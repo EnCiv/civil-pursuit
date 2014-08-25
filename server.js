@@ -27,6 +27,7 @@ domain.run(function () {
   var config = {
     'view engine'   :   'jade',
     'views'         :   'views',
+    'pretty'        :   true,
     'port'          :   process.env.PORT || 3012
   };
 
@@ -54,6 +55,12 @@ domain.run(function () {
   /* ======== API  ======== */
 
   app.all('/api/:section?', require('./routes/api'));
+
+  /* ======== HOME  ======== */
+
+  app.all('/', function (req, res) {
+    res.render('pages/home');
+  });
 
   /* ======== start server  ======== */
 
