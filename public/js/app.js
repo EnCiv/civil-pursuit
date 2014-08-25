@@ -1,0 +1,1 @@
+var synaccord = angular.module('synaccord', []);
