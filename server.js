@@ -27,13 +27,14 @@ domain.run(function () {
   var config = {
     'view engine'   :   'jade',
     'views'         :   'views',
-    'pretty'        :   true,
     'port'          :   process.env.PORT || 3012
   };
 
   for ( var middleware in config ) {
     app.set(middleware, config[middleware]);
   }
+
+  app.locals.pretty = true;
 
   /* ======== static router  ======== */
 
