@@ -56,36 +56,14 @@ domain.run(function () {
 
   app.use(cookieParser(app.locals.secret));
 
-  var sessionTime = (1000 * 60 * 60);
-
-  app.use(expressSession({
-    name: 'synuser',
-    secret: app.locals.secret,
-    saveUninitialized: true,
-    resave: true,
-    unset: 'destroy',
-    cookie: {
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      maxAge: null
-    }
-  }));
-
-  var secret = [process.pid, Math.random(), +new Date()].join();
-
   /* ======== response locals  ======== */
 
   app.use(function (req, res, next) {
     res.locals.req = req;
 
-    console.log(!!req.signedCookies.synuser);
+    console.log(req.cookies, req.signedCookies);
 
-    if ( req.signedCookies.synuser ) {
-      req.session['synuser'] = req.signedCookies.synuser;
-    }
-
-    res.locals.isSignedIn = req.signedCookies.synuser || req.session['synuser'];
+    res.locals.isSignedIn = req.signedCookies.synuser;
 
     next();
   });
@@ -101,7 +79,6 @@ domain.run(function () {
   /* ======== HOME  ======== */
 
   app.all('/', function (req, res) {
-    res.locals.isSignedIn = req.signedCookies.synuser || req.session['synuser'];
     res.render('pages/home');
   });
 

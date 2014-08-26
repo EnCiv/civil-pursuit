@@ -65,9 +65,7 @@ module.exports = function (req, res, next) {
           },
           // ------------------------------------------------------------------------------------ \\
           domain.intercept(function (saved) {
-            req.session['synuser'] = {
-              email: req.body.email
-            };
+            res.cookie('synuser', { email: req.body.email }, { path: '/', signed: true });
             res.json(saved);
           }));
         // -------------------------------------------------------------------------------------- \\
@@ -117,9 +115,7 @@ module.exports = function (req, res, next) {
               if ( ! same ) {
                 return notFound();
               }
-              req.session['synuser'] = {
-                email: user.email
-              };
+              res.cookie('synuser', { email: req.body.email }, { path: '/', signed: true });
               res.json({ in: true });
             }));
           }));
@@ -127,13 +123,10 @@ module.exports = function (req, res, next) {
         break;
       // ---------------------------------------------------------------------------------------- \\
       case 'out':
-        req.session.cookie.expires = Date.now();
 
         res.clearCookie('synuser');
 
-        delete req.session;
-
-        res.redirect('/sign/down');
+        res.redirect('/');
         break;
       case 'down':
         return res.json({ session: req.session, cookies: req.signedCookies });
