@@ -22,6 +22,18 @@ domain.run(function () {
 
   var cookieParser = require('cookie-parser');
 
+  var bodyParser = require('body-parser');
+
+  var expressSession = require('express-session');
+
+  /* ======== parsers  ======== */
+
+  // parse application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded({ extended: false }));
+
+  // parse application/json
+  app.use(bodyParser.json());
+
   /* ======== app config  ======== */
 
   var config = {
@@ -36,22 +48,51 @@ domain.run(function () {
 
   app.locals.pretty = true;
 
-  /* ======== static router  ======== */
-
-  app.use(express.static(require('path').join(__dirname, 'public')));
+  app.locals.started = false;
 
   /* ======== cookies & session  ======== */
 
-  var secret = [process.pid, Math.random(), +new Date()].join();
+  app.locals.secret = (process.pid + Math.random()).toString();
 
-  app.use(cookieParser(secret));
+  app.use(cookieParser(app.locals.secret));
+
+  var sessionTime = (1000 * 60 * 60);
+
+  app.use(expressSession({
+    name: 'synuser',
+    secret: app.locals.secret,
+    saveUninitialized: true,
+    resave: true,
+    unset: 'destroy',
+    cookie: {
+      path: '/',
+      httpOnly: true,
+      secure: false,
+      maxAge: null
+    }
+  }));
+
+  var secret = [process.pid, Math.random(), +new Date()].join();
 
   /* ======== response locals  ======== */
 
   app.use(function (req, res, next) {
     res.locals.req = req;
+
+    console.log(!!req.signedCookies.synuser);
+
+    if ( req.signedCookies.synuser ) {
+      req.session['synuser'] = req.signedCookies.synuser;
+    }
+
+    res.locals.isSignedIn = req.signedCookies.synuser || req.session['synuser'];
+
     next();
   });
+
+  /* ======== SIGN  ======== */
+
+  app.all('/sign/:dir?', require('./routes/sign'));
 
   /* ======== API  ======== */
 
@@ -60,8 +101,17 @@ domain.run(function () {
   /* ======== HOME  ======== */
 
   app.all('/', function (req, res) {
+    res.locals.isSignedIn = req.signedCookies.synuser || req.session['synuser'];
     res.render('pages/home');
   });
+
+  /* ======== static router  ======== */
+
+  app.use(express.static(require('path').join(__dirname, 'public')));
+
+  /* ======== error  ======== */
+
+  app.use(require('./routes/error'));
 
   /* ======== start server  ======== */
 
@@ -72,6 +122,8 @@ domain.run(function () {
   });
 
   server.on('error', function (error) {
-    console.log({ 'server error': error });
+    console.log({ 'server error': 'error' });
   });
+
+  domain.add(server);
 });
