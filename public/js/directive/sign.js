@@ -35,7 +35,7 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
                 // ---- on 401 error it meaans wrong password ----------------------------------  //
                 case 401:
                   $scope.sign.error = 'Wrong password';
-                  $scope.sign.email = '';
+                  $scope.sign.password = '';
                   return;
                 // ---- on 404 error it meaans credentias not found ----------------------------  //
                 case 404:
