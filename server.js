@@ -22,6 +22,18 @@ domain.run(function () {
 
   var cookieParser = require('cookie-parser');
 
+  var bodyParser = require('body-parser');
+
+  var expressSession = require('express-session');
+
+  /* ======== parsers  ======== */
+
+  // parse application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded({ extended: false }));
+
+  // parse application/json
+  app.use(bodyParser.json());
+
   /* ======== app config  ======== */
 
   var config = {
@@ -36,22 +48,29 @@ domain.run(function () {
 
   app.locals.pretty = true;
 
-  /* ======== static router  ======== */
-
-  app.use(express.static(require('path').join(__dirname, 'public')));
+  app.locals.started = false;
 
   /* ======== cookies & session  ======== */
 
-  var secret = [process.pid, Math.random(), +new Date()].join();
+  app.locals.secret = (process.pid + Math.random()).toString();
 
-  app.use(cookieParser(secret));
+  app.use(cookieParser(app.locals.secret));
 
   /* ======== response locals  ======== */
 
   app.use(function (req, res, next) {
     res.locals.req = req;
+
+    console.log(req.cookies, req.signedCookies);
+
+    res.locals.isSignedIn = req.signedCookies.synuser;
+
     next();
   });
+
+  /* ======== SIGN  ======== */
+
+  app.all('/sign/:dir?', require('./routes/sign'));
 
   /* ======== API  ======== */
 
@@ -63,6 +82,14 @@ domain.run(function () {
     res.render('pages/home');
   });
 
+  /* ======== static router  ======== */
+
+  app.use(express.static(require('path').join(__dirname, 'public')));
+
+  /* ======== error  ======== */
+
+  app.use(require('./routes/error'));
+
   /* ======== start server  ======== */
 
   var server = require('http').createServer(app);
@@ -72,6 +99,8 @@ domain.run(function () {
   });
 
   server.on('error', function (error) {
-    console.log({ 'server error': error });
+    console.log({ 'server error': 'error' });
   });
+
+  domain.add(server);
 });

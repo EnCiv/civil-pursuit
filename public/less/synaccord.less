@@ -14,9 +14,27 @@
 @import "../bower_components/bootstrap/less/buttons.less";
 
 // Components
+@import "../bower_components/bootstrap/less/alerts.less";
 @import "../bower_components/bootstrap/less/media.less";
 
 // Utility classes
 @import "../bower_components/bootstrap/less/utilities.less";
 @import "../bower_components/bootstrap/less/responsive-utilities.less";
 
+.btn, input {
+  @media (max-width: 480px) {
+    font-size: 12px;
+  }
+
+  @media (min-width: 481px) and (max-width: 690px) {
+    font-size: 16px !important;
+  }
+
+  @media (min-width: 691px) {
+    font-size: 22px !important;
+  }
+}
+
+header {
+  padding: 20px 0
+}

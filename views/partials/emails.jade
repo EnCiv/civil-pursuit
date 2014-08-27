@@ -1,10 +1,13 @@
-form(role='method')
-  .row
-    .col-xs-5.form-group
-      input.form-control(type='text' placeholder='Email')
-
-    .col-xs-5.form-group
-      input.form-control(type='password' placeholder='Password')
-
-    .col-xs-2
-      button.btn Submit
+form.synapp-sign.form-inline(role='method' novalidate ng-submit='sign.in()')
+  .alert.alert-warning.alert-dismissible(role='alert' ng-show='sign.error')
+    p
+      strong Warning! 
+      span(ng-bind='sign.error')
+  .form-group
+    input.form-control(type='email' ng-model='sign.email' placeholder='Email')
+  .form-group
+    input.form-control(type='password' placeholder='Password' ng-model='sign.password')
+  .form-group(ng-show='sign._up')
+    input.form-control(type='password' placeholder='Confirm password' ng-model='sign.password_confirm')
+  .form-group
+    button.btn.pull-right.btn-block Submit
