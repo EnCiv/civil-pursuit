@@ -16,8 +16,7 @@ module.exports = function (req, res, next) {
     // ------------------------------------------------------------------------------------------ \\
     req.params.dir                    .should.be.a.String;
     // ------------------------------------------------------------------------------------------ \\
-    ['in', 'out', 'up', 'off', 'down']
-                                      .should.containEql(req.params.dir);
+    ['in', 'out', 'up', 'off']        .should.containEql(req.params.dir);
     // ------------------------------------------------------------------------------------------ \\
     res                               .should.be.an.Object;
     // ------------------------------------------------------------------------------------------ \\
@@ -95,10 +94,10 @@ module.exports = function (req, res, next) {
         // -------------------------------------------------------------------------------------- \\
         /**************************************************************************** FIND USER  **/
         // -------------------------------------------------------------------------------------- \\
-        function notFound () {
-          var error = new Error('No such user');
-          error.status = 404;
-          throw error;
+        function customError (code, message) {
+          var error = new Error(message);
+          error.status = code;
+          return error;
         }
         User.findOne({
             email: req.body.email
@@ -106,14 +105,14 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           domain.intercept(function (user) {
             if ( ! user ) {
-              return notFound();
+              throw customError(404, 'No such user');
             }
 
             var bcrypt = require('bcrypt');
 
             bcrypt.compare(req.body.password, user.password, domain.intercept(function (same) {
               if ( ! same ) {
-                return notFound();
+                throw customError(404, 'No such user');
               }
               res.cookie('synuser', { email: req.body.email }, { path: '/', signed: true });
               res.json({ in: true });
@@ -126,10 +125,6 @@ module.exports = function (req, res, next) {
 
         res.clearCookie('synuser');
 
-        res.redirect('/');
-        break;
-      case 'down':
-        return res.json({ session: req.session, cookies: req.signedCookies });
         res.redirect('/');
         break;
       // ---------------------------------------------------------------------------------------- \\
