@@ -1,6 +1,18 @@
 // ---------------------------------------------------------------------------------------------- \\
 var should = require('should');
 // ---------------------------------------------------------------------------------------------- \\
+var cookie = {
+  path: '/',
+  signed: true,
+  maxAge: (1000 * 60 * 60 * 24 * 7)
+};
+// ---------------------------------------------------------------------------------------------- \\
+function customError (code, message) {
+  var error = new Error(message);
+  error.status = code;
+  return error;
+}
+// ---------------------------------------------------------------------------------------------- \\
 module.exports = function (req, res, next) {
     /******************************************************************************** SMOKE-TEST **/
     // ------------------------------------------------------------------------------------------ \\
@@ -64,7 +76,7 @@ module.exports = function (req, res, next) {
           },
           // ------------------------------------------------------------------------------------ \\
           domain.intercept(function (saved) {
-            res.cookie('synuser', { email: req.body.email }, { path: '/', signed: true });
+            res.cookie('synuser', { email: req.body.email }, cookie);
             res.json(saved);
           }));
         // -------------------------------------------------------------------------------------- \\
@@ -94,11 +106,6 @@ module.exports = function (req, res, next) {
         // -------------------------------------------------------------------------------------- \\
         /**************************************************************************** FIND USER  **/
         // -------------------------------------------------------------------------------------- \\
-        function customError (code, message) {
-          var error = new Error(message);
-          error.status = code;
-          return error;
-        }
         User.findOne({
             email: req.body.email
           },
@@ -112,9 +119,9 @@ module.exports = function (req, res, next) {
 
             bcrypt.compare(req.body.password, user.password, domain.intercept(function (same) {
               if ( ! same ) {
-                throw customError(404, 'No such user');
+                throw customError(401, 'No such user');
               }
-              res.cookie('synuser', { email: req.body.email }, { path: '/', signed: true });
+              res.cookie('synuser', { email: req.body.email }, cookie);
               res.json({ in: true });
             }));
           }));
