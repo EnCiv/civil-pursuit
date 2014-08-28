@@ -51,6 +51,8 @@ module.exports = function (error, req, res, next) {
       res.type('html');
     }
 
+    '%d %s %s'.format(res.statusCode, error.name, error.message).Error(error.stack.split(/\n/));
+
     res.format({
       'json': function () {
         res.json({
