@@ -3079,6 +3079,7 @@ header {
   position: fixed;
   background: #ffffff;
   z-index: 999;
+  border-bottom: 2px solid #999999;
 }
 [role=main] {
   margin-top: 120px;
