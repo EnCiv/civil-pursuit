@@ -16,7 +16,7 @@ if ( ! mongoose.connection._readyState ) {
   });
   // -------------------------------------------------------------------------------------------- \\
   mongoose.connection.once('open', function () {
-    'mongoose connected to MongoHQ'     .Success();
+    'Mongoose connected to MongoHQ'     .Success();
   });
   // -------------------------------------------------------------------------------------------- \\
 }
