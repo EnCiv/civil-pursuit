@@ -3,4 +3,5 @@
     .col-xs-4
       img.img-responsive(alt='Image' ng-src='/images/topics/{{topic.image}}')
     .col-xs-8
+      h4(ng-bind='topic.heading')
       p(ng-bind='topic.description')

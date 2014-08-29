@@ -83,7 +83,7 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        var User = mongoose.model('User', Schema);
+        var User = require('../models/User');
           // ------------------------------------------------------------------------------------ \\
           User                            .should.be.a.Function;
           User                            .should.have.property('create');
@@ -95,6 +95,7 @@ module.exports = function (req, res, next) {
           email: req.body.email,
           password: req.body.password
         }, domain.intercept(function (created) {
+          'User created: %s'    .format(req.body.email).Success();
           res.cookie('synuser', { email: req.body.email }, cookie);
           res.json(created);
         }));
@@ -119,11 +120,7 @@ module.exports = function (req, res, next) {
         // -------------------------------------------------------------------------------------- \\
         'Sign-in attempt: %s'             .format(req.body.email).Info();
         // -------------------------------------------------------------------------------------- \\
-        var Schema = require('../models/User');
-          // ------------------------------------------------------------------------------------ \\
-          Schema                          .should.be.an.Object;
-        // -------------------------------------------------------------------------------------- \\
-        var User = mongoose.model('User', Schema);
+        var User = require('../models/User');
           // ------------------------------------------------------------------------------------ \\
           User                            .should.be.a.Function;
           User                            .should.have.property('findOne');

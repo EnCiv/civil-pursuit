@@ -21,6 +21,11 @@ var UserSchema = new Schema({
 });
 
 UserSchema.pre('save', function (next) {
+
+  if ( ! this.isNew ) {
+    return next();
+  }
+
   var bcrypt = require('bcrypt');
 
   var self = this;
@@ -32,14 +37,12 @@ UserSchema.pre('save', function (next) {
   });
 
   domain.run(function () {
-    if ( ! self._id ) {
-      bcrypt.genSalt(10, domain.intercept(function (salt) {
-        bcrypt.hash(self.password, salt, domain.intercept(function (hash) {
-          self.password  = hash;
-          next();
-        }));
+    bcrypt.genSalt(10, domain.intercept(function (salt) {
+      bcrypt.hash(self.password, salt, domain.intercept(function (hash) {
+        self.password  = hash;
+        next();
       }));
-    }
+    }));
   });
 });
 
