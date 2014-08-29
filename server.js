@@ -1,13 +1,73 @@
 #!/usr/bin/env node
 
+var format = require('util').format;
+
+var colors = require('colors');
+
+/** Function to print log messages -------------------------------------------------------------  */
+function printLog (message, level, debug) {
+  var symbol,
+    color,
+    _debug = '';
+
+  switch ( level ) {
+    case 'info':
+    default:
+      symbol = 'ℹ';
+      color = 'cyan';
+      break;
+
+    case 'error':
+      symbol = '❌';
+      color = 'red';
+      break;
+
+    case 'warning':
+      symbol = '❢';
+      color = 'yellow';
+      break;
+
+    case 'success':
+      symbol = '✔';
+      color = 'green';
+      break;
+  }
+
+  if ( debug ) {
+    _debug = JSON.stringify(debug, null, 2).grey;
+  }
+
+  console.log(' %s %s %s %s',
+    'synapp' + ' http'.grey, symbol[color], message[color], _debug);
+}
+
+String.prototype.Info = function (debug) {
+  printLog(this, 'info', debug);
+};
+
+String.prototype.Error = function (debug) {
+  printLog(this, 'error', debug);
+};
+
+String.prototype.Warning = function (debug) {
+  printLog(this, 'warning', debug);
+};
+
+String.prototype.Success = function (debug) {
+  printLog(this, 'success', debug);
+};
+
+String.prototype.format = function () {
+  return require('util').format.apply(null, [this.toString()].concat(
+    Array.prototype.slice.call(arguments)));
+};
+
 var domain = require('domain').create();
 
 domain.on('error', function (error) {
-  console.log({ error: {
-    name: error.name,
-    message: error.message,
-    stack: error.stack.split(/\n/)
-  }});
+  error.message.Error({
+    name: error.name
+  });
 });
 
 domain.run(function () {
@@ -61,9 +121,24 @@ domain.run(function () {
   app.use(function (req, res, next) {
     res.locals.req = req;
 
-    console.log(req.cookies, req.signedCookies);
-
     res.locals.isSignedIn = req.signedCookies.synuser;
+
+    next();
+  });
+
+  /* ======== LOGGER  ======== */
+
+
+  app.use(function (req, res, next) {
+    var method = 'Info';
+
+    switch ( res.statusCode ) {
+      case 200:
+        method = 'Success';
+        break;
+    }
+
+    format('%d %s %s', res.statusCode, req.method, req.url)[method]();
 
     next();
   });
@@ -76,11 +151,27 @@ domain.run(function () {
 
   app.all('/api/:section?', require('./routes/api'));
 
+  /* ======== IMAGES  ======== */
+
+  app.get('/images', function (req, res, next) {
+    require('fs').readdir(require('path').join(__dirname, 'public/images'),
+      function (error, files) {
+        if ( error ) {
+          throw error;
+        }
+        res.json(files);
+      });
+  });
+
   /* ======== HOME  ======== */
 
   app.all('/', function (req, res) {
     res.render('pages/home');
   });
+
+  /* ======== BACK OFFICE / DUMP  ======== */
+
+  app.all('/back/dump', require('./routes/dump'));
 
   /* ======== static router  ======== */
 
@@ -95,11 +186,11 @@ domain.run(function () {
   var server = require('http').createServer(app);
 
   server.listen(app.get('port'), function () {
-    console.log({ message: 'started', port: app.get('port'), pid: process.pid });
+    format('Listening on port %d', app.get('port')).Success();
   });
 
   server.on('error', function (error) {
-    console.log({ 'server error': 'error' });
+    error.message.Error();
   });
 
   domain.add(server);

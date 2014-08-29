@@ -7,9 +7,10 @@ block meta
 //- Top Level Bar
 section.container(ng-app='synapp' ng-init='isSignedIn=' + !!isSignedIn)
   include ../partials/top-level-bar
-  div(ng-hide='isSignedIn')
-    include ../partials/emails
-  include ../partials/topics-list
+  section(role='main')
+    div(ng-hide='isSignedIn')
+      include ../partials/emails
+    include ../partials/topics-list
 
 //- Scripts
 

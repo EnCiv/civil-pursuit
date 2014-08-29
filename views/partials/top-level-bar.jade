@@ -1,8 +1,15 @@
-header.row
-  .col-xs-6
-    img.img-responsive(alt='Logo' src='/images/Synaccord_logo_64x61.png')
+header
+  .container
+    .row
+      .col-xs-6.col-sm-8
+        img.img-responsive(alt='Logo' src='/images/Synaccord_logo_name_300x61.png')
 
-  .col-xs-6
-    .center-block
-      a.btn.btn-default(href='/') Home
-      a.btn.btn-default(href='/') Back
+      .col-xs-6.col-sm-4
+        .text-right
+          button.btn.btn-lg
+            a(href='/')
+              big.glyphicon.glyphicon-home
+          span  
+          button.btn.btn-lg
+            a(href='/')
+              big.glyphicon.glyphicon-chevron-left

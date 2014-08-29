@@ -2,9 +2,12 @@
 @import "../bower_components/bootstrap/less/variables.less";
 @import "../bower_components/bootstrap/less/mixins.less";
 
+@icon-font-path: '../bower_components/bootstrap/fonts/';
+
 // Reset and dependencies
 @import "../bower_components/bootstrap/less/normalize.less";
 @import "../bower_components/bootstrap/less/print.less";
+@import "../bower_components/bootstrap/less/glyphicons.less";
 
 // Core CSS
 @import "../bower_components/bootstrap/less/scaffolding.less";
@@ -16,6 +19,7 @@
 // Components
 @import "../bower_components/bootstrap/less/alerts.less";
 @import "../bower_components/bootstrap/less/media.less";
+@import "../bower_components/bootstrap/less/navbar.less";
 
 // Utility classes
 @import "../bower_components/bootstrap/less/utilities.less";
@@ -36,5 +40,13 @@
 }
 
 header {
-  padding: 20px 0
+  padding: 20px 0;
+  position: fixed;
+  background: rgba(255, 255, 255, 1);
+  z-index: 999;
+  border-bottom: 2px solid #999
+}
+
+[role=main] {
+  margin-top:120px
 }
