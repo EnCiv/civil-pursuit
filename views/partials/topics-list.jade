@@ -1,7 +1,18 @@
 .synapp-topics
-  .row(ng-repeat='topic in topics')
-    .col-xs-4
-      img.img-responsive(alt='Image' ng-src='/images/topics/{{topic.image}}')
-    .col-xs-8
-      h4(ng-bind='topic.heading')
-      p(ng-bind='topic.description')
+
+  section(ng-repeat='topic in topics')
+
+    .row(ng-click='selectMeAsTopic(topic._id)')
+      
+      .col-xs-4
+        img.img-responsive(alt='Image' ng-src='/images/topics/{{topic.image}}')
+      
+      .col-xs-8
+        h4(ng-bind='topic.heading')
+        p(ng-bind='topic.description')
+      
+    .clearfix.text-center.padding(ng-hide='selectedTopic !== topic._id')
+      button.btn Create
+      button.btn Evaluate
+      button.btn My Feedback
+      button.btn Results

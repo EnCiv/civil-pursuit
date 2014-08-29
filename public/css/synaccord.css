@@ -3672,6 +3672,9 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     display: none !important;
   }
 }
+.padding {
+  padding: 20px;
+}
 @media (max-width: 480px) {
   .btn,
   input {

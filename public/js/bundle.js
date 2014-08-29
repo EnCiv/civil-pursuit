@@ -150,6 +150,12 @@ module.exports = function (TopicFactory) { // ----- uses factory/Sign.js -------
     restrict: 'C',
     // ---- Link function ----------------------------------------------------------------------  //
     link: function ($scope) {
+      $scope.selectedTopic =  'none';
+
+      $scope.selectMeAsTopic = function (id) {
+        $scope.selectedTopic = id;
+      };
+
       TopicFactory.find()
         .error(function (error) {
           console.error(error);
