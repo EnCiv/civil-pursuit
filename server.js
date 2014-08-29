@@ -66,7 +66,9 @@ var domain = require('domain').create();
 
 domain.on('error', function (error) {
   error.message.Error({
-    name: error.name
+    name: error.name,
+    message: error.message,
+    stack: error.stack.split(/\n/)
   });
 });
 
@@ -149,7 +151,15 @@ domain.run(function () {
 
   /* ======== API  ======== */
 
-  app.all('/api/:section?', require('./routes/api'));
+  require('monson')(app, {
+    mongodb: {
+      env: 'MONGOHQ_URL'
+    }
+  });
+
+  app.all('/json/:Model', function (req, res, next) {
+    res.json(res.locals.monson);
+  });
 
   /* ======== IMAGES  ======== */
 

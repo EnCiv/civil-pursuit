@@ -3,14 +3,16 @@
 var synapp = angular.module('synapp', []);
 /** ********************************************************************************  FACTORIES  **/
 synapp.factory({
-  'SignFactory': require('./factory/Sign')
+  'SignFactory': 	require('./factory/Sign'),
+  'TopicFactory': 	require('./factory/Topic')
 });
 /** *******************************************************************************  DIRECTIVES  **/
 synapp.directive({
-  'synappSign': require('./directive/sign')
+  'synappSign': 	require('./directive/sign'),
+  'synappTopics': 	require('./directive/topics')
 });
 // ---------------------------------------------------------------------------------------------- \\
-},{"./directive/sign":2,"./factory/Sign":3}],2:[function(require,module,exports){
+},{"./directive/sign":2,"./directive/topics":3,"./factory/Sign":4,"./factory/Topic":5}],2:[function(require,module,exports){
 // ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-sign"
@@ -135,10 +137,46 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
   };
 };
 },{}],3:[function(require,module,exports){
+// ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
+/*
+ *  @abstract Angular directive for all elements with class name "synapp-sign"
+ *  @return   Object directive
+ *  @param    Object TopicFactory
+ */
+// ---------------------------------------------------------------------------------------------  //
+module.exports = function (TopicFactory) { // ----- uses factory/Sign.js ------------------------  //
+  return {
+    // ---- Restrict directive to class --------------------------------------------------------  //
+    restrict: 'C',
+    // ---- Link function ----------------------------------------------------------------------  //
+    link: function ($scope) {
+      TopicFactory.find()
+        .error(function (error) {
+          console.error(error);
+        })
+        .success(function (data) {
+          $scope.topics = data.Topic.found;
+        });
+    }
+  };
+};
+},{}],4:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     in: function (creds) {
       return $http.post('/sign/in', creds);
+    },
+
+    up: function (creds) {
+      return $http.post('/sign/up', creds);
+    }
+  };
+};
+},{}],5:[function(require,module,exports){
+module.exports = function ($http) {
+  return {
+    find: function () {
+      return $http.get('/json/Topic');
     },
 
     up: function (creds) {

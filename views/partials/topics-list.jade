@@ -1,6 +1,6 @@
-- for ( var i = 0; i < 50; i ++ )
-  .row
+.synapp-topics
+  .row(ng-repeat='topic in topics')
     .col-xs-4
-      img.img-responsive(alt='Image')
+      img.img-responsive(alt='Image' ng-src='/images/topics/{{topic.image}}')
     .col-xs-8
-      p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+      p(ng-bind='topic.description')

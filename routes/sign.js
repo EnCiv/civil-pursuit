@@ -83,22 +83,21 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        var User = require('../lib/api/users');
+        var User = mongoose.model('User', Schema);
           // ------------------------------------------------------------------------------------ \\
-          User                            .should.be.an.Object;
-          User                            .should.have.property('POST');
-          User.POST                       .should.be.a.Function;
+          User                            .should.be.a.Function;
+          User                            .should.have.property('create');
+          User.create                     .should.be.a.Function;
         // -------------------------------------------------------------------------------------- \\
-        /********************************************************************** CREATE NEW USER  **/
+        /************************************************************************** CREATE USER  **/
         // -------------------------------------------------------------------------------------- \\
-        User.POST({
-            body: req.body
-          },
-          // ------------------------------------------------------------------------------------ \\
-          domain.intercept(function (saved) {
-            res.cookie('synuser', { email: req.body.email }, cookie);
-            res.json(saved);
-          }));
+        User.create({
+          email: req.body.email,
+          password: req.body.password
+        }, domain.intercept(function (created) {
+          res.cookie('synuser', { email: req.body.email }, cookie);
+          res.json(created);
+        }));
         // -------------------------------------------------------------------------------------- \\
         break;
       // ---------------------------------------------------------------------------------------- \\
@@ -120,7 +119,7 @@ module.exports = function (req, res, next) {
         // -------------------------------------------------------------------------------------- \\
         'Sign-in attempt: %s'             .format(req.body.email).Info();
         // -------------------------------------------------------------------------------------- \\
-        var Schema = require('../lib/models/User');
+        var Schema = require('../models/User');
           // ------------------------------------------------------------------------------------ \\
           Schema                          .should.be.an.Object;
         // -------------------------------------------------------------------------------------- \\
