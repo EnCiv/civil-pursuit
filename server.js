@@ -151,6 +151,18 @@ domain.run(function () {
 
   app.all('/api/:section?', require('./routes/api'));
 
+  /* ======== IMAGES  ======== */
+
+  app.get('/images', function (req, res, next) {
+    require('fs').readdir(require('path').join(__dirname, 'public/images'),
+      function (error, files) {
+        if ( error ) {
+          throw error;
+        }
+        res.json(files);
+      });
+  });
+
   /* ======== HOME  ======== */
 
   app.all('/', function (req, res) {
