@@ -91,6 +91,7 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
 
               .success(function (data) {
                 $scope.isSignedIn = true;
+                location.reload();
               });
 
             return;
@@ -115,6 +116,7 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
             .success(function (data) {
               // ----- Letting the UI knowns user is signed in ---------------------------------  //
               $scope.isSignedIn = true;
+              location.reload();
             });
         }
       };

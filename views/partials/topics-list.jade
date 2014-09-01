@@ -12,7 +12,7 @@
         p(ng-bind='topic.description')
       
     .clearfix.text-center.padding(ng-hide='selectedTopic !== topic._id')
-      button.btn Create
+      a.btn(ng-href='/topics/{{topic.slug}}/create') Create
       button.btn Evaluate
       button.btn My Feedback
       button.btn Results

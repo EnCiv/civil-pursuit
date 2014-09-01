@@ -6,6 +6,10 @@ module.exports = function ($http) {
 
     up: function (creds) {
       return $http.post('/sign/up', creds);
+    },
+
+    findByEmail: function (email) {
+      return $http.get('/json/User/findOne?email=' + email);
     }
   };
 };

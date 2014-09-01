@@ -4,8 +4,8 @@ module.exports = function ($http) {
       return $http.get('/json/Topic');
     },
 
-    up: function (creds) {
-      return $http.post('/sign/up', creds);
+    findBySlug: function (slug) {
+      return $http.get('/json/Topic/findOne?slug=' + slug);
     }
   };
 };

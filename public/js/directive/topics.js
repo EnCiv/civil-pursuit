@@ -22,7 +22,7 @@ module.exports = function (TopicFactory) { // ----- uses factory/Sign.js -------
           console.error(error);
         })
         .success(function (data) {
-          $scope.topics = data.Topic.found;
+          $scope.topics = data.found;
         });
     }
   };

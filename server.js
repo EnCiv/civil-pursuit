@@ -2,74 +2,12 @@
 
 var format = require('util').format;
 
-var colors = require('colors');
-
-/** Function to print log messages -------------------------------------------------------------  */
-function printLog (message, level, debug) {
-  var symbol,
-    color,
-    _debug = '';
-
-  switch ( level ) {
-    case 'info':
-    default:
-      symbol = 'ℹ';
-      color = 'cyan';
-      break;
-
-    case 'error':
-      symbol = '❌';
-      color = 'red';
-      break;
-
-    case 'warning':
-      symbol = '❢';
-      color = 'yellow';
-      break;
-
-    case 'success':
-      symbol = '✔';
-      color = 'green';
-      break;
-  }
-
-  if ( debug ) {
-    _debug = JSON.stringify(debug, null, 2).grey;
-  }
-
-  console.log(' %s %s %s %s',
-    'synapp' + ' http'.grey, symbol[color], message[color], _debug);
-}
-
-String.prototype.Info = function (debug) {
-  printLog(this, 'info', debug);
-};
-
-String.prototype.Error = function (debug) {
-  printLog(this, 'error', debug);
-};
-
-String.prototype.Warning = function (debug) {
-  printLog(this, 'warning', debug);
-};
-
-String.prototype.Success = function (debug) {
-  printLog(this, 'success', debug);
-};
-
-String.prototype.format = function () {
-  return require('util').format.apply(null, [this.toString()].concat(
-    Array.prototype.slice.call(arguments)));
-};
+var Log = require('String-alert')({ prefix: 'synapp' });
 
 var domain = require('domain').create();
 
 domain.on('error', function (error) {
-  error.message.Error({
-    name: error.name,
-    message: error.message,
-    stack: error.stack.split(/\n/)
-  });
+  Log.ERROR(error.message, error.format());
 });
 
 domain.run(function () {
@@ -130,17 +68,18 @@ domain.run(function () {
 
   /* ======== LOGGER  ======== */
 
-
   app.use(function (req, res, next) {
-    var method = 'Info';
+    var LOG = 'INFO';
 
     switch ( res.statusCode ) {
       case 200:
-        method = 'Success';
+        LOG = 'SUCCESS';
         break;
     }
 
-    format('%d %s %s', res.statusCode, req.method, req.url)[method]();
+    Log[LOG](format('[%s] %d %s %s',
+      req.signedCookies.synuser ? req.signedCookies.synuser.email : 'visitor',
+      res.statusCode, req.method, req.url));
 
     next();
   });
@@ -151,26 +90,14 @@ domain.run(function () {
 
   /* ======== API  ======== */
 
-  require('monson')(app, {
-    mongodb: {
-      env: 'MONGOHQ_URL'
-    }
-  });
+  require('monson')(app, require('mongoose'), 'MONGOHQ_URL');
 
-  app.all('/json/:Model', function (req, res, next) {
-    res.json(res.locals.monson);
-  });
+  /* ======== CREATE  ======== */
 
-  /* ======== IMAGES  ======== */
-
-  app.get('/images', function (req, res, next) {
-    require('fs').readdir(require('path').join(__dirname, 'public/images'),
-      function (error, files) {
-        if ( error ) {
-          throw error;
-        }
-        res.json(files);
-      });
+  app.get('/topics/:topic/create', function (req, res, next) {
+    res.render('pages/create', {
+      topic: req.params.topic
+    });
   });
 
   /* ======== HOME  ======== */
@@ -196,11 +123,11 @@ domain.run(function () {
   var server = require('http').createServer(app);
 
   server.listen(app.get('port'), function () {
-    format('Listening on port %d', app.get('port')).Success();
+    Log.OK(format('Listening on port %d', app.get('port')));
   });
 
   server.on('error', function (error) {
-    error.message.Error();
+    Log.ERROR(error.format());
   });
 
   domain.add(server);

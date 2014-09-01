@@ -1,0 +1,41 @@
+- if ( ! isSignedIn )
+  h1 Please log in
+
+- else
+
+  form.synapp-create(method='POST' role='form' ng-submit='create.publish()' ng-init='topic="' + topic + '"')
+
+    input(type='model' ng-model='email')
+    input(type='model' ng-model='topic')
+
+    .row.padding
+      .col-xs-12
+        //- Alert
+
+        .alert.alert-warning.alert-dismissible(role='alert' ng-show='create.error')
+          p
+            strong Warning! 
+            span(ng-bind='create.error')
+
+    .row.padding
+      .col-sm-4
+        image.image-responsive(alt='image')
+        input(type='hidden' ng-model='create.image')
+      .col-sm-8
+        input.form-control(type='text' placeholder='http://' ng-model='create.title')
+
+    .row.padding
+      .col-xs-12
+        input.form-control(type='text' placeholder='Subject' ng-model='create.subject')
+
+    .row.padding
+      .col-xs-12
+        textarea.form-control(placeholder='Description' spellcheck='true' lang='en'  ng-model='create.description')
+
+    .row.padding
+      .col-xs-6
+        button.btn.btn-default Upload image
+
+      .col-xs-6.text-right
+        button.btn Clear
+        button.btn.btn-info Done

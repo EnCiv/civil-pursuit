@@ -3693,13 +3693,16 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     font-size: 22px !important;
   }
 }
+textarea {
+  min-height: 120px;
+}
 header {
-  padding: 20px 0;
+  padding: 8px 0;
   position: fixed;
   background: #ffffff;
   z-index: 999;
   border-bottom: 2px solid #999999;
 }
 [role=main] {
-  margin-top: 120px;
+  margin-top: 90px;
 }

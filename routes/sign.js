@@ -1,31 +1,9 @@
 // ---------------------------------------------------------------------------------------------- \\
 var should = require('should');
 // ---------------------------------------------------------------------------------------------- \\
-var mongoose = require('mongoose');
+var Log = require('String-alert')({ prefix: 'synapp ' + 'sign'.grey });
 // ---------------------------------------------------------------------------------------------- \\
-if ( ! mongoose.connection._readyState ) {
-  // -------------------------------------------------------------------------------------------- \\
-  'Mongoose not connected to MongoHQ'       .Warning();
-  // -------------------------------------------------------------------------------------------- \\
-  'Will try to connect to %s'               .format(process.env.MONGOHQ_URL).Info();
- // -------------------------------------------------------------------------------------------- \\
-  var db = mongoose.connect( process.env.MONGOHQ_URL );
-  // -------------------------------------------------------------------------------------------- \\
-  mongoose.connection.on('error', function (error) {
-    error.message.Error();
-  });
-  // -------------------------------------------------------------------------------------------- \\
-  mongoose.connection.once('open', function () {
-    'Mongoose connected to MongoHQ'     .Success();
-  });
-  // -------------------------------------------------------------------------------------------- \\
-}
-// ---------------------------------------------------------------------------------------------- \\
-var cookie = {
-  path: '/',
-  signed: true,
-  maxAge: (1000 * 60 * 60 * 24 * 7)
-};
+var cookie = require('../config/cookie.json');
 // ---------------------------------------------------------------------------------------------- \\
 function customError (code, message) {
   var error = new Error(message);
@@ -95,9 +73,13 @@ module.exports = function (req, res, next) {
           email: req.body.email,
           password: req.body.password
         }, domain.intercept(function (created) {
-          'User created: %s'    .format(req.body.email).Success();
+          
+          Log.OK('User created: %s'    .format(req.body.email));
+          
           res.cookie('synuser', { email: req.body.email }, cookie);
+          
           res.json(created);
+
         }));
         // -------------------------------------------------------------------------------------- \\
         break;
@@ -118,7 +100,7 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        'Sign-in attempt: %s'             .format(req.body.email).Info();
+        Log.INFO('Sign-in attempt: %s'.format(req.body.email));
         // -------------------------------------------------------------------------------------- \\
         var User = require('../models/User');
           // ------------------------------------------------------------------------------------ \\
@@ -135,26 +117,26 @@ module.exports = function (req, res, next) {
           domain.intercept(function (user) {
             // ---------------------------------------------------------------------------------- \\
             if ( ! user ) {
-              'User not found: %s'         .format(req.body.email).Warning();
+              Log.WARNING('User not found: %s'.format(req.body.email));
 
               throw customError(404, 'No such user');
             }
             // ---------------------------------------------------------------------------------- \\
-            'User found: %s'               .format(req.body.email).Info();
+            Log.INFO('User found: %s'.format(req.body.email));
             // ---------------------------------------------------------------------------------- \\
             var bcrypt = require('bcrypt');
             // ---------------------------------------------------------------------------------- \\
             bcrypt.compare(req.body.password, user.password, domain.intercept(function (same) {
               if ( ! same ) {
-                'Wrong password: %s'      .format(req.body.email).Warning();
+                Log.WARNING('Wrong password: %s'      .format(req.body.email));
                 throw customError(401, 'No such user');
               }
               // -------------------------------------------------------------------------------- \\
-              'Email match: %s'         .format(req.body.email).Info();
+              Log.INFO('Email match: %s'         .format(req.body.email));
               // -------------------------------------------------------------------------------- \\
               res.cookie('synuser', { email: req.body.email }, cookie);
               // -------------------------------------------------------------------------------- \\
-              'User signed in: %s'      .format(req.body.email).Success();
+              Log.OK('User signed in: %s'      .format(req.body.email));
               // -------------------------------------------------------------------------------- \\
               res.json({ in: true });
             }));
