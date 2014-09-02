@@ -19,8 +19,8 @@
 
     .row.padding
       .col-xs-4
-        image.img-responsive(alt='image' ng-src="{{dataUrls[0]}}")
-        input(type='hidden' ng-model='create.image')
+        .drop-box(ng-show='dropSupported' ng-file-drop="onFileSelect($files)" ng-file-drop-available="dropSupported=true" ng-file-drag-over-class="dragOverClass($event)" ng-file-drag-over-delay="100" ng-hide='dataUrls.length') Drop image here
+        image.img-responsive(alt='image' ng-src="{{dataUrls[0]}}" ng-show='dataUrls.length')
       
       .col-xs-8
         input.form-control(type='text' placeholder='http://' ng-model='create.title')
