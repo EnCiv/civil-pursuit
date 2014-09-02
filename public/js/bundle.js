@@ -198,6 +198,14 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- u
     restrict: 'C',
     // ---- Link function ----------------------------------------------------------------------  //
     link: function ($scope) {
+
+      $scope.clear = function () {
+        $scope.create.title = '';
+        $scope.create.subject = '';
+        $scope.create.description = '';
+        $scope.dataUrls = [];
+      }
+
       // ---- The `create` object ----------------------------------------------------------------  //
       $scope.create = {
         // ---- The alert function -------------------------------------------------------------  //

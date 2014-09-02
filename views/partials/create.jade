@@ -38,6 +38,6 @@
         div.upload-button.btn.btn-default(ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null") Upload image
 
       .col-xs-6.text-right
-        button.btn Clear
+        button.btn(ng-click='clear()' type='button') Clear
         button.btn.btn-info Done
 
