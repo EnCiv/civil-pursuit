@@ -17,6 +17,7 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- u
         $scope.create.subject = '';
         $scope.create.description = '';
         $scope.dataUrls = [];
+        $scope.create.error = null;
       }
 
       // ---- The `create` object ----------------------------------------------------------------  //
