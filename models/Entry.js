@@ -7,7 +7,8 @@ var User = require('./User');
 
 var EntrySchema = new Schema({
   "image": {
-    "type": String
+    "type": String,
+    "required": true
   },
   "title": {
     "type": String
@@ -32,40 +33,13 @@ var EntrySchema = new Schema({
   }
 });
 
-EntrySchema.pre('init', function (next) {
+EntrySchema.pre('validate', function (next) {
 
   var self = this;
 
   var Log = require('String-alert')({ prefix: 'Entry' });
 
   Log.INFO('pre validate', this)
-
-  Topic.findOne({ slug: this._topic },
-    function (error, found) {
-      if ( error ) {
-        return next(error);
-      }
-      if ( ! found ) {
-        return next(new Error('Topic not found'));
-      }
-
-      self.topic = found._id;
-
-      User.findOne({ email: self._user },
-        function (error, found) {
-          if ( error ) {
-            return next(error);
-          }
-          if ( ! found ) {
-            return next(new Error('User not found'));
-          }
-
-          self.user = found._id;
-
-          next();
-        });
-
-    });
 
   next();
 });

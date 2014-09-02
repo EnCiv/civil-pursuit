@@ -3,10 +3,10 @@
 
 - else
 
-  form.synapp-create(method='POST' role='form' ng-submit='create.publish()' ng-init='topic="' + topic + '"')
+  form.synapp-create(method='POST' role='form' ng-submit='create.publish()' ng-init='topic="' + topic + '"' ng-controller='UploadCtrl')
 
-    input(type='model' ng-model='email')
-    input(type='model' ng-model='topic')
+    input(type='hidden' ng-model='email')
+    input(type='hidden' ng-model='topic')
 
     .row.padding
       .col-xs-12
@@ -18,10 +18,11 @@
             span(ng-bind='create.error')
 
     .row.padding
-      .col-sm-4
-        image.image-responsive(alt='image')
+      .col-xs-4
+        image.img-responsive(alt='image' ng-src="{{dataUrls[0]}}")
         input(type='hidden' ng-model='create.image')
-      .col-sm-8
+      
+      .col-xs-8
         input.form-control(type='text' placeholder='http://' ng-model='create.title')
 
     .row.padding
@@ -34,8 +35,9 @@
 
     .row.padding
       .col-xs-6
-        button.btn.btn-default Upload image
+        div.upload-button.btn.btn-default(ng-file-select="onFileSelect($files)" data-multiple="true" title="select file" onclick="this.value = null") Upload image
 
       .col-xs-6.text-right
         button.btn Clear
         button.btn.btn-info Done
+

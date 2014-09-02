@@ -3693,6 +3693,10 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     font-size: 22px !important;
   }
 }
+a.btn {
+  background: #ddd;
+  color: #000;
+}
 textarea {
   min-height: 120px;
 }

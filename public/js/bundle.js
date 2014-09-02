@@ -1,11 +1,21 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** ***********************************************************************************  MODULE  **/
-var synapp = angular.module('synapp', []);
+var deps = [];
+
+if ( typeof createPage === 'boolean' ) {
+	deps.push('angularFileUpload');
+}
+
+var synapp = angular.module('synapp', deps);
 /** ********************************************************************************  FACTORIES  **/
 synapp.factory({
   'SignFactory': 	require('./factory/Sign'),
   'TopicFactory': 	require('./factory/Topic'),
   'EntryFactory': 	require('./factory/Entry')
+});
+/** ******************************************************************************  CONTROLLERS  **/
+synapp.controller({
+  'UploadCtrl': 	require('./controller/upload')
 });
 /** *******************************************************************************  DIRECTIVES  **/
 synapp.directive({
@@ -14,7 +24,167 @@ synapp.directive({
   'synappCreate':	require('./directive/create')
 });
 // ---------------------------------------------------------------------------------------------- \\
-},{"./directive/create":2,"./directive/sign":3,"./directive/topics":4,"./factory/Entry":5,"./factory/Sign":6,"./factory/Topic":7}],2:[function(require,module,exports){
+},{"./controller/upload":2,"./directive/create":3,"./directive/sign":4,"./directive/topics":5,"./factory/Entry":6,"./factory/Sign":7,"./factory/Topic":8}],2:[function(require,module,exports){
+FileAPI = {
+  debug: true,
+  //forceLoad: true, html5: false //to debug flash in HTML5 browsers
+  //wrapInsideDiv: true, //experimental for fixing css issues
+  //only one of jsPath or jsUrl.
+    //jsPath: '/js/FileAPI.min.js/folder/', 
+    //jsUrl: 'yourcdn.com/js/FileAPI.min.js',
+
+    //only one of staticPath or flashUrl.
+    //staticPath: '/flash/FileAPI.flash.swf/folder/'
+    //flashUrl: 'yourcdn.com/js/FileAPI.flash.swf'
+};
+
+var uploadUrl = '/tools/upload';
+window.uploadUrl = window.uploadUrl || 'upload';
+
+var MyCtrl = [ '$scope', '$http', '$timeout', '$upload', function($scope, $http, $timeout, $upload) {
+
+  $scope.howToSend = 1;
+
+	$scope.usingFlash = FileAPI && FileAPI.upload != null;
+	
+  $scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
+	
+  $scope.uploadRightAway = true;
+	
+  $scope.hasUploader = function(index) {
+		return $scope.upload[index] != null;
+	};
+	
+  $scope.abort = function(index) {
+		$scope.upload[index].abort(); 
+		$scope.upload[index] = null;
+	};
+	
+  $scope.onFileSelect = function($files) {
+
+		$scope.selectedFiles = [];
+		
+    $scope.progress = [];
+		
+    if ($scope.upload && $scope.upload.length > 0) {
+			for (var i = 0; i < $scope.upload.length; i++) {
+				if ($scope.upload[i] != null) {
+					$scope.upload[i].abort();
+				}
+			}
+		}
+		
+    $scope.upload = [];
+		
+    $scope.uploadResult = [];
+		
+    $scope.selectedFiles = $files;
+		
+    $scope.dataUrls = [];
+		
+    for ( var i = 0; i < $files.length; i++) {
+			var $file = $files[i];
+			
+      if ($scope.fileReaderSupported && $file.type.indexOf('image') > -1) {
+				var fileReader = new FileReader();
+				fileReader.readAsDataURL($files[i]);
+				
+        var loadFile = function(fileReader, index) {
+					fileReader.onload = function(e) {
+						$timeout(function() {
+							$scope.dataUrls[index] = e.target.result;
+						});
+					}
+				}(fileReader, i);
+			}
+			
+      $scope.progress[i] = -1;
+			
+      if ($scope.uploadRightAway) {
+				$scope.start(i);
+			}
+		}
+	};
+	
+	$scope.start = function(index) {
+    console.log($scope.selectedFiles, $scope.howToSend);
+		$scope.progress[index] = 0;
+		$scope.errorMsg = null;
+		if ($scope.howToSend == 1) {
+			$scope.upload[index] = $upload.upload({
+				url: uploadUrl,
+				method: $scope.httpMethod,
+				headers: {'my-header': 'my-header-value'},
+				data : {
+					myModel : $scope.myModel
+				},
+				/* formDataAppender: function(fd, key, val) {
+					if (angular.isArray(val)) {
+                        angular.forEach(val, function(v) {
+                          fd.append(key, v);
+                        });
+                      } else {
+                        fd.append(key, val);
+                      }
+				}, */
+				/* transformRequest: [function(val, h) {
+					console.log(val, h('my-header')); return val + '-modified';
+				}], */
+				file: $scope.selectedFiles[index],
+				fileFormDataName: 'myFile'
+			});
+			$scope.upload[index].then(function(response) {
+				$timeout(function() {
+					$scope.uploadResult.push(response.data);
+				});
+			}, function(response) {
+				if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+			}, function(evt) {
+				// Math.min is to fix IE which reports 200% sometimes
+				$scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+			});
+			$scope.upload[index].xhr(function(xhr){
+//				xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+			});
+		} else {
+			var fileReader = new FileReader();
+            fileReader.onload = function(e) {
+		        $scope.upload[index] = $upload.http({
+		        	url: uploadUrl,
+					headers: {'Content-Type': $scope.selectedFiles[index].type},
+					data: e.target.result
+		        }).then(function(response) {
+					$scope.uploadResult.push(response.data);
+				}, function(response) {
+					if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+				}, function(evt) {
+					// Math.min is to fix IE which reports 200% sometimes
+					$scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+				});
+            }
+	        fileReader.readAsArrayBuffer($scope.selectedFiles[index]);
+		}
+	};
+	
+	$scope.dragOverClass = function($event) {
+		var items = $event.dataTransfer.items;
+		var hasFile = false;
+		if (items != null) {
+			for (var i = 0 ; i < items.length; i++) {
+				if (items[i].kind == 'file') {
+					hasFile = true;
+					break;
+				}
+			}
+		} else {
+			hasFile = true;
+		}
+		return hasFile ? "dragover" : "dragover-err";
+	};
+} ];
+
+module.exports = MyCtrl;
+},{}],3:[function(require,module,exports){
 // ----- Angular directive $('.synapp-create') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-create"
@@ -124,8 +294,13 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- u
                     subject:      $scope.create.subject,
                     description:  $scope.create.description,
                     user:         user._id,
-                    topic:        topic._id
-                  });
+                    topic:        topic._id,
+                    image:        $scope.selectedFiles[0].name
+                  })
+
+                    .success(function (data) {
+                      location.href = '/topics/' + topic.slug + '/evaluate';
+                    });
                 });
             })
 
@@ -135,7 +310,7 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- u
   };
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 // ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-sign"
@@ -261,7 +436,7 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
     }
   };
 };
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-sign"
@@ -291,7 +466,7 @@ module.exports = function (TopicFactory) { // ----- uses factory/Sign.js -------
     }
   };
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -303,7 +478,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     in: function (creds) {
@@ -319,7 +494,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {

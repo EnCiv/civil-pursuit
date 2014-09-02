@@ -2,6 +2,8 @@
 
 var format = require('util').format;
 
+var path = require('path');
+
 var Log = require('String-alert')({ prefix: 'synapp' });
 
 var domain = require('domain').create();
@@ -24,7 +26,7 @@ domain.run(function () {
 
   var bodyParser = require('body-parser');
 
-  var expressSession = require('express-session');
+  var multipart = require('connect-multiparty');
 
   /* ======== parsers  ======== */
 
@@ -33,6 +35,11 @@ domain.run(function () {
 
   // parse application/json
   app.use(bodyParser.json());
+
+  // aparse multi-parts
+  app.use(multipart({
+    uploadDir: '/tmp'
+}));
 
   /* ======== app config  ======== */
 
@@ -99,6 +106,18 @@ domain.run(function () {
       topic: req.params.topic
     });
   });
+
+  /* ======== EVALUATE  ======== */
+
+  app.get('/topics/:topic/evaluate', function (req, res, next) {
+    res.render('pages/evaluate', {
+      topic: req.params.topic
+    });
+  });
+
+  /* ======== UPLOAD  ======== */
+
+  app.all('/tools/upload', require('./routes/upload'));
 
   /* ======== HOME  ======== */
 

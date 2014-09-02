@@ -107,8 +107,13 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- u
                     subject:      $scope.create.subject,
                     description:  $scope.create.description,
                     user:         user._id,
-                    topic:        topic._id
-                  });
+                    topic:        topic._id,
+                    image:        $scope.selectedFiles[0].name
+                  })
+
+                    .success(function (data) {
+                      location.href = '/topics/' + topic.slug + '/evaluate';
+                    });
                 });
             })
 
