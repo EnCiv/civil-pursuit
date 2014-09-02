@@ -26,7 +26,7 @@
     "bower": "~1.3.9",
     "colors": "~0.6.2",
     "json2csv": "~2.2.1",
-    "monson": "git://github.com/co2-git/monson#v0.0.1",
+    "monson": "git://github.com/co2-git/monson",
     "connect-multiparty": "~1.2.4",
     "String-alert": "git://github.com/co2-git/String-alert"
   }
