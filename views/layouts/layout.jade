@@ -5,7 +5,7 @@ block meta
   include ../partials/head
 
 //- Top Level Bar
-section.container(ng-app='synapp' ng-init=' isSignedIn = ' + !!isSignedIn + '; email = "' + isSignedIn.email + '"')
+section.container(ng-app='synapp' ng-init=' isSignedIn = ' + !!isSignedIn + '; email = "' + (isSignedIn ? isSignedIn.email : '') + '"')
   
   include ../partials/top-level-bar
   
