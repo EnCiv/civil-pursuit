@@ -1,5 +1,5 @@
 - if ( ! isSignedIn )
-  h1 Please log in
+  include please-sign-in
 
 - else
 
@@ -31,7 +31,7 @@
 
     .row.padding
       .col-xs-12
-        textarea.form-control(placeholder='Description' spellcheck='true' lang='en'  ng-model='create.description')
+        textarea.form-control(auto-grow placeholder='Description' spellcheck='true' lang='en'  ng-model='create.description')
 
     .row.padding
       .col-xs-6

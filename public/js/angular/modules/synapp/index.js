@@ -2,7 +2,7 @@
 var deps = [];
 
 if ( typeof createPage === 'boolean' ) {
-	deps.push('angularFileUpload');
+	deps.push('angularFileUpload', 'autoGrow');
 }
 
 var synapp = angular.module('synapp', deps);

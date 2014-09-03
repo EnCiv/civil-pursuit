@@ -1,4 +1,4 @@
-form.row.synapp-sign.form-inline(role='method' novalidate ng-submit='sign.in()')
+form.row.synapp-sign.form-inline(role='form' novalidate ng-submit='sign.in()')
 
   //- Alert
 
@@ -8,22 +8,22 @@ form.row.synapp-sign.form-inline(role='method' novalidate ng-submit='sign.in()')
       span(ng-bind='sign.error')
 
   //- Email
-
-  .col-xs-5
-    input.form-control(type='email' ng-model='sign.email'  placeholder='Email' style='width: 100%')
+  //.col-xs-5
+  input.form-control(type='email' ng-model='sign.email'  placeholder='Email')
 
   //- Passwords
+  //.col-xs-5
+  //- First password
+  input.form-control(type='password' placeholder='Password' ng-model='sign.password')
 
-  .col-xs-5
-    //- First password
-    input.form-control(type='password' placeholder='Password' ng-model='sign.password' style='width: 100%')
-    p
-    //- Confirm password
-    input.form-control(type='password' placeholder='Confirm password' ng-model='sign.password_confirm' ng-show='sign._up' style='width: 100%')
+  button.btn.btn-xs.btn-default Submit
+
+  p
+  //- Confirm password
+  input.form-control(type='password' placeholder='Confirm password' ng-model='sign.password_confirm' ng-show='sign._up')
 
   //- Submit
 
-  .col-xs-2
-    button.btn.btn-xs.btn-block.btn-default Submit
+  
 
 hr

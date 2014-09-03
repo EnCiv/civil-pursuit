@@ -1,82 +1,147 @@
-// Core variables and mixins
+/*
+    `````````````````````````````````````````````````````````````````````` 
+    Synaccord Stylesheet
+    ====================
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
+/*
+    ``````````````````````````````````````````````````````````````````````
+    # Bootstrap
+
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Variables and mixins
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
 @import "../bower_components/bootstrap/less/variables.less";
 @import "../bower_components/bootstrap/less/mixins.less";
 
+// ## Path to glyphicons
+
 @icon-font-path: '../bower_components/bootstrap/fonts/';
 
-// Reset and dependencies
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Reset and dependencies
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
 @import "../bower_components/bootstrap/less/normalize.less";
 @import "../bower_components/bootstrap/less/print.less";
 @import "../bower_components/bootstrap/less/glyphicons.less";
 
-// Core CSS
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Core CSS
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
 @import "../bower_components/bootstrap/less/scaffolding.less";
 @import "../bower_components/bootstrap/less/type.less";
 @import "../bower_components/bootstrap/less/grid.less";
 @import "../bower_components/bootstrap/less/forms.less";
 @import "../bower_components/bootstrap/less/buttons.less";
 
-// Components
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Components
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
 @import "../bower_components/bootstrap/less/alerts.less";
 @import "../bower_components/bootstrap/less/media.less";
 @import "../bower_components/bootstrap/less/navbar.less";
 
-// Utility classes
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Utilities claess
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
 @import "../bower_components/bootstrap/less/utilities.less";
 @import "../bower_components/bootstrap/less/responsive-utilities.less";
 
-.padding {
-  padding: 20px
-}
+/*
+    ``````````````````````````````````````````````````````````````````````
+    # App
+    
 
-.btn, input {
-  @media (max-width: 480px) {
-    font-size: 12px;
-  }
+    `````````````````````````````````````````````````````````````````````` 
+*/
 
-  @media (min-width: 481px) and (max-width: 690px) {
-    font-size: 16px !important;
-  }
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Variables
+    
 
-  @media (min-width: 691px) {
-    font-size: 22px !important;
-  }
-}
+    `````````````````````````````````````````````````````````````````````` 
+*/
 
-a.btn {
-  background: #ddd;
-  color: #000;
-}
+@import "variables.less";
 
-textarea {
-  min-height: 120px;
-}
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Main
+    
 
-header {
-  padding: 8px 0;
-  position: fixed;
-  background: rgba(255, 255, 255, 1);
-  z-index: 999;
-  border-bottom: 2px solid #999
-}
+    `````````````````````````````````````````````````````````````````````` 
+*/
 
-[role=main] {
-  margin-top:90px
-}
+@import "main.less";
 
-.drop-box {
-  background: #F8F8F8;
-  border: 5px dashed #DDD;
-  height: 65px; 
-  text-align: center;
-  padding-top: 35px;
-  padding-bottom: 50px;
-}
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Layout
+    
 
-.drop-box.dragover {
-  border: 5px dashed blue;
-}
+    `````````````````````````````````````````````````````````````````````` 
+*/
 
-.drop-box.dragover-err {
-  border: 5px dashed red;
-}
+@import "layout.less";
+
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Sign
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
+@import "emails.less";
+
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Topci list
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
+@import "topics.less";
+
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Create
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+
+@import "create.less";

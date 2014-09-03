@@ -1,30 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/** ***********************************************************************************  MODULE  **/
-var deps = [];
-
-if ( typeof createPage === 'boolean' ) {
-	deps.push('angularFileUpload');
-}
-
-var synapp = angular.module('synapp', deps);
-/** ********************************************************************************  FACTORIES  **/
-synapp.factory({
-  'SignFactory': 	require('./factory/Sign'),
-  'TopicFactory': 	require('./factory/Topic'),
-  'EntryFactory': 	require('./factory/Entry')
-});
-/** ******************************************************************************  CONTROLLERS  **/
-synapp.controller({
-  'UploadCtrl': 	require('./controller/upload')
-});
-/** *******************************************************************************  DIRECTIVES  **/
-synapp.directive({
-  'synappSign': 	require('./directive/sign'),
-  'synappTopics': 	require('./directive/topics'),
-  'synappCreate':	require('./directive/create')
-});
-// ---------------------------------------------------------------------------------------------- \\
-},{"./controller/upload":2,"./directive/create":3,"./directive/sign":4,"./directive/topics":5,"./factory/Entry":6,"./factory/Sign":7,"./factory/Topic":8}],2:[function(require,module,exports){
 FileAPI = {
   debug: true,
   //forceLoad: true, html5: false //to debug flash in HTML5 browsers
@@ -184,7 +158,7 @@ var MyCtrl = [ '$scope', '$http', '$timeout', '$upload', function($scope, $http,
 } ];
 
 module.exports = MyCtrl;
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 // ----- Angular directive $('.synapp-create') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-create"
@@ -319,7 +293,7 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- u
   };
 };
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 // ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-sign"
@@ -445,7 +419,7 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
     }
   };
 };
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 // ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-sign"
@@ -475,7 +449,7 @@ module.exports = function (TopicFactory) { // ----- uses factory/Sign.js -------
     }
   };
 };
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -487,7 +461,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     in: function (creds) {
@@ -503,7 +477,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -515,4 +489,30 @@ module.exports = function ($http) {
     }
   };
 };
-},{}]},{},[1])
+},{}],8:[function(require,module,exports){
+/** ***********************************************************************************  MODULE  **/
+var deps = [];
+
+if ( typeof createPage === 'boolean' ) {
+	deps.push('angularFileUpload', 'autoGrow');
+}
+
+var synapp = angular.module('synapp', deps);
+/** ********************************************************************************  FACTORIES  **/
+synapp.factory({
+  'SignFactory': 	require('./factory/Sign'),
+  'TopicFactory': 	require('./factory/Topic'),
+  'EntryFactory': 	require('./factory/Entry')
+});
+/** ******************************************************************************  CONTROLLERS  **/
+synapp.controller({
+  'UploadCtrl': 	require('./controller/upload')
+});
+/** *******************************************************************************  DIRECTIVES  **/
+synapp.directive({
+  'synappSign': 	require('./directive/sign'),
+  'synappTopics': 	require('./directive/topics'),
+  'synappCreate':	require('./directive/create')
+});
+// ---------------------------------------------------------------------------------------------- \\
+},{"./controller/upload":1,"./directive/create":2,"./directive/sign":3,"./directive/topics":4,"./factory/Entry":5,"./factory/Sign":6,"./factory/Topic":7}]},{},[8])
