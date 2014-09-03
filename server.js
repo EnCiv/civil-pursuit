@@ -119,6 +119,10 @@ domain.run(function () {
 
   app.all('/tools/upload', require('./routes/upload'));
 
+  /* ======== GET TITLE  ======== */
+
+  app.post('/tools/get-title', require('./routes/get-title'));
+
   /* ======== HOME  ======== */
 
   app.all('/', function (req, res) {

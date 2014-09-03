@@ -166,7 +166,7 @@ module.exports = MyCtrl;
  *  @param    Object createFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- uses factory/create.js ------------------------  //
+module.exports = function (EntryFactory, TopicFactory, SignFactory, $http) { // ----- uses factory/create.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
@@ -181,8 +181,20 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory) { // ----- u
         $scope.create.error = null;
       }
 
+      $("[ng-model='create.title']").on('change', function () {
+        $http.post('/tools/get-title', { url: $(this).val() })
+          .error(function (error) {
+            console.log(error);
+          })
+          .success(function (data) {
+            console.log(data);
+            $scope.create.title = JSON.parse(data);
+          });
+      });
+
       // ---- The `create` object ----------------------------------------------------------------  //
       $scope.create = {
+
         // ---- The alert function -------------------------------------------------------------  //
         /*
          *  @abstract   Displays an alert on UI
