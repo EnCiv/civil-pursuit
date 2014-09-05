@@ -11,7 +11,7 @@ module.exports = function (EntryFactory, TopicFactory) { // ----- uses factory/S
     restrict: 'C',
     // ---- Link function ----------------------------------------------------------------------  //
     link: function ($scope) {
-
+      //
       $scope.doIt = function ($last) {
         if ( $last ) {
           $("input.slider").slider({
