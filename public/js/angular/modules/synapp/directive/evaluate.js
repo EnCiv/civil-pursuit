@@ -33,7 +33,6 @@ module.exports = function (EntryFactory, TopicFactory) { // ----- uses factory/S
             })
             .success(function (data) {
               $scope.evaluate = data;
-              
             });
         });
     }

@@ -4,62 +4,69 @@
 - else
   .synapp-evaluate
     .row
-      .col-xs-3
-        img.img-responsive(ng-src='data:image/png;base64,{{evaluate.entries[0].image}}')
-      .col-xs-3
-        h4(ng-bind='evaluate.entries[0].title')
+      .col-sm-6
+        .row
+          .col-sm-6
+            img.img-responsive(ng-src='data:image/png;base64,{{evaluate.entries[0].image}}')
+          .col-sm-6
+            h4(ng-bind='evaluate.entries[0].title')
 
-      .col-xs-3
-        img.img-responsive(ng-src='/images/entries/{{evaluate.entries[1].image}}')
-      .col-xs-3
-        h4(ng-bind='evaluate.entries[1].title')
+        .row
+          .col-xs-12
+            h2(ng-bind='evaluate.entries[0].subject')
 
-    .row
-      .col-xs-6
-        h2(ng-bind='evaluate.entries[0].subject')
+        .row
+          .col-xs-12
+            .entry-description(ng-bind='evaluate.entries[0].description')
 
-      .col-xs-6
-        h2(ng-bind='evaluate.entries[1].subject')
+      .col-sm-6
+        .row
+          .col-sm-6
+            img.img-responsive(ng-src='data:image/png;base64,{{evaluate.entries[1].image}}')
+          .col-sm-6
+            h4(ng-bind='evaluate.entries[1].title')
 
-    .row
-      .col-xs-6
-        p(ng-bind='evaluate.entries[0].description')
+        .row
+          .col-xs-12
+            h2(ng-bind='evaluate.entries[1].subject')
 
-      .col-xs-6
-        p(ng-bind='evaluate.entries[1].description')
-
-    .row
-      .col-xs-6
-        div(ng-repeat='label in evaluate.labels')
-          h4(ng-bind='label.name')
-          input.slider(type='text')
-          hr
-          div(ng-init='doIt($last)')
-
-      .col-xs-6
-        div(ng-repeat='label in evaluate.labels')
-          h4(ng-bind='label.name')
-          input.slider(type='text'
-            data-slider-min='0'
-            data-slider-max='10'
-            data-slider-step='1'
-            data-slider-value='5')
-          hr
-          div(ng-init='doIt($last)')
+        .row
+          .col-xs-12
+            .entry-description(ng-bind='evaluate.entries[1].description')
 
     .row
-      .col-xs-6.padding-bottom
-        textarea(placeholder='Constructive feedback')
+      .col-sm-6
+        .row
+          .col-xs-12
+            div(ng-repeat='label in evaluate.labels')
+              h4(ng-bind='label.name')
+              input.slider(type='text')
+              hr
+              div(ng-init='doIt($last)')
 
-      .col-xs-6.padding-bottom
-        textarea(placeholder='Constructive feedback')
+        .row
+          .col-xs-12
+            textarea.form-control(placeholder='Constructive feedback')
 
-    .row
-      .col-xs-3.padding-bottom
+      .col-sm-6
+        .row
+          .col-xs-12
+            div(ng-repeat='label in evaluate.labels')
+              h4(ng-bind='label.name')
+              input.slider(type='text')
+              hr
+              div(ng-init='doIt($last)')
+
+        .row
+          .col-xs-12
+            textarea.form-control(placeholder='Constructive feedback')
+
+    .row.padding
+      .col-sm-3.padding-bottom
         button.btn.btn-block Promote
 
-      .col-xs-6
+      .col-sm-6.padding-bottom
         button.btn.btn-block Continue
 
-      .col-xs-3
+      .col-sm-3.padding-bottom
         button.btn.btn-block Promote

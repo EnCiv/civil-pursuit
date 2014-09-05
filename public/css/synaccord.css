@@ -4062,15 +4062,16 @@ textarea {
     `````````````````````````````````````````````````````````````````````` 
 */
 header {
-  padding: 8px 0;
+  padding: 4px 0;
   position: fixed;
   background: #ffffff;
   z-index: 999;
   width: 100%;
   left: 0;
+  top: 0;
 }
 header .container {
-  border-bottom: 2px solid #fff;
+  /*border-bottom: 2px solid #ccc;*/
   padding-bottom: 12px;
 }
 @media (max-width: 480px) {
@@ -4084,7 +4085,7 @@ header .container {
   }
 }
 [role=main] {
-  margin-top: 95px;
+  margin-top: 85px;
 }
 /*
     ``````````````````````````````````````````````````````````````````````
@@ -4139,4 +4140,15 @@ header .container {
 }
 .drop-box.dragover-err {
   border: 5px dashed red;
+}
+/*
+    ``````````````````````````````````````````````````````````````````````
+    ## Evaluate
+    
+
+    `````````````````````````````````````````````````````````````````````` 
+*/
+.entry-description {
+  white-space: pre-line;
+  text-align: justify;
 }
