@@ -37,7 +37,7 @@ var EntrySchema = new Schema({
   }
 });
 
-EntrySchema.post('save', function (next) {
+/*EntrySchema.post('save', function (next) {
 
   if ( ! this.image ) {
 
@@ -56,7 +56,14 @@ EntrySchema.post('save', function (next) {
     }
     Log.OK('Image uploaded');
   });
-});
+});*/
+
+/*EntrySchema.pre('validate', function (next) {
+  if ( ! this.image ) {
+    return next();
+  }
+  require('fs').readFile('{}');
+});*/
 
 EntrySchema.statics.evaluate = function (topic, cb) {
 
