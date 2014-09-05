@@ -5,6 +5,9 @@ if ( typeof createPage === 'boolean' ) {
 	deps.push('angularFileUpload', 'autoGrow');
 }
 
+if ( typeof evaluatePage === 'string' ) {
+}
+
 var synapp = angular.module('synapp', deps);
 /** ********************************************************************************  FACTORIES  **/
 synapp.factory({
@@ -20,6 +23,7 @@ synapp.controller({
 synapp.directive({
   'synappSign': 	require('./directive/sign'),
   'synappTopics': 	require('./directive/topics'),
-  'synappCreate':	require('./directive/create')
+  'synappCreate':	require('./directive/create'),
+  'synappEvaluate':	require('./directive/evaluate')
 });
 // ---------------------------------------------------------------------------------------------- \\

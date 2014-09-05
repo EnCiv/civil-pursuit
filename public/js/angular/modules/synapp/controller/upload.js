@@ -80,7 +80,7 @@ var MyCtrl = [ '$scope', '$http', '$timeout', '$upload', function($scope, $http,
 	};
 	
 	$scope.start = function(index) {
-    console.log($scope.selectedFiles, $scope.howToSend);
+    console.log($scope.selectedFiles);
 		$scope.progress[index] = 0;
 		$scope.errorMsg = null;
 		if ($scope.howToSend == 1) {

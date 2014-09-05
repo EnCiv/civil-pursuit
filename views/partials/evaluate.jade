@@ -1,6 +1,48 @@
 - if ( ! isSignedIn )
-  h1 Please log in
+  include please-sign-in
 
 - else
+  .synapp-evaluate
+    .row
+      .col-xs-3
+        img.img-responsive(ng-src='/images/entries/{{evaluate.entries[0].image}}')
+      .col-xs-3
+        h4(ng-bind='evaluate.entries[0].title')
 
-  h1 EVALUATE PAGE
+      .col-xs-3
+        img.img-responsive(ng-src='/images/entries/{{evaluate.entries[1].image}}')
+      .col-xs-3
+        h4(ng-bind='evaluate.entries[1].title')
+
+    .row
+      .col-xs-6
+        h2(ng-bind='evaluate.entries[0].subject')
+
+      .col-xs-6
+        h2(ng-bind='evaluate.entries[1].subject')
+
+    .row
+      .col-xs-6
+        p(ng-bind='evaluate.entries[0].description')
+
+      .col-xs-6
+        p(ng-bind='evaluate.entries[1].description')
+
+    .row
+      .col-xs-6
+        div(ng-repeat='label in evaluate.labels')
+          h4(ng-bind='label.name')
+          input.slider(type='text')
+          hr
+          div(ng-init='doIt($last)')
+
+      .col-xs-6
+        div(ng-repeat='label in evaluate.labels')
+          h4(ng-bind='label.name')
+          input.slider(type='text'
+            data-slider-min='0'
+            data-slider-max='10'
+            data-slider-step='1'
+            data-slider-value='5')
+          hr
+          div(ng-init='doIt($last)')

@@ -1,4 +1,9 @@
 extends ../layouts/layout
 
+block prepend script-app
+  script.
+    var evaluatePage = "!{topic}";
+  script(src='/bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js')
+
 block page
   include ../partials/evaluate

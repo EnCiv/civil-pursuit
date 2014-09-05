@@ -29,6 +29,7 @@
     "monson": "git://github.com/co2-git/monson",
     "connect-multiparty": "~1.2.4",
     "String-alert": "git://github.com/co2-git/String-alert",
-    "request": "~2.40.0"
+    "request": "~2.40.0",
+    "fs-extra": "~0.11.1"
   }
 }

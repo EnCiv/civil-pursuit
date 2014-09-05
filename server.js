@@ -14,6 +14,10 @@ domain.on('error', function (error) {
 
 domain.run(function () {
 
+  /* ======== config ======== */
+
+  var synapp = require('./config/config.json');
+
   /* ======== start express app ======== */
 
   var express = require('express');
@@ -36,9 +40,9 @@ domain.run(function () {
   // parse application/json
   app.use(bodyParser.json());
 
-  // aparse multi-parts
+  // multi-parts
   app.use(multipart({
-    uploadDir: '/tmp'
+    uploadDir: synapp.tmp
 }));
 
   /* ======== app config  ======== */

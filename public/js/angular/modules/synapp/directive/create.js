@@ -124,12 +124,16 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, $http) { // 
                 .success(function (data) {
                   var user = data.found;
 
+                  var path = require('path');
+
                   EntryFactory.publish({
                     subject:      $scope.create.subject,
                     description:  $scope.create.description,
                     user:         user._id,
                     topic:        topic._id,
-                    image:        $scope.selectedFiles[0].name
+                    image:        Array.isArray($scope.uploadResult) && $scope.uploadResult.length ?
+                                    path.basename($scope.uploadResult[0].path) : null,
+                    title:        $scope.create.title
                   })
 
                     .success(function (data) {

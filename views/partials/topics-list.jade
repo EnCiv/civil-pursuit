@@ -8,13 +8,14 @@
         img.img-responsive(alt='Image' ng-src='/images/topics/{{topic.image}}')
       
       .col-xs-8
-        h4(ng-bind='topic.heading')
+        h4.topic-title(ng-bind='topic.heading')
         p(ng-bind='topic.description')
       
     .clearfix.text-center.padding(ng-hide='selectedTopic !== topic._id')
       - if ( !! isSignedIn )
         a.btn(ng-href='/topics/{{topic.slug}}/create') Create
-        button.btn Evaluate
+        span  
+        a.btn(ng-href='/topics/{{topic.slug}}/evaluate') Evaluate
         button.btn My Feedback
       
       button.btn Results
