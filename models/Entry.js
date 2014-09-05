@@ -58,12 +58,20 @@ var EntrySchema = new Schema({
   });
 });*/
 
-/*EntrySchema.pre('validate', function (next) {
+EntrySchema.pre('validate', function (next) {
   if ( ! this.image ) {
     return next();
   }
-  require('fs').readFile('{}');
-});*/
+  var self = this;
+  require('fs').readFile(path.join('/tmp', this.image),
+    function (error, data) {
+      if ( error ) {
+        return next(error);
+      }
+      self.image = new Buffer(data).toString('base64');
+      next();
+    });
+});
 
 EntrySchema.statics.evaluate = function (topic, cb) {
 

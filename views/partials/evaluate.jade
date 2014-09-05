@@ -5,7 +5,7 @@
   .synapp-evaluate
     .row
       .col-xs-3
-        img.img-responsive(ng-src='/images/entries/{{evaluate.entries[0].image}}')
+        img.img-responsive(ng-src='data:image/png;base64,{{evaluate.entries[0].image}}')
       .col-xs-3
         h4(ng-bind='evaluate.entries[0].title')
 

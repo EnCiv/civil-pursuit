@@ -96,12 +96,6 @@ domain.run(function () {
   });
 
 
-app.get('/images/entries/:entry', function (req, res) {
-  require('fs').createReadStream(path.join('/tmp', req.params.entry))
-    .pipe(res);
-});
-
-
   /* ======== SIGN  ======== */
 
   app.all('/sign/:dir?', require('./routes/sign'));
