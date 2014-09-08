@@ -65,6 +65,7 @@ EvaluationSchema.pre('save', function (next) {
 
   if ( this.entry ) {
     Entry.find({ topic: self.topic })
+      .where('_id').not(mongoose.Schema.Types.ObjectId(this.entry))
       .limit(4)
       .exec(function (error, entries) {
         self.entries = entries;
@@ -74,7 +75,7 @@ EvaluationSchema.pre('save', function (next) {
             if ( error ) {
               return next(error);
             }
-            
+
             self.entries.push(entry);
 
             next();
