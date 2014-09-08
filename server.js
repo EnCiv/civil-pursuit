@@ -63,7 +63,7 @@ domain.run(function () {
 
   /* ======== cookies & session  ======== */
 
-  app.locals.secret = (process.pid + Math.random()).toString();
+  app.locals.secret = 'hYGhdj729k2kdmsñw9hsy6GGW';
 
   app.use(cookieParser(app.locals.secret));
 
@@ -114,9 +114,9 @@ domain.run(function () {
 
   /* ======== EVALUATE  ======== */
 
-  app.get('/topics/:topic/evaluate', function (req, res, next) {
+  app.get('/evaluate/:evaluation?', function (req, res, next) {
     res.render('pages/evaluate', {
-      topic: req.params.topic
+      evaluation: req.params.evaluation
     });
   });
 

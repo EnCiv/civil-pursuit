@@ -9,11 +9,13 @@ if ( typeof evaluatePage === 'string' ) {
 }
 
 var synapp = angular.module('synapp', deps);
+
 /** ********************************************************************************  FACTORIES  **/
 synapp.factory({
   'SignFactory': 	require('./factory/Sign'),
   'TopicFactory': 	require('./factory/Topic'),
-  'EntryFactory': 	require('./factory/Entry')
+  'EntryFactory': 	require('./factory/Entry'),
+  'EvaluationFactory': 	require('./factory/Evaluation')
 });
 /** ******************************************************************************  CONTROLLERS  **/
 synapp.controller({

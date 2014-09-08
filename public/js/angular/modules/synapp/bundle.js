@@ -459,7 +459,7 @@ module.exports = MyCtrl;
  *  @param    Object createFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (EntryFactory, TopicFactory, SignFactory, $http) { // ----- uses factory/create.js ------------------------  //
+module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFactory, $http) { // ----- uses factory/create.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
@@ -591,7 +591,15 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, $http) { // 
                   })
 
                     .success(function (data) {
-                      location.href = '/topics/' + topic.slug + '/evaluate';
+                      EvaluationFactory.create({
+                        topic:  topic._id,
+                        user:   user._id,
+                        entry:  data.created._id
+                      })
+                        .error(console.error.bind(console))
+                        .success(function (data) {
+                          location.href = '/evaluate/' + data.created._id;
+                        });
                     });
                 });
             })
@@ -610,12 +618,41 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, $http) { // 
  *  @param    Object TopicFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (EntryFactory, TopicFactory) { // ----- uses factory/Sign.js ------------------------  //
+module.exports = function (EvaluationFactory) { // ----- uses factory/Sign.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
     // ---- Link function ----------------------------------------------------------------------  //
-    link: function ($scope) {
+    link: function ($scope, $elem, $attrs) {
+
+      $scope.evaluationDone = false;
+
+      $scope.comparing = [];
+
+      $scope.comparable = [0, 1, 2, 3, 4, 5];
+
+      EvaluationFactory.findById($attrs.id)
+
+        .error(function (error) {
+
+        })
+
+        .success(function (data) {
+          
+          data.found.entries  = data.found.entries
+            .map(function (entry) {
+              return entry._id;
+            });
+            
+          $scope.evaluate     = data.found;
+
+          $scope.left         = data.found.entries[0];
+          $scope.right        = data.found.entries[1];
+
+          $scope.comparing    = [0, 1];
+
+        });
+
       //
       $scope.doIt = function ($last) {
         if ( $last ) {
@@ -625,21 +662,72 @@ module.exports = function (EntryFactory, TopicFactory) { // ----- uses factory/S
             }
           });
         }
-      }
+      };
 
-      TopicFactory.findBySlug(evaluatePage)
-        .error(function (error) {
-          console.error(error);
-        })
-        .success(function (data) {
-          EntryFactory.evaluate(data.found._id)
-            .error(function (error) {
-              console.error(error);
-            })
-            .success(function (data) {
-              $scope.evaluate = data;
-            });
+      // Promote
+
+      $scope.promote = function (entry, position) {
+        EvaluationFactory.promote($scope.evaluate._id, entry)
+          .success(function (data) {
+
+            var newEntryPosition;
+
+            if ( position === 'left' ) {
+              $scope.comparable.splice($scope.comparable.indexOf($scope.comparing[1]), 1);
+
+              newEntryPosition = Math.min.apply(null, 
+                $scope.comparable.filter(function (x) {
+                  return x !== $scope.comparing[0];
+                }));
+
+              if ( newEntryPosition === Number.POSITIVE_INFINITY ) {
+                $scope.evaluationDone = true;
+                return;
+              }
+
+              $scope.comparing[1] = newEntryPosition;
+
+              $scope.right = $scope.evaluate.entries[newEntryPosition];
+            }
+
+            else if ( position === 'right' ) {
+              $scope.comparable.splice($scope.comparable.indexOf($scope.comparing[0]), 1);
+
+              newEntryPosition = Math.min.apply(null, 
+                $scope.comparable.filter(function (x) {
+                  return x !== $scope.comparing[1];
+                }));
+
+              if ( newEntryPosition === Number.POSITIVE_INFINITY ) {
+                $scope.evaluationDone = true;
+                return;
+              }
+
+              $scope.comparing[0] = newEntryPosition;
+
+              $scope.left = $scope.evaluate.entries[newEntryPosition];
+            }
+            
+          });
+      };
+
+      // Continue
+
+      $scope.continue = function () {
+        $scope.comparable = $scope.comparable.filter(function (num) {
+          return num > Math.max.apply(null, $scope.comparing);
         });
+
+        if ( ! $scope.comparable.length ) {
+          $scope.evaluationDone = true;
+          return console.warn('end');
+        }
+
+        $scope.comparing  = [$scope.comparable[0], $scope.comparable[1]];
+
+        $scope.left       = $scope.evaluate.entries[$scope.comparing[0]];
+        $scope.right      = $scope.evaluate.entries[$scope.comparing[1]];
+      };
     }
   };
 };
@@ -777,7 +865,7 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
  *  @param    Object TopicFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (TopicFactory) { // ----- uses factory/Sign.js ------------------------  //
+module.exports = function (TopicFactory, EvaluationFactory, SignFactory) { // ----- uses factory/Sign.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
@@ -787,6 +875,26 @@ module.exports = function (TopicFactory) { // ----- uses factory/Sign.js -------
 
       $scope.selectMeAsTopic = function (id) {
         $scope.selectedTopic = id;
+      };
+
+      $scope.evaluate = function (topicSlug) {
+        TopicFactory.findBySlug(topicSlug)
+
+          .success(function (topic) {
+
+            SignFactory.findByEmail($scope.email)
+
+              .success(function (user) {
+                EvaluationFactory.create({
+                  topic:    topic.found._id,
+                  user:     user.found._id
+                })
+
+                  .success(function (data) {
+                    location.href = '/evaluate/' + data.created._id;
+                  });
+              });
+          });
       };
 
       TopicFactory.find()
@@ -818,6 +926,22 @@ module.exports = function ($http) {
 },{}],9:[function(require,module,exports){
 module.exports = function ($http) {
   return {
+    create: function (evaluation) {
+      return $http.post('/json/Evaluation', evaluation);
+    },
+
+    findById: function (id) {
+      return $http.get('/json/Evaluation/findById/' + id + '?$populate=entries._id');
+    },
+
+    promote: function (id, entry) {
+      return $http.get('/json/Evaluation/statics/promote/' + id + '/' + entry);
+    }
+  };
+};
+},{}],10:[function(require,module,exports){
+module.exports = function ($http) {
+  return {
     in: function (creds) {
       return $http.post('/sign/in', creds);
     },
@@ -831,7 +955,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -843,7 +967,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /** ***********************************************************************************  MODULE  **/
 var deps = [];
 
@@ -855,11 +979,13 @@ if ( typeof evaluatePage === 'string' ) {
 }
 
 var synapp = angular.module('synapp', deps);
+
 /** ********************************************************************************  FACTORIES  **/
 synapp.factory({
   'SignFactory': 	require('./factory/Sign'),
   'TopicFactory': 	require('./factory/Topic'),
-  'EntryFactory': 	require('./factory/Entry')
+  'EntryFactory': 	require('./factory/Entry'),
+  'EvaluationFactory': 	require('./factory/Evaluation')
 });
 /** ******************************************************************************  CONTROLLERS  **/
 synapp.controller({
@@ -873,4 +999,4 @@ synapp.directive({
   'synappEvaluate':	require('./directive/evaluate')
 });
 // ---------------------------------------------------------------------------------------------- \\
-},{"./controller/upload":3,"./directive/create":4,"./directive/evaluate":5,"./directive/sign":6,"./directive/topics":7,"./factory/Entry":8,"./factory/Sign":9,"./factory/Topic":10}]},{},[11])
+},{"./controller/upload":3,"./directive/create":4,"./directive/evaluate":5,"./directive/sign":6,"./directive/topics":7,"./factory/Entry":8,"./factory/Evaluation":9,"./factory/Sign":10,"./factory/Topic":11}]},{},[12])

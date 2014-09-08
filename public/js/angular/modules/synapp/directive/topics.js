@@ -5,7 +5,7 @@
  *  @param    Object TopicFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (TopicFactory) { // ----- uses factory/Sign.js ------------------------  //
+module.exports = function (TopicFactory, EvaluationFactory, SignFactory) { // ----- uses factory/Sign.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
@@ -15,6 +15,26 @@ module.exports = function (TopicFactory) { // ----- uses factory/Sign.js -------
 
       $scope.selectMeAsTopic = function (id) {
         $scope.selectedTopic = id;
+      };
+
+      $scope.evaluate = function (topicSlug) {
+        TopicFactory.findBySlug(topicSlug)
+
+          .success(function (topic) {
+
+            SignFactory.findByEmail($scope.email)
+
+              .success(function (user) {
+                EvaluationFactory.create({
+                  topic:    topic.found._id,
+                  user:     user.found._id
+                })
+
+                  .success(function (data) {
+                    location.href = '/evaluate/' + data.created._id;
+                  });
+              });
+          });
       };
 
       TopicFactory.find()

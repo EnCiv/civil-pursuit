@@ -2,71 +2,146 @@
   include please-sign-in
 
 - else
-  .synapp-evaluate
-    .row
-      .col-sm-6
-        .row
-          .col-sm-6
-            img.img-responsive(ng-src='data:image/png;base64,{{evaluate.entries[0].image}}')
-          .col-sm-6
-            h4(ng-bind='evaluate.entries[0].title')
+  .synapp-evaluate(id=evaluation)
 
-        .row
-          .col-xs-12
-            h2(ng-bind='evaluate.entries[0].subject')
+    .row(ng-show='evaluationDone')
+      .col-xs-12
+        h1 Evaluation done!
 
-        .row
-          .col-xs-12
-            .entry-description(ng-bind='evaluate.entries[0].description')
+    .visible-xs(ng-hide='evaluationDone')
+      .row
+        .col-xs-12
+          img.img-responsive(ng-src='data:image/png;base64,{{left.image}}' ng-show='left.image')
 
-      .col-sm-6
-        .row
-          .col-sm-6
-            img.img-responsive(ng-src='data:image/png;base64,{{evaluate.entries[1].image}}')
-          .col-sm-6
-            h4(ng-bind='evaluate.entries[1].title')
+      .row
+        .col-xs-12
+          h4(ng-bind='left.title')
 
-        .row
-          .col-xs-12
-            h2(ng-bind='evaluate.entries[1].subject')
+      .row
+        .col-xs-12
+          h2(ng-bind='left.subject')
 
-        .row
-          .col-xs-12
-            .entry-description(ng-bind='evaluate.entries[1].description')
+      .row
+        .col-xs-12
+          .entry-description(ng-bind='left.description')
 
-    .row
-      .col-sm-6
-        .row
-          .col-xs-12
-            div(ng-repeat='label in evaluate.labels')
-              h4(ng-bind='label.name')
-              input.slider(type='text')
-              hr
-              div(ng-init='doIt($last)')
+      .row
+        .col-xs-12
+          div(ng-repeat='label in evaluate.labels')
+            h4(ng-bind='label.name')
+            input.slider(type='text')
+            hr
+            div(ng-init='doIt($last)')
 
-        .row
-          .col-xs-12
-            textarea.form-control(placeholder='Constructive feedback')
+      .row
+        .col-xs-12.padding-bottom
+          textarea.form-control(placeholder='Constructive feedback')
 
-      .col-sm-6
-        .row
-          .col-xs-12
-            div(ng-repeat='label in evaluate.labels')
-              h4(ng-bind='label.name')
-              input.slider(type='text')
-              hr
-              div(ng-init='doIt($last)')
+      .row
+        .col-xs-12.padding-bottom
+          button.btn.btn-block(ng-click='promote(left._id, "left")') Promote
 
-        .row
-          .col-xs-12
-            textarea.form-control(placeholder='Constructive feedback')
+      .row
+        .col-xs-12
+          img.img-responsive(ng-src='data:image/png;base64,{{right.image}}' ng-show='left.image')
 
-    .row.padding
-      .col-sm-3.padding-bottom
-        button.btn.btn-block Promote
+      .row
+        .col-xs-12
+          h4(ng-bind='right.title')
 
-      .col-sm-6.padding-bottom
-        button.btn.btn-block Continue
+      .row
+        .col-xs-12
+          h2(ng-bind='right.subject')
 
-      .col-sm-3.padding-bottom
-        button.btn.btn-block Promote
+      .row
+        .col-xs-12
+          .entry-description(ng-bind='right.description')
+
+      .row
+        .col-xs-12
+          div(ng-repeat='label in evaluate.labels')
+            h4(ng-bind='label.name')
+            input.slider(type='text')
+            hr
+            div(ng-init='doIt($last)')
+
+      .row
+        .col-xs-12.padding-bottom
+          textarea.form-control(placeholder='Constructive feedback')
+
+      .row
+        .col-xs-12.padding-bottom
+          button.btn.btn-block(ng-click='promote(right._id, "right")') Promote
+
+      .row
+        .col-xs-12.padding-bottom
+          button.btn.btn-block(ng-click='continue()') Continue
+
+    .hidden-xs(ng-hide='evaluationDone')
+      .row
+        .col-sm-6
+          .row
+            .col-sm-6
+              img.img-responsive(ng-src='data:image/png;base64,{{left.image}}' ng-show='left.image')
+            .col-sm-6
+              h4(ng-bind='left.title')
+
+          .row
+            .col-xs-12
+              h2(ng-bind='left.subject')
+
+          .row
+            .col-xs-12
+              .entry-description(ng-bind='left.description')
+
+        .col-sm-6
+          .row
+            .col-sm-6
+              img.img-responsive(ng-src='data:image/png;base64,{{right.image}}' ng-show='left.image')
+            .col-sm-6
+              h4(ng-bind='right.title')
+
+          .row
+            .col-xs-12
+              h2(ng-bind='right.subject')
+
+          .row
+            .col-xs-12
+              .entry-description(ng-bind='right.description')
+
+      .row
+        .col-sm-6
+          .row
+            .col-xs-12
+              div(ng-repeat='label in evaluate.labels')
+                h4(ng-bind='label.name')
+                input.slider(type='text')
+                hr
+                div(ng-init='doIt($last)')
+
+          .row
+            .col-xs-12
+              textarea.form-control(placeholder='Constructive feedback')
+
+        .col-sm-6
+          .row
+            .col-xs-12
+              div(ng-repeat='label in evaluate.labels')
+                h4(ng-bind='label.name')
+                input.slider(type='text')
+                hr
+                div(ng-init='doIt($last)')
+
+          .row
+            .col-xs-12
+              textarea.form-control(placeholder='Constructive feedback')
+
+      .row.padding
+        .col-sm-3.padding-bottom
+          button.btn.btn-block(ng-click='promote(left._id, "left")') Promote
+
+        .col-sm-6.padding-bottom
+          button.btn.btn-block(ng-click='continue()') Continue
+
+        .col-sm-3.padding-bottom
+          button.btn.btn-block(ng-click='promote(right._id, "right")') Promote

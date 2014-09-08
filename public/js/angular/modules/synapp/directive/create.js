@@ -5,7 +5,7 @@
  *  @param    Object createFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (EntryFactory, TopicFactory, SignFactory, $http) { // ----- uses factory/create.js ------------------------  //
+module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFactory, $http) { // ----- uses factory/create.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
@@ -137,7 +137,15 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, $http) { // 
                   })
 
                     .success(function (data) {
-                      location.href = '/topics/' + topic.slug + '/evaluate';
+                      EvaluationFactory.create({
+                        topic:  topic._id,
+                        user:   user._id,
+                        entry:  data.created._id
+                      })
+                        .error(console.error.bind(console))
+                        .success(function (data) {
+                          location.href = '/evaluate/' + data.created._id;
+                        });
                     });
                 });
             })
