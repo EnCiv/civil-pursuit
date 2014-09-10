@@ -16,42 +16,57 @@
   //-
 
   mixin play-image (pos)
+    // Entry image
+    
     img.img-responsive(
       ng-src      =   'data:image/png;base64,{{' + pos + '.image}}'
       ng-show     =   pos + '.image')
+    
+    // Topic image
+
     img.img-responsive.default-topic-image(
       ng-src      =   '/images/topics/{{evaluate.topic.image}}'
-      ng-hide     =   pos + '.image || ! ' + pos  '.subject')
+      ng-hide     =   pos + '.image || ! ' + pos + '.subject')
 
   mixin play-title (pos)
+    // Title
     h4
       a(
         ng-href   =   '{{' + pos + '.url}}' 
         ng-bind   =   '(' + pos + '.title||' + pos + '.url)')
 
   mixin play-subject (pos)
+    // Subject
     h2(
       ng-bind     =   pos + '.subject')
 
   mixin play-description (pos)
+    // Description
     .entry-description(
       ng-bind     =   pos + '.description')
 
   mixin play-sliders (pos)
+
+    // sliders
+
     div(
       ng-repeat   =   'criteria in criterias' 
-      ng-show     =   pos + '.subject')
+      ng-show     =   pos + '.subject'
+      )
       
       h4(
         ng-bind   =  'criteria.name')
-      
+
       input.slider(
-        type      =   'text')
+        type            =   'text'
+        data-entry      =   '{{' + pos + '._id}}'
+        data-criteria   =   '{{criteria._id}}'
+        ng-model='votes[' + pos + '._id][criteria._id]')
       
       hr
       
       div(
-        ng-init   =   'doIt($last)')
+        ng-init   =   'enableSlider($last)')
 
   mixin play-feedback (pos)
     textarea.form-control(

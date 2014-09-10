@@ -4087,8 +4087,7 @@ header .container {
 #beta {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: 50%;
   z-index: 1000;
   text-align: center;
 }
@@ -4118,7 +4117,7 @@ header .container {
     `````````````````````````````````````````````````````````````````````` 
 */
 .synapp-topics .topic-title {
-  padding-top: 7px;
+  padding-top: 6px;
 }
 .synapp-topics .image {
   text-align: center;

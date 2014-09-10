@@ -1,8 +1,13 @@
 .synapp-summary(entry=entry)
   .row
     .col-sm-4
+      image.img-responsive.default-topic-image(
+        ng-src    =   '/images/topics/{{topic.image}}'
+        ng-hide   =   'entry.image')
+
       image.img-responsive(
-          alt         =   'image')
+        ng-src    =   '/images/entries/{{entry.image}}'
+        ng-show   =   'entry.image')
 
     .col-sm-8
       h4
@@ -15,3 +20,8 @@
   .row
     .col-xs-12
       p(ng-bind='entry.description')
+
+  .row
+    .col-xs-12
+      div(ng-repeat='criteria in criterias')
+        h4(ng-bind='criteria.name')
