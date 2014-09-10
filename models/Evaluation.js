@@ -9,6 +9,7 @@ var Schema    = mongoose.Schema;
 var Topic     = require('./Topic');
 var User      = require('./User');
 var Entry     = require('./Entry');
+var Label     = require('./Label');
 
 var EvaluationSchema = new Schema({
 
@@ -63,11 +64,24 @@ EvaluationSchema.pre('init', function (next) {
 EvaluationSchema.pre('save', function (next) {
   var self = this;
 
+  // If entry is specified
+
   if ( this.entry ) {
+
+    var entry_id = this.entry;
+
     Entry.find({ topic: self.topic })
-      .where('_id').not(mongoose.Schema.Types.ObjectId(this.entry))
+
+      .where('_id').ne(entry_id)
+
       .limit(4)
+
       .exec(function (error, entries) {
+
+        if ( error ) {
+          return next(error);
+        }
+
         self.entries = entries;
 
         Entry.findById(this.entry,
@@ -82,6 +96,8 @@ EvaluationSchema.pre('save', function (next) {
           })
       });
   }
+
+  // If no entry specified
 
   else {
     Entry.find({ topic: self.topic })

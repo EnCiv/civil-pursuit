@@ -14,22 +14,31 @@ var EntrySchema = new Schema({
   "image": {
     "type": String
   },
+  
   "title": {
     "type": String
   },
+
+  "url": {
+    "type": String
+  },
+  
   "subject": {
     "type": String,
     "required": true
   },
+  
   "description": {
     "type": String,
     "required": true
   },
+  
   "topic": {
     "type": Schema.Types.ObjectId,
     "ref": "Topic",
     "required": true
   },
+  
   "user": {
     "type": Schema.Types.ObjectId,
     "ref": "User",

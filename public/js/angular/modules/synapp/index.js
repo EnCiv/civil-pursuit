@@ -1,31 +1,48 @@
-/** ***********************************************************************************  MODULE  **/
-var deps = [];
+;(function () {
+  
+  // DEPENDENCIES
 
-if ( typeof createPage === 'boolean' ) {
-	deps.push('angularFileUpload', 'autoGrow');
-}
+  var deps = [];
 
-if ( typeof evaluatePage === 'string' ) {
-}
+  if ( typeof createPage === 'boolean' ) {
+    deps.push('angularFileUpload', 'autoGrow');
+  }
 
-var synapp = angular.module('synapp', deps);
+  // MODULE
 
-/** ********************************************************************************  FACTORIES  **/
-synapp.factory({
-  'SignFactory': 	require('./factory/Sign'),
-  'TopicFactory': 	require('./factory/Topic'),
-  'EntryFactory': 	require('./factory/Entry'),
-  'EvaluationFactory': 	require('./factory/Evaluation')
-});
-/** ******************************************************************************  CONTROLLERS  **/
-synapp.controller({
-  'UploadCtrl': 	require('./controller/upload')
-});
-/** *******************************************************************************  DIRECTIVES  **/
-synapp.directive({
-  'synappSign': 	require('./directive/sign'),
-  'synappTopics': 	require('./directive/topics'),
-  'synappCreate':	require('./directive/create'),
-  'synappEvaluate':	require('./directive/evaluate')
-});
-// ---------------------------------------------------------------------------------------------- \\
+  angular.module('synapp', deps)
+
+  // FACTORIES
+
+    .factory({
+      'SignFactory':          require('./factory/Sign'),
+      'TopicFactory':         require('./factory/Topic'),
+      'EntryFactory':         require('./factory/Entry'),
+      'EvaluationFactory':    require('./factory/Evaluation')
+    })
+
+  // CONTROLLERS
+
+    .controller({
+      'UploadCtrl':           require('./controller/upload')
+    })
+
+  // DIRECTIVES
+
+    .directive({
+      'synappSign':           require('./directive/sign'),
+      'synappTopics':         require('./directive/topics'),
+      'synappCreate':         require('./directive/create'),
+      'synappEvaluate':       require('./directive/evaluate'),
+      'synappAlert':          require('./directive/alert'),
+      'consoleLog':           function () {
+        return {
+          restrict: 'A',
+          link: function ($scope, $elem, $attrs) {
+            console.log($attrs.consoleLog);
+          }
+        }
+      }
+    });
+  // ---------------------------------------------------------------------------------------------- \\
+})();
