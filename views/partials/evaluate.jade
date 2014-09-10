@@ -16,28 +16,44 @@
   //-
 
   mixin play-image (pos)
-    img.img-responsive(ng-src='data:image/png;base64,{{' + pos + '.image}}'
-      ng-show=pos + '.image')
+    img.img-responsive(
+      ng-src      =   'data:image/png;base64,{{' + pos + '.image}}'
+      ng-show     =   pos + '.image')
 
   mixin play-title (pos)
     h4
-      a(ng-href='{{' + pos + '.url}}' ng-bind='(' + pos + '.title||' + pos + '.url)')
+      a(
+        ng-href   =   '{{' + pos + '.url}}' 
+        ng-bind   =   '(' + pos + '.title||' + pos + '.url)')
 
   mixin play-subject (pos)
-    h2(ng-bind=pos + '.subject')
+    h2(
+      ng-bind     =   pos + '.subject')
 
   mixin play-description (pos)
-    .entry-description(ng-bind=pos + '.description')
+    .entry-description(
+      ng-bind     =   pos + '.description')
 
   mixin play-sliders (pos)
-    div(ng-repeat='label in evaluate.labels')
-      h4(ng-bind='label.name')
-      input.slider(type='text')
+    div(
+      ng-repeat   =   'criteria in criterias' 
+      ng-show     =   pos + '.subject')
+      
+      h4(
+        ng-bind   =  'criteria.name')
+      
+      input.slider(
+        type      =   'text')
+      
       hr
-      div(ng-init='doIt($last)')
+      
+      div(
+        ng-init   =   'doIt($last)')
 
   mixin play-feedback (pos)
-    textarea.form-control(placeholder='Constructive feedback')
+    textarea.form-control(
+      placeholder =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+      ng-show     =   pos + '.subject')
 
   mixin play-promote (pos)
     button.btn.btn-block(ng-click='promote(' + left + '._id, "' + left + '")') Promote
@@ -107,7 +123,7 @@
           +play-continue
 
     //-     
-      //- SMALL SCREEN
+      //- NORMAL SCREEN
     //-
 
     .hidden-xs(ng-hide='evaluationDone')

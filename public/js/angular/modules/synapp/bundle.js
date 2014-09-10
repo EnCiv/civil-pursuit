@@ -653,18 +653,36 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
  *  @param    Object TopicFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (EvaluationFactory) { // ----- uses factory/Sign.js ------------------------  //
+module.exports = function (EvaluationFactory, CriteriaFactory) { // ----- uses factory/Sign.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
     // ---- Link function ----------------------------------------------------------------------  //
     link: function ($scope, $elem, $attrs) {
 
+      $scope.evaluate = {};
+
       $scope.evaluationDone = false;
 
       $scope.comparing = [];
 
       $scope.comparable = [0, 1, 2, 3, 4, 5];
+
+      // Get criterias
+
+      CriteriaFactory.find()
+
+        .error(function (error) {
+
+        })
+
+        .success(function (data) {
+          $scope.criterias = data.found;
+
+          console.log($scope.criterias);
+        });
+
+      // Get Evaluation
 
       EvaluationFactory.findById($attrs.id)
 
@@ -946,6 +964,14 @@ module.exports = function (TopicFactory, EvaluationFactory, SignFactory) { // --
 module.exports = function ($http) {
   return {
     find: function () {
+      return $http.get('/json/Criteria');
+    }
+  };
+};
+},{}],10:[function(require,module,exports){
+module.exports = function ($http) {
+  return {
+    find: function () {
       return $http.get('/json/Entry');
     },
 
@@ -958,7 +984,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     create: function (evaluation) {
@@ -974,7 +1000,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     in: function (creds) {
@@ -990,7 +1016,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -1002,7 +1028,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ;(function () {
   
   // DEPENDENCIES
@@ -1023,7 +1049,8 @@ module.exports = function ($http) {
       'SignFactory':          require('./factory/Sign'),
       'TopicFactory':         require('./factory/Topic'),
       'EntryFactory':         require('./factory/Entry'),
-      'EvaluationFactory':    require('./factory/Evaluation')
+      'EvaluationFactory':    require('./factory/Evaluation'),
+      'CriteriaFactory':    require('./factory/Criteria')
     })
 
   // CONTROLLERS
@@ -1052,4 +1079,4 @@ module.exports = function ($http) {
   // ---------------------------------------------------------------------------------------------- \\
 })();
 
-},{"./controller/upload":3,"./directive/alert":4,"./directive/create":5,"./directive/evaluate":6,"./directive/sign":7,"./directive/topics":8,"./factory/Entry":9,"./factory/Evaluation":10,"./factory/Sign":11,"./factory/Topic":12}]},{},[13])
+},{"./controller/upload":3,"./directive/alert":4,"./directive/create":5,"./directive/evaluate":6,"./directive/sign":7,"./directive/topics":8,"./factory/Criteria":9,"./factory/Entry":10,"./factory/Evaluation":11,"./factory/Sign":12,"./factory/Topic":13}]},{},[14])

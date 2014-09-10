@@ -8,7 +8,6 @@ var Schema = mongoose.Schema;
 
 var Topic = require('./Topic');
 var User = require('./User');
-var Label = require('./Label');
 
 var EntrySchema = new Schema({
   "image": {

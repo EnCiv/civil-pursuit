@@ -9,7 +9,7 @@ var Schema    = mongoose.Schema;
 var Topic     = require('./Topic');
 var User      = require('./User');
 var Entry     = require('./Entry');
-var Label     = require('./Label');
+var Criteria  = require('./Criteria');
 
 var EvaluationSchema = new Schema({
 

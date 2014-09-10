@@ -5,18 +5,36 @@
  *  @param    Object TopicFactory
  */
 // ---------------------------------------------------------------------------------------------  //
-module.exports = function (EvaluationFactory) { // ----- uses factory/Sign.js ------------------------  //
+module.exports = function (EvaluationFactory, CriteriaFactory) { // ----- uses factory/Sign.js ------------------------  //
   return {
     // ---- Restrict directive to class --------------------------------------------------------  //
     restrict: 'C',
     // ---- Link function ----------------------------------------------------------------------  //
     link: function ($scope, $elem, $attrs) {
 
+      $scope.evaluate = {};
+
       $scope.evaluationDone = false;
 
       $scope.comparing = [];
 
       $scope.comparable = [0, 1, 2, 3, 4, 5];
+
+      // Get criterias
+
+      CriteriaFactory.find()
+
+        .error(function (error) {
+
+        })
+
+        .success(function (data) {
+          $scope.criterias = data.found;
+
+          console.log($scope.criterias);
+        });
+
+      // Get Evaluation
 
       EvaluationFactory.findById($attrs.id)
 

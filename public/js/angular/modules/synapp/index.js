@@ -18,7 +18,8 @@
       'SignFactory':          require('./factory/Sign'),
       'TopicFactory':         require('./factory/Topic'),
       'EntryFactory':         require('./factory/Entry'),
-      'EvaluationFactory':    require('./factory/Evaluation')
+      'EvaluationFactory':    require('./factory/Evaluation'),
+      'CriteriaFactory':    require('./factory/Criteria')
     })
 
   // CONTROLLERS

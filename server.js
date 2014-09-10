@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+process.title = 'synapphtml5';
+
 var format = require('util').format;
 
 var path = require('path');
