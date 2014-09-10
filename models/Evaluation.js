@@ -100,7 +100,7 @@ EvaluationSchema.pre('save', function (next) {
   // If no entry specified
 
   else {
-    Entry.find({ topic: self.topic })
+    Entry.find({ topic: this.topic })
       .limit(5)
       .exec(function (error, entries) {
         self.entries = entries;

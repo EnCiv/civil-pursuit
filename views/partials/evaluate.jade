@@ -19,6 +19,9 @@
     img.img-responsive(
       ng-src      =   'data:image/png;base64,{{' + pos + '.image}}'
       ng-show     =   pos + '.image')
+    img.img-responsive.default-topic-image(
+      ng-src      =   '/images/topics/{{evaluate.topic.image}}'
+      ng-hide     =   pos + '.image || ! ' + pos  '.subject')
 
   mixin play-title (pos)
     h4

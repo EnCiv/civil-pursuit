@@ -4152,3 +4152,8 @@ header .container {
   white-space: pre-line;
   text-align: justify;
 }
+.default-topic-image {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  filter: grayscale(100%);
+}

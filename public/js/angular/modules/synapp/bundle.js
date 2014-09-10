@@ -992,7 +992,7 @@ module.exports = function ($http) {
     },
 
     findById: function (id) {
-      return $http.get('/json/Evaluation/findById/' + id + '?$populate=entries._id');
+      return $http.get('/json/Evaluation/findById/' + id + '?$populate=topic entries._id');
     },
 
     promote: function (id, entry) {
