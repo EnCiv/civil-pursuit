@@ -1,76 +1,24 @@
 #!/usr/bin/env node
 
+process.title = 'synapphtml5';
+
 var format = require('util').format;
 
-var colors = require('colors');
+var path = require('path');
 
-/** Function to print log messages -------------------------------------------------------------  */
-function printLog (message, level, debug) {
-  var symbol,
-    color,
-    _debug = '';
-
-  switch ( level ) {
-    case 'info':
-    default:
-      symbol = 'ℹ';
-      color = 'cyan';
-      break;
-
-    case 'error':
-      symbol = '❌';
-      color = 'red';
-      break;
-
-    case 'warning':
-      symbol = '❢';
-      color = 'yellow';
-      break;
-
-    case 'success':
-      symbol = '✔';
-      color = 'green';
-      break;
-  }
-
-  if ( debug ) {
-    _debug = JSON.stringify(debug, null, 2).grey;
-  }
-
-  console.log(' %s %s %s %s',
-    'synapp' + ' http'.grey, symbol[color], message[color], _debug);
-}
-
-String.prototype.Info = function (debug) {
-  printLog(this, 'info', debug);
-};
-
-String.prototype.Error = function (debug) {
-  printLog(this, 'error', debug);
-};
-
-String.prototype.Warning = function (debug) {
-  printLog(this, 'warning', debug);
-};
-
-String.prototype.Success = function (debug) {
-  printLog(this, 'success', debug);
-};
-
-String.prototype.format = function () {
-  return require('util').format.apply(null, [this.toString()].concat(
-    Array.prototype.slice.call(arguments)));
-};
+var Log = require('String-alert')({ prefix: 'synapp' });
 
 var domain = require('domain').create();
 
 domain.on('error', function (error) {
-  error.message.Error({
-    name: error.name
-  });
+  Log.ERROR(error.message, error.format());
 });
 
 domain.run(function () {
+
+  /* ======== config ======== */
+
+  var synapp = require('./config/config.json');
 
   /* ======== start express app ======== */
 
@@ -84,7 +32,7 @@ domain.run(function () {
 
   var bodyParser = require('body-parser');
 
-  var expressSession = require('express-session');
+  var multipart = require('connect-multiparty');
 
   /* ======== parsers  ======== */
 
@@ -93,6 +41,11 @@ domain.run(function () {
 
   // parse application/json
   app.use(bodyParser.json());
+
+  // multi-parts
+  app.use(multipart({
+    uploadDir: synapp.tmp
+}));
 
   /* ======== app config  ======== */
 
@@ -112,7 +65,7 @@ domain.run(function () {
 
   /* ======== cookies & session  ======== */
 
-  app.locals.secret = (process.pid + Math.random()).toString();
+  app.locals.secret = 'hYGhdj729k2kdmsñw9hsy6GGW';
 
   app.use(cookieParser(app.locals.secret));
 
@@ -128,20 +81,22 @@ domain.run(function () {
 
   /* ======== LOGGER  ======== */
 
-
   app.use(function (req, res, next) {
-    var method = 'Info';
+    var LOG = 'INFO';
 
     switch ( res.statusCode ) {
       case 200:
-        method = 'Success';
+        LOG = 'SUCCESS';
         break;
     }
 
-    format('%d %s %s', res.statusCode, req.method, req.url)[method]();
+    Log[LOG](format('[%s] %d %s %s',
+      req.signedCookies.synuser ? req.signedCookies.synuser.email : 'visitor',
+      res.statusCode, req.method, req.url));
 
     next();
   });
+
 
   /* ======== SIGN  ======== */
 
@@ -149,19 +104,85 @@ domain.run(function () {
 
   /* ======== API  ======== */
 
-  app.all('/api/:section?', require('./routes/api'));
+  require('monson')(app, require('mongoose'), 'MONGOHQ_URL');
 
-  /* ======== IMAGES  ======== */
+  /* ======== CREATE  ======== */
 
-  app.get('/images', function (req, res, next) {
-    require('fs').readdir(require('path').join(__dirname, 'public/images'),
-      function (error, files) {
-        if ( error ) {
-          throw error;
-        }
-        res.json(files);
-      });
+  app.get('/topics/:topic/create', function (req, res, next) {
+    res.render('pages/create', {
+      topic: req.params.topic
+    });
   });
+
+  /* ======== EVALUATE  ======== */
+
+  app.get('/evaluate/:evaluation?', function (req, res, next) {
+    res.render('pages/evaluate', {
+      evaluation: req.params.evaluation
+    });
+  });
+
+  /* ======== SUMMARY  ======== */
+
+  app.get('/summary/:entry?', function (req, res, next) {
+    res.render('pages/summary', {
+      entry: req.params.entry
+    });
+  });
+
+   /* ======== EDIT  ======== */
+
+  app.get('/edit/:entry?', function (req, res, next) {
+    res.render('pages/create', {
+      entry: req.params.entry
+    });
+  });
+
+  /* ======== ENTRIES  ======== */
+
+  app.get('/entries', function (req, res, next) {
+    var Entry = require('./models/Entry');
+    var Topic = require('./models/Topic');
+
+    Topic.find(function (error, topics) {
+      if ( error ) {
+        return next(error);
+      }
+
+      require('async').parallel(
+        topics.map(function (topic) {
+          return function (cb) {
+            Entry
+              .find({ topic: this._id })
+              .exec(cb);
+          }.bind(topic);
+        }),
+
+        function (error, results) {
+          if ( error ) {
+            return next(error);
+          }
+          res.type('html');
+          topics.forEach(function (topic, index) {
+            res.write('<h2>' + topic.heading + '</h2>');
+
+            results[index].forEach(function (entry) {
+              res.write('<li><a href="/summary/' + entry._id + '">' + entry.subject + '</a> [<a href="/edit/' + entry._id + '">Edit</a>]</li>');
+            });
+          });
+
+          res.end();
+        });
+    });
+  });
+
+  /* ======== UPLOAD  ======== */
+
+  app.all('/tools/upload', require('./routes/upload'));
+
+  /* ======== GET TITLE  ======== */
+
+  app.post('/tools/get-title', require('./routes/get-title'));
 
   /* ======== HOME  ======== */
 
@@ -186,11 +207,11 @@ domain.run(function () {
   var server = require('http').createServer(app);
 
   server.listen(app.get('port'), function () {
-    format('Listening on port %d', app.get('port')).Success();
+    Log.OK(format('Listening on port %d', app.get('port')));
   });
 
   server.on('error', function (error) {
-    error.message.Error();
+    Log.ERROR(error.format());
   });
 
   domain.add(server);

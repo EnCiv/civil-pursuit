@@ -1,0 +1,17 @@
+.synapp-summary(entry=entry)
+  .row
+    .col-sm-4
+      image.img-responsive(
+          alt         =   'image')
+
+    .col-sm-8
+      h4
+        a(ng-bind='entry.title || entry.url')
+
+  .row
+    .col-xs-12
+      h2(ng-bind='entry.subject')
+
+  .row
+    .col-xs-12
+      p(ng-bind='entry.description')

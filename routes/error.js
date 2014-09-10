@@ -1,6 +1,8 @@
 
 var should = require('should');
 
+var Log = require('String-alert')({ prefix: 'synapp' });
+
 module.exports = function (error, req, res, next) {
 
     req     .should.be.an.Object;
@@ -51,7 +53,8 @@ module.exports = function (error, req, res, next) {
       res.type('html');
     }
 
-    '%d %s %s'.format(res.statusCode, error.name, error.message).Error(error.stack.split(/\n/));
+    Log.KO('%d %s %s'.format(res.statusCode, error.name, error.message),
+      error.stack.split(/\n/));
 
     res.format({
       'json': function () {

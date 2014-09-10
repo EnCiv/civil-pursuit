@@ -1,0 +1,13 @@
+extends ../layouts/layout
+
+block prepend script-angular
+  script(src='/bower_components/ng-file-upload-shim/angular-file-upload-shim.js')
+  script.
+    var createPage = true;
+
+block append script-angular
+  script(src='/bower_components/ng-file-upload/angular-file-upload.js')
+  script(src='/js/angular/modules/autogrow/index.js')
+
+block page
+  include ../partials/create

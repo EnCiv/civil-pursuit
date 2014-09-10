@@ -1,0 +1,186 @@
+//-
+  //-
+    //- NOT SIGNED IN
+  //-
+//-
+
+- if ( ! isSignedIn )
+  include please-sign-in
+
+- else
+
+  //-     
+    //-
+      //- MIXINS
+    //- 
+  //-
+
+  mixin play-image (pos)
+    img.img-responsive(
+      ng-src      =   'data:image/png;base64,{{' + pos + '.image}}'
+      ng-show     =   pos + '.image')
+    img.img-responsive.default-topic-image(
+      ng-src      =   '/images/topics/{{evaluate.topic.image}}'
+      ng-hide     =   pos + '.image || ! ' + pos  '.subject')
+
+  mixin play-title (pos)
+    h4
+      a(
+        ng-href   =   '{{' + pos + '.url}}' 
+        ng-bind   =   '(' + pos + '.title||' + pos + '.url)')
+
+  mixin play-subject (pos)
+    h2(
+      ng-bind     =   pos + '.subject')
+
+  mixin play-description (pos)
+    .entry-description(
+      ng-bind     =   pos + '.description')
+
+  mixin play-sliders (pos)
+    div(
+      ng-repeat   =   'criteria in criterias' 
+      ng-show     =   pos + '.subject')
+      
+      h4(
+        ng-bind   =  'criteria.name')
+      
+      input.slider(
+        type      =   'text')
+      
+      hr
+      
+      div(
+        ng-init   =   'doIt($last)')
+
+  mixin play-feedback (pos)
+    textarea.form-control(
+      placeholder =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+      ng-show     =   pos + '.subject')
+
+  mixin play-promote (pos)
+    - var other = pos === 'left' ? 'right' : 'left';
+
+    button.btn.btn-block(
+      ng-click    =   'promote(' + pos + '._id, "' + pos + '")'
+      ng-show     =   pos + '.subject && ' + other + '.subject'
+        ) Promote
+
+  mixin play-continue ()
+    button.btn.btn-block(
+      ng-click    =   'continue()'
+      ng-show     =   'left.subject && right.subject && comparable.length'
+      ) Continue
+
+  mixin edit-and-go-again (pos)
+    button.btn.btn-block(
+      ng-show='evaluate.entry && ' + pos + '._id === evaluate.entry'
+      ng-click    =   'editAndGoAgain()'
+      ) Edit and go again
+
+  //-     
+    //-
+      //- LAYOUT
+    //- 
+  //-
+
+  .synapp-evaluate(id=evaluation)
+
+    .row(ng-show='evaluationDone')
+      .col-xs-12
+        h1 Evaluation done!
+
+    //-     
+      //- SMALL SCREEN
+    //-
+
+    .visible-xs(ng-hide='evaluationDone')
+
+      - each position in ['left', 'right']
+
+        //- Image
+        .row
+          .col-xs-12
+            +play-image(position)
+
+        //- Title
+        .row
+          .col-xs-12
+            +play-title(position)
+
+        //- Subject
+        .row
+          .col-xs-12
+            +play-subject(position)
+
+        //- Description
+        .row
+          .col-xs-12
+            +play-description(position)
+
+        //- Sliders
+        .row
+          .col-xs-12
+            +play-sliders(position)
+
+        //- Feedback
+        .row
+          .col-xs-12.padding-bottom
+            +play-feedback(position)
+
+        //- Promote
+        .row
+          .col-xs-12.padding-bottom
+            +play-promote(position)
+
+        //- End each position
+
+      .row
+        .col-xs-12.padding-bottom
+          +play-continue
+
+    //-     
+      //- NORMAL SCREEN
+    //-
+
+    .hidden-xs(ng-hide='evaluationDone')
+      
+      .row
+        - each position in ['left', 'right']
+          .col-sm-6
+            .row
+              .col-sm-6
+                +play-image(position)
+              .col-sm-6
+                +play-title(position)
+
+            .row
+              .col-xs-12
+                +play-subject(position)
+
+            .row
+              .col-xs-12
+                +play-description(position)
+
+      .row
+        - each position in ['left', 'right']
+          .col-sm-6
+            .row
+              .col-xs-12
+                +play-sliders(position)
+
+            .row
+              .col-xs-12
+                +play-feedback(position)
+
+      .row.padding
+        .col-sm-3.padding-bottom
+          +edit-and-go-again('left')
+          +play-promote('left')
+
+        .col-sm-6.padding-bottom
+          +play-continue()
+
+        .col-sm-3.padding-bottom
+          +edit-and-go-again('right')
+          +play-promote('right')

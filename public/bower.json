@@ -11,6 +11,9 @@
   ],
   "dependencies": {
     "bootstrap": "~3.2.0",
-    "angular": "~1.2.23"
+    "angular": "~1.2.23",
+    "ng-file-upload": "~1.6.5",
+    "ng-file-upload-shim": "~1.6.5",
+    "seiyria-bootstrap-slider": "~4.0.1"
   }
 }
