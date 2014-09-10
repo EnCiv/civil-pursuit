@@ -880,6 +880,15 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
 
             $scope.criterias.forEach(function (criteria) {
               $scope.votes[entry._id][criteria._id] = 5;
+
+              // tooltips
+
+              setTimeout(function () {
+                $('[data-toggle="tooltip"]').tooltip({
+                  placement: 'top'
+                });
+                console.log('hola')
+              }, 1000)
             });
           });
         });

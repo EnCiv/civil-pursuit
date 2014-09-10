@@ -54,8 +54,12 @@
       ng-show     =   pos + '.subject'
       )
       
-      h4(
-        ng-bind   =  'criteria.name')
+      h4
+        span(
+          ng-bind           =  'criteria.name'
+          data-toggle       =   "tooltip" 
+          data-placement    =   "top" 
+          title             =   "{{criteria.description}}")
 
       input.slider(
         type            =   'text'
