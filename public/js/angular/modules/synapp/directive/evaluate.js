@@ -133,6 +133,12 @@ module.exports = function (EvaluationFactory, CriteriaFactory) { // ----- uses f
         $scope.left       = $scope.evaluate.entries[$scope.comparing[0]];
         $scope.right      = $scope.evaluate.entries[$scope.comparing[1]];
       };
+
+      // Edit and go again
+
+      $scope.editAndGoAgain = function () {
+        location.href='/edit/' + $scope.evaluate.entry;
+      };
     }
   };
 };

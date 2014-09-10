@@ -74,7 +74,8 @@
 
   mixin edit-and-go-again (pos)
     button.btn.btn-block(
-      ng-show     =   pos + '._id === entry'
+      ng-show='evaluate.entry && ' + pos + '._id === evaluate.entry'
+      ng-click    =   'editAndGoAgain()'
       ) Edit and go again
 
   //-     

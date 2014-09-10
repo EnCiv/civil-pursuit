@@ -130,6 +130,14 @@ domain.run(function () {
     });
   });
 
+   /* ======== EDIT  ======== */
+
+  app.get('/edit/:entry?', function (req, res, next) {
+    res.render('pages/create', {
+      entry: req.params.entry
+    });
+  });
+
   /* ======== ENTRIES  ======== */
 
   app.get('/entries', function (req, res, next) {
@@ -159,7 +167,7 @@ domain.run(function () {
             res.write('<h2>' + topic.heading + '</h2>');
 
             results[index].forEach(function (entry) {
-              res.write('<li><a href="/summary/' + entry._id + '">' + entry.subject + '</a></li>');
+              res.write('<li><a href="/summary/' + entry._id + '">' + entry.subject + '</a> [<a href="/edit/' + entry._id + '">Edit</a>]</li>');
             });
           });
 

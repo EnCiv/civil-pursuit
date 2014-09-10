@@ -3,7 +3,15 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
 
     restrict: 'C',
 
-    link: function ($scope) {
+    link: function ($scope, $elem, $attrs) {
+
+      if ( $attrs.entry ) {
+        EntryFactory.findById($attrs.entry)
+          .success(function (data) {
+            $scope.topic = data.found.topic;
+            $scope.entry = data.found;
+          })
+      }
 
       // Function to clear the form
 
@@ -17,9 +25,9 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
 
       // Behavior to fetch URL's title
 
-      $("[ng-model='create_entry.title']").on('change', function () {
+      $("[ng-model='entry.title']").on('change', function () {
 
-        $scope.create_entry.url = $(this).val();
+        $scope.entry.url = $(this).val();
 
         $http.post('/tools/get-title', { url: $(this).val() })
           .error(function (error) {
@@ -27,7 +35,7 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
           })
           .success(function (data) {
             console.log(data);
-            $scope.create_entry.title = JSON.parse(data);
+            $scope.entry.title = JSON.parse(data);
           });
       });
 

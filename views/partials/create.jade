@@ -4,6 +4,7 @@
 - else
 
   form.synapp-create(
+    data-entry    =   entry
     name          =   "form_create"
     method        =   'POST'
     role          =   'form'
@@ -52,13 +53,13 @@
         input.form-control(
           type        =   'text' 
           placeholder =   'http://'
-          ng-model    =   'create_entry.title'
+          ng-model    =   'entry.title'
           name        =   'title')
 
         input(
           type        =   'hidden'
           name        =   'url'
-          ng-model    =   'create_entry.url')
+          ng-model    =   'entry.url')
 
     .row.padding
       .col-xs-12
@@ -69,7 +70,7 @@
           name              =   'subject'
           type              =   'text' 
           placeholder       =   'Subject'
-          ng-model          =   'create_entry.subject'
+          ng-model          =   'entry.subject'
           required          )
 
     .row.padding
@@ -83,7 +84,7 @@
           placeholder       =   'Description' 
           spellcheck        =   'true'
           lang              =   'en'  
-          ng-model          =   'create_entry.description'
+          ng-model          =   'entry.description'
           required          )
 
     .row.padding
