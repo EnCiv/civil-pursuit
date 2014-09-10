@@ -19,7 +19,7 @@
       'TopicFactory':         require('./factory/Topic'),
       'EntryFactory':         require('./factory/Entry'),
       'EvaluationFactory':    require('./factory/Evaluation'),
-      'CriteriaFactory':    require('./factory/Criteria')
+      'CriteriaFactory':      require('./factory/Criteria')
     })
 
   // CONTROLLERS
@@ -36,14 +36,7 @@
       'synappCreate':         require('./directive/create'),
       'synappEvaluate':       require('./directive/evaluate'),
       'synappAlert':          require('./directive/alert'),
-      'consoleLog':           function () {
-        return {
-          restrict: 'A',
-          link: function ($scope, $elem, $attrs) {
-            console.log($attrs.consoleLog);
-          }
-        }
-      }
+      'synappSummary':        require('./directive/summary')
     });
-  // ---------------------------------------------------------------------------------------------- \\
+  
 })();

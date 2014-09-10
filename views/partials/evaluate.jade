@@ -59,10 +59,23 @@
       ng-show     =   pos + '.subject')
 
   mixin play-promote (pos)
-    button.btn.btn-block(ng-click='promote(' + left + '._id, "' + left + '")') Promote
+    - var other = pos === 'left' ? 'right' : 'left';
 
-  mixin play-continue (pos)
-    button.btn.btn-block(ng-click='continue()') Continue
+    button.btn.btn-block(
+      ng-click    =   'promote(' + pos + '._id, "' + pos + '")'
+      ng-show     =   pos + '.subject && ' + other + '.subject'
+        ) Promote
+
+  mixin play-continue ()
+    button.btn.btn-block(
+      ng-click    =   'continue()'
+      ng-show     =   'left.subject && right.subject && comparable.length'
+      ) Continue
+
+  mixin edit-and-go-again (pos)
+    button.btn.btn-block(
+      ng-show     =   pos + '._id === entry'
+      ) Edit and go again
 
   //-     
     //-
@@ -161,10 +174,12 @@
 
       .row.padding
         .col-sm-3.padding-bottom
-          button.btn.btn-block(ng-click='promote(left._id, "left")') Promote
+          +edit-and-go-again('left')
+          +play-promote('left')
 
         .col-sm-6.padding-bottom
-          button.btn.btn-block(ng-click='continue()') Continue
+          +play-continue()
 
         .col-sm-3.padding-bottom
-          button.btn.btn-block(ng-click='promote(right._id, "right")') Promote
+          +edit-and-go-again('right')
+          +play-promote('right')

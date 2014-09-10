@@ -114,8 +114,6 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
 
                     console.info('Entry created', entry);
 
-                    return;
-
                     // Create new Evaluation
 
                     var evaluation = {

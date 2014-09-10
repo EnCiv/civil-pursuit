@@ -613,8 +613,6 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
 
                     console.info('Entry created', entry);
 
-                    return;
-
                     // Create new Evaluation
 
                     var evaluation = {
@@ -911,6 +909,22 @@ module.exports = function (SignFactory) { // ----- uses factory/Sign.js --------
   };
 };
 },{}],8:[function(require,module,exports){
+module.exports = function (EntryFactory) {
+  return {
+    restrict: 'C',
+    link: function ($scope, $elem, $attrs) {
+
+      var entry = $attrs.entry;
+
+      EntryFactory.findById(entry)
+
+        .success(function (data) {
+          $scope.entry = data.found;
+        });
+    }
+  };
+};
+},{}],9:[function(require,module,exports){
 // ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
 /*
  *  @abstract Angular directive for all elements with class name "synapp-sign"
@@ -960,7 +974,7 @@ module.exports = function (TopicFactory, EvaluationFactory, SignFactory) { // --
     }
   };
 };
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -968,11 +982,15 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
       return $http.get('/json/Entry');
+    },
+
+    findById: function (id) {
+      return $http.get('/json/Entry/findById/' + id);
     },
 
     evaluate: function (topic) {
@@ -984,7 +1002,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     create: function (evaluation) {
@@ -1000,7 +1018,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     in: function (creds) {
@@ -1016,7 +1034,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -1028,7 +1046,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ;(function () {
   
   // DEPENDENCIES
@@ -1050,7 +1068,7 @@ module.exports = function ($http) {
       'TopicFactory':         require('./factory/Topic'),
       'EntryFactory':         require('./factory/Entry'),
       'EvaluationFactory':    require('./factory/Evaluation'),
-      'CriteriaFactory':    require('./factory/Criteria')
+      'CriteriaFactory':      require('./factory/Criteria')
     })
 
   // CONTROLLERS
@@ -1067,16 +1085,9 @@ module.exports = function ($http) {
       'synappCreate':         require('./directive/create'),
       'synappEvaluate':       require('./directive/evaluate'),
       'synappAlert':          require('./directive/alert'),
-      'consoleLog':           function () {
-        return {
-          restrict: 'A',
-          link: function ($scope, $elem, $attrs) {
-            console.log($attrs.consoleLog);
-          }
-        }
-      }
+      'synappSummary':        require('./directive/summary')
     });
-  // ---------------------------------------------------------------------------------------------- \\
+  
 })();
 
-},{"./controller/upload":3,"./directive/alert":4,"./directive/create":5,"./directive/evaluate":6,"./directive/sign":7,"./directive/topics":8,"./factory/Criteria":9,"./factory/Entry":10,"./factory/Evaluation":11,"./factory/Sign":12,"./factory/Topic":13}]},{},[14])
+},{"./controller/upload":3,"./directive/alert":4,"./directive/create":5,"./directive/evaluate":6,"./directive/sign":7,"./directive/summary":8,"./directive/topics":9,"./factory/Criteria":10,"./factory/Entry":11,"./factory/Evaluation":12,"./factory/Sign":13,"./factory/Topic":14}]},{},[15])

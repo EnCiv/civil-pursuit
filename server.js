@@ -122,6 +122,52 @@ domain.run(function () {
     });
   });
 
+  /* ======== SUMMARY  ======== */
+
+  app.get('/summary/:entry?', function (req, res, next) {
+    res.render('pages/summary', {
+      entry: req.params.entry
+    });
+  });
+
+  /* ======== ENTRIES  ======== */
+
+  app.get('/entries', function (req, res, next) {
+    var Entry = require('./models/Entry');
+    var Topic = require('./models/Topic');
+
+    Topic.find(function (error, topics) {
+      if ( error ) {
+        return next(error);
+      }
+
+      require('async').parallel(
+        topics.map(function (topic) {
+          return function (cb) {
+            Entry
+              .find({ topic: this._id })
+              .exec(cb);
+          }.bind(topic);
+        }),
+
+        function (error, results) {
+          if ( error ) {
+            return next(error);
+          }
+          res.type('html');
+          topics.forEach(function (topic, index) {
+            res.write('<h2>' + topic.heading + '</h2>');
+
+            results[index].forEach(function (entry) {
+              res.write('<li><a href="/summary/' + entry._id + '">' + entry.subject + '</a></li>');
+            });
+          });
+
+          res.end();
+        });
+    });
+  });
+
   /* ======== UPLOAD  ======== */
 
   app.all('/tools/upload', require('./routes/upload'));

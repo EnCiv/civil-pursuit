@@ -4084,6 +4084,18 @@ header .container {
     display: none;
   }
 }
+#beta {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  text-align: center;
+}
+#beta img {
+  margin: auto;
+  opacity: 0.75;
+}
 [role=main] {
   margin-top: 85px;
 }

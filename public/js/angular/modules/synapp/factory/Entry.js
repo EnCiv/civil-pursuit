@@ -4,6 +4,10 @@ module.exports = function ($http) {
       return $http.get('/json/Entry');
     },
 
+    findById: function (id) {
+      return $http.get('/json/Entry/findById/' + id);
+    },
+
     evaluate: function (topic) {
       return $http.get('/json/Entry/statics/evaluate/' + topic);
     },
