@@ -84,7 +84,7 @@ EvaluationSchema.pre('save', function (next) {
 
         self.entries = entries;
 
-        Entry.findById(this.entry,
+        Entry.findById(entry_id,
           function (error, entry) {
             if ( error ) {
               return next(error);

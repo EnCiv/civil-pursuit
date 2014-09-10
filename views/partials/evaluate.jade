@@ -21,7 +21,7 @@
 
   mixin play-title (pos)
     h4
-      a(ng-href='' ng-bind=pos + '.title')
+      a(ng-href='{{' + pos + '.url}}' ng-bind='(' + pos + '.title||' + pos + '.url)')
 
   mixin play-subject (pos)
     h2(ng-bind=pos + '.subject')
