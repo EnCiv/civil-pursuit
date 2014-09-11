@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+// process title
 process.title = 'synapphtml5';
 
 var format = require('util').format;
