@@ -4274,6 +4274,7 @@ header .container {
 }
 .axis {
   font: 10px sans-serif;
+  color: #ff0000;
 }
 .axis path,
 .axis line {

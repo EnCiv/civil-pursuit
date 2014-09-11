@@ -7,7 +7,9 @@ module.exports = function ($http) {
 
       if ( query && Object.keys(query).length ) {
         for ( var q in query ) {
-          params.push([q,query[q]].join('='));
+          if ( query[q] ) {
+            params.push([q,query[q]].join('='));
+          }
         }
       }
 
