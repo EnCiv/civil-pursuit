@@ -104,6 +104,8 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
 
             var newEntryPosition;
 
+            // Promoting left entry
+
             if ( position === 'left' ) {
               $scope.comparable.splice($scope.comparable.indexOf($scope.comparing[1]), 1);
 
