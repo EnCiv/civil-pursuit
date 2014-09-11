@@ -42,10 +42,20 @@ var EntrySchema = new Schema({
     "type": Schema.Types.ObjectId,
     "ref": "User",
     "required": true
-  }
+  },
+
+  "promotions": Number,
+
+  "views": Number
 });
 
 EntrySchema.pre('save', function (next) {
+
+  if ( this.isNew ) {
+    this.promotions   = 0;
+    this.views        = 0;
+  }
+
   if ( ! this.image || this.image.length > 255 ) {
     return next();
   }

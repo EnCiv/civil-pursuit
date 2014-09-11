@@ -18,6 +18,14 @@ module.exports = function ($http) {
 
     publish: function (entry) {
       return $http.post('/json/Entry', entry);
+    },
+
+    view: function (entry) {
+      return $http.put('/json/Entry?_id=' + entry, JSON.stringify({ "$inc": { views: 1 } }) );
+    },
+
+    promote: function (entry) {
+      return $http.put('/json/Entry?_id=' + entry, JSON.stringify({ "$inc": { promotions: 1 } }) );
     }
   };
 };

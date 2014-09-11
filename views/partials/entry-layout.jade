@@ -28,3 +28,8 @@
 
   .col-xs-8
     svg.chart(id='chart-{{entry._id}}-{{criteria._id}}')
+
+.row
+  .col-xs-12
+    .progress
+      .progress-bar.progress-bar-striped.active(role="progressbar" aria-valuenow="{{(entry.promotions * 100 / entry.views | number:0)}}" aria-valuemin="0" aria-valuemax="100" style="width: {{(entry.promotions * 100 / entry.views | number:0)}}%;" ng-bind='(entry.promotions * 100 / entry.views | number:0) + "%"' ng-class='{ "progress-bar-danger": (entry.promotions * 100 / entry.views | number:0) < 25, "progress-bar-warning": (entry.promotions * 100 / entry.views | number:0) < 50, "progress-bar-info": (entry.promotions * 100 / entry.views | number:0) < 75, "progress-bar-success": (entry.promotions * 100 / entry.views | number:0) > 75}')

@@ -1,6 +1,6 @@
 // .synapp-evaluate
 
-module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, SignFactory) {
+module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, SignFactory, EntryFactory) {
   return {
     
     // Restrict to class
@@ -38,14 +38,17 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
       // Get Evaluation
 
       $scope.getEvaluation = function (cb) {
+
         EvaluationFactory.findById($attrs.id)
 
           .success(function (evaluation) {
-            
+
             evaluation.entries  = evaluation.entries
               .map(function (entry) {
-                console.log(entry);
                 $scope.votes[entry._id._id] = {};
+
+                EntryFactory.view(entry._id._id);
+
                 return entry._id;
               });
               
@@ -55,10 +58,6 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
             $scope.right        = evaluation.entries[1];
 
             $scope.comparing    = [0, 1];
-
-            if ( $scope.criterias.length ) {
-
-            }
 
             cb();
 
@@ -100,7 +99,7 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
 
         console.info('Promoting entry', position);
 
-        EvaluationFactory.promote($scope.evaluate._id, entry)
+        EntryFactory.promote(entry)
           .success(function (data) {
 
             var newEntryPosition;
@@ -207,7 +206,9 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
       // FLOW
       // ===================
 
+      console.info('get evaluation');
       $scope.getEvaluation(function () {
+        console.info('get criterias');
         $scope.getCriterias(function () {
           $scope.evaluate.entries.forEach(function (entry) {
             $scope.votes[entry._id] = {};
