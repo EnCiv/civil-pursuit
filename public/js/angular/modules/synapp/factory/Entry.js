@@ -1,7 +1,21 @@
 module.exports = function ($http) {
   return {
-    find: function () {
-      return $http.get('/json/Entry');
+    find: function (query) {
+      var url = '/json/Entry';
+
+      var params = [];
+
+      if ( query && Object.keys(query).length ) {
+        for ( var q in query ) {
+          params.push([q,query[q]].join('='));
+        }
+      }
+
+      if ( params.length ) {
+        url += '?' + params.join('&');
+      }
+
+      return $http.get(url);
     },
 
     findById: function (id) {
