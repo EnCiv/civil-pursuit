@@ -114,20 +114,20 @@ domain.run(function () {
     });
   });
 
+  /* ======== USER ENTRIES  ======== */
+
+  app.get('/topics/:topic/user', function (req, res, next) {
+    res.render('pages/entries', {
+      topic: req.params.topic,
+      email: req.signedCookies.synuser ? req.signedCookies.synuser.email : ''
+    });
+  });
+
   /* ======== CREATE  ======== */
 
   app.get('/topics/:topic/create', function (req, res, next) {
     res.render('pages/create', {
       topic: req.params.topic
-    });
-  });
-
-  /* ======== USER ENTRIES  ======== */
-
-  app.get('/topics/:topic/user', function (req, res, next) {
-    res.render('pages/feedback', {
-      topic: req.params.topic,
-      email: req.signedCookies.synuser ? req.signedCookies.synuser.email : ''
     });
   });
 

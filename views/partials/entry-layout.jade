@@ -20,10 +20,10 @@
   .col-xs-12
     p(ng-bind='entry.description')
 
-.row
+.row(ng-repeat='criteria in criterias')
   .col-xs-4
-    div(ng-repeat='criteria in criterias')
-      h4(ng-bind='criteria.name')
-      p(ng-bind='criteria.description')
+    h4(ng-bind='criteria.name')
+    p(ng-bind='criteria.description')
 
   .col-xs-8
+    svg.chart(id='chart-{{entry._id}}-{{criteria._id}}')

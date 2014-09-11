@@ -154,6 +154,7 @@
         //- Promote
         .row
           .col-xs-12.padding-bottom
+            +edit-and-go-again(position)
             +play-promote(position)
 
         //- End each position
@@ -202,6 +203,7 @@
           +play-promote('left')
 
         .col-sm-6.padding-bottom
+          button.btn.btn-block(ng-show='never')
           +play-continue()
 
         .col-sm-3.padding-bottom

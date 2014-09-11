@@ -5,7 +5,20 @@ module.exports = function ($http) {
     },
 
     findByEntries: function (entries) {
-    return $http.put('/json/Vote', { entries: entries });
-  }
-};
+
+      entries = entries.map(function (entry) {
+        if ( typeof entry === 'string' ) {
+          return entry;
+        }
+
+        return entry._id;
+      })
+
+      return $http.put('/json/Vote/statics/findByEntries', entries);
+    },
+
+    getAccumulation: function (entry) {
+      return $http.get('/json/Vote/statics/getAccumulation/' + entry);
+    }
+  };
 };
