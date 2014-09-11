@@ -31,8 +31,8 @@ module.exports = function (TopicFactory, SignFactory, EntryFactory, CriteriaFact
       function chart (data, entryId, criteriaId) {
         console.log('data chart', data);
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
-          width = 360  - margin.left - margin.right,
-          height = 100 - margin.top - margin.bottom;
+          width = 300  - margin.left - margin.right,
+          height = 70 - margin.top - margin.bottom;
 
         var x = d3.scale.ordinal()
           .rangeRoundBands([0, width], .1);
@@ -64,10 +64,6 @@ module.exports = function (TopicFactory, SignFactory, EntryFactory, CriteriaFact
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
-
-        chart.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
 
         chart.selectAll(".bar")
             .data(data)
@@ -154,6 +150,22 @@ module.exports = function (TopicFactory, SignFactory, EntryFactory, CriteriaFact
         })
 
           .success(function (entries) {
+
+            entries = entries.map(function (entry) {
+              entry.promoted = Math.ceil(entry.promotions * 100 / entry.views);
+              return entry;
+            });
+
+            entries.sort(function (a,b) {
+              if ( a.promoted > b.promoted ) {
+                return -1;
+              }
+              if ( a.promoted < b.promoted ) {
+                return 1;
+              }
+              return 0;
+            });
+
             $scope.entries = entries;
             cb();
           });
