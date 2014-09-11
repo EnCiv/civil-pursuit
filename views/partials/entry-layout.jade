@@ -14,7 +14,8 @@
 
 .row
   .col-xs-12
-    h2(ng-bind='entry.subject')
+    h2
+      a(ng-bind='entry.subject' ng-href='/summary/{{entry._id}}')
 
 .row
   .col-xs-12

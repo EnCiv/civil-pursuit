@@ -7,20 +7,20 @@ module.exports = function (EntryFactory, TopicFactory, CriteriaFactory) {
 
       EntryFactory.findById(entry)
 
-        .success(function (data) {
-          $scope.entry = data.found;
+        .success(function (entry) {
+          $scope.entry = entry;
 
           TopicFactory.findById($scope.entry.topic)
 
-            .success(function (data) {
-              $scope.topic = data.found;
+            .success(function (topic) {
+              $scope.topic = topic;
             });
         });
 
       CriteriaFactory.find()
 
-        .success(function (data) {
-          $scope.criterias = data.found;
+        .success(function (criterias) {
+          $scope.criterias = criterias;
         });
     }
   };

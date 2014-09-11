@@ -486,8 +486,17 @@ module.exports = function (TopicFactory, SignFactory, EntryFactory, CriteriaFact
         return d;
       }
 
-      function findFactoryBySlug (cb) {
+      function findTopicBySlug (cb) {
         TopicFactory.findBySlug($attr.topic)
+
+          .success(function (topic) {
+            $scope.topic = topic;
+            cb();
+          });
+      }
+
+      function findTopicById (cb) {
+        TopicFactory.findById($scope.entry.topic)
 
           .success(function (topic) {
             $scope.topic = topic;
@@ -534,16 +543,53 @@ module.exports = function (TopicFactory, SignFactory, EntryFactory, CriteriaFact
           });
       }
 
+      function findEntry (cb) {
+        EntryFactory.findById($attr.entry)
+
+          .success(function (entry) {
+            $scope.entry = entry;
+            cb();
+          });
+      }
+
       // FLOW
 
       flow();
 
       function flow () {
-        findFactoryBySlug(function () {
 
-          if ( $attr.user ) {
-            
-            findUserByEmail(function () {
+        if ( $attr.entry ) {
+          findEntry(function () {
+            console.log('entry', $scope.entry);
+            findTopicById(function () {
+              console.log('topic', $scope.topic);
+            });
+          });
+        }
+
+        else {
+          findTopicBySlug(function () {
+
+            if ( $attr.user ) {
+              
+              findUserByEmail(function () {
+                
+                findCriterias(function () {
+
+                  findEntries(function () {
+                    
+                    $scope.entries.forEach(function (entry) {
+                      findEntryVotes(entry._id, function () {
+                        charts(entry._id);
+                      });
+                    });
+
+                  });
+                });
+              });
+            }
+
+            else {
               
               findCriterias(function () {
 
@@ -557,26 +603,10 @@ module.exports = function (TopicFactory, SignFactory, EntryFactory, CriteriaFact
 
                 });
               });
-            });
-          }
+            }
 
-          else {
-            
-            findCriterias(function () {
-
-              findEntries(function () {
-                
-                $scope.entries.forEach(function (entry) {
-                  findEntryVotes(entry._id, function () {
-                    charts(entry._id);
-                  });
-                });
-
-              });
-            });
-          }
-
-        });
+          });
+        }
       }
     }
   };
@@ -950,20 +980,20 @@ module.exports = function (EntryFactory, TopicFactory, CriteriaFactory) {
 
       EntryFactory.findById(entry)
 
-        .success(function (data) {
-          $scope.entry = data.found;
+        .success(function (entry) {
+          $scope.entry = entry;
 
           TopicFactory.findById($scope.entry.topic)
 
-            .success(function (data) {
-              $scope.topic = data.found;
+            .success(function (topic) {
+              $scope.topic = topic;
             });
         });
 
       CriteriaFactory.find()
 
-        .success(function (data) {
-          $scope.criterias = data.found;
+        .success(function (criterias) {
+          $scope.criterias = criterias;
         });
     }
   };
