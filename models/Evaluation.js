@@ -16,7 +16,7 @@ var EvaluationSchema = new Schema({
   // user
 
   "user":       {
-    "type":     mongoose.Schema.Types.ObjectId,
+    "type":     Schema.Types.ObjectId,
     "ref":      'User',
     "required": true
   },
@@ -26,7 +26,7 @@ var EvaluationSchema = new Schema({
   "entries":    [
     {
       "_id": {
-        "type": mongoose.Schema.Types.ObjectId,
+        "type": Schema.Types.ObjectId,
         "ref":  'Entry'
       },
 
@@ -40,7 +40,7 @@ var EvaluationSchema = new Schema({
   // topic
   
   "topic":      {
-    "type":     mongoose.Schema.Types.ObjectId,
+    "type":     Schema.Types.ObjectId,
     "ref":      'Topic',
     "required": true
   },
@@ -48,15 +48,15 @@ var EvaluationSchema = new Schema({
   // entry
   
   "entry":      {
-    "type":     mongoose.Schema.Types.ObjectId,
+    "type":     Schema.Types.ObjectId,
     "ref":      'Entry'
   }
 });
 
 EvaluationSchema.pre('init', function (next) {
-  this.user     = mongoose.Schema.Types.ObjectId(this.user);
-  this.topic    = mongoose.Schema.Types.ObjectId(this.topic);
-  this.entry    = mongoose.Schema.Types.ObjectId(this.entry);
+  this.user     = Schema.Types.ObjectId(this.user);
+  this.topic    = Schema.Types.ObjectId(this.topic);
+  this.entry    = Schema.Types.ObjectId(this.entry);
 
   next();
 });

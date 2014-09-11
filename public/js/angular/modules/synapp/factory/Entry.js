@@ -8,6 +8,10 @@ module.exports = function ($http) {
       return $http.get('/json/Entry/findById/' + id);
     },
 
+    findByIdAndUpdate: function (id, entry) {
+      return $http.put('/json/Entry/statics/updateById/' + id, entry);
+    },
+
     evaluate: function (topic) {
       return $http.get('/json/Entry/statics/evaluate/' + topic);
     },

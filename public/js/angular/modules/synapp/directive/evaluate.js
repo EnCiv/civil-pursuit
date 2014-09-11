@@ -1,9 +1,4 @@
-/**
-  * @abstract     Evaluation Angular Directive
-  * @param        <AngularFactory> EvaluationFactory
-  * @param        <AngularFactory> CriteriaFactory
-  * @param        <AngularFactory> SignFactory
-**/
+// .synapp-evaluate
 
 module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, SignFactory) {
   return {
@@ -33,12 +28,8 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
       $scope.getCriterias   = function (cb) {
         CriteriaFactory.find()
 
-          .error(function (error) {
-
-          })
-
-          .success(function (data) {
-            $scope.criterias = data.found;
+          .success(function (criterias) {
+            $scope.criterias = criterias;
 
             cb();
           });
@@ -49,22 +40,19 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
       $scope.getEvaluation = function (cb) {
         EvaluationFactory.findById($attrs.id)
 
-          .error(function (error) {
-
-          })
-
-          .success(function (data) {
+          .success(function (evaluation) {
             
-            data.found.entries  = data.found.entries
+            evaluation.entries  = evaluation.entries
               .map(function (entry) {
+                console.log(entry);
                 $scope.votes[entry._id._id] = {};
                 return entry._id;
               });
               
-            $scope.evaluate     = data.found;
+            $scope.evaluate     = evaluation;
 
-            $scope.left         = data.found.entries[0];
-            $scope.right        = data.found.entries[1];
+            $scope.left         = evaluation.entries[0];
+            $scope.right        = evaluation.entries[1];
 
             $scope.comparing    = [0, 1];
 
@@ -202,10 +190,10 @@ module.exports = function (EvaluationFactory, CriteriaFactory, VoteFactory, Sign
 
         SignFactory.findByEmail($scope.email)
 
-          .success(function (data) {
+          .success(function (user) {
 
             votes = votes.map(function (vote) {
-              vote.user = data.found._id;
+              vote.user = user._id;
 
               return vote;
             });

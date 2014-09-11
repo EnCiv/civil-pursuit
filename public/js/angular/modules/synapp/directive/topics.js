@@ -1,21 +1,21 @@
-// ----- Angular directive $('.synapp-sign') ---------------------------------------------------  //
-/*
- *  @abstract Angular directive for all elements with class name "synapp-sign"
- *  @return   Object directive
- *  @param    Object TopicFactory
- */
-// ---------------------------------------------------------------------------------------------  //
-module.exports = function (TopicFactory, EvaluationFactory, SignFactory) { // ----- uses factory/Sign.js ------------------------  //
+// .synapp-topics
+
+module.exports = function (TopicFactory, EvaluationFactory, SignFactory) {
+
   return {
-    // ---- Restrict directive to class --------------------------------------------------------  //
+
     restrict: 'C',
-    // ---- Link function ----------------------------------------------------------------------  //
+
     link: function ($scope) {
       $scope.selectedTopic =  'none';
+
+      // select a topic
 
       $scope.selectMeAsTopic = function (id) {
         $scope.selectedTopic = id;
       };
+
+      // Create a new evaluation and take user there
 
       $scope.evaluate = function (topicSlug) {
         TopicFactory.findBySlug(topicSlug)
@@ -26,23 +26,25 @@ module.exports = function (TopicFactory, EvaluationFactory, SignFactory) { // --
 
               .success(function (user) {
                 EvaluationFactory.create({
-                  topic:    topic.found._id,
-                  user:     user.found._id
+                  topic:    topic._id,
+                  user:     user._id
                 })
 
-                  .success(function (data) {
-                    location.href = '/evaluate/' + data.created._id;
+                  .success(function (created) {
+                    location.href = '/evaluate/' + created._id;
                   });
               });
           });
       };
 
+      // Get topics
+
       TopicFactory.find()
         .error(function (error) {
           console.error(error);
         })
-        .success(function (data) {
-          $scope.topics = data.found;
+        .success(function (topics) {
+          $scope.topics = topics;
         });
     }
   };

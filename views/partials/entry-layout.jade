@@ -1,0 +1,29 @@
+.row
+  .col-sm-4
+    image.img-responsive.default-topic-image(
+      ng-src    =   '/images/topics/{{topic.image}}'
+      ng-hide   =   'entry.image')
+
+    image.img-responsive(
+      ng-src    =   'data:image/png;base64,{{entry.image}}'
+      ng-show   =   'entry.image')
+
+  .col-sm-8
+    h4
+      a(ng-bind='entry.title || entry.url')
+
+.row
+  .col-xs-12
+    h2(ng-bind='entry.subject')
+
+.row
+  .col-xs-12
+    p(ng-bind='entry.description')
+
+.row
+  .col-xs-4
+    div(ng-repeat='criteria in criterias')
+      h4(ng-bind='criteria.name')
+      p(ng-bind='criteria.description')
+
+  .col-xs-8

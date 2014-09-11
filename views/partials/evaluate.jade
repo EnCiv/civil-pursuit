@@ -53,6 +53,8 @@
       ng-repeat   =   'criteria in criterias' 
       ng-show     =   pos + '.subject'
       )
+
+      // Criteria name and description
       
       h4
         span(
@@ -60,6 +62,8 @@
           data-toggle       =   "tooltip" 
           data-placement    =   "top" 
           title             =   "{{criteria.description}}")
+
+      // Slider
 
       input.slider(
         type            =   'text'

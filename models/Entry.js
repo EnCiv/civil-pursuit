@@ -45,8 +45,8 @@ var EntrySchema = new Schema({
   }
 });
 
-EntrySchema.pre('validate', function (next) {
-  if ( ! this.image ) {
+EntrySchema.pre('save', function (next) {
+  if ( ! this.image || this.image.length > 255 ) {
     return next();
   }
   var self = this;
@@ -59,5 +59,21 @@ EntrySchema.pre('validate', function (next) {
       next();
     });
 });
+
+EntrySchema.statics.updateById = function (id, entry, cb) {
+  var self = this;
+
+  self.findById(id, function (error, found) {
+    if ( error ) {
+      return cb(error);
+    }
+
+    for ( var field in entry ) {
+      found[field] = entry[field];
+    }
+
+    found.save(cb);
+  });
+};
 
 module.exports = mongoose.model('Entry', EntrySchema);

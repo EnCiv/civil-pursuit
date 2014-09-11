@@ -31,7 +31,7 @@
         //- Drop image box
 
         .drop-box(
-          ng-show                     =   'dropSupported'
+          ng-show                     =   'dropSupported && ! entry._id'
           ng-file-drop                =   'onFileSelect($files)'
           ng-file-drop-available      =   "dropSupported=true"
           ng-file-drag-over-class     =   "dragOverClass($event)"
@@ -43,8 +43,8 @@
 
         image.img-responsive(
           alt         =   'image'
-          ng-src      =   "{{dataUrls[0]}}"
-          ng-show     =   'dataUrls.length')
+          ng-src      =   "{{dataUrls[0] || 'data:image/png;base64,' + entry.image}}"
+          ng-show     =   'dataUrls.length || ( entry._id && entry.image )')
       
       .col-xs-8
 

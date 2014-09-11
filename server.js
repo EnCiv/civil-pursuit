@@ -106,11 +106,28 @@ domain.run(function () {
 
   require('monson')(app, require('mongoose'), 'MONGOHQ_URL');
 
+  /* ======== TOPIC ENTRIES  ======== */
+
+  app.get('/topics/:topic', function (req, res, next) {
+    res.render('pages/entries', {
+      topic: req.params.topic
+    });
+  });
+
   /* ======== CREATE  ======== */
 
   app.get('/topics/:topic/create', function (req, res, next) {
     res.render('pages/create', {
       topic: req.params.topic
+    });
+  });
+
+  /* ======== USER ENTRIES  ======== */
+
+  app.get('/topics/:topic/user', function (req, res, next) {
+    res.render('pages/feedback', {
+      topic: req.params.topic,
+      email: req.signedCookies.synuser ? req.signedCookies.synuser.email : ''
     });
   });
 
@@ -198,7 +215,7 @@ domain.run(function () {
 
   app.use(express.static(require('path').join(__dirname, 'public')));
 
-  /* ======== error  ======== */
+  /* ======== ERROR  ======== */
 
   app.use(require('./routes/error'));
 

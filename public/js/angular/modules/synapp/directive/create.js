@@ -1,3 +1,5 @@
+// .synapp-create
+
 module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFactory, $http) {
   return {
 
@@ -5,11 +7,13 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
 
     link: function ($scope, $elem, $attrs) {
 
+      // If entry attribute is defined, get entry
+
       if ( $attrs.entry ) {
         EntryFactory.findById($attrs.entry)
-          .success(function (data) {
-            $scope.topic = data.found.topic;
-            $scope.entry = data.found;
+          .success(function (entry) {
+            $scope.topic = entry.topic;
+            $scope.entry = entry;
           })
       }
 
@@ -60,93 +64,112 @@ module.exports = function (EntryFactory, TopicFactory, SignFactory, EvaluationFa
           return;
         }
 
-        // Fetch topic id by slug
+        // If entry has an _id, do a save
 
-        console.info('Topic', $scope.topic);
+        if ( $scope.entry._id ) {
 
-        TopicFactory
-          .findBySlug( $scope.topic )
+          // Update image if need be
+
+          if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
+            $scope.entry.image = $scope.uploadResult[0].path.split(/\//).pop();
+          }
+
+          // The update object
+
+          var update = $scope.entry;
+
+          // get rid of image if base64
+
+          if ( update.image.length > 255 ) {
+            delete update.image;
+          }
+
+          // Find entry by id and update it
+
+          EntryFactory.findByIdAndUpdate($scope.entry._id, update)
+
+            .success(function () {
+              
+              // Create new Evaluation
+
+              var evaluation = {
+                topic:  $scope.entry.topic,
+                user:   $scope.entry.user,
+                entry:  $scope.entry._id
+              };
+
+              // Create new evaluation
+
+              EvaluationFactory.create(evaluation)
+
+                .success(function (created) {
+
+                  // Take user to new Evaluation
+
+                  location.href = '/evaluate/' + created._id;
+                });
+            });
+        }
+
+        // Create entry
+
+        else {
           
-          .error(function (error) {
-            console.error('No such topic', $scope.topic);
-            $scope.alert = 'Sorry, an unexpected error has occurred. Please try again shortly!'
-          })
-          
-          .success(function (data) {
+          // Fetch topic id by slug
 
-            console.info('Topic found', $scope.topic);
+          TopicFactory.findBySlug( $scope.topic )
+            
+            .success(function (topic) {
 
-            var topic = data.found;
+              // Fetch user id by email
 
-            // Fetch user id by email
+              SignFactory
+                
+                .findByEmail( $scope.email )
 
-            console.info('User', $scope.email);
+                .success(function (user) {
 
-            SignFactory
-              .findByEmail( $scope.email )
+                  // Create new Entry
 
-              .error(function (error) {
-                console.error('User not found', $scope.email);
-              })
+                  var entry  = {
+                    subject:      $scope.form_create.subject.$modelValue,
+                    description:  $scope.form_create.description.$modelValue,
+                    user:         user._id,
+                    topic:        topic._id,
+                    image:        Array.isArray($scope.uploadResult) && $scope.uploadResult.length ?
+                                    $scope.uploadResult[0].path.split(/\//).pop() : null,
+                    title:        $scope.form_create.title.$modelValue,
+                    url:          $scope.form_create.url.$modelValue
+                  };
 
-              .success(function (data) {
+                  // Call factory
 
-                console.info('User found', $scope.email);
+                  EntryFactory.publish(entry)
 
-                var user = data.found;
+                    .success(function (created) {
 
-                var path = require('path');
+                      // Create new Evaluation
 
-                // Create new Entry
+                      var evaluation = {
+                        topic:  topic._id,
+                        user:   user._id,
+                        entry:  created._id
+                      };
 
-                var entry  = {
-                  subject:      $scope.form_create.subject.$modelValue,
-                  description:  $scope.form_create.description.$modelValue,
-                  user:         user._id,
-                  topic:        topic._id,
-                  image:        Array.isArray($scope.uploadResult) && $scope.uploadResult.length ?
-                                  path.basename($scope.uploadResult[0].path) : null,
-                  title:        $scope.form_create.title.$modelValue,
-                  url:          $scope.form_create.url.$modelValue
-                };
+                      // Call factory
 
-                console.info('New entry', entry);
+                      EvaluationFactory.create(evaluation)
 
-                EntryFactory.publish(entry)
+                        .success(function (created) {
 
-                  .error(function (error) {
-                    console.error('Could not create entry', entry);
-                  })
+                          // Take user to new Evaluation
 
-                  .success(function (data) {
-
-                    console.info('Entry created', entry);
-
-                    // Create new Evaluation
-
-                    var evaluation = {
-                      topic:  topic._id,
-                      user:   user._id,
-                      entry:  data.created._id
-                    };
-
-                    console.info('New evaluation');
-
-                    EvaluationFactory.create(evaluation)
-
-                      .error(function (error) {
-                        console.error('Could not create evaluation', evaluation, error);
-                      })
-                      
-                      .success(function (data) {
-
-                        // Take user to new Evaluation
-
-                        location.href = '/evaluate/' + data.created._id;
-                      });
-                  });
-              });
-          })
+                          location.href = '/evaluate/' + created._id;
+                        });
+                    });
+                });
+            })
+        }
       };
     }
   };

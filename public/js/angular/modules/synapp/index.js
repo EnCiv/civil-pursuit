@@ -37,7 +37,8 @@
       'synappCreate':         require('./directive/create'),
       'synappEvaluate':       require('./directive/evaluate'),
       'synappAlert':          require('./directive/alert'),
-      'synappSummary':        require('./directive/summary')
+      'synappSummary':        require('./directive/summary'),
+      'synappEntries':        require('./directive/entries')
     });
   
 })();
