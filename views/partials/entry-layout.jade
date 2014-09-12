@@ -10,7 +10,7 @@
 
   .col-sm-8
     h4
-      a(ng-bind='entry.title || entry.url')
+      a(ng-bind='entry.title || entry.url' ng-href='{{entry.url}}')
 
 .row
   .col-xs-12
@@ -23,11 +23,15 @@
 
 .row(ng-repeat='criteria in criterias')
   .col-xs-4
-    h4(ng-bind='criteria.name')
-    p(ng-bind='criteria.description')
+    h4(
+      ng-bind           =    'criteria.name'
+      data-toggle       =   "tooltip" 
+      data-placement    =   "top" 
+      title             =   "{{criteria.description}}")
 
   .col-xs-8
-    svg.chart(id='chart-{{entry._id}}-{{criteria._id}}')
+    svg.chart(id='chart-{{entry._id}}-{{criteria._id}}' ng-show='votes[entry._id][criteria._id]')
+    hr(ng-hide='votes[entry._id][criteria._id]')
 
 .row
   .col-xs-12
