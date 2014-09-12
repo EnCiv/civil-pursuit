@@ -98,6 +98,12 @@ domain.run(function () {
     next();
   });
 
+  /* ======== TOS  ======== */
+
+  app.get('/terms-of-service', function (req, res) {
+    res.render('pages/terms-of-service');
+  });
+
 
   /* ======== SIGN  ======== */
 

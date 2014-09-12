@@ -4194,6 +4194,9 @@ header .container {
 [role=main] {
   margin-top: 85px;
 }
+footer {
+  text-align: center;
+}
 /*
     ``````````````````````````````````````````````````````````````````````
     ## Sign
