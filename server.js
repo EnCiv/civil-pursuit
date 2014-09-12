@@ -29,11 +29,13 @@ domain.run(function () {
 
   /* ======== middlewares  ======== */
 
-  var cookieParser = require('cookie-parser');
+  var cookieParser  = require('cookie-parser');
 
-  var bodyParser = require('body-parser');
+  var bodyParser    = require('body-parser');
 
-  var multipart = require('connect-multiparty');
+  var multipart     = require('connect-multiparty');
+
+  var serveFavicon  = require('serve-favicon');
 
   /* ======== parsers  ======== */
 
@@ -97,6 +99,10 @@ domain.run(function () {
 
     next();
   });
+
+  /* ======== FAVICON  ======== */
+
+  app.use(serveFavicon(path.join(__dirname, 'public/images/favicon.png')));
 
   /* ======== TOS  ======== */
 
