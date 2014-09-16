@@ -3072,7 +3072,12 @@ module.exports = function ($scope, EntryFactory, VoteFactory, FeedbackFactory) {
   };
 
   $scope.finish = function () {
-    console.info('Evaluation done');
+    if ( $scope.evaluation.entry ) {
+      location.href = '/list/' + $scope.evaluation.topic.slug;
+    }
+    else {
+      location.href = '/list/' + $scope.evaluation.topic.slug + '/me';
+    }
   };
 };
 },{}],5:[function(require,module,exports){
