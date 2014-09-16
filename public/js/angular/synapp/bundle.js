@@ -3354,6 +3354,7 @@ module.exports = function (EntryFactory, UserFactory) {
         EntryFactory.findById($attr.entry)
 
           .success(function (entry) {
+            $scope.entryLoaded = true;
             $scope.entry = entry;
           });
       }

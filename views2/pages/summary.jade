@@ -4,7 +4,9 @@ block entry-image
   include ../partials/entry-image
 
 block page
-  .synapp-data-entries(data-entry=entry).synapp-util-import(data-import-email='email').synapp-data-criterias()
+  .synapp-data-entries(data-entry=entry
+    ).synapp-util-import(data-import-email='email'
+    ).synapp-data-criterias().synapp-data-topics(data-slug=topic)
 
     h4.text-muted.text-center(ng-hide='entryLoaded') Loading entry
 
