@@ -4,7 +4,7 @@ block entry-image
   include ../partials/entry-image
 
 block page
-  .synapp-data-entries(data-entry=entry).synapp-util-import(data-import-email='email')
+  .synapp-data-entries(data-entry=entry).synapp-util-import(data-import-email='email').synapp-data-criterias()
 
     h4.text-muted.text-center(ng-hide='entryLoaded') Loading entry
 
@@ -23,7 +23,7 @@ block page
 
       include ../partials/entry-promoted
 
-      .synapp-feedbacks(entry=entry)
+      .synapp-data-feedbacks(data-entry=entry)
         
         h3(data-ng-show='feedbacks') Feedbacks
         

@@ -4,7 +4,7 @@ module.exports = function () {
 
     link: function ($scope, $elem, $attr) {
 
-      $scope.enableSlider = function ($last) {
+      $scope.enableSlider = function ($last, current) {
 
         if ( $last ) {
 
@@ -15,6 +15,13 @@ module.exports = function () {
               return 'Current value: ' + value;
             }
           });
+
+          // Set value
+
+          $('input.slider')
+            .slider('setValue', 5);
+
+          current = 5;
 
           // On slide stop, update scope
           

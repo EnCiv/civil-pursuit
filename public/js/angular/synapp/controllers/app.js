@@ -11,4 +11,10 @@ module.exports = function ($scope) {
   $scope.viewEntrySummaryOnTouch = function (entryId) {
     location.href = '/summary/' + entryId;
   }
+
+  $scope.getPromoted = function (entry) {
+    if ( entry ) {
+      return (entry.promotions * 100 / entry.views).toFixed(2);
+    }
+  }
 };

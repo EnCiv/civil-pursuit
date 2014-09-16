@@ -37,7 +37,15 @@
 
     // Criteria factory
 
-    CriteriaFactory           :     require('./factories/Criteria')
+    CriteriaFactory           :     require('./factories/Criteria'),
+
+    // Vote factory
+
+    VoteFactory               :     require('./factories/Vote'),
+
+    // Feedback factory
+
+    FeedbackFactory           :     require('./factories/Feedback')
   
   });
 
@@ -50,7 +58,11 @@
 
     // criterias
 
-    synappDataCriterias       :      require('./directives/data/criterias')
+    synappDataCriterias       :      require('./directives/data/criterias'),
+
+    // feedbacks
+
+    synappDataFeedbacks       :      require('./directives/data/feedbacks')
   });
 
   // UTILITY DIRECTIVES
@@ -65,7 +77,11 @@
 
     // add a view to entry from evaluation
 
-    synappUtilAddEntryView    :       require('./directives/util/add-entry-view')
+    synappUtilAddEntryView    :       require('./directives/util/add-entry-view'),
+
+    // d3 charts
+
+    synappUtilCharts          :       require('./directives/util/charts')
   });
 
   // CONTROLLERS

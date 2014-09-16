@@ -2872,6 +2872,12 @@ module.exports = function ($scope) {
   $scope.viewEntrySummaryOnTouch = function (entryId) {
     location.href = '/summary/' + entryId;
   }
+
+  $scope.getPromoted = function (entry) {
+    if ( entry ) {
+      return (entry.promotions * 100 / entry.views).toFixed(2);
+    }
+  }
 };
 },{}],3:[function(require,module,exports){
 module.exports = function ($scope, EntryFactory, EvaluationFactory, UserFactory) {
@@ -2999,14 +3005,27 @@ module.exports = function ($scope, EntryFactory, EvaluationFactory, UserFactory)
   };
 };
 },{}],4:[function(require,module,exports){
-module.exports = function ($scope, EntryFactory) {
-  $scope.comparing = [0, 1];
+module.exports = function ($scope, EntryFactory, VoteFactory, FeedbackFactory) {
 
   $scope.votes = {};
+
+  $scope.feedbacks = {};
 
   $scope.continue = function () {
 
     var entries = $scope.evaluation.entries;
+
+    VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
+
+    console.log($scope.feedbacks);
+
+    if ( $scope.feedbacks[entries[0]._id] ) {
+      FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
+    }
+
+    if ( $scope.feedbacks[entries[1]._id] ) {
+      FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
+    }
 
     entries.splice(0, entries[1] ? 2 : 1);
 
@@ -3021,13 +3040,27 @@ module.exports = function ($scope, EntryFactory) {
 
     var entries = $scope.evaluation.entries;
 
+    console.log($scope);
+
     EntryFactory.promote(entries[index]._id);
 
     if ( index === 0 ) {
+      VoteFactory.add($scope.votes[entries[1]._id], entries[1]._id, $scope.email);
+
+      if ( $scope.feedbacks[entries[0]._id] ) {
+        FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
+      }
+
       entries.splice(1, 1);
     }
 
     else {
+      VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
+
+      if ( $scope.feedbacks[entries[0]._id] ) {
+        FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
+      }
+
       entries[0] = entries.splice(2, 1)[0];
 
       /*if ( typeof entries[0] === 'undefined' ) {
@@ -3376,6 +3409,22 @@ module.exports = function (EvaluationFactory) {
   };
 };
 },{}],10:[function(require,module,exports){
+module.exports = function (FeedbackFactory) {
+  return {
+    restrict: 'C',
+    link: function ($scope, $elem, $attr) {
+      FeedbackFactory.find({
+        entry: $attr.entry,
+        topic: $attr.topic,
+        user: $attr.email
+      })
+        .success(function (feedbacks) {
+          $scope.feedbacks = feedbacks;
+        });
+    }
+  };
+};
+},{}],11:[function(require,module,exports){
 // .synapp-topics
 
 module.exports = function (TopicFactory, EntryFactory) {
@@ -3431,7 +3480,7 @@ module.exports = function (TopicFactory, EntryFactory) {
     }
   };
 };
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function (EntryFactory) {
   return {
     restrict: 'C',
@@ -3443,7 +3492,89 @@ module.exports = function (EntryFactory) {
     }
   };
 };
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+module.exports = function () {
+  return {
+    restrict: 'C',
+
+    link: function ($scope, $elem, $attr) {
+
+      console.log('ready to party');
+
+      charts($attr.entry);
+
+      function charts (entryId) {
+
+        console.log($scope);
+
+        var votes = $scope.votes[entryId];
+
+        var data;
+
+        for ( var criteria in votes ) {
+          data = [];
+
+          for ( var value in votes[criteria].values ) {
+            data.push({
+              label: value,
+              value: votes[criteria].values[value] * 100 / votes[criteria].total
+            });
+          }
+
+          chart(data, entryId, criteria);
+        }
+      }
+
+      function chart (data, entryId, criteriaId) {
+        console.log('data chart', data);
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+          width = 300  - margin.left - margin.right,
+          height = 70 - margin.top - margin.bottom;
+
+        var x = d3.scale.ordinal()
+          .rangeRoundBands([0, width], .1);
+
+        var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+        var y = d3.scale.linear()
+          .range([height, 0]);
+
+        var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left");
+
+        var chart = d3.select("#chart-" + entryId + '-' + criteriaId)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        x.domain(data.map(function (d) {
+          return d.label;
+        }));
+
+        y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+        chart.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
+
+        chart.selectAll(".bar")
+            .data(data)
+          .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.label); })
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); })
+            .attr("width", x.rangeBand());
+      }
+    }
+  };
+};
+},{}],14:[function(require,module,exports){
 module.exports = function () {
   return {
     restrict: 'C',
@@ -3457,14 +3588,14 @@ module.exports = function () {
     }
   };
 };
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function () {
   return {
     restrict: 'C',
 
     link: function ($scope, $elem, $attr) {
 
-      $scope.enableSlider = function ($last) {
+      $scope.enableSlider = function ($last, current) {
 
         if ( $last ) {
 
@@ -3475,6 +3606,13 @@ module.exports = function () {
               return 'Current value: ' + value;
             }
           });
+
+          // Set value
+
+          $('input.slider')
+            .slider('setValue', 5);
+
+          current = 5;
 
           // On slide stop, update scope
           
@@ -3494,7 +3632,7 @@ module.exports = function () {
     }
   };
 };
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 //- .synapp-url2title
 
 module.exports = function ($http) {
@@ -3555,7 +3693,7 @@ module.exports = function ($http) {
   };
 };
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -3563,7 +3701,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function (query) {
@@ -3623,7 +3761,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     create: function (evaluation) {
@@ -3639,7 +3777,26 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+module.exports = function ($http) {
+  return {
+    create: function (entryId, userEmail, feedback) {
+      return $http({
+        method: 'PUT',
+        url: '/json/Feedback/statics/add/' + entryId + '/' + userEmail,
+        data: feedback,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8'
+        }
+      });
+    },
+
+    find: function (options) {
+      return $http.put('/json/Feedback/statics/get', options);
+    }
+  };
+};
+},{}],21:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -3655,7 +3812,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     signIn: function (creds) {
@@ -3671,7 +3828,37 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],20:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
+module.exports = function ($http) {
+  return {
+    create: function (vote) {
+      return $http.post('/json/Vote', vote);
+    },
+
+    findByEntries: function (entries) {
+
+      entries = entries.map(function (entry) {
+        if ( typeof entry === 'string' ) {
+          return entry;
+        }
+
+        return entry._id;
+      })
+
+      return $http.put('/json/Vote/statics/findByEntries', entries);
+    },
+
+    getAccumulation: function (entry) {
+      return $http.get('/json/Vote/statics/getAccumulation/' + entry);
+    },
+
+    add: function (votesByCriteria, entryId, userEmail) {
+      console.log('got', arguments);
+      return $http.post('/json/Vote/statics/add/' + entryId + '/' + userEmail, votesByCriteria);
+    }
+  };
+};
+},{}],24:[function(require,module,exports){
 module.exports = function () {
   return function (entries) {
 
@@ -3689,7 +3876,7 @@ module.exports = function () {
     return current;
   };
 };
-},{}],21:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function () {
   var moment = require('moment');
 
@@ -3703,7 +3890,7 @@ module.exports = function () {
     }
   };
 };
-},{"moment":1}],22:[function(require,module,exports){
+},{"moment":1}],26:[function(require,module,exports){
 module.exports = function () {
   return function (str) {
     if ( typeof str === 'string' ) {
@@ -3716,7 +3903,7 @@ module.exports = function () {
     }
   };
 };
-},{}],23:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ;(function () {
 
   // MODULE
@@ -3756,7 +3943,15 @@ module.exports = function () {
 
     // Criteria factory
 
-    CriteriaFactory           :     require('./factories/Criteria')
+    CriteriaFactory           :     require('./factories/Criteria'),
+
+    // Vote factory
+
+    VoteFactory               :     require('./factories/Vote'),
+
+    // Feedback factory
+
+    FeedbackFactory           :     require('./factories/Feedback')
   
   });
 
@@ -3769,7 +3964,11 @@ module.exports = function () {
 
     // criterias
 
-    synappDataCriterias       :      require('./directives/data/criterias')
+    synappDataCriterias       :      require('./directives/data/criterias'),
+
+    // feedbacks
+
+    synappDataFeedbacks       :      require('./directives/data/feedbacks')
   });
 
   // UTILITY DIRECTIVES
@@ -3784,7 +3983,11 @@ module.exports = function () {
 
     // add a view to entry from evaluation
 
-    synappUtilAddEntryView    :       require('./directives/util/add-entry-view')
+    synappUtilAddEntryView    :       require('./directives/util/add-entry-view'),
+
+    // d3 charts
+
+    synappUtilCharts          :       require('./directives/util/charts')
   });
 
   // CONTROLLERS
@@ -3808,4 +4011,4 @@ module.exports = function () {
   
 })();
 
-},{"./controllers/app":2,"./controllers/entry":3,"./controllers/evaluation":4,"./controllers/sign":5,"./controllers/upload":6,"./directives/data/criterias":7,"./directives/data/entries":8,"./directives/data/evaluations":9,"./directives/data/topics":10,"./directives/util/add-entry-view":11,"./directives/util/import":12,"./directives/util/sliders":13,"./directives/util/url-to-title":14,"./factories/Criteria":15,"./factories/Entry":16,"./factories/Evaluation":17,"./factories/Topic":18,"./factories/User":19,"./filters/currently-evaluated":20,"./filters/from-now":21,"./filters/shorten":22}]},{},[23])
+},{"./controllers/app":2,"./controllers/entry":3,"./controllers/evaluation":4,"./controllers/sign":5,"./controllers/upload":6,"./directives/data/criterias":7,"./directives/data/entries":8,"./directives/data/evaluations":9,"./directives/data/feedbacks":10,"./directives/data/topics":11,"./directives/util/add-entry-view":12,"./directives/util/charts":13,"./directives/util/import":14,"./directives/util/sliders":15,"./directives/util/url-to-title":16,"./factories/Criteria":17,"./factories/Entry":18,"./factories/Evaluation":19,"./factories/Feedback":20,"./factories/Topic":21,"./factories/User":22,"./factories/Vote":23,"./filters/currently-evaluated":24,"./filters/from-now":25,"./filters/shorten":26}]},{},[27])
