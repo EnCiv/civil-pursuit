@@ -17,7 +17,7 @@ block page
     h4.text-center.syn-load(ng-hide='entries || entries.length || ! entriesLoaded')
       span=noDataMessage
       span   
-      a(ng-href='/create/{{topic._id}}') Create one now?
+      a(ng-href='/create/' + topic) Create one now?
 
     div(ng-repeat='entry in entries')
       include ../partials/entry-list-view
