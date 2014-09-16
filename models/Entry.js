@@ -224,6 +224,47 @@ EntrySchema.statics.findByTopicSlug = function (slug, cb) {
   });
 };
 
+// GENERAL FIND
+// ============
+
+EntrySchema.statics.get = function (options, cb) {
+  var self = this;
+
+  var options = options || {};
+
+  var parallels = {};
+
+  if ( options['topic-slug'] ) {
+    parallels.topic = function (cb) {
+      Topic.findOne({ slug: options['topic-slug'] }, cb);
+    };
+  }
+
+  if ( options['user-email'] ) {
+    parallels.user = function (cb) {
+      User.findOne({ email: options['user-email'] }, cb);
+    };
+  }
+
+  require('async').parallel(parallels, function (error, results) {
+    if ( error ) {
+      return cb(error);
+    }
+
+    var query = {};
+
+    if ( results.topic ) {
+      query.topic = results.topic._id;
+    }
+
+    if ( results.user ) {
+      query.user = results.user._id;
+    }
+
+    self.find(query).sort({ promotions: -1, views: -1 }).exec(cb);
+  });
+};
+
 // EXPORT
 // ======
 

@@ -40,6 +40,10 @@ module.exports = function ($http) {
       return $http.post('/json/Entry/statics/add', entry);
     },
 
+    get: function (options) {
+      return $http.put('/json/Entry/statics/get', options);
+    },
+
     // Increment view
 
     view: function (entry) {

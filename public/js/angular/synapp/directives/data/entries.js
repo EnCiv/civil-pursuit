@@ -1,13 +1,17 @@
-module.exports = function (EntryFactory) {
+module.exports = function (EntryFactory, UserFactory) {
   return {
     restrict: 'C',
 
     link: function ($scope, $elem, $attr) {
 
-      // find entries by topic slug (such as in lists)
+      // Find many
 
-      if ( $attr.topicSlug ) {
-        EntryFactory.findByTopicSlug($attr.topicSlug)
+      if ( $attr.topicSlug || $attr.userEmail ) {
+
+        EntryFactory.get({
+          'topic-slug': $attr.topicSlug,
+          'user-email': $attr.userEmail
+        })
 
           .success(function (entries) {
             $scope.entries = entries;
