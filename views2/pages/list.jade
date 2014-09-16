@@ -9,7 +9,8 @@ block page
   - else
     - noDataMessage = 'There are no entries in this topic yet.'
 
-  .synapp-data-entries(data-topic-slug=topic data-user-email=( me ? email : ''))
+  .synapp-data-entries(data-topic-slug=topic data-user-email=( me ? email : '')
+    ).synapp-data-topics(data-slug=topic)
 
     h4.text-muted.text-center(ng-hide='entriesLoaded') Loading topic entries
 
