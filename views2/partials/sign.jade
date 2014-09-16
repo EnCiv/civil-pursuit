@@ -1,0 +1,50 @@
+//- EMAILS (SIGN BAR)
+    =================
+
+//- # Form
+
+form.form-inline.synapp-sign(
+    role                  =     'form'
+    data-ng-controller    =     'SignCtrl' 
+    data-ng-submit        =     'signIn()'
+    novalidate
+  )
+
+  //- Alert
+
+  include alert
+
+  //- # Email
+  
+  input.form-control(
+      type        =   'email' 
+      ng-model    =   'sign.email' 
+      placeholder =   'Email'
+    )
+
+  //- # Password
+  
+  input.form-control(
+      type          =   'password' 
+      placeholder   =   'Password' 
+      ng-model      =   'sign.password'
+    )
+
+  //- # Submit button
+
+  button.btn.btn-xs.btn-default Submit
+
+  //- # Spacing #TODO
+
+  p
+
+  //- # Confirm password
+  
+  input.form-control(
+      type          =   'password' 
+      placeholder   =   'Confirm password' 
+      ng-model      =   'sign.password_confirm' 
+      ng-show       =   'sign._up'
+    )
+
+hr

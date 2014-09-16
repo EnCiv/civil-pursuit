@@ -1,0 +1,13 @@
+extends ../layouts/master
+
+block page
+
+  .synapp-data-topics()
+
+    h4.text-muted.text-center(ng-hide='topicsLoaded') Loading topics
+
+    h4.text-center.syn-load(ng-hide='topics || topics.length || ! topicsLoaded')
+      span.text-danger No topics found.
+
+    div(ng-repeat='topic in topics')
+      include ../partials/topic-action

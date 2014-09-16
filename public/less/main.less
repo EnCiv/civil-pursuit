@@ -1,39 +1,28 @@
 .padding {
-  padding: 20px
+  padding: @synapp-padding
 }
 
 .padding-bottom {
-  padding-bottom: 20px
+  padding-bottom: @synapp-padding
 }
 
-// BUTTON
+.row-padding {
+  padding: 20px 0;
 
-.btn, input {
-  @media (max-width: 480px) {
-    font-size: 12px;
-  }
-
-  @media (min-width: 481px) and (max-width: 690px) {
-    font-size: 16px !important;
-  }
-
-  @media (min-width: 691px) {
-    font-size: 22px !important;
-  }
+  // @media (max-width)
 }
 
-a.btn {
-  background: #ddd;
-  color: #000;
+.pre-text {
+  white-space: pre-line;
+  text-align: justify;
 }
 
-a.btn-default {
-  background: #fff;
-  border: none
+.default-topic-image {
+	-webkit-filter: grayscale(100%);
+	-moz-filter: grayscale(100%);
+	filter: grayscale(100%);
 }
 
-// FORM
-
-textarea {
-  min-height: 120px;
-}
+/*[class^=col-] {
+  border: 1px solid red
+}*/

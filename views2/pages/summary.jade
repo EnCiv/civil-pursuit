@@ -1,0 +1,31 @@
+extends ../layouts/master
+
+block entry-image
+  include ../partials/entry-image
+
+block page
+  .synapp-data-entries(data-entry=entry).synapp-util-import(data-import-email='email')
+
+    h4.text-muted.text-center(ng-hide='entryLoaded') Loading entry
+
+    h4.text-center.syn-load(ng-hide='entry || entry.length || ! entryLoaded')
+      span.text-danger No topics found.
+
+    include ../partials/entry-grid
+
+    .row
+      .col-xs-12.padding.text-center(data-ng-hide='entry.views')
+        h4.text-warning This entry has not been evaluated yet
+
+    div(data-ng-show='entry.views')
+
+      include ../partials/entry-chart
+
+      include ../partials/entry-promoted
+
+      .synapp-feedbacks(entry=entry)
+        
+        h3(data-ng-show='feedbacks') Feedbacks
+        
+        div(data-ng-repeat='feedback in feedbacks')
+          include ../partials/entry-feedback

@@ -9,58 +9,133 @@ var Schema = mongoose.Schema;
 var Topic = require('./Topic');
 var User = require('./User');
 
+// SCHEMA
+// ======
+
 var EntrySchema = new Schema({
+
+  // the image body encoded in base64
+  
   "image": {
     "type": String
   },
+
+  // the URL title if any
   
   "title": {
     "type": String
   },
 
+  // the URL if any
+
   "url": {
     "type": String
   },
+
+  // the subject (required)
   
   "subject": {
     "type": String,
     "required": true
   },
+
+  // the description (required)
   
   "description": {
     "type": String,
     "required": true
   },
+
+  // the topic id (reference to Topic, required)
   
   "topic": {
     "type": Schema.Types.ObjectId,
     "ref": "Topic",
-    "required": true
+    "required": true,
+    "index": true
   },
+
+  // the user id (reference to User, required)
   
   "user": {
     "type": Schema.Types.ObjectId,
     "ref": "User",
-    "required": true
+    "required": true,
+    "index": true
   },
 
-  "promotions": Number,
+  // The number of times entry has been promoted
 
-  "views": Number
+  "promotions": {
+    "type": Number,
+    "index": true
+  },
+
+  // The number of times entry has been viewed
+
+  "views":  {
+    "type": Number,
+    "index": true
+  },
+
+  // When entry was created
+
+  "created": {
+    "type": Date
+  },
+
+  // When entry was last edited
+
+  "edited": {
+    "type": Date,
+    "default": Date.now
+  }
 });
+
+// PRE SAVE
+// ========
 
 EntrySchema.pre('save', function (next) {
 
   if ( this.isNew ) {
     this.promotions   = 0;
     this.views        = 0;
+    this.created      = Date.now();
   }
 
   if ( ! this.image || this.image.length > 255 ) {
     return next();
   }
+  
   var self = this;
-  require('fs').readFile(path.join('/tmp', this.image),
+
+/*  require('lwip').open(path.join(config.tmp, this.image), function(err, image){
+
+    if ( error ) {
+      return next(error);
+    }
+
+    var batch = image.batch();
+
+    var width = image.width();
+    var height = image.height();
+
+    if ( width > height ) {
+      batch.resize()
+    }
+
+  // check err...
+  // define a batch of manipulations and save to disk as JPEG:
+  image.batch()
+    .resize(120)
+    .writeFile('output.jpg', function(err){
+      // check err...
+      // done.
+    });
+
+  });*/
+
+  require('fs').readFile(path.join(config.tmp, this.image),
     function (error, data) {
       if ( error ) {
         return next(error);
@@ -69,6 +144,9 @@ EntrySchema.pre('save', function (next) {
       next();
     });
 });
+
+// UPDATE BY ID
+// ============
 
 EntrySchema.statics.updateById = function (id, entry, cb) {
   var self = this;
@@ -85,5 +163,68 @@ EntrySchema.statics.updateById = function (id, entry, cb) {
     found.save(cb);
   });
 };
+
+// SAVE FROM UI
+// ============
+
+EntrySchema.statics.add = function (entry, cb) {
+  var self = this;
+
+  require('async').parallel(
+    {
+      topic: function (cb) {
+        Topic.findOne({ slug: entry.topic }, cb);
+      },
+
+      user: function (cb) {
+        User.findOne({ email: entry.user }, cb);
+      }
+    },
+
+    function (error, results) {
+      if ( error ) {
+        return cb(error);
+      }
+
+      if ( ! results.topic ) {
+        return cb(new Error('Topic not found'));
+      }
+
+      if ( ! results.user ) {
+        return cb(new Error('User not found'));
+      }
+
+      entry.topic   = results.topic._id;
+      entry.user    = results.user._id;
+
+      console.log('adding entry', entry);
+
+      self.create(entry, cb);
+    });
+};
+
+// FIND USING TOPIC SLUG
+// =====================
+
+EntrySchema.statics.findByTopicSlug = function (slug, cb) {
+  var self = this;
+
+  Topic.findOne({ slug: slug }, function (error, topic) {
+    if ( error ) {
+      return cb(error);
+    }
+
+    if ( ! topic ) {
+      return cb(new Error('Topic not found'));
+    }
+
+    self.find({ topic: topic._id })
+      .sort({ promotions: -1, views: -1 })
+      .exec(cb);
+  });
+};
+
+// EXPORT
+// ======
 
 module.exports = mongoose.model('Entry', EntrySchema);

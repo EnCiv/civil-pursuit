@@ -1,0 +1,184 @@
+extends ../layouts/master
+
+//- ----------------------------------------------------------------------------
+    CEREMONY
+    ========
+//-
+
+//-
+    IMPORT BOOTSTRAP SLIDERS
+//-
+
+block prepend script-app
+  script(src='/bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js')
+
+//-
+    GET ENTRY IMAGE MODULE
+//-
+
+block entry-image
+  include ../partials/entry-image
+
+//- ----------------------------------------------------------------------------
+    LET'S GO
+    ========
+//-
+
+block page
+
+  // Evaluation
+  
+  //- Evaluation Data Directive + Criterias Data Directive
+  
+  section(
+    data-ng-controller    =   'EvaluationCtrl'
+  ).synapp-data-evaluations(
+    data-evaluation       =   evaluation
+  ).synapp-data-criterias()
+
+    //- IF NO EVALUATION IN SCOPE ...
+
+    // If no evaluation in scope
+
+    .row(
+      data-ng-hide        =   'evaluation'
+    )
+      .col-xs-12
+
+        //- ... THEN DISPLAY LOADING EVALUATION
+        
+        h4.text-muted.text-center(
+          data-ng-hide    =   'evaluationLoaded'
+        ) Loading evaluation
+
+    //- IF NO ENTRIES IN TOPIC ...
+
+    // If no entries in topic
+
+    .row
+      .col-xs-12
+        
+        h4.text-center.syn-load(
+          data-ng-hide      =   'evaluation.entries || evaluation.entries.length || ! evaluationLoaded'
+        )
+          
+          //- ... THEN SAY THERE IS NOTHING TO EVALUATE ...
+
+          span.text-danger This topic has no entry yet - nothing to evaluate!
+
+          //- ... AND GIVE USER OPTION TO CREATE FIRST TOPIC ENTRY
+
+          div.padding
+            a(
+              data-ng-href  =   '/create/{{evaluation.topic.slug}}'
+              data-ng-show  =   'evaluation.topic'
+            ) Create entry
+
+    //- FOR EACH ENTRIES ...
+
+    // For each evaluation entry
+
+    //- ADD VIEW
+
+    .synapp-util-add-entry-view(
+      data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+      data-entry          =   '{{entry._id}}'
+    )
+
+    //- NORMAL SCREEN
+
+    section.hidden-xs
+      .row
+        .col-sm-6(
+          data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+        )
+          .row
+            .col-sm-6
+              include ../partials/entry-image
+
+            .col-sm-6
+              include ../partials/entry-title
+
+      .row
+        .col-sm-6(
+          data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+        )
+          h2(data-ng-bind='entry.subject')
+
+      .row.padding-bottom
+        .col-sm-6(
+          data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+        )
+          include ../partials/entry-description
+
+      .row.padding-bottom
+        .col-sm-6(
+          data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+        )
+          include ../partials/entry-sliders
+
+      .row.padding-bottom
+        .col-sm-6(
+          data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+        )
+          include ../partials/entry-feedback-edit
+
+      .row.padding-bottom
+        .col-sm-6(
+          data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+        )
+          include ../partials/entry-edit-and-go-again
+
+      .row.padding-bottom
+        .col-sm-6(
+          data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+        )
+          include ../partials/entry-promote
+
+    //- SMALL SCREEN
+
+    section.hidden-sm.hidden-md.hidden-lg(
+      data-ng-repeat      =   'entry in evaluation.entries | currentlyEvaluated'
+    )
+
+      .row
+        .col-xs-12
+          include ../partials/entry-image
+
+      .row
+        .col-xs-12
+          include ../partials/entry-title
+
+      .row
+        .col-xs-12
+          h2(ng-bind='entry.subject')
+
+      .row.padding-bottom
+        .col-xs-12
+          include ../partials/entry-description
+
+      .row.padding-bottom
+        .col-xs-12
+          include ../partials/entry-sliders
+
+      .row.padding-bottom
+        .col-xs-12
+          include ../partials/entry-feedback-edit
+
+      .row.padding-bottom
+        .col-xs-12
+          include ../partials/entry-edit-and-go-again
+
+      .row.padding-bottom
+        .col-xs-12
+          include ../partials/entry-promote
+
+
+
+    //- SHOW CONTINUE BUTTON
+
+    // Continue
+
+    .row.row-padding
+      .col-xs-12
+        include ../partials/evaluation-continue-button

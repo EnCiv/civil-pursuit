@@ -1,0 +1,69 @@
+//- SCRIPTS
+    =======
+
+    All the bottom script tags
+
+script.
+  var serie = {
+    callbacks: function () {
+      // get arguments list in an array
+
+      var callbacks = Array.prototype.slice.call(arguments);
+
+      // if list empty, exit
+
+      if ( ! callbacks.length ) {
+        return;
+      }
+
+      // get first callback in list
+
+      var callback = callbacks.shift();
+
+      // if callback not a function, exit
+
+      if ( typeof callback !== 'function' ) {
+        return;
+      }
+
+      // execute callback
+
+      callback(function (error) {
+
+        if ( error ) {
+          throw error;
+        }
+
+        // if more callbacks, go again
+
+        if ( callbacks.length ) {
+          serie.callbacks.apply(this, callbacks);
+        }
+      }.bind(this));
+    }
+  };
+
+//- # A space to attach angular modules
+block script-angular-modules
+  script.
+    var angular_deps = [];
+
+//- # jQuery
+
+block script-jquery
+  script(src='/bower_components/jquery/dist/jquery.min.js')
+
+//- # Bootstrap #TODO create a uglify file
+
+block script-bootstrap
+  script(src='/bower_components/bootstrap/js/tooltip.js')
+
+//- # Angular
+
+block script-angular
+  script(src='/bower_components/angular/angular.min.js')
+
+ //- # synapp
+
+block script-app
+  script(src='/js/angular/synapp/bundle.js')

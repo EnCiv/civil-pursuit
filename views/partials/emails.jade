@@ -1,29 +1,53 @@
-form.row.synapp-sign.form-inline(role='form' novalidate ng-submit='sign.in()')
+//- EMAILS (SIGN BAR)
+    =================
 
-  //- Alert
+//- # Form
+
+form.form-inline.synapp-sign(
+    email       =   'email'
+    role        =   'form' 
+    ng-submit   =   'sign.in()'
+    novalidate
+  )
+
+  //- # Alert
 
   .alert.alert-warning.alert-dismissible(role='alert' ng-show='sign.error')
     p
       strong Warning! 
       span(ng-bind='sign.error')
 
-  //- Email
-  //.col-xs-5
-  input.form-control(type='email' ng-model='sign.email'  placeholder='Email')
+  //- # Email
+  
+  input.form-control(
+      type        =   'email' 
+      ng-model    =   'sign.email' 
+      placeholder =   'Email'
+    )
 
-  //- Passwords
-  //.col-xs-5
-  //- First password
-  input.form-control(type='password' placeholder='Password' ng-model='sign.password')
+  //- # Password
+  
+  input.form-control(
+      type          =   'password' 
+      placeholder   =   'Password' 
+      ng-model      =   'sign.password'
+    )
+
+  //- # Submit button
 
   button.btn.btn-xs.btn-default Submit
 
+  //- # Spacing #TODO
+
   p
-  //- Confirm password
-  input.form-control(type='password' placeholder='Confirm password' ng-model='sign.password_confirm' ng-show='sign._up')
 
-  //- Submit
-
+  //- # Confirm password
   
+  input.form-control(
+      type          =   'password' 
+      placeholder   =   'Confirm password' 
+      ng-model      =   'sign.password_confirm' 
+      ng-show       =   'sign._up'
+    )
 
 hr

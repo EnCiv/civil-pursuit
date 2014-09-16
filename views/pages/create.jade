@@ -1,4 +1,9 @@
-extends ../layouts/layout
+//- CREATE PAGE
+    ===========
+
+//- # Master
+
+extends ../layouts/entry
 
 block prepend script-angular
   script(src='/bower_components/ng-file-upload-shim/angular-file-upload-shim.js')
@@ -10,4 +15,4 @@ block append script-angular
   script(src='/js/angular/modules/autogrow/index.js')
 
 block page
-  include ../partials/create
+  include ../layouts/create

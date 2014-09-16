@@ -1,15 +1,29 @@
 #!/usr/bin/env node
 
-// process title
+// this script will self destruct in 30 seconds //
+
+/* CEREMONY */
+/* ------------------------------------------------------------------------ */
+
+/*  
+  PROCESS TITLE
+*/
 process.title = 'synapphtml5';
 
-var format = require('util').format;
+/*  
+  MODULES
+*/
 
-var path = require('path');
+var format    = require('util').format;
 
-var Log = require('String-alert')({ prefix: 'synapp' });
+var path      = require('path');
 
-var domain = require('domain').create();
+var Log       = require('String-alert')({ prefix: 'synapp' });
+
+var domain    = require('domain').create();
+
+/* DOMAIN */
+/* ------------------------------------------------------------------------ */
 
 domain.on('error', function (error) {
   Log.ERROR(error.message, error.format());
@@ -17,17 +31,26 @@ domain.on('error', function (error) {
 
 domain.run(function () {
 
-  /* ======== config ======== */
+  /* CONFIG */
+  /* ------------------------------------------------------------------------ */
+
+  /*  
+    SYNAPP
+  */
 
   var synapp = require('./config/config.json');
 
-  /* ======== start express app ======== */
+  /*  
+    EXPRESS
+  */
 
   var express = require('express');
 
   var app = express();
 
-  /* ======== middlewares  ======== */
+  /*  
+    MIDDLEWARES
+  */
 
   var cookieParser  = require('cookie-parser');
 
@@ -37,24 +60,44 @@ domain.run(function () {
 
   var serveFavicon  = require('serve-favicon');
 
-  /* ======== parsers  ======== */
+  /*  
+    PARSERS
+  */
 
   // parse application/x-www-form-urlencoded
+  
   app.use(bodyParser.urlencoded({ extended: false }));
 
   // parse application/json
+  
   app.use(bodyParser.json());
 
   // multi-parts
+  
   app.use(multipart({
     uploadDir: synapp.tmp
-}));
+  }));
 
-  /* ======== app config  ======== */
+  // accept plain text
+
+  app.use(function(req, res, next){
+  if (req.is('text/*')) {
+    req.body = '';
+    req.setEncoding('utf8');
+    req.on('data', function(chunk){ req.body += chunk });
+    req.on('end', next);
+  } else {
+    next();
+  }
+});
+
+  /*  
+    SETTINGS
+  */
 
   var config = {
     'view engine'   :   'jade',
-    'views'         :   'views',
+    'views'         :   'views2',
     'port'          :   process.env.PORT || 3012
   };
 
@@ -62,27 +105,43 @@ domain.run(function () {
     app.set(middleware, config[middleware]);
   }
 
+  /*  
+    APP LOCALS
+  */
+
   app.locals.pretty = true;
 
-  app.locals.started = false;
+  app.locals.synapp = synapp;
 
-  /* ======== cookies & session  ======== */
+  app.locals.back = '/';
 
-  app.locals.secret = 'hYGhdj729k2kdmsñw9hsy6GGW';
+  /*  
+    COOKIES
+  */
+
+  app.locals.secret = synapp.secret;
 
   app.use(cookieParser(app.locals.secret));
 
-  /* ======== response locals  ======== */
+  /*  
+    PRE
+  */
 
   app.use(function (req, res, next) {
     res.locals.req = req;
 
     res.locals.isSignedIn = req.signedCookies.synuser;
 
+    if ( res.locals.isSignedIn ) {
+      res.locals.email = req.signedCookies.synuser.email;
+    }
+
     next();
   });
 
-  /* ======== LOGGER  ======== */
+  /*  
+    LOG
+  */
 
   app.use(function (req, res, next) {
     var LOG = 'INFO';
@@ -100,67 +159,111 @@ domain.run(function () {
     next();
   });
 
-  /* ======== FAVICON  ======== */
+  /*  
+    FAVICON
+  */
 
   app.use(serveFavicon(path.join(__dirname, 'public/images/favicon.png')));
 
-  /* ======== TOS  ======== */
+  /*  
+    ROUTERS
+  */
+
+  var mustBeIn = require('./routes/must-be-in');
+
+  /* ENTRY POINTS */
+  /* ------------------------------------------------------------------------ */
+
+  /*  
+    TERMS OF SERVICE
+  */
 
   app.get('/terms-of-service', function (req, res) {
     res.render('pages/terms-of-service');
   });
 
+  /*  
+    SCREEN 1: HOME
+  */
 
-  /* ======== SIGN  ======== */
-
-  app.all('/sign/:dir?', require('./routes/sign'));
-
-  /* ======== API  ======== */
-
-  require('monson')(app, require('mongoose'), 'MONGOHQ_URL');
-
-  /* ======== TOPIC ENTRIES  ======== */
-
-  app.get('/topics/:topic', function (req, res, next) {
-    res.render('pages/entries', {
-      topic: req.params.topic
-    });
+  app.get('/', function (req, res) {
+    res.render('pages/topics');
   });
 
-  /* ======== USER ENTRIES  ======== */
+  /*  
+    SCREEN 2: CREATE
+  */
 
-  app.get('/topics/:topic/user', function (req, res, next) {
-    res.render('pages/entries', {
-      topic: req.params.topic,
-      email: req.signedCookies.synuser ? req.signedCookies.synuser.email : ''
+  app.get('/create/:topic',
+
+    mustBeIn,
+
+    function (req, res) {
+      res.render('pages/create', {
+        page: 'create',
+        topic: req.params.topic
+      });
     });
+
+  /*  
+    SCREEN 3: EVALUATE
+  */
+
+  app.get('/evaluate/:evaluation',
+
+    mustBeIn,
+
+    function (req, res) {
+      res.render('pages/evaluate', {
+        evaluation: req.params.evaluation
+      });
   });
 
-  /* ======== CREATE  ======== */
+  /*  
+    SCREEN 4: SUMMARY
+  */
 
-  app.get('/topics/:topic/create', function (req, res, next) {
-    res.render('pages/create', {
-      topic: req.params.topic
+  app.get('/summary/:entry',
+
+    mustBeIn,
+
+    function (req, res) {
+      res.render('pages/summary', {
+        entry: req.params.entry,
+        back: req.get('Referer')
+      });
     });
-  });
 
-  /* ======== EVALUATE  ======== */
+  /*  
+    SCREEN 5: MY ENTRIES
+  */
 
-  app.get('/evaluate/:evaluation?', function (req, res, next) {
-    res.render('pages/evaluate', {
-      evaluation: req.params.evaluation
+  app.get('/list/:topic/me',
+
+    mustBeIn,
+
+    function (req, res) {
+      res.render('pages/list', {
+        topic: req.params.topic,
+        me: true
+      });  
     });
-  });
 
-  /* ======== SUMMARY  ======== */
+  /*  
+    SCREEN 6: ALL ENTRIES
+  */
 
-  app.get('/summary/:entry?', function (req, res, next) {
-    res.render('pages/summary', {
-      entry: req.params.entry
+  app.get('/list/:topic',
+
+    function (req, res) {
+      res.render('pages/list', {
+        topic: req.params.topic
+      });  
     });
-  });
 
-   /* ======== EDIT  ======== */
+  /*  
+    EDIT AND GO AGAIN
+  */
 
   app.get('/edit/:entry?', function (req, res, next) {
     res.render('pages/create', {
@@ -168,77 +271,127 @@ domain.run(function () {
     });
   });
 
-  /* ======== ENTRIES  ======== */
+  /* ACCESS POINTS */
+  /* ------------------------------------------------------------------------ */
 
-  app.get('/entries', function (req, res, next) {
-    var Entry = require('./models/Entry');
-    var Topic = require('./models/Topic');
+  /*
+    CREATE EVALUATION
+  */
 
-    Topic.find(function (error, topics) {
-      if ( error ) {
-        return next(error);
-      }
+  app.get('/evaluate/topic/:topic',
 
-      require('async').parallel(
-        topics.map(function (topic) {
-          return function (cb) {
-            Entry
-              .find({ topic: this._id })
-              .exec(cb);
-          }.bind(topic);
-        }),
+    mustBeIn,
 
-        function (error, results) {
-          if ( error ) {
-            return next(error);
-          }
-          res.type('html');
-          topics.forEach(function (topic, index) {
-            res.write('<h2>' + topic.heading + '</h2>');
+    function (req, res, next) {
 
-            results[index].forEach(function (entry) {
-              res.write('<li><a href="/summary/' + entry._id + '">' + entry.subject + '</a> [<a href="/edit/' + entry._id + '">Edit</a>]</li>');
+      require('async').parallel({
+        
+        topic: function (cb) {
+          
+          require('./models/Topic')
+
+            .findOne({ slug: req.params.topic })
+
+            .exec(cb);
+        },
+
+        user: function (cb) {
+          
+          require('./models/User')
+
+            .findOne({ email: res.locals.email })
+
+            .exec(cb);
+        }
+      },
+
+      function (error, found) {
+        if ( error ) {
+          return next(error);
+        }
+
+        if ( ! found.topic ) {
+          return next(new Error('Topic not found'));
+        }
+
+        if ( ! found.user ) {
+          return next(new Error('User not found'));
+        }
+
+        require('./models/Evaluation')
+          .create({ user: found.user._id, topic: found.topic._id },
+            function (error, created) {
+              if ( error ) {
+                return next(error);
+              }
+
+              res.redirect('/evaluate/' + created._id);
             });
-          });
-
-          res.end();
-        });
+      });
     });
-  });
 
-  /* ======== UPLOAD  ======== */
+  /*  
+    SIGN (IN|UP|OUT)
+  */
+
+  app.all('/sign/:dir?', require('./routes/sign'));
+
+  /*  
+    MONSON API
+  */
+
+  require('monson')(app, require('mongoose'), 'MONGOHQ_URL');
+
+  /*  
+    UPLOAD IMAGE
+  */
 
   app.all('/tools/upload', require('./routes/upload'));
 
-  /* ======== GET TITLE  ======== */
+  /*  
+    GET URL TITLE
+  */
 
   app.post('/tools/get-title', require('./routes/get-title'));
 
-  /* ======== HOME  ======== */
 
-  app.all('/', function (req, res) {
-    res.render('pages/home');
-  });
+  /*  
+    DUMP
+  */
 
-  /* ======== BACK OFFICE / DUMP  ======== */
+  app.all('/tools/dump', require('./routes/dump'));
 
-  app.all('/back/dump', require('./routes/dump'));
+  /* MIDDLEWARES */
+  /* ------------------------------------------------------------------------ */
 
-  /* ======== static router  ======== */
+  /*  
+    STATIC ROUTER
+  */
 
   app.use(express.static(require('path').join(__dirname, 'public')));
 
-  /* ======== ERROR  ======== */
+  /*  
+    ERROR
+  */
 
   app.use(require('./routes/error'));
 
-  /* ======== start server  ======== */
+  /* SERVER */
+  /* ------------------------------------------------------------------------ */
 
   var server = require('http').createServer(app);
+
+  /*  
+    LISTEN
+  */
 
   server.listen(app.get('port'), function () {
     Log.OK(format('Listening on port %d', app.get('port')));
   });
+
+  /*  
+    ERROR
+  */
 
   server.on('error', function (error) {
     Log.ERROR(error.format());

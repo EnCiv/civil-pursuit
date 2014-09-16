@@ -1,0 +1,37 @@
+// Entry (grid view)
+
+.row.row-padding
+  .col-xs-4
+
+    // Entry image
+
+    block entry-image
+
+  .col-xs-8
+
+    // Entry URL / Title
+
+    block entry-title
+      include entry-title
+
+// Entry subject
+
+.row.row-padding
+  .col-xs-12
+    block entry-subject
+      h2(ng-bind='entry.subject')
+
+// Entry description
+
+.row.row-padding
+  .col-xs-12
+    block entry-description
+      div.pre-text.entry-description(ng-bind='entry.description')
+
+// Entry creation
+
+.row.row-padding
+  .col-xs-12
+    block entry-created
+      h5.text-muted Created 
+        span(ng-bind='entry.created | fromNow')

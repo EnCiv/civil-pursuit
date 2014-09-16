@@ -1,0 +1,51 @@
+//- MASTER
+    ======
+
+doctype html
+
+//- # HTML head
+
+block meta
+  include ../partials/head
+
+//- # Meta wrapper
+
+// Page container
+
+section.container(
+  data-ng-app         =   'synapp' 
+  data-ng-controller  =   'AppCtrl'
+).synapp-import(
+  data-import-email   =    email
+)
+
+  //- # Top Bar
+  
+  include ../partials/top
+
+  //- # Main wrapper
+
+  // Main container
+  
+  section(role='main')
+
+    //- # Emails
+
+    - if ( !! isSignedIn === false )
+      include ../partials/sign
+
+    //- # Page wrapper
+    
+    .row
+      .col-xs-12
+        block page
+
+//- # Footer
+
+block footer
+  include ../partials/footer
+
+//- Scripts
+
+block scripts
+  include ../partials/scripts

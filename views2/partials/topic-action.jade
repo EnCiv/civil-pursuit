@@ -1,0 +1,46 @@
+.row.padding-bottom(
+  data-ng-click       =     'selectMeAsTopic(topic._id)'
+)
+      
+  .col-xs-4.image
+    
+    //-
+        TOPIC IMAGE
+    //-
+
+    img.img-responsive.center-block(
+      alt             =     '{{topic.heading}}' 
+      data-ng-src     =     '/images/topics/{{topic.image}}'
+    )
+  
+  .col-xs-8
+
+    //-
+        TOPIC TITLE
+    //-
+
+    h4.topic-title(
+      data-ng-bind    =     'topic.heading'
+    )
+
+    //-
+        TOPIC DESCRIPTION
+    //-
+    
+    p(ng-bind='topic.description')
+  
+.clearfix.text-center.padding(ng-hide='selectedTopic !== topic._id')
+  .row
+
+    - if ( !! isSignedIn )
+      .col-xs-12.col-sm-6.col-md-3.padding-bottom
+        a.btn.btn-block(ng-href='/create/{{topic.slug}}') Create
+    
+      .col-xs-12.col-sm-6.col-md-3.padding-bottom
+        a.btn.btn-block(ng-href='/evaluate/topic/{{topic.slug}}') Evaluate
+    
+      .col-xs-12.col-sm-6.col-md-3.padding-bottom
+        a.btn.btn-block(ng-href='/list/{{topic.slug}}/me') My Feedback
+  
+    .col-xs-12.col-sm-6.col-md-3.padding-bottom
+      a.btn.btn-block(ng-href='/list/{{topic.slug}}') Results

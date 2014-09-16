@@ -1,0 +1,105 @@
+extends ../layouts/master
+
+//-
+    DROP IMAGE
+//-
+
+block append script-angular-modules
+  script.
+    angular_deps.push('angularFileUpload')
+
+block prepend script-angular
+  script(src='/bower_components/ng-file-upload-shim/angular-file-upload-shim.js')
+
+block append script-angular
+  script(src='/bower_components/ng-file-upload/angular-file-upload.js')
+
+block entry-image
+  include ../partials/drop-image
+
+//-
+    TITLE/URL
+//-
+
+block entry-title
+  include ../partials/entry-title-edit
+
+//-
+    SUBJECT
+//-
+
+block entry-subject
+  include ../partials/entry-subject-edit
+
+//-
+    DESCRIPTION
+//-
+
+block append script-angular-modules
+  script.
+    angular_deps.push('autoGrow')
+
+block append script-angular
+  script(src='/js/angular/autogrow/index.js')
+
+block entry-description
+  include ../partials/entry-description-edit
+
+//-
+    MOMENT
+//-
+
+block entry-created
+
+//-
+    PAGE
+//-
+
+block page
+
+  //-
+      FORM
+  //-
+  section.synapp-util-import(
+    data-import-email     =   email
+    data-import-topic     =   topic
+    data-ng-controller    =   'UploadCtrl'
+  )
+
+    form(
+
+      name                =   "form_create"
+      method              =   'POST'
+      role                =   'form'
+      novalidate
+
+      data-ng-controller  =   'EntryCtrl'
+      data-ng-submit      =   'saveEntry()'
+      
+    )
+
+    
+
+      //- Hidden fields
+
+      input(type='hidden' ng-model='email')
+      input(type='hidden' ng-model='topic')
+
+      //- Alert
+
+      include ../partials/alert
+
+      //- If edit
+
+      .synapp-data-entries(data-entry=entry)
+
+      - if ( entry )
+        .synapp-data-topics(data-entry=entry)
+  
+      //- Entry grid
+
+      include ../partials/entry-grid
+
+      //- Buttons
+
+      include ../partials/entry-edit-buttons

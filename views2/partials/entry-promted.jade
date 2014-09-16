@@ -1,0 +1,4 @@
+.row
+  .col-xs-12
+    .progress
+      .progress-bar.progress-bar-striped.active(role="progressbar" aria-valuenow="{{entry.promoted}}" aria-valuemin="0" aria-valuemax="100" style="width: {{entry.promoted}}%;" ng-bind='entry.promoted + "%"' ng-class='{ "progress-bar-danger": entry.promoted < 25, "progress-bar-warning": entry.promoted < 50, "progress-bar-info": entry.promoted < 75, "progress-bar-success": entry.promoted > 75}')

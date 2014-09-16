@@ -5,8 +5,18 @@ var Schema = mongoose.Schema;
 var TopicSchema = new Schema({
  "description": String,
  "image": String,
- "heading": String,
- "slug": String
+ "heading": {
+ 	"type": String,
+ 	"index": {
+ 		"unique": true
+ 	}
+ },
+ "slug": {
+ 	"type": String,
+ 	"index": {
+ 		"unique": true
+ 	}
+ }
 });
 
 function slugify (str) {

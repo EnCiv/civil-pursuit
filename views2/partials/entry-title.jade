@@ -1,0 +1,7 @@
+h4.entry-title
+  a(
+    target          =   '_blank'
+    title           =   '{{entry.url}}'
+    data-ng-href    =   '{{entry.url}}'
+    data-ng-bind    =   '(entry.title || entry.url) | filter:shorten'
+    )

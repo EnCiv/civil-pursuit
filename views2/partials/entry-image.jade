@@ -1,0 +1,9 @@
+.row
+  .col-xs-12
+    image.img-responsive.default-topic-image(
+      data-ng-src    =   '/images/topics/{{topic.image || "_default.png"}}'
+      data-ng-hide   =   'entry.image || ! entry.subject || dataUrls.length')
+
+    image.img-responsive(
+      data-ng-src    =   'data:image/png;base64,{{entry.image}}'
+      data-ng-show   =   'entry.image && ! dataUrls.length')
