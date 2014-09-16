@@ -3609,7 +3609,7 @@ module.exports = function () {
 
           $("input.slider").slider({
             formatter: function(value) {
-              return 'Current value: ' + value;
+              return '';
             }
           });
 

@@ -10,11 +10,7 @@ module.exports = function () {
 
           // Tooltip
 
-          $("input.slider").slider({
-            formatter: function(value) {
-              return 'Current value: ' + value;
-            }
-          });
+          $("input.slider").slider();
 
           // Set value
 
