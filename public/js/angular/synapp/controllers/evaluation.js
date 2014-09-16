@@ -38,6 +38,6 @@ module.exports = function ($scope, EntryFactory) {
   };
 
   $scope.finish = function () {
-    document.write('suckers');
+    console.info('Evaluation done');
   };
 };
