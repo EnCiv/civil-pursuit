@@ -3539,7 +3539,7 @@ module.exports = function () {
       $attr.$observe('entry', function (entryId) {
         if ( entryId && ! done ) {
 
-          $scope.showChart = $scope.$parent.votes[entryId][$scope.criteria._id];
+          // $scope.showChart = $scope.$parent.votes[entryId][$scope.criteria._id];
 
           done = true;
 
