@@ -94,8 +94,6 @@ VoteSchema.statics.getAccumulation = function (entry, cb) {
 VoteSchema.statics.add = function (votesByCriteria, entryId, userEmail, cb) {
 
   try {
-    console.log(arguments);
-
     votesByCriteria.should.be.an.Object;
 
     entryId.should.be.a.String;
