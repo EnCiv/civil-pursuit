@@ -3491,6 +3491,22 @@ module.exports = function (TopicFactory, EntryFactory) {
   };
 };
 },{}],12:[function(require,module,exports){
+module.exports = function (VoteFactory) {
+  return {
+    restrict: 'C',
+    link: function ($scope, $elem, $attr ) {
+      if ( $attr.entry ) {
+        VoteFactory.getAccumulation($attr.entry)
+
+          .success(function (data) {
+            $scope.votes = data;
+            console.log(data);
+          });
+      }
+    }
+  };
+};
+},{}],13:[function(require,module,exports){
 module.exports = function (EntryFactory) {
   return {
     restrict: 'C',
@@ -3502,25 +3518,25 @@ module.exports = function (EntryFactory) {
     }
   };
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = function () {
   return {
     restrict: 'C',
 
     link: function ($scope, $elem, $attr) {
 
-      console.log('7777');
+      $attr.$observe('entry', function (entryId) {
+        if ( entryId ) {
 
-      charts($attr.entry);
+          mkdata(entryId);
 
-      function charts (entryId) {
+        }
+      })
 
-        return console.log($scope.getEntry());
+      function mkdata (entryId) {
 
-        console.log($scope, entryId);
-
-        var votes = $scope.votes[entryId];
-
+        var votes = $scope.$parent.votes;
+ 
         var data;
 
         for ( var criteria in votes ) {
@@ -3586,7 +3602,7 @@ module.exports = function () {
     }
   };
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function () {
   return {
     restrict: 'C',
@@ -3600,7 +3616,7 @@ module.exports = function () {
     }
   };
 };
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function () {
   return {
     restrict: 'C',
@@ -3640,7 +3656,7 @@ module.exports = function () {
     }
   };
 };
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 //- .synapp-url2title
 
 module.exports = function ($http) {
@@ -3701,7 +3717,7 @@ module.exports = function ($http) {
   };
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -3709,7 +3725,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function (query) {
@@ -3769,7 +3785,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     create: function (evaluation) {
@@ -3785,7 +3801,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     create: function (entryId, userEmail, feedback) {
@@ -3804,7 +3820,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
@@ -3820,7 +3836,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     signIn: function (creds) {
@@ -3836,11 +3852,15 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = function ($http) {
   return {
     create: function (vote) {
       return $http.post('/json/Vote', vote);
+    },
+
+    findByEntry: function (entry) {
+      return $http.get('/json/Vote?entry=' + entry);
     },
 
     findByEntries: function (entries) {
@@ -3866,7 +3886,7 @@ module.exports = function ($http) {
     }
   };
 };
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function () {
   return function (entries) {
 
@@ -3884,7 +3904,7 @@ module.exports = function () {
     return current;
   };
 };
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function () {
   var moment = require('moment');
 
@@ -3898,7 +3918,7 @@ module.exports = function () {
     }
   };
 };
-},{"moment":1}],26:[function(require,module,exports){
+},{"moment":1}],27:[function(require,module,exports){
 module.exports = function () {
   return function (str) {
     if ( typeof str === 'string' ) {
@@ -3911,7 +3931,7 @@ module.exports = function () {
     }
   };
 };
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ;(function () {
 
   // MODULE
@@ -3966,17 +3986,30 @@ module.exports = function () {
   // DATA DIRECTIVES
 
   synapp.directive({
+
+    // topics
+
     synappDataTopics:         require('./directives/data/topics'),
+
+    // entries
+
     synappDataEntries:        require('./directives/data/entries'),
-    synappDataEvaluations:    require('./directives/data/evaluations'),
+
+    // evaluations
+
+    synappDataEvaluations     :       require('./directives/data/evaluations'),
 
     // criterias
 
-    synappDataCriterias       :      require('./directives/data/criterias'),
+    synappDataCriterias       :       require('./directives/data/criterias'),
 
     // feedbacks
 
-    synappDataFeedbacks       :      require('./directives/data/feedbacks')
+    synappDataFeedbacks       :       require('./directives/data/feedbacks'),
+
+    // votes
+
+    synappDataVotes           :       require('./directives/data/votes')
   });
 
   // UTILITY DIRECTIVES
@@ -4019,4 +4052,4 @@ module.exports = function () {
   
 })();
 
-},{"./controllers/app":2,"./controllers/entry":3,"./controllers/evaluation":4,"./controllers/sign":5,"./controllers/upload":6,"./directives/data/criterias":7,"./directives/data/entries":8,"./directives/data/evaluations":9,"./directives/data/feedbacks":10,"./directives/data/topics":11,"./directives/util/add-entry-view":12,"./directives/util/charts":13,"./directives/util/import":14,"./directives/util/sliders":15,"./directives/util/url-to-title":16,"./factories/Criteria":17,"./factories/Entry":18,"./factories/Evaluation":19,"./factories/Feedback":20,"./factories/Topic":21,"./factories/User":22,"./factories/Vote":23,"./filters/currently-evaluated":24,"./filters/from-now":25,"./filters/shorten":26}]},{},[27]);
+},{"./controllers/app":2,"./controllers/entry":3,"./controllers/evaluation":4,"./controllers/sign":5,"./controllers/upload":6,"./directives/data/criterias":7,"./directives/data/entries":8,"./directives/data/evaluations":9,"./directives/data/feedbacks":10,"./directives/data/topics":11,"./directives/data/votes":12,"./directives/util/add-entry-view":13,"./directives/util/charts":14,"./directives/util/import":15,"./directives/util/sliders":16,"./directives/util/url-to-title":17,"./factories/Criteria":18,"./factories/Entry":19,"./factories/Evaluation":20,"./factories/Feedback":21,"./factories/Topic":22,"./factories/User":23,"./factories/Vote":24,"./filters/currently-evaluated":25,"./filters/from-now":26,"./filters/shorten":27}]},{},[28]);

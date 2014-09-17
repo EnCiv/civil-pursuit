@@ -52,17 +52,30 @@
   // DATA DIRECTIVES
 
   synapp.directive({
+
+    // topics
+
     synappDataTopics:         require('./directives/data/topics'),
+
+    // entries
+
     synappDataEntries:        require('./directives/data/entries'),
-    synappDataEvaluations:    require('./directives/data/evaluations'),
+
+    // evaluations
+
+    synappDataEvaluations     :       require('./directives/data/evaluations'),
 
     // criterias
 
-    synappDataCriterias       :      require('./directives/data/criterias'),
+    synappDataCriterias       :       require('./directives/data/criterias'),
 
     // feedbacks
 
-    synappDataFeedbacks       :      require('./directives/data/feedbacks')
+    synappDataFeedbacks       :       require('./directives/data/feedbacks'),
+
+    // votes
+
+    synappDataVotes           :       require('./directives/data/votes')
   });
 
   // UTILITY DIRECTIVES

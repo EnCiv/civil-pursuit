@@ -4,18 +4,18 @@ module.exports = function () {
 
     link: function ($scope, $elem, $attr) {
 
-      console.log('7777');
+      $attr.$observe('entry', function (entryId) {
+        if ( entryId ) {
 
-      charts($attr.entry);
+          mkdata(entryId);
 
-      function charts (entryId) {
+        }
+      })
 
-        return console.log($scope.getEntry());
+      function mkdata (entryId) {
 
-        console.log($scope, entryId);
-
-        var votes = $scope.votes[entryId];
-
+        var votes = $scope.$parent.votes;
+ 
         var data;
 
         for ( var criteria in votes ) {

@@ -4,6 +4,10 @@ module.exports = function ($http) {
       return $http.post('/json/Vote', vote);
     },
 
+    findByEntry: function (entry) {
+      return $http.get('/json/Vote?entry=' + entry);
+    },
+
     findByEntries: function (entries) {
 
       entries = entries.map(function (entry) {

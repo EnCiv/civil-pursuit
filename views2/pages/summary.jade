@@ -3,10 +3,14 @@ extends ../layouts/master
 block entry-image
   include ../partials/entry-image
 
+block prepend script-app
+  script(src='/bower_components/d3/d3.js')
+
 block page
   .synapp-data-entries(     data-entry                =   entry
   ).synapp-util-import(     data-import-email         =   'email'
   ).synapp-data-topics(     data-slug                 =   topic
+  ).synapp-data-votes(
   ).synapp-data-criterias(
   )
 
