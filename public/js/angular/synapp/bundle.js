@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.3
@@ -2857,7 +2857,7 @@
     }
 }).call(this);
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 module.exports = function ($scope) {
   $scope.selectMeAsTopic = function (topicId) {
@@ -2877,6 +2877,10 @@ module.exports = function ($scope) {
     if ( entry ) {
       return (entry.promotions * 100 / entry.views).toFixed(2);
     }
+  }
+
+  $scope.getEntry = function () {
+    return $scope.entry;
   }
 };
 },{}],3:[function(require,module,exports){
@@ -3505,13 +3509,15 @@ module.exports = function () {
 
     link: function ($scope, $elem, $attr) {
 
-      console.log('ready to party');
+      console.log('7777');
 
       charts($attr.entry);
 
       function charts (entryId) {
 
-        console.log($scope);
+        return console.log($scope.getEntry());
+
+        console.log($scope, entryId);
 
         var votes = $scope.votes[entryId];
 
@@ -3607,11 +3613,7 @@ module.exports = function () {
 
           // Tooltip
 
-          $("input.slider").slider({
-            formatter: function(value) {
-              return '';
-            }
-          });
+          $("input.slider").slider();
 
           // Set value
 
@@ -4017,4 +4019,4 @@ module.exports = function () {
   
 })();
 
-},{"./controllers/app":2,"./controllers/entry":3,"./controllers/evaluation":4,"./controllers/sign":5,"./controllers/upload":6,"./directives/data/criterias":7,"./directives/data/entries":8,"./directives/data/evaluations":9,"./directives/data/feedbacks":10,"./directives/data/topics":11,"./directives/util/add-entry-view":12,"./directives/util/charts":13,"./directives/util/import":14,"./directives/util/sliders":15,"./directives/util/url-to-title":16,"./factories/Criteria":17,"./factories/Entry":18,"./factories/Evaluation":19,"./factories/Feedback":20,"./factories/Topic":21,"./factories/User":22,"./factories/Vote":23,"./filters/currently-evaluated":24,"./filters/from-now":25,"./filters/shorten":26}]},{},[27])
+},{"./controllers/app":2,"./controllers/entry":3,"./controllers/evaluation":4,"./controllers/sign":5,"./controllers/upload":6,"./directives/data/criterias":7,"./directives/data/entries":8,"./directives/data/evaluations":9,"./directives/data/feedbacks":10,"./directives/data/topics":11,"./directives/util/add-entry-view":12,"./directives/util/charts":13,"./directives/util/import":14,"./directives/util/sliders":15,"./directives/util/url-to-title":16,"./factories/Criteria":17,"./factories/Entry":18,"./factories/Evaluation":19,"./factories/Feedback":20,"./factories/Topic":21,"./factories/User":22,"./factories/Vote":23,"./filters/currently-evaluated":24,"./filters/from-now":25,"./filters/shorten":26}]},{},[27]);

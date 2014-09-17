@@ -17,4 +17,8 @@ module.exports = function ($scope) {
       return (entry.promotions * 100 / entry.views).toFixed(2);
     }
   }
+
+  $scope.getEntry = function () {
+    return $scope.entry;
+  }
 };

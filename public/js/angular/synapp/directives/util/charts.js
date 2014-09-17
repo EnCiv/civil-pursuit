@@ -4,13 +4,15 @@ module.exports = function () {
 
     link: function ($scope, $elem, $attr) {
 
-      console.log('ready to party');
+      console.log('7777');
 
       charts($attr.entry);
 
       function charts (entryId) {
 
-        console.log($scope);
+        return console.log($scope.getEntry());
+
+        console.log($scope, entryId);
 
         var votes = $scope.votes[entryId];
 
