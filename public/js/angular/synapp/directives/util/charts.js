@@ -4,15 +4,22 @@ module.exports = function () {
 
     link: function ($scope, $elem, $attr) {
 
+      var done = false;
+
       $attr.$observe('entry', function (entryId) {
-        if ( entryId ) {
+        if ( entryId && ! done ) {
+
+          done = true;
 
           mkdata(entryId);
 
+          console.log($scope.$parent.votes);
         }
-      })
+      });
 
       function mkdata (entryId) {
+
+        console.log('making chart');
 
         var votes = $scope.$parent.votes;
  
@@ -33,7 +40,9 @@ module.exports = function () {
       }
 
       function chart (data, entryId, criteriaId) {
-        console.log('data chart', data);
+
+        console.log('hello');
+
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
           width = 300  - margin.left - margin.right,
           height = 70 - margin.top - margin.bottom;
