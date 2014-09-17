@@ -3075,6 +3075,8 @@ module.exports = function ($scope, EntryFactory, VoteFactory, FeedbackFactory) {
 
   $scope.finish = function () {
 
+    var entries = $scope.evaluation.entries;
+
     if ( $scope.feedbacks[entries[0]._id] ) {
       FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
       VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
