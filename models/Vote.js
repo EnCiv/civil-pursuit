@@ -125,7 +125,11 @@ VoteSchema.statics.add = function (votesByCriteria, entryId, userEmail, cb) {
         });
       }
 
-      self.create(votes, cb);
+      require('async').parallel(votes.map(function (vote) {
+        return function (cb) {
+          self.create(this, cb);
+        }.bind(vote);
+      }), cb)
     });
 };
 
