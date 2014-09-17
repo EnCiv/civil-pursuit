@@ -33,8 +33,6 @@ module.exports = function ($scope, EntryFactory, VoteFactory, FeedbackFactory) {
 
     var entries = $scope.evaluation.entries;
 
-    console.log($scope);
-
     EntryFactory.promote(entries[index]._id);
 
     if ( index === 0 ) {
@@ -65,6 +63,17 @@ module.exports = function ($scope, EntryFactory, VoteFactory, FeedbackFactory) {
   };
 
   $scope.finish = function () {
+
+    if ( $scope.feedbacks[entries[0]._id] ) {
+      FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
+      VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
+    }
+
+    if ( $scope.feedbacks[entries[1]._id] ) {
+      FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
+      VoteFactory.add($scope.votes[entries[1]._id], entries[1]._id, $scope.email);
+    }
+
     if ( $scope.evaluation.entry ) {
       location.href = '/list/' + $scope.evaluation.topic.slug;
     }
