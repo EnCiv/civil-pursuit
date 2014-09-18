@@ -1,16 +1,19 @@
 extends ../layouts/master
 
+block append css-app
+  link(rel='stylesheet' href='/bower_components/c3/c3.css')
+
 block entry-image
   include ../partials/entry-image
 
 block prepend script-app
   script(src='/bower_components/d3/d3.js')
+  script(src='/bower_components/c3/c3.js')
 
 block page
-  .synapp-data-entries(     data-entry                =   entry
-  ).synapp-util-import(     data-import-email         =   'email'
-  ).synapp-data-topics(     data-slug                 =   topic
-  ).synapp-data-votes(
+  .synapp-data-entries.synapp-data-votes(     data-entry                =   entry
+  ).synapp-util-import(                       data-import-email         =   'email'
+  ).synapp-data-topics(                       data-slug                 =   topic
   ).synapp-data-criterias(
   )
 

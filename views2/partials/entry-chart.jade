@@ -1,6 +1,12 @@
+// Votes
+
 .row
   .col-xs-12
-    h2 Votes
+    h2 
+      span(ng-bind='votes[criterias[0]._id].total || "No"')
+      span  
+      span vote
+      span(ng-show='votes[criterias[0]._id].total > 1') s
 
     .row(
       data-ng-repeat        =   'criteria in criterias'
@@ -25,11 +31,10 @@
             CHART
         //-
 
-        .synapp-util-charts( data-entry='{{entry._id}}' data-criteria='{{criteria._id}}')
+        .synapp-util-charts( data-criteria='{{criteria._id}}' data-ng-show='votes[criteria._id].total')
 
           svg.chart(
-            id                =   'chart-{{entry._id}}-{{criteria._id}}'
-            data-ng2-show      =   'showChart'
+            id                  =   'chart-{{criteria._id}}'
           )
 
           //-
@@ -37,7 +42,7 @@
           //-
           
           hr(
-            data-ng-hide      =   'votes[entry._id][criteria._id]'
+            data-ng-hide      =   'votes[criteria._id]'
           )
 
   hr

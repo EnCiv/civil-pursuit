@@ -225,8 +225,6 @@ domain.run(function () {
 
   app.get('/summary/:entry',
 
-    mustBeIn,
-
     function (req, res) {
       res.render('pages/summary', {
         entry: req.params.entry,
@@ -265,7 +263,7 @@ domain.run(function () {
     EDIT AND GO AGAIN
   */
 
-  app.get('/edit/:entry?', function (req, res, next) {
+  app.get('/edit/:entry?', mustBeIn, function (req, res, next) {
     res.render('pages/create', {
       entry: req.params.entry
     });

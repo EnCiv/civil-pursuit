@@ -1,93 +1,99 @@
-module.exports = function () {
+// .synapp-util-charts(data-criteria)
+
+module.exports = function ($timeout) {
   return {
     restrict: 'C',
 
     link: function ($scope, $elem, $attr) {
 
-      var done = false;
-
-      $attr.$observe('entry', function (entryId) {
-        if ( entryId && ! done ) {
-
-          // $scope.showChart = $scope.$parent.votes[entryId][$scope.criteria._id];
-
-          done = true;
-
-          mkdata(entryId);
-
-          console.log($scope.$parent.votes);
-        }
-      });
-
-      function mkdata (entryId) {
-
-        console.log('making chart');
-
-        var votes = $scope.$parent.votes;
- 
-        var data;
-
-        for ( var criteria in votes ) {
-          data = [];
-
-          for ( var value in votes[criteria].values ) {
-            data.push({
-              label: value,
-              value: votes[criteria].values[value] * 100 / votes[criteria].total
-            });
-          }
-
-          chart(data, entryId, criteria);
-        }
+      if ( $attr.criteria ) {
+        $timeout(chart);
       }
 
-      function chart (data, entryId, criteriaId) {
+      function chart () {
 
-        console.log('hello');
+        var votes = $scope.$parent.votes[$attr.criteria];
 
-        var margin = {top: 20, right: 20, bottom: 30, left: 40},
-          width = 300  - margin.left - margin.right,
-          height = 70 - margin.top - margin.bottom;
+        if ( ! votes ) {
+          return console.error('no votes');
+        }
 
-        var x = d3.scale.ordinal()
-          .rangeRoundBands([0, width], .1);
+        var data = [];
 
-        var xAxis = d3.svg.axis()
-          .scale(x)
-          .orient("bottom");
+        for ( var number in votes.values ) {
+          data.push({
+            label: number,
+            value: votes.values[number] * 100 / votes.total
+          });
+        }
 
-        var y = d3.scale.linear()
-          .range([height, 0]);
+        var columns = ['votes'];
 
-        var yAxis = d3.svg.axis()
-          .scale(y)
-          .orient("left");
+        data.forEach(function (d) {
+          columns.push(d.value);
+        });
 
-        var chart = d3.select("#chart-" + entryId + '-' + criteriaId)
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        if ( ! $('#chart-' + $attr.criteria).length ) {
+          return console.error('chart not found #chart-' + $attr.criteria);
+        }
 
-        x.domain(data.map(function (d) {
-          return d.label;
-        }));
+        console.log('criteria', $attr.criteria);
 
-        y.domain([0, d3.max(data, function(d) { return d.value; })]);
+        var chart = c3.generate({
+            bindto: '#chart-' + $attr.criteria,
 
-        chart.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+            data: {
+              columns: [
+                columns
+              ],
 
-        chart.selectAll(".bar")
-            .data(data)
-          .enter().append("rect")
-            .attr("class", "bar")
-            .attr("x", function(d) { return x(d.label); })
-            .attr("y", function(d) { return y(d.value); })
-            .attr("height", function(d) { return height - y(d.value); })
-            .attr("width", x.rangeBand());
+              type: 'bar'
+            },
+            
+            axis: {
+              x: {
+                tick: {
+                  centered: false,
+                  fit: false
+                }
+              },
+              
+              y: {
+                max: 90,
+
+                show: false,
+
+                tick: {
+                  count: 5,
+
+                  format: function (y) {
+                    return y;
+                  }
+                }
+              }
+            },
+
+
+            grid: {
+
+              y: {
+                lines: [
+                  {
+                    value: 25,
+                    text: '25%'
+                  },
+                  {
+                    value: 50,
+                    text: '50%'
+                  },
+                  {
+                    value: 75,
+                    text: '75%'
+                  }
+                ]
+              }
+            }
+        });
       }
     }
   };
