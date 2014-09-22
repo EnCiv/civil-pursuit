@@ -92,10 +92,21 @@ var EntrySchema = new Schema({
   }
 });
 
+// PRE INIT
+// ========
+
+EntrySchema.post( 'init', function() {
+  this._original = this.toObject();
+});
+
 // PRE SAVE
 // ========
 
 EntrySchema.pre('save', function (next) {
+
+  var self = this;
+
+  // If creating, set default values
 
   if ( this.isNew ) {
     this.promotions   = 0;
@@ -103,46 +114,35 @@ EntrySchema.pre('save', function (next) {
     this.created      = Date.now();
   }
 
-  if ( ! this.image || this.image.length > 255 ) {
-    return next();
-  }
+  // If image declared (and in case of editing - if image changed)
+
+  if ( this.image && ( this.isNew ? true : ( this.image !== this._original.image ) )  ) {
+    
+    var cloudinary = require('cloudinary');
+    
+    cloudinary.config({ 
+      cloud_name      :   config.cloudinary.cloud.name, 
+      api_key         :   config.cloudinary.API.key, 
+      api_secret      :   config.cloudinary.API.secret 
+    });
+
+    return cloudinary.uploader.upload(
+      
+      path.join(config.tmp, this.image),
+      
+      function (result) {
+        
+        self.image = result.url;
+
+        next();
+
+      }      
+    );
   
-  var self = this;
+  }
 
-/*  require('lwip').open(path.join(config.tmp, this.image), function(err, image){
+  return next();
 
-    if ( error ) {
-      return next(error);
-    }
-
-    var batch = image.batch();
-
-    var width = image.width();
-    var height = image.height();
-
-    if ( width > height ) {
-      batch.resize()
-    }
-
-  // check err...
-  // define a batch of manipulations and save to disk as JPEG:
-  image.batch()
-    .resize(120)
-    .writeFile('output.jpg', function(err){
-      // check err...
-      // done.
-    });
-
-  });*/
-
-  require('fs').readFile(path.join(config.tmp, this.image),
-    function (error, data) {
-      if ( error ) {
-        return next(error);
-      }
-      self.image = new Buffer(data).toString('base64');
-      next();
-    });
 });
 
 // UPDATE BY ID

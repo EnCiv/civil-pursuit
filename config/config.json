@@ -1,6 +1,23 @@
 {
-  "tmp": "/tmp",
-  "title": "Synaccord | Bring Synergy To Democracy",
-  "secret": "hYGhdj729k2kdmsñw9hsy6GGW",
-  "entry image maximum width": 160
+  "tmp"                           :                 "/tmp",
+  
+  "title"                         :                 "Synaccord | Bring Synergy To Democracy",
+  
+  "secret"                        :                 "hYGhdj729k2kdmsñw9hsy6GGW",
+  
+  "entry image maximum width"     :                 160,
+  
+  "cloudinary"                    :                 {
+    
+    "cloud"       :   {
+      "name"    : "hscbexf6a"
+    },
+
+    "API"         :   {
+      "key"     : "717143894825222",
+      "secret"  : "Yy4AfBBff-PxjrizX1bsLPnkCLw"
+    },
+
+    "url"         :   "cloudinary://717143894825222:Yy4AfBBff-PxjrizX1bsLPnkCLw@hscbexf6a"
+  }
 }

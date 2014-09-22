@@ -40,6 +40,12 @@ domain.run(function () {
 
   var synapp = require('./config/config.json');
 
+  /*
+    CLOUDINARY
+  */
+
+  process.env.CLOUDINARY_URL = synapp.cloudinary.url;
+
   /*  
     EXPRESS
   */
