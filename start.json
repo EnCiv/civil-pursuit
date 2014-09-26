@@ -1,0 +1,66 @@
+[
+  {
+    "on": {
+      "env": "development"
+    },
+
+    "then": [
+      
+      {
+        "set": {
+          "MONGOHQ_URL": "mongodb://localhost:4567/syndb"
+        }
+      },
+
+      {
+        "spawn": {
+          "bin": "/home/francois/dude-js/dependencies/mongodb/mongodb-linux-x86_64-2.6.1/bin/mongod",
+          "args": [
+            "--port", 
+            4567,
+            "--dbpath",
+            "/home/francois/dude-js/data/syndb"]
+        }
+      }
+    ]
+  },
+
+
+  {
+    "on": {},
+
+    "then": [
+      {
+        "spawn": {
+          "bin": "gulp",
+          "args": ["watch"]
+        }
+      },
+
+      {
+        "set": {
+          "PORT": 3012
+        },
+
+        "spawn": {
+          "bin": "node",
+          "args": ["server"]
+        }
+      },
+
+      {
+        "spawn": {
+          "bin": "google-chrome",
+          "args": ["http://localhost:3012"]
+        }
+      },
+
+      {
+        "spawn": {
+          "bin": "gulp",
+          "args": ["watch", "browserify"]
+        }
+      }
+    ]
+  }
+]

@@ -7,10 +7,20 @@ module.exports = function ($timeout) {
     link: function ($scope, $elem, $attr) {
 
       if ( $attr.criteria ) {
-        $timeout(chart);
+        $timeout(chart, 1000);
       }
 
+      var t1 = 0;
+
       function chart () {
+
+        if ( ! $scope.$parent.votes ) {
+          t1 ++;
+          if ( t1 < 10 ) {
+            return;
+          }
+          return $timeout(chart, 1000);
+        }
 
         var votes = $scope.$parent.votes[$attr.criteria];
 
@@ -51,12 +61,6 @@ module.exports = function ($timeout) {
             },
             
             axis: {
-              x: {
-                tick: {
-                  centered: false,
-                  fit: false
-                }
-              },
               
               y: {
                 max: 90,
@@ -73,25 +77,8 @@ module.exports = function ($timeout) {
               }
             },
 
-
-            grid: {
-
-              y: {
-                lines: [
-                  {
-                    value: 25,
-                    text: '25%'
-                  },
-                  {
-                    value: 50,
-                    text: '50%'
-                  },
-                  {
-                    value: 75,
-                    text: '75%'
-                  }
-                ]
-              }
+            size: {
+              height: 80
             }
         });
       }

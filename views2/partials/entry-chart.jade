@@ -2,11 +2,21 @@
 
 .row
   .col-xs-12
-    h2 
-      span(ng-bind='votes[criterias[0]._id].total || "No"')
-      span  
-      span vote
-      span(ng-show='votes[criterias[0]._id].total > 1') s
+    h2
+      //- Number of votes
+
+      span(
+        data-ng-bind        =   'votes[criterias[0]._id].total || "No"'
+      )
+
+      //- Number of votes label
+      
+      span  vote
+        span(
+          data-ng-show        =   'votes[criterias[0]._id].total > 1'
+        ) s
+
+    //- For each criteria
 
     .row(
       data-ng-repeat        =   'criteria in criterias'
@@ -19,7 +29,7 @@
         //-
 
         h4(
-          ng-bind           =     'criteria.name'
+          data-ng-bind      =     'criteria.name'
           data-toggle       =     "tooltip" 
           data-placement    =     "top" 
           title             =     "{{criteria.description}}"

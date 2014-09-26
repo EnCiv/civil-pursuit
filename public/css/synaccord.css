@@ -4302,3 +4302,13 @@ a.btn-default {
 textarea {
   min-height: 120px;
 }
+/* CHARTS */
+.chart {
+  height: 80px;
+}
+.c3-legend-item {
+  display: none;
+}
+.c3-event-rect {
+  width: 35px;
+}
