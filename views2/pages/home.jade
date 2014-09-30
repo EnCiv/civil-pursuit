@@ -1,0 +1,33 @@
+extends ../layouts/master
+
+include ../partials/box
+
+block append script-angular
+  block script-angular-ui
+    script(src='/bower_components/angular-bootstrap/ui-bootstrap.min.js')
+    script(src='/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js')
+    script.
+      angular_deps.push('ui.bootstrap')
+
+block page
+
+  div#navigator.navigator.panel-group(data-ng-controller='AccordionCtrl')
+    .panel.panel-default
+      .panel-heading
+        h4.panel-title Topic
+
+      ul
+        li(data-ng-repeat='topic in topics' data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
+          +box('topic')
+
+          .panel-collapse.collapse.panel-body(id='topics-{{topic._id}}-problems')
+            .panel-group
+              .panel.panel-default
+                .panel-heading
+                  h4.panel-title Problem
+
+                .panel-body
+                  big(data-ng-hide='topic.$loaded') Just a moment, we are loading problems related to {{topic.subject}}
+                  ul
+                    li(data-ng-repeat='problem in topic.$problems')
+                      +box('problem')

@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var TopicSchema = new Schema({
  "description": String,
  "image": String,
- "heading": {
+ "name": {
  	"type": String,
  	"index": {
  		"unique": true

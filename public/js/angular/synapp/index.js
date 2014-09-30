@@ -45,7 +45,11 @@
 
     // Feedback factory
 
-    FeedbackFactory           :     require('./factories/Feedback')
+    FeedbackFactory           :     require('./factories/Feedback'),
+
+    // Item factory
+
+    ItemFactory           :     require('./factories/Item')
   
   });
 
@@ -106,7 +110,45 @@
     EntryCtrl:                require('./controllers/entry'),
 
     // Evaluation Controller
-    EvaluationCtrl            :       require('./controllers/evaluation')
+    EvaluationCtrl            :       require('./controllers/evaluation'),
+
+    // Accordion Controller
+    AccordionCtrl             :       function ($scope, ItemFactory, $timeout) {
+      ItemFactory.findTopics()
+        .success(function (data) {
+          $scope.topics = data;
+
+          $timeout(function () {
+            $('.navigator .collapse').on('show.bs.collapse', function (evt) {
+              var bits = $(evt.target).attr('id').split('-');
+
+              var type = bits[0];
+              var id = bits[1];
+              var has = bits[2];
+
+              var is = $scope[type].filter(function (t) {
+                return t._id === id;
+              });
+
+              if ( is.length ) {
+                is = is[0];
+
+                switch ( type ) {
+                  case 'topics':
+                    ItemFactory.findProblems({ parent: id })
+
+                      .success(function (problems) {
+                        is.$problems = problems;
+                        is.$loaded = true;
+                      });
+                    break;
+                }
+              }
+
+            });
+          });
+        });
+    }
   });
 
   // // DIRECTIVES

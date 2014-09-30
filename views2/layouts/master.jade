@@ -21,7 +21,8 @@ section.container(
 
   //- # Top Bar
   
-  include ../partials/top
+  section(role='header')
+    include ../partials/top
 
   //- # Main wrapper
 
@@ -40,10 +41,10 @@ section.container(
       .col-xs-12
         block page
 
-//- # Footer
+  //- # Footer
 
-block footer
-  include ../partials/footer
+  block footer
+    include ../partials/footer
 
 //- Scripts
 

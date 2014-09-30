@@ -16,6 +16,7 @@
     "ng-file-upload-shim": "~1.6.5",
     "seiyria-bootstrap-slider": "~4.0.1",
     "d3": "~3.4.11",
-    "c3": "~0.3.0"
+    "c3": "~0.3.0",
+    "angular-bootstrap": "~0.11.2"
   }
 }

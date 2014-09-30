@@ -1,0 +1,34 @@
+extends ../layouts/master
+
+block page
+
+  div
+    button.btn.btn-danger(type='button' data-toggle='collapse' data-target='#demo') Hello
+    #demo.collpase.in
+      h1 HELLL
+
+  #accordion.panel-group
+    .panel.panel-default
+      .panel-heading
+        h4.panel-title Topic
+
+      .panel-body
+        ul
+          li(data-toggle='collapse' data-parent='#accordion' data-target='#problems')
+
+            include ../partials/box
+
+            #problems.panel-collapse.collapse.in
+              .panel-group
+                .panel.panel-default
+                  .panel-heading
+                    h4.panel-title Problem
+
+                  .panel-body
+                    ul
+                      li Problem 1
+                      li Problem 2
+                      li Problem 3
+
+          li Topic 2
+          li Topic 3

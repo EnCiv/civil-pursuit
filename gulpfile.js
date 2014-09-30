@@ -6,6 +6,7 @@ var browserify  = require('browserify');
 var source      = require('vinyl-source-stream');
 var path        = require('path');
 var watch       = require('gulp-watch');
+var concat      = require('gulp-concat');
 
 gulp.task('default', function() {
   // place code for your default task here
@@ -39,4 +40,17 @@ gulp.task('browserify', function () {
 
 gulp.task('watch', function () {
   gulp.watch('public/less/*.less', ['less']);
+});
+
+var uglify      = require('gulp-uglifyjs');
+
+gulp.task('bootstrapjs', function () {
+
+  gulp.src('./public/bower_components/bootstrap/**/{tooltip,transition,collapse}.js')
+
+    .pipe(concat('bootstrap.js'))
+
+    .pipe(uglify())
+
+    .pipe(gulp.dest('./public/dist'));
 });

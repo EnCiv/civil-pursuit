@@ -193,7 +193,7 @@ domain.run(function () {
   */
 
   app.get('/', function (req, res) {
-    res.render('pages/topics');
+    res.render('pages/home');
   });
 
   /*  
@@ -344,7 +344,13 @@ domain.run(function () {
     MONSON API
   */
 
-  require('monson')(app, require('mongoose'), 'MONGOHQ_URL');
+  var mongoose = require('mongoose');
+
+  mongoose.connect(process.env.MONGOHQ_URL);
+
+  var monson = require('monson')(mongoose);
+
+  app.use('/json', monson.express.bind(monson));
 
   /*  
     UPLOAD IMAGE

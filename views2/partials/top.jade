@@ -4,30 +4,28 @@
 // Top bar
 
 header
-  .container
-    .row
-      .col-xs-12
+  .row
+    .col-xs-12
 
-        //- # Top bar buttons
+      //- # Top bar buttons
 
-        .pull-right
-          a.button.btn.btn-lg.btn-default(href='/')
-            big.glyphicon.glyphicon-home
-          span  
-          a.button.btn.btn-lg.btn-default(href=back)
-            big.glyphicon.glyphicon-chevron-left
+      .pull-right
+        a.button.btn.btn-lg.btn-default.btn-xs(href='/')
+          big.glyphicon.glyphicon-home
+        span  
+        a.button.btn.btn-lg.btn-default.btn-xs(href=back)
+          big.glyphicon.glyphicon-chevron-left
 
-        //- # Logo
+      //- # Logo
 
-        //- ## Regular screen
+      //- ## Regular screen
 
-        img.img-responsive.logo.logo-title-image(alt='Logo' src='/images/Synaccord_logo_name_300x61.png')
+      img.img-responsive.logo.logo-title-image.visible-lg-inline.visible-md-inline.visible-sm-inline(alt='Logo' src='/images/Synaccord_logo_name_300x61.png')
 
-        //- ## Small screen
+      //- ## Small screen
 
-        img.img-responsive.logo.logo-image(alt='Logo' src='/images/Synaccord_logo_64x61.png')
+      img.img-responsive.logo.logo-image.visible-xs-inline(alt='Logo' src='/images/Synaccord_logo_64x61.png')
 
-//- # Beta image
+      //- ## Beta
 
-#beta
-  img(alt='beta' src='/images/beta.png')
+      img.beta(alt='beta' src='/images/beta.png')

@@ -3837,11 +3837,39 @@ module.exports = function ($http) {
     }
   };
 };
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js":[function(require,module,exports){
+module.exports = function ($http) {
+  return {
+    findTopics: function () {
+      return $http.get('/json/Item?type=Topic');
+    },
+
+    findProblems: function (options) {
+      options = options || {};
+
+      var params = [];
+
+      for ( var option in options ) {
+        params.push(option + '=' + options[option]);
+      }
+
+      return $http.get('/json/Item?' + params.join('&'));
+    },
+
+    findBySlug: function (slug) {
+      return $http.get('/json/Topic/findOne?slug=' + slug);
+    },
+
+    findById: function (id) {
+      return $http.get('/json/Topic/findById/' + id);
+    }
+  };
+};
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Topic.js":[function(require,module,exports){
 module.exports = function ($http) {
   return {
     find: function () {
-      return $http.get('/json/Topic');
+      return $http.get('/json/Item?type=Topic');
     },
 
     findBySlug: function (slug) {
@@ -3996,7 +4024,11 @@ module.exports = function () {
 
     // Feedback factory
 
-    FeedbackFactory           :     require('./factories/Feedback')
+    FeedbackFactory           :     require('./factories/Feedback'),
+
+    // Item factory
+
+    ItemFactory           :     require('./factories/Item')
   
   });
 
@@ -4057,7 +4089,45 @@ module.exports = function () {
     EntryCtrl:                require('./controllers/entry'),
 
     // Evaluation Controller
-    EvaluationCtrl            :       require('./controllers/evaluation')
+    EvaluationCtrl            :       require('./controllers/evaluation'),
+
+    // Accordion Controller
+    AccordionCtrl             :       function ($scope, ItemFactory, $timeout) {
+      ItemFactory.findTopics()
+        .success(function (data) {
+          $scope.topics = data;
+
+          $timeout(function () {
+            $('.navigator .collapse').on('show.bs.collapse', function (evt) {
+              var bits = $(evt.target).attr('id').split('-');
+
+              var type = bits[0];
+              var id = bits[1];
+              var has = bits[2];
+
+              var is = $scope[type].filter(function (t) {
+                return t._id === id;
+              });
+
+              if ( is.length ) {
+                is = is[0];
+
+                switch ( type ) {
+                  case 'topics':
+                    ItemFactory.findProblems({ parent: id })
+
+                      .success(function (problems) {
+                        is.$problems = problems;
+                        is.$loaded = true;
+                      });
+                    break;
+                }
+              }
+
+            });
+          });
+        });
+    }
   });
 
   // // DIRECTIVES
@@ -4069,4 +4139,4 @@ module.exports = function () {
   
 })();
 
-},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/entry":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/entry.js","./controllers/evaluation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluation.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/data/criterias":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/criterias.js","./directives/data/entries":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/entries.js","./directives/data/evaluations":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/evaluations.js","./directives/data/feedbacks":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/feedbacks.js","./directives/data/topics":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/topics.js","./directives/data/votes":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/votes.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Criteria":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Criteria.js","./factories/Entry":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Entry.js","./factories/Evaluation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Evaluation.js","./factories/Feedback":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Feedback.js","./factories/Topic":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Topic.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./factories/Vote":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Vote.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/entry":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/entry.js","./controllers/evaluation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluation.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/data/criterias":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/criterias.js","./directives/data/entries":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/entries.js","./directives/data/evaluations":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/evaluations.js","./directives/data/feedbacks":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/feedbacks.js","./directives/data/topics":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/topics.js","./directives/data/votes":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/votes.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Criteria":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Criteria.js","./factories/Entry":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Entry.js","./factories/Evaluation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Evaluation.js","./factories/Feedback":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Feedback.js","./factories/Item":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js","./factories/Topic":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Topic.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./factories/Vote":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Vote.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
