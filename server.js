@@ -22,7 +22,7 @@ var Log       = require('String-alert')({ prefix: 'synapp' });
 
 var domain    = require('domain').create();
 
-/* DOMAIN */
+/* 123 DOMAIN */
 /* ------------------------------------------------------------------------ */
 
 domain.on('error', function (error) {
