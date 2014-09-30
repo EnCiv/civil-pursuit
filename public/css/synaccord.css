@@ -4646,6 +4646,9 @@ textarea {
 .navigator .box h4 {
   padding-left: 10px;
 }
+.navigator .box .box-description {
+  padding: 10px;
+}
 .navigator .box .box-promoted {
   padding-right: 10px;
 }

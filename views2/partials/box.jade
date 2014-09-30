@@ -6,7 +6,7 @@ mixin box(type)
 
       .col-xs-5
         h4(data-ng-bind=type + '.subject')
-        div.hidden-xs
+        div.hidden-xs.box-description
           p(data-ng-bind=type + '.description')
 
       .box-promoted.col-xs-3.text-right
@@ -16,5 +16,5 @@ mixin box(type)
           li 5%
 
     .row.visible-xs-block
-      .col-xs-12
+      .col-xs-12.box-description
         p(data-ng-bind=type + '.description')
