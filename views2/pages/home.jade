@@ -2,13 +2,6 @@ extends ../layouts/master
 
 include ../partials/box
 
-block append script-angular
-  block script-angular-ui
-    script(src='/bower_components/angular-bootstrap/ui-bootstrap.min.js')
-    script(src='/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js')
-    script.
-      angular_deps.push('ui.bootstrap')
-
 block page
 
   div#navigator.navigator.panel-group(data-ng-controller='AccordionCtrl')
