@@ -335,7 +335,7 @@ domain.run(function () {
     });
 
   /*  
-    SIGN (IN|UP|OUT)
+    SIGN (IN|UP|OUT) or 
   */
 
   app.all('/sign/:dir?', require('./routes/sign'));
