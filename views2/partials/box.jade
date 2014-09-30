@@ -13,7 +13,7 @@ mixin box(type)
         h5 Promoted
         ul
           li(data-ng-bind=type + '.promotions')
-          li 5%
+          li(data-ng-bind='(' + type + ' | getPromoted) + "%"')
 
     .row.visible-xs-block
       .col-xs-12.box-description

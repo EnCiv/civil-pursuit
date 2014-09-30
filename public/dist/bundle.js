@@ -3991,7 +3991,21 @@ module.exports = function () {
 
     // Reduce entries array to the 1 or 2 entries being evaluated
 
-    currentlyEvaluated        :     require('./filters/currently-evaluated')
+    currentlyEvaluated        :     require('./filters/currently-evaluated'),
+
+    // get promotion percentage
+
+    getPromoted               :     function () {
+      return function (item) {
+        if ( item ) {
+          if ( ! item.promotions ) {
+            return 0;
+          }
+
+          return Math.ceil(item.promotions * 100 / item.views);
+        }
+      }
+    }
   });
 
   // FACTORIES
