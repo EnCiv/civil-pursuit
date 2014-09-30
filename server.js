@@ -350,9 +350,7 @@ domain.run(function () {
 
   var monson = require('monson')(mongoose);
 
-  console.log('monson!!!!',monson);
-
-  // app.use('/json', monson.express.bind(monson));
+  app.use('/json', monson.express.bind(monson));
 
   /*  
     UPLOAD IMAGE
