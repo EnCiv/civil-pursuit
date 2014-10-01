@@ -199,7 +199,7 @@ domain.run(function () {
   });
 
   /*  
-    EDITOR
+    CREATOR
   */
 
   app.get('/create/:type/:parent?',
@@ -208,9 +208,23 @@ domain.run(function () {
 
     function (req, res) {
       res.render('pages/editor', {
-        page: 'create',
         type: req.params.type,
         parent: req.params.parent
+      });
+    });
+
+  /*  
+    EDITOR
+  */
+
+  app.get('/edit/:item',
+
+    mustBeIn,
+
+    function (req, res) {
+
+      res.render('pages/editor', {
+        item: req.params.item
       });
     });
 
@@ -267,16 +281,6 @@ domain.run(function () {
         topic: req.params.topic
       });  
     });
-
-  /*  
-    EDIT AND GO AGAIN
-  */
-
-  app.get('/edit/:entry?', mustBeIn, function (req, res, next) {
-    res.render('pages/create', {
-      entry: req.params.entry
-    });
-  });
 
   /* ACCESS POINTS */
   /* ------------------------------------------------------------------------ */

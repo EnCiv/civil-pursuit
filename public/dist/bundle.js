@@ -3591,6 +3591,10 @@ module.exports = function () {
         }
       }
 
+      if ( ! $scope.editor ) {
+        $scope.editor = {};
+      }
+
       $scope.editor = {
         $save: function () {
           
@@ -3622,6 +3626,8 @@ module.exports = function () {
             });
         }
       };
+
+
     }
   });
 

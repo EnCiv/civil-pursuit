@@ -26,7 +26,7 @@ block page
       novalidate
       data-ng-controller = 'EditorCtrl'
       data-ng-submit = 'editor.$save()'
-      data-ng-init = 'editor.type = "' + type + '"; editor.parent = ' + (parent ? ('"' + parent + '"') : null))
+      data-ng-init = 'editor.type = ' + (type ? ('"' + type + '"') : null) + '; editor.parent = ' + (parent ? ('"' + parent + '"') : null) + '; editor.item = ' + (item ? ('"' + item + '"') : null))
 
       .row.row-padding(data-ng-show='editor.$error')
         .alert.alert-warning.alert-dismissible(role='alert')

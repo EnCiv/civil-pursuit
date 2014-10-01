@@ -186,37 +186,41 @@
         }
       }
 
-      $scope.editor = {
-        $save: function () {
+      if ( ! $scope.editor ) {
+        $scope.editor = {};
+      }
+
+      $scope.editor.$save: function () {
           
-          this.$error = null;
+        this.$error = null;
 
-          if ( ! $scope.editor.subject ) {
-            return this.$error = 'Please enter a subject';
-          }
-
-          if ( ! $scope.editor.description ) {
-            return this.$error = 'Please enter a description';
-          }
-
-          var obj = {};
-
-          for ( var key in $scope.editor ) {
-            if ( ! /^\$/.test(key) ) {
-              obj[key] = $scope.editor[key];
-            }
-          }
-
-          obj.image = getImage();
-
-          console.log(obj);
-
-          ItemFactory.insert(obj)
-            .success(function () {
-              location.href = '/';
-            });
+        if ( ! $scope.editor.subject ) {
+          return this.$error = 'Please enter a subject';
         }
+
+        if ( ! $scope.editor.description ) {
+          return this.$error = 'Please enter a description';
+        }
+
+        var obj = {};
+
+        for ( var key in $scope.editor ) {
+          if ( ! /^\$/.test(key) ) {
+            obj[key] = $scope.editor[key];
+          }
+        }
+
+        obj.image = getImage();
+
+        console.log(obj);
+
+        ItemFactory.insert(obj)
+          .success(function () {
+            location.href = '/';
+          });
       };
+
+
     }
   });
 
