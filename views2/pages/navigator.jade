@@ -8,7 +8,7 @@ block page
     .panel.panel-default
       .panel-heading
         h4.panel-title
-          a(href='/create/Topic')
+          a(href='/create/Topic' data-ng-show='is.in = ' + !!isSignedIn)
             i.pull-right.glyphicon.glyphicon-plus
           span Topic
 
@@ -21,7 +21,7 @@ block page
               .panel.panel-default
                 .panel-heading
                   h4.panel-title
-                    a(data-ng-href='/create/Problem/{{topic._id}}')
+                    a(data-ng-href='/create/Problem/{{topic._id}}' data-ng-show='is.in = ' + !!isSignedIn)
                       i.pull-right.glyphicon.glyphicon-plus
                     span Problem
 

@@ -3391,13 +3391,13 @@ module.exports = function () {
 };
 },{"moment":"/home/francois/Dev/elance/synappalpha/node_modules/moment/moment.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js":[function(require,module,exports){
 module.exports = function () {
-  return function (str) {
+  return function (str, max) {
     if ( typeof str === 'string' ) {
-      if ( str.length <= 100 ) {
+      if ( str.length <= max ) {
         return str;
       }
       else {
-        return str.substr(0, 100) + '...';
+        return str.substr(0, max);
       }
     }
   };
@@ -3477,6 +3477,15 @@ module.exports = function () {
 
     // Accordion Controller
     NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
+      $scope.navigator = {};
+
+      $scope.moreLess = function (is) {
+        $timeout(function () {
+          is.$maxChars = 1000;
+        }, 250);
+        return false;
+      };
+
       ItemFactory.findTopics()
         .success(function (data) {
           $scope.topics = data;

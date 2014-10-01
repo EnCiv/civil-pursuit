@@ -1,11 +1,11 @@
 module.exports = function () {
-  return function (str) {
+  return function (str, max) {
     if ( typeof str === 'string' ) {
-      if ( str.length <= 100 ) {
+      if ( str.length <= max ) {
         return str;
       }
       else {
-        return str.substr(0, 100) + '...';
+        return str.substr(0, max);
       }
     }
   };

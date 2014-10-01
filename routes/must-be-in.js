@@ -14,6 +14,6 @@ module.exports = function (req, res, next) {
     return next ();
   }
   else {
-    return next(require('../lib/error').Unauthorized());
+    return res.redirect('/');
   }
 };

@@ -12,8 +12,12 @@ mixin box(type)
 
       .col-xs-9.col-sm-5
         h4(data-ng-bind=type + '.subject')
-        div.box-description
-          p(data-ng-bind=type + '.description')
+        div.box-description(data-ng-init=type + '.$maxChars = 100')
+          span(data-ng-bind=type + '.description | shorten:' + type + '.$maxChars')
+          span(data-ng-show=type + '.description.length > ' + type + '.$maxChars')
+            span  
+            a.more(href='#' data-ng-click='moreLess(' + type + ')') more
+          a.more(href='#' data-ng-show=type + '.$maxChars === 1000' data-ng-click=type + '.$maxChars = 100')  less
 
       .box-promoted.col-xs-3.text-right
         h5 Promoted

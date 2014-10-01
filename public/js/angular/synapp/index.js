@@ -72,6 +72,15 @@
 
     // Accordion Controller
     NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
+      $scope.navigator = {};
+
+      $scope.moreLess = function (is) {
+        $timeout(function () {
+          is.$maxChars = 1000;
+        }, 250);
+        return false;
+      };
+
       ItemFactory.findTopics()
         .success(function (data) {
           $scope.topics = data;
