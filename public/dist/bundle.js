@@ -2883,6 +2883,81 @@ module.exports = function ($scope) {
     return $scope.entry;
   }
 };
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js":[function(require,module,exports){
+module.exports = function ($scope, UserFactory) {
+
+  $scope.sign = {};
+
+  $scope.signIn = function () {   
+
+    // MUST HAVE EMAIL
+
+
+    if ( ! $scope.sign.email ) {
+      $scope.alert = 'Please enter a valid email';
+      return;
+    }
+
+    // MUST HAVE PASSWORD
+    
+    if ( ! $scope.sign.password ) {
+      $scope.alert = 'Please enter a password';
+      return;
+    }
+
+    // IF NO PASSWORD CONFIRMATION
+    
+    if ( ! $scope.sign.password_confirm ) {
+
+      // SIGN IN
+
+      UserFactory.signIn(
+        {
+          email: $scope.sign.email,
+          password: $scope.sign.password
+        })
+
+        .error(function (error) {
+          if ( error.error && error.error.statusCode && error.error.statusCode === 404 ) {
+            return $scope.sign._up = true;
+          }
+          $scope.alert = error;
+        })
+
+        .success(function (data) {
+          $scope.isSignedIn = true;
+          location.reload();
+        });
+
+      return;
+    }
+    
+    // PASSWORD CONFIRM MISMATCH
+
+    if ( $scope.sign.password !== $scope.sign.password_confirm ) {
+      return $scope.alert = "Passwords don't match";
+    }
+
+    // SIGN UP
+
+    return UserFactory.signUp(
+      // ----- Credentials ---------------------------------------------------------------  //
+      {
+        email:    $scope.sign.email,
+        password: $scope.sign.password
+      })
+      // ----- On factory error ----------------------------------------------------------  //
+      .error(function (error) {
+        $scope.alert = error;
+      })
+      // ----- On factory sucess ---------------------------------------------------------  //
+      .success(function (data) {
+        // ----- Letting the UI knowns user is signed in ---------------------------------  //
+        $scope.isSignedIn = true;
+        location.reload();
+      });
+    };
+};
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js":[function(require,module,exports){
 FileAPI = {
   debug: true,
@@ -3266,6 +3341,22 @@ module.exports = function ($http) {
     }
   };
 };
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js":[function(require,module,exports){
+module.exports = function ($http) {
+  return {
+    signIn: function (creds) {
+      return $http.post('/sign/in', creds);
+    },
+
+    signUp: function (creds) {
+      return $http.post('/sign/up', creds);
+    },
+
+    findByEmail: function (email) {
+      return $http.get('/json/User/findOne?email=' + email);
+    }
+  };
+};
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js":[function(require,module,exports){
 module.exports = function () {
   return function (entries) {
@@ -3349,7 +3440,11 @@ module.exports = function () {
 
     // Item factory
 
-    ItemFactory           :     require('./factories/Item')
+    ItemFactory           :     require('./factories/Item'),
+
+    // User factory
+
+    UserFactory           :     require('./factories/User')
   
   });
 
@@ -3378,6 +3473,7 @@ module.exports = function () {
   synapp.controller({
     AppCtrl:                  require('./controllers/app'),
     UploadCtrl:               require('./controllers/upload'),
+    SignCtrl:               require('./controllers/sign'),
 
     // Accordion Controller
     NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
@@ -3471,4 +3567,4 @@ module.exports = function () {
   
 })();
 
-},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Item":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Item":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);

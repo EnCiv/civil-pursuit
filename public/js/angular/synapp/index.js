@@ -35,7 +35,11 @@
 
     // Item factory
 
-    ItemFactory           :     require('./factories/Item')
+    ItemFactory           :     require('./factories/Item'),
+
+    // User factory
+
+    UserFactory           :     require('./factories/User')
   
   });
 
@@ -64,6 +68,7 @@
   synapp.controller({
     AppCtrl:                  require('./controllers/app'),
     UploadCtrl:               require('./controllers/upload'),
+    SignCtrl:               require('./controllers/sign'),
 
     // Accordion Controller
     NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
