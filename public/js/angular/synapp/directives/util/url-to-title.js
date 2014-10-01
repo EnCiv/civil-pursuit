@@ -30,30 +30,14 @@ module.exports = function ($http) {
 
             $scope.searchingTitle = false;
 
-            $scope.entry.url = $elem.val();
+            $scope.editor.url = $elem.val();
 
-            $scope.entry.title = JSON.parse(data);
+            $scope.editor.title = JSON.parse(data);
 
-            $elem.data('url', $scope.entry.url);
-            $elem.data('title', $scope.entry.title);
+            $elem.data('url', $scope.editor.url);
+            $elem.data('title', $scope.editor.title);
           });
       });
-
-  /*    $elem.on('focus', function () {
-        if ( $(this).data('url') && $(this).data('title') ) {
-          $(this).val($(this).data('url'));
-        }
-      });
-
-      $elem.on('blur', function () {
-        if ( $(this).data('changing') === 'yes' ) {
-          return;
-        }
-
-        if ( $(this).data('url') && $(this).data('title') ) {
-          $(this).val($(this).data('title'));
-        }
-      });*/
     }
   };
 };

@@ -57,12 +57,27 @@ block entry-created
 
 block page
 
+  form
+    .row
+      .col-xs-4
+        include ../partials/editor/image
+
+      .col-xs-8
+        include ../partials/editor/references
+
+    .row
+      .col-xs-12
+        include ../partials/editor/subject
+
+    .row
+      .col-xs-12
+        include ../partials/editor/description
+
   //-
       FORM
   //-
   section.synapp-util-import(
-    data-import-email     =   email
-    data-import-topic     =   topic
+    data-import-type      =   type
     data-ng-controller    =   'UploadCtrl'
   )
 
@@ -73,8 +88,8 @@ block page
       role                =   'form'
       novalidate
 
-      data-ng-controller  =   'EntryCtrl'
-      data-ng-submit      =   'saveEntry()'
+      data-ng-controller  =   'ItemCtrl'
+      data-ng-submit      =   'saveItem()'
       
     )
 
@@ -82,8 +97,7 @@ block page
 
       //- Hidden fields
 
-      input(type='hidden' ng-model='email')
-      input(type='hidden' ng-model='topic')
+      input(type='text' ng-model='type')
 
       //- Alert
 

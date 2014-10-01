@@ -16,12 +16,8 @@ module.exports = function ($http) {
       return $http.get('/json/Item?' + params.join('&'));
     },
 
-    findBySlug: function (slug) {
-      return $http.get('/json/Topic/findOne?slug=' + slug);
-    },
-
-    findById: function (id) {
-      return $http.get('/json/Topic/findById/' + id);
+    insert: function (item) {
+      return $http.post('/json/Item', item);
     }
   };
 };

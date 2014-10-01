@@ -30,12 +30,6 @@
     "on": {},
 
     "then": [
-      {
-        "spawn": {
-          "bin": "gulp",
-          "args": ["watch"]
-        }
-      },
 
       {
         "set": {

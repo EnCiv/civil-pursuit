@@ -1,12 +1,18 @@
+include image
+
 mixin box(type)
   .box 
     .row
       .col-xs-12.col-sm-4
-        image.img-responsive.center-block(alt='{{' + type + '.subject}}' data-ng-src='{{' + type + '.image}}')
+        h1.is-author
+          a(href='/edit/')
+            i.glyphicon.glyphicon-user
+        div
+          +item-image(type)
 
       .col-xs-9.col-sm-5
         h4(data-ng-bind=type + '.subject')
-        div
+        div.box-description
           p(data-ng-bind=type + '.description')
 
       .box-promoted.col-xs-3.text-right

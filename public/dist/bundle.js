@@ -2883,294 +2883,6 @@ module.exports = function ($scope) {
     return $scope.entry;
   }
 };
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/entry.js":[function(require,module,exports){
-module.exports = function ($scope, EntryFactory, EvaluationFactory, UserFactory) {
-
-  $scope.entry = $scope.entry || {};
-
-  function getImage () {
-    if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
-      return $scope.uploadResult[0].path.split(/\//).pop();
-    }
-  }
-
-  function create (cb) {
-    var entry = {
-      topic               :   $scope.topic,
-      user                :   $scope.email,
-      subject             :   $scope.entry.subject,
-      url                 :   $scope.entry.url,
-      title               :   $scope.entry.title,
-      description         :   $scope.entry.description,
-      image               :   getImage()
-    };
-
-    EntryFactory.create(entry)
-
-      .success(function(entry) {
-        $scope.entry = entry;
-
-        cb();
-      });
-  }
-
-  function edit (cb) {
-    var entry = {
-      topic               :   $scope.topic._id,
-      subject             :   $scope.entry.subject,
-      url                 :   $scope.entry.url,
-      title               :   $scope.entry.title,
-      description         :   $scope.entry.description,
-      image               :   getImage()
-    };
-
-    UserFactory.findByEmail($scope.email)
-
-      .success(function (user) {
-        entry.user = user._id;
-
-        EntryFactory.findByIdAndUpdate($scope.entry._id, entry)
-
-          .success(function(entry) {
-            cb();
-          });
-      })
-
-  }
-
-  function createEvaluation (cb) {
-    var evaluation = {
-      topic:    typeof $scope.topic === 'string' ? $scope.topic : $scope.topic.slug,
-      user:     $scope.email,
-      entry:    $scope.entry._id
-    };
-
-    EvaluationFactory.create(evaluation)
-
-      .success(function (evaluation) {
-        $scope.evaluation = evaluation;
-
-        cb();
-      });
-  }
-
-  function goToEvaluation () {
-    location.href = '/evaluate/' + $scope.evaluation._id;
-  }
-
-  // Function to clear the form
-
-  $scope.clearEntry = function () {
-    $scope.entry.title        = '';
-    $scope.entry.subject      = '';
-    $scope.entry.description  = '';
-    $scope.dataUrls           = [];
-  }
-
-  // Function to publish entry
-
-  $scope.saveEntry = function () {
-
-    $scope.form_create.submitted = true;
-
-    $scope.alert = false;
-
-    // Subject should not be empty
-
-    if ( $scope.form_create.subject.$error.required ) {
-      return $scope.alert = 'Please enter a subject';
-    }
-    
-    // Description should not be empty
-
-    if ( $scope.form_create.description.$error.required ) {
-      $scope.alert = 'Please enter a description';
-      return;
-    }
-
-    console.log(($scope.entry && $scope.entry._id) ? 'edit':'create');
-
-
-
-    // If entry has an _id, do a save
-
-    if ( $scope.entry && $scope.entry._id ) {
-
-      return serie.callbacks(edit, createEvaluation, goToEvaluation);
-
-    }
-
-    // Create entry
-
-    else {
-
-      return serie.callbacks(create, createEvaluation, goToEvaluation);
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluation.js":[function(require,module,exports){
-module.exports = function ($scope, EntryFactory, VoteFactory, FeedbackFactory) {
-
-  $scope.votes = {};
-
-  $scope.feedbacks = {};
-
-  $scope.continue = function () {
-
-    var entries = $scope.evaluation.entries;
-
-    VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
-
-    console.log($scope.feedbacks);
-
-    if ( $scope.feedbacks[entries[0]._id] ) {
-      FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
-    }
-
-    if ( $scope.feedbacks[entries[1]._id] ) {
-      FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
-    }
-
-    entries.splice(0, entries[1] ? 2 : 1);
-
-    EntryFactory.view(entries[0]._id);
-
-    if ( entries[1] && entries[1]._id ) {
-      EntryFactory.view(entries[1]._id);
-    }
-  }
-
-  $scope.promote = function (index) {
-
-    var entries = $scope.evaluation.entries;
-
-    EntryFactory.promote(entries[index]._id);
-
-    if ( index === 0 ) {
-      VoteFactory.add($scope.votes[entries[1]._id], entries[1]._id, $scope.email);
-
-      if ( $scope.feedbacks[entries[0]._id] ) {
-        FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
-      }
-
-      entries.splice(1, 1);
-    }
-
-    else {
-      VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
-
-      if ( $scope.feedbacks[entries[0]._id] ) {
-        FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
-      }
-
-      entries[0] = entries.splice(2, 1)[0];
-
-      /*if ( typeof entries[0] === 'undefined' ) {
-        entries
-      }*/
-
-      console.log('entries', entries);
-    }
-  };
-
-  $scope.finish = function () {
-
-    var entries = $scope.evaluation.entries;
-
-    if ( $scope.feedbacks[entries[0]._id] ) {
-      FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
-      VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
-    }
-
-    if ( $scope.feedbacks[entries[1]._id] ) {
-      FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
-      VoteFactory.add($scope.votes[entries[1]._id], entries[1]._id, $scope.email);
-    }
-
-    if ( $scope.evaluation.entry ) {
-      location.href = '/list/' + $scope.evaluation.topic.slug;
-    }
-    else {
-      location.href = '/list/' + $scope.evaluation.topic.slug + '/me';
-    }
-  };
-};
-
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js":[function(require,module,exports){
-module.exports = function ($scope, UserFactory) {
-
-  $scope.sign = {};
-
-  $scope.signIn = function () {   
-
-    // MUST HAVE EMAIL
-
-
-    if ( ! $scope.sign.email ) {
-      $scope.alert = 'Please enter a valid email';
-      return;
-    }
-
-    // MUST HAVE PASSWORD
-    
-    if ( ! $scope.sign.password ) {
-      $scope.alert = 'Please enter a password';
-      return;
-    }
-
-    // IF NO PASSWORD CONFIRMATION
-    
-    if ( ! $scope.sign.password_confirm ) {
-
-      // SIGN IN
-
-      UserFactory.signIn(
-        {
-          email: $scope.sign.email,
-          password: $scope.sign.password
-        })
-
-        .error(function (error) {
-          if ( error.error && error.error.statusCode && error.error.statusCode === 404 ) {
-            return $scope.sign._up = true;
-          }
-          $scope.alert = error;
-        })
-
-        .success(function (data) {
-          $scope.isSignedIn = true;
-          location.reload();
-        });
-
-      return;
-    }
-    
-    // PASSWORD CONFIRM MISMATCH
-
-    if ( $scope.sign.password !== $scope.sign.password_confirm ) {
-      return $scope.alert = "Passwords don't match";
-    }
-
-    // SIGN UP
-
-    return UserFactory.signUp(
-      // ----- Credentials ---------------------------------------------------------------  //
-      {
-        email:    $scope.sign.email,
-        password: $scope.sign.password
-      })
-      // ----- On factory error ----------------------------------------------------------  //
-      .error(function (error) {
-        $scope.alert = error;
-      })
-      // ----- On factory sucess ---------------------------------------------------------  //
-      .success(function (data) {
-        // ----- Letting the UI knowns user is signed in ---------------------------------  //
-        $scope.isSignedIn = true;
-        location.reload();
-      });
-    };
-};
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js":[function(require,module,exports){
 FileAPI = {
   debug: true,
@@ -3330,194 +3042,6 @@ var MyCtrl = [ '$scope', '$http', '$timeout', '$upload', function($scope, $http,
 } ];
 
 module.exports = MyCtrl;
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/criterias.js":[function(require,module,exports){
-module.exports = function (CriteriaFactory) {
-  return {
-    restrict: 'C',
-
-    link: function ($scope, $elem, $attr) {
-
-      CriteriaFactory.find()
-
-        .success(function (criterias) {
-
-          $scope.criterias = criterias;
-        });
-
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/entries.js":[function(require,module,exports){
-module.exports = function (EntryFactory, UserFactory) {
-  return {
-    restrict: 'C',
-
-    link: function ($scope, $elem, $attr) {
-
-      // Find many
-
-      if ( $attr.topicSlug || $attr.userEmail ) {
-
-        EntryFactory.get({
-          'topic-slug': $attr.topicSlug,
-          'user-email': $attr.userEmail
-        })
-
-          .success(function (entries) {
-            $scope.entries = entries;
-            $scope.entriesLoaded = true;
-          });
-      }
-
-      // find single entry (such as in summary)
-
-      if ( $attr.entry ) {
-        EntryFactory.findById($attr.entry)
-
-          .success(function (entry) {
-            $scope.entryLoaded = true;
-            $scope.entry = entry;
-          });
-      }
-
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/evaluations.js":[function(require,module,exports){
-module.exports = function (EvaluationFactory) {
-  return {
-    restrict: 'C',
-
-    link: function ($scope, $elem, $attr) {
-      // find evaluation
-
-      if ( $attr.evaluation ) {
-        EvaluationFactory.findById($attr.evaluation)
-
-          .success(function (evaluation) {
-
-            // For each entry
-
-            evaluation.entries = evaluation.entries
-              .map(function (entry) {
-
-                // Format entry
-
-                entry = entry.entry;
-
-                // Update votes in scope
-
-                $scope.votes[entry._id] = {};
-
-
-                // Return formatted entry
-
-                return entry;
-              });
-
-            /*if ( evaluation.entries.length < 2 ) {
-              $scope.comparing = [];
-
-              for ( var i = 0, len = evaluation.entries.length; i < len; i ++ ) {
-                $scope.comparing.push(i);
-              }
-            }*/
-
-            $scope.evaluation = evaluation;
-          });
-      }
-
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/feedbacks.js":[function(require,module,exports){
-module.exports = function (FeedbackFactory) {
-  return {
-    restrict: 'C',
-    link: function ($scope, $elem, $attr) {
-      FeedbackFactory.find({
-        entry: $attr.entry,
-        topic: $attr.topic,
-        user: $attr.email
-      })
-        .success(function (feedbacks) {
-          $scope.feedbacks = feedbacks;
-        });
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/topics.js":[function(require,module,exports){
-// .synapp-topics
-
-module.exports = function (TopicFactory, EntryFactory) {
-
-  return {
-
-    restrict: 'C',
-
-    link: function ($scope, $elem, $attr) {
-
-      // Get topic by slug
-
-      if ( $attr.slug ) {
-        TopicFactory.findBySlug($attr.slug)
-
-          .success(function (topic) {
-            
-            $scope.topicLoaded    =   true;
-            
-            $scope.topic          =   topic;
-
-          });
-      }
-
-      // Get topic which this entry id belongs to
-
-      else if ( $attr.entry ) {
-        EntryFactory.findById($attr.entry)
-
-          .success(function (entry) {
-            TopicFactory.findById(entry.topic)
-
-              .success(function (topic) {
-                $scope.topic = topic;
-              });
-          })
-      }
-      
-      else {
-        
-        // Get topics
-
-        TopicFactory.find()
-
-          .success(function (topics) {
-            
-            $scope.topicsLoaded   =   true;
-            
-            $scope.topics         =   topics;
-
-          });
-      }
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/votes.js":[function(require,module,exports){
-module.exports = function (VoteFactory) {
-  return {
-    restrict: 'C',
-    link: function ($scope, $elem, $attr ) {
-      if ( $attr.entry ) {
-        VoteFactory.getAccumulation($attr.entry)
-
-          .success(function (data) {
-            $scope.votes = data;
-            console.log(data);
-          });
-      }
-    }
-  };
-};
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js":[function(require,module,exports){
 module.exports = function (EntryFactory) {
   return {
@@ -3706,137 +3230,18 @@ module.exports = function ($http) {
 
             $scope.searchingTitle = false;
 
-            $scope.entry.url = $elem.val();
+            $scope.editor.url = $elem.val();
 
-            $scope.entry.title = JSON.parse(data);
+            $scope.editor.title = JSON.parse(data);
 
-            $elem.data('url', $scope.entry.url);
-            $elem.data('title', $scope.entry.title);
+            $elem.data('url', $scope.editor.url);
+            $elem.data('title', $scope.editor.title);
           });
       });
-
-  /*    $elem.on('focus', function () {
-        if ( $(this).data('url') && $(this).data('title') ) {
-          $(this).val($(this).data('url'));
-        }
-      });
-
-      $elem.on('blur', function () {
-        if ( $(this).data('changing') === 'yes' ) {
-          return;
-        }
-
-        if ( $(this).data('url') && $(this).data('title') ) {
-          $(this).val($(this).data('title'));
-        }
-      });*/
     }
   };
 };
 
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Criteria.js":[function(require,module,exports){
-module.exports = function ($http) {
-  return {
-    find: function () {
-      return $http.get('/json/Criteria');
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Entry.js":[function(require,module,exports){
-module.exports = function ($http) {
-  return {
-    find: function (query) {
-      var url = '/json/Entry/statics';
-
-      query = query || {};
-
-      var params = [];
-
-      for ( var q in query ) {
-        if ( query[q] ) {
-          params.push([q,query[q]].join('='));
-        }
-      }
-
-      if ( params.length ) {
-        url += '?' + params.join('&');
-      }
-
-      return $http.get(url);
-    },
-
-    findById: function (id) {
-      return $http.get('/json/Entry/findById/' + id);
-    },
-
-    findByTopicSlug: function (topicSlug) {
-      return $http.get('/json/Entry/statics/findByTopicSlug/' + topicSlug);
-    },
-
-    findByIdAndUpdate: function (id, entry) {
-      return $http.put('/json/Entry/statics/updateById/' + id, entry);
-    },
-
-    evaluate: function (topic) {
-      return $http.get('/json/Entry/statics/evaluate/' + topic);
-    },
-
-    create: function (entry) {
-      return $http.post('/json/Entry/statics/add', entry);
-    },
-
-    get: function (options) {
-      return $http.put('/json/Entry/statics/get', options);
-    },
-
-    // Increment view
-
-    view: function (entry) {
-      return $http.put('/json/Entry?_id=' + entry, JSON.stringify({ "$inc": { views: 1 } }) );
-    },
-
-    // Increment promotions
-
-    promote: function (entry) {
-      return $http.put('/json/Entry?_id=' + entry, JSON.stringify({ "$inc": { promotions: 1 } }) );
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Evaluation.js":[function(require,module,exports){
-module.exports = function ($http) {
-  return {
-    create: function (evaluation) {
-      return $http.post('/json/Evaluation/statics/add', evaluation);
-    },
-
-    findById: function (id) {
-      return $http.get('/json/Evaluation/findById/' + id + '?$populate=topic entries.entry');
-    },
-
-    promote: function (id, entry) {
-      return $http.get('/json/Evaluation/statics/promote/' + id + '/' + entry);
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Feedback.js":[function(require,module,exports){
-module.exports = function ($http) {
-  return {
-    create: function (entryId, userEmail, feedback) {
-      return $http({
-        method: 'PUT',
-        url: '/json/Feedback/statics/add/' + entryId + '/' + userEmail,
-        data: feedback,
-        headers: {
-          'Content-Type': 'text/plain; charset=utf-8'
-        }
-      });
-    },
-
-    find: function (options) {
-      return $http.put('/json/Feedback/statics/get', options);
-    }
-  };
-};
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js":[function(require,module,exports){
 module.exports = function ($http) {
   return {
@@ -3856,78 +3261,8 @@ module.exports = function ($http) {
       return $http.get('/json/Item?' + params.join('&'));
     },
 
-    findBySlug: function (slug) {
-      return $http.get('/json/Topic/findOne?slug=' + slug);
-    },
-
-    findById: function (id) {
-      return $http.get('/json/Topic/findById/' + id);
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Topic.js":[function(require,module,exports){
-module.exports = function ($http) {
-  return {
-    find: function () {
-      return $http.get('/json/Item?type=Topic');
-    },
-
-    findBySlug: function (slug) {
-      return $http.get('/json/Topic/findOne?slug=' + slug);
-    },
-
-    findById: function (id) {
-      return $http.get('/json/Topic/findById/' + id);
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js":[function(require,module,exports){
-module.exports = function ($http) {
-  return {
-    signIn: function (creds) {
-      return $http.post('/sign/in', creds);
-    },
-
-    signUp: function (creds) {
-      return $http.post('/sign/up', creds);
-    },
-
-    findByEmail: function (email) {
-      return $http.get('/json/User/findOne?email=' + email);
-    }
-  };
-};
-},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Vote.js":[function(require,module,exports){
-module.exports = function ($http) {
-  return {
-    create: function (vote) {
-      return $http.post('/json/Vote', vote);
-    },
-
-    findByEntry: function (entry) {
-      return $http.get('/json/Vote?entry=' + entry);
-    },
-
-    findByEntries: function (entries) {
-
-      entries = entries.map(function (entry) {
-        if ( typeof entry === 'string' ) {
-          return entry;
-        }
-
-        return entry._id;
-      })
-
-      return $http.put('/json/Vote/statics/findByEntries', entries);
-    },
-
-    getAccumulation: function (entry) {
-      return $http.get('/json/Vote/statics/getAccumulation/' + entry);
-    },
-
-    add: function (votesByCriteria, entryId, userEmail) {
-      console.log('got', arguments);
-      return $http.post('/json/Vote/statics/add/' + entryId + '/' + userEmail, votesByCriteria);
+    insert: function (item) {
+      return $http.post('/json/Item', item);
     }
   };
 };
@@ -4012,68 +3347,12 @@ module.exports = function () {
 
   synapp.factory({
 
-    // Topic factory
-
-    TopicFactory              :     require('./factories/Topic'),
-
-    // User factory
-
-    UserFactory               :     require('./factories/User'),
-
-    // Entry factory
-
-    EntryFactory              :     require('./factories/Entry'),
-
-    // Evaluation factory
-
-    EvaluationFactory         :     require('./factories/Evaluation'),
-
-    // Criteria factory
-
-    CriteriaFactory           :     require('./factories/Criteria'),
-
-    // Vote factory
-
-    VoteFactory               :     require('./factories/Vote'),
-
-    // Feedback factory
-
-    FeedbackFactory           :     require('./factories/Feedback'),
-
     // Item factory
 
     ItemFactory           :     require('./factories/Item')
   
   });
 
-  // DATA DIRECTIVES
-
-  synapp.directive({
-
-    // topics
-
-    synappDataTopics:         require('./directives/data/topics'),
-
-    // entries
-
-    synappDataEntries:        require('./directives/data/entries'),
-
-    // evaluations
-
-    synappDataEvaluations     :       require('./directives/data/evaluations'),
-
-    // criterias
-
-    synappDataCriterias       :       require('./directives/data/criterias'),
-
-    // feedbacks
-
-    synappDataFeedbacks       :       require('./directives/data/feedbacks'),
-
-    // votes
-
-    synappDataVotes           :       require('./directives/data/votes')
-  });
 
   // UTILITY DIRECTIVES
 
@@ -4098,15 +3377,10 @@ module.exports = function () {
 
   synapp.controller({
     AppCtrl:                  require('./controllers/app'),
-    SignCtrl:                 require('./controllers/sign'),
     UploadCtrl:               require('./controllers/upload'),
-    EntryCtrl:                require('./controllers/entry'),
-
-    // Evaluation Controller
-    EvaluationCtrl            :       require('./controllers/evaluation'),
 
     // Accordion Controller
-    AccordionCtrl             :       function ($scope, ItemFactory, $timeout) {
+    NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
       ItemFactory.findTopics()
         .success(function (data) {
           $scope.topics = data;
@@ -4126,21 +3400,65 @@ module.exports = function () {
               if ( is.length ) {
                 is = is[0];
 
-                switch ( type ) {
-                  case 'topics':
-                    ItemFactory.findProblems({ parent: id })
+                if ( ! is.$loaded ) {
+                  switch ( type ) {
+                    case 'topics':
+                      ItemFactory.findProblems({ parent: id })
 
-                      .success(function (problems) {
-                        is.$problems = problems;
-                        is.$loaded = true;
-                      });
-                    break;
+                        .success(function (problems) {
+                          is.$problems = problems;
+                          is.$loaded = true;
+                        });
+                      break;
+                  }
                 }
               }
 
             });
           });
         });
+    },
+
+    // Item Controller
+    EditorCtrl                  :       function ($scope, ItemFactory) {
+
+      function getImage () {
+        if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
+          return $scope.uploadResult[0].path.split(/\//).pop();
+        }
+      }
+
+      $scope.editor = {
+        $save: function () {
+          
+          this.$error = null;
+
+          if ( ! $scope.editor.subject ) {
+            return this.$error = 'Please enter a subject';
+          }
+
+          if ( ! $scope.editor.description ) {
+            return this.$error = 'Please enter a description';
+          }
+
+          var obj = {};
+
+          for ( var key in $scope.editor ) {
+            if ( ! /^\$/.test(key) ) {
+              obj[key] = $scope.editor[key];
+            }
+          }
+
+          obj.image = getImage();
+
+          console.log(obj);
+
+          ItemFactory.insert(obj)
+            .success(function () {
+              location.href = '/';
+            });
+        }
+      };
     }
   });
 
@@ -4153,4 +3471,4 @@ module.exports = function () {
   
 })();
 
-},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/entry":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/entry.js","./controllers/evaluation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluation.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/data/criterias":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/criterias.js","./directives/data/entries":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/entries.js","./directives/data/evaluations":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/evaluations.js","./directives/data/feedbacks":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/feedbacks.js","./directives/data/topics":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/topics.js","./directives/data/votes":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/data/votes.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Criteria":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Criteria.js","./factories/Entry":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Entry.js","./factories/Evaluation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Evaluation.js","./factories/Feedback":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Feedback.js","./factories/Item":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js","./factories/Topic":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Topic.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./factories/Vote":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Vote.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Item":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);

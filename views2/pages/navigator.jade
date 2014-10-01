@@ -1,14 +1,14 @@
 extends ../layouts/master
 
-include ../partials/box
+include ../partials/item/box
 
 block page
 
-  div#navigator.navigator.panel-group(data-ng-controller='AccordionCtrl')
+  div#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl')
     .panel.panel-default
       .panel-heading
         h4.panel-title
-          a(href='/create/topic')
+          a(href='/create/Topic')
             i.pull-right.glyphicon.glyphicon-plus
           span Topic
 
@@ -21,7 +21,7 @@ block page
               .panel.panel-default
                 .panel-heading
                   h4.panel-title
-                    a(href='/create/problem')
+                    a(data-ng-href='/create/Problem/{{topic._id}}')
                       i.pull-right.glyphicon.glyphicon-plus
                     span Problem
 

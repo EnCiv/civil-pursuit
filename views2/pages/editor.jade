@@ -1,0 +1,74 @@
+extends ../layouts/master
+
+//-
+    DROP IMAGE
+//-
+
+block append script-angular-modules
+  script.
+    angular_deps.push('angularFileUpload', 'autoGrow');
+
+block prepend script-angular
+  script(src='/bower_components/ng-file-upload-shim/angular-file-upload-shim.js')
+
+block append script-angular
+  script(src='/bower_components/ng-file-upload/angular-file-upload.js')
+  script(src='/js/angular/autogrow/index.js')
+
+//-
+    PAGE
+//-
+
+block page
+
+  section(data-ng-controller='UploadCtrl')
+    form(
+      novalidate
+      data-ng-controller = 'EditorCtrl'
+      data-ng-submit = 'editor.$save()'
+      data-ng-init = 'editor.type = "' + type + '"; editor.parent = ' + (parent ? ('"' + parent + '"') : null))
+
+      .row.row-padding(data-ng-show='editor.$error')
+        .alert.alert-warning.alert-dismissible(role='alert')
+          strong Warning!
+          div(data-ng-bind='editor.$error')
+
+      .row.row-padding
+        .col-xs-4.padding
+          include ../partials/editor/image
+
+        .col-xs-8.padding
+          include ../partials/editor/references
+
+      .row.row-padding
+        .col-xs-12
+          include ../partials/editor/subject
+
+      .row.row-padding
+        .col-xs-12
+          include ../partials/editor/description
+
+      .row.padding
+        .col-xs-6
+
+          //- Upload image button
+
+          div.upload-button.btn.btn-default(
+            ng-file-select  =   "onFileSelect($files)"
+            data-multiple   =   "true"
+            title           =   "select file"
+            onclick         =   "this.value = null"
+              ) Upload image
+
+        .col-xs-6.text-right
+
+          //- Clear button
+
+          button.btn(
+            data-ng-click   =   'clearEntry()' 
+            type            =   'button'
+              ) Clear
+
+          //- Done button
+          
+          button.btn.btn-info Done

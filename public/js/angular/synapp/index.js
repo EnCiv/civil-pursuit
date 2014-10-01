@@ -33,68 +33,12 @@
 
   synapp.factory({
 
-    // Topic factory
-
-    TopicFactory              :     require('./factories/Topic'),
-
-    // User factory
-
-    UserFactory               :     require('./factories/User'),
-
-    // Entry factory
-
-    EntryFactory              :     require('./factories/Entry'),
-
-    // Evaluation factory
-
-    EvaluationFactory         :     require('./factories/Evaluation'),
-
-    // Criteria factory
-
-    CriteriaFactory           :     require('./factories/Criteria'),
-
-    // Vote factory
-
-    VoteFactory               :     require('./factories/Vote'),
-
-    // Feedback factory
-
-    FeedbackFactory           :     require('./factories/Feedback'),
-
     // Item factory
 
     ItemFactory           :     require('./factories/Item')
   
   });
 
-  // DATA DIRECTIVES
-
-  synapp.directive({
-
-    // topics
-
-    synappDataTopics:         require('./directives/data/topics'),
-
-    // entries
-
-    synappDataEntries:        require('./directives/data/entries'),
-
-    // evaluations
-
-    synappDataEvaluations     :       require('./directives/data/evaluations'),
-
-    // criterias
-
-    synappDataCriterias       :       require('./directives/data/criterias'),
-
-    // feedbacks
-
-    synappDataFeedbacks       :       require('./directives/data/feedbacks'),
-
-    // votes
-
-    synappDataVotes           :       require('./directives/data/votes')
-  });
 
   // UTILITY DIRECTIVES
 
@@ -119,15 +63,10 @@
 
   synapp.controller({
     AppCtrl:                  require('./controllers/app'),
-    SignCtrl:                 require('./controllers/sign'),
     UploadCtrl:               require('./controllers/upload'),
-    EntryCtrl:                require('./controllers/entry'),
-
-    // Evaluation Controller
-    EvaluationCtrl            :       require('./controllers/evaluation'),
 
     // Accordion Controller
-    AccordionCtrl             :       function ($scope, ItemFactory, $timeout) {
+    NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
       ItemFactory.findTopics()
         .success(function (data) {
           $scope.topics = data;
@@ -147,21 +86,65 @@
               if ( is.length ) {
                 is = is[0];
 
-                switch ( type ) {
-                  case 'topics':
-                    ItemFactory.findProblems({ parent: id })
+                if ( ! is.$loaded ) {
+                  switch ( type ) {
+                    case 'topics':
+                      ItemFactory.findProblems({ parent: id })
 
-                      .success(function (problems) {
-                        is.$problems = problems;
-                        is.$loaded = true;
-                      });
-                    break;
+                        .success(function (problems) {
+                          is.$problems = problems;
+                          is.$loaded = true;
+                        });
+                      break;
+                  }
                 }
               }
 
             });
           });
         });
+    },
+
+    // Item Controller
+    EditorCtrl                  :       function ($scope, ItemFactory) {
+
+      function getImage () {
+        if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
+          return $scope.uploadResult[0].path.split(/\//).pop();
+        }
+      }
+
+      $scope.editor = {
+        $save: function () {
+          
+          this.$error = null;
+
+          if ( ! $scope.editor.subject ) {
+            return this.$error = 'Please enter a subject';
+          }
+
+          if ( ! $scope.editor.description ) {
+            return this.$error = 'Please enter a description';
+          }
+
+          var obj = {};
+
+          for ( var key in $scope.editor ) {
+            if ( ! /^\$/.test(key) ) {
+              obj[key] = $scope.editor[key];
+            }
+          }
+
+          obj.image = getImage();
+
+          console.log(obj);
+
+          ItemFactory.insert(obj)
+            .success(function () {
+              location.href = '/';
+            });
+        }
+      };
     }
   });
 

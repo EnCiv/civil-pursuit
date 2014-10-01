@@ -7,6 +7,7 @@ var source      = require('vinyl-source-stream');
 var path        = require('path');
 var watch       = require('gulp-watch');
 var concat      = require('gulp-concat');
+var minifyCSS   = require('gulp-minify-css');
 
 gulp.task('default', function() {
   // place code for your default task here
@@ -19,7 +20,12 @@ gulp.task('less', function () {
         path.join(__dirname, 'public/bower_components/boostrap/less')
       ]
     }))
-    .pipe(gulp.dest('public/css'));
+    .pipe(gulp.dest('public/css'))
+    .on('end', function () {
+      gulp.src('public/css/synaccord.css')
+        .pipe(minifyCSS())
+        .pipe(gulp.dest('public/dist'));
+    });
 });
 
 gulp.task('browserify', function () {

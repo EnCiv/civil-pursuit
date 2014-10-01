@@ -1,3 +1,5 @@
+// Meta data
+
 //- Encoding
 meta(charset='utf-8')
 
@@ -10,11 +12,11 @@ meta(http-equiv="X-UA-Compatible" content="IE=edge")
 //- Viewport
 meta(name="viewport" content="width=device-width, initial-scale=1.0")
 
-//- Environment
-meta(env=settings.env)
-
 //- Stylesheets
 block stylesheets
   block css-app
-    link(rel='stylesheet' href='/css/synaccord.css')
+    - if ( settings.env === 'production' )
+      link(rel='stylesheet' href='/dist/synaccord.css')
+    - else
+      link(rel='stylesheet' href='/css/synaccord.css')
     //- link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')

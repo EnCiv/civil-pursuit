@@ -140,6 +140,8 @@ domain.run(function () {
 
     if ( res.locals.isSignedIn ) {
       res.locals.email = req.signedCookies.synuser.email;
+      res.locals._id = req.signedCookies.synuser._id;
+      console.log('is logged in', req.signedCookies.synuser);
     }
 
     next();
@@ -189,25 +191,26 @@ domain.run(function () {
   });
 
   /*  
-    SCREEN 1: HOME
+    NAVIGATOR
   */
 
   app.get('/', function (req, res) {
-    res.render('pages/home');
+    res.render('pages/navigator');
   });
 
   /*  
-    SCREEN 2: CREATE
+    EDITOR
   */
 
-  app.get('/create/:topic',
+  app.get('/create/:type/:parent?',
 
     mustBeIn,
 
     function (req, res) {
-      res.render('pages/create', {
+      res.render('pages/editor', {
         page: 'create',
-        topic: req.params.topic
+        type: req.params.type,
+        parent: req.params.parent
       });
     });
 
@@ -350,7 +353,34 @@ domain.run(function () {
 
   var monson = require('monson')(mongoose);
 
-  app.use('/json', monson.express.bind(monson));
+  app.use('/json/:model',
+    function (req, res, next) {
+
+      // PERMISSIONS - MUST BE SIGNED IN
+
+      if ( ! res.locals.isSignedIn ) {
+        if ( req.method === 'POST' || req.method === 'PUT' ) {
+          return next(require('./lib/error').Unauthorized());
+        }
+      }
+
+      // PERMISSIONS - PROTECTING USER MODEL
+
+      if ( req.params.model === 'User' ) {
+        return next(require('./lib/error').Unauthorized());
+      }
+
+      // ADD USER
+
+      if ( req.method === 'POST' ) {
+        req.body.user = req.signedCookies.synuser.id;
+      }
+
+      next();
+      
+    },
+
+    monson.express.bind(monson));
 
   /*  
     UPLOAD IMAGE

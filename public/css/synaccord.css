@@ -4630,11 +4630,25 @@ textarea {
 
     `````````````````````````````````````````````````````````````````````` 
 */
+.navigator h4.panel-title {
+  text-align: center;
+}
+.navigator .panel-collapse {
+  padding-right: 0;
+}
 .navigator ul {
   padding-left: 0;
 }
 .navigator ul li {
   list-style-type: none;
+}
+.navigator .is-author {
+  padding: 0 10px;
+  opacity: .5;
+  display: none;
+}
+.navigator .is-author + div {
+  margin-top: 13px;
 }
 .navigator .box {
   border-bottom: 1px solid #eee;
@@ -4647,7 +4661,7 @@ textarea {
   padding-left: 10px;
 }
 .navigator .box .box-description {
-  padding: 10px;
+  padding: 4px 10px;
 }
 .navigator .box .box-promoted {
   padding-right: 10px;

@@ -76,7 +76,7 @@ module.exports = function (req, res, next) {
           
           Log.OK('User created: %s'    .format(req.body.email));
           
-          res.cookie('synuser', { email: req.body.email }, cookie);
+          res.cookie('synuser', { email: req.body.email, id: created._id }, cookie);
           
           res.json(created);
 
@@ -134,7 +134,7 @@ module.exports = function (req, res, next) {
               // -------------------------------------------------------------------------------- \\
               Log.INFO('Email match: %s'         .format(req.body.email));
               // -------------------------------------------------------------------------------- \\
-              res.cookie('synuser', { email: req.body.email }, cookie);
+              res.cookie('synuser', { email: req.body.email, id: user._id }, cookie);
               // -------------------------------------------------------------------------------- \\
               Log.OK('User signed in: %s'      .format(req.body.email));
               // -------------------------------------------------------------------------------- \\

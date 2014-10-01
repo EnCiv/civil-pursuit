@@ -48,7 +48,7 @@ var ItemSchema = new Schema({
     "type": String,
     "required": true,
     "validate": function (type) {
-      return ['topic', 'problem', 'solution', 'opinion'].indexOf(type) > -1;
+      return ['Topic', 'Problem', 'Solution', 'Opinion'].indexOf(type) > -1;
     }
   },
 
