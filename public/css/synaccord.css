@@ -4649,6 +4649,7 @@ textarea {
 }
 .navigator .is-author + div {
   margin-top: 13px;
+  margin-left: 10px;
 }
 .navigator .box {
   border-bottom: 1px solid #eee;
