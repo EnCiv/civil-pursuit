@@ -3305,14 +3305,151 @@ module.exports = function ($http) {
 
             $scope.searchingTitle = false;
 
-            $scope.editor.url = $elem.val();
+            $scope.editor.references[0].url = $elem.val();
 
-            $scope.editor.title = JSON.parse(data);
+            $scope.editor.references[0].title = JSON.parse(data);
 
-            $elem.data('url', $scope.editor.url);
-            $elem.data('title', $scope.editor.title);
+            $elem.data('url', $scope.editor.references[0].url);
+            $elem.data('title', $scope.editor.references[0].title);
           });
       });
+    }
+  };
+};
+
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js":[function(require,module,exports){
+module.exports = function ($http) {
+
+  var url = '/json/';
+
+  function Model (model) {
+    this.model = model;
+    this.query = {};
+
+    this.url = url + model + '/';
+  }
+
+  Model.prototype.action = function(action) {
+    this.url += action + '/';
+
+    return this;
+  };
+
+  Model.prototype.findById = function(id) {
+    this.action('findById');
+    this.params([id]);
+
+    return this;
+  };
+
+  Model.prototype.findOne = function(id) {
+    this.action('findOne');
+
+    return this;
+  };
+
+  Model.prototype.params = function(params) {
+    if ( Array.isArray(params) ) {
+      this.url += params.join('/') + '/';
+    }
+
+    return this;
+  };
+
+  Model.prototype.populate = function() {
+
+    var populators = [];
+
+    for ( var i in arguments ) {
+      populators.push(arguments[i]);
+    }
+
+    this.query['populate::' + populators.join('+')] = null;
+
+    return this;
+  };
+
+  Model.prototype.applyQuery = function() {
+    if ( Object.keys(this.query).length ) {
+      var queries = [];
+
+      for ( var i in this.query ) {
+        if ( this.query[i] ) {
+          queries.push(i + '=' + this.query[i]);
+        }
+        else {
+          queries.push(i);
+        }
+      }
+
+      this.url += '?' + queries.join('&');
+    }
+  };
+
+  Model.prototype.get = function() {
+    
+    this.applyQuery();
+
+    return $http.get(this.url);
+  };
+
+  Model.prototype.post = function(payload) {
+    return $http.post(this.url, payload);
+  };
+
+  Model.prototype.put = function(payload) {
+    return $http.put(this.url, payload);
+  };
+
+  return {
+    model: function (model) {
+      return new Model(model);
+    },
+
+    Evaluation: {
+      get: function (id) {
+        return new Model('Evaluation')
+
+          .findById(id)
+
+          .populate('item', 'items._id')
+
+          .get();
+      }
+    },
+
+    User_Evaluation: {
+      get: function (evaluation) {
+        return new Model('User_Evaluation')
+
+          .findOne()
+
+          .put({ evaluation: evaluation });
+      },
+
+      create: function (evaluation) {
+        return new Model('User_Evaluation')
+
+          .post({ evaluation: evaluation });
+      }
+    }
+  };
+};
+
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Evaluation.js":[function(require,module,exports){
+module.exports = function ($http) {
+  return {
+
+    // Create a new evaluation using item
+
+    make: function (item) {
+      return $http.post('/json/Evaluation/make', { item: item });
+    },
+
+    // Find evaluation by id
+
+    findById: function (id) {
+      return $http.get('/json/Evaluation/findById/' + id + '?populate::item+items._id');
     }
   };
 };
@@ -3338,6 +3475,14 @@ module.exports = function ($http) {
 
     insert: function (item) {
       return $http.post('/json/Item', item);
+    },
+
+    findById: function (id) {
+      return $http.get('/json/Item/findById/' + id);
+    },
+
+    updateById: function (id, item) {
+      return $http.put('/json/Item?_id=' + id + '&:hooks', item)
     }
   };
 };
@@ -3359,16 +3504,16 @@ module.exports = function ($http) {
 };
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js":[function(require,module,exports){
 module.exports = function () {
-  return function (entries) {
+  return function (items) {
 
     var current = [];
     
-    if ( Array.isArray(entries) && entries.length ) {
+    if ( Array.isArray(items) && items.length ) {
       
-      current.push(entries[0]);
+      current.push(items[0]);
 
-      if ( entries[1] ) {
-        current.push(entries[1]);
+      if ( items[1] ) {
+        current.push(items[1]);
       }
     }
 
@@ -3444,7 +3589,15 @@ module.exports = function () {
 
     // User factory
 
-    UserFactory           :     require('./factories/User')
+    UserFactory           :     require('./factories/User'),
+
+    // Evaluation factory
+
+    EvaluationFactory           :     require('./factories/Evaluation'),
+
+    // Data factory
+
+    DataFactory           :     require('./factories/Data')
   
   });
 
@@ -3523,7 +3676,7 @@ module.exports = function () {
     UploadCtrl:               require('./controllers/upload'),
     SignCtrl:               require('./controllers/sign'),
 
-    // Accordion Controller
+    // Navigator Controller
     NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
       $scope.navigator = {};
 
@@ -3582,8 +3735,8 @@ module.exports = function () {
         });
     },
 
-    // Item Controller
-    EditorCtrl                  :       function ($scope, ItemFactory) {
+    // Editor Controller
+    EditorCtrl                :       function ($scope, ItemFactory, EvaluationFactory, $timeout) {
 
       function getImage () {
         if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
@@ -3595,39 +3748,201 @@ module.exports = function () {
         $scope.editor = {};
       }
 
-      $scope.editor = {
-        $save: function () {
+      $scope.editor.$save = function () {
           
-          this.$error = null;
+        this.$error = null;
 
-          if ( ! $scope.editor.subject ) {
-            return this.$error = 'Please enter a subject';
+        if ( ! $scope.editor.subject ) {
+          return this.$error = 'Please enter a subject';
+        }
+
+        if ( ! $scope.editor.description ) {
+          return this.$error = 'Please enter a description';
+        }
+
+        var obj = {};
+
+        for ( var key in $scope.editor ) {
+          if ( ! /^\$/.test(key) && key !== '_id' ) {
+            obj[key] = $scope.editor[key];
           }
+        }
 
-          if ( ! $scope.editor.description ) {
-            return this.$error = 'Please enter a description';
-          }
+        // update
 
-          var obj = {};
+        if ( $scope.editor._id ) {
 
-          for ( var key in $scope.editor ) {
-            if ( ! /^\$/.test(key) ) {
-              obj[key] = $scope.editor[key];
-            }
-          }
+          obj.image = getImage() || $scope.editor.image;
 
+          console.log(obj.image)
+
+          ItemFactory.updateById($scope.editor._id, obj)
+          .success(function () {
+            location.href = '/evaluate/create/';
+          });
+        }
+
+        // create
+
+        else {
           obj.image = getImage();
 
-          console.log(obj);
-
           ItemFactory.insert(obj)
-            .success(function () {
-              location.href = '/';
+
+            .success(function (created) {
+              
+              EvaluationFactory.make(created._id)
+
+                .success(function (created) {
+                  location.href = '/evaluate/' + created._id;
+                });
+
             });
         }
       };
+      
+      $timeout(function () {
+        if ( $scope.editor.$item ) {
+          ItemFactory.findById($scope.editor.$item)
+            .success(function (item) {
+              for ( var key in item ) {
+                $scope.editor[key] = item[key];
+              }
+            });
+        }
+      });
+    },
+
+    // Evaluator Controller
+    EvaluatorCtrl             :       function ($scope, DataFactory, $timeout) {
+      
+      $scope.evaluator  = {};
+
+      var Evaluation    = DataFactory.Evaluation,
+        User_Evaluation = DataFactory.User_Evaluation;
+
+      function itemsToScope (data) {
+        $scope.items = data.items
+          .map(function (item) {
+            return item._id;
+          })
+          .concat([data.item]);
+
+        console.log('items', $scope.items);
+      }
+
+      // fetch evaluation
+      $timeout(function () {
+
+        // Get evaluation
+
+        Evaluation.get($scope.evaluation)
+          .success(itemsToScope);
+
+        // Get User Evaluation
+
+        User_Evaluation.get($scope.evaluation)
+            
+          .success(function (ue) {
+
+            if ( typeof ue === 'string' ) {
+              try {
+                ue = JSON.parse(ue);
+              }
+              catch (error) {
+
+              }
+            }
+
+            if ( ! ue ) {
+
+              // Get Evaluation
+
+              User_Evaluation.create($scope.evaluation);
+            }
+
+            else {
+
+            }
+
+          });
+      });
+
+      // promote
+
+      $scope.promote = function (index) {
+
+        // EntryFactory.promote(items[index]._id);
+
+        // Promoting left item
+
+        if ( index === 0 ) {
+/*          VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
+
+          if ( $scope.feedbacks[items[0]._id] ) {
+            FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);
+          }*/
+
+          $scope.items.splice(1, 1);
+        }
+
+        // Promoting right item
+
+        else {
+/*          VoteFactory.add($scope.votes[items[0]._id], items[0]._id, $scope.email);
+
+          if ( $scope.feedbacks[items[0]._id] ) {
+            FeedbackFactory.create(items[0]._id, $scope.email, $scope.feedbacks[items[0]._id]);
+          }*/
+
+          $scope.items[0] = $scope.items.splice(2, 1)[0];
+
+          /*if ( typeof items[0] === 'undefined' ) {
+            items
+          }*/
+        }
+      };
+
+      // continue
+
+      $scope.continue = function () {
+
+        // remove current entries from DOM
+        $scope.items.splice(0, $scope.items[1] ? 2 : 1);
+
+        return;
 
 
+
+
+
+        var entries = $scope.evaluation.entries;
+
+        VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
+
+        console.log($scope.feedbacks);
+
+        if ( $scope.feedbacks[entries[0]._id] ) {
+          FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
+        }
+
+        if ( $scope.feedbacks[entries[1]._id] ) {
+          FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
+        }
+
+        entries.splice(0, entries[1] ? 2 : 1);
+
+        EntryFactory.view(entries[0]._id);
+
+        if ( entries[1] && entries[1]._id ) {
+          EntryFactory.view(entries[1]._id);
+        }
+      };
+
+      // finish
+      $scope.finish = function () {
+        location.href = '/';
+      };
     }
   });
 
@@ -3640,4 +3955,4 @@ module.exports = function () {
   
 })();
 
-},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Item":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"./controllers/app":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/app.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/util/add-entry-view":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/add-entry-view.js","./directives/util/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/charts.js","./directives/util/import":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/import.js","./directives/util/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/sliders.js","./directives/util/url-to-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/util/url-to-title.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js","./factories/Evaluation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Evaluation.js","./factories/Item":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Item.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/currently-evaluated.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);

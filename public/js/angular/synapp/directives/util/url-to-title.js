@@ -30,12 +30,12 @@ module.exports = function ($http) {
 
             $scope.searchingTitle = false;
 
-            $scope.editor.url = $elem.val();
+            $scope.editor.references[0].url = $elem.val();
 
-            $scope.editor.title = JSON.parse(data);
+            $scope.editor.references[0].title = JSON.parse(data);
 
-            $elem.data('url', $scope.editor.url);
-            $elem.data('title', $scope.editor.title);
+            $elem.data('url', $scope.editor.references[0].url);
+            $elem.data('title', $scope.editor.references[0].title);
           });
       });
     }

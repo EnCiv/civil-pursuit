@@ -6,13 +6,13 @@ input.form-control.synapp-util-url-to-title(
   type              =   'text' 
   name              =   'title'
   placeholder       =   'http://'
-  data-ng-model     =   'editor.title'
+  data-ng-model     =   'editor.references[0].title'
 )
 
 code.text-primary(ng-show='searchingTitle') Searching title for 
-  span(ng-bind='editor.title | shorten:100' title='{{editor.title}}')
+  span(ng-bind='editor.references[0].title | shorten:100' title='{{editor.references[0].title}}')
 
-code.text-muted(ng-bind='editor.url | shorten:100' title='{{editor.url}}')
+code.text-muted(ng-bind='editor.references[0].url | shorten:100' title='{{editor.references[0].url}}')
 
 code.text-warning(ng-show='searchingTitleFailed') Could not resolve title
 
@@ -21,5 +21,5 @@ code.text-warning(ng-show='searchingTitleFailed') Could not resolve title
 input.entry-url(
   type              =   'hidden'
   name              =   'url'
-  data-ng-model     =   'editor.url'
+  data-ng-model     =   'editor.references[0].url'
 )

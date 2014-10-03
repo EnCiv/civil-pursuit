@@ -39,7 +39,15 @@
 
     // User factory
 
-    UserFactory           :     require('./factories/User')
+    UserFactory           :     require('./factories/User'),
+
+    // Evaluation factory
+
+    EvaluationFactory           :     require('./factories/Evaluation'),
+
+    // Data factory
+
+    DataFactory           :     require('./factories/Data')
   
   });
 
@@ -118,7 +126,7 @@
     UploadCtrl:               require('./controllers/upload'),
     SignCtrl:               require('./controllers/sign'),
 
-    // Accordion Controller
+    // Navigator Controller
     NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
       $scope.navigator = {};
 
@@ -177,8 +185,8 @@
         });
     },
 
-    // Item Controller
-    EditorCtrl                  :       function ($scope, ItemFactory) {
+    // Editor Controller
+    EditorCtrl                :       function ($scope, ItemFactory, EvaluationFactory, $timeout) {
 
       function getImage () {
         if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
@@ -190,7 +198,7 @@
         $scope.editor = {};
       }
 
-      $scope.editor.$save: function () {
+      $scope.editor.$save = function () {
           
         this.$error = null;
 
@@ -205,22 +213,186 @@
         var obj = {};
 
         for ( var key in $scope.editor ) {
-          if ( ! /^\$/.test(key) ) {
+          if ( ! /^\$/.test(key) && key !== '_id' ) {
             obj[key] = $scope.editor[key];
           }
         }
 
-        obj.image = getImage();
+        // update
 
-        console.log(obj);
+        if ( $scope.editor._id ) {
 
-        ItemFactory.insert(obj)
+          obj.image = getImage() || $scope.editor.image;
+
+          console.log(obj.image)
+
+          ItemFactory.updateById($scope.editor._id, obj)
           .success(function () {
-            location.href = '/';
+            location.href = '/evaluate/create/';
           });
+        }
+
+        // create
+
+        else {
+          obj.image = getImage();
+
+          ItemFactory.insert(obj)
+
+            .success(function (created) {
+              
+              EvaluationFactory.make(created._id)
+
+                .success(function (created) {
+                  location.href = '/evaluate/' + created._id;
+                });
+
+            });
+        }
+      };
+      
+      $timeout(function () {
+        if ( $scope.editor.$item ) {
+          ItemFactory.findById($scope.editor.$item)
+            .success(function (item) {
+              for ( var key in item ) {
+                $scope.editor[key] = item[key];
+              }
+            });
+        }
+      });
+    },
+
+    // Evaluator Controller
+    EvaluatorCtrl             :       function ($scope, DataFactory, $timeout) {
+      
+      $scope.evaluator  = {};
+
+      var Evaluation    = DataFactory.Evaluation,
+        User_Evaluation = DataFactory.User_Evaluation;
+
+      function itemsToScope (data) {
+        $scope.items = data.items
+          .map(function (item) {
+            return item._id;
+          })
+          .concat([data.item]);
+
+        console.log('items', $scope.items);
+      }
+
+      // fetch evaluation
+      $timeout(function () {
+
+        // Get evaluation
+
+        Evaluation.get($scope.evaluation)
+          .success(itemsToScope);
+
+        // Get User Evaluation
+
+        User_Evaluation.get($scope.evaluation)
+            
+          .success(function (ue) {
+
+            if ( typeof ue === 'string' ) {
+              try {
+                ue = JSON.parse(ue);
+              }
+              catch (error) {
+
+              }
+            }
+
+            if ( ! ue ) {
+
+              // Get Evaluation
+
+              User_Evaluation.create($scope.evaluation);
+            }
+
+            else {
+
+            }
+
+          });
+      });
+
+      // promote
+
+      $scope.promote = function (index) {
+
+        // EntryFactory.promote(items[index]._id);
+
+        // Promoting left item
+
+        if ( index === 0 ) {
+/*          VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
+
+          if ( $scope.feedbacks[items[0]._id] ) {
+            FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);
+          }*/
+
+          $scope.items.splice(1, 1);
+        }
+
+        // Promoting right item
+
+        else {
+/*          VoteFactory.add($scope.votes[items[0]._id], items[0]._id, $scope.email);
+
+          if ( $scope.feedbacks[items[0]._id] ) {
+            FeedbackFactory.create(items[0]._id, $scope.email, $scope.feedbacks[items[0]._id]);
+          }*/
+
+          $scope.items[0] = $scope.items.splice(2, 1)[0];
+
+          /*if ( typeof items[0] === 'undefined' ) {
+            items
+          }*/
+        }
       };
 
+      // continue
 
+      $scope.continue = function () {
+
+        // remove current entries from DOM
+        $scope.items.splice(0, $scope.items[1] ? 2 : 1);
+
+        return;
+
+
+
+
+
+        var entries = $scope.evaluation.entries;
+
+        VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
+
+        console.log($scope.feedbacks);
+
+        if ( $scope.feedbacks[entries[0]._id] ) {
+          FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
+        }
+
+        if ( $scope.feedbacks[entries[1]._id] ) {
+          FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
+        }
+
+        entries.splice(0, entries[1] ? 2 : 1);
+
+        EntryFactory.view(entries[0]._id);
+
+        if ( entries[1] && entries[1]._id ) {
+          EntryFactory.view(entries[1]._id);
+        }
+      };
+
+      // finish
+      $scope.finish = function () {
+        location.href = '/';
+      };
     }
   });
 

@@ -4,7 +4,7 @@ include ../partials/item/box
 
 block page
 
-  div#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl')
+  section#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl')
     .panel.panel-default
       .panel-heading
         h4.panel-title
@@ -13,7 +13,7 @@ block page
           span Topic
 
       ul
-        li(data-ng-repeat='topic in topics' data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
+        li.box-wrapper(data-ng-repeat='topic in topics' data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
           +box('topic')
 
           .panel-collapse.collapse.panel-body(id='topics-{{topic._id}}-problems')
@@ -28,5 +28,5 @@ block page
                 .panel-body
                   big(data-ng-hide='topic.$loaded') Just a moment, we are loading problems related to {{topic.subject}}
                   ul
-                    li(data-ng-repeat='problem in topic.$problems')
+                    li.box-wrapper(data-ng-repeat='problem in topic.$problems')
                       +box('problem')

@@ -1,15 +1,16 @@
 module.exports = function ($http) {
   return {
-    create: function (evaluation) {
-      return $http.post('/json/Evaluation/statics/add', evaluation);
+
+    // Create a new evaluation using item
+
+    make: function (item) {
+      return $http.post('/json/Evaluation/make', { item: item });
     },
+
+    // Find evaluation by id
 
     findById: function (id) {
-      return $http.get('/json/Evaluation/findById/' + id + '?$populate=topic entries.entry');
-    },
-
-    promote: function (id, entry) {
-      return $http.get('/json/Evaluation/statics/promote/' + id + '/' + entry);
+      return $http.get('/json/Evaluation/findById/' + id + '?populate::item+items._id');
     }
   };
 };

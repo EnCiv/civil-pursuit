@@ -4489,6 +4489,9 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   padding: 0;
   word-wrap: break-word;
 }
+[class^=col-].padding {
+  padding: 12px 8px;
+}
 /*
     ``````````````````````````````````````````````````````````````````````
     ## Layout
@@ -4651,9 +4654,8 @@ textarea {
   margin-top: 13px;
   margin-left: 10px;
 }
-.navigator .box {
-  border-bottom: 1px solid #eee;
-  margin-top: 10px;
+.navigator .box-wrapper {
+  border: 1px solid #eeeeee;
 }
 .navigator .box img.img-responsive {
   margin-bottom: 10px;

@@ -1,15 +1,18 @@
 // HTML5 Image drag & upload
 
+include ../item/image
+
 section
   //- Drop image box
 
   .drop-box(
-    data-ng-show                     =   'dropSupported'
+    data-ng-show                     =   'dropSupported && !editor.image'
     data-ng-file-drop                =   'onFileSelect($files)'
     data-ng-file-drop-available      =   "dropSupported=true"
     data-ng-file-drag-over-class     =   "dragOverClass($event)"
     data-ng-file-drag-over-delay     =   "100"
     data-ng-hide                     =   'dataUrls.length'
+    title                            =   'Optional – Drop your own graphic or image here that describes the subject'
       ) Drop image here
 
   //- Uploaded image if any
@@ -21,5 +24,5 @@ section
   )
 
   //- In case of editing, show entry image or default topic image
-  div(data-ng-show='entry._id')
-    include ../item/image
+  div(data-ng-show='editor._id && !dataUrls.length')
+    +item-image('editor')

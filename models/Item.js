@@ -143,7 +143,21 @@ ItemSchema.pre('save', function (next) {
 
       }      
     );
-  
+  }
+
+  // If no image, use parent's image (if any)
+
+  if ( this.isNew && ! this.image && this.parent ) {
+    return Item.findById(this.parent, 'image',
+      function (error, parent) {
+        if ( error ) {
+          return next(error);
+        }
+
+        this.image = parent.image;
+
+        return next();
+      }.bind(this));
   }
 
   return next();
@@ -169,108 +183,7 @@ ItemSchema.statics.updateById = function (id, Item, cb) {
   });
 };
 
-// SAVE FROM UI
-// ============
-
-ItemSchema.statics.add = function (Item, cb) {
-  var self = this;
-
-  require('async').parallel(
-    {
-      topic: function (cb) {
-        Topic.findOne({ slug: Item.topic }, cb);
-      },
-
-      user: function (cb) {
-        User.findOne({ email: Item.user }, cb);
-      }
-    },
-
-    function (error, results) {
-      if ( error ) {
-        return cb(error);
-      }
-
-      if ( ! results.topic ) {
-        return cb(new Error('Topic not found'));
-      }
-
-      if ( ! results.user ) {
-        return cb(new Error('User not found'));
-      }
-
-      Item.topic   = results.topic._id;
-      Item.user    = results.user._id;
-
-      console.log('adding Item', Item);
-
-      self.create(Item, cb);
-    });
-};
-
-// FIND USING TOPIC SLUG
-// =====================
-
-ItemSchema.statics.findByTopicSlug = function (slug, cb) {
-  var self = this;
-
-  Topic.findOne({ slug: slug }, function (error, topic) {
-    if ( error ) {
-      return cb(error);
-    }
-
-    if ( ! topic ) {
-      return cb(new Error('Topic not found'));
-    }
-
-    self.find({ topic: topic._id })
-      .sort({ promotions: -1, views: -1 })
-      .exec(cb);
-  });
-};
-
-// GENERAL FIND
-// ============
-
-ItemSchema.statics.get = function (options, cb) {
-  var self = this;
-
-  var options = options || {};
-
-  var parallels = {};
-
-  if ( options['topic-slug'] ) {
-    parallels.topic = function (cb) {
-      Topic.findOne({ slug: options['topic-slug'] }, cb);
-    };
-  }
-
-  if ( options['user-email'] ) {
-    parallels.user = function (cb) {
-      User.findOne({ email: options['user-email'] }, cb);
-    };
-  }
-
-  require('async').parallel(parallels, function (error, results) {
-    if ( error ) {
-      return cb(error);
-    }
-
-    var query = {};
-
-    if ( results.topic ) {
-      query.topic = results.topic._id;
-    }
-
-    if ( results.user ) {
-      query.user = results.user._id;
-    }
-
-    self.find(query).sort({ promotions: -1, views: -1 }).exec(cb);
-  });
-};
-
 // EXPORT
 // ======
 
-module.exports = mongoose.model('Item', ItemSchema);
+var Item = module.exports = mongoose.model('Item', ItemSchema);

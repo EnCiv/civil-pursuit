@@ -1,14 +1,14 @@
 module.exports = function () {
-  return function (entries) {
+  return function (items) {
 
     var current = [];
     
-    if ( Array.isArray(entries) && entries.length ) {
+    if ( Array.isArray(items) && items.length ) {
       
-      current.push(entries[0]);
+      current.push(items[0]);
 
-      if ( entries[1] ) {
-        current.push(entries[1]);
+      if ( items[1] ) {
+        current.push(items[1]);
       }
     }
 

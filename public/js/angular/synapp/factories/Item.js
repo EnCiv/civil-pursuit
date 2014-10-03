@@ -18,6 +18,14 @@ module.exports = function ($http) {
 
     insert: function (item) {
       return $http.post('/json/Item', item);
+    },
+
+    findById: function (id) {
+      return $http.get('/json/Item/findById/' + id);
+    },
+
+    updateById: function (id, item) {
+      return $http.put('/json/Item?_id=' + id + '&:hooks', item)
     }
   };
 };

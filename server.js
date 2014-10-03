@@ -141,7 +141,6 @@ domain.run(function () {
     if ( res.locals.isSignedIn ) {
       res.locals.email  = req.signedCookies.synuser.email;
       res.locals._id    = req.signedCookies.synuser._id;
-      console.log('is logged in', req.signedCookies.synuser);
     }
 
     next();
@@ -160,9 +159,9 @@ domain.run(function () {
         break;
     }
 
-    Log[LOG](format('[%s] %d %s %s',
+    /*Log[LOG](format('[%s] %d %s %s',
       req.signedCookies.synuser ? req.signedCookies.synuser.email : 'visitor',
-      res.statusCode, req.method, req.url));
+      res.statusCode, req.method, req.url));*/
 
     next();
   });
@@ -229,7 +228,7 @@ domain.run(function () {
     });
 
   /*  
-    SCREEN 3: EVALUATE
+    EVALUATOR
   */
 
   app.get('/evaluate/:evaluation',
@@ -237,7 +236,7 @@ domain.run(function () {
     mustBeIn,
 
     function (req, res) {
-      res.render('pages/evaluate', {
+      res.render('pages/evaluator', {
         evaluation: req.params.evaluation
       });
   });
@@ -255,91 +254,8 @@ domain.run(function () {
       });
     });
 
-  /*  
-    SCREEN 5: MY ENTRIES
-  */
-
-  app.get('/list/:topic/me',
-
-    mustBeIn,
-
-    function (req, res) {
-      res.render('pages/list', {
-        topic: req.params.topic,
-        me: true
-      });  
-    });
-
-  /*  
-    SCREEN 6: ALL ENTRIES
-  */
-
-  app.get('/list/:topic',
-
-    function (req, res) {
-      res.render('pages/list', {
-        topic: req.params.topic
-      });  
-    });
-
   /* ACCESS POINTS */
   /* ------------------------------------------------------------------------ */
-
-  /*
-    CREATE EVALUATION
-  */
-
-  app.get('/evaluate/topic/:topic',
-
-    mustBeIn,
-
-    function (req, res, next) {
-
-      require('async').parallel({
-        
-        topic: function (cb) {
-          
-          require('./models/Topic')
-
-            .findOne({ slug: req.params.topic })
-
-            .exec(cb);
-        },
-
-        user: function (cb) {
-          
-          require('./models/User')
-
-            .findOne({ email: res.locals.email })
-
-            .exec(cb);
-        }
-      },
-
-      function (error, found) {
-        if ( error ) {
-          return next(error);
-        }
-
-        if ( ! found.topic ) {
-          return next(new Error('Topic not found'));
-        }
-
-        if ( ! found.user ) {
-          return next(new Error('User not found'));
-        }
-
-        require('./models/Evaluation')
-          .create({ user: found.user._id, topic: found.topic._id },
-            function (error, created) {
-              if ( error ) {
-                return next(error);
-              }
-
-              res.redirect('/evaluate/' + created._id);
-            });
-      });
-    });
 
   /*  
     SIGN (IN|UP|OUT) or 
@@ -355,7 +271,7 @@ domain.run(function () {
 
   mongoose.connect(process.env.MONGOHQ_URL);
 
-  var monson = require('monson')(mongoose);
+  var monson = require('monson');
 
   app.use('/json/:model',
     function (req, res, next) {
@@ -384,7 +300,7 @@ domain.run(function () {
       
     },
 
-    monson.express.bind(monson));
+    monson.express(mongoose));
 
   /*  
     UPLOAD IMAGE
