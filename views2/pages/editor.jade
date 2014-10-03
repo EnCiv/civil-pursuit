@@ -34,11 +34,8 @@ block page
           div(data-ng-bind='editor.$error')
 
       .row.row-padding
-        .col-xs-4.padding
+        .col-xs-12.padding
           include ../partials/editor/image
-
-        .col-xs-8.padding
-          include ../partials/editor/references
 
       .row.row-padding
         .col-xs-12
@@ -47,6 +44,10 @@ block page
       .row.row-padding
         .col-xs-12
           include ../partials/editor/description
+
+      .row.row-padding
+        .col-xs-12
+          include ../partials/editor/references
 
       .row.padding
         .col-xs-6

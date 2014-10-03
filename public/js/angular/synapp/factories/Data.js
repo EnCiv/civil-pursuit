@@ -141,6 +141,17 @@ module.exports = function ($http) {
 
           .put(JSON.stringify(set));
       }
+    },
+
+    Feedback: {
+      create: function (itemId, feedback) {
+        return new Model('Feedback')
+
+          .post({
+            item: itemId,
+            feedback: feedback
+          });
+      }
     }
   };
 };

@@ -3461,6 +3461,17 @@ module.exports = function ($http) {
 
           .put(JSON.stringify(set));
       }
+    },
+
+    Feedback: {
+      create: function (itemId, feedback) {
+        return new Model('Feedback')
+
+          .post({
+            item: itemId,
+            feedback: feedback
+          });
+      }
     }
   };
 };
@@ -3888,6 +3899,8 @@ module.exports = function () {
           .success(function (data) {
             itemsToScope(data);
 
+            $scope.evaluator.item = data.item;
+
             // Get User Evaluation
 
             User_Evaluation.get($scope.evaluation)
@@ -3937,15 +3950,27 @@ module.exports = function () {
 
           DataFactory.Item.set($scope.items[0]._id, { $inc: { promotions: 1 } });
 
+          // if right has a feedback -- save it
+          
+          if ( $scope.items[1].$feedback ) {
+            DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
+          }
+
 /*          VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
 
           if ( $scope.feedbacks[items[0]._id] ) {
             FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);
           }*/
 
+          // finish if last
+
+          if ( ! $scope.items[2] ) {
+            return $scope.finish();
+          }
+
           // remove unpromoted from DOM
 
-          $scope.items.splice(1, 1);
+          $scope.items.splice(1, 1).length
 
           onChange();
         }
@@ -3962,6 +3987,18 @@ module.exports = function () {
           // Increment promotions counter
 
           DataFactory.Item.set($scope.items[1]._id, { $inc: { promotions: 1 } });
+
+          // if left has a feedback -- save it
+
+          if ( $scope.items[0].$feedback ) {
+            DataFactory.Feedback.create($scope.items[0]._id, $scope.items[0].$feedback);
+          }
+
+          // finish if last
+
+          if ( ! $scope.items[2] ) {
+            return $scope.finish();
+          }
 
           // remove unpromoted from DOM
 
@@ -3981,6 +4018,16 @@ module.exports = function () {
       // continue
 
       $scope.continue = function () {
+
+        // if left has a feedback -- save it
+        if ( $scope.items[0].$feedback ) {
+          DataFactory.Feedback.create($scope.items[0]._id, $scope.items[0].$feedback);
+        }
+
+        // if right has a feedback -- save it
+        if ( $scope.items[1].$feedback ) {
+          DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
+        }
 
         // remove current entries from DOM
         $scope.items.splice(0, $scope.items[1] ? 2 : 1);
@@ -4019,7 +4066,9 @@ module.exports = function () {
 
       // finish
       $scope.finish = function () {
-        location.href = '/';
+        if ( $scope.evaluator.item ) {
+          location.href = '/summary/' + $scope.evaluator.item._id;
+        }
       };
 
       // update user evaluation

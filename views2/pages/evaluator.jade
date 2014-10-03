@@ -17,7 +17,7 @@ block page
 
     // Display
     .row
-      .col-xs-12
+      .col-xs-12.padding
         h2.text-center
           span(data-ng-bind='evaluator.cursor || 1')
           span  of  
@@ -27,7 +27,7 @@ block page
 
     section.hidden-xs
 
-      // Image and references
+      // Image
 
       .row
         .col-sm-6(
@@ -38,7 +38,7 @@ block page
       // Subject
 
       .row
-        .col-sm-6(
+        .col-sm-6.padding(
           data-ng-repeat      =   'item in items | currentlyEvaluated'
         )
           h2(data-ng-bind='item.subject')
@@ -46,10 +46,18 @@ block page
       // Description
 
       .row
-        .col-sm-6(
+        .col-sm-6.padding(
           data-ng-repeat      =   'item in items | currentlyEvaluated'
         )
           div.pre-text.entry-description(data-ng-bind='item.subject')
+
+      // Feedback
+
+      .row
+        .col-sm-6.padding(
+          data-ng-repeat      =   'item in items | currentlyEvaluated'
+        )
+          include ../partials/evaluator/feedback
 
       // Promote
 
