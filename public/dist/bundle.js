@@ -3427,10 +3427,10 @@ module.exports = function ($http) {
           .put({ evaluation: evaluation });
       },
 
-      create: function (evaluation) {
+      create: function (evaluation, items) {
         return new Model('User_Evaluation')
 
-          .post({ evaluation: evaluation });
+          .post({ evaluation: evaluation, items: items });
       }
     }
   };
@@ -3816,7 +3816,9 @@ module.exports = function () {
     // Evaluator Controller
     EvaluatorCtrl             :       function ($scope, DataFactory, $timeout) {
       
-      $scope.evaluator  = {};
+      $scope.evaluator  = {
+        cursor: 1
+      };
 
       var Evaluation    = DataFactory.Evaluation,
         User_Evaluation = DataFactory.User_Evaluation;
@@ -3837,34 +3839,35 @@ module.exports = function () {
         // Get evaluation
 
         Evaluation.get($scope.evaluation)
-          .success(itemsToScope);
+          .success(function (data) {
+            itemsToScope(data);
 
-        // Get User Evaluation
+            // Get User Evaluation
 
-        User_Evaluation.get($scope.evaluation)
-            
-          .success(function (ue) {
+            User_Evaluation.get($scope.evaluation)
+                
+              .success(function (ue) {
 
-            if ( typeof ue === 'string' ) {
-              try {
-                ue = JSON.parse(ue);
-              }
-              catch (error) {
+                if ( typeof ue === 'string' ) {
+                  try {
+                    ue = JSON.parse(ue);
+                  }
+                  catch (error) {
 
-              }
-            }
+                  }
+                }
 
-            if ( ! ue ) {
+                if ( ! ue ) {
 
-              // Get Evaluation
+                  // Get Evaluation
 
-              User_Evaluation.create($scope.evaluation);
-            }
+                  User_Evaluation.create($scope.evaluation, items);
+                }
 
-            else {
+                else {
+                }
 
-            }
-
+              });
           });
       });
 
@@ -3901,6 +3904,9 @@ module.exports = function () {
             items
           }*/
         }
+
+        // update cursor
+        $scope.evaluator.cursor ++;
       };
 
       // continue
@@ -3909,6 +3915,9 @@ module.exports = function () {
 
         // remove current entries from DOM
         $scope.items.splice(0, $scope.items[1] ? 2 : 1);
+
+        // update cursor
+        $scope.evaluator.cursor += 2;
 
         return;
 
@@ -3942,6 +3951,11 @@ module.exports = function () {
       // finish
       $scope.finish = function () {
         location.href = '/';
+      };
+
+      // update user evaluation
+      $scope.updateUserEvaluation = function () {
+
       };
     }
   });

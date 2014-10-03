@@ -14,6 +14,14 @@ block prepend script-app
 
 block page
   section(data-ng-controller='EvaluatorCtrl' data-ng-init='evaluation = "' + evaluation + '"')
+
+    // Display
+    .row
+      .col-xs-12
+        h2.text-center
+          span(data-ng-bind='evaluator.cursor || 1')
+          span  of  
+          span 5
     
     // Normal screen
 
@@ -51,7 +59,7 @@ block page
         )
           button.btn.btn-block(
             data-ng-click   =   'promote($index)'
-            data-ng-show    =   'items[2]'
+            data-ng-show    =   'items[1]'
           ) Promote
 
     // Continue

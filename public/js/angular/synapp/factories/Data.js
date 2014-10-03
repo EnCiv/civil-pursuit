@@ -107,10 +107,10 @@ module.exports = function ($http) {
           .put({ evaluation: evaluation });
       },
 
-      create: function (evaluation) {
+      create: function (evaluation, items) {
         return new Model('User_Evaluation')
 
-          .post({ evaluation: evaluation });
+          .post({ evaluation: evaluation, items: items });
       }
     }
   };
