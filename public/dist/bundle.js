@@ -3342,6 +3342,13 @@ module.exports = function ($http) {
     return this;
   };
 
+  Model.prototype.updateById = function(id) {
+    this.action('updateById');
+    this.params([id]);
+
+    return this;
+  };
+
   Model.prototype.findOne = function(id) {
     this.action('findOne');
 
@@ -3365,6 +3372,14 @@ module.exports = function ($http) {
     }
 
     this.query['populate::' + populators.join('+')] = null;
+
+    return this;
+  };
+
+  Model.prototype.addQuery = function(object) {
+    for ( var i in object ) {
+      this.query[i] = object[i];
+    }
 
     return this;
   };
@@ -3398,6 +3413,9 @@ module.exports = function ($http) {
   };
 
   Model.prototype.put = function(payload) {
+
+    this.applyQuery();
+
     return $http.put(this.url, payload);
   };
 
@@ -3431,6 +3449,17 @@ module.exports = function ($http) {
         return new Model('User_Evaluation')
 
           .post({ evaluation: evaluation, items: items });
+      }
+    },
+
+    Item: {
+      set: function (id, set) {
+        console.log('got set', set)
+        return new Model('Item')
+
+          .addQuery({ _id: id })
+
+          .put(JSON.stringify(set));
       }
     }
   };
@@ -3838,6 +3867,18 @@ module.exports = function () {
         console.log('items', $scope.items);
       }
 
+      function onChange () {
+        // Add views counter
+
+        if ( $scope.items[0] ) {
+          $scope.addView($scope.items[0]);
+        }
+
+        if ( $scope.items[1] ) {
+          $scope.addView($scope.items[1]);
+        }
+      }
+
       // fetch evaluation
       $timeout(function () {
 
@@ -3866,7 +3907,7 @@ module.exports = function () {
 
                   // Get Evaluation
 
-                  User_Evaluation.create($scope.evaluation, items);
+                  // User_Evaluation.create($scope.evaluation, items);
                 }
 
                 else {
@@ -3875,6 +3916,12 @@ module.exports = function () {
               });
           });
       });
+
+      // add view
+
+      $scope.addView = function (item) {
+        DataFactory.Item.set(item._id, { $inc: { views: 1 } });
+      };
 
       // promote
 
@@ -3885,13 +3932,22 @@ module.exports = function () {
         // Promoting left item
 
         if ( index === 0 ) {
+
+          // Increment promotions counter
+
+          DataFactory.Item.set($scope.items[0]._id, { $inc: { promotions: 1 } });
+
 /*          VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
 
           if ( $scope.feedbacks[items[0]._id] ) {
             FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);
           }*/
 
+          // remove unpromoted from DOM
+
           $scope.items.splice(1, 1);
+
+          onChange();
         }
 
         // Promoting right item
@@ -3903,7 +3959,15 @@ module.exports = function () {
             FeedbackFactory.create(items[0]._id, $scope.email, $scope.feedbacks[items[0]._id]);
           }*/
 
+          // Increment promotions counter
+
+          DataFactory.Item.set($scope.items[1]._id, { $inc: { promotions: 1 } });
+
+          // remove unpromoted from DOM
+
           $scope.items[0] = $scope.items.splice(2, 1)[0];
+
+          onChange();
 
           /*if ( typeof items[0] === 'undefined' ) {
             items

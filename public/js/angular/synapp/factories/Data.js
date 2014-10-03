@@ -22,6 +22,13 @@ module.exports = function ($http) {
     return this;
   };
 
+  Model.prototype.updateById = function(id) {
+    this.action('updateById');
+    this.params([id]);
+
+    return this;
+  };
+
   Model.prototype.findOne = function(id) {
     this.action('findOne');
 
@@ -45,6 +52,14 @@ module.exports = function ($http) {
     }
 
     this.query['populate::' + populators.join('+')] = null;
+
+    return this;
+  };
+
+  Model.prototype.addQuery = function(object) {
+    for ( var i in object ) {
+      this.query[i] = object[i];
+    }
 
     return this;
   };
@@ -78,6 +93,9 @@ module.exports = function ($http) {
   };
 
   Model.prototype.put = function(payload) {
+
+    this.applyQuery();
+
     return $http.put(this.url, payload);
   };
 
@@ -111,6 +129,17 @@ module.exports = function ($http) {
         return new Model('User_Evaluation')
 
           .post({ evaluation: evaluation, items: items });
+      }
+    },
+
+    Item: {
+      set: function (id, set) {
+        console.log('got set', set)
+        return new Model('Item')
+
+          .addQuery({ _id: id })
+
+          .put(JSON.stringify(set));
       }
     }
   };

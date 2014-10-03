@@ -288,6 +288,18 @@
         console.log('items', $scope.items);
       }
 
+      function onChange () {
+        // Add views counter
+
+        if ( $scope.items[0] ) {
+          $scope.addView($scope.items[0]);
+        }
+
+        if ( $scope.items[1] ) {
+          $scope.addView($scope.items[1]);
+        }
+      }
+
       // fetch evaluation
       $timeout(function () {
 
@@ -316,7 +328,7 @@
 
                   // Get Evaluation
 
-                  User_Evaluation.create($scope.evaluation, items);
+                  // User_Evaluation.create($scope.evaluation, items);
                 }
 
                 else {
@@ -325,6 +337,12 @@
               });
           });
       });
+
+      // add view
+
+      $scope.addView = function (item) {
+        DataFactory.Item.set(item._id, { $inc: { views: 1 } });
+      };
 
       // promote
 
@@ -335,13 +353,22 @@
         // Promoting left item
 
         if ( index === 0 ) {
+
+          // Increment promotions counter
+
+          DataFactory.Item.set($scope.items[0]._id, { $inc: { promotions: 1 } });
+
 /*          VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
 
           if ( $scope.feedbacks[items[0]._id] ) {
             FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);
           }*/
 
+          // remove unpromoted from DOM
+
           $scope.items.splice(1, 1);
+
+          onChange();
         }
 
         // Promoting right item
@@ -353,7 +380,15 @@
             FeedbackFactory.create(items[0]._id, $scope.email, $scope.feedbacks[items[0]._id]);
           }*/
 
+          // Increment promotions counter
+
+          DataFactory.Item.set($scope.items[1]._id, { $inc: { promotions: 1 } });
+
+          // remove unpromoted from DOM
+
           $scope.items[0] = $scope.items.splice(2, 1)[0];
+
+          onChange();
 
           /*if ( typeof items[0] === 'undefined' ) {
             items
