@@ -3817,7 +3817,8 @@ module.exports = function () {
     EvaluatorCtrl             :       function ($scope, DataFactory, $timeout) {
       
       $scope.evaluator  = {
-        cursor: 1
+        cursor: 1,
+        limit: 5
       };
 
       var Evaluation    = DataFactory.Evaluation,
@@ -3829,6 +3830,10 @@ module.exports = function () {
             return item._id;
           })
           .concat([data.item]);
+
+        if ( $scope.items.length < 6 ) {
+          $scope.evaluator.limit = $scope.items.length - 1;
+        }
 
         console.log('items', $scope.items);
       }
