@@ -104,6 +104,16 @@ ItemSchema.post( 'init', function() {
   this._original = this.toObject();
 });
 
+// PRE VALIDATE
+// ============
+
+ItemSchema.pre('validate', function (next) {
+/*  if ( this.isNew && this.parent ) {
+    this.parent = Schema.Types.ObjectId(this.parent);
+  }*/
+  return next();
+});
+
 // PRE SAVE
 // ========
 
@@ -180,6 +190,47 @@ ItemSchema.statics.updateById = function (id, Item, cb) {
     }
 
     found.save(cb);
+  });
+};
+
+// EVALUATE
+// ============
+
+ItemSchema.statics.evaluate = function (id, cb) {
+  var self = this;
+
+  this.findById(id, function (error, item) {
+    if ( error ) {
+      return cb(error);
+    }
+
+    if ( ! item ) {
+      return cb(new Error('Item not found'));
+    }
+
+    self
+      .find({
+        type: item.type,
+        parent: item.parent
+      })
+
+      .where('_id').ne(item._id)
+
+      .limit(5)
+
+      .sort({ views: 1 })
+
+      .exec(function (error, items) {
+        if ( error ) {
+          return cb(error);
+        }
+
+        cb(null, {
+          type: item.type,
+          item: id,
+          items: items.concat(item)
+        });
+      });
   });
 };
 

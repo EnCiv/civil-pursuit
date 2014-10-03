@@ -3323,8 +3323,9 @@ module.exports = function ($http) {
   var url = '/json/';
 
   function Model (model) {
-    this.model = model;
-    this.query = {};
+    this.model    = model;
+    this.query    = {};
+    this.sorters  = [];
 
     this.url = url + model + '/';
   }
@@ -3376,6 +3377,24 @@ module.exports = function ($http) {
     return this;
   };
 
+  Model.prototype.sort = function(field, reverse) {
+    var sorter = field;
+
+    if ( reverse ) {
+      sorter += '-';
+    }
+
+    this.sorters.push(sorter);
+
+    return this;
+  };
+
+  Model.prototype.applySorters = function() {
+    if ( this.sorters.length ) {
+      this.query['sort::' + this.sorters.join(',')] = null;
+    }
+  };
+
   Model.prototype.addQuery = function(object) {
     for ( var i in object ) {
       this.query[i] = object[i];
@@ -3402,21 +3421,28 @@ module.exports = function ($http) {
   };
 
   Model.prototype.get = function() {
-    
-    this.applyQuery();
-
-    return $http.get(this.url);
+    return this.request('get');
   };
 
   Model.prototype.post = function(payload) {
-    return $http.post(this.url, payload);
+    return this.request('post', payload);
   };
 
   Model.prototype.put = function(payload) {
+    return this.request('put', payload);
+  };
+
+  Model.prototype.request = function(method, payload) {
+    this.applySorters();
 
     this.applyQuery();
 
-    return $http.put(this.url, payload);
+    var q = $http[method](this.url, payload);
+
+    q.ok = q.success;
+    q.ko = q.error;
+
+    return q;
   };
 
   return {
@@ -3424,42 +3450,50 @@ module.exports = function ($http) {
       return new Model(model);
     },
 
-    Evaluation: {
-      get: function (id) {
-        return new Model('Evaluation')
-
-          .findById(id)
-
-          .populate('item', 'items._id')
-
-          .get();
-      }
-    },
-
-    User_Evaluation: {
-      get: function (evaluation) {
-        return new Model('User_Evaluation')
-
-          .findOne()
-
-          .put({ evaluation: evaluation });
-      },
-
-      create: function (evaluation, items) {
-        return new Model('User_Evaluation')
-
-          .post({ evaluation: evaluation, items: items });
-      }
-    },
-
     Item: {
       set: function (id, set) {
-        console.log('got set', set)
         return new Model('Item')
 
           .addQuery({ _id: id })
 
           .put(JSON.stringify(set));
+      },
+
+      evaluate: function (id) {
+        return new Model('Item')
+
+          .action('evaluate')
+
+          .params([id])
+
+          .get();
+      }
+    },
+
+    Topic: {
+      get: function () {
+        return new Model('Item')
+
+          .addQuery({ type: 'Topic' })
+
+          .sort('promotions', true)
+
+          .get();
+      }
+    },
+
+    Problem: {
+      get: function (topic) {
+        return new Model('Item')
+
+          .addQuery({
+            type: 'Problem',
+            parent: topic
+          })
+
+          .sort('promotions', true)
+
+          .get();
       }
     },
 
@@ -3717,7 +3751,11 @@ module.exports = function () {
     SignCtrl:               require('./controllers/sign'),
 
     // Navigator Controller
-    NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
+    NavigatorCtrl             :       function ($scope, ItemFactory, DataFactory, $timeout) {
+
+      var Topic = DataFactory.Topic,
+        Problem = DataFactory.Problem;
+
       $scope.navigator = {};
 
       $timeout(function () {
@@ -3737,7 +3775,7 @@ module.exports = function () {
         return false;
       };
 
-      ItemFactory.findTopics()
+      Topic.get()
         .success(function (data) {
           $scope.topics = data;
 
@@ -3759,7 +3797,7 @@ module.exports = function () {
                 if ( ! is.$loaded ) {
                   switch ( type ) {
                     case 'topics':
-                      ItemFactory.findProblems({ parent: id })
+                      Problem.get(id)
 
                         .success(function (problems) {
                           is.$problems = problems;
@@ -3776,7 +3814,7 @@ module.exports = function () {
     },
 
     // Editor Controller
-    EditorCtrl                :       function ($scope, ItemFactory, EvaluationFactory, $timeout) {
+    EditorCtrl                :       function ($scope, ItemFactory, EvaluationFactory, DataFactory, $timeout) {
 
       function getImage () {
         if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
@@ -3827,17 +3865,12 @@ module.exports = function () {
         else {
           obj.image = getImage();
 
-          ItemFactory.insert(obj)
+          DataFactory.model('Item').post(obj)
 
-            .success(function (created) {
-              
-              EvaluationFactory.make(created._id)
-
-                .success(function (created) {
-                  location.href = '/evaluate/' + created._id;
-                });
-
-            });
+            .ok(
+              function (created) {
+                location.href = '/evaluate/' + created._id;
+              });
         }
       };
       
@@ -3856,29 +3889,15 @@ module.exports = function () {
     // Evaluator Controller
     EvaluatorCtrl             :       function ($scope, DataFactory, $timeout) {
       
+      var Item = DataFactory.Item;
+
       $scope.evaluator  = {
         cursor: 1,
         limit: 5
       };
 
-      var Evaluation    = DataFactory.Evaluation,
-        User_Evaluation = DataFactory.User_Evaluation;
-
-      function itemsToScope (data) {
-        $scope.items = data.items
-          .map(function (item) {
-            return item._id;
-          })
-          .concat([data.item]);
-
-        if ( $scope.items.length < 6 ) {
-          $scope.evaluator.limit = $scope.items.length - 1;
-        }
-
-        console.log('items', $scope.items);
-      }
-
       function onChange () {
+
         // Add views counter
 
         if ( $scope.items[0] ) {
@@ -3893,40 +3912,18 @@ module.exports = function () {
       // fetch evaluation
       $timeout(function () {
 
-        // Get evaluation
+        return Item.evaluate($scope.item)
+          
+          .ok(function (evaluation) {
+            console.log(evaluation)
+            
+            $scope.items = evaluation.items;
 
-        Evaluation.get($scope.evaluation)
-          .success(function (data) {
-            itemsToScope(data);
-
-            $scope.evaluator.item = data.item;
-
-            // Get User Evaluation
-
-            User_Evaluation.get($scope.evaluation)
-                
-              .success(function (ue) {
-
-                if ( typeof ue === 'string' ) {
-                  try {
-                    ue = JSON.parse(ue);
-                  }
-                  catch (error) {
-
-                  }
-                }
-
-                if ( ! ue ) {
-
-                  // Get Evaluation
-
-                  // User_Evaluation.create($scope.evaluation, items);
-                }
-
-                else {
-                }
-
-              });
+            if ( $scope.items.length < 6 ) {
+              $scope.evaluator.limit = $scope.items.length - 1;
+            }
+            
+            onChange();
           });
       });
 
@@ -3956,7 +3953,7 @@ module.exports = function () {
             DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
           }
 
-/*          VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
+          /* VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
 
           if ( $scope.feedbacks[items[0]._id] ) {
             FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);

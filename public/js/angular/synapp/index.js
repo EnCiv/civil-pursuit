@@ -127,7 +127,11 @@
     SignCtrl:               require('./controllers/sign'),
 
     // Navigator Controller
-    NavigatorCtrl             :       function ($scope, ItemFactory, $timeout) {
+    NavigatorCtrl             :       function ($scope, ItemFactory, DataFactory, $timeout) {
+
+      var Topic = DataFactory.Topic,
+        Problem = DataFactory.Problem;
+
       $scope.navigator = {};
 
       $timeout(function () {
@@ -147,7 +151,7 @@
         return false;
       };
 
-      ItemFactory.findTopics()
+      Topic.get()
         .success(function (data) {
           $scope.topics = data;
 
@@ -169,7 +173,7 @@
                 if ( ! is.$loaded ) {
                   switch ( type ) {
                     case 'topics':
-                      ItemFactory.findProblems({ parent: id })
+                      Problem.get(id)
 
                         .success(function (problems) {
                           is.$problems = problems;
@@ -186,7 +190,7 @@
     },
 
     // Editor Controller
-    EditorCtrl                :       function ($scope, ItemFactory, EvaluationFactory, $timeout) {
+    EditorCtrl                :       function ($scope, ItemFactory, EvaluationFactory, DataFactory, $timeout) {
 
       function getImage () {
         if ( Array.isArray($scope.uploadResult) && $scope.uploadResult.length ) {
@@ -237,17 +241,12 @@
         else {
           obj.image = getImage();
 
-          ItemFactory.insert(obj)
+          DataFactory.model('Item').post(obj)
 
-            .success(function (created) {
-              
-              EvaluationFactory.make(created._id)
-
-                .success(function (created) {
-                  location.href = '/evaluate/' + created._id;
-                });
-
-            });
+            .ok(
+              function (created) {
+                location.href = '/evaluate/' + created._id;
+              });
         }
       };
       
@@ -266,29 +265,15 @@
     // Evaluator Controller
     EvaluatorCtrl             :       function ($scope, DataFactory, $timeout) {
       
+      var Item = DataFactory.Item;
+
       $scope.evaluator  = {
         cursor: 1,
         limit: 5
       };
 
-      var Evaluation    = DataFactory.Evaluation,
-        User_Evaluation = DataFactory.User_Evaluation;
-
-      function itemsToScope (data) {
-        $scope.items = data.items
-          .map(function (item) {
-            return item._id;
-          })
-          .concat([data.item]);
-
-        if ( $scope.items.length < 6 ) {
-          $scope.evaluator.limit = $scope.items.length - 1;
-        }
-
-        console.log('items', $scope.items);
-      }
-
       function onChange () {
+
         // Add views counter
 
         if ( $scope.items[0] ) {
@@ -303,40 +288,18 @@
       // fetch evaluation
       $timeout(function () {
 
-        // Get evaluation
+        return Item.evaluate($scope.item)
+          
+          .ok(function (evaluation) {
+            console.log(evaluation)
+            
+            $scope.items = evaluation.items;
 
-        Evaluation.get($scope.evaluation)
-          .success(function (data) {
-            itemsToScope(data);
-
-            $scope.evaluator.item = data.item;
-
-            // Get User Evaluation
-
-            User_Evaluation.get($scope.evaluation)
-                
-              .success(function (ue) {
-
-                if ( typeof ue === 'string' ) {
-                  try {
-                    ue = JSON.parse(ue);
-                  }
-                  catch (error) {
-
-                  }
-                }
-
-                if ( ! ue ) {
-
-                  // Get Evaluation
-
-                  // User_Evaluation.create($scope.evaluation, items);
-                }
-
-                else {
-                }
-
-              });
+            if ( $scope.items.length < 6 ) {
+              $scope.evaluator.limit = $scope.items.length - 1;
+            }
+            
+            onChange();
           });
       });
 
@@ -366,7 +329,7 @@
             DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
           }
 
-/*          VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
+          /* VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
 
           if ( $scope.feedbacks[items[0]._id] ) {
             FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);

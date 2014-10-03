@@ -13,7 +13,7 @@ block prepend script-app
 //-
 
 block page
-  section(data-ng-controller='EvaluatorCtrl' data-ng-init='evaluation = "' + evaluation + '"')
+  section(data-ng-controller='EvaluatorCtrl' data-ng-init='item = "' + item + '"')
 
     // Display
     .row
@@ -50,6 +50,14 @@ block page
           data-ng-repeat      =   'item in items | currentlyEvaluated'
         )
           div.pre-text.entry-description(data-ng-bind='item.subject')
+
+      // Sliders
+
+      .row
+        .col-sm-6.padding(
+          data-ng-repeat      =   'item in items | currentlyEvaluated'
+        )
+          include ../partials/evaluator/sliders
 
       // Feedback
 

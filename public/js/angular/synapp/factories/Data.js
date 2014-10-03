@@ -3,8 +3,9 @@ module.exports = function ($http) {
   var url = '/json/';
 
   function Model (model) {
-    this.model = model;
-    this.query = {};
+    this.model    = model;
+    this.query    = {};
+    this.sorters  = [];
 
     this.url = url + model + '/';
   }
@@ -56,6 +57,24 @@ module.exports = function ($http) {
     return this;
   };
 
+  Model.prototype.sort = function(field, reverse) {
+    var sorter = field;
+
+    if ( reverse ) {
+      sorter += '-';
+    }
+
+    this.sorters.push(sorter);
+
+    return this;
+  };
+
+  Model.prototype.applySorters = function() {
+    if ( this.sorters.length ) {
+      this.query['sort::' + this.sorters.join(',')] = null;
+    }
+  };
+
   Model.prototype.addQuery = function(object) {
     for ( var i in object ) {
       this.query[i] = object[i];
@@ -82,21 +101,28 @@ module.exports = function ($http) {
   };
 
   Model.prototype.get = function() {
-    
-    this.applyQuery();
-
-    return $http.get(this.url);
+    return this.request('get');
   };
 
   Model.prototype.post = function(payload) {
-    return $http.post(this.url, payload);
+    return this.request('post', payload);
   };
 
   Model.prototype.put = function(payload) {
+    return this.request('put', payload);
+  };
+
+  Model.prototype.request = function(method, payload) {
+    this.applySorters();
 
     this.applyQuery();
 
-    return $http.put(this.url, payload);
+    var q = $http[method](this.url, payload);
+
+    q.ok = q.success;
+    q.ko = q.error;
+
+    return q;
   };
 
   return {
@@ -104,42 +130,50 @@ module.exports = function ($http) {
       return new Model(model);
     },
 
-    Evaluation: {
-      get: function (id) {
-        return new Model('Evaluation')
-
-          .findById(id)
-
-          .populate('item', 'items._id')
-
-          .get();
-      }
-    },
-
-    User_Evaluation: {
-      get: function (evaluation) {
-        return new Model('User_Evaluation')
-
-          .findOne()
-
-          .put({ evaluation: evaluation });
-      },
-
-      create: function (evaluation, items) {
-        return new Model('User_Evaluation')
-
-          .post({ evaluation: evaluation, items: items });
-      }
-    },
-
     Item: {
       set: function (id, set) {
-        console.log('got set', set)
         return new Model('Item')
 
           .addQuery({ _id: id })
 
           .put(JSON.stringify(set));
+      },
+
+      evaluate: function (id) {
+        return new Model('Item')
+
+          .action('evaluate')
+
+          .params([id])
+
+          .get();
+      }
+    },
+
+    Topic: {
+      get: function () {
+        return new Model('Item')
+
+          .addQuery({ type: 'Topic' })
+
+          .sort('promotions', true)
+
+          .get();
+      }
+    },
+
+    Problem: {
+      get: function (topic) {
+        return new Model('Item')
+
+          .addQuery({
+            type: 'Problem',
+            parent: topic
+          })
+
+          .sort('promotions', true)
+
+          .get();
       }
     },
 

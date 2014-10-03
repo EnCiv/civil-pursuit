@@ -231,13 +231,13 @@ domain.run(function () {
     EVALUATOR
   */
 
-  app.get('/evaluate/:evaluation',
+  app.get('/evaluate/:item',
 
     mustBeIn,
 
     function (req, res) {
       res.render('pages/evaluator', {
-        evaluation: req.params.evaluation
+        item: req.params.item
       });
   });
 
