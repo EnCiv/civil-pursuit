@@ -11,13 +11,14 @@ block prepend script-app
 
 block page
   section(data-ng-controller='DetailsCtrl' data-ng-init='item_id = "' + item + '"')
-    .row.padding-bottom
-      .col-xs-12
-        +item-image('item')
 
     .row.padding-bottom
       .col-xs-12
-        h2(data-ng-bind='item.subject')
+        h2.text-center(data-ng-bind='item.subject')
+
+    .row.padding-bottom
+      .col-xs-12
+        +item-image('item')
 
     .row.padding-bottom
       .col-xs-12
@@ -26,6 +27,13 @@ block page
     .row.padding-bottom
       .col-xs-12
         include ../partials/item/references
+
+    .row.padding-bottom
+      .col-xs-12
+        h4 Promoted
+        .progress
+          .progress-bar.progress-bar-success(style='width: {{item | getPromoted}}%'
+            data-ng-bind='(item | getPromoted) + "%"')
 
     .row.padding-bottom
       .col-xs-12

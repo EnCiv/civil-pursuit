@@ -3955,10 +3955,12 @@ module.exports = function () {
         // Add views counter
 
         if ( $scope.items[0] ) {
+          console.info('Adding view to left item', $scope.items[0].subject)
           $scope.addView($scope.items[0]);
         }
 
         if ( $scope.items[1] ) {
+          console.info('Adding view to right item', $scope.items[1].subject)
           $scope.addView($scope.items[1]);
         }
       }
@@ -4108,6 +4110,8 @@ module.exports = function () {
         if ( $scope.evaluator.cursor > $scope.evaluator.limit && ($scope.evaluator.limit === 2 || $scope.evaluator.limit === 4) ) {
           $scope.evaluator.cursor = $scope.evaluator.limit;
         }
+
+        onChange();
 
         // scroll back to top
         $(document).scrollTop(0);
