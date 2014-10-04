@@ -321,7 +321,6 @@
 
       // fetch evaluation
       $timeout(function () {
-
         return Item.evaluate($scope.item)
           
           .ok(function (evaluation) {
@@ -465,6 +464,9 @@
         if ( $scope.evaluator.cursor > $scope.evaluator.limit && ($scope.evaluator.limit === 2 || $scope.evaluator.limit === 4) ) {
           $scope.evaluator.cursor = $scope.evaluator.limit;
         }
+
+        // scroll back to top
+        $(document).scrollTop(0);
       };
 
       // finish

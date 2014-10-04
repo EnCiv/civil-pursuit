@@ -139,8 +139,16 @@ domain.run(function () {
     res.locals.isSignedIn = req.signedCookies.synuser;
 
     if ( res.locals.isSignedIn ) {
-      res.locals.email  = req.signedCookies.synuser.email;
-      res.locals._id    = req.signedCookies.synuser._id;
+
+      if ( ! req.signedCookies.synuser._id ) {
+        res.clearCookie('synuser');
+        res.locals.isSignedIn = false;
+      }
+
+      else {
+        res.locals.email  = req.signedCookies.synuser.email;
+        res.locals._id    = req.signedCookies.synuser._id;
+      }
     }
 
     next();
