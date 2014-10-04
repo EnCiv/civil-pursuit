@@ -19,3 +19,10 @@ mixin box(type)
         ul
           li(data-ng-bind=type + '.promotions')
           li(data-ng-bind='(' + type + ' | getPromoted) + "%"')
+
+    .row(data-ng-show=type + '.$showButtons')
+      .col-xs-6.padding
+        a.btn.btn-block.btn-sm(data-ng-href='/evaluate/{{' + type + '._id}}') Promote
+
+      .col-xs-6.padding
+        a.btn.btn-block.btn-sm(data-ng-href='/details/' + type + '._id') Details

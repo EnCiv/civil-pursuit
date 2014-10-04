@@ -242,14 +242,14 @@ domain.run(function () {
   });
 
   /*  
-    SCREEN 4: SUMMARY
+    DETAILS
   */
 
-  app.get('/summary/:entry',
+  app.get('/details/:item',
 
     function (req, res) {
-      res.render('pages/summary', {
-        entry: req.params.entry,
+      res.render('pages/details', {
+        item: req.params.item,
         back: req.get('Referer')
       });
     });

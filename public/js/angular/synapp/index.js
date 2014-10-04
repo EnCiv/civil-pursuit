@@ -151,39 +151,67 @@
         return false;
       };
 
+      function getCollapsedItem (event) {
+        var bits = $(event.target).attr('id').split('-');
+
+        var type = bits[0];
+        var id = bits[1];
+        var has = bits[2];
+
+        return {
+          is: $scope[type].filter(function (t) {
+            return t._id === id;
+          }),
+          type: type,
+          id: id,
+          has: has
+        };
+      }
+
       Topic.get()
         .success(function (data) {
           $scope.topics = data;
 
           $timeout(function () {
             $('.navigator .collapse').on('show.bs.collapse', function (evt) {
-              var bits = $(evt.target).attr('id').split('-');
 
-              var type = bits[0];
-              var id = bits[1];
-              var has = bits[2];
+              var item = getCollapsedItem(evt);
 
-              var is = $scope[type].filter(function (t) {
-                return t._id === id;
-              });
-
-              if ( is.length ) {
-                is = is[0];
+              if ( item.is.length ) {
+                is = item.is[0];
 
                 if ( ! is.$loaded ) {
-                  switch ( type ) {
+                  switch ( item.type ) {
                     case 'topics':
-                      Problem.get(id)
+                      Problem.get(item.id)
 
                         .success(function (problems) {
+                          is.$showButtons = true;
                           is.$problems = problems;
                           is.$loaded = true;
                         });
                       break;
                   }
                 }
-              }
 
+                else {
+                  $scope.$apply(function () {
+                    is.$showButtons = true;
+                  });
+                }
+              }
+            });
+
+            $('.navigator .collapse').on('hide.bs.collapse', function (evt) {
+              var item = getCollapsedItem(evt);
+
+              if ( item.is.length ) {
+                is = item.is[0];
+
+                $scope.$apply(function () {
+                  is.$showButtons = false;
+                });
+              }
             });
           });
         });
@@ -246,8 +274,6 @@
 
         else {
           obj.image = getImage();
-
-          console.log('obj', obj)
 
           DataFactory.model('Item').post(obj)
 
@@ -444,7 +470,7 @@
       // finish
       $scope.finish = function () {
         if ( $scope.item ) {
-          location.href = '/summary/' + $scope.item;
+          location.href = '/details/' + $scope.item;
         }
       };
 
