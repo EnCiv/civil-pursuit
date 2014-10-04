@@ -4511,6 +4511,9 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 footer {
   text-align: center;
 }
+napoleon {
+  color: #ff0000;
+}
 /*
     ``````````````````````````````````````````````````````````````````````
     ## Sign
@@ -4580,24 +4583,6 @@ footer {
 */
 input {
   height: 2em !important;
-}
-@media (max-width: 480px) {
-  .btn,
-  input {
-    font-size: 12px;
-  }
-}
-@media (min-width: 481px) and (max-width: 690px) {
-  .btn,
-  input {
-    font-size: 16px !important;
-  }
-}
-@media (min-width: 691px) {
-  .btn,
-  input {
-    font-size: 22px !important;
-  }
 }
 a.btn {
   background: #ddd;
