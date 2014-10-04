@@ -14,7 +14,10 @@ block page
 
     .row.padding-bottom
       .col-xs-12
-        h2.text-center(data-ng-bind='item.subject')
+        h2
+          span.text-muted(data-ng-bind='item.type')
+          span  
+          span(data-ng-bind='item.subject')
 
     .row.padding-bottom
       .col-xs-12
