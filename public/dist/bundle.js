@@ -3916,6 +3916,10 @@ module.exports = function () {
 
       function onChange () {
 
+        if ( $scope.items.length < 6 ) {
+              $scope.evaluator.limit = $scope.items.length - 1;
+            }
+
         // Add views counter
 
         if ( $scope.items[0] ) {
@@ -3936,10 +3940,6 @@ module.exports = function () {
             console.log(evaluation)
             
             $scope.items = evaluation.items;
-
-            if ( $scope.items.length < 6 ) {
-              $scope.evaluator.limit = $scope.items.length - 1;
-            }
 
             $scope.criterias = evaluation.criterias;
             
