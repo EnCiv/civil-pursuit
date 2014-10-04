@@ -1,0 +1,42 @@
+extends ../layouts/master
+
+block append css-app
+  link(rel='stylesheet' href='/bower_components/c3/c3.css')
+
+block entry-image
+  include ../partials/entry-image
+
+block prepend script-app
+  script(src='/bower_components/d3/d3.js')
+  script(src='/bower_components/c3/c3.js')
+
+block page
+  .synapp-data-entries.synapp-data-votes(     data-entry                =   entry
+  ).synapp-util-import(                       data-import-email         =   'email'
+  ).synapp-data-topics(                       data-slug                 =   topic
+  ).synapp-data-criterias(
+  )
+
+    h4.text-muted.text-center(ng-hide='entryLoaded') Loading entry
+
+    h4.text-center.syn-load(ng-hide='entry || entry.length || ! entryLoaded')
+      span.text-danger No topics found.
+
+    include ../partials/entry-grid
+
+    .row
+      .col-xs-12.padding.text-center(data-ng-hide='entry.views')
+        h4.text-warning This entry has not been evaluated yet
+
+    div(data-ng-show='entry.views')
+
+      include ../partials/entry-chart
+
+      include ../partials/entry-promoted
+
+      .synapp-data-feedbacks(data-entry=entry)
+        
+        h3(data-ng-show='feedbacks') Feedbacks
+        
+        div(data-ng-repeat='feedback in feedbacks')
+          include ../partials/entry-feedback
