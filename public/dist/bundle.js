@@ -4135,6 +4135,7 @@ module.exports = function () {
       $timeout(function () {
         DataFactory.Item.get($scope.item_id)
           .success(function (details) {
+            console.log('details', details);
             $scope.item       = details.item;
             $scope.votes      = details.votes;
             $scope.feedbacks  = details.feedbacks;

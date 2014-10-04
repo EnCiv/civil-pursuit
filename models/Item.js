@@ -247,7 +247,7 @@ ItemSchema.statics.details = function (id, cb) {
 
   require('async').parallel({
       votes: function (then) {
-        require('./Vote').find({ item: Schema.Types.ObjectId(id) }, then);
+        require('./Vote').find({ item: id }, then);
       },
 
       feedbacks: function (then) {
