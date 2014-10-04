@@ -3856,6 +3856,12 @@ module.exports = function () {
           }
         }
 
+        if ( obj.references && ! Array.isArray(obj.references) ) {
+          obj.references = Object.keys(obj.references).map(function (index) {
+            return obj.references[index];
+          });
+        }
+
         // update
 
         if ( $scope.editor._id ) {
@@ -3874,6 +3880,8 @@ module.exports = function () {
 
         else {
           obj.image = getImage();
+
+          console.log('obj', obj)
 
           DataFactory.model('Item').post(obj)
 
