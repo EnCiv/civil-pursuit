@@ -3477,6 +3477,16 @@ module.exports = function ($http) {
           .params([id])
 
           .get();
+      },
+
+      get: function (id) {
+        return new Model('Item')
+
+          .action('details')
+
+          .params([id])
+
+          .get();
       }
     },
 
@@ -4114,15 +4124,20 @@ module.exports = function () {
       $scope.updateUserEvaluation = function () {
 
       };
+    },
+
+    // Detail Controller
+    DetailsCtrl               :       function ($scope, DataFactory, $timeout) {
+      $timeout(function () {
+        DataFactory.Item.get($scope.item_id)
+          .success(function (details) {
+            $scope.item       = details.item;
+            $scope.votes      = details.votes;
+            $scope.feedbacks  = details.feedbacks;
+          });
+      }, 500);
     }
   });
-
-  // // DIRECTIVES
-
-  // synapp.directive({
-  //   'synappUrlToTitle':       require('./directives/util/url2title'),
-  //   'synappCharts':           require('./directives/util/charts')
-  // });
   
 })();
 

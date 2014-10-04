@@ -239,6 +239,41 @@ ItemSchema.statics.evaluate = function (id, cb) {
   });
 };
 
+// DETAILS
+// ============
+
+ItemSchema.statics.details = function (id, cb) {
+  var self = this;
+
+  require('async').parallel({
+      votes: function (then) {
+        require('./Vote').find({ item: Schema.Types.ObjectId(id) }, then);
+      },
+
+      feedbacks: function (then) {
+        require('./Feedback').find({ item: id }, then);
+      }
+    },
+
+    function (error, results) {
+      if ( error ) {
+        return cb(error);
+      }
+
+      self.findById(id, function (error, item) {
+        if ( error ) {
+          return cb(error);
+        }
+
+        cb(null, {
+          item: item,
+          votes: results.votes,
+          feedbacks: results.feedbacks
+        });
+      });
+    });
+};
+
 // EXPORT
 // ======
 

@@ -147,6 +147,16 @@ module.exports = function ($http) {
           .params([id])
 
           .get();
+      },
+
+      get: function (id) {
+        return new Model('Item')
+
+          .action('details')
+
+          .params([id])
+
+          .get();
       }
     },
 
