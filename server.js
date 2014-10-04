@@ -140,14 +140,14 @@ domain.run(function () {
 
     if ( res.locals.isSignedIn ) {
 
-      if ( ! req.signedCookies.synuser._id ) {
+      if ( ! req.signedCookies.synuser.id ) {
         res.clearCookie('synuser');
         res.locals.isSignedIn = false;
       }
 
       else {
         res.locals.email  = req.signedCookies.synuser.email;
-        res.locals._id    = req.signedCookies.synuser._id;
+        res.locals._id    = req.signedCookies.synuser.id;
       }
     }
 
