@@ -49,7 +49,7 @@ block page
         .col-sm-6.padding(
           data-ng-repeat      =   'item in items | currentlyEvaluated'
         )
-          div.pre-text.entry-description(data-ng-bind='item.subject')
+          .pre-text.entry-description(data-ng-bind='item.subject')
 
       // Sliders
 
@@ -73,6 +73,38 @@ block page
         .col-sm-6.padding(
           data-ng-repeat      =   'item in items | currentlyEvaluated'
         )
+          button.btn.btn-block(
+            data-ng-click   =   'promote($index)'
+            data-ng-show    =   'items[1]'
+          ) Promote
+
+    // Small screen
+
+    section.hidden-sm.hidden-md.hidden-lg(
+      data-ng-repeat      =   'item in items | currentlyEvaluated'
+    )
+      .row
+        .col-xs-12
+          +item-image('item')
+
+      .row
+        .col-xs-12
+          h2(data-ng-bind='item.subject')
+
+      .row
+        .col-xs-12
+          .pre-text.entry-description(data-ng-bind='item.subject')
+
+      .row.padding-bottom
+        .col-xs-12
+          include ../partials/evaluator/sliders
+
+      .row.padding-bottom
+        .col-xs-12
+          include ../partials/evaluator/feedback
+
+      .row.padding-bottom
+        .col-xs-12
           button.btn.btn-block(
             data-ng-click   =   'promote($index)'
             data-ng-show    =   'items[1]'

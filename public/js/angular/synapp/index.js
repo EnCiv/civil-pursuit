@@ -127,7 +127,7 @@
     SignCtrl:               require('./controllers/sign'),
 
     // Navigator Controller
-    NavigatorCtrl             :       function ($scope, ItemFactory, DataFactory, $timeout) {
+    NavigatorCtrl             :       function ($scope, DataFactory, $timeout) {
 
       var Topic = DataFactory.Topic,
         Problem = DataFactory.Problem;
@@ -298,6 +298,8 @@
             if ( $scope.items.length < 6 ) {
               $scope.evaluator.limit = $scope.items.length - 1;
             }
+
+            $scope.criterias = evaluation.criterias;
             
             onChange();
           });
@@ -306,14 +308,66 @@
       // add view
 
       $scope.addView = function (item) {
-        DataFactory.Item.set(item._id, { $inc: { views: 1 } });
+        Item.set(item._id, { $inc: { views: 1 } });
+      };
+
+      // 
+
+      var change = function () {
+        // if left has a feedback -- save it
+
+        if ( $scope.items[0].$feedback ) {
+          DataFactory.Feedback.create($scope.items[0]._id, $scope.items[0].$feedback);
+        }
+
+        // if right has a feedback -- save it
+
+        if ( $scope.items[1].$feedback ) {
+          DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
+        }
+
+        // votes
+
+        var votes = [];
+
+        // if left has votes
+
+        if ( $scope.items[0].$votes ) {
+        
+          for ( var criteria in $scope.items[0].$votes ) {
+            votes.push({
+              criteria: criteria,
+              item: $scope.items[0]._id,
+              value: $scope.items[0].$votes[criteria]
+            })
+          }
+        }
+
+        // if right has votes
+
+        if ( $scope.items[1].$votes ) {
+        
+          for ( var criteria in $scope.items[1].$votes ) {
+            votes.push({
+              criteria: criteria,
+              item: $scope.items[1]._id,
+              value: $scope.items[1].$votes[criteria]
+            })
+          }
+        }
+
+        // save votes
+
+        if ( votes.length ) {
+          DataFactory.model('Vote').post(votes);
+        }
       };
 
       // promote
 
       $scope.promote = function (index) {
 
-        // EntryFactory.promote(items[index]._id);
+        change();
 
         // Promoting left item
 
@@ -321,19 +375,7 @@
 
           // Increment promotions counter
 
-          DataFactory.Item.set($scope.items[0]._id, { $inc: { promotions: 1 } });
-
-          // if right has a feedback -- save it
-
-          if ( $scope.items[1].$feedback ) {
-            DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
-          }
-
-          /* VoteFactory.add($scope.votes[items[1]._id], items[1]._id, $scope.email);
-
-          if ( $scope.feedbacks[items[0]._id] ) {
-            FeedbackFactory.create(items[1]._id, $scope.email, $scope.feedbacks[items[1]._id]);
-          }*/
+          Item.set($scope.items[0]._id, { $inc: { promotions: 1 } });
 
           // finish if last
 
@@ -351,21 +393,10 @@
         // Promoting right item
 
         else {
-/*          VoteFactory.add($scope.votes[items[0]._id], items[0]._id, $scope.email);
-
-          if ( $scope.feedbacks[items[0]._id] ) {
-            FeedbackFactory.create(items[0]._id, $scope.email, $scope.feedbacks[items[0]._id]);
-          }*/
 
           // Increment promotions counter
 
-          DataFactory.Item.set($scope.items[1]._id, { $inc: { promotions: 1 } });
-
-          // if left has a feedback -- save it
-
-          if ( $scope.items[0].$feedback ) {
-            DataFactory.Feedback.create($scope.items[0]._id, $scope.items[0].$feedback);
-          }
+          Item.set($scope.items[1]._id, { $inc: { promotions: 1 } });
 
           // finish if last
 
@@ -378,10 +409,6 @@
           $scope.items[0] = $scope.items.splice(2, 1)[0];
 
           onChange();
-
-          /*if ( typeof items[0] === 'undefined' ) {
-            items
-          }*/
         }
 
         // update cursor
@@ -392,15 +419,7 @@
 
       $scope.continue = function () {
 
-        // if left has a feedback -- save it
-        if ( $scope.items[0].$feedback ) {
-          DataFactory.Feedback.create($scope.items[0]._id, $scope.items[0].$feedback);
-        }
-
-        // if right has a feedback -- save it
-        if ( $scope.items[1].$feedback ) {
-          DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
-        }
+        change();
 
         // remove current entries from DOM
         $scope.items.splice(0, $scope.items[1] ? 2 : 1);
@@ -412,40 +431,12 @@
         if ( $scope.evaluator.cursor > $scope.evaluator.limit && $scope.evaluator.limit === 2 ) {
           $scope.evaluator.cursor = 2;
         }
-
-        return;
-
-
-
-
-
-        var entries = $scope.evaluation.entries;
-
-        VoteFactory.add($scope.votes[entries[0]._id], entries[0]._id, $scope.email);
-
-        console.log($scope.feedbacks);
-
-        if ( $scope.feedbacks[entries[0]._id] ) {
-          FeedbackFactory.create(entries[0]._id, $scope.email, $scope.feedbacks[entries[0]._id]);
-        }
-
-        if ( $scope.feedbacks[entries[1]._id] ) {
-          FeedbackFactory.create(entries[1]._id, $scope.email, $scope.feedbacks[entries[1]._id]);
-        }
-
-        entries.splice(0, entries[1] ? 2 : 1);
-
-        EntryFactory.view(entries[0]._id);
-
-        if ( entries[1] && entries[1]._id ) {
-          EntryFactory.view(entries[1]._id);
-        }
       };
 
       // finish
       $scope.finish = function () {
-        if ( $scope.evaluator.item ) {
-          location.href = '/summary/' + $scope.evaluator.item._id;
+        if ( $scope.item ) {
+          location.href = '/summary/' + $scope.item;
         }
       };
 

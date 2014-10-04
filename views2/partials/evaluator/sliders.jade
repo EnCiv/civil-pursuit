@@ -10,14 +10,14 @@ section.synapp-util-sliders
 
   div(
     data-ng-repeat        =   'criteria in criterias' 
-    data-ng-show          =   'entry.subject'
+    data-ng-show          =   'item.subject'
   )
     
     //- Criteria name and description
     
     h4
       span(
-        ng-bind           =  'criteria.name'
+        data-ng-bind      =  'criteria.name'
         data-toggle       =   "tooltip" 
         data-placement    =   "top" 
         title             =   "{{criteria.description}}"
@@ -27,17 +27,13 @@ section.synapp-util-sliders
 
     input.slider(
       type                =   'text'
-      data-entry          =   '{{entry._id}}'
+      data-item           =   '{{item._id}}'
       data-criteria       =   '{{criteria._id}}'
-      ng-model            =   'votes[entry._id][criteria._id]'
-      data-slider-tooltip        =   'hide'
+      data-ng-model       =   'item.$votes[criteria._id]'
+      data-slider-tooltip =   'hide'
     )
     
     
     div(
       data-ng-init        =   'enableSlider($last)'
-    )
-
-    div(
-      data-ng-init        =   'votes[entry._id][criteria._id] = 5'
     )

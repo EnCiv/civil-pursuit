@@ -292,8 +292,18 @@ domain.run(function () {
 
       // ADD USER
 
-      if ( req.method === 'POST' ) {
-        req.body.user = req.signedCookies.synuser.id;
+      if ( req.method === 'POST' || req.method === 'PUT' ) {
+
+        if ( Array.isArray(req.body) ) {
+          req.body = req.body.map(function (i) {
+            i.user = req.signedCookies.synuser.id;
+            return i;
+          })
+        }
+
+        else {
+          req.body.user = req.signedCookies.synuser.id;
+        }
       }
 
       next();

@@ -208,29 +208,34 @@ ItemSchema.statics.evaluate = function (id, cb) {
       return cb(new Error('Item not found'));
     }
 
-    self
-      .find({
+    require('async').parallel({
+      items: function (then) {
+        self
+          .find({
+            type: item.type,
+            parent: item.parent
+          })
+
+          .where('_id').ne(item._id)
+
+          .limit(5)
+
+          .sort({ views: 1 })
+
+          .exec(then);
+      },
+      criterias: function (then) {
+        require('./Criteria').find({ type: 'Topic'}, then);
+      }
+    }, function (error, results) {
+      cb(error, {
         type: item.type,
-        parent: item.parent
-      })
-
-      .where('_id').ne(item._id)
-
-      .limit(5)
-
-      .sort({ views: 1 })
-
-      .exec(function (error, items) {
-        if ( error ) {
-          return cb(error);
-        }
-
-        cb(null, {
-          type: item.type,
-          item: id,
-          items: items.concat(item)
-        });
+        item: id,
+        items: results.items.concat(item),
+        criterias: results.criterias
       });
+    });
+
   });
 };
 

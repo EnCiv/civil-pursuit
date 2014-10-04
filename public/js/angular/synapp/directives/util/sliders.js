@@ -22,14 +22,24 @@ module.exports = function () {
           // On slide stop, update scope
           
           $("input.slider").slider('on', 'slideStop', function () {
-            if ( $(this).attr('type') ) {
 
-              $scope.votes[$(this).data('entry')][$(this).data('criteria')] =
-                $(this).slider('getValue');
+            var slider = $(this);
 
-              $scope.$apply();
+            if ( slider.attr('type') ) {
 
-              console.log('votes updated', $scope.votes);
+              var item = $scope.$parent.items
+                .reduce(function (item, _item) {
+                  if ( _item._id === slider.data('item') ) {
+                    item = _item;
+                  }
+                  return item;
+                }, {});
+
+              if ( ! item.$votes ) {
+                item.$votes = {};
+              }
+
+              item.$votes[slider.data('criteria')] = slider.slider('getValue');
             }
           });
         }

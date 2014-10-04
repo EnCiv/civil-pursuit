@@ -2,16 +2,16 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-require('./Entry');
+require('./Item');
 require('./Criteria');
 var User = require('./User');
 
 var should = require('should');
 
 var VoteSchema = new Schema({
-  "entry": {
+  "item": {
   	"type": Schema.Types.ObjectId,
-  	"ref": "Entry",
+  	"ref": "Item",
   	"required": true
   },
   "criteria": {
@@ -88,48 +88,6 @@ VoteSchema.statics.getAccumulation = function (entry, cb) {
       });
 
       cb(null, accumulation);
-    });
-};
-
-VoteSchema.statics.add = function (votesByCriteria, entryId, userEmail, cb) {
-
-  try {
-    votesByCriteria.should.be.an.Object;
-
-    entryId.should.be.a.String;
-
-    userEmail.should.be.a.String;
-
-    cb.should.be.a.Function;
-  }
-  catch ( error ) {
-    return cb(error);
-  }
-
-  var self = this;
-
-  User.findOne({ email: userEmail },
-    function (error, user) {
-      if ( error ) {
-        return cb(error);
-      }
-
-      var votes = [];
-
-      for ( var criteria in votesByCriteria ) {
-        votes.push({
-          user:       user._id,
-          entry:      entryId,
-          criteria:   criteria,
-          value:      +votesByCriteria[criteria]
-        });
-      }
-
-      require('async').parallel(votes.map(function (vote) {
-        return function (cb) {
-          self.create(this, cb);
-        }.bind(vote);
-      }), cb)
     });
 };
 
