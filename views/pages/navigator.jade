@@ -13,8 +13,9 @@ block page
           span Topic
 
       ul
-        li.box-wrapper(data-ng-repeat='topic in topics' data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
-          +box('topic')
+        li.box-wrapper(data-ng-repeat='topic in topics')
+          div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
+            +box('topic')
 
           .panel-collapse.collapse.panel-body(id='topics-{{topic._id}}-problems')
             .panel-group

@@ -1208,6 +1208,33 @@ module.exports = function UserFactory ($http) {
   };
 };
 
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js":[function(require,module,exports){
+/**
+ * `fromNowFilter` return a moment().fromNow()
+ * 
+ * @module filters/from-now
+ * @example
+ *    <!-- HTML -->
+ *    <ANY ng-bind='new Date(2014) | fromNowFilter' />
+ *    
+ *    // JS
+ *    var fromNow = fromNowFilter();
+ * @author francoisrvespa@gmail.com
+*/
+
+module.exports = function fromNowFilter () {
+
+  /** @method fromNow
+   * @param date {?Date}
+   * @return {?Moment}
+  */
+  function fromNow (date) {
+    return moment(date).format('ddd DD MMM YY HH:mm:ss');
+  }
+
+  return fromNow;
+};
+
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-currently-evaluated.js":[function(require,module,exports){
 /**
  * `getCurrentlyEvaluatedFilter` Return the items being currently evaluated in an evaluation
@@ -1324,6 +1351,7 @@ module.exports = function shortenFilter () {
 
   synapp.filter({
     shortenFilter:                require('./filters/shorten'),
+    fromNowFilter:                require('./filters/from-now'),
     getCurrentlyEvaluatedFilter:  require('./filters/get-currently-evaluated'),
     getPromotedPercentageFilter:  require('./filters/get-promoted-percentage')
   });
@@ -1357,4 +1385,4 @@ module.exports = function shortenFilter () {
   
 })();
 
-},{"./controllers/details":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js","./controllers/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/editor.js","./controllers/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluator.js","./controllers/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/navigator.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/charts.js","./directives/get-url-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/get-url-title.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/more-less.js","./directives/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/sliders.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-currently-evaluated.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-promoted-percentage.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"./controllers/details":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js","./controllers/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/editor.js","./controllers/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluator.js","./controllers/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/navigator.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/charts.js","./directives/get-url-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/get-url-title.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/more-less.js","./directives/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/sliders.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-currently-evaluated.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-promoted-percentage.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: CriteriaSchema</title>
+    <title>JSDoc: Module: filters/from-now</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: CriteriaSchema</h1>
+    <h1 class="page-title">Module: filters/from-now</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    CriteriaSchema
+    filters/from-now
     </h2>
     
 </header>
@@ -38,30 +38,10 @@
 
     
         
-<dt>
+            <div class="description"><p><code>fromNowFilter</code> return a moment().fromNow()</p></div>
+        
 
-    
-    
-      <a href="Criteria.js.html#line1" class="name-link"><h4 class="name" id="CriteriaSchema"><span class="type-signature"></span>CriteriaSchema<span class="signature">()</span><span class="type-signature"></span></h4></a>
-    
-
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>The Criteria Model</p>
-    </div>
-    
-
-    
-
-    
-
-    
-
-    
+        
 <dl class="details">
     
 
@@ -91,7 +71,153 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Criteria.js.html">models/Criteria.js</a>, <a href="Criteria.js.html#line1">line 1</a>
+        <a href="from-now.js.html">public/js/angular/synapp/filters/from-now.js</a>, <a href="from-now.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+            <h3>Example</h3>
+            
+    <pre class="prettyprint"><code>&lt;!-- HTML -->
+&lt;ANY ng-bind='new Date(2014) | fromNowFilter' />
+
+// JS
+var fromNow = fromNowFilter();</code></pre>
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+
+    
+    
+      <a href="from-now.js.html#line16" class="name-link"><h4 class="name" id="fromNow"><span class="type-signature">(inner) </span>fromNow<span class="signature">(date<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; (nullable) {Moment}</span></h4></a>
+    
+
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>date</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Date</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="from-now.js.html">public/js/angular/synapp/filters/from-now.js</a>, <a href="from-now.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -114,27 +240,29 @@
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Moment</span>
+
+
+    </dd>
+</dl>
+
+        
 
     
 </dd>
 
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
+        </dl>
     
 
     

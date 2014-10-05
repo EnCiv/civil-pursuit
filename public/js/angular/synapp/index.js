@@ -13,6 +13,7 @@
 
   synapp.filter({
     shortenFilter:                require('./filters/shorten'),
+    fromNowFilter:                require('./filters/from-now'),
     getCurrentlyEvaluatedFilter:  require('./filters/get-currently-evaluated'),
     getPromotedPercentageFilter:  require('./filters/get-promoted-percentage')
   });

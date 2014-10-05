@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: public/js/angular/synapp/controllers/navigator.js</title>
+    <title>JSDoc: Source: public/js/angular/synapp/filters/from-now.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: public/js/angular/synapp/controllers/navigator.js</h1>
+    <h1 class="page-title">Source: public/js/angular/synapp/filters/from-now.js</h1>
 
     
 
@@ -26,104 +26,29 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * `NavigatorCtrl` Navigator
+ * `fromNowFilter` return a moment().fromNow()
  * 
- * @module synapp
- * @method controller::navigator
- * @return {AngularController}
+ * @module filters/from-now
  * @example
- *    &lt;ANY ng-controller="NavigatorCtrl" />
+ *    &lt;!-- HTML -->
+ *    &lt;ANY ng-bind='new Date(2014) | fromNowFilter' />
+ *    
+ *    // JS
+ *    var fromNow = fromNowFilter();
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
+module.exports = function fromNowFilter () {
 
-  var Topic = DataFactory.Topic,
-    Problem = DataFactory.Problem;
-
-  $scope.navigator = {};
-
-  $timeout(function () {
-    $('.more').on('click', function (e) {
-      var item = $(this).data('item');
-      item.$maxChars = 1000;
-      angular.element($(this)).scope().$digest();
-      e.preventDefault();
-      return false;
-    });
-  }, 250);
-
-  $scope.moreLess = function (is) {
-    $timeout(function () {
-      is.$maxChars = 1000;
-    }, 250);
-    return false;
-  };
-
-  function getCollapsedItem (event) {
-    var bits = $(event.target).attr('id').split('-');
-
-    var type = bits[0];
-    var id = bits[1];
-    var has = bits[2];
-
-    return {
-      is: $scope[type].filter(function (t) {
-        return t._id === id;
-      }),
-      type: type,
-      id: id,
-      has: has
-    };
+  /** @method fromNow
+   * @param date {?Date}
+   * @return {?Moment}
+  */
+  function fromNow (date) {
+    return moment(date).format('ddd DD MMM YY HH:mm:ss');
   }
 
-  Topic.get()
-    .success(function (data) {
-      $scope.topics = data;
-
-      $timeout(function () {
-        $('.navigator .collapse').on('show.bs.collapse', function (evt) {
-
-          var item = getCollapsedItem(evt);
-
-          if ( item.is.length ) {
-            is = item.is[0];
-
-            if ( ! is.$loaded ) {
-              switch ( item.type ) {
-                case 'topics':
-                  Problem.get(item.id)
-
-                    .success(function (problems) {
-                      is.$showButtons = true;
-                      is.$problems = problems;
-                      is.$loaded = true;
-                    });
-                  break;
-              }
-            }
-
-            else {
-              $scope.$apply(function () {
-                is.$showButtons = true;
-              });
-            }
-          }
-        });
-
-        $('.navigator .collapse').on('hide.bs.collapse', function (evt) {
-          var item = getCollapsedItem(evt);
-
-          if ( item.is.length ) {
-            is = item.is[0];
-
-            $scope.$apply(function () {
-              is.$showButtons = false;
-            });
-          }
-        });
-      });
-    });
+  return fromNow;
 };
 </code></pre>
         </article>

@@ -6,6 +6,7 @@ block append css-app
   link(rel='stylesheet' href='/bower_components/c3/c3.css')
 
 block prepend script-app
+  script(src='/bower_components/moment/min/moment.min.js')
   script(src='/bower_components/d3/d3.js')
   script(src='/bower_components/c3/c3.js')
 
@@ -51,4 +52,4 @@ block page
           div.pre-text(ng-bind='feedback.feedback')
 
           h5.text-muted Posted 
-            span(ng-bind='feedback.created | fromNow')
+            span(ng-bind='feedback.created | fromNowFilter')
