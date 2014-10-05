@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: public/js/angular/synapp/filters/get-promoted-percentage.js</title>
+    <title>JSDoc: Source: public/js/angular/synapp/filters/cloudinary-transformation.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: public/js/angular/synapp/filters/get-promoted-percentage.js</h1>
+    <h1 class="page-title">Source: public/js/angular/synapp/filters/cloudinary-transformation.js</h1>
 
     
 
@@ -26,32 +26,33 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * `getPromotedPercentageFilter` Get the promotion rate of an item as percentage
+ * `cloudinaryTransformationFilter` ** Return cloudinary transformation **
+ *  https://cloudinary.com/console/transformations
  * 
- * @module synapp
- * @class Filter
- * @method filter::get-promoted-percentage
- * @return {Number}
- * @param {Object} item - Items to parse
- * @example
+ *  @module filters/cloudinary-transform
+ *  @example
  *    &lt;!-- HTML -->
- *    &lt;ANY ng-bind='item | getPromotedPercentageFilter' />
+ *    &lt;img ng-src='image | cloudinaryTransformationFilter' />
  *    
  *    // JS
- *    var percent = getPromotedPercentageFilter(item)
+ *    var img = cloudinaryTransformationFilter(image);
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = function () {
-  return function getPromotedPercentage (item) {
-    if ( item ) {
-      if ( ! item.promotions ) {
-        return 0;
-      }
+module.exports = function cloudinaryTransformationFilter () {
 
-      return Math.ceil(item.promotions * 100 / item.views);
+  /** @method cloudinaryTransformation
+   * @param cloudinaryImageUrl {?string}
+   * @return {?string}
+  */
+  function cloudinaryTransformation (cloudinaryImageUrl) {
+    if ( cloudinaryImageUrl &amp;&amp; typeof cloudinaryImageUrl === 'string' ) {
+      return cloudinaryImageUrl.replace(/\/image\/upload\/v(.+)\/(.+)\.jpg$/,
+        '/image/upload/t_media_lib_thumb/$2.jpg');
     }
-  };
+  }
+
+  return cloudinaryTransformation;
 };
 </code></pre>
         </article>

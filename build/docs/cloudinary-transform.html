@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: filters/from-now</title>
+    <title>JSDoc: Module: filters/cloudinary-transform</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: filters/from-now</h1>
+    <h1 class="page-title">Module: filters/cloudinary-transform</h1>
 
     
 
@@ -27,7 +27,7 @@
 
 <header>
     <h2>
-    filters/from-now
+    filters/cloudinary-transform
     </h2>
     
 </header>
@@ -38,7 +38,8 @@
 
     
         
-            <div class="description"><p><code>fromNowFilter</code> return a moment().fromNow()</p></div>
+            <div class="description"><p><code>cloudinaryTransformationFilter</code> <strong> Return cloudinary transformation </strong>
+ https://cloudinary.com/console/transformations</p></div>
         
 
         
@@ -71,7 +72,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="from-now.js.html">public/js/angular/synapp/filters/from-now.js</a>, <a href="from-now.js.html#line1">line 1</a>
+        <a href="cloudinary-transformation.js.html">public/js/angular/synapp/filters/cloudinary-transformation.js</a>, <a href="cloudinary-transformation.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -87,10 +88,10 @@
             <h3>Example</h3>
             
     <pre class="prettyprint"><code>&lt;!-- HTML -->
-&lt;ANY ng-bind='new Date(2014) | fromNowFilter' />
+&lt;img ng-src='image | cloudinaryTransformationFilter' />
 
 // JS
-var fromNow = fromNowFilter();</code></pre>
+var img = cloudinaryTransformationFilter(image);</code></pre>
 
         
     
@@ -119,7 +120,7 @@ var fromNow = fromNowFilter();</code></pre>
 
     
     
-      <a href="from-now.js.html#line16" class="name-link"><h4 class="name" id="fromNow"><span class="type-signature">(inner) </span>fromNow<span class="signature">(date<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; (nullable) {Moment}</span></h4></a>
+      <a href="cloudinary-transformation.js.html#line17" class="name-link"><h4 class="name" id="cloudinaryTransformation"><span class="type-signature">(inner) </span>cloudinaryTransformation<span class="signature">(cloudinaryImageUrl<span class="signature-attributes">nullable</span>)</span><span class="type-signature"> &rarr; (nullable) {string}</span></h4></a>
     
 
     
@@ -160,13 +161,13 @@ var fromNow = fromNowFilter();</code></pre>
 
         <tr>
             
-                <td class="name"><code>date</code></td>
+                <td class="name"><code>cloudinaryImageUrl</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Date</span>
+<span class="param-type">string</span>
 
 
             
@@ -217,7 +218,7 @@ var fromNow = fromNowFilter();</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="from-now.js.html">public/js/angular/synapp/filters/from-now.js</a>, <a href="from-now.js.html#line16">line 16</a>
+        <a href="cloudinary-transformation.js.html">public/js/angular/synapp/filters/cloudinary-transformation.js</a>, <a href="cloudinary-transformation.js.html#line17">line 17</a>
     </li></ul></dd>
     
 
@@ -251,7 +252,7 @@ var fromNow = fromNowFilter();</code></pre>
     </dt>
     <dd>
         
-<span class="param-type">Moment</span>
+<span class="param-type">string</span>
 
 
     </dd>

@@ -331,9 +331,8 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 /**
  * `NavigatorCtrl` Navigator
  * 
- * @module synapp
- * @method controller::navigator
- * @return {AngularController}
+ * @module controllers/navigator
+ * @prop $scope {q}
  * @example
  *    <ANY ng-controller="NavigatorCtrl" />
  * @author francoisrvespa@gmail.com
@@ -344,17 +343,45 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
   var Topic = DataFactory.Topic,
     Problem = DataFactory.Problem;
 
+  /** 
+   *  @prop $scope.navigator {Object} */
+  
   $scope.navigator = {};
 
-  $timeout(function () {
-    $('.more').on('click', function (e) {
-      var item = $(this).data('item');
-      item.$maxChars = 1000;
-      angular.element($(this)).scope().$digest();
-      e.preventDefault();
-      return false;
-    });
-  }, 250);
+  /** Attach {@link module:controllers/navigator~onClickMore} to all elements with classname "more".
+   *    This function is called once via a $timeout
+   *
+   *  @function activateMoreLess
+   */
+
+  function activateMoreLess () {
+    $('.more').on('click',
+
+      /** Change maximum to 1000 and update scope.
+       *
+       *  @function onClickMore
+       *  @param e {Event}
+       *  @return {boolean} false
+       */
+
+      function onClickMore (e) {
+        var item = $(this).data('item');
+        item.$maxChars = 1000;
+        angular.element($(this)).scope().$digest();
+        e.preventDefault();
+        return false;
+      });
+  }
+
+  /** call {@link module:controllers/navigator~activateMoreLess} in 250 miliseconds */
+
+  $timeout(activateMoreLess, 250);
+
+  /** Attach {@link module:controllers/navigator~onClickMore} to all elements with classname "more".
+   *    This function is called once via a $timeout
+   *
+   *  @function moreLess
+   */
 
   $scope.moreLess = function (is) {
     $timeout(function () {
@@ -843,13 +870,15 @@ module.exports = function getUrlTitle ($http) {
 
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/more-less.js":[function(require,module,exports){
 /**
- * `moreLess` Displays more or less toggle buttons for truncated tex
+ *  **Displays buttons to squeeze/expand long texts**
+ *
+ *  It actually *observes* `ng-bind` attribute. Once it gets a new non-null value, it uses that as the text to truncate. It checks if text is greater than {@link module:directives/more-less~limit}. If it's not, it does nothing. Else, it truncates the text and append to DOM a "more" button.
  * 
- * @module synapp
- * @function directive::more-less
- * @return {AngularDirective}
+ * @module directives/more-less
+ * @prop $scope {q} - scope
+ * @prop $attr {q} - attributes
  * @example
- *    <ANY data-syn-more-less />
+ *    <ANY ng-bind="Possibly some long text..." data-syn-more-less>
  * @author francoisrvespa@gmail.com
 */
 
@@ -862,6 +891,7 @@ module.exports = function () {
         if ( n && n !== o ) {
           var des = $elem.text();
 
+          /** @var limit {number} - Text limit */
           var limit = 100;
 
           if ( des.length > limit ) {
@@ -870,6 +900,7 @@ module.exports = function () {
             var more = $('<a href="#">more</a>');
             var less = $('<a href="#">less</a>');
 
+            /** @function _more */
             function _more () {
               more.on('click', function (e) {
                 e.preventDefault();
@@ -880,6 +911,7 @@ module.exports = function () {
               });
             }
 
+            /** @function _less */
             function _less () {
               less.on('click', function (e) {
                 e.preventDefault();
@@ -1208,6 +1240,37 @@ module.exports = function UserFactory ($http) {
   };
 };
 
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/cloudinary-transformation.js":[function(require,module,exports){
+/**
+ * `cloudinaryTransformationFilter` ** Return cloudinary transformation **
+ *  https://cloudinary.com/console/transformations
+ * 
+ *  @module filters/cloudinary-transform
+ *  @example
+ *    <!-- HTML -->
+ *    <img ng-src='image | cloudinaryTransformationFilter' />
+ *    
+ *    // JS
+ *    var img = cloudinaryTransformationFilter(image);
+ * @author francoisrvespa@gmail.com
+*/
+
+module.exports = function cloudinaryTransformationFilter () {
+
+  /** @method cloudinaryTransformation
+   * @param cloudinaryImageUrl {?string}
+   * @return {?string}
+  */
+  function cloudinaryTransformation (cloudinaryImageUrl) {
+    if ( cloudinaryImageUrl && typeof cloudinaryImageUrl === 'string' ) {
+      return cloudinaryImageUrl.replace(/\/image\/upload\/v(.+)\/(.+)\.jpg$/,
+        '/image/upload/t_media_lib_thumb/$2.jpg');
+    }
+  }
+
+  return cloudinaryTransformation;
+};
+
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js":[function(require,module,exports){
 /**
  * `fromNowFilter` return a moment().fromNow()
@@ -1353,7 +1416,9 @@ module.exports = function shortenFilter () {
     shortenFilter:                require('./filters/shorten'),
     fromNowFilter:                require('./filters/from-now'),
     getCurrentlyEvaluatedFilter:  require('./filters/get-currently-evaluated'),
-    getPromotedPercentageFilter:  require('./filters/get-promoted-percentage')
+    getPromotedPercentageFilter:  require('./filters/get-promoted-percentage'),
+    cloudinaryTransformationFilter:
+                                  require('./filters/cloudinary-transformation')
   });
 
   /** Factories */
@@ -1385,4 +1450,4 @@ module.exports = function shortenFilter () {
   
 })();
 
-},{"./controllers/details":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js","./controllers/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/editor.js","./controllers/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluator.js","./controllers/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/navigator.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/charts.js","./directives/get-url-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/get-url-title.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/more-less.js","./directives/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/sliders.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-currently-evaluated.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-promoted-percentage.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"./controllers/details":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js","./controllers/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/editor.js","./controllers/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluator.js","./controllers/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/navigator.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/charts.js","./directives/get-url-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/get-url-title.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/more-less.js","./directives/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/sliders.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/cloudinary-transformation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/cloudinary-transformation.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-currently-evaluated.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-promoted-percentage.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);

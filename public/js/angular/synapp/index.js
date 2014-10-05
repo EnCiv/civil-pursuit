@@ -15,7 +15,9 @@
     shortenFilter:                require('./filters/shorten'),
     fromNowFilter:                require('./filters/from-now'),
     getCurrentlyEvaluatedFilter:  require('./filters/get-currently-evaluated'),
-    getPromotedPercentageFilter:  require('./filters/get-promoted-percentage')
+    getPromotedPercentageFilter:  require('./filters/get-promoted-percentage'),
+    cloudinaryTransformationFilter:
+                                  require('./filters/cloudinary-transformation')
   });
 
   /** Factories */

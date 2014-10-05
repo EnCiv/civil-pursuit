@@ -30,4 +30,5 @@ block page
                   big(data-ng-hide='topic.$loaded') Just a moment, we are loading problems related to {{topic.subject}}
                   ul
                     li.box-wrapper(data-ng-repeat='problem in topic.$problems')
-                      +box('problem')
+                      div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
+                        +box('problem')

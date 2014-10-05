@@ -1,11 +1,13 @@
 /**
- * `moreLess` Displays more or less toggle buttons for truncated tex
+ *  **Displays buttons to squeeze/expand long texts**
+ *
+ *  It actually *observes* `ng-bind` attribute. Once it gets a new non-null value, it uses that as the text to truncate. It checks if text is greater than {@link module:directives/more-less~limit}. If it's not, it does nothing. Else, it truncates the text and append to DOM a "more" button.
  * 
- * @module synapp
- * @function directive::more-less
- * @return {AngularDirective}
+ * @module directives/more-less
+ * @prop $scope {q} - scope
+ * @prop $attr {q} - attributes
  * @example
- *    <ANY data-syn-more-less />
+ *    <ANY ng-bind="Possibly some long text..." data-syn-more-less>
  * @author francoisrvespa@gmail.com
 */
 
@@ -18,6 +20,7 @@ module.exports = function () {
         if ( n && n !== o ) {
           var des = $elem.text();
 
+          /** @var limit {number} - Text limit */
           var limit = 100;
 
           if ( des.length > limit ) {
@@ -26,6 +29,7 @@ module.exports = function () {
             var more = $('<a href="#">more</a>');
             var less = $('<a href="#">less</a>');
 
+            /** @function _more */
             function _more () {
               more.on('click', function (e) {
                 e.preventDefault();
@@ -36,6 +40,7 @@ module.exports = function () {
               });
             }
 
+            /** @function _less */
             function _less () {
               less.on('click', function (e) {
                 e.preventDefault();
