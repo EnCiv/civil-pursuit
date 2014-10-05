@@ -1,3 +1,11 @@
+/**
+ * The Vote Model
+ * 
+ * @module Models
+ * @class VoteSchema
+ * @author francoisrvespa@gmail.com
+*/
+
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
@@ -34,34 +42,26 @@ var VoteSchema = new Schema({
   }
 });
 
-VoteSchema.statics.findByEntries = function (entries, user, cb) {
+/** Get Accumulation...
+ *
+ *  @method model::Vote::get-accumulation
+ *  @param {String} item - Restrict to item
+ *  @param {updateById~cb} cb - The callback
+ *  @return {Object}
+ */
 
-  entries.should.be.an.Array;
-
-  if ( typeof user === 'function' && ! cb ) {
-    cb = user;
-    user = {};
-  }
-
-  this.find(user)
-    .where('entry').in(entries)
-    .exec(cb);
-};
-
-VoteSchema.statics.getAccumulation = function (entry, cb) {
-  entry.should.be.a.String;
+VoteSchema.statics.getAccumulation = function (item, cb) {
+  item.should.be.a.String;
 
   cb.should.be.a.Function;
 
   var accumulation = {};
 
-  this.find({ entry: entry })
+  this.find({ item: item })
     .exec(function (error, votes) {
       if ( error ) {
         return cb(error);
       }
-
-      console.log('votes', votes);
 
       votes.forEach(function (vote) {
         if ( ! accumulation[vote.criteria] ) {

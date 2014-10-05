@@ -1,0 +1,46 @@
+// Votes
+
+.row(data-ng-show='Object.keys(votes).length')
+  .col-xs-12
+    h3 Votes
+
+    //- For each criteria
+
+    .row(
+      data-ng-repeat        =   'criteria in criterias'
+    )
+
+      .col-xs-4
+
+        //-
+            CRITERIA NAME
+        //-
+
+        h4(
+          data-ng-bind      =     'criteria.name'
+          data-toggle       =     "tooltip" 
+          data-placement    =     "top" 
+          title             =     "{{criteria.description}}"
+        )
+
+      .col-xs-8
+
+        //-
+            CHART
+        //-
+
+        div(data-syn-charts='{{criteria._id}}' data-ng-show2='votes[criteria._id].total')
+
+          svg.chart(
+            id                  =   'chart-{{criteria._id}}'
+          )
+
+          //-
+              CHART SEPARATOR
+          //-
+          
+          hr(
+            data-ng-hide      =   'votes[criteria._id]'
+          )
+
+  hr

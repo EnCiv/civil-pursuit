@@ -1,3 +1,11 @@
+/**
+ * The Criteria Model
+ * 
+ * @module Models
+ * @class CriteriaSchema
+ * @author francoisrvespa@gmail.com
+*/
+
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;

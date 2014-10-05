@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+/**
+ * Provides the base Widget class...
+ *
+ * @module widget
+ */
+
 // this script will self destruct in 30 seconds //
 
 /* CEREMONY */
@@ -103,7 +109,7 @@ domain.run(function () {
 
   var config = {
     'view engine'   :   'jade',
-    'views'         :   'views2',
+    'views'         :   'views',
     'port'          :   process.env.PORT || 3012
   };
 
@@ -338,6 +344,12 @@ domain.run(function () {
   */
 
   app.all('/tools/dump', require('./routes/dump'));
+
+  /*
+    JSDOC
+  */
+
+  app.use('/docs', express.static(require('path').join(__dirname, 'build/docs')));
 
   /* MIDDLEWARES */
   /* ------------------------------------------------------------------------ */

@@ -1,0 +1,27 @@
+// References
+
+//- Title
+
+input.form-control(
+  data-syn-get-url-title
+  type              =   'text' 
+  name              =   'title'
+  placeholder       =   'http://'
+  data-ng-model     =   'editor.references[0].title'
+  title				      =	  'Optional reference'
+)
+
+code.text-primary(ng-show='searchingTitle') Searching title for 
+  span(ng-bind='editor.references[0].title | shortenFilter:100' title='{{editor.references[0].title}}')
+
+code.text-muted(ng-bind='editor.references[0].url | shortenFilter:100' title='{{editor.references[0].url}}')
+
+code.text-warning(ng-show='searchingTitleFailed') Could not resolve title
+
+//- URL
+
+input.entry-url(
+  type              =   'hidden'
+  name              =   'url'
+  data-ng-model     =   'editor.references[0].url'
+)

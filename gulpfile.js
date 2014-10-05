@@ -60,3 +60,16 @@ gulp.task('bootstrapjs', function () {
 
     .pipe(gulp.dest('./public/dist'));
 });
+
+// js docs
+
+var shell = require('gulp-shell');
+
+gulp.task('docs', shell.task([ 
+  'node_modules/jsdoc/jsdoc.js '+ 
+    '-c node_modules/angular-jsdoc/conf.json '+   // config file
+    '-t node_modules/angular-jsdoc/template '+    // template file
+    '-d build/docs '+                             // output directory
+    '-r '+                                        // recursive
+    'public/js/angular/synapp models'             // source code directory
+]));

@@ -1,3 +1,11 @@
+/**
+ * The Feedback Model
+ * 
+ * @module Models
+ * @class FeedbackSchema
+ * @author francoisrvespa@gmail.com
+*/
+
 var should = require('should');
 
 var mongoose = require('mongoose');

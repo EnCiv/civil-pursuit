@@ -1,3 +1,14 @@
+/**
+ * `UploadCtrl` Uploader
+ * 
+ * @module synapp
+ * @method controller::upload
+ * @return {AngularController}
+ * @example
+ *    <ANY ng-controller="UploadCtrl" />
+ * @author francoisrvespa@gmail.com
+*/
+
 FileAPI = {
   debug: true,
   //forceLoad: true, html5: false //to debug flash in HTML5 browsers
@@ -14,7 +25,7 @@ FileAPI = {
 var uploadUrl = '/tools/upload';
 window.uploadUrl = window.uploadUrl || 'upload';
 
-var MyCtrl = [ '$scope', '$http', '$timeout', '$upload', function($scope, $http, $timeout, $upload) {
+var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl ($scope, $http, $timeout, $upload) {
 
   $scope.howToSend = 1;
 
@@ -155,4 +166,4 @@ var MyCtrl = [ '$scope', '$http', '$timeout', '$upload', function($scope, $http,
 	};
 } ];
 
-module.exports = MyCtrl;
+module.exports = UploadCtrl;

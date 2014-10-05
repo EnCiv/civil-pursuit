@@ -1,4 +1,14 @@
-module.exports = function ($http) {
+/**
+ * `UserFactory` User Factory (legacy from SignCtrl)
+ * 
+ * @module synapp
+ * @submodule factories
+ * @method factory::user
+ * @return {AngularFactory}
+ * @author francoisrvespa@gmail.com
+*/
+
+module.exports = function UserFactory ($http) {
   return {
     signIn: function (creds) {
       return $http.post('/sign/in', creds);

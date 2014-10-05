@@ -1,0 +1,39 @@
+//-
+    ENTRY SLIDERS
+    =============
+
+//- Entry sliders
+
+// Entry sliders
+
+section(data-syn-sliders)
+
+  div(
+    data-ng-repeat        =   'criteria in criterias' 
+    data-ng-show          =   'item.subject'
+  )
+    
+    //- Criteria name and description
+    
+    h4
+      span(
+        data-ng-bind      =  'criteria.name'
+        data-toggle       =   "tooltip" 
+        data-placement    =   "top" 
+        title             =   "{{criteria.description}}"
+      )
+
+    //- Slider
+
+    input.slider(
+      type                =   'text'
+      data-item           =   '{{item._id}}'
+      data-criteria       =   '{{criteria._id}}'
+      data-ng-model       =   'item.$votes[criteria._id]'
+      data-slider-tooltip =   'hide'
+    )
+    
+    
+    div(
+      data-ng-init        =   'enableSlider($last)'
+    )

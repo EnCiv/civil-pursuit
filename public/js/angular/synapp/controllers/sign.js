@@ -1,3 +1,14 @@
+/**
+ * `SignCtrl` Sign component
+ * 
+ * @module synapp
+ * @method controller::sign
+ * @return {AngularController}
+ * @example
+ *    <FORM ng-controller="SignCtrl" />
+ * @author francoisrvespa@gmail.com
+*/
+
 module.exports = function ($scope, UserFactory) {
 
   $scope.sign = {};

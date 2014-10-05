@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: public/js/angular/synapp/controllers/upload.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: public/js/angular/synapp/controllers/upload.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * `UploadCtrl` Uploader
+ * 
+ * @module synapp
+ * @method controller::upload
+ * @return {AngularController}
+ * @example
+ *    &lt;ANY ng-controller="UploadCtrl" />
+ * @author francoisrvespa@gmail.com
+*/
+
+FileAPI = {
+  debug: true,
+  //forceLoad: true, html5: false //to debug flash in HTML5 browsers
+  //wrapInsideDiv: true, //experimental for fixing css issues
+  //only one of jsPath or jsUrl.
+    //jsPath: '/js/FileAPI.min.js/folder/', 
+    //jsUrl: 'yourcdn.com/js/FileAPI.min.js',
+
+    //only one of staticPath or flashUrl.
+    //staticPath: '/flash/FileAPI.flash.swf/folder/'
+    //flashUrl: 'yourcdn.com/js/FileAPI.flash.swf'
+};
+
+var uploadUrl = '/tools/upload';
+window.uploadUrl = window.uploadUrl || 'upload';
+
+var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl ($scope, $http, $timeout, $upload) {
+
+  $scope.howToSend = 1;
+
+	$scope.usingFlash = FileAPI &amp;&amp; FileAPI.upload != null;
+	
+  $scope.fileReaderSupported = window.FileReader != null &amp;&amp; (window.FileAPI == null || FileAPI.html5 != false);
+	
+  $scope.uploadRightAway = true;
+	
+  $scope.hasUploader = function(index) {
+		return $scope.upload[index] != null;
+	};
+	
+  $scope.abort = function(index) {
+		$scope.upload[index].abort(); 
+		$scope.upload[index] = null;
+	};
+	
+  $scope.onFileSelect = function($files) {
+
+		$scope.selectedFiles = [];
+		
+    $scope.progress = [];
+		
+    if ($scope.upload &amp;&amp; $scope.upload.length > 0) {
+			for (var i = 0; i &lt; $scope.upload.length; i++) {
+				if ($scope.upload[i] != null) {
+					$scope.upload[i].abort();
+				}
+			}
+		}
+		
+    $scope.upload = [];
+		
+    $scope.uploadResult = [];
+		
+    $scope.selectedFiles = $files;
+		
+    $scope.dataUrls = [];
+		
+    for ( var i = 0; i &lt; $files.length; i++) {
+			var $file = $files[i];
+			
+      if ($scope.fileReaderSupported &amp;&amp; $file.type.indexOf('image') > -1) {
+				var fileReader = new FileReader();
+				fileReader.readAsDataURL($files[i]);
+				
+        var loadFile = function(fileReader, index) {
+					fileReader.onload = function(e) {
+						$timeout(function() {
+							$scope.dataUrls[index] = e.target.result;
+						});
+					}
+				}(fileReader, i);
+			}
+			
+      $scope.progress[i] = -1;
+			
+      if ($scope.uploadRightAway) {
+				$scope.start(i);
+			}
+		}
+	};
+	
+	$scope.start = function(index) {
+		$scope.progress[index] = 0;
+		$scope.errorMsg = null;
+		if ($scope.howToSend == 1) {
+			$scope.upload[index] = $upload.upload({
+				url: uploadUrl,
+				method: $scope.httpMethod,
+				headers: {'my-header': 'my-header-value'},
+				data : {
+					myModel : $scope.myModel
+				},
+				/* formDataAppender: function(fd, key, val) {
+					if (angular.isArray(val)) {
+                        angular.forEach(val, function(v) {
+                          fd.append(key, v);
+                        });
+                      } else {
+                        fd.append(key, val);
+                      }
+				}, */
+				/* transformRequest: [function(val, h) {
+					console.log(val, h('my-header')); return val + '-modified';
+				}], */
+				file: $scope.selectedFiles[index],
+				fileFormDataName: 'myFile'
+			});
+			$scope.upload[index].then(function(response) {
+				$timeout(function() {
+					$scope.uploadResult.push(response.data);
+				});
+			}, function(response) {
+				if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+			}, function(evt) {
+				// Math.min is to fix IE which reports 200% sometimes
+				$scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+			});
+			$scope.upload[index].xhr(function(xhr){
+//				xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+			});
+		} else {
+			var fileReader = new FileReader();
+            fileReader.onload = function(e) {
+		        $scope.upload[index] = $upload.http({
+		        	url: uploadUrl,
+					headers: {'Content-Type': $scope.selectedFiles[index].type},
+					data: e.target.result
+		        }).then(function(response) {
+					$scope.uploadResult.push(response.data);
+				}, function(response) {
+					if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+				}, function(evt) {
+					// Math.min is to fix IE which reports 200% sometimes
+					$scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+				});
+            }
+	        fileReader.readAsArrayBuffer($scope.selectedFiles[index]);
+		}
+	};
+	
+	$scope.dragOverClass = function($event) {
+		var items = $event.dataTransfer.items;
+		var hasFile = false;
+		if (items != null) {
+			for (var i = 0 ; i &lt; items.length; i++) {
+				if (items[i].kind == 'file') {
+					hasFile = true;
+					break;
+				}
+			}
+		} else {
+			hasFile = true;
+		}
+		return hasFile ? "dragover" : "dragover-err";
+	};
+} ];
+
+module.exports = UploadCtrl;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="details.html">controllers/details</a></li><li><a href="editor.html">controllers/editor</a></li><li><a href="evaluator.html">controllers/evaluator</a></li><li><a href="charts.html">directives/charts</a></li><li><a href="get-currently-evaluated.html">filters/get-currently-evaluated</a></li><li><a href="shorten.html">filters/shorten</a></li><li><a href="module-synapp.html">synapp</a></li></ul><h3>class</h3><ul><li><a href="CriteriaSchema.html">CriteriaSchema</a></li><li><a href="FeedbackSchema.html">FeedbackSchema</a></li><li><a href="ItemSchema.html">ItemSchema</a></li><li><a href="UserSchema.html">UserSchema</a></li><li><a href="VoteSchema.html">VoteSchema</a></li></ul><h3>Global</h3><ul><li><a href="global.html#controller::navigator">controller::navigator</a></li><li><a href="global.html#controller::sign">controller::sign</a></li><li><a href="global.html#controller::upload">controller::upload</a></li><li><a href="global.html#directive::get-url-title">directive::get-url-title</a></li><li><a href="global.html#directive::more-less">directive::more-less</a></li><li><a href="global.html#directive::sliders">directive::sliders</a></li><li><a href="global.html#factory::data">factory::data</a></li><li><a href="global.html#factory::user">factory::user</a></li><li><a href="global.html#filter::get-promoted-percentage">filter::get-promoted-percentage</a></li><li><a href="global.html#model::Vote::get-accumulation">model::Vote::get-accumulation</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> 
+    using <a href="https://github.com/allenhwkim/angularjs-google-maps/tree/master/config/jsdoc/template">custom template </a> and 
+    <a href="https://raw.githubusercontent.com/allenhwkim/angularjs-google-maps/master/config/jsdoc/plugins/angular.js">custom tag @ngdoc</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+<script>
+  var href=window.location.href.match(/\/([^\/]+$)/)[1];
+  document.querySelector("nav a[href='"+href+"']").scrollIntoView(true);
+  if (window.location.hash == "")
+    document.querySelector("body").scrollIntoView(true);
+</script>
+</body>
+</html>

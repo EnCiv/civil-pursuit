@@ -1,3 +1,11 @@
+/**
+ * The User Model
+ * 
+ * @module Models
+ * @class UserSchema
+ * @author francoisrvespa@gmail.com
+*/
+
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;

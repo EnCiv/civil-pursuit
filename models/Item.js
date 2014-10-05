@@ -1,3 +1,10 @@
+/**
+ * The Item Model
+ * 
+ * @class ItemSchema
+ * @author francoisrvespa@gmail.com
+*/
+
 var config = require('../config/config.json');
 
 var path = require('path');
@@ -8,18 +15,15 @@ var Schema = mongoose.Schema;
 
 var User    = require('./User');
 
-// SCHEMA
-// ======
-
 var ItemSchema = new Schema({
 
-  // the image (link to cloudinary)
+  
   
   "image": {
     "type": String
   },
 
-  // the references
+  
 
   "references": [
     {
@@ -28,21 +32,21 @@ var ItemSchema = new Schema({
     }
   ],
 
-  // the subject (required)
+  
   
   "subject": {
     "type": String,
     "required": true
   },
 
-  // the description (required)
+  
   
   "description": {
     "type": String,
     "required": true
   },
 
-  // the type of items
+  
 
   "type": {
     "type": String,
@@ -52,7 +56,7 @@ var ItemSchema = new Schema({
     }
   },
 
-  // the parent
+  
   
   "parent": {
     "type": Schema.Types.ObjectId,
@@ -174,10 +178,15 @@ ItemSchema.pre('save', function (next) {
 
 });
 
-// UPDATE BY ID
-// ============
-
-ItemSchema.statics.updateById = function (id, Item, cb) {
+/** Update Item by ID...
+ *
+ *  @function ItemSchema.updateById
+ *  @param {String} id - The Item to update Object Id
+ *  @param {Object} item - The patch
+ *  @param {updateById~cb} cb - The callback
+ *  @return {Object}
+ */
+ItemSchema.statics.updateById = function (id, item, cb) {
   var self = this;
 
   self.findById(id, function (error, found) {
@@ -185,16 +194,21 @@ ItemSchema.statics.updateById = function (id, Item, cb) {
       return cb(error);
     }
 
-    for ( var field in Item ) {
-      found[field] = Item[field];
+    for ( var field in item ) {
+      found[field] = item[field];
     }
 
     found.save(cb);
   });
 };
 
-// EVALUATE
-// ============
+/** Evaluate item against 5 others...
+ *
+ *  @method ItemSchema.evaluate
+ *  @param {String} id - The Item to update Object Id
+ *  @param {updateById~cb} cb - The callback
+ *  @return {Object}
+ */
 
 ItemSchema.statics.evaluate = function (id, cb) {
   var self = this;
@@ -239,15 +253,20 @@ ItemSchema.statics.evaluate = function (id, cb) {
   });
 };
 
-// DETAILS
-// ============
+/** Fetch item's related data, namely votes and feedbacks ...
+ *
+ *  @method ItemSchema.details
+ *  @param {String} id - The Item to update Object Id
+ *  @param {updateById~cb} cb - The callback
+ *  @return {Object}
+ */
 
 ItemSchema.statics.details = function (id, cb) {
   var self = this;
 
   require('async').parallel({
       votes: function (then) {
-        require('./Vote').find({ item: id }, then);
+        require('./Vote').getAccumulation(id, then);
       },
 
       feedbacks: function (then) {
@@ -265,11 +284,23 @@ ItemSchema.statics.details = function (id, cb) {
           return cb(error);
         }
 
-        cb(null, {
-          item: item,
-          votes: results.votes,
-          feedbacks: results.feedbacks
-        });
+        /** Get type criterias */
+
+        require('./Criteria')
+          .find({ type: item.type }, function (error, criterias) {
+            if ( error ) {
+              return cb(error);
+            }
+
+            /** Return details */
+
+            cb(null, {
+              item: item,
+              votes: results.votes,
+              feedbacks: results.feedbacks,
+              criterias: criterias
+            });
+          });
       });
     });
 };

@@ -1,9 +1,0 @@
-.row
-  .col-xs-12
-    image.img-responsive.default-topic-image(
-      data-ng-src    =   '{{topic.image || evaluation.topic.image}}'
-      data-ng-hide   =   'entry.image || ! entry.subject || dataUrls.length')
-
-    image.img-responsive(
-      data-ng-src    =   '{{entry.image}}'
-      data-ng-show   =   'entry.image && ! dataUrls.length')
