@@ -1,3 +1,10 @@
-mixin item-image(type)
+mixin item-image(type, filter)
+  - var ngSrc = '{{' + type + '.image'
+
+  - if ( filter )
+    - ngSrc += '| cloudinaryTransformationFilter'
+
+  - ngSrc += '}}'
+  
   img.img-responsive(
-    alt='{{' + type + '.subject}}' data-ng-src='{{' + type + '.image}}')
+    alt='{{' + type + '.subject}}' data-ng-src=ngSrc)

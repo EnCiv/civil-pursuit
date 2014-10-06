@@ -25,6 +25,8 @@ module.exports = function DetailsCtrl ($scope, DataFactory, $timeout) {
         $scope.feedbacks  = details.feedbacks;
 
         $scope.criterias  = details.criterias;
+
+        $scope.hasVotes   = Object.keys(details.votes).length;
       });
   }, 500);
 };
