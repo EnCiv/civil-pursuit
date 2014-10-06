@@ -239,7 +239,7 @@ ItemSchema.statics.evaluate = function (id, cb) {
           .exec(then);
       },
       criterias: function (then) {
-        require('./Criteria').find({ type: 'Topic'}, then);
+        require('./Criteria').find({ type: item.type}, then);
       }
     }, function (error, results) {
       cb(error, {
