@@ -9,7 +9,8 @@
 
 module.exports = function DataFactory ($http) {
 
-  var url = '/json/';
+  var url = '/json/',
+    batchSize = synapp['navigator batch size'];
 
   function Model (model) {
     this.model    = model;
@@ -74,6 +75,12 @@ module.exports = function DataFactory ($http) {
     }
 
     this.sorters.push(sorter);
+
+    return this;
+  };
+
+  Model.prototype.limit = function(limit) {
+    this.query['limit::' + limit] = null;
 
     return this;
   };
@@ -177,6 +184,8 @@ module.exports = function DataFactory ($http) {
 
           .sort('promotions', true)
 
+          .limit(batchSize)
+
           .get();
       }
     },
@@ -191,6 +200,8 @@ module.exports = function DataFactory ($http) {
           })
 
           .sort('promotions', true)
+
+          .limit(batchSize)
 
           .get();
       }

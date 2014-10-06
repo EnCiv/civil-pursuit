@@ -4,7 +4,7 @@ include ../partials/item/box
 
 block page
 
-  section#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl')
+  section#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl' data-ng-init='getTopics()')
     .panel.panel-default
       .panel-heading
         h4.panel-title
@@ -14,7 +14,7 @@ block page
 
       ul
         li.box-wrapper(data-ng-repeat='topic in topics')
-          div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
+          div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems')
             +box('topic')
 
           .panel-collapse.collapse.panel-body(id='topics-{{topic._id}}-problems')
@@ -27,8 +27,17 @@ block page
                     span Problem
 
                 .panel-body
-                  big(data-ng-hide='topic.$loaded') Just a moment, we are loading problems related to {{topic.subject}}
+                  big(data-ng-hide='$loaded') Just a moment, we are loading problems related to {{topic.subject}}
                   ul
-                    li.box-wrapper(data-ng-repeat='problem in topic.$problems')
-                      div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems' data-parent='#navigator')
+                    li.box-wrapper(data-ng-repeat='problem in $problems')
+                      div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems-{{problem._id}}' data-parent='#navigator')
                         +box('problem')
+
+                      .panel-collapse.collapse.panel-body(id='topics-{{topic._id}}-problems-{{problem._id}}')
+                        .panel-group
+                          .panel.panel-default
+                            .panel-heading
+                              
+
+                            .panel-body
+                              

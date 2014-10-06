@@ -38,7 +38,26 @@
 
     
         
-            <div class="description"><p><code>NavigatorCtrl</code> Navigator</p></div>
+            <div class="description"><h1>Navigator Controller (<code>NavigatorCtrl</code>)</h1><p> Controls the navigation and three-way binds items.</p>
+<h2>Type lineage</h2><p> Navigator shows items grouped by type lineage. </p>
+<ul>
+<li>Topics<ul>
+<li>Problems<ul>
+<li>Opinions</li>
+<li>Solutions<ul>
+<li>Opinions</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Loading data flow</h2><p> Navigator works by lazy loading. It does not load data until a User Event triggers it to do so. The only exception to that are topics that gets downloaded on <code>ng-init</code></p>
+<p> Data loads a default batch of 15 items with the option of loading more via User Event. Every batch downloaded stays in the Memory.</p>
+<p> The function used to fetch data is <code>getTopics</code>.</p>
+<h2>Bootstrap</h2><p> We use <a href="http://getbootstrap.com/javascript/#collapse"> Bootstrap collapse</a> to expand/squeeze items and sub-items</p>
+<h3>Bootstrap integration in Scope</h3><p> The controller listen to Bootstrap's collapse <code>show</code> and <code>hide</code> events and calls either <a href="navigator.html#onCollapse"><code>module:controllers/navigator~onCollapse</code></a> or <a href="navigator.html#onCollapse"><code>module:controllers/navigator~onCollapse</code></a>.</p></div>
         
 
         
@@ -77,7 +96,7 @@
             <td class="type">
             
                 
-<span class="param-type">q</span>
+<span class="param-type">k</span>
 
 
             
@@ -87,7 +106,54 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>Controller's scope</p>
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>topics</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;NavigatorItem></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Array of topics</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+            </td>
         </tr>
 
     
@@ -129,7 +195,27 @@
     
 
     
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://docs.angularjs.org/guide/controller"> Angular Documentation: Controller</a></li>
+        
+            <li><a href="https://docs.angularjs.org/api/ng/directive/ngController"> Angular Documentation: ngController</a></li>
+        
+            <li><a href="https://docs.angularjs.org/api/ng/service/$timeout"> Angular Documentation: $timeout</a></li>
+        
+            <li><a href="http://getbootstrap.com/javascript/#collapse"> Bootstrap Documentation: collapse</a></li>
+        </ul>
+    </dd>
+    
 
+    
+    <dt class="tag-todo">To Do:</dt>
+    <dd class="tag-todo">
+        <ul>
+            <li>Possible memory leaks with all the batch of items being kept in the Memory. Maybe defining a maximum of items?</li>
+        </ul>
+    </dd>
     
 </dl>
 
@@ -137,7 +223,8 @@
         
             <h3>Example</h3>
             
-    <pre class="prettyprint"><code>&lt;ANY ng-controller="NavigatorCtrl" /></code></pre>
+    <pre class="prettyprint"><code>&lt;ANY ng-controller="NavigatorCtrl" ng-init="getTopics()" />
+ </code></pre>
 
         
     
@@ -166,18 +253,13 @@
 
     
     
-      <a href="navigator.js.html#line21" class="name-link"><h4 class="name" id="activateMoreLess"><span class="type-signature">(inner) </span>activateMoreLess<span class="signature">()</span><span class="type-signature"></span></h4></a>
+      <a href="navigator.js.html#line119" class="name-link"><h4 class="name" id="getTopics"><span class="type-signature">(inner) </span>getTopics<span class="signature">()</span><span class="type-signature"></span></h4></a>
     
 
     
 </dt>
 <dd>
 
-    
-    <div class="description">
-        <p>Attach <a href="navigator.html#onClickMore"><code>module:controllers/navigator~onClickMore</code></a> to all elements with classname &quot;more&quot;.
-   This function is called once via a $timeout</p>
-    </div>
     
 
     
@@ -209,7 +291,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="navigator.js.html">public/js/angular/synapp/controllers/navigator.js</a>, <a href="navigator.js.html#line21">line 21</a>
+        <a href="navigator.js.html">public/js/angular/synapp/controllers/navigator.js</a>, <a href="navigator.js.html#line119">line 119</a>
     </li></ul></dd>
     
 
@@ -242,93 +324,13 @@
 
     
     
-      <a href="navigator.js.html#line50" class="name-link"><h4 class="name" id="moreLess"><span class="type-signature">(inner) </span>moreLess<span class="signature">()</span><span class="type-signature"></span></h4></a>
+      <a href="navigator.js.html#line57" class="name-link"><h4 class="name" id="onCollapse"><span class="type-signature">(inner) </span>onCollapse<span class="signature">(evt)</span><span class="type-signature"></span></h4></a>
     
 
     
 </dt>
 <dd>
 
-    
-    <div class="description">
-        <p>Attach <a href="navigator.html#onClickMore"><code>module:controllers/navigator~onClickMore</code></a> to all elements with classname &quot;more&quot;.
-   This function is called once via a $timeout</p>
-    </div>
-    
-
-    
-
-    
-
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="navigator.js.html">public/js/angular/synapp/controllers/navigator.js</a>, <a href="navigator.js.html#line50">line 50</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<dt>
-
-    
-    
-      <a href="navigator.js.html#line30" class="name-link"><h4 class="name" id="onClickMore"><span class="type-signature">(inner) </span>onClickMore<span class="signature">(e)</span><span class="type-signature"> &rarr; {boolean}</span></h4></a>
-    
-
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>Change maximum to 1000 and update scope.</p>
-    </div>
     
 
     
@@ -361,13 +363,13 @@
 
         <tr>
             
-                <td class="name"><code>e</code></td>
+                <td class="name"><code>evt</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Event</span>
+<span class="param-type">Object</span>
 
 
             
@@ -377,7 +379,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>DOM Event</p></td>
         </tr>
 
     
@@ -408,7 +410,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="navigator.js.html">public/js/angular/synapp/controllers/navigator.js</a>, <a href="navigator.js.html#line30">line 30</a>
+        <a href="navigator.js.html">public/js/angular/synapp/controllers/navigator.js</a>, <a href="navigator.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -431,28 +433,201 @@
     
 
     
-    <h5>Returns:</h5>
+
     
-            
-<div class="param-desc">
-    <p>false</p>
-</div>
+</dd>
 
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
         
-<span class="param-type">boolean</span>
+            
+<dt>
+
+    
+    
+      <a href="navigator.js.html#line71" class="name-link"><h4 class="name" id="onExpand"><span class="type-signature">(inner) </span>onExpand<span class="signature">(evt)</span><span class="type-signature"></span></h4></a>
+    
+
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>evt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
 
-    </dd>
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>DOM Event</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="navigator.js.html">public/js/angular/synapp/controllers/navigator.js</a>, <a href="navigator.js.html#line71">line 71</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
 </dl>
 
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
         
+            
+<dt>
+
+    
+    
+      <a href="navigator.js.html#line108" class="name-link"><h4 class="name" id="onLoaded"><span class="type-signature">(inner) </span>onLoaded<span class="signature">()</span><span class="type-signature"></span></h4></a>
+    
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Function to add listeners to Bootstrap collapse's events
+ This function gets called upon success of <code>getTopics</code></p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="navigator.js.html">public/js/angular/synapp/controllers/navigator.js</a>, <a href="navigator.js.html#line108">line 108</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 </dd>

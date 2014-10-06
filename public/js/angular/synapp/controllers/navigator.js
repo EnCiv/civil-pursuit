@@ -1,127 +1,142 @@
 /**
- * `NavigatorCtrl` Navigator
+ *  Navigator Controller (`NavigatorCtrl`)
+ *  ======================================
+ *
+ *  Controls the navigation and three-way binds items.
+ *
+ *  ## Type lineage
+ *
+ *  Navigator shows items grouped by type lineage. 
+ *  
+ *  - Topics
+ *    - Problems
+ *      - Opinions
+ *      - Solutions
+ *        - Opinions
+ *
+ *
+ *  ## Loading data flow
+ *
+ *  Navigator works by lazy loading. It does not load data until a User Event triggers it to do so. The only exception to that are topics that gets downloaded on `ng-init`
+ *
+ *  Data loads a default batch of 15 items with the option of loading more via User Event. Every batch downloaded stays in the Memory.
+ *
+ *  The function used to fetch data is {@link getTopics}.
+ *
+ *  ## Bootstrap
+ *  
+ *  We use {@link http://getbootstrap.com/javascript/#collapse| Bootstrap collapse} to expand/squeeze items and sub-items
+ *
+ *  ### Bootstrap integration in Scope
+ *
+ *  The controller listen to Bootstrap's collapse `show` and `hide` events and calls either {@link module:controllers/navigator~onCollapse} or {@link module:controllers/navigator~onCollapse}.
  * 
- * @module controllers/navigator
- * @prop $scope {q}
- * @example
- *    <ANY ng-controller="NavigatorCtrl" />
+ *  @module controllers/navigator
+ *  @prop $scope {k} - Controller's scope
+ *  @prop $scope.topics {NavigatorItem[]} - Array of topics
+ *  @see {@link https://docs.angularjs.org/guide/controller| Angular Documentation: Controller}
+ *  @see {@link https://docs.angularjs.org/api/ng/directive/ngController| Angular Documentation: ngController}
+ *  @see {@link https://docs.angularjs.org/api/ng/service/$timeout| Angular Documentation: $timeout}
+ *  @see {@link http://getbootstrap.com/javascript/#collapse| Bootstrap Documentation: collapse}
+ *  @example
+ *    <ANY ng-controller="NavigatorCtrl" ng-init="getTopics()" />
+ *  @todo Possible memory leaks with all the batch of items being kept in the Memory. Maybe defining a maximum of items?
  * @author francoisrvespa@gmail.com
 */
 
 module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
+  'use strict';
 
   var Topic = DataFactory.Topic,
     Problem = DataFactory.Problem;
 
-  /** 
-   *  @prop $scope.navigator {Object} */
-  
-  $scope.navigator = {};
-
-  /** Attach {@link module:controllers/navigator~onClickMore} to all elements with classname "more".
-   *    This function is called once via a $timeout
-   *
-   *  @function activateMoreLess
+  /** @function 
+   *  @param {Object} evt - DOM Event
    */
 
-  function activateMoreLess () {
-    $('.more').on('click',
+  function onCollapse (evt) {
 
-      /** Change maximum to 1000 and update scope.
-       *
-       *  @function onClickMore
-       *  @param e {Event}
-       *  @return {boolean} false
-       */
+    var target = $(event.target).closest('.box'),
+      targetScope = angular.element(target).scope();
 
-      function onClickMore (e) {
-        var item = $(this).data('item');
-        item.$maxChars = 1000;
-        angular.element($(this)).scope().$digest();
-        e.preventDefault();
-        return false;
+    targetScope.$apply(function () {
+        targetScope.$showButtons = false;
       });
   }
 
-  /** call {@link module:controllers/navigator~activateMoreLess} in 250 miliseconds */
-
-  $timeout(activateMoreLess, 250);
-
-  /** Attach {@link module:controllers/navigator~onClickMore} to all elements with classname "more".
-   *    This function is called once via a $timeout
-   *
-   *  @function moreLess
+  /** @function 
+   *  @param {Object} evt - DOM Event
    */
 
-  $scope.moreLess = function (is) {
-    $timeout(function () {
-      is.$maxChars = 1000;
-    }, 250);
-    return false;
-  };
+  function onExpand (evt) {
+    /** Get item's info */
 
-  function getCollapsedItem (event) {
-    var bits = $(event.target).attr('id').split('-');
+    var target = $(event.target).closest('.box'),
+      targetScope = angular.element(target).scope();
 
-    var type = bits[0];
-    var id = bits[1];
-    var has = bits[2];
+    if ( angular.element(target).data('is-navigable') ) {
+      return;
+    }
 
-    return {
-      is: $scope[type].filter(function (t) {
-        return t._id === id;
-      }),
-      type: type,
-      id: id,
-      has: has
-    };
-  }
+    angular.element(target).data('is-navigable', true);
 
-  Topic.get()
-    .success(function (data) {
-      $scope.topics = data;
+    if ( ! targetScope.$type ) {
+      ['topic', 'problem'].forEach(function (type) {
+        if ( type in targetScope ) {
+          targetScope.$type = type;
+        }
+      });
+    }
 
-      $timeout(function () {
-        $('.navigator .collapse').on('show.bs.collapse', function (evt) {
+    if ( ! targetScope.$loaded ) {
+      switch ( targetScope.$type ) {
+        case 'topic':
+          Problem.get(targetScope[targetScope.$type]._id)
 
-          var item = getCollapsedItem(evt);
-
-          if ( item.is.length ) {
-            is = item.is[0];
-
-            if ( ! is.$loaded ) {
-              switch ( item.type ) {
-                case 'topics':
-                  Problem.get(item.id)
-
-                    .success(function (problems) {
-                      is.$showButtons = true;
-                      is.$problems = problems;
-                      is.$loaded = true;
-                    });
-                  break;
-              }
-            }
-
-            else {
-              $scope.$apply(function () {
-                is.$showButtons = true;
-              });
-            }
-          }
-        });
-
-        $('.navigator .collapse').on('hide.bs.collapse', function (evt) {
-          var item = getCollapsedItem(evt);
-
-          if ( item.is.length ) {
-            is = item.is[0];
-
-            $scope.$apply(function () {
-              is.$showButtons = false;
+            .success(function (problems) {
+              targetScope.$showButtons  =   true;
+              targetScope.$loaded       =   true;
+              targetScope.$problems     =   problems;
             });
-          }
-        });
+          break;
+
+        case 'problem':
+          
+          break;
+        }
+    }
+
+    else {
+      targetScope.$apply(function () {
+        targetScope.$showButtons = true;
       });
-    });
+    }
+
+    return console.log(targetScope);
+  }
+
+  /** Function to add listeners to Bootstrap collapse's events
+   *  This function gets called upon success of {@link getTopics}
+   *  @function onLoaded
+   */
+
+  function onLoaded () {
+    $('.navigator .collapse')
+      .on('show.bs.collapse', onExpand)
+      .on('hide.bs.collapse', onCollapse);
+  }
+
+  /** @function getTopics */
+
+  function getTopics () {
+    Topic.get()
+      .success(function (topics) {
+
+        $scope.topics = topics;
+
+        $timeout(onLoaded);
+      });
+  }
+
+  $scope.getTopics = getTopics;
 };

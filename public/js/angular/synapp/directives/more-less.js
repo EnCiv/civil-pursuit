@@ -13,7 +13,7 @@
 
 module.exports = function () {
   return {
-    restrict: 'C',
+    restrict: 'CA',
     link: function ($scope, $elem, $attr) {
 
       $attr.$observe('ngBind', function (n, o) {
