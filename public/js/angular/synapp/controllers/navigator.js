@@ -90,6 +90,7 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
 
     if ( ! targetScope.$loaded ) {
       switch ( targetScope.$type ) {
+        
         case 'topic':
           Problem.get(targetScope[targetScope.$type]._id)
 
