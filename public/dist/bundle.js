@@ -405,6 +405,9 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
       targetScope = angular.element(target).scope();
 
     if ( angular.element(target).data('is-navigable') ) {
+      targetScope.$apply(function () {
+        targetScope.$showButtons = true;
+      });
       return;
     }
 
@@ -420,7 +423,7 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
 
     if ( ! targetScope.$loaded ) {
       switch ( targetScope.$type ) {
-        
+
         case 'topic':
           Problem.get(targetScope[targetScope.$type]._id)
 
