@@ -196,7 +196,7 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
     // if right has a feedback -- save it
 
-    if ( $scope.items[1].$feedback ) {
+    if ( $scope.items[1] && $scope.items[1].$feedback ) {
       DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
     }
 
@@ -219,7 +219,7 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
     // if right has votes
 
-    if ( $scope.items[1].$votes ) {
+    if ( $scope.items[1] && $scope.items[1].$votes ) {
     
       for ( var criteria in $scope.items[1].$votes ) {
         votes.push({
@@ -316,6 +316,8 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
   // finish
   $scope.finish = function () {
+    change();
+
     if ( $scope.item ) {
       location.href = '/details/' + $scope.item;
     }
@@ -1294,7 +1296,7 @@ module.exports = function cloudinaryTransformationFilter () {
   function cloudinaryTransformation (cloudinaryImageUrl) {
     if ( cloudinaryImageUrl && typeof cloudinaryImageUrl === 'string' ) {
       return cloudinaryImageUrl.replace(/\/image\/upload\/v(.+)\/(.+)\.jpg$/,
-        '/image/upload/c_lfill,e_improve,g_face,h_120,r_7,w_180/$2.jpg');
+        '/image/upload/' + synapp['cloudinary navigator images filter'] + '/$2.jpg');
     }
   }
 

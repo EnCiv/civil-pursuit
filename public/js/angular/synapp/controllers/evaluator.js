@@ -74,7 +74,7 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
     // if right has a feedback -- save it
 
-    if ( $scope.items[1].$feedback ) {
+    if ( $scope.items[1] && $scope.items[1].$feedback ) {
       DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
     }
 
@@ -97,7 +97,7 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
     // if right has votes
 
-    if ( $scope.items[1].$votes ) {
+    if ( $scope.items[1] && $scope.items[1].$votes ) {
     
       for ( var criteria in $scope.items[1].$votes ) {
         votes.push({
@@ -194,6 +194,8 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
   // finish
   $scope.finish = function () {
+    change();
+
     if ( $scope.item ) {
       location.href = '/details/' + $scope.item;
     }

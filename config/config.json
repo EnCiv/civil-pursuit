@@ -22,6 +22,8 @@
   },
 
   "public"                        :         {
-    "navigator batch size"        :         5
+    "navigator batch size"        :         5,
+    "cloudinary navigator images filter"
+                                  :         "c_thumb,e_improve,g_face,h_120,w_180"
   }
 }
