@@ -1294,7 +1294,7 @@ module.exports = function cloudinaryTransformationFilter () {
   function cloudinaryTransformation (cloudinaryImageUrl) {
     if ( cloudinaryImageUrl && typeof cloudinaryImageUrl === 'string' ) {
       return cloudinaryImageUrl.replace(/\/image\/upload\/v(.+)\/(.+)\.jpg$/,
-        '/image/upload/t_media_lib_thumb/$2.jpg');
+        '/image/upload/c_lfill,e_improve,g_face,h_120,r_7,w_180/$2.jpg');
     }
   }
 
