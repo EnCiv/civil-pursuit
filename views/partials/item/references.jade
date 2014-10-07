@@ -1,7 +1,7 @@
 h4.entry-title
   a(
     target          =   '_blank'
-    title           =   '{{item.url}}'
-    data-ng-href    =   '{{item.url}}'
-    data-ng-bind    =   '(item.title || item.url) | filter:shorten'
+    title           =   '{{item.references[0].url}}'
+    data-ng-href    =   '{{item.references[0].url}}'
+    data-ng-bind    =   '(item.references[0].title || item.references[0].url) | filter:shorten'
     )

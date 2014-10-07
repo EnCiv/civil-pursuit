@@ -51,6 +51,14 @@ block page
         )
           .pre-text.entry-description(data-ng-bind='item.description')
 
+      // References
+
+      .row
+        .col-sm-6.padding(
+          data-ng-repeat      =   'item in items | getCurrentlyEvaluatedFilter'
+        )
+          include ../partials/item/references
+
       // Sliders
 
       .row
