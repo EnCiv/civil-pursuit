@@ -534,7 +534,7 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
  *  @see {@link http://getbootstrap.com/javascript/#collapse| Bootstrap Documentation: collapse}
  *  @example
  *    <ANY ng-controller="NavigatorCtrl" ng-init="getTopics()" />
- *  @todo Possible memory leaks with all the batch of items being kept in the Memory. Maybe defining a maximum of items?
+ *  @todo Possible memory leaks with all the batch of items being kept in the Memory. Maybe defining a maximum of items? Or emoving them?
  * @author francoisrvespa@gmail.com
 */
 
