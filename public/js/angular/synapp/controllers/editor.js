@@ -21,7 +21,7 @@ module.exports = function ($scope, DataFactory, $timeout) {
     $scope.editor = {};
   }
 
-  $scope.editor.$save = function () {
+  $scope.editor.$save = function saveEditor () {
       
     this.$error = null;
 
@@ -65,6 +65,8 @@ module.exports = function ($scope, DataFactory, $timeout) {
 
     else {
       obj.image = getImage();
+
+      console.log('creating item', obj);
 
       DataFactory.model('Item').post(obj)
 

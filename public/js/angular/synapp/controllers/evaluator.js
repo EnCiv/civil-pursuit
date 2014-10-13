@@ -47,6 +47,10 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
         if ( $scope.items.length < 6 ) {
           $scope.evaluator.limit = $scope.items.length - 1;
+
+          if ( ! $scope.evaluator.limit && $scope.items.length === 1 ) {
+            $scope.evaluator.limit = 1;
+          }
         }
 
         $scope.criterias = evaluation.criterias;

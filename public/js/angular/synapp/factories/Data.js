@@ -7,148 +7,18 @@
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = function DataFactory ($http) {
+module.exports = function DataFactory (Model) {
 
-  var url = '/json/',
-    batchSize = synapp['navigator batch size'];
-
-  function Model (model) {
-    this.model    = model;
-    this.query    = {};
-    this.sorters  = [];
-
-    this.url = url + model + '/';
-  }
-
-  Model.prototype.action = function(action) {
-    this.url += action + '/';
-
-    return this;
-  };
-
-  Model.prototype.findById = function(id) {
-    this.action('findById');
-    this.params([id]);
-
-    return this;
-  };
-
-  Model.prototype.updateById = function(id) {
-    this.action('updateById');
-    this.params([id]);
-
-    return this;
-  };
-
-  Model.prototype.findOne = function(id) {
-    this.action('findOne');
-
-    return this;
-  };
-
-  Model.prototype.params = function(params) {
-    if ( Array.isArray(params) ) {
-      this.url += params.join('/') + '/';
-    }
-
-    return this;
-  };
-
-  Model.prototype.populate = function() {
-
-    var populators = [];
-
-    for ( var i in arguments ) {
-      populators.push(arguments[i]);
-    }
-
-    this.query['populate::' + populators.join('+')] = null;
-
-    return this;
-  };
-
-  Model.prototype.sort = function(field, reverse) {
-    var sorter = field;
-
-    if ( reverse ) {
-      sorter += '-';
-    }
-
-    this.sorters.push(sorter);
-
-    return this;
-  };
-
-  Model.prototype.limit = function(limit) {
-    this.query['limit::' + limit] = null;
-
-    return this;
-  };
-
-  Model.prototype.applySorters = function() {
-    if ( this.sorters.length ) {
-      this.query['sort::' + this.sorters.join(',')] = null;
-    }
-  };
-
-  Model.prototype.addQuery = function(object) {
-    for ( var i in object ) {
-      this.query[i] = object[i];
-    }
-
-    return this;
-  };
-
-  Model.prototype.applyQuery = function() {
-    if ( Object.keys(this.query).length ) {
-      var queries = [];
-
-      for ( var i in this.query ) {
-        if ( this.query[i] ) {
-          queries.push(i + '=' + this.query[i]);
-        }
-        else {
-          queries.push(i);
-        }
-      }
-
-      this.url += '?' + queries.join('&');
-    }
-  };
-
-  Model.prototype.get = function() {
-    return this.request('get');
-  };
-
-  Model.prototype.post = function(payload) {
-    return this.request('post', payload);
-  };
-
-  Model.prototype.put = function(payload) {
-    return this.request('put', payload);
-  };
-
-  Model.prototype.request = function(method, payload) {
-    this.applySorters();
-
-    this.applyQuery();
-
-    var q = $http[method](this.url, payload);
-
-    q.ok = q.success;
-    q.ko = q.error;
-
-    return q;
-  };
+  var batchSize = synapp["navigator batch size"];
 
   return {
     model: function (model) {
-      return new Model(model);
+      return Model.request(model);
     },
 
     Item: {
       set: function (id, set) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .addQuery({ _id: id })
 
@@ -156,7 +26,7 @@ module.exports = function DataFactory ($http) {
       },
 
       evaluate: function (id) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .action('evaluate')
 
@@ -166,7 +36,7 @@ module.exports = function DataFactory ($http) {
       },
 
       get: function (id) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .action('details')
 
@@ -178,7 +48,7 @@ module.exports = function DataFactory ($http) {
 
     Topic: {
       get: function () {
-        return new Model('Item')
+        return Model.request('Item')
 
           .addQuery({ type: 'Topic' })
 
@@ -192,7 +62,7 @@ module.exports = function DataFactory ($http) {
 
     Problem: {
       get: function (topic) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .addQuery({
             type: 'Problem',
@@ -207,9 +77,94 @@ module.exports = function DataFactory ($http) {
       }
     },
 
+    Agree: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Agree',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Disagree: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Disagree',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Solution: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Solution',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Pro: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Pro',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Con: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Con',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
     Feedback: {
       create: function (itemId, feedback) {
-        return new Model('Feedback')
+        return Model.request('Feedback')
 
           .post({
             item: itemId,

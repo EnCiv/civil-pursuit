@@ -17,15 +17,18 @@
  *
  *  ## Loading data flow
  *
- *  Navigator works by lazy loading. It does not load data until a User Event triggers it to do so. The only exception to that are topics that gets downloaded on `ng-init`
+ *  Navigator works by lazy loading. It does not load data until a User Event triggers it to do so.
+ *  The only exception to that are topics that gets downloaded on `ng-init`
  *
- *  Data loads a default batch of 15 items with the option of loading more via User Event. Every batch downloaded stays in the Memory.
+ *  Data loads a default batch of 15 items with the option of loading more via User Event.
+ *  Every batch downloaded stays in the Memory.
  *
  *  The function used to fetch data is {@link getTopics}.
  *
  *  ## Bootstrap
  *  
- *  We use {@link http://getbootstrap.com/javascript/#collapse| Bootstrap collapse} to expand/squeeze items and sub-items
+ *  We use {@link http://getbootstrap.com/javascript/#collapse| Bootstrap collapse}
+ *   to expand/squeeze items and sub-items
  *
  *  ### Bootstrap integration in Scope
  *
@@ -47,21 +50,11 @@
 module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
   'use strict';
 
-  var Topic = DataFactory.Topic,
-    Problem = DataFactory.Problem;
-
   /** @function 
    *  @param {Object} evt - DOM Event
    */
 
   function onCollapse (evt) {
-
-    var target = $(event.target).closest('.box'),
-      targetScope = angular.element(target).scope();
-
-    targetScope.$apply(function () {
-        targetScope.$showButtons = false;
-      });
   }
 
   /** @function 
@@ -72,42 +65,62 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
     /** Get item's info */
 
     var target = $(event.target).closest('.box'),
-      targetScope = angular.element(target).scope();
+      targetScope = angular.element(target).scope(),
+      type = target.data('type').toLowerCase();
 
-    if ( angular.element(target).data('is-navigable') ) {
-      targetScope.$apply(function () {
-        targetScope.$showButtons = true;
-      });
-      return;
-    }
-
-    angular.element(target).data('is-navigable', true);
-
-    if ( ! targetScope.$type ) {
-      ['topic', 'problem'].forEach(function (type) {
-        if ( type in targetScope ) {
-          targetScope.$type = type;
-        }
-      });
-    }
-
-    if ( ! targetScope.$loaded ) {
-      switch ( targetScope.$type ) {
+    if ( ! target.data('loaded') ) {
+      switch ( type ) {
 
         case 'topic':
-          Problem.get(targetScope[targetScope.$type]._id)
+          DataFactory.Problem.get(targetScope[type]._id)
 
             .success(function (problems) {
-              targetScope.$showButtons  =   true;
-              targetScope.$loaded       =   true;
-              targetScope.$problems     =   problems;
+              targetScope.problems = problems;
+              target.data('loaded', true);
             });
           break;
 
         case 'problem':
-          
+          DataFactory.Agree.get(targetScope[type]._id)
+
+            .success(function (agrees) {
+              targetScope.agrees = agrees;
+              target.data('loaded', true);
+            });
+
+          DataFactory.Disagree.get(targetScope[type]._id)
+
+            .success(function (disagrees) {
+              targetScope.disagrees = disagrees;
+              target.data('loaded', true);
+            });
+
+          DataFactory.Solution.get(targetScope[type]._id)
+
+            .success(function (solutions) {
+              targetScope.solutions = solutions;
+              target.data('loaded', true);
+            });
           break;
-        }
+
+        case 'solution':
+          DataFactory.Pro.get(targetScope[type]._id)
+
+            .success(function (pros) {
+              targetScope.pros = pros;
+              target.data('loaded', true);
+            });
+
+          DataFactory.Con.get(targetScope[type]._id)
+
+            .success(function (cons) {
+              targetScope.cons = cons;
+              target.data('loaded', true);
+            });
+          break;
+
+
+      }
     }
 
     else {
@@ -133,7 +146,7 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
   /** @function getTopics */
 
   function getTopics () {
-    Topic.get()
+    DataFactory.Topic.get()
       .success(function (topics) {
 
         $scope.topics = topics;

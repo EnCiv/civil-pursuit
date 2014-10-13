@@ -49,12 +49,14 @@ block page
         .col-xs-12
           include ../partials/editor/references
 
-      .row.padding
+      .row.padding-bottom
+
+      .row.padding-bottom
         .col-xs-6
 
           //- Upload image button
 
-          div.upload-button.btn.btn-default(
+          div.upload-button.btn.btn-default.btn-lg(
             ng-file-select  =   "onFileSelect($files)"
             data-multiple   =   "true"
             title           =   "select file"
@@ -65,11 +67,11 @@ block page
 
           //- Clear button
 
-          button.btn(
+          button.btn.btn-lg(
             data-ng-click   =   'clearEntry()' 
             type            =   'button'
               ) Clear
 
           //- Done button
           
-          button.btn.btn-info Done
+          button.btn.btn-info.btn-lg Done

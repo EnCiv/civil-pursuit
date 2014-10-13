@@ -25,7 +25,7 @@ FileAPI = {
 var uploadUrl = '/tools/upload';
 window.uploadUrl = window.uploadUrl || 'upload';
 
-var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl ($scope, $http, $timeout, $upload) {
+var UploadCtrl = function UploadCtrl ($scope, $http, $timeout, $upload) {
 
   $scope.howToSend = 1;
 
@@ -127,7 +127,7 @@ var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl
 				$scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
 			});
 			$scope.upload[index].xhr(function(xhr){
-//				xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+				xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
 			});
 		} else {
 			var fileReader = new FileReader();
@@ -164,6 +164,6 @@ var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl
 		}
 		return hasFile ? "dragover" : "dragover-err";
 	};
-} ];
+};
 
 module.exports = UploadCtrl;

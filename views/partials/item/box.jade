@@ -1,33 +1,45 @@
+//- Navigator's item box
+//- @mixin box
+//- @param {Object} item
+
 include image
 
-mixin box(type)
+mixin box(item)
   // Box item
-  .box(data-ng-init='$showButtons = false')
+  .box(data-ng-init='$showButtons = false' data-type="{{" + item + ".type}}" data-loaded="{{false}}")
     .row(data-ng-hide='$last && $index === ' + synapp.public["navigator batch size"])
+
+      //- Image + user=author icon
       .col-xs-12.col-sm-4
         h1.is-author
           a(href='/edit/')
             i.glyphicon.glyphicon-user
         div
-          +item-image(type)
+          +item-image(item)
 
+      //- Subject + description
       .col-xs-9.col-sm-5
-        h4(data-ng-bind=type + '.subject')
-        div.box-description(data-ng-bind=type + '.description' data-syn-more-less)
+        h4(data-ng-bind=item + '.subject')
+        div.box-description(data-ng-bind=item + '.description' data-syn-more-less)
 
+      //- Right buttons + stats
       .box-promoted.col-xs-3.text-right
-        h5 Promoted
         ul
-          li(data-ng-bind=type + '.promotions')
-          li(data-ng-bind='(' + type + ' | getPromotedPercentageFilter) + "%"')
+          //- Promote button
+          li
+            a.btn.btn-sm(data-ng-href='/evaluate/{{' + item + '._id}}') Promote
 
-    .row(data-ng-show='$showButtons && ! ($last && $index === ' + synapp.public["navigator batch size"] +')')
-      .col-xs-6.padding
-        a.btn.btn-block.btn-sm(data-ng-href='/evaluate/{{' + type + '._id}}') Promote
+          //- Promoted stat (times)
+          li(data-ng-bind=item + '.promotions')
 
-      .col-xs-6.padding
-        a.btn.btn-block.btn-sm(data-ng-href='/details/{{' + type + '._id}}') Details
+          //- Promoted stat (percent)
+          li(data-ng-bind='(' + item + ' | getPromotedPercentageFilter) + "%"')
 
+          //- Details button
+          li
+            a.btn.btn-sm(data-ng-href='/details/{{' + item + '._id}}') &nbsp;Details&nbsp;
+
+    //- Show more (in case item is last in list)
     .row(data-ng-show='$last && $index === ' + (+synapp.public["navigator batch size"] - 1))
       .col-xs-12.text-center
         a(href) Show more

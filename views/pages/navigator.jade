@@ -2,42 +2,40 @@ extends ../layouts/master
 
 include ../partials/item/box
 
-block page
-
-  section#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl' data-ng-init='getTopics()')
-    .panel.panel-default
-      .panel-heading
-        h4.panel-title
-          a(href='/create/Topic' data-ng-show='is.in = ' + !!isSignedIn)
+mixin panel (title, create, repeat, repeater)
+  .panel.panel-default
+    .panel-heading
+      h4.panel-title
+        - if ( create )
+          a(href=create data-ng-show='is.in = ' + !!isSignedIn)
             i.pull-right.glyphicon.glyphicon-plus
-          span Topic
+        span=title
 
+    - if ( repeat )
       ul
-        li.box-wrapper(data-ng-repeat='topic in topics')
-          div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems')
-            +box('topic')
+        li.box-wrapper(data-ng-repeat=repeater + ' in ' + repeat)
+          div(data-toggle='collapse' data-target='#' + repeat + '-{{' + repeater + '._id}}')
+            +box(repeater)
 
-          .panel-collapse.collapse.panel-body(id='topics-{{topic._id}}-problems')
+          .panel-collapse.collapse.panel-body(id=repeat + '-{{' + repeater + '._id}}')
             .panel-group
-              .panel.panel-default
-                .panel-heading
-                  h4.panel-title
-                    a(data-ng-href='/create/Problem/{{topic._id}}' data-ng-show='is.in = ' + !!isSignedIn)
-                      i.pull-right.glyphicon.glyphicon-plus
-                    span Problem
+              block
 
-                .panel-body
-                  big(data-ng-hide='$loaded') Just a moment, we are loading problems related to {{topic.subject}}
-                  ul
-                    li.box-wrapper(data-ng-repeat='problem in $problems')
-                      div(data-toggle='collapse' data-target='#topics-{{topic._id}}-problems-{{problem._id}}' data-parent='#navigator')
-                        +box('problem')
+block page
+  section#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl' data-ng-init='getTopics()')
+    +panel('Topic', '/create/Topic', 'topics', 'topic')
+      +panel('Problem', '/create/Problem/{{topic._id}}', 'problems', 'problem')
+        .row
+          .col-sm-6.col-xs-12
+            +panel('Agree', '/create/Agree/{{problem._id}}', 'agrees', 'agree')
 
-                      .panel-collapse.collapse.panel-body(id='topics-{{topic._id}}-problems-{{problem._id}}')
-                        .panel-group
-                          .panel.panel-default
-                            .panel-heading
-                              
+          .col-sm-6.col-xs-12
+            +panel('Disagree', '/create/Disagree/{{problem._id}}', 'disagrees', 'disagree')
 
-                            .panel-body
-                              
+        +panel('Solution', '/create/Solution/{{problem._id}}', 'solutions', 'solution')
+          .row
+            .col-sm-6.col-xs-12
+              +panel('Pro', '/create/Pro/{{solution._id}}', 'pros', 'pro')
+
+            .col-sm-6.col-xs-12
+              +panel('Con', '/create/Con/{{solution._id}}', 'cons', 'con')

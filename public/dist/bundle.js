@@ -1,4 +1,155 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/elance/synappalpha/public/js/angular/monson/index.js":[function(require,module,exports){
+;(function () {
+
+  angular.module('monson', [])
+
+    .factory('MonsonFactory', ['$http', function ($http) {
+      function Model (model) {
+        this.path     =   '/json/';
+        this.model    =   model;
+        this.query    =   {};
+        this.sorters  =   [];
+
+        this.url = this.path + model + '/';
+      }
+
+      Model.prototype.changePath = function(path) {
+        this.path = path;
+
+        return this;
+      };
+
+      Model.prototype.action = function(action) {
+        this.url += action + '/';
+
+        return this;
+      };
+
+      Model.prototype.findById = function(id) {
+        this.action('findById');
+        this.params([id]);
+
+        return this;
+      };
+
+      Model.prototype.updateById = function(id) {
+        this.action('updateById');
+        this.params([id]);
+
+        return this;
+      };
+
+      Model.prototype.findOne = function(id) {
+        this.action('findOne');
+
+        return this;
+      };
+
+      Model.prototype.params = function(params) {
+        if ( Array.isArray(params) ) {
+          this.url += params.join('/') + '/';
+        }
+
+        return this;
+      };
+
+      Model.prototype.populate = function() {
+
+        var populators = [];
+
+        for ( var i in arguments ) {
+          populators.push(arguments[i]);
+        }
+
+        this.query['populate::' + populators.join('+')] = null;
+
+        return this;
+      };
+
+      Model.prototype.sort = function(field, reverse) {
+        var sorter = field;
+
+        if ( reverse ) {
+          sorter += '-';
+        }
+
+        this.sorters.push(sorter);
+
+        return this;
+      };
+
+      Model.prototype.limit = function(limit) {
+        this.query['limit::' + limit] = null;
+
+        return this;
+      };
+
+      Model.prototype.applySorters = function() {
+        if ( this.sorters.length ) {
+          this.query['sort::' + this.sorters.join(',')] = null;
+        }
+      };
+
+      Model.prototype.addQuery = function(object) {
+        for ( var i in object ) {
+          this.query[i] = object[i];
+        }
+
+        return this;
+      };
+
+      Model.prototype.applyQuery = function() {
+        if ( Object.keys(this.query).length ) {
+          var queries = [];
+
+          for ( var i in this.query ) {
+            if ( this.query[i] ) {
+              queries.push(i + '=' + this.query[i]);
+            }
+            else {
+              queries.push(i);
+            }
+          }
+
+          this.url += '?' + queries.join('&');
+        }
+      };
+
+      Model.prototype.get = function() {
+        return this.request('get');
+      };
+
+      Model.prototype.post = function(payload) {
+        return this.request('post', payload);
+      };
+
+      Model.prototype.put = function(payload) {
+        return this.request('put', payload);
+      };
+
+      Model.prototype.request = function(method, payload) {
+        this.applySorters();
+
+        this.applyQuery();
+
+        var q = $http[method](this.url, payload);
+
+        q.ok = q.success;
+        q.ko = q.error;
+
+        return q;
+      };
+
+      return {
+        request: function (model) {
+          return new Model(model);
+        }
+      };
+    }]);
+
+})();
+
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js":[function(require,module,exports){
 /**
  * `DetailsCtrl` Details
  * 
@@ -55,7 +206,7 @@ module.exports = function ($scope, DataFactory, $timeout) {
     $scope.editor = {};
   }
 
-  $scope.editor.$save = function () {
+  $scope.editor.$save = function saveEditor () {
       
     this.$error = null;
 
@@ -99,6 +250,8 @@ module.exports = function ($scope, DataFactory, $timeout) {
 
     else {
       obj.image = getImage();
+
+      console.log('creating item', obj);
 
       DataFactory.model('Item').post(obj)
 
@@ -171,6 +324,10 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 
         if ( $scope.items.length < 6 ) {
           $scope.evaluator.limit = $scope.items.length - 1;
+
+          if ( ! $scope.evaluator.limit && $scope.items.length === 1 ) {
+            $scope.evaluator.limit = 1;
+          }
         }
 
         $scope.criterias = evaluation.criterias;
@@ -351,15 +508,18 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
  *
  *  ## Loading data flow
  *
- *  Navigator works by lazy loading. It does not load data until a User Event triggers it to do so. The only exception to that are topics that gets downloaded on `ng-init`
+ *  Navigator works by lazy loading. It does not load data until a User Event triggers it to do so.
+ *  The only exception to that are topics that gets downloaded on `ng-init`
  *
- *  Data loads a default batch of 15 items with the option of loading more via User Event. Every batch downloaded stays in the Memory.
+ *  Data loads a default batch of 15 items with the option of loading more via User Event.
+ *  Every batch downloaded stays in the Memory.
  *
  *  The function used to fetch data is {@link getTopics}.
  *
  *  ## Bootstrap
  *  
- *  We use {@link http://getbootstrap.com/javascript/#collapse| Bootstrap collapse} to expand/squeeze items and sub-items
+ *  We use {@link http://getbootstrap.com/javascript/#collapse| Bootstrap collapse}
+ *   to expand/squeeze items and sub-items
  *
  *  ### Bootstrap integration in Scope
  *
@@ -381,21 +541,11 @@ module.exports = function EvaluatorCtrl ($scope, DataFactory, $timeout) {
 module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
   'use strict';
 
-  var Topic = DataFactory.Topic,
-    Problem = DataFactory.Problem;
-
   /** @function 
    *  @param {Object} evt - DOM Event
    */
 
   function onCollapse (evt) {
-
-    var target = $(event.target).closest('.box'),
-      targetScope = angular.element(target).scope();
-
-    targetScope.$apply(function () {
-        targetScope.$showButtons = false;
-      });
   }
 
   /** @function 
@@ -406,42 +556,62 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
     /** Get item's info */
 
     var target = $(event.target).closest('.box'),
-      targetScope = angular.element(target).scope();
+      targetScope = angular.element(target).scope(),
+      type = target.data('type').toLowerCase();
 
-    if ( angular.element(target).data('is-navigable') ) {
-      targetScope.$apply(function () {
-        targetScope.$showButtons = true;
-      });
-      return;
-    }
-
-    angular.element(target).data('is-navigable', true);
-
-    if ( ! targetScope.$type ) {
-      ['topic', 'problem'].forEach(function (type) {
-        if ( type in targetScope ) {
-          targetScope.$type = type;
-        }
-      });
-    }
-
-    if ( ! targetScope.$loaded ) {
-      switch ( targetScope.$type ) {
+    if ( ! target.data('loaded') ) {
+      switch ( type ) {
 
         case 'topic':
-          Problem.get(targetScope[targetScope.$type]._id)
+          DataFactory.Problem.get(targetScope[type]._id)
 
             .success(function (problems) {
-              targetScope.$showButtons  =   true;
-              targetScope.$loaded       =   true;
-              targetScope.$problems     =   problems;
+              targetScope.problems = problems;
+              target.data('loaded', true);
             });
           break;
 
         case 'problem':
-          
+          DataFactory.Agree.get(targetScope[type]._id)
+
+            .success(function (agrees) {
+              targetScope.agrees = agrees;
+              target.data('loaded', true);
+            });
+
+          DataFactory.Disagree.get(targetScope[type]._id)
+
+            .success(function (disagrees) {
+              targetScope.disagrees = disagrees;
+              target.data('loaded', true);
+            });
+
+          DataFactory.Solution.get(targetScope[type]._id)
+
+            .success(function (solutions) {
+              targetScope.solutions = solutions;
+              target.data('loaded', true);
+            });
           break;
-        }
+
+        case 'solution':
+          DataFactory.Pro.get(targetScope[type]._id)
+
+            .success(function (pros) {
+              targetScope.pros = pros;
+              target.data('loaded', true);
+            });
+
+          DataFactory.Con.get(targetScope[type]._id)
+
+            .success(function (cons) {
+              targetScope.cons = cons;
+              target.data('loaded', true);
+            });
+          break;
+
+
+      }
     }
 
     else {
@@ -467,7 +637,7 @@ module.exports = function NavigatorCtrl ($scope, DataFactory, $timeout) {
   /** @function getTopics */
 
   function getTopics () {
-    Topic.get()
+    DataFactory.Topic.get()
       .success(function (topics) {
 
         $scope.topics = topics;
@@ -593,7 +763,7 @@ FileAPI = {
 var uploadUrl = '/tools/upload';
 window.uploadUrl = window.uploadUrl || 'upload';
 
-var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl ($scope, $http, $timeout, $upload) {
+var UploadCtrl = function UploadCtrl ($scope, $http, $timeout, $upload) {
 
   $scope.howToSend = 1;
 
@@ -695,7 +865,7 @@ var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl
 				$scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
 			});
 			$scope.upload[index].xhr(function(xhr){
-//				xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+				xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
 			});
 		} else {
 			var fileReader = new FileReader();
@@ -732,7 +902,7 @@ var UploadCtrl = [ '$scope', '$http', '$timeout', '$upload', function UploadCtrl
 		}
 		return hasFile ? "dragover" : "dragover-err";
 	};
-} ];
+};
 
 module.exports = UploadCtrl;
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/charts.js":[function(require,module,exports){
@@ -1024,6 +1194,7 @@ module.exports = function () {
     }
   };
 };
+
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js":[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
@@ -1034,148 +1205,18 @@ module.exports = function () {
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = function DataFactory ($http) {
+module.exports = function DataFactory (Model) {
 
-  var url = '/json/',
-    batchSize = synapp['navigator batch size'];
-
-  function Model (model) {
-    this.model    = model;
-    this.query    = {};
-    this.sorters  = [];
-
-    this.url = url + model + '/';
-  }
-
-  Model.prototype.action = function(action) {
-    this.url += action + '/';
-
-    return this;
-  };
-
-  Model.prototype.findById = function(id) {
-    this.action('findById');
-    this.params([id]);
-
-    return this;
-  };
-
-  Model.prototype.updateById = function(id) {
-    this.action('updateById');
-    this.params([id]);
-
-    return this;
-  };
-
-  Model.prototype.findOne = function(id) {
-    this.action('findOne');
-
-    return this;
-  };
-
-  Model.prototype.params = function(params) {
-    if ( Array.isArray(params) ) {
-      this.url += params.join('/') + '/';
-    }
-
-    return this;
-  };
-
-  Model.prototype.populate = function() {
-
-    var populators = [];
-
-    for ( var i in arguments ) {
-      populators.push(arguments[i]);
-    }
-
-    this.query['populate::' + populators.join('+')] = null;
-
-    return this;
-  };
-
-  Model.prototype.sort = function(field, reverse) {
-    var sorter = field;
-
-    if ( reverse ) {
-      sorter += '-';
-    }
-
-    this.sorters.push(sorter);
-
-    return this;
-  };
-
-  Model.prototype.limit = function(limit) {
-    this.query['limit::' + limit] = null;
-
-    return this;
-  };
-
-  Model.prototype.applySorters = function() {
-    if ( this.sorters.length ) {
-      this.query['sort::' + this.sorters.join(',')] = null;
-    }
-  };
-
-  Model.prototype.addQuery = function(object) {
-    for ( var i in object ) {
-      this.query[i] = object[i];
-    }
-
-    return this;
-  };
-
-  Model.prototype.applyQuery = function() {
-    if ( Object.keys(this.query).length ) {
-      var queries = [];
-
-      for ( var i in this.query ) {
-        if ( this.query[i] ) {
-          queries.push(i + '=' + this.query[i]);
-        }
-        else {
-          queries.push(i);
-        }
-      }
-
-      this.url += '?' + queries.join('&');
-    }
-  };
-
-  Model.prototype.get = function() {
-    return this.request('get');
-  };
-
-  Model.prototype.post = function(payload) {
-    return this.request('post', payload);
-  };
-
-  Model.prototype.put = function(payload) {
-    return this.request('put', payload);
-  };
-
-  Model.prototype.request = function(method, payload) {
-    this.applySorters();
-
-    this.applyQuery();
-
-    var q = $http[method](this.url, payload);
-
-    q.ok = q.success;
-    q.ko = q.error;
-
-    return q;
-  };
+  var batchSize = synapp["navigator batch size"];
 
   return {
     model: function (model) {
-      return new Model(model);
+      return Model.request(model);
     },
 
     Item: {
       set: function (id, set) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .addQuery({ _id: id })
 
@@ -1183,7 +1224,7 @@ module.exports = function DataFactory ($http) {
       },
 
       evaluate: function (id) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .action('evaluate')
 
@@ -1193,7 +1234,7 @@ module.exports = function DataFactory ($http) {
       },
 
       get: function (id) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .action('details')
 
@@ -1205,7 +1246,7 @@ module.exports = function DataFactory ($http) {
 
     Topic: {
       get: function () {
-        return new Model('Item')
+        return Model.request('Item')
 
           .addQuery({ type: 'Topic' })
 
@@ -1219,7 +1260,7 @@ module.exports = function DataFactory ($http) {
 
     Problem: {
       get: function (topic) {
-        return new Model('Item')
+        return Model.request('Item')
 
           .addQuery({
             type: 'Problem',
@@ -1234,9 +1275,94 @@ module.exports = function DataFactory ($http) {
       }
     },
 
+    Agree: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Agree',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Disagree: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Disagree',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Solution: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Solution',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Pro: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Pro',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
+    Con: {
+      get: function (problem) {
+        return Model.request('Item')
+
+          .addQuery({
+            type: 'Con',
+            parent: problem
+          })
+
+          .sort('promotions', true)
+
+          .limit(batchSize)
+
+          .get();
+      }
+    },
+
     Feedback: {
       create: function (itemId, feedback) {
-        return new Model('Feedback')
+        return Model.request('Feedback')
 
           .post({
             item: itemId,
@@ -1442,46 +1568,49 @@ module.exports = function shortenFilter () {
 
 ;(function () {
 
+  require('../monson/index');
+
+  angular_deps.push('monson');
+
   var synapp = angular.module('synapp', angular_deps);
 
   /** Filters */
 
   synapp.filter({
-    shortenFilter:                require('./filters/shorten'),
-    fromNowFilter:                require('./filters/from-now'),
-    getCurrentlyEvaluatedFilter:  require('./filters/get-currently-evaluated'),
-    getPromotedPercentageFilter:  require('./filters/get-promoted-percentage'),
-    cloudinaryTransformationFilter:
-                                  require('./filters/cloudinary-transformation')
+    shortenFilter:                    [require('./filters/shorten')],
+    fromNowFilter:                    [require('./filters/from-now')],
+    getCurrentlyEvaluatedFilter:      [require('./filters/get-currently-evaluated')],
+    getPromotedPercentageFilter:      [require('./filters/get-promoted-percentage')],
+    cloudinaryTransformationFilter:   [require('./filters/cloudinary-transformation')]
   });
 
   /** Factories */
 
   synapp.factory({
-    DataFactory:                  require('./factories/Data'),
-    UserFactory:                  require('./factories/User')
+    DataFactory:                  ['MonsonFactory', require('./factories/Data')],
+    UserFactory:                  ['$http', require('./factories/User')]
   });
 
   /** Controllers */
 
   synapp.controller({
-    UploadCtrl:                   require('./controllers/upload'),
-    SignCtrl:                     require('./controllers/sign'),
-    NavigatorCtrl:                require('./controllers/navigator'),
-    EditorCtrl:                   require('./controllers/editor'),
-    EvaluatorCtrl:                require('./controllers/evaluator'),
-    DetailsCtrl:                  require('./controllers/details')
+    UploadCtrl:                   ['$scope', '$http', '$timeout', '$upload', require('./controllers/upload')],
+    SignCtrl:                     ['$scope', 'UserFactory', require('./controllers/sign')],
+    NavigatorCtrl:                ['$scope', 'DataFactory', '$timeout', require('./controllers/navigator')],
+    EditorCtrl:                   ['$scope', 'DataFactory', '$timeout', require('./controllers/editor')],
+    EvaluatorCtrl:                ['$scope', 'DataFactory', '$timeout', require('./controllers/evaluator')],
+    DetailsCtrl:                  ['$scope', 'DataFactory', '$timeout', require('./controllers/details')]
   });
 
   /** Directives */
 
   synapp.directive({
-    synGetUrlTitle:               require('./directives/get-url-title'),
-    synSliders:                   require('./directives/sliders'),
-    synCharts:                    require('./directives/charts'),
-    synMoreLess:                  require('./directives/more-less')
+    synGetUrlTitle:               ['$http', require('./directives/get-url-title')],
+    synSliders:                   [require('./directives/sliders')],
+    synCharts:                    ['$timeout', require('./directives/charts')],
+    synMoreLess:                  [require('./directives/more-less')]
   });
   
 })();
 
-},{"./controllers/details":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js","./controllers/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/editor.js","./controllers/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluator.js","./controllers/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/navigator.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/charts.js","./directives/get-url-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/get-url-title.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/more-less.js","./directives/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/sliders.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/cloudinary-transformation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/cloudinary-transformation.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-currently-evaluated.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-promoted-percentage.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"../monson/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/monson/index.js","./controllers/details":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/details.js","./controllers/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/editor.js","./controllers/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/evaluator.js","./controllers/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/navigator.js","./controllers/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/sign.js","./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/controllers/upload.js","./directives/charts":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/charts.js","./directives/get-url-title":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/get-url-title.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/more-less.js","./directives/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/directives/sliders.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/Data.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/factories/User.js","./filters/cloudinary-transformation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/cloudinary-transformation.js","./filters/from-now":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/from-now.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-currently-evaluated.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/get-promoted-percentage.js","./filters/shorten":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/shorten.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
