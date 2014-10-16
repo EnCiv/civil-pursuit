@@ -12,7 +12,7 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
 
       else {
         callback = require('util').format("http://%s%s",
-          req.hostname, synapp.facebook['callback url'])
+          req.hostname, synapp.facebook['callback url']);
       }
 
       passport.use(
