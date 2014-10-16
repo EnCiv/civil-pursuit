@@ -212,11 +212,6 @@ domain.run(function () {
 
   var mustBeIn = require('./routes/must-be-in');
 
-  app.get('/testurl', function (req, res) {
-    res.send(require('util').format("http://%s%s",
-          req.hostname, synapp.facebook['callback url']));
-  });
-
   /** *****************************************************************************************  **/
   /**                                                                                            **/
   /**                                   ENTRY POINTS                                             **/ 
