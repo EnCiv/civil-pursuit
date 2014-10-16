@@ -16,16 +16,18 @@ process.title = 'synapphtml5';
 /** Dependencies
 /** *******************************************************************************************  **/
 
-var format    = require('util').format;
+var format          =   require('util').format;
 
-var path      = require('path');
+var path            =   require('path');
 
-var Log       = require('String-alert')({ prefix: 'synapp' });
+var Log             =   require('String-alert')({ prefix: 'synapp' });
 
-var domain    = require('domain').create();
+var domain          =   require('domain').create();
+
+var SynappError     =   require('./lib/error');
 
 /** *******************************************************************************************  **/
-/** Doamin
+/** Domain
 /** *******************************************************************************************  **/
 
 domain.on('error', function (error) {
@@ -54,13 +56,19 @@ domain.run(function () {
   /** Middlewares
   /** *****************************************************************************************  **/
 
-  var cookieParser  = require('cookie-parser');
+  var cookieParser  =   require('cookie-parser');
 
-  var bodyParser    = require('body-parser');
+  var bodyParser    =   require('body-parser');
 
-  var multipart     = require('connect-multiparty');
+  var multipart     =   require('connect-multiparty');
 
-  var serveFavicon  = require('serve-favicon');
+  var serveFavicon  =   require('serve-favicon');
+
+  var flash         =   require('connect-flash');
+
+  var session       =   require('express-session');
+
+  var passport      =   require('passport');
 
   /** *****************************************************************************************  **/
   /** Parsers
@@ -82,16 +90,16 @@ domain.run(function () {
 
   // accept plain text
 
-  app.use(function(req, res, next){
-  if (req.is('text/*')) {
-    req.body = '';
-    req.setEncoding('utf8');
-    req.on('data', function(chunk){ req.body += chunk });
-    req.on('end', next);
-  } else {
-    next();
-  }
-});
+  app.use(function (req, res, next){
+    if ( req.is('text/*') ) {
+      req.body = '';
+      req.setEncoding('utf8');
+      req.on('data', function (chunk) { req.body += chunk });
+      req.on('end', next);
+    } else {
+      next();
+    }
+  });
 
   /** *****************************************************************************************  **/
   /** Express settings
@@ -126,11 +134,71 @@ domain.run(function () {
   app.use(cookieParser(app.locals.secret));
 
   /** *****************************************************************************************  **/
+  /** Session
+  /** *****************************************************************************************  **/
+
+  app.use(session({ secret: synapp.secret, resave: true, saveUninitialized: true }));
+  app.use(passport.initialize());
+  app.use(flash());
+
+  passport.serializeUser(function(user, done) {
+    done(null, user._id);
+  });
+
+  passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+      done(err, user);
+    });
+  });
+
+  /** *****************************************************************************************  **/
   /** Pre middleware
   /** *****************************************************************************************  **/
 
   app.use(function (req, res, next) {
     res.locals.req = req;
+
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log(req.signedCookies)
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log()
 
     res.locals.isSignedIn = req.signedCookies.synuser;
 
@@ -147,11 +215,15 @@ domain.run(function () {
       }
     }
 
+    if ( req.session ) {
+      console.log('yes session', req.session, req.signedCookies.syn_sid);
+    }
+
     next();
   });
 
   /** *****************************************************************************************  **/
-  /** Loggeer
+  /** Logger
   /** *****************************************************************************************  **/
 
   app.use(function (req, res, next) {
@@ -182,94 +254,110 @@ domain.run(function () {
 
   var mustBeIn = require('./routes/must-be-in');
 
-  /* ENTRY POINTS */
-  /* ------------------------------------------------------------------------ */
+  /** *****************************************************************************************  **/
+  /**                                                                                            **/
+  /**                                   ENTRY POINTS                                             **/ 
+  /**                                                                                            **/
+  /** *****************************************************************************************  **/
 
-  /*  
-    TERMS OF SERVICE
-  */
+  /** *****************************************************************************************  **/
+  /** TERMS OF SERVICE
+  /** *****************************************************************************************  **/
 
-  app.get('/terms-of-service', function (req, res) {
+  app.get('/terms-of-service', function route_termsOfService (req, res) {
     res.render('pages/terms-of-service');
   });
 
-  /*  
-    NAVIGATOR
-  */
+  /** *****************************************************************************************  **/
+  /** NAVIGATOR
+  /** *****************************************************************************************  **/
 
-  app.get('/', function (req, res) {
-    res.render('pages/navigator');
+  app.get('/', function route_navigator (req, res) {
+
+    var extra = {};
+
+    if ( req.query.failed ) {
+      switch ( req.query.failed ) {
+        case 'nodup':
+          extra.signUpDuplicateError = true; 
+          break;
+      }
+    }
+    res.render('pages/navigator', extra);
   });
 
-  /*  
-    CREATOR
-  */
+  /** *****************************************************************************************  **/
+  /** CREATOR
+  /** *****************************************************************************************  **/
 
   app.get('/create/:type/:parent?',
 
     mustBeIn,
 
-    function (req, res) {
+    function route_creator (req, res) {
       res.render('pages/editor', {
         type: req.params.type,
         parent: req.params.parent
       });
     });
 
-  /*  
-    EDITOR
-  */
+  /** *****************************************************************************************  **/
+  /** EDITOR
+  /** *****************************************************************************************  **/
 
   app.get('/edit/:item',
 
     mustBeIn,
 
-    function (req, res) {
+    function route_editor (req, res) {
 
       res.render('pages/editor', {
         item: req.params.item
       });
     });
 
-  /*  
-    EVALUATOR
-  */
+  /** *****************************************************************************************  **/
+  /** EVALUATOR
+  /** *****************************************************************************************  **/
 
   app.get('/evaluate/:item',
 
     mustBeIn,
 
-    function (req, res) {
+    function route_evaluator (req, res) {
       res.render('pages/evaluator', {
         item: req.params.item
       });
   });
 
-  /*  
-    DETAILS
-  */
+  /** *****************************************************************************************  **/
+  /** DETAILS
+  /** *****************************************************************************************  **/
 
   app.get('/details/:item',
 
-    function (req, res) {
+    function route_details (req, res) {
       res.render('pages/details', {
         item: req.params.item,
         back: req.get('Referer')
       });
     });
 
-  /* ACCESS POINTS */
-  /* ------------------------------------------------------------------------ */
+  /** *****************************************************************************************  **/
+  /**                                                                                            **/
+  /**                                   ACCESS POINTS                                            **/ 
+  /**                                                                                            **/
+  /** *****************************************************************************************  **/
 
-  /*  
-    SIGN (IN|UP|OUT) or 
-  */
+  /** *****************************************************************************************  **/
+  /** SIGN IN / SIGN UP / SIGN OUT
+  /** *****************************************************************************************  **/
 
   app.all('/sign/:dir?', require('./routes/sign'));
 
-  /*  
-    MONSON API
-  */
+  /** *****************************************************************************************  **/
+  /** MONSON API
+  /** *****************************************************************************************  **/
 
   var mongoose = require('mongoose');
 
@@ -316,43 +404,61 @@ domain.run(function () {
 
     monson.express(mongoose));
 
-  /*  
-    UPLOAD IMAGE
-  */
+  /** *****************************************************************************************  **/
+  /** UPLOAD IMAGE
+  /** *****************************************************************************************  **/
 
   app.all('/tools/upload', require('./routes/upload'));
 
-  /*  
-    GET URL TITLE
-  */
+  /** *****************************************************************************************  **/
+  /** GET URL TITLE
+  /** *****************************************************************************************  **/
 
   app.post('/tools/get-title', require('./routes/get-title'));
 
+  /** *****************************************************************************************  **/
+  /** FACEBOOK AUTH
+  /** *****************************************************************************************  **/
 
-  /*  
-    DUMP
-  */
+  app.get('/auth/facebook',
+    require('./routes/facebook')(app, synapp, Log, SynappError, passport),
+    passport.authenticate('facebook'));
+
+  app.get(synapp.facebook['callback url'],
+    passport.authenticate('facebook', {
+      successRedirect: '/fb/ok',
+      failureRedirect: '/?fb=ko'
+    }));
+
+  app.get('/fb/ok', function (req, res) {
+    res.cookie('synuser', { email: req.session.email, id: req.session.id }, synapp.cookie);
+
+    Log.INFO('Cookie set', req.session);
+
+    res.redirect('/');
+  });
+
+  /** *****************************************************************************************  **/
+  /** DUMP DATABASE
+  /** *****************************************************************************************  **/
 
   app.all('/tools/dump', require('./routes/dump'));
 
-  /*
-    JSDOC
-  */
+  /** *****************************************************************************************  **/
+  /**                                                                                            **/
+  /**                                   MIDDLEWARES                                              **/ 
+  /**                                                                                            **/
+  /** *****************************************************************************************  **/
 
-  app.use('/docs', express.static(require('path').join(__dirname, 'build/docs')));
-
-  /* MIDDLEWARES */
-  /* ------------------------------------------------------------------------ */
-
-  /*  
-    STATIC ROUTER
-  */
+  /** *****************************************************************************************  **/
+  /** STATIC ROUTER
+  /** *****************************************************************************************  **/
 
   app.use(express.static(require('path').join(__dirname, 'public')));
 
-  /*  
-    ERROR
-  */
+  /** *****************************************************************************************  **/
+  /** ERROR
+  /** *****************************************************************************************  **/
 
   app.use(require('./routes/error'));
 
@@ -361,17 +467,17 @@ domain.run(function () {
 
   var server = require('http').createServer(app);
 
-  /*  
-    LISTEN
-  */
+  /** *****************************************************************************************  **/
+  /** LISTEN
+  /** *****************************************************************************************  **/
 
   server.listen(app.get('port'), function () {
     Log.OK(format('Listening on port %d', app.get('port')));
   });
 
-  /*  
-    ERROR
-  */
+  /** *****************************************************************************************  **/
+  /** SERVER ERROR
+  /** *****************************************************************************************  **/
 
   server.on('error', function (error) {
     Log.ERROR(error.format());

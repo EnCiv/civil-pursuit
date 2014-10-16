@@ -8,7 +8,7 @@ mixin panel (title, create, repeat, repeater)
       h4.panel-title
         - if ( create )
           a(href=create data-ng-show='is.in = ' + !!isSignedIn)
-            i.pull-right.glyphicon.glyphicon-plus
+            i.pull-right.fa.fa-plus
         span=title
 
     - if ( repeat )

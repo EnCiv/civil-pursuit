@@ -10,6 +10,8 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
+var bcrypt = require('bcrypt');
+
 var UserSchema = new Schema({
   "email": {
     "type": String,
@@ -34,8 +36,6 @@ UserSchema.pre('save', function (next) {
     return next();
   }
 
-  var bcrypt = require('bcrypt');
-
   var self = this;
 
   var domain = require('domain').create();
@@ -53,5 +53,22 @@ UserSchema.pre('save', function (next) {
     }));
   });
 });
+
+UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb) {
+  bcrypt.compare(requestPassword, realPassword, function (error, same) {
+    return cb(error, same);
+    if ( ! same ) {
+      return false;
+    }
+    // -------------------------------------------------------------------------------- \\
+    Log.INFO('Email match: %s'         .format(req.body.email));
+    // -------------------------------------------------------------------------------- \\
+    res.cookie('synuser', { email: req.body.email, id: user._id }, cookie);
+    // -------------------------------------------------------------------------------- \\
+    Log.OK('User signed in: %s'      .format(req.body.email));
+    // -------------------------------------------------------------------------------- \\
+    res.json({ in: true });
+  });
+};
 
 module.exports = mongoose.model('User', UserSchema);

@@ -38,7 +38,12 @@
     "cloudinary": "~1.0.12",
     "gulp-shell": "~0.2.9",
     "jsdoc": "~3.3.0-alpha9",
-    "angular-jsdoc": "~0.1.1"
+    "angular-jsdoc": "~0.1.1",
+    "passport": "~0.2.1",
+    "passport-local": "~1.0.0",
+    "connect-flash": "~0.1.1",
+    "passport-facebook": "~1.0.3",
+    "passport-twitter": "~1.0.2"
   },
   "devDependencies": {
     "gulp": "~3.8.8",

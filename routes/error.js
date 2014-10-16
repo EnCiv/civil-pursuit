@@ -1,7 +1,8 @@
 /***  Route Error Middleware
       ======================
 
-      This middleware will terminate the stack trying to respond with the most accurate status code and content type
+      This middleware will terminate the stack trying to respond 
+      with the most accurate status code and content type
 
       # HTTP Response Code
 
@@ -45,6 +46,10 @@ module.exports = function (error, req, res, next) {
   });
 
   domain.run(function () {
+
+    if ( error.name === 'Synapp_DuplicateUserError' ) {
+      return res.redirect('/?failed=nodup');
+    }
 
     if ( typeof error.status === 'number' ) {
       res.status(error.status);

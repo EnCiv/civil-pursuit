@@ -52,7 +52,7 @@ var uglify      = require('gulp-uglifyjs');
 
 gulp.task('bootstrapjs', function () {
 
-  gulp.src('./public/bower_components/bootstrap/**/{tooltip,transition,collapse}.js')
+  gulp.src('./public/bower_components/bootstrap/**/{tooltip,transition,collapse,modal,dropdown}.js')
 
     .pipe(concat('bootstrap.js'))
 

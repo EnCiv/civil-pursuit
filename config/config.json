@@ -21,6 +21,25 @@
     "url"                         :         "cloudinary://717143894825222:Yy4AfBBff-PxjrizX1bsLPnkCLw@hscbexf6a"
   },
 
+  "cookie"                        :         {
+    "path"                        :         "/",
+    "signed"                      :         true,
+    "maxAge"                      :         604800000,
+    "httpOnly"                    :         true
+  },
+
+  "facebook"                      :         {
+    "app id"                      :         "295589523959214",
+    "app secret"                  :         "1faefb08184d71117f62eb63eb0e22c7",
+    "callback url"                :         "/idcb/fb"
+  },
+
+  "twitter"                       :         {
+    "key"                         :         "982482393394-fTGEoaYBv6Ix3CWtsdN0bLvmnnE7qb9c9gZMf4Eaq",
+    "secret"                      :         "qBLPLqOXk5l5k6EATnV3ukHxDgrfPeQ9yRrHmF20b4m80",
+    "callback url"                :         "/idcb/tw"
+  },
+
   "public"                        :         {
     "navigator batch size"        :         5,
     "cloudinary navigator images filter"

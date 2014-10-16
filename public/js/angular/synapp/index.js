@@ -49,5 +49,11 @@
     synCharts:                    ['$timeout', require('./directives/charts')],
     synMoreLess:                  [require('./directives/more-less')]
   });
+
+  /** Run **/
+
+  synapp.run([function () {
+    $('.sy-ng-elem').css('visibility', 'visible');
+  }]);
   
 })();

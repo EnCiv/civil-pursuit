@@ -3,7 +3,7 @@ var should = require('should');
 // ---------------------------------------------------------------------------------------------- \\
 var Log = require('String-alert')({ prefix: 'synapp ' + 'sign'.grey });
 // ---------------------------------------------------------------------------------------------- \\
-var cookie = require('../config/cookie.json');
+var cookie = require('../config/config.json').cookie;
 // ---------------------------------------------------------------------------------------------- \\
 function customError (code, message) {
   var error = new Error(message);

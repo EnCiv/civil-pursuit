@@ -13,10 +13,13 @@ module.exports = function ($scope, UserFactory) {
 
   $scope.sign = {};
 
-  $scope.signIn = function () {   
+  $scope.signByMail = {};
+
+  $scope.agreeToTerms = false;
+
+  $scope.signIn = function () {
 
     // MUST HAVE EMAIL
-
 
     if ( ! $scope.sign.email ) {
       $scope.alert = 'Please enter a valid email';
@@ -29,6 +32,26 @@ module.exports = function ($scope, UserFactory) {
       $scope.alert = 'Please enter a password';
       return;
     }
+
+    // BACK END
+
+    return UserFactory.signIn(
+      {
+        email: $scope.sign.email,
+        password: $scope.sign.password
+      })
+
+      .error(function (error) {
+        if ( error.error && error.error.statusCode && error.error.statusCode === 404 ) {
+          return $scope.sign._up = true;
+        }
+        $scope.alert = error;
+      })
+
+      .success(function (data) {
+        $scope.isSignedIn = true;
+        location.reload();
+      });
 
     // IF NO PASSWORD CONFIRMATION
     
@@ -78,6 +101,77 @@ module.exports = function ($scope, UserFactory) {
       // ----- On factory sucess ---------------------------------------------------------  //
       .success(function (data) {
         // ----- Letting the UI knowns user is signed in ---------------------------------  //
+        $scope.isSignedIn = true;
+        location.reload();
+      });
+    };
+
+  $scope.signUp = function (strategy) {
+
+    // MUST AGREE
+
+    if ( ! $scope.agreeToTerms ) {
+      return $scope.alert = 'You must agree to our terms of service';
+    }
+
+    // FACEBOOK
+
+    if ( strategy === 'facebook' ) {
+      return location.href = '/auth/facebook';
+    }
+
+    // MUST HAVE EMAIL
+
+    if ( ! $scope.signByMail.email ) {
+      $scope.alert = 'Please enter a valid email';
+      return;
+    }
+
+    // MUST HAVE PASSWORD
+    
+    if ( ! $scope.signByMail.password ) {
+      $scope.alert = 'Please enter a password';
+      return;
+    }
+
+    // MUST HAVE PASSWORD CONFIRM
+    
+    if ( ! $scope.signByMail.confirm ) {
+      $scope.alert = 'Please confirm password';
+      return;
+    }
+
+    // PASSWORD MUST MATCH
+    
+    if ( $scope.signByMail.confirm !== $scope.signByMail.password ) {
+      $scope.alert = "Passwords don't match";
+      return;
+    }
+
+    // BACK END
+
+    return UserFactory.signUp(
+      {
+        email:      $scope.signByMail.email,
+        password:   $scope.signByMail.password
+      })
+
+      .error(function (response, statusCode) {
+
+        if ( response.error ) {
+          if ( response.error.message ) {
+            // email already in use
+
+            if ( /duplicate/.test(response.error.message) ) {
+              return $scope.alert = 'This email address is already in use';
+            }
+          }
+        }
+
+        $scope.alert = 'Something grrrr';
+      })
+
+      .success(function (data) {
         $scope.isSignedIn = true;
         location.reload();
       });

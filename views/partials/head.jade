@@ -16,6 +16,15 @@ meta(name="env" content=settings.env)
 
 //- Stylesheets
 block stylesheets
+  block stylesheet-font-awesome
+    - var href
+    - if ( settings.env === 'production' )
+      - href = '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'
+    - else
+      - href='/bower_components/font-awesome/css/font-awesome.min.css'
+    
+    link(rel='stylesheet' href=href)
+      
   block css-app
     - if ( settings.env === 'production' )
       link(rel='stylesheet' href='/dist/synaccord.css')
