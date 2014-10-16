@@ -158,48 +158,6 @@ domain.run(function () {
   app.use(function (req, res, next) {
     res.locals.req = req;
 
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log(req.signedCookies)
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-
     res.locals.isSignedIn = req.signedCookies.synuser;
 
     if ( res.locals.isSignedIn ) {
@@ -431,6 +389,28 @@ domain.run(function () {
     }));
 
   app.get('/fb/ok', function (req, res) {
+    res.cookie('synuser', { email: req.session.email, id: req.session.id }, synapp.cookie);
+
+    Log.INFO('Cookie set', req.session);
+
+    res.redirect('/');
+  });
+
+  /** *****************************************************************************************  **/
+  /** TWITTER AUTH
+  /** *****************************************************************************************  **/
+
+  app.get('/auth/twitter',
+    require('./routes/twitter')(app, synapp, Log, SynappError, passport),
+    passport.authenticate('twitter'));
+
+  app.get(synapp.twitter['callback url'],
+    passport.authenticate('twitter', {
+      successRedirect: '/tw/ok',
+      failureRedirect: '/?tw=ko'
+    }));
+
+  app.get('/tw/ok', function (req, res) {
     res.cookie('synuser', { email: req.session.email, id: req.session.id }, synapp.cookie);
 
     Log.INFO('Cookie set', req.session);
