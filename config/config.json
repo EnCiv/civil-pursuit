@@ -35,8 +35,8 @@
   },
 
   "twitter"                       :         {
-    "key"                         :         "982482393394-fTGEoaYBv6Ix3CWtsdN0bLvmnnE7qb9c9gZMf4Eaq",
-    "secret"                      :         "qBLPLqOXk5l5k6EATnV3ukHxDgrfPeQ9yRrHmF20b4m80",
+    "key"                         :         "IzWo1v2OHAjPrh65HG8ruCqiF",
+    "secret"                      :         "BXV375BjEEzC9t93ywhJqA01u91ORkEJEkIb5qFwtDqBy9lVW1",
     "callback url"                :         "/idcb/tw"
   },
 
