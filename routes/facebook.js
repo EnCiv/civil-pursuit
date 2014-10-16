@@ -3,12 +3,23 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
     if ( ! app.locals.FacebookStrategy ) {
       app.locals.FacebookStrategy = require('passport-facebook').Strategy;
 
+      var callback;
+
+      if ( req.hostname === 'localhost' ) {
+        callback = require('util').format("http://%s:%d%s",
+          req.hostname, app.get('port'), synapp.facebook['callback url']);
+      }
+
+      else {
+        callback = require('util').format("http://%s%s",
+          req.hostname, synapp.facebook['callback url'])
+      }
+
       passport.use(
         new app.locals.FacebookStrategy({
           clientID:       synapp.facebook['app id'],
           clientSecret:   synapp.facebook['app secret'],
-          callbackURL:    require('util').format("http://%s:%d%s",
-            req.hostname, app.get('port'), synapp.facebook['callback url'])
+          callbackURL:    callback
         },
         
         function (accessToken, refreshToken, profile, done) {
