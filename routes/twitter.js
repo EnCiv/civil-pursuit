@@ -7,18 +7,18 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
 
       if ( req.hostname === 'localhost' ) {
         callback = require('util').format("http://%s:%d%s",
-          req.hostname, app.get('port'), synapp.twitter['callback url']);
+          req.hostname, app.get('port'), synapp.twitter[process.env.SYNAPP_ENV]['callback url']);
       }
 
       else {
         callback = require('util').format("http://%s%s",
-          req.hostname, synapp.twitter['callback url'])
+          req.hostname, synapp.twitter[process.env.SYNAPP_ENV]['callback url'])
       }
 
       passport.use(
         new app.locals.TwitterStrategy({
-          consumerKey:       synapp.twitter['key'],
-          consumerSecret:   synapp.twitter['secret'],
+          consumerKey:       synapp.twitter[process.env.SYNAPP_ENV]['key'],
+          consumerSecret:   synapp.twitter[process.env.SYNAPP_ENV]['secret'],
           callbackURL:    callback
         },
         

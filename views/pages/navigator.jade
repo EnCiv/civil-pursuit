@@ -2,7 +2,7 @@ extends ../layouts/master
 
 include ../partials/item/box
 
-mixin panel (title, create, repeat, repeater)
+mixin panel (title, create, repeat, repeater, isSplit)
   .panel.panel-default
     .panel-heading
       h4.panel-title
@@ -15,7 +15,7 @@ mixin panel (title, create, repeat, repeater)
       ul
         li.box-wrapper(data-ng-repeat=repeater + ' in ' + repeat)
           div(data-toggle='collapse' data-target='#' + repeat + '-{{' + repeater + '._id}}')
-            +box(repeater)
+            +box(repeater, isSplit)
 
           .panel-collapse.collapse.panel-body(id=repeat + '-{{' + repeater + '._id}}')
             .panel-group
@@ -27,10 +27,10 @@ block page
       +panel('Problem', '/create/Problem/{{topic._id}}', 'problems', 'problem')
         .row
           .col-sm-6.col-xs-12
-            +panel('Agree', '/create/Agree/{{problem._id}}', 'agrees', 'agree')
+            +panel('Agree', '/create/Agree/{{problem._id}}', 'agrees', 'agree', true)
 
           .col-sm-6.col-xs-12
-            +panel('Disagree', '/create/Disagree/{{problem._id}}', 'disagrees', 'disagree')
+            +panel('Disagree', '/create/Disagree/{{problem._id}}', 'disagrees', 'disagree', true)
 
         +panel('Solution', '/create/Solution/{{problem._id}}', 'solutions', 'solution')
           .row

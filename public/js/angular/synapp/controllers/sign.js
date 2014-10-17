@@ -37,7 +37,7 @@ module.exports = function ($scope, UserFactory) {
 
     return UserFactory.signIn(
       {
-        email: $scope.sign.email,
+        email: $scope.sign.email.toLowerCase(),
         password: $scope.sign.password
       })
 

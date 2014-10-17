@@ -35,9 +35,21 @@
   },
 
   "twitter"                       :         {
-    "key"                         :         "6RtcRvzZTyJf0mLh7vdzRszdD",
-    "secret"                      :         "8pS3cts1YDZIv8uhAg5ZlupIkAXC9mw00UfHMMP60Ps1Gu78kY",
-    "callback url"                :         "/idcb/tw"
+    "alpha-heroku": {
+      "key"                         :         "6RtcRvzZTyJf0mLh7vdzRszdD",
+      "secret"                      :         "8pS3cts1YDZIv8uhAg5ZlupIkAXC9mw00UfHMMP60Ps1Gu78kY",
+      "callback url"                :         "/idcb/tw"
+    },
+    "alpha": {
+      "key"                         :         "ID4HLrtkRwRenjNyAkPKf1g89",
+      "secret"                      :         "g3pyCCCLfEuuAzzzEPHnaH8jycwgkD2wvL2jlXhU91r9jEo2cQ",
+      "callback url"                :         "/idcb/tw"
+    },
+    "beta": {
+      "key"                         :         "ATRK8LP4rIboQjXx9YS3soSZ5",
+      "secret"                      :         "HGFmYxchXHyjQgB0DSRRXcgnClyIgMKbrwokp7l5hmz8PSxqzr",
+      "callback url"                :         "/idcb/tw"
+    }
   },
 
   "public"                        :         {

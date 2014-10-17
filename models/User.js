@@ -36,6 +36,8 @@ UserSchema.pre('save', function (next) {
     return next();
   }
 
+  this.email = this.email.toLowerCase();
+
   var self = this;
 
   var domain = require('domain').create();

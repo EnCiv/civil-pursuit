@@ -4,3 +4,4 @@
 
 export MONGOHQ_URL=mongodb://localhost:4567/syndb
 export PORT=3012
+export SYNAPP_ENV=alpha-heroku
