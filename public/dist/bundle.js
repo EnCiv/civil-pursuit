@@ -695,9 +695,10 @@ module.exports = function ($scope, UserFactory) {
 
       .error(function (error) {
         if ( error.error && error.error.statusCode && error.error.statusCode === 404 ) {
-          return $scope.sign._up = true;
+          return $scope.alert = 'Invalid credentials';
         }
-        $scope.alert = error;
+        
+        $scope.alert = 'An unexpected error has occurred. Please try again in a moment';
       })
 
       .success(function (data) {

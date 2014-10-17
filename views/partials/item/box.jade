@@ -6,7 +6,7 @@ include image
 
 mixin box(item)
   // Box item
-  .box(data-ng-init='$showButtons = false' data-type="{{" + item + ".type}}" data-loaded="{{false}}")
+  .box.sy-ng-elem(data-ng-init='$showButtons = false' data-type="{{" + item + ".type}}" data-loaded="{{false}}")
     .row(data-ng-hide='$last && $index === ' + synapp.public["navigator batch size"])
 
       //- Image + user=author icon
@@ -26,7 +26,7 @@ mixin box(item)
       .box-promoted.col-xs-3.text-right
         ul
           //- Promote button
-          li
+          li(data-ng-show='is.in = ' + !!isSignedIn)
             a.btn.btn-sm(data-ng-href='/evaluate/{{' + item + '._id}}') Promote
 
           //- Promoted stat (times)
