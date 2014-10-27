@@ -251,6 +251,8 @@ module.exports = function ($scope, DataFactory, $timeout) {
     else {
       obj.image = getImage();
 
+      console.log('obj', obj);
+
       setTimeout(function () {
         DataFactory.model('Item').post(obj)
 
