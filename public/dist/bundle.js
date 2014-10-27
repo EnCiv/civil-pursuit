@@ -211,10 +211,12 @@ module.exports = function ($scope, DataFactory, $timeout) {
     this.$error = null;
 
     if ( ! $scope.editor.subject ) {
+      $('#loading-editor').modal('hide');
       return this.$error = 'Please enter a subject';
     }
 
     if ( ! $scope.editor.description ) {
+      $('#loading-editor').modal('hide');
       return this.$error = 'Please enter a description';
     }
 
@@ -238,12 +240,10 @@ module.exports = function ($scope, DataFactory, $timeout) {
 
       obj.image = getImage() || $scope.editor.image;
 
-      console.log(obj.image)
-
       ItemFactory.updateById($scope.editor._id, obj)
-      .success(function () {
-        location.href = '/evaluate/create/';
-      });
+        .success(function () {
+          location.href = '/evaluate/create/';
+        });
     }
 
     // create
@@ -251,14 +251,15 @@ module.exports = function ($scope, DataFactory, $timeout) {
     else {
       obj.image = getImage();
 
-      console.log('creating item', obj);
+      setTimeout(function () {
+        DataFactory.model('Item').post(obj)
 
-      DataFactory.model('Item').post(obj)
-
-        .ok(
-          function (created) {
-            location.href = '/evaluate/' + created._id;
-          });
+          .ok(
+            function (created) {
+              $('#loading-editor').modal('hide');
+              location.href = '/evaluate/' + created._id;
+            });
+      }, 1000 * 5);
     }
   };
   

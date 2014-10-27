@@ -110,6 +110,7 @@ function testProblem (topic) {
 
           if ( res.body[0] && ! problemv ) {
             testAgree(res.body[0]._id);
+            testDisagree(res.body[0]._id);
             problemv = 1;
           }
 
@@ -137,6 +138,32 @@ function testAgree (problem) {
 
           res.body.forEach(function (agree) {
             testItem(agree, 'Agree');
+          });
+
+          done();
+        });
+    });
+  });
+}
+
+function testDisagree (problem) {
+  describe('GET disagrees of problem ' + problem, function () {
+    it('response with json an array of disagrees', function (done) {
+      request(app[1])
+        .get('/json/Item/?type=Disagree&parent=' + problem + '&limit::5&sort::promotions-')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function (error, res) {
+          if ( error ) {
+            throw error;
+          }
+
+          should(res).be.an.Object;
+          res.should.have.property('body');
+          res.body.should.be.an.Array;
+
+          res.body.forEach(function (disagree) {
+            testItem(disagree, 'Disagree');
           });
 
           done();

@@ -4479,11 +4479,19 @@ textarea {
 
     `````````````````````````````````````````````````````````````````````` 
 */
+.navigator {
+  /** Item section title (ie, Topic, Problem, etc.) */
+  /* The "no items yet" message box */
+}
 .navigator h4.panel-title {
   text-align: center;
 }
 .navigator .panel-collapse {
   padding-right: 0;
+}
+.navigator .no-items {
+  text-align: center;
+  padding: 8px;
 }
 .navigator ul {
   padding-left: 0;

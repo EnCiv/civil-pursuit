@@ -12,6 +12,10 @@ mixin panel (title, create, repeat, repeater, isSplit)
         span=title
 
     - if ( repeat )
+      div.no-items(data-ng-hide=repeat + '.length') Nothing here. 
+        - if ( create )
+          a(href=create data-ng-show='is.in = ' + !!isSignedIn) Create 
+            span=title
       ul
         li.box-wrapper(data-ng-repeat=repeater + ' in ' + repeat)
           div(data-toggle='collapse' data-target='#' + repeat + '-{{' + repeater + '._id}}')
