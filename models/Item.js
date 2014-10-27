@@ -168,7 +168,9 @@ ItemSchema.pre('save', function (next) {
           return next(error);
         }
 
-        this.image = parent.image.replace(/\/upload\//, '/upload/e_grayscale/');
+        if ( parent.image ) {
+          this.image = parent.image.replace(/\/upload\//, '/upload/e_grayscale/');
+        }
 
         return next();
       }.bind(this));
