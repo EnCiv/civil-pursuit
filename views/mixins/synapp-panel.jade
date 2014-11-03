@@ -1,0 +1,39 @@
+//- Panel
+
+include bootstrap
+include item-box
+
+mixin synapp-panel (itemType)
+
+  - var itemSingle    =   itemType.toLowerCase();
+  - var itemMulti     =   itemType.toLowerCase() + 's';
+  - var hasChildren   =   itemType !== 'Pro' && itemType !== 'Con';
+
+  +bootstrap-panel
+    
+    +bootstrap-panel-heading
+      
+      //- Toggle Editor show/hide
+      i.pull-right.fa.fa-plus.cursor-pointer()
+
+      //- Item Type (Panel title)
+      h4.panel-title=itemType
+    
+    +bootstrap-panel-body
+
+      //- Editor
+      .synapp-editor(
+        data-type     =   itemType
+        data-parent   =   ""
+        data-item-id  =   "")
+      
+      //- List of items
+      nav
+        ul
+          li.box-wrapper(data-ng-repeat=itemSingle + ' in ' + itemMulti)
+            +item-box(itemSingle)
+            .synapp-evaluator
+            h2 Details
+
+            section
+              block

@@ -11,19 +11,26 @@ mixin panel (title, create, repeat, repeater, isSplit)
             i.pull-right.fa.fa-plus
         span=title
 
-    - if ( repeat )
-      div.no-items(data-ng-hide=repeat + '.length') Nothing here. 
-        - if ( create )
-          a(href=create data-ng-show='is.in = ' + !!isSignedIn) Create 
-            span=title
-      ul
-        li.box-wrapper(data-ng-repeat=repeater + ' in ' + repeat)
-          div(data-toggle='collapse' data-target='#' + repeat + '-{{' + repeater + '._id}}')
-            +box(repeater, isSplit)
+    .panel-body
+      - if ( create )
+        section.syn-editor
 
-          .panel-collapse.collapse.panel-body(id=repeat + '-{{' + repeater + '._id}}')
-            .panel-group
-              block
+      - if ( repeat )
+
+        //- If no items found
+
+        div.no-items(data-ng-hide=repeat + '.length') Nothing here. 
+          - if ( create )
+            a(href=create data-ng-show='is.in = ' + !!isSignedIn) Create 
+              span=title
+        ul
+          li.box-wrapper(data-ng-repeat=repeater + ' in ' + repeat)
+            div(data-toggle='collapse' data-target='#' + repeat + '-{{' + repeater + '._id}}')
+              +box(repeater, isSplit)
+
+            .panel-collapse.collapse.panel-body(id=repeat + '-{{' + repeater + '._id}}')
+              .panel-group
+                block
 
 block page
   section#navigator.navigator.panel-group(data-ng-controller='NavigatorCtrl' data-ng-init='getTopics()')

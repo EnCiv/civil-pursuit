@@ -14,10 +14,46 @@ var test_data = {
     type:         'Topic',
     subject:      'I am a test topic created on ' + new Date().toString(),
     description:  'Some random description here'
-  }
+  },
+
+  create_problem: {
+    type:         'Problem',
+    subject:      'I am a test problem created on ' + new Date().toString(),
+    description:  'Some random description here'
+  },
+
+  create_agree: {
+    type:         'Agree',
+    subject:      'I am a test agree created on ' + new Date().toString(),
+    description:  'Some random description here'
+  },
+
+  create_disagree: {
+    type:         'Disagree',
+    subject:      'I am a test disagree created on ' + new Date().toString(),
+    description:  'Some random description here'
+  },
+
+  create_solution: {
+    type:         'Solution',
+    subject:      'I am a test solution created on ' + new Date().toString(),
+    description:  'Some random description here'
+  },
+
+  create_pro: {
+    type:         'Pro',
+    subject:      'I am a test pro created on ' + new Date().toString(),
+    description:  'Some random description here'
+  },
+
+  create_con: {
+    type:         'Con',
+    subject:      'I am a test con created on ' + new Date().toString(),
+    description:  'Some random description here'
+  } 
 };
 
-function test_createTopic () {
+function test_visitor_creates_topic () {
   describe('POST Topic when not signed in', function () {
     it('should respond with Unauthorized', function (done) {
       request(app.server)
@@ -52,7 +88,227 @@ function test_createTopic () {
   });
 }
 
-test_createTopic();
+function test_visitor_creates_problem () {
+  describe('POST Problem when not signed in', function () {
+    it('should respond with Unauthorized', function (done) {
+      request(app.server)
+        .post(POST_ITEM_URI)
+        .send(test_data.create_problem)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .end(function (error, response) {
+          if ( error ) {
+            throw error;
+          }
+          should(response).be.an.Object;
+          should(response).have.property('body');
+          should(response.body).be.an.Object;
+          should(response.body).have.property('error');
+          should(response.body.error).be.an.Object;
+          should(response.body.error).have.property('name');
+          should(response.body.error.name).be.a.String;
+          should(response.body.error.name).equal('Synapp_UnauthorizedError');
+          should(response.body.error).have.property('message');
+          should(response.body.error.message).be.a.String;
+          should(response.body.error.message).equal('You must be signed in');
+          should(response.body.error).have.property('stack');
+          should(response.body.error.stack).be.an.Object;
+          should(response.body.error).have.property('statusCode');
+          should(response.body.error.statusCode).be.a.Number;
+          should(response.body.error.statusCode).equal(401);
+          should(Object.keys(response.body.error)).eql(['name', 'message', 'stack', 'statusCode']);
+          done();
+        });
+    });
+  });
+}
+
+function test_visitor_creates_agree () {
+  describe('POST Agree when not signed in', function () {
+    it('should respond with Unauthorized', function (done) {
+      request(app.server)
+        .post(POST_ITEM_URI)
+        .send(test_data.create_agree)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .end(function (error, response) {
+          if ( error ) {
+            throw error;
+          }
+          should(response).be.an.Object;
+          should(response).have.property('body');
+          should(response.body).be.an.Object;
+          should(response.body).have.property('error');
+          should(response.body.error).be.an.Object;
+          should(response.body.error).have.property('name');
+          should(response.body.error.name).be.a.String;
+          should(response.body.error.name).equal('Synapp_UnauthorizedError');
+          should(response.body.error).have.property('message');
+          should(response.body.error.message).be.a.String;
+          should(response.body.error.message).equal('You must be signed in');
+          should(response.body.error).have.property('stack');
+          should(response.body.error.stack).be.an.Object;
+          should(response.body.error).have.property('statusCode');
+          should(response.body.error.statusCode).be.a.Number;
+          should(response.body.error.statusCode).equal(401);
+          should(Object.keys(response.body.error)).eql(['name', 'message', 'stack', 'statusCode']);
+          done();
+        });
+    });
+  });
+}
+
+function test_visitor_creates_disagree () {
+  describe('POST Disagree when not signed in', function () {
+    it('should respond with Unauthorized', function (done) {
+      request(app.server)
+        .post(POST_ITEM_URI)
+        .send(test_data.create_disagree)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .end(function (error, response) {
+          if ( error ) {
+            throw error;
+          }
+          should(response).be.an.Object;
+          should(response).have.property('body');
+          should(response.body).be.an.Object;
+          should(response.body).have.property('error');
+          should(response.body.error).be.an.Object;
+          should(response.body.error).have.property('name');
+          should(response.body.error.name).be.a.String;
+          should(response.body.error.name).equal('Synapp_UnauthorizedError');
+          should(response.body.error).have.property('message');
+          should(response.body.error.message).be.a.String;
+          should(response.body.error.message).equal('You must be signed in');
+          should(response.body.error).have.property('stack');
+          should(response.body.error.stack).be.an.Object;
+          should(response.body.error).have.property('statusCode');
+          should(response.body.error.statusCode).be.a.Number;
+          should(response.body.error.statusCode).equal(401);
+          should(Object.keys(response.body.error)).eql(['name', 'message', 'stack', 'statusCode']);
+          done();
+        });
+    });
+  });
+}
+
+function test_visitor_creates_solution () {
+  describe('POST Solution when not signed in', function () {
+    it('should respond with Unauthorized', function (done) {
+      request(app.server)
+        .post(POST_ITEM_URI)
+        .send(test_data.create_solution)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .end(function (error, response) {
+          if ( error ) {
+            throw error;
+          }
+          should(response).be.an.Object;
+          should(response).have.property('body');
+          should(response.body).be.an.Object;
+          should(response.body).have.property('error');
+          should(response.body.error).be.an.Object;
+          should(response.body.error).have.property('name');
+          should(response.body.error.name).be.a.String;
+          should(response.body.error.name).equal('Synapp_UnauthorizedError');
+          should(response.body.error).have.property('message');
+          should(response.body.error.message).be.a.String;
+          should(response.body.error.message).equal('You must be signed in');
+          should(response.body.error).have.property('stack');
+          should(response.body.error.stack).be.an.Object;
+          should(response.body.error).have.property('statusCode');
+          should(response.body.error.statusCode).be.a.Number;
+          should(response.body.error.statusCode).equal(401);
+          should(Object.keys(response.body.error)).eql(['name', 'message', 'stack', 'statusCode']);
+          done();
+        });
+    });
+  });
+}
+
+function test_visitor_creates_pro () {
+  describe('POST Pro when not signed in', function () {
+    it('should respond with Unauthorized', function (done) {
+      request(app.server)
+        .post(POST_ITEM_URI)
+        .send(test_data.create_pro)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .end(function (error, response) {
+          if ( error ) {
+            throw error;
+          }
+          should(response).be.an.Object;
+          should(response).have.property('body');
+          should(response.body).be.an.Object;
+          should(response.body).have.property('error');
+          should(response.body.error).be.an.Object;
+          should(response.body.error).have.property('name');
+          should(response.body.error.name).be.a.String;
+          should(response.body.error.name).equal('Synapp_UnauthorizedError');
+          should(response.body.error).have.property('message');
+          should(response.body.error.message).be.a.String;
+          should(response.body.error.message).equal('You must be signed in');
+          should(response.body.error).have.property('stack');
+          should(response.body.error.stack).be.an.Object;
+          should(response.body.error).have.property('statusCode');
+          should(response.body.error.statusCode).be.a.Number;
+          should(response.body.error.statusCode).equal(401);
+          should(Object.keys(response.body.error)).eql(['name', 'message', 'stack', 'statusCode']);
+          done();
+        });
+    });
+  });
+}
+
+function test_visitor_creates_con () {
+  describe('POST Con when not signed in', function () {
+    it('should respond with Unauthorized', function (done) {
+      request(app.server)
+        .post(POST_ITEM_URI)
+        .send(test_data.create_con)
+        .expect('Content-Type', /json/)
+        .expect(401)
+        .end(function (error, response) {
+          if ( error ) {
+            throw error;
+          }
+          should(response).be.an.Object;
+          should(response).have.property('body');
+          should(response.body).be.an.Object;
+          should(response.body).have.property('error');
+          should(response.body.error).be.an.Object;
+          should(response.body.error).have.property('name');
+          should(response.body.error.name).be.a.String;
+          should(response.body.error.name).equal('Synapp_UnauthorizedError');
+          should(response.body.error).have.property('message');
+          should(response.body.error.message).be.a.String;
+          should(response.body.error.message).equal('You must be signed in');
+          should(response.body.error).have.property('stack');
+          should(response.body.error.stack).be.an.Object;
+          should(response.body.error).have.property('statusCode');
+          should(response.body.error.statusCode).be.a.Number;
+          should(response.body.error.statusCode).equal(401);
+          should(Object.keys(response.body.error)).eql(['name', 'message', 'stack', 'statusCode']);
+          done();
+        });
+    });
+  });
+}
+
+function test_visitor_view_topics () {
+  
+}
+
+test_visitor_creates_topic();
+test_visitor_creates_problem();
+test_visitor_creates_agree();
+test_visitor_creates_disagree();
+test_visitor_creates_solution();
+test_visitor_creates_pro();
+test_visitor_creates_con();
 
 // Get topics (navigator)
 

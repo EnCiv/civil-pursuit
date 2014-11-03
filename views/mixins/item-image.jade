@@ -1,0 +1,11 @@
+mixin item-image(type, filter)
+  - var ngSrc = '{{' + type + '.image'
+
+  - if ( filter )
+    - ngSrc += '| cloudinaryTransformationFilter'
+
+  - ngSrc += '}}'
+
+  - var url = type + '.references && ' + type + '.references[0] && ' + type + '.references[0].url';
+
+  article.synapp-item-media(data-url='{{' + url + '}}' data-image='{{' + type + '.image}}' data-filter=filter)

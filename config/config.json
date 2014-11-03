@@ -54,7 +54,39 @@
 
   "public"                        :         {
     "navigator batch size"        :         5,
+    "latency"                     :         {
+      "development"               :         1500,
+      "production"                :         15000
+    },
     "cloudinary navigator images filter"
-                                  :         "c_thumb,e_improve,g_face,h_120,w_180"
+                                  :         "c_thumb,e_improve,g_face,h_120,w_180",
+    "navigation"                  :         {
+      "create topic"              :         "/create/topic"
+    },
+    "item media"                  :         {
+      "max-width"                 :         180,
+      "max-height"                :         120
+    },
+    "item relation"               :         {
+      "Topic"                     :         "Problem",
+      "Problem"                   :         [["Agree", "Disagree"], "Solution"],
+      "Solution"                  :         [["Pro", "Con"]]
+    }
+  },
+
+  "google analytics"              :         {
+    "key"                         :         "UA-55807209-1"
+  },
+
+  "font awesome"                  :         {
+    "cdn"                         :         "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+  },
+
+  "jquery"                        :         {
+    "cdn"                         :         "//code.jquery.com/jquery-2.1.1.min.js"
+  },
+
+  "angular"                       :         {
+    "cdn"                         :         "//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"
   }
 }

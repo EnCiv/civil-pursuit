@@ -1,0 +1,114 @@
+include ../mixins/item-image
+
+.row
+  .col-xs-12.padding
+    h2.text-center
+      span(data-ng-bind='cursor || 1')
+      span  of  
+      span(data-ng-bind='limit')
+
+// Normal screen
+
+section.hidden-xs
+
+  // Image
+
+  .row
+    .col-sm-6.padding(
+      data-ng-repeat      =   'item in current'
+    )
+      +item-image('item')
+
+  // Subject
+
+  .row
+    .col-sm-6.padding(
+      data-ng-repeat      =   'item in current'
+    )
+      h2(data-ng-bind='item.subject')
+
+  // Description
+
+  .row
+    .col-sm-6.padding(
+      data-ng-repeat      =   'item in current'
+    )
+      .pre-text.entry-description(data-ng-bind='item.description')
+
+  // References
+
+  .row
+    .col-sm-6.padding(
+      data-ng-repeat      =   'item in current'
+    )
+      include ../partials/item/references
+
+  // Sliders
+
+  .row
+    .col-sm-6.padding(
+      data-ng-repeat      =   'item in current'
+    )
+      include ../partials/evaluator/sliders
+
+  // Feedback
+
+  .row
+    .col-sm-6.padding(
+      data-ng-repeat      =   'item in current'
+    )
+      include ../partials/evaluator/feedback
+
+  // Promote
+
+  .row.padding-bottom
+    .col-sm-6.padding(
+      data-ng-repeat      =   'item in current'
+    )
+      button.btn.btn-block(
+        data-ng-click   =   'promote($index)'
+        data-ng-show    =   'current[1]'
+      ) Promote
+
+// Small screen
+
+section.hidden-sm.hidden-md.hidden-lg(
+  data-ng-repeat      =   'item in current'
+)
+  .row
+    .col-xs-12
+      +item-image('item')
+
+  .row
+    .col-xs-12
+      h2(data-ng-bind='item.subject')
+
+  .row
+    .col-xs-12
+      .pre-text.entry-description(data-ng-bind='item.subject')
+
+  .row.padding-bottom
+    .col-xs-12
+      include ../partials/evaluator/sliders
+
+  .row.padding-bottom
+    .col-xs-12
+      include ../partials/evaluator/feedback
+
+  .row.padding-bottom
+    .col-xs-12
+      button.btn.btn-block(
+        data-ng-click   =   'promote($index)'
+        data-ng-show    =   'current[1]'
+      ) Promote
+
+// Continue
+
+.row
+  .col-sm-12
+    button.btn.btn-block(
+      data-ng-click       =   'next.length ? continue() : finish()' 
+      data-ng-show        =   'current'
+    )
+      span(data-ng-show='next.length') Continue
+      span(data-ng-hide='next.length') Finish

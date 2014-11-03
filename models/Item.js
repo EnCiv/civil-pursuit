@@ -121,7 +121,7 @@ ItemSchema.pre('validate', function (next) {
 // PRE SAVE
 // ========
 
-ItemSchema.pre('save', function (next) {
+ItemSchema.pre('save', function (next, done) {
 
   var self = this;
 
@@ -136,6 +136,8 @@ ItemSchema.pre('save', function (next) {
   // If image declared (and in case of editing - if image changed)
 
   if ( this.image && ( this.isNew ? true : ( this.image !== this._original.image ) )  ) {
+
+    next();
     
     var cloudinary = require('cloudinary');
     
@@ -151,10 +153,9 @@ ItemSchema.pre('save', function (next) {
       
       function (result) {
         
-        self.image = result.url;
+        console.log('got answer from cloudinary', result.url);
 
-        next();
-
+        Item.update({ _id: self._id }, { image: result.url }, done);
       }      
     );
   }

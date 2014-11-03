@@ -4346,6 +4346,9 @@ button.close {
 .sy-ng-elem {
   visibility: hidden;
 }
+.cursor-pointer {
+  cursor: pointer;
+}
 /*
     ``````````````````````````````````````````````````````````````````````
     ## Layout
@@ -4353,6 +4356,13 @@ button.close {
 
     `````````````````````````````````````````````````````````````````````` 
 */
+/** Top bar **/
+[role='header'] {
+  margin-bottom: 12px;
+  /** Logo **/
+  /** Beta image **/
+  /** Icons **/
+}
 [role='header'] .logo {
   float: left;
 }
@@ -4362,11 +4372,9 @@ button.close {
 [role='header'] .pull-right {
   padding: 4px;
 }
+/** Footer **/
 footer {
   text-align: center;
-}
-napoleon {
-  color: #ff0000;
 }
 /*
     ``````````````````````````````````````````````````````````````````````
@@ -4482,12 +4490,17 @@ textarea {
 .navigator {
   /** Item section title (ie, Topic, Problem, etc.) */
   /* The "no items yet" message box */
+  /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
 }
 .navigator h4.panel-title {
   text-align: center;
 }
 .navigator .panel-collapse {
   padding-right: 0;
+}
+.navigator .panel .panel {
+  margin-left: 20px;
+  margin-top: 20px;
 }
 .navigator .no-items {
   text-align: center;
@@ -4522,4 +4535,20 @@ textarea {
 }
 .navigator .box .box-promoted {
   padding: 10px;
+}
+.navigator .video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+.navigator .video-container iframe,
+.navigator .video-container object,
+.navigator .video-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

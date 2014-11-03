@@ -6,8 +6,8 @@ include image
 
 mixin box(item, isSplit)
   // Box item
-  .box.sy-ng-elem(data-ng-init='$showButtons = false' data-type="{{" + item + ".type}}" data-loaded="{{false}}")
-    .row(data-ng-hide='$last && $index === ' + synapp.public["navigator batch size"])
+  .box(data-type="{{" + item + ".type}}" data-loaded="{{false}}")
+    .row
 
       //- Image + user=author icon
       .col-xs-12.col-sm-4
@@ -42,7 +42,4 @@ mixin box(item, isSplit)
         //- Description
         div.box-description(data-ng-bind=item + '.description' data-syn-more-less)
 
-    //- Show more (in case item is last in list)
-    .row(data-ng-show='$last && $index === ' + (+synapp.public["navigator batch size"] - 1))
-      .col-xs-12.text-center
-        a(href='') Show more
+    block

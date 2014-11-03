@@ -1,0 +1,52 @@
+//- Panel
+
+include bootstrap
+include item-box
+
+mixin panel ()
+
+  +bootstrap-panel
+    
+    +bootstrap-panel-heading
+      
+      //- Toggle Editor show/hide
+      i.pull-right.fa.fa-plus.cursor-pointer
+
+      //- Item Type (Panel title)
+      h4.panel-title(data-ng-bind='type')
+    
+    +bootstrap-panel-body
+
+      //- Editor
+      .synapp-editor.collapse(
+        data-type     =   '{{type}}'
+        data-parent   =   "{{from}}"
+        data-item-id  =   ""
+        data-panel-id =   "{{$id}}")
+
+      //- Nothing here
+
+      div.no-items(data-ng-hide='items.length') Nothing here.
+      
+      //- List of items
+      nav
+        ul
+          li.box-wrapper(data-ng-repeat='item in items')
+            
+            //- Item box
+            +item-box('item')
+
+            //- Evaluator
+            .synapp-evaluator.collapse(data-limit='5' data-item-id='{{item._id}}')
+
+            //- Details
+            .synapp-details.collapse(data-item-id="{{item._id}}")
+
+            //- Nest panel
+            .nested-panels.collapse(data-parent="{{item._id}}")
+
+            //- Toggle-arrow
+            .row.padding.text-center
+              big
+                i.fa.synapp-toggle-arrow.cursor-pointer(
+                data-ng-class='{ "fa-arrow-circle-down": ! toggle, "fa-arrow-circle-up": toggle }' data-ng-show='is_nested')
