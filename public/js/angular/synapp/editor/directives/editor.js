@@ -4,6 +4,8 @@
    *
    */
 
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', EditorComponent];
+
   function EditorComponent ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
@@ -19,7 +21,13 @@
       
       controller: function ($scope) {
 
-        console.log($scope);
+        // console.log('EDITOR', {
+        //   type: $scope.type,
+        //   parent: $scope.parent,
+        //   itemId: $scope.itemId,
+        //   panelId: $scope.panelId,
+        //   id: $scope.$id
+        // });
 
         /** @function */
 
@@ -166,7 +174,5 @@
       }
     };
   }
-
-  module.exports = ['$rootScope', '$timeout', 'DataFactory', EditorComponent];
 
 })();

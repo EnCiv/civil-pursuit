@@ -30,14 +30,14 @@ section.container(
     //- # Emails
 
     - if ( !! isSignedIn === false )
-      include ../partials/sign
+      .synapp-sign
 
     //- # Page wrapper
     
     .row
       .col-xs-12
         #navigator.navigator.panel-group
-          .synapp-navigator(data-type='Topic')
+          .synapp-navigator(data-type='Topic' data-autoload='{{true}}')
 
   //- # Footer
 

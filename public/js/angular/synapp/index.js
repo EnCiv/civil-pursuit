@@ -15,8 +15,10 @@
   require('./editor/index');
   require('./evaluator/index');
   require('./details/index');
+  require('./user/index');
 
   angular.module('synapp', [
+    'synapp.user',
   	'synapp.router',
     'synapp.navigator',
     'synapp.editor',

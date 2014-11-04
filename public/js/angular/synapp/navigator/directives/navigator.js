@@ -2,27 +2,43 @@
 
   function NavigatorComponent ($rootScope, $timeout, $compile, DataFactory) {
 
-    var on, emit;
+    var on, emit, broadcast;
 
     return {
       restrict:       'C',
       scope:          {
         type: '@',
-        from: '@'
+        from: '@',
+        autoload: '@'
       },
       templateUrl:    '/templates/navigator',
-      replace:        false,
       controller:     function ($scope) {
+
+        $scope.state = 0;
+
+        console.info('NAVIGATOR', {
+          type: $scope.type,
+          from: $scope.from,
+          autoload: $scope.autoload,
+          id: $scope.$id,
+          parent: $scope.$parent.$id
+        });
 
         on = function (event, callback) {
           $rootScope.$on($scope.$id + ' ' + event, callback)
         }
 
         emit = function (event, message) {
+          console.info('EMIT', $scope.$id, event, message);
           $scope.$emit($scope.$id + ' ' + event, message);
         }
 
-        function getItem () {
+        broadcast = function (event, message) {
+          console.info('BROADCAST', $scope.$id, event, message);
+          $scope.$broadcast($scope.$id + ' '  + event, message);
+        }
+
+        $scope.getItems = function (cb) {
           // GET TOPICS
 
           DataFactory[$scope.type].get($scope.from)
@@ -33,12 +49,12 @@
               if ( items.length ) {
                 emit('got items of type ' + items[0].type, items);
               }
+
+              if ( cb ) {
+                cb();
+              }
             });
         }
-
-        // GET ITEMS
-
-        getItem();
 
         // UPDATE ITEMS
 
@@ -48,6 +64,10 @@
       },
       
       link: function ($scope, $elem, $attr) {
+
+        if ( $scope.autoload ) {
+          $scope.getItems();
+        }
 
         // Plus icon behavior to toggle editor's visibility
 
@@ -67,6 +87,7 @@
         }
 
         on('got items of type ' + $scope.type, function (event, items) {
+          console.info('RECEIVED', $scope.$id, 'got items of type ' + $scope.type);
           $timeout(function () {
 
             var has = synapp['item relation'][$scope.type];
@@ -107,16 +128,24 @@
           });
         });
 
+        on('expand items', function (event, parent) {
+          console.info('RECEIVED expand items', $scope.id, parent);
+          if ( ! $scope.state ) {
+            $scope.state = 1;
+            $scope.getItems();
+          }
+        });
+
         // Function to toggle show/hide elements
 
         $scope.toggle = function (what, $event) {
-
           
           $($event.target).closest('.box-wrapper').find('.synapp-' + what + ':eq(0)').collapse('toggle');
         }
 
         function onExpand ($event) {
-          console.log('Hey! I am expanding');
+          console.info('EXPANDING',{ state: $scope.state, 
+            autoload: $scope.autoload });
 
           $('.collapse.in')
 
@@ -125,11 +154,12 @@
                 $(this).collapse('hide');
               }
             });
+
+          emit('expand items', $scope.$id);
         }
 
         function onExpanded ($event) {
           console.log('Hey! I have expend');
-          
         }
 
         function onCollapse ($event) {
@@ -141,9 +171,9 @@
         }
 
         $elem
-          .on('show.bs.collapse', onExpand)
-          .on('shown.bs.collapse', onExpanded)
-          .on('hide.bs.collapse', onCollapse)
+          .on('show.bs.collapse',   onExpand)
+          .on('shown.bs.collapse',  onExpanded)
+          .on('hide.bs.collapse',   onCollapse)
           .on('hidden.bs.collapse', onCollapsed);
 
         $rootScope.$on('go to', function (event, route) {

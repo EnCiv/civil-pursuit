@@ -193,7 +193,7 @@ module.exports = function cloudinaryTransformationFilter () {
   angular.module('synapp.cloudinary', [])
 
     .filter({
-      cloudinaryTransformationFilter:   [require('./filters/cloudinary-transformation')]
+      cloudinaryTransformationFilter: require('./filters/cloudinary-transformation')
     });
   
 })();
@@ -448,6 +448,8 @@ module.exports = function cloudinaryTransformationFilter () {
    *
    */
 
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', EditorComponent];
+
   function EditorComponent ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
@@ -463,7 +465,13 @@ module.exports = function cloudinaryTransformationFilter () {
       
       controller: function ($scope) {
 
-        console.log($scope);
+        // console.log('EDITOR', {
+        //   type: $scope.type,
+        //   parent: $scope.parent,
+        //   itemId: $scope.itemId,
+        //   panelId: $scope.panelId,
+        //   id: $scope.$id
+        // });
 
         /** @function */
 
@@ -611,8 +619,6 @@ module.exports = function cloudinaryTransformationFilter () {
     };
   }
 
-  module.exports = ['$rootScope', '$timeout', 'DataFactory', EditorComponent];
-
 })();
 
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/directives/url-fetcher.js":[function(require,module,exports){
@@ -700,6 +706,13 @@ module.exports = ['DataFactory', function (DataFactory) {
     },
     
     controller: function ($scope) {
+
+      // console.log('EVALUATOR', {
+      //   itemId: $scope.itemId,
+      //   limit: $scope.limit,
+      //   id: $scope.$id
+      // });
+
       $scope.cursor = 1;
 
       /** @method onChange */
@@ -1013,8 +1026,10 @@ module.exports = function shortenFilter () {
   require('./editor/index');
   require('./evaluator/index');
   require('./details/index');
+  require('./user/index');
 
   angular.module('synapp', [
+    'synapp.user',
   	'synapp.router',
     'synapp.navigator',
     'synapp.editor',
@@ -1024,7 +1039,7 @@ module.exports = function shortenFilter () {
   
 })();
 
-},{"./cloudinary/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/cloudinary/index.js","./details/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/details/index.js","./editor/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/index.js","./evaluator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/index.js","./filters/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/index.js","./navigator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/index.js","./router/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/index.js","./services/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/index.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/item-media.js":[function(require,module,exports){
+},{"./cloudinary/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/cloudinary/index.js","./details/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/details/index.js","./editor/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/index.js","./evaluator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/index.js","./filters/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/index.js","./navigator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/index.js","./router/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/index.js","./services/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/index.js","./user/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/index.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/item-media.js":[function(require,module,exports){
 module.exports = [
   function ItemMedia () {
     return {
@@ -1056,7 +1071,6 @@ module.exports = [
           var image = $('<img />');
           image.addClass('img-responsive');
           image.attr('src', $scope.image);
-          console.log('image', image);
           $elem.append(image);
         }
       }
@@ -1068,27 +1082,43 @@ module.exports = [
 
   function NavigatorComponent ($rootScope, $timeout, $compile, DataFactory) {
 
-    var on, emit;
+    var on, emit, broadcast;
 
     return {
       restrict:       'C',
       scope:          {
         type: '@',
-        from: '@'
+        from: '@',
+        autoload: '@'
       },
       templateUrl:    '/templates/navigator',
-      replace:        false,
       controller:     function ($scope) {
+
+        $scope.state = 0;
+
+        console.info('NAVIGATOR', {
+          type: $scope.type,
+          from: $scope.from,
+          autoload: $scope.autoload,
+          id: $scope.$id,
+          parent: $scope.$parent.$id
+        });
 
         on = function (event, callback) {
           $rootScope.$on($scope.$id + ' ' + event, callback)
         }
 
         emit = function (event, message) {
+          console.info('EMIT', $scope.$id, event, message);
           $scope.$emit($scope.$id + ' ' + event, message);
         }
 
-        function getItem () {
+        broadcast = function (event, message) {
+          console.info('BROADCAST', $scope.$id, event, message);
+          $scope.$broadcast($scope.$id + ' '  + event, message);
+        }
+
+        $scope.getItems = function (cb) {
           // GET TOPICS
 
           DataFactory[$scope.type].get($scope.from)
@@ -1099,12 +1129,12 @@ module.exports = [
               if ( items.length ) {
                 emit('got items of type ' + items[0].type, items);
               }
+
+              if ( cb ) {
+                cb();
+              }
             });
         }
-
-        // GET ITEMS
-
-        getItem();
 
         // UPDATE ITEMS
 
@@ -1114,6 +1144,10 @@ module.exports = [
       },
       
       link: function ($scope, $elem, $attr) {
+
+        if ( $scope.autoload ) {
+          $scope.getItems();
+        }
 
         // Plus icon behavior to toggle editor's visibility
 
@@ -1133,6 +1167,7 @@ module.exports = [
         }
 
         on('got items of type ' + $scope.type, function (event, items) {
+          console.info('RECEIVED', $scope.$id, 'got items of type ' + $scope.type);
           $timeout(function () {
 
             var has = synapp['item relation'][$scope.type];
@@ -1173,16 +1208,24 @@ module.exports = [
           });
         });
 
+        on('expand items', function (event, parent) {
+          console.info('RECEIVED expand items', $scope.id, parent);
+          if ( ! $scope.state ) {
+            $scope.state = 1;
+            $scope.getItems();
+          }
+        });
+
         // Function to toggle show/hide elements
 
         $scope.toggle = function (what, $event) {
-
           
           $($event.target).closest('.box-wrapper').find('.synapp-' + what + ':eq(0)').collapse('toggle');
         }
 
         function onExpand ($event) {
-          console.log('Hey! I am expanding');
+          console.info('EXPANDING',{ state: $scope.state, 
+            autoload: $scope.autoload });
 
           $('.collapse.in')
 
@@ -1191,11 +1234,12 @@ module.exports = [
                 $(this).collapse('hide');
               }
             });
+
+          emit('expand items', $scope.$id);
         }
 
         function onExpanded ($event) {
           console.log('Hey! I have expend');
-          
         }
 
         function onCollapse ($event) {
@@ -1207,9 +1251,9 @@ module.exports = [
         }
 
         $elem
-          .on('show.bs.collapse', onExpand)
-          .on('shown.bs.collapse', onExpanded)
-          .on('hide.bs.collapse', onCollapse)
+          .on('show.bs.collapse',   onExpand)
+          .on('shown.bs.collapse',  onExpanded)
+          .on('hide.bs.collapse',   onCollapse)
           .on('hidden.bs.collapse', onCollapsed);
 
         $rootScope.$on('go to', function (event, route) {
@@ -1552,4 +1596,235 @@ module.exports = function DataFactory (MonsonFactory) {
   
 })();
 
-},{"../../monson/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/monson/index.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Data.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);
+},{"../../monson/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/monson/index.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Data.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/directives/sign.js":[function(require,module,exports){
+;(function () {
+
+  module.exports = ['UserFactory', SignComponent];
+
+  function SignComponent (UserFactory) {
+
+    return {
+      restrict: 'C',
+      templateUrl: '/templates/sign',
+      scope: {},
+      controller: function ($scope) {
+        console.log('SIGN::controller', $scope);
+      },
+      link: function ($scope, $elem, $attr) {
+        $scope.sign = {};
+
+        $scope.signByMail = {};
+
+        $scope.agreeToTerms = false;
+
+        $scope.signIn = function () {
+
+          // MUST HAVE EMAIL
+
+          if ( ! $scope.sign.email ) {
+            $scope.alert = 'Please enter a valid email';
+            return;
+          }
+
+          // MUST HAVE PASSWORD
+          
+          if ( ! $scope.sign.password ) {
+            $scope.alert = 'Please enter a password';
+            return;
+          }
+
+          // BACK END
+
+          return UserFactory.signIn(
+            {
+              email: $scope.sign.email.toLowerCase(),
+              password: $scope.sign.password
+            })
+
+            .error(function (error) {
+              if ( error.error && error.error.statusCode && error.error.statusCode === 404 ) {
+                return $scope.alert = 'Invalid credentials';
+              }
+              
+              $scope.alert = 'An unexpected error has occurred. Please try again in a moment';
+            })
+
+            .success(function (data) {
+              $scope.isSignedIn = true;
+              location.reload();
+            });
+
+          // IF NO PASSWORD CONFIRMATION
+          
+          if ( ! $scope.sign.password_confirm ) {
+
+            // SIGN IN
+
+            UserFactory.signIn(
+              {
+                email: $scope.sign.email,
+                password: $scope.sign.password
+              })
+
+              .error(function (error) {
+                if ( error.error && error.error.statusCode && error.error.statusCode === 404 ) {
+                  return $scope.sign._up = true;
+                }
+                $scope.alert = error;
+              })
+
+              .success(function (data) {
+                $scope.isSignedIn = true;
+                location.reload();
+              });
+
+            return;
+          }
+          
+          // PASSWORD CONFIRM MISMATCH
+
+          if ( $scope.sign.password !== $scope.sign.password_confirm ) {
+            return $scope.alert = "Passwords don't match";
+          }
+
+          // SIGN UP
+
+          return UserFactory.signUp(
+            // ----- Credentials ---------------------------------------------------------------  //
+            {
+              email:    $scope.sign.email,
+              password: $scope.sign.password
+            })
+            // ----- On factory error ----------------------------------------------------------  //
+            .error(function (error) {
+              $scope.alert = error;
+            })
+            // ----- On factory sucess ---------------------------------------------------------  //
+            .success(function (data) {
+              // ----- Letting the UI knowns user is signed in ---------------------------------  //
+              $scope.isSignedIn = true;
+              location.reload();
+            });
+          };
+
+        $scope.signUp = function (strategy) {
+
+          // MUST AGREE
+
+          if ( ! $scope.agreeToTerms ) {
+            return $scope.alert = 'You must agree to our terms of service';
+          }
+
+          // FACEBOOK
+
+          if ( strategy === 'facebook' ) {
+            return location.href = '/auth/facebook';
+          }
+
+          // MUST HAVE EMAIL
+
+          if ( ! $scope.signByMail.email ) {
+            $scope.alert = 'Please enter a valid email';
+            return;
+          }
+
+          // MUST HAVE PASSWORD
+          
+          if ( ! $scope.signByMail.password ) {
+            $scope.alert = 'Please enter a password';
+            return;
+          }
+
+          // MUST HAVE PASSWORD CONFIRM
+          
+          if ( ! $scope.signByMail.confirm ) {
+            $scope.alert = 'Please confirm password';
+            return;
+          }
+
+          // PASSWORD MUST MATCH
+          
+          if ( $scope.signByMail.confirm !== $scope.signByMail.password ) {
+            $scope.alert = "Passwords don't match";
+            return;
+          }
+
+          // BACK END
+
+          return UserFactory.signUp(
+            {
+              email:      $scope.signByMail.email,
+              password:   $scope.signByMail.password
+            })
+
+            .error(function (response, statusCode) {
+
+              if ( response.error ) {
+                if ( response.error.message ) {
+                  // email already in use
+
+                  if ( /duplicate/.test(response.error.message) ) {
+                    return $scope.alert = 'This email address is already in use';
+                  }
+                }
+              }
+
+              $scope.alert = 'Something grrrr';
+            })
+
+            .success(function (data) {
+              $scope.isSignedIn = true;
+              location.reload();
+            });
+          };
+      }
+      }
+    };
+
+})();
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/factories/User.js":[function(require,module,exports){
+/**
+ * `UserFactory` User Factory (legacy from SignCtrl)
+ * 
+ * @module synapp
+ * @submodule factories
+ * @method factory::user
+ * @return {AngularFactory}
+ * @author francoisrvespa@gmail.com
+*/
+
+module.exports = function UserFactory ($http) {
+  return {
+    signIn: function (creds) {
+      return $http.post('/sign/in', creds);
+    },
+
+    signUp: function (creds) {
+      return $http.post('/sign/up', creds);
+    },
+
+    findByEmail: function (email) {
+      return $http.get('/json/User/findOne?email=' + email);
+    }
+  };
+};
+
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/index.js":[function(require,module,exports){
+/**
+ * Synapp Angular module...
+ * 
+ * @module synapp
+ * @author francoisrvespa@gmail.com
+*/
+
+;(function () {
+
+  angular.module('synapp.user', [])
+
+    .factory('UserFactory', require('./factories/User'))
+
+    .directive('synappSign', require('./directives/sign'));
+  
+})();
+
+},{"./directives/sign":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/directives/sign.js","./factories/User":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/factories/User.js"}]},{},["/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/index.js"]);

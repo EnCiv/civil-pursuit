@@ -10,7 +10,7 @@
   angular.module('synapp.cloudinary', [])
 
     .filter({
-      cloudinaryTransformationFilter:   [require('./filters/cloudinary-transformation')]
+      cloudinaryTransformationFilter: require('./filters/cloudinary-transformation')
     });
   
 })();

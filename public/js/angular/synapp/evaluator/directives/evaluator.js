@@ -8,6 +8,13 @@ module.exports = ['DataFactory', function (DataFactory) {
     },
     
     controller: function ($scope) {
+
+      // console.log('EVALUATOR', {
+      //   itemId: $scope.itemId,
+      //   limit: $scope.limit,
+      //   id: $scope.$id
+      // });
+
       $scope.cursor = 1;
 
       /** @method onChange */

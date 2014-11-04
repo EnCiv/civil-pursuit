@@ -29,7 +29,6 @@ module.exports = [
           var image = $('<img />');
           image.addClass('img-responsive');
           image.attr('src', $scope.image);
-          console.log('image', image);
           $elem.append(image);
         }
       }
