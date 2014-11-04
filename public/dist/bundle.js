@@ -713,12 +713,6 @@ module.exports = ['DataFactory', function (DataFactory) {
     
     controller: function ($scope) {
 
-      // console.log('EVALUATOR', {
-      //   itemId: $scope.itemId,
-      //   limit: $scope.limit,
-      //   id: $scope.$id
-      // });
-
       $scope.cursor = 1;
 
       /** @method onChange */
@@ -870,6 +864,8 @@ module.exports = ['DataFactory', function (DataFactory) {
 
                 $scope.evaluation = evaluation;
 
+                $scope.criterias = evaluation.criterias;
+
                 $scope.current = [];
                 $scope.next = [];
 
@@ -904,6 +900,65 @@ module.exports = ['DataFactory', function (DataFactory) {
 	};
 }];
 
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/directives/sliders.js":[function(require,module,exports){
+;(function () {
+
+  function SlidersComponent () {
+    return {
+      
+      restrict: 'C',
+      
+      templateUrl: '/templates/sliders',
+
+      link: function ($scope, $elem, $attr) {
+
+        $scope.enableSlider = function ($last, current) {
+
+          if ( $last ) {
+
+            // Tooltip
+
+            $("input.slider").slider();
+
+            // Set value
+
+            $('input.slider')
+              .slider('setValue', 5);
+
+            current = 5;
+
+            // On slide stop, update scope
+            
+            $("input.slider").slider('on', 'slideStop', function () {
+
+              var slider = $(this);
+
+              if ( slider.attr('type') ) {
+
+                var item = $scope.items
+                  .reduce(function (item, _item) {
+                    if ( _item._id === slider.data('item') ) {
+                      item = _item;
+                    }
+                    return item;
+                  }, {});
+
+                if ( ! item.$votes ) {
+                  item.$votes = {};
+                }
+
+                item.$votes[slider.data('criteria')] = slider.slider('getValue');
+              }
+            });
+          }
+        };
+      }
+    }
+  }
+
+  module.exports = [SlidersComponent];
+
+})();
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/filters/get-currently-evaluated.js":[function(require,module,exports){
 /**
  * `getCurrentlyEvaluatedFilter` Return the items being currently evaluated in an evaluation
@@ -962,11 +1017,13 @@ module.exports = function getCurrentlyEvaluatedFilter () {
 
 		.filter('getCurrentlyEvaluatedFilter', require('./filters/get-currently-evaluated'))
 
+		.directive('synappSliders', require('./directives/sliders'))
+
 		.directive('synappEvaluator', require('./directives/evaluator'));
 	
 })();
 
-},{"./directives/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/directives/evaluator.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/filters/get-currently-evaluated.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/filters/shorten.js":[function(require,module,exports){
+},{"./directives/evaluator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/directives/evaluator.js","./directives/sliders":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/directives/sliders.js","./filters/get-currently-evaluated":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/filters/get-currently-evaluated.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/filters/shorten.js":[function(require,module,exports){
 /**
  * `shortenFilter` Chops off a string if it exceeds maximum
  * 

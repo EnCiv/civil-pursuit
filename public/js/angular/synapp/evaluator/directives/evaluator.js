@@ -9,12 +9,6 @@ module.exports = ['DataFactory', function (DataFactory) {
     
     controller: function ($scope) {
 
-      // console.log('EVALUATOR', {
-      //   itemId: $scope.itemId,
-      //   limit: $scope.limit,
-      //   id: $scope.$id
-      // });
-
       $scope.cursor = 1;
 
       /** @method onChange */
@@ -165,6 +159,8 @@ module.exports = ['DataFactory', function (DataFactory) {
                 $scope.state = 2;
 
                 $scope.evaluation = evaluation;
+
+                $scope.criterias = evaluation.criterias;
 
                 $scope.current = [];
                 $scope.next = [];

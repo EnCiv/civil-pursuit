@@ -11,6 +11,8 @@
 
 		.filter('getCurrentlyEvaluatedFilter', require('./filters/get-currently-evaluated'))
 
+		.directive('synappSliders', require('./directives/sliders'))
+
 		.directive('synappEvaluator', require('./directives/evaluator'));
 	
 })();
