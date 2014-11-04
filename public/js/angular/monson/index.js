@@ -83,6 +83,12 @@
         return this;
       };
 
+      Model.prototype.offset = function(offset) {
+        this.query['offset::' + offset] = null;
+
+        return this;
+      };
+
       Model.prototype.applySorters = function() {
         if ( this.sorters.length ) {
           this.query['sort::' + this.sorters.join(',')] = null;

@@ -31,7 +31,7 @@ mixin panel ()
       //- List of items
       nav
         ul
-          li.box-wrapper(data-ng-repeat='item in items')
+          li.box-wrapper(data-ng-repeat='item in items' data-ng-show='$index < batch * loaded - 1')
             
             //- Item box
             +item-box('item')
@@ -50,3 +50,7 @@ mixin panel ()
               big
                 i.fa.synapp-toggle-arrow.cursor-pointer(
                 data-ng-class='{ "fa-arrow-circle-down": ! toggle, "fa-arrow-circle-up": toggle }' data-ng-show='is_nested')
+
+            //- View more (ia)
+            .row.padding.text-center(data-ng-show='items.length === batch * loaded && $index === batch * loaded - 2')
+              a(href='#' data-ng-click='loadMore()') View more

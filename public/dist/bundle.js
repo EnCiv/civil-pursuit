@@ -84,6 +84,12 @@
         return this;
       };
 
+      Model.prototype.offset = function(offset) {
+        this.query['offset::' + offset] = null;
+
+        return this;
+      };
+
       Model.prototype.applySorters = function() {
         if ( this.sorters.length ) {
           this.query['sort::' + this.sorters.join(',')] = null;
@@ -1096,6 +1102,10 @@ module.exports = [
 
         $scope.state = 0;
 
+        $scope.loaded = 0;
+
+        $scope.batch = synapp['navigator batch size'];
+
         console.info('NAVIGATOR', {
           type: $scope.type,
           from: $scope.from,
@@ -1126,6 +1136,8 @@ module.exports = [
 
               $scope.items = items;
 
+              $scope.loaded ++;
+
               if ( items.length ) {
                 emit('got items of type ' + items[0].type, items);
               }
@@ -1134,6 +1146,27 @@ module.exports = [
                 cb();
               }
             });
+        }
+
+        $scope.loadMore = function () {
+
+          var query = { type: $scope.type };
+
+          if ( $scope.from ) {
+            query.parent = $scope.from;
+          }
+
+          DataFactory.model('Item')
+            .addQuery(query)
+            .sort('promotions', true)
+            .sort('created', true)
+            .offset(6).limit(6)
+            .get()
+
+              .success(function (data) {
+                $scope.loaded ++;
+                $scope.items = $scope.items.concat(data);
+              });
         }
 
         // UPDATE ITEMS
