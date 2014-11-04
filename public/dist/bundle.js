@@ -703,6 +703,9 @@ module.exports = ['$http',
 
 },{"./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/controllers/upload.js","./directives/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/directives/editor.js","./directives/url-fetcher":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/directives/url-fetcher.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/directives/evaluator.js":[function(require,module,exports){
 module.exports = ['DataFactory', function (DataFactory) {
+
+  var change, one = 0, two = 1;
+
 	return {
 		restrict: 'C',
 		templateUrl: '/templates/evaluator',
@@ -742,55 +745,28 @@ module.exports = ['DataFactory', function (DataFactory) {
 
       /** @method change */
 
-      var change = function () {
-        // if left has a feedback -- save it
+      change = function (which) {
+        which = which || 'both';
 
-        // if ( $scope.items[0].$feedback ) {
-        //   DataFactory.Feedback.create($scope.items[0]._id, $scope.items[0].$feedback);
-        // }
+        if ( which === 'left' || which === 'both' ) {
+          if ( ! $scope.items[one] ) {
+            return console.warn('No items with index', one);
+          }
+          
+          $scope.current[0] = $scope.items[one];
 
-        // if right has a feedback -- save it
+          $scope.addView($scope.items[one]);
+        }
 
-        // if ( $scope.items[1] && $scope.items[1].$feedback ) {
-        //   DataFactory.Feedback.create($scope.items[1]._id, $scope.items[1].$feedback);
-        // }
+        if ( which === 'right' || which === 'both' ) {
+          if ( ! $scope.items[two] ) {
+            return console.warn('No items with index', two);
+          }
+          $scope.current[1] = $scope.items[two];
+        }
+      }
 
-        // // votes
-
-        // var votes = [];
-
-        // // if left has votes
-
-        // if ( $scope.items[0].$votes ) {
-        
-        //   for ( var criteria in $scope.items[0].$votes ) {
-        //     votes.push({
-        //       criteria: criteria,
-        //       item: $scope.items[0]._id,
-        //       value: $scope.items[0].$votes[criteria]
-        //     })
-        //   }
-        // }
-
-        // // if right has votes
-
-        // if ( $scope.items[1] && $scope.items[1].$votes ) {
-        
-        //   for ( var criteria in $scope.items[1].$votes ) {
-        //     votes.push({
-        //       criteria: criteria,
-        //       item: $scope.items[1]._id,
-        //       value: $scope.items[1].$votes[criteria]
-        //     })
-        //   }
-        // }
-
-        // // save votes
-
-        // if ( votes.length ) {
-        //   DataFactory.model('Vote').post(votes);
-        // }
-      };
+      
 
       /** @method promote 
        *  @param index {number} - 0 for left, 1 for right
@@ -798,15 +774,16 @@ module.exports = ['DataFactory', function (DataFactory) {
 
       $scope.promote = function (index) {
 
-        change();
-
         // Promoting left item
 
         if ( index === 0 ) {
 
           // Increment promotions counter
 
-          Item.set($scope.current[0]._id, { $inc: { promotions: 1 } });
+          DataFactory.Item.set($scope.current[0]._id, { $inc: { promotions: 1 } })
+            .success(function () {
+              // $rootScope.$emit('changed item');
+            });
 
           // finish if last
 
@@ -827,7 +804,10 @@ module.exports = ['DataFactory', function (DataFactory) {
 
           // Increment promotions counter
 
-          Item.set($scope.items[1]._id, { $inc: { promotions: 1 } });
+          DataFactory.Item.set($scope.current[1]._id, { $inc: { promotions: 1 } })
+            .success(function () {
+              $rootScope.$emit('changed item');
+            });
 
           // finish if last
 
@@ -837,19 +817,60 @@ module.exports = ['DataFactory', function (DataFactory) {
 
           // remove unpromoted from DOM
 
-          $scope.items[0] = $scope.items.splice(2, 1)[0];
-
-          onChange();
+          //$scope.items[0] = $scope.items.splice(2, 1)[0];
         }
-
-        // update cursor
-        $scope.evaluator.cursor ++;
       };
     },
     
     link: function ($scope, $elem, $attr) {
 
       $scope.state = 0;
+
+      $scope.finish = function () {
+        $elem.collapse('hide');
+        $scope.state = 0;
+      }
+
+      function onGotEvaluation (evaluation) {
+        $scope.state = 2;
+
+        $scope.evaluation = evaluation;
+
+        $scope.criterias = evaluation.criterias;
+
+        $scope.items = evaluation.items;
+
+        $scope.current = [];
+        $scope.next = [];
+
+        if ( evaluation.items.length < 6 ) {
+          $scope.limit = evaluation.items.length - 1;
+
+          if ( ! $scope.limit && evaluation.items.length === 1 ) {
+            $scope.limit = 1;
+          }
+        }
+
+        if ( evaluation.items.length ) {
+          if ( evaluation.items[0] ) {
+            $scope.current[0] = evaluation.items[0];
+            $scope.addView(evaluation.items[0]);
+          }
+
+          if ( evaluation.items[1] ) {
+            $scope.current[1] = evaluation.items[1];
+            $scope.addView(evaluation.items[1]);
+          }
+
+          if ( evaluation.items[2] ) {
+            $scope.next[0] = evaluation.items[2];
+          }
+
+          if ( evaluation.items[3] ) {
+            $scope.next[1] = evaluation.items[3];
+          }
+        }
+      }
 
       $elem
         .on('show.bs.collapse', function () {
@@ -858,42 +879,7 @@ module.exports = ['DataFactory', function (DataFactory) {
             $scope.state = 1;
 
             DataFactory.Item.evaluate($scope.itemId)
-              .success(function (evaluation) {
-
-                $scope.state = 2;
-
-                $scope.evaluation = evaluation;
-
-                $scope.criterias = evaluation.criterias;
-
-                $scope.current = [];
-                $scope.next = [];
-
-                if ( evaluation.items.length) {
-                  $scope.current.push(evaluation.items[0]);
-
-                  if ( evaluation.items[1] ) {
-                    $scope.current.push(evaluation.items[1]);
-                  }
-
-                  if ( evaluation.items[2] ) {
-                    $scope.next.push(evaluation.items[2]);
-                  }
-
-                  if ( evaluation.items[3] ) {
-                    $scope.next.push(evaluation.items[3]);
-                  }
-                }
-
-                if ( evaluation.items.length < 6 ) {
-                  $scope.limit = evaluation.items.length - 1;
-
-                  if ( ! $scope.limit && evaluation.items.length === 1 ) {
-                    $scope.limit = 1;
-                  }
-                }
-                
-              });
+              .success(onGotEvaluation);
           }
         });
     }
@@ -1196,7 +1182,7 @@ module.exports = [
               $scope.loaded ++;
 
               if ( items.length ) {
-                emit('got items of type ' + items[0].type, items);
+                $scope.onItems(items);
               }
 
               if ( cb ) {
@@ -1223,6 +1209,7 @@ module.exports = [
               .success(function (data) {
                 $scope.loaded ++;
                 $scope.items = $scope.items.concat(data);
+                $scope.onItems(data);
               });
         }
 
@@ -1235,29 +1222,7 @@ module.exports = [
       
       link: function ($scope, $elem, $attr) {
 
-        if ( $scope.autoload ) {
-          $scope.getItems();
-        }
-
-        // Plus icon behavior to toggle editor's visibility
-
-        function toggle_editor_view () {
-          $elem.find('.fa-plus').on('click', function () {
-            $(this).closest('.panel').find('.synapp-editor').collapse('toggle');
-          });
-        }
-
-        toggle_editor_view();        
-
-        // Compile nested panels directive
-
-        function compileDirective (type, item) {
-          var tpl = '<div data-type="' + type + '" data-from=":from:" class="synapp-navigator"></div>';
-          return $compile(tpl.replace(/:from:/, item._id))($scope);
-        }
-
-        on('got items of type ' + $scope.type, function (event, items) {
-          console.info('RECEIVED', $scope.$id, 'got items of type ' + $scope.type);
+        $scope.onItems = function (items) {
           $timeout(function () {
 
             var has = synapp['item relation'][$scope.type];
@@ -1296,7 +1261,28 @@ module.exports = [
               });
             }
           });
-        });
+        }
+
+        if ( $scope.autoload ) {
+          $scope.getItems();
+        }
+
+        // Plus icon behavior to toggle editor's visibility
+
+        function toggle_editor_view () {
+          $elem.find('.fa-plus').on('click', function () {
+            $(this).closest('.panel').find('.synapp-editor').collapse('toggle');
+          });
+        }
+
+        toggle_editor_view();        
+
+        // Compile nested panels directive
+
+        function compileDirective (type, item) {
+          var tpl = '<div data-type="' + type + '" data-from=":from:" class="synapp-navigator"></div>';
+          return $compile(tpl.replace(/:from:/, item._id))($scope);
+        }
 
         on('expand items', function (event, parent) {
           console.info('RECEIVED expand items', $scope.id, parent);

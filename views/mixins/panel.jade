@@ -49,7 +49,7 @@ mixin panel ()
             .row.padding.text-center
               big
                 i.fa.synapp-toggle-arrow.cursor-pointer(
-                data-ng-class='{ "fa-arrow-circle-down": ! toggle, "fa-arrow-circle-up": toggle }' data-ng-show='is_nested')
+                data-ng-class='{ "fa-arrow-circle-down": ! toggle, "fa-arrow-circle-up": toggle }' data-ng-show-me='is_nested')
 
             //- View more (ia)
             .row.padding.text-center(data-ng-show='items.length === batch * loaded && $index === batch * loaded - 2')

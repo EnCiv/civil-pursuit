@@ -53,7 +53,7 @@
               $scope.loaded ++;
 
               if ( items.length ) {
-                emit('got items of type ' + items[0].type, items);
+                $scope.onItems(items);
               }
 
               if ( cb ) {
@@ -80,6 +80,7 @@
               .success(function (data) {
                 $scope.loaded ++;
                 $scope.items = $scope.items.concat(data);
+                $scope.onItems(data);
               });
         }
 
@@ -92,29 +93,7 @@
       
       link: function ($scope, $elem, $attr) {
 
-        if ( $scope.autoload ) {
-          $scope.getItems();
-        }
-
-        // Plus icon behavior to toggle editor's visibility
-
-        function toggle_editor_view () {
-          $elem.find('.fa-plus').on('click', function () {
-            $(this).closest('.panel').find('.synapp-editor').collapse('toggle');
-          });
-        }
-
-        toggle_editor_view();        
-
-        // Compile nested panels directive
-
-        function compileDirective (type, item) {
-          var tpl = '<div data-type="' + type + '" data-from=":from:" class="synapp-navigator"></div>';
-          return $compile(tpl.replace(/:from:/, item._id))($scope);
-        }
-
-        on('got items of type ' + $scope.type, function (event, items) {
-          console.info('RECEIVED', $scope.$id, 'got items of type ' + $scope.type);
+        $scope.onItems = function (items) {
           $timeout(function () {
 
             var has = synapp['item relation'][$scope.type];
@@ -153,7 +132,28 @@
               });
             }
           });
-        });
+        }
+
+        if ( $scope.autoload ) {
+          $scope.getItems();
+        }
+
+        // Plus icon behavior to toggle editor's visibility
+
+        function toggle_editor_view () {
+          $elem.find('.fa-plus').on('click', function () {
+            $(this).closest('.panel').find('.synapp-editor').collapse('toggle');
+          });
+        }
+
+        toggle_editor_view();        
+
+        // Compile nested panels directive
+
+        function compileDirective (type, item) {
+          var tpl = '<div data-type="' + type + '" data-from=":from:" class="synapp-navigator"></div>';
+          return $compile(tpl.replace(/:from:/, item._id))($scope);
+        }
 
         on('expand items', function (event, parent) {
           console.info('RECEIVED expand items', $scope.id, parent);
