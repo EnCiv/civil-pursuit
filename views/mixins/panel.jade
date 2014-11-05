@@ -26,11 +26,11 @@ mixin panel ()
 
       //- Loading
 
-      div.no-items(data-ng-hide='state') Loading items...
+      div.no-items(data-ng-hide='loaded') Loading items...
 
       //- Nothing here
 
-      div.no-items(data-ng-hide='items.length || !state') Nothing here.
+      div.no-items(data-ng-hide='items.length || !loaded') Nothing here.
       
       //- List of items
       nav
@@ -47,13 +47,13 @@ mixin panel ()
             .synapp-details.collapse(data-item-id="{{item._id}}")
 
             //- Nest panel
-            .nested-panels.collapse(data-parent="{{item._id}}")
+            .nested-panels.collapse
 
             //- Toggle-arrow
             .row.padding.text-center
               big
                 i.fa.synapp-toggle-arrow.cursor-pointer(
-                data-ng-class='{ "fa-arrow-circle-down": ! toggle, "fa-arrow-circle-up": toggle }' data-ng-show-me='is_nested')
+                data-ng-class='{ "fa-arrow-circle-down": ! toggle, "fa-arrow-circle-up": toggle }' data-ng-show-me='is_nested' data-item-id='{{ item._id }}')
 
             //- View more (ia)
             .row.padding.text-center(data-ng-show='items.length === batch * loaded && $index === batch * loaded - 2')

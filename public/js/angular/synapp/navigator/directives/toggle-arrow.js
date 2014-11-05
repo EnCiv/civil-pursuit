@@ -1,11 +1,13 @@
 ;(function () {
 
-  module.exports = ['$timeout', ToggleArrow];
+  module.exports = ['$timeout', 'Channel', ToggleArrow];
 
-  function ToggleArrow ($timeout) {
+  function ToggleArrow ($timeout, Channel) {
     return {
       restrict: 'CA',
-      scope: true,
+      scope: {
+        itemId: '@'
+      },
       link: function ($scope, $elem, $attrs) {
 
         $scope.triggered = 0;
@@ -13,13 +15,18 @@
         $scope.toggle = false;
 
         var collapser = $elem.closest('.box-wrapper')
-          .find('.nested-panels.collapse:first');
+          .find('.nested-panels:first');
 
         $timeout(function () {
           $scope.is_nested = collapser.find('.synapp-navigator').length;
+          $scope.is_nested = true;
         });
 
         collapser
+
+          .on('show.bs.collapse', function ($event) {
+            Channel.emit($scope.itemId, 'showing');
+          })
 
           .on('shown.bs.collapse', function ($event) {
             if ( $($event.target).is(collapser) ) {

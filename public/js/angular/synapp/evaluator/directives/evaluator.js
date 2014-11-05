@@ -39,31 +39,6 @@ module.exports = ['DataFactory', function (DataFactory) {
         DataFactory.Item.set(item._id, { $inc: { views: 1 } });
       };
 
-      /** @method change */
-
-      change = function (which) {
-        which = which || 'both';
-
-        if ( which === 'left' || which === 'both' ) {
-          if ( ! $scope.items[one] ) {
-            return console.warn('No items with index', one);
-          }
-          
-          $scope.current[0] = $scope.items[one];
-
-          $scope.addView($scope.items[one]);
-        }
-
-        if ( which === 'right' || which === 'both' ) {
-          if ( ! $scope.items[two] ) {
-            return console.warn('No items with index', two);
-          }
-          $scope.current[1] = $scope.items[two];
-        }
-      }
-
-      
-
       /** @method promote 
        *  @param index {number} - 0 for left, 1 for right
        */
@@ -125,6 +100,32 @@ module.exports = ['DataFactory', function (DataFactory) {
       $scope.finish = function () {
         $elem.collapse('hide');
         $scope.state = 0;
+      };
+
+      $scope.continue = function () {
+        $scope.change();
+      }
+
+      /** @method change */
+
+      $scope.change = function (d) {
+
+        console.log('change', $scope)
+
+        d = d || 'both';
+
+        switch (d) {
+          case 'left': case 'both':
+            $scope.current[0] = $scope.next.shift();
+
+          case 'right': case 'both':
+            $scope.current[1] = $scope.next.shift();
+
+          case 'both': 
+            $scope.next.push($scope.items.shift());
+        }
+
+        $scope.next.push($scope.items.shift());
       }
 
       function onGotEvaluation (evaluation) {
@@ -147,24 +148,22 @@ module.exports = ['DataFactory', function (DataFactory) {
           }
         }
 
-        if ( evaluation.items.length ) {
-          if ( evaluation.items[0] ) {
-            $scope.current[0] = evaluation.items[0];
-            $scope.addView(evaluation.items[0]);
-          }
+        start();
+      }
 
-          if ( evaluation.items[1] ) {
-            $scope.current[1] = evaluation.items[1];
-            $scope.addView(evaluation.items[1]);
-          }
+      function start () {
+        var series = [
+          function () { $scope.current[0] = $scope.items.shift(); },
+          function () { $scope.current[1] = $scope.items.shift(); },
+          function () { $scope.next[0]    = $scope.items.shift(); },
+          function () { $scope.next[1]    = $scope.items.shift(); },
+        ];
 
-          if ( evaluation.items[2] ) {
-            $scope.next[0] = evaluation.items[2];
-          }
+        var i = 0;
 
-          if ( evaluation.items[3] ) {
-            $scope.next[1] = evaluation.items[3];
-          }
+        while ( series[i] && $scope.items.length ) {
+          series[i]();
+          i++;
         }
       }
 

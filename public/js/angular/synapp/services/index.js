@@ -12,7 +12,8 @@
   angular.module('synapp.services', ['monson'])
 
     .factory({
-      DataFactory: require('./factories/Data')
+      DataFactory: require('./factories/Data'),
+      Channel: require('./factories/Channel')
     });
   
 })();

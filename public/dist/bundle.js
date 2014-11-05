@@ -743,31 +743,6 @@ module.exports = ['DataFactory', function (DataFactory) {
         DataFactory.Item.set(item._id, { $inc: { views: 1 } });
       };
 
-      /** @method change */
-
-      change = function (which) {
-        which = which || 'both';
-
-        if ( which === 'left' || which === 'both' ) {
-          if ( ! $scope.items[one] ) {
-            return console.warn('No items with index', one);
-          }
-          
-          $scope.current[0] = $scope.items[one];
-
-          $scope.addView($scope.items[one]);
-        }
-
-        if ( which === 'right' || which === 'both' ) {
-          if ( ! $scope.items[two] ) {
-            return console.warn('No items with index', two);
-          }
-          $scope.current[1] = $scope.items[two];
-        }
-      }
-
-      
-
       /** @method promote 
        *  @param index {number} - 0 for left, 1 for right
        */
@@ -829,6 +804,32 @@ module.exports = ['DataFactory', function (DataFactory) {
       $scope.finish = function () {
         $elem.collapse('hide');
         $scope.state = 0;
+      };
+
+      $scope.continue = function () {
+        $scope.change();
+      }
+
+      /** @method change */
+
+      $scope.change = function (d) {
+
+        console.log('change', $scope)
+
+        d = d || 'both';
+
+        switch (d) {
+          case 'left': case 'both':
+            $scope.current[0] = $scope.next.shift();
+
+          case 'right': case 'both':
+            $scope.current[1] = $scope.next.shift();
+
+          case 'both': 
+            $scope.next.push($scope.items.shift());
+        }
+
+        $scope.next.push($scope.items.shift());
       }
 
       function onGotEvaluation (evaluation) {
@@ -851,24 +852,22 @@ module.exports = ['DataFactory', function (DataFactory) {
           }
         }
 
-        if ( evaluation.items.length ) {
-          if ( evaluation.items[0] ) {
-            $scope.current[0] = evaluation.items[0];
-            $scope.addView(evaluation.items[0]);
-          }
+        start();
+      }
 
-          if ( evaluation.items[1] ) {
-            $scope.current[1] = evaluation.items[1];
-            $scope.addView(evaluation.items[1]);
-          }
+      function start () {
+        var series = [
+          function () { $scope.current[0] = $scope.items.shift(); },
+          function () { $scope.current[1] = $scope.items.shift(); },
+          function () { $scope.next[0]    = $scope.items.shift(); },
+          function () { $scope.next[1]    = $scope.items.shift(); },
+        ];
 
-          if ( evaluation.items[2] ) {
-            $scope.next[0] = evaluation.items[2];
-          }
+        var i = 0;
 
-          if ( evaluation.items[3] ) {
-            $scope.next[1] = evaluation.items[3];
-          }
+        while ( series[i] && $scope.items.length ) {
+          series[i]();
+          i++;
         }
       }
 
@@ -1128,26 +1127,23 @@ module.exports = [
 
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/navigator.js":[function(require,module,exports){
 ;(function () {
+  module.exports = ['$rootScope', '$timeout', '$compile', 'DataFactory', 'Channel', NavigatorComponent];
 
-  function NavigatorComponent ($rootScope, $timeout, $compile, DataFactory) {
-
-    var on, emit, broadcast;
+  function NavigatorComponent ($rootScope, $timeout, $compile, DataFactory, Channel) {
 
     return {
+      
       restrict:       'C',
+      
       scope:          {
         type: '@',
         from: '@',
         autoload: '@'
       },
+      
       templateUrl:    '/templates/navigator',
+      
       controller:     function ($scope) {
-
-        $scope.state = 0;
-
-        $scope.loaded = 0;
-
-        $scope.batch = synapp['navigator batch size'];
 
         console.info('NAVIGATOR', {
           type: $scope.type,
@@ -1157,203 +1153,148 @@ module.exports = [
           parent: $scope.$parent.$id
         });
 
-        on = function (event, callback) {
-          $rootScope.$on($scope.$id + ' ' + event, callback)
-        }
+        /** Items from back-end
+         *
+         */
+        $scope.items = [];
 
-        emit = function (event, message) {
-          console.info('EMIT', $scope.$id, event, message);
-          $scope.$emit($scope.$id + ' ' + event, message);
-        }
+        /** How many times items have been fecthed from back-end
+         *
+         */
+        $scope.loaded = 0;
 
-        broadcast = function (event, message) {
-          console.info('BROADCAST', $scope.$id, event, message);
-          $scope.$broadcast($scope.$id + ' '  + event, message);
-        }
+        /** How many items in a batch
+         *
+         */
+        $scope.batch = synapp['navigator batch size'];
 
-        $scope.getItems = function (cb) {
-          // GET TOPICS
-
+        /** Autoloading items
+         *
+         */
+        if ( $scope.autoload ) {
           DataFactory[$scope.type].get($scope.from)
             .success(function (items) {
-
-              $scope.items = items;
-
-              $scope.loaded ++;
-
-              $scope.state = 1;
-
-              if ( items.length ) {
-                $scope.onItems(items);
-              }
-
-              if ( cb ) {
-                cb();
-              }
+              Channel.emit($scope.$id, 'items', items);
             });
         }
 
-        $scope.loadMore = function () {
-
-          var query = { type: $scope.type };
-
-          if ( $scope.from ) {
-            query.parent = $scope.from;
-          }
-
-          DataFactory.model('Item')
-            .addQuery(query)
-            .sort('promotions', true)
-            .sort('created', true)
-            .offset(6).limit(6)
-            .get()
-
-              .success(function (data) {
-                $scope.loaded ++;
-                $scope.items = $scope.items.concat(data);
-                $scope.onItems(data);
-              });
-        }
-
-        // UPDATE ITEMS
-
-        on('created item', function (event, item) {
-          $scope.items.push(item);
-        });
+        
       },
       
       link: function ($scope, $elem, $attr) {
 
-        $scope.onItems = function (items) {
-          $timeout(function () {
+        function Compile (item, index) {
 
-            var has = synapp['item relation'][$scope.type];
+          function compile (type, item) {
 
-            if ( has ) {
-              items.forEach(function (item, i) {
+            var tpl = '<div ' +
+              ' data-type    =   "' + type + '" ' +
+              ' data-from    =   "' + item._id + '"' +
+              ' class        =   "synapp-navigator"></div>';
 
-                var target = $elem.find('.nested-panels:eq(' + i + ')');
-                var row = $('<div class="row"></div>');
+            return $compile(tpl)($scope);
+          }
 
-                target.empty();
+          var has = synapp['item relation'][$scope.type];
 
-                if ( Array.isArray( has ) ) {
-                  has.forEach(function (type) {
+          if ( has ) {
+            var target = $elem.find('.nested-panels:eq(' + index + ')');
+            var row = $('<div class="row"></div>');
 
-                    if ( Array.isArray( type ) ) {
-                      
-                      var col1 = $('<div class="col-xs-6"></div>');
-                      col1.append(compileDirective(type[0], item));
-                      
-                      var col2 = $('<div class="col-xs-6"></div>');
-                      col2.append(compileDirective(type[1], item));
-                      
-                      row.append(col1, col2);
-                      target.append(row);
-                    }
-                    else {
-                      target.append(compileDirective(type, item));
-                    }
-                  });
+            target.empty();
+
+            if ( Array.isArray( has ) ) {
+              has.forEach(function (type) {
+
+                if ( Array.isArray( type ) ) {
+                  var col1 = $('<div class="col-xs-6"></div>');
+                  col1.append(compile(type[0], item));
+                  
+                  var col2 = $('<div class="col-xs-6"></div>');
+                  col2.append(compile(type[1], item));
+                  
+                  row.append(col1, col2);
+                  target.append(row);
                 }
 
                 else {
-                  target.append(compileDirective(has, item));
+                  target.append(compile(type, item));
                 }
               });
             }
-          });
-        }
 
-        if ( $scope.autoload ) {
-          $scope.getItems();
-        }
-
-        // Plus icon behavior to toggle editor's visibility
-
-        function toggle_editor_view () {
-          $elem.find('.fa-plus').on('click', function () {
-            $(this).closest('.panel').find('.synapp-editor').collapse('toggle');
-          });
-        }
-
-        toggle_editor_view();        
-
-        // Compile nested panels directive
-
-        function compileDirective (type, item) {
-          var tpl = '<div data-type="' + type + '" data-from=":from:" class="synapp-navigator"></div>';
-          return $compile(tpl.replace(/:from:/, item._id))($scope);
-        }
-
-        on('expand items', function (event, parent) {
-          console.info('RECEIVED expand items', $scope.id, parent);
-          if ( ! $scope.state ) {
-            $scope.state = 1;
-            $scope.getItems();
+            else {
+              target.append(compile(has, item));
+            }
           }
-        });
 
-        // Function to toggle show/hide elements
-
-        $scope.toggle = function (what, $event) {
-          
-          $($event.target).closest('.box-wrapper').find('.synapp-' + what + ':eq(0)').collapse('toggle');
+          return true;
         }
 
-        function onExpand ($event) {
-          console.info('EXPANDING',{ state: $scope.state, 
-            autoload: $scope.autoload });
-
+        /** The accordion
+         *
+         */
+        $elem.on('show.bs.collapse', function (event) {
           $('.collapse.in')
-
             .each(function () {
-              if ( ! $(this).has($event.target).length ) {
+              if ( ! $(this).has(event.target).length ) {
                 $(this).collapse('hide');
               }
             });
+        });
 
-          emit('expand items', $scope.$id);
-        }
+        /** What to do on new items
+         *
+         */
+        Channel.on($scope.$id, 'items', function (items) {
+          $scope.loaded ++;
+          
+          $scope.items = $scope.items.concat(items);
+          
+          $timeout(function () {
+            $scope.items = $scope.items.map(function (item, i) {
+              if ( typeof item.$compiled === 'undefined' ) {
+                item.compiled = new Compile(item, i);
+              }
+              return item;
+            });
+          });
+        });
 
-        function onExpanded ($event) {
-          console.log('Hey! I have expend');
-        }
+        /** What to do on toggle arrow (show/hide)
+         *
+         */
 
-        function onCollapse ($event) {
-          console.log('Hey! I am collapsing');
-        }
+        var ij = 0;
+        Channel.on($scope.from, 'showing', function (message) {
 
-        function onCollapsed ($event) {
-          console.log('Hey! I have collapsed');
-        }
-
-        $elem
-          .on('show.bs.collapse',   onExpand)
-          .on('shown.bs.collapse',  onExpanded)
-          .on('hide.bs.collapse',   onCollapse)
-          .on('hidden.bs.collapse', onCollapsed);
-
-        $rootScope.$on('go to', function (event, route) {
-          console.log('got go to', route);
+          if ( ! $scope.loaded ) {
+            if ( ! ij ) {
+              ij ++;
+              DataFactory[$scope.type].get($scope.from)
+                .success(function (items) {
+                  Channel.emit($scope.$id, 'items', items);
+                });
+            }
+          }
         });
       }
     };
   }
-
-  module.exports = ['$rootScope', '$timeout', '$compile', 'DataFactory', NavigatorComponent];
 
 })();
 
 },{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/toggle-arrow.js":[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$timeout', ToggleArrow];
+  module.exports = ['$timeout', 'Channel', ToggleArrow];
 
-  function ToggleArrow ($timeout) {
+  function ToggleArrow ($timeout, Channel) {
     return {
       restrict: 'CA',
-      scope: true,
+      scope: {
+        itemId: '@'
+      },
       link: function ($scope, $elem, $attrs) {
 
         $scope.triggered = 0;
@@ -1361,13 +1302,18 @@ module.exports = [
         $scope.toggle = false;
 
         var collapser = $elem.closest('.box-wrapper')
-          .find('.nested-panels.collapse:first');
+          .find('.nested-panels:first');
 
         $timeout(function () {
           $scope.is_nested = collapser.find('.synapp-navigator').length;
+          $scope.is_nested = true;
         });
 
         collapser
+
+          .on('show.bs.collapse', function ($event) {
+            Channel.emit($scope.itemId, 'showing');
+          })
 
           .on('shown.bs.collapse', function ($event) {
             if ( $($event.target).is(collapser) ) {
@@ -1478,7 +1424,42 @@ module.exports = function RouterFactory () {
   
 })(angular);
 
-},{"./factories/Router":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/factories/Router.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Data.js":[function(require,module,exports){
+},{"./factories/Router":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/factories/Router.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Channel.js":[function(require,module,exports){
+;(function () {
+
+  module.exports = [Channel];
+
+  function Channel () {
+    return {
+      
+      _events: {},
+
+      on: function (channel, event, then) {
+
+        if ( ! this._events[channel] ) {
+          this._events[channel] = {};
+        }
+
+        if ( ! this._events[channel][event] ) {
+          this._events[channel][event] = [];
+        }
+
+        this._events[channel][event].push(then);
+      },
+
+      emit: function (channel, event, message) {
+
+        if ( this._events[channel] && this._events[channel][event] ) {
+          this._events[channel][event].forEach(function (then) {
+            then(message);
+          });
+        }
+      }
+    };
+  }
+})();
+
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Data.js":[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -1672,12 +1653,13 @@ module.exports = function DataFactory (MonsonFactory) {
   angular.module('synapp.services', ['monson'])
 
     .factory({
-      DataFactory: require('./factories/Data')
+      DataFactory: require('./factories/Data'),
+      Channel: require('./factories/Channel')
     });
   
 })();
 
-},{"../../monson/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/monson/index.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Data.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/directives/sign.js":[function(require,module,exports){
+},{"../../monson/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/monson/index.js","./factories/Channel":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Channel.js","./factories/Data":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/factories/Data.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/directives/sign.js":[function(require,module,exports){
 ;(function () {
 
   module.exports = ['UserFactory', SignComponent];
