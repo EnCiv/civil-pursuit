@@ -116,10 +116,11 @@
               });
           })
           .on('shown.bs.collapse', function (event) {
-            $(window).scrollTop($elem.offset().top);
+            // $(window).scrollTop($elem.offset().top);
+            console.log(this.$elem.offset().top)
             /** stop propagation , http://stackoverflow.com/questions/4522257/how-do-stop-events-bubbling-in-jquery */
             return false;
-          });
+          }.bind({ $elem: $elem }));
 
         /** What to do on new items
          *
