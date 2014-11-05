@@ -1145,13 +1145,13 @@ module.exports = [
       
       controller:     function ($scope) {
 
-        console.info('NAVIGATOR', {
-          type: $scope.type,
-          from: $scope.from,
-          autoload: $scope.autoload,
-          id: $scope.$id,
-          parent: $scope.$parent.$id
-        });
+        // console.info('NAVIGATOR', {
+        //   type: $scope.type,
+        //   from: $scope.from,
+        //   autoload: $scope.autoload,
+        //   id: $scope.$id,
+        //   parent: $scope.$parent.$id
+        // });
 
         /** Items from back-end
          *
@@ -1234,14 +1234,20 @@ module.exports = [
         /** The accordion
          *
          */
-        $elem.on('show.bs.collapse', function (event) {
-          $('.collapse.in')
-            .each(function () {
-              if ( ! $(this).has(event.target).length ) {
-                $(this).collapse('hide');
-              }
-            });
-        });
+        $elem
+          .on('show.bs.collapse', function (event) {
+            $('.collapse.in')
+              .each(function () {
+                if ( ! $(this).has(event.target).length ) {
+                  $(this).collapse('hide');
+                }
+              });
+          })
+          .on('shown.bs.collapse', function (event) {
+            $(window).scrollTop($elem.offset().top);
+            /** stop propagation , http://stackoverflow.com/questions/4522257/how-do-stop-events-bubbling-in-jquery */
+            return false;
+          });
 
         /** What to do on new items
          *
