@@ -52,6 +52,8 @@
 
               $scope.loaded ++;
 
+              $scope.state = 1;
+
               if ( items.length ) {
                 $scope.onItems(items);
               }

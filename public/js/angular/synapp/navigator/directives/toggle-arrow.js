@@ -7,6 +7,9 @@
       restrict: 'CA',
       scope: true,
       link: function ($scope, $elem, $attrs) {
+
+        $scope.triggered = 0;
+
         $scope.toggle = false;
 
         var collapser = $elem.closest('.box-wrapper')

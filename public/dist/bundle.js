@@ -1181,6 +1181,8 @@ module.exports = [
 
               $scope.loaded ++;
 
+              $scope.state = 1;
+
               if ( items.length ) {
                 $scope.onItems(items);
               }
@@ -1353,6 +1355,9 @@ module.exports = [
       restrict: 'CA',
       scope: true,
       link: function ($scope, $elem, $attrs) {
+
+        $scope.triggered = 0;
+
         $scope.toggle = false;
 
         var collapser = $elem.closest('.box-wrapper')

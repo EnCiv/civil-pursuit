@@ -24,9 +24,13 @@ mixin panel ()
         data-item-id  =   ""
         data-panel-id =   "{{$id}}")
 
+      //- Loading
+
+      div.no-items(data-ng-hide='state') Loading items...
+
       //- Nothing here
 
-      div.no-items(data-ng-hide='items.length') Nothing here.
+      div.no-items(data-ng-hide='items.length || !state') Nothing here.
       
       //- List of items
       nav
