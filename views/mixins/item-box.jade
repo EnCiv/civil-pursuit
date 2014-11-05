@@ -40,6 +40,6 @@ mixin item-box(item, isSplit)
         h4(data-ng-bind=item + '.subject')
 
         //- Description
-        div.box-description(data-ng-bind=item + '.description' data-syn-more-less)
+        div.box-description.synapp-more-less(data-ng-bind=item + '.description')
 
     block

@@ -17,6 +17,8 @@
 
     .directive('synappItemMedia', require('./directives/item-media'))
 
+    .directive('synappMoreLess', require('./directives/more-less'))
+
     .directive('synappToggleArrow', require('./directives/toggle-arrow'));
   
 })();
