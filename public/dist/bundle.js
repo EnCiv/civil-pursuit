@@ -1342,13 +1342,12 @@ module.exports = function () {
         Channel.on($scope.from, 'showing', function (message) {
 
           if ( ! $scope.loaded ) {
-            if ( ! ij ) {
-              ij ++;
+            $timeout(function () {
               DataFactory[$scope.type].get($scope.from)
                 .success(function (items) {
                   Channel.emit($scope.$id, 'items', items);
                 });
-            }
+              }, 1000);
           }
         });
       }
