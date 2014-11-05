@@ -6,11 +6,10 @@ include item-image
 
 mixin item-box(item, isSplit)
   // Box item
-  .box(data-type="{{" + item + ".type}}" data-loaded="{{false}}")
+  .box(data-type="{{" + item + ".type}}" data-loaded="{{false}}" data-ng-init='isSplit = item.type === "Agree" || item.type === "Disagree"')
     .row
-
       //- Image + user=author icon
-      .col-xs-12.col-sm-4
+      .col-xs-12(data-ng-class='{ "col-sm-4": ! isSplit }')
         h1.is-author
           a(href='/edit/')
             i.fa.fa-user
@@ -18,7 +17,7 @@ mixin item-box(item, isSplit)
           +item-image(item)
 
       //- Subject + description
-      .col-xs-12.col-sm-8
+      .col-xs-12(data-ng-class='{ "col-sm-8": ! isSplit }')
         //- Right buttons + stats
         .box-promoted.text-right.pull-right
           ul
