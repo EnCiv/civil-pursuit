@@ -79,10 +79,10 @@
               has.forEach(function (type) {
 
                 if ( Array.isArray( type ) ) {
-                  var col1 = $('<div class="col-xs-6"></div>');
+                  var col1 = $('<div class="col-xs-6 split-view"></div>');
                   col1.append(compile(type[0], item));
                   
-                  var col2 = $('<div class="col-xs-6"></div>');
+                  var col2 = $('<div class="col-xs-6 split-view"></div>');
                   col2.append(compile(type[1], item));
                   
                   row.append(col1, col2);

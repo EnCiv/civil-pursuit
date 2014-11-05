@@ -6,7 +6,7 @@ include item-image
 
 mixin item-box(item, isSplit)
   // Box item
-  .box(data-type="{{" + item + ".type}}" data-loaded="{{false}}" data-ng-init='isSplit = item.type === "Agree" || item.type === "Disagree"')
+  .box(data-type="{{" + item + ".type}}" data-loaded="{{false}}" data-ng-init='isSplit = item.type === "Agree" || item.type === "Disagree" || item.type === "Pro" || item.type === "Con"')
     .row
       //- Image + user=author icon
       .col-xs-12(data-ng-class='{ "col-sm-4": ! isSplit }')

@@ -1273,10 +1273,10 @@ module.exports = function () {
               has.forEach(function (type) {
 
                 if ( Array.isArray( type ) ) {
-                  var col1 = $('<div class="col-xs-6"></div>');
+                  var col1 = $('<div class="col-xs-6 split-view"></div>');
                   col1.append(compile(type[0], item));
                   
-                  var col2 = $('<div class="col-xs-6"></div>');
+                  var col2 = $('<div class="col-xs-6 split-view"></div>');
                   col2.append(compile(type[1], item));
                   
                   row.append(col1, col2);
@@ -1394,20 +1394,6 @@ module.exports = function () {
             Channel.emit($attrs.itemId, 'showing');
 
             var adjust = $(window).height() / 2;
-
-            setInterval(function () {
-              if ( target.hasClass('collapsing') ) {
-                $(window).scrollTop($elem.offset().top - adjust);
-              }
-            }, 250);
-
-            target.on('shown.bs.collapse', function () {
-              $(window).scrollTop($elem.offset().top - adjust);
-            });
-
-            target.on('hidden.bs.collapse', function () {
-              $(window).scrollTop(target.closest('.box-wrapper').offset().top);
-            });
 
             $scope.unused = false;
           }

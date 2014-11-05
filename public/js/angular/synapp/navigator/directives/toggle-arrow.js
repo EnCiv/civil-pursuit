@@ -36,20 +36,6 @@
 
             var adjust = $(window).height() / 2;
 
-            setInterval(function () {
-              if ( target.hasClass('collapsing') ) {
-                $(window).scrollTop($elem.offset().top - adjust);
-              }
-            }, 250);
-
-            target.on('shown.bs.collapse', function () {
-              $(window).scrollTop($elem.offset().top - adjust);
-            });
-
-            target.on('hidden.bs.collapse', function () {
-              $(window).scrollTop(target.closest('.box-wrapper').offset().top);
-            });
-
             $scope.unused = false;
           }
         });
