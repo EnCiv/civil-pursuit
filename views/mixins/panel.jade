@@ -55,7 +55,7 @@ mixin panel ()
               //- Toggle-arrow
               .row.padding.text-center
                 big
-                  i.fa.cursor-pointer(data-ng-show-me='is_nested' data-item-id='{{ item._id }}' data-ng-click='view = ((view === "nest" && "-") || "nest")' data-ng-class='{ "fa-arrow-circle-down": view !== "nest", "fa-arrow-circle-up": view === "nest" }')
+                  i.fa.cursor-pointer(data-ng-show-me='is_nested' data-item-id='{{ item._id }}' data-ng-click='view = ((view === "nest" && panel.$view.id === $id && "-") || "nest")' data-ng-class='{ "fa-arrow-circle-down": view !== "nest" || panel.$view.id !== $id, "fa-arrow-circle-up": view === "nest" }')
 
               //- View more (ia)
               .row.padding.text-center(data-ng-show='items.length === batch * loaded && $index === batch * loaded - 2')
