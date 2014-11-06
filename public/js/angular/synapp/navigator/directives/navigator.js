@@ -79,6 +79,26 @@
           console.log($scope.panel.$view[component])
         };
 
+        $scope.loadMore = function () {
+
+          var query = { type: $scope.type };
+
+          if ( $scope.from ) {
+            query.from = $scope.from;
+          }
+
+          DataFactory.model('Item')
+            .offset(synapp['navigator batch size'] * $scope.loaded)
+            .limit(synapp['navigator batch size'])
+            .sort('promotions', 1)
+            .sort('created', 1)
+            .addQuery(query)
+            .get()
+            .success(function (items) {
+              Channel.emit($scope.$id, 'items', items);
+            });
+        }
+
         function Compile (item, index) {
 
           function compile (type, item) {

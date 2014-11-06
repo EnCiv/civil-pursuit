@@ -4351,9 +4351,6 @@ button.close {
 [class^=col-].padding {
   padding: 12px 8px;
 }
-.sy-ng-elem {
-  visibility: hidden;
-}
 .cursor-pointer {
   cursor: pointer;
 }
@@ -4441,6 +4438,9 @@ footer {
 
     `````````````````````````````````````````````````````````````````````` 
 */
+.synapp-evaluator {
+  border-bottom: 1px solid #eee;
+}
 /*
     ``````````````````````````````````````````````````````````````````````
     ## entrie
