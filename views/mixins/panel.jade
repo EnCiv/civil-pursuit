@@ -38,19 +38,19 @@ mixin panel ()
         //- List of items
         nav
           ul
-            li.box-wrapper(data-ng-repeat='item in items' data-ng-show='$index < batch * loaded - 1')
+            li.box-wrapper(data-ng-repeat='item in items' data-ng-show='$index < batch * loaded - 1' data-ng-click='panel.$view.id = $id')
               
               //- Item box
               +item-box('item')
 
               //- Evaluator
-              .synapp-evaluator.animate-show(data-limit='5' data-item-id='{{item._id}}' data-ng-show='view === "evaluator"')
+              .synapp-evaluator.animate-show(data-limit='5' data-item-id='{{item._id}}' data-ng-show='panel.$view.id === $id && view === "evaluator"')
 
               //- Details
-              .synapp-details.animate-show(data-item-id="{{item._id}}" data-ng-show='view === "details"')
+              .synapp-details.animate-show(data-item-id="{{item._id}}" data-ng-show='panel.$view.id === $id && view === "details"')
 
               //- Nest panel
-              .nested-panels.synapp-nest.animate-show(data-ng-show='view === "nest"')
+              .nested-panels.synapp-nest.animate-show(data-ng-show='panel.$view.id === $id && view === "nest"')
 
               //- Toggle-arrow
               .row.padding.text-center
