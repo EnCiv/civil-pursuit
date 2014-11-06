@@ -1239,6 +1239,12 @@ module.exports = function () {
          *
          */
         $scope.loaded = 0;
+        $scope.opened = false;
+        $scope.$watch('opened', function (from, _from) {
+          if ( typeof from === 'string' && from !== _from ) {
+            Channel.emit(from, 'showing');
+          }
+        });
 
         /** How many items in a batch
          *
