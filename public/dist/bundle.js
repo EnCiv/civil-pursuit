@@ -1077,6 +1077,7 @@ module.exports = function shortenFilter () {
   require('./user/index');
 
   angular.module('synapp', [
+    'ngAnimate',
     'synapp.user',
   	'synapp.router',
     'synapp.navigator',
@@ -1087,7 +1088,17 @@ module.exports = function shortenFilter () {
   
 })();
 
-},{"./cloudinary/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/cloudinary/index.js","./details/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/details/index.js","./editor/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/index.js","./evaluator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/index.js","./filters/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/index.js","./navigator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/index.js","./router/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/index.js","./services/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/index.js","./user/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/index.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/item-media.js":[function(require,module,exports){
+},{"./cloudinary/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/cloudinary/index.js","./details/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/details/index.js","./editor/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/index.js","./evaluator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/index.js","./filters/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/filters/index.js","./navigator/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/index.js","./router/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/index.js","./services/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/services/index.js","./user/index":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/user/index.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/animations/fade.js":[function(require,module,exports){
+;(function () {
+
+  module.exports = [FadeAnim];
+
+  function FadeAnim () {
+
+  }
+
+})();
+},{}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/item-media.js":[function(require,module,exports){
 module.exports = [
   function ItemMedia () {
     return {
@@ -1249,6 +1260,24 @@ module.exports = function () {
       
       link: function ($scope, $elem, $attr) {
 
+        $scope.panel = {
+          $active: $scope.$id, 
+          $view: {
+            panel: true
+          }
+        };
+
+        /** The accordion
+         *
+         */
+        $scope.toggle = function (component, id) {
+          $scope.panel.$view[component] = ! $scope.panel.$view[component];
+          if ( id ) {
+            $scope.panel.$active = id;
+          }
+          console.log($scope.panel.$view[component])
+        };
+
         function Compile (item, index) {
 
           function compile (type, item) {
@@ -1296,25 +1325,6 @@ module.exports = function () {
 
           return true;
         }
-
-        /** The accordion
-         *
-         */
-        $elem
-          .on('show.bs.collapse', function (event) {
-            $('.collapse.in')
-              .each(function () {
-                if ( ! $(this).has(event.target).length ) {
-                  $(this).collapse('hide');
-                }
-              });
-          })
-          .on('shown.bs.collapse', function (event) {
-            // $(window).scrollTop($elem.offset().top);
-            console.log(this.$elem.offset().top)
-            /** stop propagation , http://stackoverflow.com/questions/4522257/how-do-stop-events-bubbling-in-jquery */
-            return false;
-          }.bind({ $elem: $elem }));
 
         /** What to do on new items
          *
@@ -1450,6 +1460,8 @@ module.exports = function () {
       getPromotedPercentageFilter:  [require('./filters/get-promoted-percentage')],
     })
 
+    .animation('.fade', require('./animations/fade'))
+
     .directive('synappNavigator', require('./directives/navigator'))
 
     .directive('synappItemMedia', require('./directives/item-media'))
@@ -1460,7 +1472,7 @@ module.exports = function () {
   
 })();
 
-},{"./directives/item-media":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/item-media.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/more-less.js","./directives/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/navigator.js","./directives/toggle-arrow":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/toggle-arrow.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/filters/get-promoted-percentage.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/factories/Router.js":[function(require,module,exports){
+},{"./animations/fade":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/animations/fade.js","./directives/item-media":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/item-media.js","./directives/more-less":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/more-less.js","./directives/navigator":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/navigator.js","./directives/toggle-arrow":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/directives/toggle-arrow.js","./filters/get-promoted-percentage":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/navigator/filters/get-promoted-percentage.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/router/factories/Router.js":[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 

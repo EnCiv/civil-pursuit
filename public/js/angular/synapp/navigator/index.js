@@ -13,6 +13,8 @@
       getPromotedPercentageFilter:  [require('./filters/get-promoted-percentage')],
     })
 
+    .animation('.fade', require('./animations/fade'))
+
     .directive('synappNavigator', require('./directives/navigator'))
 
     .directive('synappItemMedia', require('./directives/item-media'))

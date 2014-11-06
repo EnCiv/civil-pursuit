@@ -18,6 +18,7 @@
   require('./user/index');
 
   angular.module('synapp', [
+    'ngAnimate',
     'synapp.user',
   	'synapp.router',
     'synapp.navigator',

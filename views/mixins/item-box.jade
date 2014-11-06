@@ -23,7 +23,7 @@ mixin item-box(item, isSplit)
           .row
             div(data-ng-show='is.in = ' + !!isSignedIn
               data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-              a.btn.btn-sm(data-ng-click='toggle("evaluator", $event)') Promote
+              a.btn.btn-sm(data-ng-click='view = ((view === "evaluator" && "-") || "evaluator")') Promote
 
             //- Promoted stat (times)
             div(data-ng-bind=item + '.promotions'
@@ -35,12 +35,10 @@ mixin item-box(item, isSplit)
 
             //- Details button
             div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-              a.btn.btn-sm(data-ng-click='toggle("details", $event)') &nbsp;Details&nbsp;
+              a.btn.btn-sm(data-ng-click='view = ((view === "details" && "-") || "details")') &nbsp;Details&nbsp;
 
         //- Subject     
         h4(data-ng-bind=item + '.subject')
 
         //- Description
         div.box-description.synapp-more-less.pre-text(data-ng-bind=item + '.description')
-
-    block

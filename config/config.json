@@ -87,6 +87,9 @@
   },
 
   "angular"                       :         {
-    "cdn"                         :         "//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"
+    "cdn"                         :         "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js",
+    "animate"                     :         {
+      "cdn"                       :         "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"
+    }
   }
 }

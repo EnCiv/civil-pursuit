@@ -10,50 +10,53 @@ mixin panel ()
     +bootstrap-panel-heading
       
       //- Toggle Editor show/hide
-      i.pull-right.fa.fa-plus.cursor-pointer
+      i.pull-right.fa.fa-plus.cursor-pointer(data-ng-click='toggle("editor")')
 
       //- Item Type (Panel title)
-      h4.panel-title(data-ng-bind='type')
+      h4.panel-title(data-ng-bind='type' data-ng-click='toggle("panel")')
     
     +bootstrap-panel-body
 
       //- Editor
-      .synapp-editor.collapse(
+      .synapp-editor.animate-show(
         data-type     =   '{{type}}'
         data-parent   =   "{{from}}"
         data-item-id  =   ""
-        data-panel-id =   "{{$id}}")
+        data-panel-id =   "{{$id}}"
+        data-ng-show  =   "panel.$view.editor")
 
-      //- Loading
+      .synapp-panel.animate-show(data-ng-show = 'panel.$view.panel')
 
-      div.no-items(data-ng-hide='loaded') Loading items...
+        //- Loading
 
-      //- Nothing here
+        div.no-items(data-ng-hide='loaded') Loading items...
 
-      div.no-items(data-ng-hide='items.length || !loaded') Nothing here.
-      
-      //- List of items
-      nav
-        ul
-          li.box-wrapper(data-ng-repeat='item in items' data-ng-show='$index < batch * loaded - 1')
-            
-            //- Item box
-            +item-box('item')
+        //- Nothing here
 
-            //- Evaluator
-            .synapp-evaluator.collapse(data-limit='5' data-item-id='{{item._id}}')
+        div.no-items(data-ng-hide='items.length || !loaded') Nothing here.
+        
+        //- List of items
+        nav
+          ul
+            li.box-wrapper(data-ng-repeat='item in items' data-ng-show='$index < batch * loaded - 1')
+              
+              //- Item box
+              +item-box('item')
 
-            //- Details
-            .synapp-details.collapse(data-item-id="{{item._id}}")
+              //- Evaluator
+              .synapp-evaluator.animate-show(data-limit='5' data-item-id='{{item._id}}' data-ng-show='view === "evaluator"')
 
-            //- Nest panel
-            .nested-panels.collapse
+              //- Details
+              .synapp-details.animate-show(data-item-id="{{item._id}}" data-ng-show='view === "details"')
 
-            //- Toggle-arrow
-            .row.padding.text-center
-              big
-                i.fa.fa-arrow-circle-down.cursor-pointer.synapp-toggle-arrow(data-ng-show-me='is_nested' data-item-id='{{ item._id }}')
+              //- Nest panel
+              .nested-panels.synapp-nest.animate-show(data-ng-show='view === "nest"')
 
-            //- View more (ia)
-            .row.padding.text-center(data-ng-show='items.length === batch * loaded && $index === batch * loaded - 2')
-              a(href='#' data-ng-click='loadMore()') View more
+              //- Toggle-arrow
+              .row.padding.text-center
+                big
+                  i.fa.cursor-pointer(data-ng-show-me='is_nested' data-item-id='{{ item._id }}' data-ng-click='view = ((view === "nest" && "-") || "nest")' data-ng-class='{ "fa-arrow-circle-down": view !== "nest", "fa-arrow-circle-up": view === "nest" }')
+
+              //- View more (ia)
+              .row.padding.text-center(data-ng-show='items.length === batch * loaded && $index === batch * loaded - 2')
+                a(href='#' data-ng-click='loadMore()') View more

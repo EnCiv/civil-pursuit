@@ -55,6 +55,24 @@
       
       link: function ($scope, $elem, $attr) {
 
+        $scope.panel = {
+          $active: $scope.$id, 
+          $view: {
+            panel: true
+          }
+        };
+
+        /** The accordion
+         *
+         */
+        $scope.toggle = function (component, id) {
+          $scope.panel.$view[component] = ! $scope.panel.$view[component];
+          if ( id ) {
+            $scope.panel.$active = id;
+          }
+          console.log($scope.panel.$view[component])
+        };
+
         function Compile (item, index) {
 
           function compile (type, item) {
@@ -102,25 +120,6 @@
 
           return true;
         }
-
-        /** The accordion
-         *
-         */
-        $elem
-          .on('show.bs.collapse', function (event) {
-            $('.collapse.in')
-              .each(function () {
-                if ( ! $(this).has(event.target).length ) {
-                  $(this).collapse('hide');
-                }
-              });
-          })
-          .on('shown.bs.collapse', function (event) {
-            // $(window).scrollTop($elem.offset().top);
-            console.log(this.$elem.offset().top)
-            /** stop propagation , http://stackoverflow.com/questions/4522257/how-do-stop-events-bubbling-in-jquery */
-            return false;
-          }.bind({ $elem: $elem }));
 
         /** What to do on new items
          *
