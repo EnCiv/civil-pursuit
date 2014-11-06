@@ -4535,6 +4535,9 @@ textarea {
 .navigator .box-wrapper {
   border: 1px solid #eeeeee;
 }
+.navigator .box {
+  padding-bottom: 16px;
+}
 .navigator .box img.img-responsive {
   margin-bottom: 10px;
 }
