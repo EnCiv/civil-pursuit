@@ -702,7 +702,7 @@ module.exports = ['$http',
 })();
 
 },{"./controllers/upload":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/controllers/upload.js","./directives/editor":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/directives/editor.js","./directives/url-fetcher":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/editor/directives/url-fetcher.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/evaluator/directives/evaluator.js":[function(require,module,exports){
-module.exports = ['DataFactory', function (DataFactory) {
+module.exports = ['DataFactory', 'Channel', function (DataFactory, Channel) {
 
   var change, one = 0, two = 1;
 
@@ -711,12 +711,15 @@ module.exports = ['DataFactory', function (DataFactory) {
 		templateUrl: '/templates/evaluator',
     scope: {
       itemId: '@',
-      limit: '@'
+      limit: '@',
+      from: '@'
     },
     
     controller: function ($scope) {
 
       $scope.cursor = 1;
+
+      console.log($scope)
 
       /** @method onChange */
 
@@ -871,8 +874,10 @@ module.exports = ['DataFactory', function (DataFactory) {
         }
       }
 
-      $elem
-        .on('show.bs.collapse', function () {
+      Channel
+        .on($scope.itemId, 'promoting', function () {
+
+          console.log('hello2222')
 
           if ( ! $scope.state ) {
             $scope.state = 1;
@@ -1245,6 +1250,13 @@ module.exports = function () {
             Channel.emit(from, 'showing');
           }
         });
+        $scope.promote_enable = false;
+        $scope.$watch('promote_enable', function (from, _from) {
+          if ( typeof from === 'string' && from !== _from ) {
+            console.log('/7/', from)
+            Channel.emit(from, 'promoting');
+          }
+        });
 
         /** How many items in a batch
          *
@@ -1374,9 +1386,7 @@ module.exports = function () {
          *
          */
 
-        var ij = 0;
         Channel.on($scope.from, 'showing', function (message) {
-
           if ( ! $scope.loaded ) {
             $timeout(function () {
               DataFactory[$scope.type].get($scope.from)

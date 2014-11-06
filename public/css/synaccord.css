@@ -4535,6 +4535,9 @@ textarea {
 .navigator .box-wrapper {
   border: 1px solid #eeeeee;
 }
+.navigator .arrow {
+  border-top: 1px solid #eee;
+}
 .navigator .box {
   border-bottom: 1px solid #eee;
   padding-bottom: 16px;
@@ -4543,13 +4546,18 @@ textarea {
   margin-bottom: 10px;
 }
 .navigator .box h4 {
-  padding-left: 10px;
+  padding-left: 20px;
+  font-size: 24px;
 }
 .navigator .box .box-description {
-  padding: 4px 10px;
+  padding: 20px;
+  font-size: 16px;
 }
 .navigator .box .box-promoted {
   padding: 10px;
+}
+.navigator .box .pull-right {
+  width: 120px;
 }
 .navigator .is-split li:nth-last-child(1) {
   text-align: right;

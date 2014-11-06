@@ -40,6 +40,13 @@
             Channel.emit(from, 'showing');
           }
         });
+        $scope.promote_enable = false;
+        $scope.$watch('promote_enable', function (from, _from) {
+          if ( typeof from === 'string' && from !== _from ) {
+            console.log('/7/', from)
+            Channel.emit(from, 'promoting');
+          }
+        });
 
         /** How many items in a batch
          *
@@ -169,9 +176,7 @@
          *
          */
 
-        var ij = 0;
         Channel.on($scope.from, 'showing', function (message) {
-
           if ( ! $scope.loaded ) {
             $timeout(function () {
               DataFactory[$scope.type].get($scope.from)

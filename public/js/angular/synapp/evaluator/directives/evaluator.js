@@ -1,4 +1,4 @@
-module.exports = ['DataFactory', function (DataFactory) {
+module.exports = ['DataFactory', 'Channel', function (DataFactory, Channel) {
 
   var change, one = 0, two = 1;
 
@@ -7,12 +7,15 @@ module.exports = ['DataFactory', function (DataFactory) {
 		templateUrl: '/templates/evaluator',
     scope: {
       itemId: '@',
-      limit: '@'
+      limit: '@',
+      from: '@'
     },
     
     controller: function ($scope) {
 
       $scope.cursor = 1;
+
+      console.log($scope)
 
       /** @method onChange */
 
@@ -167,8 +170,10 @@ module.exports = ['DataFactory', function (DataFactory) {
         }
       }
 
-      $elem
-        .on('show.bs.collapse', function () {
+      Channel
+        .on($scope.itemId, 'promoting', function () {
+
+          console.log('hello2222')
 
           if ( ! $scope.state ) {
             $scope.state = 1;

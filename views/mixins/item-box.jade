@@ -23,7 +23,7 @@ mixin item-box(item, isSplit)
           .row
             div(data-ng-show='is.in = ' + !!isSignedIn
               data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-              a.btn.btn-sm(data-ng-click='view = ((view === "evaluator" && "-") || "evaluator")') Promote
+              a.btn.btn-sm(data-ng-click='view = ((view === "evaluator" && "-") || "evaluator"); $parent.promote_enable = item._id') Promote
 
             //- Promoted stat (times)
             div(data-ng-bind=item + '.promotions'
