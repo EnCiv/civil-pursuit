@@ -19,20 +19,22 @@ mixin item-box(item, isSplit)
       //- Subject + description
       .col-xs-12(data-ng-class='{ "col-sm-8": ! isSplit }')
         //- Right buttons + stats
-        .box-promoted.text-right.pull-right
-          ul
-            //- Promote button
-            li(data-ng-show='is.in = ' + !!isSignedIn)
+        .box-promoted(data-ng-class='{ "text-right pull-right": ! isSplit, "is-split": isSplit }')
+          .row
+            div(data-ng-show='is.in = ' + !!isSignedIn
+              data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
               a.btn.btn-sm(data-ng-click='toggle("evaluator", $event)') Promote
 
             //- Promoted stat (times)
-            li(data-ng-bind=item + '.promotions')
+            div(data-ng-bind=item + '.promotions'
+              data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
 
             //- Promoted stat (percent)
-            li(data-ng-bind='(' + item + ' | getPromotedPercentageFilter) + "%"')
+            div(data-ng-bind='(' + item + ' | getPromotedPercentageFilter) + "%"'
+              data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
 
             //- Details button
-            li
+            div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
               a.btn.btn-sm(data-ng-click='toggle("details", $event)') &nbsp;Details&nbsp;
 
         //- Subject     
