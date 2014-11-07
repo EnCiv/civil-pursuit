@@ -10,6 +10,8 @@
   }
 
   .panel {
+    background: #fff;
+
     .panel {
       margin-left: 30px;
     }
@@ -63,6 +65,8 @@
     border-bottom: 1px solid #eee;
 
     padding-bottom: 16px;
+
+    background: #fff;
 
     img.img-responsive {
       margin-bottom: 10px
@@ -120,23 +124,37 @@
 }
 
 .animate-show {
-  opacity:1;
+  // opacity:1;
+
 }
 
 .animate-show.ng-hide-add.ng-hide-add-active,
 .animate-show.ng-hide-remove.ng-hide-remove-active {
-  -webkit-transition:all linear 0.5s;
-  transition:all linear 0.5s;
+  // -webkit-transition:all linear 2s;
+  // transition:all linear 2s;
+
+/*  -webkit-transition: max-height 2s;
+  -moz-transition: max-height 2s;
+  transition: max-height 2s;*/
 }
 
 .animate-show.ng-hide {
-  line-height:0;
-  opacity:0;
-  padding:0 10px;
+  // opacity:0;
 }
 
-.check-element {
-  padding:10px;
-  border:1px solid black;
-  background:white;
+.animate-show.ng-hide {
+    max-height: 0;
+    opacity: 0;
+    transition:opacity 2s ease-out;
+    transition: max-height 0.75s ease-out;
+    overflow: hidden;
+    background: #d5d5d5;
+}
+
+.animate-show:not(.ng-hide) {
+    max-height: 5000px;
+    overflow: auto;
+    transition: max-height 1.25s ease-in;
+    opacity: 1;
+    transition:opacity 1.25s ease-in;
 }

@@ -4514,6 +4514,9 @@ textarea {
 .navigator .panel-collapse {
   padding-right: 0;
 }
+.navigator .panel {
+  background: #fff;
+}
 .navigator .panel .panel {
   margin-left: 30px;
 }
@@ -4549,6 +4552,7 @@ textarea {
 .navigator .box {
   border-bottom: 1px solid #eee;
   padding-bottom: 16px;
+  background: #fff;
 }
 .navigator .box img.img-responsive {
   margin-bottom: 10px;
@@ -4593,21 +4597,24 @@ textarea {
   width: 100%;
   height: 100%;
 }
-.animate-show {
-  opacity: 1;
-}
 .animate-show.ng-hide-add.ng-hide-add-active,
 .animate-show.ng-hide-remove.ng-hide-remove-active {
-  -webkit-transition: all linear 0.5s;
-  transition: all linear 0.5s;
+  /*  -webkit-transition: max-height 2s;
+  -moz-transition: max-height 2s;
+  transition: max-height 2s;*/
 }
 .animate-show.ng-hide {
-  line-height: 0;
+  max-height: 0;
   opacity: 0;
-  padding: 0 10px;
+  transition: opacity 2s ease-out;
+  transition: max-height 0.75s ease-out;
+  overflow: hidden;
+  background: #d5d5d5;
 }
-.check-element {
-  padding: 10px;
-  border: 1px solid black;
-  background: white;
+.animate-show:not(.ng-hide) {
+  max-height: 5000px;
+  overflow: auto;
+  transition: max-height 1.25s ease-in;
+  opacity: 1;
+  transition: opacity 1.25s ease-in;
 }
