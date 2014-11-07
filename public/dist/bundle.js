@@ -619,7 +619,7 @@ module.exports = function cloudinaryTransformationFilter () {
         $scope.$elem = $elem;
 
         $scope.collapse = function () {
-          $elem.collapse('hide');
+          $scope.$parent.panel.$view.editor = false;
         }
       }
     };
