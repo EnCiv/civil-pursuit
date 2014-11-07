@@ -42,7 +42,7 @@ module.exports = ['$http',
 
               $scope.item.references[0].url = $elem.val();
 
-              $scope.item.references[0].title = JSON.parse(data);
+              $scope.item.references[0].title = data;
 
               $elem.data('url', $scope.item.references[0].url);
               $elem.data('title', $scope.item.references[0].title);

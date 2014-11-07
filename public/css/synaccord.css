@@ -4612,7 +4612,7 @@ textarea {
   background: #d5d5d5;
 }
 .animate-show:not(.ng-hide) {
-  max-height: 5000px;
+  max-height: 50000px;
   overflow: auto;
   transition: max-height 1.25s ease-in;
   opacity: 1;
