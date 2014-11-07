@@ -130,12 +130,7 @@
 
 .animate-show.ng-hide-add.ng-hide-add-active,
 .animate-show.ng-hide-remove.ng-hide-remove-active {
-  // -webkit-transition:all linear 2s;
-  // transition:all linear 2s;
-
-/*  -webkit-transition: max-height 2s;
-  -moz-transition: max-height 2s;
-  transition: max-height 2s;*/
+  
 }
 
 .animate-show.ng-hide {
@@ -144,19 +139,18 @@
 
 .animate-show.ng-hide {
     max-height: 0;
-    opacity: 0;
-    transition:opacity 2s ease-out;
+    // opacity: 0;
+    // transition:opacity 2s ease-out;
     transition: max-height 0.75s ease-out;
-    overflow: hidden;
-    background: #d5d5d5;
+    overflow: auto;
 }
 
 .animate-show:not(.ng-hide) {
-    max-height: 50000px;
+    max-height: 10000px;
     overflow: auto;
     transition: max-height 1.25s ease-in;
-    opacity: 1;
-    transition:opacity 1.25s ease-in;
+    // opacity: 1;
+    // transition:opacity 1.25s ease-in;
 }
 
 .modal {
