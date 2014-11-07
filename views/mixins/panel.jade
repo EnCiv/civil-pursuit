@@ -49,13 +49,13 @@ mixin panel ()
               //- Details
               .synapp-details.animate-show(data-item-id="{{item._id}}" data-ng-show='panel.$view.id === $id && view === "details"')
 
-              //- Nest panel
-              .nested-panels.synapp-nest.animate-show(data-ng-show='panel.$view.id === $id && view === "nest"')
-
               //- Toggle-arrow
               .row.padding.text-center.arrow
                 big
                   i.fa.cursor-pointer(data-ng-show-me='is_nested' data-item-id='{{ item._id }}' data-ng-click='view = ((view === "nest" && panel.$view.id === $id && "-") || "nest"); $parent.opened = item._id' data-ng-class='{ "fa-arrow-circle-down": view !== "nest" || panel.$view.id !== $id, "fa-arrow-circle-up": view === "nest" }')
+
+              //- Nest panel
+              .nested-panels.synapp-nest.animate-show(data-ng-show='panel.$view.id === $id && view === "nest"')
 
               //- View more (ia)
               .row.padding.text-center(data-ng-show='items.length === batch * loaded && $index === batch * loaded - 2')
