@@ -43,7 +43,6 @@
         $scope.promote_enable = false;
         $scope.$watch('promote_enable', function (from, _from) {
           if ( typeof from === 'string' && from !== _from ) {
-            console.log('/7/', from)
             Channel.emit(from, 'promoting');
           }
         });
@@ -83,7 +82,6 @@
           if ( id ) {
             $scope.panel.$active = id;
           }
-          console.log($scope.panel.$view[component])
         };
 
         $scope.loadMore = function () {
@@ -154,7 +152,7 @@
           return true;
         }
 
-        /** What to do on new items
+        /** What to do on new batch of items
          *
          */
         Channel.on($scope.$id, 'items', function (items) {
@@ -169,6 +167,19 @@
               }
               return item;
             });
+          });
+        });
+
+        /** What to do on new item
+         *
+         */
+        Channel.on($scope.$from || 'root', 'new item', function (item) {
+          console.log('yeah! new item');
+          
+          $scope.items = [item].concat($scope.items);
+          
+          $timeout(function () {
+            $scope.items[0].compiled = new Compile($scope.items[0], 0);
           });
         });
 

@@ -454,9 +454,9 @@ module.exports = function cloudinaryTransformationFilter () {
    *
    */
 
-  module.exports = ['$rootScope', '$timeout', 'DataFactory', EditorComponent];
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', 'Channel', EditorComponent];
 
-  function EditorComponent ($rootScope, $timeout, DataFactory) {
+  function EditorComponent ($rootScope, $timeout, DataFactory, Channel) {
     return {
       restrict: 'C',
       
@@ -556,9 +556,12 @@ module.exports = function cloudinaryTransformationFilter () {
             subject: $scope.item.subject,
             description: $scope.item.description,
             references: $scope.item.references,
-            type: $scope.type,
-            parent: $scope.parent || null
+            type: $scope.type
           };
+
+          if ( $scope.parent ) {
+            candidate.parent = $scope.parent;
+          } 
 
           if ( candidate.references && ! Array.isArray(candidate.references) ) {
             candidate.references = candidateect.keys(candidate.references).map(function (index) {
@@ -577,8 +580,6 @@ module.exports = function cloudinaryTransformationFilter () {
           else {
             candidate.image = getImage();
 
-            console.log('candidate', candidate);
-
             setTimeout(function () {
               DataFactory.model('Item').post(candidate)
 
@@ -590,8 +591,8 @@ module.exports = function cloudinaryTransformationFilter () {
                     }
 
                     // Broadcasting we have a new item
-                    console.log($scope.panelId + ' created item');
-                    $rootScope.$emit($scope.panelId + ' created item', created);
+                    console.log($scope.parent || 'root', 'new item', created);
+                    Channel.emit($scope.parent || 'root', 'new item', created);
 
                     // Turn off progress light
                     $scope.is.in.progress = false;
@@ -608,7 +609,7 @@ module.exports = function cloudinaryTransformationFilter () {
                     $('#loading-editor').modal('hide');
 
                     // Collapsing
-                    $scope.$elem.collapse('hide');
+                    $scope.$parent.panel.$view.editor = false;
                   });
             }, synapp.latency[synapp.env]); 
           }
@@ -1253,7 +1254,6 @@ module.exports = function () {
         $scope.promote_enable = false;
         $scope.$watch('promote_enable', function (from, _from) {
           if ( typeof from === 'string' && from !== _from ) {
-            console.log('/7/', from)
             Channel.emit(from, 'promoting');
           }
         });
@@ -1293,7 +1293,6 @@ module.exports = function () {
           if ( id ) {
             $scope.panel.$active = id;
           }
-          console.log($scope.panel.$view[component])
         };
 
         $scope.loadMore = function () {
@@ -1364,7 +1363,7 @@ module.exports = function () {
           return true;
         }
 
-        /** What to do on new items
+        /** What to do on new batch of items
          *
          */
         Channel.on($scope.$id, 'items', function (items) {
@@ -1379,6 +1378,19 @@ module.exports = function () {
               }
               return item;
             });
+          });
+        });
+
+        /** What to do on new item
+         *
+         */
+        Channel.on($scope.$from || 'root', 'new item', function (item) {
+          console.log('yeah! new item');
+          
+          $scope.items = [item].concat($scope.items);
+          
+          $timeout(function () {
+            $scope.items[0].compiled = new Compile($scope.items[0], 0);
           });
         });
 

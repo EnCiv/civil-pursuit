@@ -4363,7 +4363,12 @@ button.close {
 */
 /** Top bar **/
 [role='header'] {
-  margin-bottom: 12px;
+  position: fixed;
+  top: 0;
+  left: 0 ;
+  width: 100%;
+  z-index: 9999;
+  background: #ffffff;
   /** Logo **/
   /** Beta image **/
   /** Icons **/
@@ -4376,6 +4381,9 @@ button.close {
 }
 [role='header'] .pull-right {
   padding: 4px;
+}
+[role='main'] {
+  margin-top: 80px;
 }
 /** Footer **/
 footer {

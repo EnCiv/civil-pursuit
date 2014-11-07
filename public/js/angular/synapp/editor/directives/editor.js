@@ -4,9 +4,9 @@
    *
    */
 
-  module.exports = ['$rootScope', '$timeout', 'DataFactory', EditorComponent];
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', 'Channel', EditorComponent];
 
-  function EditorComponent ($rootScope, $timeout, DataFactory) {
+  function EditorComponent ($rootScope, $timeout, DataFactory, Channel) {
     return {
       restrict: 'C',
       
@@ -106,9 +106,12 @@
             subject: $scope.item.subject,
             description: $scope.item.description,
             references: $scope.item.references,
-            type: $scope.type,
-            parent: $scope.parent || null
+            type: $scope.type
           };
+
+          if ( $scope.parent ) {
+            candidate.parent = $scope.parent;
+          } 
 
           if ( candidate.references && ! Array.isArray(candidate.references) ) {
             candidate.references = candidateect.keys(candidate.references).map(function (index) {
@@ -127,8 +130,6 @@
           else {
             candidate.image = getImage();
 
-            console.log('candidate', candidate);
-
             setTimeout(function () {
               DataFactory.model('Item').post(candidate)
 
@@ -140,8 +141,8 @@
                     }
 
                     // Broadcasting we have a new item
-                    console.log($scope.panelId + ' created item');
-                    $rootScope.$emit($scope.panelId + ' created item', created);
+                    console.log($scope.parent || 'root', 'new item', created);
+                    Channel.emit($scope.parent || 'root', 'new item', created);
 
                     // Turn off progress light
                     $scope.is.in.progress = false;
@@ -158,7 +159,7 @@
                     $('#loading-editor').modal('hide');
 
                     // Collapsing
-                    $scope.$elem.collapse('hide');
+                    $scope.$parent.panel.$view.editor = false;
                   });
             }, synapp.latency[synapp.env]); 
           }
