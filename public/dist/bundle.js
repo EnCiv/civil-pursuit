@@ -1305,7 +1305,7 @@ module.exports = function () {
           var query = { type: $scope.type };
 
           if ( $scope.from ) {
-            query.from = $scope.from;
+            query.parent = $scope.from;
           }
 
           DataFactory.model('Item')
