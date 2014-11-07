@@ -764,39 +764,42 @@ module.exports = ['DataFactory', 'Channel', function (DataFactory, Channel) {
               // $rootScope.$emit('changed item');
             });
 
+          onChange();
+
+          // remove unpromoted from DOM
+
+          $scope.change('right');
+
           // finish if last
 
           if ( ! $scope.next.length ) {
             return $scope.finish();
           }
 
-          // remove unpromoted from DOM
-
-          $scope.current[1] = $scope.next.shift();
-
-          onChange();
+          
         }
 
         // Promoting right item
 
         else {
-
           // Increment promotions counter
 
           DataFactory.Item.set($scope.current[1]._id, { $inc: { promotions: 1 } })
             .success(function () {
-              $rootScope.$emit('changed item');
+              // $rootScope.$emit('changed item');
             });
 
-          // finish if last
-
-          if ( ! $scope.items[2] ) {
-            return $scope.finish();
-          }
+          onChange();
 
           // remove unpromoted from DOM
 
-          //$scope.items[0] = $scope.items.splice(2, 1)[0];
+          $scope.change('left');
+
+          // finish if last
+
+          if ( ! $scope.next.length ) {
+            return $scope.finish();
+          }
         }
       };
     },
@@ -822,16 +825,20 @@ module.exports = ['DataFactory', 'Channel', function (DataFactory, Channel) {
 
         d = d || 'both';
 
-        switch (d) {
-          case 'left': case 'both':
-            $scope.current[0] = $scope.next.shift();
-
-          case 'right': case 'both':
-            $scope.current[1] = $scope.next.shift();
-
-          case 'both': 
-            $scope.next.push($scope.items.shift());
+        if ( d === 'left' || d === 'both' ) {
+          $scope.current[0] = $scope.next.shift();
         }
+
+        if ( d === 'right' || d === 'both' ) {
+          $scope.current[1] = $scope.next.shift();
+        }
+
+        if ( d === 'both' ) {
+          $scope.next.push($scope.items.shift());
+          $scope.cursor ++;
+        }
+
+        $scope.cursor ++;
 
         $scope.next.push($scope.items.shift());
       }
@@ -877,8 +884,6 @@ module.exports = ['DataFactory', 'Channel', function (DataFactory, Channel) {
 
       Channel
         .on($scope.itemId, 'promoting', function () {
-
-          console.log('hello2222')
 
           if ( ! $scope.state ) {
             $scope.state = 1;
