@@ -4553,6 +4553,9 @@ textarea {
   padding: 20px;
   font-size: 16px;
 }
+.navigator .box .entry-title {
+  padding: 0 20px 20px 20px;
+}
 .navigator .box .box-promoted {
   padding: 10px;
 }
