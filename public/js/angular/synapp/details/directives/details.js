@@ -1,18 +1,21 @@
 ;(function () {
 
+  module.exports = ['DataFactory', 'Channel', DetailsDirective];
+
   /** Item Details Component
    *
    *  @function
    *  @return {Object} - Angular Directive Definition
    *  @example <div class="synapp-details" data-item="{{item._id}}"></div>
    */
-  function DetailsDirective (DataFactory) {
+  function DetailsDirective (DataFactory, Channel) {
 
     return {
       restrict: 'C',
       templateUrl: '/templates/details',
       scope: {
-        itemId:   '@'
+        itemId:   '@',
+        from: '@'
       },
       
       controller: function ($scope) {
@@ -28,8 +31,8 @@
       link: function ($scope, $elem, $attr) {
         $scope.state = 0;
 
-        $elem
-          .on('shown.bs.collapse', function (event) {
+        Channel
+          .on($scope.itemId, 'details', function () {
             if ( ! $scope.state ) {
               $scope.state = 1;
               $scope.getItem(function (details) {
@@ -42,7 +45,5 @@
       }
     }; 
   }
-
-  module.exports = ['DataFactory', DetailsDirective];
 
 })();

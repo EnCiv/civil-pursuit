@@ -35,7 +35,7 @@ mixin item-box(item, isSplit)
 
             //- Details button
             div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-              a.btn.btn-sm(data-ng-click='view = ((view === "details" && "-") || "details")') &nbsp;Details&nbsp;
+              a.btn.btn-sm(data-ng-click='view = ((view === "details" && "-") || "details"); $parent.details_enable = item._id') &nbsp;Details&nbsp;
 
         //- Subject     
         h4(data-ng-bind=item + '.subject')

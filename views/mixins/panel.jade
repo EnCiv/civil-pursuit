@@ -47,7 +47,7 @@ mixin panel ()
               .synapp-evaluator.animate-show(data-limit='5' data-item-id='{{item._id}}' data-ng-show='panel.$view.id === $id && view === "evaluator"' data-from='{{from}}')
 
               //- Details
-              .synapp-details.animate-show(data-item-id="{{item._id}}" data-ng-show='panel.$view.id === $id && view === "details"')
+              .synapp-details.animate-show(data-item-id="{{item._id}}" data-ng-show='panel.$view.id === $id && view === "details"' data-from='{{from}}')
 
               //- Toggle-arrow
               .row.padding.text-center.arrow

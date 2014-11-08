@@ -207,19 +207,22 @@ module.exports = function cloudinaryTransformationFilter () {
 },{"./filters/cloudinary-transformation":"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/cloudinary/filters/cloudinary-transformation.js"}],"/home/francois/Dev/elance/synappalpha/public/js/angular/synapp/details/directives/details.js":[function(require,module,exports){
 ;(function () {
 
+  module.exports = ['DataFactory', 'Channel', DetailsDirective];
+
   /** Item Details Component
    *
    *  @function
    *  @return {Object} - Angular Directive Definition
    *  @example <div class="synapp-details" data-item="{{item._id}}"></div>
    */
-  function DetailsDirective (DataFactory) {
+  function DetailsDirective (DataFactory, Channel) {
 
     return {
       restrict: 'C',
       templateUrl: '/templates/details',
       scope: {
-        itemId:   '@'
+        itemId:   '@',
+        from: '@'
       },
       
       controller: function ($scope) {
@@ -235,8 +238,8 @@ module.exports = function cloudinaryTransformationFilter () {
       link: function ($scope, $elem, $attr) {
         $scope.state = 0;
 
-        $elem
-          .on('shown.bs.collapse', function (event) {
+        Channel
+          .on($scope.itemId, 'details', function () {
             if ( ! $scope.state ) {
               $scope.state = 1;
               $scope.getItem(function (details) {
@@ -249,8 +252,6 @@ module.exports = function cloudinaryTransformationFilter () {
       }
     }; 
   }
-
-  module.exports = ['DataFactory', DetailsDirective];
 
 })();
 
@@ -1250,16 +1251,32 @@ module.exports = function () {
          *
          */
         $scope.loaded = 0;
+
+        /** Listen for signal to load items
+         *
+         */
         $scope.opened = false;
         $scope.$watch('opened', function (from, _from) {
           if ( typeof from === 'string' && from !== _from ) {
             Channel.emit(from, 'showing');
           }
         });
+        /** Listen for signal to load promotion
+         *
+         */
         $scope.promote_enable = false;
         $scope.$watch('promote_enable', function (from, _from) {
           if ( typeof from === 'string' && from !== _from ) {
             Channel.emit(from, 'promoting');
+          }
+        });
+        /** Listen for signal to load details
+         *
+         */
+        $scope.details_enable = false;
+        $scope.$watch('details_enable', function (from, _from) {
+          if ( typeof from === 'string' && from !== _from ) {
+            Channel.emit(from, 'details');
           }
         });
 

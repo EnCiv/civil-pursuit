@@ -34,16 +34,32 @@
          *
          */
         $scope.loaded = 0;
+
+        /** Listen for signal to load items
+         *
+         */
         $scope.opened = false;
         $scope.$watch('opened', function (from, _from) {
           if ( typeof from === 'string' && from !== _from ) {
             Channel.emit(from, 'showing');
           }
         });
+        /** Listen for signal to load promotion
+         *
+         */
         $scope.promote_enable = false;
         $scope.$watch('promote_enable', function (from, _from) {
           if ( typeof from === 'string' && from !== _from ) {
             Channel.emit(from, 'promoting');
+          }
+        });
+        /** Listen for signal to load details
+         *
+         */
+        $scope.details_enable = false;
+        $scope.$watch('details_enable', function (from, _from) {
+          if ( typeof from === 'string' && from !== _from ) {
+            Channel.emit(from, 'details');
           }
         });
 
