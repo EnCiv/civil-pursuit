@@ -1,4 +1,5 @@
 include ../mixins/bootstrap
+include ../mixins/item-image
 
 div(data-ng-init='show = "items"')
   +bootstrap-panel
@@ -28,7 +29,7 @@ div(data-ng-init='show = "items"')
           .box
             .row
               .col-xs-12(data-ng-class='{ "col-sm-4": ! isSplit }')
-                h2 Image
+                +item-image()
               .col-xs-12(data-ng-class='{ "col-sm-8": ! isSplit }')
                 h4(ng-bind='item.subject')
                 div(ng-bind='item.description')
@@ -51,6 +52,10 @@ div(data-ng-init='show = "items"')
                 div Editor:
                   button(ng-click='$show = (($show === "editor" && "-") || "editor")')  Toggle
 
+            .row
+              .col-xs-12
+                i.fa.fa-arrow-down(ng-click='$show = (($show === "children" && "-") || "children")')
+
           // COLLAPSERS
 
           .collapsers(ng-show='show === "items"')
@@ -58,8 +63,6 @@ div(data-ng-init='show = "items"')
             // EVALUATOR
             
             .evaluator.animate-show(ng-show='$show === "evaluator"')
-              h1 Evaluator
-                span(ng-bind='$root.evaluations.length')
               section(ng-repeat='evaluation in $root.evaluations')
                 .row
                   .col-xs-12.padding
@@ -80,6 +83,9 @@ div(data-ng-init='show = "items"')
               section
                 h4 Promoted
                 div(ng-bind='item | calculatePromotionPercentage')
+                .progress
+                  .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
+                    data-ng-bind='(item | calculatePromotionPercentage) + "%"')
                 h4 Feedbacks
                 div(data-ng-repeat='feedback in $root.feedbacks | getFeedbackByItem:item._id')
                   div(ng-bind='feedback.feedback')

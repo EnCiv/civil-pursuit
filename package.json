@@ -45,6 +45,7 @@
     "monson": "git://github.com/co2-git/monson",
     "cloudinary": "~1.0.13",
     "jade": "~1.7.0",
-    "bcrypt": "~0.8.0"
+    "bcrypt": "~0.8.0",
+    "string": "~2.2.0"
   }
 }

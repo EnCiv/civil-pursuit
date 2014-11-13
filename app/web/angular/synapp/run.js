@@ -14,6 +14,9 @@
       DataFactory.Item.find(item)
         .success(function (items) {
           $rootScope.items = $rootScope.items.concat(items);
+        })
+        .error(function () {
+          console.log(arguments);
         });
     };
 

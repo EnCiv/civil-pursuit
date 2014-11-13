@@ -1,38 +1,33 @@
-// ---------------------------------------------------------------------------------------------- \\
+
 var should = require('should');
 
-// ---------------------------------------------------------------------------------------------- \\
 module.exports = function (req, res, next) {
-    /******************************************************************************** SMOKE-TEST **/
-    // ------------------------------------------------------------------------------------------ \\
-    req                               .should.be.an.Object;
-    // ------------------------------------------------------------------------------------------ \\
-    req.constructor.name              .should.equal('IncomingMessage');
-    // ------------------------------------------------------------------------------------------ \\
-    res                               .should.be.an.Object;
-    // ------------------------------------------------------------------------------------------ \\
-    res.constructor.name              .should.equal('ServerResponse');
-    // ------------------------------------------------------------------------------------------ \\
-    next                              .should.be.a.Function;
-    // ------------------------------------------------------------------------------------------ \\
-  /********************************************************************************   DOMAIN     **/
-  // -------------------------------------------------------------------------------------------- \\
+  req                               .should.be.an.Object;
+  req.constructor.name              .should.equal('IncomingMessage');
+  res                               .should.be.an.Object;
+  res.constructor.name              .should.equal('ServerResponse');
+  next                              .should.be.a.Function;
+  
   var domain = require('domain').create();
-  // -------------------------------------------------------------------------------------------- \\
+
   domain.on('error', function (error) {
     return next(error);
   });
-  // -------------------------------------------------------------------------------------------- \\
+
   domain.run(function () {
-    console.info('Attempt to get title from %s'.format(req.body.url));
-    // ------------------------------------------------------------------------------------------ \\
+
+    console.info(require('util').format('Attempt to get title from %s',
+      req.body.url));
+
+    var config = require('../../business/config.json');
+
     require('request')(
 
       {
         url:      req.body.url,
         timeout:  1000 * 5,
         headers:  {
-          'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36'
+          'User-Agent': config['user agent']
         }
       },
       

@@ -175,6 +175,101 @@
 
   module.exports = UploadCtrl;
 })();
+},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/creator.js":[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', 'DataFactory', Creator];
+
+  function Creator ($rootScope, DataFactory) {
+    return {
+      restrict: 'C',
+      templateUrl: '/templates/editor',
+      scope: {
+        type: '@',
+        parent: '@'
+      },
+      controller: function ($scope) {
+        $scope.item = {
+          type: $scope.type
+        };
+
+        if ( $scope.parent ) {
+          $scope.item.parent = $scope.parent;
+        }
+
+        $scope.save = function () {
+
+          $scope.item.image = (function () {
+            if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
+                return $scope.$root.uploadResult[0].path.split(/\//).pop();
+              }
+          })();
+
+          DataFactory.Item.create($scope.item)
+            .success(function (item) {
+              $rootScope.items = [item].concat($rootScope.items);
+              $scope.$parent.show = 'items';
+            })
+        };
+      }
+    };
+  }
+
+})();
+},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/evaluator.js":[function(require,module,exports){
+;(function () {
+
+  module.exports = [Evaluator];
+
+  function Evaluator () {
+    return {
+      restrict: 'C',
+      controller: function ($scope) {
+        $scope.limit = 5;
+      }
+    };
+  }
+
+})();
+
+},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/item-media.js":[function(require,module,exports){
+module.exports = [
+  function ItemMedia () {
+    return {
+      restrict: 'C',
+      scope: {
+        url:    '@',
+        filter: '@',
+        image:  '@'
+      },
+      link: function ($scope, $elem) {
+        var regexYouTube = /^https?:\/\/+.*\.youtu(be.+)|(\.be)\?.*v=(.+)(&|$|\s)/
+
+        if ( $scope.url && regexYouTube.test($scope.url) ) {
+          var youtube;
+          $scope.url.replace(regexYouTube, function (m, v) {
+            youtube = v;
+          });
+          var container = $('<div></div>');
+          container.addClass('video-container');
+          var iframe = $('<iframe></iframe>');
+          iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
+          iframe.attr('frameborder', '0');
+          iframe.attr('width', 560);
+          iframe.attr('height', 315);
+          container.append(iframe);
+          $elem.append(container);
+        }
+        else if ( $scope.image ) {
+          var image = $('<img />');
+          image.addClass('img-responsive');
+          image.attr('src', $scope.image);
+          $elem.append(image);
+        }
+      }
+    };
+  }];
+
 },{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/sign.js":[function(require,module,exports){
 ;(function () {
 
@@ -360,6 +455,61 @@
     };
 
 })();
+},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/url-fetcher.js":[function(require,module,exports){
+/**
+ * `getUrlTitle` Attempt to fetch a title from URL and inject back results to scope
+ * 
+ * @module synapp
+ * @function directive::get-url-title
+ * @return {AngularDirective}
+ * @example
+ *    <INPUT data-syn-get-url-title />
+ * @author francoisrvespa@gmail.com
+*/
+
+module.exports = ['$http',
+  function getUrlTitle ($http) {
+    return {
+      restrict: 'CA',
+
+      link: function ($scope, $elem, $attr) {
+
+        $scope.searchingTitle = false;
+
+        $elem.on('change', function () {
+
+          $scope.searchingTitle = true;
+
+          $scope.searchingTitleFailed = false;
+
+          $(this).data('changing', 'yes');
+
+          $http.post('/tools/get-title', { url: $(this).val() })
+            
+            .error(function (error) {
+              $scope.searchingTitleFailed = true;
+
+              $scope.searchingTitle = false;
+            })
+            
+            .success(function (data) {
+
+              $elem.data('changing', 'no');
+
+              $scope.searchingTitle = false;
+
+              $scope.item.references[0].url = $elem.val();
+
+              $scope.item.references[0].title = data;
+
+              $elem.data('url', $scope.item.references[0].url);
+              $elem.data('title', $scope.item.references[0].title);
+            });
+        });
+      }
+    };
+  }];
+
 },{}],"/home/francois/Dev/syn/app/web/angular/synapp/factories/Data.js":[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
@@ -550,9 +700,9 @@ module.exports = function shortenFilter () {
       return function (item) {
         if ( item ) {
           if ( ! item.promotions ) {
-            return '0%';
+            return 0;
           }
-          return Math.floor(item.promotions * 100 / item.views) + '%';
+          return Math.floor(item.promotions * 100 / item.views);
         }
       }
     })
@@ -651,45 +801,11 @@ module.exports = function shortenFilter () {
       };
     }])
 
-    .directive('creator', ['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
-      return {
-        restrict: 'C',
-        templateUrl: '/templates/editor',
-        scope: {
-          type: '@',
-          parent: '@'
-        },
-        controller: function ($scope) {
-          $scope.item = {
-            type: $scope.type
-          };
+    .directive('creator', require('./directives/creator'))
 
-          if ( $scope.parent ) {
-            $scope.item.parent = $scope.parent;
-          }
+    .directive('evaluator', require('./directives/evaluator'))
 
-          $scope.save = function () {
-
-            $scope.item.image = (function () {
-              if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
-                  return $scope.$root.uploadResult[0].path.split(/\//).pop();
-                }
-            })();
-
-            DataFactory.Item.create($scope.item)
-              .success(function (item) {
-                $rootScope.items = [item].concat($rootScope.items);
-                $scope.$parent.show = 'items';
-              })
-          };
-        }
-      };
-    }])
-
-    .directive('evaluator', [function () {
-      return {
-      };
-    }])
+    .directive('synappUrlFetcher', require('./directives/url-fetcher'))
 
     .directive('editor', ['DataFactory', function (DataFactory) {
       return {
@@ -711,12 +827,14 @@ module.exports = function shortenFilter () {
       };
     }])
 
+    .directive('synappItemMedia', require('./directives/item-media'))
+
     .run(require('./run'));
   
 })();
 
 
-},{"./controllers/upload":"/home/francois/Dev/syn/app/web/angular/synapp/controllers/upload.js","./directives/sign":"/home/francois/Dev/syn/app/web/angular/synapp/directives/sign.js","./factories/Data":"/home/francois/Dev/syn/app/web/angular/synapp/factories/Data.js","./factories/Sign":"/home/francois/Dev/syn/app/web/angular/synapp/factories/Sign.js","./filters/shorten":"/home/francois/Dev/syn/app/web/angular/synapp/filters/shorten.js","./run":"/home/francois/Dev/syn/app/web/angular/synapp/run.js"}],"/home/francois/Dev/syn/app/web/angular/synapp/run.js":[function(require,module,exports){
+},{"./controllers/upload":"/home/francois/Dev/syn/app/web/angular/synapp/controllers/upload.js","./directives/creator":"/home/francois/Dev/syn/app/web/angular/synapp/directives/creator.js","./directives/evaluator":"/home/francois/Dev/syn/app/web/angular/synapp/directives/evaluator.js","./directives/item-media":"/home/francois/Dev/syn/app/web/angular/synapp/directives/item-media.js","./directives/sign":"/home/francois/Dev/syn/app/web/angular/synapp/directives/sign.js","./directives/url-fetcher":"/home/francois/Dev/syn/app/web/angular/synapp/directives/url-fetcher.js","./factories/Data":"/home/francois/Dev/syn/app/web/angular/synapp/factories/Data.js","./factories/Sign":"/home/francois/Dev/syn/app/web/angular/synapp/factories/Sign.js","./filters/shorten":"/home/francois/Dev/syn/app/web/angular/synapp/filters/shorten.js","./run":"/home/francois/Dev/syn/app/web/angular/synapp/run.js"}],"/home/francois/Dev/syn/app/web/angular/synapp/run.js":[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', 'DataFactory', Run];
@@ -733,6 +851,9 @@ module.exports = function shortenFilter () {
       DataFactory.Item.find(item)
         .success(function (items) {
           $rootScope.items = $rootScope.items.concat(items);
+        })
+        .error(function () {
+          console.log(arguments);
         });
     };
 

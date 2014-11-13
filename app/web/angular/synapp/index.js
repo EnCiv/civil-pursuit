@@ -67,9 +67,9 @@
       return function (item) {
         if ( item ) {
           if ( ! item.promotions ) {
-            return '0%';
+            return 0;
           }
-          return Math.floor(item.promotions * 100 / item.views) + '%';
+          return Math.floor(item.promotions * 100 / item.views);
         }
       }
     })
@@ -168,45 +168,11 @@
       };
     }])
 
-    .directive('creator', ['$rootScope', 'DataFactory', function ($rootScope, DataFactory) {
-      return {
-        restrict: 'C',
-        templateUrl: '/templates/editor',
-        scope: {
-          type: '@',
-          parent: '@'
-        },
-        controller: function ($scope) {
-          $scope.item = {
-            type: $scope.type
-          };
+    .directive('creator', require('./directives/creator'))
 
-          if ( $scope.parent ) {
-            $scope.item.parent = $scope.parent;
-          }
+    .directive('evaluator', require('./directives/evaluator'))
 
-          $scope.save = function () {
-
-            $scope.item.image = (function () {
-              if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
-                  return $scope.$root.uploadResult[0].path.split(/\//).pop();
-                }
-            })();
-
-            DataFactory.Item.create($scope.item)
-              .success(function (item) {
-                $rootScope.items = [item].concat($rootScope.items);
-                $scope.$parent.show = 'items';
-              })
-          };
-        }
-      };
-    }])
-
-    .directive('evaluator', [function () {
-      return {
-      };
-    }])
+    .directive('synappUrlFetcher', require('./directives/url-fetcher'))
 
     .directive('editor', ['DataFactory', function (DataFactory) {
       return {
@@ -227,6 +193,8 @@
         }
       };
     }])
+
+    .directive('synappItemMedia', require('./directives/item-media'))
 
     .run(require('./run'));
   
