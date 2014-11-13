@@ -198,25 +198,36 @@ gulp.task('build-prod', ['build'], function (cb) {
 ////////////////////////////////////////////////////////////////////////////////
 
 gulp.task('push-to-heroku', ['build-prod'], function pushToHeroku (cb) {
-  var spawn = require('child_process').spawn('git',
-    'push heroku master'.split(' '));
 
-  spawn.on('error', cb);
+  function spawn (cmd, args, then) {
 
-  spawn.on('exit', function (code) {
-    if ( typeof code === 'number' && ! code ) {
-      return cb();
-    }
-    cb(new Error('Got code ' + code));
-  });
+    var cp = require('child_process').spawn(cmd, args);
 
-  spawn.stdout.on('data', function (data) {
-    console.log(data.toString());
-  });
+    cp.on('error', then);
 
-  spawn.stderr.on('data', function (data) {
-    console.log(data.toString());
-  });
+    cp.on('exit', function (code) {
+      if ( typeof code === 'number' && ! code ) {
+        return then();
+      }
+      then(new Error('Got code ' + code));
+    });
+
+    cp.stdout.on('data', function (data) {
+      console.log(data.toString());
+    });
+
+    cp.stderr.on('data', function (data) {
+      console.log(data.toString());
+    });
+  }
+
+  spawn('git', ['commit', '-am', 'Pushing to Heroku'],
+    function (error) {
+      if ( error ) {
+        return cb(error);
+      }
+      spawn('git', ['push', 'heroku', 'master'], cb);
+    })
 });
 
 
