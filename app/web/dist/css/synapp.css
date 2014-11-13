@@ -4519,8 +4519,7 @@ footer {
 }
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,
-.panel .panel-body .items .item .collapsers .editor,
-.panel .panel-body .items .item .collapsers .children {
+.panel .panel-body .items .item .collapsers .editor {
   border: 1px solid #000;
   border-right: none;
   margin: 10px;
