@@ -709,6 +709,10 @@ module.exports = ['$http',
 
       query[batchSize] = undefined;
 
+      // Order by
+
+      query['sort:promotions-,created-'] = undefined;
+
       for ( var field in query ) {
         if ( query[field] === undefined ) {
           params.push(field);
