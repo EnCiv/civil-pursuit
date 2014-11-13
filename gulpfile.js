@@ -11,6 +11,7 @@ var minifyCSS     =   require('gulp-minify-css');
 var rename        =   require("gulp-rename");
 var runSequence   =   require('run-sequence');
 var uglify        =   require('gulp-uglifyjs');
+var shell         =   require('gulp-shell');
 
 var path_bower    =   'app/web/bower_components';
 var path_less     =   'app/web/less';
@@ -168,7 +169,6 @@ gulp.task('watch-less', function watchLess () {
 */
 
 gulp.task('watch', ['watch-less', 'watchifyApp'], function watch () {
-
 });
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +191,32 @@ gulp.task('build', ['less', 'concat-bs', 'browserifyApp'], function (cb) {
 
 gulp.task('build-prod', ['build'], function (cb) {
   runSequence('min-css', 'min-css-c3', 'ugly-bs', 'ugly-app', cb);
+});
+
+////////////////////////////////////////////////////////////////////////////////
+//    ROUTINES
+////////////////////////////////////////////////////////////////////////////////
+
+gulp.task('push-to-heroku', ['build-prod'], function pushToHeroku (cb) {
+  var spawn = require('child_process').spawn('git',
+    'push heroku master'.split(' '));
+
+  spawn.on('error', cb);
+
+  spawn.on('exit', function (code) {
+    if ( typeof code === 'number' && ! code ) {
+      return cb();
+    }
+    cb(new Error('Got code ' + code));
+  });
+
+  spawn.stdout.on('data', function (data) {
+    console.log(data.toString());
+  });
+
+  spawn.stderr.on('data', function (data) {
+    console.log(data.toString());
+  });
 });
 
 
