@@ -1,7 +1,7 @@
-div.entry-title(data-ng-show='item.references.length')
+div.entry-title(data-ng-show='item && item.references && item.references.length')
   a(
-    target          =   '_blank'
-    title           =   '{{item.references[0].url}}'
-    data-ng-href    =   '{{item.references[0].url}}'
-    data-ng-bind    =   '(item.references[0].title || item.references[0].url) | filter:shorten'
+    target = '_blank'
+    title = '{{item.references && item.references[0].url}}'
+    data-ng-href = '{{item.references[0].url}}',
+    data-ng-bind = 'item.references[0].title || item.references[0].url'
     )
