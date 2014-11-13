@@ -25,14 +25,14 @@ var path_ngapp    =   path.join(path_angular, 'synapp')
 */
 
 gulp.task('less', function gulpCompileLess (cb) {
-  gulp.src(path.join(path_less, 'synapp.less'))
+  return gulp.src(path.join(path_less, 'synapp.less'))
     .pipe(less({
       paths: [
         path.join(__dirname, path_bower, 'boostrap/less')
       ]
     }))
     .pipe(gulp.dest(path.join(path_dist, 'css')))
-    .on('end', cb);
+    // .on('end', cb);
 });
 
 /*
@@ -41,7 +41,7 @@ gulp.task('less', function gulpCompileLess (cb) {
 */
 
 gulp.task('min-css', function gulpMinifyCSS () {
-  gulp.src(path.join(path_dist, 'css/synapp.css'))
+  return gulp.src(path.join(path_dist, 'css/synapp.css'))
     .pipe(minifyCSS())
     .pipe(rename(function (path) {
       path.extname = '.min.css';
@@ -55,7 +55,7 @@ gulp.task('min-css', function gulpMinifyCSS () {
 */
 
 gulp.task('min-css-c3', function gulpMinifyC3CSS () {
-  gulp.src(path.join(path_bower, 'c3/c3.css'))
+  return gulp.src(path.join(path_bower, 'c3/c3.css'))
     .pipe(minifyCSS())
     .pipe(rename(function (path) {
       path.extname = '.min.css';
@@ -70,7 +70,7 @@ gulp.task('min-css-c3', function gulpMinifyC3CSS () {
 
 gulp.task('concat-bs', function concatBsJS () {
 
-  gulp.src(path.join(path_bower,
+  return gulp.src(path.join(path_bower,
     'bootstrap/**/{tooltip,transition,collapse,modal,dropdown}.js'))
 
     .pipe(concat('bootstrap.js'))
@@ -116,7 +116,7 @@ gulp.task('browserifyApp', function browserifyApp () {
 
 gulp.task('ugly-app', function uglifyApp () {
 
-  gulp.src(path.join(path_dist, 'js/bundle.js'))
+  return gulp.src(path.join(path_dist, 'js/bundle.js'))
 
     .pipe(uglify())
 
