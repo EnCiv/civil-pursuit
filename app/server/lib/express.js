@@ -13,7 +13,7 @@ module.exports = function synappExpress (listen, isTest) {
 
   process.title = 'synapphtml5';
 
-  process.env.SYNAPP_PATH = path.resolve(__dirname, '../../..');
+  process.env.SYNAPP_PATH = require('path').resolve(__dirname, '../../..');
 
   //////////////////////////////////////////////////////////////////////////////
   // Dependencies
