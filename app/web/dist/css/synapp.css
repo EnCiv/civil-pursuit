@@ -4496,7 +4496,8 @@ footer {
   padding: 0;
 }
 .panel .panel-body .items .box {
-  border-bottom: 1px solid #000000;
+  border: 1px solid #000;
+  margin: 10px;
 }
 .panel .panel-body .items .collapsers .evaluator,
 .panel .panel-body .items .collapsers .details,
