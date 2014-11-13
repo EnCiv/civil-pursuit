@@ -8,10 +8,13 @@
       scope: {
         url:    '@',
         filter: '@',
-        image:  '@'
+        image:  '@',
+        upload: '@'
       },
       link: function ($scope, $elem) {
         var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+
+        /** Url is a Youtube URL */
 
         if ( $scope.url && regexYouTube.test($scope.url) ) {
           var youtube;
@@ -28,10 +31,22 @@
           container.append(iframe);
           $elem.append(container);
         }
-        else if ( $scope.image ) {
+
+        /** There is an image */
+
+        else if ( $scope.image && /cloudinary/.test($scope.image) ) {
           var image = $('<img />');
           image.addClass('img-responsive');
           image.attr('src', $scope.image);
+          $elem.append(image);
+        }
+
+        /** There is an uploaded image */
+        
+        else if ( $scope.upload ) {
+          var image = $('<img />');
+          image.addClass('img-responsive');
+          image.attr('src', $scope.upload);
           $elem.append(image);
         }
       }

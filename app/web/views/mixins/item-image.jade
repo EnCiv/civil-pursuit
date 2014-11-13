@@ -21,4 +21,8 @@ mixin item-image(filter)
 
   div(ng-bind='i')
 
-  article.item-media(data-url='{{' + url + '}}' data-image='{{item.image}}' data-filter=filter)
+  article.item-media(
+    data-url='{{' + url + '}}' 
+    data-image='{{item.image}}' 
+    data-upload='{{$root.dataUrls[0]}}'
+    data-filter=filter)
