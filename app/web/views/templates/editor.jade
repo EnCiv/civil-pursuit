@@ -59,4 +59,5 @@ section.editor-component(data-ng-controller='UploadCtrl')
     
     .row.padding-bottom
       .col-xs-12.text-center
-        i.fa.fa-arrow-circle-up.cursor-pointer(data-ng-click='collapse()')
+        i.fa.fa-arrow-circle-up.cursor-pointer(
+          data-ng-click='$parent.$parent.show = "items"')
