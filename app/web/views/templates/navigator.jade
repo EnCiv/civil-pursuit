@@ -64,7 +64,7 @@ div(data-ng-init='show = "items"')
 
             // EVALUATOR
             
-            .evaluator.animate-show(ng-show='$show === "evaluator"')
+            .evaluator.animate-show.padding(ng-show='$show === "evaluator"')
               section(ng-repeat='evaluation in $root.evaluations')
                 
                 //- 1 of 5
@@ -96,11 +96,9 @@ div(data-ng-init='show = "items"')
             
             // DETAILS
 
-            .details.animate-show(ng-show='$show === "details"')
-              h1 Details
+            .details.animate-show.padding(ng-show='$show === "details"')
               section
                 h4 Promoted
-                div(ng-bind='item | calculatePromotionPercentage')
                 .progress
                   .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
                     data-ng-bind='(item | calculatePromotionPercentage) + "%"')

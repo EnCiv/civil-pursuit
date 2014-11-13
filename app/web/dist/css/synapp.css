@@ -4492,6 +4492,9 @@ footer {
 */
 .panel {
   border-color: #000;
+  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
 }
 .panel .panel {
@@ -4510,14 +4513,22 @@ footer {
   border: 1px solid #000;
   margin: 10px;
   border-radius: 4px;
+  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,
 .panel .panel-body .items .item .collapsers .editor,
 .panel .panel-body .items .item .collapsers .children {
   border: 1px solid #000;
+  border-right: none;
   margin: 10px;
   margin-right: 0;
+  border-radius: 4px;
+  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
 .panel .video-container {
   position: relative;

@@ -13,9 +13,21 @@
  *  
 */
 
+.box-shadow(@x; @z; @blur; @spread; @r; @g; @b; @a) {
+  -webkit-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
+  -moz-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
+  box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
+}
+
+.card() {
+  .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+}
+
 .panel {
 
   border-color: #000;
+
+  .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 
   .panel {
     margin: 10px;
@@ -36,6 +48,7 @@
         border: 1px solid #000;
         margin: 10px;
         border-radius: 4px;
+        .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 
         .box {
 
@@ -43,8 +56,11 @@
         .collapsers {
           .evaluator, .details, .editor, .children {
             border: 1px solid #000;
+            border-right: none;
             margin: 10px;
             margin-right: 0;
+            border-radius: 4px;
+            .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
           }
         }
       }
