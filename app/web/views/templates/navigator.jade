@@ -59,15 +59,6 @@ div(data-ng-init='show = "items"')
                 include navigator/references
 
             .row
-              .col-xs-6
-                //- div Children:
-                //-   button(ng-click='$show = (($show === "children" && "-") || "children")') Toggle
-                //-   button(ng-click='loadChildren(item._id)') Load
-
-                div Editor:
-                  button(ng-click='$show = (($show === "editor" && "-") || "editor")')  Toggle
-
-            .row
               .col-xs-12.text-center.padding-top
                 i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children")')
 
@@ -121,4 +112,3 @@ div(data-ng-init='show = "items"')
             // CHILDREN
 
             .children.animate-show(ng-show='$show === "children"' data-loaded='{{false}}')
-              div.text-center.padding Loading items...
