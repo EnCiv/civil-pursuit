@@ -855,6 +855,22 @@ function getUrlTitle ($http) {
 },{}],14:[function(require,module,exports){
 ;(function () {
 
+  module.exports = ['$rootScope', getEvaluationByItem];
+
+  function getEvaluationByItem ($rootScope) {
+    return function (evaluations, item_id) {
+      if ( evaluations ) {
+        return evaluations.filter(function (evaluation) {
+          return evaluation.item === item_id;
+        });
+      }
+    };
+  }
+
+})();
+},{}],15:[function(require,module,exports){
+;(function () {
+
   module.exports = ['$rootScope', getEvaluationItems];
 
   function getEvaluationItems ($rootScope) {
@@ -878,7 +894,7 @@ function getUrlTitle ($http) {
   }
 
 })();
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ;(function () {
 
   module.exports = [getFeedbacksByItem];
@@ -895,7 +911,7 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -918,7 +934,7 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -939,6 +955,7 @@ function getUrlTitle ($http) {
       shorten:                      require('./filters/shorten'),
       calculatePromotionPercentage: require('./filters/calculate-promotion-percentage'),
       getEvaluationItems:           require('./filters/get-evaluation-items'),
+      getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
       getFeedbacksByItem:           require('./filters/get-feedbacks-by-item'),
       filterItems:                  require('./filters/filter-items')
     })
@@ -963,7 +980,7 @@ function getUrlTitle ($http) {
 })();
 
 
-},{"./controllers/upload":1,"./directives/creator":2,"./directives/editor":3,"./directives/evaluator":4,"./directives/item":6,"./directives/item-media":5,"./directives/navigator":7,"./directives/sign":8,"./directives/url-fetcher":9,"./factories/Data":10,"./factories/Sign":11,"./filters/calculate-promotion-percentage":12,"./filters/filter-items":13,"./filters/get-evaluation-items":14,"./filters/get-feedbacks-by-item":15,"./filters/shorten":16,"./run":18}],18:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/creator":2,"./directives/editor":3,"./directives/evaluator":4,"./directives/item":6,"./directives/item-media":5,"./directives/navigator":7,"./directives/sign":8,"./directives/url-fetcher":9,"./factories/Data":10,"./factories/Sign":11,"./filters/calculate-promotion-percentage":12,"./filters/filter-items":13,"./filters/get-evaluation-by-item":14,"./filters/get-evaluation-items":15,"./filters/get-feedbacks-by-item":16,"./filters/shorten":17,"./run":19}],19:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', 'DataFactory', Run];
@@ -1066,4 +1083,4 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}]},{},[17]);
+},{}]},{},[18]);

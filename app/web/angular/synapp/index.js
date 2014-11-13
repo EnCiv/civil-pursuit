@@ -18,6 +18,7 @@
       shorten:                      require('./filters/shorten'),
       calculatePromotionPercentage: require('./filters/calculate-promotion-percentage'),
       getEvaluationItems:           require('./filters/get-evaluation-items'),
+      getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
       getFeedbacksByItem:           require('./filters/get-feedbacks-by-item'),
       filterItems:                  require('./filters/filter-items')
     })

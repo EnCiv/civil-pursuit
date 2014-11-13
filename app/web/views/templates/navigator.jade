@@ -63,7 +63,7 @@ div(data-ng-init='show = "items"')
             // EVALUATOR
             
             .evaluator.animate-show.padding(ng-show='$show === "evaluator" && show === "items"')
-              section(ng-repeat='evaluation in $root.evaluations')
+              section(ng-repeat='evaluation in $root.evaluations | getEvaluationByItem:item._id')
                 
                 //- 1 of 5
 
@@ -82,6 +82,14 @@ div(data-ng-init='show = "items"')
                       data-ng-repeat      =   'item in evaluation.current'
                     )
                       +item-image
+
+                  // Subject
+
+                  .row
+                    .col-sm-6.padding(
+                      data-ng-repeat      =   'item in evaluation.current'
+                    )
+                      h2(data-ng-bind='item.subject')
 
                 // Continue
                 .row
