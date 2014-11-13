@@ -4515,7 +4515,9 @@ footer {
 .panel .panel-body .items .item .collapsers .details,
 .panel .panel-body .items .item .collapsers .editor,
 .panel .panel-body .items .item .collapsers .children {
-  border-bottom: 1px solid #000000;
+  border: 1px solid #000;
+  margin: 10px;
+  margin-right: 0;
 }
 .panel .video-container {
   position: relative;

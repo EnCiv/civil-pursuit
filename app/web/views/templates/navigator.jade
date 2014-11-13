@@ -58,10 +58,6 @@ div(data-ng-init='show = "items"')
                 div(ng-bind='item.description')
                 include navigator/references
 
-            .row
-              .col-xs-12.text-center.padding-top
-                i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children")')
-
           // COLLAPSERS
 
           .collapsers(ng-show='show === "items"')
@@ -70,17 +66,24 @@ div(data-ng-init='show = "items"')
             
             .evaluator.animate-show(ng-show='$show === "evaluator"')
               section(ng-repeat='evaluation in $root.evaluations')
+                
+                //- 1 of 5
+
                 .row
                   .col-xs-12.padding
                     h2.text-center
                       span(data-ng-bind='evaluation.cursor')
                       span  of  
                       span(data-ng-bind='evaluation.limit')
-                .row
-                  .col-xs-12(ng-repeat='item in evaluation.current')
-                    h4
-                      small(data-ng-bind='item.type')
-                      span(data-ng-bind='item.subject')
+
+                section.hidden-xs
+                  // Image
+
+                  .row
+                    .col-sm-6.padding(
+                      data-ng-repeat      =   'item in evaluation.current'
+                    )
+                      +item-image
 
                 // Continue
                 .row
@@ -108,6 +111,10 @@ div(data-ng-init='show = "items"')
             // EDITOR
 
             .editor.animate-show(ng-show='$show === "editor"')
+
+            .row
+              .col-xs-12.text-center.padding-top
+                i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children")')
 
             // CHILDREN
 
