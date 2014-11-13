@@ -28,19 +28,32 @@ div(data-ng-init='show = "items"')
           
           .box
             .row
-              .col-xs-12(data-ng-class='{ "col-sm-4": ! isSplit }')
+              .col-xs-12.padding(data-ng-class='{ "col-sm-4": ! isSplit }')
                 +item-image()
-              .col-xs-12(data-ng-class='{ "col-sm-8": ! isSplit }')
+              .col-xs-12.padding(data-ng-class='{ "col-sm-8": ! isSplit }')
+                .box-promoted(data-ng-class='{ "text-right pull-right": ! isSplit, "is-split": isSplit }')
+                  .row
+                    div(data-ng-show='is.in = ' + !!isSignedIn
+                      data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
+                      a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator")') Promote
+
+                    //- Promoted stat (times)
+                    div(data-ng-bind=item + '.promotions'
+                      data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
+
+                    //- Promoted stat (percent)
+                    div(data-ng-bind='(' + item + ' | calculatePromotionPercentage) || 0 + "%"'
+                      data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
+
+                    //- Details button
+                    div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
+                      a.btn.btn-sm(data-ng-click='view = ((view === "details" && "-") || "details"); $parent.details_enable = item._id') &nbsp;Details&nbsp;
                 h4(ng-bind='item.subject')
                 div(ng-bind='item.description')
                 include navigator/references
 
             .row
               .col-xs-6
-                div Evaluator:
-                  button(ng-click='$show = (($show === "evaluator" && "-") || "evaluator")') Toggle
-                  button(ng-click='$root.loadEvaluation(item._id)') Load
-                
                 div Details: 
                   button(ng-click='$show = (($show === "details" && "-") || "details")') Toggle
                   button(ng-click='$root.loadDetails(item._id)') Load

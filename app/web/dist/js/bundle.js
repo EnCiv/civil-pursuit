@@ -802,6 +802,11 @@ module.exports = function shortenFilter () {
                     $scope.loaded.children = true;
                     $scope.$parent.loadChildren($scope.item._id);
                     break;
+
+                  case 'evaluator':
+                    $scope.loaded.evaluator = true;
+                    $scope.$root.loadEvaluation($scope.item._id);
+                    break;
                 }
               }
             }
