@@ -1,4 +1,7 @@
 mixin item-image(filter)
+  
+  //- Variables
+
   - var ngSrc = '{{item.image'
 
   - if ( filter )
@@ -6,6 +9,16 @@ mixin item-image(filter)
 
   - ngSrc += '}}'
 
-  - var url = 'item.references && item.references[0] && item.references[0].url';
+  - var url = ['item.references', 'item.references[0]']
+
+  - url.push(['item.references[0].url', 'item.references[0].title'].join(' || '))
+
+  - url = url.map(function (u) { return '(' + u + ')' })
+
+  - url = url.join(' && ')
+
+  //- HTML
+
+  div(ng-bind='i')
 
   article.item-media(data-url='{{' + url + '}}' data-image='{{item.image}}' data-filter=filter)

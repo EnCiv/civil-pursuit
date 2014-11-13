@@ -9,45 +9,50 @@
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = ['$http',
-  function getUrlTitle ($http) {
-    return {
-      restrict: 'CA',
+module.exports = ['$http', getUrlTitle];
 
-      link: function ($scope, $elem, $attr) {
+function getUrlTitle ($http) {
+  return {
+    restrict: 'CA',
 
-        $scope.searchingTitle = false;
+    link: function ($scope, $elem, $attr) {
 
-        $elem.on('change', function () {
+      /** */
 
-          $scope.searchingTitle = true;
+      $scope.searchingTitle = false;
 
-          $scope.searchingTitleFailed = false;
+      /** */
 
-          $(this).data('changing', 'yes');
+      $elem.on('change', function () {
 
-          $http.post('/tools/get-title', { url: $(this).val() })
-            
-            .error(function (error) {
-              $scope.searchingTitleFailed = true;
+        $scope.searchingTitle = true;
 
-              $scope.searchingTitle = false;
-            })
-            
-            .success(function (data) {
+        $scope.searchingTitleFailed = false;
 
-              $elem.data('changing', 'no');
+        $(this).data('changing', 'yes');
 
-              $scope.searchingTitle = false;
+        $http.post('/tools/get-title', { url: $(this).val() })
+          
+          .error(function (error) {
+            $scope.searchingTitleFailed = true;
 
-              $scope.item.references[0].url = $elem.val();
+            $scope.searchingTitle = false;
+          })
+          
+          .success(function (data) {
 
-              $scope.item.references[0].title = data;
+            $elem.data('changing', 'no');
 
-              $elem.data('url', $scope.item.references[0].url);
-              $elem.data('title', $scope.item.references[0].title);
-            });
-        });
-      }
-    };
-  }];
+            $scope.searchingTitle = false;
+
+            $scope.item.references[0].url = $elem.val();
+
+            $scope.item.references[0].title = data;
+
+            $elem.data('url', $scope.item.references[0].url);
+            $elem.data('title', $scope.item.references[0].title);
+          });
+      });
+    }
+  };
+}

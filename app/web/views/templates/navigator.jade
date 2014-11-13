@@ -77,7 +77,7 @@ div(data-ng-init='show = "items"')
                       span  of  
                       span(data-ng-bind='evaluation.limit')
                 .row
-                  .col-xs-12(ng-repeat='item in $root.items | getEvaluationItems:item._id')
+                  .col-xs-12(ng-repeat='item in evaluation.current')
                     h4
                       small(data-ng-bind='item.type')
                       span(data-ng-bind='item.subject')

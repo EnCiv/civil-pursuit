@@ -11,7 +11,7 @@
         image:  '@'
       },
       link: function ($scope, $elem) {
-        var regexYouTube = /^https?:\/\/+.*\.youtu(be.+)|(\.be)\?.*v=(.+)(&|$|\s)/
+        var regexYouTube = /youtu\.?be.+v=([^&]+)/;
 
         if ( $scope.url && regexYouTube.test($scope.url) ) {
           var youtube;
