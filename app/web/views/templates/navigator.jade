@@ -39,7 +39,7 @@ div(data-ng-init='show = "items"')
                   .row
                     div(data-ng-show='is.in = ' + !!isSignedIn
                       data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-                      a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator")') Promote
+                      a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator"); $parent.show = "items"') Promote
 
                     //- Promoted stat (times)
                     div(data-ng-bind='item.promotions'
@@ -51,18 +51,18 @@ div(data-ng-init='show = "items"')
 
                     //- Details button
                     div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-                      a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details")') &nbsp;Details&nbsp;
+                      a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"') &nbsp;Details&nbsp;
                 h4(ng-bind='item.subject')
                 div(ng-bind='item.description')
                 include navigator/references
 
           // COLLAPSERS
 
-          .collapsers(ng-show='show === "items"')
+          .collapsers
 
             // EVALUATOR
             
-            .evaluator.animate-show.padding(ng-show='$show === "evaluator"')
+            .evaluator.animate-show.padding(ng-show='$show === "evaluator" && show === "items"')
               section(ng-repeat='evaluation in $root.evaluations')
                 
                 //- 1 of 5
@@ -94,7 +94,7 @@ div(data-ng-init='show = "items"')
             
             // DETAILS
 
-            .details.animate-show.padding(ng-show='$show === "details"')
+            .details.animate-show.padding(ng-show='$show === "details" && show === "items"')
               section
                 h4 Promoted
                 .progress
@@ -106,12 +106,14 @@ div(data-ng-init='show = "items"')
 
             // EDITOR
 
-            .editor.animate-show(ng-show='$show === "editor"')
+            .editor.animate-show(ng-show='$show === "editor" && show === "items"')
+
+            // TOGGLE ARROW
 
             .row
               .col-xs-12.text-center.padding-top
-                i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children")')
+                i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children"); $parent.show = "items"')
 
             // CHILDREN
 
-            .children.animate-show(ng-show='$show === "children"' data-loaded='{{false}}')
+            .children.animate-show(ng-show='$show === "children" && show === "items"' data-loaded='{{false}}')
