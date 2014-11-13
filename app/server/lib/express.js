@@ -21,8 +21,6 @@ module.exports = function synappExpress (listen, isTest) {
 
   var path            =   require('path');
 
-  var Log             =   require('String-alert')({ prefix: 'synapp' });
-
   var domain          =   require('domain').create();
 
   var SynappError     =   require('../lib/error');
@@ -32,7 +30,7 @@ module.exports = function synappExpress (listen, isTest) {
   //////////////////////////////////////////////////////////////////////////////
 
   domain.on('error', function (error) {
-    Log.ERROR(error.message, error.format());
+    console.log('error', error);
   });
 
   domain.run(function () {
@@ -41,7 +39,7 @@ module.exports = function synappExpress (listen, isTest) {
     // Config
     ////////////////////////////////////////////////////////////////////////////
 
-    var synapp = require('../config/config.json');
+    var synapp = require(path.join(process.env.SYNAPP_PATH, 'app/business/config/config.json'));
 
     process.env.CLOUDINARY_URL = synapp.cloudinary.url;
 
@@ -211,9 +209,9 @@ module.exports = function synappExpress (listen, isTest) {
           break;
       }
 
-      Log[LOG](format('[%s] %d %s %s',
-        req.signedCookies.synuser ? req.signedCookies.synuser.email : 'visitor',
-        res.statusCode, req.method, req.url));
+      // Log[LOG](format('[%s] %d %s %s',
+      //   req.signedCookies.synuser ? req.signedCookies.synuser.email : 'visitor',
+      //   res.statusCode, req.method, req.url));
 
       next();
     });
@@ -225,7 +223,7 @@ module.exports = function synappExpress (listen, isTest) {
     ////////////////////////////////////////////////////////////////////////////
 
     app.use(serveFavicon(path.join(path.dirname(__dirname),
-      'public/images/favicon.png')));
+      '../web/images/favicon.png')));
 
     ////////////////////////////////////////////////////////////////////////////
     
@@ -381,7 +379,7 @@ module.exports = function synappExpress (listen, isTest) {
     app.get('/fb/ok', function (req, res) {
       res.cookie('synuser', { email: req.session.email, id: req.session.id }, synapp.cookie);
 
-      Log.INFO('Cookie set', req.session);
+      // Log.INFO('Cookie set', req.session);
 
       res.redirect('/');
     });
@@ -393,7 +391,7 @@ module.exports = function synappExpress (listen, isTest) {
     ////////////////////////////////////////////////////////////////////////////
 
     app.get('/auth/twitter',
-      require('../routes/twitter')(app, synapp, Log, SynappError, passport),
+      require('../routes/twitter')(app, synapp, SynappError, passport),
       passport.authenticate('twitter'));
 
     app.get(synapp.twitter[process.env.SYNAPP_ENV]['callback url'],
@@ -405,7 +403,7 @@ module.exports = function synappExpress (listen, isTest) {
     app.get('/tw/ok', function (req, res) {
       res.cookie('synuser', { email: req.session.email, id: req.session.id }, synapp.cookie);
 
-      Log.INFO('Cookie set', req.session);
+      console.log('Cookie set', req.session);
 
       res.redirect('/');
     });
@@ -452,7 +450,7 @@ module.exports = function synappExpress (listen, isTest) {
       //////////////////////////////////////////////////////////////////////////
 
       server.listen(app.get('port'), function () {
-        Log.OK(format('Listening on port %d', app.get('port')));
+        console.error(format('Listening on port %d', app.get('port')));
       });
 
       //////////////////////////////////////////////////////////////////////////

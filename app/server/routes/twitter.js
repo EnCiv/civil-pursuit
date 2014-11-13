@@ -1,4 +1,4 @@
-module.exports = function (app, synapp, Log, SynappError, passport) {
+module.exports = function (app, synapp, SynappError, passport) {
   return function (req, res, next) {
     if ( ! app.locals.TwitterStrategy ) {
       app.locals.TwitterStrategy = require('passport-twitter').Strategy;
@@ -23,7 +23,7 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
         },
         
         function (accessToken, refreshToken, profile, done) {
-          Log.OK('Got response from twitter', profile);
+          console.log('Got response from twitter', profile);
 
           var email = profile.id + '@twitter.com';
 
@@ -31,7 +31,7 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
 
           User.findOne({ email: email }, function (error, user) {
             if ( error ) {
-              Log.KO('Something bad happened while looking for user', error.format()); 
+              console.error('Something bad happened while looking for user', error.format()); 
 
               return done(error);
             }
@@ -40,7 +40,7 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
               req.session.email =   email;
               req.session.id    =   user._id;
 
-              Log.OK('User found');
+              console.log('User found');
 
               return done(null, user);
             }
@@ -48,7 +48,7 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
             User.create({ email: email, password: profile.id + Date.now() },
               function (error, user) {
                 if ( error ) {
-                  Log.KO('Could not sign up user', error.format());
+                  console.error('Could not sign up user', error.format());
 
                   if ( error.message && /duplicate/.test(error.message) ) {
                     return done(SynappError.DuplicateUser());
@@ -60,7 +60,7 @@ module.exports = function (app, synapp, Log, SynappError, passport) {
                 req.session.email   =   email;
                 req.session.id      =   user._id;
 
-                Log.OK('User created', user);
+                console.log('User created', user);
                 
                 done(null, user);
 

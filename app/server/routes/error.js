@@ -17,8 +17,6 @@
 
 var should = require('should');
 
-var Log = require('String-alert')({ prefix: 'synapp' });
-
 module.exports = function (error, req, res, next) {
 
     // Assert away
@@ -79,7 +77,7 @@ module.exports = function (error, req, res, next) {
       res.type('html');
     }
 
-    Log.KO('%d %s %s'.format(res.statusCode, error.name, error.message),
+    console.error('%d %s %s'.format(res.statusCode, error.name, error.message),
       error.stack && error.stack.split(/\n/));
 
     res.format({

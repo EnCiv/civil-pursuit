@@ -1,8 +1,6 @@
 // ---------------------------------------------------------------------------------------------- \\
 var should = require('should');
 // ---------------------------------------------------------------------------------------------- \\
-var Log = require('String-alert')({ prefix: 'synapp ' + 'sign'.grey });
-// ---------------------------------------------------------------------------------------------- \\
 var cookie = require('../config/config.json').cookie;
 // ---------------------------------------------------------------------------------------------- \\
 function customError (code, message) {
@@ -74,7 +72,7 @@ module.exports = function (req, res, next) {
           password: req.body.password
         }, domain.intercept(function (created) {
           
-          Log.OK('User created: %s'    .format(req.body.email));
+          console.error('User created: %s'    .format(req.body.email));
           
           res.cookie('synuser', { email: req.body.email, id: created._id }, cookie);
           
@@ -100,7 +98,7 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        Log.INFO('Sign-in attempt: %s'.format(req.body.email));
+        console.info('Sign-in attempt: %s'.format(req.body.email));
         // -------------------------------------------------------------------------------------- \\
         var User = require('../models/User');
           // ------------------------------------------------------------------------------------ \\
@@ -117,26 +115,26 @@ module.exports = function (req, res, next) {
           domain.intercept(function (user) {
             // ---------------------------------------------------------------------------------- \\
             if ( ! user ) {
-              Log.WARNING('User not found: %s'.format(req.body.email));
+              console.warn('User not found: %s'.format(req.body.email));
 
               throw customError(404, 'No such user');
             }
             // ---------------------------------------------------------------------------------- \\
-            Log.INFO('User found: %s'.format(req.body.email));
+            console.info('User found: %s'.format(req.body.email));
             // ---------------------------------------------------------------------------------- \\
             var bcrypt = require('bcrypt');
             // ---------------------------------------------------------------------------------- \\
             bcrypt.compare(req.body.password, user.password, domain.intercept(function (same) {
               if ( ! same ) {
-                Log.WARNING('Wrong password: %s'      .format(req.body.email));
+                console.warn('Wrong password: %s'      .format(req.body.email));
                 throw customError(401, 'No such user');
               }
               // -------------------------------------------------------------------------------- \\
-              Log.INFO('Email match: %s'         .format(req.body.email));
+              console.info('Email match: %s'         .format(req.body.email));
               // -------------------------------------------------------------------------------- \\
               res.cookie('synuser', { email: req.body.email, id: user._id }, cookie);
               // -------------------------------------------------------------------------------- \\
-              Log.OK('User signed in: %s'      .format(req.body.email));
+              console.error('User signed in: %s'      .format(req.body.email));
               // -------------------------------------------------------------------------------- \\
               res.json({ in: true });
             }));

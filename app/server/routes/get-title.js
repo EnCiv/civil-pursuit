@@ -1,7 +1,6 @@
 // ---------------------------------------------------------------------------------------------- \\
 var should = require('should');
-// ---------------------------------------------------------------------------------------------- \\
-var Log = require('String-alert')({ prefix: 'synapp ' + 'sign'.grey });
+
 // ---------------------------------------------------------------------------------------------- \\
 module.exports = function (req, res, next) {
     /******************************************************************************** SMOKE-TEST **/
@@ -25,7 +24,7 @@ module.exports = function (req, res, next) {
   });
   // -------------------------------------------------------------------------------------------- \\
   domain.run(function () {
-    Log.INFO('Attempt to get title from %s'.format(req.body.url));
+    console.info('Attempt to get title from %s'.format(req.body.url));
     // ------------------------------------------------------------------------------------------ \\
     require('request')(
 
@@ -59,7 +58,7 @@ module.exports = function (req, res, next) {
 
             });
 
-          Log.INFO('Got title', title);
+          console.info('Got title', title);
 
           res.json(title);
         }
