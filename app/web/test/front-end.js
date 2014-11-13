@@ -2,11 +2,12 @@ var request   =   require('request');
 var mocha     =   require('mocha');
 var assert    =   require('assert');
 var should    =   require('should');
+var path      =   require('path');
 
 var User, Topic,
   Email = Date.now () + '@synapp.com';
 
-require('../config/assertions/Response');
+require(path.join(process.env.SYNAPP_PATH, 'app/business/config/assertions/Response'));
 
 describe('Landing page', function () {
   var url = 'http://localhost:3012/',
