@@ -1,6 +1,0 @@
-{
-  "path": "/",
-  "signed": true,
-  "maxAge": 604800000,
-  "httpOnly": true
-}
