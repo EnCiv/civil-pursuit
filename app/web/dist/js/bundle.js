@@ -447,10 +447,10 @@
 
           compile(item, $('#item-' + item_id), scope, $compile);
 
-          // DataFactory.Item.find({ parent: item_id })
-          //   .success(function (items) {
-          //     $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
-          //   });
+          DataFactory.Item.find({ parent: item_id })
+            .success(function (items) {
+              $rootScope.items = $rootScope.items.concat(items);
+            });
         };
         
       }],
