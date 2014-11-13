@@ -19,6 +19,12 @@ div(data-ng-init='show = "items"')
       .creator.animate-show(ng-show='show === "creator"' data-type="{{ type }}" data-parent='{{ parent }}')
 
       // ITEMS
+
+      .row(data-ng-hide='$root.loadedItems[item.parent || "Topic"]')
+        .col-xs-12.text-center.padding Loading items...
+
+      .row(data-ng-hide='($root.items | filterItems:type:parent).length')
+        .col-xs-12.text-center.padding Nothing here!
       
       .items(ng-repeat='item in $root.items | filterItems:type:parent track by item._id')
 

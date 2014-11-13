@@ -964,11 +964,13 @@ module.exports = ['$http',
     $rootScope.feedbacks    =   [];
     $rootScope.votes        =   [];
     $rootScope.show         =   {};
+    $rootScope.loadedItems  =   {};
 
     $rootScope.getItems = function (item) {
       DataFactory.Item.find(item)
         .success(function (items) {
           $rootScope.items = $rootScope.items.concat(items);
+          $rootScope.loadedItems[item.parent || item.type] = true; 
         })
         .error(function () {
           console.log(arguments);
