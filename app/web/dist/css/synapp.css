@@ -4498,6 +4498,7 @@ footer {
 .panel .panel-body .items .box {
   border: 1px solid #000;
   margin: 10px;
+  border-radius: 6px;
 }
 .panel .panel-body .items .collapsers .evaluator,
 .panel .panel-body .items .collapsers .details,
