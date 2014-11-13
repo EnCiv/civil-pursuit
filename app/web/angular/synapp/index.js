@@ -78,11 +78,11 @@
       sign:           require('./directives/sign'),
       item:           require('./directives/item'),
       navigator:      require('./directives/navigator'),
-    //   creator:        require('./directives/creator'),
-    //   evaluator:      require('./directives/evaluator'),
-    //   urlFetcher:     require('./directives/url-fetcher'),
-    //   editor:         require('./directives/editor'),
-    //   itemMedia:      require('./directives/item-media')
+      creator:        require('./directives/creator'),
+      evaluator:      require('./directives/evaluator'),
+      urlFetcher:     require('./directives/url-fetcher'),
+      editor:         require('./directives/editor'),
+      itemMedia:      require('./directives/item-media')
     })
 
     .run(require('./run'));

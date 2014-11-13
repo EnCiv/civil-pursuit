@@ -178,6 +178,150 @@
 },{}],2:[function(require,module,exports){
 ;(function () {
 
+  module.exports = ['$rootScope', 'DataFactory', Creator];
+
+  function Creator ($rootScope, DataFactory) {
+    return {
+      restrict: 'C',
+      templateUrl: '/templates/editor',
+      scope: {
+        type: '@',
+        parent: '@'
+      },
+      controller: ['$scope', function ($scope) {
+        $scope.item = {
+          type: $scope.type
+        };
+
+        if ( $scope.parent ) {
+          $scope.item.parent = $scope.parent;
+        }
+
+        $scope.getImage = function () {
+          if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
+            return $scope.$root.uploadResult[0].path.split(/\//).pop();
+          }
+        };
+
+        $scope.save = function () {
+
+          var item = {
+            type: $scope.item.type,
+            subject: $scope.item.subject,
+            description: $scope.item.description,
+            image: $scope.getImage()
+          }
+
+          if ( $scope.parent ) {
+            item.parent = $scope.parent;
+          }
+
+          if ( $scope.item.references[0] ) {
+            item.references = [];
+
+            for ( var i in $scope.item.references ) {
+              item.references[+i] = $scope.item.references[i];
+            }
+          }
+
+          console.log('item', item);
+
+          DataFactory.Item.create(item)
+            .success(function (item) {
+              $rootScope.items = [item].concat($rootScope.items);
+              $scope.$parent.show = 'items';
+            })
+        };
+      }]
+    };
+  }
+
+})();
+},{}],3:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['DataFactory', Editor];
+
+  function Editor (DataFactory) {
+    return {
+      restrict: 'C',
+      templateUrl: '/templates/editor',
+      controller: ['$scope', function ($scope) {
+        $scope.save = function () {
+          DataFactory.Item.update($scope.item._id, {
+            subject: $scope.item.subject,
+            description: $scope.item.description,
+            image: (function () {
+              if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
+                  return $scope.$root.uploadResult[0].path.split(/\//).pop();
+                }
+            })()
+          });
+        };
+      }]
+    };
+  }
+})();
+
+},{}],4:[function(require,module,exports){
+;(function () {
+
+  module.exports = [Evaluator];
+
+  function Evaluator () {
+    return {
+      restrict: 'C'
+    };
+  }
+
+})();
+
+},{}],5:[function(require,module,exports){
+;(function () {
+
+  module.exports = [ItemMedia];
+
+  function ItemMedia () {
+    return {
+      restrict: 'C',
+      scope: {
+        url:    '@',
+        filter: '@',
+        image:  '@'
+      },
+      link: function ($scope, $elem) {
+        var regexYouTube = /^https?:\/\/+.*\.youtu(be.+)|(\.be)\?.*v=(.+)(&|$|\s)/
+
+        if ( $scope.url && regexYouTube.test($scope.url) ) {
+          var youtube;
+          $scope.url.replace(regexYouTube, function (m, v) {
+            youtube = v;
+          });
+          var container = $('<div></div>');
+          container.addClass('video-container');
+          var iframe = $('<iframe></iframe>');
+          iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
+          iframe.attr('frameborder', '0');
+          iframe.attr('width', 560);
+          iframe.attr('height', 315);
+          container.append(iframe);
+          $elem.append(container);
+        }
+        else if ( $scope.image ) {
+          var image = $('<img />');
+          image.addClass('img-responsive');
+          image.attr('src', $scope.image);
+          $elem.append(image);
+        }
+      }
+    };
+  }
+
+})();
+
+},{}],6:[function(require,module,exports){
+;(function () {
+
   module.exports = ['$rootScope', Item];
 
   function Item ($rootScope) {
@@ -208,7 +352,7 @@
     };
   }
 })();
-},{}],3:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$compile', 'DataFactory', NavigatorComponent];
@@ -248,7 +392,7 @@
   }
 
 })();
-},{}],4:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -431,7 +575,62 @@
     };
 
 })();
-},{}],5:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
+/**
+ * `getUrlTitle` Attempt to fetch a title from URL and inject back results to scope
+ * 
+ * @module synapp
+ * @function directive::get-url-title
+ * @return {AngularDirective}
+ * @example
+ *    <INPUT data-syn-get-url-title />
+ * @author francoisrvespa@gmail.com
+*/
+
+module.exports = ['$http',
+  function getUrlTitle ($http) {
+    return {
+      restrict: 'CA',
+
+      link: function ($scope, $elem, $attr) {
+
+        $scope.searchingTitle = false;
+
+        $elem.on('change', function () {
+
+          $scope.searchingTitle = true;
+
+          $scope.searchingTitleFailed = false;
+
+          $(this).data('changing', 'yes');
+
+          $http.post('/tools/get-title', { url: $(this).val() })
+            
+            .error(function (error) {
+              $scope.searchingTitleFailed = true;
+
+              $scope.searchingTitle = false;
+            })
+            
+            .success(function (data) {
+
+              $elem.data('changing', 'no');
+
+              $scope.searchingTitle = false;
+
+              $scope.item.references[0].url = $elem.val();
+
+              $scope.item.references[0].title = data;
+
+              $elem.data('url', $scope.item.references[0].url);
+              $elem.data('title', $scope.item.references[0].title);
+            });
+        });
+      }
+    };
+  }];
+
+},{}],10:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -500,7 +699,7 @@
   };
 })();
 
-},{}],6:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /**
  * `UserFactory` User Factory (legacy from SignCtrl)
  * 
@@ -527,7 +726,7 @@
   };
 })();
 
-},{}],7:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 ;(function () {
 
   module.exports = [calculatePromotionPercentage];
@@ -544,7 +743,7 @@
   }
 })();
 
-},{}],8:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ;(function () {
 
   module.exports = [filterItems];
@@ -576,7 +775,7 @@
   }
 })();
 
-},{}],9:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationItems];
@@ -602,7 +801,7 @@
   }
 
 })();
-},{}],10:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ;(function () {
 
   module.exports = [getFeedbacksByItem];
@@ -619,7 +818,7 @@
 
 })();
 
-},{}],11:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * `shortenFilter` Chops off a string if it exceeds maximum
  * 
@@ -655,7 +854,7 @@
 
 })();
 
-},{}],12:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -736,11 +935,11 @@
       sign:           require('./directives/sign'),
       item:           require('./directives/item'),
       navigator:      require('./directives/navigator'),
-    //   creator:        require('./directives/creator'),
-    //   evaluator:      require('./directives/evaluator'),
-    //   urlFetcher:     require('./directives/url-fetcher'),
-    //   editor:         require('./directives/editor'),
-    //   itemMedia:      require('./directives/item-media')
+      creator:        require('./directives/creator'),
+      evaluator:      require('./directives/evaluator'),
+      urlFetcher:     require('./directives/url-fetcher'),
+      editor:         require('./directives/editor'),
+      itemMedia:      require('./directives/item-media')
     })
 
     .run(require('./run'));
@@ -748,7 +947,7 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/item":2,"./directives/navigator":3,"./directives/sign":4,"./factories/Data":5,"./factories/Sign":6,"./filters/calculate-promotion-percentage":7,"./filters/filter-items":8,"./filters/get-evaluation-items":9,"./filters/get-feedbacks-by-item":10,"./filters/shorten":11,"./run":13}],13:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/creator":2,"./directives/editor":3,"./directives/evaluator":4,"./directives/item":6,"./directives/item-media":5,"./directives/navigator":7,"./directives/sign":8,"./directives/url-fetcher":9,"./factories/Data":10,"./factories/Sign":11,"./filters/calculate-promotion-percentage":12,"./filters/filter-items":13,"./filters/get-evaluation-items":14,"./filters/get-feedbacks-by-item":15,"./filters/shorten":16,"./run":18}],18:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', 'DataFactory', Run];
@@ -849,4 +1048,4 @@
 
 })();
 
-},{}]},{},[12]);
+},{}]},{},[17]);
