@@ -38,7 +38,7 @@
             item.parent = $scope.parent;
           }
 
-          if ( $scope.item.references[0] ) {
+          if ( $scope.item.references ) {
             item.references = [];
 
             for ( var i in $scope.item.references ) {
