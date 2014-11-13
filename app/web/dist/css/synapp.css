@@ -4495,15 +4495,15 @@ footer {
 .panel .panel-body {
   padding: 0;
 }
-.panel .panel-body .items .box {
+.panel .panel-body .items .item {
   border: 1px solid #000;
   margin: 10px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
-.panel .panel-body .items .collapsers .evaluator,
-.panel .panel-body .items .collapsers .details,
-.panel .panel-body .items .collapsers .editor,
-.panel .panel-body .items .collapsers .children {
+.panel .panel-body .items .item .collapsers .evaluator,
+.panel .panel-body .items .item .collapsers .details,
+.panel .panel-body .items .item .collapsers .editor,
+.panel .panel-body .items .item .collapsers .children {
   border-bottom: 1px solid #000000;
 }
 .panel .video-container {
