@@ -83,9 +83,8 @@ gulp.task('concat-bs', function concatBsJS () {
  *  ================
 */
 
-gulp.task('ugly-bs', function uglifyBs () {
-
-  gulp.src(path.join(path_dist, 'js/bootstrap.js'))
+gulp.task('ugly-bs', function uglifyBs (cb) {
+  return gulp.src(path.join(path_dist, 'js/bootstrap.js'))
 
     .pipe(uglify())
 
