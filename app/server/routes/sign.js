@@ -1,7 +1,9 @@
 // ---------------------------------------------------------------------------------------------- \\
 var should = require('should');
+var path = require('path');;
 // ---------------------------------------------------------------------------------------------- \\
-var cookie = require('../config/config.json').cookie;
+var cookie = require(path.join(process.env.SYNAPP_PATH, 'app/business/config.json'))
+  .cookie;
 // ---------------------------------------------------------------------------------------------- \\
 function customError (code, message) {
   var error = new Error(message);

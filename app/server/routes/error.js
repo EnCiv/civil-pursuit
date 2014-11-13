@@ -77,7 +77,7 @@ module.exports = function (error, req, res, next) {
       res.type('html');
     }
 
-    console.error('%d %s %s'.format(res.statusCode, error.name, error.message),
+    console.error(require('util').format('%d %s %s', res.statusCode, error.name, error.message),
       error.stack && error.stack.split(/\n/));
 
     res.format({

@@ -23,7 +23,7 @@ module.exports = function synappExpress (listen, isTest) {
 
   var domain          =   require('domain').create();
 
-  var SynappError     =   require('../lib/error');
+  var SynappError     =   require('./error');
 
   //////////////////////////////////////////////////////////////////////////////
   // Domain
@@ -39,7 +39,8 @@ module.exports = function synappExpress (listen, isTest) {
     // Config
     ////////////////////////////////////////////////////////////////////////////
 
-    var synapp = require(path.join(process.env.SYNAPP_PATH, 'app/business/config/config.json'));
+    var synapp = require(path.join(process.env.SYNAPP_PATH,
+      'app/business/config.json'));
 
     process.env.CLOUDINARY_URL = synapp.cloudinary.url;
 
@@ -106,7 +107,7 @@ module.exports = function synappExpress (listen, isTest) {
 
     var config = {
       'view engine'   :   'jade',
-      'views'         :   'views',
+      'views'         :   '../../web/views',
       'port'          :   process.env.PORT || 3012
     };
 
@@ -177,10 +178,6 @@ module.exports = function synappExpress (listen, isTest) {
           res.locals.email  = req.signedCookies.synuser.email;
           res.locals._id    = req.signedCookies.synuser.id;
         }
-      }
-
-      if ( req.session ) {
-        console.log('yes session', req.session, req.signedCookies.syn_sid);
       }
 
       next();
@@ -367,7 +364,7 @@ module.exports = function synappExpress (listen, isTest) {
     ////////////////////////////////////////////////////////////////////////////
 
     app.get('/auth/facebook',
-      require('../routes/facebook')(app, synapp, Log, SynappError, passport),
+      require('../routes/facebook')(app, synapp, SynappError, passport),
       passport.authenticate('facebook'));
 
     app.get(synapp.facebook['callback url'],
@@ -458,7 +455,7 @@ module.exports = function synappExpress (listen, isTest) {
       //////////////////////////////////////////////////////////////////////////
 
       server.on('error', function (error) {
-        Log.ERROR(error.format());
+        console.error(error.format());
       });
 
       domain.add(server);
