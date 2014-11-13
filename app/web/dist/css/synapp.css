@@ -4408,11 +4408,22 @@ button.close {
 .cursor-pointer {
   cursor: pointer;
 }
+/*
+ *	Padding
+ */
 .padding {
   padding: 10px;
 }
 .padding-top {
   padding-top: 10px;
+}
+a.btn {
+  background: #ddd;
+  color: #000;
+}
+a.btn-default {
+  background: #fff;
+  border: none;
 }
 /** Importing layout */
 /**
@@ -4566,14 +4577,6 @@ footer {
 }
 .editor-component form input {
   height: 2em !important;
-}
-.editor-component form a.btn {
-  background: #ddd;
-  color: #000;
-}
-.editor-component form a.btn-default {
-  background: #fff;
-  border: none;
 }
 .editor-component form textarea {
   min-height: 120px;
