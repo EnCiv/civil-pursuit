@@ -1,3 +1,5 @@
 /node_modules/*
-/public/bower_components/*
+/app/web/bower_components/*
 /*.csv
+/.env.sh
+/.start.sh
