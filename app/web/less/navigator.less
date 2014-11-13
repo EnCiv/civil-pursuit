@@ -13,6 +13,8 @@
  *  
 */
 
+@panel-heading-bg: #222;
+
 .box-shadow(@x; @z; @blur; @spread; @r; @g; @b; @a) {
   -webkit-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
   -moz-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
@@ -25,17 +27,18 @@
 
 .panel {
 
-  border-color: #000;
+  border-color: @panel-heading-bg;
 
   .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 
   .panel {
     margin: 10px;
-    margin-right: 0
+    margin-right: 0;
+    border-right: none;
   }
 
   .panel-heading {
-    background: #000;
+    background: @panel-heading-bg;
     color: #fff;
     text-align: center;
   }
@@ -45,7 +48,7 @@
 
     .items {
       .item {
-        border: 1px solid #000;
+        border: 1px solid @panel-heading-bg;
         margin: 10px;
         border-radius: 4px;
         .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
@@ -55,7 +58,7 @@
         }
         .collapsers {
           .evaluator, .details, .editor {
-            border: 1px solid #000;
+            border: 1px solid @panel-heading-bg;
             border-right: none;
             margin: 10px;
             margin-right: 0;

@@ -4491,7 +4491,7 @@ footer {
  *  
 */
 .panel {
-  border-color: #000;
+  border-color: #222222;
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
@@ -4500,9 +4500,10 @@ footer {
 .panel .panel {
   margin: 10px;
   margin-right: 0;
+  border-right: none;
 }
 .panel .panel-heading {
-  background: #000;
+  background: #222222;
   color: #fff;
   text-align: center;
 }
@@ -4510,7 +4511,7 @@ footer {
   padding: 0;
 }
 .panel .panel-body .items .item {
-  border: 1px solid #000;
+  border: 1px solid #222222;
   margin: 10px;
   border-radius: 4px;
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
@@ -4520,7 +4521,7 @@ footer {
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,
 .panel .panel-body .items .item .collapsers .editor {
-  border: 1px solid #000;
+  border: 1px solid #222222;
   border-right: none;
   margin: 10px;
   margin-right: 0;
