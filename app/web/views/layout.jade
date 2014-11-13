@@ -1,0 +1,56 @@
+//- MASTER
+    ======
+
+doctype html
+
+//- # HTML head
+
+block meta
+  include layout/head
+
+//- # Meta wrapper
+
+// Page container
+
+section.container(
+  data-ng-app         =   'synapp' 
+)
+
+  //- # Top Bar
+  
+  section(role='header')
+    include layout/top
+
+  //- # Main wrapper
+
+  // Main container
+  
+  section(role='main')
+
+    //- # Emails
+
+    - if ( ! isSignedIn )
+      .sign
+
+    //- # Page wrapper
+    
+    .row
+      .col-xs-12
+        block page
+        //- #navigator.panel-group
+        //-   .navigator(data-type='Topic' data-autoload='{{true}}')
+        //-     h4.text-center Loading page...
+
+  //- # Footer
+
+  block footer
+    include layout/footer
+
+//- Loading modal
+
+include layout/loading-modal
+
+//- Scripts
+
+block scripts
+  include layout/scripts

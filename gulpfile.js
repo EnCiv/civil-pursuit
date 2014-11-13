@@ -1,0 +1,128 @@
+var gulp        = require('gulp');
+var gutil       = require('gulp-util');
+var less        = require('gulp-less');
+var watchify    = require('watchify');
+var browserify  = require('browserify');
+var source      = require('vinyl-source-stream');
+var path        = require('path');
+var watch       = require('gulp-watch');
+var concat      = require('gulp-concat');
+var minifyCSS   = require('gulp-minify-css');
+var rename      = require("gulp-rename");
+
+/*
+ *  COMPILE LESS
+ *  ============
+*/
+
+gulp.task('less', function gulpCompileLess () {
+  gulp.src('app/web/less/synapp.less')
+    .pipe(less({
+      paths: [
+        path.join(__dirname, 'app/web/bower_components/boostrap/less')
+      ]
+    }))
+    .pipe(gulp.dest('app/web/dist/css'));
+});
+
+/*
+ *  MINIFY CSS
+ *  ==========
+*/
+
+gulp.task('mincss', function gulpMinifyCSS () {
+  gulp.src('app/web/dist/css/synapp.css')
+    .pipe(minifyCSS())
+    .pipe(rename(function (path) {
+      path.extname = '.min.css';
+    }))
+    .pipe(gulp.dest('app/web/dist/css'))
+});
+
+
+/*
+ *  BUILD
+ *  =====
+*/
+
+gulp.task('build', ['less'], function () {
+
+});
+
+/*
+ *  BUILD PROD
+ *  ==========
+*/
+
+gulp.task('build-prod', ['build'], function () {
+
+});
+
+gulp.task('build', ['less'], function () {
+
+});
+
+gulp.task('default', function() {
+  // place code for your default task here
+});
+
+gulp.task('less', function () {
+  gulp.src('app/web/less/synapp.less')
+    .pipe(less({
+      paths: [
+        path.join(__dirname, 'app/web/bower_components/boostrap/less')
+      ]
+    }))
+    .pipe(gulp.dest('app/web/dist/css'))
+    // .on('end', function () {
+    //   gulp.src('app/web/dist/css/synapp.css')
+    //     .pipe(minifyCSS())
+    //     .pipe(gulp.dest('app/web/dist/css'));
+    // });
+});
+
+gulp.task('browserify', function () {
+  var bundler = watchify(browserify(path.join(__dirname, 'public/js/angular/synapp/index.js'), watchify.args));
+
+  bundler.on('update', rebundle);
+
+  function rebundle() {
+    return bundler.bundle()
+      // log errors if they happen
+      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+      .pipe(source('bundle.js'))
+      .pipe(gulp.dest('./public/dist'));
+  }
+
+  return rebundle();
+});
+
+gulp.task('watch', function () {
+  gulp.watch('less/*.less', ['less']);
+});
+
+var uglify      = require('gulp-uglifyjs');
+
+gulp.task('bootstrapjs', function () {
+
+  gulp.src('./public/bower_components/bootstrap/**/{tooltip,transition,collapse,modal,dropdown}.js')
+
+    .pipe(concat('bootstrap.js'))
+
+    .pipe(uglify())
+
+    .pipe(gulp.dest('./public/dist'));
+});
+
+// js docs
+
+var shell = require('gulp-shell');
+
+gulp.task('docs', shell.task([ 
+  'node_modules/jsdoc/jsdoc.js '+ 
+    '-c node_modules/angular-jsdoc/conf.json '+   // config file
+    '-t node_modules/angular-jsdoc/template '+    // template file
+    '-d build/docs '+                             // output directory
+    '-r '+                                        // recursive
+    'public/js/angular/synapp models'             // source code directory
+]));

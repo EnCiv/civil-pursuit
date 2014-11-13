@@ -107,7 +107,7 @@ module.exports = function synappExpress (listen, isTest) {
 
     var config = {
       'view engine'   :   'jade',
-      'views'         :   '../../web/views',
+      'views'         :   path.join(process.env.SYNAPP_PATH, 'app/web/views'),
       'port'          :   process.env.PORT || 3012
     };
 
@@ -423,8 +423,9 @@ module.exports = function synappExpress (listen, isTest) {
     // STATIC ROUTER
     ////////////////////////////////////////////////////////////////////////////
 
-    app.use(express.static(require('path').join(path.dirname(__dirname),
-      'public')));
+    app.use('/bower/',
+      express.static(path.join(process.env.SYNAPP_PATH,
+        'app/web/bower_components')));
 
     ////////////////////////////////////////////////////////////////////////////
     // ERROR
