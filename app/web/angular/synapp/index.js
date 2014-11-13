@@ -7,54 +7,6 @@
 
 ;(function () {
 
-  function compile (item, into, scope, $compile) {
-
-    function _compile (type) {
-
-      var tpl = '<div ' +
-        ' data-type    =   "' + type + '" ' +
-        ' data-parent  =   "' + item._id + '"' +
-        ' class        =   "navigator"></div>';
-
-      return $compile(tpl)(scope);
-    }
-
-    var has = synapp['item relation'][item.type];
-
-    console.log(has);
-
-    if ( has ) {
-      var row = $('<div class="row"></div>'),
-        target = into.find('.children');
-
-      if ( Array.isArray( has ) ) {
-        has.forEach(function (type) {
-
-          if ( Array.isArray( type ) ) {
-            var col1 = $('<div class="col-xs-6 split-view"></div>');
-            col1.append(_compile(type[0]));
-            
-            var col2 = $('<div class="col-xs-6 split-view"></div>');
-            col2.append(_compile(type[1]));
-            
-            row.append(col1, col2);
-            target.append(row);
-          }
-
-          else {
-            target.append(_compile(type));
-          }
-        });
-      }
-
-      else {
-        target.append(_compile(has));
-      }
-    }
-
-    return true;
-  }
-
   angular.module('synapp', ['angularFileUpload'])
 
     .factory({

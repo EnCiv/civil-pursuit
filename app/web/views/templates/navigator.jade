@@ -38,11 +38,11 @@ div(data-ng-init='show = "items"')
                       a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator")') Promote
 
                     //- Promoted stat (times)
-                    div(data-ng-bind=item + '.promotions'
+                    div(data-ng-bind='item.promotions'
                       data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
 
                     //- Promoted stat (percent)
-                    div(data-ng-bind='(' + item + ' | calculatePromotionPercentage) || 0 + "%"'
+                    div(data-ng-bind='(item | calculatePromotionPercentage) || 0 + "%"'
                       data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
 
                     //- Details button
