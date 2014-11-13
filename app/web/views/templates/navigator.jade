@@ -33,6 +33,7 @@ div(data-ng-init='show = "items"')
               .col-xs-12(data-ng-class='{ "col-sm-8": ! isSplit }')
                 h4(ng-bind='item.subject')
                 div(ng-bind='item.description')
+                include navigator/references
 
             .row
               .col-xs-6
@@ -45,16 +46,16 @@ div(data-ng-init='show = "items"')
                   button(ng-click='$root.loadDetails(item._id)') Load
 
               .col-xs-6
-                div Children:
-                  button(ng-click='$show = (($show === "children" && "-") || "children")') Toggle
-                  button(ng-click='loadChildren(item._id)') Load
+                //- div Children:
+                //-   button(ng-click='$show = (($show === "children" && "-") || "children")') Toggle
+                //-   button(ng-click='loadChildren(item._id)') Load
 
                 div Editor:
                   button(ng-click='$show = (($show === "editor" && "-") || "editor")')  Toggle
 
             .row
-              .col-xs-12
-                i.fa.fa-arrow-down(ng-click='$show = (($show === "children" && "-") || "children")')
+              .col-xs-12.text-center.padding-top
+                i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children")')
 
           // COLLAPSERS
 
@@ -67,14 +68,23 @@ div(data-ng-init='show = "items"')
                 .row
                   .col-xs-12.padding
                     h2.text-center
-                      span(data-ng-bind='cursor || 1')
+                      span(data-ng-bind='evaluation.cursor')
                       span  of  
-                      span(data-ng-bind='limit')
+                      span(data-ng-bind='evaluation.limit')
                 .row
                   .col-xs-12(ng-repeat='item in $root.items | getEvaluationItems:item._id')
                     h4
                       small(data-ng-bind='item.type')
                       span(data-ng-bind='item.subject')
+
+                // Continue
+                .row
+                  .col-sm-12
+                    button.btn.btn-block(
+                      data-ng-click = 'evaluation.next.length ? continue() : finish()' 
+                    )
+                      span(data-ng-show='evaluation.next.length') Continue
+                      span(data-ng-hide='evaluation.next.length') Finish
             
             // DETAILS
 
@@ -97,3 +107,4 @@ div(data-ng-init='show = "items"')
             // CHILDREN
 
             .children.animate-show(ng-show='$show === "children"' data-loaded='{{false}}')
+              div.text-center.padding Loading items...

@@ -133,6 +133,29 @@
     .controller('UploadCtrl', require('./controllers/upload'))
 
     .directive('sign', require('./directives/sign'))
+
+    .directive('item', ['$rootScope', function ($rootScope) {
+      return {
+        restrict: 'C',
+        controller: function ($scope) {
+
+          $scope.loaded = {};
+
+          $scope.$watch('$show', function (show, _show) {
+            if ( show && show !== _show ) {
+              if ( ! $scope.loaded[show] ) {
+                switch ( show ) {
+                  case 'children':
+                    $scope.loaded.children = true;
+                    $scope.$parent.loadChildren($scope.item._id);
+                    break;
+                }
+              }
+            }
+          });
+        }
+      };
+    }])
     
     .directive('navigator', ['$rootScope', '$compile', 'DataFactory', function ($rootScope, $compile, DataFactory) {
       return {
@@ -162,6 +185,7 @@
             //     $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
             //   });
           };
+          
         },
         link: function ($scope, $elem, $attrs) {
         }

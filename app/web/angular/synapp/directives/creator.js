@@ -19,15 +19,36 @@
           $scope.item.parent = $scope.parent;
         }
 
+        $scope.getImage = function () {
+          if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
+            return $scope.$root.uploadResult[0].path.split(/\//).pop();
+          }
+        };
+
         $scope.save = function () {
 
-          $scope.item.image = (function () {
-            if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
-                return $scope.$root.uploadResult[0].path.split(/\//).pop();
-              }
-          })();
+          var item = {
+            type: $scope.item.type,
+            subject: $scope.item.subject,
+            description: $scope.item.description,
+            image: $scope.getImage()
+          }
 
-          DataFactory.Item.create($scope.item)
+          if ( $scope.parent ) {
+            item.parent = $scope.parent;
+          }
+
+          if ( $scope.item.references[0] ) {
+            item.references = [];
+
+            for ( var i in $scope.item.references ) {
+              item.references[+i] = $scope.item.references[i];
+            }
+          }
+
+          console.log('item', item);
+
+          DataFactory.Item.create(item)
             .success(function (item) {
               $rootScope.items = [item].concat($rootScope.items);
               $scope.$parent.show = 'items';

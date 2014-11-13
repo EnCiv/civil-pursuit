@@ -4408,6 +4408,12 @@ button.close {
 .cursor-pointer {
   cursor: pointer;
 }
+.padding {
+  padding: 10px;
+}
+.padding-top {
+  padding-top: 10px;
+}
 /** Importing layout */
 /**
  *    __________________________________________________________________________

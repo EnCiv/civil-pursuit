@@ -22,10 +22,10 @@ var ItemSchema = new Schema({
   },  
 
   "references": [
-    {
+    new Schema({
       "url": String,
       "title": String
-    }
+    })
   ],
 
   "subject": {

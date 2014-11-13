@@ -197,15 +197,36 @@
           $scope.item.parent = $scope.parent;
         }
 
+        $scope.getImage = function () {
+          if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
+            return $scope.$root.uploadResult[0].path.split(/\//).pop();
+          }
+        };
+
         $scope.save = function () {
 
-          $scope.item.image = (function () {
-            if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
-                return $scope.$root.uploadResult[0].path.split(/\//).pop();
-              }
-          })();
+          var item = {
+            type: $scope.item.type,
+            subject: $scope.item.subject,
+            description: $scope.item.description,
+            image: $scope.getImage()
+          }
 
-          DataFactory.Item.create($scope.item)
+          if ( $scope.parent ) {
+            item.parent = $scope.parent;
+          }
+
+          if ( $scope.item.references[0] ) {
+            item.references = [];
+
+            for ( var i in $scope.item.references ) {
+              item.references[+i] = $scope.item.references[i];
+            }
+          }
+
+          console.log('item', item);
+
+          DataFactory.Item.create(item)
             .success(function (item) {
               $rootScope.items = [item].concat($rootScope.items);
               $scope.$parent.show = 'items';
@@ -225,7 +246,6 @@
     return {
       restrict: 'C',
       controller: function ($scope) {
-        $scope.limit = 5;
       }
     };
   }
@@ -766,6 +786,29 @@ module.exports = function shortenFilter () {
     .controller('UploadCtrl', require('./controllers/upload'))
 
     .directive('sign', require('./directives/sign'))
+
+    .directive('item', ['$rootScope', function ($rootScope) {
+      return {
+        restrict: 'C',
+        controller: function ($scope) {
+
+          $scope.loaded = {};
+
+          $scope.$watch('$show', function (show, _show) {
+            if ( show && show !== _show ) {
+              if ( ! $scope.loaded[show] ) {
+                switch ( show ) {
+                  case 'children':
+                    $scope.loaded.children = true;
+                    $scope.$parent.loadChildren($scope.item._id);
+                    break;
+                }
+              }
+            }
+          });
+        }
+      };
+    }])
     
     .directive('navigator', ['$rootScope', '$compile', 'DataFactory', function ($rootScope, $compile, DataFactory) {
       return {
@@ -795,6 +838,7 @@ module.exports = function shortenFilter () {
             //     $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
             //   });
           };
+          
         },
         link: function ($scope, $elem, $attrs) {
         }
@@ -859,6 +903,10 @@ module.exports = function shortenFilter () {
 
     $rootScope.getItems({ type: 'Topic' });
 
+    $rootScope.addViewToItem = function (item) {
+      DataFactory.Item.update(item._id, { $inc: { views: 1 } });
+    };
+
     $rootScope.loadEvaluation = function (item_id) {
       var evaluation = $rootScope.evaluations
         .filter(function (evaluation) {
@@ -868,6 +916,39 @@ module.exports = function shortenFilter () {
       if ( ! evaluation.length ) {
         DataFactory.Item.evaluate(item_id)
           .success(function (evaluation) {
+            evaluation.cursor = 1;
+            evaluation.limit = 5;
+            if ( evaluation.items.length < 6 ) {
+              evaluation.limit = evaluation.items.length - 1;
+
+              if ( ! evaluation.limit && evaluation.items.length === 1 ) {
+                evaluation.limit = 1;
+              }
+            }
+            evaluation.current = [];
+            evaluation.next = [];
+
+            var series = [
+              function () { 
+                evaluation.current[0] = evaluation.items.shift();
+                $rootScope.addViewToItem(evaluation.current[0]);
+              },
+              function () {
+                evaluation.current[1] = evaluation.items.shift();
+                $rootScope.addViewToItem(evaluation.current[1]); 
+              },
+              function () { evaluation.next[0]    = evaluation.items.shift(); },
+              function () { evaluation.next[1]    = evaluation.items.shift(); },
+            ];
+
+            var i = 0;
+
+            while ( series[i] && evaluation.items.length ) {
+              series[i]();
+              i++;
+            }
+
+
             $rootScope.evaluations.push(evaluation);
           });
       }
