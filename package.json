@@ -28,7 +28,8 @@
     "browserify": "~6.3.2",
     "gulp-shell": "~0.2.10",
     "gulp-uglifyjs": "~0.5.0",
-    "gulp-rename": "~1.2.0"
+    "gulp-rename": "~1.2.0",
+    "run-sequence": "~1.0.1"
   },
   "dependencies": {
     "request": "~2.48.0",
@@ -43,6 +44,7 @@
     "mongoose": "~3.8.19",
     "monson": "git://github.com/co2-git/monson",
     "cloudinary": "~1.0.13",
-    "jade": "~1.7.0"
+    "jade": "~1.7.0",
+    "bcrypt": "~0.8.0"
   }
 }

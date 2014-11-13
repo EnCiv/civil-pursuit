@@ -4556,19 +4556,22 @@ footer {
         ------------------------------------------------------------------------
   */
 }
-.editor-component input {
+.editor-component form input {
   height: 2em !important;
 }
-.editor-component a.btn {
+.editor-component form a.btn {
   background: #ddd;
   color: #000;
 }
-.editor-component a.btn-default {
+.editor-component form a.btn-default {
   background: #fff;
   border: none;
 }
-.editor-component textarea {
+.editor-component form textarea {
   min-height: 120px;
+}
+.editor-component form [class^=col-] {
+  padding: 10px;
 }
 .editor-component .drop-box {
   background: #F8F8F8;

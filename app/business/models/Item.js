@@ -5,7 +5,7 @@
  * @author francoisrvespa@gmail.com
 */
 
-var config = require('../config/config.json');
+var config = require('../config.json');
 
 var path = require('path');
 

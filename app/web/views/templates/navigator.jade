@@ -1,0 +1,93 @@
+include ../mixins/bootstrap
+
+div(data-ng-init='show = "items"')
+  +bootstrap-panel
+    +bootstrap-panel-heading
+      i.pull-right.fa.fa-plus.cursor-pointer(ng-click='show = (show === "creator" && "items") || "creator"')
+
+      // TYPE
+
+      h4.panel-title
+        span(data-ng-bind='type')
+        small(data-ng-bind='parent')
+
+    +bootstrap-panel-body
+      
+      // CREATOR
+
+      .creator.animate-show(ng-show='show === "creator"' data-type="{{ type }}" data-parent='{{ parent }}')
+
+      // ITEMS
+      
+      .items(ng-repeat='item in $root.items | filterItems:type:parent track by item._id')
+
+        .item(id='item-{{item._id}}')
+
+          // BOX
+          
+          .box
+            .row
+              .col-xs-12(data-ng-class='{ "col-sm-4": ! isSplit }')
+                h2 Image
+              .col-xs-12(data-ng-class='{ "col-sm-8": ! isSplit }')
+                h4(ng-bind='item.subject')
+                div(ng-bind='item.description')
+
+            .row
+              .col-xs-6
+                div Evaluator:
+                  button(ng-click='$show = (($show === "evaluator" && "-") || "evaluator")') Toggle
+                  button(ng-click='$root.loadEvaluation(item._id)') Load
+                
+                div Details: 
+                  button(ng-click='$show = (($show === "details" && "-") || "details")') Toggle
+                  button(ng-click='$root.loadDetails(item._id)') Load
+
+              .col-xs-6
+                div Children:
+                  button(ng-click='$show = (($show === "children" && "-") || "children")') Toggle
+                  button(ng-click='loadChildren(item._id)') Load
+
+                div Editor:
+                  button(ng-click='$show = (($show === "editor" && "-") || "editor")')  Toggle
+
+          // COLLAPSERS
+
+          .collapsers(ng-show='show === "items"')
+
+            // EVALUATOR
+            
+            .evaluator.animate-show(ng-show='$show === "evaluator"')
+              h1 Evaluator
+                span(ng-bind='$root.evaluations.length')
+              section(ng-repeat='evaluation in $root.evaluations')
+                .row
+                  .col-xs-12.padding
+                    h2.text-center
+                      span(data-ng-bind='cursor || 1')
+                      span  of  
+                      span(data-ng-bind='limit')
+                .row
+                  .col-xs-12(ng-repeat='item in $root.items | getEvaluationItems:item._id')
+                    h4
+                      small(data-ng-bind='item.type')
+                      span(data-ng-bind='item.subject')
+            
+            // DETAILS
+
+            .details.animate-show(ng-show='$show === "details"')
+              h1 Details
+              section
+                h4 Promoted
+                div(ng-bind='item | calculatePromotionPercentage')
+                h4 Feedbacks
+                div(data-ng-repeat='feedback in $root.feedbacks | getFeedbackByItem:item._id')
+                  div(ng-bind='feedback.feedback')
+
+            // EDITOR
+
+            .editor.animate-show(ng-show='$show === "editor"')
+
+            // CHILDREN
+
+            .children.animate-show(ng-show='$show === "children"' data-loaded='{{false}}')

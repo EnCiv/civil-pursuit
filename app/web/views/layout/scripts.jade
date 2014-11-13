@@ -19,17 +19,20 @@ block script-jquery
     script(src=synapp.jquery.cdn)
 
   - else
-    script(src='/bower_components/jquery/dist/jquery.min.js')
+    script(src='/bower/jquery/dist/jquery.min.js')
 
 //- # Bootstrap
 
 block script-bootstrap
-  script(src='/dist/bootstrap.js')
+  - if ( settings.env === 'production' )
+    script(src='/dist/js/bootstrap.min.js')
+  - else
+    script(src='/dist/js/bootstrap.js')
 
 //- # Shims
 
 block script-shims
-  script(src='/bower_components/ng-file-upload-shim/angular-file-upload-shim.js')
+  script(src='/bower/ng-file-upload-shim/angular-file-upload-shim.js')
 
 //- # Angular
 
@@ -38,52 +41,56 @@ block script-angular
     script(src=synapp.angular.cdn)
 
   - else
-    script(src='/bower_components/angular/angular.js')
+    script(src='/bower/angular/angular.js')
 
-block script-angular-animate
-  - if ( settings.env === 'production' )
-    script(src=synapp.angular.animate.cdn)
+//- block script-angular-animate
+//-   - if ( settings.env === 'production' )
+//-     script(src=synapp.angular.animate.cdn)
 
-  - else
-    script(src='/bower_components/angular-animate/angular-animate.js')
+//-   - else
+//-     script(src='/bower/angular-animate/angular-animate.js')
 
 //- # Angular apps
 
 block script-file-upload
   - if ( settings.env === 'production' )
-    script(src='/bower_components/ng-file-upload/angular-file-upload.min.js')
+    script(src='/bower/ng-file-upload/angular-file-upload.min.js')
 
   - else
-    script(src='/bower_components/ng-file-upload/angular-file-upload.js')
+    script(src='/bower/ng-file-upload/angular-file-upload.js')
   
-block script-autogrow
-  script(src='/js/angular/autogrow/index.js')
+//- block script-autogrow
+//-   script(src='/js/angular/autogrow/index.js')
 
 //- # Bootstrap sliders
 
 block script-sliders
   - if ( settings.env === 'production' )
-    script(src='/bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
+    script(src='/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
 
   - else
-    script(src='/bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js')
+    script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
 
-block script-moment
-  script(src='/bower_components/moment/min/moment.min.js')
+//- block script-moment
+//-   script(src='/bower/moment/min/moment.min.js')
 
 block script-d3
   - if ( settings.env === 'production' )
-    script(src='/bower_components/d3/d3.min.js')
+    script(src='/bower/d3/d3.min.js')
   - else
-    script(src='/bower_components/d3/d3.js')
+    script(src='/bower/d3/d3.js')
 
 block script-c3
   - if ( settings.env === 'production' )
-    script(src='/bower_components/c3/c3.min.js')
+    script(src='/bower/c3/c3.min.js')
   - else
-    script(src='/bower_components/c3/c3.js')
+    script(src='/bower/c3/c3.js')
 
 //- # synapp
 
 block script-app
-  script(src='/dist/bundle.js')
+  - if ( settings.env === 'production' )
+    script(src='/dist/js/bundle.min.js')
+
+  - else
+    script(src='/dist/js/bundle.js')

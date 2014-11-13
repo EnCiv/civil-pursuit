@@ -41,11 +41,15 @@ block stylesheets
       
   block css-app
     - if ( settings.env === 'production' )
-      link(rel='stylesheet' href='/dist/css/synaccord.min.css')
+      link(rel='stylesheet' href='/dist/css/synapp.min.css')
     
     - else
-      link(rel='stylesheet' href='/dist/css/synaccord.css')
+      link(rel='stylesheet' href='/dist/css/synapp.css')
 
   //- C3 CSS
   block css-c3
-    link(rel='stylesheet' href='/bower/c3/c3.css')
+    - if ( settings.env === 'production' )
+      link(rel='stylesheet' href='/dist/css/c3.min.css')
+    
+    - else
+      link(rel='stylesheet' href='/bower/c3/c3.css')

@@ -264,7 +264,7 @@ module.exports = function synappExpress (listen, isTest) {
         }
       }
 
-      res.render('layouts/master', extra);
+      res.render('pages/navigator', extra);
     });
 
     ////////////////////////////////////////////////////////////////////////////
@@ -300,7 +300,10 @@ module.exports = function synappExpress (listen, isTest) {
     var mongoose = require('mongoose');
 
     var monson = require('monson')(
-      isTest ? process.env.MONGOHQ_URL_TEST : process.env.MONGOHQ_URL);
+      isTest ? process.env.MONGOHQ_URL_TEST : process.env.MONGOHQ_URL,
+      {
+        base: 'app/business'
+      });
 
     app.use('/models/:model',
       function (req, res, next) {
@@ -426,6 +429,10 @@ module.exports = function synappExpress (listen, isTest) {
     app.use('/bower/',
       express.static(path.join(process.env.SYNAPP_PATH,
         'app/web/bower_components')));
+
+    app.use('/dist/',
+      express.static(path.join(process.env.SYNAPP_PATH,
+        'app/web/dist')));
 
     ////////////////////////////////////////////////////////////////////////////
     // ERROR
