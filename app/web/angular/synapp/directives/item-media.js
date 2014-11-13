@@ -1,4 +1,7 @@
-module.exports = [
+;(function () {
+
+  module.exports = [ItemMedia];
+
   function ItemMedia () {
     return {
       restrict: 'C',
@@ -33,4 +36,6 @@ module.exports = [
         }
       }
     };
-  }];
+  }
+
+})();

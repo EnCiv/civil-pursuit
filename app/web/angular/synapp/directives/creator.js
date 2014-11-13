@@ -10,7 +10,7 @@
         type: '@',
         parent: '@'
       },
-      controller: function ($scope) {
+      controller: ['$scope', function ($scope) {
         $scope.item = {
           type: $scope.type
         };
@@ -54,7 +54,7 @@
               $scope.$parent.show = 'items';
             })
         };
-      }
+      }]
     };
   }
 

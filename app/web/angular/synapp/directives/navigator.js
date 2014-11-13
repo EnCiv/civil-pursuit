@@ -1,38 +1,37 @@
 ;(function () {
 
-  module.exports = ['$rootScope', 'DataFactory', Navigator];
+  module.exports = ['$rootScope', '$compile', 'DataFactory', NavigatorComponent];
 
-  function Navigator ($rootScope, DataFactory) {
+  function NavigatorComponent ($rootScope, $compile, DataFactory) {
     return {
       restrict: 'C',
-      templateUrl: '/templates/editor',
+      templateUrl: '/templates/navigator',
       scope: {
-        type: '@',
+        type:' @',
         parent: '@'
       },
-      controller: function ($scope) {
-        $scope.item = {
-          type: $scope.type
+      controller: ['$scope', function ($scope) {
+        $scope.loadChildren = function (item_id) {
+
+          var item = $rootScope.items.reduce(function (item, _item) {
+            if ( _item._id === item_id ) {
+              item = _item;
+            }
+            return item;
+          }, null);
+
+          var scope = $scope.$new();
+
+          compile(item, $('#item-' + item_id), scope, $compile);
+
+          // DataFactory.Item.find({ parent: item_id })
+          //   .success(function (items) {
+          //     $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
+          //   });
         };
-
-        if ( $scope.parent ) {
-          $scope.item.parent = $scope.parent;
-        }
-
-        $scope.save = function () {
-
-          $scope.item.image = (function () {
-            if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
-                return $scope.$root.uploadResult[0].path.split(/\//).pop();
-              }
-          })();
-
-          DataFactory.Item.create($scope.item)
-            .success(function (item) {
-              $rootScope.items = [item].concat($rootScope.items);
-              $scope.$parent.show = 'items';
-            })
-        };
+        
+      }],
+      link: function ($scope, $elem, $attrs) {
       }
     };
   }

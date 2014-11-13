@@ -8,8 +8,6 @@
       restrict: 'C',
       templateUrl: '/templates/sign',
       scope: {},
-      controller: function ($scope) {
-      },
       link: function ($scope, $elem, $attr) {
         $scope.sign = {};
 

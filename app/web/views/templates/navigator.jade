@@ -110,7 +110,7 @@ div(data-ng-init='show = "items"')
                   .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
                     data-ng-bind='(item | calculatePromotionPercentage) + "%"')
                 h4 Feedbacks
-                div(data-ng-repeat='feedback in $root.feedbacks | getFeedbackByItem:item._id')
+                div(data-ng-repeat='feedback in $root.feedbacks | getFeedbacksByItem:item._id')
                   div(ng-bind='feedback.feedback')
 
             // EDITOR

@@ -4,9 +4,7 @@
 
   function Evaluator () {
     return {
-      restrict: 'C',
-      controller: function ($scope) {
-      }
+      restrict: 'C'
     };
   }
 

@@ -24,15 +24,14 @@ var path_ngapp    =   path.join(path_angular, 'synapp')
  *  ============
 */
 
-gulp.task('less', function gulpCompileLess (cb) {
+gulp.task('less', function gulpCompileLess () {
   return gulp.src(path.join(path_less, 'synapp.less'))
     .pipe(less({
       paths: [
         path.join(__dirname, path_bower, 'boostrap/less')
       ]
     }))
-    .pipe(gulp.dest(path.join(path_dist, 'css')))
-    // .on('end', cb);
+    .pipe(gulp.dest(path.join(path_dist, 'css')));
 });
 
 /*

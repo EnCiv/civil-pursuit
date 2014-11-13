@@ -8,14 +8,18 @@
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = function SignFactory ($http) {
-  return {
-    signIn: function (creds) {
-      return $http.post('/sign/in', creds);
-    },
+;(function () {
+  module.exports = ['$http', SignFactory];
 
-    signUp: function (creds) {
-      return $http.post('/sign/up', creds);
-    }
+  function SignFactory ($http) {
+    return {
+      signIn: function (creds) {
+        return $http.post('/sign/in', creds);
+      },
+
+      signUp: function (creds) {
+        return $http.post('/sign/up', creds);
+      }
+    };
   };
-};
+})();
