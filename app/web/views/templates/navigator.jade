@@ -47,17 +47,12 @@ div(data-ng-init='show = "items"')
 
                     //- Details button
                     div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-                      a.btn.btn-sm(data-ng-click='view = ((view === "details" && "-") || "details"); $parent.details_enable = item._id') &nbsp;Details&nbsp;
+                      a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details")') &nbsp;Details&nbsp;
                 h4(ng-bind='item.subject')
                 div(ng-bind='item.description')
                 include navigator/references
 
             .row
-              .col-xs-6
-                div Details: 
-                  button(ng-click='$show = (($show === "details" && "-") || "details")') Toggle
-                  button(ng-click='$root.loadDetails(item._id)') Load
-
               .col-xs-6
                 //- div Children:
                 //-   button(ng-click='$show = (($show === "children" && "-") || "children")') Toggle

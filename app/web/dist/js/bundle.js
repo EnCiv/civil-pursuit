@@ -344,6 +344,11 @@
                   $scope.loaded.evaluator = true;
                   $scope.$root.loadEvaluation($scope.item._id);
                   break;
+
+                case 'details':
+                  $scope.loaded.details = true;
+                  $scope.$root.loadDetails($scope.item._id);
+                  break;
               }
             }
           }
