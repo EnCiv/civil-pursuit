@@ -93,6 +93,14 @@ div(data-ng-init='show = "items"')
                     )
                       h2(data-ng-bind='item.subject')
 
+                  // Description
+
+                  .row
+                    .col-sm-6.padding(
+                      data-ng-repeat      =   'item in evaluation.current'
+                    )
+                      .pre-text.entry-description(data-ng-bind='item.description')
+
                 // Continue
                 .row
                   .col-sm-12
