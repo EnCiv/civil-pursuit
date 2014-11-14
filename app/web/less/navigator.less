@@ -13,12 +13,22 @@
  *  
 */
 
-@panel-heading-bg: #222;
+@panel-heading-bg: #39683C;
+@panel-border-color: #222;
 
 .box-shadow(@x; @z; @blur; @spread; @r; @g; @b; @a) {
   -webkit-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
   -moz-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
   box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
+}
+
+.gradient (@startColor: #eee, @endColor: white) {
+  background-color: @startColor;
+  background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
+  background: -webkit-linear-gradient(top, @startColor, @endColor);
+  background: -moz-linear-gradient(top, @startColor, @endColor);
+  background: -ms-linear-gradient(top, @startColor, @endColor);
+  background: -o-linear-gradient(top, @startColor, @endColor);
 }
 
 .card() {
@@ -27,13 +37,14 @@
 
 .panel {
 
-  border-color: @panel-heading-bg;
+  border-color: @panel-border-color;
 
   .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 
 
   .panel-heading {
     background: @panel-heading-bg;
+    .gradient(#333, #000);
     color: #fff;
     text-align: center;
   }
@@ -43,7 +54,7 @@
 
     .items {
       .item {
-        border: 1px solid @panel-heading-bg;
+        border: 1px solid @panel-border-color;
         margin: 10px;
         border-radius: 4px;
         .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
@@ -53,7 +64,7 @@
         }
         .collapsers {
           .evaluator, .details, .editor {
-            border: 1px solid @panel-heading-bg;
+            border: 1px solid @panel-border-color;
             border-right: none;
             margin: 10px;
             margin-right: 0;
