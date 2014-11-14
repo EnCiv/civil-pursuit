@@ -54,16 +54,16 @@
               $scope.$parent.show = 'items';
 
               $timeout(function () {
-                console.log('id', '#item-' + item._id);
-                console.log('jquery', $('#item-' + item._id).length);
-                console.log(angular.element('#item-' + item._id).scope());
-
+                
                 var _scope = angular.element('#item-' + item._id).scope();
 
                 _scope.$apply(function () {
                   _scope.$show = 'evaluator';
-                  $rootScope.itemViewed  = item._id;
                 });
+
+                $rootScope.itemViewed  = item._id;
+
+                $rootScope.lineage[item._id] = item.parent;
               });
             });
         };

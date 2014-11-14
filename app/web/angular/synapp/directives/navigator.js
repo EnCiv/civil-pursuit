@@ -76,6 +76,11 @@
           DataFactory.Item.find({ parent: item_id })
             .success(function (items) {
               $rootScope.items = $rootScope.items.concat(items);
+              /** Lineage */
+
+              items.forEach(function (item) {
+                $rootScope.lineage[item._id] = item.parent;
+              });
             });
         };
         

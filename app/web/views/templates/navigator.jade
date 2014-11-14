@@ -120,7 +120,7 @@ div(data-ng-init='show = "items"')
             
             // DETAILS
 
-            .details.animate-show.padding(ng-show='$show === "details" && show === "items"&& $root.itemViewed === item._id')
+            .details.animate-show.padding(ng-show='$show === "details" && show === "items" && $root.itemViewed === item._id')
               section
                 h4 Promoted
                 .progress
@@ -133,7 +133,7 @@ div(data-ng-init='show = "items"')
 
             // EDITOR
 
-            .editor.animate-show(ng-show='$show === "editor" && show === "items"')
+            .editor.animate-show(ng-show='$show === "editor" && show === "items" && $root.itemViewed === item._id')
 
             // TOGGLE ARROW
 
@@ -144,4 +144,6 @@ div(data-ng-init='show = "items"')
 
             // CHILDREN
 
-            .children.animate-show(ng-show='$show === "children" && show === "items" && $root.itemViewed === item._id' data-loaded='{{false}}')
+            //- thereIsARelation(item._id, $root.itemViewed)
+
+            .children.animate-show(ng-show='($root.itemHas(item, $root.itemViewed) || $root.itemViewed === item._id)' data-loaded='{{false}}')

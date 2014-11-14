@@ -232,16 +232,16 @@
               $scope.$parent.show = 'items';
 
               $timeout(function () {
-                console.log('id', '#item-' + item._id);
-                console.log('jquery', $('#item-' + item._id).length);
-                console.log(angular.element('#item-' + item._id).scope());
-
+                
                 var _scope = angular.element('#item-' + item._id).scope();
 
                 _scope.$apply(function () {
                   _scope.$show = 'evaluator';
-                  $rootScope.itemViewed  = item._id;
                 });
+
+                $rootScope.itemViewed  = item._id;
+
+                $rootScope.lineage[item._id] = item.parent;
               });
             });
         };
@@ -466,6 +466,11 @@
           DataFactory.Item.find({ parent: item_id })
             .success(function (items) {
               $rootScope.items = $rootScope.items.concat(items);
+              /** Lineage */
+
+              items.forEach(function (item) {
+                $rootScope.lineage[item._id] = item.parent;
+              });
             });
         };
         
@@ -1026,6 +1031,9 @@ function getUrlTitle ($http) {
     /** @??? */
     $rootScope.loadedItems  =   {};
 
+    /** { $item_id: [Number] } Item's lineage */
+    $rootScope.lineage      =   {};
+
     /** LOCATION */
 
     $rootScope.$on('$locationChangeStart', function () {
@@ -1036,11 +1044,20 @@ function getUrlTitle ($http) {
       }
     });
 
+    /** ITEMS */
+
     $rootScope.getItems = function (item) {
       DataFactory.Item.find(item)
         .success(function (items) {
           $rootScope.items = $rootScope.items.concat(items);
-          $rootScope.loadedItems[item.parent || item.type] = true; 
+          $rootScope.loadedItems[item.parent || item.type] = true;
+
+          /** Lineage */
+
+          items.forEach(function (item) {
+            $rootScope.lineage[item._id] = item.parent;
+          });
+
         })
         .error(function () {
           console.log(arguments);
@@ -1051,6 +1068,23 @@ function getUrlTitle ($http) {
 
     $rootScope.addViewToItem = function (item) {
       DataFactory.Item.update(item._id, { $inc: { views: 1 } });
+    };
+
+    $rootScope.itemHas = function (item, has) {
+      
+      
+      if ( item && has ) {
+
+        var child = $rootScope.lineage[has];
+
+        while ( child ) {
+
+          if ( child === item._id ) {
+            return true;
+          }
+          child = $rootScope.lineage[child];
+        }
+      }
     };
 
     $rootScope.loadEvaluation = function (item_id) {

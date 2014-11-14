@@ -22,6 +22,9 @@
     /** @??? */
     $rootScope.loadedItems  =   {};
 
+    /** { $item_id: [Number] } Item's lineage */
+    $rootScope.lineage      =   {};
+
     /** LOCATION */
 
     $rootScope.$on('$locationChangeStart', function () {
@@ -32,11 +35,20 @@
       }
     });
 
+    /** ITEMS */
+
     $rootScope.getItems = function (item) {
       DataFactory.Item.find(item)
         .success(function (items) {
           $rootScope.items = $rootScope.items.concat(items);
-          $rootScope.loadedItems[item.parent || item.type] = true; 
+          $rootScope.loadedItems[item.parent || item.type] = true;
+
+          /** Lineage */
+
+          items.forEach(function (item) {
+            $rootScope.lineage[item._id] = item.parent;
+          });
+
         })
         .error(function () {
           console.log(arguments);
@@ -47,6 +59,23 @@
 
     $rootScope.addViewToItem = function (item) {
       DataFactory.Item.update(item._id, { $inc: { views: 1 } });
+    };
+
+    $rootScope.itemHas = function (item, has) {
+      
+      
+      if ( item && has ) {
+
+        var child = $rootScope.lineage[has];
+
+        while ( child ) {
+
+          if ( child === item._id ) {
+            return true;
+          }
+          child = $rootScope.lineage[child];
+        }
+      }
     };
 
     $rootScope.loadEvaluation = function (item_id) {
