@@ -20,7 +20,21 @@
       getEvaluationItems:           require('./filters/get-evaluation-items'),
       getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
       getFeedbacksByItem:           require('./filters/get-feedbacks-by-item'),
-      filterItems:                  require('./filters/filter-items')
+      filterItems:                  require('./filters/filter-items'),
+      criteriaFilter:               function () {
+        return function (criterias, criteria) {
+          if ( criterias ) {
+            return criterias.filter(function (_criteria) {
+              for ( var key in criteria ) {
+                if ( _criteria[key] !== criteria[key] ) {
+                  return false;
+                }
+              }
+              return true;
+            });
+          }
+        };
+      }
     })
 
     .controller({
@@ -29,13 +43,30 @@
 
     .directive({
       sign:           require('./directives/sign'),
-      item:           require('./directives/item'),
+      
+      /** Navigator */
       navigator:      require('./directives/navigator'),
+
+      /** Item */
+      item:           require('./directives/item'),
+      
+      /** Creator */
       creator:        require('./directives/creator'),
+
+      /** Evaluator */
       evaluator:      require('./directives/evaluator'),
+
+      /** Url Fetcher */
       urlFetcher:     require('./directives/url-fetcher'),
+
+      /** Editor */
       editor:         require('./directives/editor'),
-      itemMedia:      require('./directives/item-media')
+
+      /** Item Media */
+      itemMedia:      require('./directives/item-media'),
+
+      /** Sliders */
+      sliders:        require('./directives/sliders')
     })
 
     .config(['$locationProvider',

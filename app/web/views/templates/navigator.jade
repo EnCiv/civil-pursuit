@@ -109,6 +109,14 @@ div(data-ng-init='show = "items"')
                     )
                       include navigator/references
 
+                  // Sliders
+
+                  .row
+                    .col-sm-6.padding(
+                      data-ng-repeat      =   'item in evaluation.current'
+                    )
+                      .sliders
+
                 // Continue
                 .row
                   .col-sm-12

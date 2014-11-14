@@ -65,6 +65,12 @@
         find: function (feedback) {
           return $http.get(querystring_format('/models/Feedback', feedback));
         }
+      },
+
+      Criteria: {
+        find: function (criteria) {
+          return $http.get(querystring_format('/models/Criteria', criteria));
+        }
       }
     };
   };

@@ -9,7 +9,7 @@
 section
 
   div(
-    data-ng-repeat        =   'criteria in criterias' 
+    data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:type}' 
     data-ng-show          =   'item.subject'
   )
     

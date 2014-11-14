@@ -35,6 +35,15 @@
       }
     });
 
+    /** CRITERIAS */
+
+    $rootScope.criterias = [];
+
+    DataFactory.Criteria.find({})
+      .success(function (criterias) {
+        $rootScope.criterias = criterias;
+      });
+
     /** ITEMS */
 
     $rootScope.getItems = function (item) {

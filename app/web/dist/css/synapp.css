@@ -4440,14 +4440,6 @@ a.btn-default {
  *    __________________________________________________________________________
  *  
 */
-body {
-  background-color: #ffffff;
-  background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#eeeeee));
-  background: -webkit-linear-gradient(top, #ffffff, #eeeeee);
-  background: -moz-linear-gradient(top, #ffffff, #eeeeee);
-  background: -ms-linear-gradient(top, #ffffff, #eeeeee);
-  background: -o-linear-gradient(top, #ffffff, #eeeeee);
-}
 /*
  * Top bar
  */
@@ -4570,6 +4562,13 @@ footer {
   margin: 10px;
   margin-right: 0;
   border-right: none;
+}
+.panel .is-split li:nth-last-child(1) {
+  text-align: right;
+}
+.panel .is-split + h4 {
+  clear: both;
+  padding-top: 18px;
 }
 .panel .video-container {
   position: relative;
