@@ -4,12 +4,51 @@
 
   function Run ($rootScope, DataFactory) {
 
+    /** @type [Model.Item] */
     $rootScope.items        =   [];
+
+    /** @type [Evaluation] */
     $rootScope.evaluations  =   [];
+
+    /** @type [Model.Feedback] */
     $rootScope.feedbacks    =   [];
+
+    /** @type [Model.Vote] */
     $rootScope.votes        =   [];
+
+    /** @deprecated */
     $rootScope.show         =   {};
+
+    /** @??? */
     $rootScope.loadedItems  =   {};
+
+    /**
+      Panel {
+        type: String,
+        parent: ObjectID,
+        show: String || null
+      }
+    */
+
+    /** @type [Panel] */
+    $rootScope.panels       =   [];
+
+    /** PANELS */
+
+    $rootScope.findPanel = function (type, parent) {
+      return $rootScope.panels.filter(function (panel) {
+        
+        var sameType = panel.type === type;
+        var sameParent = panel.parent === parent;
+
+        if ( parent ) {
+          return sameType && sameParent;
+        }
+
+        return sameType;
+      
+      })[0];
+    };
 
     $rootScope.getItems = function (item) {
       DataFactory.Item.find(item)

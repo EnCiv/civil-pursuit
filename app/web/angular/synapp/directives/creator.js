@@ -52,6 +52,7 @@
             .success(function (item) {
               $rootScope.items = [item].concat($rootScope.items);
               $scope.$parent.show = 'items';
+              $scope.$parent.$show = 'evaluator';
             });
         };
       }]

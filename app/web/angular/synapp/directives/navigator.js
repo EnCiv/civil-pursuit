@@ -59,6 +59,16 @@
         parent: '@'
       },
       controller: ['$scope', function ($scope) {
+
+        /** Add a new panel to root */
+
+        $scope.$root.panels.push({
+          type: $scope.type,
+          parent: $scope.parent,
+          show: 'items'
+        });
+
+        /** @args {ObjectID} item_id */
         $scope.loadChildren = function (item_id) {
 
           var item = $rootScope.items.reduce(function (item, _item) {

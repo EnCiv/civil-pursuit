@@ -230,6 +230,7 @@
             .success(function (item) {
               $rootScope.items = [item].concat($rootScope.items);
               $scope.$parent.show = 'items';
+              $scope.$parent.$show = 'evaluator';
             });
         };
       }]
@@ -434,6 +435,16 @@
         parent: '@'
       },
       controller: ['$scope', function ($scope) {
+
+        /** Add a new panel to root */
+
+        $scope.$root.panels.push({
+          type: $scope.type,
+          parent: $scope.parent,
+          show: 'items'
+        });
+
+        /** @args {ObjectID} item_id */
         $scope.loadChildren = function (item_id) {
 
           var item = $rootScope.items.reduce(function (item, _item) {
@@ -987,12 +998,51 @@ function getUrlTitle ($http) {
 
   function Run ($rootScope, DataFactory) {
 
+    /** @type [Model.Item] */
     $rootScope.items        =   [];
+
+    /** @type [Evaluation] */
     $rootScope.evaluations  =   [];
+
+    /** @type [Model.Feedback] */
     $rootScope.feedbacks    =   [];
+
+    /** @type [Model.Vote] */
     $rootScope.votes        =   [];
+
+    /** @deprecated */
     $rootScope.show         =   {};
+
+    /** @??? */
     $rootScope.loadedItems  =   {};
+
+    /**
+      Panel {
+        type: String,
+        parent: ObjectID,
+        show: String || null
+      }
+    */
+
+    /** @type [Panel] */
+    $rootScope.panels       =   [];
+
+    /** PANELS */
+
+    $rootScope.findPanel = function (type, parent) {
+      return $rootScope.panels.filter(function (panel) {
+        
+        var sameType = panel.type === type;
+        var sameParent = panel.parent === parent;
+
+        if ( parent ) {
+          return sameType && sameParent;
+        }
+
+        return sameType;
+      
+      })[0];
+    };
 
     $rootScope.getItems = function (item) {
       DataFactory.Item.find(item)
