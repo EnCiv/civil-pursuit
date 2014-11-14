@@ -4550,6 +4550,7 @@ footer {
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  margin-bottom: 50px;
 }
 .panel .panel-body .items .item .collapsers .toggle-arrow i {
   display: block;
