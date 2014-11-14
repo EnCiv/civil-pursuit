@@ -31,11 +31,6 @@
 
   .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 
-  .panel {
-    margin: 10px;
-    margin-right: 0;
-    border-right: none;
-  }
 
   .panel-heading {
     background: @panel-heading-bg;
@@ -67,6 +62,17 @@
           }
         }
       }
+    }
+  }
+
+  .panel {
+    margin: 10px;
+    margin-right: 0;
+    border-right: none;
+
+    .item {
+      margin-right: 0 !important;
+      border-right: none !important;
     }
   }
 

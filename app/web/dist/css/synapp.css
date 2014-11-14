@@ -4497,11 +4497,6 @@ footer {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
 }
-.panel .panel {
-  margin: 10px;
-  margin-right: 0;
-  border-right: none;
-}
 .panel .panel-heading {
   background: #222222;
   color: #fff;
@@ -4529,6 +4524,15 @@ footer {
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+}
+.panel .panel {
+  margin: 10px;
+  margin-right: 0;
+  border-right: none;
+}
+.panel .panel .item {
+  margin-right: 0 !important;
+  border-right: none !important;
 }
 .panel .video-container {
   position: relative;
