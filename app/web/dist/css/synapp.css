@@ -4530,6 +4530,9 @@ footer {
   padding: 20px;
   font-size: 16px;
 }
+.panel .panel-body .items .item .box .entry-title {
+  padding: 0 20px 20px 20px;
+}
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,
 .panel .panel-body .items .item .collapsers .editor {
@@ -4546,7 +4549,6 @@ footer {
   margin: 10px;
   margin-right: 0;
   border-right: none;
-  background: rgba(0, 0, 0, 0.1);
 }
 .panel .video-container {
   position: relative;
