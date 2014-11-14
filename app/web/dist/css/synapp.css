@@ -4551,6 +4551,10 @@ footer {
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
+.panel .panel-body .items .item .collapsers .toggle-arrow i {
+  display: block;
+  margin-top: -30px;
+}
 .panel .panel {
   margin: 10px;
   margin-right: 0;

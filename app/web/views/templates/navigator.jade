@@ -120,8 +120,8 @@ div(data-ng-init='show = "items"')
 
             // TOGGLE ARROW
 
-            .row
-              .col-xs-12.text-center.padding-top
+            .row.toggle-arrow
+              .col-xs-12.text-center
                 i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children"); $parent.show = "items"')
 
             // CHILDREN
