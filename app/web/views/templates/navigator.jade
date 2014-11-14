@@ -53,7 +53,7 @@ div(data-ng-init='show = "items"')
 
                     //- Details button
                     div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-                      a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"') &nbsp;Details&nbsp;
+                      a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"; $root.itemViewed = item._id') &nbsp;Details&nbsp;
                 h4(ng-bind='item.subject')
                 div.box-description(ng-bind='item.description')
                 include navigator/references
@@ -112,7 +112,7 @@ div(data-ng-init='show = "items"')
             
             // DETAILS
 
-            .details.animate-show.padding(ng-show='$show === "details" && show === "items"')
+            .details.animate-show.padding(ng-show='$show === "details" && show === "items"&& $root.itemViewed === item._id')
               section
                 h4 Promoted
                 .progress
@@ -131,8 +131,8 @@ div(data-ng-init='show = "items"')
 
             .row.toggle-arrow
               .col-xs-12.text-center
-                i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children"); $parent.show = "items"')
+                i.fa.fa-arrow-down.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children"); $parent.show = "items"; $root.itemViewed = item._id')
 
             // CHILDREN
 
-            .children.animate-show(ng-show='$show === "children" && show === "items"' data-loaded='{{false}}')
+            .children.animate-show(ng-show='$show === "children" && show === "items" && $root.itemViewed === item._id' data-loaded='{{false}}')
