@@ -4440,6 +4440,14 @@ a.btn-default {
  *    __________________________________________________________________________
  *  
 */
+body {
+  background-color: #ffffff;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#eeeeee));
+  background: -webkit-linear-gradient(top, #ffffff, #eeeeee);
+  background: -moz-linear-gradient(top, #ffffff, #eeeeee);
+  background: -ms-linear-gradient(top, #ffffff, #eeeeee);
+  background: -o-linear-gradient(top, #ffffff, #eeeeee);
+}
 /*
  * Top bar
  */
@@ -4449,7 +4457,6 @@ a.btn-default {
   left: 0 ;
   width: 100%;
   z-index: 9999;
-  background: #ffffff;
   /** Logo **/
   /** Beta image **/
   /** Icons **/
@@ -4464,6 +4471,9 @@ a.btn-default {
 }
 [role='header'] .pull-right {
   padding: 4px;
+}
+[role='header'] .col-xs-12 {
+  background: #fff;
 }
 /*
  * Main

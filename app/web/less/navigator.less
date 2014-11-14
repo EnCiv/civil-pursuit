@@ -13,6 +13,8 @@
  *  
 */
 
+@import "mixins/gradient";
+
 @panel-heading-bg: #39683C;
 @panel-border-color: #222;
 
@@ -20,15 +22,6 @@
   -webkit-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
   -moz-box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
   box-shadow: @x @z @blur @spread rgba(@r, @g, @b, @a);
-}
-
-.gradient (@startColor: #eee, @endColor: white) {
-  background-color: @startColor;
-  background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
-  background: -webkit-linear-gradient(top, @startColor, @endColor);
-  background: -moz-linear-gradient(top, @startColor, @endColor);
-  background: -ms-linear-gradient(top, @startColor, @endColor);
-  background: -o-linear-gradient(top, @startColor, @endColor);
 }
 
 .card() {

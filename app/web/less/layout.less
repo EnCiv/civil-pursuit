@@ -13,6 +13,11 @@
  *  
 */
 
+@import "mixins/gradient";
+
+body {
+	.gradient(#fff, #eee);
+}
 
 /*
  * Top bar
@@ -24,7 +29,7 @@
 	left:0 ;
 	width: 100%;
 	z-index: 9999;
-	background: rgb(255, 255, 255);
+	// background: rgb(255, 255, 255);
 
 	/** Logo **/
 
@@ -44,6 +49,10 @@
 
 	.pull-right {
 		padding: 4px
+	}
+
+	.col-xs-12 {
+		background: #fff;
 	}
 }
 
