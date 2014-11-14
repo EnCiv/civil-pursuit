@@ -38,6 +38,7 @@
 .panel {
 
   border-color: @panel-border-color;
+  // .gradient(#fff, #ccc);
 
   .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 
@@ -54,6 +55,7 @@
 
     .items {
       .item {
+        background: #fff;
         border: 1px solid @panel-border-color;
         margin: 10px;
         border-radius: 4px;
@@ -62,7 +64,15 @@
         border-right: none;
 
         .box {
+          h4 {
+            padding-left: 20px;
+            font-size: 24px
+          }
 
+          .box-description {
+            padding: 20px;
+            font-size: 16px;
+          }
         }
         .collapsers {
           .evaluator, .details, .editor {
@@ -82,6 +92,7 @@
     margin: 10px;
     margin-right: 0;
     border-right: none;
+    background: rgba(0, 0, 0, .10);
   }
 
   // .panel-collapse {
@@ -155,10 +166,7 @@
   //     margin-bottom: 10px
   //   }
 
-  //   h4 {
-  //     padding-left: 20px;
-  //     font-size: 24px
-  //   }
+  
 
   //   .box-description {
   //     padding: 20px;

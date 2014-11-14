@@ -53,7 +53,7 @@ div(data-ng-init='show = "items"')
                     div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
                       a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"') &nbsp;Details&nbsp;
                 h4(ng-bind='item.subject')
-                div(ng-bind='item.description')
+                div.box-description(ng-bind='item.description')
                 include navigator/references
 
           // COLLAPSERS
