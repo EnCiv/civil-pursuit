@@ -4458,7 +4458,9 @@ a.btn-default {
   float: left;
 }
 [role='header'] .beta {
-  padding: 0 8px;
+  position: fixed;
+  top: 0;
+  left: calc(47.61904762%);
 }
 [role='header'] .pull-right {
   padding: 4px;
