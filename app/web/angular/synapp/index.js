@@ -38,6 +38,11 @@
       itemMedia:      require('./directives/item-media')
     })
 
+    .config(['$locationProvider',
+      function ($locationProvider) {
+        // $locationProvider.html5Mode(false);
+      }])
+
     .run(require('./run'));
   
 })();

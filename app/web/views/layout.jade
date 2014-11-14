@@ -36,6 +36,15 @@ section.container(
     
     .row
       .col-xs-12
+        include mixins/bootstrap
+
+        #intro
+          +bootstrap-panel
+            +bootstrap-panel-heading
+              h4.panel-title Intro
+            +bootstrap-panel-body
+              .padding.text-center Intro goes here
+
         block page
         //- #navigator.panel-group
         //-   .navigator(data-type='Topic' data-autoload='{{true}}')

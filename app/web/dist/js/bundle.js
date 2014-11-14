@@ -435,15 +435,6 @@
         parent: '@'
       },
       controller: ['$scope', function ($scope) {
-
-        /** Add a new panel to root */
-
-        $scope.$root.panels.push({
-          type: $scope.type,
-          parent: $scope.parent,
-          show: 'items'
-        });
-
         /** @args {ObjectID} item_id */
         $scope.loadChildren = function (item_id) {
 
@@ -986,6 +977,11 @@ function getUrlTitle ($http) {
       itemMedia:      require('./directives/item-media')
     })
 
+    .config(['$locationProvider',
+      function ($locationProvider) {
+        // $locationProvider.html5Mode(false);
+      }])
+
     .run(require('./run'));
   
 })();
@@ -994,9 +990,9 @@ function getUrlTitle ($http) {
 },{"./controllers/upload":1,"./directives/creator":2,"./directives/editor":3,"./directives/evaluator":4,"./directives/item":6,"./directives/item-media":5,"./directives/navigator":7,"./directives/sign":8,"./directives/url-fetcher":9,"./factories/Data":10,"./factories/Sign":11,"./filters/calculate-promotion-percentage":12,"./filters/filter-items":13,"./filters/get-evaluation-by-item":14,"./filters/get-evaluation-items":15,"./filters/get-feedbacks-by-item":16,"./filters/shorten":17,"./run":19}],19:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', 'DataFactory', Run];
+  module.exports = ['$rootScope', '$location', 'DataFactory', Run];
 
-  function Run ($rootScope, DataFactory) {
+  function Run ($rootScope, $location, DataFactory) {
 
     /** @type [Model.Item] */
     $rootScope.items        =   [];
@@ -1016,33 +1012,15 @@ function getUrlTitle ($http) {
     /** @??? */
     $rootScope.loadedItems  =   {};
 
-    /**
-      Panel {
-        type: String,
-        parent: ObjectID,
-        show: String || null
+    /** LOCATION */
+
+    $rootScope.$on('$locationChangeStart', function () {
+      switch ( $location.path() ) {
+        case '/intro': case 'intro':
+          $(window).scrollTop($('#intro').offset().top - 100);
+          break;
       }
-    */
-
-    /** @type [Panel] */
-    $rootScope.panels       =   [];
-
-    /** PANELS */
-
-    $rootScope.findPanel = function (type, parent) {
-      return $rootScope.panels.filter(function (panel) {
-        
-        var sameType = panel.type === type;
-        var sameParent = panel.parent === parent;
-
-        if ( parent ) {
-          return sameType && sameParent;
-        }
-
-        return sameType;
-      
-      })[0];
-    };
+    });
 
     $rootScope.getItems = function (item) {
       DataFactory.Item.find(item)

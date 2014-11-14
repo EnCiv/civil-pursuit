@@ -1,8 +1,8 @@
 ;(function () {
 
-  module.exports = ['$rootScope', 'DataFactory', Run];
+  module.exports = ['$rootScope', '$location', 'DataFactory', Run];
 
-  function Run ($rootScope, DataFactory) {
+  function Run ($rootScope, $location, DataFactory) {
 
     /** @type [Model.Item] */
     $rootScope.items        =   [];
@@ -22,33 +22,15 @@
     /** @??? */
     $rootScope.loadedItems  =   {};
 
-    /**
-      Panel {
-        type: String,
-        parent: ObjectID,
-        show: String || null
+    /** LOCATION */
+
+    $rootScope.$on('$locationChangeStart', function () {
+      switch ( $location.path() ) {
+        case '/intro': case 'intro':
+          $(window).scrollTop($('#intro').offset().top - 100);
+          break;
       }
-    */
-
-    /** @type [Panel] */
-    $rootScope.panels       =   [];
-
-    /** PANELS */
-
-    $rootScope.findPanel = function (type, parent) {
-      return $rootScope.panels.filter(function (panel) {
-        
-        var sameType = panel.type === type;
-        var sameParent = panel.parent === parent;
-
-        if ( parent ) {
-          return sameType && sameParent;
-        }
-
-        return sameType;
-      
-      })[0];
-    };
+    });
 
     $rootScope.getItems = function (item) {
       DataFactory.Item.find(item)

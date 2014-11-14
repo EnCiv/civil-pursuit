@@ -4471,6 +4471,10 @@ a.btn-default {
 [role='main'] {
   margin-top: 80px;
 }
+[role='main'] #intro {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
 /*
  * Footer
  */
