@@ -1,8 +1,8 @@
 ;(function () {
 
-  module.exports = ['$rootScope', 'DataFactory', Creator];
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', Creator];
 
-  function Creator ($rootScope, DataFactory) {
+  function Creator ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
       templateUrl: '/templates/editor',
@@ -52,7 +52,19 @@
             .success(function (item) {
               $rootScope.items = [item].concat($rootScope.items);
               $scope.$parent.show = 'items';
-              $scope.$parent.$show = 'evaluator';
+
+              $timeout(function () {
+                console.log('id', '#item-' + item._id);
+                console.log('jquery', $('#item-' + item._id).length);
+                console.log(angular.element('#item-' + item._id).scope());
+
+                var _scope = angular.element('#item-' + item._id).scope();
+
+                _scope.$apply(function () {
+                  _scope.$show = 'evaluator';
+                  $rootScope.itemViewed  = item._id;
+                });
+              });
             });
         };
       }]
