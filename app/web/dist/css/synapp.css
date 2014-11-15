@@ -4649,3 +4649,7 @@ footer {
 .editor-component .drop-box.dragover-err {
   border: 5px dashed red;
 }
+/** Importing evaluator */
+.feedback-entry {
+  min-height: 200px;
+}
