@@ -4586,15 +4586,13 @@ footer {
   width: 100%;
   height: 100%;
 }
-.animate-show.ng-hide {
-  max-height: 0;
-  transition: max-height 0.75s ease-out;
-  overflow: auto;
+.animate-show {
+  opacity: 1;
+  transition: all 0.5s ease-in-out;
 }
-.animate-show:not(.ng-hide) {
-  max-height: 100vh;
-  overflow: auto;
-  transition: max-height 1.25s ease-in;
+.animate-show.ng-hide {
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
 }
 .modal {
   top: 200px !important;

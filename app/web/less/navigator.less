@@ -218,34 +218,71 @@
 }
 
 .animate-show {
-  // opacity:1;
+  // -webkit-transform: scale(1, 1);
+  // -webkit-transition-duration: 500ms;
+  // -webkit-transition-timing-function: ease-out;
 
+  opacity: 1;
+  transition: all 0.5s ease-in-out;
 }
 
-.animate-show.ng-hide-add.ng-hide-add-active,
-.animate-show.ng-hide-remove.ng-hide-remove-active {
+// .animate-show.ng-hide-add.ng-hide-add-active,
+// .animate-show.ng-hide-remove.ng-hide-remove-active {
   
-}
+// }
 
 .animate-show.ng-hide {
-  // opacity:0;
+  // webkit-transform: scale(1.2, 1.2);
+  //   -webkit-transition-duration: 500ms;
+  //   -webkit-transition-timing-function: ease-out;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
 }
 
-.animate-show.ng-hide {
-    max-height: 0;
-    // opacity: 0;
-    // transition:opacity 2s ease-out;
-    transition: max-height 0.75s ease-out;
-    overflow: auto;
-}
 
-.animate-show:not(.ng-hide) {
-    max-height: 100vh;
-    overflow: auto;
-    transition: max-height 1.25s ease-in;
-    // opacity: 1;
-    // transition:opacity 1.25s ease-in;
-}
+// .animate-show .item-media {
+//   border: 5px solid red;
+// }
+
+// .animate-show.ng-hide {
+//   height: 0;
+//   transition: height 0.75s ease-out;
+// }
+
+// .animate-show.ng-hide,
+// .animate-show.ng-hide input,
+// .animate-show.ng-hide h1,
+// .animate-show.ng-hide h2,
+// .animate-show.ng-hide h3,
+// .animate-show.ng-hide h4,
+// .animate-show.ng-hide h5,
+// .animate-show.ng-hide a
+//  {
+//     // max-height: 0;
+//     // // opacity: 0;
+//     // // transition:opacity 2s ease-out;
+//     // transition: max-height 0.75s ease-out;
+//     // overflow: auto;
+//   font-size: 0px !important;
+//   transition: font-size 0.75s ease-out;
+// }
+
+// .animate-show.ng-hide .item-media {
+//   width: 0;
+//   height: 0;
+//   transition-property: height, width;
+//   transition-duration: 0.75s;
+// }
+
+// .animate-show:not(.ng-hide)
+// {
+//   transition: height 0.75s ease-in;
+//     // max-height: 100vh;
+//     // overflow: auto;
+//     // transition: max-height 1.25s ease-in;
+//     // opacity: 1;
+//     // transition:opacity 1.25s ease-in;
+// }
 
 .modal {
   top: 200px !important;

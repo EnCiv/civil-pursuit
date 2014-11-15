@@ -138,7 +138,7 @@ div(data-ng-init='show = "items"')
             
             // DETAILS
 
-            .details.animate-show.padding(ng-show='$show === "details" && show === "items" && $root.itemViewed === item._id')
+            .details.animate-show.padding(ng-show='$show === "details" && show === "items" && $root.itemViewed === item._id' ng-class=' { "active": $show === "details" && show === "items" && $root.itemViewed === item._id, "inactive": $show !== "details" || show !== "items" || $root.itemViewed !== item._id } ')
               section
                 h4 Promoted
                 .progress
