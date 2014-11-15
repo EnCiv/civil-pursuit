@@ -117,6 +117,16 @@ div(data-ng-init='show = "items"')
                     )
                       .sliders
 
+                  // Feedback
+
+                  .row
+                    .col-sm-6.padding(
+                      data-ng-repeat      =   'item in evaluation.current'
+                    )
+                      textarea.form-control(
+                        placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+                        data-ng-show      =   'item.subject')
+
                 // Continue
                 .row
                   .col-sm-12
