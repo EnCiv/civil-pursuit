@@ -4531,7 +4531,6 @@ footer {
   border-right: none;
 }
 .panel .panel-body .items .item .box {
-  max-height: 180px;
   overflow: auto;
 }
 .panel .panel-body .items .item .box h4 {
