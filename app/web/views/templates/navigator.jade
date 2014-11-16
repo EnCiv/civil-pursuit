@@ -35,7 +35,6 @@ div(data-ng-init='show = "items"')
           .box
             .row
               .col-xs-12.padding(data-ng-class='{ "col-sm-4": ! isSplit }')
-                span(ng-bind='isSplit')
                 +item-image()
               .col-xs-12.padding(data-ng-class='{ "col-sm-8": ! isSplit }')
                 .box-promoted(data-ng-class='{ "text-right pull-right": ! isSplit, "is-split": isSplit }')
