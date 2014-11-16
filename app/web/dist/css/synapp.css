@@ -4588,10 +4588,12 @@ footer {
 }
 .animate-show {
   opacity: 1;
+  padding-top: 0;
   transition: all 0.5s ease-in-out;
 }
 .animate-show.ng-hide {
   opacity: 0;
+  padding-top: -250px !important;
   transition: all 0.5s ease-in-out;
 }
 .modal {

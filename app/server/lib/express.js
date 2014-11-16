@@ -299,13 +299,9 @@ module.exports = function synappExpress (listen, isTest) {
     
     ////////////////////////////////////////////////////////////////////////////
 
-    var mongoose = require('mongoose');
-
     var monson = require('monson')(
       isTest ? process.env.MONGOHQ_URL_TEST : process.env.MONGOHQ_URL,
-      {
-        base: 'app/business'
-      });
+      { base: path.join(__dirname, '../../business') });
 
     app.use('/models/:model',
       function (req, res, next) {
