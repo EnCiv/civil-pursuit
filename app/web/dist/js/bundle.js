@@ -389,7 +389,8 @@
         });
       }],
       link: function ($scope, $elem, $attr) {
-        $scope.isSplit = $elem.hasClass('split-view');
+        $scope.isSplit = ['Agree', 'Disagree', 'Pro', 'Con']
+          .indexOf($scope.item.type) > -1;
       }
     };
   }
