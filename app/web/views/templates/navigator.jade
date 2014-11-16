@@ -76,6 +76,8 @@ div(data-ng-init='show = "items"')
                       span  of  
                       span(data-ng-bind='evaluation.limit')
 
+                // Normal screen
+
                 section.hidden-xs
                   // Image
 
@@ -99,7 +101,7 @@ div(data-ng-init='show = "items"')
                     .col-sm-6.padding(
                       data-ng-repeat      =   'item in evaluation.current'
                     )
-                      .pre-text.entry-description.pre-text(data-ng-bind='item.description')
+                      .pre-text.entry-description(data-ng-bind='item.description')
 
                   // References
 
@@ -133,6 +135,43 @@ div(data-ng-init='show = "items"')
                     .col-sm-6.padding(
                       data-ng-repeat      =   'item in evaluation.current'
                     )
+                      button.btn.btn-block(
+                        data-ng-click   =   'promote($index)'
+                        data-ng-show    =   'evaluation.current[1]'
+                      ) Promote
+
+                // Small screen
+
+                section.hidden-sm.hidden-md.hidden-lg(
+                  data-ng-repeat      =   'item in evaluation.current'
+                  )
+
+                  // image
+
+                  .row
+                    .col-xs-12
+                      +item-image
+
+                  .row
+                    .col-xs-12
+                      h2(data-ng-bind='item.subject')
+
+                  .row
+                    .col-xs-12
+                      .pre-text.entry-description(data-ng-bind='item.subject')
+
+                  .row.padding-bottom
+                    .col-xs-12
+                      .sliders
+
+                  .row.padding-bottom
+                    .col-xs-12
+                      textarea.feedback-entry.form-control(
+                        placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+                        data-ng-show      =   'item.subject')
+
+                  .row.padding-bottom
+                    .col-xs-12
                       button.btn.btn-block(
                         data-ng-click   =   'promote($index)'
                         data-ng-show    =   'evaluation.current[1]'
