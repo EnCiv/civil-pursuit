@@ -128,6 +128,10 @@
               i++;
             }
 
+            evaluation.continue = function () {
+              this.cursor ++;
+            };
+
 
             $rootScope.evaluations.push(evaluation);
           });

@@ -283,7 +283,12 @@
 
   function Evaluator () {
     return {
-      restrict: 'C'
+      restrict: 'C',
+      link: function ($scope) {
+        $scope.continue = function () {
+          console.log('lol');
+        };
+      }
     };
   }
 
@@ -1235,6 +1240,10 @@ function getUrlTitle ($http) {
               series[i]();
               i++;
             }
+
+            evaluation.continue = function () {
+              this.cursor ++;
+            };
 
 
             $rootScope.evaluations.push(evaluation);

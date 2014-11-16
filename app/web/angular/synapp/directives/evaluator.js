@@ -4,7 +4,12 @@
 
   function Evaluator () {
     return {
-      restrict: 'C'
+      restrict: 'C',
+      link: function ($scope) {
+        $scope.continue = function () {
+          console.log('lol');
+        };
+      }
     };
   }
 
