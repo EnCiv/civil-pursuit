@@ -87,6 +87,102 @@
       }
     };
 
+    function Evaluation (evaluation) {
+
+      this.item       =   evaluation.item;
+      this.items      =   evaluation.items;
+      this.type       =   evaluation.type;
+      this.criterias  =   evaluation.criterias;
+
+      this.cursor   =   1;
+      this.limit    =   5;
+      
+      if ( this.items.length < 6 ) {
+        this.limit = this.items.length - 1;
+
+        if ( ! this.limit && this.items.length === 1 ) {
+          this.limit = 1;
+        }
+      }
+      
+      this.current  =   [];
+      this.next     =   [];
+
+      var series = [
+        function () { 
+          this.current[0] = this.items.shift();
+          $rootScope.addViewToItem(this.current[0]);
+        }.bind(this),
+        
+        function () {
+          this.current[1] = this.items.shift();
+          $rootScope.addViewToItem(this.current[1]); 
+        }.bind(this),
+        
+        function () { this.next[0] = this.items.shift(); }.bind(this),
+        
+        function () { this.next[1] = this.items.shift(); }.bind(this),
+      ];
+
+      var i = 0;
+
+      while ( series[i] && evaluation.items.length ) {
+        series[i]();
+        i++;
+      }
+    }
+
+    Evaluation.prototype.change = function(d) {
+      d = d || 'both';
+
+      console.log(this);
+
+      if ( this.current[0] ) {
+        // if ( this.current[0].$feedback ) {
+        //   DataFactory.Feedback.create(this.current[0]._id,
+        //     this.current[0].$feedback);
+        // }
+      }
+
+      if ( this.current[1] ) {
+        // if ( this.current[1].$feedback ) {
+        //   DataFactory.Feedback.create(this.current[1]._id,
+        //     this.current[1].$feedback);
+        // }
+      }
+
+      if ( this.next.length ) {
+        if ( d === 'left' || d === 'both' ) {
+          this.current[0] = this.next.shift();
+          $rootScope.addViewToItem(this.current[0]);
+        }
+
+        if ( d === 'right' || d === 'both' ) {
+          if ( this.next.length ) {
+            this.current[1] = this.next.shift();
+            $rootScope.addViewToItem(this.current[1]);
+          }
+          else {
+            delete this.current[1];
+          }
+        }
+
+        if ( d === 'both' ) {
+          if ( this.items.length ) {
+            this.next.push(this.items.shift());
+            this.cursor ++;
+          }
+        }
+
+        this.next.push(this.items.shift());
+        this.cursor ++;
+      }
+    };
+
+    Evaluation.prototype.continue = function() {
+      this.change();
+    };
+
     $rootScope.loadEvaluation = function (item_id) {
       var evaluation = $rootScope.evaluations
         .filter(function (evaluation) {
@@ -96,44 +192,9 @@
       if ( ! evaluation.length ) {
         DataFactory.Item.evaluate(item_id)
           .success(function (evaluation) {
-            evaluation.cursor = 1;
-            evaluation.limit = 5;
-            if ( evaluation.items.length < 6 ) {
-              evaluation.limit = evaluation.items.length - 1;
 
-              if ( ! evaluation.limit && evaluation.items.length === 1 ) {
-                evaluation.limit = 1;
-              }
-            }
-            evaluation.current = [];
-            evaluation.next = [];
+            $rootScope.evaluations.push(new Evaluation(evaluation));
 
-            var series = [
-              function () { 
-                evaluation.current[0] = evaluation.items.shift();
-                $rootScope.addViewToItem(evaluation.current[0]);
-              },
-              function () {
-                evaluation.current[1] = evaluation.items.shift();
-                $rootScope.addViewToItem(evaluation.current[1]); 
-              },
-              function () { evaluation.next[0]    = evaluation.items.shift(); },
-              function () { evaluation.next[1]    = evaluation.items.shift(); },
-            ];
-
-            var i = 0;
-
-            while ( series[i] && evaluation.items.length ) {
-              series[i]();
-              i++;
-            }
-
-            evaluation.continue = function () {
-              this.cursor ++;
-            };
-
-
-            $rootScope.evaluations.push(evaluation);
           });
       }
 
