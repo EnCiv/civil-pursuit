@@ -55,7 +55,7 @@ div(data-ng-init='show = "items"')
                     div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
                       a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"; $root.itemViewed = item._id') &nbsp;Details&nbsp;
                 h4(ng-bind='item.subject')
-                div.box-description(ng-bind='item.description')
+                div.box-description.pre-text(ng-bind='item.description')
                 include navigator/references
 
           // COLLAPSERS
@@ -99,7 +99,7 @@ div(data-ng-init='show = "items"')
                     .col-sm-6.padding(
                       data-ng-repeat      =   'item in evaluation.current'
                     )
-                      .pre-text.entry-description(data-ng-bind='item.description')
+                      .pre-text.entry-description.pre-text(data-ng-bind='item.description')
 
                   // References
 
