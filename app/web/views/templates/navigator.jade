@@ -127,6 +127,17 @@ div(data-ng-init='show = "items"')
                         placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
                         data-ng-show      =   'item.subject')
 
+                  // Promote
+
+                  .row.padding-bottom
+                    .col-sm-6.padding(
+                      data-ng-repeat      =   'item in evaluation.current'
+                    )
+                      button.btn.btn-block(
+                        data-ng-click   =   'promote($index)'
+                        data-ng-show    =   'evaluation.current[1]'
+                      ) Promote
+
                 // Continue
                 .row
                   .col-sm-12
