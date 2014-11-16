@@ -382,7 +382,10 @@
             }
           }
         });
-      }]
+      }],
+      link: function ($scope, $elem, $attr) {
+        $scope.isSplit = $elem.hasClass('split-view');
+      }
     };
   }
 })();

@@ -4572,10 +4572,10 @@ footer {
   margin-right: 0;
   border-right: none;
 }
-.panel .is-split li:nth-last-child(1) {
+.panel .split-view li:nth-last-child(1) {
   text-align: right;
 }
-.panel .is-split + h4 {
+.panel .split-view + h4 {
   clear: both;
   padding-top: 18px;
 }
