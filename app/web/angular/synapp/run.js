@@ -90,7 +90,6 @@
 
     $rootScope.itemHas = function (item, has) {
       
-      
       if ( item && has ) {
 
         var child = $rootScope.lineage[has];
@@ -171,6 +170,13 @@
         if ( this.current[1].$feedback ) {
           DataFactory.Feedback.create(this.current[1]._id,
             this.current[1].$feedback);
+
+          $rootScope.items.forEach(function (item, index) {
+            if ( item._id === this._id ) {
+              this.feedback.item = item._id;
+              $rootScope.feedbacks.push(this.feedback);
+            }
+          }.bind(this.current[1]));
         }
       }
 
