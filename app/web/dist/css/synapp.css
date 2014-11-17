@@ -4611,6 +4611,9 @@ footer {
 .panel .split-view .box-promoted {
   width: 100%;
 }
+.panel .split-view .toggle-arrow {
+  display: none;
+}
 .panel .split-view .box h4 {
   clear: both;
   padding-top: 28px;
