@@ -866,6 +866,10 @@ function getUrlTitle ($http) {
       Feedback: {
         find: function (feedback) {
           return $http.get(querystring_format('/models/Feedback', feedback));
+        },
+
+        create: function (item, feedback) {
+          return $http.post('/models/Feedback', {feedback: feedback, item: item});
         }
       },
 
@@ -1281,17 +1285,17 @@ function getUrlTitle ($http) {
       d = d || 'both';
 
       if ( this.current[0] ) {
-        // if ( this.current[0].$feedback ) {
-        //   DataFactory.Feedback.create(this.current[0]._id,
-        //     this.current[0].$feedback);
-        // }
+        if ( this.current[0].$feedback ) {
+          DataFactory.Feedback.create(this.current[0]._id,
+            this.current[0].$feedback);
+        }
       }
 
       if ( this.current[1] ) {
-        // if ( this.current[1].$feedback ) {
-        //   DataFactory.Feedback.create(this.current[1]._id,
-        //     this.current[1].$feedback);
-        // }
+        if ( this.current[1].$feedback ) {
+          DataFactory.Feedback.create(this.current[1]._id,
+            this.current[1].$feedback);
+        }
       }
 
       if ( this.next.length ) {

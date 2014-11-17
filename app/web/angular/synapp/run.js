@@ -160,17 +160,17 @@
       d = d || 'both';
 
       if ( this.current[0] ) {
-        // if ( this.current[0].$feedback ) {
-        //   DataFactory.Feedback.create(this.current[0]._id,
-        //     this.current[0].$feedback);
-        // }
+        if ( this.current[0].$feedback ) {
+          DataFactory.Feedback.create(this.current[0]._id,
+            this.current[0].$feedback);
+        }
       }
 
       if ( this.current[1] ) {
-        // if ( this.current[1].$feedback ) {
-        //   DataFactory.Feedback.create(this.current[1]._id,
-        //     this.current[1].$feedback);
-        // }
+        if ( this.current[1].$feedback ) {
+          DataFactory.Feedback.create(this.current[1]._id,
+            this.current[1].$feedback);
+        }
       }
 
       if ( this.next.length ) {

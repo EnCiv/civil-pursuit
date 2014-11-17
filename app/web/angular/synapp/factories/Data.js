@@ -64,6 +64,10 @@
       Feedback: {
         find: function (feedback) {
           return $http.get(querystring_format('/models/Feedback', feedback));
+        },
+
+        create: function (item, feedback) {
+          return $http.post('/models/Feedback', {feedback: feedback, item: item});
         }
       },
 

@@ -204,7 +204,8 @@ div(data-ng-init='show = "items"')
                     data-ng-bind='(item | calculatePromotionPercentage) + "%"')
                 h4 Feedbacks
                 div(data-ng-repeat='feedback in $root.feedbacks | getFeedbacksByItem:item._id')
-                  div(ng-bind='feedback.feedback')
+                  hr
+                  div.pre-text(ng-bind='feedback.feedback')
                 h4 Votes
 
             // EDITOR
