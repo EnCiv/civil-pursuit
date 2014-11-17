@@ -1,13 +1,20 @@
 ;(function () {
 
-  module.exports = [Evaluator];
+  module.exports = ['$timeout', Evaluator];
 
-  function Evaluator () {
+  function Evaluator ($timeout) {
     return {
       restrict: 'C',
       link: function ($scope) {
-        $scope.continue = function () {
-          console.log('lol');
+        $scope.closeEvaluation = function (inprogress) {
+          if ( ! inprogress ) {
+            $timeout(function () {
+              $scope.$show = "-";
+            }, 500);
+            $timeout(function () {
+              $scope.$show = "details";
+            }, 1000);
+          }
         };
       }
     };

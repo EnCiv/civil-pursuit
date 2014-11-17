@@ -140,7 +140,7 @@ div(data-ng-init='show = "items"')
                       data-ng-repeat      =   'item in evaluation.current'
                     )
                       button.btn.btn-block(
-                        data-ng-click   =   'promote($index)'
+                        data-ng-click   =   'evaluation.promote($index)'
                         data-ng-show    =   'evaluation.current[1]'
                       ) Promote
 
@@ -177,7 +177,7 @@ div(data-ng-init='show = "items"')
                   .row.padding-bottom
                     .col-xs-12
                       button.btn.btn-block(
-                        data-ng-click   =   'promote($index)'
+                        data-ng-click   =   'evaluation.promote($index)'
                         data-ng-show    =   'evaluation.current[1]'
                       ) Promote
 
@@ -185,7 +185,7 @@ div(data-ng-init='show = "items"')
                 .row
                   .col-sm-12
                     button.btn.btn-block(
-                      data-ng-click = 'evaluation.next.length ? evaluation.continue() : finish()' 
+                      data-ng-click = 'evaluation.next.length ? evaluation.continue() : evaluation.finish(); closeEvaluation(evaluation.next.length)' 
                     )
                       span(data-ng-show='evaluation.next.length') Continue
                       span(data-ng-hide='evaluation.next.length') Finish

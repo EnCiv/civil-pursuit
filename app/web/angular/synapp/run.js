@@ -135,8 +135,6 @@
     Evaluation.prototype.change = function(d) {
       d = d || 'both';
 
-      console.log(this);
-
       if ( this.current[0] ) {
         // if ( this.current[0].$feedback ) {
         //   DataFactory.Feedback.create(this.current[0]._id,
@@ -185,10 +183,36 @@
           this.cursor ++;
         }
       }
+
+      else {
+        this.current = [];
+      }
     };
 
     Evaluation.prototype.continue = function() {
       this.change();
+    };
+
+    Evaluation.prototype.finish = function () {
+      this.change();
+    };
+
+    Evaluation.prototype.promote = function(pos) {
+      // Promoting left item
+
+      if ( pos === 0 ) {
+
+        this.change('right');
+        
+      }
+
+      // Promoting right item
+
+      else {
+
+        this.change('left');
+
+      }
     };
 
     $rootScope.loadEvaluation = function (item_id) {
