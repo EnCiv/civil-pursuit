@@ -163,7 +163,7 @@
             $rootScope.addViewToItem(this.current[1]);
           }
           else {
-            delete this.current[1];
+            this.current.splice(1, 1);
           }
         }
 
@@ -174,7 +174,10 @@
           }
         }
 
-        this.next.push(this.items.shift());
+        if ( this.items.length ) {
+          this.next.push(this.items.shift());
+        }
+        
         this.cursor ++;
       }
     };
