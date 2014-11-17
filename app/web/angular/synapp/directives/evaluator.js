@@ -14,6 +14,12 @@
             $timeout(function () {
               $scope.$show = "details";
             }, 1000);
+            $timeout(function () {
+              $scope.$root.evaluations = $scope.$root.evaluations
+                .filter(function (evaluation) {
+                  return evaluation.item !== $scope.item._id;
+                });
+            }, 1000);
           }
         };
       }
