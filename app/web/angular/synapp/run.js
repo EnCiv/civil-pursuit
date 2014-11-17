@@ -128,13 +128,7 @@
 
       var series = [
         function () { 
-          var current_item = this.items.shift();
-          this.current[0] = $rootScope.items.reduce(function (current, item) {
-            if ( item._id === current_item._id ) {
-              current = item;
-            }
-            return current;
-          }, null);
+          this.current[0] = this.items.shift();
           $rootScope.addViewToItem(this.current[0]);
         }.bind(this),
         
