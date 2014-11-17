@@ -170,6 +170,9 @@
         if ( d === 'both' ) {
           if ( this.items.length ) {
             this.next.push(this.items.shift());
+          }
+
+          if ( this.cursor !== this.limit ) {
             this.cursor ++;
           }
         }
@@ -178,7 +181,9 @@
           this.next.push(this.items.shift());
         }
         
-        this.cursor ++;
+        if ( this.cursor !== this.limit ) {
+          this.cursor ++;
+        }
       }
     };
 
