@@ -43,7 +43,6 @@ div(data-ng-init='show = "items"')
 
                     div(data-ng-show='is.in = ' + !!isSignedIn
                       data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-                      
                       a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator"); $parent.show = "items"; $root.itemViewed = item._id') Promote
 
                     //- Promoted stat (times)
@@ -204,7 +203,7 @@ div(data-ng-init='show = "items"')
                     data-ng-bind='(item | calculatePromotionPercentage) + "%"')
                 h4 Feedbacks
                 div(data-ng-repeat='feedback in $root.feedbacks | getFeedbacksByItem:item._id')
-                  hr
+
                   div.pre-text(ng-bind='feedback.feedback')
                 h4 Votes
 

@@ -14,7 +14,7 @@ form.form-inline(
   - if ( signUpDuplicateError )
     span(data-ng-init='alert = "This account is already in use."')
 
-  include ../partials/alert
+  include ../layout/alert
 
   .row
     .col-xs-4
@@ -68,7 +68,7 @@ hr
         h4#joinLabel.modal-title Join
 
       .modal-body
-        include ../partials/alert
+        include ../layout/alert
 
         p
           button.btn.btn-link

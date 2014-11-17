@@ -100,9 +100,10 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        console.info('Sign-in attempt: %s'.format(req.body.email));
+        console.info(require('util').format('Sign-in attempt: %s',
+          req.body.email));
         // -------------------------------------------------------------------------------------- \\
-        var User = require('../models/User');
+        var User = require('../../business/models/User');
           // ------------------------------------------------------------------------------------ \\
           User                            .should.be.a.Function;
           User                            .should.have.property('findOne');
@@ -117,12 +118,13 @@ module.exports = function (req, res, next) {
           domain.intercept(function (user) {
             // ---------------------------------------------------------------------------------- \\
             if ( ! user ) {
-              console.warn('User not found: %s'.format(req.body.email));
+              console.warn(require('util').format('User not found: %s',
+                req.body.email));
 
               throw customError(404, 'No such user');
             }
             // ---------------------------------------------------------------------------------- \\
-            console.info('User found: %s'.format(req.body.email));
+            // console.info('User found: %s'.format(req.body.email));
             // ---------------------------------------------------------------------------------- \\
             var bcrypt = require('bcrypt');
             // ---------------------------------------------------------------------------------- \\
@@ -132,11 +134,11 @@ module.exports = function (req, res, next) {
                 throw customError(401, 'No such user');
               }
               // -------------------------------------------------------------------------------- \\
-              console.info('Email match: %s'         .format(req.body.email));
+              // console.info('Email match: %s'         .format(req.body.email));
               // -------------------------------------------------------------------------------- \\
               res.cookie('synuser', { email: req.body.email, id: user._id }, cookie);
               // -------------------------------------------------------------------------------- \\
-              console.error('User signed in: %s'      .format(req.body.email));
+              // console.error('User signed in: %s'      .format(req.body.email));
               // -------------------------------------------------------------------------------- \\
               res.json({ in: true });
             }));

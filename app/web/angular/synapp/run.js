@@ -220,6 +220,8 @@
 
     Evaluation.prototype.finish = function () {
       this.change();
+
+
     };
 
     Evaluation.prototype.promote = function(pos) {
