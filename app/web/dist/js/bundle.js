@@ -1188,6 +1188,9 @@ function getUrlTitle ($http) {
     $rootScope.getItems({ type: 'Topic' });
 
     $rootScope.addViewToItem = function (item) {
+
+      console.log('item', item);
+
       DataFactory.Item.update(item._id, { $inc: { views: 1 } });
       $rootScope.items.forEach(function (_item, index) {
         if ( _item._id === item._id ) {
