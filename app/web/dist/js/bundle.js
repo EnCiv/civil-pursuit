@@ -1290,8 +1290,8 @@ function getUrlTitle ($http) {
 
           $rootScope.items.forEach(function (item, index) {
             if ( item._id === this._id ) {
-              this.feedback.item = item._id;
-              $rootScope.feedbacks.push(this.feedback);
+              this.$feedback.item = item._id;
+              $rootScope.feedbacks.push(this.$feedback);
             }
           }.bind(this.current[0]));
         }
@@ -1304,8 +1304,8 @@ function getUrlTitle ($http) {
 
           $rootScope.items.forEach(function (item, index) {
             if ( item._id === this._id ) {
-              this.feedback.item = item._id;
-              $rootScope.feedbacks.push(this.feedback);
+              this.$feedback.item = item._id;
+              $rootScope.feedbacks.push(this.$feedback);
             }
           }.bind(this.current[1]));
         }
