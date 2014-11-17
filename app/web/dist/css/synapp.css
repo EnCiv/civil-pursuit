@@ -4603,6 +4603,9 @@ footer {
 .panel .split-view li:nth-last-child(1) {
   text-align: right;
 }
+.panel .split-view .box-promoted {
+  width: 100%;
+}
 .panel .split-view .box h4 {
   clear: both;
   padding-top: 28px;
