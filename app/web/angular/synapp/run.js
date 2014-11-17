@@ -68,7 +68,7 @@
 
     $rootScope.addViewToItem = function (item) {
 
-      console.log('item', item);
+      if ( ! item ) { return };
 
       DataFactory.Item.update(item._id, { $inc: { views: 1 } });
       $rootScope.items.forEach(function (_item, index) {
