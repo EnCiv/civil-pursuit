@@ -43,14 +43,15 @@ div(data-ng-init='show = "items"')
 
                     div(data-ng-show='is.in = ' + !!isSignedIn
                       data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
+                      
                       a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator"); $parent.show = "items"; $root.itemViewed = item._id') Promote
 
                     //- Promoted stat (times)
-                    div(data-ng-bind='item.promotions'
+                    div.pnum(data-ng-bind='item.promotions'
                       data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
 
                     //- Promoted stat (percent)
-                    div(data-ng-bind='(item | calculatePromotionPercentage) || 0 + "%"'
+                    div.pnum(data-ng-bind='(item | calculatePromotionPercentage) || 0 + "%"'
                       data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
 
                     //- Details button

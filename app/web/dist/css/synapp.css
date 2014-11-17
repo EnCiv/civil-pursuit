@@ -4560,8 +4560,13 @@ footer {
     max-height: 216px;
   }
 }
+.panel .panel-body .items .item .box .item-main .pnum {
+  margin-bottom: 6px;
+  margin-top: 6px;
+}
 .panel .panel-body .items .item .box .item-main .box-promoted {
   width: 100px;
+  margin-bottom: 30px;
 }
 .panel .panel-body .items .item .box .item-main h4 {
   font-size: 25px;
