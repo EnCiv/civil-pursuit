@@ -4534,20 +4534,43 @@ footer {
   border-right: none;
 }
 .panel .panel-body .items .item .box {
-  overflow: auto;
+  overflow: hidden;
 }
-.panel .panel-body .items .item .box h4 {
-  padding-left: 20px;
-  font-size: 24px;
-  margin-top: -5px;
-  margin-right: 90px;
-  padding-right: -1020px;
+.panel .panel-body .items .item .box .item-main {
+  max-height: 125px;
+  overflow: hidden;
 }
-.panel .panel-body .items .item .box .box-description {
-  padding: 20px;
+@media (max-width: 440px) {
+  .panel .panel-body .items .item .box .item-main {
+    max-height: 216px;
+  }
+}
+@media (min-width: 440px) and (max-width: 768px) {
+  .panel .panel-body .items .item .box .item-main {
+    max-height: 172px;
+  }
+}
+@media (min-width: 992px) {
+  .panel .panel-body .items .item .box .item-main {
+    max-height: 172px;
+  }
+}
+@media (min-width: 1200px) {
+  .panel .panel-body .items .item .box .item-main {
+    max-height: 216px;
+  }
+}
+.panel .panel-body .items .item .box .item-main .box-promoted {
+  width: 100px;
+}
+.panel .panel-body .items .item .box .item-main h4 {
+  font-size: 25px;
+  margin-top: 0px;
+}
+.panel .panel-body .items .item .box .item-main .box-description {
   font-size: 16px;
 }
-.panel .panel-body .items .item .box .entry-title {
+.panel .panel-body .items .item .box .item-main .entry-title {
   padding: 0 20px 20px 20px;
 }
 .panel .panel-body .items .item .collapsers .evaluator,
@@ -4566,6 +4589,11 @@ footer {
 .panel .panel-body .items .item .collapsers .toggle-arrow i {
   display: block;
   margin-top: -30px;
+}
+@media (max-width: 768px) {
+  .panel .panel-body .items .item .collapsers .toggle-arrow i {
+    margin-top: 0;
+  }
 }
 .panel .panel {
   margin: 10px;

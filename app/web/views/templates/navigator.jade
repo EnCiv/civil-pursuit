@@ -35,10 +35,12 @@ div(data-ng-init='show = "items"')
           .box
             .row
               .col-xs-12.padding(data-ng-class='{ "col-sm-4": ! isSplit }')
-                +item-image()
+                +item-image
+              
               .col-xs-12.padding(data-ng-class='{ "col-sm-8": ! isSplit }')
-                .box-promoted(data-ng-class='{ "text-right pull-right": ! isSplit, "is-split": isSplit }')
-                  .row
+                .item-main
+                  .box-promoted(data-ng-class='{ "text-right pull-right": ! isSplit, "is-split": isSplit }')
+
                     div(data-ng-show='is.in = ' + !!isSignedIn
                       data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
                       a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator"); $parent.show = "items"; $root.itemViewed = item._id') Promote
@@ -54,9 +56,10 @@ div(data-ng-init='show = "items"')
                     //- Details button
                     div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
                       a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"; $root.itemViewed = item._id') &nbsp;Details&nbsp;
-                h4(ng-bind='item.subject')
-                div.box-description.pre-text(ng-bind='item.description')
-                include navigator/references
+
+                  h4(ng-bind='item.subject')
+                  div.box-description.pre-text(ng-bind='item.description')
+                  include navigator/references
 
           // COLLAPSERS
 
