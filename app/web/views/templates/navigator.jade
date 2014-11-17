@@ -185,7 +185,7 @@ div(data-ng-init='show = "items"')
                 .row
                   .col-sm-12
                     button.btn.btn-block(
-                      data-ng-click = 'evaluation.next.length ? evaluation.continue() : evaluation.finish(); closeEvaluation(evaluation.next.length)' 
+                      data-ng-click = 'evaluation.next.length ? evaluation.continue() : evaluation.finish(); closeEvaluation(evaluation.current.length)' 
                     )
                       span(data-ng-show='evaluation.next.length') Continue
                       span(data-ng-hide='evaluation.next.length') Finish
