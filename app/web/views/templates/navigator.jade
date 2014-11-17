@@ -47,11 +47,14 @@ div(data-ng-init='show = "items"')
                       a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator"); $parent.show = "items"; $root.itemViewed = item._id') Promote
 
                     //- Promoted stat (times)
-                    div.pnum(data-ng-bind='item.promotions'
+                    div.pnum(
                       data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
+                        //- span(data-ng-bind='item.views')
+                        //- span ,  
+                        span(data-ng-bind='item.promotions')
 
                     //- Promoted stat (percent)
-                    div.pnum(data-ng-bind='(item | calculatePromotionPercentage) || 0 + "%"'
+                    div.pnum(data-ng-bind='((item | calculatePromotionPercentage) || 0) + "%"'
                       data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
 
                     //- Details button
@@ -140,7 +143,7 @@ div(data-ng-init='show = "items"')
                       data-ng-repeat      =   'item in evaluation.current'
                     )
                       button.btn.btn-block(
-                        data-ng-click   =   'evaluation.promote($index)'
+                        data-ng-click   =   'evaluation.promote($index); closeEvaluation(evaluation.current.length)'
                         data-ng-show    =   'evaluation.current[1]'
                       ) Promote
 
@@ -177,7 +180,7 @@ div(data-ng-init='show = "items"')
                   .row.padding-bottom
                     .col-xs-12
                       button.btn.btn-block(
-                        data-ng-click   =   'evaluation.promote($index)'
+                        data-ng-click   =   'evaluation.promote($index); closeEvaluation(evaluation.current.length)'
                         data-ng-show    =   'evaluation.current[1]'
                       ) Promote
 

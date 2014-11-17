@@ -1189,6 +1189,21 @@ function getUrlTitle ($http) {
 
     $rootScope.addViewToItem = function (item) {
       DataFactory.Item.update(item._id, { $inc: { views: 1 } });
+      $rootScope.items.forEach(function (_item, index) {
+        if ( _item._id === item._id ) {
+          $rootScope.items[index].views += 1;
+        }
+      });
+    };
+
+    $rootScope.addPromotionToItem = function (item) {
+      console.log('promoting');
+      DataFactory.Item.update(item._id, { $inc: { promotions: 1 } });
+      $rootScope.items.forEach(function (_item, index) {
+        if ( _item._id === item._id ) {
+          $rootScope.items[index].promotions += 1;
+        }
+      });
     };
 
     $rootScope.itemHas = function (item, has) {
@@ -1231,7 +1246,13 @@ function getUrlTitle ($http) {
 
       var series = [
         function () { 
-          this.current[0] = this.items.shift();
+          var current_item = this.items.shift();
+          this.current[0] = $rootScope.items.reduce(function (current, item) {
+            if ( item._id === current_item._id ) {
+              current = item;
+            }
+            return current;
+          }, null);
           $rootScope.addViewToItem(this.current[0]);
         }.bind(this),
         
@@ -1323,6 +1344,8 @@ function getUrlTitle ($http) {
 
       if ( pos === 0 ) {
 
+        $rootScope.addPromotionToItem(this.current[0]);
+
         this.change('right');
         
       }
@@ -1330,6 +1353,8 @@ function getUrlTitle ($http) {
       // Promoting right item
 
       else {
+
+        $rootScope.addPromotionToItem(this.current[1]);
 
         this.change('left');
 
