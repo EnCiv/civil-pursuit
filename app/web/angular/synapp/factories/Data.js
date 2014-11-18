@@ -58,6 +58,11 @@
         evaluate: function (id) {
           return $http
             .get('/models/Item.evaluate/' + id);
+        },
+
+        details: function (id) {
+          return $http
+            .get('/models/Item.details/' + id);
         }
       },
 

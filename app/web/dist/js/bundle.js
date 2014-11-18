@@ -178,6 +178,176 @@
 },{}],2:[function(require,module,exports){
 ;(function () {
 
+  module.exports = ['$timeout', Charts];
+
+  function Charts ($timeout) {
+    return {
+      restrict: 'CA',
+
+      link: function ($scope, $elem, $attr) {
+
+        var t1 = 0;
+
+        var item = $scope.$parent.item._id;
+
+        var criteria = $scope.criteria._id;
+
+        var loaded = false;
+
+        $scope.$root.$watch('votes', function (votes, _votes) {
+          if ( votes && votes.length ) {
+
+            if ( ! loaded ) {
+              loaded = true;
+
+              votes = votes.filter(function (vote) {
+                return ( vote.item === item );
+              });
+
+              console.log('votes', votes)
+
+              if ( votes.length && votes[0].criterias[criteria] ) {
+
+                var data = [];
+
+                for ( var number in votes[0].criterias[criteria].values ) {
+                  data.push({
+                    label: number,
+                    value: votes[0].criterias[criteria].values[number] * 100 / votes[0].criterias[criteria].total
+                  });
+                }
+
+                var columns = ['votes'];
+
+                data.forEach(function (d) {
+                  columns.push(d.value);
+                });
+
+                var chart = c3.generate({
+                    bindto: '#' + $elem.find('svg').attr('id'),
+
+                    data: {
+                      columns: [
+                        columns
+                      ],
+
+                      type: 'bar'
+                    },
+                    
+                    axis: {
+                      
+                      y: {
+                        max: 90,
+
+                        show: false,
+
+                        tick: {
+                          count: 5,
+
+                          format: function (y) {
+                            return y;
+                          }
+                        }
+                      }
+                    },
+
+                    size: {
+                      height: 80
+                    }
+                });
+              }
+            }
+
+          }
+        });
+
+        return;
+
+        $timeout(chart, 1000);
+
+        var t1 = 0;
+
+        /** @method chart */
+
+        function chart () {
+
+          if ( ! $scope.$parent.votes ) {
+            t1 ++;
+            if ( t1 < 10 ) {
+              return;
+            }
+            return $timeout(chart, 1000);
+          }
+
+          var votes = $scope.$parent.votes[$attr.synCharts];
+
+          if ( ! votes ) {
+            return;
+          }
+
+          var data = [];
+
+          for ( var number in votes.values ) {
+            data.push({
+              label: number,
+              value: votes.values[number] * 100 / votes.total
+            });
+          }
+
+          var columns = ['votes'];
+
+          data.forEach(function (d) {
+            columns.push(d.value);
+          });
+
+          if ( ! $('#chart-' + $attr.synCharts).length ) {
+            return console.error('chart not found #chart-' + $attr.synCharts);
+          }
+
+          console.log('criteria', $attr.synCharts);
+
+          var chart = c3.generate({
+              bindto: '#chart-' + $attr.synCharts,
+
+              data: {
+                columns: [
+                  columns
+                ],
+
+                type: 'bar'
+              },
+              
+              axis: {
+                
+                y: {
+                  max: 90,
+
+                  show: false,
+
+                  tick: {
+                    count: 5,
+
+                    format: function (y) {
+                      return y;
+                    }
+                  }
+                }
+              },
+
+              size: {
+                height: 80
+              }
+          });
+        }
+      }
+    };
+  }
+
+})();
+
+},{}],3:[function(require,module,exports){
+;(function () {
+
   module.exports = ['$rootScope', '$timeout', 'DataFactory', Creator];
 
   function Creator ($rootScope, $timeout, DataFactory) {
@@ -250,7 +420,7 @@
   }
 
 })();
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 ;(function () {
 
   module.exports = [Details];
@@ -264,7 +434,7 @@
   }
 
 })();
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['DataFactory', Editor];
@@ -290,7 +460,7 @@
   }
 })();
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$timeout', Evaluator];
@@ -321,7 +491,7 @@
 
 })();
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ;(function () {
 
   module.exports = [ItemMedia];
@@ -379,7 +549,7 @@
 
 })();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', Item];
@@ -423,7 +593,7 @@
   }
 })();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$compile', 'DataFactory', NavigatorComponent];
@@ -517,7 +687,7 @@
   }
 
 })();
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -700,7 +870,7 @@
     };
 
 })();
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$timeout', SlidersComponent];
@@ -736,7 +906,7 @@
 
 })();
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
  * `getUrlTitle` Attempt to fetch a title from URL and inject back results to scope
  * 
@@ -796,7 +966,7 @@ function getUrlTitle ($http) {
   };
 }
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -857,6 +1027,11 @@ function getUrlTitle ($http) {
         evaluate: function (id) {
           return $http
             .get('/models/Item.evaluate/' + id);
+        },
+
+        details: function (id) {
+          return $http
+            .get('/models/Item.details/' + id);
         }
       },
 
@@ -889,7 +1064,7 @@ function getUrlTitle ($http) {
   };
 })();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * `UserFactory` User Factory (legacy from SignCtrl)
  * 
@@ -916,7 +1091,7 @@ function getUrlTitle ($http) {
   };
 })();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ;(function () {
 
   module.exports = [calculatePromotionPercentage];
@@ -933,7 +1108,7 @@ function getUrlTitle ($http) {
   }
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ;(function () {
 
   module.exports = [filterItems];
@@ -965,7 +1140,7 @@ function getUrlTitle ($http) {
   }
 })();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationByItem];
@@ -981,7 +1156,7 @@ function getUrlTitle ($http) {
   }
 
 })();
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationItems];
@@ -1007,7 +1182,7 @@ function getUrlTitle ($http) {
   }
 
 })();
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ;(function () {
 
   module.exports = [getFeedbacksByItem];
@@ -1024,7 +1199,7 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -1047,7 +1222,7 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -1133,7 +1308,10 @@ function getUrlTitle ($http) {
       sliders:        require('./directives/sliders'),
 
       /** Details */
-      details:        require('./directives/details')
+      details:        require('./directives/details'),
+
+      /** Charts */
+      charts:        require('./directives/charts')
     })
 
     .config(['$locationProvider',
@@ -1146,7 +1324,7 @@ function getUrlTitle ($http) {
 })();
 
 
-},{"./controllers/upload":1,"./directives/creator":2,"./directives/details":3,"./directives/editor":4,"./directives/evaluator":5,"./directives/item":7,"./directives/item-media":6,"./directives/navigator":8,"./directives/sign":9,"./directives/sliders":10,"./directives/url-fetcher":11,"./factories/Data":12,"./factories/Sign":13,"./filters/calculate-promotion-percentage":14,"./filters/filter-items":15,"./filters/get-evaluation-by-item":16,"./filters/get-evaluation-items":17,"./filters/get-feedbacks-by-item":18,"./filters/shorten":19,"./run":21}],21:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/filter-items":16,"./filters/get-evaluation-by-item":17,"./filters/get-evaluation-items":18,"./filters/get-feedbacks-by-item":19,"./filters/shorten":20,"./run":22}],22:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', 'DataFactory', Run];
@@ -1463,40 +1641,42 @@ function getUrlTitle ($http) {
     };
 
     $rootScope.loadDetails = function (item_id) {
-      var feedback = $rootScope.feedbacks
-        .filter(function (feedback) {
-          return feedback.item === item_id;
+
+      DataFactory.Item.details(item_id)
+        .success(function (details) {
+          console.log('details', details)
+          
+
+          var feedbacks = details.feedbacks;
+
+          if ( $rootScope.feedbacks.length ) {
+            feedbacks = feedbacks.filter(function (feedback) {
+              return $rootScope.feedbacks.some(function (_feedback) {
+                return _feedback._id === feedback._id;
+              });
+            });
+          }
+
+          $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
+
+
+
+          var vote = {
+            item: item_id,
+            criterias: details.votes
+          };
+
+          $rootScope.votes = $rootScope.votes
+            .filter(function (vote) {
+              return vote.item !== item_id;
+            });
+
+          $rootScope.votes.push(vote);
+
         });
-
-      if ( ! feedback.length ) {
-        DataFactory.Feedback.find({ item: item_id })
-          .success(function (feedbacks) {
-            $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
-          });
-      }
-
-      else {
-
-      }
-
-      var vote = $rootScope.votes
-        .filter(function (vote) {
-          return vote.item === item_id;
-        });
-
-      if ( ! vote.length ) {
-        DataFactory.Vote.find({ item: item_id })
-          .success(function (votes) {
-            $rootScope.votes = $rootScope.votes.concat(votes);
-          });
-      }
-
-      else {
-
-      }
     };
   }
 
 })();
 
-},{}]},{},[20]);
+},{}]},{},[21]);

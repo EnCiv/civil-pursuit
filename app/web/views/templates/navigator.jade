@@ -205,12 +205,13 @@ div(data-ng-init='show = "items"')
                 //- Has feedbacks
 
                 div(data-ng-show='($root.feedbacks | feedbackFilter:{item:item._id}).length')
-                  h3 Feedbacks
+                  h3 Feedbacks!!
                   
                   div(
-                    data-ng-repeat='feedback in $root.feedbacks | getFeedbacksByItem:item._id')
+                    data-ng-repeat='feedback in $root.feedbacks | feedbackFilter:{item:item._id}')
 
-                  div.pre-text(ng-bind='feedback.feedback')
+                    hr
+                    div.pre-text(ng-bind='feedback.feedback')
 
                 //- No feedback and just created
 
@@ -223,7 +224,51 @@ div(data-ng-init='show = "items"')
 
                 //- Votes
 
-                include charts
+                .row
+                  .col-xs-12
+                    h3 Votes
+
+                    //- For each criteria
+
+                    .row(
+                      data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:item.type}'
+                    )
+
+                      .col-xs-4
+
+                        //-
+                            CRITERIA NAME
+                        //-
+
+                        h4(
+                          data-ng-bind      =     'criteria.name'
+                          data-toggle       =     "tooltip" 
+                          data-placement    =     "top" 
+                          title             =     "{{criteria.description}}"
+                        )
+
+                      .col-xs-8
+
+                        //-
+                            CHART
+                        //-
+
+                        div(data-charts='{{criteria._id}}' data-ng-show2='votes[criteria._id].total')
+
+                          svg.chart(
+                            id                  =   'chart-{{item._id}}-{{criteria._id}}'
+                          )
+
+                          //-
+                              CHART SEPARATOR
+                          //-
+                          
+                          hr(
+                            data-ng-hide      =   'votes[criteria._id]'
+                          )
+
+                  hr
+
 
             // EDITOR
 

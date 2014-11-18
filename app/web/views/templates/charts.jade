@@ -3,11 +3,12 @@
 .row
   .col-xs-12
     h3 Votes
+      small(ng-bind='$root.criterias.length')
 
     //- For each criteria
 
     .row(
-      data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{item:item._id}'
+      data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:item.type}'
     )
 
       .col-xs-4

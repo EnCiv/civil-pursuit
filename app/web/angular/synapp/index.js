@@ -83,7 +83,10 @@
       sliders:        require('./directives/sliders'),
 
       /** Details */
-      details:        require('./directives/details')
+      details:        require('./directives/details'),
+
+      /** Charts */
+      charts:        require('./directives/charts')
     })
 
     .config(['$locationProvider',

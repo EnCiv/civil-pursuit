@@ -314,37 +314,39 @@
     };
 
     $rootScope.loadDetails = function (item_id) {
-      var feedback = $rootScope.feedbacks
-        .filter(function (feedback) {
-          return feedback.item === item_id;
+
+      DataFactory.Item.details(item_id)
+        .success(function (details) {
+          console.log('details', details)
+          
+
+          var feedbacks = details.feedbacks;
+
+          if ( $rootScope.feedbacks.length ) {
+            feedbacks = feedbacks.filter(function (feedback) {
+              return $rootScope.feedbacks.some(function (_feedback) {
+                return _feedback._id === feedback._id;
+              });
+            });
+          }
+
+          $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
+
+
+
+          var vote = {
+            item: item_id,
+            criterias: details.votes
+          };
+
+          $rootScope.votes = $rootScope.votes
+            .filter(function (vote) {
+              return vote.item !== item_id;
+            });
+
+          $rootScope.votes.push(vote);
+
         });
-
-      if ( ! feedback.length ) {
-        DataFactory.Feedback.find({ item: item_id })
-          .success(function (feedbacks) {
-            $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
-          });
-      }
-
-      else {
-
-      }
-
-      var vote = $rootScope.votes
-        .filter(function (vote) {
-          return vote.item === item_id;
-        });
-
-      if ( ! vote.length ) {
-        DataFactory.Vote.find({ item: item_id })
-          .success(function (votes) {
-            $rootScope.votes = $rootScope.votes.concat(votes);
-          });
-      }
-
-      else {
-
-      }
     };
   }
 
