@@ -4616,7 +4616,7 @@ footer {
   text-align: right;
 }
 .panel .split-view .box-promoted {
-  width: 100%;
+  width: 100% !important;
 }
 .panel .split-view .toggle-arrow {
   display: none;
