@@ -34,6 +34,20 @@
             });
           }
         };
+      },
+      feedbackFilter:               function () {
+        return function (feedbacks, feedback) {
+          if ( feedbacks ) {
+            return feedbacks.filter(function (_feedback) {
+              for ( var key in feedback ) {
+                if ( _feedback[key] !== feedback[key] ) {
+                  return false;
+                }
+              }
+              return true;
+            });
+          }
+        };
       }
     })
 
@@ -66,7 +80,10 @@
       itemMedia:      require('./directives/item-media'),
 
       /** Sliders */
-      sliders:        require('./directives/sliders')
+      sliders:        require('./directives/sliders'),
+
+      /** Details */
+      details:        require('./directives/details')
     })
 
     .config(['$locationProvider',

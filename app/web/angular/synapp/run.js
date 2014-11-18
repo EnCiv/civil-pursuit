@@ -110,6 +110,7 @@
       this.items      =   evaluation.items;
       this.type       =   evaluation.type;
       this.criterias  =   evaluation.criterias;
+      this.votes      =   [];
 
       this.cursor   =   1;
       this.limit    =   5;
@@ -153,6 +154,9 @@
       d = d || 'both';
 
       if ( this.current[0] ) {
+
+        // feedback
+
         if ( this.current[0].$feedback ) {
           DataFactory.Feedback.create(this.current[0]._id,
             this.current[0].$feedback);
@@ -164,9 +168,29 @@
             }
           }.bind(this.current[0]));
         }
+
+        // Votes
+
+        if ( this.votes[this.current[0]._id] ) {
+
+          var votes = [];
+
+          for ( var criteria in this.votes[this.current[0]._id] ) {
+            votes.push({
+              item: this.current[0]._id,
+              criteria: criteria,
+              value: this.votes[this.current[0]._id][criteria]
+            })
+          }
+
+          DataFactory.Vote.create(votes);
+        }
       }
 
       if ( this.current[1] ) {
+
+        // Feedback
+
         if ( this.current[1].$feedback ) {
           DataFactory.Feedback.create(this.current[1]._id,
             this.current[1].$feedback);
@@ -177,6 +201,23 @@
               $rootScope.feedbacks.push(this.$feedback);
             }
           }.bind(this.current[1]));
+        }
+
+        // Votes
+
+        if ( this.votes[this.current[1]._id] ) {
+
+          var votes = [];
+
+          for ( var criteria in this.votes[this.current[1]._id] ) {
+            votes.push({
+              item: this.current[1]._id,
+              criteria: criteria,
+              value: this.votes[this.current[1]._id][criteria]
+            })
+          }
+
+          DataFactory.Vote.create(votes);
         }
       }
 
@@ -282,6 +323,22 @@
         DataFactory.Feedback.find({ item: item_id })
           .success(function (feedbacks) {
             $rootScope.feedbacks = $rootScope.feedbacks.concat(feedbacks);
+          });
+      }
+
+      else {
+
+      }
+
+      var vote = $rootScope.votes
+        .filter(function (vote) {
+          return vote.item === item_id;
+        });
+
+      if ( ! vote.length ) {
+        DataFactory.Vote.find({ item: item_id })
+          .success(function (votes) {
+            $rootScope.votes = $rootScope.votes.concat(votes);
           });
       }
 

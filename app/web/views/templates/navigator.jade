@@ -197,15 +197,32 @@ div(data-ng-init='show = "items"')
 
             .details.animate-show.padding(ng-show='$show === "details" && show === "items" && $root.itemViewed === item._id' ng-class=' { "active": $show === "details" && show === "items" && $root.itemViewed === item._id, "inactive": $show !== "details" || show !== "items" || $root.itemViewed !== item._id } ')
               section
-                h4 Promoted
+                h3 Promoted
                 .progress
                   .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
                     data-ng-bind='(item | calculatePromotionPercentage) + "%"')
-                h4 Feedbacks
-                div(data-ng-repeat='feedback in $root.feedbacks | getFeedbacksByItem:item._id')
+
+                //- Has feedbacks
+
+                div(data-ng-show='($root.feedbacks | feedbackFilter:{item:item._id}).length')
+                  h3 Feedbacks
+                  
+                  div(
+                    data-ng-repeat='feedback in $root.feedbacks | getFeedbacksByItem:item._id')
 
                   div.pre-text(ng-bind='feedback.feedback')
-                h4 Votes
+
+                //- No feedback and just created
+
+                div(data-ng-hide='($root.feedbacks | feedbackFilter:{item:item._id}).length')
+                  h3 Feedback pending
+
+                  p While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.
+
+                  textarea I'm helping to bring synergy to democracy by voicing my opinion. I'm participating in the topic: "Most important issues in the US"
+
+                //- Votes
+
                 include charts
 
             // EDITOR

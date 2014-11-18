@@ -253,6 +253,20 @@
 },{}],3:[function(require,module,exports){
 ;(function () {
 
+  module.exports = [Details];
+
+  function Details () {
+    return {
+      restrict: 'C',
+      link: function ($scope, $elem) {
+      }
+    };
+  }
+
+})();
+},{}],4:[function(require,module,exports){
+;(function () {
+
   module.exports = ['DataFactory', Editor];
 
   function Editor (DataFactory) {
@@ -276,7 +290,7 @@
   }
 })();
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$timeout', Evaluator];
@@ -307,7 +321,7 @@
 
 })();
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ;(function () {
 
   module.exports = [ItemMedia];
@@ -365,7 +379,7 @@
 
 })();
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', Item];
@@ -409,7 +423,7 @@
   }
 })();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$compile', 'DataFactory', NavigatorComponent];
@@ -503,7 +517,7 @@
   }
 
 })();
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -686,12 +700,12 @@
     };
 
 })();
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', SlidersComponent];
+  module.exports = ['$timeout', SlidersComponent];
 
-  function SlidersComponent ($rootScope) {
+  function SlidersComponent ($timeout) {
     return {
       
       restrict: 'C',
@@ -700,52 +714,29 @@
 
       link: function ($scope, $elem, $attr) {
 
-        $scope.enableSlider = function ($last, current) {
+        $timeout(function () {
+          $elem.find('input.slider').slider();
 
-          if ( $last ) {
-
-            // Tooltip
-
-            $("input.slider").slider();
-
-            // Set value
-
-            $('input.slider')
-              .slider('setValue', 5);
-
-            current = 5;
-
-            // On slide stop, update scope
-            
-            $("input.slider").slider('on', 'slideStop', function () {
-
+          $elem.find('input.slider').slider('on', 'slideStop',
+            function () {
               var slider = $(this);
 
               if ( slider.attr('type') ) {
 
-                var item = $rootScope.items
-                  .reduce(function (item, _item) {
-                    if ( _item._id === slider.data('item') ) {
-                      item = _item;
-                    }
-                    return item;
-                  }, {});
+                var value = slider.slider('getValue');
 
-                if ( ! item.$votes ) {
-                  item.$votes = {};
-                }
+                $scope.$parent.evaluation.votes[$scope.item._id][slider.data('criteria')] = value;
 
-                item.$votes[slider.data('criteria')] = slider.slider('getValue');
               }
             });
-          }
-        };
+        });
       }
     }
   }
 
 })();
-},{}],10:[function(require,module,exports){
+
+},{}],11:[function(require,module,exports){
 /**
  * `getUrlTitle` Attempt to fetch a title from URL and inject back results to scope
  * 
@@ -805,7 +796,7 @@ function getUrlTitle ($http) {
   };
 }
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -883,12 +874,22 @@ function getUrlTitle ($http) {
         find: function (criteria) {
           return $http.get(querystring_format('/models/Criteria', criteria));
         }
+      },
+
+      Vote: {
+        find: function (vote) {
+          return $http.get(querystring_format('/models/Vote', vote));
+        },
+
+        create: function (vote) {
+          return $http.post('/models/Vote', vote);
+        }
       }
     };
   };
 })();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /**
  * `UserFactory` User Factory (legacy from SignCtrl)
  * 
@@ -915,7 +916,7 @@ function getUrlTitle ($http) {
   };
 })();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ;(function () {
 
   module.exports = [calculatePromotionPercentage];
@@ -932,7 +933,7 @@ function getUrlTitle ($http) {
   }
 })();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ;(function () {
 
   module.exports = [filterItems];
@@ -964,7 +965,7 @@ function getUrlTitle ($http) {
   }
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationByItem];
@@ -980,7 +981,7 @@ function getUrlTitle ($http) {
   }
 
 })();
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationItems];
@@ -1006,7 +1007,7 @@ function getUrlTitle ($http) {
   }
 
 })();
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ;(function () {
 
   module.exports = [getFeedbacksByItem];
@@ -1023,7 +1024,7 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -1046,7 +1047,7 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -1076,6 +1077,20 @@ function getUrlTitle ($http) {
             return criterias.filter(function (_criteria) {
               for ( var key in criteria ) {
                 if ( _criteria[key] !== criteria[key] ) {
+                  return false;
+                }
+              }
+              return true;
+            });
+          }
+        };
+      },
+      feedbackFilter:               function () {
+        return function (feedbacks, feedback) {
+          if ( feedbacks ) {
+            return feedbacks.filter(function (_feedback) {
+              for ( var key in feedback ) {
+                if ( _feedback[key] !== feedback[key] ) {
                   return false;
                 }
               }
@@ -1115,7 +1130,10 @@ function getUrlTitle ($http) {
       itemMedia:      require('./directives/item-media'),
 
       /** Sliders */
-      sliders:        require('./directives/sliders')
+      sliders:        require('./directives/sliders'),
+
+      /** Details */
+      details:        require('./directives/details')
     })
 
     .config(['$locationProvider',
@@ -1128,7 +1146,7 @@ function getUrlTitle ($http) {
 })();
 
 
-},{"./controllers/upload":1,"./directives/creator":2,"./directives/editor":3,"./directives/evaluator":4,"./directives/item":6,"./directives/item-media":5,"./directives/navigator":7,"./directives/sign":8,"./directives/sliders":9,"./directives/url-fetcher":10,"./factories/Data":11,"./factories/Sign":12,"./filters/calculate-promotion-percentage":13,"./filters/filter-items":14,"./filters/get-evaluation-by-item":15,"./filters/get-evaluation-items":16,"./filters/get-feedbacks-by-item":17,"./filters/shorten":18,"./run":20}],20:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/creator":2,"./directives/details":3,"./directives/editor":4,"./directives/evaluator":5,"./directives/item":7,"./directives/item-media":6,"./directives/navigator":8,"./directives/sign":9,"./directives/sliders":10,"./directives/url-fetcher":11,"./factories/Data":12,"./factories/Sign":13,"./filters/calculate-promotion-percentage":14,"./filters/filter-items":15,"./filters/get-evaluation-by-item":16,"./filters/get-evaluation-items":17,"./filters/get-feedbacks-by-item":18,"./filters/shorten":19,"./run":21}],21:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', 'DataFactory', Run];
@@ -1241,6 +1259,7 @@ function getUrlTitle ($http) {
       this.items      =   evaluation.items;
       this.type       =   evaluation.type;
       this.criterias  =   evaluation.criterias;
+      this.votes      =   [];
 
       this.cursor   =   1;
       this.limit    =   5;
@@ -1284,6 +1303,9 @@ function getUrlTitle ($http) {
       d = d || 'both';
 
       if ( this.current[0] ) {
+
+        // feedback
+
         if ( this.current[0].$feedback ) {
           DataFactory.Feedback.create(this.current[0]._id,
             this.current[0].$feedback);
@@ -1295,9 +1317,29 @@ function getUrlTitle ($http) {
             }
           }.bind(this.current[0]));
         }
+
+        // Votes
+
+        if ( this.votes[this.current[0]._id] ) {
+
+          var votes = [];
+
+          for ( var criteria in this.votes[this.current[0]._id] ) {
+            votes.push({
+              item: this.current[0]._id,
+              criteria: criteria,
+              value: this.votes[this.current[0]._id][criteria]
+            })
+          }
+
+          DataFactory.Vote.create(votes);
+        }
       }
 
       if ( this.current[1] ) {
+
+        // Feedback
+
         if ( this.current[1].$feedback ) {
           DataFactory.Feedback.create(this.current[1]._id,
             this.current[1].$feedback);
@@ -1308,6 +1350,23 @@ function getUrlTitle ($http) {
               $rootScope.feedbacks.push(this.$feedback);
             }
           }.bind(this.current[1]));
+        }
+
+        // Votes
+
+        if ( this.votes[this.current[1]._id] ) {
+
+          var votes = [];
+
+          for ( var criteria in this.votes[this.current[1]._id] ) {
+            votes.push({
+              item: this.current[1]._id,
+              criteria: criteria,
+              value: this.votes[this.current[1]._id][criteria]
+            })
+          }
+
+          DataFactory.Vote.create(votes);
         }
       }
 
@@ -1419,9 +1478,25 @@ function getUrlTitle ($http) {
       else {
 
       }
+
+      var vote = $rootScope.votes
+        .filter(function (vote) {
+          return vote.item === item_id;
+        });
+
+      if ( ! vote.length ) {
+        DataFactory.Vote.find({ item: item_id })
+          .success(function (votes) {
+            $rootScope.votes = $rootScope.votes.concat(votes);
+          });
+      }
+
+      else {
+
+      }
     };
   }
 
 })();
 
-},{}]},{},[19]);
+},{}]},{},[20]);

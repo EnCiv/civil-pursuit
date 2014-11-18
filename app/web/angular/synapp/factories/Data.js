@@ -75,6 +75,16 @@
         find: function (criteria) {
           return $http.get(querystring_format('/models/Criteria', criteria));
         }
+      },
+
+      Vote: {
+        find: function (vote) {
+          return $http.get(querystring_format('/models/Vote', vote));
+        },
+
+        create: function (vote) {
+          return $http.post('/models/Vote', vote);
+        }
       }
     };
   };

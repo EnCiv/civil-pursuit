@@ -6,7 +6,7 @@
 
 // Entry sliders
 
-section
+section(data-ng-init='evaluation.votes[item._id] = {}')
 
   div(
     data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:type}' 
@@ -29,11 +29,11 @@ section
       type                =   'text'
       data-item           =   '{{item._id}}'
       data-criteria       =   '{{criteria._id}}'
-      data-ng-model       =   'item.$votes[criteria._id]'
+      data-ng-model       =   'evaluation.votes[item._id][criteria._id]'
       data-slider-tooltip =   'hide'
     )
     
     
-    div(
-      data-ng-init        =   'enableSlider($last)'
-    )
+    //- div(
+    //-   data-ng-init        =   'enableSlider($last)'
+    //- )

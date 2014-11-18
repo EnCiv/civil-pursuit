@@ -1,8 +1,8 @@
 ;(function () {
 
-  module.exports = ['$rootScope', SlidersComponent];
+  module.exports = ['$timeout', SlidersComponent];
 
-  function SlidersComponent ($rootScope) {
+  function SlidersComponent ($timeout) {
     return {
       
       restrict: 'C',
@@ -11,46 +11,22 @@
 
       link: function ($scope, $elem, $attr) {
 
-        $scope.enableSlider = function ($last, current) {
+        $timeout(function () {
+          $elem.find('input.slider').slider();
 
-          if ( $last ) {
-
-            // Tooltip
-
-            $("input.slider").slider();
-
-            // Set value
-
-            $('input.slider')
-              .slider('setValue', 5);
-
-            current = 5;
-
-            // On slide stop, update scope
-            
-            $("input.slider").slider('on', 'slideStop', function () {
-
+          $elem.find('input.slider').slider('on', 'slideStop',
+            function () {
               var slider = $(this);
 
               if ( slider.attr('type') ) {
 
-                var item = $rootScope.items
-                  .reduce(function (item, _item) {
-                    if ( _item._id === slider.data('item') ) {
-                      item = _item;
-                    }
-                    return item;
-                  }, {});
+                var value = slider.slider('getValue');
 
-                if ( ! item.$votes ) {
-                  item.$votes = {};
-                }
+                $scope.$parent.evaluation.votes[$scope.item._id][slider.data('criteria')] = value;
 
-                item.$votes[slider.data('criteria')] = slider.slider('getValue');
               }
             });
-          }
-        };
+        });
       }
     }
   }
