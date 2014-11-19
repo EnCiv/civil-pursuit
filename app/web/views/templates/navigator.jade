@@ -61,7 +61,8 @@ div(data-ng-init='show = "items"')
                       a.btn.btn-sm(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"; $root.itemViewed = item._id') &nbsp;Details&nbsp;
 
                   h4(data-ng-bind='item.subject | shorten: 75'
-                    data-ng-class='{ "too-long": item.subject.length > 75 }')
+                    data-ng-class='{ "too-long": item.subject.length > 75 }'
+                    title='{{ item-subject }}')
                   div.box-description.pre-text(ng-bind='item.description')
                   include navigator/references
 
