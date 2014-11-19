@@ -13,19 +13,27 @@
  *  
 */
 
+/** ____________________________________________________________________________
+
+          IMPORTS
+    ============================================================================
+**/
+
 @import "mixins/gradient";
 
-body { 
-  // background: url(/images/crowd-of-people.jpg) no-repeat center center fixed; 
-  // -webkit-background-size: cover;
-  // -moz-background-size: cover;
-  // -o-background-size: cover;
-  // background-size: cover;
-}
+// body { 
+//   background: url(/images/crowd-of-people.jpg) no-repeat center center fixed; 
+//   -webkit-background-size: cover;
+//   -moz-background-size: cover;
+//   -o-background-size: cover;
+//   background-size: cover;
+// }
 
-/*
- * Top bar
- */
+/** ____________________________________________________________________________
+
+          TOP BAR
+    ============================================================================
+**/
 
 [role='header'] {
 	position: fixed;
@@ -60,12 +68,14 @@ body {
 	}
 }
 
-/*
- * Main
- */
+/** ____________________________________________________________________________
+
+          MAIN
+    ============================================================================
+**/
 
 [role='main'] {
- 	margin-top: 80px;
+ 	margin-top: @syn-top-bar-margin-bottom;
 
  	#intro {
  		margin-top: 20px;
@@ -73,13 +83,21 @@ body {
  	}
 }
 
+/** ____________________________________________________________________________
+
+          SIGN IN/ UP
+    ============================================================================
+**/
+
 .sign {
-	margin-top: 80px;
+	margin-top: @syn-top-bar-margin-bottom;
 }
 
-/*
- * Footer
- */
+/** ____________________________________________________________________________
+
+          FOOTER
+    ============================================================================
+**/
 
 footer {
   	text-align: center;

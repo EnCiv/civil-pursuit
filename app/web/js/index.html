@@ -1,0 +1,97 @@
+<!doctype html>
+	<section class="container">
+		<section role="main">
+			<section class="panel">
+				<div class="panel-heading">
+					<i>+</i>
+					<h4 class="bind-type">Loading</h4>
+				</div>
+				<div class="panel-body">
+					<div class="creator">
+						<h4>CREATOR</h4>
+					</div>
+				</div>
+			</section>
+		</section>
+	</section>
+			
+	<script src="/bower/jquery/dist/jquery.min.js"></script>
+	<script src="/foo/watchable.js"></script>
+	<script src="/foo/mvb.js"></script>
+	<script>
+
+		var templates = {
+			items: $('ul').html()
+		};
+
+		$('ul').empty();
+
+		var mvb = new MVB();
+
+		// BIND MODEL
+
+		mvb
+
+			.bind('items', function (items, diff) {console.log('coool')
+				items.forEach(function (item) {
+					if ( ! $('#item-' + item._id).length ) {
+						var div = $(templates.items);
+						
+						div.attr('id', 'item-' + item._id);
+						div.find('b').text(item.subject);
+						
+						$('ul').append(div);
+					}
+				});
+			})
+
+			.bind('type', $('.bind-type'))
+
+			.bind('showPanel', function (type, parent) {
+				
+			});
+
+		// BIND DOM
+		 mvb
+
+		 	.bind($('i'),
+
+		 		function (event, i) {
+		 			console.log('hahaha');
+			 	},
+
+			 	{ event: 'click' });
+
+		// INJECT
+
+		mvb
+
+			.inject('type', 'Topic');
+
+
+		$.ajax({
+			url: '/models/Item'
+		})
+			.done(function (items) {
+
+				console.log('got items')
+
+				if ( mvb.model.items && mvb.model.items.length ) {
+					items = items.filter(function (item) {
+						return mvb.model.items.some(function (_item) {
+							return _item._id !== item._id;
+						});
+					});
+				}
+
+				if ( ! mvb.model.items ) {
+					mvb.inject('items', items);
+				}
+				else {
+					console.log('dhs')
+					mvb.model.items = mvb.model.items.concat(items);
+				}
+
+			});
+
+	</script>

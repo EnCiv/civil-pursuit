@@ -436,6 +436,10 @@ module.exports = function synappExpress (listen, isTest) {
       express.static(path.join(process.env.SYNAPP_PATH,
         'app/web/images')));
 
+    app.use('/foo/',
+      express.static(path.join(process.env.SYNAPP_PATH,
+        'app/web/js')));
+
     ////////////////////////////////////////////////////////////////////////////
     // ERROR
     ////////////////////////////////////////////////////////////////////////////

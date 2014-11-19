@@ -1,9 +1,9 @@
 // ---------------------------------------------------------------------------------------------- \\
 var should = require('should');
 var path = require('path');;
+var base = path.dirname(path.dirname(path.dirname(__dirname)));
 // ---------------------------------------------------------------------------------------------- \\
-var cookie = require(path.join(process.env.SYNAPP_PATH, 'app/business/config.json'))
-  .cookie;
+var cookie = require(path.join(base, 'app/business/config.json')).cookie;
 // ---------------------------------------------------------------------------------------------- \\
 function customError (code, message) {
   var error = new Error(message);
@@ -61,7 +61,7 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        var User = require('../models/User');
+        var User = require(path.join(base, 'app/business/models/User'));
           // ------------------------------------------------------------------------------------ \\
           User                            .should.be.a.Function;
           User                            .should.have.property('create');
@@ -73,8 +73,6 @@ module.exports = function (req, res, next) {
           email: req.body.email,
           password: req.body.password
         }, domain.intercept(function (created) {
-          
-          console.error('User created: %s'    .format(req.body.email));
           
           res.cookie('synuser', { email: req.body.email, id: created._id }, cookie);
           
@@ -100,10 +98,8 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        console.info(require('util').format('Sign-in attempt: %s',
-          req.body.email));
         // -------------------------------------------------------------------------------------- \\
-        var User = require('../../business/models/User');
+        var User = require(path.join(base, 'app/business/models/User'));
           // ------------------------------------------------------------------------------------ \\
           User                            .should.be.a.Function;
           User                            .should.have.property('findOne');
@@ -118,9 +114,6 @@ module.exports = function (req, res, next) {
           domain.intercept(function (user) {
             // ---------------------------------------------------------------------------------- \\
             if ( ! user ) {
-              console.warn(require('util').format('User not found: %s',
-                req.body.email));
-
               throw customError(404, 'No such user');
             }
             // ---------------------------------------------------------------------------------- \\
@@ -130,7 +123,6 @@ module.exports = function (req, res, next) {
             // ---------------------------------------------------------------------------------- \\
             bcrypt.compare(req.body.password, user.password, domain.intercept(function (same) {
               if ( ! same ) {
-                console.warn('Wrong password: %s'      .format(req.body.email));
                 throw customError(401, 'No such user');
               }
               // -------------------------------------------------------------------------------- \\

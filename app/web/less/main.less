@@ -13,21 +13,50 @@
  *  
 */
 
+/** ____________________________________________________________________________
+
+          ELEMENTS
+    ============================================================================
+**/
 
 /*
- * Text from DB
+ *  Buttons
+ */
+
+a.btn {
+  background: #ddd;
+  color: #000;
+}
+
+a.btn-default {
+  background: #fff;
+  border: none
+}
+
+/*
+ *  Form
+ */
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+}
+
+/** ____________________________________________________________________________
+
+          CLASSES
+    ============================================================================
+**/
+
+
+/*
+ *  Format raw text
  */
 
 .pre-text {
   /** Parse \n into line breaks */
   white-space: pre-line;
   text-align: justify;
-}
-
-.default-topic-image {
-	-webkit-filter: grayscale(100%);
-	-moz-filter: grayscale(100%);
-	filter: grayscale(100%);
 }
 
 /*
@@ -43,28 +72,13 @@
  */
 
 .padding {
-	padding: 10px
+	padding: @syn-padding;
 }
 
 .padding-top {
-	padding-top: 10px
+	padding-top: @syn-padding;
 }
 
 .padding-bottom {
-  padding-bottom: 10px
-}
-
-a.btn {
-  background: #ddd;
-  color: #000;
-}
-
-a.btn-default {
-  background: #fff;
-  border: none
-}
-
-textarea {
-  width: 100%;
-  min-height: 120px;
+  padding-bottom: @syn-padding;
 }

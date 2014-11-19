@@ -1111,6 +1111,92 @@ function getUrlTitle ($http) {
 },{}],16:[function(require,module,exports){
 ;(function () {
 
+  module.exports = [CriteriaFilter];
+
+  function CriteriaFilter () {
+    return function (criterias, criteria) {
+      if ( criterias ) {
+        return criterias.filter(function (_criteria) {
+          for ( var key in criteria ) {
+            if ( _criteria[key] !== criteria[key] ) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    };
+  }
+
+})();
+
+},{}],17:[function(require,module,exports){
+;(function () {
+
+  module.exports = [FeedbackFilter];
+
+  function FeedbackFilter () {
+    return function (feedbacks, feedback) {
+      if ( feedbacks ) {
+        return feedbacks.filter(function (_feedback) {
+          for ( var key in feedback ) {
+            if ( _feedback[key] !== feedback[key] ) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    };
+  }
+
+})();
+
+},{}],18:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', getEvaluationByItem];
+
+  function getEvaluationByItem ($rootScope) {
+    return function (evaluations, item_id) {
+      if ( evaluations ) {
+        return evaluations.filter(function (evaluation) {
+          return evaluation.item === item_id;
+        });
+      }
+    };
+  }
+
+})();
+},{}],19:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', getEvaluationItems];
+
+  function getEvaluationItems ($rootScope) {
+    return function (items, item_id) {
+      if ( items && item_id ) {
+        var evaluation = $rootScope.evaluations
+          .reduce(function (evaluation, candidate) {
+            if ( candidate.item === item_id ) {
+              evaluation = candidate;
+            }
+            return evaluation;
+          }, null);
+
+        if ( evaluation ) {
+          return evaluation.items;
+        }
+
+        return [];
+      }
+    };
+  }
+
+})();
+},{}],20:[function(require,module,exports){
+;(function () {
+
   module.exports = [filterItems];
 
   function filterItems () {
@@ -1140,66 +1226,7 @@ function getUrlTitle ($http) {
   }
 })();
 
-},{}],17:[function(require,module,exports){
-;(function () {
-
-  module.exports = ['$rootScope', getEvaluationByItem];
-
-  function getEvaluationByItem ($rootScope) {
-    return function (evaluations, item_id) {
-      if ( evaluations ) {
-        return evaluations.filter(function (evaluation) {
-          return evaluation.item === item_id;
-        });
-      }
-    };
-  }
-
-})();
-},{}],18:[function(require,module,exports){
-;(function () {
-
-  module.exports = ['$rootScope', getEvaluationItems];
-
-  function getEvaluationItems ($rootScope) {
-    return function (items, item_id) {
-      if ( items && item_id ) {
-        var evaluation = $rootScope.evaluations
-          .reduce(function (evaluation, candidate) {
-            if ( candidate.item === item_id ) {
-              evaluation = candidate;
-            }
-            return evaluation;
-          }, null);
-
-        if ( evaluation ) {
-          return evaluation.items;
-        }
-
-        return [];
-      }
-    };
-  }
-
-})();
-},{}],19:[function(require,module,exports){
-;(function () {
-
-  module.exports = [getFeedbacksByItem];
-
-  function getFeedbacksByItem (getFeedbacksByItem) {
-    return function (feedbacks, item_id) {
-      if ( feedbacks ) {
-        return feedbacks.filter(function (feedback) {
-          return feedback.item === item_id;
-        });
-      }
-    };
-  }
-
-})();
-
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -1222,7 +1249,7 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -1244,36 +1271,9 @@ function getUrlTitle ($http) {
       calculatePromotionPercentage: require('./filters/calculate-promotion-percentage'),
       getEvaluationItems:           require('./filters/get-evaluation-items'),
       getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
-      getFeedbacksByItem:           require('./filters/get-feedbacks-by-item'),
-      filterItems:                  require('./filters/filter-items'),
-      criteriaFilter:               function () {
-        return function (criterias, criteria) {
-          if ( criterias ) {
-            return criterias.filter(function (_criteria) {
-              for ( var key in criteria ) {
-                if ( _criteria[key] !== criteria[key] ) {
-                  return false;
-                }
-              }
-              return true;
-            });
-          }
-        };
-      },
-      feedbackFilter:               function () {
-        return function (feedbacks, feedback) {
-          if ( feedbacks ) {
-            return feedbacks.filter(function (_feedback) {
-              for ( var key in feedback ) {
-                if ( _feedback[key] !== feedback[key] ) {
-                  return false;
-                }
-              }
-              return true;
-            });
-          }
-        };
-      }
+      itemFilter:                   require('./filters/item-filter'),
+      criteriaFilter:               require('./filters/criteria-filter'),
+      feedbackFilter:               require('./filters/feedback-filter')
     })
 
     .controller({
@@ -1324,7 +1324,7 @@ function getUrlTitle ($http) {
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/filter-items":16,"./filters/get-evaluation-by-item":17,"./filters/get-evaluation-items":18,"./filters/get-feedbacks-by-item":19,"./filters/shorten":20,"./run":22}],22:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/get-evaluation-by-item":18,"./filters/get-evaluation-items":19,"./filters/item-filter":20,"./filters/shorten":21,"./run":23}],23:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', 'DataFactory', Run];
@@ -1679,4 +1679,4 @@ function getUrlTitle ($http) {
 
 })();
 
-},{}]},{},[21]);
+},{}]},{},[22]);

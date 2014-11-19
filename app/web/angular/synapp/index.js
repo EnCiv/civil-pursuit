@@ -19,36 +19,9 @@
       calculatePromotionPercentage: require('./filters/calculate-promotion-percentage'),
       getEvaluationItems:           require('./filters/get-evaluation-items'),
       getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
-      getFeedbacksByItem:           require('./filters/get-feedbacks-by-item'),
-      filterItems:                  require('./filters/filter-items'),
-      criteriaFilter:               function () {
-        return function (criterias, criteria) {
-          if ( criterias ) {
-            return criterias.filter(function (_criteria) {
-              for ( var key in criteria ) {
-                if ( _criteria[key] !== criteria[key] ) {
-                  return false;
-                }
-              }
-              return true;
-            });
-          }
-        };
-      },
-      feedbackFilter:               function () {
-        return function (feedbacks, feedback) {
-          if ( feedbacks ) {
-            return feedbacks.filter(function (_feedback) {
-              for ( var key in feedback ) {
-                if ( _feedback[key] !== feedback[key] ) {
-                  return false;
-                }
-              }
-              return true;
-            });
-          }
-        };
-      }
+      itemFilter:                   require('./filters/item-filter'),
+      criteriaFilter:               require('./filters/criteria-filter'),
+      feedbackFilter:               require('./filters/feedback-filter')
     })
 
     .controller({
