@@ -223,9 +223,6 @@ gulp.task('build-prod', ['build'], function (cb) {
 ////////////////////////////////////////////////////////////////////////////////
 
 gulp.task('push-to-heroku', ['build-prod'], function pushToHeroku (cb) {
-
-
-
   spawn('git', ['commit', '-am', 'Pushing to Heroku'],
     function (error) {
       if ( error ) {

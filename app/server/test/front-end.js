@@ -44,7 +44,7 @@ describe('Landing page', function () {
 });
 
 describe('Signing up', function () {
-  
+
   var url = 'http://localhost:3012/sign/up',
     error,
     response,
@@ -253,5 +253,12 @@ describe('Signing out', function () {
 
   it('should have a HTML5 document as body', function () {
     response.headers['content-type'].should.match(/html/);
+  });
+});
+
+describe('Cleaning out', function () {
+  it('should remove created test user', function (done) {
+    request.del('http://localhost:3012/models/User?email=' + Email,
+      done);
   });
 });

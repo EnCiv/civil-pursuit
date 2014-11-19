@@ -59,6 +59,9 @@
         parent: '@'
       },
       controller: ['$scope', function ($scope) {
+
+        $scope.batchSize = synapp['navigator batch size'];
+
         /** @args {ObjectID} item_id */
         $scope.loadChildren = function (item_id) {
 
@@ -81,6 +84,27 @@
               items.forEach(function (item) {
                 $rootScope.lineage[item._id] = item.parent;
               });
+            });
+        };
+
+        $scope.loadMore = function () {
+
+          var query = { type: $scope.type, $skip: $scope.batchSize };
+
+          if ( $scope.parent ) {
+            query.parent = $scope.parent;
+          }
+
+          DataFactory.Item.find(query)
+            .success(function (items) {
+              $rootScope.items = $rootScope.items.concat(items);
+              /** Lineage */
+
+              items.forEach(function (item) {
+                $rootScope.lineage[item._id] = item.parent;
+              });
+
+              $scope.batchSize += synapp['navigator batch size'];
             });
         };
         

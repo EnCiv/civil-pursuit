@@ -28,7 +28,7 @@ div(data-ng-init='show = "items"')
       
       .items(ng-repeat='item in $root.items | itemFilter:type:parent track by item._id')
 
-        .item(id='item-{{item._id}}')
+        .item(id='item-{{item._id}}' data-ng-show='$index < ( batchSize - 1 )')
 
           // BOX
           
@@ -290,3 +290,8 @@ div(data-ng-init='show = "items"')
             //- thereIsARelation(item._id, $root.itemViewed)
 
             .children.animate-show(ng-show='($root.itemHas(item, $root.itemViewed) || $root.itemViewed === item._id) && $show === "children"' data-loaded='{{false}}')
+
+        // SHOW MORE
+
+        .padding.text-center(data-ng-show="$index === ( batchSize - 1 )")
+          a.btn(href='#' data-ng-click='loadMore()') Load more
