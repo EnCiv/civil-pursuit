@@ -19,6 +19,28 @@ var path_dist     =   'app/web/dist';
 var path_angular  =   'app/web/angular';
 var path_ngapp    =   path.join(path_angular, 'synapp')
 
+function spawn (cmd, args, then) {
+
+  var cp = require('child_process').spawn(cmd, args);
+
+  cp.on('error', then);
+
+  cp.on('exit', function (code) {
+    if ( typeof code === 'number' && ! code ) {
+      return then();
+    }
+    then(new Error('Got code ' + code));
+  });
+
+  cp.stdout.on('data', function (data) {
+    console.log(data.toString());
+  });
+
+  cp.stderr.on('data', function (data) {
+    console.log(data.toString());
+  });
+}
+
 /*
  *  COMPILE LESS
  *  ============
@@ -188,7 +210,12 @@ gulp.task('build', ['less', 'concat-bs', 'browserifyApp'], function (cb) {
 */
 
 gulp.task('build-prod', ['build'], function (cb) {
-  runSequence('min-css', 'min-css-c3', 'ugly-bs', 'ugly-app', cb);
+  runSequence('min-css', 'min-css-c3', 'ugly-bs', 'ugly-app', function (error) {
+    if ( error ) {
+      return cb(error);
+    }
+    spawn('mocha', ['app/server/test/front-end'], cb)
+  });
 });
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -197,27 +224,7 @@ gulp.task('build-prod', ['build'], function (cb) {
 
 gulp.task('push-to-heroku', ['build-prod'], function pushToHeroku (cb) {
 
-  function spawn (cmd, args, then) {
 
-    var cp = require('child_process').spawn(cmd, args);
-
-    cp.on('error', then);
-
-    cp.on('exit', function (code) {
-      if ( typeof code === 'number' && ! code ) {
-        return then();
-      }
-      then(new Error('Got code ' + code));
-    });
-
-    cp.stdout.on('data', function (data) {
-      console.log(data.toString());
-    });
-
-    cp.stderr.on('data', function (data) {
-      console.log(data.toString());
-    });
-  }
 
   spawn('git', ['commit', '-am', 'Pushing to Heroku'],
     function (error) {

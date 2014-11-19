@@ -61,24 +61,15 @@ module.exports = function (req, res, next) {
           // ------------------------------------------------------------------------------------ \\
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
-        var User = require(path.join(base, 'app/business/models/User'));
-          // ------------------------------------------------------------------------------------ \\
-          User                            .should.be.a.Function;
-          User                            .should.have.property('create');
-          User.create                     .should.be.a.Function;
-        // -------------------------------------------------------------------------------------- \\
-        /************************************************************************** CREATE USER  **/
-        // -------------------------------------------------------------------------------------- \\
-        User.create({
-          email: req.body.email,
-          password: req.body.password
-        }, domain.intercept(function (created) {
-          
-          res.cookie('synuser', { email: req.body.email, id: created._id }, cookie);
-          
-          res.json(created);
-
-        }));
+        
+        res.locals.monson.post('/models/User', {
+            email: req.body.email,
+            password: req.body.password
+          },
+          domain.intercept(function (created) {
+            res.cookie('synuser', { email: req.body.email, id: created._id }, cookie);
+            res.json(created);
+          }));
         // -------------------------------------------------------------------------------------- \\
         break;
       // ---------------------------------------------------------------------------------------- \\
@@ -99,17 +90,8 @@ module.exports = function (req, res, next) {
           req.body.password               .should.be.a.String;
         // -------------------------------------------------------------------------------------- \\
         // -------------------------------------------------------------------------------------- \\
-        var User = require(path.join(base, 'app/business/models/User'));
-          // ------------------------------------------------------------------------------------ \\
-          User                            .should.be.a.Function;
-          User                            .should.have.property('findOne');
-          User.findOne                    .should.be.a.Function;
-        // -------------------------------------------------------------------------------------- \\
-        /**************************************************************************** FIND USER  **/
-        // -------------------------------------------------------------------------------------- \\
-        User.findOne({
-            email: req.body.email
-          },
+
+        res.locals.monson.get('/models/User.findOne?email=' + req.body.email,
           // ------------------------------------------------------------------------------------ \\
           domain.intercept(function (user) {
             // ---------------------------------------------------------------------------------- \\

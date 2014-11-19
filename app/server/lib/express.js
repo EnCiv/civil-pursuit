@@ -72,6 +72,10 @@ module.exports = function synappExpress (listen, isTest) {
 
     var passport      =   require('passport');
 
+    var monson        =   require('monson')(
+      isTest ? process.env.MONGOHQ_URL_TEST : process.env.MONGOHQ_URL,
+      { base: path.join(__dirname, '../../business') });
+
     ////////////////////////////////////////////////////////////////////////////
     // Parsers
     ////////////////////////////////////////////////////////////////////////////
@@ -164,6 +168,8 @@ module.exports = function synappExpress (listen, isTest) {
 
     app.use(function (req, res, next) {
       res.locals.req = req;
+
+      res.locals.monson = monson;
 
       res.locals.isSignedIn = req.signedCookies.synuser;
 
@@ -298,10 +304,6 @@ module.exports = function synappExpress (listen, isTest) {
     // MONSON API
     
     ////////////////////////////////////////////////////////////////////////////
-
-    var monson = require('monson')(
-      isTest ? process.env.MONGOHQ_URL_TEST : process.env.MONGOHQ_URL,
-      { base: path.join(__dirname, '../../business') });
 
     app.use('/models/:model',
       function (req, res, next) {
