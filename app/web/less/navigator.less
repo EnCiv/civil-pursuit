@@ -80,12 +80,16 @@
               max-height: 172px
             }
 
-            @media (min-width: 992px) {
+            @media (min-width: 768px) and (max-width: 992px) {
+              max-height: 120px
+            }
+
+            @media (min-width: 992px) and (max-width: 1200px) {
               max-height: 172px
             }
 
             @media (min-width: 1200px) {
-              max-height: 216px
+              max-height: 180px
             }
 
             .pnum {
@@ -124,6 +128,8 @@
           }
 
           .toggle-arrow {
+            // .gradient (rgba(255, 255, 255, .2); rgba(255, 255, 255, 1));
+            // border: 1px solid black;
             i {
               display: block;
               margin-top: -30px;
@@ -159,7 +165,7 @@
     }
 
     .item-main {
-      max-height: 300px !important;
+      max-height: 400px !important;
     }
   }
 

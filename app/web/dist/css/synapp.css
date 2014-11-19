@@ -4219,6 +4219,11 @@ button.close {
 */
 /** ____________________________________________________________________________
 
+          MIXINS
+    ============================================================================
+**/
+/** ____________________________________________________________________________
+
           ELEMENTS
     ============================================================================
 **/
@@ -4434,14 +4439,19 @@ footer {
     max-height: 172px;
   }
 }
-@media (min-width: 992px) {
+@media (min-width: 768px) and (max-width: 992px) {
+  .panel .panel-body .items .item .box .item-main {
+    max-height: 120px;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
   .panel .panel-body .items .item .box .item-main {
     max-height: 172px;
   }
 }
 @media (min-width: 1200px) {
   .panel .panel-body .items .item .box .item-main {
-    max-height: 216px;
+    max-height: 180px;
   }
 }
 .panel .panel-body .items .item .box .item-main .pnum {
@@ -4499,7 +4509,7 @@ footer {
   display: none;
 }
 .panel .split-view .item-main {
-  max-height: 300px !important;
+  max-height: 400px !important;
 }
 .panel .split-view .box h4 {
   clear: both;
