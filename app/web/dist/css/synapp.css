@@ -4257,7 +4257,7 @@ textarea {
  *  Text bigger than max size
  */
 .too-long::after {
-  content: '...';
+  content: ' ...';
   color: #999;
 }
 /*
