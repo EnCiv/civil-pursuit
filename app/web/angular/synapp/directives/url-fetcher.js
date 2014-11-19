@@ -9,50 +9,52 @@
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = ['$http', getUrlTitle];
+;(function () {
+  module.exports = ['$http', getUrlTitle];
 
-function getUrlTitle ($http) {
-  return {
-    restrict: 'CA',
+  function getUrlTitle ($http) {
+    return {
+      restrict: 'CA',
 
-    link: function ($scope, $elem, $attr) {
+      link: function ($scope, $elem, $attr) {
 
-      /** */
+        /** */
 
-      $scope.searchingTitle = false;
+        $scope.searchingTitle = false;
 
-      /** */
+        /** */
 
-      $elem.on('change', function () {
+        $elem.on('change', function () {
 
-        $scope.searchingTitle = true;
+          $scope.searchingTitle = true;
 
-        $scope.searchingTitleFailed = false;
+          $scope.searchingTitleFailed = false;
 
-        $(this).data('changing', 'yes');
+          $(this).data('changing', 'yes');
 
-        $http.post('/tools/get-title', { url: $(this).val() })
-          
-          .error(function (error) {
-            $scope.searchingTitleFailed = true;
+          $http.post('/tools/get-title', { url: $(this).val() })
+            
+            .error(function (error) {
+              $scope.searchingTitleFailed = true;
 
-            $scope.searchingTitle = false;
-          })
-          
-          .success(function (data) {
+              $scope.searchingTitle = false;
+            })
+            
+            .success(function (data) {
 
-            $elem.data('changing', 'no');
+              $elem.data('changing', 'no');
 
-            $scope.searchingTitle = false;
+              $scope.searchingTitle = false;
 
-            $scope.item.references[0].url = $elem.val();
+              $scope.item.references[0].url = $elem.val();
 
-            $scope.item.references[0].title = data;
+              $scope.item.references[0].title = data;
 
-            $elem.data('url', $scope.item.references[0].url);
-            $elem.data('title', $scope.item.references[0].title);
-          });
-      });
-    }
-  };
-}
+              $elem.data('url', $scope.item.references[0].url);
+              $elem.data('title', $scope.item.references[0].title);
+            });
+        });
+      }
+    };
+  }
+})();

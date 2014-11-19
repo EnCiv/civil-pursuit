@@ -29,43 +29,39 @@
     })
 
     .directive({
-      sign:           require('./directives/sign'),
-      
-      /** Navigator */
-      navigator:      require('./directives/navigator'),
+      /** Charts */
+      charts:        require('./directives/charts'),
 
-      /** Item */
-      item:           require('./directives/item'),
-      
       /** Creator */
       creator:        require('./directives/creator'),
-
-      /** Evaluator */
-      evaluator:      require('./directives/evaluator'),
-
-      /** Url Fetcher */
-      urlFetcher:     require('./directives/url-fetcher'),
-
-      /** Editor */
-      editor:         require('./directives/editor'),
-
-      /** Item Media */
-      itemMedia:      require('./directives/item-media'),
-
-      /** Sliders */
-      sliders:        require('./directives/sliders'),
 
       /** Details */
       details:        require('./directives/details'),
 
-      /** Charts */
-      charts:        require('./directives/charts')
-    })
+      /** Editor */
+      editor:         require('./directives/editor'),
 
-    .config(['$locationProvider',
-      function ($locationProvider) {
-        // $locationProvider.html5Mode(false);
-      }])
+      /** Evaluator */
+      evaluator:      require('./directives/evaluator'),
+
+      /** Item */
+      item:           require('./directives/item'),
+
+      /** Item Media */
+      itemMedia:      require('./directives/item-media'),
+
+      /** Navigator */
+      navigator:      require('./directives/navigator'),
+
+      /** Sign */
+      sign:           require('./directives/sign'),
+
+      /** Sliders */
+      sliders:        require('./directives/sliders'),
+
+      /** Url Fetcher */
+      urlFetcher:     require('./directives/url-fetcher'),
+    })
 
     .run(require('./run'));
   

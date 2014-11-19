@@ -11,7 +11,20 @@
     */
     function shorten (str, max) {
       if ( str ) {
-        return str.substr(0, max);
+
+        max = max || 100;
+
+        if ( str.length < max ) {
+          return str;
+        }
+
+        if ( /\s/.test(str[max]) ) {
+          return str.substr(0, max);
+        }
+
+        var right = str.substr(max).split(/\s/);
+
+        return str.substr(0, max) + right[0];
       }
     };
 

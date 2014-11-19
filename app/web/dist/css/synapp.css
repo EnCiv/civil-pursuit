@@ -4254,6 +4254,13 @@ textarea {
   text-align: justify;
 }
 /*
+ *  Text bigger than max size
+ */
+.too-long::after {
+  content: '...';
+  color: #999;
+}
+/*
  *  Force cursor to be a pointer
  */
 .cursor-pointer {
@@ -4490,6 +4497,9 @@ footer {
 }
 .panel .split-view .toggle-arrow {
   display: none;
+}
+.panel .split-view .item-main {
+  max-height: 300px !important;
 }
 .panel .split-view .box h4 {
   clear: both;

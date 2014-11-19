@@ -27,153 +27,153 @@
   var uploadUrl     =   '/tools/upload';
   window.uploadUrl  =   window.uploadUrl || 'upload';
 
-  var UploadCtrl = ['$rootScope', '$scope', '$http', '$timeout', '$upload',
-    function UploadCtrl ($rootScope, $scope, $http, $timeout, $upload) {
+  module.exports = ['$rootScope', '$scope', '$http', '$timeout', '$upload',
+    UploadCtrl];
 
-      $scope.howToSend = 1;
+  function UploadCtrl ($rootScope, $scope, $http, $timeout, $upload) {
 
-      $scope.usingFlash = FileAPI && FileAPI.upload != null;
-      
-      $scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
-      
-      $scope.uploadRightAway = true;
-      
-      $scope.hasUploader = function(index) {
-        return $scope.upload[index] != null;
-      };
-      
-      $scope.abort = function(index) {
-        $scope.upload[index].abort(); 
-        $scope.upload[index] = null;
-      };
-      
-      $scope.onFileSelect = function($files) {
+    $scope.howToSend = 1;
 
-        $scope.selectedFiles = [];
+    $scope.usingFlash = FileAPI && FileAPI.upload != null;
+    
+    $scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
+    
+    $scope.uploadRightAway = true;
+    
+    $scope.hasUploader = function(index) {
+      return $scope.upload[index] != null;
+    };
+    
+    $scope.abort = function(index) {
+      $scope.upload[index].abort(); 
+      $scope.upload[index] = null;
+    };
+    
+    $scope.onFileSelect = function($files) {
+
+      $scope.selectedFiles = [];
+      
+      $scope.progress = [];
+      
+      if ($scope.upload && $scope.upload.length > 0) {
+        for (var i = 0; i < $scope.upload.length; i++) {
+          if ($scope.upload[i] != null) {
+            $scope.upload[i].abort();
+          }
+        }
+      }
+      
+      $scope.upload = [];
+      
+      $scope.uploadResult = [];
+
+      $rootScope.uploadResult = $scope.uploadResult;
+      
+      $scope.selectedFiles = $files;
+      
+      $scope.dataUrls = [];
+
+      $rootScope.dataUrls = $scope.dataUrls;
+      
+      for ( var i = 0; i < $files.length; i++) {
+        var $file = $files[i];
         
-        $scope.progress = [];
-        
-        if ($scope.upload && $scope.upload.length > 0) {
-          for (var i = 0; i < $scope.upload.length; i++) {
-            if ($scope.upload[i] != null) {
-              $scope.upload[i].abort();
+        if ($scope.fileReaderSupported && $file.type.indexOf('image') > -1) {
+          var fileReader = new FileReader();
+          fileReader.readAsDataURL($files[i]);
+          
+          var loadFile = function(fileReader, index) {
+            fileReader.onload = function(e) {
+              $timeout(function() {
+                $scope.dataUrls[index] = e.target.result;
+              });
             }
-          }
+          }(fileReader, i);
         }
         
-        $scope.upload = [];
+        $scope.progress[i] = -1;
         
-        $scope.uploadResult = [];
-
-        $rootScope.uploadResult = $scope.uploadResult;
-        
-        $scope.selectedFiles = $files;
-        
-        $scope.dataUrls = [];
-
-        $rootScope.dataUrls = $scope.dataUrls;
-        
-        for ( var i = 0; i < $files.length; i++) {
-          var $file = $files[i];
-          
-          if ($scope.fileReaderSupported && $file.type.indexOf('image') > -1) {
-            var fileReader = new FileReader();
-            fileReader.readAsDataURL($files[i]);
-            
-            var loadFile = function(fileReader, index) {
-              fileReader.onload = function(e) {
-                $timeout(function() {
-                  $scope.dataUrls[index] = e.target.result;
-                });
-              }
-            }(fileReader, i);
-          }
-          
-          $scope.progress[i] = -1;
-          
-          if ($scope.uploadRightAway) {
-            $scope.start(i);
-          }
+        if ($scope.uploadRightAway) {
+          $scope.start(i);
         }
-      };
-      
-      $scope.start = function(index) {
-        $scope.progress[index] = 0;
-        $scope.errorMsg = null;
-        if ($scope.howToSend == 1) {
-          $scope.upload[index] = $upload.upload({
-            url: uploadUrl,
-            method: $scope.httpMethod,
-            headers: {'my-header': 'my-header-value'},
-            data : {
-              myModel : $scope.myModel
-            },
-            /* formDataAppender: function(fd, key, val) {
-              if (angular.isArray(val)) {
-                            angular.forEach(val, function(v) {
-                              fd.append(key, v);
-                            });
-                          } else {
-                            fd.append(key, val);
-                          }
-            }, */
-            /* transformRequest: [function(val, h) {
-              console.log(val, h('my-header')); return val + '-modified';
-            }], */
-            file: $scope.selectedFiles[index],
-            fileFormDataName: 'myFile'
+      }
+    };
+    
+    $scope.start = function(index) {
+      $scope.progress[index] = 0;
+      $scope.errorMsg = null;
+      if ($scope.howToSend == 1) {
+        $scope.upload[index] = $upload.upload({
+          url: uploadUrl,
+          method: $scope.httpMethod,
+          headers: {'my-header': 'my-header-value'},
+          data : {
+            myModel : $scope.myModel
+          },
+          /* formDataAppender: function(fd, key, val) {
+            if (angular.isArray(val)) {
+                          angular.forEach(val, function(v) {
+                            fd.append(key, v);
+                          });
+                        } else {
+                          fd.append(key, val);
+                        }
+          }, */
+          /* transformRequest: [function(val, h) {
+            console.log(val, h('my-header')); return val + '-modified';
+          }], */
+          file: $scope.selectedFiles[index],
+          fileFormDataName: 'myFile'
+        });
+        $scope.upload[index].then(function(response) {
+          $timeout(function() {
+            $scope.uploadResult.push(response.data);
           });
-          $scope.upload[index].then(function(response) {
-            $timeout(function() {
-              $scope.uploadResult.push(response.data);
-            });
+        }, function(response) {
+          if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
+        }, function(evt) {
+          // Math.min is to fix IE which reports 200% sometimes
+          $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
+        $scope.upload[index].xhr(function(xhr){
+          xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
+        });
+      } else {
+        var fileReader = new FileReader();
+              fileReader.onload = function(e) {
+              $scope.upload[index] = $upload.http({
+                url: uploadUrl,
+            headers: {'Content-Type': $scope.selectedFiles[index].type},
+            data: e.target.result
+              }).then(function(response) {
+            $scope.uploadResult.push(response.data);
           }, function(response) {
             if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
           }, function(evt) {
             // Math.min is to fix IE which reports 200% sometimes
             $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
           });
-          $scope.upload[index].xhr(function(xhr){
-            xhr.upload.addEventListener('abort', function() {console.log('abort complete')}, false);
-          });
-        } else {
-          var fileReader = new FileReader();
-                fileReader.onload = function(e) {
-                $scope.upload[index] = $upload.http({
-                  url: uploadUrl,
-              headers: {'Content-Type': $scope.selectedFiles[index].type},
-              data: e.target.result
-                }).then(function(response) {
-              $scope.uploadResult.push(response.data);
-            }, function(response) {
-              if (response.status > 0) $scope.errorMsg = response.status + ': ' + response.data;
-            }, function(evt) {
-              // Math.min is to fix IE which reports 200% sometimes
-              $scope.progress[index] = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-            });
-                }
-              fileReader.readAsArrayBuffer($scope.selectedFiles[index]);
-        }
-      };
-      
-      $scope.dragOverClass = function($event) {
-        var items = $event.dataTransfer.items;
-        var hasFile = false;
-        if (items != null) {
-          for (var i = 0 ; i < items.length; i++) {
-            if (items[i].kind == 'file') {
-              hasFile = true;
-              break;
-            }
+              }
+            fileReader.readAsArrayBuffer($scope.selectedFiles[index]);
+      }
+    };
+    
+    $scope.dragOverClass = function($event) {
+      var items = $event.dataTransfer.items;
+      var hasFile = false;
+      if (items != null) {
+        for (var i = 0 ; i < items.length; i++) {
+          if (items[i].kind == 'file') {
+            hasFile = true;
+            break;
           }
-        } else {
-          hasFile = true;
         }
-        return hasFile ? "dragover" : "dragover-err";
-      };
-    }];
-
-  module.exports = UploadCtrl;
+      } else {
+        hasFile = true;
+      }
+      return hasFile ? "dragover" : "dragover-err";
+    };
+  }
 })();
 },{}],2:[function(require,module,exports){
 ;(function () {
@@ -918,53 +918,55 @@
  * @author francoisrvespa@gmail.com
 */
 
-module.exports = ['$http', getUrlTitle];
+;(function () {
+  module.exports = ['$http', getUrlTitle];
 
-function getUrlTitle ($http) {
-  return {
-    restrict: 'CA',
+  function getUrlTitle ($http) {
+    return {
+      restrict: 'CA',
 
-    link: function ($scope, $elem, $attr) {
+      link: function ($scope, $elem, $attr) {
 
-      /** */
+        /** */
 
-      $scope.searchingTitle = false;
+        $scope.searchingTitle = false;
 
-      /** */
+        /** */
 
-      $elem.on('change', function () {
+        $elem.on('change', function () {
 
-        $scope.searchingTitle = true;
+          $scope.searchingTitle = true;
 
-        $scope.searchingTitleFailed = false;
+          $scope.searchingTitleFailed = false;
 
-        $(this).data('changing', 'yes');
+          $(this).data('changing', 'yes');
 
-        $http.post('/tools/get-title', { url: $(this).val() })
-          
-          .error(function (error) {
-            $scope.searchingTitleFailed = true;
+          $http.post('/tools/get-title', { url: $(this).val() })
+            
+            .error(function (error) {
+              $scope.searchingTitleFailed = true;
 
-            $scope.searchingTitle = false;
-          })
-          
-          .success(function (data) {
+              $scope.searchingTitle = false;
+            })
+            
+            .success(function (data) {
 
-            $elem.data('changing', 'no');
+              $elem.data('changing', 'no');
 
-            $scope.searchingTitle = false;
+              $scope.searchingTitle = false;
 
-            $scope.item.references[0].url = $elem.val();
+              $scope.item.references[0].url = $elem.val();
 
-            $scope.item.references[0].title = data;
+              $scope.item.references[0].title = data;
 
-            $elem.data('url', $scope.item.references[0].url);
-            $elem.data('title', $scope.item.references[0].title);
-          });
-      });
-    }
-  };
-}
+              $elem.data('url', $scope.item.references[0].url);
+              $elem.data('title', $scope.item.references[0].title);
+            });
+        });
+      }
+    };
+  }
+})();
 
 },{}],13:[function(require,module,exports){
 /**
@@ -1240,7 +1242,20 @@ function getUrlTitle ($http) {
     */
     function shorten (str, max) {
       if ( str ) {
-        return str.substr(0, max);
+
+        max = max || 100;
+
+        if ( str.length < max ) {
+          return str;
+        }
+
+        if ( /\s/.test(str[max]) ) {
+          return str.substr(0, max);
+        }
+
+        var right = str.substr(max).split(/\s/);
+
+        return str.substr(0, max) + right[0];
       }
     };
 
@@ -1281,43 +1296,39 @@ function getUrlTitle ($http) {
     })
 
     .directive({
-      sign:           require('./directives/sign'),
-      
-      /** Navigator */
-      navigator:      require('./directives/navigator'),
+      /** Charts */
+      charts:        require('./directives/charts'),
 
-      /** Item */
-      item:           require('./directives/item'),
-      
       /** Creator */
       creator:        require('./directives/creator'),
-
-      /** Evaluator */
-      evaluator:      require('./directives/evaluator'),
-
-      /** Url Fetcher */
-      urlFetcher:     require('./directives/url-fetcher'),
-
-      /** Editor */
-      editor:         require('./directives/editor'),
-
-      /** Item Media */
-      itemMedia:      require('./directives/item-media'),
-
-      /** Sliders */
-      sliders:        require('./directives/sliders'),
 
       /** Details */
       details:        require('./directives/details'),
 
-      /** Charts */
-      charts:        require('./directives/charts')
-    })
+      /** Editor */
+      editor:         require('./directives/editor'),
 
-    .config(['$locationProvider',
-      function ($locationProvider) {
-        // $locationProvider.html5Mode(false);
-      }])
+      /** Evaluator */
+      evaluator:      require('./directives/evaluator'),
+
+      /** Item */
+      item:           require('./directives/item'),
+
+      /** Item Media */
+      itemMedia:      require('./directives/item-media'),
+
+      /** Navigator */
+      navigator:      require('./directives/navigator'),
+
+      /** Sign */
+      sign:           require('./directives/sign'),
+
+      /** Sliders */
+      sliders:        require('./directives/sliders'),
+
+      /** Url Fetcher */
+      urlFetcher:     require('./directives/url-fetcher'),
+    })
 
     .run(require('./run'));
   
