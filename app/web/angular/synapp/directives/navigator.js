@@ -87,6 +87,8 @@
             });
         };
 
+        /** load more items */
+
         $scope.loadMore = function () {
 
           var query = { type: $scope.type, $skip: $scope.batchSize };
