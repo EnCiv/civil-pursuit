@@ -5,7 +5,7 @@
   function Evaluator ($timeout) {
     return {
       restrict: 'C',
-      link: function ($scope) {
+      link: function ($scope, $elem) {
         $scope.closeEvaluation = function (inprogress) {
           if ( ! inprogress ) {
             $timeout(function () {
@@ -21,6 +21,11 @@
                 });
             }, 1000);
           }
+        };
+
+        $scope.editAndGoAgain = function (item) {
+          $scope.$parent.show = "creator";
+          $elem.closest('.panel').find('.creator').attr('subject', 'hello')
         };
       }
     };

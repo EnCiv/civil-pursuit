@@ -67,7 +67,12 @@
               });
             });
         };
-      }]
+      }],
+      link: function ($scope, $elem, $attr) {
+        $attr.$observe('subject', function (subject) {
+          console.log('subject', subject);
+        });
+      }
     };
   }
 

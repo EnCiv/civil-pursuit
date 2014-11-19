@@ -16,7 +16,7 @@ div(data-ng-init='show = "items"')
 
       // CREATOR
 
-      .creator.animate-show(ng-show='show === "creator"' data-type="{{ type }}" data-parent='{{ parent }}')
+      .creator.animate-show(ng-show='show === "creator"' data-type="{{ type }}" data-parent='{{ parent }}' subject='')
 
       // ITEMS
 
@@ -60,12 +60,14 @@ div(data-ng-init='show = "items"')
                     div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
                       a.btn.btn-sm.toggle-details(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"; $root.itemViewed = item._id') &nbsp;Details&nbsp;
 
-                  h4(data-ng-bind='item.subject'
-                    title='{{ item.subject }}')
-                  div.box-description.pre-text(ng-bind='item.description')
-                  //- div 
-                  //-   a(href='#') View more
-                  include navigator/references
+                  .item-text
+                    h4(data-ng-bind='item.subject'
+                      title='{{ item.subject }}')
+                    div.box-description.pre-text(ng-bind='item.description')
+                    a(href="#" class="readmore") Read more
+                    //- div 
+                    //-   a(href='#') View more
+                    include navigator/references
                   div.fix-1
 
           // COLLAPSERS
@@ -139,6 +141,16 @@ div(data-ng-init='show = "items"')
                         placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
                         data-ng-show      =   'item.subject'
                         data-ng-model     =   'evaluation.current[$index].$feedback')
+
+                  // Edit and go again
+
+                  .row.padding-bottom
+                    .col-sm-6.padding(
+                      data-ng-repeat      =   'item in evaluation.current'
+                    )
+                      button.btn.btn-block(
+                        data-ng-click   =   'editAndGoAgain(item)'
+                      ) Edit and go again
 
                   // Promote
 

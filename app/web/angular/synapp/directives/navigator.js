@@ -112,6 +112,35 @@
         
       }],
       link: function ($scope, $elem, $attrs) {
+        setTimeout(function () {
+
+          var height = $elem.find('.item-text').closest('.box').find('.item-media')
+            .height();
+
+          $elem.find('.item-text').each(function () {
+            if ( ! $(this).data('dotdotdot') ) {
+              $(this).data('dotdotdot', 'yes');
+            }
+
+            $(this).dotdotdot({
+              ellipsis: '...',
+              wrap: 'word',
+              fallBackToLetter: true,
+              watch: true,
+              tolerance: 0,
+              callback: console.log.bind(console),
+              height: height,
+              after: "a.readmore"
+            });
+
+            $(this).on('click', function () {
+              $(this).dotdotdot(false);
+              $(this).css('padding-bottom', '20px')
+            })
+          });
+
+            
+        }, 500);
       }
     };
   }

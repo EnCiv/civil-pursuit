@@ -415,11 +415,17 @@
               });
             });
         };
-      }]
+      }],
+      link: function ($scope, $elem, $attr) {
+        $attr.$observe('subject', function (subject) {
+          console.log('subject', subject);
+        });
+      }
     };
   }
 
 })();
+
 },{}],4:[function(require,module,exports){
 ;(function () {
 
@@ -468,7 +474,7 @@
   function Evaluator ($timeout) {
     return {
       restrict: 'C',
-      link: function ($scope) {
+      link: function ($scope, $elem) {
         $scope.closeEvaluation = function (inprogress) {
           if ( ! inprogress ) {
             $timeout(function () {
@@ -484,6 +490,11 @@
                 });
             }, 1000);
           }
+        };
+
+        $scope.editAndGoAgain = function (item) {
+          $scope.$parent.show = "creator";
+          $elem.closest('.panel').find('.creator').attr('subject', 'hello')
         };
       }
     };
@@ -708,11 +719,41 @@
         
       }],
       link: function ($scope, $elem, $attrs) {
+        setTimeout(function () {
+
+          var height = $elem.find('.item-text').closest('.box').find('.item-media')
+            .height();
+
+          $elem.find('.item-text').each(function () {
+            if ( ! $(this).data('dotdotdot') ) {
+              $(this).data('dotdotdot', 'yes');
+            }
+
+            $(this).dotdotdot({
+              ellipsis: '...',
+              wrap: 'word',
+              fallBackToLetter: true,
+              watch: true,
+              tolerance: 0,
+              callback: console.log.bind(console),
+              height: height,
+              after: "a.readmore"
+            });
+
+            $(this).on('click', function () {
+              $(this).dotdotdot(false);
+              $(this).css('padding-bottom', '20px')
+            })
+          });
+
+            
+        }, 500);
       }
     };
   }
 
 })();
+
 },{}],10:[function(require,module,exports){
 ;(function () {
 

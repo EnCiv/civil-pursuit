@@ -188,7 +188,7 @@ gulp.task('watch-less', function watchLess () {
  *  ============
 */
 
-gulp.task('watch', ['watch-less', 'watchifyApp'], function watch () {
+gulp.task('watch', ['less', 'watch-less', 'watchifyApp'], function watch () {
 });
 
 ////////////////////////////////////////////////////////////////////////////////
