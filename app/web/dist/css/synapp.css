@@ -4505,6 +4505,9 @@ footer {
 .panel .split-view .box-promoted {
   width: 100% !important;
 }
+.panel .split-view .box-promoted .toggle-details {
+  float: right;
+}
 .panel .split-view .toggle-arrow {
   display: none;
 }
