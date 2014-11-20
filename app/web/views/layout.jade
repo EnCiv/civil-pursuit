@@ -15,7 +15,7 @@ block meta
 
 // Page container
 
-section.container(
+section.container-fluid(
   data-ng-app         =   'synapp' 
 )
 
@@ -47,7 +47,16 @@ section.container(
             +bootstrap-panel-heading
               h4.panel-title(ng-bind='intro.subject')
             +bootstrap-panel-body
-              //+item-image('intro')
+              
+              div.padding(style='max-width: 40%')
+                img.img-responsive.pull-left(ng-src='{{intro.image}}')
+
+              .item-text.padding-right.padding-bottom
+                h4.item-title.padding-left.padding-right(ng-bind='intro.subject')
+              
+                .pre-text(ng-bind='intro.description')
+
+
               .row
                 .col-xs-12.col-sm-4.padding
                   img.img-responsive(ng-src='{{intro.image}}')
