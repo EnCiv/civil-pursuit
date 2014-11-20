@@ -1,17 +1,12 @@
-mixin item-image(filter)
+mixin item-image(name)
+
+ - name = name || 'item';
   
-  //- Variables
+  //- Get URL
 
-  - var ngSrc = '{{item.image'
+  - var url = [name + '.references', name + '.references[0]']
 
-  - if ( filter )
-    - ngSrc += '| cloudinaryTransformationFilter'
-
-  - ngSrc += '}}'
-
-  - var url = ['item.references', 'item.references[0]']
-
-  - url.push(['item.references[0].url', 'item.references[0].title'].join(' || '))
+  - url.push([name + '.references[0].url', name + '.references[0].title'].join(' || '))
 
   - url = url.map(function (u) { return '(' + u + ')' })
 
@@ -19,10 +14,8 @@ mixin item-image(filter)
 
   //- HTML
 
-  div(ng-bind='i')
-
   article.item-media(
     data-url='{{' + url + '}}' 
-    data-image='{{item.image}}' 
+    data-image='{{' + name + '.image}}'
     data-upload='{{$root.dataUrls[0]}}'
-    data-filter=filter)
+  )

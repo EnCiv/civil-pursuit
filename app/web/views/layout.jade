@@ -1,6 +1,9 @@
 //- MASTER
     ======
 
+include mixins/item-image
+include mixins/bootstrap
+
 doctype html
 
 //- # HTML head
@@ -36,14 +39,29 @@ section.container(
     
     .row
       .col-xs-12
-        include mixins/bootstrap
+
+        // Intro
 
         #intro
           +bootstrap-panel
             +bootstrap-panel-heading
-              h4.panel-title Intro
+              h4.panel-title(ng-bind='intro.subject')
             +bootstrap-panel-body
-              .padding.text-center Intro goes here
+              //+item-image('intro')
+              .row
+                .col-xs-12.col-sm-4.padding
+                  img.img-responsive(ng-src='{{intro.image}}')
+                .col-xs-12.col-sm-8.padding-right.padding-bottom
+                  .item-text
+                    h4.item-title.padding-left.padding-right(ng-bind='intro.subject')
+                    .padding.box-description.description.pre-text(ng-bind='intro.description')
+                    span.readmore
+                      span [ 
+                      a(href='#') more
+                      span  ]
+              .row.padding.hide.item-more
+                .col-xs-12
+                  .padding.box-description.description.pre-text(ng-bind='intro.description')
 
         block page
 

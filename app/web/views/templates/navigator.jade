@@ -61,15 +61,22 @@ div(data-ng-init='show = "items"')
                       a.btn.btn-sm.toggle-details(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"; $root.itemViewed = item._id') &nbsp;Details&nbsp;
 
                   .item-text
-                    h4(data-ng-bind='item.subject'
+                    h4.item-title(data-ng-bind='item.subject'
                       title='{{ item.subject }}')
                     div.box-description.pre-text(ng-bind='item.description')
-                    a(href="#" class="readmore") Read more
+                    span.readmore
+                      span [ 
+                      a(href='#') more
+                      span  ]
                     //- div 
                     //-   a(href='#') View more
                     include navigator/references
                   div.fix-1
 
+            .row.padding.hide.item-more
+              .col-xs-12.padding-bottom
+                .padding.box-description.description.pre-text
+                  .padding-bottom(ng-bind='item.description')
           // COLLAPSERS
 
           .collapsers

@@ -20,6 +20,86 @@
 	<script src="/foo/mvb.js"></script>
 	<script>
 
+		var modelView;
+
+		(function () {
+			var mvb = require('mvbinder');
+
+			modelView = new mvb()
+
+				.$model('title')
+					
+					.$assign($('h1'), 'text')
+					
+					.$watch($('input'), 'value', { on: 'change', debounce: 3000 })
+
+				.$model('items')
+					
+					.$assign(function () {
+						$();
+					});
+		})();
+
+		(function () {
+			$.ajax({})
+				.done(function (items) {
+					modelView.items = items;
+				});
+		});
+
+		(function () {
+			setTimeout(function () {
+				modelView.title = 'Good bye!';
+			}, 1250);
+		});
+
+		
+		// Toggle
+
+
+		// Incrementer / Decrementer
+
+		modelView
+
+			.$model('counter', 0)
+
+				.$inc($('.plus'))
+
+				.$dec($('.minus'), { step: 5 })
+
+				.$reset($('.reset'))
+
+
+		// Type ahead
+
+		modelView
+
+			.$model('movies', [])
+
+				.$watch($('input'))
+
+
+
+
+
+
+
+
+		// CALLBACK STYLE
+
+		var str = 'Hello';
+
+		require('mvbinder')(str, function () {
+			this.$bind($('h1'));
+			this.$watch($('input'));
+		});
+
+
+
+
+
+
+
 		var templates = {
 			items: $('ul').html()
 		};
@@ -28,7 +108,148 @@
 
 		var model = new Watchable();
 
-		;
+		$('h4').$bind(model, 'type');
+
+		$('h4').$bind(model.watch('title'));
+
+		bind(view, model);
+		bind.in(view, model);
+		bind.out(view, model);
+
+		mvc.model('title', {
+			bind: 'h4',
+			binder: 'input'
+		})
+
+		var model = {
+			title: 'This is a title',
+			items: []
+		};
+
+		var mvb = new ModelViewBinder();
+
+		mvb.bind(model.title, $('h1'), { on: $('input') });
+
+		mvb.bind(model.items, function () {
+
+		})
+
+
+		new ModelViewBinder(model, function () {
+			this.bind('title', $('h1'), { bind: $('input') });
+
+			this.bind('items', function () {
+
+			});
+		})
+
+
+
+
+		$.ajax({})
+			.done(function (items) {
+				model.items = items;
+			})
+
+
+		new ModelView({ title: 'hello' })
+
+			.bind('title', { update: $('h1'), watch: $('input') });
+
+		mvc.inject('title', 'hello');
+
+		new ModelView().bind('help-text', { update: {
+			view: $('input'), attr: 'placeholder'
+			)}});
+
+		.bind('help-text', function (helpText) {
+			$('input').attr('placeholder', helpText);
+		})
+
+		.on('push', 'items', function () {
+
+		});
+
+
+		new ModelView ()
+
+			.bind('title', { emit: 'h1', listen: 'input' })
+
+			.inject('title', 'Hello')
+
+			.bind('show', { toggle: '.fa-plus' },
+				function (show) {
+
+				})
+
+			.bind('items', function (items) {});
+
+
+
+
+
+
+		var mvb = new ModelViewBinder(function () {
+
+			this.$bind({
+				
+				model: 'title',
+				view: 'h1'
+			
+			});
+
+			this.$bind({
+
+				model: 
+
+			});
+
+			this.$toggle({
+				
+				model: 'show',
+				view: '.fa-plus'
+			
+			});
+		});
+
+		$('h4').$bind('title')
+		$('input').$emit('title')
+
+		bind($('input')).to('title')
+		bind($('h4')).
+
+		// h4 <-> title
+
+		$('.fa-plus').$toggle('type')
+
+		$('h4').$bind('title');
+
+		// h4 -> title
+
+		$('h4').$bind('title')
+
+		binders
+			.$bind('type', $('h4'), false)
+			.$bind($('input'), 'type');
+
+		binders
+			.$bind($('.fa-plus'), 'show');
+
+			{
+				model: 'title',
+				view: 'h4'
+			}
+
+		mvc.bind(function () {
+			
+			$('h4').$bind('title');
+
+			$('input').$bind('title', false)
+		
+		});
+
+
+
 
 		// BIND MODEL
 

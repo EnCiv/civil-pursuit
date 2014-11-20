@@ -4283,6 +4283,12 @@ textarea {
 .padding-bottom {
   padding-bottom: 10px;
 }
+.padding-right {
+  padding-right: 10px;
+}
+.padding-left {
+  padding-left: 10px;
+}
 /** Importing layout */
 /**
  *    __________________________________________________________________________
@@ -4411,6 +4417,18 @@ footer {
 .panel .panel-body {
   padding: 0;
 }
+.panel .panel-body .readmore {
+  display: none;
+}
+.panel .panel-body .box-description {
+  font-size: 16px;
+}
+.panel .panel-body .entry-title {
+  margin-top: 15px;
+}
+.panel .panel-body .item-title {
+  font-size: 25px;
+}
 .panel .panel-body .items .item {
   background: #fff;
   border: 1px solid #666666;
@@ -4457,18 +4475,8 @@ footer {
   width: 100px;
   margin-bottom: 30px;
 }
-.panel .panel-body .items .item .box .item-main h4 {
-  font-size: 25px;
+.panel .panel-body .items .item .box .item-main .item-title {
   margin-top: 0px;
-}
-.panel .panel-body .items .item .box .item-main .box-description {
-  font-size: 16px;
-}
-.panel .panel-body .items .item .box .item-main .entry-title {
-  margin-top: 15px;
-}
-.panel .panel-body .items .item .box .item-main .readmore {
-  display: none;
 }
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,

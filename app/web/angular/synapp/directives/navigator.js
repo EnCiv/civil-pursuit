@@ -120,23 +120,31 @@
           $elem.find('.item-text').each(function () {
             if ( ! $(this).data('dotdotdot') ) {
               $(this).data('dotdotdot', 'yes');
+
+              var elem = $(this);
+
+              $(this).dotdotdot({
+                ellipsis: '...',
+                wrap: 'word',
+                fallBackToLetter: true,
+                watch: true,
+                tolerance: 0,
+                // callback: console.log.bind(console),
+                height: height,
+                after: "span.readmore"
+              });
+
+              $(this).find('span.readmore a').on('click', function () {
+                if ( $(this).text() === 'more' ) {
+                  $(this).text('less');
+                  elem.closest('.box').find('.item-more').removeClass('hide');
+                }
+                else {
+                  $(this).text('more');
+                  elem.closest('.box').find('.item-more').addClass('hide');
+                }
+              })
             }
-
-            $(this).dotdotdot({
-              ellipsis: '...',
-              wrap: 'word',
-              fallBackToLetter: true,
-              watch: true,
-              tolerance: 0,
-              callback: console.log.bind(console),
-              height: height,
-              after: "a.readmore"
-            });
-
-            $(this).on('click', function () {
-              $(this).dotdotdot(false);
-              $(this).css('padding-bottom', '20px')
-            })
           });
 
             

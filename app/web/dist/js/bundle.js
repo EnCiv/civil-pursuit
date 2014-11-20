@@ -727,23 +727,31 @@
           $elem.find('.item-text').each(function () {
             if ( ! $(this).data('dotdotdot') ) {
               $(this).data('dotdotdot', 'yes');
+
+              var elem = $(this);
+
+              $(this).dotdotdot({
+                ellipsis: '...',
+                wrap: 'word',
+                fallBackToLetter: true,
+                watch: true,
+                tolerance: 0,
+                // callback: console.log.bind(console),
+                height: height,
+                after: "span.readmore"
+              });
+
+              $(this).find('span.readmore a').on('click', function () {
+                if ( $(this).text() === 'more' ) {
+                  $(this).text('less');
+                  elem.closest('.box').find('.item-more').removeClass('hide');
+                }
+                else {
+                  $(this).text('more');
+                  elem.closest('.box').find('.item-more').addClass('hide');
+                }
+              })
             }
-
-            $(this).dotdotdot({
-              ellipsis: '...',
-              wrap: 'word',
-              fallBackToLetter: true,
-              watch: true,
-              tolerance: 0,
-              callback: console.log.bind(console),
-              height: height,
-              after: "a.readmore"
-            });
-
-            $(this).on('click', function () {
-              $(this).dotdotdot(false);
-              $(this).css('padding-bottom', '20px')
-            })
           });
 
             
@@ -1405,9 +1413,9 @@
 },{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/get-evaluation-by-item":18,"./filters/get-evaluation-items":19,"./filters/item-filter":20,"./filters/shorten":21,"./run":23}],23:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', '$location', 'DataFactory', Run];
+  module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
 
-  function Run ($rootScope, $location, DataFactory) {
+  function Run ($rootScope, $location, $timeout, DataFactory) {
 
     /** @type [Model.Item] */
     $rootScope.items        =   [];
@@ -1753,6 +1761,39 @@
 
         });
     };
+
+    // Load intro
+
+    DataFactory.Item.find({ type: 'Intro' })
+      .success(function (items) {
+        $rootScope.intro = items[0];
+
+        $timeout(function () {
+          var dotdotdot = {
+            ellipsis: '...',
+            wrap: 'word',
+            fallBackToLetter: true,
+            watch: true,
+            tolerance: 0,
+            callback: console.log.bind(console),
+            height: $('#intro img').height() + 10,
+            after: "span.readmore"
+          };
+
+          $('#intro .item-text').dotdotdot(dotdotdot);
+
+          $('#intro span.readmore a').on('click', function () {
+            if ( $(this).text() === 'more' ) {
+              $(this).text('less');
+              $('#intro .item-more').removeClass('hide');
+            }
+            else {
+              $(this).text('more');
+              $('#intro .item-more').addClass('hide');
+            }
+          });
+        })
+      });
   }
 
 })();

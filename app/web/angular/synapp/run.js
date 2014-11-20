@@ -1,8 +1,8 @@
 ;(function () {
 
-  module.exports = ['$rootScope', '$location', 'DataFactory', Run];
+  module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
 
-  function Run ($rootScope, $location, DataFactory) {
+  function Run ($rootScope, $location, $timeout, DataFactory) {
 
     /** @type [Model.Item] */
     $rootScope.items        =   [];
@@ -348,6 +348,39 @@
 
         });
     };
+
+    // Load intro
+
+    DataFactory.Item.find({ type: 'Intro' })
+      .success(function (items) {
+        $rootScope.intro = items[0];
+
+        $timeout(function () {
+          var dotdotdot = {
+            ellipsis: '...',
+            wrap: 'word',
+            fallBackToLetter: true,
+            watch: true,
+            tolerance: 0,
+            callback: console.log.bind(console),
+            height: $('#intro img').height() + 10,
+            after: "span.readmore"
+          };
+
+          $('#intro .item-text').dotdotdot(dotdotdot);
+
+          $('#intro span.readmore a').on('click', function () {
+            if ( $(this).text() === 'more' ) {
+              $(this).text('less');
+              $('#intro .item-more').removeClass('hide');
+            }
+            else {
+              $(this).text('more');
+              $('#intro .item-more').addClass('hide');
+            }
+          });
+        })
+      });
   }
 
 })();
