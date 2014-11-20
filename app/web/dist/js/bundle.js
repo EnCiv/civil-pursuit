@@ -256,6 +256,10 @@
                     }
                 });
               }
+
+              else {
+                $elem.find('svg').css('height', '0');
+              }
             }
 
           }
@@ -1232,6 +1236,28 @@
 },{}],18:[function(require,module,exports){
 ;(function () {
 
+  module.exports = [Find];
+
+  function Find () {
+    return function (items, item) {
+      if ( items ) {
+        return items.filter(function (_item) {
+          for ( var key in item ) {
+            if ( _item[key] !== item[key] ) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    };
+  }
+
+})();
+
+},{}],19:[function(require,module,exports){
+;(function () {
+
   module.exports = ['$rootScope', getEvaluationByItem];
 
   function getEvaluationByItem ($rootScope) {
@@ -1245,7 +1271,7 @@
   }
 
 })();
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationItems];
@@ -1271,7 +1297,7 @@
   }
 
 })();
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ;(function () {
 
   module.exports = [filterItems];
@@ -1303,7 +1329,7 @@
   }
 })();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -1339,7 +1365,7 @@
 
 })();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -1363,7 +1389,8 @@
       getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
       itemFilter:                   require('./filters/item-filter'),
       criteriaFilter:               require('./filters/criteria-filter'),
-      feedbackFilter:               require('./filters/feedback-filter')
+      feedbackFilter:               require('./filters/feedback-filter'),
+      find:                         require('./filters/find')
     })
 
     .controller({
@@ -1410,7 +1437,7 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/get-evaluation-by-item":18,"./filters/get-evaluation-items":19,"./filters/item-filter":20,"./filters/shorten":21,"./run":23}],23:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/find":18,"./filters/get-evaluation-by-item":19,"./filters/get-evaluation-items":20,"./filters/item-filter":21,"./filters/shorten":22,"./run":24}],24:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
@@ -1798,4 +1825,4 @@
 
 })();
 
-},{}]},{},[22]);
+},{}]},{},[23]);

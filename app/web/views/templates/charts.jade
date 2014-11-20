@@ -30,7 +30,7 @@
             CHART
         //-
 
-        div(data-syn-charts='{{criteria._id}}' data-ng-show2='votes[criteria._id].total')
+        div(data-syn-charts='{{criteria._id}}' data-ng-show='$root.isCool')
 
           svg.chart(
             id                  =   'chart-{{criteria._id}}'

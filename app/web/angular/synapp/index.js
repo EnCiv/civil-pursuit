@@ -21,7 +21,8 @@
       getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
       itemFilter:                   require('./filters/item-filter'),
       criteriaFilter:               require('./filters/criteria-filter'),
-      feedbackFilter:               require('./filters/feedback-filter')
+      feedbackFilter:               require('./filters/feedback-filter'),
+      find:                         require('./filters/find')
     })
 
     .controller({

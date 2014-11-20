@@ -78,6 +78,10 @@
                     }
                 });
               }
+
+              else {
+                $elem.find('svg').css('height', '0');
+              }
             }
 
           }
