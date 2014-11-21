@@ -58,9 +58,15 @@
 
 		model.$bind('title', $('h1'));
 
-		model.$bind('title', $('input'));
-
 		model.$listen('title', $('input'));
+
+		model.$toggle('show', $('button'));
+
+		model.$bind('show', function (show) {
+			if ( show ) {
+				$('button').removeClass('s');
+			}
+		});
 
 		// // app.$assign('title', $('h1'));
 
