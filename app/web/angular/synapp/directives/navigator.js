@@ -1,7 +1,5 @@
 ;(function () {
 
-  module.exports = ['$rootScope', '$compile', 'DataFactory', NavigatorComponent];
-
   function compile (item, into, scope, $compile) {
 
     function _compile (type) {
@@ -50,7 +48,9 @@
     return true;
   }
 
-  function NavigatorComponent ($rootScope, $compile, DataFactory) {
+  module.exports = ['$rootScope', '$compile', '$timeout', 'DataFactory', NavigatorComponent];
+
+  function NavigatorComponent ($rootScope, $compile, $timeout, DataFactory) {
     return {
       restrict: 'C',
       templateUrl: '/templates/navigator',
@@ -107,47 +107,26 @@
               });
 
               $scope.batchSize += synapp['navigator batch size'];
+
+              $timeout(function () {
+                require('../lib/ellipsis').apply($scope.elem.find('.box'));
+              });
             });
         };
         
       }],
       link: function ($scope, $elem, $attrs) {
+
+        $scope.elem = $elem;
+
         setTimeout(function () {
 
-          var height = $elem.find('.item-text').closest('.box').find('.item-media')
-            .height();
+          var ellipsis = require('../lib/ellipsis');
 
-          $elem.find('.item-text').each(function () {
-            if ( ! $(this).data('dotdotdot') ) {
-              $(this).data('dotdotdot', 'yes');
+          // $timeout(ellipsis.bind($elem.find('.box')), 0);
+          ellipsis.apply($elem.find('.box'));
+          // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
 
-              var elem = $(this);
-
-              $(this).dotdotdot({
-                ellipsis: '...',
-                wrap: 'word',
-                fallBackToLetter: true,
-                watch: true,
-                tolerance: 0,
-                // callback: console.log.bind(console),
-                height: height,
-                after: "span.readmore"
-              });
-
-              $(this).find('span.readmore a').on('click', function () {
-                if ( $(this).text() === 'more' ) {
-                  $(this).text('less');
-                  elem.closest('.box').find('.item-more').removeClass('hide');
-                }
-                else {
-                  $(this).text('more');
-                  elem.closest('.box').find('.item-more').addClass('hide');
-                }
-              })
-            }
-          });
-
-            
         }, 500);
       }
     };

@@ -1,13 +1,51 @@
 function MVB () {
-
-	this.model = new Watchable();
 }
 
-MVB.prototype.inject = function(model, value) {
-	this.model.set(model, value);
+MVB.prototype.$assign = function(model, view) {
+  $(view).text(this[model]);
 
-	return this;
+  this.$watch(model, function (value) {
+    $(view).text(value);
+  });
 };
+
+MVB.prototype.$listen = function(model, view) {
+  var self = this;
+
+  $(view).on('keyup', function () {
+    self[model] = $(this).val();
+  });
+};
+
+MVB.prototype.$toggle = function(model, view) {
+  var self = this;
+
+  $(view).on('click', function () {
+    self[model] = ! self[model];
+  });
+};
+
+MVB.prototype.$toggleView = function(model, view) {
+  var self = this;
+
+  this.$watch(model, function (value) {
+    if ( value ) {
+      view.show();
+    }
+    else {
+      view.hide();
+    }
+  });
+};
+
+
+
+
+
+
+
+
+
 
 MVB.prototype.bind = function (model, view, options) {
 	options = options || { watch: true };

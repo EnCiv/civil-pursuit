@@ -1,64 +1,92 @@
-function Watchable () {
-	this.watchers = {};
-	this.scope = {};
-}
+/**
+	* @example 
+	*	// Prototype
+	* require('watchit').useProto();
+	*	var foo = true;
+	*	this.$watch('foo', console.log.bind(console));
+	* setInterval(function () {
+	*		console.log('foo', foo);
+	*		foo = ! foo;
+	* });
+	*
+	*	// Constructor
+	* var $watch = require('watchit');
+	*	var foo = true;
+	* $watch('foo', console.log.bind(console));
+	* setInterval(function () {
+	*		console.log('foo', foo);
+	*		foo = ! foo;
+	* });
+*/
 
-Watchable.prototype.watch = function (prop, cb) {
-	this.watchers[prop] = this.watchers[prop] || [];
-	this.watchers[prop].push(cb);
+;(function () {
 
-	return this;
-};
+	function Listen (obj, prop, value, watch) {
+		var name = prop;
+		var is;
+		var old;
 
-Watchable.prototype.set = function (prop, value) {
-	if ( this.scope[prop] ) {
-		this.scope[prop] = value;
+		Object.defineProperty(
+			obj,
+			prop,
+			{
+				set: function (value) {
+					console.info(['set', name, 'to', value, is]);
+
+					old = is;
+
+					this.value = is = value;
+
+					if ( watch ) {
+						watch(name, is, old);
+					}
+				},
+
+				get: function () {
+					return this.value;
+				}
+		});
+
+		obj[prop] = value;
 	}
 
-	else {
-		new Watchable.Inject(this.scope, prop, value,
-			function (name, value, diff) {
-				if ( this.watchers[name] ) {
-					this.watchers[name].forEach(function (watcher) {
-						watcher(value, diff);
-					});
-				}
-			}.bind(this));
+	Object.prototype.$watch = function(prop, watcher) {
 
-	}
+		if ( ! this.__watchers ) {
+			this.__watchers = {};
+		}
 
-	return this;
-};
+		if ( ! this.__watchers[prop] ) {
+			this.__watchers[prop] = [];
+		}
 
-Watchable.Inject = function (obj, prop, value, watch) {
-	var name = prop;
-	var is;
-	var old;
+		this.__watchers[prop].push(watcher);
 
-	Object.defineProperty(
-		obj,
-		prop,
-		{
+		if ( typeof this[prop] === 'undefined' ) {
+			new Listen(this, prop, null,
+				function (name, value, diff) {
+					if ( this.__watchers[name] ) {
+						this.__watchers[name].forEach(function (watcher) {
+							watcher(value, diff);
+						});
+					}
+				}.bind(this));
+		}
 
-			set: function (value) {
-				// console.info(['set', name, 'to', value, is]);
+		else {
+			var value = this[prop];
 
-				old = is;
+			new Listen(this, prop, value,
+				function (name, value, diff) {
+					if ( this.__watchers[name] ) {
+						this.__watchers[name].forEach(function (watcher) {
+							watcher(value, diff);
+						});
+					}
+				}.bind(this));
+		}
+		
+		return this
+	};
 
-				this.value = is = value;
-
-				if ( watch ) {
-					watch(name, is, old);
-				}
-
-			},
-			
-			get: function () {
-				// console.info('get', name, 'which is', is);
-				return is;
-			}
-
-	});
-
-	obj[prop] = value;
-}
+})();

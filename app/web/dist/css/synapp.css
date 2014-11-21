@@ -4401,33 +4401,107 @@ footer {
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
 }
 .panel .panel-heading {
   background: #39683c;
-  background-color: #333333;
-  background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(#000000));
-  background: -webkit-linear-gradient(top, #333333, #000000);
-  background: -moz-linear-gradient(top, #333333, #000000);
-  background: -ms-linear-gradient(top, #333333, #000000);
-  background: -o-linear-gradient(top, #333333, #000000);
+  background-color: rgba(0, 0, 0, 0.6);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.6)), to(#000000));
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
+  background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
+  background: -ms-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
+  background: -o-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
   color: #fff;
   text-align: center;
 }
 .panel .panel-body {
   padding: 0;
 }
-.panel .panel-body .readmore {
+.panel .panel-body .box {
+  overflow: hidden;
+}
+.panel .panel-body .box .item-media-wrapper {
+  width: 35%;
+  float: left;
+  padding: 10px;
+}
+.panel .panel-body .box .item-media-wrapper .item-media {
+  /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
+}
+.panel .panel-body .box .item-media-wrapper .item-media .video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+.panel .panel-body .box .item-media-wrapper .item-media .video-container iframe,
+.panel .panel-body .box .item-media-wrapper .item-media .video-container object,
+.panel .panel-body .box .item-media-wrapper .item-media .video-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.panel .panel-body .box .box-buttons {
+  text-align: right;
+}
+.panel .panel-body .box .box-buttons .btn {
+  width: 100px;
+}
+@media (max-width: 600px) {
+  .panel .panel-body .box .box-buttons .btn {
+    font-size: 80%;
+    width: 70px;
+    border-radius: 10px;
+  }
+}
+.panel .panel-body .box .box-buttons div {
+  padding: 10px;
+}
+@media (max-width: 600px) {
+  .panel .panel-body .box .box-buttons div {
+    padding: 2px;
+    font-size: 80%;
+  }
+}
+.panel .panel-body .box .item-text {
+  padding-left: 10px;
+}
+.panel .panel-body .box .item-text .item-title {
+  font-size: 25px;
+  word-wrap: break-word;
+}
+@media (max-width: 700px) {
+  .panel .panel-body .box .item-text .item-title {
+    font-size: 22px;
+  }
+}
+@media (max-width: 600px) {
+  .panel .panel-body .box .item-text .item-title {
+    font-size: 20px;
+  }
+}
+@media (max-width: 500px) {
+  .panel .panel-body .box .item-text .item-title {
+    font-size: 17px;
+  }
+}
+.panel .panel-body .box .item-text .readmore {
   display: none;
 }
-.panel .panel-body .box-description {
+.panel .panel-body .box .item-text .box-description {
   font-size: 16px;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
-.panel .panel-body .entry-title {
+@media (max-width: 500px) {
+  .panel .panel-body .box .item-text .box-description {
+    font-size: 14px;
+  }
+}
+.panel .panel-body .box .item-text .entry-title {
   margin-top: 15px;
-}
-.panel .panel-body .item-title {
-  font-size: 25px;
 }
 .panel .panel-body .items .item {
   background: #fff;
@@ -4439,44 +4513,6 @@ footer {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   margin-right: 0;
   border-right: none;
-}
-.panel .panel-body .items .item .box {
-  overflow: hidden;
-}
-.panel .panel-body .items .item .box .item-main {
-  /*max-height: 125px;
-            overflow: hidden;
-
-            @media (max-width: 440px) {
-              max-height: 216px
-            }
-
-            @media (min-width: 440px) and (max-width: 768px) {
-              max-height: 172px
-            }
-
-            @media (min-width: 768px) and (max-width: 992px) {
-              max-height: 129px
-            }
-
-            @media (min-width: 992px) and (max-width: 1200px) {
-              max-height: 172px
-            }
-
-            @media (min-width: 1200px) {
-              max-height: 180px
-            }*/
-}
-.panel .panel-body .items .item .box .item-main .pnum {
-  margin-bottom: 6px;
-  margin-top: 6px;
-}
-.panel .panel-body .items .item .box .item-main .box-promoted {
-  width: 100px;
-  margin-bottom: 30px;
-}
-.panel .panel-body .items .item .box .item-main .item-title {
-  margin-top: 0px;
 }
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,
@@ -4500,43 +4536,43 @@ footer {
     margin-top: 0;
   }
 }
+.panel .panel-body .items .item .collapsers .children .split-view li:nth-last-child(1) {
+  text-align: right;
+}
+@media (max-width: 480px) {
+  .panel .panel-body .items .item .collapsers .children .split-view .box-buttons {
+    float: none !important;
+    width: 100%;
+    clear: both;
+    text-align: center;
+  }
+}
+.panel .panel-body .items .item .collapsers .children .split-view .box-buttons button {
+  width: 70px !important;
+}
+.panel .panel-body .items .item .collapsers .children .split-view .toggle-arrow {
+  display: none;
+}
+@media (max-width: 900px) {
+  .panel .panel-body .items .item .collapsers .children .split-view .item-title {
+    clear: left !important;
+    padding: 10px 10px 0 10px;
+  }
+}
+@media (max-width: 900px) {
+  .panel .panel-body .items .item .collapsers .children .split-view .item-text {
+    clear: left !important;
+  }
+}
+@media (max-width: 900px) {
+  .panel .panel-body .items .item .collapsers .children .split-view .item-media-wrapper {
+    width: 100%;
+  }
+}
 .panel .panel {
   margin: 10px;
   margin-right: 0;
   border-right: none;
-}
-.panel .split-view li:nth-last-child(1) {
-  text-align: right;
-}
-.panel .split-view .box-promoted {
-  width: 100% !important;
-}
-.panel .split-view .box-promoted .toggle-details {
-  float: right;
-}
-.panel .split-view .toggle-arrow {
-  display: none;
-}
-.panel .split-view .box h4 {
-  clear: both;
-  padding-top: 28px;
-  margin-right: 0;
-}
-.panel .video-container {
-  position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 30px;
-  height: 0;
-  overflow: hidden;
-}
-.panel .video-container iframe,
-.panel .video-container object,
-.panel .video-container embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 }
 .animate-show {
   opacity: 1;

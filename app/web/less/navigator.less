@@ -46,84 +46,118 @@
 
   .panel-heading {
     background: @panel-heading-bg;
-    .gradient(#333, #000);
+    .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
     color: #fff;
     text-align: center;
   }
 
   .panel-body {
+    
     padding: 0;
 
-    .readmore {
-      display: none
-    }
+    .box {
 
-    .box-description {
-      font-size: 16px;
-    }
-   
-    .entry-title {
-      margin-top: 15px
-    }
+      overflow: hidden;
 
-    .item-title {
-      font-size: 25px;
-      // margin-top: 0px;
+      .item-media-wrapper {
+        width: 35%;
+        float: left;
+        padding: @syn-padding;
+
+        .item-media {
+
+          /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
+          .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            padding-top: 30px; height: 0; overflow: hidden;
+
+            iframe, object, embed {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+
+      .box-buttons {
+        text-align: right;
+
+        .btn {
+          width: 100px;
+
+          @media (max-width: 600px) {
+            font-size: 80%;
+            width: 70px;
+            border-radius: 10px;
+          }
+        }
+
+        div {
+          padding: @syn-padding;
+
+          @media (max-width: 600px) {
+            padding: 2px;
+            font-size: 80%;
+          }
+        }
+      }
+
+      .item-text {
+
+        padding-left: @syn-padding;
+
+        .item-title {
+          font-size: 25px;
+          word-wrap: break-word;
+          
+          @media (max-width: 700px) {
+            font-size: 22px
+          }
+
+          @media (max-width: 600px) {
+            font-size: 20px
+          }
+
+          @media (max-width: 500px) {
+            font-size: 17px
+          }
+        }
+
+        .readmore {
+          display: none
+        }
+
+        .box-description {
+          font-size: 16px;
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+
+          @media (max-width: 500px) {
+            font-size: 14px
+          }
+        }
+
+        .entry-title {
+          margin-top: 15px
+        }
+      }
     }
 
     .items {
       .item {
+       
         background:     #fff;
         border:         1px solid @panel-border-color;
         margin:         @syn-padding;
-        border-radius: 4px;
+        border-radius:  4px;
         .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
-        margin-right: 0;
-        border-right: none;
+        margin-right:   0;
+        border-right:   none;
 
-        .box {
-          overflow: hidden;
-
-          .item-main {
-
-            /*max-height: 125px;
-            overflow: hidden;
-
-            @media (max-width: 440px) {
-              max-height: 216px
-            }
-
-            @media (min-width: 440px) and (max-width: 768px) {
-              max-height: 172px
-            }
-
-            @media (min-width: 768px) and (max-width: 992px) {
-              max-height: 129px
-            }
-
-            @media (min-width: 992px) and (max-width: 1200px) {
-              max-height: 172px
-            }
-
-            @media (min-width: 1200px) {
-              max-height: 180px
-            }*/
-
-            .pnum {
-              margin-bottom: 6px;
-              margin-top: 6px;
-            }
-
-            .box-promoted {
-              width: 100px;
-              margin-bottom: 30px;
-            }
-
-            .item-title {
-              margin-top: 0px;
-            }
-          }
-        }
         .collapsers {
           .evaluator, .details, .editor {
             border: 1px solid @panel-border-color;
@@ -147,6 +181,55 @@
               }
             }
           }
+
+          .children {
+              .split-view {
+                li:nth-last-child(1) {
+                  text-align: right
+                }
+
+                .box-buttons {
+
+                  @media (max-width: 480px) {
+                    float: none !important;
+                    width: 100%;
+                    clear: both;
+                    text-align: center;
+                  }
+
+                  button {
+                    width: 70px !important
+                  }
+                }
+
+                .toggle-arrow {
+                  display: none
+                }
+
+                .item-title {
+                  @media (max-width: 900px) {
+                    clear: left !important;
+                    padding: 10px 10px 0 10px;
+                  }
+                }
+
+                .item-text {
+                  @media (max-width: 900px) {
+                    clear: left !important;
+                  }
+                }
+
+                .item-media-wrapper {
+                  @media (max-width: 900px) {
+                    width: 100%
+                  }
+                }
+
+                // .item-main {
+                //   max-height: 400px !important;
+                // }
+              }
+          }
         }
       }
     }
@@ -157,50 +240,7 @@
     margin-right: 0;
     border-right: none;
   }
-
-  .split-view {
-
-    li:nth-last-child(1) {
-      text-align: right
-    }
-
-    .box-promoted {
-      width: 100% !important;
-
-      .toggle-details {
-        float: right
-      }
-    }
-
-    .toggle-arrow {
-      display: none
-    }
-
-    // .item-main {
-    //   max-height: 400px !important;
-    // }
-  }
-
-  .split-view .box h4 {
-    clear: both;
-    padding-top: 28px;
-    margin-right: 0;
-  }
-
-  /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
-  .video-container {
-    position: relative;
-    padding-bottom: 56.25%;
-    padding-top: 30px; height: 0; overflow: hidden;
-
-    iframe, object, embed {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-  }
+  
 }
 
 .animate-show {

@@ -47,30 +47,19 @@ section.container-fluid(
             +bootstrap-panel-heading
               h4.panel-title(ng-bind='intro.subject')
             +bootstrap-panel-body
-              
-              div.padding(style='max-width: 40%')
-                img.img-responsive.pull-left(ng-src='{{intro.image}}')
+              .box
+                .item-media-wrapper
+                  img.img-responsive.pull-left(data-ng-src='{{intro.image}}')
 
-              .item-text.padding-right.padding-bottom
-                h4.item-title.padding-left.padding-right(ng-bind='intro.subject')
-              
-                .pre-text(ng-bind='intro.description')
-
-
-              .row
-                .col-xs-12.col-sm-4.padding
-                  img.img-responsive(ng-src='{{intro.image}}')
-                .col-xs-12.col-sm-8.padding-right.padding-bottom
-                  .item-text
-                    h4.item-title.padding-left.padding-right(ng-bind='intro.subject')
-                    .padding.box-description.description.pre-text(ng-bind='intro.description')
+                div.item-text.padding
+                  h4.item-title(ng-bind='intro.subject')
+                
+                  .box-description.description.pre-text(ng-bind='intro.description')
+                  //
                     span.readmore
                       span [ 
                       a(href='#') more
                       span  ]
-              .row.padding.hide.item-more
-                .col-xs-12
-                  .padding.box-description.description.pre-text(ng-bind='intro.description')
 
         block page
 

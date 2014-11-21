@@ -355,31 +355,11 @@
       .success(function (items) {
         $rootScope.intro = items[0];
 
-        $timeout(function () {
-          var dotdotdot = {
-            ellipsis: '...',
-            wrap: 'word',
-            fallBackToLetter: true,
-            watch: true,
-            tolerance: 0,
-            callback: console.log.bind(console),
-            height: $('#intro img').height() + 10,
-            after: "span.readmore"
-          };
+        var ellipsis = require('./lib/ellipsis');
 
-          $('#intro .item-text').dotdotdot(dotdotdot);
+        $timeout(ellipsis.bind($('#intro .box')), 0);
 
-          $('#intro span.readmore a').on('click', function () {
-            if ( $(this).text() === 'more' ) {
-              $(this).text('less');
-              $('#intro .item-more').removeClass('hide');
-            }
-            else {
-              $(this).text('more');
-              $('#intro .item-more').addClass('hide');
-            }
-          });
-        })
+        // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
       });
   }
 

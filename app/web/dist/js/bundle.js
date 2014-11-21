@@ -611,8 +611,6 @@
 },{}],9:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', '$compile', 'DataFactory', NavigatorComponent];
-
   function compile (item, into, scope, $compile) {
 
     function _compile (type) {
@@ -661,7 +659,9 @@
     return true;
   }
 
-  function NavigatorComponent ($rootScope, $compile, DataFactory) {
+  module.exports = ['$rootScope', '$compile', '$timeout', 'DataFactory', NavigatorComponent];
+
+  function NavigatorComponent ($rootScope, $compile, $timeout, DataFactory) {
     return {
       restrict: 'C',
       templateUrl: '/templates/navigator',
@@ -718,47 +718,26 @@
               });
 
               $scope.batchSize += synapp['navigator batch size'];
+
+              $timeout(function () {
+                require('../lib/ellipsis').apply($scope.elem.find('.box'));
+              });
             });
         };
         
       }],
       link: function ($scope, $elem, $attrs) {
+
+        $scope.elem = $elem;
+
         setTimeout(function () {
 
-          var height = $elem.find('.item-text').closest('.box').find('.item-media')
-            .height();
+          var ellipsis = require('../lib/ellipsis');
 
-          $elem.find('.item-text').each(function () {
-            if ( ! $(this).data('dotdotdot') ) {
-              $(this).data('dotdotdot', 'yes');
+          // $timeout(ellipsis.bind($elem.find('.box')), 0);
+          ellipsis.apply($elem.find('.box'));
+          // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
 
-              var elem = $(this);
-
-              $(this).dotdotdot({
-                ellipsis: '...',
-                wrap: 'word',
-                fallBackToLetter: true,
-                watch: true,
-                tolerance: 0,
-                // callback: console.log.bind(console),
-                height: height,
-                after: "span.readmore"
-              });
-
-              $(this).find('span.readmore a').on('click', function () {
-                if ( $(this).text() === 'more' ) {
-                  $(this).text('less');
-                  elem.closest('.box').find('.item-more').removeClass('hide');
-                }
-                else {
-                  $(this).text('more');
-                  elem.closest('.box').find('.item-more').addClass('hide');
-                }
-              })
-            }
-          });
-
-            
         }, 500);
       }
     };
@@ -766,7 +745,7 @@
 
 })();
 
-},{}],10:[function(require,module,exports){
+},{"../lib/ellipsis":24}],10:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -1437,7 +1416,107 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/find":18,"./filters/get-evaluation-by-item":19,"./filters/get-evaluation-items":20,"./filters/item-filter":21,"./filters/shorten":22,"./run":24}],24:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/find":18,"./filters/get-evaluation-by-item":19,"./filters/get-evaluation-items":20,"./filters/item-filter":21,"./filters/shorten":22,"./run":25}],24:[function(require,module,exports){
+;(function () {
+
+  module.exports = function ellipsis () {
+
+    $(this).each(function () {
+      var box = this;
+
+      if ( $(box).hasClass('is-ellipsis') ) {
+        return;
+      }
+
+      var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive');
+
+      if ( ! media.length ) {
+        media = $(box).find('.item-media-wrapper').find('iframe');
+      }
+
+      var height = media.height() || media.css('height');
+
+      console.log('aaaaaaa', $(box).find('.item-title').text(), media.length,
+        $(box).find('.item-media-wrapper:eq(0)').height());
+
+      height = parseInt(height);
+
+      if ( ! height || height < 50 ) {
+        if ( isNaN(this.refreshed) ) {
+          this.refreshed = 0;
+        }
+
+        if ( this.refreshed > 25 ) {
+          height = 120;
+        }
+
+        else {
+          this.refreshed ++;
+
+          console.log('fffffff', $(box).find('.item-title').text(), media.length, height);
+
+          return setTimeout(ellipsis.bind(box), 250);
+        }
+      }
+
+      var height2 = $(box).find('.box-buttons').height() || $(box).find('.box-buttons').css('height');
+
+      if ( height2 > height ) {
+        height = height2 + 35;
+      }
+
+      if ( $(box).closest('.split-view').length ) {
+        height *= 1.5;
+      }
+
+      $(box).addClass('ellipsis');
+
+      console.log({
+        subject: $(box).find('.item-title').text(),
+        media: {
+          has: !!media.length,
+          is: media.length && media[0].nodeName,
+          height: height
+        }
+      });
+
+      var readmore = $('<span class="readmore">[ <a href="#">more</a> ]</span>');
+
+      // readmore.find('a').text(height)
+
+      var readless = $('<div class="readless hide text-center">[ <a href="#">less</a> ]</div>');
+
+      readmore.find('a').on('click', function () {
+        $(box).find('.item-text').trigger('destroy');
+        readless.removeClass('hide');
+      });
+
+      readmore.insertAfter($(box).find('.description'));
+
+      readless.insertAfter($(box).find('.item-text'));
+
+      var dotdotdot = {
+        ellipsis: '... ',
+        wrap: 'word',
+        fallBackToLetter: true,
+        watch: true,
+        tolerance: 5,
+        // callback: console.log.bind(console),
+        height: height,
+        after: "span.readmore"
+      };
+
+      $(box).find('.item-text').dotdotdot(dotdotdot);
+
+      readless.find('a').on('click', function () {
+        $(box).find('.item-text').dotdotdot(dotdotdot);
+        readless.addClass('hide');
+      });
+    });
+  };
+
+})();
+},{}],25:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
@@ -1795,34 +1874,14 @@
       .success(function (items) {
         $rootScope.intro = items[0];
 
-        $timeout(function () {
-          var dotdotdot = {
-            ellipsis: '...',
-            wrap: 'word',
-            fallBackToLetter: true,
-            watch: true,
-            tolerance: 0,
-            callback: console.log.bind(console),
-            height: $('#intro img').height() + 10,
-            after: "span.readmore"
-          };
+        var ellipsis = require('./lib/ellipsis');
 
-          $('#intro .item-text').dotdotdot(dotdotdot);
+        $timeout(ellipsis.bind($('#intro .box')), 0);
 
-          $('#intro span.readmore a').on('click', function () {
-            if ( $(this).text() === 'more' ) {
-              $(this).text('less');
-              $('#intro .item-more').removeClass('hide');
-            }
-            else {
-              $(this).text('more');
-              $('#intro .item-more').addClass('hide');
-            }
-          });
-        })
+        // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
       });
   }
 
 })();
 
-},{}]},{},[23]);
+},{"./lib/ellipsis":24}]},{},[23]);
