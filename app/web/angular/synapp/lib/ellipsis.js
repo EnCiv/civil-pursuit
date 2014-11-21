@@ -9,16 +9,15 @@
         return;
       }
 
-      var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive');
+      var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive:eq(0)');
 
       if ( ! media.length ) {
-        media = $(box).find('.item-media-wrapper').find('iframe');
+        media = $(box).find('.item-media-wrapper:eq(0) iframe');
       }
 
       var height = media.height() || media.css('height');
 
-      console.log('aaaaaaa', $(box).find('.item-title').text(), media.length,
-        $(box).find('.item-media-wrapper:eq(0)').height());
+      console.log('aaaaaaa', $(box).find('.item-title').text(), media.length, height);
 
       height = parseInt(height);
 
@@ -60,6 +59,10 @@
           height: height
         }
       });
+
+      if ( height < 100 ) {
+        height += 20;
+      }
 
       var readmore = $('<span class="readmore">[ <a href="#">more</a> ]</span>');
 
