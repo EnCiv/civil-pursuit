@@ -50,54 +50,6 @@ div(data-ng-init='show = "items"')
                 title='{{ item.subject }}')
               div.box-description.description.pre-text.padding-right.padding-left(ng-bind='item.description')
 
-
-                //
-                      .row
-                        .col-xs-12.padding(data-ng-class='{ "col-sm-4": ! isSplit }')
-                          +item-image
-
-                        
-                        .col-xs-12.padding(data-ng-class='{ "col-sm-8": ! isSplit }')
-                          .item-main
-                            .box-promoted(data-ng-class='{ "text-right pull-right": ! isSplit, "is-split": isSplit }')
-
-                              div(data-ng-show='is.in = ' + !!isSignedIn
-                                data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-                                a.btn.btn-sm(data-ng-click='$show = (($show === "evaluator" && "-") || "evaluator"); $parent.show = "items"; $root.itemViewed = item._id') Promote
-
-                              //- Promoted stat (times)
-                              div.pnum(
-                                data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
-                                  //- span(data-ng-bind='item.views')
-                                  //- span ,  
-                                  span(data-ng-bind='item.promotions')
-
-                              //- Promoted stat (percent)
-                              div.pnum(data-ng-bind='((item | calculatePromotionPercentage) || 0) + "%"'
-                                data-ng-class='{ "col-xs-2": isSplit, "col-xs-12": ! isSplit}')
-
-                              //- Details button
-                              div(data-ng-class='{ "col-xs-4": isSplit, "col-xs-12": ! isSplit}')
-                                a.btn.btn-sm.toggle-details(data-ng-click='$show = (($show === "details" && "-") || "details"); $parent.show = "items"; $root.itemViewed = item._id') &nbsp;Details&nbsp;
-
-                            .item-text
-                              h4.item-title(data-ng-bind='item.subject'
-                                title='{{ item.subject }}')
-                              div.box-description.pre-text(ng-bind='item.description')
-                              span.readmore
-                                span [ 
-                                a(href='#') more
-                                span  ]
-                              //- div 
-                              //-   a(href='#') View more
-                              include navigator/references
-                            div.fix-1
-
-                      .row.padding.hide.item-more
-                        .col-xs-12.padding-bottom
-                          .padding.box-description.description.pre-text
-                            .padding-bottom(ng-bind='item.description')
-                            include navigator/references
           // COLLAPSERS
 
           .collapsers
@@ -111,10 +63,13 @@ div(data-ng-init='show = "items"')
 
                 .row
                   .col-xs-12.padding
+
                     h2.text-center
                       span(data-ng-bind='evaluation.cursor')
                       span  of  
                       span(data-ng-bind='evaluation.limit')
+
+                    h4.text-center Evaluate Each Item Below
 
                 // Normal screen
 
@@ -133,7 +88,7 @@ div(data-ng-init='show = "items"')
                     .col-sm-6.padding(
                       data-ng-repeat      =   'item in evaluation.current'
                     )
-                      h2(data-ng-bind='item.subject')
+                      h3(data-ng-bind='item.subject')
 
                   // Description
 
@@ -180,6 +135,10 @@ div(data-ng-init='show = "items"')
                   //-       data-ng-click   =   'editAndGoAgain(item)'
                   //-     ) Edit and go again
 
+                  .row.padding-bottom
+                    .col-xs-12
+                      h4.text-center Which of these is most important for the community to consider?
+
                   // Promote
 
                   .row.padding-bottom
@@ -189,6 +148,7 @@ div(data-ng-init='show = "items"')
                       button.btn.btn-block(
                         data-ng-click   =   'evaluation.promote($index); closeEvaluation(evaluation.current.length)'
                         data-ng-show    =   'evaluation.current[1]'
+                        data-ng-bind    =   'evaluation.current[$index].subject'
                       ) Promote
 
                 // Small screen
@@ -234,7 +194,7 @@ div(data-ng-init='show = "items"')
                     button.btn.btn-block(
                       data-ng-click = 'evaluation.next.length ? evaluation.continue() : evaluation.finish(); closeEvaluation(evaluation.current.length)' 
                     )
-                      span(data-ng-show='evaluation.next.length') Continue
+                      span(data-ng-show='evaluation.next.length') Neither
                       span(data-ng-hide='evaluation.next.length') Finish
             
             // DETAILS
