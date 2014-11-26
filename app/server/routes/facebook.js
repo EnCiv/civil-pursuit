@@ -27,7 +27,7 @@ module.exports = function (app, synapp, SynappError, passport) {
 
           var email = profile.id + '@facebook.com';
 
-          var User = require('../models/User');
+          var User = require('../../business/models/User');
 
           User.findOne({ email: email }, function (error, user) {
             if ( error ) {
