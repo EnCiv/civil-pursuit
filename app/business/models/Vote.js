@@ -64,27 +64,23 @@ VoteSchema.statics.getAccumulation = function (item, cb) {
       }
 
       votes.forEach(function (vote) {
-        if ( ! accumulation[vote.criteria] ) {
-          accumulation[vote.criteria] = {
-            total: 0,
-            values: {
-              '0': 0,
-              '1': 0,
-              '2': 0,
-              // '3': 0,
-              // '4': 0,
-              // '5': 0,
-              // '6': 0,
-              // '7': 0,
-              // '8': 0,
-              // '9': 0,
-              // '10': 0
-            }
-          };
+
+        if ( vote.value > -2 && vote.value < 2 ) {
+          if ( ! accumulation[vote.criteria] ) {
+            accumulation[vote.criteria] = {
+              total: 0,
+              values: {
+                '-1': 0,
+                '0': 0,
+                '1': 0
+              }
+            };
+          }
+
+          accumulation[vote.criteria].values[vote.value] ++;
+          accumulation[vote.criteria].total ++;
         }
 
-        accumulation[vote.criteria].values[vote.value] ++;
-        accumulation[vote.criteria].total ++;
       });
 
       cb(null, accumulation);

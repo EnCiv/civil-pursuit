@@ -212,12 +212,15 @@
 
                 for ( var number in votes[0].criterias[criteria].values ) {
                   data.push({
-                    label: number,
+                    label: 'number',
                     value: votes[0].criterias[criteria].values[number] * 100 / votes[0].criterias[criteria].total
                   });
                 }
 
-                var columns = ['votes'];
+                console.log('data', data);
+
+                var columns = [votes[0].criterias[criteria].total + ' vote' +
+                  (votes[0].criterias[criteria].total > 1 && 's' || '')];
 
                 data.forEach(function (d) {
                   columns.push(d.value);
@@ -227,14 +230,17 @@
                     bindto: '#' + $elem.find('svg').attr('id'),
 
                     data: {
-                      columns: [
-                        columns
-                      ],
+                      columns: [columns],
 
                       type: 'bar'
                     },
                     
                     axis: {
+                      x: {
+                        tick: {
+                          values: [1, 2, 3, 4]
+                        }
+                      },
                       
                       y: {
                         max: 90,
@@ -985,6 +991,8 @@
         $timeout(function () {
           $elem.find('input.slider').slider();
 
+          $elem.find('input.slider').slider('setValue', 0);
+
           $elem.find('input.slider').slider('on', 'slideStop',
             function () {
               var slider = $(this);
@@ -994,7 +1002,6 @@
                 var value = slider.slider('getValue');
 
                 $scope.$parent.evaluation.votes[$scope.item._id][slider.data('criteria')] = value;
-
               }
             });
         });
