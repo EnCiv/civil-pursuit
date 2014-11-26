@@ -51,7 +51,7 @@ div(data-ng-init='show = "items"')
               div.box-description.description.pre-text.padding-right.padding-left
                 div(ng-bind='item.description')
                 h4.padding(data-ng-repeat='reference in item.references')
-                  a(data-ng-href='{{ reference.url }}') {{ reference.title || reference.url }}
+                  a(data-ng-href='{{ reference.url }}' target='_blank') {{ reference.title || reference.url }}
 
           // COLLAPSERS
 
