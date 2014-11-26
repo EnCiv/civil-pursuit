@@ -63,7 +63,6 @@ module.exports = function (app, synapp, SynappError, passport) {
                 console.log('User created', user);
                 
                 done(null, user);
-
               });
           });
         }
