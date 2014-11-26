@@ -39,7 +39,7 @@
                   });
                 }
 
-                console.log('data', data);
+                
 
                 var columns = [votes[0].criterias[criteria].total + ' vote' +
                   (votes[0].criterias[criteria].total > 1 && 's' || '')];
@@ -48,20 +48,26 @@
                   columns.push(d.value);
                 });
 
+                console.log('columns', columns);
+
                 var chart = c3.generate({
                     bindto: '#' + $elem.find('svg').attr('id'),
 
                     data: {
-                      columns: [columns],
-
+                      x: 'x',
+                      columns: [['x', -1, 0, 1], columns],
                       type: 'bar'
+                    },
+
+                    grid: {
+                      x: {
+                        lines: 3
+                      }
                     },
                     
                     axis: {
                       x: {
-                        tick: {
-                          values: [1, 2, 3, 4]
-                        }
+                        
                       },
                       
                       y: {
