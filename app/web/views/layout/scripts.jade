@@ -3,7 +3,8 @@
 
     All the bottom script tags
 
-// Scripts
+// javascript
+
 
 //- # pass config public
 block script-backend
@@ -19,7 +20,7 @@ block script-jquery
     script(src=synapp.jquery.cdn)
 
   - else
-    script(src='/bower/jquery/dist/jquery.min.js')
+    script(src='/bower/jquery/dist/jquery.js')
 
 //- # dotdotdot
 
@@ -68,8 +69,8 @@ block script-file-upload
   - else
     script(src='/bower/ng-file-upload/angular-file-upload.js')
   
-//- block script-autogrow
-//-   script(src='/js/angular/autogrow/index.js')
+block script-autogrow
+  script(src='/js/angular/autogrow/index.js')
 
 //- # Bootstrap sliders
 
@@ -79,9 +80,6 @@ block script-sliders
 
   - else
     script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
-
-//- block script-moment
-//-   script(src='/bower/moment/min/moment.min.js')
 
 block script-d3
   - if ( settings.env === 'production' )
@@ -103,3 +101,5 @@ block script-app
 
   - else
     script(src='/dist/js/bundle.js')
+
+  //- script(src='/foo/app.js')

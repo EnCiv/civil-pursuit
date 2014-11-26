@@ -276,6 +276,27 @@ module.exports = function synappExpress (listen, isTest) {
     });
 
     ////////////////////////////////////////////////////////////////////////////
+    
+    // v0.4
+    
+    ////////////////////////////////////////////////////////////////////////////
+
+    app.get('/v0.4', function route_navigator (req, res) {
+
+      var extra = {};
+
+      if ( req.query.failed ) {
+        switch ( req.query.failed ) {
+          case 'nodup':
+            extra.signUpDuplicateError = true; 
+            break;
+        }
+      }
+
+      res.render('pages/v04', extra);
+    });
+
+    ////////////////////////////////////////////////////////////////////////////
     //
     //  ACCESS POINTS
     //

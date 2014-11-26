@@ -1,180 +1,334 @@
 <!doctype html>
 	
-	<h1></h1>
+  <style>
+    .panel {
+      border: 5px dotted #999;
+      padding: 10px 0 10px 10px;
+    }
+    .panel .panel {
+      margin: 10px 0 10px 10px;
+    }
+    .item {
+      border: 4px solid black;
+    }
+    .item-contents {
+      border: 4px solid blue;
+      height: 160px;
+    }
+    .item-nav {
+      float: right;
+    }
+    .item-details, .item-evaluation {
+      background: #ccc;
+    }
+  </style>
 
-	<input/>
-
-	<article>
-		<h2></h2>
-		<h4></h4>
-		<p></p>
-		<h5><span></span></h5>
-	</article>
+  <section role="main"></section>
 			
-	<script src="/bower/jquery/dist/jquery.min.js"></script>
-	<script>
+  <script src="/bower/jquery/dist/jquery.min.js"></script>
 
-		function MVB () {
+  <script type="text/html" id="tpl-panel" src="/foo/panel.html"></script>
 
-		}
+  <script type="text/html" id="tpl-item" src="/foo/item.html"></script>
+  
+  <script type="text/html" id="tpl-evaluator" src="/foo/evaluator.html"></script>
 
-		MVB.prototype.$bind = function(model, view) {
+  <script type="text/html" id="tpl-details" src="/foo/details.html"></script>
+	
+  <!-- script src="/foo/watchable.js"></script -->
+	
+  <script>
 
-			var self = this;
+    function loadTemplates (done) {
+      //A list of promises that need to resolve before starting
+      var loaded = [];
+       
+      //Load all templates
+      var $templates = $('script[type="text/html"]');
+      $templates.each(function() {
+          var src = $(this).attr("src");
+          if (src) {
+              loaded.push( //Wait for the template to load
+                  $.ajax(src, {context:this}).
+                  done(function(data) {
+                      $(this).html(data);
+                  })
+              );
+          }
+      });
+       
+      //Wait for the DOM to be ready
+      loaded.push($.ready);
+       
+      //Initialise after everything is loaded
+      $.when.apply($,loaded).done(done);
+    }
 
-			var fn = 'text';
+    //////////////////////////////////////////////
 
-			var args = [this[model]];
+    function $watch (object) {
 
-			view[fn].apply(view, args);
+      var self = this;
 
-			Object.observe(this, function (changes) {
-				changes.forEach(function (change) {
-					if ( change.name === model ) {
-						view.text(self[model])
-					}
-				});
-			});
+      for ( var prop in object ) {
+        this[prop] = object[prop];
+      }
 
-			return this;
-		};
+      this.__watchers = {};
 
-		MVB.prototype.$listen = function(model, view) {
-			
-			var self = this;
+      Object.observe(this, function (changes) {
+        changes.forEach(function (change) {
+          if ( self.__watchers[change.name] ) {
+            self.__watchers[change.name].forEach(function (watcher) {
+              watcher(self[change.name]);
+            });
+          }
+        });
+      });
+    }
 
-			view.on('keyup', function () {
-				self[model] = $(this).val();
-			});
+    $watch.prototype.$watch = function(prop, watcher) {
+      if ( ! this.__watchers[prop] ) {
+        this.__watchers[prop] = [];
+      }
+      this.__watchers[prop].push(watcher);
+    };
 
-			return this;
-		};
+    //////////////////////////////////////////////
 
-		var model = new MVB();
+    var model = new $watch({
+      rel: {
+        Topic: ['Problem'],
+        Problem: [['Agree', 'Disagree'], 'Solution'],
+        Solution: [['Pro', 'Con']]
+      },
+      items: [],
+      panels: [],
+      limit: 6
+    });
 
-		// Model updates view
+    /** @return jQuery .panel */
+    function PanelView (options, once) {
 
-		model.title = 'Hello!';
+      var panel = $($('#tpl-panel').html());
 
-		model.$bind('title', $('h1'));
+      panel.data('type', options.type);
+      panel.data('parent', options.parent);
+      panel.data('skip', 0);
 
-		model.$listen('title', $('input'));
+      panel.find('h4').text(options.type);
 
-		model.$toggle('show', $('button'));
+      panel.find('.load-more-items a').on('click', function () {
+        var elem = $(this), panel = elem.closest('.panel');
 
-		model.$bind('show', function (show) {
-			if ( show ) {
-				$('button').removeClass('s');
-			}
-		});
+        console.log(panel.data('skip'))
 
-		// // app.$assign('title', $('h1'));
+        Ctrl.find(options.type, options.parent, panel.data('skip'))
+          .success(function (items) {
+            var skip = +panel.data('skip');
+            skip += items.length;
+            panel.data('skip', skip);
+          });
+        return false;
+      });;
 
-		// app.$assign('title', 'h1');
+      if ( ! once ) {
+        model.$watch('items', function (items) {
+          ItemView(items, panel);
+        });
+      }
 
-		// setTimeout(function () {
-		// 	console.log('title', app.title)
-		// 	app.title = 'Goodbye!'
-		// }, 1000);
+      model.panels = model.panels.concat([panel]);
 
-		// // View updates model
+      return panel;
+    }
 
-		// app.$listen('title', $('input'));
+    /** Mapper */
+    function ItemView (items, panel) {
 
-		// // Toggle
+      var type = panel.data('type');
+      var parent = panel.data('parent');
 
-		// app.$toggle('show', $('h1'));
+      var iterations = [];
 
-		// // Toggle view
+      items
 
-		// app.show = true;
+        .filter(function (item) {
+          return item.type === type;
+        })
 
-		// app.$toggleView('show', $('input'));
+        .filter(function (item) {
+          if ( parent ) {
+            return item.parent === parent;
+          }
+          return true;
+        })
 
-		// app.article = {
-		// 	title: 'This is an article',
-		// 	description: 'This is a description',
-		// 	author: {
-		// 		name: 'joe',
-		// 		email: 'joe@joe.com'
-		// 	},
-		// 	tags: ['cool', 'awesome', 'life-changing'],
-		// 	comments: [
-		// 		{
-		// 			author: 'jane',
-		// 			comment: 'Changed my life!'
-		// 		}
-		// 	]
-		// };
+        .forEach(function (item) {
 
-		// app.assign('article.title', 					$('article h2'));
-		// app.assign('article.description', 		$('article p'));
-		// app.assign('article.author.name', 		$('article h4'));
-		// app.assign('article.author.email', 		{
-		// 	view: $('article h4'),
-		// 	attr: 'title'
-		// });
+          iterations.push(function () {
+            var article = $('#item-' + item._id),
+              isNew = false;
 
-		// app.$assign('article', {
-		// 	map: {
-		// 		"title": 					$('article h2'),
-		// 		"description": 		$('article p'),
-		// 		"author.name":		$('article h4'),
-		// 		"author.email":		{ attr: { title: $('article h4') }},
-		// 		"tags": 					$('article h5 span'),
-		// 		"comments":				
-		// 	}
-		// });
+            if ( ! article.length ) {
 
-		
-		// // Toggle
+              isNew = true
 
-		// modelView
+              article = $($('#tpl-item').html());
 
-		// 	.$model('show', false)
+              article.attr('id', 'item-' + item._id);
+            }
 
-		// 		.$toggle($('button.toggle'))
+            setTimeout(function () {
+              article.find('.item-subject').text(item.subject);
+              article.find('.item-description').text(item.description);
+            }, 250);
 
-		// // Incrementer / Decrementer
+            // IS NEW
 
-		// modelView
+            if ( isNew ) {
 
-		// 	.$model('counter', 0)
+              // Append panel to DOM
 
-		// 		.$inc($('button.plus'))
+              panel.find('.items:first').append(article);
 
-		// 		.$dec($('button.minus'), { step: 5 })
+              // Evaluator
 
-		// 		.$reset($('button.reset'))
+              article.find('.toggle-promote').on('click', function () {
+                article.find('.item-evaluation').append(EvaluationView(item._id));
+              });
 
-		// 		.$assign($('.counter'));
+              // Details
 
+              article.find('.item-details').append(DetailsView(item._id));
 
-		// // Type ahead
+              // Sub panel
 
-		// modelView
+              model.rel[type].forEach(function (t) {
 
-		// 	.$model('loading', false)
+                if ( typeof t === 'string' ) {
+                  var panel = PanelView({ type: t, parent: item._id });
 
-		// 	.$model('movies', [])
+                  article.find('.item-panels:first').append(panel, false);
+                }
 
-		// 		.$watch($('input'), function (query) {
+                if ( Array.isArray(t) ) {
+                  var div = $('<div class="row"></div>');
+                  t.forEach(function (t) {
+                    var panel = PanelView({ type: t, parent: item._id });
+                    div.append(panel);
+                  });
+                  article.find('.item-panels:first').append(div, false);
+                }
+              });
+            }
+          });
+        });
+    
+      var iteration = 1;
 
-		// 			if ( this.loading ) {
-		// 				return;
-		// 			}
+      function execIterations () {
+        setTimeout(function () {
+          iterations[iteration]();
 
-		// 			this.loading = true;
+          iteration ++;
 
-		// 			if ( query.length > 3 ) {
-		// 				$.ajax('/movies?query=' + query)
-		// 					.done(function (movies) {
-		// 						this.movies = movies;
-		// 						this.loading = false;
-		// 					}.bind(this));
-		// 			}
-		// 		})
+          if ( iterations[iteration] ) {
+            execIterations();
+          }
 
-		// 		.$assign($('li'));
+        }, 750)
+      }
+
+      if ( iterations[iteration] ) {
+        iterations[iteration]();
+
+        iteration ++;
+
+        if ( iterations[iteration] ) {
+           execIterations();
+        }
+      }
+    };
+
+    /** Evaluator 
+     *  @return jQuery .evaluator
+     */
+
+    function EvaluationView () {
+      var evaluator = $($('#tpl-evaluator').html());
+
+      return evaluator;
+    }
+
+    /** Details 
+     *  @return jQuery .details
+     */
+
+    function DetailsView () {
+      var details = $($('#tpl-details').html());
+
+      return details;
+    }
+
+    var Item = {
+      find: function (query, paging) {
+
+        var params = [];
+
+        for ( var field in query ) {
+          params.push(field + (query[field] && '=' + query[field]));
+        }
+
+        if ( paging.limit ) {
+          params.push(paging.limit);
+        }
+
+        if ( paging.skip ) {
+          params.push('$skip=' + paging.skip);
+        }
+
+        if ( paging.sort ) {
+          var sort = [];
+
+          for ( var sorter in paging.sort ) {
+            sort.push(sorter + (paging.sort > 0 ? '+' : '-'));
+          }
+
+          params.push('sort:' + sort.join(','));
+        }
+
+        return $.ajax('/models/Item?' + params.join('&'));
+      }
+    };
+
+    var Ctrl = {
+      find: function (type, parent, skip) {
+
+        var query = { type: type };
+
+        if ( parent ) {
+          query.parent = parent;
+        }
+
+        return Item.find(query, {
+          limit: model.limit,
+          skip: skip,
+          sort: {
+            promotions: -1,
+            views: -1
+          }
+        })
+          .done(function (items) {
+            model.items = model.items.concat(items);
+          });
+      }
+    };
+
+    //////////////////////////////////////////////
+
+    loadTemplates(function () {
+      $('[role=main]').append(PanelView({ type: 'Topic' }));
+    });
 
 	</script>

@@ -264,6 +264,12 @@ div(data-ng-init='show = "items"')
                   hr
 
 
+                //- Edit and go again
+                .row
+                  .col-xs-12
+                    hr
+                    button.btn.btn-block(data-ng-click='$show = "editor"') Edit and go again
+
             // EDITOR
 
             .editor.animate-show(ng-show='$show === "editor" && show === "items" && $root.itemViewed === item._id')

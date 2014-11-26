@@ -1,0 +1,29 @@
+extends ../layout
+
+block scripts
+  //- # pass config public
+  block script-backend
+    script.
+      var synapp = !{JSON.stringify(synapp.public)} || {};
+      synapp.env = "!{settings.env}";
+      synapp.user = "!{_id}";
+
+  //- # jQuery
+
+  block script-jquery
+    - if ( settings.env === 'production')
+      script(src=synapp.jquery.cdn)
+
+    - else
+      script(src='/bower/jquery/dist/jquery.js')
+
+  //- # Bootstrap
+
+  block script-bootstrap
+    - if ( settings.env === 'production' )
+      script(src='/dist/js/bootstrap.min.js')
+    - else
+      script(src='/dist/js/bootstrap.js')
+
+block page
+  .main
