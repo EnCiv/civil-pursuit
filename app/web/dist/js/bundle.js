@@ -204,8 +204,6 @@
                 return ( vote.item === item );
               });
 
-              console.log('votes', votes)
-
               if ( votes.length && votes[0].criterias[criteria] ) {
 
                 var data = [];
@@ -1755,10 +1753,30 @@
               item: this.current[0]._id,
               criteria: criteria,
               value: this.votes[this.current[0]._id][criteria]
-            })
+            });
           }
 
-          DataFactory.Vote.create(votes);
+          if ( votes.length ) {
+            DataFactory.Vote.create(votes);
+            var found = false;
+
+            $rootScope.votes.forEach(function (vote, index) {
+              console.warn(vote, this._id, index);
+              if ( vote.item === this._id ) {
+                found = index;
+              }
+            }.bind(this.current[0]));
+
+            console.error('watch out', found, found !== false)
+
+            if ( found !== false ) {
+              console.warn($rootScope.votes, found)
+              for ( var criteria in this.votes[this.current[0]._id] ) {
+                $rootScope.votes[found].criterias[criteria].total ++;
+                $rootScope.votes[found].criterias[criteria].values[this.votes[this.current[0]._id][criteria]] ++;
+              }
+            }
+          }
         }
       }
 
@@ -1792,7 +1810,28 @@
             })
           }
 
-          DataFactory.Vote.create(votes);
+          if ( votes.length ) {
+            DataFactory.Vote.create(votes);
+
+            var found = false;
+
+            $rootScope.votes.forEach(function (vote, index) {
+              if ( vote.item === this._id ) {
+                found = index;
+              }
+            }.bind(this.current[1]));
+
+
+            if ( found !== false ) {
+              console.warn($rootScope.votes, found)
+              for ( var criteria in this.votes[this.current[1]._id] ) {
+                $rootScope.votes[found].criterias[criteria].total ++;
+                $rootScope.votes[found].criterias[criteria].values[this.votes[this.current[1]._id][criteria]] ++;
+              }
+            }
+          }
+
+          
         }
       }
 

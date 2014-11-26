@@ -26,8 +26,6 @@
                 return ( vote.item === item );
               });
 
-              console.log('votes', votes)
-
               if ( votes.length && votes[0].criterias[criteria] ) {
 
                 var data = [];
