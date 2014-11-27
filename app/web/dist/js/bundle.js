@@ -1800,6 +1800,8 @@
 
         if ( this.votes[this.current[1]._id] ) {
 
+          console.info('votes detected')
+
           var votes = [];
 
           for ( var criteria in this.votes[this.current[1]._id] ) {
@@ -1811,7 +1813,6 @@
           }
 
           if ( votes.length ) {
-            DataFactory.Vote.create(votes);
 
             var found = false;
 
@@ -1821,14 +1822,15 @@
               }
             }.bind(this.current[1]));
 
-
-            if ( found !== false ) {
-              console.warn($rootScope.votes, found)
-              for ( var criteria in this.votes[this.current[1]._id] ) {
-                $rootScope.votes[found].criterias[criteria].total ++;
-                $rootScope.votes[found].criterias[criteria].values[this.votes[this.current[1]._id][criteria]] ++;
-              }
-            }
+            DataFactory.Vote.create(votes)
+              .success(function () {
+                if ( found !== false ) {
+                  for ( var criteria in this ) {
+                    $rootScope.votes[found].criterias[criteria].total ++;
+                    $rootScope.votes[found].criterias[criteria].values[this[criteria]] ++;
+                  }
+                }
+              }.bind(this.votes[this.current[1]._id]));
           }
 
           
