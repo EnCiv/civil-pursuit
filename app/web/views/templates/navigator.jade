@@ -212,7 +212,9 @@ div(data-ng-init='show = "items"')
 
                   p While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.
 
-                  textarea.hide I'm helping to bring synergy to democracy by voicing my opinion. I'm participating in the topic: "Most important issues in the US"
+                  textarea(data-ng-model='emailBody')
+
+                  a(data-ng-href='mailto:?subject={{item.subject}}&body={{emailBody}}!' target='_blank') Send
 
                 // Promoted
 
