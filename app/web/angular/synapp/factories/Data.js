@@ -15,13 +15,24 @@
     var batchSize = synapp["navigator batch size"];
 
     function querystring_format (url, query) {
+
       var params = [];
       
       query = query || {};
 
       // Set limit
 
-      query[batchSize] = undefined;
+      var limit = null;
+
+      for ( var q in query ) {
+        if ( ! isNaN(q) ) {
+          limit = +q;
+        }
+      }
+
+      if ( limit === null ) {
+        query[batchSize] = undefined;
+      }
 
       // Order by
 
@@ -78,6 +89,7 @@
 
       Criteria: {
         find: function (criteria) {
+          criteria[100] = undefined;
           return $http.get(querystring_format('/models/Criteria', criteria));
         }
       },
