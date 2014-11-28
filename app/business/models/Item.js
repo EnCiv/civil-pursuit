@@ -214,52 +214,102 @@ ItemSchema.statics.evaluate = function (id, cb) {
       return cb(new Error('Item not found'));
     }
 
-    var types = [item.type];
-
     switch ( item.type ) {
       case 'Agree':
-        types.push('Disagree');
-        break;
       case 'Disagree':
-        types.push('Agree');
-        break;
       case 'Pro':
-        types.push('Con');
-        break;
       case 'Con':
-        types.push('Pro');
+        var right;
+
+        switch ( item.type ) {
+          case 'Agree':
+            right = 'Disagree';
+            break;
+          case 'Disagree':
+            right = 'Agree';
+            break;
+          case 'Pro':
+            right = 'Con';
+            break;
+          case 'Con':
+            right = 'Pro';
+            break;
+        }
+
+        require('async').parallel({
+          itemsLeft: function (then) {
+            self
+              .find({
+                type: item.type,
+                parent: item.parent
+              })
+
+              .where('_id').ne(item._id)
+
+              .limit(2)
+
+              .sort({ views: 1, created: 1 })
+
+              .exec(then);
+          },
+          itemsRight: function (then) {
+            self
+              .find({
+                type: right,
+                parent: item.parent
+              })
+
+              .where('_id').ne(item._id)
+
+              .limit(3)
+
+              .sort({ views: 1, created: 1 })
+
+              .exec(then);
+          },
+          criterias: function (then) {
+            require('./Criteria').find({ type: item.type}, then);
+          }
+        }, function (error, results) {
+          cb(error, {
+            type: item.type,
+            item: id,
+            items: results.itemsLeft.concat(results.itemsRight).concat(item),
+            criterias: results.criterias
+          });
+        });
+        break;
+
+      default:
+        require('async').parallel({
+          items: function (then) {
+            self
+              .find({
+                type: item.type,
+                parent: item.parent
+              })
+
+              .where('_id').ne(item._id)
+
+              .limit(5)
+
+              .sort({ views: 1, created: 1 })
+
+              .exec(then);
+          },
+          criterias: function (then) {
+            require('./Criteria').find({ type: item.type}, then);
+          }
+        }, function (error, results) {
+          cb(error, {
+            type: item.type,
+            item: id,
+            items: results.items.concat(item),
+            criterias: results.criterias
+          });
+        });
         break;
     }
-
-    require('async').parallel({
-      items: function (then) {
-        self
-          .find({
-            type: {
-              $in: types
-            },
-            parent: item.parent
-          })
-
-          .where('_id').ne(item._id)
-
-          .limit(5)
-
-          .sort({ views: 1 })
-
-          .exec(then);
-      },
-      criterias: function (then) {
-        require('./Criteria').find({ type: item.type}, then);
-      }
-    }, function (error, results) {
-      cb(error, {
-        type: item.type,
-        item: id,
-        items: results.items.concat(item),
-        criterias: results.criterias
-      });
-    });
 
   });
 };
