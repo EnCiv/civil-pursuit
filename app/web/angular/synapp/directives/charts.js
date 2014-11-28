@@ -28,6 +28,14 @@
 
               if ( votes.length && votes[0].criterias[criteria] ) {
 
+                //svg.chart(id='chart-{{item._id}}-{{criteria._id}}')
+
+                var svg = $('<svg class="chart"></svg>');
+
+                svg.attr('id', 'chart-' + $scope.item._id + '-' + $scope.criteria._id);
+
+                $elem.empty().apppend(svg);
+
                 var data = [];
 
                 for ( var number in votes[0].criterias[criteria].values ) {

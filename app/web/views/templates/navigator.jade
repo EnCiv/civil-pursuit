@@ -221,7 +221,7 @@ div(data-ng-init='show = "items"')
                 .row
                   .col-xs-4
                     h4 Promoted
-                  .col-xs-8.padding
+                  .col-xs-8.padding-top
                     .progress
                       .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
                         data-ng-bind='(item | calculatePromotionPercentage) + "%"')
@@ -257,7 +257,7 @@ div(data-ng-init='show = "items"')
 
                         div(data-charts='{{criteria._id}}')
 
-                          svg.chart(id='chart-{{item._id}}-{{criteria._id}}')
+                          hr
 
                   hr
 
@@ -273,10 +273,10 @@ div(data-ng-init='show = "items"')
                     div.pre-text(ng-bind='feedback.feedback')
 
                 //- Edit and go again
-                .row
+                .row.padding-top
                   .col-xs-12
                     hr
-                    button.btn.btn-block(data-ng-click='$show = "editor"') Edit and go again
+                    button.btn.syn-btn(data-ng-click='$show = "editor"') Edit and go again
 
             // EDITOR
 

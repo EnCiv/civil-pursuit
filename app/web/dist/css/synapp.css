@@ -4238,6 +4238,16 @@ a.btn-default {
   background: #fff;
   border: none;
 }
+.syn-btn {
+  min-width: 100px;
+}
+@media (max-width: 600px) {
+  .syn-btn {
+    font-size: 80%;
+    min-width: 70px;
+    border-radius: 10px;
+  }
+}
 /*
  *  Form
  */
@@ -4831,4 +4841,8 @@ footer {
 }
 .slider-selection {
   background: #BABABA !important;
+}
+/** Importing the details */
+.details .progress {
+  margin-bottom: -10px;
 }
