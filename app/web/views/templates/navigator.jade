@@ -265,7 +265,7 @@ div(data-ng-init='show = "items"')
                 //- Has feedbacks
 
                 div(data-ng-show='($root.feedbacks | feedbackFilter:{item:item._id}).length')
-                  h4 Feedbacks
+                  h4 Feedback
                   
                   div(
                     data-ng-repeat='feedback in $root.feedbacks | feedbackFilter:{item:item._id}')
@@ -275,7 +275,7 @@ div(data-ng-init='show = "items"')
 
                 //- Edit and go again
                 .row.padding-top
-                  .col-xs-12
+                  .col-xs-12.text-right
                     hr
                     button.btn.syn-btn(data-ng-click='$show = "editor"') Edit and go again
 
