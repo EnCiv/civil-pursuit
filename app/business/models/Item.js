@@ -214,11 +214,30 @@ ItemSchema.statics.evaluate = function (id, cb) {
       return cb(new Error('Item not found'));
     }
 
+    var types = [item.type];
+
+    switch ( item.type ) {
+      case 'Agree':
+        types.push('Disagree');
+        break;
+      case 'Disagree':
+        types.push('Agree');
+        break;
+      case 'Pro':
+        types.push('Con');
+        break;
+      case 'Con':
+        types.push('Pro');
+        break;
+    }
+
     require('async').parallel({
       items: function (then) {
         self
           .find({
-            type: item.type,
+            type: {
+              $in: types
+            },
             parent: item.parent
           })
 
