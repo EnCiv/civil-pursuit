@@ -4251,10 +4251,6 @@ a.btn-default {
 /*
  *  Form
  */
-textarea {
-  width: 100%;
-  min-height: 120px;
-}
 /** ____________________________________________________________________________
 
           CLASSES
@@ -4406,6 +4402,123 @@ footer {
           LAYOUT
     ============================================================================
 **/
+.box {
+  overflow: hidden;
+}
+.box input {
+  width: 50% !important;
+  border: none;
+}
+.box textarea {
+  border: none;
+  width: 50% !important;
+}
+.box .drop-box {
+  min-height: 230px !important;
+  margin-left: -10px !important;
+  padding-top: 55px !important;
+}
+.box .item-media-wrapper {
+  width: 35%;
+  float: left;
+  padding: 10px;
+  text-align: center !important;
+}
+@media (min-width: 760px) {
+  .box .item-media-wrapper {
+    margin-right: 10px;
+  }
+}
+.box .item-media-wrapper .item-media {
+  /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
+}
+.box .item-media-wrapper .item-media .video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+.box .item-media-wrapper .item-media .video-container iframe,
+.box .item-media-wrapper .item-media .video-container object,
+.box .item-media-wrapper .item-media .video-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.box .box-buttons {
+  text-align: right;
+}
+.box .box-buttons .btn {
+  width: 100px;
+}
+@media (max-width: 600px) {
+  .box .box-buttons .btn {
+    font-size: 80%;
+    width: 70px;
+    border-radius: 10px;
+  }
+}
+.box .box-buttons div {
+  padding: 10px;
+}
+@media (max-width: 600px) {
+  .box .box-buttons div {
+    padding: 2px;
+    font-size: 80%;
+  }
+}
+.box .item-text {
+  padding-left: 10px;
+}
+.box .item-text .item-title,
+.box .item-text input.subject {
+  font-size: 24px;
+  word-wrap: break-word;
+}
+@media (max-width: 800px) {
+  .box .item-text .item-title,
+  .box .item-text input.subject {
+    font-size: 22px;
+  }
+}
+@media (max-width: 700px) {
+  .box .item-text .item-title,
+  .box .item-text input.subject {
+    font-size: 20px;
+  }
+}
+@media (max-width: 600px) {
+  .box .item-text .item-title,
+  .box .item-text input.subject {
+    font-size: 18px;
+  }
+}
+@media (max-width: 500px) {
+  .box .item-text .item-title,
+  .box .item-text input.subject {
+    font-size: 16px;
+  }
+}
+.box .item-text .readmore {
+  display: none;
+}
+.box .item-text .box-description {
+  font-size: 16px;
+  margin-top: 0 !important;
+  padding: 10px;
+  padding-top: 0 !important;
+}
+@media (max-width: 500px) {
+  .box .item-text .box-description {
+    font-size: 14px;
+  }
+}
+.box .item-text .entry-title {
+  margin-top: 15px;
+}
 .panel {
   border-color: #666666;
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
@@ -4425,94 +4538,6 @@ footer {
 }
 .panel .panel-body {
   padding: 0;
-}
-.panel .panel-body .box {
-  overflow: hidden;
-}
-.panel .panel-body .box .item-media-wrapper {
-  width: 35%;
-  float: left;
-  padding: 10px;
-}
-.panel .panel-body .box .item-media-wrapper .item-media {
-  /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
-}
-.panel .panel-body .box .item-media-wrapper .item-media .video-container {
-  position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 30px;
-  height: 0;
-  overflow: hidden;
-}
-.panel .panel-body .box .item-media-wrapper .item-media .video-container iframe,
-.panel .panel-body .box .item-media-wrapper .item-media .video-container object,
-.panel .panel-body .box .item-media-wrapper .item-media .video-container embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-.panel .panel-body .box .box-buttons {
-  text-align: right;
-}
-.panel .panel-body .box .box-buttons .btn {
-  width: 100px;
-}
-@media (max-width: 600px) {
-  .panel .panel-body .box .box-buttons .btn {
-    font-size: 80%;
-    width: 70px;
-    border-radius: 10px;
-  }
-}
-.panel .panel-body .box .box-buttons div {
-  padding: 10px;
-}
-@media (max-width: 600px) {
-  .panel .panel-body .box .box-buttons div {
-    padding: 2px;
-    font-size: 80%;
-  }
-}
-.panel .panel-body .box .item-text {
-  padding-left: 10px;
-}
-.panel .panel-body .box .item-text .item-title {
-  font-size: 25px;
-  word-wrap: break-word;
-}
-@media (max-width: 700px) {
-  .panel .panel-body .box .item-text .item-title {
-    font-size: 22px;
-  }
-}
-@media (max-width: 600px) {
-  .panel .panel-body .box .item-text .item-title {
-    font-size: 20px;
-  }
-}
-@media (max-width: 500px) {
-  .panel .panel-body .box .item-text .item-title {
-    font-size: 17px;
-  }
-}
-.panel .panel-body .box .item-text .readmore {
-  display: none;
-}
-.panel .panel-body .box .item-text .box-description {
-  font-size: 16px;
-  margin-top: 0 !important;
-  padding: 10px;
-  padding-top: 0 !important;
-}
-@media (max-width: 500px) {
-  .panel .panel-body .box .item-text .box-description {
-    font-size: 14px;
-  }
-}
-.panel .panel-body .box .item-text .entry-title {
-  margin-top: 15px;
 }
 .panel .panel-body .items .item {
   background: #fff;
@@ -4628,6 +4653,9 @@ footer {
 
         ------------------------------------------------------------------------
   */
+}
+.editor-component .upload-button {
+  margin-top: -85px;
 }
 .editor-component form input {
   height: 2em !important;

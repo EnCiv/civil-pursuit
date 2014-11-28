@@ -37,6 +37,123 @@
     ============================================================================
 **/
 
+.box {
+
+  overflow: hidden;
+
+  input {
+    width: 50% !important;
+    border: none;
+  }
+
+  textarea {
+    border: none;
+    width: 50% !important
+  }
+
+  .drop-box {
+    min-height: 230px !important;
+    margin-left: -10px !important;
+    padding-top: 55px !important
+  }
+
+  .item-media-wrapper {
+    width: 35%;
+    float: left;
+    padding: @syn-padding;
+    text-align: center !important;
+
+    @media (min-width: 760px) {
+      margin-right: 10px;
+    }
+
+    .item-media {
+
+      /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        padding-top: 30px; height: 0; overflow: hidden;
+
+        iframe, object, embed {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  .box-buttons {
+    text-align: right;
+
+    .btn {
+      width: 100px;
+
+      @media (max-width: 600px) {
+        font-size: 80%;
+        width: 70px;
+        border-radius: 10px;
+      }
+    }
+
+    div {
+      padding: @syn-padding;
+
+      @media (max-width: 600px) {
+        padding: 2px;
+        font-size: 80%;
+      }
+    }
+  }
+
+  .item-text {
+    padding-left: @syn-padding;
+
+    .item-title, input.subject {
+      font-size: 24px;
+      word-wrap: break-word;
+
+      @media (max-width: 800px) {
+        font-size: 22px
+      }
+      
+      @media (max-width: 700px) {
+        font-size: 20px
+      }
+
+      @media (max-width: 600px) {
+        font-size: 18px
+      }
+
+      @media (max-width: 500px) {
+        font-size: 16px
+      }
+    }
+
+    .readmore {
+      display: none
+    }
+
+    .box-description {
+      font-size: 16px;
+      margin-top: 0 !important;
+      padding: 10px;
+      padding-top: 0 !important;
+
+      @media (max-width: 500px) {
+        font-size: 14px
+      }
+    }
+
+    .entry-title {
+      margin-top: 15px
+    }
+  }
+}
+
 .panel {
 
   border-color: @panel-border-color;
@@ -54,98 +171,6 @@
   .panel-body {
     
     padding: 0;
-
-    .box {
-
-      overflow: hidden;
-
-      .item-media-wrapper {
-        width: 35%;
-        float: left;
-        padding: @syn-padding;
-
-        .item-media {
-
-          /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
-          .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            padding-top: 30px; height: 0; overflow: hidden;
-
-            iframe, object, embed {
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-            }
-          }
-        }
-      }
-
-      .box-buttons {
-        text-align: right;
-
-        .btn {
-          width: 100px;
-
-          @media (max-width: 600px) {
-            font-size: 80%;
-            width: 70px;
-            border-radius: 10px;
-          }
-        }
-
-        div {
-          padding: @syn-padding;
-
-          @media (max-width: 600px) {
-            padding: 2px;
-            font-size: 80%;
-          }
-        }
-      }
-
-      .item-text {
-        padding-left: @syn-padding;
-
-        .item-title {
-          font-size: 25px;
-          word-wrap: break-word;
-          
-          @media (max-width: 700px) {
-            font-size: 22px
-          }
-
-          @media (max-width: 600px) {
-            font-size: 20px
-          }
-
-          @media (max-width: 500px) {
-            font-size: 17px
-          }
-        }
-
-        .readmore {
-          display: none
-        }
-
-        .box-description {
-          font-size: 16px;
-          margin-top: 0 !important;
-          padding: 10px;
-          padding-top: 0 !important;
-
-          @media (max-width: 500px) {
-            font-size: 14px
-          }
-        }
-
-        .entry-title {
-          margin-top: 15px
-        }
-      }
-    }
 
     .items {
       .item {

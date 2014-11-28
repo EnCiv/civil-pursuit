@@ -9,55 +9,36 @@ section.editor-component(data-ng-controller='UploadCtrl')
         strong Warning!
         div(data-ng-bind='error')
 
-    .row.row-padding
-      .col-xs-12.padding
-        include editor/image
-
-    .row.row-padding
+    .row.padding
       .col-xs-12
-        include editor/subject
+        .box.prefetch
+          .item-media-wrapper
+            include editor/image
+            //- Upload image button
 
-    .row.row-padding
-      .col-xs-12
-        include editor/description
+            div.upload-button.btn.btn-default.btn-sm(
+              ng-file-select  =   "onFileSelect($files)"
+              data-multiple   =   "true"
+              title           =   "select file"
+              onclick         =   "this.value = null"
+                ) Upload image
 
-    .row.row-padding
-      .col-xs-12
-        include editor/references
+          .pull-right.box-buttons
+            button.btn Promote
 
-    .row.padding-bottom
+            div New
 
-    .row.padding-bottom
-      .col-xs-6
+            div.text-muted 0%
 
-        //- Upload image button
+            button.btn(disabled) Details
 
-        div.upload-button.btn.btn-default.btn-lg(
-          ng-file-select  =   "onFileSelect($files)"
-          data-multiple   =   "true"
-          title           =   "select file"
-          onclick         =   "this.value = null"
-            ) Upload image
+          .item-text.padding
+            include editor/subject
+          
+            .box-description.description
+              include editor/description
 
-      .col-xs-6.text-right
+            include editor/references
 
-        //- Clear button
-
-        button.btn.btn-lg(
-          data-ng-click   =   'clearEntry()' 
-          type            =   'button'
-            ) Clear
-
-        //- Done button
-        
-        button.btn.btn-info.btn-lg Done
-
-    //- Arrow up icon (collapse)
-
-    .row.padding-bottom
-      .col-xs-12
-    
-    .row.padding-bottom
-      .col-xs-12.text-center
-        i.fa.fa-arrow-circle-up.cursor-pointer(
-          data-ng-click='$parent.$parent.show = "items"')
+        .text-center(style='margin-top:-50px')
+          i.fa.fa-arrow-up.cursor-pointer(data-ng-click='$parent.$parent.show = "items"')
