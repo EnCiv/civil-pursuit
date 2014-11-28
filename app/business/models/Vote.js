@@ -63,22 +63,34 @@ VoteSchema.statics.getAccumulation = function (item, cb) {
         return cb(error);
       }
 
+      function initValues () {
+        var values = {};
+
+        values['-1'] = 0;
+        values['+0'] = 0;
+        values['+1'] = 0;
+
+        return values;
+      }
+
       votes.forEach(function (vote) {
 
         if ( vote.value > -2 && vote.value < 2 ) {
           if ( ! accumulation[vote.criteria] ) {
             accumulation[vote.criteria] = {
               total: 0,
-              values: {
-                '-1': 0,
-                '0': 0,
-                '1': 0
-              }
+              values: initValues()
             };
           }
-
-          accumulation[vote.criteria].values[vote.value] ++;
+          
           accumulation[vote.criteria].total ++;
+
+          if ( vote.value === -1 ) {
+            accumulation[vote.criteria].values['-1'] ++;
+          }
+          else {
+            accumulation[vote.criteria].values['+' + vote.value] ++;
+          }
         }
 
       });

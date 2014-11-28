@@ -52,6 +52,14 @@
 
               $elem.data('url', $scope.item.references[0].url);
               $elem.data('title', $scope.item.references[0].title);
+
+              var youtube = require('../lib/youtube')($scope.item.references[0].url);
+
+              if ( youtube ) {
+                $elem.closest('.editor,.creator').find('.item-media')
+                  .addClass('youtube')
+                  .empty().append(youtube);
+              }
             });
         });
       }

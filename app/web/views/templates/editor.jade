@@ -13,10 +13,11 @@ section.editor-component(data-ng-controller='UploadCtrl')
       .col-xs-12
         .box.prefetch
           .item-media-wrapper
-            include editor/image
+            .item-media
+              include editor/image
             //- Upload image button
 
-            div.upload-button.btn.btn-default.btn-sm(
+            .upload-button.btn.btn-default.btn-sm(
               ng-file-select  =   "onFileSelect($files)"
               data-multiple   =   "true"
               title           =   "select file"

@@ -12,24 +12,13 @@
         upload: '@'
       },
       link: function ($scope, $elem) {
-        var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+        
+        var youtube = require('../lib/youtube')($scope.url);
 
         /** Url is a Youtube URL */
 
-        if ( $scope.url && regexYouTube.test($scope.url) ) {
-          var youtube;
-          $scope.url.replace(regexYouTube, function (m, v) {
-            youtube = v;
-          });
-          var container = $('<div></div>');
-          container.addClass('video-container');
-          var iframe = $('<iframe></iframe>');
-          iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
-          iframe.attr('frameborder', '0');
-          iframe.attr('width', 560);
-          iframe.attr('height', 315);
-          container.append(iframe);
-          $elem.append(container);
+        if ( youtube ) {
+          $elem.append(youtube);
         }
 
         /** There is an image */

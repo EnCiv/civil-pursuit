@@ -90,7 +90,7 @@
         ellipsis: '... ',
         wrap: 'word',
         fallBackToLetter: true,
-        watch: true,
+        watch: false,
         tolerance: 0,
         // callback: console.log.bind(console),
         height: height,

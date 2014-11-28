@@ -221,12 +221,9 @@
                     label: 'number',
                     value: votes[0].criterias[criteria].values[number] * 100 / votes[0].criterias[criteria].total
                   });
-                }
+                }                
 
-                
-
-                var columns = [votes[0].criterias[criteria].total + ' vote' +
-                  (votes[0].criterias[criteria].total > 1 && 's' || '')];
+                var columns = ['votes'];
 
                 data.forEach(function (d) {
                   columns.push(d.value);
@@ -250,9 +247,7 @@
                     },
                     
                     axis: {
-                      x: {
-                        
-                      },
+                      x: {},
                       
                       y: {
                         max: 90,
@@ -271,7 +266,15 @@
 
                     size: {
                       height: 80
+                    },
+
+                    bar: {
+                      width: $(window).width() / 5
                     }
+                });
+
+                $timeout(function () {
+                  $elem.find('.c3-chart-bar:first').hide();
                 });
               }
 
@@ -282,85 +285,6 @@
 
           }
         });
-
-        return;
-
-        $timeout(chart, 1000);
-
-        var t1 = 0;
-
-        /** @method chart */
-
-        function chart () {
-
-          if ( ! $scope.$parent.votes ) {
-            t1 ++;
-            if ( t1 < 10 ) {
-              return;
-            }
-            return $timeout(chart, 1000);
-          }
-
-          var votes = $scope.$parent.votes[$attr.synCharts];
-
-          if ( ! votes ) {
-            return;
-          }
-
-          var data = [];
-
-          for ( var number in votes.values ) {
-            data.push({
-              label: number,
-              value: votes.values[number] * 100 / votes.total
-            });
-          }
-
-          var columns = ['votes'];
-
-          data.forEach(function (d) {
-            columns.push(d.value);
-          });
-
-          if ( ! $('#chart-' + $attr.synCharts).length ) {
-            return console.error('chart not found #chart-' + $attr.synCharts);
-          }
-
-          console.log('criteria', $attr.synCharts);
-
-          var chart = c3.generate({
-              bindto: '#chart-' + $attr.synCharts,
-
-              data: {
-                columns: [
-                  columns
-                ],
-
-                type: 'bar'
-              },
-              
-              axis: {
-                
-                y: {
-                  max: 90,
-
-                  show: false,
-
-                  tick: {
-                    count: 5,
-
-                    format: function (y) {
-                      return y;
-                    }
-                  }
-                }
-              },
-
-              size: {
-                height: 80
-              }
-          });
-        }
       }
     };
   }
@@ -581,24 +505,13 @@
         upload: '@'
       },
       link: function ($scope, $elem) {
-        var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+        
+        var youtube = require('../lib/youtube')($scope.url);
 
         /** Url is a Youtube URL */
 
-        if ( $scope.url && regexYouTube.test($scope.url) ) {
-          var youtube;
-          $scope.url.replace(regexYouTube, function (m, v) {
-            youtube = v;
-          });
-          var container = $('<div></div>');
-          container.addClass('video-container');
-          var iframe = $('<iframe></iframe>');
-          iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
-          iframe.attr('frameborder', '0');
-          iframe.attr('width', 560);
-          iframe.attr('height', 315);
-          container.append(iframe);
-          $elem.append(container);
+        if ( youtube ) {
+          $elem.append(youtube);
         }
 
         /** There is an image */
@@ -624,7 +537,7 @@
 
 })();
 
-},{}],8:[function(require,module,exports){
+},{"../lib/youtube":25}],8:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', Item];
@@ -1080,6 +993,14 @@
 
               $elem.data('url', $scope.item.references[0].url);
               $elem.data('title', $scope.item.references[0].title);
+
+              var youtube = require('../lib/youtube')($scope.item.references[0].url);
+
+              if ( youtube ) {
+                $elem.closest('.editor,.creator').find('.item-media')
+                  .addClass('youtube')
+                  .empty().append(youtube);
+              }
             });
         });
       }
@@ -1087,7 +1008,7 @@
   }
 })();
 
-},{}],13:[function(require,module,exports){
+},{"../lib/youtube":25}],13:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -1112,7 +1033,7 @@
 
       // Set limit
 
-      var limit = null;
+      var limit = null, sort = null;
 
       for ( var q in query ) {
         if ( ! isNaN(q) ) {
@@ -1123,10 +1044,6 @@
       if ( limit === null ) {
         query[batchSize] = undefined;
       }
-
-      // Order by
-
-      query['sort:promotions-,created-'] = undefined;
 
       for ( var field in query ) {
         if ( query[field] === undefined ) {
@@ -1145,6 +1062,7 @@
     return {
       Item: {
         find: function (item) {
+          item['sort:promotions-,created-'] = undefined;
           return $http.get(querystring_format('/models/Item', item));
         },
 
@@ -1180,6 +1098,7 @@
       Criteria: {
         find: function (criteria) {
           criteria[100] = undefined;
+          criteria['sort:criteria+'] = undefined;
           return $http.get(querystring_format('/models/Criteria', criteria));
         }
       },
@@ -1489,7 +1408,7 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/find":18,"./filters/get-evaluation-by-item":19,"./filters/get-evaluation-items":20,"./filters/item-filter":21,"./filters/shorten":22,"./run":25}],24:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/find":18,"./filters/get-evaluation-by-item":19,"./filters/get-evaluation-items":20,"./filters/item-filter":21,"./filters/shorten":22,"./run":26}],24:[function(require,module,exports){
 ;(function () {
 
   module.exports = function ellipsis () {
@@ -1582,7 +1501,7 @@
         ellipsis: '... ',
         wrap: 'word',
         fallBackToLetter: true,
-        watch: true,
+        watch: false,
         tolerance: 0,
         // callback: console.log.bind(console),
         height: height,
@@ -1612,6 +1531,34 @@
 
 })();
 },{}],25:[function(require,module,exports){
+;(function () {
+
+  function youtube (url) {
+    var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+
+    if ( url && regexYouTube.test(url) ) {
+      var youtube;
+      url.replace(regexYouTube, function (m, v) {
+        youtube = v;
+      });
+      var container = $('<div></div>');
+      container.addClass('video-container');
+      var iframe = $('<iframe></iframe>');
+      iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
+      iframe.attr('frameborder', '0');
+      iframe.attr('width', 560);
+      iframe.attr('height', 315);
+      container.append(iframe);
+      return container;
+    }
+
+    return false;
+  }
+
+  module.exports = youtube;
+
+})();
+},{}],26:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];

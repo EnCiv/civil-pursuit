@@ -22,7 +22,7 @@
 
       // Set limit
 
-      var limit = null;
+      var limit = null, sort = null;
 
       for ( var q in query ) {
         if ( ! isNaN(q) ) {
@@ -33,10 +33,6 @@
       if ( limit === null ) {
         query[batchSize] = undefined;
       }
-
-      // Order by
-
-      query['sort:promotions-,created-'] = undefined;
 
       for ( var field in query ) {
         if ( query[field] === undefined ) {
@@ -55,6 +51,7 @@
     return {
       Item: {
         find: function (item) {
+          item['sort:promotions-,created-'] = undefined;
           return $http.get(querystring_format('/models/Item', item));
         },
 
@@ -90,6 +87,7 @@
       Criteria: {
         find: function (criteria) {
           criteria[100] = undefined;
+          criteria['sort:criteria+'] = undefined;
           return $http.get(querystring_format('/models/Criteria', criteria));
         }
       },

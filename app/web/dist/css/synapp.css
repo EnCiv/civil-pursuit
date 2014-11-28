@@ -4657,6 +4657,10 @@ footer {
 .editor-component .upload-button {
   margin-top: -85px;
 }
+.editor-component .item-media.youtube + .upload-button {
+  margin-top: 0;
+  margin-bottom: 50px;
+}
 .editor-component form input {
   height: 2em !important;
 }
@@ -4873,9 +4877,16 @@ footer {
 }
 /** Importing the details */
 .details .progress {
-  margin-bottom: -10px;
+  margin-bottom: 0;
 }
 .details textarea {
   width: 100%;
   min-height: 70px;
+}
+.details svg.chart {
+  width: 100%;
+  margin-bottom: -40px;
+}
+.details .c3-legend-item {
+  display: none;
 }
