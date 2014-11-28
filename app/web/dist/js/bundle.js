@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/web/angular/synapp/controllers/upload.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
  * `UploadCtrl` Uploader
  * 
@@ -175,7 +175,7 @@
     };
   }
 })();
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/charts.js":[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$timeout', Charts];
@@ -367,7 +367,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/creator.js":[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$timeout', 'DataFactory', Creator];
@@ -448,7 +448,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/details.js":[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 ;(function () {
 
   module.exports = [Details];
@@ -464,7 +464,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/editor.js":[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['DataFactory', '$timeout', Editor];
@@ -530,7 +530,7 @@
   }
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/evaluator.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$timeout', Evaluator];
@@ -566,7 +566,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/item-media.js":[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ;(function () {
 
   module.exports = [ItemMedia];
@@ -624,7 +624,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/item.js":[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', Item];
@@ -668,7 +668,7 @@
   }
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/navigator.js":[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ;(function () {
 
   function compile (item, into, scope, $compile) {
@@ -805,7 +805,7 @@
 
 })();
 
-},{"../lib/ellipsis":"/home/francois/Dev/syn/app/web/angular/synapp/lib/ellipsis.js"}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/sign.js":[function(require,module,exports){
+},{"../lib/ellipsis":24}],10:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -988,7 +988,7 @@
     };
 
 })();
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/sliders.js":[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$timeout', SlidersComponent];
@@ -1025,7 +1025,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/directives/url-fetcher.js":[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
  * `getUrlTitle` Attempt to fetch a title from URL and inject back results to scope
  * 
@@ -1087,7 +1087,7 @@
   }
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/factories/Data.js":[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -1197,7 +1197,7 @@
   };
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/factories/Sign.js":[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * `UserFactory` User Factory (legacy from SignCtrl)
  * 
@@ -1224,7 +1224,7 @@
   };
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/calculate-promotion-percentage.js":[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ;(function () {
 
   module.exports = [calculatePromotionPercentage];
@@ -1241,7 +1241,7 @@
   }
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/criteria-filter.js":[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ;(function () {
 
   module.exports = [CriteriaFilter];
@@ -1263,7 +1263,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/feedback-filter.js":[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ;(function () {
 
   module.exports = [FeedbackFilter];
@@ -1285,7 +1285,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/find.js":[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ;(function () {
 
   module.exports = [Find];
@@ -1307,7 +1307,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/get-evaluation-by-item.js":[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationByItem];
@@ -1323,7 +1323,7 @@
   }
 
 })();
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/get-evaluation-items.js":[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationItems];
@@ -1349,7 +1349,7 @@
   }
 
 })();
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/item-filter.js":[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ;(function () {
 
   module.exports = [filterItems];
@@ -1381,7 +1381,7 @@
   }
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/filters/shorten.js":[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -1417,7 +1417,7 @@
 
 })();
 
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/index.js":[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -1489,7 +1489,7 @@
 })();
 
 
-},{"./controllers/upload":"/home/francois/Dev/syn/app/web/angular/synapp/controllers/upload.js","./directives/charts":"/home/francois/Dev/syn/app/web/angular/synapp/directives/charts.js","./directives/creator":"/home/francois/Dev/syn/app/web/angular/synapp/directives/creator.js","./directives/details":"/home/francois/Dev/syn/app/web/angular/synapp/directives/details.js","./directives/editor":"/home/francois/Dev/syn/app/web/angular/synapp/directives/editor.js","./directives/evaluator":"/home/francois/Dev/syn/app/web/angular/synapp/directives/evaluator.js","./directives/item":"/home/francois/Dev/syn/app/web/angular/synapp/directives/item.js","./directives/item-media":"/home/francois/Dev/syn/app/web/angular/synapp/directives/item-media.js","./directives/navigator":"/home/francois/Dev/syn/app/web/angular/synapp/directives/navigator.js","./directives/sign":"/home/francois/Dev/syn/app/web/angular/synapp/directives/sign.js","./directives/sliders":"/home/francois/Dev/syn/app/web/angular/synapp/directives/sliders.js","./directives/url-fetcher":"/home/francois/Dev/syn/app/web/angular/synapp/directives/url-fetcher.js","./factories/Data":"/home/francois/Dev/syn/app/web/angular/synapp/factories/Data.js","./factories/Sign":"/home/francois/Dev/syn/app/web/angular/synapp/factories/Sign.js","./filters/calculate-promotion-percentage":"/home/francois/Dev/syn/app/web/angular/synapp/filters/calculate-promotion-percentage.js","./filters/criteria-filter":"/home/francois/Dev/syn/app/web/angular/synapp/filters/criteria-filter.js","./filters/feedback-filter":"/home/francois/Dev/syn/app/web/angular/synapp/filters/feedback-filter.js","./filters/find":"/home/francois/Dev/syn/app/web/angular/synapp/filters/find.js","./filters/get-evaluation-by-item":"/home/francois/Dev/syn/app/web/angular/synapp/filters/get-evaluation-by-item.js","./filters/get-evaluation-items":"/home/francois/Dev/syn/app/web/angular/synapp/filters/get-evaluation-items.js","./filters/item-filter":"/home/francois/Dev/syn/app/web/angular/synapp/filters/item-filter.js","./filters/shorten":"/home/francois/Dev/syn/app/web/angular/synapp/filters/shorten.js","./run":"/home/francois/Dev/syn/app/web/angular/synapp/run.js"}],"/home/francois/Dev/syn/app/web/angular/synapp/lib/ellipsis.js":[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/find":18,"./filters/get-evaluation-by-item":19,"./filters/get-evaluation-items":20,"./filters/item-filter":21,"./filters/shorten":22,"./run":25}],24:[function(require,module,exports){
 ;(function () {
 
   module.exports = function ellipsis () {
@@ -1497,15 +1497,21 @@
     $(this).each(function () {
       var box = this;
 
+      /** Exit if box has already been ellipsed */
+
       if ( $(box).hasClass('is-ellipsis') ) {
         return;
       }
 
-      var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive:eq(0)');
+      var media = (function getMedia () {
+        var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive:eq(0)');
 
-      if ( ! media.length ) {
-        media = $(box).find('.item-media-wrapper:eq(0) iframe');
-      }
+        if ( media.length ) {
+          return media;
+        }
+
+        return $(box).find('.item-media-wrapper:eq(0) iframe');
+      })();
 
       var height = media.height() || media.css('height');
 
@@ -1514,14 +1520,14 @@
 
         this.type = $(box).closest('.panel').find('.panel-title').text();
         
-        this.media = media[0].nodeName.toLowerCase();
+        this.media = media[0].nodeName;
 
         this.height = height;
+
+        this.refreshed = box.refreshed
       })();
 
       console.info(info_candidate);
-
-      height = parseInt(height);
 
       if ( ! height || height < 50 ) {
         if ( isNaN(this.refreshed) ) {
@@ -1579,7 +1585,7 @@
         watch: true,
         tolerance: 0,
         // callback: console.log.bind(console),
-        height: 200,
+        height: height,
         after: "span.readmore"
       };
 
@@ -1605,7 +1611,7 @@
   };
 
 })();
-},{}],"/home/francois/Dev/syn/app/web/angular/synapp/run.js":[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
@@ -2016,4 +2022,4 @@
 
 })();
 
-},{"./lib/ellipsis":"/home/francois/Dev/syn/app/web/angular/synapp/lib/ellipsis.js"}]},{},["/home/francois/Dev/syn/app/web/angular/synapp/index.js"]);
+},{"./lib/ellipsis":24}]},{},[23]);

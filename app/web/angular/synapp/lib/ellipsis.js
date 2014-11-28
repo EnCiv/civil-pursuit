@@ -5,15 +5,21 @@
     $(this).each(function () {
       var box = this;
 
+      /** Exit if box has already been ellipsed */
+
       if ( $(box).hasClass('is-ellipsis') ) {
         return;
       }
 
-      var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive:eq(0)');
+      var media = (function getMedia () {
+        var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive:eq(0)');
 
-      if ( ! media.length ) {
-        media = $(box).find('.item-media-wrapper:eq(0) iframe');
-      }
+        if ( media.length ) {
+          return media;
+        }
+
+        return $(box).find('.item-media-wrapper:eq(0) iframe');
+      })();
 
       var height = media.height() || media.css('height');
 
@@ -22,14 +28,14 @@
 
         this.type = $(box).closest('.panel').find('.panel-title').text();
         
-        this.media = media[0].nodeName.toLowerCase();
+        this.media = media[0].nodeName;
 
         this.height = height;
+
+        this.refreshed = box.refreshed
       })();
 
       console.info(info_candidate);
-
-      height = parseInt(height);
 
       if ( ! height || height < 50 ) {
         if ( isNaN(this.refreshed) ) {
@@ -87,7 +93,7 @@
         watch: true,
         tolerance: 0,
         // callback: console.log.bind(console),
-        height: 200,
+        height: height,
         after: "span.readmore"
       };
 
