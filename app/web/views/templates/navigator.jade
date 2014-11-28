@@ -32,7 +32,7 @@ div(data-ng-init='show = "items"')
 
           // BOX
           
-          .box
+          .box(data-ng-class='{ prefetch: $index === ( batchSize - 1 ) }')
             .item-media-wrapper
               +item-image('item')
 

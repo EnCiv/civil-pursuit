@@ -4476,6 +4476,7 @@ footer {
   }
 }
 .panel .panel-body .box .item-text {
+  background: red;
   padding-left: 10px;
 }
 .panel .panel-body .box .item-text .item-title {
@@ -4501,6 +4502,7 @@ footer {
   display: none;
 }
 .panel .panel-body .box .item-text .box-description {
+  background: green;
   font-size: 16px;
   margin-top: 0 !important;
   padding-top: 0 !important;
@@ -4512,74 +4514,6 @@ footer {
 }
 .panel .panel-body .box .item-text .entry-title {
   margin-top: 15px;
-}
-.panel .panel-body .items .item {
-  background: #fff;
-  border: 1px solid #666666;
-  margin: 10px;
-  border-radius: 4px;
-  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  margin-right: 0;
-  border-right: none;
-}
-.panel .panel-body .items .item .collapsers .evaluator,
-.panel .panel-body .items .item .collapsers .details,
-.panel .panel-body .items .item .collapsers .editor {
-  border: 1px solid #666666;
-  border-right: none;
-  margin: 10px;
-  margin-right: 0;
-  border-radius: 4px;
-  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  margin-bottom: 50px;
-}
-.panel .panel-body .items .item .collapsers .toggle-arrow i {
-  display: block;
-  width: 30px;
-  margin: auto;
-  margin-top: -30px;
-}
-@media (max-width: 768px) {
-  .panel .panel-body .items .item .collapsers .toggle-arrow i {
-    margin-top: 0;
-  }
-}
-.panel .panel-body .items .item .collapsers .children .split-view li:nth-last-child(1) {
-  text-align: right;
-}
-@media (max-width: 480px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .box-buttons {
-    float: none !important;
-    width: 100%;
-    clear: both;
-    text-align: center;
-  }
-}
-.panel .panel-body .items .item .collapsers .children .split-view .box-buttons button {
-  width: 70px !important;
-}
-.panel .panel-body .items .item .collapsers .children .split-view .toggle-arrow {
-  display: none;
-}
-@media (max-width: 900px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .item-title {
-    clear: left !important;
-    padding: 10px 10px 0 10px;
-  }
-}
-@media (max-width: 900px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .item-text {
-    clear: left !important;
-  }
-}
-@media (max-width: 900px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .item-media-wrapper {
-    width: 100%;
-  }
 }
 .panel .panel {
   margin: 10px;

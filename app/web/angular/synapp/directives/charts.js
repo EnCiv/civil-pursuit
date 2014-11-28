@@ -34,7 +34,7 @@
 
                 svg.attr('id', 'chart-' + $scope.item._id + '-' + $scope.criteria._id);
 
-                $elem.empty().apppend(svg);
+                $elem.empty().append(svg);
 
                 var data = [];
 

@@ -124,7 +124,7 @@
           var ellipsis = require('../lib/ellipsis');
 
           // $timeout(ellipsis.bind($elem.find('.box')), 0);
-          ellipsis.apply($elem.find('.box'));
+          ellipsis.apply($elem.find('.box').not('.prefetch'));
           // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
 
         }, 500);

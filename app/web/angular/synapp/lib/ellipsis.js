@@ -17,7 +17,17 @@
 
       var height = media.height() || media.css('height');
 
-      console.log('aaaaaaa', $(box).find('.item-title').text(), media.length, height);
+      var info_candidate = new (function ellipse_candidate () {
+        this.subject = $(box).find('.item-title').text();
+
+        this.type = $(box).closest('.panel').find('.panel-title').text();
+        
+        this.media = media[0].nodeName.toLowerCase();
+
+        this.height = height;
+      })();
+
+      console.info(info_candidate);
 
       height = parseInt(height);
 
@@ -51,15 +61,6 @@
 
       $(box).addClass('ellipsis');
 
-      console.log({
-        subject: $(box).find('.item-title').text(),
-        media: {
-          has: !!media.length,
-          is: media.length && media[0].nodeName,
-          height: height
-        }
-      });
-
       if ( height < 100 ) {
         height += 20;
       }
@@ -84,11 +85,23 @@
         wrap: 'word',
         fallBackToLetter: true,
         watch: true,
-        tolerance: 5,
+        tolerance: 0,
         // callback: console.log.bind(console),
-        height: height,
+        height: 200,
         after: "span.readmore"
       };
+
+      var info_apply = new (function ellipse_apply () {
+        this.subject = $(box).find('.item-title').text();
+
+        this.type = $(box).closest('.panel').find('.panel-title').text();
+        
+        this.media = media[0].nodeName.toLowerCase();
+
+        this.height = height;
+      })();
+
+      console.info(info_apply);
 
       $(box).find('.item-text').dotdotdot(dotdotdot);
 
