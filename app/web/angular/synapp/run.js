@@ -343,7 +343,7 @@
         });
 
       if ( ! evaluation.length ) {
-        DataFactory.Item.evaluate(item_id)
+        return DataFactory.Item.evaluate(item_id)
           .success(function (evaluation) {
 
             $rootScope.evaluations.push(new Evaluation(evaluation));
@@ -404,6 +404,109 @@
 
         // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
       });
+
+
+    // UI EVENT
+
+    $rootScope.__channels = {};
+
+    $rootScope.publish = function (channel, message) {
+      if ( $rootScope.__channels[channel] ) {
+        $rootScope.__channels[channel].forEach(function (subscriber) {
+          subscriber(message);
+        });
+      }
+    };
+
+    $rootScope.subscribe = function (channel, subscriber) {
+      if ( ! $rootScope.__channels[channel] ) {
+        $rootScope.__channels[channel] = [];
+      }
+
+      $rootScope.__channels[channel].push(subscriber);
+    };
+
+
+
+    $rootScope.subscribe('toggle view', function (options) {
+
+      var view = $('#item-' + options.item).find('.' + options.view);
+
+      function show (elem, cb) {
+        console.log('showing', elem)
+        elem.css('margin-top', '-' + elem.height() + 'px');
+
+        elem.find('.is-section:first').animate({
+            'margin-top': 0
+          }, 750, function () {
+            elem.removeClass('is-showing').addClass('is-shown');
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 1
+          }, 700);
+      }
+
+      function hide (elem, cb) {
+        elem.removeClass('is-shown').addClass('is-hiding');;
+
+        elem.find('.is-section:first').animate({
+            'margin-top': '-' + elem.height() + 'px'
+          }, 750, function () {
+            elem.removeClass('is-hiding').addClass('is-hidden');
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 0
+          }, 750);
+      }
+
+      if ( $('#item-' + options.item).hasClass('.is-showing') ) {
+        return false;
+      }
+      
+      if ( view.hasClass('is-hidden') || ! view.hasClass('is-toggable') ) {
+
+        if ( ! view.hasClass('is-toggable') ) {
+          view.addClass('is-toggable is-hidden');
+        }
+
+        if ( $('#item-' + options.item).find('.is-shown').length ) {
+          hide($('#item-' + options.item).find('.is-shown'), function () {
+            view.removeClass('is-hidden').addClass('is-showing');
+
+            setTimeout(function () {
+              show(view);
+            });
+          });
+        }
+        
+        else {
+          view.removeClass('is-hidden').addClass('is-showing');
+
+          setTimeout(function () {
+            show(view);
+          });
+        }
+
+        switch ( options.view ) {
+          case 'evaluator':
+            if ( ! view.hasClass('is-loaded') ) {
+              $rootScope.loadEvaluation(options.item)
+                .success(function () {
+                  view.addClass('is-loaded');
+                });
+            }
+            break;
+        }
+      }
+      else if ( view.hasClass('is-shown') ) {
+        
+        hide(view);
+      }
+    });
   }
 
 })();

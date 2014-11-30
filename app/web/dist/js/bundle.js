@@ -537,7 +537,7 @@
 
 })();
 
-},{"../lib/youtube":25}],8:[function(require,module,exports){
+},{"../lib/youtube":26}],8:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', Item];
@@ -548,6 +548,8 @@
       controller: ['$scope', function ($scope) {
 
         $scope.loaded = {};
+
+        return;
 
         $scope.$watch('$show', function (show, _show) {
           if ( show && show !== _show ) {
@@ -718,7 +720,7 @@
 
 })();
 
-},{"../lib/ellipsis":24}],10:[function(require,module,exports){
+},{"../lib/ellipsis":25}],10:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -1008,7 +1010,18 @@
   }
 })();
 
-},{"../lib/youtube":25}],13:[function(require,module,exports){
+},{"../lib/youtube":26}],13:[function(require,module,exports){
+;(function () {
+
+  module.exports = [Accordion];
+
+  function Accordion () {
+    
+  }
+
+})();
+
+},{}],14:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -1116,7 +1129,7 @@
   };
 })();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /**
  * `UserFactory` User Factory (legacy from SignCtrl)
  * 
@@ -1143,7 +1156,7 @@
   };
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ;(function () {
 
   module.exports = [calculatePromotionPercentage];
@@ -1160,7 +1173,7 @@
   }
 })();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ;(function () {
 
   module.exports = [CriteriaFilter];
@@ -1182,7 +1195,7 @@
 
 })();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ;(function () {
 
   module.exports = [FeedbackFilter];
@@ -1204,7 +1217,7 @@
 
 })();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ;(function () {
 
   module.exports = [Find];
@@ -1226,7 +1239,7 @@
 
 })();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationByItem];
@@ -1242,7 +1255,7 @@
   }
 
 })();
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationItems];
@@ -1268,7 +1281,7 @@
   }
 
 })();
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ;(function () {
 
   module.exports = [filterItems];
@@ -1300,7 +1313,7 @@
   }
 })();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -1336,7 +1349,7 @@
 
 })();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -1350,7 +1363,8 @@
 
     .factory({
       DataFactory: require('./factories/Data'),
-      SignFactory: require('./factories/Sign')
+      SignFactory: require('./factories/Sign'),
+      Accordion: require('./factories/Accordion')
     })
 
     .filter({
@@ -1408,7 +1422,7 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./filters/calculate-promotion-percentage":15,"./filters/criteria-filter":16,"./filters/feedback-filter":17,"./filters/find":18,"./filters/get-evaluation-by-item":19,"./filters/get-evaluation-items":20,"./filters/item-filter":21,"./filters/shorten":22,"./run":26}],24:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Accordion":13,"./factories/Data":14,"./factories/Sign":15,"./filters/calculate-promotion-percentage":16,"./filters/criteria-filter":17,"./filters/feedback-filter":18,"./filters/find":19,"./filters/get-evaluation-by-item":20,"./filters/get-evaluation-items":21,"./filters/item-filter":22,"./filters/shorten":23,"./run":27}],25:[function(require,module,exports){
 ;(function () {
 
   module.exports = function ellipsis () {
@@ -1530,7 +1544,7 @@
   };
 
 })();
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ;(function () {
 
   function youtube (url) {
@@ -1558,7 +1572,7 @@
   module.exports = youtube;
 
 })();
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
@@ -1904,7 +1918,7 @@
         });
 
       if ( ! evaluation.length ) {
-        DataFactory.Item.evaluate(item_id)
+        return DataFactory.Item.evaluate(item_id)
           .success(function (evaluation) {
 
             $rootScope.evaluations.push(new Evaluation(evaluation));
@@ -1965,8 +1979,111 @@
 
         // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
       });
+
+
+    // UI EVENT
+
+    $rootScope.__channels = {};
+
+    $rootScope.publish = function (channel, message) {
+      if ( $rootScope.__channels[channel] ) {
+        $rootScope.__channels[channel].forEach(function (subscriber) {
+          subscriber(message);
+        });
+      }
+    };
+
+    $rootScope.subscribe = function (channel, subscriber) {
+      if ( ! $rootScope.__channels[channel] ) {
+        $rootScope.__channels[channel] = [];
+      }
+
+      $rootScope.__channels[channel].push(subscriber);
+    };
+
+
+
+    $rootScope.subscribe('toggle view', function (options) {
+
+      var view = $('#item-' + options.item).find('.' + options.view);
+
+      function show (elem, cb) {
+        console.log('showing', elem)
+        elem.css('margin-top', '-' + elem.height() + 'px');
+
+        elem.find('.is-section:first').animate({
+            'margin-top': 0
+          }, 750, function () {
+            elem.removeClass('is-showing').addClass('is-shown');
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 1
+          }, 700);
+      }
+
+      function hide (elem, cb) {
+        elem.removeClass('is-shown').addClass('is-hiding');;
+
+        elem.find('.is-section:first').animate({
+            'margin-top': '-' + elem.height() + 'px'
+          }, 750, function () {
+            elem.removeClass('is-hiding').addClass('is-hidden');
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 0
+          }, 750);
+      }
+
+      if ( $('#item-' + options.item).hasClass('.is-showing') ) {
+        return false;
+      }
+      
+      if ( view.hasClass('is-hidden') || ! view.hasClass('is-toggable') ) {
+
+        if ( ! view.hasClass('is-toggable') ) {
+          view.addClass('is-toggable is-hidden');
+        }
+
+        if ( $('#item-' + options.item).find('.is-shown').length ) {
+          hide($('#item-' + options.item).find('.is-shown'), function () {
+            view.removeClass('is-hidden').addClass('is-showing');
+
+            setTimeout(function () {
+              show(view);
+            });
+          });
+        }
+        
+        else {
+          view.removeClass('is-hidden').addClass('is-showing');
+
+          setTimeout(function () {
+            show(view);
+          });
+        }
+
+        switch ( options.view ) {
+          case 'evaluator':
+            if ( ! view.hasClass('is-loaded') ) {
+              $rootScope.loadEvaluation(options.item)
+                .success(function () {
+                  view.addClass('is-loaded');
+                });
+            }
+            break;
+        }
+      }
+      else if ( view.hasClass('is-shown') ) {
+        
+        hide(view);
+      }
+    });
   }
 
 })();
 
-},{"./lib/ellipsis":24}]},{},[23]);
+},{"./lib/ellipsis":25}]},{},[24]);
