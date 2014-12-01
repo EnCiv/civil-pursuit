@@ -111,10 +111,23 @@
 
   .item-text {
     padding-left: @syn-padding;
+    border: 1px solid #fff;
+
+    @media (max-width: 320px) {
+      padding-bottom: 200px;
+      margin-bottom: -200px;
+      padding-left: 0;
+    }
+
+    &.truncated {
+      // border-color: green !important;
+      // margin-bottom: -2em
+    }
 
     .item-title, input.subject {
       font-size: 24px;
       word-wrap: break-word;
+      padding-left: @syn-padding;
 
       @media (max-width: 800px) {
         font-size: 22px
@@ -131,10 +144,6 @@
       @media (max-width: 500px) {
         font-size: 16px
       }
-    }
-
-    .readmore {
-      display: none
     }
 
     .box-description {
@@ -260,6 +269,10 @@
                 // }
               }
           }
+        }
+        .readmore {
+          display: none;
+          // margin-top: -2em
         }
       }
     }

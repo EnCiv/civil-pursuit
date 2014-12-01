@@ -4480,11 +4480,20 @@ footer {
 }
 .box .item-text {
   padding-left: 10px;
+  border: 1px solid #fff;
+}
+@media (max-width: 320px) {
+  .box .item-text {
+    padding-bottom: 200px;
+    margin-bottom: -200px;
+    padding-left: 0;
+  }
 }
 .box .item-text .item-title,
 .box .item-text input.subject {
   font-size: 24px;
   word-wrap: break-word;
+  padding-left: 10px;
 }
 @media (max-width: 800px) {
   .box .item-text .item-title,
@@ -4509,9 +4518,6 @@ footer {
   .box .item-text input.subject {
     font-size: 16px;
   }
-}
-.box .item-text .readmore {
-  display: none;
 }
 .box .item-text .box-description {
   font-size: 16px;
@@ -4621,6 +4627,9 @@ footer {
   .panel .panel-body .items .item .collapsers .children .split-view .item-media-wrapper {
     width: 100%;
   }
+}
+.panel .panel-body .items .item .readmore {
+  display: none;
 }
 .panel .panel {
   margin: 10px;

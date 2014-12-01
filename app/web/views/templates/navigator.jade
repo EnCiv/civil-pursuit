@@ -51,8 +51,10 @@ div(data-ng-init='show = "items"')
               
               .box-description.description.pre-text.padding-right.padding-left(ng-bind='item.description')
 
-              h4.padding(data-ng-repeat='reference in item.references' data-ng-show='item.references.length')
+              h4.padding.reference(data-ng-repeat='reference in item.references' data-ng-show='item.references.length')
                 a(data-ng-href='{{ reference.url }}' target='_blank') {{ reference.title || reference.url }}
+
+              span.end
 
           // COLLAPSERS
 
@@ -221,9 +223,9 @@ div(data-ng-init='show = "items"')
                 // Promoted
 
                 .row
-                  .col-xs-4
+                  .col-sm-4.col-xs-12
                     h4 Promoted
-                  .col-xs-8.padding-top
+                  .col-sm-8.col-xs-12.padding-top
                     .progress
                       .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
                         data-ng-bind='(item | calculatePromotionPercentage) + "%"')
@@ -238,7 +240,7 @@ div(data-ng-init='show = "items"')
                       data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:item.type}'
                     )
 
-                      .col-xs-4
+                      .col-sm-4.col-xs-12
 
                         //-
                             CRITERIA NAME
@@ -251,7 +253,7 @@ div(data-ng-init='show = "items"')
                           title             =     "{{criteria.description}}"
                         )
 
-                      .col-xs-8
+                      .col-sm-8.col-xs-12
 
                         //-
                             CHART
@@ -282,7 +284,7 @@ div(data-ng-init='show = "items"')
 
             // EDITOR
 
-            .editor.animate-show(ng-show='$show === "editor" && show === "items" && $root.itemViewed === item._id')
+            .editor(ng-show='$show === "editor" && show === "items" && $root.itemViewed === item._id')
 
             // TOGGLE ARROW
 

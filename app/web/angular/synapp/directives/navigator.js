@@ -119,15 +119,15 @@
 
         $scope.elem = $elem;
 
-        setTimeout(function () {
+        // setTimeout(function () {
 
-          var ellipsis = require('../lib/ellipsis');
+        //   var ellipsis = require('../lib/ellipsis');
 
-          // $timeout(ellipsis.bind($elem.find('.box')), 0);
-          ellipsis.apply($elem.find('.box').not('.prefetch'));
-          // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
+        //   // $timeout(ellipsis.bind($elem.find('.box')), 0);
+        //   ellipsis.apply($elem.find('.box').not('.prefetch'));
+        //   // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
 
-        }, 500);
+        // }, 500);
       }
     };
   }

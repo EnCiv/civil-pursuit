@@ -540,9 +540,24 @@
 },{"../lib/youtube":26}],8:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', Item];
+  function isVisible (elem) {
 
-  function Item ($rootScope) {
+    var parent = { elem: elem.parent() };
+
+    parent.top = parent.elem.offset().top;
+
+    parent.height = parent.elem.outerHeight();
+
+    var child = { elem: elem };
+
+    child.top = elem.offset().top;
+
+    return (parent.top + parent.height) > child.top;
+  }
+
+  module.exports = ['$rootScope', '$timeout', Item];
+
+  function Item ($rootScope, $timeout) {
     return {
       restrict: 'C',
       controller: ['$scope', function ($scope) {
@@ -578,6 +593,10 @@
       link: function ($scope, $elem, $attr) {
         $scope.isSplit = ['Agree', 'Disagree', 'Pro', 'Con']
           .indexOf($scope.item.type) > -1;
+
+        $timeout(function () {
+          $scope.$root.truncate($elem);
+        });
       }
     };
   }
@@ -705,15 +724,15 @@
 
         $scope.elem = $elem;
 
-        setTimeout(function () {
+        // setTimeout(function () {
 
-          var ellipsis = require('../lib/ellipsis');
+        //   var ellipsis = require('../lib/ellipsis');
 
-          // $timeout(ellipsis.bind($elem.find('.box')), 0);
-          ellipsis.apply($elem.find('.box').not('.prefetch'));
-          // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
+        //   // $timeout(ellipsis.bind($elem.find('.box')), 0);
+        //   ellipsis.apply($elem.find('.box').not('.prefetch'));
+        //   // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
 
-        }, 500);
+        // }, 500);
       }
     };
   }
@@ -1425,6 +1444,8 @@
 },{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Accordion":13,"./factories/Data":14,"./factories/Sign":15,"./filters/calculate-promotion-percentage":16,"./filters/criteria-filter":17,"./filters/feedback-filter":18,"./filters/find":19,"./filters/get-evaluation-by-item":20,"./filters/get-evaluation-items":21,"./filters/item-filter":22,"./filters/shorten":23,"./run":27}],25:[function(require,module,exports){
 ;(function () {
 
+  return false;
+
   module.exports = function ellipsis () {
 
     $(this).each(function () {
@@ -1436,65 +1457,9 @@
         return;
       }
 
-      var media = (function getMedia () {
-        var media = $(box).find('.item-media-wrapper:eq(0) .img-responsive:eq(0)');
+      $(box).addClass('is-ellipsis');
 
-        if ( media.length ) {
-          return media;
-        }
-
-        return $(box).find('.item-media-wrapper:eq(0) iframe');
-      })();
-
-      var height = media.height() || media.css('height');
-
-      var info_candidate = new (function ellipse_candidate () {
-        this.subject = $(box).find('.item-title').text();
-
-        this.type = $(box).closest('.panel').find('.panel-title').text();
-        
-        this.media = media[0].nodeName;
-
-        this.height = height;
-
-        this.refreshed = box.refreshed
-      })();
-
-      console.info(info_candidate);
-
-      if ( ! height || height < 50 ) {
-        if ( isNaN(this.refreshed) ) {
-          this.refreshed = 0;
-        }
-
-        if ( this.refreshed > 25 ) {
-          height = 120;
-        }
-
-        else {
-          this.refreshed ++;
-
-          console.log('fffffff', $(box).find('.item-title').text(), media.length, height);
-
-          return setTimeout(ellipsis.bind(box), 250);
-        }
-      }
-
-      var height2 = $(box).find('.box-buttons').height() || $(box).find('.box-buttons').css('height');
-
-      if ( height2 > height ) {
-        height = height2 + 35;
-      }
-
-      if ( $(box).closest('.split-view').length ) {
-        height *= 1.5;
-      }
-
-      $(box).addClass('ellipsis');
-
-      if ( height < 100 ) {
-        height += 20;
-      }
+      var height = $(box).find('.item-text').height();
 
       var readmore = $('<span class="readmore">[ <a href="#">more</a> ]</span>');
 
@@ -1505,6 +1470,7 @@
       readmore.find('a').on('click', function () {
         $(box).find('.item-text').trigger('destroy');
         readless.removeClass('hide');
+        $(box).find('.item-text').css('max-height', '100000px !important')
       });
 
       readmore.insertAfter($(box).find('.description'));
@@ -1527,8 +1493,6 @@
 
         this.type = $(box).closest('.panel').find('.panel-title').text();
         
-        this.media = media[0].nodeName.toLowerCase();
-
         this.height = height;
       })();
 
@@ -1676,6 +1640,142 @@
           }
           child = $rootScope.lineage[child];
         }
+      }
+    };
+
+    $rootScope.truncate = function (item) {
+      var text = item.find('.description').text().toString();
+
+      item.find('.description').empty();
+
+      var i = 0;
+
+      var paddingBottom = parseInt(item.find('.item-text').css('paddingBottom'));
+
+      var hide = false;
+
+      text.split(' ').forEach(function (word) {
+
+        var span = $('<span></span>');
+
+        if ( hide ) {
+          span.addClass('truncated');
+          span.hide();
+        }
+
+        span.text(word + ' ');
+
+        item.find('.description').append(span);
+
+        if ( i === 5 ) {
+
+          var diff = item.find('.item-text').height() > paddingBottom;
+
+          if ( diff && ! hide ) {
+
+            hide = true;
+          }
+
+          i = -1;
+        }
+
+        i ++;
+      });
+
+      if ( hide ) {
+        var moreLabel = '+', lessLabel = '-';
+
+        var more = $('<span><i>... </i>[<a href=""></a>]</span>');
+
+        more.find('a').text(moreLabel);
+
+        function showMore (elem) {          
+
+          var interval = 0, length = item.find('.truncated').length;
+ 
+          for ( var i = 0; i < length ; i += 50 ) {
+            setTimeout(function () {
+              var k = this.i + 50;
+              for ( var j = this.i; j < k ; j ++ ) {
+                item.find('.truncated:eq(' + j + ')').show();
+              }
+            }.bind({ i: i }), interval += 100);
+          }
+
+          setTimeout(function () {
+            item.find('.reference').show();
+            elem.find('a').text(lessLabel);
+            elem.find('i').hide();  
+          }, interval += 100);
+
+          // 
+        }
+
+        function showLess (elem) {
+
+          var interval = 0, length = item.find('.truncated').length;
+ 
+          for ( var i = 0; i < length ; i += 50 ) {
+            setTimeout(function () {
+              var k = this.i + 50;
+              for ( var j = this.i; j < k ; j ++ ) {
+                item.find('.truncated:eq(' + j + ')').hide();
+              }
+            }.bind({ i: i }), interval += 100);
+          }
+
+          setTimeout(function () {
+            item.find('.reference').hide();
+            elem.find('a').text(moreLabel);
+            elem.find('i').show();
+          }, interval += 100);
+
+        }
+
+        more.on('click', function () {
+          if ( item.find('.is-showing').length ) {
+            return false;
+          }
+
+          if ( $(this).find('a').text() === moreLabel ) {
+            // console.warn('lune rouge')
+            if ( /^item-/.test(item.attr('id')) ) {
+
+              var item_id = item.attr('id').split('-')[1];
+
+              if ( item.find('.is-shown').length ) {
+                $rootScope.publish("toggle view",
+                  { view: "text", item: item_id });
+
+                $rootScope.subscribe('did hide view', function (options) {
+                  if ( options.item === item_id )  {
+                    setTimeout(function () {
+                      showMore($(this));
+                    }.bind(this));
+                  }
+                }.bind(this));
+              }
+
+              else {
+                showMore($(this));
+              }
+            }
+            
+            else {
+              showMore($(this));
+            }
+          }
+
+          // hide
+
+          else {
+            showLess($(this));
+          }
+        });
+
+        item.find('.description').append(more);
+
+        item.find('.reference').hide();
       }
     };
 
@@ -1973,9 +2073,9 @@
       .success(function (items) {
         $rootScope.intro = items[0];
 
-        var ellipsis = require('./lib/ellipsis');
-
-        $timeout(ellipsis.bind($('#intro .box')), 0);
+        $timeout(function () {
+          $rootScope.truncate($('#intro'));
+        });
 
         // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
       });
@@ -2005,16 +2105,18 @@
 
     $rootScope.subscribe('toggle view', function (options) {
 
+      console.log('toggle view', options)
+
       var view = $('#item-' + options.item).find('.' + options.view);
 
       function show (elem, cb) {
-        console.log('showing', elem)
         elem.css('margin-top', '-' + elem.height() + 'px');
 
         elem.find('.is-section:first').animate({
             'margin-top': 0
           }, 750, function () {
             elem.removeClass('is-showing').addClass('is-shown');
+            $rootScope.publish('did show view', options);
             if ( cb ) cb();
           });
 
@@ -2030,6 +2132,7 @@
             'margin-top': '-' + elem.height() + 'px'
           }, 750, function () {
             elem.removeClass('is-hiding').addClass('is-hidden');
+            $rootScope.publish('did hide view', options);
             if ( cb ) cb();
           });
 
@@ -2038,15 +2141,25 @@
           }, 750);
       }
 
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
       if ( $('#item-' + options.item).hasClass('.is-showing') ) {
         return false;
       }
-      
-      if ( view.hasClass('is-hidden') || ! view.hasClass('is-toggable') ) {
 
-        if ( ! view.hasClass('is-toggable') ) {
-          view.addClass('is-toggable is-hidden');
-        }
+      if ( ! view.hasClass('is-toggable') ) {
+        view.addClass('is-toggable');
+      }
+
+      // hide
+
+      if ( view.hasClass('is-shown') ) {
+        hide(view);
+      }
+
+      // show
+      
+      else {
 
         if ( $('#item-' + options.item).find('.is-shown').length ) {
           hide($('#item-' + options.item).find('.is-shown'), function () {
@@ -2077,13 +2190,9 @@
             break;
         }
       }
-      else if ( view.hasClass('is-shown') ) {
-        
-        hide(view);
-      }
     });
   }
 
 })();
 
-},{"./lib/ellipsis":25}]},{},[24]);
+},{}]},{},[24]);

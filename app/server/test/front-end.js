@@ -4,7 +4,7 @@ var assert    =   require('assert');
 var should    =   require('should');
 var path      =   require('path');
 
-var User, Topic,
+var User, Topic, Problem,
   Email = Date.now () + '@synapp.com';
 
 var base      =   path.dirname(path.dirname(path.dirname(__dirname)));
@@ -144,7 +144,7 @@ describe('Creating new topic', function () {
         body: {
           type: 'Topic',
           subject: new Date().toISOString(),
-          description: 'HAHAHA',
+          description: 'generatedTESTMOCHA DES DES',
           user: User._id
         },
         jar: true
@@ -190,7 +190,7 @@ describe('Creating new problem', function () {
         body: {
           type: 'Problem',
           subject: new Date().toISOString(),
-          description: 'HAHAHA',
+          description: 'generatedTESTMOCHA DES DES',
           user: User._id,
           parent: Topic._id
         },
@@ -219,7 +219,7 @@ describe('Creating new problem', function () {
   it('should be a JSON', function () {
     should(body).be.an.Object;
 
-    // Topic = body;
+    Problem = body;
   });
 });
 
@@ -259,6 +259,16 @@ describe('Signing out', function () {
 describe('Cleaning out', function () {
   it('should remove created test user', function (done) {
     request.del('http://localhost:3012/models/User?email=' + Email,
+      done);
+  });
+
+  it('should remove created test topic', function (done) {
+    request.del('http://localhost:3012/models/Item?_id=' + Topic._id,
+      done);
+  });
+
+  it('should remove created test problem', function (done) {
+    request.del('http://localhost:3012/models/Item?_id=' + Problem._id,
       done);
   });
 });
