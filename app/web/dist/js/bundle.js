@@ -564,8 +564,6 @@
 
         $scope.loaded = {};
 
-        return;
-
         $scope.$watch('$show', function (show, _show) {
           if ( show && show !== _show ) {
             console.log('show', show, $scope.loaded[show])
