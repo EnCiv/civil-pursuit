@@ -4482,6 +4482,27 @@ footer {
   padding-left: 10px;
   border: 1px solid #fff;
 }
+@media (min-width: 901px) {
+  .box .item-text {
+    padding-bottom: 200px;
+    margin-bottom: -200px;
+    padding-left: 0;
+  }
+}
+@media (max-width: 900px) {
+  .box .item-text {
+    padding-bottom: 150px;
+    margin-bottom: -150px;
+    padding-left: 0;
+  }
+}
+@media (max-width: 620px) {
+  .box .item-text {
+    padding-bottom: 130px;
+    margin-bottom: -130px;
+    padding-left: 0;
+  }
+}
 @media (max-width: 320px) {
   .box .item-text {
     padding-bottom: 200px;

@@ -144,7 +144,7 @@
       });
 
       if ( hide ) {
-        var moreLabel = '+', lessLabel = '-';
+        var moreLabel = 'more', lessLabel = 'less';
 
         var more = $('<span><i>... </i>[<a href=""></a>]</span>');
 
