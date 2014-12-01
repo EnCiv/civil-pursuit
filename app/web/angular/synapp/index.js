@@ -7,7 +7,7 @@
 
 ;(function () {
 
-  angular.module('synapp', ['angularFileUpload', 'ngAnimate'])
+  angular.module('synapp', ['angularFileUpload', 'ngAnimate', 'autoGrow'])
 
     .factory({
       DataFactory: require('./factories/Data'),

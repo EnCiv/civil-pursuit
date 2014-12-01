@@ -461,7 +461,7 @@ module.exports = function synappExpress (listen, isTest) {
 
     app.use('/js/',
       express.static(path.join(process.env.SYNAPP_PATH,
-        'app/web/js')));
+        'app/web/angular')));
 
     ////////////////////////////////////////////////////////////////////////////
     // ERROR

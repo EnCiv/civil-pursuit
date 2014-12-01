@@ -4514,7 +4514,6 @@ footer {
 .box .item-text input.subject {
   font-size: 24px;
   word-wrap: break-word;
-  padding-left: 10px;
 }
 @media (max-width: 800px) {
   .box .item-text .item-title,
