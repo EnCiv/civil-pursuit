@@ -447,6 +447,9 @@
           }, 750, function () {
             elem.removeClass('is-showing').addClass('is-shown');
             $rootScope.publish('did show view', options);
+            if ( elem.css('margin-top') !== 0 ) {
+              elem.animate({'margin-top': 0}, 250);
+            }
             if ( cb ) cb();
           });
 
