@@ -104,6 +104,12 @@
       }
     };
 
+    $rootScope.scrollToPoA = function (item, cb) {
+      $('html, body').animate({
+        scrollTop: (item.offset().top - 80)
+      }, 500, 'swing', cb);
+    };
+
     $rootScope.truncate = function (item) {
       var text = item.find('.description').text().toString();
 
@@ -198,40 +204,42 @@
             return false;
           }
 
-          if ( $(this).find('a').text() === moreLabel ) {
-            // console.warn('lune rouge')
-            if ( /^item-/.test(item.attr('id')) ) {
+          $rootScope.scrollToPoA(item, function () {
+            if ( $(this).find('a').text() === moreLabel ) {
+              // console.warn('lune rouge')
+              if ( /^item-/.test(item.attr('id')) ) {
 
-              var item_id = item.attr('id').split('-')[1];
+                var item_id = item.attr('id').split('-')[1];
 
-              if ( item.find('.is-shown').length ) {
-                $rootScope.publish("toggle view",
-                  { view: "text", item: item_id });
+                if ( item.find('.is-shown').length ) {
+                  $rootScope.publish("toggle view",
+                    { view: "text", item: item_id });
 
-                $rootScope.subscribe('did hide view', function (options) {
-                  if ( options.item === item_id )  {
-                    setTimeout(function () {
-                      showMore($(this));
-                    }.bind(this));
-                  }
-                }.bind(this));
+                  $rootScope.subscribe('did hide view', function (options) {
+                    if ( options.item === item_id )  {
+                      setTimeout(function () {
+                        showMore($(this));
+                      }.bind(this));
+                    }
+                  }.bind(this));
+                }
+
+                else {
+                  showMore($(this));
+                }
               }
-
+              
               else {
                 showMore($(this));
               }
             }
-            
+
+            // hide
+
             else {
-              showMore($(this));
+              showLess($(this));
             }
-          }
-
-          // hide
-
-          else {
-            showLess($(this));
-          }
+          });
         });
 
         item.find('.description').append(more);
@@ -446,8 +454,6 @@
 
     Evaluation.prototype.finish = function () {
       this.change();
-
-
     };
 
     Evaluation.prototype.promote = function(pos) {
@@ -612,45 +618,52 @@
         view.addClass('is-toggable');
       }
 
-      // hide
+      var itemTop = $('#item-' + options.item).offset().top;
+      var windowScroll = $(window).scroll();
 
-      if ( view.hasClass('is-shown') ) {
-        hide(view);
-      }
+      console.log({item: itemTop, scroll: windowScroll});
 
-      // show
-      
-      else {
+      $rootScope.scrollToPoA($('#item-' + options.item), function () {
+        // hide
 
-        if ( $('#item-' + options.item).find('.is-shown').length ) {
-          hide($('#item-' + options.item).find('.is-shown'), function () {
+        if ( view.hasClass('is-shown') ) {
+          hide(view);
+        }
+
+        // show
+        
+        else {
+
+          if ( $('#item-' + options.item).find('.is-shown').length ) {
+            hide($('#item-' + options.item).find('.is-shown'), function () {
+              view.removeClass('is-hidden').addClass('is-showing');
+
+              setTimeout(function () {
+                show(view);
+              });
+            });
+          }
+          
+          else {
             view.removeClass('is-hidden').addClass('is-showing');
 
             setTimeout(function () {
               show(view);
             });
-          });
-        }
-        
-        else {
-          view.removeClass('is-hidden').addClass('is-showing');
+          }
 
-          setTimeout(function () {
-            show(view);
-          });
+          switch ( options.view ) {
+            case 'evaluator':
+              if ( ! view.hasClass('is-loaded') ) {
+                $rootScope.loadEvaluation(options.item)
+                  .success(function () {
+                    view.addClass('is-loaded');
+                  });
+              }
+              break;
+          }
         }
-
-        switch ( options.view ) {
-          case 'evaluator':
-            if ( ! view.hasClass('is-loaded') ) {
-              $rootScope.loadEvaluation(options.item)
-                .success(function () {
-                  view.addClass('is-loaded');
-                });
-            }
-            break;
-        }
-      }
+      });
     });
   }
 
