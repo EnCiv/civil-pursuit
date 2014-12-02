@@ -1,8 +1,10 @@
 ;(function () {
 
-  module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
+  module.exports = ['$rootScope', '$location', '$timeout',
+    'DataFactory', 'Truncate', 'View',
+    Run];
 
-  function Run ($rootScope, $location, $timeout, DataFactory) {
+  function Run ($rootScope, $location, $timeout, DataFactory, Truncate, View) {
 
     /** @type [Model.Item] */
     $rootScope.items        =   [];
@@ -101,150 +103,6 @@
           }
           child = $rootScope.lineage[child];
         }
-      }
-    };
-
-    $rootScope.scrollToPoA = function (item, cb) {
-      $('html, body').animate({
-        scrollTop: (item.offset().top - 80)
-      }, 500, 'swing', cb);
-    };
-
-    $rootScope.truncate = function (item) {
-      var text = item.find('.description').text().toString();
-
-      item.find('.description').empty();
-
-      var i = 0;
-
-      var paddingBottom = parseInt(item.find('.item-text').css('paddingBottom'));
-
-      var hide = false;
-
-      text.split(' ').forEach(function (word) {
-
-        var span = $('<span></span>');
-
-        if ( hide ) {
-          span.addClass('truncated');
-          span.hide();
-        }
-
-        span.text(word + ' ');
-
-        item.find('.description').append(span);
-
-        if ( i === 5 ) {
-
-          var diff = item.find('.item-text').height() > paddingBottom;
-
-          if ( diff && ! hide ) {
-
-            hide = true;
-          }
-
-          i = -1;
-        }
-
-        i ++;
-      });
-
-      if ( hide ) {
-        var moreLabel = 'more', lessLabel = 'less';
-
-        var more = $('<span><i>... </i>[<a href=""></a>]</span>');
-
-        more.find('a').text(moreLabel);
-
-        function showMore (elem) {          
-
-          var interval = 0, length = item.find('.truncated').length;
- 
-          for ( var i = 0; i < length ; i += 50 ) {
-            setTimeout(function () {
-              var k = this.i + 50;
-              for ( var j = this.i; j < k ; j ++ ) {
-                item.find('.truncated:eq(' + j + ')').show();
-              }
-            }.bind({ i: i }), interval += 100);
-          }
-
-          setTimeout(function () {
-            item.find('.reference').show();
-            elem.find('a').text(lessLabel);
-            elem.find('i').hide();  
-          }, interval += 100);
-
-          // 
-        }
-
-        function showLess (elem) {
-
-          var interval = 0, length = item.find('.truncated').length;
- 
-          for ( var i = 0; i < length ; i += 50 ) {
-            setTimeout(function () {
-              var k = this.i + 50;
-              for ( var j = this.i; j < k ; j ++ ) {
-                item.find('.truncated:eq(' + j + ')').hide();
-              }
-            }.bind({ i: i }), interval += 100);
-          }
-
-          setTimeout(function () {
-            item.find('.reference').hide();
-            elem.find('a').text(moreLabel);
-            elem.find('i').show();
-          }, interval += 100);
-
-        }
-
-        more.on('click', function () {
-          if ( item.find('.is-showing').length ) {
-            return false;
-          }
-
-          $rootScope.scrollToPoA(item, function () {
-            if ( $(this).find('a').text() === moreLabel ) {
-              // console.warn('lune rouge')
-              if ( /^item-/.test(item.attr('id')) ) {
-
-                var item_id = item.attr('id').split('-')[1];
-
-                if ( item.find('.is-shown').length ) {
-                  $rootScope.publish("toggle view",
-                    { view: "text", item: item_id });
-
-                  $rootScope.subscribe('did hide view', function (options) {
-                    if ( options.item === item_id )  {
-                      setTimeout(function () {
-                        showMore($(this));
-                      }.bind(this));
-                    }
-                  }.bind(this));
-                }
-
-                else {
-                  showMore($(this));
-                }
-              }
-              
-              else {
-                showMore($(this));
-              }
-            }
-
-            // hide
-
-            else {
-              showLess($(this));
-            }
-          });
-        });
-
-        item.find('.description').append(more);
-
-        item.find('.reference').hide();
       }
     };
 
@@ -541,7 +399,8 @@
         $rootScope.intro = items[0];
 
         $timeout(function () {
-          $rootScope.truncate($('#intro'));
+          new Truncate($('#intro'));
+          // console.log(Truncate);
         });
 
         // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
@@ -623,7 +482,7 @@
 
       console.log({item: itemTop, scroll: windowScroll});
 
-      $rootScope.scrollToPoA($('#item-' + options.item), function () {
+      View.scrollToPointOfAttention($('#item-' + options.item), function () {
         // hide
 
         if ( view.hasClass('is-shown') ) {
@@ -659,6 +518,15 @@
                   .success(function () {
                     view.addClass('is-loaded');
                   });
+              }
+              break;
+
+            case 'children':
+              if ( ! view.hasClass('is-loaded') && ! view.hasClass('is-loading') ) {
+                $rootScope.publish('load children', {
+                  parent: options.item,
+                  view: view
+                });
               }
               break;
           }

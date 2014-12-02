@@ -12,7 +12,8 @@
     .factory({
       DataFactory: require('./factories/Data'),
       SignFactory: require('./factories/Sign'),
-      Accordion: require('./factories/Accordion')
+      Truncate: require('./factories/Truncate'),
+      View: require('./factories/View')
     })
 
     .filter({

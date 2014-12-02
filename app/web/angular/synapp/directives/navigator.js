@@ -87,6 +87,8 @@
             });
         };
 
+
+
         /** load more items */
 
         $scope.loadMore = function () {
@@ -118,6 +120,12 @@
       link: function ($scope, $elem, $attrs) {
 
         $scope.elem = $elem;
+
+        /** Listen to load children event **/
+        $scope.$root.subscribe('load children', function (message) {
+          $scope.loadChildren(message.parent);
+          message.view.removeClass('is-loading').addClass('is-loaded');
+        });
 
         // setTimeout(function () {
 

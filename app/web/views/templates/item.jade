@@ -1,29 +1,23 @@
-article.item
+.box(data-ng-class='{ prefetch: $index === ( batchSize - 1 ) }')
+  .item-media-wrapper
+    +item-image('item')
 
-  header.item-contents
+  .pull-right.box-buttons.padding
+    button.btn(data-ng-click='$root.publish("toggle view", { view: "evaluator", item: item._id })') Promote
 
-    aside
-      nav.item-nav
-        ul
-          li
-            button.toggle-promote Promote
-          li
-            button Details
+    div(data-ng-bind='item.promotions')
 
-    article.item-article
+    div(data-ng-bind='((item | calculatePromotionPercentage) || 0) + "%"')
 
-      header
-        h4.item-subject Loading item's subject
+    button.btn(data-ng-click='$root.publish("toggle view", { view: "details", item: item._id })') Details
 
-      .item-description
+  .item-text
+    h4.item-title(data-ng-bind='item.subject'
+      title='{{ item.subject }}')
+    
+    .box-description.description.pre-text.padding-right.padding-left(ng-bind='item.description')
 
-  section
+    h4.padding.reference(data-ng-repeat='reference in item.references' data-ng-show='item.references.length')
+      a(data-ng-href='{{ reference.url }}' target='_blank') {{ reference.title || reference.url }}
 
-    div.item-evaluation
-
-    div.item-details
-
-    div
-      a(href='#').item-panel-toggle Expand
-
-    .item-panels
+    span.end

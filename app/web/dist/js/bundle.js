@@ -537,7 +537,7 @@
 
 })();
 
-},{"../lib/youtube":26}],8:[function(require,module,exports){
+},{"../lib/youtube":27}],8:[function(require,module,exports){
 ;(function () {
 
   function isVisible (elem) {
@@ -555,45 +555,22 @@
     return (parent.top + parent.height) > child.top;
   }
 
-  module.exports = ['$rootScope', '$timeout', Item];
+  module.exports = ['$rootScope', '$timeout', 'Truncate', Item];
 
-  function Item ($rootScope, $timeout) {
+  function Item ($rootScope, $timeout, Truncate) {
     return {
       restrict: 'C',
       controller: ['$scope', function ($scope) {
 
         $scope.loaded = {};
 
-        $scope.$watch('$show', function (show, _show) {
-          if ( show && show !== _show ) {
-            console.log('show', show, $scope.loaded[show])
-
-            if ( show === 'evaluator' ) {
-              $scope.$root.loadEvaluation($scope.item._id);
-            }
-
-            else if ( ! $scope.loaded[show] ) {
-              switch ( show ) {
-                case 'children':
-                  $scope.loaded.children = true;
-                  $scope.$parent.loadChildren($scope.item._id);
-                  break;
-
-                case 'details':
-                  $scope.loaded.details = true;
-                  $scope.$root.loadDetails($scope.item._id);
-                  break;
-              }
-            }
-          }
-        });
       }],
       link: function ($scope, $elem, $attr) {
         $scope.isSplit = ['Agree', 'Disagree', 'Pro', 'Con']
           .indexOf($scope.item.type) > -1;
 
         $timeout(function () {
-          $scope.$root.truncate($elem);
+          new Truncate($elem);
         });
       }
     };
@@ -690,6 +667,8 @@
             });
         };
 
+
+
         /** load more items */
 
         $scope.loadMore = function () {
@@ -722,6 +701,12 @@
 
         $scope.elem = $elem;
 
+        /** Listen to load children event **/
+        $scope.$root.subscribe('load children', function (message) {
+          $scope.loadChildren(message.parent);
+          message.view.removeClass('is-loading').addClass('is-loaded');
+        });
+
         // setTimeout(function () {
 
         //   var ellipsis = require('../lib/ellipsis');
@@ -737,7 +722,7 @@
 
 })();
 
-},{"../lib/ellipsis":25}],10:[function(require,module,exports){
+},{"../lib/ellipsis":26}],10:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -1027,18 +1012,7 @@
   }
 })();
 
-},{"../lib/youtube":26}],13:[function(require,module,exports){
-;(function () {
-
-  module.exports = [Accordion];
-
-  function Accordion () {
-    
-  }
-
-})();
-
-},{}],14:[function(require,module,exports){
+},{"../lib/youtube":27}],13:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -1146,7 +1120,7 @@
   };
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * `UserFactory` User Factory (legacy from SignCtrl)
  * 
@@ -1173,7 +1147,261 @@
   };
 })();
 
+},{}],15:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', 'View', TruncateAsAService]
+
+  function TruncateAsAService ($rootScope, View) {
+    function Truncate (item) {
+
+      console.info('Truncating', item.attr('id'));
+
+      // ============
+
+      this.item = item;
+
+      this.description = this.item.find('.description');
+
+      this.textWrapper = this.item.find('.item-text');
+
+      this.reference = this.item.find('.reference');
+
+      this.text = this.description.text();
+
+      this.words = this.text.split(' ');
+
+      this.height = parseInt(this.item.find('.item-text').css('paddingBottom'));
+
+      this.truncated = false;
+
+      this.moreLabel = 'more';
+
+      this.lessLabel = 'less';
+
+      this.isIntro = ( this.item.attr('id') === 'intro' );
+
+      if ( ! this.isIntro ) {
+        this._id = this.item.attr('id').split('-')[1];
+      }
+
+      // ============
+
+      this.tagify();
+
+      if ( this.truncated ) {
+        this.appendMoreButton();
+      }
+    }
+
+    Truncate.prototype.tagify = function () {
+
+      var self = this;
+
+      this.description.empty();
+
+      this.reference.hide();
+
+      var i = 0;
+
+      this.words.forEach(function (word, index) {
+
+        var span = $('<span></span>');
+
+        if ( self.truncated ) {
+          span.addClass('truncated');
+          span.hide();
+        }
+
+        span.text(word + ' ');
+
+        self.description.append(span);
+
+        if ( i === 5 ) {
+
+          var diff = self.textWrapper.height() > self.height;
+
+          if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
+
+            self.truncated = true;
+          }
+
+          i = -1;
+        }
+
+        i ++;
+      });
+    };
+
+    Truncate.prototype.appendMoreButton = function () {
+
+      var self = this;
+
+      // create more button
+
+      this.more = $('<span><i>... </i>[<a href=""></a>]</span>');
+
+      // more button's text
+
+      this.more.find('a').text(self.moreLabel);
+
+      // more button's on click behavior
+
+      this.more.find('a').on('click', function () {
+
+        var moreLink = $(this);
+
+        // Exit if already an animation in progress
+
+        if ( self.item.find('.is-showing').length ) {
+          return false;
+        }
+
+        View.scrollToPointOfAttention(self.item, function () {
+
+          // Show more
+
+          if ( moreLink.text() === self.moreLabel ) {
+            
+            // If is intro
+
+            if ( self.isIntro ) {
+              self.unTruncate();
+            }
+            
+            else {
+              // If there is already stuff shown, hide it first
+
+              if ( self.item.find('.is-shown').length ) {
+                
+                // Trigger the toggle view to hide current shown items
+
+                $rootScope.publish("toggle view",
+                  { view: "text", item: self._id });
+
+                // Listen on hiding done
+
+                $rootScope.subscribe('did hide view', function (options) {
+
+                  // Make sure it concerns our item
+
+                  if ( options.item === self._id )  {
+
+                    // untruncate
+
+                    setTimeout(function () {
+                      self.unTruncate();
+                    });
+                  }
+                });
+              }
+
+              else {
+                self.unTruncate();
+              }
+            }
+          }
+
+          // hide
+
+          else {
+            self.reTruncate();
+          }
+        });
+      });
+
+      this.description.append(this.more);
+    };
+
+    Truncate.prototype.unTruncate = function () {
+        
+      var self = this;
+
+      var interval = 0;
+
+      var inc = 50;
+
+      var inc = Math.ceil(self.height / self.words.length);
+
+      console.log(self.words.length, inc)
+
+      // show words 50 by 50
+
+      for ( var i = 0; i < this.words.length ; i += inc ) {
+        setTimeout(function () {
+          var k = this.i + inc;
+          for ( var j = this.i; j < k ; j ++ ) {
+            self.item.find('.truncated:eq(' + j + ')').show();
+          }
+        }.bind({ i: i }), interval += (inc * 1.5));
+      }
+
+      // on done showing words, wrap up
+
+      setTimeout(function () {
+        self.item.find('.reference').show();
+        self.more.find('a').text(self.lessLabel);
+        self.more.find('i').hide();  
+      }, interval);
+    };
+
+    Truncate.prototype.reTruncate = function () {
+      
+      var self = this;
+
+      var interval = 0;
+
+      var inc = Math.ceil(self.height / self.words.length);
+
+      for ( var i = 0; i < this.words.length ; i += inc ) {
+        setTimeout(function () {
+          var k = this.i + inc;
+          for ( var j = this.i; j < k ; j ++ ) {
+            self.item.find('.truncated:eq(' + j + ')').hide();
+          }
+        }.bind({ i: i }), interval += (inc * 2));
+      }
+
+      setTimeout(function () {
+        self.item.find('.reference').hide();
+        self.more.find('a').text(self.moreLabel);
+        self.more.find('i').show();
+      }, interval);
+    };
+
+    return Truncate;
+  }
+
+})();
 },{}],16:[function(require,module,exports){
+;(function () {
+
+  module.exports = [View];
+
+  function View () {
+    return {
+
+      scrollToPointOfAttention: function (pointOfAttention, cb) {
+
+        var poa = (pointOfAttention.offset().top - 80);
+
+        var current = $(document).scrollTop();
+
+        if ( current - poa < 50 ) {
+          return cb();
+        }
+
+        $('html, body').animate({
+          scrollTop: poa
+        }, 250, 'swing', cb);
+      }
+
+    };
+  }
+
+})();
+
+},{}],17:[function(require,module,exports){
 ;(function () {
 
   module.exports = [calculatePromotionPercentage];
@@ -1190,7 +1418,7 @@
   }
 })();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ;(function () {
 
   module.exports = [CriteriaFilter];
@@ -1212,7 +1440,7 @@
 
 })();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ;(function () {
 
   module.exports = [FeedbackFilter];
@@ -1234,7 +1462,7 @@
 
 })();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ;(function () {
 
   module.exports = [Find];
@@ -1256,7 +1484,7 @@
 
 })();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationByItem];
@@ -1272,7 +1500,7 @@
   }
 
 })();
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', getEvaluationItems];
@@ -1298,7 +1526,7 @@
   }
 
 })();
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ;(function () {
 
   module.exports = [filterItems];
@@ -1330,7 +1558,7 @@
   }
 })();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ;(function () {
 
   module.exports = [shortenFilter];
@@ -1366,7 +1594,7 @@
 
 })();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
  * Synapp Angular module...
  * 
@@ -1381,7 +1609,8 @@
     .factory({
       DataFactory: require('./factories/Data'),
       SignFactory: require('./factories/Sign'),
-      Accordion: require('./factories/Accordion')
+      Truncate: require('./factories/Truncate'),
+      View: require('./factories/View')
     })
 
     .filter({
@@ -1439,7 +1668,7 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Accordion":13,"./factories/Data":14,"./factories/Sign":15,"./filters/calculate-promotion-percentage":16,"./filters/criteria-filter":17,"./filters/feedback-filter":18,"./filters/find":19,"./filters/get-evaluation-by-item":20,"./filters/get-evaluation-items":21,"./filters/item-filter":22,"./filters/shorten":23,"./run":27}],25:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./factories/Truncate":15,"./factories/View":16,"./filters/calculate-promotion-percentage":17,"./filters/criteria-filter":18,"./filters/feedback-filter":19,"./filters/find":20,"./filters/get-evaluation-by-item":21,"./filters/get-evaluation-items":22,"./filters/item-filter":23,"./filters/shorten":24,"./run":28}],26:[function(require,module,exports){
 ;(function () {
 
   return false;
@@ -1506,7 +1735,7 @@
   };
 
 })();
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ;(function () {
 
   function youtube (url) {
@@ -1534,12 +1763,14 @@
   module.exports = youtube;
 
 })();
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', '$location', '$timeout', 'DataFactory', Run];
+  module.exports = ['$rootScope', '$location', '$timeout',
+    'DataFactory', 'Truncate', 'View',
+    Run];
 
-  function Run ($rootScope, $location, $timeout, DataFactory) {
+  function Run ($rootScope, $location, $timeout, DataFactory, Truncate, View) {
 
     /** @type [Model.Item] */
     $rootScope.items        =   [];
@@ -1638,150 +1869,6 @@
           }
           child = $rootScope.lineage[child];
         }
-      }
-    };
-
-    $rootScope.scrollToPoA = function (item, cb) {
-      $('html, body').animate({
-        scrollTop: (item.offset().top - 80)
-      }, 500, 'swing', cb);
-    };
-
-    $rootScope.truncate = function (item) {
-      var text = item.find('.description').text().toString();
-
-      item.find('.description').empty();
-
-      var i = 0;
-
-      var paddingBottom = parseInt(item.find('.item-text').css('paddingBottom'));
-
-      var hide = false;
-
-      text.split(' ').forEach(function (word) {
-
-        var span = $('<span></span>');
-
-        if ( hide ) {
-          span.addClass('truncated');
-          span.hide();
-        }
-
-        span.text(word + ' ');
-
-        item.find('.description').append(span);
-
-        if ( i === 5 ) {
-
-          var diff = item.find('.item-text').height() > paddingBottom;
-
-          if ( diff && ! hide ) {
-
-            hide = true;
-          }
-
-          i = -1;
-        }
-
-        i ++;
-      });
-
-      if ( hide ) {
-        var moreLabel = 'more', lessLabel = 'less';
-
-        var more = $('<span><i>... </i>[<a href=""></a>]</span>');
-
-        more.find('a').text(moreLabel);
-
-        function showMore (elem) {          
-
-          var interval = 0, length = item.find('.truncated').length;
- 
-          for ( var i = 0; i < length ; i += 50 ) {
-            setTimeout(function () {
-              var k = this.i + 50;
-              for ( var j = this.i; j < k ; j ++ ) {
-                item.find('.truncated:eq(' + j + ')').show();
-              }
-            }.bind({ i: i }), interval += 100);
-          }
-
-          setTimeout(function () {
-            item.find('.reference').show();
-            elem.find('a').text(lessLabel);
-            elem.find('i').hide();  
-          }, interval += 100);
-
-          // 
-        }
-
-        function showLess (elem) {
-
-          var interval = 0, length = item.find('.truncated').length;
- 
-          for ( var i = 0; i < length ; i += 50 ) {
-            setTimeout(function () {
-              var k = this.i + 50;
-              for ( var j = this.i; j < k ; j ++ ) {
-                item.find('.truncated:eq(' + j + ')').hide();
-              }
-            }.bind({ i: i }), interval += 100);
-          }
-
-          setTimeout(function () {
-            item.find('.reference').hide();
-            elem.find('a').text(moreLabel);
-            elem.find('i').show();
-          }, interval += 100);
-
-        }
-
-        more.on('click', function () {
-          if ( item.find('.is-showing').length ) {
-            return false;
-          }
-
-          $rootScope.scrollToPoA(item, function () {
-            if ( $(this).find('a').text() === moreLabel ) {
-              // console.warn('lune rouge')
-              if ( /^item-/.test(item.attr('id')) ) {
-
-                var item_id = item.attr('id').split('-')[1];
-
-                if ( item.find('.is-shown').length ) {
-                  $rootScope.publish("toggle view",
-                    { view: "text", item: item_id });
-
-                  $rootScope.subscribe('did hide view', function (options) {
-                    if ( options.item === item_id )  {
-                      setTimeout(function () {
-                        showMore($(this));
-                      }.bind(this));
-                    }
-                  }.bind(this));
-                }
-
-                else {
-                  showMore($(this));
-                }
-              }
-              
-              else {
-                showMore($(this));
-              }
-            }
-
-            // hide
-
-            else {
-              showLess($(this));
-            }
-          });
-        });
-
-        item.find('.description').append(more);
-
-        item.find('.reference').hide();
       }
     };
 
@@ -2078,7 +2165,8 @@
         $rootScope.intro = items[0];
 
         $timeout(function () {
-          $rootScope.truncate($('#intro'));
+          new Truncate($('#intro'));
+          // console.log(Truncate);
         });
 
         // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
@@ -2160,7 +2248,7 @@
 
       console.log({item: itemTop, scroll: windowScroll});
 
-      $rootScope.scrollToPoA($('#item-' + options.item), function () {
+      View.scrollToPointOfAttention($('#item-' + options.item), function () {
         // hide
 
         if ( view.hasClass('is-shown') ) {
@@ -2198,6 +2286,15 @@
                   });
               }
               break;
+
+            case 'children':
+              if ( ! view.hasClass('is-loaded') && ! view.hasClass('is-loading') ) {
+                $rootScope.publish('load children', {
+                  parent: options.item,
+                  view: view
+                });
+              }
+              break;
           }
         }
       });
@@ -2206,4 +2303,4 @@
 
 })();
 
-},{}]},{},[24]);
+},{}]},{},[25]);

@@ -1,114 +1,139 @@
-include ../mixins/item-image
-
-.row
-  .col-xs-12.padding
-    h2.text-center
-      span(data-ng-bind='cursor || 1')
-      span  of  
-      span(data-ng-bind='limit')
-
-// Normal screen
-
-section.hidden-xs
-
-  // Image
+section(ng-repeat='evaluation in $root.evaluations | getEvaluationByItem:item._id')
+  
+  //- 1 of 5
 
   .row
-    .col-sm-6.padding(
-      data-ng-repeat      =   'item in current'
+    .col-xs-12.padding
+
+      h2.text-center
+        span(data-ng-bind='evaluation.cursor')
+        span  of  
+        span(data-ng-bind='evaluation.limit')
+
+      h4.text-center Evaluate Each Item Below
+
+  // Normal screen
+
+  section.hidden-xs
+    // Image
+
+    .row
+      .col-sm-6.padding(
+        data-ng-repeat      =   'item in evaluation.current'
+      )
+        +item-image
+
+    // Subject
+
+    .row
+      .col-sm-6.padding(
+        data-ng-repeat      =   'item in evaluation.current'
+      )
+        h3(data-ng-bind='item.subject')
+
+    // Description
+
+    .row
+      .col-sm-6.padding(
+        data-ng-repeat      =   'item in evaluation.current'
+      )
+        .pre-text.entry-description(data-ng-bind='item.description')
+
+    // References
+
+    .row
+      .col-sm-6.padding(
+        data-ng-repeat      =   'item in evaluation.current'
+      )
+        include navigator/references
+
+    // Sliders
+
+    .row
+      .col-sm-6.padding(
+        data-ng-repeat      =   'item in evaluation.current'
+      )
+        .sliders
+
+    // Feedback
+
+    .row
+      .col-sm-6.padding(
+        data-ng-repeat      =   'item in evaluation.current'
+      )
+        textarea.feedback-entry.form-control(
+          placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+          data-ng-show      =   'item.subject'
+          data-ng-model     =   'evaluation.current[$index].$feedback')
+
+    //- // Edit and go again
+
+    //- .row.padding-bottom
+    //-   .col-sm-6.padding(
+    //-     data-ng-repeat      =   'item in evaluation.current'
+    //-   )
+    //-     button.btn.btn-block(
+    //-       data-ng-click   =   'editAndGoAgain(item)'
+    //-     ) Edit and go again
+
+    .row.padding-bottom
+      .col-xs-12
+        h4.text-center Which of these is most important for the community to consider?
+
+    // Promote
+
+    .row.padding-bottom
+      .col-sm-6.padding(
+        data-ng-repeat      =   'item in evaluation.current'
+      )
+        button.btn.btn-block(
+          data-ng-click   =   'evaluation.promote($index); closeEvaluation(evaluation.current.length)'
+          data-ng-show    =   'evaluation.current[1]'
+          data-ng-bind    =   'evaluation.current[$index].subject'
+        ) Promote
+
+  // Small screen
+
+  section.hidden-sm.hidden-md.hidden-lg(
+    data-ng-repeat      =   'item in evaluation.current'
     )
-      +item-image('item')
 
-  // Subject
+    // image
 
+    .row
+      .col-xs-12
+        +item-image
+
+    .row
+      .col-xs-12
+        h2(data-ng-bind='item.subject')
+
+    .row
+      .col-xs-12
+        .pre-text.entry-description(data-ng-bind='item.subject')
+
+    .row.padding-bottom
+      .col-xs-12
+        .sliders
+
+    .row.padding-bottom
+      .col-xs-12
+        textarea.feedback-entry.form-control(
+          placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+          data-ng-show      =   'item.subject')
+
+    .row.padding-bottom
+      .col-xs-12
+        button.btn.btn-block(
+          data-ng-click   =   'evaluation.promote($index); closeEvaluation(evaluation.current.length)'
+          data-ng-show    =   'evaluation.current[1]'
+        ) Promote
+
+  // Continue
   .row
-    .col-sm-6.padding(
-      data-ng-repeat      =   'item in current'
-    )
-      h2(data-ng-bind='item.subject')
-
-  // Description
-
-  .row
-    .col-sm-6.padding(
-      data-ng-repeat      =   'item in current'
-    )
-      .pre-text.entry-description(data-ng-bind='item.description')
-
-  // References
-
-  .row
-    .col-sm-6.padding(
-      data-ng-repeat      =   'item in current'
-    )
-      include ../partials/item/references
-
-  // Sliders
-
-  .row
-    .col-sm-6.padding(
-      data-ng-repeat      =   'item in current'
-    )
-      .synapp-sliders
-
-  // Feedback
-
-  .row
-    .col-sm-6.padding(
-      data-ng-repeat      =   'item in current'
-    )
-      include ../partials/evaluator/feedback
-
-  // Promote
-
-  .row.padding-bottom
-    .col-sm-6.padding(
-      data-ng-repeat      =   'item in current'
-    )
+    .col-sm-12
       button.btn.btn-block(
-        data-ng-click   =   'promote($index)'
-        data-ng-show    =   'current[1]'
-      ) Promote
-
-// Small screen
-
-section.hidden-sm.hidden-md.hidden-lg(
-  data-ng-repeat      =   'item in current'
-)
-  .row
-    .col-xs-12
-      +item-image('item')
-
-  .row
-    .col-xs-12
-      h2(data-ng-bind='item.subject')
-
-  .row
-    .col-xs-12
-      .pre-text.entry-description(data-ng-bind='item.subject')
-
-  .row.padding-bottom
-    .col-xs-12
-      include ../partials/evaluator/sliders
-
-  .row.padding-bottom
-    .col-xs-12
-      include ../partials/evaluator/feedback
-
-  .row.padding-bottom
-    .col-xs-12
-      button.btn.btn-block(
-        data-ng-click   =   'promote($index)'
-        data-ng-show    =   'current[1]'
-      ) Promote
-
-// Continue
-
-.row
-  .col-sm-12
-    button.btn.btn-block(
-      data-ng-click       =   'next.length ? continue() : finish()' 
-      data-ng-show        =   'current'
-    )
-      span(data-ng-show='next.length') Continue
-      span(data-ng-hide='next.length') Finish
+        data-ng-click = 'evaluation.next.length ? evaluation.continue() : evaluation.finish(); closeEvaluation(evaluation.current.length)' 
+      )
+        span(data-ng-show='evaluation.next.length') Neither
+        span(data-ng-hide='evaluation.next.length') Finish

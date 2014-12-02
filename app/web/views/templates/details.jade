@@ -1,18 +1,72 @@
-.row.padding-bottom()
-  .col-xs-12
+//- No feedback and just created
+
+div(data-ng-hide='($root.feedbacks | feedbackFilter:{item:item._id}).length')
+  h4 Feedback pending
+
+  p While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.
+
+  textarea(data-ng-model='emailBody')
+
+  a.btn(data-ng-href='mailto:?subject={{item.subject}}&body={{emailBody}}' target='_blank') Send
+
+// Promoted
+
+.row
+  .col-sm-4.col-xs-12
     h4 Promoted
+  .col-sm-8.col-xs-12.padding-top
     .progress
-      .progress-bar.progress-bar-success(style='width: {{item | getPromotedPercentageFilter}}%'
-        data-ng-bind='(item | getPromotedPercentageFilter) + "%"')
+      .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
+        data-ng-bind='(item | calculatePromotionPercentage) + "%"')
 
-.row.padding-bottom
+//- Votes
+
+.row
   .col-xs-12
-    include ../mixins/charts
+    //- For each criteria
 
-.row.padding-bottom(data-ng-show='feedbacks.length')
-  .col-xs-12
-    h4 Feedbacks
+    .row(
+      data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:item.type}'
+    )
 
-    div(data-ng-repeat='feedback in feedbacks')
-      hr
-      div.pre-text(ng-bind='feedback.feedback')
+      .col-sm-4.col-xs-12
+
+        //-
+            CRITERIA NAME
+        //-
+
+        h4(
+          data-ng-bind      =     'criteria.name'
+          data-toggle       =     "tooltip" 
+          data-placement    =     "top" 
+          title             =     "{{criteria.description}}"
+        )
+
+      .col-sm-8.col-xs-12
+
+        //-
+            CHART
+        //-
+
+        div(data-charts='{{criteria._id}}')
+
+          hr
+
+  hr
+
+//- Has feedbacks
+
+div(data-ng-show='($root.feedbacks | feedbackFilter:{item:item._id}).length')
+  h4 Feedback
+  
+  div(
+    data-ng-repeat='feedback in $root.feedbacks | feedbackFilter:{item:item._id}')
+
+    hr
+    div.pre-text(ng-bind='feedback.feedback')
+
+//- Edit and go again
+.row.padding-top
+  .col-xs-12.text-right
+    hr
+    button.btn.syn-btn(data-ng-click='$show = "editor"') Edit and go again

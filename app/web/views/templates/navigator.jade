@@ -31,30 +31,8 @@ div(data-ng-init='show = "items"')
         .item(id='item-{{item._id}}' data-ng-show='$index < ( batchSize - 1 )')
 
           // BOX
-          
-          .box(data-ng-class='{ prefetch: $index === ( batchSize - 1 ) }')
-            .item-media-wrapper
-              +item-image('item')
 
-            .pull-right.box-buttons.padding
-              button.btn(data-ng-click='$root.publish("toggle view", { view: "evaluator", item: item._id })') Promote
-
-              div(data-ng-bind='item.promotions')
-
-              div(data-ng-bind='((item | calculatePromotionPercentage) || 0) + "%"')
-
-              button.btn(data-ng-click='$root.publish("toggle view", { view: "details", item: item._id })') Details
-
-            .item-text
-              h4.item-title(data-ng-bind='item.subject'
-                title='{{ item.subject }}')
-              
-              .box-description.description.pre-text.padding-right.padding-left(ng-bind='item.description')
-
-              h4.padding.reference(data-ng-repeat='reference in item.references' data-ng-show='item.references.length')
-                a(data-ng-href='{{ reference.url }}' target='_blank') {{ reference.title || reference.url }}
-
-              span.end
+          include item
 
           // COLLAPSERS
 
@@ -64,223 +42,13 @@ div(data-ng-init='show = "items"')
             
             .evaluator.is-container
               .is-section
-                section(ng-repeat='evaluation in $root.evaluations | getEvaluationByItem:item._id')
-                  
-                  //- 1 of 5
-
-                  .row
-                    .col-xs-12.padding
-
-                      h2.text-center
-                        span(data-ng-bind='evaluation.cursor')
-                        span  of  
-                        span(data-ng-bind='evaluation.limit')
-
-                      h4.text-center Evaluate Each Item Below
-
-                  // Normal screen
-
-                  section.hidden-xs
-                    // Image
-
-                    .row
-                      .col-sm-6.padding(
-                        data-ng-repeat      =   'item in evaluation.current'
-                      )
-                        +item-image
-
-                    // Subject
-
-                    .row
-                      .col-sm-6.padding(
-                        data-ng-repeat      =   'item in evaluation.current'
-                      )
-                        h3(data-ng-bind='item.subject')
-
-                    // Description
-
-                    .row
-                      .col-sm-6.padding(
-                        data-ng-repeat      =   'item in evaluation.current'
-                      )
-                        .pre-text.entry-description(data-ng-bind='item.description')
-
-                    // References
-
-                    .row
-                      .col-sm-6.padding(
-                        data-ng-repeat      =   'item in evaluation.current'
-                      )
-                        include navigator/references
-
-                    // Sliders
-
-                    .row
-                      .col-sm-6.padding(
-                        data-ng-repeat      =   'item in evaluation.current'
-                      )
-                        .sliders
-
-                    // Feedback
-
-                    .row
-                      .col-sm-6.padding(
-                        data-ng-repeat      =   'item in evaluation.current'
-                      )
-                        textarea.feedback-entry.form-control(
-                          placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
-                          data-ng-show      =   'item.subject'
-                          data-ng-model     =   'evaluation.current[$index].$feedback')
-
-                    //- // Edit and go again
-
-                    //- .row.padding-bottom
-                    //-   .col-sm-6.padding(
-                    //-     data-ng-repeat      =   'item in evaluation.current'
-                    //-   )
-                    //-     button.btn.btn-block(
-                    //-       data-ng-click   =   'editAndGoAgain(item)'
-                    //-     ) Edit and go again
-
-                    .row.padding-bottom
-                      .col-xs-12
-                        h4.text-center Which of these is most important for the community to consider?
-
-                    // Promote
-
-                    .row.padding-bottom
-                      .col-sm-6.padding(
-                        data-ng-repeat      =   'item in evaluation.current'
-                      )
-                        button.btn.btn-block(
-                          data-ng-click   =   'evaluation.promote($index); closeEvaluation(evaluation.current.length)'
-                          data-ng-show    =   'evaluation.current[1]'
-                          data-ng-bind    =   'evaluation.current[$index].subject'
-                        ) Promote
-
-                  // Small screen
-
-                  section.hidden-sm.hidden-md.hidden-lg(
-                    data-ng-repeat      =   'item in evaluation.current'
-                    )
-
-                    // image
-
-                    .row
-                      .col-xs-12
-                        +item-image
-
-                    .row
-                      .col-xs-12
-                        h2(data-ng-bind='item.subject')
-
-                    .row
-                      .col-xs-12
-                        .pre-text.entry-description(data-ng-bind='item.subject')
-
-                    .row.padding-bottom
-                      .col-xs-12
-                        .sliders
-
-                    .row.padding-bottom
-                      .col-xs-12
-                        textarea.feedback-entry.form-control(
-                          placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
-                          data-ng-show      =   'item.subject')
-
-                    .row.padding-bottom
-                      .col-xs-12
-                        button.btn.btn-block(
-                          data-ng-click   =   'evaluation.promote($index); closeEvaluation(evaluation.current.length)'
-                          data-ng-show    =   'evaluation.current[1]'
-                        ) Promote
-
-                  // Continue
-                  .row
-                    .col-sm-12
-                      button.btn.btn-block(
-                        data-ng-click = 'evaluation.next.length ? evaluation.continue() : evaluation.finish(); closeEvaluation(evaluation.current.length)' 
-                      )
-                        span(data-ng-show='evaluation.next.length') Neither
-                        span(data-ng-hide='evaluation.next.length') Finish
+                include evaluator
             
             // DETAILS
 
             .details.is-container
               .is-section
-                
-                //- No feedback and just created
-
-                div(data-ng-hide='($root.feedbacks | feedbackFilter:{item:item._id}).length')
-                  h4 Feedback pending
-
-                  p While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.
-
-                  textarea(data-ng-model='emailBody')
-
-                  a.btn(data-ng-href='mailto:?subject={{item.subject}}&body={{emailBody}}' target='_blank') Send
-
-                // Promoted
-
-                .row
-                  .col-sm-4.col-xs-12
-                    h4 Promoted
-                  .col-sm-8.col-xs-12.padding-top
-                    .progress
-                      .progress-bar.progress-bar-success(style='width: {{item | calculatePromotionPercentage}}%'
-                        data-ng-bind='(item | calculatePromotionPercentage) + "%"')
-
-                //- Votes
-
-                .row
-                  .col-xs-12
-                    //- For each criteria
-
-                    .row(
-                      data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:item.type}'
-                    )
-
-                      .col-sm-4.col-xs-12
-
-                        //-
-                            CRITERIA NAME
-                        //-
-
-                        h4(
-                          data-ng-bind      =     'criteria.name'
-                          data-toggle       =     "tooltip" 
-                          data-placement    =     "top" 
-                          title             =     "{{criteria.description}}"
-                        )
-
-                      .col-sm-8.col-xs-12
-
-                        //-
-                            CHART
-                        //-
-
-                        div(data-charts='{{criteria._id}}')
-
-                          hr
-
-                  hr
-
-                //- Has feedbacks
-
-                div(data-ng-show='($root.feedbacks | feedbackFilter:{item:item._id}).length')
-                  h4 Feedback
-                  
-                  div(
-                    data-ng-repeat='feedback in $root.feedbacks | feedbackFilter:{item:item._id}')
-
-                    hr
-                    div.pre-text(ng-bind='feedback.feedback')
-
-                //- Edit and go again
-                .row.padding-top
-                  .col-xs-12.text-right
-                    hr
-                    button.btn.syn-btn(data-ng-click='$show = "editor"') Edit and go again
+                include details
 
             // EDITOR
 
@@ -290,14 +58,14 @@ div(data-ng-init='show = "items"')
 
             .row.toggle-arrow
               .col-xs-12.text-center
-                i.fa.cursor-pointer(ng-click='$show = (($show === "children" && "-") || "children"); $parent.show = "items"; $root.itemViewed = item._id'
-                  data-ng-class='{ "fa-arrow-down": $show !== "children", "fa-arrow-up": $show === "children"}')
+                i.fa.cursor-pointer.fa-arrow-down(data-ng-click='$root.publish("toggle view", { view: "children", item: item._id })')
 
             // CHILDREN
 
             //- thereIsARelation(item._id, $root.itemViewed)
 
-            .children.animate-show(ng-show='($root.itemHas(item, $root.itemViewed) || $root.itemViewed === item._id) && $show === "children"' data-loaded='{{false}}')
+            .children.is-container
+              .is-section
 
         // SHOW MORE
 
