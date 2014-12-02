@@ -5,7 +5,7 @@
   function Editor (DataFactory, $timeout) {
     return {
       restrict: 'C',
-      templateUrl: '/templates/editor',
+      // templateUrl: '/templates/editor',
       controller: ['$scope', function ($scope) {
         
         $scope.getImage = function () {
@@ -56,7 +56,6 @@
               });
             });
         };
-
 
       }]
     };

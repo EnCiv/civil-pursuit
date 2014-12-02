@@ -69,4 +69,4 @@ div(data-ng-show='($root.feedbacks | feedbackFilter:{item:item._id}).length')
 .row.padding-top
   .col-xs-12.text-right
     hr
-    button.btn.syn-btn(data-ng-click='$show = "editor"') Edit and go again
+    button.btn.syn-btn(data-ng-click='$root.publish("toggle view", { view: "editor", item: item._id})') Edit and go again

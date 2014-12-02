@@ -52,7 +52,9 @@ div(data-ng-init='show = "items"')
 
             // EDITOR
 
-            .editor(ng-show='$show === "editor" && show === "items" && $root.itemViewed === item._id')
+            .editor.is-container
+              .is-section
+                include editor
 
             // TOGGLE ARROW
 
