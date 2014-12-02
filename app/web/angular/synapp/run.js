@@ -435,7 +435,7 @@
 
     $rootScope.subscribe('toggle view', function (options) {
 
-      console.log('toggle view', options)
+      console.warn('toggle view', options)
 
       var view = $('#item-' + options.item).find('.' + options.view);
 
@@ -443,7 +443,8 @@
         elem.css('margin-top', '-' + elem.height() + 'px');
 
         elem.find('.is-section:first').animate({
-            'margin-top': 0
+            'margin-top': 0,
+            // 'padding-top': 0,
           }, 750, function () {
             elem.removeClass('is-showing').addClass('is-shown');
             $rootScope.publish('did show view', options);
@@ -462,7 +463,8 @@
         elem.removeClass('is-shown').addClass('is-hiding');;
 
         elem.find('.is-section:first').animate({
-            'margin-top': '-' + elem.height() + 'px'
+            'margin-top': '-' + elem.height() + 'px',
+            // 'padding-top': elem.height() + 'px'
           }, 750, function () {
             elem.removeClass('is-hiding').addClass('is-hidden');
             $rootScope.publish('did hide view', options);
@@ -487,9 +489,8 @@
       var itemTop = $('#item-' + options.item).offset().top;
       var windowScroll = $(window).scroll();
 
-      console.log({item: itemTop, scroll: windowScroll});
-
       View.scrollToPointOfAttention($('#item-' + options.item), function () {
+
         // hide
 
         if ( view.hasClass('is-shown') ) {
