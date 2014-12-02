@@ -445,7 +445,7 @@
         elem.find('.is-section:first').animate({
             'margin-top': 0,
             // 'padding-top': 0,
-          }, 750, function () {
+          }, 1000, function () {
             elem.removeClass('is-showing').addClass('is-shown');
             $rootScope.publish('did show view', options);
             if ( elem.css('margin-top') !== 0 ) {
@@ -465,7 +465,7 @@
         elem.find('.is-section:first').animate({
             'margin-top': '-' + elem.height() + 'px',
             // 'padding-top': elem.height() + 'px'
-          }, 750, function () {
+          }, 1000, function () {
             elem.removeClass('is-hiding').addClass('is-hidden');
             $rootScope.publish('did hide view', options);
             if ( cb ) cb();
@@ -473,7 +473,7 @@
 
         elem.animate({
            opacity: 0
-          }, 750);
+          }, 1000);
       }
 
       // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker

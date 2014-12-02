@@ -1388,20 +1388,24 @@
 
         var poa = (pointOfAttention.offset().top - 80);
 
-        var current = $(document).scrollTop();
-
-        console.log(current - poa)
+        var current = $('body').scrollTop();
 
         if ( 
           (current === poa) || 
           (current > poa && (current - poa < 50)) ||
           (poa > current && (poa - current < 50)) ) {
+
+          console.warn('ALREADY PoA')
           return cb();
         }
 
-        $('html').animate({
-          scrollTop: poa
-        }, speed || 250, 'swing', cb);
+        console.info('PoA', poa, current)
+
+        $('body').animate({
+          scrollTop: poa + 'px'
+        }, speed || 500, 'swing', function () {
+          cb();
+        });
       }
 
     };
@@ -2152,7 +2156,7 @@
         elem.find('.is-section:first').animate({
             'margin-top': 0,
             // 'padding-top': 0,
-          }, 750, function () {
+          }, 1000, function () {
             elem.removeClass('is-showing').addClass('is-shown');
             $rootScope.publish('did show view', options);
             if ( elem.css('margin-top') !== 0 ) {
@@ -2172,7 +2176,7 @@
         elem.find('.is-section:first').animate({
             'margin-top': '-' + elem.height() + 'px',
             // 'padding-top': elem.height() + 'px'
-          }, 750, function () {
+          }, 1000, function () {
             elem.removeClass('is-hiding').addClass('is-hidden');
             $rootScope.publish('did hide view', options);
             if ( cb ) cb();
@@ -2180,7 +2184,7 @@
 
         elem.animate({
            opacity: 0
-          }, 750);
+          }, 1000);
       }
 
       // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker

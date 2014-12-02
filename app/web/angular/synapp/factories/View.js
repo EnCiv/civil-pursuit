@@ -9,20 +9,24 @@
 
         var poa = (pointOfAttention.offset().top - 80);
 
-        var current = $(document).scrollTop();
-
-        console.log(current - poa)
+        var current = $('body').scrollTop();
 
         if ( 
           (current === poa) || 
           (current > poa && (current - poa < 50)) ||
           (poa > current && (poa - current < 50)) ) {
+
+          console.warn('ALREADY PoA')
           return cb();
         }
 
-        $('html').animate({
-          scrollTop: poa
-        }, speed || 250, 'swing', cb);
+        console.info('PoA', poa, current)
+
+        $('body').animate({
+          scrollTop: poa + 'px'
+        }, speed || 500, 'swing', function () {
+          cb();
+        });
       }
 
     };
