@@ -474,6 +474,8 @@
                 .filter(function (evaluation) {
                   return evaluation.item !== $scope.item._id;
                 });
+
+              $elem.removeClass('is-loaded');
             }, 1000);
           }
         };
@@ -1917,8 +1919,9 @@
     }
 
     Evaluation.prototype.change = function(d) {
+      View.scrollToPointOfAttention($('#item-' + this.item), function () {
 
-      View.scrollToPointOfAttention($('#item-' + this.item), 1000);
+      }, 1000);
 
       d = d || 'both';
 
@@ -2260,34 +2263,41 @@
         
         else {
 
-          if ( $('#item-' + options.item).find('.is-shown').length ) {
-            hide($('#item-' + options.item).find('.is-shown'), function () {
+          function _show () {
+            if ( $('#item-' + options.item).find('.is-shown').length ) {
+              hide($('#item-' + options.item).find('.is-shown'), function () {
+                view.removeClass('is-hidden').addClass('is-showing');
+
+                setTimeout(function () {
+                  show(view);
+                });
+              });
+            }
+            
+            else {
               view.removeClass('is-hidden').addClass('is-showing');
 
               setTimeout(function () {
                 show(view);
               });
-            });
-          }
-          
-          else {
-            view.removeClass('is-hidden').addClass('is-showing');
-
-            setTimeout(function () {
-              show(view);
-            });
+            }
           }
 
           switch ( options.view ) {
             case 'evaluator':
               if ( ! view.hasClass('is-loaded') ) {
-                $rootScope.loadEvaluation(options.item)
+                return $rootScope.loadEvaluation(options.item)
                   .success(function () {
                     view.addClass('is-loaded');
+                    _show()
                   });
               }
               break;
+          }
 
+          _show();
+
+          switch ( options.view ) {
             case 'children':
               if ( ! view.hasClass('is-loaded') && ! view.hasClass('is-loading') ) {
                 $rootScope.publish('load children', {

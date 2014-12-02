@@ -17,6 +17,8 @@
                 .filter(function (evaluation) {
                   return evaluation.item !== $scope.item._id;
                 });
+
+              $elem.removeClass('is-loaded');
             }, 1000);
           }
         };
