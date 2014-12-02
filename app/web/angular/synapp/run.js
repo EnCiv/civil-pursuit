@@ -538,6 +538,7 @@
           switch ( options.view ) {
             case 'children':
               if ( ! view.hasClass('is-loaded') && ! view.hasClass('is-loading') ) {
+                console.warn('publish load children')
                 $rootScope.publish('load children', {
                   parent: options.item,
                   view: view

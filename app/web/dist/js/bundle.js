@@ -555,31 +555,6 @@
     return (parent.top + parent.height) > child.top;
   }
 
-  module.exports = ['$rootScope', '$timeout', 'Truncate', Item];
-
-  function Item ($rootScope, $timeout, Truncate) {
-    return {
-      restrict: 'C',
-      controller: ['$scope', function ($scope) {
-
-        $scope.loaded = {};
-
-      }],
-      link: function ($scope, $elem, $attr) {
-        $scope.isSplit = ['Agree', 'Disagree', 'Pro', 'Con']
-          .indexOf($scope.item.type) > -1;
-
-        $timeout(function () {
-          new Truncate($elem);
-        });
-      }
-    };
-  }
-})();
-
-},{}],9:[function(require,module,exports){
-;(function () {
-
   function compile (item, into, scope, $compile) {
 
     function _compile (type) {
@@ -628,19 +603,12 @@
     return true;
   }
 
-  module.exports = ['$rootScope', '$compile', '$timeout', 'DataFactory', NavigatorComponent];
+  module.exports = ['$rootScope', '$compile', '$timeout', 'DataFactory', 'Truncate', Item];
 
-  function NavigatorComponent ($rootScope, $compile, $timeout, DataFactory) {
+  function Item ($rootScope, $compile, $timeout, DataFactory, Truncate) {
     return {
       restrict: 'C',
-      templateUrl: '/templates/navigator',
-      scope: {
-        type:' @',
-        parent: '@'
-      },
       controller: ['$scope', function ($scope) {
-
-        $scope.batchSize = synapp['navigator batch size'];
 
         /** @args {ObjectID} item_id */
         $scope.loadChildren = function (item_id) {
@@ -666,6 +634,45 @@
               });
             });
         };
+
+        /** Listen to load children event **/
+        $scope.$root.subscribe('load children', function (message) {
+
+          if ( message.parent === $scope.item._id ) {
+            $scope.loadChildren(message.parent);
+            message.view.removeClass('is-loading').addClass('is-loaded');
+          }
+        });
+
+      }],
+      link: function ($scope, $elem, $attr) {
+        $scope.isSplit = ['Agree', 'Disagree', 'Pro', 'Con']
+          .indexOf($scope.item.type) > -1;
+
+        $timeout(function () {
+          new Truncate($elem);
+        });
+      }
+    };
+  }
+})();
+
+},{}],9:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', NavigatorComponent];
+
+  function NavigatorComponent ($rootScope, $timeout, DataFactory) {
+    return {
+      restrict: 'C',
+      templateUrl: '/templates/navigator',
+      scope: {
+        type:' @',
+        parent: '@'
+      },
+      controller: ['$scope', function ($scope) {
+
+        $scope.batchSize = synapp['navigator batch size'];
 
 
 
@@ -701,11 +708,7 @@
 
         $scope.elem = $elem;
 
-        /** Listen to load children event **/
-        $scope.$root.subscribe('load children', function (message) {
-          $scope.loadChildren(message.parent);
-          message.view.removeClass('is-loading').addClass('is-loaded');
-        });
+        
 
         // setTimeout(function () {
 
@@ -2309,6 +2312,7 @@
           switch ( options.view ) {
             case 'children':
               if ( ! view.hasClass('is-loaded') && ! view.hasClass('is-loading') ) {
+                console.warn('publish load children')
                 $rootScope.publish('load children', {
                   parent: options.item,
                   view: view

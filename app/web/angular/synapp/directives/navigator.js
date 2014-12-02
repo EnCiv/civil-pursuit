@@ -1,56 +1,8 @@
 ;(function () {
 
-  function compile (item, into, scope, $compile) {
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', NavigatorComponent];
 
-    function _compile (type) {
-
-      var tpl = '<div ' +
-        ' data-type    =   "' + type + '" ' +
-        ' data-parent  =   "' + item._id + '"' +
-        ' class        =   "navigator"></div>';
-
-      return $compile(tpl)(scope);
-    }
-
-    var has = synapp['item relation'][item.type];
-
-    console.log(has);
-
-    if ( has ) {
-      var row = $('<div class="row"></div>'),
-        target = into.find('.children');
-
-      if ( Array.isArray( has ) ) {
-        has.forEach(function (type) {
-
-          if ( Array.isArray( type ) ) {
-            var col1 = $('<div class="col-xs-6 split-view"></div>');
-            col1.append(_compile(type[0]));
-            
-            var col2 = $('<div class="col-xs-6 split-view"></div>');
-            col2.append(_compile(type[1]));
-            
-            row.append(col1, col2);
-            target.append(row);
-          }
-
-          else {
-            target.append(_compile(type));
-          }
-        });
-      }
-
-      else {
-        target.append(_compile(has));
-      }
-    }
-
-    return true;
-  }
-
-  module.exports = ['$rootScope', '$compile', '$timeout', 'DataFactory', NavigatorComponent];
-
-  function NavigatorComponent ($rootScope, $compile, $timeout, DataFactory) {
+  function NavigatorComponent ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
       templateUrl: '/templates/navigator',
@@ -61,31 +13,6 @@
       controller: ['$scope', function ($scope) {
 
         $scope.batchSize = synapp['navigator batch size'];
-
-        /** @args {ObjectID} item_id */
-        $scope.loadChildren = function (item_id) {
-
-          var item = $rootScope.items.reduce(function (item, _item) {
-            if ( _item._id === item_id ) {
-              item = _item;
-            }
-            return item;
-          }, null);
-
-          var scope = $scope.$new();
-
-          compile(item, $('#item-' + item_id), scope, $compile);
-
-          DataFactory.Item.find({ parent: item_id })
-            .success(function (items) {
-              $rootScope.items = $rootScope.items.concat(items);
-              /** Lineage */
-
-              items.forEach(function (item) {
-                $rootScope.lineage[item._id] = item.parent;
-              });
-            });
-        };
 
 
 
@@ -121,11 +48,7 @@
 
         $scope.elem = $elem;
 
-        /** Listen to load children event **/
-        $scope.$root.subscribe('load children', function (message) {
-          $scope.loadChildren(message.parent);
-          message.view.removeClass('is-loading').addClass('is-loaded');
-        });
+        
 
         // setTimeout(function () {
 
