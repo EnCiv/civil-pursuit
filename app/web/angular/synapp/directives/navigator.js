@@ -38,7 +38,7 @@
               $scope.batchSize += synapp['navigator batch size'];
 
               $timeout(function () {
-                require('../lib/ellipsis').apply($scope.elem.find('.box'));
+                /*new Truncate($scope.elem);*/
               });
             });
         };

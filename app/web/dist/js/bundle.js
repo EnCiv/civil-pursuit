@@ -537,7 +537,7 @@
 
 })();
 
-},{"../lib/youtube":27}],8:[function(require,module,exports){
+},{"../lib/youtube":26}],8:[function(require,module,exports){
 ;(function () {
 
   function isVisible (elem) {
@@ -698,7 +698,7 @@
               $scope.batchSize += synapp['navigator batch size'];
 
               $timeout(function () {
-                require('../lib/ellipsis').apply($scope.elem.find('.box'));
+                /*new Truncate($scope.elem);*/
               });
             });
         };
@@ -725,7 +725,7 @@
 
 })();
 
-},{"../lib/ellipsis":26}],10:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['SignFactory', SignComponent];
@@ -1015,7 +1015,7 @@
   }
 })();
 
-},{"../lib/youtube":27}],13:[function(require,module,exports){
+},{"../lib/youtube":26}],13:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -1676,74 +1676,7 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./factories/Truncate":15,"./factories/View":16,"./filters/calculate-promotion-percentage":17,"./filters/criteria-filter":18,"./filters/feedback-filter":19,"./filters/find":20,"./filters/get-evaluation-by-item":21,"./filters/get-evaluation-items":22,"./filters/item-filter":23,"./filters/shorten":24,"./run":28}],26:[function(require,module,exports){
-;(function () {
-
-  return false;
-
-  module.exports = function ellipsis () {
-
-    $(this).each(function () {
-      var box = this;
-
-      /** Exit if box has already been ellipsed */
-
-      if ( $(box).hasClass('is-ellipsis') ) {
-        return;
-      }
-
-      $(box).addClass('is-ellipsis');
-
-      var height = $(box).find('.item-text').height();
-
-      var readmore = $('<span class="readmore">[ <a href="#">more</a> ]</span>');
-
-      // readmore.find('a').text(height)
-
-      var readless = $('<div class="readless hide text-center">[ <a href="#">less</a> ]</div>');
-
-      readmore.find('a').on('click', function () {
-        $(box).find('.item-text').trigger('destroy');
-        readless.removeClass('hide');
-        $(box).find('.item-text').css('max-height', '100000px !important')
-      });
-
-      readmore.insertAfter($(box).find('.description'));
-
-      readless.insertAfter($(box).find('.item-text'));
-
-      var dotdotdot = {
-        ellipsis: '... ',
-        wrap: 'word',
-        fallBackToLetter: true,
-        watch: false,
-        tolerance: 0,
-        // callback: console.log.bind(console),
-        height: height,
-        after: "span.readmore"
-      };
-
-      var info_apply = new (function ellipse_apply () {
-        this.subject = $(box).find('.item-title').text();
-
-        this.type = $(box).closest('.panel').find('.panel-title').text();
-        
-        this.height = height;
-      })();
-
-      console.info(info_apply);
-
-      $(box).find('.item-text').dotdotdot(dotdotdot);
-
-      readless.find('a').on('click', function () {
-        $(box).find('.item-text').dotdotdot(dotdotdot);
-        readless.addClass('hide');
-      });
-    });
-  };
-
-})();
-},{}],27:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./factories/Truncate":15,"./factories/View":16,"./filters/calculate-promotion-percentage":17,"./filters/criteria-filter":18,"./filters/feedback-filter":19,"./filters/find":20,"./filters/get-evaluation-by-item":21,"./filters/get-evaluation-items":22,"./filters/item-filter":23,"./filters/shorten":24,"./run":27}],26:[function(require,module,exports){
 ;(function () {
 
   function youtube (url) {
@@ -1771,7 +1704,7 @@
   module.exports = youtube;
 
 })();
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ;(function () {
 
   module.exports = ['$rootScope', '$location', '$timeout',
