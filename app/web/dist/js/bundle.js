@@ -1381,7 +1381,7 @@
   function View () {
     return {
 
-      scrollToPointOfAttention: function (pointOfAttention, cb) {
+      scrollToPointOfAttention: function (pointOfAttention, cb, speed) {
 
         var poa = (pointOfAttention.offset().top - 80);
 
@@ -1393,7 +1393,7 @@
 
         $('html, body').animate({
           scrollTop: poa
-        }, 250, 'swing', cb);
+        }, speed || 250, 'swing', cb);
       }
 
     };
@@ -1919,6 +1919,9 @@
     }
 
     Evaluation.prototype.change = function(d) {
+
+      View.scrollToPointOfAttention($('#item-' + this.item), 1000);
+
       d = d || 'both';
 
       if ( this.current[0] ) {

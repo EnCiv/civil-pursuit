@@ -5,7 +5,7 @@
   function View () {
     return {
 
-      scrollToPointOfAttention: function (pointOfAttention, cb) {
+      scrollToPointOfAttention: function (pointOfAttention, cb, speed) {
 
         var poa = (pointOfAttention.offset().top - 80);
 
@@ -17,7 +17,7 @@
 
         $('html, body').animate({
           scrollTop: poa
-        }, 250, 'swing', cb);
+        }, speed || 250, 'swing', cb);
       }
 
     };

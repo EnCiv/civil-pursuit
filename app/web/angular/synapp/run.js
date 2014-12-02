@@ -153,6 +153,9 @@
     }
 
     Evaluation.prototype.change = function(d) {
+
+      View.scrollToPointOfAttention($('#item-' + this.item), 1000);
+
       d = d || 'both';
 
       if ( this.current[0] ) {
