@@ -466,11 +466,9 @@
         $scope.closeEvaluation = function (inprogress) {
           if ( ! inprogress ) {
             $timeout(function () {
-              $scope.$show = "-";
+              $scope.$root.publish('toggle view', { item: $scope.item, view: 'details' });
             }, 500);
-            $timeout(function () {
-              $scope.$show = "details";
-            }, 1000);
+
             $timeout(function () {
               $scope.$root.evaluations = $scope.$root.evaluations
                 .filter(function (evaluation) {
