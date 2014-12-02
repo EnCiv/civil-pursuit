@@ -27,9 +27,9 @@ section.editor-component(data-ng-controller='UploadCtrl')
           .pull-right.box-buttons
             button.btn Promote
 
-            div New
+            div(data-ng-hide='item.description') New
 
-            div.text-muted 0%
+            div.text-muted(data-ng-bind='((item | calculatePromotionPercentage) || 0) + "%"')
 
             button.btn(disabled) Details
 
