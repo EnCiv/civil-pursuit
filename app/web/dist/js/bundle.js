@@ -2219,7 +2219,7 @@
 
           function _show () {
             if ( $('#item-' + options.item).find('.is-shown').length ) {
-              hide($('#item-' + options.item).find('.is-shown'), function () {
+              hide($('#item-' + options.item).find('.is-shown'), options, function () {
                 view.removeClass('is-hidden').addClass('is-showing');
 
                 setTimeout(function () {
@@ -2292,8 +2292,9 @@
         // show
 
         else {
-          if ( panel.find('.is-shown').length ) {
-            hide(panel.find('.is-shown'), function () {
+          if ( panel.find('.is-shown').length ) { console.error(990)
+            hide(panel.find('.is-shown'), options, function () {
+
               creator.removeClass('is-hidden').addClass('is-showing');
 
               setTimeout(function () {
