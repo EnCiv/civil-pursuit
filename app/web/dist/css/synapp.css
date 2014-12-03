@@ -4414,12 +4414,12 @@ footer {
   overflow: hidden;
 }
 .box input {
-  width: 50% !important;
+  width: 45% !important;
   border: none;
 }
 .box textarea {
   border: none;
-  width: 50% !important;
+  width: 45% !important;
 }
 .box .drop-box {
   min-height: 230px !important;
