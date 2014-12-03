@@ -4380,7 +4380,7 @@ a.btn-default {
 footer {
   text-align: center;
 }
-/** Importing navigator */
+/** Importing panel */
 /**
  *    __________________________________________________________________________
  *
@@ -4400,31 +4400,8 @@ footer {
           IMPORTS
     ============================================================================
 **/
-/** ____________________________________________________________________________
-
-          VARIABLES
-    ============================================================================
-**/
-/** ____________________________________________________________________________
-
-          LAYOUT
-    ============================================================================
-**/
 .box {
   overflow: hidden;
-}
-.box input {
-  width: 45% !important;
-  border: none;
-}
-.box textarea {
-  border: none;
-  width: 45% !important;
-}
-.box .drop-box {
-  min-height: 230px !important;
-  margin-left: -10px !important;
-  padding-top: 55px !important;
 }
 .box .item-media-wrapper {
   width: 35%;
@@ -4510,32 +4487,27 @@ footer {
     padding-left: 0;
   }
 }
-.box .item-text .item-title,
-.box .item-text input.subject {
+.box .item-text .item-title {
   font-size: 24px;
   word-wrap: break-word;
 }
 @media (max-width: 800px) {
-  .box .item-text .item-title,
-  .box .item-text input.subject {
+  .box .item-text .item-title {
     font-size: 22px;
   }
 }
 @media (max-width: 700px) {
-  .box .item-text .item-title,
-  .box .item-text input.subject {
+  .box .item-text .item-title {
     font-size: 20px;
   }
 }
 @media (max-width: 600px) {
-  .box .item-text .item-title,
-  .box .item-text input.subject {
+  .box .item-text .item-title {
     font-size: 18px;
   }
 }
 @media (max-width: 500px) {
-  .box .item-text .item-title,
-  .box .item-text input.subject {
+  .box .item-text .item-title {
     font-size: 16px;
   }
 }
@@ -4553,6 +4525,29 @@ footer {
 .box .item-text .entry-title {
   margin-top: 15px;
 }
+.box input {
+  width: 45% !important;
+  border: none;
+}
+.box textarea {
+  border: none;
+  width: 45% !important;
+}
+.box .drop-box {
+  min-height: 230px !important;
+  margin-left: -10px !important;
+  padding-top: 55px !important;
+}
+/** ____________________________________________________________________________
+
+          VARIABLES
+    ============================================================================
+**/
+/** ____________________________________________________________________________
+
+          LAYOUT
+    ============================================================================
+**/
 .panel {
   border-color: #666666;
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
@@ -4648,23 +4643,10 @@ footer {
     width: 100%;
   }
 }
-.panel .panel-body .items .item .readmore {
-  display: none;
-}
 .panel .panel {
   margin: 10px;
   margin-right: 0;
   border-right: none;
-}
-.animate-show {
-  opacity: 1;
-  padding-top: 0;
-  transition: all 0.5s ease-in-out;
-}
-.animate-show.ng-hide {
-  opacity: 0;
-  padding-top: -250px !important;
-  transition: all 0.5s ease-in-out;
 }
 .modal {
   top: 200px !important;

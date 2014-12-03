@@ -53,8 +53,8 @@
       /** Item Media */
       itemMedia:      require('./directives/item-media'),
 
-      /** Navigator */
-      navigator:      require('./directives/navigator'),
+      /** Panel */
+      isPanel:        require('./directives/panel'),
 
       /** Sign */
       sign:           require('./directives/sign'),

@@ -659,12 +659,12 @@
 },{}],9:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', '$timeout', 'DataFactory', NavigatorComponent];
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', PanelComponent];
 
-  function NavigatorComponent ($rootScope, $timeout, DataFactory) {
+  function PanelComponent ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
-      templateUrl: '/templates/navigator',
+      templateUrl: '/templates/panel',
       scope: {
         type:' @',
         parent: '@'
@@ -1661,8 +1661,8 @@
       /** Item Media */
       itemMedia:      require('./directives/item-media'),
 
-      /** Navigator */
-      navigator:      require('./directives/navigator'),
+      /** Panel */
+      isPanel:        require('./directives/panel'),
 
       /** Sign */
       sign:           require('./directives/sign'),
@@ -1679,7 +1679,7 @@
 })();
 
 
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/navigator":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./factories/Truncate":15,"./factories/View":16,"./filters/calculate-promotion-percentage":17,"./filters/criteria-filter":18,"./filters/feedback-filter":19,"./filters/find":20,"./filters/get-evaluation-by-item":21,"./filters/get-evaluation-items":22,"./filters/item-filter":23,"./filters/shorten":24,"./run":27}],26:[function(require,module,exports){
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/panel":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./factories/Truncate":15,"./factories/View":16,"./filters/calculate-promotion-percentage":17,"./filters/criteria-filter":18,"./filters/feedback-filter":19,"./filters/find":20,"./filters/get-evaluation-by-item":21,"./filters/get-evaluation-items":22,"./filters/item-filter":23,"./filters/shorten":24,"./run":27}],26:[function(require,module,exports){
 ;(function () {
 
   function youtube (url) {
