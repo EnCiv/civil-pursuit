@@ -4683,6 +4683,9 @@ footer {
 .editor-component .upload-button {
   margin-top: -85px;
 }
+.editor-component input.upload-button {
+  width: 20px !important;
+}
 .editor-component .item-media.youtube + .upload-button {
   margin-top: 0;
   margin-bottom: 50px;
