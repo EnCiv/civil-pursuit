@@ -4650,8 +4650,8 @@ footer {
   }
 }
 .panel .panel {
-  margin: 10px;
-  margin-right: 0;
+  margin: 0px;
+  margin-right: -10px;
   border-right: none;
 }
 .modal {

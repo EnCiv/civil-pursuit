@@ -363,9 +363,7 @@
         };
       }],
       link: function ($scope, $elem, $attr) {
-        $attr.$observe('subject', function (subject) {
-          console.log('subject', subject);
-        });
+        console.log('holllllllaaa')
       }
     };
   }
@@ -426,8 +424,6 @@
             }
           }
 
-          console.log('item', item);
-
           DataFactory.Item.create(item)
             .success(function (item) {
               $scope.$root.items = [item].concat($scope.$root.items);
@@ -465,7 +461,12 @@
         $scope.closeEvaluation = function (inprogress) {
           if ( ! inprogress ) {
             $timeout(function () {
-              $scope.$root.publish('toggle view', { item: $scope.item._id, view: 'details' });
+              if ( 2 === 1) {
+
+              }
+              else {
+                $scope.$root.publish('toggle view', { item: $scope.item._id, view: 'details' });
+              }
             }, 500);
 
             $timeout(function () {

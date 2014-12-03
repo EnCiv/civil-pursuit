@@ -9,7 +9,12 @@
         $scope.closeEvaluation = function (inprogress) {
           if ( ! inprogress ) {
             $timeout(function () {
-              $scope.$root.publish('toggle view', { item: $scope.item._id, view: 'details' });
+              if ( 2 === 1) {
+
+              }
+              else {
+                $scope.$root.publish('toggle view', { item: $scope.item._id, view: 'details' });
+              }
             }, 500);
 
             $timeout(function () {

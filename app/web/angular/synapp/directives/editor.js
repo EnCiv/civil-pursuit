@@ -35,8 +35,6 @@
             }
           }
 
-          console.log('item', item);
-
           DataFactory.Item.create(item)
             .success(function (item) {
               $scope.$root.items = [item].concat($scope.$root.items);
