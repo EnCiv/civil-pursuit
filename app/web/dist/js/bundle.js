@@ -2278,7 +2278,7 @@
 
       var creator = panel.find('.creator');
 
-      if ( $('.is-showing').length || $('.is-hiding').length ) {
+      if ( creator.hasClass('is-showing') || creator.hasClass('is-hiding') ) {
         return false;
       }
 
