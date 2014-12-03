@@ -299,7 +299,7 @@
   function Creator ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
-      templateUrl: '/templates/editor',
+      // templateUrl: '/templates/editor',
       scope: {
         type: '@',
         parent: '@'
@@ -536,7 +536,7 @@
 
 })();
 
-},{"../lib/youtube":26}],8:[function(require,module,exports){
+},{"../lib/youtube":27}],8:[function(require,module,exports){
 ;(function () {
 
   function isVisible (elem) {
@@ -707,17 +707,14 @@
 
         $scope.elem = $elem;
 
-        
+        var id = 'panel-' + $scope.type;
 
-        // setTimeout(function () {
+        if ( $scope.parent ) {
+          id += $scope.parent;
+        }
 
-        //   var ellipsis = require('../lib/ellipsis');
+        $elem.attr('id',  id);
 
-        //   // $timeout(ellipsis.bind($elem.find('.box')), 0);
-        //   ellipsis.apply($elem.find('.box').not('.prefetch'));
-        //   // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
-
-        // }, 500);
       }
     };
   }
@@ -1014,7 +1011,7 @@
   }
 })();
 
-},{"../lib/youtube":26}],13:[function(require,module,exports){
+},{"../lib/youtube":27}],13:[function(require,module,exports){
 /**
  * `DataFactory` Data -> monson factory
  * 
@@ -1123,699 +1120,11 @@
 })();
 
 },{}],14:[function(require,module,exports){
-/**
- * `UserFactory` User Factory (legacy from SignCtrl)
- * 
- * @module synapp
- * @submodule factories
- * @method factory::user
- * @return {AngularFactory}
- * @author francoisrvespa@gmail.com
-*/
-
-;(function () {
-  module.exports = ['$http', SignFactory];
-
-  function SignFactory ($http) {
-    return {
-      signIn: function (creds) {
-        return $http.post('/sign/in', creds);
-      },
-
-      signUp: function (creds) {
-        return $http.post('/sign/up', creds);
-      }
-    };
-  };
-})();
-
-},{}],15:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', 'View', TruncateAsAService]
+  module.exports = ['$rootScope', EvaluationAsAService];
 
-  function TruncateAsAService ($rootScope, View) {
-    function Truncate (item) {
-
-      console.info('Truncating', item.attr('id'));
-
-      // ============
-
-      this.item = item;
-
-      this.description = this.item.find('.description');
-
-      this.textWrapper = this.item.find('.item-text');
-
-      this.reference = this.item.find('.reference');
-
-      this.text = this.description.text();
-
-      this.words = this.text.split(' ');
-
-      this.height = parseInt(this.item.find('.item-text').css('paddingBottom'));
-
-      this.truncated = false;
-
-      this.moreLabel = 'more';
-
-      this.lessLabel = 'less';
-
-      this.isIntro = ( this.item.attr('id') === 'intro' );
-
-      if ( ! this.isIntro ) {
-        this._id = this.item.attr('id').split('-')[1];
-      }
-
-      // ============
-
-      this.tagify();
-
-      if ( this.truncated ) {
-        this.appendMoreButton();
-      }
-    }
-
-    Truncate.prototype.tagify = function () {
-
-      var self = this;
-
-      this.description.empty();
-
-      this.reference.hide();
-
-      var i = 0;
-
-      this.words.forEach(function (word, index) {
-
-        var span = $('<span></span>');
-
-        if ( self.truncated ) {
-          span.addClass('truncated');
-          span.hide();
-        }
-
-        span.text(word + ' ');
-
-        self.description.append(span);
-
-        if ( i === 5 ) {
-
-          var diff = self.textWrapper.height() > self.height;
-
-          if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
-
-            self.truncated = true;
-          }
-
-          i = -1;
-        }
-
-        i ++;
-      });
-    };
-
-    Truncate.prototype.appendMoreButton = function () {
-
-      var self = this;
-
-      // create more button
-
-      this.more = $('<span><i>... </i>[<a href=""></a>]</span>');
-
-      // more button's text
-
-      this.more.find('a').text(self.moreLabel);
-
-      // more button's on click behavior
-
-      this.more.find('a').on('click', function () {
-
-        var moreLink = $(this);
-
-        // Exit if already an animation in progress
-
-        if ( self.item.find('.is-showing').length ) {
-          return false;
-        }
-
-        View.scrollToPointOfAttention(self.item, function () {
-
-          // Show more
-
-          if ( moreLink.text() === self.moreLabel ) {
-            
-            // If is intro
-
-            if ( self.isIntro ) {
-              self.unTruncate();
-            }
-            
-            else {
-              // If there is already stuff shown, hide it first
-
-              if ( self.item.find('.is-shown').length ) {
-                
-                // Trigger the toggle view to hide current shown items
-
-                $rootScope.publish("toggle view",
-                  { view: "text", item: self._id });
-
-                // Listen on hiding done
-
-                $rootScope.subscribe('did hide view', function (options) {
-
-                  // Make sure it concerns our item
-
-                  if ( options.item === self._id )  {
-
-                    // untruncate
-
-                    setTimeout(function () {
-                      self.unTruncate();
-                    });
-                  }
-                });
-              }
-
-              else {
-                self.unTruncate();
-              }
-            }
-          }
-
-          // hide
-
-          else {
-            self.reTruncate();
-          }
-        });
-      });
-
-      this.description.append(this.more);
-    };
-
-    Truncate.prototype.unTruncate = function () {
-        
-      var self = this;
-
-      var interval = 0;
-
-      var inc = 50;
-
-      var inc = Math.ceil(self.height / self.words.length);
-
-      console.log(self.words.length, inc)
-
-      // show words 50 by 50
-
-      for ( var i = 0; i < this.words.length ; i += inc ) {
-        setTimeout(function () {
-          var k = this.i + inc;
-          for ( var j = this.i; j < k ; j ++ ) {
-            self.item.find('.truncated:eq(' + j + ')').show();
-          }
-        }.bind({ i: i }), interval += (inc * 1.5));
-      }
-
-      // on done showing words, wrap up
-
-      setTimeout(function () {
-        self.item.find('.reference').show();
-        self.more.find('a').text(self.lessLabel);
-        self.more.find('i').hide();  
-      }, interval);
-    };
-
-    Truncate.prototype.reTruncate = function () {
-      
-      var self = this;
-
-      var interval = 0;
-
-      var inc = Math.ceil(self.height / self.words.length);
-
-      for ( var i = 0; i < this.words.length ; i += inc ) {
-        setTimeout(function () {
-          var k = this.i + inc;
-          for ( var j = this.i; j < k ; j ++ ) {
-            self.item.find('.truncated:eq(' + j + ')').hide();
-          }
-        }.bind({ i: i }), interval += (inc * 2));
-      }
-
-      setTimeout(function () {
-        self.item.find('.reference').hide();
-        self.more.find('a').text(self.moreLabel);
-        self.more.find('i').show();
-      }, interval);
-    };
-
-    return Truncate;
-  }
-
-})();
-},{}],16:[function(require,module,exports){
-;(function () {
-
-  module.exports = [View];
-
-  function View () {
-    return {
-
-      scrollToPointOfAttention: function (pointOfAttention, cb, speed) {
-
-        var poa = (pointOfAttention.offset().top - 80);
-
-        var current = $('body').scrollTop();
-
-        if ( 
-          (current === poa) || 
-          (current > poa && (current - poa < 50)) ||
-          (poa > current && (poa - current < 50)) ) {
-
-          console.warn('ALREADY PoA')
-          return cb();
-        }
-
-        console.info('PoA', poa, current)
-
-        $('body').animate({
-          scrollTop: poa + 'px'
-        }, speed || 500, 'swing', function () {
-          cb();
-        });
-      }
-
-    };
-  }
-
-})();
-
-},{}],17:[function(require,module,exports){
-;(function () {
-
-  module.exports = [calculatePromotionPercentage];
-
-  function calculatePromotionPercentage () {
-    return function (item) {
-      if ( item ) {
-        if ( ! item.promotions ) {
-          return 0;
-        }
-        return Math.floor(item.promotions * 100 / item.views);
-      }
-    }
-  }
-})();
-
-},{}],18:[function(require,module,exports){
-;(function () {
-
-  module.exports = [CriteriaFilter];
-
-  function CriteriaFilter () {
-    return function (criterias, criteria) {
-      if ( criterias ) {
-        return criterias.filter(function (_criteria) {
-          for ( var key in criteria ) {
-            if ( _criteria[key] !== criteria[key] ) {
-              return false;
-            }
-          }
-          return true;
-        });
-      }
-    };
-  }
-
-})();
-
-},{}],19:[function(require,module,exports){
-;(function () {
-
-  module.exports = [FeedbackFilter];
-
-  function FeedbackFilter () {
-    return function (feedbacks, feedback) {
-      if ( feedbacks ) {
-        return feedbacks.filter(function (_feedback) {
-          for ( var key in feedback ) {
-            if ( _feedback[key] !== feedback[key] ) {
-              return false;
-            }
-          }
-          return true;
-        });
-      }
-    };
-  }
-
-})();
-
-},{}],20:[function(require,module,exports){
-;(function () {
-
-  module.exports = [Find];
-
-  function Find () {
-    return function (items, item) {
-      if ( items ) {
-        return items.filter(function (_item) {
-          for ( var key in item ) {
-            if ( _item[key] !== item[key] ) {
-              return false;
-            }
-          }
-          return true;
-        });
-      }
-    };
-  }
-
-})();
-
-},{}],21:[function(require,module,exports){
-;(function () {
-
-  module.exports = ['$rootScope', getEvaluationByItem];
-
-  function getEvaluationByItem ($rootScope) {
-    return function (evaluations, item_id) {
-      if ( evaluations ) {
-        return evaluations.filter(function (evaluation) {
-          return evaluation.item === item_id;
-        });
-      }
-    };
-  }
-
-})();
-},{}],22:[function(require,module,exports){
-;(function () {
-
-  module.exports = ['$rootScope', getEvaluationItems];
-
-  function getEvaluationItems ($rootScope) {
-    return function (items, item_id) {
-      if ( items && item_id ) {
-        var evaluation = $rootScope.evaluations
-          .reduce(function (evaluation, candidate) {
-            if ( candidate.item === item_id ) {
-              evaluation = candidate;
-            }
-            return evaluation;
-          }, null);
-
-        if ( evaluation ) {
-          return evaluation.items;
-        }
-
-        return [];
-      }
-    };
-  }
-
-})();
-},{}],23:[function(require,module,exports){
-;(function () {
-
-  module.exports = [filterItems];
-
-  function filterItems () {
-    return function (items, type, parent) {
-      if ( items ) {
-
-        var query = {};
-
-        if ( type ) {
-          query.type = type;
-        }
-
-        if ( parent ) {
-          query.parent = parent;
-        }
-
-        return items.filter(function (item) {
-          for ( var field in query ) {
-            if ( item[field] !== query [field] ) {
-              return false;
-            }
-          }
-          return true;
-        });
-      }
-    };
-  }
-})();
-
-},{}],24:[function(require,module,exports){
-;(function () {
-
-  module.exports = [shortenFilter];
-
-  function shortenFilter () {
-
-    /** @method shorten
-     * @param str {string} - the string to shorten
-     * @param max {number} - the limit
-     * @return {?string}
-    */
-    function shorten (str, max) {
-      if ( str ) {
-
-        max = max || 100;
-
-        if ( str.length < max ) {
-          return str;
-        }
-
-        if ( /\s/.test(str[max]) ) {
-          return str.substr(0, max);
-        }
-
-        var right = str.substr(max).split(/\s/);
-
-        return str.substr(0, max) + right[0];
-      }
-    };
-
-    return shorten;
-  };
-
-})();
-
-},{}],25:[function(require,module,exports){
-/**
- * Synapp Angular module...
- * 
- * @module synapp
- * @author francoisrvespa@gmail.com
-*/
-
-;(function () {
-
-  angular.module('synapp', ['angularFileUpload', 'autoGrow'])
-
-    .factory({
-      DataFactory: require('./factories/Data'),
-      SignFactory: require('./factories/Sign'),
-      Truncate: require('./factories/Truncate'),
-      View: require('./factories/View')
-    })
-
-    .filter({
-      shorten:                      require('./filters/shorten'),
-      calculatePromotionPercentage: require('./filters/calculate-promotion-percentage'),
-      getEvaluationItems:           require('./filters/get-evaluation-items'),
-      getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
-      itemFilter:                   require('./filters/item-filter'),
-      criteriaFilter:               require('./filters/criteria-filter'),
-      feedbackFilter:               require('./filters/feedback-filter'),
-      find:                         require('./filters/find')
-    })
-
-    .controller({
-      'UploadCtrl': require('./controllers/upload')
-    })
-
-    .directive({
-      /** Charts */
-      charts:        require('./directives/charts'),
-
-      /** Creator */
-      creator:        require('./directives/creator'),
-
-      /** Details */
-      details:        require('./directives/details'),
-
-      /** Editor */
-      editor:         require('./directives/editor'),
-
-      /** Evaluator */
-      evaluator:      require('./directives/evaluator'),
-
-      /** Item */
-      item:           require('./directives/item'),
-
-      /** Item Media */
-      itemMedia:      require('./directives/item-media'),
-
-      /** Panel */
-      isPanel:        require('./directives/panel'),
-
-      /** Sign */
-      sign:           require('./directives/sign'),
-
-      /** Sliders */
-      sliders:        require('./directives/sliders'),
-
-      /** Url Fetcher */
-      urlFetcher:     require('./directives/url-fetcher'),
-    })
-
-    .run(require('./run'));
-  
-})();
-
-
-},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/panel":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Sign":14,"./factories/Truncate":15,"./factories/View":16,"./filters/calculate-promotion-percentage":17,"./filters/criteria-filter":18,"./filters/feedback-filter":19,"./filters/find":20,"./filters/get-evaluation-by-item":21,"./filters/get-evaluation-items":22,"./filters/item-filter":23,"./filters/shorten":24,"./run":27}],26:[function(require,module,exports){
-;(function () {
-
-  function youtube (url) {
-    var regexYouTube = /youtu\.?be.+v=([^&]+)/;
-
-    if ( url && regexYouTube.test(url) ) {
-      var youtube;
-      url.replace(regexYouTube, function (m, v) {
-        youtube = v;
-      });
-      var container = $('<div></div>');
-      container.addClass('video-container');
-      var iframe = $('<iframe></iframe>');
-      iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
-      iframe.attr('frameborder', '0');
-      iframe.attr('width', 560);
-      iframe.attr('height', 315);
-      container.append(iframe);
-      return container;
-    }
-
-    return false;
-  }
-
-  module.exports = youtube;
-
-})();
-},{}],27:[function(require,module,exports){
-;(function () {
-
-  module.exports = ['$rootScope', '$location', '$timeout',
-    'DataFactory', 'Truncate', 'View',
-    Run];
-
-  function Run ($rootScope, $location, $timeout, DataFactory, Truncate, View) {
-
-    /** @type [Model.Item] */
-    $rootScope.items        =   [];
-
-    /** @type [Evaluation] */
-    $rootScope.evaluations  =   [];
-
-    /** @type [Model.Feedback] */
-    $rootScope.feedbacks    =   [];
-
-    /** @type [Model.Vote] */
-    $rootScope.votes        =   [];
-
-    /** @deprecated */
-    $rootScope.show         =   {};
-
-    /** @??? */
-    $rootScope.loadedItems  =   {};
-
-    /** { $item_id: [Number] } Item's lineage */
-    $rootScope.lineage      =   {};
-
-    /** LOCATION */
-
-    $rootScope.$on('$locationChangeStart', function () {
-      switch ( $location.path() ) {
-        case '/intro': case 'intro':
-          $(window).scrollTop($('#intro').offset().top - 100);
-          break;
-      }
-    });
-
-    /** CRITERIAS */
-
-    $rootScope.criterias = [];
-
-    DataFactory.Criteria.find({})
-      .success(function (criterias) {
-        $rootScope.criterias = criterias;
-      });
-
-    /** ITEMS */
-
-    $rootScope.getItems = function (item) {
-      DataFactory.Item.find(item)
-        .success(function (items) {
-          $rootScope.items = $rootScope.items.concat(items);
-          $rootScope.loadedItems[item.parent || item.type] = true;
-
-          /** Lineage */
-
-          items.forEach(function (item) {
-            $rootScope.lineage[item._id] = item.parent;
-          });
-
-        })
-        .error(function () {
-          console.log(arguments);
-        });
-    };
-
-    $rootScope.getItems({ type: 'Topic' });
-
-    $rootScope.addViewToItem = function (item) {
-
-      if ( ! item ) { return };
-
-      DataFactory.Item.update(item._id, { $inc: { views: 1 } });
-      $rootScope.items.forEach(function (_item, index) {
-        if ( _item._id === item._id ) {
-          $rootScope.items[index].views += 1;
-        }
-      });
-    };
-
-    $rootScope.addPromotionToItem = function (item) {
-      console.log('promoting');
-      DataFactory.Item.update(item._id, { $inc: { promotions: 1 } });
-      $rootScope.items.forEach(function (_item, index) {
-        if ( _item._id === item._id ) {
-          $rootScope.items[index].promotions += 1;
-        }
-      });
-    };
-
-    $rootScope.itemHas = function (item, has) {
-      
-      if ( item && has ) {
-
-        var child = $rootScope.lineage[has];
-
-        while ( child ) {
-
-          if ( child === item._id ) {
-            return true;
-          }
-          child = $rootScope.lineage[child];
-        }
-      }
-    };
-
+  function EvaluationAsAService ($rootScope) {
     function Evaluation (evaluation) {
 
       this.item       =   evaluation.item;
@@ -2050,6 +1359,695 @@
       }
     };
 
+    return Evaluation;
+  }
+
+})();
+
+},{}],15:[function(require,module,exports){
+/**
+ * `UserFactory` User Factory (legacy from SignCtrl)
+ * 
+ * @module synapp
+ * @submodule factories
+ * @method factory::user
+ * @return {AngularFactory}
+ * @author francoisrvespa@gmail.com
+*/
+
+;(function () {
+  module.exports = ['$http', SignFactory];
+
+  function SignFactory ($http) {
+    return {
+      signIn: function (creds) {
+        return $http.post('/sign/in', creds);
+      },
+
+      signUp: function (creds) {
+        return $http.post('/sign/up', creds);
+      }
+    };
+  };
+})();
+
+},{}],16:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', 'View', TruncateAsAService]
+
+  function TruncateAsAService ($rootScope, View) {
+    function Truncate (item) {
+
+      // ============
+
+      this.item = item;
+
+      this.description = this.item.find('.description');
+
+      this.textWrapper = this.item.find('.item-text');
+
+      this.reference = this.item.find('.reference');
+
+      this.text = this.description.text();
+
+      this.words = this.text.split(' ');
+
+      this.height = parseInt(this.item.find('.item-text').css('paddingBottom'));
+
+      this.truncated = false;
+
+      this.moreLabel = 'more';
+
+      this.lessLabel = 'less';
+
+      this.isIntro = ( this.item.attr('id') === 'intro' );
+
+      if ( ! this.isIntro ) {
+        this._id = this.item.attr('id').split('-')[1];
+      }
+
+      // ============
+
+      this.tagify();
+
+      if ( this.truncated ) {
+        this.appendMoreButton();
+      }
+    }
+
+    Truncate.prototype.tagify = function () {
+
+      var self = this;
+
+      this.description.empty();
+
+      this.reference.hide();
+
+      var i = 0;
+
+      this.words.forEach(function (word, index) {
+
+        var span = $('<span></span>');
+
+        if ( self.truncated ) {
+          span.addClass('truncated');
+          span.hide();
+        }
+
+        span.text(word + ' ');
+
+        self.description.append(span);
+
+        if ( i === 5 ) {
+
+          var diff = self.textWrapper.height() > self.height;
+
+          if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
+
+            self.truncated = true;
+          }
+
+          i = -1;
+        }
+
+        i ++;
+      });
+    };
+
+    Truncate.prototype.appendMoreButton = function () {
+
+      var self = this;
+
+      // create more button
+
+      this.more = $('<span><i>... </i>[<a href=""></a>]</span>');
+
+      // more button's text
+
+      this.more.find('a').text(self.moreLabel);
+
+      // more button's on click behavior
+
+      this.more.find('a').on('click', function () {
+
+        var moreLink = $(this);
+
+        // Exit if already an animation in progress
+
+        if ( self.item.find('.is-showing').length ) {
+          return false;
+        }
+
+        View.scrollToPointOfAttention(self.item, function () {
+
+          // Show more
+
+          if ( moreLink.text() === self.moreLabel ) {
+            
+            // If is intro
+
+            if ( self.isIntro ) {
+              self.unTruncate();
+            }
+            
+            else {
+              // If there is already stuff shown, hide it first
+
+              if ( self.item.find('.is-shown').length ) {
+                
+                // Trigger the toggle view to hide current shown items
+
+                $rootScope.publish("toggle view",
+                  { view: "text", item: self._id });
+
+                // Listen on hiding done
+
+                $rootScope.subscribe('did hide view', function (options) {
+
+                  // Make sure it concerns our item
+
+                  if ( options.item === self._id )  {
+
+                    // untruncate
+
+                    setTimeout(function () {
+                      self.unTruncate();
+                    });
+                  }
+                });
+              }
+
+              else {
+                self.unTruncate();
+              }
+            }
+          }
+
+          // hide
+
+          else {
+            self.reTruncate();
+          }
+        });
+      });
+
+      this.description.append(this.more);
+    };
+
+    Truncate.prototype.unTruncate = function () {
+        
+      var self = this;
+
+      var interval = 0;
+
+      var inc = 50;
+
+      var inc = Math.ceil(self.height / self.words.length);
+
+      console.log(self.words.length, inc)
+
+      // show words 50 by 50
+
+      for ( var i = 0; i < this.words.length ; i += inc ) {
+        setTimeout(function () {
+          var k = this.i + inc;
+          for ( var j = this.i; j < k ; j ++ ) {
+            self.item.find('.truncated:eq(' + j + ')').show();
+          }
+        }.bind({ i: i }), interval += (inc * 1.5));
+      }
+
+      // on done showing words, wrap up
+
+      setTimeout(function () {
+        self.item.find('.reference').show();
+        self.more.find('a').text(self.lessLabel);
+        self.more.find('i').hide();  
+      }, interval);
+    };
+
+    Truncate.prototype.reTruncate = function () {
+      
+      var self = this;
+
+      var interval = 0;
+
+      var inc = Math.ceil(self.height / self.words.length);
+
+      for ( var i = 0; i < this.words.length ; i += inc ) {
+        setTimeout(function () {
+          var k = this.i + inc;
+          for ( var j = this.i; j < k ; j ++ ) {
+            self.item.find('.truncated:eq(' + j + ')').hide();
+          }
+        }.bind({ i: i }), interval += (inc * 2));
+      }
+
+      setTimeout(function () {
+        self.item.find('.reference').hide();
+        self.more.find('a').text(self.moreLabel);
+        self.more.find('i').show();
+      }, interval);
+    };
+
+    return Truncate;
+  }
+
+})();
+},{}],17:[function(require,module,exports){
+;(function () {
+
+  module.exports = [View];
+
+  function View () {
+    return {
+
+      scrollToPointOfAttention: function (pointOfAttention, cb, speed) {
+
+        var poa = (pointOfAttention.offset().top - 80);
+
+        var current = $('body').scrollTop();
+
+        console.info('scrolling to PoA', poa);
+
+        if ( 
+          (current === poa) || 
+          (current > poa && (current - poa < 50)) ||
+          (poa > current && (poa - current < 50)) ) {
+
+          console.warn('ALREADY PoA')
+          return cb();
+        }
+
+        $('body').animate({
+          scrollTop: poa + 'px'
+        }, speed || 500, 'swing', function () {
+          console.info('scrolled to PoA', poa);
+          cb();
+        });
+      }
+
+    };
+  }
+
+})();
+
+},{}],18:[function(require,module,exports){
+;(function () {
+
+  module.exports = [calculatePromotionPercentage];
+
+  function calculatePromotionPercentage () {
+    return function (item) {
+      if ( item ) {
+        if ( ! item.promotions ) {
+          return 0;
+        }
+        return Math.floor(item.promotions * 100 / item.views);
+      }
+    }
+  }
+})();
+
+},{}],19:[function(require,module,exports){
+;(function () {
+
+  module.exports = [CriteriaFilter];
+
+  function CriteriaFilter () {
+    return function (criterias, criteria) {
+      if ( criterias ) {
+        return criterias.filter(function (_criteria) {
+          for ( var key in criteria ) {
+            if ( _criteria[key] !== criteria[key] ) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    };
+  }
+
+})();
+
+},{}],20:[function(require,module,exports){
+;(function () {
+
+  module.exports = [FeedbackFilter];
+
+  function FeedbackFilter () {
+    return function (feedbacks, feedback) {
+      if ( feedbacks ) {
+        return feedbacks.filter(function (_feedback) {
+          for ( var key in feedback ) {
+            if ( _feedback[key] !== feedback[key] ) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    };
+  }
+
+})();
+
+},{}],21:[function(require,module,exports){
+;(function () {
+
+  module.exports = [Find];
+
+  function Find () {
+    return function (items, item) {
+      if ( items ) {
+        return items.filter(function (_item) {
+          for ( var key in item ) {
+            if ( _item[key] !== item[key] ) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    };
+  }
+
+})();
+
+},{}],22:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', getEvaluationByItem];
+
+  function getEvaluationByItem ($rootScope) {
+    return function (evaluations, item_id) {
+      if ( evaluations ) {
+        return evaluations.filter(function (evaluation) {
+          return evaluation.item === item_id;
+        });
+      }
+    };
+  }
+
+})();
+},{}],23:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', getEvaluationItems];
+
+  function getEvaluationItems ($rootScope) {
+    return function (items, item_id) {
+      if ( items && item_id ) {
+        var evaluation = $rootScope.evaluations
+          .reduce(function (evaluation, candidate) {
+            if ( candidate.item === item_id ) {
+              evaluation = candidate;
+            }
+            return evaluation;
+          }, null);
+
+        if ( evaluation ) {
+          return evaluation.items;
+        }
+
+        return [];
+      }
+    };
+  }
+
+})();
+},{}],24:[function(require,module,exports){
+;(function () {
+
+  module.exports = [filterItems];
+
+  function filterItems () {
+    return function (items, type, parent) {
+      if ( items ) {
+
+        var query = {};
+
+        if ( type ) {
+          query.type = type;
+        }
+
+        if ( parent ) {
+          query.parent = parent;
+        }
+
+        return items.filter(function (item) {
+          for ( var field in query ) {
+            if ( item[field] !== query [field] ) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    };
+  }
+})();
+
+},{}],25:[function(require,module,exports){
+;(function () {
+
+  module.exports = [shortenFilter];
+
+  function shortenFilter () {
+
+    /** @method shorten
+     * @param str {string} - the string to shorten
+     * @param max {number} - the limit
+     * @return {?string}
+    */
+    function shorten (str, max) {
+      if ( str ) {
+
+        max = max || 100;
+
+        if ( str.length < max ) {
+          return str;
+        }
+
+        if ( /\s/.test(str[max]) ) {
+          return str.substr(0, max);
+        }
+
+        var right = str.substr(max).split(/\s/);
+
+        return str.substr(0, max) + right[0];
+      }
+    };
+
+    return shorten;
+  };
+
+})();
+
+},{}],26:[function(require,module,exports){
+/**
+ * Synapp Angular module...
+ * 
+ * @module synapp
+ * @author francoisrvespa@gmail.com
+*/
+
+;(function () {
+
+  angular.module('synapp', ['angularFileUpload', 'autoGrow'])
+
+    .factory({
+      DataFactory: require('./factories/Data'),
+      SignFactory: require('./factories/Sign'),
+      Truncate: require('./factories/Truncate'),
+      View: require('./factories/View'),
+      Evaluation: require('./factories/Evaluation')
+    })
+
+    .filter({
+      shorten:                      require('./filters/shorten'),
+      calculatePromotionPercentage: require('./filters/calculate-promotion-percentage'),
+      getEvaluationItems:           require('./filters/get-evaluation-items'),
+      getEvaluationByItem:          require('./filters/get-evaluation-by-item'),
+      itemFilter:                   require('./filters/item-filter'),
+      criteriaFilter:               require('./filters/criteria-filter'),
+      feedbackFilter:               require('./filters/feedback-filter'),
+      find:                         require('./filters/find')
+    })
+
+    .controller({
+      'UploadCtrl': require('./controllers/upload')
+    })
+
+    .directive({
+      /** Charts */
+      charts:        require('./directives/charts'),
+
+      /** Creator */
+      creator:        require('./directives/creator'),
+
+      /** Details */
+      details:        require('./directives/details'),
+
+      /** Editor */
+      editor:         require('./directives/editor'),
+
+      /** Evaluator */
+      evaluator:      require('./directives/evaluator'),
+
+      /** Item */
+      item:           require('./directives/item'),
+
+      /** Item Media */
+      itemMedia:      require('./directives/item-media'),
+
+      /** Panel */
+      isPanel:        require('./directives/panel'),
+
+      /** Sign */
+      sign:           require('./directives/sign'),
+
+      /** Sliders */
+      sliders:        require('./directives/sliders'),
+
+      /** Url Fetcher */
+      urlFetcher:     require('./directives/url-fetcher'),
+    })
+
+    .run(require('./run'));
+  
+})();
+
+
+},{"./controllers/upload":1,"./directives/charts":2,"./directives/creator":3,"./directives/details":4,"./directives/editor":5,"./directives/evaluator":6,"./directives/item":8,"./directives/item-media":7,"./directives/panel":9,"./directives/sign":10,"./directives/sliders":11,"./directives/url-fetcher":12,"./factories/Data":13,"./factories/Evaluation":14,"./factories/Sign":15,"./factories/Truncate":16,"./factories/View":17,"./filters/calculate-promotion-percentage":18,"./filters/criteria-filter":19,"./filters/feedback-filter":20,"./filters/find":21,"./filters/get-evaluation-by-item":22,"./filters/get-evaluation-items":23,"./filters/item-filter":24,"./filters/shorten":25,"./run":28}],27:[function(require,module,exports){
+;(function () {
+
+  function youtube (url) {
+    var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+
+    if ( url && regexYouTube.test(url) ) {
+      var youtube;
+      url.replace(regexYouTube, function (m, v) {
+        youtube = v;
+      });
+      var container = $('<div></div>');
+      container.addClass('video-container');
+      var iframe = $('<iframe></iframe>');
+      iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
+      iframe.attr('frameborder', '0');
+      iframe.attr('width', 560);
+      iframe.attr('height', 315);
+      container.append(iframe);
+      return container;
+    }
+
+    return false;
+  }
+
+  module.exports = youtube;
+
+})();
+},{}],28:[function(require,module,exports){
+;(function () {
+
+  module.exports = ['$rootScope', '$location', '$timeout',
+    'DataFactory', 'Truncate', 'View', 'Evaluation',
+    Run];
+
+  function Run ($rootScope, $location, $timeout, DataFactory, Truncate, View, Evaluation) {
+
+    /** @type [Model.Item] */
+    $rootScope.items        =   [];
+
+    /** @type [Evaluation] */
+    $rootScope.evaluations  =   [];
+
+    /** @type [Model.Feedback] */
+    $rootScope.feedbacks    =   [];
+
+    /** @type [Model.Vote] */
+    $rootScope.votes        =   [];
+
+    /** @deprecated */
+    $rootScope.show         =   {};
+
+    /** @??? */
+    $rootScope.loadedItems  =   {};
+
+    /** { $item_id: [Number] } Item's lineage */
+    $rootScope.lineage      =   {};
+
+    /** CRITERIAS */
+
+    $rootScope.criterias = [];
+
+    DataFactory.Criteria.find({})
+      .success(function (criterias) {
+        $rootScope.criterias = criterias;
+      });
+
+    /** ITEMS */
+
+    $rootScope.getItems = function (item) {
+      DataFactory.Item.find(item)
+        .success(function (items) {
+          $rootScope.items = $rootScope.items.concat(items);
+          $rootScope.loadedItems[item.parent || item.type] = true;
+
+          /** Lineage */
+
+          items.forEach(function (item) {
+            $rootScope.lineage[item._id] = item.parent;
+          });
+
+        })
+        .error(function () {
+          console.log(arguments);
+        });
+    };
+
+    $rootScope.getItems({ type: 'Topic' });
+
+    $rootScope.addViewToItem = function (item) {
+
+      if ( ! item ) { return };
+
+      DataFactory.Item.update(item._id, { $inc: { views: 1 } });
+      $rootScope.items.forEach(function (_item, index) {
+        if ( _item._id === item._id ) {
+          $rootScope.items[index].views += 1;
+        }
+      });
+    };
+
+    $rootScope.addPromotionToItem = function (item) {
+      console.log('promoting');
+      DataFactory.Item.update(item._id, { $inc: { promotions: 1 } });
+      $rootScope.items.forEach(function (_item, index) {
+        if ( _item._id === item._id ) {
+          $rootScope.items[index].promotions += 1;
+        }
+      });
+    };
+
+    $rootScope.itemHas = function (item, has) {
+      
+      if ( item && has ) {
+
+        var child = $rootScope.lineage[has];
+
+        while ( child ) {
+
+          if ( child === item._id ) {
+            return true;
+          }
+          child = $rootScope.lineage[child];
+        }
+      }
+    };
+
     $rootScope.loadEvaluation = function (item_id) {
       var evaluation = $rootScope.evaluations
         .filter(function (evaluation) {
@@ -2120,7 +2118,6 @@
         // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
       });
 
-
     // UI EVENT
 
     $rootScope.__channels = {};
@@ -2141,70 +2138,79 @@
       $rootScope.__channels[channel].push(subscriber);
     };
 
+    function show (elem, options, cb) {
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
 
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+        return false;
+      }
+
+      console.info('showing', elem.attr('class'), options);
+
+      // make sure margin-top is equal to height for smooth scrolling
+
+      elem.css('margin-top', '-' + elem.height() + 'px');
+
+      // animate is-section
+
+      elem.find('.is-section:first').animate({
+          'margin-top': 0,
+          // 'padding-top': 0,
+        }, 500, function () {
+          console.info('shown', elem.attr('class'), options);
+          elem.removeClass('is-showing').addClass('is-shown');
+          $rootScope.publish('did show view', options);
+          if ( elem.css('margin-top') !== 0 ) {
+            elem.animate({'margin-top': 0}, 250);
+          }
+          if ( cb ) cb();
+        });
+
+      elem.animate({
+         opacity: 1
+        }, 500);
+    }
+
+    function hide (elem, options, cb) {
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+        return false;
+      }
+
+      elem.removeClass('is-shown').addClass('is-hiding');;
+
+      elem.find('.is-section:first').animate({
+          'margin-top': '-' + elem.height() + 'px',
+          // 'padding-top': elem.height() + 'px'
+        }, 1000, function () {
+          elem.removeClass('is-hiding').addClass('is-hidden');
+          $rootScope.publish('did hide view', options);
+          if ( cb ) cb();
+        });
+
+      elem.animate({
+         opacity: 0
+        }, 1000);
+    }
+
+
+    // SUBSCRIBERS
 
     $rootScope.subscribe('toggle view', function (options) {
 
-      console.warn('toggle view', options)
-
       var view = $('#item-' + options.item).find('.' + options.view);
-
-      function show (elem, cb) {
-        elem.css('margin-top', '-' + elem.height() + 'px');
-
-        elem.find('.is-section:first').animate({
-            'margin-top': 0,
-            // 'padding-top': 0,
-          }, 1000, function () {
-            elem.removeClass('is-showing').addClass('is-shown');
-            $rootScope.publish('did show view', options);
-            if ( elem.css('margin-top') !== 0 ) {
-              elem.animate({'margin-top': 0}, 250);
-            }
-            if ( cb ) cb();
-          });
-
-        elem.animate({
-           opacity: 1
-          }, 700);
-      }
-
-      function hide (elem, cb) {
-        elem.removeClass('is-shown').addClass('is-hiding');;
-
-        elem.find('.is-section:first').animate({
-            'margin-top': '-' + elem.height() + 'px',
-            // 'padding-top': elem.height() + 'px'
-          }, 1000, function () {
-            elem.removeClass('is-hiding').addClass('is-hidden');
-            $rootScope.publish('did hide view', options);
-            if ( cb ) cb();
-          });
-
-        elem.animate({
-           opacity: 0
-          }, 1000);
-      }
-
-      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-      if ( $('#item-' + options.item).hasClass('.is-showing') ) {
-        return false;
-      }
 
       if ( ! view.hasClass('is-toggable') ) {
         view.addClass('is-toggable');
       }
-
-      var itemTop = $('#item-' + options.item).offset().top;
-      var windowScroll = $(window).scroll();
 
       View.scrollToPointOfAttention($('#item-' + options.item), function () {
 
         // hide
 
         if ( view.hasClass('is-shown') ) {
-          hide(view);
+          hide(view, options);
         }
 
         // show
@@ -2217,7 +2223,7 @@
                 view.removeClass('is-hidden').addClass('is-showing');
 
                 setTimeout(function () {
-                  show(view);
+                  show(view, options);
                 });
               });
             }
@@ -2226,7 +2232,7 @@
               view.removeClass('is-hidden').addClass('is-showing');
 
               setTimeout(function () {
-                show(view);
+                show(view, options);
               });
             }
           }
@@ -2259,8 +2265,60 @@
         }
       });
     });
+
+    $rootScope.subscribe('toggle creator', function (options) {
+
+      var id = '#panel-' + options.type;
+
+      if ( options.parent ) {
+        id += options.parent;
+      }
+
+      var panel = $(id);
+
+      var creator = panel.find('.creator');
+
+      if ( $('.is-showing').length || $('.is-hiding').length ) {
+        return false;
+      }
+
+      function toggle () {
+        // hide
+
+        if (  creator.hasClass('is-shown') ) {
+          hide( creator, options);
+        }
+
+        // show
+
+        else {
+          if ( panel.find('.is-shown').length ) {
+            hide(panel.find('.is-shown'), function () {
+              creator.removeClass('is-hidden').addClass('is-showing');
+
+              setTimeout(function () {
+                show(creator, options);
+              });
+            });
+          }
+          
+          else {
+            creator.removeClass('is-hidden').addClass('is-showing');
+
+            setTimeout(function () {
+              show(creator, options);
+            });
+          }
+        }
+      }
+
+      View.scrollToPointOfAttention(panel, function () {
+      });
+
+      toggle();
+    });
   }
 
 })();
 
-},{}]},{},[25]);
+},{}]},{},[26]);

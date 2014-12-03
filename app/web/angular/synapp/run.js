@@ -1,10 +1,10 @@
 ;(function () {
 
   module.exports = ['$rootScope', '$location', '$timeout',
-    'DataFactory', 'Truncate', 'View',
+    'DataFactory', 'Truncate', 'View', 'Evaluation',
     Run];
 
-  function Run ($rootScope, $location, $timeout, DataFactory, Truncate, View) {
+  function Run ($rootScope, $location, $timeout, DataFactory, Truncate, View, Evaluation) {
 
     /** @type [Model.Item] */
     $rootScope.items        =   [];
@@ -26,16 +26,6 @@
 
     /** { $item_id: [Number] } Item's lineage */
     $rootScope.lineage      =   {};
-
-    /** LOCATION */
-
-    $rootScope.$on('$locationChangeStart', function () {
-      switch ( $location.path() ) {
-        case '/intro': case 'intro':
-          $(window).scrollTop($('#intro').offset().top - 100);
-          break;
-      }
-    });
 
     /** CRITERIAS */
 
@@ -103,240 +93,6 @@
           }
           child = $rootScope.lineage[child];
         }
-      }
-    };
-
-    function Evaluation (evaluation) {
-
-      this.item       =   evaluation.item;
-      this.items      =   evaluation.items;
-      this.type       =   evaluation.type;
-      this.criterias  =   evaluation.criterias;
-      this.votes      =   [];
-
-      this.cursor   =   1;
-      this.limit    =   5;
-      
-      if ( this.items.length < 6 ) {
-        this.limit = this.items.length - 1;
-
-        if ( ! this.limit && this.items.length === 1 ) {
-          this.limit = 1;
-        }
-      }
-      
-      this.current  =   [];
-      this.next     =   [];
-
-      var series = [
-        function () { 
-          this.current[0] = this.items.shift();
-          $rootScope.addViewToItem(this.current[0]);
-        }.bind(this),
-        
-        function () {
-          this.current[1] = this.items.shift();
-          $rootScope.addViewToItem(this.current[1]); 
-        }.bind(this),
-        
-        function () { this.next[0] = this.items.shift(); }.bind(this),
-        
-        function () { this.next[1] = this.items.shift(); }.bind(this),
-      ];
-
-      var i = 0;
-
-      while ( series[i] && evaluation.items.length ) {
-        series[i]();
-        i++;
-      }
-    }
-
-    Evaluation.prototype.change = function(d) {
-      View.scrollToPointOfAttention($('#item-' + this.item), function () {
-
-      }, 1000);
-
-      d = d || 'both';
-
-      if ( this.current[0] ) {
-
-        // feedback
-
-        if ( this.current[0].$feedback ) {
-          DataFactory.Feedback.create(this.current[0]._id,
-            this.current[0].$feedback);
-
-          $rootScope.items.forEach(function (item, index) {
-            if ( item._id === this._id ) {
-              this.$feedback.item = item._id;
-              $rootScope.feedbacks.push(this.$feedback);
-            }
-          }.bind(this.current[0]));
-        }
-
-        // Votes
-
-        if ( this.votes[this.current[0]._id] ) {
-
-          var votes = [];
-
-          for ( var criteria in this.votes[this.current[0]._id] ) {
-            votes.push({
-              item: this.current[0]._id,
-              criteria: criteria,
-              value: this.votes[this.current[0]._id][criteria]
-            });
-          }
-
-          if ( votes.length ) {
-            DataFactory.Vote.create(votes);
-            var found = false;
-
-            $rootScope.votes.forEach(function (vote, index) {
-              console.warn(vote, this._id, index);
-              if ( vote.item === this._id ) {
-                found = index;
-              }
-            }.bind(this.current[0]));
-
-            console.error('watch out', found, found !== false)
-
-            if ( found !== false ) {
-              console.warn($rootScope.votes, found)
-              for ( var criteria in this.votes[this.current[0]._id] ) {
-                $rootScope.votes[found].criterias[criteria].total ++;
-                $rootScope.votes[found].criterias[criteria].values[this.votes[this.current[0]._id][criteria]] ++;
-              }
-            }
-          }
-        }
-      }
-
-      if ( this.current[1] ) {
-
-        // Feedback
-
-        if ( this.current[1].$feedback ) {
-          DataFactory.Feedback.create(this.current[1]._id,
-            this.current[1].$feedback);
-
-          $rootScope.items.forEach(function (item, index) {
-            if ( item._id === this._id ) {
-              this.$feedback.item = item._id;
-              $rootScope.feedbacks.push(this.$feedback);
-            }
-          }.bind(this.current[1]));
-        }
-
-        // Votes
-
-        if ( this.votes[this.current[1]._id] ) {
-
-          console.info('votes detected')
-
-          var votes = [];
-
-          for ( var criteria in this.votes[this.current[1]._id] ) {
-            votes.push({
-              item: this.current[1]._id,
-              criteria: criteria,
-              value: this.votes[this.current[1]._id][criteria]
-            })
-          }
-
-          if ( votes.length ) {
-
-            var found = false;
-
-            $rootScope.votes.forEach(function (vote, index) {
-              if ( vote.item === this._id ) {
-                found = index;
-              }
-            }.bind(this.current[1]));
-
-            DataFactory.Vote.create(votes)
-              .success(function () {
-                if ( found !== false ) {
-                  for ( var criteria in this ) {
-                    $rootScope.votes[found].criterias[criteria].total ++;
-                    $rootScope.votes[found].criterias[criteria].values[this[criteria]] ++;
-                  }
-                }
-              }.bind(this.votes[this.current[1]._id]));
-          }
-
-          
-        }
-      }
-
-      if ( this.next.length ) {
-        if ( d === 'left' || d === 'both' ) {
-          this.current[0] = this.next.shift();
-          $rootScope.addViewToItem(this.current[0]);
-        }
-
-        if ( d === 'right' || d === 'both' ) {
-          if ( this.next.length ) {
-            this.current[1] = this.next.shift();
-            $rootScope.addViewToItem(this.current[1]);
-          }
-          else {
-            this.current.splice(1, 1);
-          }
-        }
-
-        if ( d === 'both' ) {
-          if ( this.items.length ) {
-            this.next.push(this.items.shift());
-          }
-
-          if ( this.cursor !== this.limit ) {
-            this.cursor ++;
-          }
-        }
-
-        if ( this.items.length ) {
-          this.next.push(this.items.shift());
-        }
-        
-        if ( this.cursor !== this.limit ) {
-          this.cursor ++;
-        }
-      }
-
-      else {
-        this.current = [];
-      }
-    };
-
-    Evaluation.prototype.continue = function() {
-      this.change();
-    };
-
-    Evaluation.prototype.finish = function () {
-      this.change();
-    };
-
-    Evaluation.prototype.promote = function(pos) {
-      // Promoting left item
-
-      if ( pos === 0 ) {
-
-        $rootScope.addPromotionToItem(this.current[0]);
-
-        this.change('right');
-        
-      }
-
-      // Promoting right item
-
-      else {
-
-        $rootScope.addPromotionToItem(this.current[1]);
-
-        this.change('left');
-
       }
     };
 
@@ -410,7 +166,6 @@
         // $(window).on('resize', ellipsis.bind($('#intro .item-text')));
       });
 
-
     // UI EVENT
 
     $rootScope.__channels = {};
@@ -431,70 +186,79 @@
       $rootScope.__channels[channel].push(subscriber);
     };
 
+    function show (elem, options, cb) {
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
 
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+        return false;
+      }
+
+      console.info('showing', elem.attr('class'), options);
+
+      // make sure margin-top is equal to height for smooth scrolling
+
+      elem.css('margin-top', '-' + elem.height() + 'px');
+
+      // animate is-section
+
+      elem.find('.is-section:first').animate({
+          'margin-top': 0,
+          // 'padding-top': 0,
+        }, 500, function () {
+          console.info('shown', elem.attr('class'), options);
+          elem.removeClass('is-showing').addClass('is-shown');
+          $rootScope.publish('did show view', options);
+          if ( elem.css('margin-top') !== 0 ) {
+            elem.animate({'margin-top': 0}, 250);
+          }
+          if ( cb ) cb();
+        });
+
+      elem.animate({
+         opacity: 1
+        }, 500);
+    }
+
+    function hide (elem, options, cb) {
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+        return false;
+      }
+
+      elem.removeClass('is-shown').addClass('is-hiding');;
+
+      elem.find('.is-section:first').animate({
+          'margin-top': '-' + elem.height() + 'px',
+          // 'padding-top': elem.height() + 'px'
+        }, 1000, function () {
+          elem.removeClass('is-hiding').addClass('is-hidden');
+          $rootScope.publish('did hide view', options);
+          if ( cb ) cb();
+        });
+
+      elem.animate({
+         opacity: 0
+        }, 1000);
+    }
+
+
+    // SUBSCRIBERS
 
     $rootScope.subscribe('toggle view', function (options) {
 
-      console.warn('toggle view', options)
-
       var view = $('#item-' + options.item).find('.' + options.view);
-
-      function show (elem, cb) {
-        elem.css('margin-top', '-' + elem.height() + 'px');
-
-        elem.find('.is-section:first').animate({
-            'margin-top': 0,
-            // 'padding-top': 0,
-          }, 1000, function () {
-            elem.removeClass('is-showing').addClass('is-shown');
-            $rootScope.publish('did show view', options);
-            if ( elem.css('margin-top') !== 0 ) {
-              elem.animate({'margin-top': 0}, 250);
-            }
-            if ( cb ) cb();
-          });
-
-        elem.animate({
-           opacity: 1
-          }, 700);
-      }
-
-      function hide (elem, cb) {
-        elem.removeClass('is-shown').addClass('is-hiding');;
-
-        elem.find('.is-section:first').animate({
-            'margin-top': '-' + elem.height() + 'px',
-            // 'padding-top': elem.height() + 'px'
-          }, 1000, function () {
-            elem.removeClass('is-hiding').addClass('is-hidden');
-            $rootScope.publish('did hide view', options);
-            if ( cb ) cb();
-          });
-
-        elem.animate({
-           opacity: 0
-          }, 1000);
-      }
-
-      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-      if ( $('#item-' + options.item).hasClass('.is-showing') ) {
-        return false;
-      }
 
       if ( ! view.hasClass('is-toggable') ) {
         view.addClass('is-toggable');
       }
-
-      var itemTop = $('#item-' + options.item).offset().top;
-      var windowScroll = $(window).scroll();
 
       View.scrollToPointOfAttention($('#item-' + options.item), function () {
 
         // hide
 
         if ( view.hasClass('is-shown') ) {
-          hide(view);
+          hide(view, options);
         }
 
         // show
@@ -507,7 +271,7 @@
                 view.removeClass('is-hidden').addClass('is-showing');
 
                 setTimeout(function () {
-                  show(view);
+                  show(view, options);
                 });
               });
             }
@@ -516,7 +280,7 @@
               view.removeClass('is-hidden').addClass('is-showing');
 
               setTimeout(function () {
-                show(view);
+                show(view, options);
               });
             }
           }
@@ -548,6 +312,58 @@
           }
         }
       });
+    });
+
+    $rootScope.subscribe('toggle creator', function (options) {
+
+      var id = '#panel-' + options.type;
+
+      if ( options.parent ) {
+        id += options.parent;
+      }
+
+      var panel = $(id);
+
+      var creator = panel.find('.creator');
+
+      if ( $('.is-showing').length || $('.is-hiding').length ) {
+        return false;
+      }
+
+      function toggle () {
+        // hide
+
+        if (  creator.hasClass('is-shown') ) {
+          hide( creator, options);
+        }
+
+        // show
+
+        else {
+          if ( panel.find('.is-shown').length ) {
+            hide(panel.find('.is-shown'), function () {
+              creator.removeClass('is-hidden').addClass('is-showing');
+
+              setTimeout(function () {
+                show(creator, options);
+              });
+            });
+          }
+          
+          else {
+            creator.removeClass('is-hidden').addClass('is-showing');
+
+            setTimeout(function () {
+              show(creator, options);
+            });
+          }
+        }
+      }
+
+      View.scrollToPointOfAttention(panel, function () {
+      });
+
+      toggle();
     });
   }
 

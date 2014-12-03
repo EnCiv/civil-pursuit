@@ -5,8 +5,6 @@
   function TruncateAsAService ($rootScope, View) {
     function Truncate (item) {
 
-      console.info('Truncating', item.attr('id'));
-
       // ============
 
       this.item = item;

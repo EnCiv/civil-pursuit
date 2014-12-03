@@ -5,7 +5,7 @@
   function Creator ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
-      templateUrl: '/templates/editor',
+      // templateUrl: '/templates/editor',
       scope: {
         type: '@',
         parent: '@'

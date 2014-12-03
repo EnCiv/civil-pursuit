@@ -1,75 +1,82 @@
 include ../mixins/bootstrap
 include ../mixins/item-image
 
-div(data-ng-init='show = "items"')
-  +bootstrap-panel
-    +bootstrap-panel-heading
-      i.pull-right.fa.fa-plus.cursor-pointer(ng-click='show = (show === "creator" && "items") || "creator"')
+// PANEL
 
-      //- span(ng-click='$root.showPanel({ parent: parent, type: type }, "creator")')
++bootstrap-panel
 
-      // TYPE
+  // PANEL HEADING
 
-      h4.panel-title(data-ng-bind='type')
+  +bootstrap-panel-heading
 
-    +bootstrap-panel-body
+    // TOGGLE CREATOR
 
-      // CREATOR
+    i.pull-right.fa.fa-plus.cursor-pointer(data-ng-click='$root.publish("toggle creator", { type: type, parent: parent })')
 
-      .creator(ng-show='show === "creator"' data-type="{{ type }}" data-parent='{{ parent }}' subject='')
+    // TYPE
 
-      // ITEMS
+    h4.panel-title(data-ng-bind='type')
 
-      .row(data-ng-hide='$root.loadedItems[item.parent || "Topic"]')
-        .col-xs-12.text-center.padding Loading items...
+  // PANEL BODY
 
-      .row(data-ng-hide='($root.items | itemFilter:type:parent).length')
-        .col-xs-12.text-center.padding Nothing here!
-      
-      .items(ng-repeat='item in $root.items | itemFilter:type:parent track by item._id')
+  +bootstrap-panel-body
 
-        .item(id='item-{{item._id}}' data-ng-show='$index < ( batchSize - 1 )')
+    // CREATOR
 
-          // BOX
+    .creator.is-container(data-type="{{ type }}" data-parent='{{ parent }}')
+      .is-section
+        include editor
 
-          include item
+    // ITEMS
 
-          // COLLAPSERS
+    .row(data-ng-hide='$root.loadedItems[item.parent || "Topic"]')
+      .col-xs-12.text-center.padding Loading items...
 
-          .collapsers
+    .row(data-ng-hide='($root.items | itemFilter:type:parent).length')
+      .col-xs-12.text-center.padding Nothing here!
+    
+    .items(ng-repeat='item in $root.items | itemFilter:type:parent track by item._id')
 
-            // EVALUATOR
-            
-            .evaluator.is-container
-              .is-section
-                include evaluator
-            
-            // DETAILS
+      .item(id='item-{{item._id}}' data-ng-show='$index < ( batchSize - 1 )')
 
-            .details.is-container
-              .is-section
-                include details
+        // BOX
 
-            // EDITOR
+        include item
 
-            .editor.is-container
-              .is-section
-                include editor
+        // COLLAPSERS
 
-            // TOGGLE ARROW
+        .collapsers
 
-            .row.toggle-arrow
-              .col-xs-12.text-center
-                i.fa.cursor-pointer.fa-arrow-down(data-ng-click='$root.publish("toggle view", { view: "children", item: item._id })')
+          // EVALUATOR
+          
+          .evaluator.is-container
+            .is-section
+              include evaluator
+          
+          // DETAILS
 
-            // CHILDREN
+          .details.is-container
+            .is-section
+              include details
 
-            //- thereIsARelation(item._id, $root.itemViewed)
+          // EDITOR
 
-            .children.is-container
-              .is-section
+          .editor.is-container
+            .is-section
+              include editor
 
-        // SHOW MORE
+          // TOGGLE ARROW
 
-        .padding.text-center(data-ng-show="$index === ( batchSize - 1 )")
-          a(href='#' data-ng-click='loadMore()') Load more
+          .row.toggle-arrow
+            .col-xs-12.text-center
+              i.fa.cursor-pointer.fa-arrow-down(data-ng-click='$root.publish("toggle view", { view: "children", item: item._id })')
+
+          // CHILDREN
+
+          .children.is-container
+            .is-section
+
+      // SHOW MORE
+
+      .padding.text-center(data-ng-show="$index === ( batchSize - 1 )")
+        a(href='#' data-ng-click='loadMore()') Load more

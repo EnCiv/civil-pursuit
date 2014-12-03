@@ -11,6 +11,8 @@
 
         var current = $('body').scrollTop();
 
+        console.info('scrolling to PoA', poa);
+
         if ( 
           (current === poa) || 
           (current > poa && (current - poa < 50)) ||
@@ -20,11 +22,10 @@
           return cb();
         }
 
-        console.info('PoA', poa, current)
-
         $('body').animate({
           scrollTop: poa + 'px'
         }, speed || 500, 'swing', function () {
+          console.info('scrolled to PoA', poa);
           cb();
         });
       }

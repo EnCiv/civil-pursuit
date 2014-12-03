@@ -13,7 +13,8 @@
       DataFactory: require('./factories/Data'),
       SignFactory: require('./factories/Sign'),
       Truncate: require('./factories/Truncate'),
-      View: require('./factories/View')
+      View: require('./factories/View'),
+      Evaluation: require('./factories/Evaluation')
     })
 
     .filter({

@@ -48,17 +48,14 @@
 
         $scope.elem = $elem;
 
-        
+        var id = 'panel-' + $scope.type;
 
-        // setTimeout(function () {
+        if ( $scope.parent ) {
+          id += $scope.parent;
+        }
 
-        //   var ellipsis = require('../lib/ellipsis');
+        $elem.attr('id',  id);
 
-        //   // $timeout(ellipsis.bind($elem.find('.box')), 0);
-        //   ellipsis.apply($elem.find('.box').not('.prefetch'));
-        //   // $(window).on('resize', ellipsis.bind($elem.find('.item-text')))
-
-        // }, 500);
       }
     };
   }
