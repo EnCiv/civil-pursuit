@@ -44,13 +44,6 @@ block script-angular
   - else
     script(src='/bower/angular/angular.js')
 
-block script-angular-animate
-  - if ( settings.env === 'production' )
-    script(src=synapp.angular.animate.cdn)
-
-  - else
-    script(src='/bower/angular-animate/angular-animate.js')
-
 //- # Angular apps
 
 block script-file-upload
