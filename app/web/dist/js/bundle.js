@@ -2205,6 +2205,10 @@
         view.addClass('is-toggable');
       }
 
+      if ( view.hasClass('is-showing') || view.hasClass('is-hiding') ) {
+        return false;
+      }
+
       View.scrollToPointOfAttention($('#item-' + options.item), function () {
 
         // hide
