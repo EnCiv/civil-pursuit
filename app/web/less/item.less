@@ -1,0 +1,137 @@
+.box {
+  overflow: hidden;
+
+  .item-media-wrapper {
+    width: 35%;
+    float: left;
+    padding: @syn-padding;
+    text-align: center !important;
+
+    @media (min-width: 760px) {
+      margin-right: 10px;
+    }
+
+    .item-media {
+
+      /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        padding-top: 30px; height: 0; overflow: hidden;
+
+        iframe, object, embed {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  .box-buttons {
+    text-align: right;
+
+    .btn {
+      width: 100px;
+
+      @media (max-width: 600px) {
+        font-size: 80%;
+        width: 70px;
+        border-radius: 10px;
+      }
+    }
+
+    div {
+      padding: @syn-padding;
+
+      @media (max-width: 600px) {
+        padding: 2px;
+        font-size: 80%;
+      }
+    }
+  }
+
+  .item-text {
+    padding-left: @syn-padding;
+    border: 1px solid #fff;
+
+    @media (min-width: 901px) {
+      padding-bottom: 200px;
+      margin-bottom: -200px;
+      padding-left: 0;
+    }
+
+    @media (max-width: 900px) {
+      padding-bottom: 150px;
+      margin-bottom: -150px;
+      padding-left: 0;
+    }
+
+    @media (max-width: 620px) {
+      padding-bottom: 130px;
+      margin-bottom: -130px;
+      padding-left: 0;
+    }
+
+    @media (max-width: 320px) {
+      padding-bottom: 200px;
+      margin-bottom: -200px;
+      padding-left: 0;
+    }
+
+    .item-title {
+      font-size: 24px;
+      word-wrap: break-word;
+      // padding-left: @syn-padding;
+
+      @media (max-width: 800px) {
+        font-size: 22px
+      }
+      
+      @media (max-width: 700px) {
+        font-size: 20px
+      }
+
+      @media (max-width: 600px) {
+        font-size: 18px
+      }
+
+      @media (max-width: 500px) {
+        font-size: 16px
+      }
+    }
+
+    .box-description {
+      font-size: 16px;
+      margin-top: 0 !important;
+      padding: 10px;
+      padding-top: 0 !important;
+
+      @media (max-width: 500px) {
+        font-size: 14px
+      }
+    }
+
+    .entry-title {
+      margin-top: 15px
+    }
+
+    input {
+      width: 45% !important;
+      border: none;
+    }
+
+    textarea {
+      border: none;
+      width: 45% !important
+    }
+
+    .drop-box {
+      min-height: 230px !important;
+      margin-left: -10px !important;
+      padding-top: 55px !important
+    }
+  }
+}

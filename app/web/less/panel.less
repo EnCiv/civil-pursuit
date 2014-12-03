@@ -1,0 +1,159 @@
+/**
+ *    __________________________________________________________________________
+ *
+ *    Synapp Style Sheet / Navigator
+ *    ------------------   ---------
+ *
+ *    @abstract
+ *    Navigator + Panel
+ *
+ *    @author   francois
+ *
+ *    __________________________________________________________________________
+ *  
+*/
+
+/** ____________________________________________________________________________
+
+          IMPORTS
+    ============================================================================
+**/
+
+@import "mixins/gradient";
+@import "mixins/box-shadow";
+@import "box";
+
+/** ____________________________________________________________________________
+
+          VARIABLES
+    ============================================================================
+**/
+
+@panel-heading-bg: #39683C;
+@panel-border-color: #666;
+
+/** ____________________________________________________________________________
+
+          LAYOUT
+    ============================================================================
+**/
+
+.panel {
+  
+  & {
+    border-color: @panel-border-color;
+    .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+  }
+
+  .panel-heading {
+    background: @panel-heading-bg;
+    .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+    color: #fff;
+    text-align: center;
+  }
+
+  .panel-body {
+    
+    & {
+      padding: 0;
+    }
+
+    .items {
+      .item {
+
+        & {
+          background:     #fff;
+          border:         1px solid @panel-border-color;
+          margin:         @syn-padding;
+          border-radius:  4px;
+          .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+          margin-right:   0;
+          border-right:   none;
+        }
+
+        .collapsers {
+          .evaluator, .details, .editor {
+            border: 1px solid @panel-border-color;
+            border-right: none;
+            margin-left: @syn-padding;
+            margin-right: 0;
+            border-radius: 4px;
+            .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+
+            &.is-shown, &.is-showing {
+              margin-bottom: 50px;
+            }
+          }
+
+          .toggle-arrow {
+            i {
+              display: block;
+              width: 30px;
+              margin: auto;
+              margin-top: -30px;
+
+              @media (max-width: 768px) {
+                margin-top: 0
+              }
+            }
+          }
+
+          .children {
+              .split-view {
+                li:nth-last-child(1) {
+                  text-align: right
+                }
+
+                .box-buttons {
+
+                  @media (max-width: 480px) {
+                    float: none !important;
+                    width: 100%;
+                    clear: both;
+                    text-align: center;
+                  }
+
+                  button {
+                    width: 70px !important
+                  }
+                }
+
+                .toggle-arrow {
+                  display: none
+                }
+
+                .item-title {
+                  @media (max-width: 900px) {
+                    clear: left !important;
+                    padding: 10px 10px 0 10px;
+                  }
+                }
+
+                .item-text {
+                  @media (max-width: 900px) {
+                    clear: left !important;
+                  }
+                }
+
+                .item-media-wrapper {
+                  @media (max-width: 900px) {
+                    width: 100%
+                  }
+                }
+              }
+          }
+        }
+      }
+    }
+  }
+
+  .panel {
+    margin: @syn-padding;
+    margin-right: 0;
+    border-right: none;
+  }
+}
+
+.modal {
+  top: 200px !important;
+}
