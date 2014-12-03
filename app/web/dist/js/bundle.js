@@ -561,18 +561,16 @@
       var tpl = '<div ' +
         ' data-type    =   "' + type + '" ' +
         ' data-parent  =   "' + item._id + '"' +
-        ' class        =   "navigator"></div>';
+        ' class        =   "is-panel"></div>';
 
       return $compile(tpl)(scope);
     }
 
     var has = synapp['item relation'][item.type];
 
-    console.log(has);
-
     if ( has ) {
       var row = $('<div class="row"></div>'),
-        target = into.find('.children');
+        target = into.find('.children .is-section');
 
       if ( Array.isArray( has ) ) {
         has.forEach(function (type) {
@@ -636,7 +634,6 @@
 
         /** Listen to load children event **/
         $scope.$root.subscribe('load children', function (message) {
-
           if ( message.parent === $scope.item._id ) {
             $scope.loadChildren(message.parent);
             message.view.removeClass('is-loading').addClass('is-loaded');
@@ -1122,9 +1119,9 @@
 },{}],14:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', EvaluationAsAService];
+  module.exports = ['$rootScope', 'View', EvaluationAsAService];
 
-  function EvaluationAsAService ($rootScope) {
+  function EvaluationAsAService ($rootScope, View) {
     function Evaluation (evaluation) {
 
       this.item       =   evaluation.item;
@@ -1629,21 +1626,17 @@
 
         var current = $('body').scrollTop();
 
-        console.info('scrolling to PoA', poa);
-
         if ( 
           (current === poa) || 
           (current > poa && (current - poa < 50)) ||
           (poa > current && (poa - current < 50)) ) {
 
-          console.warn('ALREADY PoA')
           return cb();
         }
 
         $('body').animate({
           scrollTop: poa + 'px'
         }, speed || 500, 'swing', function () {
-          console.info('scrolled to PoA', poa);
           cb();
         });
       }
@@ -2023,7 +2016,6 @@
     };
 
     $rootScope.addPromotionToItem = function (item) {
-      console.log('promoting');
       DataFactory.Item.update(item._id, { $inc: { promotions: 1 } });
       $rootScope.items.forEach(function (_item, index) {
         if ( _item._id === item._id ) {
@@ -2072,8 +2064,6 @@
 
       DataFactory.Item.details(item_id)
         .success(function (details) {
-          console.log('details', details)
-          
 
           var feedbacks = details.feedbacks;
 
@@ -2145,24 +2135,30 @@
         return false;
       }
 
-      console.info('showing', elem.attr('class'), options);
-
       // make sure margin-top is equal to height for smooth scrolling
 
       elem.css('margin-top', '-' + elem.height() + 'px');
 
       // animate is-section
 
-      elem.find('.is-section:first').animate({
+      elem.find('.is-section:first').animate(
+        
+        {
           'margin-top': 0,
           // 'padding-top': 0,
-        }, 500, function () {
-          console.info('shown', elem.attr('class'), options);
+        },
+
+        500,
+
+        function () {
           elem.removeClass('is-showing').addClass('is-shown');
+          
           $rootScope.publish('did show view', options);
+          
           if ( elem.css('margin-top') !== 0 ) {
             elem.animate({'margin-top': 0}, 250);
           }
+          
           if ( cb ) cb();
         });
 
@@ -2210,64 +2206,63 @@
       }
 
       View.scrollToPointOfAttention($('#item-' + options.item), function () {
+      });
 
-        // hide
+      // hide
 
-        if ( view.hasClass('is-shown') ) {
-          hide(view, options);
-        }
+      if ( view.hasClass('is-shown') ) {
+        hide(view, options);
+      }
 
-        // show
-        
-        else {
+      // show
+      
+      else {
 
-          function _show () {
-            if ( $('#item-' + options.item).find('.is-shown').length ) {
-              hide($('#item-' + options.item).find('.is-shown'), options, function () {
-                view.removeClass('is-hidden').addClass('is-showing');
-
-                setTimeout(function () {
-                  show(view, options);
-                });
-              });
-            }
-            
-            else {
+        function _show () {
+          if ( $('#item-' + options.item).find('.is-shown').length ) {
+            hide($('#item-' + options.item).find('.is-shown'), options, function () {
               view.removeClass('is-hidden').addClass('is-showing');
 
               setTimeout(function () {
                 show(view, options);
               });
-            }
+            });
           }
+          
+          else {
+            view.removeClass('is-hidden').addClass('is-showing');
 
-          switch ( options.view ) {
-            case 'evaluator':
-              if ( ! view.hasClass('is-loaded') ) {
-                return $rootScope.loadEvaluation(options.item)
-                  .success(function () {
-                    view.addClass('is-loaded');
-                    _show()
-                  });
-              }
-              break;
-          }
-
-          _show();
-
-          switch ( options.view ) {
-            case 'children':
-              if ( ! view.hasClass('is-loaded') && ! view.hasClass('is-loading') ) {
-                console.warn('publish load children')
-                $rootScope.publish('load children', {
-                  parent: options.item,
-                  view: view
-                });
-              }
-              break;
+            setTimeout(function () {
+              show(view, options);
+            });
           }
         }
-      });
+
+        switch ( options.view ) {
+          case 'evaluator':
+            if ( ! view.hasClass('is-loaded') ) {
+              return $rootScope.loadEvaluation(options.item)
+                .success(function () {
+                  view.addClass('is-loaded');
+                  _show()
+                });
+            }
+            break;
+        }
+
+        _show();
+
+        switch ( options.view ) {
+          case 'children':
+            if ( ! view.hasClass('is-loaded') && ! view.hasClass('is-loading') ) {
+              $rootScope.publish('load children', {
+                parent: options.item,
+                view: view
+              });
+            }
+            break;
+        }
+      }
     });
 
     $rootScope.subscribe('toggle creator', function (options) {
@@ -2296,7 +2291,7 @@
         // show
 
         else {
-          if ( panel.find('.is-shown').length ) { console.error(990)
+          if ( panel.find('.is-shown').length ) { 
             hide(panel.find('.is-shown'), options, function () {
 
               creator.removeClass('is-hidden').addClass('is-showing');

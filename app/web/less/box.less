@@ -54,8 +54,11 @@
   }
 
   .item-text {
-    padding-left: @syn-padding;
-    border: 1px solid #fff;
+    
+    & {
+      padding-left: @syn-padding;
+      border: 1px solid #fff;
+    }
 
     @media (min-width: 901px) {
       padding-bottom: 200px;

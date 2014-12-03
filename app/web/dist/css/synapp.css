@@ -4610,6 +4610,9 @@ footer {
     margin-top: 0;
   }
 }
+.panel .panel-body .items .item .collapsers .children {
+  background: #eeeeee;
+}
 .panel .panel-body .items .item .collapsers .children .split-view li:nth-last-child(1) {
   text-align: right;
 }
@@ -4626,6 +4629,9 @@ footer {
 }
 .panel .panel-body .items .item .collapsers .children .split-view .toggle-arrow {
   display: none;
+}
+.panel .panel-body .items .item .collapsers .children .split-view .item-title {
+  width: 50%;
 }
 @media (max-width: 900px) {
   .panel .panel-body .items .item .collapsers .children .split-view .item-title {

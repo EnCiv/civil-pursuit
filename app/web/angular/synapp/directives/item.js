@@ -22,18 +22,16 @@
       var tpl = '<div ' +
         ' data-type    =   "' + type + '" ' +
         ' data-parent  =   "' + item._id + '"' +
-        ' class        =   "navigator"></div>';
+        ' class        =   "is-panel"></div>';
 
       return $compile(tpl)(scope);
     }
 
     var has = synapp['item relation'][item.type];
 
-    console.log(has);
-
     if ( has ) {
       var row = $('<div class="row"></div>'),
-        target = into.find('.children');
+        target = into.find('.children .is-section');
 
       if ( Array.isArray( has ) ) {
         has.forEach(function (type) {
@@ -97,7 +95,6 @@
 
         /** Listen to load children event **/
         $scope.$root.subscribe('load children', function (message) {
-
           if ( message.parent === $scope.item._id ) {
             $scope.loadChildren(message.parent);
             message.view.removeClass('is-loading').addClass('is-loaded');
