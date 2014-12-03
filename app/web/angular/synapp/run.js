@@ -262,11 +262,17 @@
       // if there is a shown truncated text
 
       if ( $('#item-' + options.item).hasClass('is-truncated') ) {
-        console.error($('#item-' + options.item).find('span').not('.word').length)
+        if ( $('#item-' + options.item).find('.item-text:first .truncator a').text() === 'less' ) {
+          $('#item-' + options.item).find('.item-text:first .truncator a').click();
+          setTimeout(function () {
+            View.scrollToPointOfAttention($('#item-' + options.item), function () {});
+          })
+        }
       }
 
-      View.scrollToPointOfAttention($('#item-' + options.item), function () {
-      });
+      else {
+        View.scrollToPointOfAttention($('#item-' + options.item), function () {});
+      }
 
       // hide
 

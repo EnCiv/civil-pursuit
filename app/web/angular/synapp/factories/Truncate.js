@@ -88,7 +88,7 @@
 
       // create more button
 
-      this.more = $('<span><i>... </i>[<a href=""></a>]</span>');
+      this.more = $('<span class="truncator"><i>... </i>[<a href=""></a>]</span>');
 
       // more button's text
 
