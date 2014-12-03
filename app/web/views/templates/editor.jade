@@ -4,12 +4,12 @@ section.editor-component(data-ng-controller='UploadCtrl')
     novalidate
     data-ng-submit = 'save()')
 
-    .row.row-padding(data-ng-show='error')
+    .row(data-ng-show='error')
       .alert.alert-warning.alert-dismissible(role='alert')
         strong Warning!
         div(data-ng-bind='error')
 
-    .row.padding
+    .row
       .col-xs-12
         .box.prefetch
           .item-media-wrapper
@@ -33,7 +33,7 @@ section.editor-component(data-ng-controller='UploadCtrl')
 
             button.btn(disabled) Details
 
-          .item-text.padding
+          .item-text
             include editor/subject
           
             .box-description.description

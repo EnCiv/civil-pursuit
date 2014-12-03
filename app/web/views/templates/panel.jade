@@ -78,5 +78,5 @@ include ../mixins/item-image
 
       // SHOW MORE
 
-      .padding.text-center(data-ng-show="$index === ( batchSize - 1 )")
+      .padding.text-center.load-more(data-ng-show="$index === ( batchSize - 1 )")
         a(href='#' data-ng-click='loadMore()') Load more

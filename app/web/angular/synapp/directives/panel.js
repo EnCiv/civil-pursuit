@@ -1,8 +1,8 @@
 ;(function () {
 
-  module.exports = ['$rootScope', '$timeout', 'DataFactory', PanelComponent];
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', 'View', PanelComponent];
 
-  function PanelComponent ($rootScope, $timeout, DataFactory) {
+  function PanelComponent ($rootScope, $timeout, DataFactory, View) {
     return {
       restrict: 'C',
       templateUrl: '/templates/panel',
@@ -19,6 +19,10 @@
         /** load more items */
 
         $scope.loadMore = function () {
+
+          View.scrollToPointOfAttention($scope.elem.find('.load-more'), function () {
+
+          });
 
           var query = { type: $scope.type, $skip: $scope.batchSize };
 

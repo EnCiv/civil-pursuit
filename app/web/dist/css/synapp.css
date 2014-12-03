@@ -4702,9 +4702,6 @@ footer {
 .editor-component form textarea {
   min-height: 120px;
 }
-.editor-component form [class^=col-] {
-  padding: 10px;
-}
 .editor-component .drop-box {
   background: #F8F8F8;
   border: 5px dashed #DDD;

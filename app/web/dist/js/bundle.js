@@ -656,9 +656,9 @@
 },{}],9:[function(require,module,exports){
 ;(function () {
 
-  module.exports = ['$rootScope', '$timeout', 'DataFactory', PanelComponent];
+  module.exports = ['$rootScope', '$timeout', 'DataFactory', 'View', PanelComponent];
 
-  function PanelComponent ($rootScope, $timeout, DataFactory) {
+  function PanelComponent ($rootScope, $timeout, DataFactory, View) {
     return {
       restrict: 'C',
       templateUrl: '/templates/panel',
@@ -675,6 +675,10 @@
         /** load more items */
 
         $scope.loadMore = function () {
+
+          View.scrollToPointOfAttention($scope.elem.find('.load-more'), function () {
+
+          });
 
           var query = { type: $scope.type, $skip: $scope.batchSize };
 
@@ -1400,17 +1404,17 @@
 
       this.item = item;
 
-      this.description = this.item.find('.description');
+      this.description = this.item.find('.description:first');
 
-      this.textWrapper = this.item.find('.item-text');
+      this.textWrapper = this.item.find('.item-text:first');
 
-      this.reference = this.item.find('.reference');
+      this.reference = this.item.find('.reference:first');
 
       this.text = this.description.text();
 
       this.words = this.text.split(' ');
 
-      this.height = parseInt(this.item.find('.item-text').css('paddingBottom'));
+      this.height = parseInt(this.textWrapper.css('paddingBottom'));
 
       this.truncated = false;
 
@@ -1429,6 +1433,7 @@
       this.tagify();
 
       if ( this.truncated ) {
+        item.addClass('is-truncated');
         this.appendMoreButton();
       }
     }
@@ -1445,7 +1450,7 @@
 
       this.words.forEach(function (word, index) {
 
-        var span = $('<span></span>');
+        var span = $('<span class="word"></span>');
 
         if ( self.truncated ) {
           span.addClass('truncated');
@@ -1506,6 +1511,9 @@
 
             if ( self.isIntro ) {
               self.unTruncate();
+              moreLink.closest('span').find('.reference').show();
+              moreLink.text(self.lessLabel);
+              moreLink.closest('span').find('i').hide();
             }
             
             else {
@@ -1537,6 +1545,9 @@
 
               else {
                 self.unTruncate();
+                moreLink.closest('span').find('.reference').show();
+                moreLink.text(self.lessLabel);
+                moreLink.closest('span').find('i').hide();
               }
             }
           }
@@ -1545,6 +1556,9 @@
 
           else {
             self.reTruncate();
+            moreLink.closest('span').find('.reference').hide();
+            moreLink.text(self.moreLabel);
+            moreLink.closest('span').find('i').show();
           }
         });
       });
@@ -1553,6 +1567,8 @@
     };
 
     Truncate.prototype.unTruncate = function () {
+
+      console.log('showing more');
         
       var self = this;
 
@@ -1560,9 +1576,7 @@
 
       var inc = 50;
 
-      var inc = Math.ceil(self.height / self.words.length);
-
-      console.log(self.words.length, inc)
+      // var inc = Math.ceil(self.height / self.words.length);
 
       // show words 50 by 50
 
@@ -1577,14 +1591,12 @@
 
       // on done showing words, wrap up
 
-      setTimeout(function () {
-        self.item.find('.reference').show();
-        self.more.find('a').text(self.lessLabel);
-        self.more.find('i').hide();  
-      }, interval);
+      
     };
 
     Truncate.prototype.reTruncate = function () {
+
+      console.log('showing less');
       
       var self = this;
 
@@ -1600,12 +1612,6 @@
           }
         }.bind({ i: i }), interval += (inc * 2));
       }
-
-      setTimeout(function () {
-        self.item.find('.reference').hide();
-        self.more.find('a').text(self.moreLabel);
-        self.more.find('i').show();
-      }, interval);
     };
 
     return Truncate;
@@ -2190,7 +2196,6 @@
         }, 1000);
     }
 
-
     // SUBSCRIBERS
 
     $rootScope.subscribe('toggle view', function (options) {
@@ -2203,6 +2208,12 @@
 
       if ( view.hasClass('is-showing') || view.hasClass('is-hiding') ) {
         return false;
+      }
+
+      // if there is a shown truncated text
+
+      if ( $('#item-' + options.item).hasClass('is-truncated') ) {
+        console.error($('#item-' + options.item).find('span').not('.word').length)
       }
 
       View.scrollToPointOfAttention($('#item-' + options.item), function () {

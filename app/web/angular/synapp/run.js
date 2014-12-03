@@ -245,7 +245,6 @@
         }, 1000);
     }
 
-
     // SUBSCRIBERS
 
     $rootScope.subscribe('toggle view', function (options) {
@@ -258,6 +257,12 @@
 
       if ( view.hasClass('is-showing') || view.hasClass('is-hiding') ) {
         return false;
+      }
+
+      // if there is a shown truncated text
+
+      if ( $('#item-' + options.item).hasClass('is-truncated') ) {
+        console.error($('#item-' + options.item).find('span').not('.word').length)
       }
 
       View.scrollToPointOfAttention($('#item-' + options.item), function () {
