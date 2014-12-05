@@ -35,18 +35,7 @@ mixin item-buttons (ref)
 
 mixin item-text (ref)
   .item-text
-    - if ( ref === 'creator' )
-      input.subject.item-title(
-        name              =   'subject'
-        type              =   'text' 
-        placeholder       =   'Subject'
-        data-ng-model     =   'item.subject'
-        data-ng-disabled  =   'is.in.progress'
-        title             =   'Enter subject'
-        autofocus
-        required          )
-
-    - else if ( ref === 'editor' )
+    - if ( ref === 'creator' || ref === 'editor' )
       input.subject.item-title(
         name              =   'subject'
         type              =   'text' 
@@ -76,14 +65,50 @@ mixin item-text (ref)
       - else
         .pre-text.padding-right.padding-left(ng-bind=ref + '.description')
 
-    h4.padding.reference(data-ng-repeat='reference in ' + ref + '.references' data-ng-show=ref + '.references.length')
-      a(data-ng-href='{{ reference.url }}' target='_blank') {{ reference.title || reference.url }}
+    - if ( ref === 'creator' || ref === 'editor' )
+      
+      //- Title
+
+      input.url-fetcher(
+        type              =   'text' 
+        name              =   'title'
+        placeholder       =   'http://'
+        value             =   '{{' + ref + '.references[0].title}}'
+        title             =  'Optional reference'
+      )
+
+      code.text-primary(ng-show='searchingTitle') Searching title for 
+        span(ng-bind=ref + '.references[0].title | shorten:100' title='{{' + ref + '.references[0].title}}')
+
+      code.text-muted(ng-bind=ref + '.references[0].url | shorten:100' title='{{' + ref + '.references[0].url}}')
+
+      code.text-warning(ng-show='searchingTitleFailed') Could not resolve title
+
+      //- URL
+
+      input.entry-url(
+        type              =   'hidden'
+        name              =   'url'
+      )
+
+    - else
+      h4(data-ng-repeat='reference in ' + ref + '.references')
+        a(data-ng-href='{{ reference.url }}' target='_blank') {{ reference.title || reference.url }}
 
 mixin item (ref)
-  .box(data-ng-controller='UploadCtrl')
-    +item-media(ref)
 
-    - if ( ref !== 'intro' )
-      +item-buttons(ref)
+  - if ( ref === 'creator' || ref === 'editor' )
+    .box(data-ng-init=ref + '= { references: [] }' data-ng-controller='UploadCtrl')
+      +box(ref)
 
-    +item-text(ref)
+  - else
+    .box
+      +box(ref)
+
+mixin box(ref)
+  +item-media(ref)
+
+  - if ( ref !== 'intro' )
+    +item-buttons(ref)
+
+  +item-text(ref)

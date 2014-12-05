@@ -46,14 +46,13 @@
 
               $scope.searchingTitle = false;
 
-              $scope.item.references[0].url = $elem.val();
+              $elem.closest('.description').find('[name="url"]').val($elem.val());
 
-              $scope.item.references[0].title = data;
+              $elem.data('url', $elem.val());
+              $elem.data('title', data);
+              $elem.val(data);
 
-              $elem.data('url', $scope.item.references[0].url);
-              $elem.data('title', $scope.item.references[0].title);
-
-              var youtube = require('../lib/youtube')($scope.item.references[0].url);
+              var youtube = require('../lib/youtube')(data);
 
               if ( youtube ) {
                 $elem.closest('.editor,.creator').find('.item-media')

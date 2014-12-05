@@ -444,6 +444,13 @@
           payload.parent = message.parent;
         }
 
+        if ( box.find('input[name="title"]').val() ) {
+          payload.references = [{
+            title: box.find('input[name="title"]').val(),
+            url: box.find('input[name="url"]').val(),
+          }];
+        }
+
         DataFactory.Item.create(payload)
           .success(function (item) {
             $rootScope.items = [item].concat($rootScope.items);
