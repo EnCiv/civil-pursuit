@@ -58,7 +58,7 @@ module.exports = function (app, synapp, SynappError, passport) {
                 }
 
                 req.session.email   =   email;
-                req.session.id      =   user._id;
+                req.session.userid      =   user._id;
 
                 console.log('User created', user);
                 

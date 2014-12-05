@@ -398,7 +398,7 @@ module.exports = function synappExpress (listen, isTest) {
       }));
 
     app.get('/fb/ok', function (req, res) {
-      res.cookie('synuser', { email: req.session.email, id: req.session.id }, synapp.cookie);
+      res.cookie('synuser', { email: req.session.email, id: req.session.userid }, synapp.cookie);
 
       // Log.INFO('Cookie set', req.session);
 
@@ -422,7 +422,7 @@ module.exports = function synappExpress (listen, isTest) {
       }));
 
     app.get('/tw/ok', function (req, res) {
-      res.cookie('synuser', { email: req.session.email, id: req.session.id }, synapp.cookie);
+      res.cookie('synuser', { email: req.session.email, id: req.session.userid }, synapp.cookie);
 
       console.log('Cookie set', req.session);
 
