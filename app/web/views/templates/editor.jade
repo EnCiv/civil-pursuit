@@ -25,7 +25,7 @@ section.editor-component(data-ng-controller='UploadCtrl')
                 ) Upload image
 
           .pull-right.box-buttons
-            button.btn Promote
+            button.btn(data-ng-bind='saver')
 
             div(data-ng-hide='item.description') New
 

@@ -50,6 +50,8 @@
       }],
       link: function ($scope, $elem, $attrs) {
 
+        $scope.saver = 'panel';
+
         $scope.elem = $elem;
 
         var id = 'panel-' + $scope.type;

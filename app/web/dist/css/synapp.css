@@ -4303,6 +4303,11 @@ a.btn-default {
   overflow: hidden;
   opacity: 0;
 }
+input.danger,
+textarea.danger {
+  color: red !important;
+  border: 1px solid #ff0000 !important;
+}
 /** Importing layout */
 /**
  *    __________________________________________________________________________
@@ -4433,8 +4438,40 @@ footer {
   width: 100%;
   height: 100%;
 }
+.box .item-media-wrapper .item-media .upload-button {
+  margin-top: -85px;
+}
+.box .item-media-wrapper .item-media input.upload-button {
+  width: 20px !important;
+}
+.box .item-media-wrapper .item-media.youtube + .upload-button {
+  margin-top: 0;
+  margin-bottom: 50px;
+}
+.box .item-media-wrapper .item-media .drop-box {
+  background: #F8F8F8;
+  border: 5px dashed #DDD;
+  height: 45px !important;
+  text-align: center;
+  padding-top: 2vh;
+  padding-bottom: 80px;
+  margin-left: -10px !important;
+  padding-top: 55px !important;
+}
+.box .item-media-wrapper .item-media .drop-box.dragover {
+  border: 5px dashed blue;
+}
+.box .item-media-wrapper .item-media .drop-box.dragover-err {
+  border: 5px dashed red;
+}
 .box .box-buttons {
   text-align: right;
+  width: 120px;
+}
+@media (max-width: 600px) {
+  .box .box-buttons {
+    width: 90px;
+  }
 }
 .box .box-buttons .btn {
   width: 100px;
@@ -4490,6 +4527,7 @@ footer {
 .box .item-text .item-title {
   font-size: 24px;
   word-wrap: break-word;
+  border: none;
 }
 @media (max-width: 800px) {
   .box .item-text .item-title {
@@ -4511,6 +4549,39 @@ footer {
     font-size: 16px;
   }
 }
+@media (min-width: 1280px) {
+  .box .item-text input.item-title,
+  .box .item-text .box-description textarea {
+    width: 50%;
+  }
+}
+@media (max-width: 1280px) {
+  .box .item-text input.item-title,
+  .box .item-text .box-description textarea {
+    width: 45%;
+  }
+}
+@media (max-width: 680px) {
+  .box .item-text input.item-title,
+  .box .item-text .box-description textarea {
+    width: 40%;
+  }
+}
+@media (max-width: 500px) {
+  .box .item-text input.item-title,
+  .box .item-text .box-description textarea {
+    width: 35%;
+  }
+}
+@media (max-width: 400px) {
+  .box .item-text input.item-title,
+  .box .item-text .box-description textarea {
+    width: 60%;
+  }
+}
+.box .item-text input.item-title {
+  margin-top: 8px;
+}
 .box .item-text .box-description {
   font-size: 16px;
   margin-top: 0 !important;
@@ -4522,21 +4593,12 @@ footer {
     font-size: 14px;
   }
 }
+.box .item-text .box-description textarea {
+  border: none;
+  min-height: 120px;
+}
 .box .item-text .entry-title {
   margin-top: 15px;
-}
-.box input {
-  width: 45% !important;
-  border: none;
-}
-.box textarea {
-  border: none;
-  width: 45% !important;
-}
-.box .drop-box {
-  min-height: 230px !important;
-  margin-left: -10px !important;
-  padding-top: 55px !important;
 }
 /** ____________________________________________________________________________
 
@@ -4658,64 +4720,6 @@ footer {
   top: 200px !important;
 }
 /** Importing editor */
-/**
- *    __________________________________________________________________________
- *
- *    Synapp Style Sheet / Editor
- *    ------------------   ------
- *
- *    @abstract
- *    Editor COmponent
- *
- *    @author   francois
- *   
- *    __________________________________________________________________________
- *
-*/
-.editor-component {
-  /*    ------------------------------------------------------------------------
-      
-        FORM
-
-        ------------------------------------------------------------------------
-  */
-  /*    ------------------------------------------------------------------------
-      
-        DROP IMAGE
-
-        ------------------------------------------------------------------------
-  */
-}
-.editor-component .upload-button {
-  margin-top: -85px;
-}
-.editor-component input.upload-button {
-  width: 20px !important;
-}
-.editor-component .item-media.youtube + .upload-button {
-  margin-top: 0;
-  margin-bottom: 50px;
-}
-.editor-component form input {
-  height: 2em !important;
-}
-.editor-component form textarea {
-  min-height: 120px;
-}
-.editor-component .drop-box {
-  background: #F8F8F8;
-  border: 5px dashed #DDD;
-  height: 65px;
-  text-align: center;
-  padding-top: 2vh;
-  padding-bottom: 50px;
-}
-.editor-component .drop-box.dragover {
-  border: 5px dashed blue;
-}
-.editor-component .drop-box.dragover-err {
-  border: 5px dashed red;
-}
 /** Importing evaluator */
 .evaluator .feedback-entry {
   min-height: 200px;

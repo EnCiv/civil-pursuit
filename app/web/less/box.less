@@ -27,11 +27,51 @@
           height: 100%;
         }
       }
+
+      .upload-button {
+        margin-top: -85px;
+        // width: 90%;
+        // font-size: 14px
+      }
+
+      input.upload-button {
+        width: 20px !important
+      }
+
+      &.youtube + .upload-button {
+        margin-top: 0;
+        margin-bottom: 50px
+      }
+
+      .drop-box {
+        background: #F8F8F8;
+        border: 5px dashed #DDD;
+        height: 45px !important; 
+        text-align: center;
+        padding-top: 2vh;
+        padding-bottom: 80px;
+        // min-height: 230px !important;
+        margin-left: -10px !important;
+        padding-top: 55px !important
+      }
+
+      .drop-box.dragover {
+        border: 5px dashed blue;
+      }
+
+      .drop-box.dragover-err {
+        border: 5px dashed red;
+      }
     }
   }
 
   .box-buttons {
     text-align: right;
+    width: 120px;
+
+    @media (max-width: 600px) {
+      width: 90px;
+    }
 
     .btn {
       width: 100px;
@@ -54,7 +94,7 @@
   }
 
   .item-text {
-    
+
     & {
       padding-left: @syn-padding;
       border: 1px solid #fff;
@@ -87,6 +127,7 @@
     .item-title {
       font-size: 24px;
       word-wrap: break-word;
+      border: none;
       // padding-left: @syn-padding;
 
       @media (max-width: 800px) {
@@ -106,6 +147,33 @@
       }
     }
 
+    input.item-title, .box-description textarea {
+
+      @media (min-width: 1280px) {
+        width: 50%
+      }
+
+      @media (max-width:1280px) {
+        width: 45%
+      }
+
+      @media (max-width: 680px) {
+        width: 40%
+      }
+
+      @media (max-width: 500px) {
+        width: 35%
+      }
+
+      @media (max-width: 400px) {
+        width: 60%
+      }
+    }
+
+    input.item-title {
+      margin-top: 8px
+    }
+
     .box-description {
       font-size: 16px;
       margin-top: 0 !important;
@@ -115,26 +183,16 @@
       @media (max-width: 500px) {
         font-size: 14px
       }
+
+      textarea {
+        border: none;
+        min-height: 120px
+      }
     }
 
     .entry-title {
       margin-top: 15px
     }
   }
-
-  input {
-    width: 45% !important;
-    border: none;
-  }
-
-  textarea {
-    border: none;
-    width: 45% !important
-  }
-
-  .drop-box {
-    min-height: 230px !important;
-    margin-left: -10px !important;
-    padding-top: 55px !important
-  }
+  
 }

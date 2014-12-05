@@ -7,6 +7,8 @@
       restrict: 'C',
       // templateUrl: '/templates/editor',
       controller: ['$scope', function ($scope) {
+
+        $scope.saver = 'editor';
         
         $scope.getImage = function () {
           if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {

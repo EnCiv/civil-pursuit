@@ -3,6 +3,7 @@
 
 include mixins/item-image
 include mixins/bootstrap
+include mixins/item
 
 doctype html
 
@@ -47,15 +48,7 @@ section.container-fluid(
             +bootstrap-panel-heading
               h4.panel-title(ng-bind='intro.subject')
             +bootstrap-panel-body
-              .box
-                .item-media-wrapper
-                  .item-media
-                    img.img-responsive.pull-left(data-ng-src='{{intro.image}}')
-
-                div.item-text.padding
-                  h4.item-title(ng-bind='intro.subject' style='margin-top: -2px')
-                
-                  .box-description.description.pre-text(ng-bind='intro.description')
+              +item('intro')
 
         block page
 

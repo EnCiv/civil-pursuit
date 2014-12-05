@@ -9,9 +9,12 @@
         url:    '@',
         filter: '@',
         image:  '@',
+        subject:  '@',
         upload: '@'
       },
       link: function ($scope, $elem) {
+
+        $scope.saver = 'item-media';
         
         var youtube = require('../lib/youtube')($scope.url);
 

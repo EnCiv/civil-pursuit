@@ -1,5 +1,6 @@
 include ../mixins/bootstrap
 include ../mixins/item-image
+include ../mixins/item
 
 // PANEL
 
@@ -25,7 +26,7 @@ include ../mixins/item-image
 
     .creator.is-container(data-type="{{ type }}" data-parent='{{ parent }}')
       .is-section
-        include editor
+        +item('creator')
 
     // ITEMS
 
@@ -41,7 +42,7 @@ include ../mixins/item-image
 
         // BOX
 
-        include item
+        +item('item')
 
         // COLLAPSERS
 

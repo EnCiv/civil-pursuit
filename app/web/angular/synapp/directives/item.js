@@ -68,6 +68,8 @@
       restrict: 'C',
       controller: ['$scope', function ($scope) {
 
+        $scope.saver = 'item';
+
         /** @args {ObjectID} item_id */
         $scope.loadChildren = function (item_id) {
 

@@ -299,7 +299,6 @@
   function Creator ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
-      // templateUrl: '/templates/editor',
       scope: {
         type: '@',
         parent: '@'
@@ -319,14 +318,14 @@
           }
         };
 
-        $scope.save = function () {
-
+        $scope.save = function () { console.warn('hello');
+          return;
           var item = {
             type: $scope.item.type,
             subject: $scope.item.subject,
             description: $scope.item.description,
             image: $scope.getImage()
-          }
+          };
 
           if ( $scope.parent ) {
             item.parent = $scope.parent;
@@ -339,8 +338,6 @@
               item.references[+i] = $scope.item.references[i];
             }
           }
-
-          console.log('item', item);
 
           DataFactory.Item.create(item)
             .success(function (item) {
@@ -363,7 +360,7 @@
         };
       }],
       link: function ($scope, $elem, $attr) {
-        console.log('holllllllaaa')
+        
       }
     };
   }
@@ -396,6 +393,8 @@
       restrict: 'C',
       // templateUrl: '/templates/editor',
       controller: ['$scope', function ($scope) {
+
+        $scope.saver = 'editor';
         
         $scope.getImage = function () {
           if ( Array.isArray($scope.$root.uploadResult) && $scope.$root.uploadResult.length ) {
@@ -502,9 +501,12 @@
         url:    '@',
         filter: '@',
         image:  '@',
+        subject:  '@',
         upload: '@'
       },
       link: function ($scope, $elem) {
+
+        $scope.saver = 'item-media';
         
         var youtube = require('../lib/youtube')($scope.url);
 
@@ -608,6 +610,8 @@
       restrict: 'C',
       controller: ['$scope', function ($scope) {
 
+        $scope.saver = 'item';
+
         /** @args {ObjectID} item_id */
         $scope.loadChildren = function (item_id) {
 
@@ -706,6 +710,8 @@
         
       }],
       link: function ($scope, $elem, $attrs) {
+
+        $scope.saver = 'panel';
 
         $scope.elem = $elem;
 
@@ -2334,6 +2340,77 @@
       });
 
       toggle();
+    });
+
+    $rootScope.subscribe('create item', function (message) {
+
+      /** Get box */
+
+      var box = $(message.elem.target).closest('.box');
+
+      /** Verify has subject */
+
+      if ( ! box.find('input.item-title').val() ) {
+        box.find('input.item-title')
+          .addClass('danger')
+          .off('keyup')
+          .on('keyup', function () {
+            if ( $(this).val() && $(this).hasClass('danger') ) {
+              $(this).removeClass('danger');
+            }
+            else if ( ! $(this).val() && ! $(this).hasClass('danger') ) {
+              $(this).addClass('danger');
+            }
+          })
+          ;
+      }
+
+      /** Verify has description */
+
+      else if ( ! box.find('.description textarea').val() ) {
+        box.find('.description textarea')
+          .addClass('danger')
+          .off('keyup')
+          .on('keyup', function () {
+            if ( $(this).val() && $(this).hasClass('danger') ) {
+              $(this).removeClass('danger');
+            }
+            else if ( ! $(this).val() && ! $(this).hasClass('danger') ) {
+              $(this).addClass('danger');
+            }
+          })
+          ;
+      }
+
+      /** Send to back end */
+
+      else {
+        var payload = {
+          type: message.type,
+          subject: box.find('input.item-title').val(),
+          description: box.find('.description textarea').val(),
+          image: (function () {
+
+            if ( Array.isArray($rootScope.uploadResult) && $rootScope.uploadResult.length ) {
+              return $rootScope.uploadResult[0].path.split(/\//).pop();
+            }
+
+          })()
+        };
+
+        if ( message.parent ) {
+          payload.parent = message.parent;
+        }
+
+        DataFactory.Item.create(payload)
+          .success(function (item) {
+            $rootScope.items = [item].concat($rootScope.items);
+
+            $rootScope.itemViewed  = item._id;
+
+            $rootScope.lineage[item._id] = item.parent;
+          });
+      }
     });
   }
 

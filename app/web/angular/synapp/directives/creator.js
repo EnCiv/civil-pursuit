@@ -5,7 +5,6 @@
   function Creator ($rootScope, $timeout, DataFactory) {
     return {
       restrict: 'C',
-      // templateUrl: '/templates/editor',
       scope: {
         type: '@',
         parent: '@'
@@ -25,14 +24,14 @@
           }
         };
 
-        $scope.save = function () {
-
+        $scope.save = function () { console.warn('hello');
+          return;
           var item = {
             type: $scope.item.type,
             subject: $scope.item.subject,
             description: $scope.item.description,
             image: $scope.getImage()
-          }
+          };
 
           if ( $scope.parent ) {
             item.parent = $scope.parent;
@@ -45,8 +44,6 @@
               item.references[+i] = $scope.item.references[i];
             }
           }
-
-          console.log('item', item);
 
           DataFactory.Item.create(item)
             .success(function (item) {
@@ -69,7 +66,7 @@
         };
       }],
       link: function ($scope, $elem, $attr) {
-        console.log('holllllllaaa')
+        
       }
     };
   }
