@@ -90,11 +90,15 @@
               display: block;
               width: 30px;
               margin: auto;
-              margin-top: -30px;
+              margin-top: -35px !important;
 
               @media (max-width: 768px) {
                 margin-top: 0
               }
+            }
+
+            .is-truncated + .toggle-arrow {
+              border: 1px solid red;
             }
           }
 

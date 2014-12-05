@@ -4665,12 +4665,15 @@ footer {
   display: block;
   width: 30px;
   margin: auto;
-  margin-top: -30px;
+  margin-top: -35px !important;
 }
 @media (max-width: 768px) {
   .panel .panel-body .items .item .collapsers .toggle-arrow i {
     margin-top: 0;
   }
+}
+.panel .panel-body .items .item .collapsers .toggle-arrow .is-truncated + .toggle-arrow {
+  border: 1px solid red;
 }
 .panel .panel-body .items .item .collapsers .children {
   background: #eeeeee;

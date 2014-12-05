@@ -92,7 +92,7 @@ mixin item-text (ref)
       )
 
     - else
-      h4(data-ng-repeat='reference in ' + ref + '.references')
+      h4(data-ng-repeat='reference in ' + ref + '.references' data-ng-show=ref + '.references.length')
         a(data-ng-href='{{ reference.url }}' target='_blank') {{ reference.title || reference.url }}
 
 mixin item (ref)
