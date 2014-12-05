@@ -4,7 +4,7 @@ mixin item-image(name)
     .item-media
       img.img-responsive.pull-left(data-ng-src='{{intro.image}}')
 
-  - else if ( name === 'creator' )
+  - else if ( name === 'creator' || name === 'editor' )
     section.item-media
       //- Drop image box
 

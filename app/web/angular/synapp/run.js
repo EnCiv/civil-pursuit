@@ -454,6 +454,89 @@
           });
       }
     });
+
+    $rootScope.subscribe('edit item', function (message) {
+
+      /** Get box */
+
+      var box = $(message.elem.target).closest('.box');
+
+      /** Verify has subject */
+
+      if ( ! box.find('input.item-title').val() ) {
+        box.find('input.item-title')
+          .addClass('danger')
+          .off('keyup')
+          .on('keyup', function () {
+            if ( $(this).val() && $(this).hasClass('danger') ) {
+              $(this).removeClass('danger');
+            }
+            else if ( ! $(this).val() && ! $(this).hasClass('danger') ) {
+              $(this).addClass('danger');
+            }
+          })
+          ;
+      }
+
+      /** Verify has description */
+
+      else if ( ! box.find('.description textarea').val() ) {
+        box.find('.description textarea')
+          .addClass('danger')
+          .off('keyup')
+          .on('keyup', function () {
+            if ( $(this).val() && $(this).hasClass('danger') ) {
+              $(this).removeClass('danger');
+            }
+            else if ( ! $(this).val() && ! $(this).hasClass('danger') ) {
+              $(this).addClass('danger');
+            }
+          })
+          ;
+      }
+
+      /** Send to back end */
+
+      else {
+        var payload = {
+          type: message.type,
+          from: message.item,
+          subject: box.find('input.item-title').val(),
+          description: box.find('.description textarea').val(),
+          image: (function () {
+
+            if ( Array.isArray($rootScope.uploadResult) && $rootScope.uploadResult.length ) {
+              return $rootScope.uploadResult[0].path.split(/\//).pop();
+            }
+
+            var edited = $rootScope.items.reduce(
+              function (edited, item) {
+
+                if ( item._id === message.item ) {
+                  edited = item;
+                }
+
+                return edited;
+              },
+              null);
+
+            if ( edited && edited.image ) {
+              return edited.image;
+            }
+
+          })()
+        };
+
+        DataFactory.Item.create(payload)
+          .success(function (item) {
+            $rootScope.items = [item].concat($rootScope.items);
+
+            $rootScope.itemViewed  = item._id;
+
+            $rootScope.lineage[item._id] = item.parent;
+          });
+      }
+    });
   }
 
 })();

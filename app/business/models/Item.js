@@ -53,6 +53,12 @@ var ItemSchema = new Schema({
     "index": true
   },
 
+  "from": {
+    "type": Schema.Types.ObjectId,
+    "ref": "Item",
+    "index": true
+  },
+
   // the user id (reference to User, required)
   
   "user": {
