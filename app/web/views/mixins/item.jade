@@ -49,21 +49,22 @@ mixin item-text (ref)
     - else
       h4.item-title(data-ng-bind=ref + '.subject' title='{{ ' + ref + '.subject }}')
     
-    .box-description.description
+    
       - if ( ref === 'creator' || ref === 'editor' )
-        textarea(
-          auto-grow
-          name              =   'description'
-          placeholder       =   'Describe the subject in a concise and complete fashion that is measurable and unbiased'
-          title             =   'Describe the subject in a concise and complete fashion that is measurable and unbiased' 
-          spellcheck        =   'true'
-          lang              =   'en'  
-          data-ng-model     =   'item.description'
-          data-ng-disabled  =   'is.in.progress'
-          required          )
+        .box-description.description
+          textarea(
+            auto-grow
+            name              =   'description'
+            placeholder       =   'Describe the subject in a concise and complete fashion that is measurable and unbiased'
+            title             =   'Describe the subject in a concise and complete fashion that is measurable and unbiased' 
+            spellcheck        =   'true'
+            lang              =   'en'  
+            data-ng-model     =   'item.description'
+            data-ng-disabled  =   'is.in.progress'
+            required          )
 
       - else
-        .pre-text.padding-right.padding-left(ng-bind=ref + '.description')
+        .box-description.description.pre-text.padding-right.padding-left(ng-bind=ref + '.description')
 
     - if ( ref === 'creator' || ref === 'editor' )
       
