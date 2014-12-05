@@ -4641,6 +4641,10 @@ footer {
   margin-right: 0;
   border-right: none;
 }
+.panel .panel-body .items .item.is-truncated .truncator {
+  display: inline-block;
+  margin-bottom: 30px;
+}
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,
 .panel .panel-body .items .item .collapsers .editor {
@@ -4671,9 +4675,6 @@ footer {
   .panel .panel-body .items .item .collapsers .toggle-arrow i {
     margin-top: 0;
   }
-}
-.panel .panel-body .items .item .collapsers .toggle-arrow .is-truncated + .toggle-arrow {
-  border: 1px solid red;
 }
 .panel .panel-body .items .item .collapsers .children {
   background: #eeeeee;

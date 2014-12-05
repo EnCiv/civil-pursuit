@@ -71,6 +71,11 @@
           border-right:   none;
         }
 
+        &.is-truncated .truncator {
+          display: inline-block;
+          margin-bottom: 30px;
+        }
+
         .collapsers {
           .evaluator, .details, .editor {
             border: 1px solid @panel-border-color;
@@ -95,10 +100,6 @@
               @media (max-width: 768px) {
                 margin-top: 0
               }
-            }
-
-            .is-truncated + .toggle-arrow {
-              border: 1px solid red;
             }
           }
 
