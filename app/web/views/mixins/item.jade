@@ -13,7 +13,7 @@ mixin item-buttons (ref)
     - else if ( ref === 'editor' )
       button.btn(data-ng-click='$root.publish("edit item", { type: type, item: item._id, elem: $event })') Promote
 
-    - else
+    - else if ( isSignedIn )
       button.btn(data-ng-click='$root.publish("toggle view", { view: "evaluator", item: ' + ref + '._id })') Promote
 
     - if ( ref === 'creator' )
