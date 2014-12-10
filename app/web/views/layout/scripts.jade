@@ -13,6 +13,10 @@ block script-backend
     synapp.env = "!{settings.env}";
     synapp.user = "!{_id}";
 
+//- socketio
+block script-socketio
+  script(src='/socket.io/socket.io.js')
+
 //- # jQuery
 
 block script-jquery

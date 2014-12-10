@@ -544,6 +544,15 @@
           });
       }
     });
+
+    // SOCKET IO
+
+    $rootScope.socket = io.connect('http://' + window.location.hostname + ':' +
+    window.location.port);
+
+    $rootScope.socket.on('online users', function (online_users) {
+      $rootScope.online_users = online_users;
+    });
   }
 
 })();

@@ -8,8 +8,11 @@ header.container-fluid
   .row
     .col-xs-12
       .pull-right
+        span
+          span(data-ng-bind='$root.online_users')
+          span  users on-line
         a.button.btn.btn-lg.btn-default(href='#intro')
-          big.fa.fa-home
+          big.fa.fa-user
         span  
         a.button.btn.btn-lg.btn-default(href=back)
           big.fa.fa-chevron-left

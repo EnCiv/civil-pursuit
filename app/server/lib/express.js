@@ -495,6 +495,12 @@ module.exports = function synappExpress (listen, isTest) {
         console.error(error.format());
       });
 
+      /////////////////////////////////////////////////////////////////////////
+      // SOCKET IO
+      //////////////////////////////////////////////////////////////////////////
+
+      require('./io')(server, app);
+
       domain.add(server);
     }
   });
