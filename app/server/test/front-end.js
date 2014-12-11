@@ -57,7 +57,7 @@ describe('Signing up', function () {
         json: true,
         body: {
           email: Email,
-          password: '1234'
+          password: 'abcd1234!!QWER-1,.'
         },
         jar: true
       },
@@ -101,7 +101,7 @@ describe('Signing in', function () {
         json: true,
         body: {
           email: Email,
-          password: '1234'
+          password: 'abcd1234!!QWER-1,.'
         },
         jar: true
       },

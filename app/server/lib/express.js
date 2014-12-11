@@ -188,6 +188,8 @@ module.exports = function synappExpress (listen, isTest) {
         }
       }
 
+      console.log(req.method, req.originalUrl);
+
       next();
     });
 

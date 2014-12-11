@@ -17,6 +17,8 @@
 
       io.on('connection', function (socket) {
 
+        console.log('socket', socket);
+
         online_users ++;
 
         io.emit('online users', online_users);

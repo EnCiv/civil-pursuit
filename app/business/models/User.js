@@ -57,19 +57,35 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb) {
-  bcrypt.compare(requestPassword, realPassword, function (error, same) {
-    return cb(error, same);
-    if ( ! same ) {
-      return false;
+  bcrypt.compare(requestPassword, realPassword, cb);
+};
+
+UserSchema.statics.identify = function (email, password, cb) {
+  console.log()
+  console.log('usser arguments', arguments)
+  console.log()
+  var self = this;
+
+  this.findOne({ email: email }, function (error, user) {
+    if ( error ) {
+      return cb(error);
     }
-    // -------------------------------------------------------------------------------- \\
-    Log.INFO('Email match: %s'         .format(req.body.email));
-    // -------------------------------------------------------------------------------- \\
-    res.cookie('synuser', { email: req.body.email, id: user._id }, cookie);
-    // -------------------------------------------------------------------------------- \\
-    Log.OK('User signed in: %s'      .format(req.body.email));
-    // -------------------------------------------------------------------------------- \\
-    res.json({ in: true });
+
+    if ( ! user ) {
+      return cb(new Error('User not found ' + email));
+    }
+    
+    self.isValidPassword(password, user.password, function (error, isValid) {
+      if ( error ) {
+        return cb(error);
+      }
+      
+      if ( ! isValid ) {
+        return cb(new Error('Wrong password'));
+      }
+      
+      return cb(null, user);
+    });
   });
 };
 
