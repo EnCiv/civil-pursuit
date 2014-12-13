@@ -15,82 +15,105 @@
 
 ***/
 
-var should = require('should');
+(function () {
+  'use strict';
 
-module.exports = function (error, req, res, next) {
+  var should = require('should');
 
-    // Assert away
+  module.exports = function (app) {
+    return function (error, req, res, next) {
 
-    req     .should.be.an.Object;
+      // Assert away
 
-    req.constructor.name
-            .should.equal('IncomingMessage');
+      req
+        .should.be.an.Object;
 
-    res     .should.be.an.Object;
+      req.constructor.name
+        .should.equal('IncomingMessage');
 
-    res.constructor.name
-            .should.equal('ServerResponse');
+      res
+        .should.be.an.Object;
 
-    next    .should.be.a.Function;
+      res.constructor.name
+        .should.equal('ServerResponse');
 
-  if ( ! error instanceof Error ) {
-    return next();
-  }
+      next
+        .should.be.a.Function;
 
-  var domain = require('domain').create();
-
-  domain.on('error', function (error2) {
-    next(error);
-  });
-
-  domain.run(function () {
-
-    if ( error.name === 'Synapp_DuplicateUserError' ) {
-      return res.redirect('/?failed=nodup');
-    }
-
-    if ( typeof error.status === 'number' ) {
-      res.status(error.status);
-    }
-
-    else {
-      switch ( error.name ) {
-        case 'AssertionError':
-          res.status(400);
-          break;
-
-        case 'Synapp_UnauthorizedError':
-          res.status(401);
-          break;
-
-        default:
-          res.status(500);
-          break;
+      if ( ! error instanceof Error ) {
+        return next();
       }
-    }
 
-    if ( /^\/(api)|(test)\/?/.test(req.path) ) {
-      res.type('json');
-    }
+      var domain = require('domain').create();
 
-    else {
-      res.type('html');
-    }
+      domain.on('error', function (error2) {
+        next(error);
+      });
 
-    console.error(require('util').format('%d %s %s', res.statusCode, error.name, error.message),
-      error.stack && error.stack.split(/\n/));
+      domain.run(function () {
 
-    res.format({
-      'json': function () {
-        res.json({
-          error: {
-            name: error.name,
-            message: error.message,
-            stack: error.stack && error.stack.split(/\n/),
-            statusCode: res.statusCode
+        if ( error.name === 'Synapp_DuplicateUserError' ) {
+          res.statusCode = 301;
+          res.locals.logResponse();
+          return res.redirect('/?failed=nodup');
+        }
+
+        if ( typeof error.status === 'number' ) {
+          res.status(error.status);
+        }
+
+        else {
+          switch ( error.name ) {
+            case 'AssertionError':
+              res.status(400);
+              break;
+
+            case 'Synapp_UnauthorizedError':
+              res.status(401);
+              break;
+
+            default:
+              res.status(500);
+              break;
+          }
+        }
+
+        if ( /^\/(api)|(test)|(sign)\/?/.test(req.path) ) {
+          res.type('json');
+        }
+
+        else {
+          res.type('html');
+        }
+
+        res.locals.logMessage({
+          error: error.message,
+          name: error.name,
+          code: error.code,
+          status: error.status,
+          stack: error.stack.split(/\n/)
+        });
+
+        res.locals.logResponse();
+
+        res.format({
+          json: function () {
+            res.json({
+              error: {
+                name: error.name,
+                message: error.message,
+                stack: app.locals.settings.env && error.stack && error.stack.split(/\n/),
+                statusCode: res.statusCode
+              }
+            });
+          },
+
+          html: function () {
+            res.send('An error occurred');
           }
         });
-      }
-    });
-  });
-};
+      });
+    };
+  };
+
+}) ();

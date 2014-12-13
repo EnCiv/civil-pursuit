@@ -1,64 +1,59 @@
-const API_VERSION = '0.0.0';
+(function () {
 
-var should = require('should');
+  'use strict';
 
-module.exports = function (req, res, next) {
-  /********************************************************************************** SMOKE-TEST **/
-    // ------------------------------------------------------------------------------------------ \\
-    req     .should.be.an.Object;
-    // ------------------------------------------------------------------------------------------ \\
-    res     .should.be.an.Object;
-    // ------------------------------------------------------------------------------------------ \\
-    next    .should.be.a.Function;
-    // ------------------------------------------------------------------------------------------ \\
-  /********************************************************************************   DOMAIN     **/
-  // -------------------------------------------------------------------------------------------- \\
-  var domain = require('domain').create();
-  // -------------------------------------------------------------------------------------------- \\
-  domain.on('error', function (error) {
+  function modelAPI () {
 
-    switch ( error.name ) {
+    /**  Model API - Middleware
+     *
+     *  @function
+     *  @description Middleware to be called before Monson middleware
+     *  @return void
+     *  @arg {Object} req - HTTP request 
+     *  @arg {Object} res - HTTP response 
+     *  @arg {Function} next - Function to call next middleware in stack 
+     */
 
-      default:
-        return next(error);
+    function modelAPIMiddleware (req, res, next) {
 
-      case 'ValidationError':
-        
-        res.status(403);
+      // PERMISSIONS - MUST BE SIGNED IN
 
-        var validerr = error.stack.split(/\n/)[0];
+      if ( ! res.locals.isSignedIn ) {
+        if ( req.method === 'POST' || req.method === 'PUT' ) {
+          return next(SynappError.Unauthorized());
+        }
+      }
 
-        res.json({
-          error: validerr,
-          code: 403
-        });
-        
-        break;
+      // PERMISSIONS - PROTECTING USER MODEL
+
+      if ( req.params.model === 'User' ) {
+        return next(SynappError.Unauthorized());
+      }
+
+      // ADD USER FIELD IN PAYLOAD
+
+      if ( req.method === 'POST' || req.method === 'PUT' ) {
+
+        if ( Array.isArray(req.body) ) {
+          req.body = req.body.map(function (i) {
+            i.user = req.signedCookies.synuser.id;
+            return i;
+          })
+        }
+
+        else {
+          req.body.user = req.signedCookies.synuser.id;
+        }
+      }
+
+      res.locals.logResponse();
+
+      next();
     }
-  });
-  // -------------------------------------------------------------------------------------------- \\
-  domain.run(function () {
-    var section = req.params.section;
 
-    if ( ! section ) {
-      return res.json({
-        hello: 'API',
-        version: API_VERSION
-      });
-    }
+    return modelAPIMiddleware;
+  }
 
-    require('../lib/api/' + req.params.section)[req.method]({
-        body: req.body,
-        query: req.query,
-        params: req.params
-      },
-      domain.intercept(function (response) {
-        
-          response    .should.be.an.Object;
-        
-        res.json(response);
-      
-      }));
-  });
-  // -------------------------------------------------------------------------------------------- \\
-};
+  module.exports = modelAPI;
+
+}) ();

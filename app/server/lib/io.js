@@ -17,7 +17,9 @@
 
       io.on('connection', function (socket) {
 
-        console.log('socket', socket);
+        app.locals.logSystemMessage({
+          'web socket server': 'new incoming client'
+        });
 
         online_users ++;
 

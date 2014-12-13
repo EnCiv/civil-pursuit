@@ -61,9 +61,7 @@ UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb
 };
 
 UserSchema.statics.identify = function (email, password, cb) {
-  console.log()
-  console.log('usser arguments', arguments)
-  console.log()
+
   var self = this;
 
   this.findOne({ email: email }, function (error, user) {

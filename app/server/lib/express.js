@@ -4,20 +4,21 @@
  * @module widget
  */
 
+require('colors');
+
 module.exports = function synappExpress (listen, isTest) {
-  var app, server;
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Process
-  //////////////////////////////////////////////////////////////////////////////
+  'use strict';
 
-  process.title = 'synapphtml5';
+  /** */
 
-  process.env.SYNAPP_PATH = require('path').resolve(__dirname, '../../..');
+  var app;
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Dependencies
-  //////////////////////////////////////////////////////////////////////////////
+  /** HTTP server */
+
+  var server;
+
+  /** Dependencies */
 
   var format          =   require('util').format;
 
@@ -27,36 +28,44 @@ module.exports = function synappExpress (listen, isTest) {
 
   var SynappError     =   require('./error');
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Domain
-  //////////////////////////////////////////////////////////////////////////////
+  var express         =   require('express');
+
+  function logSystemMessage (message) {
+    var d = new Date();
+
+    console.log(
+      ('[' + d.getHours() + ':' + d.getMinutes() +']').grey,
+      '*'.magenta.bold,
+      'system'.grey,
+      message);
+  }
+
+  /** Domain */
 
   domain.on('error', function (error) {
-    console.log('error', error);
+    logSystemMessage({ error: {
+      message: error.message,
+      name: error.name,
+      stack: error.stack.split(/\n/)
+    }});
   });
 
   domain.run(function () {
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Config
-    ////////////////////////////////////////////////////////////////////////////
+    /** Environment variables */
+
+    process.env.SYNAPP_PATH = require('path').resolve(__dirname, '../../..');
 
     var synapp = require(path.join(process.env.SYNAPP_PATH,
       'app/business/config.json'));
 
     process.env.CLOUDINARY_URL = synapp.cloudinary.url;
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Express
-    ////////////////////////////////////////////////////////////////////////////
-
-    var express = require('express');
+    /** Express */
 
     app = express();
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Middlewares
-    ////////////////////////////////////////////////////////////////////////////
+    /** Middlewares */
 
     var cookieParser  =   require('cookie-parser');
 
@@ -76,9 +85,9 @@ module.exports = function synappExpress (listen, isTest) {
       isTest ? process.env.MONGOHQ_URL_TEST : process.env.MONGOHQ_URL,
       { base: path.join(__dirname, '../../business') });
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Parsers
-    ////////////////////////////////////////////////////////////////////////////
+    var staticRouter  =   require('../routes/static');
+
+    /** Parsers */
 
     // parse application/x-www-form-urlencoded
     
@@ -107,23 +116,19 @@ module.exports = function synappExpress (listen, isTest) {
       }
     });
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Express settings
-    ////////////////////////////////////////////////////////////////////////////
+    /** Express app settings */
 
     var config = {
       'view engine'   :   'jade',
       'views'         :   path.join(process.env.SYNAPP_PATH, 'app/web/views'),
-      'port'          :   process.env.PORT || 3012
+      'port'          :   +process.env.PORT || 3012
     };
 
     for ( var middleware in config ) {
       app.set(middleware, config[middleware]);
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Locals
-    ////////////////////////////////////////////////////////////////////////////
+    /** Express app locals */
 
     if ( app.get('env') === 'development' ) {
       app.locals.pretty = true;
@@ -133,65 +138,15 @@ module.exports = function synappExpress (listen, isTest) {
 
     app.locals.back = '/';
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Cookies
-    ////////////////////////////////////////////////////////////////////////////
+    app.locals.monson = monson;
+
+    app.locals.logSystemMessage = logSystemMessage;
+
+    /** Cookies */
 
     app.locals.secret = synapp.secret;
 
     app.use(cookieParser(app.locals.secret));
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Session
-    ////////////////////////////////////////////////////////////////////////////
-
-    app.use(session({
-      secret: synapp.secret, resave: true, saveUninitialized: true }));
-    app.use(passport.initialize());
-    app.use(flash());
-
-    passport.serializeUser(function(user, done) {
-      done(null, user._id);
-    });
-
-    passport.deserializeUser(function(id, done) {
-      User.findById(id, function(err, user) {
-        done(err, user);
-      });
-    });
-
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // Pre middleware
-    
-    ////////////////////////////////////////////////////////////////////////////
-
-    app.use(function (req, res, next) {
-      res.locals.req = req;
-
-      res.locals.monson = monson;
-
-      res.locals.isSignedIn = req.signedCookies.synuser;
-
-      console.log('isSignedIn', res.locals.isSignedIn);
-
-      if ( res.locals.isSignedIn ) {
-
-        if ( ! req.signedCookies.synuser.id ) {
-          res.clearCookie('synuser');
-          res.locals.isSignedIn = false;
-        }
-
-        else {
-          res.locals.email  = req.signedCookies.synuser.email;
-          res.locals._id    = req.signedCookies.synuser.id;
-        }
-      }
-
-      console.log(req.method, req.originalUrl);
-
-      next();
-    });
 
     app.get('/test22', function (req, res, next) {
       res.json({
@@ -201,66 +156,50 @@ module.exports = function synappExpress (listen, isTest) {
       });
     });
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // Logger
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** Session */
 
-    app.use(function (req, res, next) {
-      var LOG = 'INFO';
+    app.use(session({
+      secret: synapp.secret, resave: true, saveUninitialized: true }));
 
-      switch ( res.statusCode ) {
-        case 200:
-          LOG = 'SUCCESS';
-          break;
-      }
+    /** Passport */
 
-      // Log[LOG](format('[%s] %d %s %s',
-      //   req.signedCookies.synuser ? req.signedCookies.synuser.email : 'visitor',
-      //   res.statusCode, req.method, req.url));
+    app.use(passport.initialize());
+    app.use(flash());
 
-      next();
+    passport.serializeUser(function(user, done) {
+      logSystemMessage({ 'serializing user': user.email });
+
+      done(null, user._id);
     });
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // Favicon
-    
-    ////////////////////////////////////////////////////////////////////////////
+    passport.deserializeUser(function(id, done) {
+      User.findById(id, function(err, user) {
+        done(err, user);
+      });
+    });
+
+    /** Pre router */
+
+    app.use(require('../routes/pre-router'));
+
+    /** Favicon */
 
     app.use(serveFavicon(path.join(path.dirname(__dirname),
       '../web/images/favicon.png')));
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // Routes
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** Routes */
 
     var mustBeIn = require('../routes/must-be-in');
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    //      ENTRY POINTS
-    //
-    ////////////////////////////////////////////////////////////////////////////
+    /** ENTRY POINTS */
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // TERMS OF SERVICE
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** TERMS OF SERVICE */
 
     app.get('/terms-of-service', function route_termsOfService (req, res) {
       res.render('pages/terms-of-service');
     });
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // NAVIGATOR
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** NAVIGATOR */
 
     app.get('/', function route_navigator (req, res) {
 
@@ -275,6 +214,8 @@ module.exports = function synappExpress (listen, isTest) {
       }
 
       res.render('pages/navigator', extra);
+
+      res.locals.logResponse();
     });
 
     ////////////////////////////////////////////////////////////////////////////
@@ -298,208 +239,125 @@ module.exports = function synappExpress (listen, isTest) {
       res.render('pages/v04', extra);
     });
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    //  ACCESS POINTS
-    //
-    ////////////////////////////////////////////////////////////////////////////
+    /**  ACCESS POINTS */
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // PARTIALS
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** PARTIALS */
 
     app.get('/templates/:template', function (req, res, next) {
       res.render('templates/' + req.params.template);
+
+      res.locals.logResponse();
     });
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // SIGN IN / SIGN UP / SIGN OUT
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** SIGN OUT */
 
-    app.all('/sign/:dir?', require('../routes/sign'));
+    app.all('/sign/up', require('../routes/sign').up(app, synapp));
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // MONSON API
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** SIGN IN */
+
+    app.all('/sign/in', require('../routes/sign').in(app, synapp));
+
+    /** SIGN OUT */
+
+    app.all('/sign/out', require('../routes/sign').out(app, synapp));
+
+    /** MONSON API */
 
     app.use('/models/:model',
-      function (req, res, next) {
-
-        // PERMISSIONS - MUST BE SIGNED IN
-
-        if ( ! res.locals.isSignedIn ) {
-          if ( req.method === 'POST' || req.method === 'PUT' ) {
-            return next(SynappError.Unauthorized());
-          }
-        }
-
-        // PERMISSIONS - PROTECTING USER MODEL
-
-        if ( req.params.model === 'User' ) {
-          return next(SynappError.Unauthorized());
-        }
-
-        // ADD USER FIELD IN PAYLOAD
-
-        if ( req.method === 'POST' || req.method === 'PUT' ) {
-
-          if ( Array.isArray(req.body) ) {
-            req.body = req.body.map(function (i) {
-              i.user = req.signedCookies.synuser.id;
-              return i;
-            })
-          }
-
-          else {
-            req.body.user = req.signedCookies.synuser.id;
-          }
-        }
-
-        next();
-        
-      },
-
+      require('../routes/api')(),
       monson.express);
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // UPLOAD IMAGE
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** UPLOAD IMAGE */
 
     app.all('/tools/upload', require('../routes/upload'));
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // GET URL TITLE
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** GET URL TITLE */
 
     app.post('/tools/get-title', require('../routes/get-title'));
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // FACEBOOK AUTH
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** FACEBOOK AUTH */
 
-    app.get('/auth/facebook',
-      require('../routes/facebook')(app, synapp, SynappError, passport),
-      passport.authenticate('facebook'));
+    (function facebook () {
+      app.get('/auth/facebook',
+        require('../routes/facebook')(app, synapp, SynappError, passport),
+        passport.authenticate('facebook'));
 
-    app.get(synapp.facebook['callback url'],
-      passport.authenticate('facebook', {
-        successRedirect: '/fb/ok',
-        failureRedirect: '/?fb=ko'
-      }));
+      app.get(synapp.facebook['callback url'],
+        passport.authenticate('facebook', {
+          successRedirect: '/fb/ok',
+          failureRedirect: '/?fb=ko'
+        }));
 
-    app.get('/fb/ok', function (req, res) {
-      res.cookie('synuser', { email: req.session.email, id: req.session.userid }, synapp.cookie);
+      app.get('/fb/ok', function (req, res) {
+        res.cookie('synuser', { email: req.session.email, id: req.session.userid }, synapp.cookie);
 
-      // Log.INFO('Cookie set', req.session);
+        // Log.INFO('Cookie set', req.session);
 
-      res.redirect('/');
-    });
+        res.redirect('/');
+      });
+    }) ();
 
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // TWITTER AUTH
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** TWITTER AUTH */
 
-    app.get('/auth/twitter',
-      require('../routes/twitter')(app, synapp, SynappError, passport),
-      passport.authenticate('twitter'));
+    require('../routes/twitter')(app, synapp, SynappError, passport);
 
-    app.get(synapp.twitter[process.env.SYNAPP_ENV]['callback url'],
-      passport.authenticate('twitter', {
-        successRedirect: '/tw/ok',
-        failureRedirect: '/?tw=ko'
-      }));
-
-    app.get('/tw/ok', function (req, res) {
-      res.cookie('synuser', { email: req.session.email, id: req.session.userid }, synapp.cookie);
-
-      console.log('Cookie set', req.session);
-
-      res.redirect('/');
-    });
-
-    ////////////////////////////////////////////////////////////////////////////
-    
-    // DUMP DATABASE
-    
-    ////////////////////////////////////////////////////////////////////////////
+    /** DUMP DATABASE */
 
     app.all('/tools/dump', require('../routes/dump'));
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    // MIDDLEWARES
-    //
-    ////////////////////////////////////////////////////////////////////////////
+    /** MIDDLEWARES */
 
-    ////////////////////////////////////////////////////////////////////////////
-    // STATIC ROUTER
-    ////////////////////////////////////////////////////////////////////////////
+    /** STATIC ROUTER */
 
-    app.use('/bower/',
-      express.static(path.join(process.env.SYNAPP_PATH,
-        'app/web/bower_components')));
+    var static_routes = {
+      '/bower/': 'app/web/bower_components', 
+      '/dist/': 'app/web/dist', 
+      '/images/': 'app/web/images',
+      '/js/': 'app/web/angular'
+    };
 
-    app.use('/dist/',
-      express.static(path.join(process.env.SYNAPP_PATH,
-        'app/web/dist')));
+    for ( var static_route in static_routes ) {
+      app.use(static_route,
 
-    app.use('/images/',
-      express.static(path.join(process.env.SYNAPP_PATH,
-        'app/web/images')));
+        staticRouter(static_routes[static_route]),
 
-    app.use('/js/',
-      express.static(path.join(process.env.SYNAPP_PATH,
-        'app/web/angular')));
+        express.static(path.join(process.env.SYNAPP_PATH,
+          static_routes[static_route]))
+      );
+    }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // ERROR
-    ////////////////////////////////////////////////////////////////////////////
+    /** ERROR */
 
-    app.use(require('../routes/error'));
+    app.use(require('../routes/error')(app));
 
-    ////////////////////////////////////////////////////////////////////////////
-    //
-    // SERVER
-    //
-    ////////////////////////////////////////////////////////////////////////////
+    /** NOT FOUND */
+
+    app.use(require('../routes/not-found')(app));
+
+    /** SERVER */
 
     server = require('http').createServer(app);
 
     if ( listen ) {
   
-      //////////////////////////////////////////////////////////////////////////
-      // LISTEN
-      //////////////////////////////////////////////////////////////////////////
+      /** LISTEN */
 
       server.listen(app.get('port'), function () {
-        console.error(format('Listening on port %d', app.get('port')));
+        logSystemMessage({
+          'http server': {
+            'is listening on port': app.get('port'),
+            env: app.get('env')
+          }
+        });
       });
 
-      //////////////////////////////////////////////////////////////////////////
-      // SERVER ERROR
-      //////////////////////////////////////////////////////////////////////////
+      /** SERVER ERROR */
 
       server.on('error', function (error) {
         console.error(error.format());
       });
 
-      /////////////////////////////////////////////////////////////////////////
-      // SOCKET IO
-      //////////////////////////////////////////////////////////////////////////
+      /** SOCKET IO */
 
       require('./io')(server, app);
 

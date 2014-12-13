@@ -29,7 +29,8 @@
     "gulp-shell": "~0.2.10",
     "gulp-uglifyjs": "~0.5.0",
     "gulp-rename": "~1.2.0",
-    "run-sequence": "~1.0.1"
+    "run-sequence": "~1.0.1",
+    "colors": "~1.0.3"
   },
   "dependencies": {
     "request": "~2.48.0",
