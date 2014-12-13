@@ -20,14 +20,14 @@
 
       if ( ! res.locals.isSignedIn ) {
         if ( req.method === 'POST' || req.method === 'PUT' ) {
-          return next(SynappError.Unauthorized());
+          return next(require('../lib/error').Unauthorized());
         }
       }
 
       // PERMISSIONS - PROTECTING USER MODEL
 
       if ( req.params.model === 'User' ) {
-        return next(SynappError.Unauthorized());
+        return next(require('../lib/error').Unauthorized());
       }
 
       // ADD USER FIELD IN PAYLOAD
