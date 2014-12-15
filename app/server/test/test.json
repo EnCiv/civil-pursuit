@@ -1,0 +1,12 @@
+{
+	"test user": {
+		"email": "test-user@synapp.com",
+		"password": "abcd1234!!QWER-1,."
+	},
+	"test topic": {
+		"subject": "This is a test topic 468736487167482738468732647623"
+	},
+	"test problem": {
+		"subject": "This is a test problem 468736487167482738468732647623"
+	}
+}

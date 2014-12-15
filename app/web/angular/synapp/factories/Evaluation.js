@@ -1,8 +1,8 @@
 ;(function () {
 
-  module.exports = ['$rootScope', 'View', EvaluationAsAService];
+  module.exports = ['$rootScope', 'View', 'DataFactory', EvaluationAsAService];
 
-  function EvaluationAsAService ($rootScope, View) {
+  function EvaluationAsAService ($rootScope, View, DataFactory) {
     function Evaluation (evaluation) {
 
       this.item       =   evaluation.item;

@@ -23,52 +23,9 @@
 
   require('./create-topic');
 
-  // describe('Creating new problem', function () {
-  //   var url = 'http://localhost:3012/models/Item',
-  //     error,
-  //     response,
-  //     body;
+  require('./create-problem');
 
-  //   it('... post ' + url, function (done) {
-  //     request.post(
-  //       {
-  //         url: url,
-  //         json: true,
-  //         body: {
-  //           type: 'Problem',
-  //           subject: new Date().toISOString(),
-  //           description: 'generatedTESTMOCHA DES DES',
-  //           user: User._id,
-  //           parent: Topic._id
-  //         },
-  //         jar: true
-  //       },
-  //       function ($error, $response, $body) {
-  //         error = $error;
-  //         response = $response;
-  //         body = $body;
-  //         done($error);
-  //       });
-  //   });
-
-  //   it('should not have errors', function () {
-  //     should(error).not.be.an.Error;
-  //   });
-
-  //   it('should have a response', function () {
-  //     should(response).be.a.Response;
-  //   });
-
-  //   it('should have status 200', function () {
-  //     response.statusCode.should.equal(200);
-  //   });
-
-  //   it('should be a JSON', function () {
-  //     should(body).be.an.Object;
-
-  //     Problem = body;
-  //   });
-  // });
+  require('./sign-out');
 
   // describe('Signing out', function () {
   //   var url = 'http://localhost:3012/sign/out',
