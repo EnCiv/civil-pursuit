@@ -15,12 +15,12 @@
   var test_config = require('./test.json');
 
   describe('Signing in', function () {
-    var url = 'http://localhost:3012/sign/in',
+    var url = 'http://localhost:' + process.env.PORT + '/sign/in',
       error,
       response,
       body;
 
-    it('... post ' + url, function (done) {
+    before(function (done) {
       request.post(
         {
           url: url,
@@ -32,6 +32,7 @@
           jar: true
         },
         function ($error, $response, $body) {
+          // console.log($response);
           error = $error;
           response = $response;
           body = $body;
@@ -51,8 +52,20 @@
       response.statusCode.should.equal(200);
     });
 
-    it('should have a HTML5 document as body', function () {
+    it('should be a JSON which equals to { "in": true }', function () {
       should(body).be.an.Object.and.have.property('in').which.is.true;
+    });
+
+    it('should have a cookie header', function () {
+      response.headers.should.have.property('set-cookie')
+        .which.is.an.Array;
+    });
+
+    it('should have a synuser cookie', function () {
+      response.headers['set-cookie'].some(function (cookie) {
+        return /^synuser=/.test(cookie);
+      })
+        .should.be.true;
     });
   });
 

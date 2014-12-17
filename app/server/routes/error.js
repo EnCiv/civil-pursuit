@@ -1,44 +1,11 @@
-/***  Route Error Middleware
-      ======================
-
-      This middleware will terminate the stack trying to respond 
-      with the most accurate status code and content type
-
-      # HTTP Response Code
-
-      Middleware will proceed in that order:
-
-      - if error has a status property which is a number, this will be used
-      - if error name is AssertionError, 400 will be used
-      - if error name is Synapp_UnauthorizedError, 401 will be used
-      - use 500
-
-***/
-
-(function () {
+module.exports = (function () {
   'use strict';
 
-  var should = require('should');
+  var path = require('path');
 
-  module.exports = function (app) {
-    return function (error, req, res, next) {
-
-      // Assert away
-
-      req
-        .should.be.an.Object;
-
-      req.constructor.name
-        .should.equal('IncomingMessage');
-
-      res
-        .should.be.an.Object;
-
-      res.constructor.name
-        .should.equal('ServerResponse');
-
-      next
-        .should.be.a.Function;
+  return (function errorMiddleware (app) {
+    
+    return function middleware (error, req, res, next) {
 
       if ( ! error instanceof Error ) {
         return next();
@@ -86,13 +53,7 @@
           res.type('html');
         }
 
-        res.locals.logMessage({
-          error: error.message,
-          name: error.name,
-          code: error.code,
-          status: error.status,
-          stack: error.stack.split(/\n/)
-        });
+        app.locals.logSystemError(error);
 
         res.locals.logResponse();
 
@@ -109,11 +70,11 @@
           },
 
           html: function () {
-            res.send('An error occurred');
+            res.sendFile(path.resolve(__dirname, '../../web/error.html'));
           }
         });
       });
     };
-  };
+  });
 
 }) ();

@@ -8,5 +8,19 @@
 	},
 	"test problem": {
 		"subject": "This is a test problem 468736487167482738468732647623"
+	},
+	"twitter": {
+		"user": {
+			"email": "UserTest@synaccord.com",
+			"password": "gT%7Ijh?f.fff.f0x0-¿jskJJ665b",
+			"name": "usertest72637"
+		}
+	},
+	"facebook": {
+		"user": {
+			"email": "UserTest@synaccord.com",
+			"password": "gT%7Ijh?f.fff.f0x0-¿jskJJ665b",
+			"name": "usertest72637"
+		}
 	}
 }

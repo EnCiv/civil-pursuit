@@ -1,97 +1,131 @@
 {
-  "tmp"                           :         "/tmp",
+  "tmp":"/tmp",
   
-  "title"                         :         "Synaccord | Bring Synergy To Democracy",
+  "title": "Synaccord | Bring Synergy To Democracy",
   
-  "secret"                        :         "hYGhdj729k2kdmsñw9hsy6GGW",
+  "secret":"hYGhdj729k2kdmsñw9hsy6GGW",
   
-  "entry image maximum width"     :         160,
+  "entry image maximum width": 160,
   
-  "cloudinary"                    :         {
+  "cloudinary": {
     
-    "cloud"                       :         {
-      "name"                      :         "hscbexf6a"
+    "cloud": {
+      "name": "hscbexf6a"
     },
 
-    "API"                         :         {
-      "key"                       :         "717143894825222",
-      "secret"                    :         "Yy4AfBBff-PxjrizX1bsLPnkCLw"
+    "API": {
+      "key": "717143894825222",
+      "secret": "Yy4AfBBff-PxjrizX1bsLPnkCLw"
     },
 
-    "url"                         :         "cloudinary://717143894825222:Yy4AfBBff-PxjrizX1bsLPnkCLw@hscbexf6a"
+    "url": "cloudinary://717143894825222:Yy4AfBBff-PxjrizX1bsLPnkCLw@hscbexf6a"
   },
 
-  "cookie"                        :         {
-    "path"                        :         "/",
-    "signed"                      :         true,
-    "maxAge"                      :         604800000,
-    "httpOnly"                    :         true
+  "cookie":{
+    
+    "path":"/",
+    "signed": true,
+    "maxAge": 604800000,
+    "httpOnly": true
   },
 
-  "facebook"                      :         {
-    "app id"                      :         "295589523959214",
-    "app secret"                  :         "1faefb08184d71117f62eb63eb0e22c7",
-    "callback url"                :         "/idcb/fb"
+  "facebook": {
+    
+    "app id": "295589523959214",
+    "app secret": "1faefb08184d71117f62eb63eb0e22c7",
+    "callback url": "/sign/facebook/oauth"
   },
 
-  "twitter"                       :         {
+  "twitter": {
+    
     "alpha-heroku": {
-      "key"                         :         "6RtcRvzZTyJf0mLh7vdzRszdD",
-      "secret"                      :         "8pS3cts1YDZIv8uhAg5ZlupIkAXC9mw00UfHMMP60Ps1Gu78kY",
-      "callback url"                :         "/idcb/tw"
+      "key": "6RtcRvzZTyJf0mLh7vdzRszdD",
+      "secret": "8pS3cts1YDZIv8uhAg5ZlupIkAXC9mw00UfHMMP60Ps1Gu78kY",
+      "callback url": "/sign/twitter/oauth"
     },
+    
     "alpha": {
-      "key"                         :         "ID4HLrtkRwRenjNyAkPKf1g89",
-      "secret"                      :         "g3pyCCCLfEuuAzzzEPHnaH8jycwgkD2wvL2jlXhU91r9jEo2cQ",
-      "callback url"                :         "/idcb/tw"
+      "key": "ID4HLrtkRwRenjNyAkPKf1g89",
+      "secret": "g3pyCCCLfEuuAzzzEPHnaH8jycwgkD2wvL2jlXhU91r9jEo2cQ",
+      "callback url": "/sign/twitter/oauth"
     },
+    
     "beta": {
-      "key"                         :         "ATRK8LP4rIboQjXx9YS3soSZ5",
-      "secret"                      :         "HGFmYxchXHyjQgB0DSRRXcgnClyIgMKbrwokp7l5hmz8PSxqzr",
-      "callback url"                :         "/idcb/tw"
+      "key": "ATRK8LP4rIboQjXx9YS3soSZ5",
+      "secret": "HGFmYxchXHyjQgB0DSRRXcgnClyIgMKbrwokp7l5hmz8PSxqzr",
+      "callback url": "/sign/twitter/oauth"
     }
   },
 
-  "public"                        :         {
-    "navigator batch size"        :         6,
-    "latency"                     :         {
-      "development"               :         1500,
-      "production"                :         15000
+  "public":{
+    
+    "navigator batch size": 6,
+    
+    "latency": {
+      
+      "development": 1500,
+      "production": 15000
     },
-    "cloudinary navigator images filter"
-                                  :         "c_thumb,e_improve,g_face,h_120,w_180",
-    "navigation"                  :         {
-      "create topic"              :         "/create/topic"
+    
+    "cloudinary navigator images filter": "c_thumb,e_improve,g_face,h_120,w_180",
+    
+    "navigation": {
+
+      "create topic": "/create/topic"
     },
-    "item media"                  :         {
-      "max-width"                 :         180,
-      "max-height"                :         120
+    
+    "item media": {
+
+      "max-width": 180,
+      
+      "max-height": 120
     },
-    "item relation"               :         {
-      "Topic"                     :         "Problem",
-      "Problem"                   :         [["Agree", "Disagree"], "Solution"],
-      "Solution"                  :         [["Pro", "Con"]]
+    
+    "item relation": {
+
+      "Topic": "Problem",
+      
+      "Problem": [["Agree", "Disagree"], "Solution"],
+      
+      "Solution": [["Pro", "Con"]]
+    },
+    
+    "routes": {
+      
+      "sign in with Twitter": "/sign/twitter",
+
+      "sign in with Twitter OK": "/sign/twitter/ok",
+
+      "sign in with Facebook": "/sign/facebook",
+
+      "sign in with Facebook OK": "/sign/facebook/ok"
     }
   },
 
-  "google analytics"              :         {
-    "key"                         :         "UA-55807209-1"
+  "google analytics": {
+    
+    "key": "UA-55807209-1"
   },
 
-  "font awesome"                  :         {
-    "cdn"                         :         "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+  "font awesome": {
+
+    "cdn": "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
   },
 
-  "jquery"                        :         {
-    "cdn"                         :         "//code.jquery.com/jquery-2.1.1.min.js"
+  "jquery":{
+
+    "cdn": "//code.jquery.com/jquery-2.1.1.min.js"
   },
 
-  "angular"                       :         {
-    "cdn"                         :         "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js",
-    "animate"                     :         {
-      "cdn"                       :         "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"
+  "angular": {
+
+    "cdn": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js",
+    
+    "animate": {
+      
+      "cdn": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"
     }
   },
 
-  "user agent"                    :         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36"
+  "user agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36"
 }

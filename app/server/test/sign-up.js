@@ -16,12 +16,12 @@
 
   describe('Signing up', function () {
 
-    var url = 'http://localhost:3012/sign/up',
+    var url = 'http://localhost:' +process.env.PORT + '/sign/up',
       error,
       response,
       body;
 
-    it('... post ' + url, function (done) {
+    before(function (done) {
       request.post(
         {
           url: url,
@@ -55,6 +55,18 @@
     it('should be a JSON', function () {
       should(body).be.an.Object.and.have.property('email')
         .which.is.a.String.and.equal(test_config['test user'].email);
+    });
+
+    it('should have a cookie header', function () {
+      response.headers.should.have.property('set-cookie')
+        .which.is.an.Array;
+    });
+
+    it('should have a synuser cookie', function () {
+      response.headers['set-cookie'].some(function (cookie) {
+        return /^synuser=/.test(cookie);
+      })
+        .should.be.true;
     });
   });  
 

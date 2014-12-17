@@ -41,21 +41,27 @@
   exports.out = signOut;
 
   function signUp (app, synapp) {
-    function middleware (req, res, next) {
+    
+    return (function middleware (req, res, next) {
+      
       app.locals.monson.post('/models/User', {
         email: req.body.email,
         password: req.body.password
       },
+      
       function (error, created) {
+        
         if ( error ) {
           return next(error);
         }
-        res.cookie('synuser', { email: req.body.email, id: created._id }, synapp.cookie);
+        
+        res.cookie('synuser',
+          { email: req.body.email, id: created._id },
+          synapp.cookie);
+        
         res.json(created);
       });
-    }
-
-    return middleware;
+    });
   }
 
   exports.up = signUp;

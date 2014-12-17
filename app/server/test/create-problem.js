@@ -17,7 +17,7 @@
   var user, topic;
 
   describe('Creating new problem', function () {
-    var url = 'http://localhost:3012/models/Item',
+    var url = 'http://localhost:' + process.env.PORT + '/models/Item',
       error,
       response,
       body;

@@ -82,16 +82,16 @@ hr
             span .
 
         p
-          button.btn.btn-primary(data-ng-click='signUp("facebook")')
+          button.btn.btn-primary
             i.fa.fa-facebook
           span  
-          a(href='#' data-ng-click='signUp("facebook")') Join with Facebook
+          a(href=synapp.public.routes["sign in with Facebook"]) Join with Facebook
 
         p
-          button.btn.btn-primary(onclick='/auth/twitter')
+          button.btn.btn-primary
             i.fa.fa-twitter
           span  
-          a(href='/auth/twitter') Join with Twitter
+          a(href=synapp.public.routes["sign in with Twitter"]) Join with Twitter
 
         h4.text-center Join with email
 

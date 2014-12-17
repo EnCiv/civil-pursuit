@@ -10,4 +10,6 @@ should.Assertion.add('Response', function() {
 
   this.obj.should.have.property('statusCode').which.is.a.Number;
 
+  this.obj.should.have.property('headers').which.is.an.Object;
+
 }, true);

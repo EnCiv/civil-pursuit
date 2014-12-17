@@ -1,22 +1,24 @@
-/***  Custom errors
-      =============
+(function () {
 
-***/
+  'use strict';
 
-/*
-  ERRORS
-*/
+  function CustomError () {
+    this.Errors = {
+      Unauthorized      :   'You must be signed in',
+      DuplicateUser     :   'This account is already in use'
+    };
 
-var Errors = {
-  Unauthorized      :   'You must be signed in',
-  DuplicateUser     :   'This account is already in use'
-};
+    for ( var key in this.Errors ) {
+      this[key] = function () {
+        var error     = new Error(this.value);
+        error.name    = "Synapp_" + this.key + "Error";
+        error.message = this.value;
+        return error;
+      }.bind({ key: key, value: this.Errors[key] });
+    }
+  }
 
-for ( var key in Errors ) {
-  exports[key] = function () {
-    var error     = new Error(this.value);
-    error.name    = "Synapp_" + this.key + "Error";
-    error.message = this.value;
-    return error;
-  }.bind({ key: key, value: Errors[key] });
-}
+  CustomError.prototype.Unauthorized = function () {
+    
+  };
+});

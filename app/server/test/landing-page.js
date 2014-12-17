@@ -13,12 +13,12 @@
   require(path.join(base, 'app/business/assertions/Response'));
 
   describe('Landing page', function () {
-    var url = 'http://localhost:3012/',
+    var url = 'http://localhost:' + process.env.PORT,
       error,
       response,
       body;
 
-    it('... get ' + url, function (done) {
+    before(function (done) {
       request(url, function ($error, $response, $body) {
         error = $error;
         response = $response;
