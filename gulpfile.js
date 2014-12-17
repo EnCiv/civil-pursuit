@@ -228,7 +228,14 @@ gulp.task('push-to-heroku', ['build-prod'], function pushToHeroku (cb) {
       if ( error ) {
         return cb(error);
       }
-      spawn('git', ['push', 'heroku', 'master'], cb);
+
+      spawn('git', ['push', 'bitbucket', 'master'], function (error) {
+        if ( error ) {
+          return cb(error);
+        }
+
+        spawn('git', ['push', 'heroku', 'master'], cb);
+      });
     })
 });
 
