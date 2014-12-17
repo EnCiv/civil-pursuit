@@ -18,7 +18,7 @@
   var monson = require('monson')(process.env.MONSON_MONGODB,
     { base: path.join(__dirname, '../../business') });
 
-  describe('Cleaning out', function () {
+  describe('Cleaning out'.cyan.bold.inverse, function () {
 
     var test_config = require('./test.json');
 

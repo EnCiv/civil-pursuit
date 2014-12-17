@@ -11,7 +11,7 @@
 
   require(path.join(base, 'app/business/assertions/Response'));
 
-  describe ( 'Front-end', function () {
+  describe ( 'Front-end'.green.bold.inverse, function () {
 
     before(function (done) {
       daemon(true, true)
@@ -34,6 +34,8 @@
     require('./sign-out')();
 
     require('./sign-up-with-twitter');
+
+    require('./sign-up-with-facebook');
 
     require('./cleaning-out');
   });

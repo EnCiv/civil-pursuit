@@ -15,12 +15,12 @@
 
   var test_config = require('./test.json');
 
-  describe ( 'Signing up with Twitter'.blue.bold.inverse, function () {
+  describe ( 'Signing up with Facebook'.blue.bold.inverse, function () {
 
-    describe ( 'GET /sign/twitter should redirect you to Twitter to log in'.blue.inverse,
+    describe ( 'GET /sign/facebook should redirect you to Facebook to log in'.blue.inverse,
       function () {
         var url = 'http://localhost:' +process.env.PORT +
-          synapp.public.routes['sign in with Twitter'],
+          synapp.public.routes['sign in with Facebook'],
           error,
           response,
           body;

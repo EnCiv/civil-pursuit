@@ -2342,7 +2342,7 @@
     });
 
     $rootScope.subscribe('create item', function (message) {
-
+      console.log('................ ')
       /** Get box */
 
       var box = $(message.elem.target).closest('.box');
@@ -2415,6 +2415,11 @@
             $rootScope.itemViewed  = item._id;
 
             $rootScope.lineage[item._id] = item.parent;
+
+            $timeout(function () {
+              $rootScope.publish("toggle view", { view: "evaluator", item: item._id });
+            });
+
           });
       }
     });

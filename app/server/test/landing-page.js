@@ -12,7 +12,7 @@
 
   require(path.join(base, 'app/business/assertions/Response'));
 
-  describe('Landing page', function () {
+  describe('Landing page'.blue.bold.inverse, function () {
     var url = 'http://localhost:' + process.env.PORT,
       error,
       response,

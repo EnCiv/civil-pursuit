@@ -14,7 +14,7 @@
 
   var test_config = require('./test.json');
 
-  describe('Signing up', function () {
+  describe('Signing up'.blue.bold.inverse, function () {
 
     var url = 'http://localhost:' +process.env.PORT + '/sign/up',
       error,

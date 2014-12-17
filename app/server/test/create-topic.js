@@ -16,7 +16,7 @@
 
   var user;
 
-  describe('Creating new topic', function () {
+  describe('Creating new topic'.blue.bold.inverse, function () {
     var url = 'http://localhost:' + process.env.PORT + '/models/Item',
       error,
       response,

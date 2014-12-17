@@ -14,7 +14,7 @@
 
   var test_config = require('./test.json');
 
-  describe('Signing in', function () {
+  describe('Signing in'.blue.bold.inverse, function () {
     var url = 'http://localhost:' + process.env.PORT + '/sign/in',
       error,
       response,

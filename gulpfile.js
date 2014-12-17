@@ -214,7 +214,7 @@ gulp.task('build-prod', ['build'], function (cb) {
     if ( error ) {
       return cb(error);
     }
-    spawn('mocha', ['app/server/test/front-end'], cb)
+    spawn('npm', ['test'], cb)
   });
 });
 
