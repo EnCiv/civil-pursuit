@@ -34,7 +34,7 @@
             event: change.type
           };
 
-          console.warn({
+          console.info('[' + change.type + ']', {
             event: event,
             message: message
           });
@@ -72,19 +72,61 @@
     'template':                 require('./controllers/template'),
     'get intro':                require('./controllers/get-intro'),
     'panels template':          require('./controllers/panels-template'),
+    'items template':           require('./controllers/items-template'),
     'bind panel':               require('./controllers/bind-panel'),
+    'find panel':               require('./controllers/find-panel'),
     'get panel items':          require('./controllers/get-panel-items')
   };
 
 } ();
 
-},{"./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js","./controllers/monson-get":"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js","./controllers/panels-template":"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js","./controllers/template":"/home/francois/Dev/syn/app/web/js/controllers/template.js"}],"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js":[function(require,module,exports){
+},{"./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js","./controllers/find-panel":"/home/francois/Dev/syn/app/web/js/controllers/find-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js","./controllers/items-template":"/home/francois/Dev/syn/app/web/js/controllers/items-template.js","./controllers/monson-get":"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js","./controllers/panels-template":"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js","./controllers/template":"/home/francois/Dev/syn/app/web/js/controllers/template.js"}],"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = function applyTemplateToPanel (view, panel) {
     view.find('.panel-title').text(panel.type);
+
+    this.model('panels', this.model('panels')
+      .map(function (_panel) {
+        if ( _panel.type === panel.type && ( _panel.parent ? _panel.parent === panel.parent : true ) && ! _panel.view ) {
+          _panel.view = view;
+        }
+
+        return _panel;
+      }));
+  };
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/find-panel.js":[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = function findPanel (panel) {
+
+    var app = this;
+
+    var query = { type: panel.type };
+
+    if ( panel.parent ) {
+      query.parent = panel.parent;
+    }
+
+    console.info('[find-panel]', query);
+
+    return app.model('panels')
+      .filter(function (panel) {
+        for ( var i in query ) {
+          if ( panel[i] !== query[i] ) {
+            return false;
+          }
+        }
+        return true;
+      })
+      [0];
   };
 
 } ();
@@ -94,7 +136,8 @@
 
   'use strict';
 
-  module.exports = function template (template) {
+  module.exports = function getIntro () {
+    console.info('[get-intro]');
     this.controller('monson get')('/models/Item.findOne?type=Intro',
       function (error, intro) {
         if ( error ) {
@@ -135,19 +178,46 @@
 
 } ();
 
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/items-template.js":[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = function itemsTemplate (items, panelView) {
+    console.info('[items template]', items, panelView);
+
+    var app = this;
+
+    items.forEach(function (item) {
+      app.controller('template')({
+        name:       'item',
+        url:        '/partial/item',
+        container:  panelView,
+        ready:      function (view) {
+          view.find('h1').text(item.subject);
+        }
+      });
+    });
+  };
+
+} ();
+
 },{}],"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = function monsonGet (url, cb) {
-    console.info('monson get ' + url);
+    console.info('[monson]', 'GET', url);
     $.ajax(url)
       .error(function (error) {
         console.error('monson GET error', error);    
       })
       .success(function (data) {
         cb(null, data);
+      })
+      .done(function (data, status, response) {
+        console.info('[monson]', response.status, 'GET', url, data);
       });
   };
 
@@ -158,7 +228,9 @@
 
   'use strict';
 
-  module.exports = function applyTemplateToPanels (panels) {
+  module.exports = function panelsTemplate (panels) {
+    console.info('[panels template]', panels);
+    
     panels.forEach(function (panel) {
       this.controller('template')({
         name:       'panel',
@@ -179,18 +251,43 @@
   'use strict';
 
   module.exports = function template (template) {
-    if ( this.model('templates')[template] ) {
-      //template.container.append($(this.model('templates')[template]));
+    console.info('[template]', template.name, template,
+      { cache: template.name in this.model('templates') });
+
+    if ( template.name in this.model('templates') ) {
+
+      if ( typeof template.ready === 'function' ) {
+        if ( Array.isArray(this.model('templates')[template.name]) ) {
+          this.model('templates')[template.name].push(
+            function (view) {
+              template.container.append(view);
+            },
+            template.ready);
+        }
+
+        else if ( typeof this.model('templates')[template.name] === 'string' ) {
+          template.container.append($(this.model('templates')[template.name]));
+          template.ready($(this.model('templates')[template.name]));
+        }
+      }
     }
     else {
+      this.model('templates')[template.name] = [];
+
       $.ajax(template.url)
         .success(function (data) {
 
           var toDOM = $(data);
           
           template.container.append(toDOM);
+
+          if ( Array.isArray(this.model('templates')[template.name]) ) {
+            this.model('templates')[template.name].forEach(function (queue) {
+              queue(toDOM);
+            });
+          }
           
-          this.model('templates')[template] = data;
+          this.model('templates')[template.name] = data;
 
           if ( typeof template.ready === 'function' ) {
             template.ready(toDOM);
@@ -249,6 +346,19 @@
      *  @when model "items" on "concat"
      *  @then 
      */
+
+    .tell(trueStory
+      .when({ model: 'items' }, { on: 'concat' })
+        .then(function (items) {
+          var app = this;
+
+          var panel = app.controller('find panel')({
+            type: items[0].type,
+            parent: items[0].parent
+          });
+
+          app.controller('items template')(items, panel.view);
+        }))
 
     /**
      *  run
@@ -1321,44 +1431,73 @@ function hasOwnProperty(obj, prop) {
 
   TrueStory.prototype.model = function (name, model) {
 
+    var app = this;
+
     if ( typeof name === 'object' ) {
       for ( var i in name ) {
-        this.model(i, name[i]);
+        app.model(i, name[i]);
       }
 
-      return this;
+      return app;
     }
 
     if ( typeof name === 'string' ) {
       if ( '1' in arguments ) {
-        this.models[name] = model;
+        app.models[name] = model;
 
-        return this;
+        return app;
       }
 
-      if ( Array.isArray(this.models[name] ) && ! this.models[name].__follow ) {
+      if ( Array.isArray(app.models[name] ) && ! app.models[name].__follow ) {
         
-        this.models[name].__follow = true;
+        app.models[name].__follow = true;
 
-        this.models[name].push = function push () {
-          this.models[name] = Array.prototype.concat.apply(
-            this.models[name],
+        // Wrap push() into an emitter
+
+        app.models[name].push = function push () {
+
+          // Do the concatening
+
+          app.models[name] = Array.prototype.concat.apply(
+            app.models[name],
             Array.prototype.slice.apply(arguments));
 
-          this.emit('push ' + name, Array.prototype.slice.call(arguments));
-        }.bind(this);
+          console.info('[push]', name);
 
-        this.models[name].concat = function concat () {
-          this.models[name] = Array.prototype.concat.apply(
-            this.models[name],
-            Array.prototype.slice.apply(arguments));
+          // Emit it
 
-          this.emit('concat ' + name, Array.prototype.slice.call(arguments));
-        }.bind(this);
+          app.emit('push ' + name, Array.prototype.slice.call(arguments));
+
+        }.bind(app);
+
+        // Wrap concat() into an emitter
+
+        app.models[name].concat = function concat () {
+
+          var more = [];
+
+          // Do the concatening
+
+          for ( var i in arguments ) {
+            app.models[name] = Array.prototype.concat.apply(
+              app.models[name],
+              [arguments[i]]);
+
+            more = more.concat(arguments[i]);
+          }
+
+          console.info('[concat]', name, more);
+
+          // Emit it
+
+          var concatenated = [];
+
+          app.emit('concat ' + name, more);
+        }.bind(app);
 
       }
 
-      return this.models[name];
+      return app.models[name];
     }
   };
 
@@ -1461,7 +1600,6 @@ function hasOwnProperty(obj, prop) {
   TrueStory.exports.parseDotNotation = require('./TrueStory/parse-dot-notation');
 
   TrueStory.exports.when = function (who, what) {
-    console.log('when', who, what);
     return {
       then: function (fn) {
         if ( who.model ) {
@@ -1474,18 +1612,15 @@ function hasOwnProperty(obj, prop) {
                 };
 
               case 'add':
-                return function () {
-                  this.follow.on('add ' + who.model, fn.bind(this));
-                };
-
               case 'update':
                 return function () {
-                  this.follow.on('update ' + who.model, fn.bind(this));
+                  this.follow.on(what.on + ' ' + who.model, fn.bind(this));
                 };
 
               case 'push':
+              case 'concat':
                 return function () {
-                  this.on('push ' + who.model, fn.bind(this));
+                  this.on(what.on + ' ' + who.model, fn.bind(this));
                 };
             }
           }

@@ -2,7 +2,8 @@
 
   'use strict';
 
-  module.exports = function template (template) {
+  module.exports = function getIntro () {
+    console.info('[get-intro]');
     this.controller('monson get')('/models/Item.findOne?type=Intro',
       function (error, intro) {
         if ( error ) {

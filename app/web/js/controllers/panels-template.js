@@ -2,7 +2,9 @@
 
   'use strict';
 
-  module.exports = function applyTemplateToPanels (panels) {
+  module.exports = function panelsTemplate (panels) {
+    console.info('[panels template]', panels);
+    
     panels.forEach(function (panel) {
       this.controller('template')({
         name:       'panel',

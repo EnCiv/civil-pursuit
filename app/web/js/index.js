@@ -45,6 +45,19 @@
      *  @then 
      */
 
+    .tell(trueStory
+      .when({ model: 'items' }, { on: 'concat' })
+        .then(function (items) {
+          var app = this;
+
+          var panel = app.controller('find panel')({
+            type: items[0].type,
+            parent: items[0].parent
+          });
+
+          app.controller('items template')(items, panel.view);
+        }))
+
     /**
      *  run
      */
