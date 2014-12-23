@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start": "node app/server/server",
-    "postinstall": "cd app/web && ../../node_modules/.bin/bower install"
+    "start": "node app/server/server"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
   "license": "BSD-2-Clause",
