@@ -9,8 +9,17 @@
     else {
       $.ajax(template.url)
         .success(function (data) {
-          template.container.append($(data));
+
+          var toDOM = $(data);
+          
+          template.container.append(toDOM);
+          
           this.model('templates')[template] = data;
+
+          if ( typeof template.ready === 'function' ) {
+            template.ready(toDOM);
+          }
+
         }.bind(this));
     }
   };

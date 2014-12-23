@@ -62,7 +62,18 @@
 
 }();
 
-},{"events":13,"util":17}],2:[function(require,module,exports){
+},{"events":14,"util":18}],2:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = function applyTemplateToPanel (view, panel) {
+    view.find('.panel-title').text(panel.type);
+  };
+
+} ();
+
+},{}],3:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -73,14 +84,16 @@
         name:       'panel',
         url:        '/partial/panel',
         container:  this.view('panels'),
-        exports:    panel
+        ready:      function (view) {
+          require('./apply-template-to-panel')(view, panel);
+        }
       });
     }.bind(this));
   };
 
 } ();
 
-},{}],3:[function(require,module,exports){
+},{"./apply-template-to-panel":2}],4:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -92,13 +105,18 @@
           return this.emit('error', error);
         }
 
-        this.view('intro').find('.panel-title').text(intro.subject);
+        console.log('view of intro', this.view('intro'))
+
+        require('./apply-template-to-panel')(this.view('intro'), {
+          type: intro.subject
+        });
+
       }.bind(this));
   };
 
 } ();
 
-},{}],4:[function(require,module,exports){
+},{"./apply-template-to-panel":2}],5:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -116,7 +134,7 @@
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -128,15 +146,24 @@
     else {
       $.ajax(template.url)
         .success(function (data) {
-          template.container.append($(data));
+
+          var toDOM = $(data);
+          
+          template.container.append(toDOM);
+          
           this.model('templates')[template] = data;
+
+          if ( typeof template.ready === 'function' ) {
+            template.ready(toDOM);
+          }
+
         }.bind(this));
     }
   };
 
 } ();
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ;! function () {
 
   'use strict';
@@ -176,7 +203,7 @@
     });
   
 }();
-},{"./controllers/apply-template-to-panels":2,"./controllers/get-intro":3,"./controllers/monson-get":4,"./controllers/template":5,"./model":7,"./view":8,"/home/francois/Dev/true-story.js/lib/TrueStory":9}],7:[function(require,module,exports){
+},{"./controllers/apply-template-to-panels":3,"./controllers/get-intro":4,"./controllers/monson-get":5,"./controllers/template":6,"./model":8,"./view":9,"/home/francois/Dev/true-story.js/lib/TrueStory":10}],8:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -190,7 +217,7 @@
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -203,7 +230,7 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -283,12 +310,12 @@
 
     if ( typeof name === 'string' ) {
       if ( '1' in arguments ) {
-        this.views[name] = $(view);
+        this.views[name] = view;
 
         return this;
       }
 
-      return this.views[name];
+      return $(this.views[name]);
     }
   };
 
@@ -406,7 +433,7 @@
   module.exports = TrueStory.exports;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/bind":10,"./TrueStory/parse-dot-notation":11,"./TrueStory/watch":12,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":15,"events":13,"util":17}],10:[function(require,module,exports){
+},{"./TrueStory/bind":11,"./TrueStory/parse-dot-notation":12,"./TrueStory/watch":13,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":16,"events":14,"util":18}],11:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -470,7 +497,7 @@
 
 } ();
 
-},{"./parse-dot-notation":11}],11:[function(require,module,exports){
+},{"./parse-dot-notation":12}],12:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -496,7 +523,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -537,7 +564,7 @@
 
 } ();
 
-},{"./parse-dot-notation":11}],13:[function(require,module,exports){
+},{"./parse-dot-notation":12}],14:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -840,7 +867,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -865,7 +892,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -930,14 +957,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1527,4 +1554,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":16,"_process":15,"inherits":14}]},{},[6]);
+},{"./support/isBuffer":17,"_process":16,"inherits":15}]},{},[7]);

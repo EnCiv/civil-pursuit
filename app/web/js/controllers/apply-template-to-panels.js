@@ -8,7 +8,9 @@
         name:       'panel',
         url:        '/partial/panel',
         container:  this.view('panels'),
-        exports:    panel
+        ready:      function (view) {
+          require('./apply-template-to-panel')(view, panel);
+        }
       });
     }.bind(this));
   };

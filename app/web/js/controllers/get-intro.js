@@ -9,7 +9,12 @@
           return this.emit('error', error);
         }
 
-        this.view('intro').find('.panel-title').text(intro.subject);
+        console.log('view of intro', this.view('intro'))
+
+        require('./apply-template-to-panel')(this.view('intro'), {
+          type: intro.subject
+        });
+
       }.bind(this));
   };
 
