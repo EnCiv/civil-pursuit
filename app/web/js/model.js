@@ -6,7 +6,8 @@
     "user":         synapp.user,
     "panels":       [],
     "templates":    {},
-    "intro":        null
+    "intro":        null,
+    "items":        []
   };
 
 } ();

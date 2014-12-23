@@ -62,7 +62,22 @@
 
 }();
 
-},{"events":10,"util":14}],2:[function(require,module,exports){
+},{"events":11,"util":15}],2:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = {
+    'monson get':               require('./controllers/monson-get'),
+    'template':                 require('./controllers/template'),
+    'get intro':                require('./controllers/get-intro'),
+    'panels template':          require('./controllers/panels-template'),
+    'bind panel':               require('./controllers/bind-panel')
+  };
+
+} ();
+
+},{"./controllers/bind-panel":3,"./controllers/get-intro":4,"./controllers/monson-get":5,"./controllers/panels-template":6,"./controllers/template":7}],3:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -73,50 +88,26 @@
 
 } ();
 
-},{}],3:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  module.exports = function applyTemplateToPanels (panels) {
-    panels.forEach(function (panel) {
-      this.controller('template')({
-        name:       'panel',
-        url:        '/partial/panel',
-        container:  this.view('panels'),
-        ready:      function (view) {
-          require('./apply-template-to-panel')(view, panel);
-        }
-      });
-    }.bind(this));
-  };
-
-} ();
-
-},{"./apply-template-to-panel":2}],4:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = function template (template) {
-    this.controller('monson GET')('/models/Item.findOne?type=Intro',
+    this.controller('monson get')('/models/Item.findOne?type=Intro',
       function (error, intro) {
         if ( error ) {
           return this.emit('error', error);
         }
 
-        console.log('view of intro', this.view('intro'))
-
-        require('./apply-template-to-panel')(this.view('intro'), {
-          type: intro.subject
-        });
+        this.model('intro', intro);
 
       }.bind(this));
   };
 
 } ();
 
-},{"./apply-template-to-panel":2}],5:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -135,6 +126,26 @@
 } ();
 
 },{}],6:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = function applyTemplateToPanels (panels) {
+    panels.forEach(function (panel) {
+      this.controller('template')({
+        name:       'panel',
+        url:        '/partial/panel',
+        container:  this.view('panels'),
+        ready:      function (view) {
+          this.controller('bind panel')(view, panel);
+        }.bind(this)
+      });
+    }.bind(this));
+  };
+
+} ();
+
+},{}],7:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -163,7 +174,7 @@
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ;! function () {
 
   'use strict';
@@ -176,25 +187,54 @@
 
     .view(require('./view'))
 
-    .controller('monson GET',   require('./controllers/monson-get'))
-
-    .controller('template',     require('./controllers/template'))
-
-    .controller('get intro',    require('./controllers/get-intro'))
-
-    .controller('apply template to panels',
-      require('./controllers/apply-template-to-panels'))
+    .controller(require('./controller'))
 
     /**
-     *  @when model "panels" on "add"
+     *  @when model "intro" on "all"
+     *  @then call controller "apply template to panel"
+     */
+
+    .tell(trueStory
+      .when({ model: 'intro' }, { on: 'all' })
+        .then(function (intro) {
+          this.controller('bind panel')(this.view('intro'), {
+            type: intro.new.subject
+          });
+        }))
+
+    /**
+     *  @when model "panels" on "push"
      *  @then for each added apply template "panel"
      */
 
     .tell(trueStory
       .when({ model: 'panels' }, { on: 'push' })
         .then(function (panels) {
-          this.controller('apply template to panels')(panels);
+          var app = this;
+
+          app.controller('panels template')(panels);
+
+          panels.forEach(function (panel) {
+            
+            app.controller('monson get')('/models/Item?type=' + panel.type,
+              
+              function (error, items) {
+                
+                if ( error ) {
+                  return app.emit('error', error);
+                }
+
+                app.model('items').concat(items.filter(function (item) {
+                  return ! app.find('items', { _id: item._id }).length;
+                }));
+
+              });
+          });
         }))
+
+    /**
+     *  run
+     */
 
     .run(function () {
       this.controller('get intro')();
@@ -203,7 +243,7 @@
     });
   
 }();
-},{"./controllers/apply-template-to-panels":3,"./controllers/get-intro":4,"./controllers/monson-get":5,"./controllers/template":6,"./model":8,"./view":9,"/home/francois/Dev/true-story.js/lib/TrueStory":15}],8:[function(require,module,exports){
+},{"./controller":2,"./model":9,"./view":10,"/home/francois/Dev/true-story.js/lib/TrueStory":16}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -212,12 +252,13 @@
     "user":         synapp.user,
     "panels":       [],
     "templates":    {},
-    "intro":        null
+    "intro":        null,
+    "items":        []
   };
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -230,7 +271,7 @@
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -533,7 +574,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -558,7 +599,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -646,14 +687,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1243,7 +1284,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":13,"_process":12,"inherits":11}],15:[function(require,module,exports){
+},{"./support/isBuffer":14,"_process":13,"inherits":12}],16:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -1278,14 +1319,25 @@ function hasOwnProperty(obj, prop) {
       }
 
       if ( Array.isArray(this.models[name] ) && ! this.models[name].__follow ) {
+        
         this.models[name].__follow = true;
 
-        this.models[name].push = function pushModel () {
-          for ( var i in arguments ) {
-            this.models[name] = this.models[name].concat([arguments[i]]);
-          }
+        this.models[name].push = function push () {
+          this.models[name] = Array.prototype.concat.apply(
+            this.models[name],
+            Array.prototype.slice.apply(arguments));
+          
           this.emit('push ' + name, Array.prototype.slice.call(arguments));
         }.bind(this);
+
+        this.models[name].concat = function concat () {
+          this.models[name] = Array.prototype.concat.apply(
+            this.models[name],
+            Array.prototype.slice.apply(arguments));
+
+          this.emit('concat ' + name, Array.prototype.slice.call(arguments));
+        }.bind(this);
+
       }
 
       return this.models[name];
@@ -1446,7 +1498,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = TrueStory.exports;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/bind":16,"./TrueStory/parse-dot-notation":17,"./TrueStory/watch":18,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":12,"events":10,"util":14}],16:[function(require,module,exports){
+},{"./TrueStory/bind":17,"./TrueStory/parse-dot-notation":18,"./TrueStory/watch":19,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":13,"events":11,"util":15}],17:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -1510,7 +1562,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"./parse-dot-notation":17}],17:[function(require,module,exports){
+},{"./parse-dot-notation":18}],18:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -1536,7 +1588,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -1577,4 +1629,4 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"./parse-dot-notation":17}]},{},[7]);
+},{"./parse-dot-notation":18}]},{},[8]);

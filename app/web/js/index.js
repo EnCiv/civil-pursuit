@@ -10,25 +10,44 @@
 
     .view(require('./view'))
 
-    .controller('monson GET',   require('./controllers/monson-get'))
-
-    .controller('template',     require('./controllers/template'))
-
-    .controller('get intro',    require('./controllers/get-intro'))
-
-    .controller('apply template to panels',
-      require('./controllers/apply-template-to-panels'))
+    .controller(require('./controller'))
 
     /**
-     *  @when model "panels" on "add"
+     *  @when model "intro" on "all"
+     *  @then call controller "apply template to panel"
+     */
+
+    .tell(trueStory
+      .when({ model: 'intro' }, { on: 'all' })
+        .then(function (intro) {
+          this.controller('bind panel')(this.view('intro'), {
+            type: intro.new.subject
+          });
+        }))
+
+    /**
+     *  @when model "panels" on "push"
      *  @then for each added apply template "panel"
      */
 
     .tell(trueStory
       .when({ model: 'panels' }, { on: 'push' })
         .then(function (panels) {
-          this.controller('apply template to panels')(panels);
+          var app = this;
+
+          app.controller('panels template')(panels);
+
+          panels.forEach(app.controller('get panel items').bind(app));
         }))
+
+    /**
+     *  @when model "items" on "concat"
+     *  @then 
+     */
+
+    /**
+     *  run
+     */
 
     .run(function () {
       this.controller('get intro')();

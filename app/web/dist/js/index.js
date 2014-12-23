@@ -62,7 +62,23 @@
 
 }();
 
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panel.js":[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/controller.js":[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = {
+    'monson get':               require('./controllers/monson-get'),
+    'template':                 require('./controllers/template'),
+    'get intro':                require('./controllers/get-intro'),
+    'panels template':          require('./controllers/panels-template'),
+    'bind panel':               require('./controllers/bind-panel'),
+    'get panel items':          require('./controllers/get-panel-items')
+  };
+
+} ();
+
+},{"./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js","./controllers/monson-get":"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js","./controllers/panels-template":"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js","./controllers/template":"/home/francois/Dev/syn/app/web/js/controllers/template.js"}],"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -73,50 +89,53 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panels.js":[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  module.exports = function applyTemplateToPanels (panels) {
-    panels.forEach(function (panel) {
-      this.controller('template')({
-        name:       'panel',
-        url:        '/partial/panel',
-        container:  this.view('panels'),
-        ready:      function (view) {
-          require('./apply-template-to-panel')(view, panel);
-        }
-      });
-    }.bind(this));
-  };
-
-} ();
-
-},{"./apply-template-to-panel":"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panel.js"}],"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = function template (template) {
-    this.controller('monson GET')('/models/Item.findOne?type=Intro',
+    this.controller('monson get')('/models/Item.findOne?type=Intro',
       function (error, intro) {
         if ( error ) {
           return this.emit('error', error);
         }
 
-        console.log('view of intro', this.view('intro'))
-
-        require('./apply-template-to-panel')(this.view('intro'), {
-          type: intro.subject
-        });
+        this.model('intro', intro);
 
       }.bind(this));
   };
 
 } ();
 
-},{"./apply-template-to-panel":"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panel.js"}],"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js":[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = function getPanelItems (panel) {
+    var app = this;
+
+     app.controller('monson get')('/models/Item?type=' + panel.type,
+      
+      function (error, items) {
+        
+        if ( error ) {
+          return app.emit('error', error);
+        }
+
+        app.model('items').concat(items.filter(function (new_item) {
+          return ! app.model('items').some(function (item) {
+            return item._id === new_item._id;
+          });
+        }));
+
+      });
+  };
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -130,6 +149,26 @@
       .success(function (data) {
         cb(null, data);
       });
+  };
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js":[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  module.exports = function applyTemplateToPanels (panels) {
+    panels.forEach(function (panel) {
+      this.controller('template')({
+        name:       'panel',
+        url:        '/partial/panel',
+        container:  this.view('panels'),
+        ready:      function (view) {
+          this.controller('bind panel')(view, panel);
+        }.bind(this)
+      });
+    }.bind(this));
   };
 
 } ();
@@ -176,25 +215,44 @@
 
     .view(require('./view'))
 
-    .controller('monson GET',   require('./controllers/monson-get'))
-
-    .controller('template',     require('./controllers/template'))
-
-    .controller('get intro',    require('./controllers/get-intro'))
-
-    .controller('apply template to panels',
-      require('./controllers/apply-template-to-panels'))
+    .controller(require('./controller'))
 
     /**
-     *  @when model "panels" on "add"
+     *  @when model "intro" on "all"
+     *  @then call controller "apply template to panel"
+     */
+
+    .tell(trueStory
+      .when({ model: 'intro' }, { on: 'all' })
+        .then(function (intro) {
+          this.controller('bind panel')(this.view('intro'), {
+            type: intro.new.subject
+          });
+        }))
+
+    /**
+     *  @when model "panels" on "push"
      *  @then for each added apply template "panel"
      */
 
     .tell(trueStory
       .when({ model: 'panels' }, { on: 'push' })
         .then(function (panels) {
-          this.controller('apply template to panels')(panels);
+          var app = this;
+
+          app.controller('panels template')(panels);
+
+          panels.forEach(app.controller('get panel items').bind(app));
         }))
+
+    /**
+     *  @when model "items" on "concat"
+     *  @then 
+     */
+
+    /**
+     *  run
+     */
 
     .run(function () {
       this.controller('get intro')();
@@ -203,7 +261,7 @@
     });
   
 }();
-},{"./controllers/apply-template-to-panels":"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panels.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js","./controllers/monson-get":"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js","./controllers/template":"/home/francois/Dev/syn/app/web/js/controllers/template.js","./model":"/home/francois/Dev/syn/app/web/js/model.js","./view":"/home/francois/Dev/syn/app/web/js/view.js","/home/francois/Dev/true-story.js/lib/TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/syn/app/web/js/model.js":[function(require,module,exports){
+},{"./controller":"/home/francois/Dev/syn/app/web/js/controller.js","./model":"/home/francois/Dev/syn/app/web/js/model.js","./view":"/home/francois/Dev/syn/app/web/js/view.js","/home/francois/Dev/true-story.js/lib/TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/syn/app/web/js/model.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -212,7 +270,8 @@
     "user":         synapp.user,
     "panels":       [],
     "templates":    {},
-    "intro":        null
+    "intro":        null,
+    "items":        []
   };
 
 } ();
@@ -1278,14 +1337,25 @@ function hasOwnProperty(obj, prop) {
       }
 
       if ( Array.isArray(this.models[name] ) && ! this.models[name].__follow ) {
+        
         this.models[name].__follow = true;
 
-        this.models[name].push = function pushModel () {
-          for ( var i in arguments ) {
-            this.models[name] = this.models[name].concat([arguments[i]]);
-          }
+        this.models[name].push = function push () {
+          this.models[name] = Array.prototype.concat.apply(
+            this.models[name],
+            Array.prototype.slice.apply(arguments));
+
           this.emit('push ' + name, Array.prototype.slice.call(arguments));
         }.bind(this);
+
+        this.models[name].concat = function concat () {
+          this.models[name] = Array.prototype.concat.apply(
+            this.models[name],
+            Array.prototype.slice.apply(arguments));
+
+          this.emit('concat ' + name, Array.prototype.slice.call(arguments));
+        }.bind(this);
+
       }
 
       return this.models[name];

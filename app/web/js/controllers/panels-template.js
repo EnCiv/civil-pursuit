@@ -9,8 +9,8 @@
         url:        '/partial/panel',
         container:  this.view('panels'),
         ready:      function (view) {
-          require('./apply-template-to-panel')(view, panel);
-        }
+          this.controller('bind panel')(view, panel);
+        }.bind(this)
       });
     }.bind(this));
   };
