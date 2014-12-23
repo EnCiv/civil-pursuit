@@ -1,268 +1,278 @@
-var gulp          =   require('gulp');
-var gutil         =   require('gulp-util');
-var less          =   require('gulp-less');
-var watchify      =   require('watchify');
-var browserify    =   require('browserify');
-var source        =   require('vinyl-source-stream');
-var path          =   require('path');
-var watch         =   require('gulp-watch');
-var concat        =   require('gulp-concat');
-var minifyCSS     =   require('gulp-minify-css');
-var rename        =   require("gulp-rename");
-var runSequence   =   require('run-sequence');
-var uglify        =   require('gulp-uglifyjs');
-var shell         =   require('gulp-shell');
+(function () {
 
-var path_bower    =   'app/web/bower_components';
-var path_less     =   'app/web/less';
-var path_dist     =   'app/web/dist';
-var path_angular  =   'app/web/angular';
-var path_ngapp    =   path.join(path_angular, 'synapp')
+  'use strict';
 
-function spawn (cmd, args, then) {
+  var gulp          =   require('gulp');
 
-  var cp = require('child_process').spawn(cmd, args);
+  gulp.task('browserify', require('./app/business/build/browserify'));
 
-  cp.on('error', then);
+})();
 
-  cp.on('exit', function (code) {
-    if ( typeof code === 'number' && ! code ) {
-      return then();
-    }
-    then(new Error('Got code ' + code));
-  });
+// var gulp          =   require('gulp');
+// var gutil         =   require('gulp-util');
+// var less          =   require('gulp-less');
+// var watchify      =   require('watchify');
+// var browserify    =   require('browserify');
+// var source        =   require('vinyl-source-stream');
+// var path          =   require('path');
+// var watch         =   require('gulp-watch');
+// var concat        =   require('gulp-concat');
+// var minifyCSS     =   require('gulp-minify-css');
+// var rename        =   require("gulp-rename");
+// var runSequence   =   require('run-sequence');
+// var uglify        =   require('gulp-uglifyjs');
+// var shell         =   require('gulp-shell');
 
-  cp.stdout.on('data', function (data) {
-    console.log(data.toString());
-  });
+// var path_bower    =   'app/web/bower_components';
+// var path_less     =   'app/web/less';
+// var path_dist     =   'app/web/dist';
+// var path_angular  =   'app/web/angular';
+// var path_ngapp    =   path.join(path_angular, 'synapp')
 
-  cp.stderr.on('data', function (data) {
-    console.log(data.toString());
-  });
-}
+// function spawn (cmd, args, then) {
 
-/*
- *  COMPILE LESS
- *  ============
-*/
+//   var cp = require('child_process').spawn(cmd, args);
 
-gulp.task('less', function gulpCompileLess () {
-  return gulp.src(path.join(path_less, 'synapp.less'))
-    .pipe(less({
-      paths: [
-        path.join(__dirname, path_bower, 'boostrap/less')
-      ]
-    }))
-    .pipe(gulp.dest(path.join(path_dist, 'css')));
-});
+//   cp.on('error', then);
 
-/*
- *  MINIFY CSS
- *  ==========
-*/
+//   cp.on('exit', function (code) {
+//     if ( typeof code === 'number' && ! code ) {
+//       return then();
+//     }
+//     then(new Error('Got code ' + code));
+//   });
 
-gulp.task('min-css', function gulpMinifyCSS () {
-  return gulp.src(path.join(path_dist, 'css/synapp.css'))
-    .pipe(minifyCSS())
-    .pipe(rename(function (path) {
-      path.extname = '.min.css';
-    }))
-    .pipe(gulp.dest(path.join(path_dist, 'css')));
-});
+//   cp.stdout.on('data', function (data) {
+//     console.log(data.toString());
+//   });
 
-/*
- *  MINIFY C3 CSS
- *  =============
-*/
+//   cp.stderr.on('data', function (data) {
+//     console.log(data.toString());
+//   });
+// }
 
-gulp.task('min-css-c3', function gulpMinifyC3CSS () {
-  return gulp.src(path.join(path_bower, 'c3/c3.css'))
-    .pipe(minifyCSS())
-    .pipe(rename(function (path) {
-      path.extname = '.min.css';
-    }))
-    .pipe(gulp.dest(path.join(path_dist, 'css')));
-});
+// /*
+//  *  COMPILE LESS
+//  *  ============
+// */
 
-/*
- *  CONCAT BOOTSTRAP
- *  ================
-*/
+// gulp.task('less', function gulpCompileLess () {
+//   return gulp.src(path.join(path_less, 'synapp.less'))
+//     .pipe(less({
+//       paths: [
+//         path.join(__dirname, path_bower, 'boostrap/less')
+//       ]
+//     }))
+//     .pipe(gulp.dest(path.join(path_dist, 'css')));
+// });
 
-gulp.task('concat-bs', function concatBsJS () {
+// /*
+//  *  MINIFY CSS
+//  *  ==========
+// */
 
-  return gulp.src(path.join(path_bower,
-    'bootstrap/**/{tooltip,transition,collapse,modal,dropdown}.js'))
+// gulp.task('min-css', function gulpMinifyCSS () {
+//   return gulp.src(path.join(path_dist, 'css/synapp.css'))
+//     .pipe(minifyCSS())
+//     .pipe(rename(function (path) {
+//       path.extname = '.min.css';
+//     }))
+//     .pipe(gulp.dest(path.join(path_dist, 'css')));
+// });
 
-    .pipe(concat('bootstrap.js'))
+// /*
+//  *  MINIFY C3 CSS
+//  *  =============
+// */
 
-    .pipe(gulp.dest(path.join(path_dist, 'js')));
-});
+// gulp.task('min-css-c3', function gulpMinifyC3CSS () {
+//   return gulp.src(path.join(path_bower, 'c3/c3.css'))
+//     .pipe(minifyCSS())
+//     .pipe(rename(function (path) {
+//       path.extname = '.min.css';
+//     }))
+//     .pipe(gulp.dest(path.join(path_dist, 'css')));
+// });
 
-/*
- *  UGLIFY BOOTSTRAP
- *  ================
-*/
+// /*
+//  *  CONCAT BOOTSTRAP
+//  *  ================
+// */
 
-gulp.task('ugly-bs', function uglifyBs (cb) {
-  return gulp.src(path.join(path_dist, 'js/bootstrap.js'))
+// gulp.task('concat-bs', function concatBsJS () {
 
-    .pipe(uglify())
+//   return gulp.src(path.join(path_bower,
+//     'bootstrap/**/{tooltip,transition,collapse,modal,dropdown}.js'))
 
-    .pipe(rename(function (path) {
-      path.extname = '.min.js';
-    }))
+//     .pipe(concat('bootstrap.js'))
 
-    .pipe(gulp.dest(path.join(path_dist, 'js')));
-});
+//     .pipe(gulp.dest(path.join(path_dist, 'js')));
+// });
 
-/*
- *  BROWSERIFY APP
- *  ==============
-*/
+// /*
+//  *  UGLIFY BOOTSTRAP
+//  *  ================
+// */
 
-gulp.task('browserifyApp', function browserifyApp () {
-  return browserify(path.join(__dirname, path_ngapp, 'index.js'))
-    .bundle()
-    //Pass desired output filename to vinyl-source-stream
-    .pipe(source('bundle.js'))
-    // Start piping stream to tasks!
-    .pipe(gulp.dest(path.join(path_dist, 'js')));
-});
+// gulp.task('ugly-bs', function uglifyBs (cb) {
+//   return gulp.src(path.join(path_dist, 'js/bootstrap.js'))
 
-/*
- *  UGLIFY APP
- *  ==========
-*/
+//     .pipe(uglify())
 
-gulp.task('ugly-app', function uglifyApp () {
+//     .pipe(rename(function (path) {
+//       path.extname = '.min.js';
+//     }))
 
-  return gulp.src(path.join(path_dist, 'js/bundle.js'))
+//     .pipe(gulp.dest(path.join(path_dist, 'js')));
+// });
 
-    .pipe(uglify())
+// /*
+//  *  BROWSERIFY APP
+//  *  ==============
+// */
 
-    .pipe(rename(function (path) {
-      path.extname = '.min.js';
-    }))
+// gulp.task('browserifyApp', function browserifyApp () {
+//   return browserify(path.join(__dirname, path_ngapp, 'index.js'))
+//     .bundle()
+//     //Pass desired output filename to vinyl-source-stream
+//     .pipe(source('bundle.js'))
+//     // Start piping stream to tasks!
+//     .pipe(gulp.dest(path.join(path_dist, 'js')));
+// });
 
-    .pipe(gulp.dest(path.join(path_dist, 'js')));
-});
+// /*
+//  *  UGLIFY APP
+//  *  ==========
+// */
 
-////////////////////////////////////////////////////////////////////////////////
-//    WATCHERS
-////////////////////////////////////////////////////////////////////////////////
+// gulp.task('ugly-app', function uglifyApp () {
 
-/*
- *  WATCHIFY APP
- *  ============
-*/
+//   return gulp.src(path.join(path_dist, 'js/bundle.js'))
 
-gulp.task('watchifyApp', function watchifyApp () {
-  var bundler = watchify(browserify(path.join(__dirname, path_ngapp, 'index.js'),
-    watchify.args));
+//     .pipe(uglify())
 
-  bundler.on('update', rebundle);
+//     .pipe(rename(function (path) {
+//       path.extname = '.min.js';
+//     }))
 
-  function rebundle() {
-    return bundler.bundle()
-      // log errors if they happen
-      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-      .pipe(source('bundle.js'))
-      .pipe(gulp.dest(path.join(path_dist, 'js')));
-  }
+//     .pipe(gulp.dest(path.join(path_dist, 'js')));
+// });
 
-  return rebundle();
-});
+// ////////////////////////////////////////////////////////////////////////////////
+// //    WATCHERS
+// ////////////////////////////////////////////////////////////////////////////////
 
-/*
- *  WATCH LESS
- *  ==========
-*/
+// /*
+//  *  WATCHIFY APP
+//  *  ============
+// */
 
-gulp.task('watch-less', function watchLess () {
-  gulp.watch('app/web/less/*.less', ['less']);
-});
+// gulp.task('watchifyApp', function watchifyApp () {
+//   var bundler = watchify(browserify(path.join(__dirname, path_ngapp, 'index.js'),
+//     watchify.args));
 
-/*
- *  ALL WATCHERs
- *  ============
-*/
+//   bundler.on('update', rebundle);
 
-gulp.task('watch', ['less', 'watch-less', 'watchifyApp'], function watch () {
-});
+//   function rebundle() {
+//     return bundler.bundle()
+//       // log errors if they happen
+//       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+//       .pipe(source('bundle.js'))
+//       .pipe(gulp.dest(path.join(path_dist, 'js')));
+//   }
 
-////////////////////////////////////////////////////////////////////////////////
-//    BUILDERS
-////////////////////////////////////////////////////////////////////////////////
+//   return rebundle();
+// });
 
-/*
- *  BUILD
- *  =====
-*/
+// /*
+//  *  WATCH LESS
+//  *  ==========
+// */
 
-gulp.task('build', ['less', 'concat-bs', 'browserifyApp'], function (cb) {
-  cb();
-});
+// gulp.task('watch-less', function watchLess () {
+//   gulp.watch('app/web/less/*.less', ['less']);
+// });
 
-/*
- *  BUILD PROD
- *  ==========
-*/
+// /*
+//  *  ALL WATCHERs
+//  *  ============
+// */
 
-gulp.task('build-prod', ['build'], function (cb) {
-  runSequence('min-css', 'min-css-c3', 'ugly-bs', 'ugly-app', function (error) {
-    if ( error ) {
-      return cb(error);
-    }
-    spawn('npm', ['test'], cb)
-  });
-});
+// gulp.task('watch', ['less', 'watch-less', 'watchifyApp'], function watch () {
+// });
 
-////////////////////////////////////////////////////////////////////////////////
-//    ROUTINES
-////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////
+// //    BUILDERS
+// ////////////////////////////////////////////////////////////////////////////////
 
-gulp.task('push-to-heroku', ['build-prod'], function pushToHeroku (cb) {
-  spawn('git', ['commit', '-am', 'Pushing to Heroku'],
-    function (error) {
-      if ( error ) {
-        return cb(error);
-      }
+// /*
+//  *  BUILD
+//  *  =====
+// */
 
-      spawn('git', ['push', 'bitbucket', 'master'], function (error) {
-        if ( error ) {
-          return cb(error);
-        }
+// gulp.task('build', ['less', 'concat-bs', 'browserifyApp'], function (cb) {
+//   cb();
+// });
 
-        spawn('git', ['push', 'heroku', 'master'], cb);
-      });
-    })
-});
+// /*
+//  *  BUILD PROD
+//  *  ==========
+// */
 
+// gulp.task('build-prod', ['build'], function (cb) {
+//   runSequence('min-css', 'min-css-c3', 'ugly-bs', 'ugly-app', function (error) {
+//     if ( error ) {
+//       return cb(error);
+//     }
+//     spawn('npm', ['test'], cb)
+//   });
+// });
 
-///////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////
+// //    ROUTINES
+// ////////////////////////////////////////////////////////////////////////////////
 
-// gulp.task('default', function() {
-//   // place code for your default task here
+// gulp.task('push-to-heroku', ['build-prod'], function pushToHeroku (cb) {
+//   spawn('git', ['commit', '-am', 'Pushing to Heroku'],
+//     function (error) {
+//       if ( error ) {
+//         return cb(error);
+//       }
+
+//       spawn('git', ['push', 'bitbucket', 'master'], function (error) {
+//         if ( error ) {
+//           return cb(error);
+//         }
+
+//         spawn('git', ['push', 'heroku', 'master'], cb);
+//       });
+//     })
 // });
 
 
+// ///////////////////////////////////////////////////////////
+
+// // gulp.task('default', function() {
+// //   // place code for your default task here
+// // });
 
 
 
-// var uglify      = require('gulp-uglifyjs');
+
+
+// // var uglify      = require('gulp-uglifyjs');
 
 
 
-// // js docs
+// // // js docs
 
-// var shell = require('gulp-shell');
+// // var shell = require('gulp-shell');
 
-// gulp.task('docs', shell.task([ 
-//   'node_modules/jsdoc/jsdoc.js '+ 
-//     '-c node_modules/angular-jsdoc/conf.json '+   // config file
-//     '-t node_modules/angular-jsdoc/template '+    // template file
-//     '-d build/docs '+                             // output directory
-//     '-r '+                                        // recursive
-//     'public/js/angular/synapp models'             // source code directory
-// ]));
+// // gulp.task('docs', shell.task([ 
+// //   'node_modules/jsdoc/jsdoc.js '+ 
+// //     '-c node_modules/angular-jsdoc/conf.json '+   // config file
+// //     '-t node_modules/angular-jsdoc/template '+    // template file
+// //     '-d build/docs '+                             // output directory
+// //     '-r '+                                        // recursive
+// //     'public/js/angular/synapp models'             // source code directory
+// // ]));

@@ -38,21 +38,21 @@ block stylesheets
 
     - else
       //- Otherwise use bower
-      - href = '/bower/font-awesome/css/font-awesome.min.css'
+      - href = '/bower/font-awesome/css/font-awesome.css'
     
     link(rel='stylesheet' href=href)
       
   block css-app
     - if ( settings.env === 'production' )
-      link(rel='stylesheet' href='/dist/css/synapp.min.css')
+      link(rel='stylesheet' href='/css/synapp.min.css')
     
     - else
-      link(rel='stylesheet' href='/dist/css/synapp.css')
+      link(rel='stylesheet' href='/css/synapp.css')
 
   //- C3 CSS
   block css-c3
     - if ( settings.env === 'production' )
-      link(rel='stylesheet' href='/dist/css/c3.min.css')
+      link(rel='stylesheet' href='/css/c3.min.css')
     
     - else
       link(rel='stylesheet' href='/bower/c3/c3.css')

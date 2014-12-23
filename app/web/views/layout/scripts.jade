@@ -15,7 +15,7 @@ block script-backend
 
 //- socketio
 block script-socketio
-  script(src='/socket.io/socket.io.js')
+  //- script(src='/socket.io/socket.io.js')
 
 //- # jQuery
 
@@ -29,51 +29,52 @@ block script-jquery
 //- # Bootstrap
 
 block script-bootstrap
-  - if ( settings.env === 'production' )
-    script(src='/dist/js/bootstrap.min.js')
-  - else
-    script(src='/dist/js/bootstrap.js')
+  //- - if ( settings.env === 'production' )
+  //-   script(src='/dist/js/bootstrap.min.js')
+  //- - else
+  //-   script(src='/dist/js/bootstrap.js')
 
 //- # Shims
 
 block script-shims
-  script(src='/bower/ng-file-upload-shim/angular-file-upload-shim.js')
+  //- script(src='/bower/ng-file-upload-shim/angular-file-upload-shim.js')
 
 //- # Angular
 
 block script-angular
-  - if ( settings.env === 'production' )
-    script(src=synapp.angular.cdn)
+  //- - if ( settings.env === 'production' )
+  //-   script(src=synapp.angular.cdn)
 
-  - else
-    script(src='/bower/angular/angular.js')
+  //- - else
+  //-   script(src='/bower/angular/angular.js')
 
 //- # Angular apps
 
 block script-file-upload
-  - if ( settings.env === 'production' )
-    script(src='/bower/ng-file-upload/angular-file-upload.min.js')
+  //- - if ( settings.env === 'production' )
+  //-   script(src='/bower/ng-file-upload/angular-file-upload.min.js')
 
-  - else
-    script(src='/bower/ng-file-upload/angular-file-upload.js')
+  //- - else
+  //-   script(src='/bower/ng-file-upload/angular-file-upload.js')
   
 block script-autogrow
-  script(src='/js/autogrow/index.js')
+  //- script(src='/js/autogrow/index.js')
 
 //- # Bootstrap sliders
 
 block script-sliders
-  - if ( settings.env === 'production' )
-    script(src='/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
+  //- - if ( settings.env === 'production' )
+  //-   script(src='/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
 
-  - else
-    script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
+  //- - else
+  //-   script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
 
 block script-d3
   - if ( settings.env === 'production' )
     script(src='/bower/d3/d3.min.js')
   - else
     script(src='/bower/d3/d3.js')
+    //- script(src='http://d3js.org/d3.v3.min.js' charset='utf-8')
 
 block script-c3
   - if ( settings.env === 'production' )
@@ -85,9 +86,9 @@ block script-c3
 
 block script-app
   - if ( settings.env === 'production' )
-    script(src='/dist/js/bundle.min.js')
+    script(src='/js/bundle.min.js')
 
   - else
-    script(src='/dist/js/bundle.js')
+    script(src='/js/index.js')
 
   //- script(src='/foo/app.js')

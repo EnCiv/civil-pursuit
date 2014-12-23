@@ -61,19 +61,6 @@
     
     "navigator batch size": 6,
     
-    "latency": {
-      
-      "development": 1500,
-      "production": 15000
-    },
-    
-    "cloudinary navigator images filter": "c_thumb,e_improve,g_face,h_120,w_180",
-    
-    "navigation": {
-
-      "create topic": "/create/topic"
-    },
-    
     "item media": {
 
       "max-width": 180,
@@ -91,6 +78,8 @@
     },
     
     "routes": {
+
+      "terms of service": "/page/terms-of-service",
       
       "sign in with Twitter": "/sign/twitter",
 
@@ -99,7 +88,18 @@
       "sign in with Facebook": "/sign/facebook",
 
       "sign in with Facebook OK": "/sign/facebook/ok"
+
     }
+  },
+
+  "files": {
+    
+    "app js": "app/web/js/index.js"
+  },
+
+  "dirs": {
+
+    "dist js": "app/web/dist/js"
   },
 
   "google analytics": {

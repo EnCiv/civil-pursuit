@@ -2,10 +2,12 @@
 
   'use strict';
 
+  require('colors');
+
   var mocha     =   require('mocha');
   var assert    =   require('assert');
   var path      =   require('path');
-  var daemon    =   require('../lib/express');
+  var daemon    =   require('../lib/pronto');
 
   var base      =   path.dirname(path.dirname(path.dirname(__dirname)));
 
@@ -14,9 +16,10 @@
   describe ( 'Front-end'.green.bold.inverse, function () {
 
     before(function (done) {
-      daemon(true, true)
-        .server
-          .on('listening', done);
+      daemon()
+        .on('listening', function () {
+          done();
+        });
     });
 
     require('./landing-page');

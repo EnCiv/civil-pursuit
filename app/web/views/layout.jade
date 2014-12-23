@@ -1,67 +1,35 @@
-//- MASTER
-    ======
-
-include mixins/item-image
-include mixins/bootstrap
-include mixins/item
-
 doctype html
 
-//- # HTML head
+//- Head
 
-block meta
-  include layout/head
+include layout/head
 
-//- # Meta wrapper
+//- Top bar
 
-// Page container
+section(role='header')
 
-section.container-fluid(
-  data-ng-app         =   'synapp'
-)
+  include layout/top
 
-  //- # Top Bar
+//- Session bar
+
+- if ( ! req.user )
+
+  include partials/sign
+
+//- Page
+
+section(role='main')
   
-  section(role='header')
-    include layout/top
+  block page
 
-  //- # Main wrapper
+//- Footer
 
-  // Main container
+block footer
   
-  section(role='main')
-
-    //- # Emails
-
-    - if ( ! isSignedIn )
-      .sign
-
-    //- # Page wrapper
-    
-    .row
-      .col-xs-12
-
-        // Intro
-
-        #intro
-          +bootstrap-panel
-            +bootstrap-panel-heading
-              h4.panel-title(ng-bind='intro.subject')
-            +bootstrap-panel-body
-              +item('intro')
-
-        block page
-
-  //- # Footer
-
-  block footer
-    include layout/footer
-
-//- Loading modal
-
-include layout/loading-modal
+  include layout/footer
 
 //- Scripts
 
 block scripts
+  
   include layout/scripts

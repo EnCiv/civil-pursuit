@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-var express   =   require('./lib/express');
-var app       =   express(true);
+var pronto    =   require('./lib/pronto');
+var app       =   pronto(true);

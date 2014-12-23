@@ -1,6 +1,8 @@
 //- # Footer
 
+- var y = new Date().getFullYear()
+
 footer.padding
-  p Copyright Ⓒ 2014 by Synaccord.
+  p Copyright Ⓒ 2014 #{(y > 2014 ? " - " + y : "")} by Synaccord.
   p
-    a(href='/terms-of-service') Terms of Service and Privacy Policy
+    a(href=synapp.public.routes['terms of service']) Terms of Service and Privacy Policy
