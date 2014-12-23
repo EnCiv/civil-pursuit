@@ -8,7 +8,7 @@
 
     .model(require('./model'))
 
-    .view(require('./views'))
+    .view(require('./view'))
 
     .controller('monson GET',   require('./controllers/monson-get'))
 

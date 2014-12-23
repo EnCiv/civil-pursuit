@@ -9,7 +9,7 @@
           return this.emit('error', error);
         }
 
-        
+        this.view('intro').find('.panel-title').text(intro.subject);
       }.bind(this));
   };
 
