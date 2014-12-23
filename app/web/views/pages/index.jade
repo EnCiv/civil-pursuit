@@ -1,9 +1,12 @@
 extends ../layout
 
+include ../mixins/bootstrap
+
 block page
   section.panels
-    .panel
-      .panel-header
-        h4 Intro
+    #intro
+      +bootstrap-panel
+        +bootstrap-panel-heading
+          h4.panel-title Intro
 
     hr
