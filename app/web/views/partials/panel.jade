@@ -1,0 +1,21 @@
+include ../mixins/bootstrap
+
+// PANEL
+
++bootstrap-panel
+
+  // PANEL HEADING
+
+  +bootstrap-panel-heading
+
+    // TOGGLE CREATOR
+
+    i.pull-right.fa.fa-plus.cursor-pointer(data-ng-click='$root.publish("toggle creator", { type: type, parent: parent })')
+
+    // TYPE
+
+    h4.panel-title Panel Title
+
+  // PANEL BODY
+
+  +bootstrap-panel-body
