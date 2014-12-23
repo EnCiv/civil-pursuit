@@ -3,8 +3,10 @@
   'use strict';
 
   var gulp          =   require('gulp');
+  var buildersDir   =   './app/business/build';
 
-  gulp.task('browserify', require('./app/business/build/browserify'));
+  gulp.task('browserify',   require(buildersDir + '/browserify'));
+  gulp.task('watchify',     require(buildersDir + '/watchify'));
 
 })();
 

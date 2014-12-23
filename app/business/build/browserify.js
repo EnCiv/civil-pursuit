@@ -1,4 +1,4 @@
-module.exports = (function () {
+! function () {
 
   'use strict';
 
@@ -8,11 +8,11 @@ module.exports = (function () {
   var source        =   require('vinyl-source-stream');
   var config        =   require('../config.json');
 
-  return (function browserifyApp () {
+  module.exports = function browserifyApp () {
     return browserify(path.join(process.cwd(), config.files['app js']))
       .bundle()
       .pipe(source('bundle.js'))
       .pipe(gulp.dest(config.dirs['dist js']));
-  });
+  };
 
-})();
+}();

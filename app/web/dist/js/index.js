@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/follow.js/lib/Follow.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -62,7 +62,7 @@
 
 }();
 
-},{"events":14,"util":18}],2:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panel.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -73,7 +73,7 @@
 
 } ();
 
-},{}],3:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panels.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -93,7 +93,7 @@
 
 } ();
 
-},{"./apply-template-to-panel":2}],4:[function(require,module,exports){
+},{"./apply-template-to-panel":"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panel.js"}],"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -116,7 +116,7 @@
 
 } ();
 
-},{"./apply-template-to-panel":2}],5:[function(require,module,exports){
+},{"./apply-template-to-panel":"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panel.js"}],"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -134,7 +134,7 @@
 
 } ();
 
-},{}],6:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/template.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -163,7 +163,7 @@
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
 ;! function () {
 
   'use strict';
@@ -203,7 +203,7 @@
     });
   
 }();
-},{"./controllers/apply-template-to-panels":3,"./controllers/get-intro":4,"./controllers/monson-get":5,"./controllers/template":6,"./model":8,"./view":9,"/home/francois/Dev/true-story.js/lib/TrueStory":10}],8:[function(require,module,exports){
+},{"./controllers/apply-template-to-panels":"/home/francois/Dev/syn/app/web/js/controllers/apply-template-to-panels.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js","./controllers/monson-get":"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js","./controllers/template":"/home/francois/Dev/syn/app/web/js/controllers/template.js","./model":"/home/francois/Dev/syn/app/web/js/model.js","./view":"/home/francois/Dev/syn/app/web/js/view.js","/home/francois/Dev/true-story.js/lib/TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/syn/app/web/js/model.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -217,7 +217,7 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/view.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -230,341 +230,7 @@
 
 } ();
 
-},{}],10:[function(require,module,exports){
-(function (process){
-; ! function () {
-
-	'use strict';
-
-  var Follow = require('/home/francois/Dev/follow.js/lib/Follow');
-
-	function TrueStory () {
-    this.models 			= {};
-    this.controllers 	= {};
-    this.views 				= {};
-    this.follow       = new Follow(this.models);
-  }
-
-  require('util').inherits(TrueStory, require('events').EventEmitter);
-
-  TrueStory.prototype.model = function (name, model) {
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.model(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.models[name] = model;
-
-        return this;
-      }
-
-      if ( Array.isArray(this.models[name] ) && ! this.models[name].__follow ) {
-        this.models[name].__follow = true;
-
-        this.models[name].push = function pushModel () {
-          for ( var i in arguments ) {
-            this.models[name] = this.models[name].concat([arguments[i]]);
-          }
-          this.emit('push ' + name, Array.prototype.slice.call(arguments));
-        }.bind(this);
-      }
-
-      return this.models[name];
-    }
-  };
-
-  TrueStory.prototype.controller = function (name, controller) {
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.controller(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.controllers[name] = controller.bind(this);
-
-        return this;
-      }
-
-      return this.controllers[name];
-    }
-  };
-
-  TrueStory.prototype.view = function (name, view) {
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.view(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.views[name] = view;
-
-        return this;
-      }
-
-      return $(this.views[name]);
-    }
-  };
-
-  TrueStory.prototype.watch = require('./TrueStory/watch');
-
-  TrueStory.prototype.bind = require('./TrueStory/bind');
-
-  TrueStory.prototype.listen = function (view, events) {
-
-  	var self = this;
-
-  	if ( view.view ) {
-  		view = $(this.views[view.view]);
-  	}
-
-  	function onEvent (action) {
-  		if ( action.controller ) {
-  			return self.controllers[action.controller];
-  		}
-  	}
-
-  	for ( var _event in events ) {
-  		view.on(_event, onEvent(events[_event]));
-  	}
-
-    return this;
-  };
-
-  TrueStory.prototype.run = function (fn) {
-    if ( typeof fn === 'function' ) {
-      process.nextTick(function () {
-        fn.apply(this);
-      }.bind(this));
-    }
-
-    return this;
-  };
-
-  TrueStory.prototype.tell = function (trueStory) {
-
-    if ( typeof trueStory === 'function' ) {
-      // process.nextTick(function () {
-      //   trueStory.apply(this);
-      // }.bind(this));
-
-      trueStory.apply(this);
-    }
-
-    return this;
-  };
-
-  TrueStory.prototype.test = function () {
-    return this;
-  };
-
-  TrueStory.exports = function () {
-    return new TrueStory();
-  }
-
-  TrueStory.exports.parseDotNotation = require('./TrueStory/parse-dot-notation');
-
-  TrueStory.exports.when = function (who, what) {
-    console.log('when', who, what);
-    return {
-      then: function (fn) {
-        if ( who.model ) {
-          if ( what.on ) {
-            switch ( what.on ) {
-              case 'all':
-                return function () {
-                  this.follow.on('add ' + who.model, fn.bind(this));
-                  this.follow.on('update ' + who.model, fn.bind(this));
-                };
-
-              case 'add':
-                return function () {
-                  this.follow.on('add ' + who.model, fn.bind(this));
-                };
-
-              case 'update':
-                return function () {
-                  this.follow.on('update ' + who.model, fn.bind(this));
-                };
-
-              case 'push':
-                return function () {
-                  this.on('push ' + who.model, fn.bind(this));
-                };
-            }
-          }
-
-          else if ( 'is' in what ) {
-            return function () {
-              function onAny (event) {
-                if ( event.new === what.is ) {
-                  fn.apply(this);
-                }
-              }
-
-              this.follow.on('add ' + who.model, onAny.bind(this));
-              this.follow.on('update ' + who.model, onAny.bind(this));
-            };
-          }
-        }
-
-        else if ( who.view ) {
-          if ( what.on ) {
-
-          }
-        }
-      }
-    };
-  };
-
-  module.exports = TrueStory.exports;
-} ();
-}).call(this,require('_process'))
-},{"./TrueStory/bind":11,"./TrueStory/parse-dot-notation":12,"./TrueStory/watch":13,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":16,"events":14,"util":18}],11:[function(require,module,exports){
-; ! function () {
-  
-  'use strict';
-
-  module.exports = function bindToModel (model) {
-    var self = this;
-
-    var bindables = Array.prototype.slice.call(arguments);
-
-    bindables.shift();
-
-    bindables.forEach(function (bindable) {
-      var target = bindable.with;
-
-      if ( target.view ) {
-        target = $(self.views[target.view]);
-      }
-
-      if ( typeof bindable.binders === 'string' ) {
-        bindable.binders = [bindable.binders];
-      }
-
-      bindable.binders.forEach(function (binder) {
-        
-        if ( typeof binder === 'string' ) {
-          
-          switch ( binder ) {
-            
-            case 'value':
-              
-              self.watch(model, function (v) {
-                target.val(v);
-              });
-              
-              break;
-
-            case 'text':
-
-              self.watch(model, function (v) {
-                if ( v ) {
-                  var m = model.split(/\./);
-                  m.shift();
-
-                  target.text(require('./parse-dot-notation').apply(this,
-                    [v.new, m.join('.')]))
-                }
-              });
-              
-              break;
-          }
-        }
-
-        else if ( typeof binder === 'function' ) {
-          self.watch(model, binder, { boundView: target });
-        }
-      });
-    });
-
-    return this;
-  };
-
-} ();
-
-},{"./parse-dot-notation":12}],12:[function(require,module,exports){
-; ! function () {
-  
-  'use strict';
-
-  module.exports = function parseDotNotation (obj, notation) {
-
-    if ( ! /\./.test(notation) ) {
-      return obj[notation];
-    }
-
-    var dots = notation.split(/\./);
-
-    var noCopy = obj[dots[0]];
-
-    if ( dots[1] ) {
-      return parseDotNotation(noCopy, dots.filter(function (dot, index) {
-        return index;
-      }).join('.'));
-    }
-
-    return noCopy;
-  }
-
-} ();
-
-},{}],13:[function(require,module,exports){
-; ! function () {
-  
-  'use strict';
-
-  module.exports = function watch (model, watcher, options) {
-    options = options || {};
-
-    var modelName = model, dots = [];
-
-    if ( /\./.test(model) ) {
-      dots = model.split(/\./);
-
-      modelName = dots.shift();
-    }
-
-    var closure = this;
-
-    if ( options ) {
-      for ( var i in options ) {
-        closure[i] = options[i];
-      }
-    }
-
-    this.follow.on('update', function (updated) {
-      if ( updated.name === modelName ) {
-        watcher.apply(closure, [updated]);
-      }
-    });
-
-    var value = require('./parse-dot-notation')(this.models, model);
-
-    console.info('value', value)
-
-    watcher.apply(closure, [value]);
-
-    return this;
-  }
-
-} ();
-
-},{"./parse-dot-notation":12}],14:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -867,7 +533,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],15:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -892,7 +558,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],16:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -900,6 +566,8 @@ var process = module.exports = {};
 process.nextTick = (function () {
     var canSetImmediate = typeof window !== 'undefined'
     && window.setImmediate;
+    var canMutationObserver = typeof window !== 'undefined'
+    && window.MutationObserver;
     var canPost = typeof window !== 'undefined'
     && window.postMessage && window.addEventListener
     ;
@@ -908,8 +576,29 @@ process.nextTick = (function () {
         return function (f) { return window.setImmediate(f) };
     }
 
+    var queue = [];
+
+    if (canMutationObserver) {
+        var hiddenDiv = document.createElement("div");
+        var observer = new MutationObserver(function () {
+            var queueList = queue.slice();
+            queue.length = 0;
+            queueList.forEach(function (fn) {
+                fn();
+            });
+        });
+
+        observer.observe(hiddenDiv, { attributes: true });
+
+        return function nextTick(fn) {
+            if (!queue.length) {
+                hiddenDiv.setAttribute('yes', 'no');
+            }
+            queue.push(fn);
+        };
+    }
+
     if (canPost) {
-        var queue = [];
         window.addEventListener('message', function (ev) {
             var source = ev.source;
             if ((source === window || source === null) && ev.data === 'process-tick') {
@@ -949,7 +638,7 @@ process.emit = noop;
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
-}
+};
 
 // TODO(shtylman)
 process.cwd = function () { return '/' };
@@ -957,14 +646,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],17:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],18:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1554,4 +1243,338 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":17,"_process":16,"inherits":15}]},{},[7]);
+},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory.js":[function(require,module,exports){
+(function (process){
+; ! function () {
+
+	'use strict';
+
+  var Follow = require('/home/francois/Dev/follow.js/lib/Follow');
+
+	function TrueStory () {
+    this.models 			= {};
+    this.controllers 	= {};
+    this.views 				= {};
+    this.follow       = new Follow(this.models);
+  }
+
+  require('util').inherits(TrueStory, require('events').EventEmitter);
+
+  TrueStory.prototype.model = function (name, model) {
+
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.model(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.models[name] = model;
+
+        return this;
+      }
+
+      if ( Array.isArray(this.models[name] ) && ! this.models[name].__follow ) {
+        this.models[name].__follow = true;
+
+        this.models[name].push = function pushModel () {
+          for ( var i in arguments ) {
+            this.models[name] = this.models[name].concat([arguments[i]]);
+          }
+          this.emit('push ' + name, Array.prototype.slice.call(arguments));
+        }.bind(this);
+      }
+
+      return this.models[name];
+    }
+  };
+
+  TrueStory.prototype.controller = function (name, controller) {
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.controller(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.controllers[name] = controller.bind(this);
+
+        return this;
+      }
+
+      return this.controllers[name];
+    }
+  };
+
+  TrueStory.prototype.view = function (name, view) {
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.view(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.views[name] = view;
+
+        return this;
+      }
+
+      return $(this.views[name]);
+    }
+  };
+
+  TrueStory.prototype.watch = require('./TrueStory/watch');
+
+  TrueStory.prototype.bind = require('./TrueStory/bind');
+
+  TrueStory.prototype.listen = function (view, events) {
+
+  	var self = this;
+
+  	if ( view.view ) {
+  		view = $(this.views[view.view]);
+  	}
+
+  	function onEvent (action) {
+  		if ( action.controller ) {
+  			return self.controllers[action.controller];
+  		}
+  	}
+
+  	for ( var _event in events ) {
+  		view.on(_event, onEvent(events[_event]));
+  	}
+
+    return this;
+  };
+
+  TrueStory.prototype.run = function (fn) {
+    if ( typeof fn === 'function' ) {
+      process.nextTick(function () {
+        fn.apply(this);
+      }.bind(this));
+    }
+
+    return this;
+  };
+
+  TrueStory.prototype.tell = function (trueStory) {
+
+    if ( typeof trueStory === 'function' ) {
+      // process.nextTick(function () {
+      //   trueStory.apply(this);
+      // }.bind(this));
+
+      trueStory.apply(this);
+    }
+
+    return this;
+  };
+
+  TrueStory.prototype.test = function () {
+    return this;
+  };
+
+  TrueStory.exports = function () {
+    return new TrueStory();
+  }
+
+  TrueStory.exports.parseDotNotation = require('./TrueStory/parse-dot-notation');
+
+  TrueStory.exports.when = function (who, what) {
+    console.log('when', who, what);
+    return {
+      then: function (fn) {
+        if ( who.model ) {
+          if ( what.on ) {
+            switch ( what.on ) {
+              case 'all':
+                return function () {
+                  this.follow.on('add ' + who.model, fn.bind(this));
+                  this.follow.on('update ' + who.model, fn.bind(this));
+                };
+
+              case 'add':
+                return function () {
+                  this.follow.on('add ' + who.model, fn.bind(this));
+                };
+
+              case 'update':
+                return function () {
+                  this.follow.on('update ' + who.model, fn.bind(this));
+                };
+
+              case 'push':
+                return function () {
+                  this.on('push ' + who.model, fn.bind(this));
+                };
+            }
+          }
+
+          else if ( 'is' in what ) {
+            return function () {
+              function onAny (event) {
+                if ( event.new === what.is ) {
+                  fn.apply(this);
+                }
+              }
+
+              this.follow.on('add ' + who.model, onAny.bind(this));
+              this.follow.on('update ' + who.model, onAny.bind(this));
+            };
+          }
+        }
+
+        else if ( who.view ) {
+          if ( what.on ) {
+
+          }
+        }
+      }
+    };
+  };
+
+  module.exports = TrueStory.exports;
+} ();
+}).call(this,require('_process'))
+},{"./TrueStory/bind":"/home/francois/Dev/true-story.js/lib/TrueStory/bind.js","./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","./TrueStory/watch":"/home/francois/Dev/true-story.js/lib/TrueStory/watch.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/bind.js":[function(require,module,exports){
+; ! function () {
+  
+  'use strict';
+
+  module.exports = function bindToModel (model) {
+    var self = this;
+
+    var bindables = Array.prototype.slice.call(arguments);
+
+    bindables.shift();
+
+    bindables.forEach(function (bindable) {
+      var target = bindable.with;
+
+      if ( target.view ) {
+        target = $(self.views[target.view]);
+      }
+
+      if ( typeof bindable.binders === 'string' ) {
+        bindable.binders = [bindable.binders];
+      }
+
+      bindable.binders.forEach(function (binder) {
+        
+        if ( typeof binder === 'string' ) {
+          
+          switch ( binder ) {
+            
+            case 'value':
+              
+              self.watch(model, function (v) {
+                target.val(v);
+              });
+              
+              break;
+
+            case 'text':
+
+              self.watch(model, function (v) {
+                if ( v ) {
+                  var m = model.split(/\./);
+                  m.shift();
+
+                  target.text(require('./parse-dot-notation').apply(this,
+                    [v.new, m.join('.')]))
+                }
+              });
+              
+              break;
+          }
+        }
+
+        else if ( typeof binder === 'function' ) {
+          self.watch(model, binder, { boundView: target });
+        }
+      });
+    });
+
+    return this;
+  };
+
+} ();
+
+},{"./parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
+; ! function () {
+  
+  'use strict';
+
+  module.exports = function parseDotNotation (obj, notation) {
+
+    if ( ! /\./.test(notation) ) {
+      return obj[notation];
+    }
+
+    var dots = notation.split(/\./);
+
+    var noCopy = obj[dots[0]];
+
+    if ( dots[1] ) {
+      return parseDotNotation(noCopy, dots.filter(function (dot, index) {
+        return index;
+      }).join('.'));
+    }
+
+    return noCopy;
+  }
+
+} ();
+
+},{}],"/home/francois/Dev/true-story.js/lib/TrueStory/watch.js":[function(require,module,exports){
+; ! function () {
+  
+  'use strict';
+
+  module.exports = function watch (model, watcher, options) {
+    options = options || {};
+
+    var modelName = model, dots = [];
+
+    if ( /\./.test(model) ) {
+      dots = model.split(/\./);
+
+      modelName = dots.shift();
+    }
+
+    var closure = this;
+
+    if ( options ) {
+      for ( var i in options ) {
+        closure[i] = options[i];
+      }
+    }
+
+    this.follow.on('update', function (updated) {
+      if ( updated.name === modelName ) {
+        watcher.apply(closure, [updated]);
+      }
+    });
+
+    var value = require('./parse-dot-notation')(this.models, model);
+
+    console.info('value', value)
+
+    watcher.apply(closure, [value]);
+
+    return this;
+  }
+
+} ();
+
+},{"./parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js"}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);
