@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var pronto = require('/home/francois/Dev/pronto/lib/Pronto');
+  var pronto = require('prontojs');
 
   var when = pronto.when;
 
