@@ -11,6 +11,10 @@
         url: '/partial/panel'
       },
       engine: function (view, locals) {
+        view = $(view);
+
+        view.find('.panel-title').text(locals.panel.type);
+
         return view;
       },
       locals: { panel: panel },
