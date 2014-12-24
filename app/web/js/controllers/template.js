@@ -3,50 +3,59 @@
   'use strict';
 
   module.exports = function template (template) {
-    console.info('[template]', template.name, template,
-      { cache: template.name in this.model('templates') });
+    var app = this;
 
-    if ( template.name in this.model('templates') ) {
+    process.nextTick(function () {
+      console.info('[template]', template.name, template,
+        { cache: template.name in app.model('templates') });
 
-      if ( typeof template.ready === 'function' ) {
-        if ( Array.isArray(this.model('templates')[template.name]) ) {
-          this.model('templates')[template.name].push(
-            function (view) {
-              template.container.append(view);
-            },
-            template.ready);
-        }
+      if ( template.name in app.model('templates') ) {
 
-        else if ( typeof this.model('templates')[template.name] === 'string' ) {
-          template.container.append($(this.model('templates')[template.name]));
-          template.ready($(this.model('templates')[template.name]));
+        if ( typeof template.ready === 'function' ) {
+          if ( Array.isArray(app.model('templates')[template.name]) ) {
+            app.model('templates')[template.name].push(
+              function (view) {
+                template.container.append(view);
+              },
+              template.ready);
+          }
+
+          else if ( typeof app.model('templates')[template.name] === 'string' ) {
+            template.container.append($(app.model('templates')[template.name]));
+            template.ready($(app.model('templates')[template.name]));
+          }
         }
       }
-    }
-    else {
-      this.model('templates')[template.name] = [];
+      else {
+        app.model('templates')[template.name] = [];
 
-      $.ajax(template.url)
-        .success(function (data) {
+        $.ajax(template.url)
+          .success(function (data) {
 
-          var toDOM = $(data);
-          
-          template.container.append(toDOM);
+            var toDOM = $(data);
+            
+            try {
+              template.container.append(toDOM);
+            }
+            catch ( error ) {
+              throw new Error('Template has no container: ' + template.name);
+            }
 
-          if ( Array.isArray(this.model('templates')[template.name]) ) {
-            this.model('templates')[template.name].forEach(function (queue) {
-              queue(toDOM);
-            });
-          }
-          
-          this.model('templates')[template.name] = data;
+            if ( Array.isArray(app.model('templates')[template.name]) ) {
+              app.model('templates')[template.name].forEach(function (queue) {
+                queue(toDOM);
+              });
+            }
+            
+            app.model('templates')[template.name] = data;
 
-          if ( typeof template.ready === 'function' ) {
-            template.ready(toDOM);
-          }
+            if ( typeof template.ready === 'function' ) {
+              template.ready(toDOM);
+            }
 
-        }.bind(this));
-    }
+          });
+      }
+    });
   };
 
 } ();

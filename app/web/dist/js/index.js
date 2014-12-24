@@ -86,11 +86,26 @@
   'use strict';
 
   module.exports = function applyTemplateToPanel (view, panel) {
+    console.info('[bind panel]', view, panel);
+
     view.find('.panel-title').text(panel.type);
 
     this.model('panels', this.model('panels')
       .map(function (_panel) {
-        if ( _panel.type === panel.type && ( _panel.parent ? _panel.parent === panel.parent : true ) && ! _panel.view ) {
+
+        var match = false;
+
+        if ( _panel.type === panel.type ) {
+          match = true;
+        }
+
+        if ( panel.parent ) {
+          if ( panel.parent !== _panel.parent ) {
+            match = false;
+          }
+        }
+
+        if ( match ) {
           _panel.view = view;
         }
 
@@ -230,7 +245,7 @@
 
   module.exports = function panelsTemplate (panels) {
     console.info('[panels template]', panels);
-    
+
     panels.forEach(function (panel) {
       this.controller('template')({
         name:       'panel',
@@ -246,60 +261,71 @@
 } ();
 
 },{}],"/home/francois/Dev/syn/app/web/js/controllers/template.js":[function(require,module,exports){
+(function (process){
 ; ! function () {
 
   'use strict';
 
   module.exports = function template (template) {
-    console.info('[template]', template.name, template,
-      { cache: template.name in this.model('templates') });
+    var app = this;
 
-    if ( template.name in this.model('templates') ) {
+    process.nextTick(function () {
+      console.info('[template]', template.name, template,
+        { cache: template.name in app.model('templates') });
 
-      if ( typeof template.ready === 'function' ) {
-        if ( Array.isArray(this.model('templates')[template.name]) ) {
-          this.model('templates')[template.name].push(
-            function (view) {
-              template.container.append(view);
-            },
-            template.ready);
-        }
+      if ( template.name in app.model('templates') ) {
 
-        else if ( typeof this.model('templates')[template.name] === 'string' ) {
-          template.container.append($(this.model('templates')[template.name]));
-          template.ready($(this.model('templates')[template.name]));
+        if ( typeof template.ready === 'function' ) {
+          if ( Array.isArray(app.model('templates')[template.name]) ) {
+            app.model('templates')[template.name].push(
+              function (view) {
+                template.container.append(view);
+              },
+              template.ready);
+          }
+
+          else if ( typeof app.model('templates')[template.name] === 'string' ) {
+            template.container.append($(app.model('templates')[template.name]));
+            template.ready($(app.model('templates')[template.name]));
+          }
         }
       }
-    }
-    else {
-      this.model('templates')[template.name] = [];
+      else {
+        app.model('templates')[template.name] = [];
 
-      $.ajax(template.url)
-        .success(function (data) {
+        $.ajax(template.url)
+          .success(function (data) {
 
-          var toDOM = $(data);
-          
-          template.container.append(toDOM);
+            var toDOM = $(data);
+            
+            try {
+              template.container.append(toDOM);
+            }
+            catch ( error ) {
+              throw new Error('Template has no container: ' + template.name);
+            }
 
-          if ( Array.isArray(this.model('templates')[template.name]) ) {
-            this.model('templates')[template.name].forEach(function (queue) {
-              queue(toDOM);
-            });
-          }
-          
-          this.model('templates')[template.name] = data;
+            if ( Array.isArray(app.model('templates')[template.name]) ) {
+              app.model('templates')[template.name].forEach(function (queue) {
+                queue(toDOM);
+              });
+            }
+            
+            app.model('templates')[template.name] = data;
 
-          if ( typeof template.ready === 'function' ) {
-            template.ready(toDOM);
-          }
+            if ( typeof template.ready === 'function' ) {
+              template.ready(toDOM);
+            }
 
-        }.bind(this));
-    }
+          });
+      }
+    });
   };
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
 ;! function () {
 
   'use strict';
@@ -357,7 +383,20 @@
             parent: items[0].parent
           });
 
-          app.controller('items template')(items, panel.view);
+          if ( ! panel.view ) {
+            app.watch(panel)
+              .on('add view', function (view) {
+                app.controller('items template')(items, view.new);
+              });
+          }
+
+          else {
+            app.controller('items template')(items, panel.view);
+          }
+
+          // process.nextTick(function () {
+          //   app.controller('items template')(items, panel.view);
+          // });
         }))
 
     /**
@@ -1541,31 +1580,6 @@ function hasOwnProperty(obj, prop) {
     }
   };
 
-  TrueStory.prototype.watch = require('./TrueStory/watch');
-
-  TrueStory.prototype.bind = require('./TrueStory/bind');
-
-  TrueStory.prototype.listen = function (view, events) {
-
-  	var self = this;
-
-  	if ( view.view ) {
-  		view = $(this.views[view.view]);
-  	}
-
-  	function onEvent (action) {
-  		if ( action.controller ) {
-  			return self.controllers[action.controller];
-  		}
-  	}
-
-  	for ( var _event in events ) {
-  		view.on(_event, onEvent(events[_event]));
-  	}
-
-    return this;
-  };
-
   TrueStory.prototype.run = function (fn) {
     if ( typeof fn === 'function' ) {
       process.nextTick(function () {
@@ -1591,6 +1605,10 @@ function hasOwnProperty(obj, prop) {
 
   TrueStory.prototype.test = function () {
     return this;
+  };
+
+  TrueStory.prototype.watch = function (object) {
+    return new Follow(object);
   };
 
   TrueStory.exports = function () {
@@ -1651,71 +1669,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = TrueStory.exports;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/bind":"/home/francois/Dev/true-story.js/lib/TrueStory/bind.js","./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","./TrueStory/watch":"/home/francois/Dev/true-story.js/lib/TrueStory/watch.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/bind.js":[function(require,module,exports){
-; ! function () {
-  
-  'use strict';
-
-  module.exports = function bindToModel (model) {
-    var self = this;
-
-    var bindables = Array.prototype.slice.call(arguments);
-
-    bindables.shift();
-
-    bindables.forEach(function (bindable) {
-      var target = bindable.with;
-
-      if ( target.view ) {
-        target = $(self.views[target.view]);
-      }
-
-      if ( typeof bindable.binders === 'string' ) {
-        bindable.binders = [bindable.binders];
-      }
-
-      bindable.binders.forEach(function (binder) {
-        
-        if ( typeof binder === 'string' ) {
-          
-          switch ( binder ) {
-            
-            case 'value':
-              
-              self.watch(model, function (v) {
-                target.val(v);
-              });
-              
-              break;
-
-            case 'text':
-
-              self.watch(model, function (v) {
-                if ( v ) {
-                  var m = model.split(/\./);
-                  m.shift();
-
-                  target.text(require('./parse-dot-notation').apply(this,
-                    [v.new, m.join('.')]))
-                }
-              });
-              
-              break;
-          }
-        }
-
-        else if ( typeof binder === 'function' ) {
-          self.watch(model, binder, { boundView: target });
-        }
-      });
-    });
-
-    return this;
-  };
-
-} ();
-
-},{"./parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
+},{"./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -1741,45 +1695,4 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{}],"/home/francois/Dev/true-story.js/lib/TrueStory/watch.js":[function(require,module,exports){
-; ! function () {
-  
-  'use strict';
-
-  module.exports = function watch (model, watcher, options) {
-    options = options || {};
-
-    var modelName = model, dots = [];
-
-    if ( /\./.test(model) ) {
-      dots = model.split(/\./);
-
-      modelName = dots.shift();
-    }
-
-    var closure = this;
-
-    if ( options ) {
-      for ( var i in options ) {
-        closure[i] = options[i];
-      }
-    }
-
-    this.follow.on('update', function (updated) {
-      if ( updated.name === modelName ) {
-        watcher.apply(closure, [updated]);
-      }
-    });
-
-    var value = require('./parse-dot-notation')(this.models, model);
-
-    console.info('value', value)
-
-    watcher.apply(closure, [value]);
-
-    return this;
-  }
-
-} ();
-
-},{"./parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js"}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);
+},{}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);

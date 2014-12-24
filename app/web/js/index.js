@@ -55,7 +55,20 @@
             parent: items[0].parent
           });
 
-          app.controller('items template')(items, panel.view);
+          if ( ! panel.view ) {
+            app.watch(panel)
+              .on('add view', function (view) {
+                app.controller('items template')(items, view.new);
+              });
+          }
+
+          else {
+            app.controller('items template')(items, panel.view);
+          }
+
+          // process.nextTick(function () {
+          //   app.controller('items template')(items, panel.view);
+          // });
         }))
 
     /**
