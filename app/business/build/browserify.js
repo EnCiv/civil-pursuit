@@ -8,7 +8,7 @@
   var source        =   require('vinyl-source-stream');
   var config        =   require('../config.json');
 
-  module.exports = function browserifyApp () {
+  exports.task      =   function browserifyApp () {
     return browserify(path.join(process.cwd(), config.files['app js']))
       .bundle()
       .pipe(source('index.js'))

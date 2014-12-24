@@ -8,68 +8,73 @@
 
     .model(require('./model'))
 
+    .model('socket', io.connect('http://' + window.location.hostname + ':' + window.location.port), true)
+
     .view(require('./view'))
 
     .controller(require('./controller'))
 
-    /**
-     *  @when model "intro" on "all"
-     *  @then call controller "apply template to panel"
-     */
+    /** @when *all* model "intro" */
 
-    .tell(trueStory
-      .when({ model: 'intro' }, { on: 'all' })
-        .then(function (intro) {
-          this.controller('bind panel')(this.view('intro'), {
-            type: intro.new.subject
-          });
-        }))
+    .when({ model: 'intro' }, { on: 'all' },
+      function (intro) {
+        this.controller('bind panel')(this.view('intro'), {
+          type: intro.new.subject
+        });
+        this.controller('bind item')(intro.new, this.view('intro'));
+      })
 
-    /**
-     *  @when model "panels" on "push"
-     *  @then for each added apply template "panel"
-     */
+    /** @when push model "panels" */
 
-    .tell(trueStory
-      .when({ model: 'panels' }, { on: 'push' })
-        .then(function (panels) {
-          var app = this;
+    .when({ model: 'panels' }, { on: 'push' },
+      function (panels) {
+        this.controller('panels template')(panels);
+        panels.forEach(this.controller('get panel items').bind(this));
+      })
 
-          app.controller('panels template')(panels);
+    /** @when concat model "items" */
 
-          panels.forEach(app.controller('get panel items').bind(app));
-        }))
+    .when({ model: 'items' }, { on: 'concat' },
+      function (items) {
+        var app = this;
 
-    /**
-     *  @when model "items" on "concat"
-     *  @then 
-     */
+        var panel = app.controller('find panel')({
+          type: items[0].type,
+          parent: items[0].parent
+        });
 
-    .tell(trueStory
-      .when({ model: 'items' }, { on: 'concat' })
-        .then(function (items) {
-          var app = this;
+        if ( ! panel.view ) {
+          app.watch(panel)
+            .on('add view', function (view) {
+              app.controller('items template')(items, view.new);
+            });
+        }
 
-          var panel = app.controller('find panel')({
-            type: items[0].type,
-            parent: items[0].parent
-          });
+        else {
+          app.controller('items template')(items, panel.view);
+        }
+      })
 
-          if ( ! panel.view ) {
-            app.watch(panel)
-              .on('add view', function (view) {
-                app.controller('items template')(items, view.new);
-              });
-          }
+    /** @when model "socket" emits "connection" */
 
-          else {
-            app.controller('items template')(items, panel.view);
-          }
+    .when({ model: 'socket' }, { on: 'connect' },
+      function (conn) {
+        console.info('[✔]', 'connected to web socket server');
+      })
 
-          // process.nextTick(function () {
-          //   app.controller('items template')(items, panel.view);
-          // });
-        }))
+    /** @when model "socket" emits "online users" */
+
+    .when({ model: 'socket' }, { on: 'online users' },
+      function (online_users) {
+        this.model('online users', online_users);
+      })
+
+    /** @when model "socket" emits "online users" */
+
+    .when({ model: 'online users' }, { on: 'all' },
+      function (online_users) {
+        this.view('online users').text(online_users.new);
+      })
 
     /**
      *  run
@@ -78,7 +83,7 @@
     .run(function () {
       this.controller('get intro')();
 
-      this.model('panels').push({ type: 'Topic' });
+      // this.model('panels').push({ type: 'Topic' });
     });
   
 }();

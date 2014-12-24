@@ -1,17 +1,29 @@
-(function () {
+! function () {
 
   'use strict';
 
   var gulp          =   require('gulp');
   var buildersDir   =   './app/business/build';
 
-  gulp.task('browserify',   require(buildersDir + '/browserify'));
-  gulp.task('watchify',     require(buildersDir + '/watchify'));
-  gulp.task('uglify',       require(buildersDir + '/uglify'));
-  gulp.task('less',         require(buildersDir + '/less'));
-  gulp.task('minify-css',   require(buildersDir + '/minify-css'));
+  var tasks         =   [
+    'browserify',
+    'build-dev',
+    'build-prod',
+    'less',
+    'minify-css',
+    'uglify',
+    'watchify'];
 
-})();
+  tasks.forEach(function (task) {
+    var t = require(buildersDir + '/' + task);
+    gulp.task(task, t.dependencies, t.task);
+  });
+
+  gulp.task('default', tasks.filter(function (task) {
+    return task !== 'watchify';
+  }));
+
+}();
 
 // var gulp          =   require('gulp');
 // var gutil         =   require('gulp-util');

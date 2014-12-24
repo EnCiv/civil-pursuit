@@ -8,7 +8,7 @@
   var uglify        =   require('gulp-uglifyjs');
   var rename        =   require("gulp-rename");
 
-  module.exports = function uglifyApp () {
+  exports.task      =   function uglifyApp () {
 
     return gulp.src(path.join(process.cwd(), config.files['app js compiled']))
 

@@ -10,7 +10,7 @@
   var gutil         =   require('gulp-util');
   var config        =   require('../config.json');
 
-  module.exports = function watchifyApp () {
+  exports.task      =   function watchifyApp () {
     var bundler = watchify(browserify(path.join(process.cwd(), config.files['app js']),
       watchify.args));
 

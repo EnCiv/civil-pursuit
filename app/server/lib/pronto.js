@@ -18,7 +18,7 @@
       base: require('path').join(process.cwd(), 'app/business')
     });
 
-    return pronto ()
+    var server = pronto ()
 
       .inject('synapp', config)
 
@@ -40,9 +40,19 @@
 
       .open('app/web/dist/css', when.prefix('/css'))
 
+      .on('listening', function (service) {
+        require('./io')(server);
+      })
+
+      .on('error', function (error) {
+        console.log('erroooooooooor');
+      })
+
       // .open ( routes.urlTitleFetcher, when.post ( '/tools/get-title' ) )
 
       ;
+
+    return server;
 
   };
 

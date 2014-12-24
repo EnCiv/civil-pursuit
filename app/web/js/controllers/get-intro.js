@@ -4,15 +4,16 @@
 
   module.exports = function getIntro () {
     console.info('[get-intro]');
-    this.controller('monson get')('/models/Item.findOne?type=Intro',
-      function (error, intro) {
-        if ( error ) {
-          return this.emit('error', error);
-        }
 
-        this.model('intro', intro);
+    var app = this;
 
-      }.bind(this));
+    this.model('socket').emit('get intro', function (error, intro) {
+      if ( error ) {
+        return app.emit('error', error);
+      }
+
+      app.model('intro', intro);
+    });
   };
 
 } ();

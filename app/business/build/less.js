@@ -8,7 +8,7 @@
   var less          =   require('gulp-less');
   var rename        =   require("gulp-rename");
 
-  module.exports = function gulpCompileLess () {
+  exports.task      =   function gulpCompileLess () {
     return gulp.src(path.join(process.cwd(), config.files['app less']))
       .pipe(less({
         // paths: [

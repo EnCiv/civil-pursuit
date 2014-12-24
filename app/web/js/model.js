@@ -7,7 +7,8 @@
     "panels":       [],
     "templates":    {},
     "intro":        null,
-    "items":        []
-  };
+    "items":        [],
+    "online users": 0
+    };
 
 } ();

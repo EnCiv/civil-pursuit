@@ -1,32 +1,56 @@
-(function () {
+! function () {
 
   'use strict';
 
   var online_users = 0;
 
-  function WebSocketServer (server, app) {
-    var WebSocketServerDomain = require('domain').create();
+  function WebSocketServer (pronto) {
 
-    WebSocketServerDomain.on('error', function (error) {
+    var IODomain = require('domain').create();
 
+    IODomain.on('error', function (error) {
+      pronto.emit('error', error);
     });
 
-    WebSocketServerDomain.run(function () {
+    IODomain.run(function () {
       var socketIO  = require('socket.io');
-      var io        = socketIO(server);
+      var io        = socketIO(pronto.server);
+      var monson    = require('monson')(process.env.MONGOHQ_URL, {
+        base: require('path').join(process.cwd(), 'app/business')
+      });
+
+      pronto.emit('socketIO listening');
+      pronto.emit('message', 'socketIO listening');
 
       io.on('connection', function (socket) {
 
-        app.locals.logSystemMessage({
+        pronto.emit('message', {
           'web socket server': 'new incoming client'
         });
 
         online_users ++;
 
         io.emit('online users', online_users);
+        io.broadcast('online users', online_users);
 
         socket.on('disconnect', function (why) {
           online_users --;
+        });
+
+        socket.on('get intro', function (cb) {
+          pronto.emit('message', {
+            'web socket server': 'new incoming request',
+            request: 'get intro'
+          });
+
+          monson.get('models/Item.findOne?type=Intro')
+            .on('error', function (error) {
+              pronto.emit('error', error);
+              cb(error);
+            })
+            .on('success', function (intro) {
+              cb(null, intro);
+            });
         });
 
       });
@@ -35,4 +59,4 @@
 
   module.exports = WebSocketServer;
 
-})();
+}();
