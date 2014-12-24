@@ -11,7 +11,7 @@
       app.controller('template')({
         name:       'item',
         url:        '/partial/item',
-        container:  panelView,
+        container:  panelView.find('.items'),
         ready:      function (view) {
           view.find('h1').text(item.subject);
         }
