@@ -211,6 +211,10 @@
         ready:      function (view) {
           view.find('.item-title').text(item.subject);
           view.find('.description').text(item.description);
+
+          if ( ! item.references.length ) {
+            view.find('.item-references').hide();
+          }
         }
       });
     });
