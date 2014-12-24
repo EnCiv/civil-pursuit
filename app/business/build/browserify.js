@@ -11,7 +11,7 @@
   module.exports = function browserifyApp () {
     return browserify(path.join(process.cwd(), config.files['app js']))
       .bundle()
-      .pipe(source('bundle.js'))
+      .pipe(source('index.js'))
       .pipe(gulp.dest(config.dirs['dist js']));
   };
 

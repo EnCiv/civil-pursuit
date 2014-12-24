@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/follow.js/lib/Follow.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -62,7 +62,7 @@
 
 }();
 
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/controller.js":[function(require,module,exports){
+},{"events":14,"util":18}],2:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -80,7 +80,7 @@
 
 } ();
 
-},{"./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js","./controllers/find-panel":"/home/francois/Dev/syn/app/web/js/controllers/find-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js","./controllers/items-template":"/home/francois/Dev/syn/app/web/js/controllers/items-template.js","./controllers/monson-get":"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js","./controllers/panels-template":"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js","./controllers/template":"/home/francois/Dev/syn/app/web/js/controllers/template.js"}],"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js":[function(require,module,exports){
+},{"./controllers/bind-panel":3,"./controllers/find-panel":4,"./controllers/get-intro":5,"./controllers/get-panel-items":6,"./controllers/items-template":7,"./controllers/monson-get":8,"./controllers/panels-template":9,"./controllers/template":10}],3:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -115,7 +115,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/find-panel.js":[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -146,7 +146,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js":[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -166,7 +166,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -193,7 +193,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/items-template.js":[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -232,7 +232,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js":[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -253,7 +253,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js":[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -275,7 +275,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/controllers/template.js":[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -366,7 +366,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
+},{"_process":16}],11:[function(require,module,exports){
 ;! function () {
 
   'use strict';
@@ -451,7 +451,7 @@
     });
   
 }();
-},{"./controller":"/home/francois/Dev/syn/app/web/js/controller.js","./model":"/home/francois/Dev/syn/app/web/js/model.js","./view":"/home/francois/Dev/syn/app/web/js/view.js","/home/francois/Dev/true-story.js/lib/TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/syn/app/web/js/model.js":[function(require,module,exports){
+},{"./controller":2,"./model":12,"./view":13,"/home/francois/Dev/true-story.js/lib/TrueStory":19}],12:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -466,7 +466,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/view.js":[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -479,7 +479,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -782,7 +782,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -807,7 +807,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -895,14 +895,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1492,7 +1492,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory.js":[function(require,module,exports){
+},{"./support/isBuffer":17,"_process":16,"inherits":15}],19:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -1710,7 +1710,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = TrueStory.exports;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
+},{"./TrueStory/parse-dot-notation":20,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":16,"events":14,"util":18}],20:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -1736,4 +1736,4 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);
+},{}]},{},[11]);

@@ -94,12 +94,16 @@
 
   "files": {
     
-    "app js": "app/web/js/index.js"
+    "app js": "app/web/js/index.js",
+
+    "app js compiled": "app/web/dist/js/index.js"
+  
   },
 
   "dirs": {
 
     "dist js": "app/web/dist/js"
+  
   },
 
   "google analytics": {

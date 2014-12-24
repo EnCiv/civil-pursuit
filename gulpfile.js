@@ -7,6 +7,7 @@
 
   gulp.task('browserify',   require(buildersDir + '/browserify'));
   gulp.task('watchify',     require(buildersDir + '/watchify'));
+  gulp.task('uglify',       require(buildersDir + '/uglify'));
 
 })();
 
