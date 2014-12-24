@@ -100,7 +100,7 @@
 
     "app less": "app/web/less/synapp.less",
 
-    "app css": "app/web/css/dist/index.css"
+    "app css": "app/web/dist/css/index.css"
   
   },
 

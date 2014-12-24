@@ -21,42 +21,12 @@
     /** @when *all* model "intro" */
 
     .when({ model: 'intro' }, { on: 'update' },
-      function (intro) {
-
-        var app = this;
-
-        this.view('intro').find('.panel-title').text(intro.new.subject);
-
-        this.view('intro').find('.item-title').text(intro.new.subject);
-
-        this.view('intro').find('.description').text(intro.new.description);
-
-        this.view('intro').find('.item-media').append(
-          this.controller('bootstrap/responsive-image')({
-            src: intro.new.image
-          }));
-
-        this.view('intro').find('.item-references').hide();
-        
-      })
+      require('./when/model-intro-on-update'))
 
     /** @when push model "panels" */
 
     .when({ model: 'panels' }, { on: 'push' },
-      function (panels) {
-
-        var app = this;
-
-        /** Apply panel template to each pushed (new) panel */
-        this.controller('panels template')(panels);
-
-        this.when({ model: 'template_panels_done' }, { on: 'all' },
-          function () {
-            console.error('big PAYBACK')
-            /** Get items of each new panel */
-            panels.forEach(app.controller('get panel items').bind(app));
-          });
-      })
+      require('./when/model-panels-on-push'))
 
     /** @when concat model "items" */
 
@@ -89,7 +59,7 @@
 
         this.controller('get intro')();
 
-        // this.model('panels').push({ type: 'Topic' });
+        this.model('panels').push({ type: 'Topic' });
       })
 
     /** @when model "socket" emits "online users" */

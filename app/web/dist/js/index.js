@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/follow.js/lib/Follow.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -72,7 +72,7 @@
 
 }();
 
-},{"events":17,"util":21}],2:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/controller.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -92,7 +92,7 @@
 
 } ();
 
-},{"./controllers/bind-item":3,"./controllers/bind-panel":4,"./controllers/bootstrap/responsive-image":5,"./controllers/find-panel":6,"./controllers/get-intro":7,"./controllers/get-panel-items":8,"./controllers/items-template":9,"./controllers/monson-get":10,"./controllers/panels-template":11,"./controllers/template":12}],3:[function(require,module,exports){
+},{"./controllers/bind-item":"/home/francois/Dev/syn/app/web/js/controllers/bind-item.js","./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js","./controllers/bootstrap/responsive-image":"/home/francois/Dev/syn/app/web/js/controllers/bootstrap/responsive-image.js","./controllers/find-panel":"/home/francois/Dev/syn/app/web/js/controllers/find-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js","./controllers/items-template":"/home/francois/Dev/syn/app/web/js/controllers/items-template.js","./controllers/monson-get":"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js","./controllers/panels-template":"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js","./controllers/template":"/home/francois/Dev/syn/app/web/js/controllers/template.js"}],"/home/francois/Dev/syn/app/web/js/controllers/bind-item.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -123,7 +123,7 @@
 
 } ();
 
-},{}],4:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/bind-panel.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -162,7 +162,7 @@
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/bootstrap/responsive-image.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -184,7 +184,7 @@
 
 } ();
 
-},{}],6:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/find-panel.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -219,7 +219,7 @@
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/get-intro.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -242,7 +242,7 @@
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/get-panel-items.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -271,7 +271,7 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/items-template.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -295,7 +295,7 @@
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/monson-get.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -316,7 +316,7 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/panels-template.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -351,7 +351,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/controllers/template.js":[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -444,7 +444,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":19}],13:[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
 ;! function () {
 
   'use strict';
@@ -468,42 +468,12 @@
     /** @when *all* model "intro" */
 
     .when({ model: 'intro' }, { on: 'update' },
-      function (intro) {
-
-        var app = this;
-
-        this.view('intro').find('.panel-title').text(intro.new.subject);
-
-        this.view('intro').find('.item-title').text(intro.new.subject);
-
-        this.view('intro').find('.description').text(intro.new.description);
-
-        this.view('intro').find('.item-media').append(
-          this.controller('bootstrap/responsive-image')({
-            src: intro.new.image
-          }));
-
-        this.view('intro').find('.item-references').hide();
-        
-      })
+      require('./when/model-intro-on-update'))
 
     /** @when push model "panels" */
 
     .when({ model: 'panels' }, { on: 'push' },
-      function (panels) {
-
-        var app = this;
-
-        /** Apply panel template to each pushed (new) panel */
-        this.controller('panels template')(panels);
-
-        this.when({ model: 'template_panels_done' }, { on: 'all' },
-          function () {
-            console.error('big PAYBACK')
-            /** Get items of each new panel */
-            panels.forEach(app.controller('get panel items').bind(app));
-          });
-      })
+      require('./when/model-panels-on-push'))
 
     /** @when concat model "items" */
 
@@ -536,7 +506,7 @@
 
         this.controller('get intro')();
 
-        // this.model('panels').push({ type: 'Topic' });
+        this.model('panels').push({ type: 'Topic' });
       })
 
     /** @when model "socket" emits "online users" */
@@ -562,7 +532,7 @@
     });
   
 }();
-},{"./controller":2,"./model":14,"./view":15,"/home/francois/Dev/true-story.js/lib/TrueStory":22}],14:[function(require,module,exports){
+},{"./controller":"/home/francois/Dev/syn/app/web/js/controller.js","./model":"/home/francois/Dev/syn/app/web/js/model.js","./view":"/home/francois/Dev/syn/app/web/js/view.js","./when/model-intro-on-update":"/home/francois/Dev/syn/app/web/js/when/model-intro-on-update.js","./when/model-panels-on-push":"/home/francois/Dev/syn/app/web/js/when/model-panels-on-push.js","/home/francois/Dev/true-story.js/lib/TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/syn/app/web/js/model.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -579,7 +549,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/view.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -593,7 +563,55 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/when/model-intro-on-update.js":[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = function onUpdateModelIntro (intro) {
+    var app = this;
+
+    this.view('intro').find('.panel-title').text(intro.new.subject);
+
+    this.view('intro').find('.item-title').text(intro.new.subject);
+
+    this.view('intro').find('.description').text(intro.new.description);
+
+    this.view('intro').find('.item-media').append(
+      this.controller('bootstrap/responsive-image')({
+        src: intro.new.image
+      }));
+
+    this.view('intro').find('.item-references').hide();
+    
+  };
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/when/model-panels-on-push.js":[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = function onPushModelPanels (panel) {
+    var app = this;
+
+    this.controller('true-story/render-view')({
+      container: this.view('panels'),
+      template: {
+        url: '/partial/panel'
+      },
+      engine: function (view, locals) {
+        return view;
+      },
+      locals: { panel: panel },
+      append: true
+    });
+  };
+
+} ();
+
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -631,7 +649,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":17}],17:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -934,7 +952,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],18:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -959,7 +977,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],19:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1047,14 +1065,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],20:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],21:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1644,7 +1662,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":20,"_process":19,"inherits":18}],22:[function(require,module,exports){
+},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory.js":[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -1658,6 +1676,7 @@ function hasOwnProperty(obj, prop) {
     this.controllers 	= {};
     this.views 				= {};
     this.follow       = new Follow(this.models);
+    this.templates    = {};
 
     this.domain       = require('domain').create();
 
@@ -1669,7 +1688,24 @@ function hasOwnProperty(obj, prop) {
     })
 
     this.controller('true-story/render-view', function (options) {
-      options.engine(options.view, options.locals);
+      var template;
+
+      if ( options.template.url ) {
+        if ( options.template.url in app.templates ) {
+          template = app.templates[options.template.url];
+        }
+        else {
+          return $.ajax(options.template.url)
+            .done(function (data, status, response) {
+              if ( status === 'success' ) {
+                app.templates[options.template.url] = data;
+                app.controller('true-story/render-view')(options);
+              }
+            });
+        }
+      }
+
+      
     });
   }
 
@@ -1715,15 +1751,15 @@ function hasOwnProperty(obj, prop) {
 
           // Do the concatening
 
-          mod = Array.prototype.concat.apply(
-            mod,
-            Array.prototype.slice.apply(arguments));
+          for ( var i in arguments ) {
+            mod = Array.prototype.concat.apply(mod, arguments[i]);
 
-          console.info('[❱]', "\twatchAr\t", name, Array.prototype.slice.call(arguments), mod);
+            console.info('[❱]', "\twatchAr\t", name, arguments[i], mod);
 
-          // Emit it
+            // Emit it
 
-          app.emit('push ' + name, Array.prototype.slice.call(arguments));
+            app.emit('push ' + name, arguments[i]);
+          }
 
         }.bind(app);
 
@@ -1919,7 +1955,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = TrueStory.exports;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/parse-dot-notation":23,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":19,"domain":16,"events":17,"util":21}],23:[function(require,module,exports){
+},{"./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -1945,4 +1981,4 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{}]},{},[13]);
+},{}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);
