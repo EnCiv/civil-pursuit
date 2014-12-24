@@ -209,7 +209,7 @@
         url:        '/partial/item',
         container:  panelView.find('.items'),
         ready:      function (view) {
-          view.find('h1').text(item.subject);
+          view.find('.item-title').text(item.subject);
         }
       });
     });
