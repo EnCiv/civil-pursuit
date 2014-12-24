@@ -96,13 +96,19 @@
     
     "app js": "app/web/js/index.js",
 
-    "app js compiled": "app/web/dist/js/index.js"
+    "app js compiled": "app/web/dist/js/index.js",
+
+    "app less": "app/web/less/synapp.less",
+
+    "app css": "app/web/css/dist/index.css"
   
   },
 
   "dirs": {
 
-    "dist js": "app/web/dist/js"
+    "dist js": "app/web/dist/js",
+
+    "dist css": "app/web/dist/css"
   
   },
 

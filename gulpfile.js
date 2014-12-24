@@ -8,6 +8,8 @@
   gulp.task('browserify',   require(buildersDir + '/browserify'));
   gulp.task('watchify',     require(buildersDir + '/watchify'));
   gulp.task('uglify',       require(buildersDir + '/uglify'));
+  gulp.task('less',         require(buildersDir + '/less'));
+  gulp.task('minify-css',   require(buildersDir + '/minify-css'));
 
 })();
 
