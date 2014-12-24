@@ -12,9 +12,9 @@
       query.parent = panel.parent;
     }
 
-    console.info('[find-panel]', query);
+    console.info('[⟳]', "\tfind   \t", 'panels', query, app.model('panels'));
 
-    return app.model('panels')
+    var found = app.model('panels')
       .filter(function (panel) {
         for ( var i in query ) {
           if ( panel[i] !== query[i] ) {
@@ -24,6 +24,10 @@
         return true;
       })
       [0];
+
+    console.info('[✔]', "\tfound   \t", 'panel', found || []);
+
+    return found;
   };
 
 } ();

@@ -3,7 +3,7 @@
   'use strict';
 
   module.exports = function monsonGet (url, cb) {
-    console.info('[monson]', 'GET', url);
+    console.info('[⌛]', 'GET', url);
     $.ajax(url)
       .error(function (error) {
         console.error('monson GET error', error);    

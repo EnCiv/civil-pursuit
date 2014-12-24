@@ -34,7 +34,17 @@
             event: change.type
           };
 
-          console.info('[' + change.type + ']', {
+          var symbol = '';
+
+          if ( change.type === 'add' ) {
+            symbol = '➕';
+          }
+
+          else if ( change.type === 'update' ) {
+            symbol = '❍';
+          }
+
+          console.info('[' + symbol + ']', "\tfollow \t", {
             event: event,
             message: message
           });
@@ -62,32 +72,33 @@
 
 }();
 
-},{"events":15,"util":19}],2:[function(require,module,exports){
+},{"events":17,"util":21}],2:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = {
-    'monson get':               require('./controllers/monson-get'),
-    'template':                 require('./controllers/template'),
-    'get intro':                require('./controllers/get-intro'),
-    'panels template':          require('./controllers/panels-template'),
-    'items template':           require('./controllers/items-template'),
-    'bind item':                require('./controllers/bind-item'),
-    'bind panel':               require('./controllers/bind-panel'),
-    'find panel':               require('./controllers/find-panel'),
-    'get panel items':          require('./controllers/get-panel-items')
+    'bootstrap/responsive-image': require('./controllers/bootstrap/responsive-image'),
+    'monson get':                 require('./controllers/monson-get'),
+    'template':                   require('./controllers/template'),
+    'get intro':                  require('./controllers/get-intro'),
+    'panels template':            require('./controllers/panels-template'),
+    'items template':             require('./controllers/items-template'),
+    'bind item':                  require('./controllers/bind-item'),
+    'bind panel':                 require('./controllers/bind-panel'),
+    'find panel':                 require('./controllers/find-panel'),
+    'get panel items':            require('./controllers/get-panel-items')
   };
 
 } ();
 
-},{"./controllers/bind-item":3,"./controllers/bind-panel":4,"./controllers/find-panel":5,"./controllers/get-intro":6,"./controllers/get-panel-items":7,"./controllers/items-template":8,"./controllers/monson-get":9,"./controllers/panels-template":10,"./controllers/template":11}],3:[function(require,module,exports){
+},{"./controllers/bind-item":3,"./controllers/bind-panel":4,"./controllers/bootstrap/responsive-image":5,"./controllers/find-panel":6,"./controllers/get-intro":7,"./controllers/get-panel-items":8,"./controllers/items-template":9,"./controllers/monson-get":10,"./controllers/panels-template":11,"./controllers/template":12}],3:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = function bindItem (item, itemView) {
-    console.info('[bind item]', { item: item, view: itemView });
+    console.info('[⇆]', 'bind item', { item: item, view: itemView });
 
     var app = this;
 
@@ -117,37 +128,63 @@
 
   'use strict';
 
-  module.exports = function applyTemplateToPanel (view, panel) {
-    console.info('[bind panel]', view, panel);
+  module.exports = function bindPanel (view, panel) {
+    console.info('[⬄]', "\tbind mv\t", 'panel', {
+      view: view, panel: panel
+    });
 
     view.find('.panel-title').text(panel.type);
 
+    console.warn(this.model('panels'))
+
     this.model('panels', this.model('panels')
-      .map(function (_panel) {
+      .map(function ($panel) {
 
         var match = false;
 
-        if ( _panel.type === panel.type ) {
+        if ( $panel.type === panel.type ) {
           match = true;
         }
 
         if ( panel.parent ) {
-          if ( panel.parent !== _panel.parent ) {
+          if ( panel.parent !== $panel.parent ) {
             match = false;
           }
         }
 
         if ( match ) {
-          _panel.view = view;
+          $panel.view = view;
         }
 
-        return _panel;
+        return $panel;
       }));
   };
 
 } ();
 
 },{}],5:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = function bootstrapResponsiveImage (options) {
+    console.info('[*]', "\tbootstr\*", 'responsive image', options);
+
+    var img = $('<img/>');
+
+    img.addClass('img-responsive');
+
+    if ( options.src ) {
+      img.attr('src', options.src);
+    }
+
+    return img;
+
+  };
+
+} ();
+
+},{}],6:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -162,9 +199,9 @@
       query.parent = panel.parent;
     }
 
-    console.info('[find-panel]', query);
+    console.info('[⟳]', "\tfind   \t", 'panels', query, app.model('panels'));
 
-    return app.model('panels')
+    var found = app.model('panels')
       .filter(function (panel) {
         for ( var i in query ) {
           if ( panel[i] !== query[i] ) {
@@ -174,27 +211,10 @@
         return true;
       })
       [0];
-  };
 
-} ();
+    console.info('[✔]', "\tfound   \t", 'panel', found || []);
 
-},{}],6:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  module.exports = function getIntro () {
-    console.info('[get-intro]');
-
-    var app = this;
-
-    this.model('socket').emit('get intro', function (error, intro) {
-      if ( error ) {
-        return app.emit('error', error);
-      }
-
-      app.model('intro', intro);
-    });
+    return found;
   };
 
 } ();
@@ -204,24 +224,20 @@
 
   'use strict';
 
-  module.exports = function getPanelItems (panel) {
+  module.exports = function getIntro () {
+    console.info('[➲]', "\tsocket \t", 'get intro');
+
     var app = this;
 
-     app.controller('monson get')('/models/Item?type=' + panel.type,
-      
-      function (error, items) {
-        
-        if ( error ) {
-          return app.emit('error', error);
-        }
+    this.model('socket').emit('get intro', function (error, intro) {
+      if ( error ) {
+        return app.emit('error', error);
+      }
 
-        app.model('items').concat(items.filter(function (new_item) {
-          return ! app.model('items').some(function (item) {
-            return item._id === new_item._id;
-          });
-        }));
+      console.info('[✔]', "\tsocket \t", 'got intro', intro);
 
-      });
+      app.model('intro', intro);
+    });
   };
 
 } ();
@@ -231,8 +247,37 @@
 
   'use strict';
 
+  module.exports = function getPanelItems (panel) {
+
+    console.info('[➲]', "\tsocket \t", 'get panel items', panel);
+
+    var app = this;
+
+    app.model('socket').emit('get panel items', panel, {
+      limit: synapp["navigator batch size"] },
+      
+      function (error, items) {
+        if ( error ) {
+          return app.emit('error', error);
+        }
+
+        app.model('items').concat(items.filter(function (new_item) {
+          return ! app.model('items').some(function (item) {
+            return item._id === new_item._id;
+          });
+        }));
+    });
+  };
+
+} ();
+
+},{}],9:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
   module.exports = function itemsTemplate (items, panelView) {
-    console.info('[items template]', items, panelView);
+    console.info('[✨]', 'items template', items, panelView);
 
     var app = this;
 
@@ -250,13 +295,13 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = function monsonGet (url, cb) {
-    console.info('[monson]', 'GET', url);
+    console.info('[⌛]', 'GET', url);
     $.ajax(url)
       .error(function (error) {
         console.error('monson GET error', error);    
@@ -271,13 +316,25 @@
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = function panelsTemplate (panels) {
-    console.info('[panels template]', panels);
+
+    var app = this;
+
+    var i = 0;
+    var len = panels.length;
+
+    function onEach () {
+      i ++;
+
+      if ( i === len ) {
+        app.model('template_panels_done', ! app.model('template_panels_done'));
+      }
+    }
 
     panels.forEach(function (panel) {
       this.controller('template')({
@@ -286,6 +343,7 @@
         container:  this.view('panels'),
         ready:      function (view) {
           this.controller('bind panel')(view, panel);
+          onEach();
         }.bind(this)
       });
     }.bind(this));
@@ -293,7 +351,7 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -303,8 +361,10 @@
     var app = this;
 
     process.nextTick(function () {
-      console.info('[template]', template.name, template,
-        { cache: template.name in app.model('templates') });
+      console.info('[✨]', "\ttemplat\t", template.name, {
+        cache: template.name in app.model('templates'),
+        template: template
+      });
 
       // If cached
 
@@ -384,7 +444,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":17}],12:[function(require,module,exports){
+},{"_process":19}],13:[function(require,module,exports){
 ;! function () {
 
   'use strict';
@@ -392,6 +452,10 @@
   var trueStory = require('/home/francois/Dev/true-story.js/lib/TrueStory');
 
   trueStory()
+
+    .on('error', function (error) {
+      console.error(error.message);
+    })
 
     .model(require('./model'))
 
@@ -403,20 +467,42 @@
 
     /** @when *all* model "intro" */
 
-    .when({ model: 'intro' }, { on: 'all' },
+    .when({ model: 'intro' }, { on: 'update' },
       function (intro) {
-        this.controller('bind panel')(this.view('intro'), {
-          type: intro.new.subject
-        });
-        this.controller('bind item')(intro.new, this.view('intro'));
+
+        var app = this;
+
+        this.view('intro').find('.panel-title').text(intro.new.subject);
+
+        this.view('intro').find('.item-title').text(intro.new.subject);
+
+        this.view('intro').find('.description').text(intro.new.description);
+
+        this.view('intro').find('.item-media').append(
+          this.controller('bootstrap/responsive-image')({
+            src: intro.new.image
+          }));
+
+        this.view('intro').find('.item-references').hide();
+        
       })
 
     /** @when push model "panels" */
 
     .when({ model: 'panels' }, { on: 'push' },
       function (panels) {
+
+        var app = this;
+
+        /** Apply panel template to each pushed (new) panel */
         this.controller('panels template')(panels);
-        panels.forEach(this.controller('get panel items').bind(this));
+
+        this.when({ model: 'template_panels_done' }, { on: 'all' },
+          function () {
+            console.error('big PAYBACK')
+            /** Get items of each new panel */
+            panels.forEach(app.controller('get panel items').bind(app));
+          });
       })
 
     /** @when concat model "items" */
@@ -446,7 +532,11 @@
 
     .when({ model: 'socket' }, { on: 'connect' },
       function (conn) {
-        console.info('[✔]', 'connected to web socket server');
+        console.info('[✔]', "\tsocket \t", 'connected to web socket server');
+
+        this.controller('get intro')();
+
+        // this.model('panels').push({ type: 'Topic' });
       })
 
     /** @when model "socket" emits "online users" */
@@ -468,29 +558,28 @@
      */
 
     .run(function () {
-      this.controller('get intro')();
-
-      // this.model('panels').push({ type: 'Topic' });
+      
     });
   
 }();
-},{"./controller":2,"./model":13,"./view":14,"/home/francois/Dev/true-story.js/lib/TrueStory":20}],13:[function(require,module,exports){
+},{"./controller":2,"./model":14,"./view":15,"/home/francois/Dev/true-story.js/lib/TrueStory":22}],14:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   module.exports = {
-    "user":         synapp.user,
-    "panels":       [],
-    "templates":    {},
-    "intro":        null,
-    "items":        [],
-    "online users": 0
+    "user":                   synapp.user,
+    "panels":                 [],
+    "templates":              {},
+    "intro":                  null,
+    "items":                  [],
+    "online users":           0,
+    "template_panels_done":   false
     };
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -504,7 +593,45 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
+/*global define:false require:false */
+module.exports = (function(){
+	// Import Events
+	var events = require('events');
+
+	// Export Domain
+	var domain = {};
+	domain.createDomain = domain.create = function(){
+		var d = new events.EventEmitter();
+
+		function emitError(e) {
+			d.emit('error', e)
+		}
+
+		d.add = function(emitter){
+			emitter.on('error', emitError);
+		}
+		d.remove = function(emitter){
+			emitter.removeListener('error', emitError);
+		}
+		d.run = function(fn){
+			try {
+				fn();
+			}
+			catch (err) {
+				this.emit('error', err);
+			}
+			return this;
+		};
+		d.dispose = function(){
+			this.removeAllListeners();
+			return this;
+		};
+		return d;
+	};
+	return domain;
+}).call(this);
+},{"events":17}],17:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -807,7 +934,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -832,7 +959,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -920,14 +1047,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1517,7 +1644,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":18,"_process":17,"inherits":16}],20:[function(require,module,exports){
+},{"./support/isBuffer":20,"_process":19,"inherits":18}],22:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -1531,6 +1658,19 @@ function hasOwnProperty(obj, prop) {
     this.controllers 	= {};
     this.views 				= {};
     this.follow       = new Follow(this.models);
+
+    this.domain       = require('domain').create();
+
+    var app = this;
+
+    this.domain.on('error', function (error) {
+      console.warn('An Error Occured! True story!', error, error.stack);
+      app.emit('error', error);
+    })
+
+    this.controller('true-story/render-view', function (options) {
+      options.engine(options.view, options.locals);
+    });
   }
 
   require('util').inherits(TrueStory, require('events').EventEmitter);
@@ -1579,7 +1719,7 @@ function hasOwnProperty(obj, prop) {
             mod,
             Array.prototype.slice.apply(arguments));
 
-          console.info('[push]', name);
+          console.info('[❱]', "\twatchAr\t", name, Array.prototype.slice.call(arguments), mod);
 
           // Emit it
 
@@ -1603,7 +1743,7 @@ function hasOwnProperty(obj, prop) {
             more = more.concat(arguments[i]);
           }
 
-          console.info('[concat]', name, more);
+          console.info('[❱❱]', "\twatchAr\t", name, more);
 
           // Emit it
 
@@ -1619,6 +1759,8 @@ function hasOwnProperty(obj, prop) {
   };
 
   TrueStory.prototype.controller = function (name, controller) {
+    var app = this;
+
     if ( typeof name === 'object' ) {
       for ( var i in name ) {
         this.controller(i, name[i]);
@@ -1669,13 +1811,12 @@ function hasOwnProperty(obj, prop) {
   };
 
   TrueStory.prototype.tell = function (trueStory) {
+    var app = this;
 
     if ( typeof trueStory === 'function' ) {
-      // process.nextTick(function () {
-      //   trueStory.apply(this);
-      // }.bind(this));
-
-      trueStory.apply(this);
+      this.domain.run(function () {
+        trueStory.apply(app);
+      });
     }
 
     return this;
@@ -1703,29 +1844,51 @@ function hasOwnProperty(obj, prop) {
     return {
       then: function (fn) {
         if ( who.model ) {
-          if ( what.on ) {
-            switch ( what.on ) {
+          if ( what.on || what.once || what.off ) {
+            var listener = (what.on && "on") ||
+              (what.once && "once") ||
+              (what.off && "off");
+
+            var event = what[listener];
+
+            switch ( event ) {
               case 'all':
                 return function () {
-                  this.follow.on('add ' + who.model, fn.bind(this));
-                  this.follow.on('update ' + who.model, fn.bind(this));
+                  var app = this;
+                  this.follow[listener]('add ' + who.model, function (obj) {
+                    // console.log('event add', obj);
+                    app.domain.run(function () {
+                      fn.apply(app, [obj]);
+                    });
+                  });
+                  this.follow[listener]('update ' + who.model, function (obj) {
+                    // console.log('event update');
+                    app.domain.run(function () {
+                      fn.apply(app, [obj]);
+                    });
+                  });
                 };
 
               case 'add':
               case 'update':
                 return function () {
-                  this.follow.on(what.on + ' ' + who.model, fn.bind(this));
+                  var app = this;
+                  this.follow[listener](event + ' ' + who.model, function (obj) {
+                    app.domain.run(function () {
+                      fn.apply(app, [obj]);
+                    });
+                  });
                 };
 
               case 'push':
               case 'concat':
                 return function () {
-                  this.on(what.on + ' ' + who.model, fn.bind(this));
+                  this[listener](event + ' ' + who.model, fn.bind(this));
                 };
 
               default:
                 return function () {
-                  this.model(who.model).on(what.on, fn.bind(this));
+                  this.model(who.model)[listener](event, fn.bind(this));
                 };
             }
           }
@@ -1738,8 +1901,8 @@ function hasOwnProperty(obj, prop) {
                 }
               }
 
-              this.follow.on('add ' + who.model, onAny.bind(this));
-              this.follow.on('update ' + who.model, onAny.bind(this));
+              this.follow[listener]('add ' + who.model, onAny.bind(this));
+              this.follow[listener]('update ' + who.model, onAny.bind(this));
             };
           }
         }
@@ -1756,7 +1919,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = TrueStory.exports;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/parse-dot-notation":21,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":17,"events":15,"util":19}],21:[function(require,module,exports){
+},{"./TrueStory/parse-dot-notation":23,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":19,"domain":16,"events":17,"util":21}],23:[function(require,module,exports){
 ; ! function () {
   
   'use strict';
@@ -1782,4 +1945,4 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{}]},{},[12]);
+},{}]},{},[13]);

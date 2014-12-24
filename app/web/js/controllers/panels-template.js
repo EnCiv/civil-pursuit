@@ -3,7 +3,19 @@
   'use strict';
 
   module.exports = function panelsTemplate (panels) {
-    console.info('[panels template]', panels);
+
+    var app = this;
+
+    var i = 0;
+    var len = panels.length;
+
+    function onEach () {
+      i ++;
+
+      if ( i === len ) {
+        app.model('template_panels_done', ! app.model('template_panels_done'));
+      }
+    }
 
     panels.forEach(function (panel) {
       this.controller('template')({
@@ -12,6 +24,7 @@
         container:  this.view('panels'),
         ready:      function (view) {
           this.controller('bind panel')(view, panel);
+          onEach();
         }.bind(this)
       });
     }.bind(this));

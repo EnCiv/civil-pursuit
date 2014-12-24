@@ -3,12 +3,15 @@
   'use strict';
 
   module.exports = function getPanelItems (panel) {
+
+    console.info('[➲]', "\tsocket \t", 'get panel items', panel);
+
     var app = this;
 
-     app.controller('monson get')('/models/Item?type=' + panel.type,
+    app.model('socket').emit('get panel items', panel, {
+      limit: synapp["navigator batch size"] },
       
       function (error, items) {
-        
         if ( error ) {
           return app.emit('error', error);
         }
@@ -18,8 +21,7 @@
             return item._id === new_item._id;
           });
         }));
-
-      });
+    });
   };
 
 } ();

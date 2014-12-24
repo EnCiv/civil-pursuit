@@ -6,8 +6,10 @@
     var app = this;
 
     process.nextTick(function () {
-      console.info('[template]', template.name, template,
-        { cache: template.name in app.model('templates') });
+      console.info('[✨]', "\ttemplat\t", template.name, {
+        cache: template.name in app.model('templates'),
+        template: template
+      });
 
       // If cached
 

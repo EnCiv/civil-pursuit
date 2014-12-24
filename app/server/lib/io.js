@@ -31,7 +31,7 @@
         online_users ++;
 
         io.emit('online users', online_users);
-        io.broadcast('online users', online_users);
+        socket.broadcast.emit('online users', online_users);
 
         socket.on('disconnect', function (why) {
           online_users --;
@@ -44,6 +44,41 @@
           });
 
           monson.get('models/Item.findOne?type=Intro')
+            .on('error', function (error) {
+              pronto.emit('error', error);
+              cb(error);
+            })
+            .on('success', function (intro) {
+              cb(null, intro);
+            });
+        });
+
+        socket.on('get panel items', function (panel, options, cb) {
+
+          console.log('cb is', cb)
+
+          var url = 'models/Item?type=' + panel.type;
+
+          if ( panel.parent ) {
+            url += '&parent=' + panel.parent;
+          }
+
+          if ( 'limit' in options ) {
+            url += '&' + options.limit;
+          }
+
+          pronto.emit('message', {
+            'web socket server': 'new incoming request',
+            request: {
+              panel: panel,
+              options: options,
+              cb: typeof cb
+            },
+            url: url,
+            method: 'GET'
+          });
+
+          monson.get(url)
             .on('error', function (error) {
               pronto.emit('error', error);
               cb(error);

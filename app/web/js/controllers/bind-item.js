@@ -3,7 +3,7 @@
   'use strict';
 
   module.exports = function bindItem (item, itemView) {
-    console.info('[bind item]', { item: item, view: itemView });
+    console.info('[⇆]', 'bind item', { item: item, view: itemView });
 
     var app = this;
 

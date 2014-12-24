@@ -3,7 +3,7 @@
   'use strict';
 
   module.exports = function itemsTemplate (items, panelView) {
-    console.info('[items template]', items, panelView);
+    console.info('[✨]', 'items template', items, panelView);
 
     var app = this;
 

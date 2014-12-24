@@ -6,6 +6,10 @@
 
   trueStory()
 
+    .on('error', function (error) {
+      console.error(error.message);
+    })
+
     .model(require('./model'))
 
     .model('socket', io.connect('http://' + window.location.hostname + ':' + window.location.port), true)
@@ -16,20 +20,42 @@
 
     /** @when *all* model "intro" */
 
-    .when({ model: 'intro' }, { on: 'all' },
+    .when({ model: 'intro' }, { on: 'update' },
       function (intro) {
-        this.controller('bind panel')(this.view('intro'), {
-          type: intro.new.subject
-        });
-        this.controller('bind item')(intro.new, this.view('intro'));
+
+        var app = this;
+
+        this.view('intro').find('.panel-title').text(intro.new.subject);
+
+        this.view('intro').find('.item-title').text(intro.new.subject);
+
+        this.view('intro').find('.description').text(intro.new.description);
+
+        this.view('intro').find('.item-media').append(
+          this.controller('bootstrap/responsive-image')({
+            src: intro.new.image
+          }));
+
+        this.view('intro').find('.item-references').hide();
+        
       })
 
     /** @when push model "panels" */
 
     .when({ model: 'panels' }, { on: 'push' },
       function (panels) {
+
+        var app = this;
+
+        /** Apply panel template to each pushed (new) panel */
         this.controller('panels template')(panels);
-        panels.forEach(this.controller('get panel items').bind(this));
+
+        this.when({ model: 'template_panels_done' }, { on: 'all' },
+          function () {
+            console.error('big PAYBACK')
+            /** Get items of each new panel */
+            panels.forEach(app.controller('get panel items').bind(app));
+          });
       })
 
     /** @when concat model "items" */
@@ -59,7 +85,11 @@
 
     .when({ model: 'socket' }, { on: 'connect' },
       function (conn) {
-        console.info('[✔]', 'connected to web socket server');
+        console.info('[✔]', "\tsocket \t", 'connected to web socket server');
+
+        this.controller('get intro')();
+
+        // this.model('panels').push({ type: 'Topic' });
       })
 
     /** @when model "socket" emits "online users" */
@@ -81,9 +111,7 @@
      */
 
     .run(function () {
-      this.controller('get intro')();
-
-      // this.model('panels').push({ type: 'Topic' });
+      
     });
   
 }();

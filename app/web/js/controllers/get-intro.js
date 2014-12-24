@@ -3,7 +3,7 @@
   'use strict';
 
   module.exports = function getIntro () {
-    console.info('[get-intro]');
+    console.info('[➲]', "\tsocket \t", 'get intro');
 
     var app = this;
 
@@ -11,6 +11,8 @@
       if ( error ) {
         return app.emit('error', error);
       }
+
+      console.info('[✔]', "\tsocket \t", 'got intro', intro);
 
       app.model('intro', intro);
     });
