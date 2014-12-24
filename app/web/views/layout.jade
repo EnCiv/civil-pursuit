@@ -4,29 +4,31 @@ doctype html
 
 include layout/head
 
-//- Top bar
+.container-fluid
 
-section(role='header')
+  //- Top bar
 
-  include layout/top
+  section(role='header')
 
-//- Session bar
+    include layout/top
 
-//- - if ( ! req.user )
+  //- Session bar
 
-//-   include partials/sign
+  //- - if ( ! req.user )
 
-//- Page
+  //-   include partials/sign
 
-section(role='main')
-  
-  block page
+  //- Page
 
-//- Footer
+  section(role='main')
+    
+    block page
 
-block footer
-  
-  include layout/footer
+  //- Footer
+
+  block footer
+    
+    include layout/footer
 
 //- Scripts
 
