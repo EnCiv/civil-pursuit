@@ -210,6 +210,7 @@
         container:  panelView.find('.items'),
         ready:      function (view) {
           view.find('.item-title').text(item.subject);
+          view.find('.description').text(item.description);
         }
       });
     });
