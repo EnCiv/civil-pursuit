@@ -21,12 +21,13 @@
           }
 
           if ( item.image ) {
+
             var image = $('<img/>')
 
             image.addClass('img-responsive');
             image.attr('src', item.image);
 
-            view.find('item-media').append(image);
+            view.find('.item-media').append(image);
           }
         }
       });
