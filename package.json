@@ -51,6 +51,7 @@
     "passport-facebook": "~1.0.3",
     "passport-twitter": "~1.0.2",
     "socket.io": "~1.2.1",
-    "prontojs": "git://github.com/co2-git/prontojs"
+    "prontojs": "git://github.com/co2-git/prontojs",
+    "async": "~0.9.0"
   }
 }

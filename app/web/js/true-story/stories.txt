@@ -1,0 +1,245 @@
+
+
+
+         @\_______/@
+        @|XXXXXXXX |
+       @ |X||    X |
+      @  |X||    X |
+     @   |XXXXXXXX |
+    @    |X||    X |             V
+   @     |X||   .X |
+  @      |X||.  .X |                      V
+ @      |%XXXXXXXX%||
+@       |X||  . . X||
+        |X||   .. X||                               @     @
+        |X||  .   X||.                              ||====%
+        |X|| .    X|| .                             ||    %
+        |X||.     X||   .                           ||====%
+       |XXXXXXXXXXXX||     .                        ||    %
+       |XXXXXXXXXXXX||         .                 .  ||====% .
+       |XX|        X||                .        .    ||    %  .
+       |XX|        X||                   .          ||====%   .
+       |XX|        X||              .          .    ||    %     .
+       |XX|======= X||============================+ || .. %  ........
+===== /            X||                              ||    %
+                   X||           /)                 ||    %
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Nina Butorac
+
+                                                                             
+                            
+                                                                             
+ $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
+$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
+ $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
+      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
+$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
+                $$                      $$        $$           $$            
+          $$    $$                      $$        $$     $$    $$            
+           $$$$$$                       $$        $$      $$$$$$             
+
+
+
+
+                                     __
+                         .--.      .'  `.
+                       .' . :\    /   :  L
+                       F     :\  /   . : |        .-._
+                      /     :  \/        J      .' ___\
+                     J     :   /      : : L    /--'   ``.
+                     F      : J           |  .<'.o.  `-'>
+                    /        J             L \_>.   .--w)
+                   J        /              \_/|   . `-__|
+                   F                        / `    -' /|)
+                  |   :                    J   '        |
+                 .'   ':                   |    .    :  \
+                /                          J      :     |L
+               F                              |     \   ||
+              F .                             |   :      |
+             F  |                             ; .   :  : F
+            /   |                                     : J
+           J    J             )                ;        F
+           |     L           /      .:'                J
+        .-'F:     L        ./       :: :       .       F
+        `-'F:     .\    `:.J         :::.             J
+          J       ::\    `:|        |::::\            |
+          J        |:`.    J        :`:::\            F
+           L   :':/ \ `-`.  \       : `:::|        .-'
+           |     /   L    >--\         :::|`.    .-'
+           J    J    |    |   L     .  :::: :`, /
+            L   F    J    )   |        >::   : /
+            |  J      L   F   \     .-.:'   . /
+            ): |     J   /     `-   | |   .--'
+            /  |     |: J        L  J J   )
+            L  |     |: |        L   F|   /
+            \: J     \:  L       \  /  L |
+             L |      \  |        F|   | )
+             J F       \ J       J |   |J
+              L|        \ \      | |   | L
+              J L        \ \     F \   F |
+               L\         \ \   J   | J   L
+              /__\_________)_`._)_  |_/   \_____
+                                  ""   `"""
+
+                                                                  
+                                                                  
+              $$                          $$                      
+              $$                                                  
+   $$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
+  $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
+   $$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
+        $$    $$  $$  $$    $$  $$        $$  $$              $$  
+  $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
+                                                                  
+           
+
+Objectives:
+
+O1    Render a new panel
+O2    Get panel's items via socket
+O3    Render new panel's items
+
+Break-down:
+
+#1    model "socket" emits "connect"
+⌄⌄
+#2    model "panels" emits "push"
+⌄⌄
+#3    controller "true-story/render-view" calls "ready"
+>>    O1 OK
+⌄⌄
+#4    model "template panel rendered" emits "update"
+⌄⌄
+#5    controller "get panel items" get called
+⌄⌄
+#6    model "socket" emits "get panel items"
+⌄⌄
+#7    model "socket" emits "got panel items"
+>>    O2 OK
+______________________________________________________
+______________________________________________________
+
+|                      MODELS                         |
+______________________________________________________
+______________________________________________________
+
+
+ _____________ _______________________________
+|             |                               |
+|   @model    |   socket                      |
+|   @type     |   Socket                      |
+|_____________|_______________________________|
+|             |                               |
+|   @event    |   connect                     |> 1
+|   @emits    |   - Socket                    |  1 
+|-------------|-------------------------------|  1 
+|   @event    |   get panel items             |<51555555555555555555 
+|   @emits    |   - Panel                     |  1                 5 
+|             |     - String type             |  1                 5 
+|             |     - String parent?          |  1                 5 
+|             |   - Object?                   |  1                 5 
+|             |     - Number limit?           |  1                 5 
+|-------------|-------------------------------|  1                 5
+|   @event    |   got panel items             |  1                 5 
+|   @emits    |   - [Item]                    |  1                 5 
+|_____________|_______________________________|  1                 5 
+                                                 1                 5 
+|_____________ _______________________________|  1                 5 
+|                                             |  1                 5 
+ _____________ _______________________________   1                 5 
+|             |                               |  1                 5 
+|   @model    |   panels                      |  1                 5 
+|   @type     |   {Panel}                     |  1                 5 
+|             |     - String type             |  1                 5 
+|             |     - String parent?          |  1                 5 
+|_____________|_______________________________|  1                 5 
+|             |                               |  1                 5 
+|   @event    |   push                        |< 1                 5 
+|   @emits    |   - {Panel}                   |> 2                 5 
+|             |     - String type             |  2                 5 
+|             |     - String parent?          |  2                 5 
+|_____________|_______________________________|  2                 5 
+                                                 2                 5 
+|_____________ _______________________________|  2                 5 
+|                                             |  2                 5 
+ _____________ _______________________________   2                 5 
+|             |                               |  2                 5 
+|   @model    |   template panel rendered     |  2                 5 
+|   @type     |   {Panel}                     |  2                 5 
+|             |     - String type             |  2                 5 
+|             |     - String parent?          |  2                 5 
+|_____________|_______________________________|  2                 5 
+|             |                               |  2                 5 
+|   @event    |   update                      |< 3  3  3           5
+|   @emits    |   - {Follower}                |> 4  4  4  4  4     5
+|_____________|_______________________________|  2     3     4     5
+                                                 2     3     4     5
+______________________________________________   2     3     4     5
+______________________________________________   2     3     4     5
+                                                 2     3     4     5
+|                   CONTROLLERS               |  2     3     4     5
+______________________________________________   2     3     4     5
+______________________________________________   2     3     4     5
+                                                 2     3     4     5
+|_____________ _______________________________|  2     3     4     5
+|                                             |  2     3     4     5
+ _____________ _______________________________   2     3     4     5
+|             |                               |  2     3     4     5
+| @controller |   true-story/render-view      |< 2     3     4     5
+|_____________|_______________________________|        3     4     5
+|             |                               |        3     4     5
+|   @event    |   ready                       |> 3  3  3     4     5
+|   @emits    |   - jQuery                    |              4     5
+|_____________|_______________________________|              4     5
+                                                             4     5
+|_____________ _______________________________|              4     5
+|                                             |              4     5
+ _____________ _______________________________               4     5 
+|             |                               |              4     5  
+| @controller |   get panel items             |< 4  4  4  4  4     5 
+|_____________|_______________________________|> 5  5  5  5  5  5  5 
+
+
+
+
+______________________________________________________
+______________________________________________________
+
+|                    FUNCTIONS                        |
+______________________________________________________
+______________________________________________________
+
+ _____________ _______________________________________ 
+|             |                                       |
+| @function   |   
+
+
+
+
+DISPLAYING TOPIC PANEL
+
+#1 WHEN model "socket" triggers "connect"
+#2 THEN model "panel" gets pushed with { "type": "Topic" }
+
+#3 WHEN model "panel" triggers "push"
+#4 THEN execute controller "true-story/render-view"
+
+#5 WHEN controller "true-story/render-view" triggers "ready"
+#6 THEN model "template panel rendered" gets updated
+
+#7 WHEN model "template panel rendered" triggers "update"
+#8 THEN execute controller "get panel items"
+#9 THEN controller "get panel items" emits "get panel item" to model "socket"
+
+#10 WHEN model "socket" triggers "get panel items"
+#11 THEN socketIO::Server::socket asks monson to get panels
+
+#12 WHEN monson gets panels
+#13 THEN socketIO::Server::socket gets called back
+#14 THEN socketIO::Server::socket calls back socket client
+
+#15 WHEN model "socket" gets callbacked
+#16 THEN execute controller "true-story/render-view"
+
+
+
