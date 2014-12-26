@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/follow.js/lib/Follow.js":[function(require,module,exports){
 /***
 
 
@@ -120,7 +120,7 @@
 
 }();
 
-},{"events":26,"util":30}],2:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
 /***
 
 
@@ -247,7 +247,7 @@ Nina Butorac
   app.runTests('story get intro');
   
 }();
-},{"./true-story/app":3}],3:[function(require,module,exports){
+},{"./true-story/app":"/home/francois/Dev/syn/app/web/js/true-story/app.js"}],"/home/francois/Dev/syn/app/web/js/true-story/app.js":[function(require,module,exports){
 /***
 
 
@@ -451,7 +451,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":11,"./stories":12,"./test":13,"./view":17,"/home/francois/Dev/true-story.js/lib/TrueStory":31}],4:[function(require,module,exports){
+},{"./controller":"/home/francois/Dev/syn/app/web/js/true-story/controller.js","./model":"/home/francois/Dev/syn/app/web/js/true-story/model.js","./stories":"/home/francois/Dev/syn/app/web/js/true-story/stories.js","./test":"/home/francois/Dev/syn/app/web/js/true-story/test.js","./view":"/home/francois/Dev/syn/app/web/js/true-story/view.js","/home/francois/Dev/true-story.js/lib/TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/syn/app/web/js/true-story/controller.js":[function(require,module,exports){
 /***
 
 
@@ -568,7 +568,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"./controllers/bind-item":5,"./controllers/bind-panel":6,"./controllers/bootstrap/responsive-image":7,"./controllers/find-panel":8,"./controllers/get-intro":9,"./controllers/get-panel-items":10}],5:[function(require,module,exports){
+},{"./controllers/bind-item":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-item.js","./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-panel.js","./controllers/bootstrap/responsive-image":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bootstrap/responsive-image.js","./controllers/find-panel":"/home/francois/Dev/syn/app/web/js/true-story/controllers/find-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-panel-items.js"}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-item.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -599,7 +599,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],6:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-panel.js":[function(require,module,exports){
 /***
 
 
@@ -661,7 +661,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bootstrap/responsive-image.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -683,7 +683,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/find-panel.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -718,7 +718,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-intro.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -741,7 +741,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-panel-items.js":[function(require,module,exports){
 /***
 
 
@@ -895,7 +895,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/model.js":[function(require,module,exports){
 /***
 
 
@@ -991,7 +991,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/stories.js":[function(require,module,exports){
 /***
 
 
@@ -1357,7 +1357,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./when/emitter/socket/on/connect":18,"./when/emitter/socket/on/online users":19,"./when/model/intro/on/update":20,"./when/model/items/on/concat":21,"./when/model/online users/on/all":22,"./when/model/panels/on/push":23,"./when/model/template panel rendered/on/update":24}],13:[function(require,module,exports){
+},{"./when/emitter/socket/on/connect":"/home/francois/Dev/syn/app/web/js/true-story/when/emitter/socket/on/connect.js","./when/emitter/socket/on/online users":"/home/francois/Dev/syn/app/web/js/true-story/when/emitter/socket/on/online users.js","./when/model/intro/on/update":"/home/francois/Dev/syn/app/web/js/true-story/when/model/intro/on/update.js","./when/model/items/on/concat":"/home/francois/Dev/syn/app/web/js/true-story/when/model/items/on/concat.js","./when/model/online users/on/all":"/home/francois/Dev/syn/app/web/js/true-story/when/model/online users/on/all.js","./when/model/panels/on/push":"/home/francois/Dev/syn/app/web/js/true-story/when/model/panels/on/push.js","./when/model/template panel rendered/on/update":"/home/francois/Dev/syn/app/web/js/true-story/when/model/template panel rendered/on/update.js"}],"/home/francois/Dev/syn/app/web/js/true-story/test.js":[function(require,module,exports){
 /***
 
 
@@ -1462,7 +1462,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"./tests/stories":14}],14:[function(require,module,exports){
+},{"./tests/stories":"/home/francois/Dev/syn/app/web/js/true-story/tests/stories.js"}],"/home/francois/Dev/syn/app/web/js/true-story/tests/stories.js":[function(require,module,exports){
 /***
 
 
@@ -1577,7 +1577,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"./stories/get-intro":15,"./stories/get-topics":16}],15:[function(require,module,exports){
+},{"./stories/get-intro":"/home/francois/Dev/syn/app/web/js/true-story/tests/stories/get-intro.js","./stories/get-topics":"/home/francois/Dev/syn/app/web/js/true-story/tests/stories/get-topics.js"}],"/home/francois/Dev/syn/app/web/js/true-story/tests/stories/get-intro.js":[function(require,module,exports){
 /***
 
 
@@ -1739,6 +1739,25 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         model: 'intro',
         event: 'update',
         listener: 'on'
+      },
+
+      {
+        event: 'template rendered',
+        listener: 'on',
+        run: function (dom) {
+
+          return [
+
+            dom.attr('id') === this.view('intro').attr('id'),
+
+            ! dom.find('.iddle').length
+            
+          
+          ].every(function (assertion) {
+           
+            return assertion;
+          });
+        }
       }
     ];
 
@@ -1772,16 +1791,40 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
       series.forEach(function (story) {
 
-        var role = ('model' in story && 'model') ||
-          ('emitter' in story && 'emitter');
+        var role = 'emitter';
+
+        if ( 'model' in story ) {
+          role = 'model';
+        }
+
+        if ( role === 'emitter' && ! story.emitter ) {
+          story.emitter = null;
+        }
+
+        console.error('OH WEELLL', story)
 
         when()
+          
           [role](story[role])
+          
           .triggers(story.event)
-          .then(function () {
-            app.model('test.got').push(story);
-            console.warn('SPIDERMAN', app.model('test'))
-          });
+          
+          .then(function (event) {
+            console.log('I AM FLYING AWAY NOW', this)
+
+            var yes = true;
+
+            if ( this.run ) {
+              yes = this.run.apply(app, [event]);
+            }
+
+            if ( yes ) {
+              app.model('test.got').push(this);
+            }
+          
+          }.bind(story));
+
+
       });
     });
 
@@ -1797,7 +1840,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/tests/stories/get-topics.js":[function(require,module,exports){
 /***
 
 
@@ -1993,7 +2036,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/view.js":[function(require,module,exports){
 /***
 
 
@@ -2105,7 +2148,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/when/emitter/socket/on/connect.js":[function(require,module,exports){
 /***
 
 
@@ -2313,7 +2356,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/when/emitter/socket/on/online users.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2324,7 +2367,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/when/model/intro/on/update.js":[function(require,module,exports){
 /***
 
 
@@ -2514,12 +2557,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       }));
 
     this.view('intro').find('.item-references').hide();
+
+    this.emit('template rendered', this.view('intro'));
     
   };
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/when/model/items/on/concat.js":[function(require,module,exports){
 /***
 
 
@@ -2732,7 +2777,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/when/model/online users/on/all.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2743,7 +2788,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/when/model/panels/on/push.js":[function(require,module,exports){
 /***
 
 
@@ -2959,7 +3004,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/when/model/template panel rendered/on/update.js":[function(require,module,exports){
 /***
 
 
@@ -3200,7 +3245,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],25:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3238,7 +3283,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":26}],26:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3541,7 +3586,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],27:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3566,7 +3611,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],28:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3654,14 +3699,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],29:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],30:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4251,7 +4296,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":29,"_process":28,"inherits":27}],31:[function(require,module,exports){
+},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory.js":[function(require,module,exports){
 (function (process){
 /***
 
@@ -4507,6 +4552,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
 
   TrueStory.prototype.emitter = function (name, emitter) {
     var app = this;
+
 
     if ( typeof name === 'object' ) {
       for ( var i in name ) {
@@ -4800,7 +4846,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory.exports;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":32,"./TrueStory/parse-dot-notation":33,"./When":34,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":28,"domain":25,"events":26,"util":30}],32:[function(require,module,exports){
+},{"./TrueStory/model":"/home/francois/Dev/true-story.js/lib/TrueStory/model.js","./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","./When":"/home/francois/Dev/true-story.js/lib/When.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/model.js":[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5186,7 +5232,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],33:[function(require,module,exports){
+},{}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5308,7 +5354,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],"/home/francois/Dev/true-story.js/lib/When.js":[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5502,32 +5548,32 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
                                                     
                                                     
-                      $$                            
-                      $$                            
-        $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
-        $$   $$   $$  $$    $$  $$    $$  $$    $$  
-        $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
-        $$   $$   $$  $$    $$  $$        $$    $$  
-         $$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
-                                                    
-                                                        
-                                                        
-                                      $$            $$  
-                                      $$            $$  
-        $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-        $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-        $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-        $$   $$   $$  $$    $$  $$    $$  $$        $$  
-        $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$    
-
-
-                            
-                            
-         $$$$$$   $$$$$$$   
-        $$    $$  $$    $$  
-        $$    $$  $$    $$  
-        $$    $$  $$    $$  
-         $$$$$$   $$    $$  
+          .             $$                            
+          .             $$                            
+          $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
+          $$   $$   $$  $$    $$  $$    $$  $$    $$  
+          $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
+          $$   $$   $$  $$    $$  $$        $$    $$  
+          .$$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
+          .                                           
+          .                                               
+          .                                               
+          .                             $$            $$  
+          .                             $$            $$  
+          $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
+          $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
+          $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
+          $$   $$   $$  $$    $$  $$    $$  $$        $$  
+          $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$    
+          .
+          .
+          .                   
+          .                   
+          .$$$$$$   $$$$$$$   
+          $$    $$  $$    $$  
+          $$    $$  $$    $$  
+          $$    $$  $$    $$  
+          .$$$$$$   $$    $$  
                             
                             
                             
@@ -5616,7 +5662,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
       }
     }
 
-    else if ( when.who.emitter ) {
+    else if ( 'emitter' in when.who ) {
       /***
 
                                                                         
@@ -5653,7 +5699,22 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
       ***/
 
       return ! function () {
-        this.emitter(when.who.emitter)[when.listener](when.event, fn.bind(this));
+        var emitter = when.who.emitter;
+
+        if ( ! emitter ) {
+          emitter = this;
+        }
+
+        else {
+          emitter = this.emitters[emitter];
+        }
+
+        console.warn('setting new listener', {
+          emitter: when.who.emitter,
+          listener: when.listener
+        })
+        
+        emitter[when.listener](when.event, fn.bind(this));
       }.apply(this.app);
     }
 
@@ -5666,4 +5727,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
   module.exports = When;
 } ();
-},{}]},{},[2]);
+},{}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);

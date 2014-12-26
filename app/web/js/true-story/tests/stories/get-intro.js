@@ -159,6 +159,25 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         model: 'intro',
         event: 'update',
         listener: 'on'
+      },
+
+      {
+        event: 'template rendered',
+        listener: 'on',
+        run: function (dom) {
+
+          return [
+
+            dom.attr('id') === this.view('intro').attr('id'),
+
+            ! dom.find('.iddle').length
+            
+          
+          ].every(function (assertion) {
+           
+            return assertion;
+          });
+        }
       }
     ];
 
@@ -192,16 +211,40 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
       series.forEach(function (story) {
 
-        var role = ('model' in story && 'model') ||
-          ('emitter' in story && 'emitter');
+        var role = 'emitter';
+
+        if ( 'model' in story ) {
+          role = 'model';
+        }
+
+        if ( role === 'emitter' && ! story.emitter ) {
+          story.emitter = null;
+        }
+
+        console.error('OH WEELLL', story)
 
         when()
+          
           [role](story[role])
+          
           .triggers(story.event)
-          .then(function () {
-            app.model('test.got').push(story);
-            console.warn('SPIDERMAN', app.model('test'))
-          });
+          
+          .then(function (event) {
+            console.log('I AM FLYING AWAY NOW', this)
+
+            var yes = true;
+
+            if ( this.run ) {
+              yes = this.run.apply(app, [event]);
+            }
+
+            if ( yes ) {
+              app.model('test.got').push(this);
+            }
+          
+          }.bind(story));
+
+
       });
     });
 

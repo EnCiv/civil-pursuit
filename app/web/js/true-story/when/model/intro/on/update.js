@@ -187,6 +187,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       }));
 
     this.view('intro').find('.item-references').hide();
+
+    this.emit('template rendered', this.view('intro'));
     
   };
 
