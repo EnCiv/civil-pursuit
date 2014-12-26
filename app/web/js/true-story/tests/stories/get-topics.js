@@ -148,6 +148,24 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         model: 'panels',
         event: 'push',
         listener: 'on'
+      },
+
+      {
+        model: 'panel',
+        event: 'update',
+        listener: 'on'
+      },
+
+      {
+        emitter: 'socket',
+        event: 'got panel items',
+        listener: 'on'
+      },
+
+      {
+        model: 'items',
+        event: 'concat',
+        listener: 'on'
       }
     ]);
   };

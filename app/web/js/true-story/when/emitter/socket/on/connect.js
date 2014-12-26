@@ -193,7 +193,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = function onModelSocketConnect (conn) {
-    console.info('[*]', "\tSOCKET\t\t", '✔ connected to web socket server');
+    
+    console.info(new (
+      function TrueModule_synapp__action_status () {
+        this['connecting to Web Sockets Server'] = '✔';
+      })());
 
     /** If no intro loaded, load it */
     if ( ! this.model('intro') ) {

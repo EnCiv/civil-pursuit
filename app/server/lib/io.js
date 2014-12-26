@@ -115,6 +115,14 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
   var domain;
 
+  function Streamer () {
+    
+  }
+
+  require('util').inherits(Streamer, require('events').EventEmitter);
+
+  var streamer = new Streamer();
+
   /***
                                 
                                                       
@@ -151,31 +159,6 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
   };
 
 
-
-  /***
-  
-                                                                                  
-                          $$    $$      $$                            $$$  $$$    
-                                $$      $$                           $$      $$   
-   $$$$$$   $$$$$$ $$$$   $$  $$$$$$  $$$$$$     $$$$$$    $$$$$$   $$        $$  
-  $$    $$  $$   $$   $$  $$    $$      $$      $$    $$  $$    $$  $$        $$  
-  $$$$$$$$  $$   $$   $$  $$    $$      $$      $$$$$$$$  $$        $$        $$  
-  $$        $$   $$   $$  $$    $$  $$  $$  $$  $$        $$         $$      $$   
-   $$$$$$$  $$   $$   $$  $$     $$$$    $$$$    $$$$$$$  $$          $$$  $$$    
-                                                                                  
-                                                                                  
-                                                                                  
-  ***/
-
-  function emitter(pronto, socket, event, message) {
-    pronto.emit('message', { 'socket emits': {
-      event: event,
-      message: message
-    }});
-
-    socket.emit(event, message);
-  }
-
   function onEvent (event, args) {
     this.emit('message', {
       'socket server': {
@@ -199,17 +182,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
     /***
 
-                  
-                  
-                        
-                        
-     $$$$$$   $$$$$$$   
-    $$    $$  $$    $$  
-    $$    $$  $$    $$  
-    $$    $$  $$    $$  
-     $$$$$$   $$    $$  
-                        
-                                  
+
+                      
                                   
       $$                          
       $$                          
@@ -289,6 +263,26 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
       var socketIO  =   require('socket.io');
       var io        =   socketIO(pronto.server);
+
+
+      /***
+
+                                                                
+                                                                        
+                                                                        
+                                                                        
+        $$$$$$ $$$$    $$$$$$   $$$$$$$    $$$$$$$   $$$$$$   $$$$$$$   
+        $$   $$   $$  $$    $$  $$    $$  $$        $$    $$  $$    $$  
+        $$   $$   $$  $$    $$  $$    $$   $$$$$$   $$    $$  $$    $$  
+        $$   $$   $$  $$    $$  $$    $$        $$  $$    $$  $$    $$  
+        $$   $$   $$   $$$$$$   $$    $$  $$$$$$$    $$$$$$   $$    $$  
+                                                                        
+             
+
+
+                                                                        
+        ***/
+
       var monson    =   require('monson')(process.env.MONGOHQ_URL, {
         base: require('path').join(process.cwd(), 'app/business')
       });
@@ -338,6 +332,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
       io.on('connection', function (socket) {
 
+
         /***
 
                     
@@ -386,9 +381,10 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           var error_json = error_to_json(error);
 
           pronto.emit('message', { 'socket error': error_json });
+          
           pronto.emit('error', error);
-          emitter(pronto, socket, 'error', error_json);
-          emitter(pronto, socket, 'catcha', error_json);
+
+          socket.emit('error', error);
 
         });
 
@@ -523,7 +519,9 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
         ***/
 
-        
+        setTimeout(function () {
+          socket.emit('glouglou');
+        }, 3000);
 
         socket.on('get intro', function () {
           onEvent('get intro', arguments);
@@ -540,6 +538,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
               })
 
               .on('success', function (intro) {
+                pronto.emit('message', 'socket got intro from monson')
                 socket.emit('got intro', intro);
               });
             });
@@ -634,6 +633,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
                 throw error;
               })
               .on('success', function (items) {
+                pronto.emit('message', 'socket got panel items from monson');
                 socket.emit('got panel items', {
                   panel: panel,
                   items: items
@@ -647,7 +647,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
       });
 
       io.on('error', function (error) {
-        throw error;
+        pronto.emit('error', error);
       });
     });
   }

@@ -179,6 +179,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = function (panelView) {
+
     this.controller('get panel items')(panelView.new.panel);
   };
 

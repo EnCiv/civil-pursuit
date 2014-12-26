@@ -139,14 +139,45 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   'use strict';
 
-  module.exports = function getPanelItems (panel) {
-
-    console.info('[➲]', "\tsocket \t", 'get panel items', panel);
-
+  function gotPanels (panelItems) {
+    console.info(new (function synapp_got_panel_items () {})());
+    
     var app = this;
 
-    app.emitter('socket').emit('get panel items', panel, {
+    app.model('items').concat(panelItems.items);
+
+    var id = '#panel-' + panelItems.panel.type;
+
+    if ( panelItems.panel.parent ) {
+      id += '-' + panelItems.panel.parent;
+    }
+
+    app.controller('true-story/render-view')({
+      container:  $(id).find('.items'),
+      template:   {
+        url: '/partial/item'
+      },
+      engine:     function (view, locals) {
+        view = $(view);
+
+        // app.controller('bind panel')(locals.panel, view);
+
+        return view;
+      },
+      locals:     { items: panelItems.items },
+      append:     true
+    });
+  }
+
+  module.exports = function getPanelItems (panel) {
+
+    console.info(new (function synapp_getting_panel_items () {})());
+
+    this.emitter('socket').emit('get panel items', panel, {
       limit: synapp["navigator batch size"] });
+
+    this.emitter('socket').on('got panel items', gotPanels.bind(this));
+
   };
 
 } ();
