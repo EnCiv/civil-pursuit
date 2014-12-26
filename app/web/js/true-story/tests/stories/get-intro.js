@@ -141,8 +141,9 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = function () {
     var app = this;
 
-
-    var series = [
+    app.watchDog({
+      story: 'get intro'
+    }, [
       {
         emitter: 'socket',
         event: 'connect',
@@ -171,7 +172,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             dom.attr('id') === this.view('intro').attr('id'),
 
             ! dom.find('.iddle').length
-            
+
           
           ].every(function (assertion) {
            
@@ -179,83 +180,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           });
         }
       }
-    ];
-
-    var got = [];
-
-
-
-
-    app.model('test', {
-      got: [],
-      done: false
-    });
-
-    // var tests = app.model('__tests.stories');
-
-    // app.controller('true-story/merge')(app.model('__tests.stories'), {
-    //     'story': 
-    //   });
-
-    // console.info(app.model('test').name);
-
-    app.tell(function (when) {
-      when()
-        .model('test.got')
-        .triggers('push')
-        .then(function (pushed) {
-          if ( app.model('test.got').length === series.length ) {
-            app.model('test.done', true);
-          }
-        });
-
-      series.forEach(function (story) {
-
-        var role = 'emitter';
-
-        if ( 'model' in story ) {
-          role = 'model';
-        }
-
-        if ( role === 'emitter' && ! story.emitter ) {
-          story.emitter = null;
-        }
-
-        console.error('OH WEELLL', story)
-
-        when()
-          
-          [role](story[role])
-          
-          .triggers(story.event)
-          
-          .then(function (event) {
-            console.log('I AM FLYING AWAY NOW', this)
-
-            var yes = true;
-
-            if ( this.run ) {
-              yes = this.run.apply(app, [event]);
-            }
-
-            if ( yes ) {
-              app.model('test.got').push(this);
-            }
-          
-          }.bind(story));
-
-
-      });
-    });
-
-    setTimeout(function () {
-      if ( ! app.model('test.done') ) {
-        throw new Error('Test failed', 'get intro');
-      }
-      else {
-        console.info(' :) :) :) :) :) TRUE STORY TEST OK', 'get intro');
-      }
-    }, 2000);
+    ]);
   };
 
 } ();
