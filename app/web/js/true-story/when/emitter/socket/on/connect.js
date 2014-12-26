@@ -129,7 +129,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
                                                                   
                                                           
                                    
-                                                          
+
                                                                       
                                                                       
                             $$    $$      $$                          
@@ -193,14 +193,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = function onModelSocketConnect (conn) {
-    console.info('[✔]', "\tsocket \t", 'connected to web socket server');
+    console.info('[*]', "\tSOCKET\t\t", '✔ connected to web socket server');
 
     /** If no intro loaded, load it */
     if ( ! this.model('intro') ) {
       this.controller('get intro')();
     }
 
-    // this.model('panels').push({ type: 'Topic' });
+    this.model('panels').push({ type: 'Topic' });
   };
 
 } ();

@@ -133,12 +133,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   module.exports = function () {
 
-    return console.warn('test story', this)
-
     var app = this;
 
-
-    var series = [
+    app.watchDog({
+      story: 'get topics'
+    }, [
       {
         emitter: 'socket',
         event: 'connect',
@@ -150,45 +149,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         event: 'push',
         listener: 'on'
       }
-    ];
-
-
-    app.model('test', {
-      name: 'Render Topic panel with items',
-      got: [],
-      done: false
-    });
-
-    app.tell(function (when) {
-
-      when
-        .model('test.got')
-        .triggers('push')
-        .then(function (pushed) {
-          console.warn(series.length, app.model('test.got').length);
-        });
-
-      series.forEach(function (story) {
-
-        var role = ('model' in story && 'model') ||
-          ('emitter' in story && 'emitter');
-
-        console.warn('story !!!!!', 'when.' + role + '(' + story[role] + ').triggers(' + story.event + ')');
-
-        when
-          [role](story[role])
-          .triggers(story.event)
-          .then(function () {
-            // app.model('test.got').push(story);
-          });
-      });
-    });
-
-    setTimeout(function () {
-      console.log('!')
-      console.log('!.')
-      console.log('!..', app)
-    }, 2000);
+    ]);
   };
 
 } ();

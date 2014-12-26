@@ -244,7 +244,7 @@ Nina Butorac
 
   var app = require('./true-story/app')();
 
-  app.runTests('story get intro');
+  app.runTests();
   
 }();
 },{"./true-story/app":3}],3:[function(require,module,exports){
@@ -725,14 +725,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   module.exports = function getIntro () {
 
-    console.info('[➲]', "\tsocket \t", 'get intro');
+     console.info('[*]', "\tSOCKET\t\t", '↺ getting intro');
 
     var app = this;
 
     this.emitter('socket').emit('get intro');
 
     this.emitter('socket').on('got intro', function (intro) {
-      console.info('[✔]', "\tsocket \t", 'got intro', intro);
+      console.info('[*]', "\tSOCKET\t\t", '✔ got intro');
 
       app.model('intro', intro);
     });
@@ -1901,12 +1901,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   module.exports = function () {
 
-    return console.warn('test story', this)
-
     var app = this;
 
-
-    var series = [
+    app.watchDog({
+      story: 'get topics'
+    }, [
       {
         emitter: 'socket',
         event: 'connect',
@@ -1918,45 +1917,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         event: 'push',
         listener: 'on'
       }
-    ];
-
-
-    app.model('test', {
-      name: 'Render Topic panel with items',
-      got: [],
-      done: false
-    });
-
-    app.tell(function (when) {
-
-      when
-        .model('test.got')
-        .triggers('push')
-        .then(function (pushed) {
-          console.warn(series.length, app.model('test.got').length);
-        });
-
-      series.forEach(function (story) {
-
-        var role = ('model' in story && 'model') ||
-          ('emitter' in story && 'emitter');
-
-        console.warn('story !!!!!', 'when.' + role + '(' + story[role] + ').triggers(' + story.event + ')');
-
-        when
-          [role](story[role])
-          .triggers(story.event)
-          .then(function () {
-            // app.model('test.got').push(story);
-          });
-      });
-    });
-
-    setTimeout(function () {
-      console.log('!')
-      console.log('!.')
-      console.log('!..', app)
-    }, 2000);
+    ]);
   };
 
 } ();
@@ -2205,7 +2166,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
                                                                   
                                                           
                                    
-                                                          
+
                                                                       
                                                                       
                             $$    $$      $$                          
@@ -2269,14 +2230,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = function onModelSocketConnect (conn) {
-    console.info('[✔]', "\tsocket \t", 'connected to web socket server');
+    console.info('[*]', "\tSOCKET\t\t", '✔ connected to web socket server');
 
     /** If no intro loaded, load it */
     if ( ! this.model('intro') ) {
       this.controller('get intro')();
     }
 
-    // this.model('panels').push({ type: 'Topic' });
+    this.model('panels').push({ type: 'Topic' });
   };
 
 } ();
@@ -4620,9 +4581,10 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
 
   TrueStory.prototype.runTests = function (tests) {
     if ( ! tests ) {
-      console.warn('** TRUE STORY ** Running all tests!')
+      console.info("\t\\`o/\t", "Running all tests");
+
       for ( var test in this.tests ) {
-        console.warn('** TRUE STORY ** Running test', test);
+        console.info("\t\\`o/\t", "Running test", test);
         this.test(test)();
       }
 
@@ -4631,7 +4593,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
 
     for ( var i in arguments ) {
       if ( typeof arguments[i] === 'string' ) {
-        console.warn('***** TRUE STORY ***** Running test', arguments[i], this.tests);
+        console.info("\t\\`o/\t", "Running test", arguments[i]);
         this.test(arguments[i])();
       }
     }
@@ -4673,15 +4635,14 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
     var app = this;
 
     var watch_dog = new (function WatchDog () {
+      this.name = JSON.stringify(dog);
       this.dog = dog;
       this.stories = stories;
       this.watched = [];
       this.doneWatching = false;
     })();
 
-    console.info("\t\\`o/\t");
-    console.info("\t  |  ", 'TRUE STORY!', watch_dog);
-    console.info("\t  -\t\t           ");
+    console.info("  \\`o/  ", watch_dog);
 
     new Follow(watch_dog)
       .on('update watched', function () {
@@ -4718,9 +4679,8 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
             }
 
             if ( yes ) {
-              console.info("\t\\`o/");
-              console.info("\t  |  ", 'TRUE STORY!', new (function WatchDogOK() {
-                this.dog = dog;
+              console.info("  \\`o/  ", new (function WatchDogOK() {
+                this.name = JSON.stringify(dog);
                 this.story = story;
               })());
               console.info("\t  -");
@@ -4739,7 +4699,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
         throw new Error('Test failed', 'get intro');
       }
       else {
-        console.info(' :) :) :) :) :) TRUE STORY TEST OK', 'get intro');
+        console.info("  \\`o/  Watch Dog OK!!!", JSON.stringify(dog));
       }
     }, 2000);
   };
@@ -5569,7 +5529,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   When.prototype.then = function (fn) {
     var when = this;
 
-    console.warn('***** TRUE STORY ******', when);
+    console.info("  \\`o/  ", when);
 
     if ( when.who.model ) {
 
@@ -5739,11 +5699,6 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
         else {
           emitter = this.emitters[emitter];
         }
-
-        console.warn('setting new listener', {
-          emitter: when.who.emitter,
-          listener: when.listener
-        })
         
         emitter[when.listener](when.event, fn.bind(this));
       }.apply(this.app);

@@ -121,6 +121,6 @@ Nina Butorac
 
   var app = require('./true-story/app')();
 
-  app.runTests('story get intro');
+  app.runTests();
   
 }();
