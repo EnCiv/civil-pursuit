@@ -172,8 +172,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = function (items) {
     var app = this;
 
-    console.log('arrrrrrrrrg', items, this.model('panels'))
-
     this.model('panels').forEach(function (panel) {
       items.forEach(function (item) {
 

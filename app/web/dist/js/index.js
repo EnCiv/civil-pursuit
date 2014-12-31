@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":26,"util":30}],2:[function(require,module,exports){
+},{"events":17,"util":21}],2:[function(require,module,exports){
 /***
 
 
@@ -152,92 +152,25 @@ Nina Butorac
                       $$                      $$        $$     
                  $$$$$$                       $$        $$                     
 
-
-
-
-
-
-
-
-
-                    .+~                :xx++::
-                   :`. -          .!!X!~"?!`~!~!. :-:.
-                  <             .!!!H":.~ ::+!~~!!!~ `%X.
-                  '             ~~!M!!>!!X?!!!!!!!!!!...!~.
-                              <!:!MM!~:XM!!!!!!.:!..~ !.  `<
-                  <: `   :~ .:<~!!M!XXHM!!!X!XXHtMMHHHX!  ~ ~
-                ~~~~<' ~!!!:!!!!!XM!!M!!!XHMMMRMSXXX!!!!!!:  <`
-                  `<  <::!!!!!X!X?M!!M!!XMMMMXXMMMM??!!!!!?!:~<
-               : '~~~<!!!XMMH!!XMXMXHHXXXXM!!!!MMMMSXXXX!!!!!!!~
-            :    ::`~!!!MMMMXXXtMMMMMMMMMMMHX!!!!!!HMMMMMX!!!!!: ~
-               '~:~!!!!!MMMMMMMMMMMMMMMMMMMMMMXXX!!!M??MMMM!!X!!i:
-               <~<!!!!!XMMMMMMMMMMMM8M8MMMMM8MMMMMXX!!!!!!!!X!?t?!:
-               ~:~~!!!!?MMMMMM@M@RMRRR$@@MMRMRMMMMMMXSX!!!XMMMX<?X!
-             :XX <!!XHMMMM88MM88BR$M$$$$8@8RN88MMMMMMMMHXX?MMMMMX!!!
-           .:X! <XMSM8M@@$$$$$$$$$$$$$$$$$$$B8R$8MMMMMMMMMMMMMMMMX!X
-          :!?! !?XMMMMM8$$$$8$$$$$$$$$$$$$$BBR$$MMM@MMMMMMMMMMMMMM!!X
-        ~<!!~ <!!XMMMB$$$$$$$$$$$$$$$$$$$$$$$$MMR$8MR$MMMMMMMMMMMMM!?!:
-        :~~~ !:X!XMM8$$$$$$$$$$$$$$$$$$$$$$$RR$$MMMMR8NMMMMMMMMMMMMM<!`-
-    ~:<!:~`~':!:HMM8N$$$$$$$$$$$$$$$$$$$$$$$$$8MRMM8R$MRMMMMMMMMRMMMX!
-  !X!``~~   :~XM?SMM$B$$$$$$$$$$$$$$$$$$$$$$BR$$MMM$@R$M$MMMMMM$MMMMX?L
- X~.      : `!!!MM#$RR$$$$$$$$$$$$$$$$$R$$$$$R$M$MMRRRM8MMMMMMM$$MMMM!?:
- ! ~ <~  !! !!~`` :!!MR$$$$$$$$$$RMM!?!??RR?#R8$M$MMMRM$RMMMM8MM$MMM!M!:>
-: ' >!~ '!!  !   .!XMM8$$$$$@$$$R888HMM!!XXHWX$8$RM$MR5$8MMMMR$$@MMM!!!< ~
-!  ' !  ~!! :!:XXHXMMMR$$$$$$$$$$$$$$$$8$$$$8$$$MMR$M$$$MMMMMM$$$MMM!!!!
- ~<!!!  !!! !!HMMMMMMMM$$$$$$$$$$$$$$$$$$$$$$$$$$MMM$M$$MM8MMMR$$MMXX!!!!/:`
-  ~!!!  !!! !XMMMMMMMMMMR$$$$$$$$$$$$R$RRR$$$$$$$MMMM$RM$MM8MM$$$M8MMMX!!!!:
-  !~ ~  !!~ XMMM%!!!XMMX?M$$$$$$$$B$MMSXXXH?MR$$8MMMM$$@$8$M$B$$$$B$MMMX!!!!
-  ~!    !! 'XMM?~~!!!MMMX!M$$$$$$MRMMM?!%MMMH!R$MMMMMM$$$MM$8$$$$$$MR@M!!!!!
-  <>    !!  !Mf x@#"~!t?M~!$$$$$RMMM?Xb@!~`??MS$M@MMM@RMRMMM$$$$$$RMMMMM!!!!
-  !    '!~ <!!:!?M   !@!M<XM$$R5M$8MMM$! -XXXMMRMBMMM$RMMM@$R$BR$MMMMX??!X!!
-  !    '!  !!X!!!?::xH!HM:MM$RM8M$RHMMMX...XMMMMM$RMMRRMMMMMMM8MMMMMMMMX!!X!
-  !     ~  !!?:::!!!MXMR~!MMMRMM8MMMMMS!!M?XXMMMMM$$M$M$RMMMM8$RMMMMMMMM%X!!
-  ~     ~  !~~X!!XHMMM?~ XM$MMMMRMMMMMM@MMMMMMMMMM$8@MMMMMMMMRMMMMM?!MMM%HX!
-           !!!!XSMMXXMM .MMMMMMMM$$$BB8MMM@MMMMMMMR$RMMMMMMMMMMMMMMMXX!?H!XX
-           XHXMMMMMMMM!.XMMMMMMMMMR$$$8M$$$$$M@88MMMMMMMMMMMMMMM!XMMMXX!!!XM
-      ~   <!MMMMMMMMRM:XMMMMMMMMMM8R$$$$$$$$$$$$$$$NMMMMMMMM?!MM!M8MXX!!/t!M
-      '   ~HMMMMMMMMM~!MM8@8MMM!MM$$8$$$$$$$$$$$$$$8MMMMMMM!!XMMMM$8MR!MX!MM
-          'MMMMMMMMMM'MM$$$$$MMXMXM$$$$$$$$$$$$$$$$RMMMMMMM!!MMM$$$$MMMMM<!M
-          'MMMMMMMMM!'MM$$$$$RMMMMMM$$$$$$$$$$$$$$$MMM!MMMX!!MM$$$$$M$$M$M!M
-           !MMMMMM$M! !MR$$$RMM8$8MXM8$$$$$$$$$$$$NMMM!MMM!!!?MRR$$RXM$$MR!M
-           !M?XMM$$M.< !MMMMMMSUSRMXM$8R$$$$$$$$$$#$MM!MMM!X!t8$M$MMMHMRMMX$
-    ,-,   '!!!MM$RMSMX:.?!XMHRR$RM88$$$8M$$$$$R$$$$8MM!MMXMH!M$$RMMMMRNMMX!$
-   -'`    '!!!MMMMMMMMMM8$RMM8MBMRRMR8RMMM$$$$8$8$$$MMXMMMMM!MR$MM!M?MMMMMM$
-          'XX!MMMMMMM@RMM$MM@$$BM$$$M8MMMMR$$$$@$$$$MM!MMMMXX$MRM!XH!!??XMMM
-          `!!!M?MHMMM$RMMMR@$$$$MR@MMMM8MMMM$$$$$$$WMM!MMMM!M$RMM!!.MM!%M?~!
-           !!!!!!MMMMBMM$$RRMMMR8MMMMMRMMMMM8$$$$$$$MM?MMMM!f#RM~    `~!!!~!
-           ~!!HX!!~!?MM?MMM??MM?MMMMMMMMMRMMMM$$$$$MMM!MMMM!!
-           '!!!MX!:`~~`~~!~~!!!!XM!!!?!?MMMM8$$$$$MMMMXMMM!!
-            !!~M@MX.. <!!X!!!!XHMHX!!``!XMMMB$MM$$B$M!MMM!!
-            !!!?MRMM!:!XHMHMMMMMMMM!  X!SMMX$$MM$$$RMXMMM~
-             !M!MMMM>!XMMMMMMMMXMM!!:!MM$MMMBRM$$$$8MMMM~
-             `?H!M$R>'MMMM?MMM!MM6!X!XM$$$MM$MM$$$$MX$f
-              `MXM$8X MMMMMMM!!MM!!!!XM$$$MM$MM$$$RX@"
-               ~M?$MM !MMMMXM!!MM!!!XMMM$$$8$XM$$RM!`
-                !XMMM !MMMMXX!XM!!!HMMMM$$$$RH$$M!~
-                'M?MM `?MMXMM!XM!XMMMMM$$$$$RM$$#
-                 `>MMk ~MMHM!XM!XMMM$$$$$$BRM$M"
-                  ~`?M. !M?MXM!X$$@M$$$$$$RMM#
-                    `!M  !!MM!X8$$$RM$$$$MM#`
-                      !% `~~~X8$$$$8M$$RR#`
-                       !!x:xH$$$$$$$R$R*`
-                        ~!?MMMMRRRM@M#`       -Sushil-
-                         `~???MMM?M"`
-                             ``~~ 
- 
-
-
     ***/
 
 ;! function () {
 
   'use strict';
 
-  var app = require('./true-story/app')();
+  window.app       =   require('./true-story/app')();
 
-  app.runTests();
-  
+  // app.emitter('socket').on('connect', function () {
+  //   console.error('connect');
+  // });
+
+  // var visual       =   require('./true-story/true-visual-story')(app);
+
+  // app.watchDog('story get intro');
+  // app.watchDog('story get topics');
+
 }();
+
 },{"./true-story/app":3}],3:[function(require,module,exports){
 /***
 
@@ -341,7 +274,7 @@ Nina Butorac
 
   'use strict';
 
-  var trueStory = require('/home/francois/Dev/true-story.js/lib/TrueStory');
+  var trueStory = require('/home/francois/Dev/true-story.js');
 
   module.exports = function () {
 
@@ -351,82 +284,72 @@ Nina Butorac
         console.error(error.message);
       })
 
-      /***
-        .                             $$            $$            
-        .                             $$            $$            
-        $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$   $$$$$$$  
-        $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  $$        
-        $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$   $$$$$$   
-        $$   $$   $$  $$    $$  $$    $$  $$        $$        $$  
-        $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  $$$$$$$   
-
-      ***/
-
       .model(require('./model'))
-
-      /**
-        .                       $$    $$      $$                                    
-        .                             $$      $$                                    
-         $$$$$$   $$$$$$ $$$$   $$  $$$$$$  $$$$$$     $$$$$$    $$$$$$    $$$$$$$  
-        $$    $$  $$   $$   $$  $$    $$      $$      $$    $$  $$    $$  $$        
-        $$$$$$$$  $$   $$   $$  $$    $$      $$      $$$$$$$$  $$         $$$$$$   
-        $$        $$   $$   $$  $$    $$  $$  $$  $$  $$        $$              $$  
-         $$$$$$$  $$   $$   $$  $$     $$$$    $$$$    $$$$$$$  $$        $$$$$$$   
-
-      **/
 
       .emitter('socket',
         io.connect('http://' + window.location.hostname + ':' +
           window.location.port))
 
-      /***
-        .          $$                                    
-        .                                                         
-        $$     $$  $$   $$$$$$   $$   $$   $$   $$$$$$$  
-        .$$   $$   $$  $$    $$  $$   $$   $$  $$        
-        . $$ $$    $$  $$$$$$$$  $$   $$   $$   $$$$$$   
-        .  $$$     $$  $$        $$   $$   $$        $$  
-        .   $      $$   $$$$$$$   $$$$$ $$$$   $$$$$$$   
-
-      **/
-
       .view(require('./view'))
 
-      /**
-        .                               $$                          $$          
-        .                               $$                          $$          
-         $$$$$$$   $$$$$$   $$$$$$$   $$$$$$     $$$$$$    $$$$$$   $$          
-        $$        $$    $$  $$    $$    $$      $$    $$  $$    $$  $$  $$$$$$  
-        $$        $$    $$  $$    $$    $$      $$        $$    $$  $$          
-        $$        $$    $$  $$    $$    $$  $$  $$        $$    $$  $$          
-         $$$$$$$   $$$$$$   $$    $$     $$$$   $$         $$$$$$   $$          
-                                                                               
-                            $$                                
-                            $$                                
-                            $$   $$$$$$    $$$$$$    $$$$$$$  
-                    $$$$$$  $$  $$    $$  $$    $$  $$        
-                            $$  $$$$$$$$  $$         $$$$$$   
-                            $$  $$        $$              $$  
-                            $$   $$$$$$$  $$        $$$$$$$   
-                                            
-      ***/
+      .template({
+        "online users": {
+          template: '.online-users',
+          controller: function (view, online_users) {
+            view.text(online_users);
+          }
+        },
+
+        "panel": {
+          url: '/partial/panel',
+          controller: function (view, panelItems) {
+
+            var id = 'panel-' + panelItems.panel.type;
+
+            if ( panelItems.panel.parent ) {
+              id += '-' + panelItems.panel.parent;
+            }
+
+            view.attr('id', id);
+
+            view.find('.panel-title').text(panelItems.panel.type);
+
+          }
+        },
+
+        "intro": {
+          template: '#intro',
+          controller: function (view, intro) {
+            var app = this;
+
+            // view.find('.panel-title').text('intro.subject');
+            $('#intro').find('.panel-title').text(intro.subject);
+            $('#intro').find('.item-title').text(intro.subject);
+            $('#intro').find('.description').text(intro.description);
+
+            $('#intro').find('.item-media').append(
+              app.controller('bootstrap/responsive-image')({
+                src: intro.image
+              }));
+
+            $('#intro').find('.item-references').hide();
+          }
+        },
+
+        "item": {
+          url: '/partial/item',
+          controller: function (view, item) {
+            view.find('.item-title').text(item.subject);
+          }
+        }
+      })
 
       .controller(require('./controller'))
-
-      /***
-        .           $$                          $$                      
-        .           $$                                                  
-        .$$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
-        $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
-        .$$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
-        .     $$    $$  $$  $$    $$  $$        $$  $$              $$  
-        $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
-
-      ***/
 
       .tell(require('./stories'))
 
       /**
+                                                         
                                                          
           $$                            $$               
           $$                            $$               
@@ -436,13 +359,17 @@ Nina Butorac
           $$  $$  $$              $$    $$  $$       $$  
            $$$$    $$$$$$$  $$$$$$$      $$$$  $$$$$$$   
                                                          
+                                                         
         ***/
 
-      .test(require('./test'));
+      .watchDog({
+        'story get topics':   require('./watchdogs/story-get-topics'),
+        'story get intro':    require('./watchdogs/story-get-intro')
+      });
     };
 
 }();
-},{"./controller":4,"./model":11,"./stories":12,"./test":13,"./view":17,"/home/francois/Dev/true-story.js/lib/TrueStory":31}],4:[function(require,module,exports){
+},{"./controller":4,"./model":11,"./stories":12,"./view":13,"./watchdogs/story-get-intro":14,"./watchdogs/story-get-topics":15,"/home/francois/Dev/true-story.js":22}],4:[function(require,module,exports){
 /***
 
 
@@ -894,21 +821,25 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       id += '-' + panelItems.panel.parent;
     }
 
-    app.controller('true-story/render-view')({
-      container:  $(id).find('.items'),
-      template:   {
-        url: '/partial/item'
-      },
-      engine:     function (view, locals) {
-        view = $(view);
+    // app.view('item').render(function () {
+      
+    // })
 
-        // app.controller('bind panel')(locals.panel, view);
+    // app.controller('true-story/render-view')({
+    //   container:  $(id).find('.items'),
+    //   template:   {
+    //     url: '/partial/item'
+    //   },
+    //   engine:     function (view, locals) {
+    //     view = $(view);
 
-        return view;
-      },
-      locals:     { items: panelItems.items },
-      append:     true
-    });
+    //     // app.controller('bind panel')(locals.panel, view);
+
+    //     return view;
+    //   },
+    //   locals:     { items: panelItems.items },
+    //   append:     true
+    // });
   }
 
   module.exports = function getPanelItems (panel) {
@@ -1136,219 +1067,116 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = function (when) {
+
+    var app = this;
+
     // http://patorjk.com/software/taag/#p=display&f=Small&t=online
 
-    /***
+    /** EMITTER:SOCKET */
 
+    this.emitter('socket')
+      
+      .on('error', function (error) {
+        console.warn('socket error', socket);
+      })
 
+      .on('connect', function () {
+        app.emitter('socket').emit('get intro');
+        app.model('panels').push({ type: 'Topic' });
+      })
 
-                                                    
-                                                    
-                                  $$            $$  
-                                  $$            $$  
-    $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-    $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-    $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-    $$   $$   $$  $$    $$  $$    $$  $$        $$  
-    $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                                    
-                                                    
-                                                    
-    $$$$$$  $$$$$$  $$$$$$  $$$$$$  $$$$$$  $$$$$$  
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                   
-                                
-                                
-                                
-                                
-                       
-    ***/
+      .on('got intro', function (intro) {
+        app.model('intro', intro);
+      })
 
+      .on('got panel items', function (panelItems) {
+        app.render('panel', panelItems);
 
-    /***
-                                                                
-                                  $$                    $$      
-                                  $$                    $$      
-     $$$$$$$   $$$$$$    $$$$$$$  $$    $$   $$$$$$   $$$$$$    
-    $$        $$    $$  $$        $$   $$<  $$    $$    $$      
-     $$$$$$   $$    $$  $$        $$$$$$    $$$$$$$$    $$      
-          $$  $$    $$  $$        $$   $$   $$          $$  $$  
-    $$$$$$$    $$$$$$    $$$$$$$  $$    $$   $$$$$$$     $$$$   
-                                                                
-                                                            
-    ***/
+        app.on('rendered panel', function (panelView) {
+          app.view('panels').append(panelView);
 
+          panelItems.items.forEach(function (item) {
+            app.render('item', item);
+          });
 
-
-
-
-      /***
-
-                                                            
-           $$$$$$    $$$$$$    $$$$$$    $$$$$$    $$$$$$   
-          $$    $$  $$    $$  $$    $$  $$    $$  $$    $$  
-          $$$$$$$$  $$        $$        $$    $$  $$        
-          $$        $$        $$        $$    $$  $$        
-           $$$$$$$  $$        $$         $$$$$$   $$        
-
-
-
-      ***/
-
-
-    when()
-      .emitter('socket')
-      .triggers('error')
-      .then(function (error) {
-        console.warn('TOLD YOU SO');
+          app.on('rendered item', function (view) {
+            panelView.find('.items').append(view);
+          });
+        });
       });
 
+    /** MODEL */
 
+    app.follow
+      
+      .on('update intro', function (intro) {
+        app.render('intro', intro.new);
+      });
 
-      /***
-                                                                    $$      
-                                                                    $$      
-       $$$$$$$   $$$$$$   $$$$$$$   $$$$$$$    $$$$$$    $$$$$$$  $$$$$$    
-      $$        $$    $$  $$    $$  $$    $$  $$    $$  $$          $$      
-      $$        $$    $$  $$    $$  $$    $$  $$$$$$$$  $$          $$      
-      $$        $$    $$  $$    $$  $$    $$  $$        $$          $$  $$  
-       $$$$$$$   $$$$$$   $$    $$  $$    $$   $$$$$$$   $$$$$$$     $$$$   
-            
-      ***/
+    app
 
-    when()
-      .emitter('socket')
-      .triggers('connect')
-      .then(require('./when/emitter/socket/on/connect'));
+      .on('push panels', function (panel) {
+        app.emitter('socket').emit('get panel items', panel);
+      });
 
-          /***                         
-                              $$  $$                      
-                              $$                          
-           $$$$$$   $$$$$$$   $$  $$  $$$$$$$    $$$$$$   
-          $$    $$  $$    $$  $$  $$  $$    $$  $$    $$  
-          $$    $$  $$    $$  $$  $$  $$    $$  $$$$$$$$  
-          $$    $$  $$    $$  $$  $$  $$    $$  $$        
-           $$$$$$   $$    $$  $$  $$  $$    $$   $$$$$$$  
-                                                            
-          $$    $$   $$$$$$$   $$$$$$    $$$$$$    $$$$$$$  
-          $$    $$  $$        $$    $$  $$    $$  $$        
-          $$    $$   $$$$$$   $$$$$$$$  $$         $$$$$$   
-          $$    $$        $$  $$        $$              $$  
-           $$$$$$   $$$$$$$    $$$$$$$  $$        $$$$$$$   
-                                                  
-          ***/
+    /** when emitter socket triggers error  */
+    /** then Function */
 
-    when()
-      .emitter('socket')
-      .triggers('online users')
-      .then(require('./when/emitter/socket/on/online users'));
+    // when()
+    //   .emitter('socket')
+    //   .triggers('error')
+    //   .then(function (error) {
+    //     console.warn('TOLD YOU SO');
+    //   });
 
-    /***
-                                                
-                                                
-    $$              $$                          
-                    $$                          
-    $$  $$$$$$$   $$$$$$     $$$$$$    $$$$$$   
-    $$  $$    $$    $$      $$    $$  $$    $$  
-    $$  $$    $$    $$      $$        $$    $$  
-    $$  $$    $$    $$  $$  $$        $$    $$  
-    $$  $$    $$     $$$$   $$         $$$$$$   
-                                                
+    /** when emitter "socket" on "connect" */
+    /** then trigger "socket" on "get intro" */
+    /** then push "panels" {Panel} */
 
-    ***/
+    // when()
+    //   .emitter('socket')
+    //   .triggers('connect')
+    //   .then(function () {
+    //     console.log('//////////7')
+    //   });
 
-    when()
-      .model('intro')
-      .triggers('update')
-      .then(require('./when/model/intro/on/update'));
+    /** when emitter "socket" on "got intro" */
 
-    /***
-                                                          
-                                            $$            
-                                            $$            
-     $$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$   $$$$$$$  
-    $$    $$        $$  $$    $$  $$    $$  $$  $$        
-    $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$   $$$$$$   
-    $$    $$  $$    $$  $$    $$  $$        $$        $$  
-    $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$  $$$$$$$   
-    $$                                                    
-    $$                                                    
-    $$                                                                          
-    
-    ***/
+    // when()
+    //   .emitter('socket')
+    //   .triggers('got intro')
+    //   .then
+    //     .model('intro');
 
-     when()
-      .model('panels')
-      .triggers('push')
-      .then(require('./when/model/panels/on/push'));
+    // when()
+    //   .emitter('socket')
+    //   .triggers('online users')
+    //   .then
+    //     .model('online users');
 
-    /**
+    // when()
+    //   .model('online users')
+    //   .triggers('all')
+    //   .then
+    //     .render('online users');
 
-                                            $$            
-     $$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$ 
-    $$    $$        $$  $$    $$  $$    $$  $$ 
-    $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$ 
-    $$    $$  $$    $$  $$    $$  $$        $$ 
-    $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$ 
-    $$                                                    
-    $$                                                    
-    $$    
-                                          
-    **/
-    
-    when()
-      .model('panel')
-      .triggers('update')
-      .then(require('./when/model/panel/on/update'));
+    // when()
+    //   .model('intro')
+    //   .triggers('update')
+    //   .then
+    //     .render('intro');
 
-    /***
-                          
-    $$    $$                                        
-          $$                                        
-    $$  $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$$  
-    $$    $$      $$    $$  $$   $$   $$  $$        
-    $$    $$      $$$$$$$$  $$   $$   $$   $$$$$$   
-    $$    $$  $$  $$        $$   $$   $$        $$  
-    $$     $$$$    $$$$$$$  $$   $$   $$  $$$$$$$   
-                       
-    ***/
-
-    when()
-      .model('items')
-      .triggers('concat')
-      .then(require('./when/model/items/on/concat'));
-
-    /***                         
-                        $$  $$                      
-                        $$                          
-     $$$$$$   $$$$$$$   $$  $$  $$$$$$$    $$$$$$   
-    $$    $$  $$    $$  $$  $$  $$    $$  $$    $$  
-    $$    $$  $$    $$  $$  $$  $$    $$  $$$$$$$$  
-    $$    $$  $$    $$  $$  $$  $$    $$  $$        
-     $$$$$$   $$    $$  $$  $$  $$    $$   $$$$$$$  
-                                                      
-    $$    $$   $$$$$$$   $$$$$$    $$$$$$    $$$$$$$  
-    $$    $$  $$        $$    $$  $$    $$  $$        
-    $$    $$   $$$$$$   $$$$$$$$  $$         $$$$$$   
-    $$    $$        $$  $$        $$              $$  
-     $$$$$$   $$$$$$$    $$$$$$$  $$        $$$$$$$   
-                                            
-    ***/
-
-    when()
-      .model('online users')
-      .triggers('all')
-      .then(require('./when/model/online users/on/all'));
+    // when()
+    //   .model('panels')
+    //   .triggers('push')
+    //   .then
+    //     .render('panel');
 
   };
 
 }();
 
-},{"./when/emitter/socket/on/connect":18,"./when/emitter/socket/on/online users":19,"./when/model/intro/on/update":20,"./when/model/items/on/concat":21,"./when/model/online users/on/all":22,"./when/model/panel/on/update":23,"./when/model/panels/on/push":24}],13:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /***
 
 
@@ -1390,185 +1218,75 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           $$    $$                      $$        $$     $$    $$            
            $$$$$$                       $$        $$      $$$$$$             
 
-
-
-
-
-
-
-                                        _.-.._         _._
-                                     _,/^^,y./  ^^^^"""^^\= \
-                                     \y###XX;/  /     \    ^\^\
-                                       `\Y^   /   .-==||==-.)^^
-                   ,.-=""""=-.__       /^ (  (   -/<0>++<0>(
-                 .^      .: . . :^===(^ \ (  (  /```^^^^^^^)
-                /      .: .,GGGGp,_ .(   \   /    /-(o'~'o))
-              .^      : . gGG"""YGG}. \   )   / /  _/-====-\
-             /       (. .gGP  __ ~~ . .\  \  (    (  _.---._)
-            /        (. (GGb,,)GGp. . . \_-^-.__(_ /______./
-           (          \ . `"!GGP^ . . . . ^=-._--_--^^^^^~)
-           (        /^^^\_. . . . . . . . . . . . . . . . )
-           )       /     /._. . . . . . . . . . . . . ._.=)
-           \      /      |  ^"=.. . . . . . . ._++""\"^    \
-            \    |       |       )^|^^~'---'~^^      \     )
-            )   /        )      /   \                 \    \
-            |`  |        \     /\    \                (    /
-            |   |         (   (  \ . .\               |   (
-            )   |         )   )   ^^^^^^              |   |
-           /. . \         |  '|                       )   (
-           ^^^^^^         )    \                      /. . \
-                          / . . \                     ^^^^^^
-
-
-                          
-
-                                                            
-                                                            
-              $$$$$$$$                     $$               
-                 $$                        $$               
-                 $$   $$$$$$    $$$$$$$  $$$$$$    $$$$$$$  
-                 $$  $$    $$  $$          $$     $$        
-                 $$  $$$$$$$$   $$$$$$     $$      $$$$$$   
-                 $$  $$              $$    $$  $$       $$  
-                 $$   $$$$$$$  $$$$$$$      $$$$  $$$$$$$   
-                                                            
-                                                            
-                                                                               
-
 ***/
 
-; ! function () {
 
-  'use strict';
 
-  var tests = {};
 
-  var stories = require('./tests/stories');
-
-  for ( var story in stories ) {
-    tests['story ' + story] = stories[story];
-  }
-
-  module.exports = tests;
-
-} ();
-
-},{"./tests/stories":14}],14:[function(require,module,exports){
 /***
 
 
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                             
-                                                                             
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
+                          ,
+                     ,   /^\     ___
+                    /^\_/   `...'  /`
+                 ,__\    ,'     ~ (
+              ,___\ ,,    .,       \
+               \___ \\\ .'.'   .-.  )
+                 .'.-\\\`.`.  '.-. (
+                / (==== ."".  ( o ) \
+              ,/u  `~~~'|  /   `-'   )
+             "")^u ^u^|~| `""".  ~_ /
+               /^u ^u ^\~\     ".  \\
+       _      /u^  u ^u  ~\      ". \\
+      ( \     )^ ^U ^U ^U\~\      ". \\
+     (_ (\   /^U ^ ^U ^U  ~|       ". `\
+    (_  _ \  )U ^ U^ ^U ^|~|        ". `\.
+   (_  = _(\ \^ U ^U ^ U^ ~|          ".`.;      Joan Stark
+  (_ -(    _\_)U ^ ^ U^ ^|~|            ""
+  (_    =   ( ^ U^ U^ ^ U ~|
+  (_ -  ( ~  = ^ U ^U U ^|~/
+   (_  =     (_^U^ ^ U^ U /
+    (_-   ~_(/ \^ U^ ^U^,"
+     (_ =  _/   |^ u^u."
+      (_  (/    |u^ u.(
+       (__/     )^u^ u/
+               /u^ u^(
+              |^ u^ u/
+              |u^ u^(       ____
+              |^u^ u(    .-'    `-,
+               \^u ^ \  / ' .---.  \
+         jgs    \^ u^u\ |  '  `  ;  |
+                 \u^u^u:` . `-'  ;  |
+                  `-.^ u`._   _.'^'./
+                     "-.^.-```_=~._/
 
 
+            __                                   
+             /  |                                  
+   __     __ $$/   ______   __   __   __   _______ 
+  /  \   /  |/  | /      \ /  | /  | /  | /       |
+  $$  \ /$$/ $$ |/$$$$$$  |$$ | $$ | $$ |/$$$$$$$/ 
+   $$  /$$/  $$ |$$    $$ |$$ | $$ | $$ |$$      \ 
+    $$ $$/   $$ |$$$$$$$$/ $$ \_$$ \_$$ | $$$$$$  |
+     $$$/    $$ |$$       |$$   $$   $$/ /     $$/ 
+      $/     $$/  $$$$$$$/  $$$$$/$$$$/  $$$$$$$/  
+                                                 
+                                             
 
-
-
-
-
-                                        _.-.._         _._
-                                     _,/^^,y./  ^^^^"""^^\= \
-                                     \y###XX;/  /     \    ^\^\
-                                       `\Y^   /   .-==||==-.)^^
-                   ,.-=""""=-.__       /^ (  (   -/<0>++<0>(
-                 .^      .: . . :^===(^ \ (  (  /```^^^^^^^)
-                /      .: .,GGGGp,_ .(   \   /    /-(o'~'o))
-              .^      : . gGG"""YGG}. \   )   / /  _/-====-\
-             /       (. .gGP  __ ~~ . .\  \  (    (  _.---._)
-            /        (. (GGb,,)GGp. . . \_-^-.__(_ /______./
-           (          \ . `"!GGP^ . . . . ^=-._--_--^^^^^~)
-           (        /^^^\_. . . . . . . . . . . . . . . . )
-           )       /     /._. . . . . . . . . . . . . ._.=)
-           \      /      |  ^"=.. . . . . . . ._++""\"^    \
-            \    |       |       )^|^^~'---'~^^      \     )
-            )   /        )      /   \                 \    \
-            |`  |        \     /\    \                (    /
-            |   |         (   (  \ . .\               |   (
-            )   |         )   )   ^^^^^^              |   |
-           /. . \         |  '|                       )   (
-           ^^^^^^         )    \                      /. . \
-                          / . . \                     ^^^^^^
-
-
-                          
-
-                                                            
-                                                            
-              $$$$$$$$                     $$               
-                 $$                        $$               
-                 $$   $$$$$$    $$$$$$$  $$$$$$    $$$$$$$  
-                 $$  $$    $$  $$          $$     $$        
-                 $$  $$$$$$$$   $$$$$$     $$      $$$$$$   
-                 $$  $$              $$    $$  $$       $$  
-                 $$   $$$$$$$  $$$$$$$      $$$$  $$$$$$$   
-                                                            
-                                                            
-
-
-                                                                        
-                                                                        
-                    $$                          $$                      
-                    $$                                                  
-         $$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
-        $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
-         $$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
-              $$    $$  $$  $$    $$  $$        $$  $$              $$  
-        $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
-                                                                        
-                                                                        
-                                                                
-
-                                                           
-
-***/
+**/
 
 ; ! function () {
 
   'use strict';
 
   module.exports = {
-    "get topics":                 require('./stories/get-topics'),
-    "get intro":                  require('./stories/get-intro')
+    "panels":       '.panels',
+    "intro":        '#intro'
   };
 
 } ();
 
-},{"./stories/get-intro":15,"./stories/get-topics":16}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /***
 
 
@@ -1709,54 +1427,48 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   'use strict';
 
-  module.exports = function () {
-    var app = this;
+  module.exports = [
+    {
+      emitter: 'socket',
+      event: 'connect',
+      listener: 'on'
+    },
 
-    app.watchDog({
-      story: 'get intro'
-    }, [
-      {
-        emitter: 'socket',
-        event: 'connect',
-        listener: 'on'
-      },
+    {
+      emitter: 'socket',
+      event: 'got intro',
+      listener: 'on'
+    },
 
-      {
-        emitter: 'socket',
-        event: 'got intro',
-        listener: 'on'
-      },
+    {
+      model: 'intro',
+      event: 'update',
+      listener: 'on'
+    },
 
-      {
-        model: 'intro',
-        event: 'update',
-        listener: 'on'
-      },
+    {
+      event: 'template rendered',
+      listener: 'on',
+      run: function (dom) {
 
-      {
-        event: 'template rendered',
-        listener: 'on',
-        run: function (dom) {
+        return [
 
-          return [
+          dom.attr('id') === this.view('intro').attr('id'),
 
-            dom.attr('id') === this.view('intro').attr('id'),
+          ! dom.find('.iddle').length
 
-            ! dom.find('.iddle').length
-
-          
-          ].every(function (assertion) {
-           
-            return assertion;
-          });
-        }
+        
+        ].every(function (assertion) {
+         
+          return assertion;
+        });
       }
-    ]);
-  };
+    }
+  ];
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /***
 
 
@@ -1890,1208 +1602,41 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   'use strict';
 
-  module.exports = function () {
-
-    var app = this;
-
-    app.watchDog({
-      story: 'get topics'
-    }, [
-      {
-        emitter: 'socket',
-        event: 'connect',
-        listener: 'on'
-      },
-
-      {
-        model: 'panels',
-        event: 'push',
-        listener: 'on'
-      },
-
-      {
-        model: 'panel',
-        event: 'update',
-        listener: 'on'
-      },
-
-      {
-        emitter: 'socket',
-        event: 'got panel items',
-        listener: 'on'
-      },
-
-      {
-        model: 'items',
-        event: 'concat',
-        listener: 'on'
-      }
-    ]);
-  };
-
-} ();
-
-},{}],17:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                             
-                                                                             
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
-
-***/
-
-
-
-
-/***
-
-
-                          ,
-                     ,   /^\     ___
-                    /^\_/   `...'  /`
-                 ,__\    ,'     ~ (
-              ,___\ ,,    .,       \
-               \___ \\\ .'.'   .-.  )
-                 .'.-\\\`.`.  '.-. (
-                / (==== ."".  ( o ) \
-              ,/u  `~~~'|  /   `-'   )
-             "")^u ^u^|~| `""".  ~_ /
-               /^u ^u ^\~\     ".  \\
-       _      /u^  u ^u  ~\      ". \\
-      ( \     )^ ^U ^U ^U\~\      ". \\
-     (_ (\   /^U ^ ^U ^U  ~|       ". `\
-    (_  _ \  )U ^ U^ ^U ^|~|        ". `\.
-   (_  = _(\ \^ U ^U ^ U^ ~|          ".`.;      Joan Stark
-  (_ -(    _\_)U ^ ^ U^ ^|~|            ""
-  (_    =   ( ^ U^ U^ ^ U ~|
-  (_ -  ( ~  = ^ U ^U U ^|~/
-   (_  =     (_^U^ ^ U^ U /
-    (_-   ~_(/ \^ U^ ^U^,"
-     (_ =  _/   |^ u^u."
-      (_  (/    |u^ u.(
-       (__/     )^u^ u/
-               /u^ u^(
-              |^ u^ u/
-              |u^ u^(       ____
-              |^u^ u(    .-'    `-,
-               \^u ^ \  / ' .---.  \
-         jgs    \^ u^u\ |  '  `  ;  |
-                 \u^u^u:` . `-'  ;  |
-                  `-.^ u`._   _.'^'./
-                     "-.^.-```_=~._/
-
-
-            __                                   
-             /  |                                  
-   __     __ $$/   ______   __   __   __   _______ 
-  /  \   /  |/  | /      \ /  | /  | /  | /       |
-  $$  \ /$$/ $$ |/$$$$$$  |$$ | $$ | $$ |/$$$$$$$/ 
-   $$  /$$/  $$ |$$    $$ |$$ | $$ | $$ |$$      \ 
-    $$ $$/   $$ |$$$$$$$$/ $$ \_$$ \_$$ | $$$$$$  |
-     $$$/    $$ |$$       |$$   $$   $$/ /     $$/ 
-      $/     $$/  $$$$$$$/  $$$$$/$$$$/  $$$$$$$/  
-                                                 
-                                             
-
-**/
-
-; ! function () {
-
-  'use strict';
-
-  module.exports = {
-    "panels":       '.panels',
-    "panel":        '.panel',
-    "intro":        '#intro',
-    "online users": '.online-users'
-  };
-
-} ();
-
-},{}],18:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$               
-
-
-***/
-
-
-
-
-
-
-/***
-
-
-                                     __
-                         .--.      .'  `.
-                       .' . :\    /   :  L
-                       F     :\  /   . : |        .-._
-                      /     :  \/        J      .' ___\
-                     J     :   /      : : L    /--'   ``.
-                     F      : J           |  .<'.o.  `-'>
-                    /        J             L \_>.   .--w)
-                   J        /              \_/|   . `-__|
-                   F                        / `    -' /|)
-                  |   :                    J   '        |
-                 .'   ':                   |    .    :  \
-                /                          J      :     |L
-               F                              |     \   ||
-              F .                             |   :      |
-             F  |                             ; .   :  : F
-            /   |                                     : J
-           J    J             )                ;        F
-           |     L           /      .:'                J
-        .-'F:     L        ./       :: :       .       F
-        `-'F:     .\    `:.J         :::.             J
-          J       ::\    `:|        |::::\            |
-          J        |:`.    J        :`:::\            F
-           L   :':/ \ `-`.  \       : `:::|        .-'
-           |     /   L    >--\         :::|`.    .-'
-           J    J    |    |   L     .  :::: :`, /
-            L   F    J    )   |        >::   : /
-            |  J      L   F   \     .-.:'   . /
-            ): |     J   /     `-   | |   .--'
-            /  |     |: J        L  J J   )
-            L  |     |: |        L   F|   /
-            \: J     \:  L       \  /  L |
-             L |      \  |        F|   | )
-             J F       \ J       J |   |J
-              L|        \ \      | |   | L
-              J L        \ \     F \   F |
-               L\         \ \   J   | J   L
-              /__\_________)_`._)_  |_/   \_____
-                                  ""   `"""
-
-               __                          __                     
-              /  |                        /  |                    
-    _______  _$$ |_     ______    ______  $$/   ______    _______ 
-   /       |/ $$   |   /      \  /      \ /  | /      \  /       |
-  /$$$$$$$/ $$$$$$/   /$$$$$$  |/$$$$$$  |$$ |/$$$$$$  |/$$$$$$$/ 
-  $$      \   $$ | __ $$ |  $$ |$$ |  $$/ $$ |$$    $$ |$$      \ 
-   $$$$$$  |  $$ |/  |$$ \__$$ |$$ |      $$ |$$$$$$$$/  $$$$$$  |
-  /     $$/   $$  $$/ $$    $$/ $$ |      $$ |$$       |/     $$/ 
-  $$$$$$$/     $$$$/   $$$$$$/  $$/       $$/  $$$$$$$/ $$$$$$$/  
-                                                                  
-           
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                        
-                          $$                            
-                          $$                            
-            $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
-            $$   $$   $$  $$    $$  $$    $$  $$    $$  
-            $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
-            $$   $$   $$  $$    $$  $$        $$    $$  
-             $$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
-                                                        
-                                                                  
-                                                          
-                                   
-
-                                                                      
-                                                                      
-                            $$    $$      $$                          
-                                  $$      $$                          
-     $$$$$$   $$$$$$ $$$$   $$  $$$$$$  $$$$$$     $$$$$$    $$$$$$   
-    $$    $$  $$   $$   $$  $$    $$      $$      $$    $$  $$    $$  
-    $$$$$$$$  $$   $$   $$  $$    $$      $$      $$$$$$$$  $$        
-    $$        $$   $$   $$  $$    $$  $$  $$  $$  $$        $$        
-     $$$$$$$  $$   $$   $$  $$     $$$$    $$$$    $$$$$$$  $$        
-                                                                      
-                                    
-
-                                                                  
-
-
-                                                                     
-                                       $$                    $$      
-                                       $$                    $$      
-           $$$$$$$   $$$$$$    $$$$$$$  $$    $$   $$$$$$   $$$$$$    
-          $$        $$    $$  $$        $$   $$<  $$    $$    $$      
-          $$$$$$   $$    $$  $$        $$$$$$    $$$$$$$$    $$      
-                $$  $$    $$  $$        $$   $$   $$          $$  $$  
-          $$$$$$$    $$$$$$    $$$$$$$  $$    $$   $$$$$$$     $$$$  
-
-
-       
-                                 
-
-
-                                            
-                         $$$$$$   $$$$$$$   
-                        $$    $$  $$    $$  
-                        $$    $$  $$    $$  
-                        $$    $$  $$    $$  
-                         $$$$$$   $$    $$  
-          
-                                 
-
-
-                                                                    $$      
-                                                                    $$      
-       $$$$$$$   $$$$$$   $$$$$$$   $$$$$$$    $$$$$$    $$$$$$$  $$$$$$    
-      $$        $$    $$  $$    $$  $$    $$  $$    $$  $$          $$      
-      $$        $$    $$  $$    $$  $$    $$  $$$$$$$$  $$          $$      
-      $$        $$    $$  $$    $$  $$    $$  $$        $$          $$  $$  
-       $$$$$$$   $$$$$$   $$    $$  $$    $$   $$$$$$$   $$$$$$$     $$$$   
-                                                                      
-                                                                      
-
-
-
-
-
-
-
-
-***/
-
-! function () {
-
-  'use strict';
-
-  module.exports = function onModelSocketConnect (conn) {
-    
-    console.info(new (
-      function TrueModule_synapp__action_status () {
-        this['connecting to Web Sockets Server'] = '✔';
-      })());
-
-    /** If no intro loaded, load it */
-    if ( ! this.model('intro') ) {
-      this.controller('get intro')();
+  module.exports = [
+    {
+      emitter: 'socket',
+      event: 'connect',
+      listener: 'on'
+    },
+
+    {
+      model: 'panels',
+      event: 'push',
+      listener: 'on'
+    },
+
+    {
+      model: 'panel',
+      event: 'update',
+      listener: 'on'
+    },
+
+    {
+      emitter: 'socket',
+      event: 'got panel items',
+      listener: 'on'
+    },
+
+    {
+      model: 'items',
+      event: 'concat',
+      listener: 'on'
     }
-
-    this.model('panels').push({ type: 'Topic' });
-  };
+  ];
 
 } ();
 
-},{}],19:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = function (online_users) {
-    this.model('online users', online_users);
-  };
-
-} ();
-
-},{}],20:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                            
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
-
-
-
-
-                                     __
-                         .--.      .'  `.
-                       .' . :\    /   :  L
-                       F     :\  /   . : |        .-._
-                      /     :  \/        J      .' ___\
-                     J     :   /      : : L    /--'   ``.
-                     F      : J           |  .<'.o.  `-'>
-                    /        J             L \_>.   .--w)
-                   J        /              \_/|   . `-__|
-                   F                        / `    -' /|)
-                  |   :                    J   '        |
-                 .'   ':                   |    .    :  \
-                /                          J      :     |L
-               F                              |     \   ||
-              F .                             |   :      |
-             F  |                             ; .   :  : F
-            /   |                                     : J
-           J    J             )                ;        F
-           |     L           /      .:'                J
-        .-'F:     L        ./       :: :       .       F
-        `-'F:     .\    `:.J         :::.             J
-          J       ::\    `:|        |::::\            |
-          J        |:`.    J        :`:::\            F
-           L   :':/ \ `-`.  \       : `:::|        .-'
-           |     /   L    >--\         :::|`.    .-'
-           J    J    |    |   L     .  :::: :`, /
-            L   F    J    )   |        >::   : /
-            |  J      L   F   \     .-.:'   . /
-            ): |     J   /     `-   | |   .--'
-            /  |     |: J        L  J J   )
-            L  |     |: |        L   F|   /
-            \: J     \:  L       \  /  L |
-             L |      \  |        F|   | )
-             J F       \ J       J |   |J
-              L|        \ \      | |   | L
-              J L        \ \     F \   F |
-               L\         \ \   J   | J   L
-              /__\_________)_`._)_  |_/   \_____
-                                  ""   `"""
-
-                                                                  
-                                                                  
-              $$                          $$                      
-              $$                                                  
-   $$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
-  $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
-   $$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
-        $$    $$  $$  $$    $$  $$        $$  $$              $$  
-  $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
-                                                                  
-           
-
-
-
-
-
-
-
-
-
-
-
-
-                                            
-                                                        
-                          $$                            
-                          $$                            
-            $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
-            $$   $$   $$  $$    $$  $$    $$  $$    $$  
-            $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
-            $$   $$   $$  $$    $$  $$        $$    $$  
-             $$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
-                                                        
-                                                                  
-                                                          
-                                                          
-                                        $$            $$  
-                                        $$            $$  
-          $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-          $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$        $$  
-          $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                                          
-                                                          
-                                            
-                                                        
-            $$              $$                          
-                            $$                          
-            $$  $$$$$$$   $$$$$$     $$$$$$    $$$$$$   
-            $$  $$    $$    $$      $$    $$  $$    $$  
-            $$  $$    $$    $$      $$        $$    $$  
-            $$  $$    $$    $$  $$  $$        $$    $$  
-            $$  $$    $$     $$$$   $$         $$$$$$   
-                                                        
-                    
-                    
-                                        
-                                        
-                     $$$$$$   $$$$$$$   
-                    $$    $$  $$    $$  
-                    $$    $$  $$    $$  
-                    $$    $$  $$    $$  
-                     $$$$$$   $$    $$  
-                    
-                                                            
-                                                                    
-                                  $$              $$                
-                                  $$              $$                
-        $$    $$   $$$$$$    $$$$$$$   $$$$$$   $$$$$$     $$$$$$   
-        $$    $$  $$    $$  $$    $$        $$    $$      $$    $$  
-        $$    $$  $$    $$  $$    $$   $$$$$$$    $$      $$$$$$$$  
-        $$    $$  $$    $$  $$    $$  $$    $$    $$  $$  $$        
-         $$$$$$   $$$$$$$    $$$$$$$   $$$$$$$     $$$$    $$$$$$$  
-                  $$                                                
-                  $$                                                
-                  $$                                                
-
-
-
-
-
-
-
-
-***/
-
-! function () {
-
-  'use strict';
-
-  module.exports = function onUpdateModelIntro (intro) {
-    var app = this;
-
-    this.view('intro').find('.panel-title').text(intro.new.subject);
-
-    this.view('intro').find('.item-title').text(intro.new.subject);
-
-    this.view('intro').find('.description').text(intro.new.description);
-
-    this.view('intro').find('.item-media').append(
-      this.controller('bootstrap/responsive-image')({
-        src: intro.new.image
-      }));
-
-    this.view('intro').find('.item-references').hide();
-
-    this.emit('template rendered', this.view('intro'));
-    
-  };
-
-} ();
-
-},{}],21:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                            
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
-
-
-
-
-                                     __
-                         .--.      .'  `.
-                       .' . :\    /   :  L
-                       F     :\  /   . : |        .-._
-                      /     :  \/        J      .' ___\
-                     J     :   /      : : L    /--'   ``.
-                     F      : J           |  .<'.o.  `-'>
-                    /        J             L \_>.   .--w)
-                   J        /              \_/|   . `-__|
-                   F                        / `    -' /|)
-                  |   :                    J   '        |
-                 .'   ':                   |    .    :  \
-                /                          J      :     |L
-               F                              |     \   ||
-              F .                             |   :      |
-             F  |                             ; .   :  : F
-            /   |                                     : J
-           J    J             )                ;        F
-           |     L           /      .:'                J
-        .-'F:     L        ./       :: :       .       F
-        `-'F:     .\    `:.J         :::.             J
-          J       ::\    `:|        |::::\            |
-          J        |:`.    J        :`:::\            F
-           L   :':/ \ `-`.  \       : `:::|        .-'
-           |     /   L    >--\         :::|`.    .-'
-           J    J    |    |   L     .  :::: :`, /
-            L   F    J    )   |        >::   : /
-            |  J      L   F   \     .-.:'   . /
-            ): |     J   /     `-   | |   .--'
-            /  |     |: J        L  J J   )
-            L  |     |: |        L   F|   /
-            \: J     \:  L       \  /  L |
-             L |      \  |        F|   | )
-             J F       \ J       J |   |J
-              L|        \ \      | |   | L
-              J L        \ \     F \   F |
-               L\         \ \   J   | J   L
-              /__\_________)_`._)_  |_/   \_____
-                                  ""   `"""
-
-                                                                  
-                                                                  
-              $$                          $$                      
-              $$                                                  
-   $$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
-  $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
-   $$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
-        $$    $$  $$  $$    $$  $$        $$  $$              $$  
-  $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
-                                                                  
-           
-
-
-
-
-
-
-
-
-
-
-
-
-                                            
-                                                        
-                          $$                            
-                          $$                            
-            $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
-            $$   $$   $$  $$    $$  $$    $$  $$    $$  
-            $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
-            $$   $$   $$  $$    $$  $$        $$    $$  
-             $$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
-                                                        
-                                                                  
-                                                          
-                                                          
-                                        $$            $$  
-                                        $$            $$  
-          $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-          $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$        $$  
-          $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                                          
-                                                          
-                                                      
-                                                          
-                                                          
-          $$    $$                                        
-                $$                                        
-          $$  $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$$  
-          $$    $$      $$    $$  $$   $$   $$  $$        
-          $$    $$      $$$$$$$$  $$   $$   $$   $$$$$$   
-          $$    $$  $$  $$        $$   $$   $$        $$  
-          $$     $$$$    $$$$$$$  $$   $$   $$  $$$$$$$   
-                                           
-                              
-
-
-                                        
-                     $$$$$$   $$$$$$$   
-                    $$    $$  $$    $$  
-                    $$    $$  $$    $$  
-                    $$    $$  $$    $$  
-                     $$$$$$   $$    $$  
-                                                            
-                                                                
-                                                        $$      
-                                                        $$      
-     $$$$$$$   $$$$$$   $$$$$$$    $$$$$$$   $$$$$$   $$$$$$    
-    $$        $$    $$  $$    $$  $$              $$    $$      
-    $$        $$    $$  $$    $$  $$         $$$$$$$    $$      
-    $$        $$    $$  $$    $$  $$        $$    $$    $$  $$  
-     $$$$$$$   $$$$$$   $$    $$   $$$$$$$   $$$$$$$     $$$$   
-                                                                
-                                                                
-                                                                
-
-
-
-
-
-
-
-***/! function () {
-
-  'use strict';
-
-  module.exports = function (items) {
-    var app = this;
-
-    console.log('arrrrrrrrrg', items, this.model('panels'))
-
-    this.model('panels').forEach(function (panel) {
-      items.forEach(function (item) {
-
-        var match = false;
-
-        if ( panel.parent ) {
-          if ( panel.parent === item.parent ) {
-            match = true;
-          }
-        }
-        else {
-          if ( panel.type === item.type ) {
-            match = true;
-          }
-        }
-
-        if ( match ) {
-          var id = '#panel-' + panel.type;
-
-          if ( panel.parent ) {
-            id += '-' + panel.parent;
-          }
-
-          var panelView = $(id);
-
-          if ( ! panelView.length ) {
-            console.warn('Panel not found')
-          }
-        }
-
-      });
-    });
-  };
-
-} ();
-
-},{}],22:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = function onOnlineUsers (online_users) {
-    this.view('online users').text(online_users.new);
-  };
-
-} ();
-
-},{}],23:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                            
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
-
-
-
-
-                                     __
-                         .--.      .'  `.
-                       .' . :\    /   :  L
-                       F     :\  /   . : |        .-._
-                      /     :  \/        J      .' ___\
-                     J     :   /      : : L    /--'   ``.
-                     F      : J           |  .<'.o.  `-'>
-                    /        J             L \_>.   .--w)
-                   J        /              \_/|   . `-__|
-                   F                        / `    -' /|)
-                  |   :                    J   '        |
-                 .'   ':                   |    .    :  \
-                /                          J      :     |L
-               F                              |     \   ||
-              F .                             |   :      |
-             F  |                             ; .   :  : F
-            /   |                                     : J
-           J    J             )                ;        F
-           |     L           /      .:'                J
-        .-'F:     L        ./       :: :       .       F
-        `-'F:     .\    `:.J         :::.             J
-          J       ::\    `:|        |::::\            |
-          J        |:`.    J        :`:::\            F
-           L   :':/ \ `-`.  \       : `:::|        .-'
-           |     /   L    >--\         :::|`.    .-'
-           J    J    |    |   L     .  :::: :`, /
-            L   F    J    )   |        >::   : /
-            |  J      L   F   \     .-.:'   . /
-            ): |     J   /     `-   | |   .--'
-            /  |     |: J        L  J J   )
-            L  |     |: |        L   F|   /
-            \: J     \:  L       \  /  L |
-             L |      \  |        F|   | )
-             J F       \ J       J |   |J
-              L|        \ \      | |   | L
-              J L        \ \     F \   F |
-               L\         \ \   J   | J   L
-              /__\_________)_`._)_  |_/   \_____
-                                  ""   `"""
-
-                                                                  
-                                                                  
-              $$                          $$                      
-              $$                                                  
-   $$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
-  $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
-   $$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
-        $$    $$  $$  $$    $$  $$        $$  $$              $$  
-  $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
-                                                                  
-           
-
-
-
-
-
-
-
-
-
-
-
-
-                                            
-                                                          
-                            $$                            
-                            $$                            
-              $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
-              $$   $$   $$  $$    $$  $$    $$  $$    $$  
-              $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
-              $$   $$   $$  $$    $$  $$        $$    $$  
-               $$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
-                                                          
-                                                                    
-                                                            
-                                                            
-                                          $$            $$  
-                                          $$            $$  
-            $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-            $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-            $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-            $$   $$   $$  $$    $$  $$    $$  $$        $$  
-            $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                    
-                                  
-
-                                                              
-                                                              
-                                                      $$            
-                                                      $$            
-               $$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$
-              $$    $$        $$  $$    $$  $$    $$  $$
-              $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$
-              $$    $$  $$    $$  $$    $$  $$        $$
-              $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$
-              $$                                                    
-              $$                                                    
-              $$    
-
-
-
-                                            
-                                            
-                         $$$$$$   $$$$$$$   
-                        $$    $$  $$    $$  
-                        $$    $$  $$    $$  
-                        $$    $$  $$    $$  
-                         $$$$$$   $$    $$  
-
-                      
-                                      
-
-                                                                      
-                                    $$              $$                
-                                    $$              $$                
-          $$    $$   $$$$$$    $$$$$$$   $$$$$$   $$$$$$     $$$$$$   
-          $$    $$  $$    $$  $$    $$        $$    $$      $$    $$  
-          $$    $$  $$    $$  $$    $$   $$$$$$$    $$      $$$$$$$$  
-          $$    $$  $$    $$  $$    $$  $$    $$    $$  $$  $$        
-           $$$$$$   $$$$$$$    $$$$$$$   $$$$$$$     $$$$    $$$$$$$  
-                    $$                                                
-                    $$                                                
-                    $$                                                
-
-
-
-
-
-
-
-
-***/
-
-! function () {
-
-  'use strict';
-
-  module.exports = function (panelView) {
-
-    this.controller('get panel items')(panelView.new.panel);
-  };
-
-}();
-
-},{}],24:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$               
-
-
-***/
-
-
-
-
-
-
-/***
-
-
-                                     __
-                         .--.      .'  `.
-                       .' . :\    /   :  L
-                       F     :\  /   . : |        .-._
-                      /     :  \/        J      .' ___\
-                     J     :   /      : : L    /--'   ``.
-                     F      : J           |  .<'.o.  `-'>
-                    /        J             L \_>.   .--w)
-                   J        /              \_/|   . `-__|
-                   F                        / `    -' /|)
-                  |   :                    J   '        |
-                 .'   ':                   |    .    :  \
-                /                          J      :     |L
-               F                              |     \   ||
-              F .                             |   :      |
-             F  |                             ; .   :  : F
-            /   |                                     : J
-           J    J             )                ;        F
-           |     L           /      .:'                J
-        .-'F:     L        ./       :: :       .       F
-        `-'F:     .\    `:.J         :::.             J
-          J       ::\    `:|        |::::\            |
-          J        |:`.    J        :`:::\            F
-           L   :':/ \ `-`.  \       : `:::|        .-'
-           |     /   L    >--\         :::|`.    .-'
-           J    J    |    |   L     .  :::: :`, /
-            L   F    J    )   |        >::   : /
-            |  J      L   F   \     .-.:'   . /
-            ): |     J   /     `-   | |   .--'
-            /  |     |: J        L  J J   )
-            L  |     |: |        L   F|   /
-            \: J     \:  L       \  /  L |
-             L |      \  |        F|   | )
-             J F       \ J       J |   |J
-              L|        \ \      | |   | L
-              J L        \ \     F \   F |
-               L\         \ \   J   | J   L
-              /__\_________)_`._)_  |_/   \_____
-                                  ""   `"""
-
-               __                          __                     
-              /  |                        /  |                    
-    _______  _$$ |_     ______    ______  $$/   ______    _______ 
-   /       |/ $$   |   /      \  /      \ /  | /      \  /       |
-  /$$$$$$$/ $$$$$$/   /$$$$$$  |/$$$$$$  |$$ |/$$$$$$  |/$$$$$$$/ 
-  $$      \   $$ | __ $$ |  $$ |$$ |  $$/ $$ |$$    $$ |$$      \ 
-   $$$$$$  |  $$ |/  |$$ \__$$ |$$ |      $$ |$$$$$$$$/  $$$$$$  |
-  /     $$/   $$  $$/ $$    $$/ $$ |      $$ |$$       |/     $$/ 
-  $$$$$$$/     $$$$/   $$$$$$/  $$/       $$/  $$$$$$$/ $$$$$$$/  
-                                                                  
-           
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                                        
-                          $$                            
-                          $$                            
-            $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
-            $$   $$   $$  $$    $$  $$    $$  $$    $$  
-            $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
-            $$   $$   $$  $$    $$  $$        $$    $$  
-             $$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
-                                                        
-                                                                  
-                                                          
-                                                          
-                                        $$            $$  
-                                        $$            $$  
-          $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-          $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$        $$  
-          $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                            
-                                                                               
-                                                                
-                                                                
-                                                  $$            
-                                                  $$            
-           $$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$   $$$$$$$  
-          $$    $$        $$  $$    $$  $$    $$  $$  $$        
-          $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$   $$$$$$   
-          $$    $$  $$    $$  $$    $$  $$        $$        $$  
-          $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$  $$$$$$$   
-          $$                                                    
-          $$                                                    
-          $$                                                    
-
-
-                                          
-                       $$$$$$   $$$$$$$   
-                      $$    $$  $$    $$  
-                      $$    $$  $$    $$  
-                      $$    $$  $$    $$  
-                       $$$$$$   $$    $$  
-        
-                                                                            
-                                          
-                                                        
-                                              $$        
-                                              $$        
-                 $$$$$$   $$    $$   $$$$$$$  $$$$$$$   
-                $$    $$  $$    $$  $$        $$    $$  
-                $$    $$  $$    $$   $$$$$$   $$    $$  
-                $$    $$  $$    $$        $$  $$    $$  
-                $$$$$$$    $$$$$$   $$$$$$$   $$    $$  
-                $$                                      
-                $$                                      
-                $$                                      
-
-
-
-
-
-
-
-***/
-! function () {
-
-  'use strict';
-
-  module.exports = function onPushModelPanels (panel) {
-
-    var app = this;
-
-    this.controller('true-story/render-view')({
-      container:  this.view('panels'),
-      template:   {
-        url: '/partial/panel'
-      },
-      engine:     function (view, locals) {
-        view = $(view);
-
-        app.controller('bind panel')(locals.panel, view);
-
-        return view;
-      },
-      locals:     { panel: panel },
-      append:     true,
-      ready:      function (view) {
-        app.model('panel', {
-          panel: panel,
-          view: view
-        });
-      }
-    });
-  };
-
-} ();
-
-},{}],25:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3129,7 +1674,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":26}],26:[function(require,module,exports){
+},{"events":17}],17:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3432,7 +1977,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],27:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3457,7 +2002,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],28:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3545,14 +2090,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],29:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],30:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4142,7 +2687,66 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":29,"_process":28,"inherits":27}],31:[function(require,module,exports){
+},{"./support/isBuffer":20,"_process":19,"inherits":18}],22:[function(require,module,exports){
+/***
+
+────────────────────▄▄▄▄
+────────────────▄▄█▀▀──▀▀█▄
+─────────────▄█▀▀─────────▀▀█▄
+────────────▄█▀──▄▄▄▄▄▄──────▀█
+────────────█───█▌────▀▀█▄─────█
+────────────█──▄█────────▀▀▀█──█
+────────────█──█──▀▀▀──▀▀▀▄─▐──█
+────────────█──▌────────────▐──█
+────────────█──▌─▄▀▀▄───────▐──█
+───────────█▀▌█──▄▄▄───▄▀▀▄─▐──█
+───────────▌─▀───█▄█▌─▄▄▄────█─█
+───────────▌──────▀▀──█▄█▌────█
+───────────█───────────▀▀─────▐
+────────────█──────▌──────────█
+────────────██────█──────────█
+─────────────█──▄──█▄█─▄────█
+─────────────█──▌─▄▄▄▄▄─█──█
+─────────────█─────▄▄──▄▀─█
+─────────────█▄──────────█
+─────────────█▀█▄▄──▄▄▄▄▄█▄▄▄▄▄
+───────────▄██▄──▀▀▀█─────────█
+──────────██▄─█▄────█─────────█
+───▄▄▄▄███──█▄─█▄───█─────────██▄▄▄
+▄█▀▀────█────█──█▄──█▓▓▓▓▓▓▓▓▓█───▀▀▄
+█──────█─────█───████▓▓▓▓▓▓▓▓▓█────▀█
+█──────█─────█───█████▓▓▓▓▓▓▓█──────█
+█─────█──────█───███▀▀▀▀█▓▓▓█───────█
+█────█───────█───█───▄▄▄▄████───────█
+█────█───────█──▄▀───────────█──▄───█
+█────█───────█─▄▀─────█████▀▀▀─▄█───█
+█────█───────█▄▀────────█─█────█────█
+█────█───────█▀───────███─█────█────█
+█─────█────▄█▀──────────█─█────█────█
+█─────█──▄██▀────────▄▀██─█▄───█────█
+█────▄███▀─█───────▄█─▄█───█▄──█────█
+█─▄██▀──█──█─────▄███─█─────█──█────█
+██▀────▄█───█▄▄▄█████─▀▀▀▀█▀▀──█────█
+█──────█────▄▀──█████─────█────▀█───█
+───────█──▄█▀───█████─────█─────█───█
+──────▄███▀─────▀███▀─────█─────█───█
+─────────────────────────────────────
+▀█▀─█▀▄─█─█─█▀────▄▀▀─▀█▀─▄▀▄─█▀▄─█─█
+─█──█▄▀─█─█─█▀────▀▀█──█──█─█─█▄▀─█▄█
+─▀──▀─▀─▀▀▀─▀▀────▀▀───▀───▀──▀─▀─▄▄█
+─────────────────────────────────────
+
+
+***/
+
+! function () {
+	
+  'use strict';
+
+  module.exports = require('./lib/TrueStory.js').exports;
+
+} ();
+},{"./lib/TrueStory.js":23}],23:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4214,19 +2818,40 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   var Follow = require('/home/francois/Dev/follow.js/lib/Follow');
 
 	function TrueStory () {
-    this.models 			= {};
-    this.indexes      = {};
-    this.controllers 	= {};
-    this.emitters     = {};
-    this.views 				= {};
-    this.follow       = new Follow(this.models);
-    this.templates    = {};
-    this.tests        = {};
-    this.watchDogs    = {};
 
-    this.domain       = require('domain').create();
+    /** Models - Hash table */
 
-    var app = this;
+    this.models 			=   {};
+
+    /** Controllers - Hash table */
+    
+    this.controllers 	=   {};
+
+    /** Emitters - Hash table */
+    
+    this.emitters     =   {};
+
+    /** Views - Hash table */
+    
+    this.views 				=   {};
+
+    /** Views - Hash Table { String: Object } */
+
+    this.templates    =   {};
+
+    /** Watch dogs - Hash table */
+
+    this.watchDogs    =   {};
+    
+    this.watched      =   [];
+
+    this.stories      =   [];
+    
+    this.follow       =   new Follow(this.models);
+
+    this.domain       =   require('domain').create();
+
+    var app           =   this;
 
     this.domain.on('error', function (error) {
       console.warn('An Error Occured! True story!', error, error.stack);
@@ -4275,15 +2900,15 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   require('util').inherits(TrueStory, require('events').EventEmitter);
 
   /***********************************************
-                                                    
-                                                  
-                                ee            ee  
-                                ee            ee  
-  eeeeee eeee    eeeeee    eeeeeee   eeeeee   ee  
-  ee   ee   ee  ee    ee  ee    ee  ee    ee  ee  
-  ee   ee   ee  ee    ee  ee    ee  eeeeeeee  ee  
-  ee   ee   ee  ee    ee  ee    ee  ee        ee  
-  ee   ee   ee   eeeeee    eeeeeee   eeeeeee  ee  
+    .                                               
+    .                                               
+    .                             ee            ee  
+    .                             ee            ee  
+    eeeeee eeee    eeeeee    eeeeeee   eeeeee   ee  
+    ee   ee   ee  ee    ee  ee    ee  ee    ee  ee  
+    ee   ee   ee  ee    ee  ee    ee  eeeeeeee  ee  
+    ee   ee   ee  ee    ee  ee    ee  ee        ee  
+    ee   ee   ee   eeeeee    eeeeeee   eeeeeee  ee  
                                                   
                                                 
   ***********************************************/
@@ -4291,26 +2916,26 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   TrueStory.prototype.model = require('./TrueStory/model');
 
   /***********************************************
-                                                                  
-                                                                  
-                                  ee                          ee  
-                                  ee                          ee  
-   eeeeeee   eeeeee   eeeeeee   eeeeee     eeeeee    eeeeee   ee  
-  ee        ee    ee  ee    ee    ee      ee    ee  ee    ee  ee  
-  ee        ee    ee  ee    ee    ee      ee        ee    ee  ee  
-  ee        ee    ee  ee    ee    ee  ee  ee        ee    ee  ee  
-   eeeeeee   eeeeee   ee    ee     eeee   ee         eeeeee   ee  
-                                                                  
-                                                                  
-                          
-                          
-  ee                      
-  ee                      
-  ee   eeeeee    eeeeee   
-  ee  ee    ee  ee    ee  
-  ee  eeeeeeee  ee        
-  ee  ee        ee        
-  ee   eeeeeee  ee        
+    .                                                             
+    .                                                             
+    .                               ee                          ee  
+    .                               ee                          ee  
+     eeeeeee   eeeeee   eeeeeee   eeeeee     eeeeee    eeeeee   ee  
+    ee        ee    ee  ee    ee    ee      ee    ee  ee    ee  ee  
+    ee        ee    ee  ee    ee    ee      ee        ee    ee  ee  
+    ee        ee    ee  ee    ee    ee  ee  ee        ee    ee  ee  
+     eeeeeee   eeeeee   ee    ee     eeee   ee         eeeeee   ee  
+                                                                    
+                                                                    
+                            
+                            
+    ee                      
+    ee                      
+    ee   eeeeee    eeeeee   
+    ee  ee    ee  ee    ee  
+    ee  eeeeeeee  ee        
+    ee  ee        ee        
+    ee   eeeeeee  ee        
                           
                         
   ***********************************************/
@@ -4370,6 +2995,28 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
       return $(this.views[name]);
     }
   };
+
+  TrueStory.prototype.template = function (name, template) {
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.template(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.templates[name] = template;
+
+        return this;
+      }
+
+      return this.templates[name];
+    }
+  };
+
+  TrueStory.prototype.render = require('./TrueStory/render');
 
   /***********************************************
                        
@@ -4600,88 +3247,147 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   
   ***/
 
-  TrueStory.prototype.watchDog = function (dog, stories) {
+  TrueStory.prototype.watchDog = function (name, stories) {
     var app = this;
 
-    var watch_dog = new (function TrueStory_WatchDog () {
-      this.name = JSON.stringify(dog);
-      this.dog = dog;
-      this.stories = stories;
-      this.watched = [];
-      this.doneWatching = false;
-    })();
-
-    console.info(watch_dog);
-
-    new Follow(watch_dog)
-      .on('update watched', function () {
-        if ( watch_dog.watched.length === stories.length ) {
-          watch_dog.doneWatching = true;
-        }
-      });
-
-    stories.forEach(function (story) {
-
-      var role = 'emitter';
-
-      if ( 'model' in story ) {
-        role = 'model';
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.watchDog(i, name[i]);
       }
 
-      if ( role === 'emitter' && ! story.emitter ) {
-        story.emitter = null;
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+
+      /** 
+       *
+       * SETTER
+       *
+       */
+
+      var watched = {
+        watchDog:   name,
+        stories:    stories,
+        results:    []
+      };
+
+
+      if ( '1' in arguments ) {
+        this.watchDogs[name] = stories;
+
+        return this;
       }
 
-      app.tell(function (when) {
-        when()
-          
-          [role](story[role])
-          
-          .triggers(story.event)
-          
-          .then(function (event) {
+      /** 
+       *
+       * GETTER
+       *
+       */
 
-            var yes = true;
+      // if ( ! name in this.watchDogs ) {
 
-            if ( this.run ) {
-              yes = this.run.apply(app, [event]);
+      // }
+
+      return ! function () {
+
+        var stories = app.watchDogs[name];
+
+        var watch_dog = new (function TrueStory_WatchDog () {
+          this.name         = name;
+          this.stories      = stories;
+          this.watched      = [];
+          this.doneWatching = false;
+        })();
+
+        new Follow(watch_dog)
+          .on('update watched', function () {
+            if ( watch_dog.watched.length === stories.length ) {
+              watch_dog.doneWatching = true;
             }
+          });
 
-            if ( yes ) {
-              console.info(new (function TrueStory_WatchDog_OK() {
-                this.name = JSON.stringify(dog);
-                this.story = JSON.stringify(story);
-                this.pos = (watch_dog.watched.length + 1) + '/' +
-                  stories.length
+        // Running each watch dog stories
+
+        stories.forEach(function (story) {
+
+          var role = 'emitter';
+
+          if ( 'model' in story ) {
+            role = 'model';
+          }
+
+          if ( role === 'emitter' && ! story.emitter ) {
+            story.emitter = null;
+          }
+
+          // Pass stories to app
+
+          app.tell(function (when) {
+
+            when()
+              
+              [role](story[role])
+              
+              .triggers(story.event)
+              
+              .then(function (event) {
+
+                var yes = true;
+
+                if ( this.run ) {
+                  yes = this.run.apply(app, [event]);
+                  
+                  watched.results.push({
+                    story:  story,
+                    ok:     yes
+                  });
+                }
+
+                if ( yes ) {
+                  
+                  console.info(new (function TrueStory_WatchDog_OK() {
+                    this.name     =  name;
+                    this.story    =  JSON.stringify(story);
+                    this.pos      =  (watch_dog.watched.length + 1) + '/' +
+                      stories.length
+                  })());
+
+                  console.info("\t  -");
+
+
+                  watch_dog.watched = watch_dog.watched.concat(story);
+                }
+              
+              }.bind(story));
+            });
+
+          });
+
+          setTimeout(function () {
+            if ( ! watch_dog.doneWatching ) {
+
+              var missing = watch_dog.stories.length - watch_dog.watched.length;
+
+              var error = new Error('Watch dog timed out -- ' + missing + ' test(s) could not be watched');
+              error.name = 'TrueStory_WatchDog_Error';
+              throw error;
+            }
+            else {
+
+              app.watched.push(watched);
+
+              console.info("True story!", new (function TrueStory_WatchDog_Done () {
+                this.name     =   name;
+                this.watched  =   watch_dog.watched;
+                this.stories  =   watch_dog.stories;
               })());
-              console.info("\t  -");
 
-
-              watch_dog.watched = watch_dog.watched.concat(story);
             }
-          
-          }.bind(story));
-        });
+          }, 2000);
 
-    });
-
-    setTimeout(function () {
-      if ( ! watch_dog.doneWatching ) {
-
-        var missing = watch_dog.stories.length - watch_dog.watched.length;
-
-        var error = new Error('Watch dog timed out -- ' + missing + ' test(s) could not be watched');
-        error.name = 'TrueStory_WatchDog_Error';
-        throw error;
-      }
-      else {
-        console.info("True story!", new (function TrueStory_WatchDog_Done () {
-          this.dog = JSON.stringify(dog);
-          this.watched = watch_dog.watched;
-          this.stories = watch_dog.stories;
-        })());
-      }
-    }, 2000);
+      } (); 
+    }
   };
 
   /***********************************************
@@ -4725,6 +3431,29 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
     }
 
     return this;
+  };
+
+
+  TrueStory.prototype.context = function (name, context) {
+    var app = this;
+
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.context(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.contexts[name] = context;
+
+        return this;
+      }
+
+      return this.contexts[name];
+    }
   };
 
 
@@ -4814,10 +3543,10 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
 
   TrueStory.exports.parseDotNotation = require('./TrueStory/parse-dot-notation');
 
-  module.exports = TrueStory.exports;
+  module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":32,"./TrueStory/parse-dot-notation":33,"./When":34,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":28,"domain":25,"events":26,"util":30}],32:[function(require,module,exports){
+},{"./TrueStory/model":24,"./TrueStory/parse-dot-notation":25,"./TrueStory/render":26,"./When":27,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":19,"domain":16,"events":17,"util":21}],24:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4901,6 +3630,10 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
   module.exports = function (name, model, noFollow) {
     var app = this;
+
+    if ( ! name ) {
+      return this;
+    }
 
     /***
 
@@ -5064,36 +3797,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 
       if ( /\./.test(name) ) {
-
-        if ( ! app.indexes[name] ) {
-          
-        }
-
         $model = index(app.models, name);
-
-        // $model = app.indexes[name];
-        
-        // console.warn('AL CAPONE %%%%%%%%%%%%%%%%%%%%%%%%%', 
-        //   name.split('.').reduce(index, app.models));
-
-
-        // var $model = [app.models]
-        //   .concat(name.split(/\./))
-        //   .reduce(function(prev, curr) {
-        //       return prev[curr];
-        //   });
-
-        // $model = name.split('.').reduce(index, app.models);
-
-        console.warn('AY AY AY AY MODEL', $model)
-
-        // var $model = this.models;
-
-        // name.split(/\./).forEach(function (n) {
-        //   if ( $model ) {
-        //     $model = $model[n];
-        //   }
-        // });
       }
 
       else {
@@ -5124,7 +3828,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
           
           Object.defineProperty($model, '__follow', {
             value: true,
-            enumerable: 'false'
+            enumerable: false
           });
 
           /***
@@ -5203,7 +3907,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],33:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5325,7 +4029,119 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+(function (process){
+; ! function () {
+
+  'use strict';
+
+  function trueStory_Render (template_name, locals) {
+
+    /** @type TrueStory */
+    
+    var app = this;
+
+    /** @type Object */
+
+    var template_config = app.template(template_name);
+
+    /** Error if template_name does not exists */
+
+    if ( ! template_config ) {
+      console.warn(app.templates)
+
+      return app.emit('error', new Error('Could not render unexisting template: ' + template_name));
+    }
+
+    /** Log */
+
+    console.info(new (function TrueStory_Render_Template () {
+      this.template     =     template_name;
+      this.locals       =     locals;
+      this.config       =     template_config;
+    })());
+
+    /** Using nextTick @because */
+
+    process.nextTick(function () {
+
+      /** String */
+
+      var HTMLString;
+
+      /** If view already as a HTML string defined in its template property */
+
+      if ( template_config.template && template_config.template.length ) {
+        HTMLString = $(template_config.template)[0].outerHTML;
+      }
+
+      /** If template URL defined */
+
+      else if ( template_config.url ) {
+
+        /** Log about AJAX getting the template by url */
+
+        console.info(new (function TrueStory_Render_Template_Fetch_URL () {
+          this.name       =     template_name;
+          this.config     =     template_config;
+        })());
+
+        /** AJAX call to get template by URL */
+
+        return $.ajax({
+          url: template_config.url
+        })
+
+          /** On AJAX done */
+
+          .done(function (data) {
+
+            /** Log about it */
+
+            console.info(new (function TrueStory_Render_Template_Fetched_URL () {
+              this.template   =     template_name;
+              this.config     =     template_config;
+              this.data       =     data;
+            })());
+
+            /** Save HTML string as template property */
+
+            template_config.template    =     data;
+
+
+
+            /** Relaunch render */
+
+            app.render(template_name, locals);
+
+          });
+      }
+
+      /** Convert HTML String into jQuery */
+
+      var elem = $(HTMLString);
+
+      /** If template has a controller */
+
+      if ( template_config.controller ) {
+        template_config.controller.apply(app, [elem, locals]);
+      }
+
+      /** Emit render OK */
+
+      console.warn('rendered OK', template_name, HTMLString);
+
+      app.emit('rendered ' + template_name, elem);
+    });
+  };
+
+  module.exports = trueStory_Render;
+
+}();
+
+}).call(this,require('_process'))
+},{"_process":19}],27:[function(require,module,exports){
+(function (process){
 /***
 
 ────────────────────▄▄▄▄
@@ -5392,6 +4208,68 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 	'use strict';
 
+  var thens = {
+    render: function (template, locals) {
+      var when = this;
+
+      this.and_then.push(function (x) {
+        when.app.render(template, x);
+      });
+
+      return when.then;
+    },
+
+    controller: function (controller, args) {
+      var when = this;
+
+      console.warn('controller');
+
+      this.and_then.push(function (x) {
+        when.app.controller(controller);
+      });
+
+      return when.then;
+    },
+
+    push: function (model, item) {
+
+
+      var when = this;
+
+      this.and_then.push(function (x) {
+        when.app.model(model).push(item);
+      });
+
+      return when.then;
+    },
+
+    model: function (model) {
+      
+      var when = this;
+
+      this.and_then.push(function (x) {
+        console.error('then model', model);
+        when.app.model(model, x);
+      });
+
+      return when.then;
+    },
+
+    trigger: function (emitter, event, message) {
+
+      var when = this;
+
+      this.and_then.push(function (x) {
+        console.log()
+        console.warn('triggering', event)
+        console.log()
+        when.app.emitter(emitter).emit(event, message || x);
+      });
+
+      return when.then;
+    }
+  };
+
   /** @class
    *  @arg {TrueStory} app
    **/
@@ -5401,6 +4279,32 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
     /** @type TrueStory */
     this.app = app;
+
+    this.and_then = [];
+
+    for ( var then in thens ) {
+      this.then[then] = thens[then].bind(this);
+    }
+
+    var when = this;
+
+    process.nextTick(function () {
+
+      /** If stack (means not called by then()) */
+
+      if ( when.and_then.length ) {
+
+        /** pass stack to then() */
+
+        when.then(function () {
+          console.warn('boooom');
+
+          when.and_then.forEach(function (and_then) {
+            and_then.call(when, arguments);
+          });
+        });
+      }
+    });
   }
 
   /***
@@ -5508,6 +4412,10 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
   TrueStory_When.prototype.then = function (fn) {
     var when = this;
+
+    if ( this.app instanceof require('./TrueStory') ) {
+      this.app.stories.push(when);
+    }
 
     console.info(when);
 
@@ -5670,6 +4578,8 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
       ***/
 
       return ! function () {
+        var app = this;
+
         var emitter = when.who.emitter;
 
         if ( ! emitter ) {
@@ -5680,7 +4590,11 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
           emitter = this.emitters[emitter];
         }
         
-        emitter[when.listener](when.event, fn.bind(this));
+        emitter[when.listener](when.event, function () {
+          console.error({ listener: when.listener, event: when.event, args: arguments});
+          // fn.apply(app);
+          app.emitter('socket').emit('get intro');
+        });
       }.apply(this.app);
     }
 
@@ -5691,6 +4605,12 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
     }
   };
 
+
+  function then_render () {
+
+  }
+
   module.exports = TrueStory_When;
 } ();
-},{}]},{},[2]);
+}).call(this,require('_process'))
+},{"./TrueStory":23,"_process":19}]},{},[2]);

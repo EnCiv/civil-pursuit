@@ -145,7 +145,7 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .open('app/web/views/pages/index.jade', when.home)
 
-      .open('app/web/views/pages', when.prefix('/page/'))
+      .open('app/web/views/pages', { 'append extension': 'jade' }, when.prefix('/page/'))
 
       .open('app/web/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
 

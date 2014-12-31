@@ -113,213 +113,110 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = function (when) {
+
+    var app = this;
+
     // http://patorjk.com/software/taag/#p=display&f=Small&t=online
 
-    /***
+    /** EMITTER:SOCKET */
 
+    this.emitter('socket')
+      
+      .on('error', function (error) {
+        console.warn('socket error', socket);
+      })
 
+      .on('connect', function () {
+        app.emitter('socket').emit('get intro');
+        app.model('panels').push({ type: 'Topic' });
+      })
 
-                                                    
-                                                    
-                                  $$            $$  
-                                  $$            $$  
-    $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-    $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-    $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-    $$   $$   $$  $$    $$  $$    $$  $$        $$  
-    $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                                    
-                                                    
-                                                    
-    $$$$$$  $$$$$$  $$$$$$  $$$$$$  $$$$$$  $$$$$$  
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                   
-                                
-                                
-                                
-                                
-                       
-    ***/
+      .on('got intro', function (intro) {
+        app.model('intro', intro);
+      })
 
+      .on('got panel items', function (panelItems) {
+        app.render('panel', panelItems);
 
-    /***
-                                                                
-                                  $$                    $$      
-                                  $$                    $$      
-     $$$$$$$   $$$$$$    $$$$$$$  $$    $$   $$$$$$   $$$$$$    
-    $$        $$    $$  $$        $$   $$<  $$    $$    $$      
-     $$$$$$   $$    $$  $$        $$$$$$    $$$$$$$$    $$      
-          $$  $$    $$  $$        $$   $$   $$          $$  $$  
-    $$$$$$$    $$$$$$    $$$$$$$  $$    $$   $$$$$$$     $$$$   
-                                                                
-                                                            
-    ***/
+        app.on('rendered panel', function (panelView) {
+          app.view('panels').append(panelView);
 
+          panelItems.items.forEach(function (item) {
+            app.render('item', item);
+          });
 
-
-
-
-      /***
-
-                                                            
-           $$$$$$    $$$$$$    $$$$$$    $$$$$$    $$$$$$   
-          $$    $$  $$    $$  $$    $$  $$    $$  $$    $$  
-          $$$$$$$$  $$        $$        $$    $$  $$        
-          $$        $$        $$        $$    $$  $$        
-           $$$$$$$  $$        $$         $$$$$$   $$        
-
-
-
-      ***/
-
-
-    when()
-      .emitter('socket')
-      .triggers('error')
-      .then(function (error) {
-        console.warn('TOLD YOU SO');
+          app.on('rendered item', function (view) {
+            panelView.find('.items').append(view);
+          });
+        });
       });
 
+    /** MODEL */
 
+    app.follow
+      
+      .on('update intro', function (intro) {
+        app.render('intro', intro.new);
+      });
 
-      /***
-                                                                    $$      
-                                                                    $$      
-       $$$$$$$   $$$$$$   $$$$$$$   $$$$$$$    $$$$$$    $$$$$$$  $$$$$$    
-      $$        $$    $$  $$    $$  $$    $$  $$    $$  $$          $$      
-      $$        $$    $$  $$    $$  $$    $$  $$$$$$$$  $$          $$      
-      $$        $$    $$  $$    $$  $$    $$  $$        $$          $$  $$  
-       $$$$$$$   $$$$$$   $$    $$  $$    $$   $$$$$$$   $$$$$$$     $$$$   
-            
-      ***/
+    app
 
-    when()
-      .emitter('socket')
-      .triggers('connect')
-      .then(require('./when/emitter/socket/on/connect'));
+      .on('push panels', function (panel) {
+        app.emitter('socket').emit('get panel items', panel);
+      });
 
-          /***                         
-                              $$  $$                      
-                              $$                          
-           $$$$$$   $$$$$$$   $$  $$  $$$$$$$    $$$$$$   
-          $$    $$  $$    $$  $$  $$  $$    $$  $$    $$  
-          $$    $$  $$    $$  $$  $$  $$    $$  $$$$$$$$  
-          $$    $$  $$    $$  $$  $$  $$    $$  $$        
-           $$$$$$   $$    $$  $$  $$  $$    $$   $$$$$$$  
-                                                            
-          $$    $$   $$$$$$$   $$$$$$    $$$$$$    $$$$$$$  
-          $$    $$  $$        $$    $$  $$    $$  $$        
-          $$    $$   $$$$$$   $$$$$$$$  $$         $$$$$$   
-          $$    $$        $$  $$        $$              $$  
-           $$$$$$   $$$$$$$    $$$$$$$  $$        $$$$$$$   
-                                                  
-          ***/
+    /** when emitter socket triggers error  */
+    /** then Function */
 
-    when()
-      .emitter('socket')
-      .triggers('online users')
-      .then(require('./when/emitter/socket/on/online users'));
+    // when()
+    //   .emitter('socket')
+    //   .triggers('error')
+    //   .then(function (error) {
+    //     console.warn('TOLD YOU SO');
+    //   });
 
-    /***
-                                                
-                                                
-    $$              $$                          
-                    $$                          
-    $$  $$$$$$$   $$$$$$     $$$$$$    $$$$$$   
-    $$  $$    $$    $$      $$    $$  $$    $$  
-    $$  $$    $$    $$      $$        $$    $$  
-    $$  $$    $$    $$  $$  $$        $$    $$  
-    $$  $$    $$     $$$$   $$         $$$$$$   
-                                                
+    /** when emitter "socket" on "connect" */
+    /** then trigger "socket" on "get intro" */
+    /** then push "panels" {Panel} */
 
-    ***/
+    // when()
+    //   .emitter('socket')
+    //   .triggers('connect')
+    //   .then(function () {
+    //     console.log('//////////7')
+    //   });
 
-    when()
-      .model('intro')
-      .triggers('update')
-      .then(require('./when/model/intro/on/update'));
+    /** when emitter "socket" on "got intro" */
 
-    /***
-                                                          
-                                            $$            
-                                            $$            
-     $$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$   $$$$$$$  
-    $$    $$        $$  $$    $$  $$    $$  $$  $$        
-    $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$   $$$$$$   
-    $$    $$  $$    $$  $$    $$  $$        $$        $$  
-    $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$  $$$$$$$   
-    $$                                                    
-    $$                                                    
-    $$                                                                          
-    
-    ***/
+    // when()
+    //   .emitter('socket')
+    //   .triggers('got intro')
+    //   .then
+    //     .model('intro');
 
-     when()
-      .model('panels')
-      .triggers('push')
-      .then(require('./when/model/panels/on/push'));
+    // when()
+    //   .emitter('socket')
+    //   .triggers('online users')
+    //   .then
+    //     .model('online users');
 
-    /**
+    // when()
+    //   .model('online users')
+    //   .triggers('all')
+    //   .then
+    //     .render('online users');
 
-                                            $$            
-     $$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$ 
-    $$    $$        $$  $$    $$  $$    $$  $$ 
-    $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$ 
-    $$    $$  $$    $$  $$    $$  $$        $$ 
-    $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$ 
-    $$                                                    
-    $$                                                    
-    $$    
-                                          
-    **/
-    
-    when()
-      .model('panel')
-      .triggers('update')
-      .then(require('./when/model/panel/on/update'));
+    // when()
+    //   .model('intro')
+    //   .triggers('update')
+    //   .then
+    //     .render('intro');
 
-    /***
-                          
-    $$    $$                                        
-          $$                                        
-    $$  $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$$  
-    $$    $$      $$    $$  $$   $$   $$  $$        
-    $$    $$      $$$$$$$$  $$   $$   $$   $$$$$$   
-    $$    $$  $$  $$        $$   $$   $$        $$  
-    $$     $$$$    $$$$$$$  $$   $$   $$  $$$$$$$   
-                       
-    ***/
-
-    when()
-      .model('items')
-      .triggers('concat')
-      .then(require('./when/model/items/on/concat'));
-
-    /***                         
-                        $$  $$                      
-                        $$                          
-     $$$$$$   $$$$$$$   $$  $$  $$$$$$$    $$$$$$   
-    $$    $$  $$    $$  $$  $$  $$    $$  $$    $$  
-    $$    $$  $$    $$  $$  $$  $$    $$  $$$$$$$$  
-    $$    $$  $$    $$  $$  $$  $$    $$  $$        
-     $$$$$$   $$    $$  $$  $$  $$    $$   $$$$$$$  
-                                                      
-    $$    $$   $$$$$$$   $$$$$$    $$$$$$    $$$$$$$  
-    $$    $$  $$        $$    $$  $$    $$  $$        
-    $$    $$   $$$$$$   $$$$$$$$  $$         $$$$$$   
-    $$    $$        $$  $$        $$              $$  
-     $$$$$$   $$$$$$$    $$$$$$$  $$        $$$$$$$   
-                                            
-    ***/
-
-    when()
-      .model('online users')
-      .triggers('all')
-      .then(require('./when/model/online users/on/all'));
+    // when()
+    //   .model('panels')
+    //   .triggers('push')
+    //   .then
+    //     .render('panel');
 
   };
 

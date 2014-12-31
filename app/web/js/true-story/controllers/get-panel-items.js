@@ -152,21 +152,25 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       id += '-' + panelItems.panel.parent;
     }
 
-    app.controller('true-story/render-view')({
-      container:  $(id).find('.items'),
-      template:   {
-        url: '/partial/item'
-      },
-      engine:     function (view, locals) {
-        view = $(view);
+    // app.view('item').render(function () {
+      
+    // })
 
-        // app.controller('bind panel')(locals.panel, view);
+    // app.controller('true-story/render-view')({
+    //   container:  $(id).find('.items'),
+    //   template:   {
+    //     url: '/partial/item'
+    //   },
+    //   engine:     function (view, locals) {
+    //     view = $(view);
 
-        return view;
-      },
-      locals:     { items: panelItems.items },
-      append:     true
-    });
+    //     // app.controller('bind panel')(locals.panel, view);
+
+    //     return view;
+    //   },
+    //   locals:     { items: panelItems.items },
+    //   append:     true
+    // });
   }
 
   module.exports = function getPanelItems (panel) {
