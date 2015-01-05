@@ -1502,6 +1502,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         new (require('./controllers/truncate'))($('#intro'));
 
         $('#intro').find('.promoted').hide();
+
+        $('#intro').find('.box-buttons').hide();
       }
     },
 
