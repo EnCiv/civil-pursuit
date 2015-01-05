@@ -101,6 +101,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         item.find('.evaluator .cursor').text(evaluation.cursor); 
         item.find('.evaluator .limit').text(evaluation.limit);
 
+        item.find('.evaluator .image:eq(0)').append(
+          app.controller('item media')(evaluation.items[0]));
+
+        item.find('.evaluator .image:eq(1)').append(
+          app.controller('item media')(evaluation.items[1]));
+
         item.find('.evaluator .subject:eq(0)').text(
           evaluation.items[0].subject);
 

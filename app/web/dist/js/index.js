@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":20,"util":24}],2:[function(require,module,exports){
+},{"events":21,"util":25}],2:[function(require,module,exports){
 /***
 
 
@@ -305,7 +305,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":10,"./stories":11,"./template":15,"./view":16,"./watchdogs/story-get-intro":17,"./watchdogs/story-get-topics":18,"/home/francois/Dev/true-story.js":25}],4:[function(require,module,exports){
+},{"./controller":4,"./model":11,"./stories":12,"./template":16,"./view":17,"./watchdogs/story-get-intro":18,"./watchdogs/story-get-topics":19,"/home/francois/Dev/true-story.js":26}],4:[function(require,module,exports){
 /***
 
 
@@ -414,12 +414,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = {
     'bootstrap/responsive-image':   require('./controllers/bootstrap/responsive-image'),
     'scroll to point of attention': require('./controllers/scroll-to-point-of-attention'),
-    'show': require('./controllers/show')
+    'show': require('./controllers/show'),
+    'youtube': require('./controllers/youtube'),
+    'item media': require('./controllers/item-media')
   };
 
 } ();
 
-},{"./controllers/bootstrap/responsive-image":5,"./controllers/scroll-to-point-of-attention":6,"./controllers/show":7}],5:[function(require,module,exports){
+},{"./controllers/bootstrap/responsive-image":5,"./controllers/item-media":6,"./controllers/scroll-to-point-of-attention":7,"./controllers/show":8,"./controllers/youtube":10}],5:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -442,6 +444,40 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 } ();
 
 },{}],6:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  function itemMedia (item) {
+
+    var app = this;
+
+    var media;
+
+    // youtube video from references
+
+    if ( item.references.length ) {
+      media = app.controller('youtube')(item.references[0].url);
+
+      if ( media ) {
+        return media;
+      }
+    }
+
+    // image
+
+    if ( item.image ) {
+      return app.controller('bootstrap/responsive-image')({
+        src: item.image
+      });
+    }
+  }
+
+  module.exports = itemMedia;
+
+} ();
+
+},{}],7:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -470,7 +506,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -520,7 +556,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -745,7 +781,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./scroll-to-point-of-attention":6}],9:[function(require,module,exports){
+},{"./scroll-to-point-of-attention":7}],10:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -776,7 +812,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /***
 
 
@@ -839,7 +875,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /***
 
 
@@ -942,6 +978,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         item.find('.evaluator .cursor').text(evaluation.cursor); 
         item.find('.evaluator .limit').text(evaluation.limit);
+
+        item.find('.evaluator .image:eq(0)').append(
+          app.controller('item media')(evaluation.items[0]));
+
+        item.find('.evaluator .image:eq(1)').append(
+          app.controller('item media')(evaluation.items[1]));
 
         item.find('.evaluator .subject:eq(0)').text(
           evaluation.items[0].subject);
@@ -1052,7 +1094,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-intro":12,"./stories/get-items":13,"./stories/get-panel":14}],12:[function(require,module,exports){
+},{"./stories/get-intro":13,"./stories/get-items":14,"./stories/get-panel":15}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1087,7 +1129,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1144,7 +1186,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1182,7 +1224,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1251,9 +1293,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         var app = this;
 
-        var hasMedia;
-        var yt;
-
         view.attr('id', 'item-' + item._id);
 
         view.find('.item-title').text(item.subject);
@@ -1266,13 +1305,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           view.find('.item-references a')
             .attr('src', item.references[0].url)
             .text(item.references[0].title || item.references[0].url);
-
-          yt = require('./controllers/youtube')(item.references[0].url);
-
-          if ( yt ) {
-            view.find('.item-media').append(yt);
-            hasMedia = true;
-          }
         }
         else {
           view.find('.item-references').hide();
@@ -1284,20 +1316,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         // ITEM MEDIA
 
-        if ( item.image && ! hasMedia ) {
-          yt = require('./controllers/youtube')(item.image);
-
-          if ( yt ) {
-            view.find('.item-media').append(yt);
-          }
-
-          else {
-            view.find('.item-media').append(
-              app.controller('bootstrap/responsive-image')({
-                src: item.image
-              }));
-          }
-        }
+        view.find('.item-media').append(
+          app.controller('item media')(item));
 
         // ITEM STATS
 
@@ -1348,7 +1368,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./controllers/truncate":8,"./controllers/youtube":9}],16:[function(require,module,exports){
+},{"./controllers/truncate":9}],17:[function(require,module,exports){
 /***
 
 
@@ -1458,7 +1478,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /***
 
 
@@ -1640,7 +1660,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /***
 
 
@@ -1808,7 +1828,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1846,7 +1866,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":20}],20:[function(require,module,exports){
+},{"events":21}],21:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2149,7 +2169,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2174,7 +2194,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2262,14 +2282,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2859,7 +2879,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":23,"_process":22,"inherits":21}],25:[function(require,module,exports){
+},{"./support/isBuffer":24,"_process":23,"inherits":22}],26:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -2918,7 +2938,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":26}],26:[function(require,module,exports){
+},{"./lib/TrueStory.js":27}],27:[function(require,module,exports){
 (function (process){
 /***
 
@@ -3718,7 +3738,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":27,"./TrueStory/parse-dot-notation":28,"./TrueStory/render":29,"./When":30,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":22,"domain":19,"events":20,"util":24}],27:[function(require,module,exports){
+},{"./TrueStory/model":28,"./TrueStory/parse-dot-notation":29,"./TrueStory/render":30,"./When":31,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":23,"domain":20,"events":21,"util":25}],28:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4079,7 +4099,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4201,7 +4221,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -4308,7 +4328,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":22}],30:[function(require,module,exports){
+},{"_process":23}],31:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4781,4 +4801,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":26,"_process":22}]},{},[2]);
+},{"./TrueStory":27,"_process":23}]},{},[2]);

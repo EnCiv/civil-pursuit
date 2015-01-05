@@ -66,9 +66,6 @@
 
         var app = this;
 
-        var hasMedia;
-        var yt;
-
         view.attr('id', 'item-' + item._id);
 
         view.find('.item-title').text(item.subject);
@@ -81,13 +78,6 @@
           view.find('.item-references a')
             .attr('src', item.references[0].url)
             .text(item.references[0].title || item.references[0].url);
-
-          yt = require('./controllers/youtube')(item.references[0].url);
-
-          if ( yt ) {
-            view.find('.item-media').append(yt);
-            hasMedia = true;
-          }
         }
         else {
           view.find('.item-references').hide();
@@ -99,20 +89,8 @@
 
         // ITEM MEDIA
 
-        if ( item.image && ! hasMedia ) {
-          yt = require('./controllers/youtube')(item.image);
-
-          if ( yt ) {
-            view.find('.item-media').append(yt);
-          }
-
-          else {
-            view.find('.item-media').append(
-              app.controller('bootstrap/responsive-image')({
-                src: item.image
-              }));
-          }
-        }
+        view.find('.item-media').append(
+          app.controller('item media')(item));
 
         // ITEM STATS
 
