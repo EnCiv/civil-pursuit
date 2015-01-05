@@ -941,7 +941,13 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         var item = $(itemID);
 
         item.find('.evaluator .cursor').text(evaluation.cursor); 
-        item.find('.evaluator .limit').text(evaluation.limit); 
+        item.find('.evaluator .limit').text(evaluation.limit);
+
+        item.find('.evaluator .subject:eq(0)').text(
+          evaluation.items[0].subject);
+
+        item.find('.evaluator .subject:eq(1)').text(
+          evaluation.items[1].subject);
       });
     }
 
