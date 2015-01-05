@@ -601,28 +601,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
             url += '&' + panel.size + '&$skip=' + panel.skip;
 
-            // if ( 'limit' in options ) {
-            //   url += '&' + options.limit;
-            // }
-
-            // if ( 'skip' in options ) {
-            //   url += '&$skip=' + options.skip;
-            // }
-
             /** Send request to monson */
-
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
-            console.log('monson url', url);
 
             monson.get(url)
               .on('error', function (error) {

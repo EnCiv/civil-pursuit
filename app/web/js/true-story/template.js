@@ -51,6 +51,8 @@
           }));
 
         $('#intro').find('.item-references').hide();
+
+        new (require('./controllers/truncate'))(view);
       }
     },
 

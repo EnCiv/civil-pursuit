@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/follow.js/lib/Follow.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /***
 
 
@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
+},{"events":22,"util":26}],2:[function(require,module,exports){
 /***
 
 
@@ -171,7 +171,7 @@ Nina Butorac
 
 }();
 
-},{"./true-story/app":"/home/francois/Dev/syn/app/web/js/true-story/app.js"}],"/home/francois/Dev/syn/app/web/js/true-story/app.js":[function(require,module,exports){
+},{"./true-story/app":3}],3:[function(require,module,exports){
 /***
 
 
@@ -305,7 +305,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":"/home/francois/Dev/syn/app/web/js/true-story/controller.js","./model":"/home/francois/Dev/syn/app/web/js/true-story/model.js","./stories":"/home/francois/Dev/syn/app/web/js/true-story/stories.js","./template":"/home/francois/Dev/syn/app/web/js/true-story/template.js","./view":"/home/francois/Dev/syn/app/web/js/true-story/view.js","./watchdogs/story-get-intro":"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-intro.js","./watchdogs/story-get-topics":"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-topics.js","/home/francois/Dev/true-story.js":"/home/francois/Dev/true-story.js/index.js"}],"/home/francois/Dev/syn/app/web/js/true-story/controller.js":[function(require,module,exports){
+},{"./controller":4,"./model":12,"./stories":13,"./template":17,"./view":18,"./watchdogs/story-get-intro":19,"./watchdogs/story-get-topics":20,"/home/francois/Dev/true-story.js":27}],4:[function(require,module,exports){
 /***
 
 
@@ -422,7 +422,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"./controllers/bind-item":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-item.js","./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-panel.js","./controllers/bootstrap/responsive-image":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bootstrap/responsive-image.js","./controllers/find-panel":"/home/francois/Dev/syn/app/web/js/true-story/controllers/find-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-panel-items.js"}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-item.js":[function(require,module,exports){
+},{"./controllers/bind-item":5,"./controllers/bind-panel":6,"./controllers/bootstrap/responsive-image":7,"./controllers/find-panel":8,"./controllers/get-intro":9,"./controllers/get-panel-items":10}],5:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -453,7 +453,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-panel.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /***
 
 
@@ -515,7 +515,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bootstrap/responsive-image.js":[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -537,7 +537,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/find-panel.js":[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -572,7 +572,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-intro.js":[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -602,7 +602,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-panel-items.js":[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /***
 
 
@@ -791,7 +791,230 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/model.js":[function(require,module,exports){
+},{}],11:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  function Truncate (item) {
+
+    // ============
+
+    this.item = item;
+
+    this.description = this.item.find('.description:first');
+
+    this.textWrapper = this.item.find('.item-text:first');
+
+    this.reference = this.item.find('.reference:first');
+
+    this.text = this.description.text();
+
+    this.words = this.text.split(' ');
+
+    this.height = parseInt(this.textWrapper.css('paddingBottom'));
+
+    this.truncated = false;
+
+    this.moreLabel = 'more';
+
+    this.lessLabel = 'less';
+
+    this.isIntro = ( this.item.attr('id') === 'intro' );
+
+    if ( ! this.isIntro ) {
+      this._id = this.item.attr('id').split('-')[1];
+    }
+
+    // ============
+
+    this.tagify();
+
+    if ( this.truncated ) {
+      item.addClass('is-truncated');
+      this.appendMoreButton();
+    }
+  }
+
+  Truncate.prototype.tagify = function () {
+
+    var self = this;
+
+    this.description.empty();
+
+    this.reference.hide();
+
+    var i = 0;
+
+    this.words.forEach(function (word, index) {
+
+      var span = $('<span class="word"></span>');
+
+      if ( self.truncated ) {
+        span.addClass('truncated');
+        span.hide();
+      }
+
+      span.text(word + ' ');
+
+      self.description.append(span);
+
+      if ( i === 5 ) {
+
+        var diff = self.textWrapper.height() > self.height;
+
+        if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
+
+          self.truncated = true;
+        }
+
+        i = -1;
+      }
+
+      i ++;
+    });
+  };
+
+  Truncate.prototype.appendMoreButton = function () {
+
+    var self = this;
+
+    // create more button
+
+    this.more = $('<span class="truncator"><i>... </i>[<a href=""></a>]</span>');
+
+    // more button's text
+
+    this.more.find('a').text(self.moreLabel);
+
+    // more button's on click behavior
+
+    this.more.find('a').on('click', function () {
+
+      var moreLink = $(this);
+
+      // Exit if already an animation in progress
+
+      if ( self.item.find('.is-showing').length ) {
+        return false;
+      }
+
+      View.scrollToPointOfAttention(self.item, function () {
+
+        // Show more
+
+        if ( moreLink.text() === self.moreLabel ) {
+          
+          // If is intro
+
+          if ( self.isIntro ) {
+            self.unTruncate();
+            moreLink.closest('span').find('.reference').show();
+            moreLink.text(self.lessLabel);
+            moreLink.closest('span').find('i').hide();
+          }
+          
+          else {
+            // If there is already stuff shown, hide it first
+
+            if ( self.item.find('.is-shown').length ) {
+              
+              // Trigger the toggle view to hide current shown items
+
+              $rootScope.publish("toggle view",
+                { view: "text", item: self._id });
+
+              // Listen on hiding done
+
+              $rootScope.subscribe('did hide view', function (options) {
+
+                // Make sure it concerns our item
+
+                if ( options.item === self._id )  {
+
+                  // untruncate
+
+                  setTimeout(function () {
+                    self.unTruncate();
+                  });
+                }
+              });
+            }
+
+            else {
+              self.unTruncate();
+              moreLink.closest('span').find('.reference').show();
+              moreLink.text(self.lessLabel);
+              moreLink.closest('span').find('i').hide();
+            }
+          }
+        }
+
+        // hide
+
+        else {
+          self.reTruncate();
+          moreLink.closest('span').find('.reference').hide();
+          moreLink.text(self.moreLabel);
+          moreLink.closest('span').find('i').show();
+        }
+      });
+    });
+
+    this.description.append(this.more);
+  };
+
+  Truncate.prototype.unTruncate = function () {
+
+    console.log('showing more');
+      
+    var self = this;
+
+    var interval = 0;
+
+    var inc = 50;
+
+    // var inc = Math.ceil(self.height / self.words.length);
+
+    // show words 50 by 50
+
+    for ( var i = 0; i < this.words.length ; i += inc ) {
+      setTimeout(function () {
+        var k = this.i + inc;
+        for ( var j = this.i; j < k ; j ++ ) {
+          self.item.find('.truncated:eq(' + j + ')').show();
+        }
+      }.bind({ i: i }), interval += (inc * 1.5));
+    }
+
+    // on done showing words, wrap up
+  };
+
+  Truncate.prototype.reTruncate = function () {
+
+    console.log('showing less');
+    
+    var self = this;
+
+    var interval = 0;
+
+    var inc = Math.ceil(self.height / self.words.length);
+
+    for ( var i = 0; i < this.words.length ; i += inc ) {
+      setTimeout(function () {
+        var k = this.i + inc;
+        for ( var j = this.i; j < k ; j ++ ) {
+          self.item.find('.truncated:eq(' + j + ')').hide();
+        }
+      }.bind({ i: i }), interval += (inc * 2));
+    }
+  };
+
+  module.exports = Truncate;
+
+}();
+
+},{}],12:[function(require,module,exports){
 /***
 
 
@@ -853,7 +1076,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/stories.js":[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /***
 
 
@@ -1029,7 +1252,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-intro":"/home/francois/Dev/syn/app/web/js/true-story/stories/get-intro.js","./stories/get-items":"/home/francois/Dev/syn/app/web/js/true-story/stories/get-items.js","./stories/get-panel":"/home/francois/Dev/syn/app/web/js/true-story/stories/get-panel.js"}],"/home/francois/Dev/syn/app/web/js/true-story/stories/get-intro.js":[function(require,module,exports){
+},{"./stories/get-intro":14,"./stories/get-items":15,"./stories/get-panel":16}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1064,7 +1287,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/stories/get-items.js":[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1121,7 +1344,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/stories/get-panel.js":[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1159,7 +1382,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/template.js":[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1213,6 +1436,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           }));
 
         $('#intro').find('.item-references').hide();
+
+        new (require('./controllers/truncate'))(view);
       }
     },
 
@@ -1227,7 +1452,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/view.js":[function(require,module,exports){
+},{"./controllers/truncate":11}],18:[function(require,module,exports){
 /***
 
 
@@ -1337,7 +1562,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-intro.js":[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /***
 
 
@@ -1519,7 +1744,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-topics.js":[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /***
 
 
@@ -1687,7 +1912,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1725,7 +1950,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{"events":22}],22:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2028,7 +2253,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2053,7 +2278,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2141,14 +2366,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2738,7 +2963,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/true-story.js/index.js":[function(require,module,exports){
+},{"./support/isBuffer":25,"_process":24,"inherits":23}],27:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -2797,7 +3022,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory.js":[function(require,module,exports){
+},{"./lib/TrueStory.js":28}],28:[function(require,module,exports){
 (function (process){
 /***
 
@@ -3597,7 +3822,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":"/home/francois/Dev/true-story.js/lib/TrueStory/model.js","./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","./TrueStory/render":"/home/francois/Dev/true-story.js/lib/TrueStory/render.js","./When":"/home/francois/Dev/true-story.js/lib/When.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/model.js":[function(require,module,exports){
+},{"./TrueStory/model":29,"./TrueStory/parse-dot-notation":30,"./TrueStory/render":31,"./When":32,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":24,"domain":21,"events":22,"util":26}],29:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -3958,7 +4183,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4080,7 +4305,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],"/home/francois/Dev/true-story.js/lib/TrueStory/render.js":[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -4187,7 +4412,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/true-story.js/lib/When.js":[function(require,module,exports){
+},{"_process":24}],32:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4660,4 +4885,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);
+},{"./TrueStory":28,"_process":24}]},{},[2]);
