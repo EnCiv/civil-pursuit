@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":24,"util":28}],2:[function(require,module,exports){
+},{"events":20,"util":24}],2:[function(require,module,exports){
 /***
 
 
@@ -305,7 +305,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":14,"./stories":15,"./template":19,"./view":20,"./watchdogs/story-get-intro":21,"./watchdogs/story-get-topics":22,"/home/francois/Dev/true-story.js":29}],4:[function(require,module,exports){
+},{"./controller":4,"./model":10,"./stories":11,"./template":15,"./view":16,"./watchdogs/story-get-intro":17,"./watchdogs/story-get-topics":18,"/home/francois/Dev/true-story.js":25}],4:[function(require,module,exports){
 /***
 
 
@@ -412,110 +412,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = {
-    'bootstrap/responsive-image': require('./controllers/bootstrap/responsive-image'),
-    'get intro':                  require('./controllers/get-intro'),
-    'bind item':                  require('./controllers/bind-item'),
-    'bind panel':                 require('./controllers/bind-panel'),
-    'find panel':                 require('./controllers/find-panel'),
-    'get panel items':            require('./controllers/get-panel-items')
+    'bootstrap/responsive-image':   require('./controllers/bootstrap/responsive-image'),
+    'scroll to point of attention': require('./controllers/scroll-to-point-of-attention'),
+    'show': require('./controllers/show')
   };
 
 } ();
 
-},{"./controllers/bind-item":5,"./controllers/bind-panel":6,"./controllers/bootstrap/responsive-image":7,"./controllers/find-panel":8,"./controllers/get-intro":9,"./controllers/get-panel-items":10}],5:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  module.exports = function bindItem (item, view) {
-    console.info('[⇆]', 'bind item', { item: item, view: view });
-
-    var app = this;
-
-    view.find('.item-title').text(item.subject);
-    view.find('.description').text(item.description);
-
-    if ( ! item.references.length ) {
-      view.find('.item-references').hide();
-    }
-
-    if ( item.image ) {
-
-      var image = $('<img/>')
-
-      image.addClass('img-responsive');
-      image.attr('src', item.image);
-
-      view.find('.item-media').append(image);
-    }
-
-  };
-
-} ();
-
-},{}],6:[function(require,module,exports){
-/***
-
-
-
-                                        ,
-                                   ,   /^\     ___
-                                  /^\_/   `...'  /`
-                               ,__\    ,'     ~ (
-                            ,___\ ,,    .,       \
-                             \___ \\\ .'.'   .-.  )
-                               .'.-\\\`.`.  '.-. (
-                              / (==== ."".  ( o ) \
-                            ,/u  `~~~'|  /   `-'   )
-                           "")^u ^u^|~| `""".  ~_ /
-                             /^u ^u ^\~\     ".  \\
-                     _      /u^  u ^u  ~\      ". \\
-                    ( \     )^ ^U ^U ^U\~\      ". \\
-                   (_ (\   /^U ^ ^U ^U  ~|       ". `\
-                  (_  _ \  )U ^ U^ ^U ^|~|        ". `\.
-                 (_  = _(\ \^ U ^U ^ U^ ~|          ".`.;      Joan Stark
-                (_ -(    _\_)U ^ ^ U^ ^|~|            ""
-                (_    =   ( ^ U^ U^ ^ U ~|
-                (_ -  ( ~  = ^ U ^U U ^|~/
-                 (_  =     (_^U^ ^ U^ U /
-                  (_-   ~_(/ \^ U^ ^U^,"
-                   (_ =  _/   |^ u^u."
-                    (_  (/    |u^ u.(
-                     (__/     )^u^ u/
-                             /u^ u^(
-                            |^ u^ u/
-                            |u^ u^(       ____
-                            |^u^ u(    .-'    `-,
-                             \^u ^ \  / ' .---.  \
-                       jgs    \^ u^u\ |  '  `  ;  |
-                               \u^u^u:` . `-'  ;  |
-                                `-.^ u`._   _.'^'./
-                                   "-.^.-```_=~._/
-
-
-
-
-**/
-
-; ! function () {
-
-  'use strict';
-
-  module.exports = function bindPanel (panel, view) {
-    var id = 'panel-' + panel.type;
-
-    if ( panel.parent ) {
-      id += '-' + panel.parent;
-    }
-
-    view.attr('id', id);
-    
-    view.find('.panel-title').text(panel.type);
-  };
-
-} ();
-
-},{}],7:[function(require,module,exports){
+},{"./controllers/bootstrap/responsive-image":5,"./controllers/scroll-to-point-of-attention":6,"./controllers/show":7}],5:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -537,261 +441,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],8:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  module.exports = function findPanel (panel) {
-
-    var app = this;
-
-    var query = { type: panel.type };
-
-    if ( panel.parent ) {
-      query.parent = panel.parent;
-    }
-
-    console.info('[⟳]', "\tfind   \t", 'panels', query, app.model('panels'));
-
-    var found = app.model('panels')
-      .filter(function (panel) {
-        for ( var i in query ) {
-          if ( panel[i] !== query[i] ) {
-            return false;
-          }
-        }
-        return true;
-      })
-      [0];
-
-    console.info('[✔]', "\tfound   \t", 'panel', found || []);
-
-    return found;
-  };
-
-} ();
-
-},{}],9:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  module.exports = function getIntro () {
-
-    console.info(new (
-      function TrueModule_synapp__action_status () {
-        this['getting intro'] = '↺';
-      })());
-
-    var app = this;
-
-    this.emitter('socket').emit('get intro');
-
-    this.emitter('socket').on('got intro', function (intro) {
-
-      console.info(new (
-        function TrueModule_synapp__action_status () {
-          this['getting intro'] = '✔';
-        })());
-
-      app.model('intro', intro);
-    });
-
-  };
-
-} ();
-
-},{}],10:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                            
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
-
-
-
-
-               .. ..oooo.....ooo...
-            .odSS4PYYYSSOOXXXXXXXXXOodbgooo.
-           /SSYod$$$$SSOIIPXXXXXXXXXYYP.oo.*b.
-          ($$Yd$$$$SSSOII:XXXXXXXX:IIoSSS$$b.Y,
-           \Yd$$$$SSSOII:XXXXXXXXXX:IIOOSSS$$$b\
-            d$$$$SSSOOI:XP"YXXXXXXXX:IIOOSSSS$$$\
-            Y$$$SSSOOII:XbdXXXXXP"YX:IIOOOSS$$$$)
-            'Y$$$SSSOI:XXXXXXXXXbodX:IIOOSS$$$$$/
-             "Y$$$SSSOI(PoTXXXXXTo)XXIIOOOSS$$$*'
-               ""*Y$S(((PXXXXXXXY))dIIOSSS$$dP'
-                  "*'()P;XXXXXXXXY)IIOSSS$P".oS,
-                  (S'(P;XXXXXXXP;Y)XXYOP".oSSSSb
-                 (S'(P;'XXXXXXX';Y).ooooSSSSSSSS)
-                 (S'(P;'XXXXXXP';Y).oSSSSSSSSSSSP
-                 (SS'Y);YXXXXX';(Y.oSSSSSSSSSSSSP
-                  YSS'Y)'YXXX".(Y.oSSP.SSSSSSSSY
-                   YSS'"" XXX""oooSSP.SSSSSSSSY
-                   SSSSSS YXXX:SSSSP.SSSSSSSSY
-                   SSSSSP  YXb:SSSP.S"SSSSSSP
-                   S(OO)S   YXb:SY    )SSSSS
-                   SSSSO    )YXb.I    ISSSSP
-                   YSSSY    I."YXXb   Y(SS)I
-                   )SSS(    dSSo.""*b  YSSSY
-                   OooSb   dSSSSP      )SSS(
-                           dSSSY       OooSS
-                           OooSP
-
-
-                                   __                          __         
-                                  /  |                        /  |        
-    _______   ______   _______   _$$ |_     ______    ______  $$ |        
-   /       | /      \ /       \ / $$   |   /      \  /      \ $$ | ______ 
-  /$$$$$$$/ /$$$$$$  |$$$$$$$  |$$$$$$/   /$$$$$$  |/$$$$$$  |$$ |/      |
-  $$ |      $$ |  $$ |$$ |  $$ |  $$ | __ $$ |  $$/ $$ |  $$ |$$ |$$$$$$/ 
-  $$ \_____ $$ \__$$ |$$ |  $$ |  $$ |/  |$$ |      $$ \__$$ |$$ |        
-  $$       |$$    $$/ $$ |  $$ |  $$  $$/ $$ |      $$    $$/ $$ |        
-   $$$$$$$/  $$$$$$/  $$/   $$/    $$$$/  $$/        $$$$$$/  $$/         
-                                                                          
-                                                                              
-                           __                               
-                          /  |                              
-                          $$ |  ______    ______  
-                   ______ $$ | /      \  /      \ 
-                  /      |$$ |/$$$$$$  |/$$$$$$  |
-                  $$$$$$/ $$ |$$    $$ |$$ |  $$/ 
-                          $$ |$$$$$$$$/ $$ |      
-                          $$ |$$       |$$ |      
-                          $$/  $$$$$$$/ $$/       
-                                      
-                                      
-                                      
-
-
-                                          
-                                                    
-                                            $$      
-                                            $$      
-                       $$$$$$    $$$$$$   $$$$$$    
-                      $$    $$  $$    $$    $$      
-                      $$    $$  $$$$$$$$    $$      
-                      $$    $$  $$          $$  $$  
-                       $$$$$$$   $$$$$$$     $$$$   
-                            $$                      
-                      $$    $$                      
-                       $$$$$$                       
-
-                                                       
-                                                            
-                                                        $$  
-                                                        $$  
-                 $$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$  
-                $$    $$        $$  $$    $$  $$    $$  $$  
-                $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$  
-                $$    $$  $$    $$  $$    $$  $$        $$  
-                $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$  
-                $$                                          
-                $$                                          
-                $$                                          
-
-                                                          
-                                                                
-                $$    $$                                        
-                      $$                                        
-                $$  $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$$  
-                $$    $$      $$    $$  $$   $$   $$  $$        
-                $$    $$      $$$$$$$$  $$   $$   $$   $$$$$$   
-                $$    $$  $$  $$        $$   $$   $$        $$  
-                $$     $$$$    $$$$$$$  $$   $$   $$  $$$$$$$   
-                                                                
-                                                                
-
-
-***/
-
-; ! function () {
-
-  'use strict';
-
-  function gotPanels (panelItems) {
-    console.info(new (function synapp_got_panel_items () {})());
-    
-    var app = this;
-
-    app.model('items').concat(panelItems.items);
-
-    var id = '#panel-' + panelItems.panel.type;
-
-    if ( panelItems.panel.parent ) {
-      id += '-' + panelItems.panel.parent;
-    }
-
-    // app.view('item').render(function () {
-      
-    // })
-
-    // app.controller('true-story/render-view')({
-    //   container:  $(id).find('.items'),
-    //   template:   {
-    //     url: '/partial/item'
-    //   },
-    //   engine:     function (view, locals) {
-    //     view = $(view);
-
-    //     // app.controller('bind panel')(locals.panel, view);
-
-    //     return view;
-    //   },
-    //   locals:     { items: panelItems.items },
-    //   append:     true
-    // });
-  }
-
-  module.exports = function getPanelItems (panel) {
-
-    console.info(new (function synapp_getting_panel_items () {})());
-
-    this.emitter('socket').emit('get panel items', panel, {
-      limit: synapp["navigator batch size"] });
-
-    this.emitter('socket').on('got panel items', gotPanels.bind(this));
-
-  };
-
-} ();
-
-},{}],11:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -820,7 +470,57 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],12:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  function show (elem, options, cb) {
+    // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+    if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+      return false;
+    }
+
+    // make sure margin-top is equal to height for smooth scrolling
+
+    elem.css('margin-top', '-' + elem.height() + 'px');
+
+    // animate is-section
+
+    elem.find('.is-section:first').animate(
+      
+      {
+        'margin-top': 0,
+        // 'padding-top': 0,
+      },
+
+      500,
+
+      function () {
+        elem.removeClass('is-showing').addClass('is-shown');
+        
+        // $rootScope.publish('did show view', options);
+        
+        if ( elem.css('margin-top') !== 0 ) {
+          elem.animate({'margin-top': 0}, 250);
+        }
+        
+        if ( cb ) {
+          cb();
+        }
+      });
+
+    elem.animate({
+       opacity: 1
+      }, 500);
+  }
+
+  module.exports = show;
+
+}();
+
+},{}],8:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1045,7 +745,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./scroll-to-point-of-attention":11}],13:[function(require,module,exports){
+},{"./scroll-to-point-of-attention":6}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1076,7 +776,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /***
 
 
@@ -1138,7 +838,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /***
 
 
@@ -1314,7 +1014,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-intro":16,"./stories/get-items":17,"./stories/get-panel":18}],16:[function(require,module,exports){
+},{"./stories/get-intro":12,"./stories/get-items":13,"./stories/get-panel":14}],12:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1349,7 +1049,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],17:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1406,7 +1106,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],18:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1444,7 +1144,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],19:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1511,6 +1211,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       url: '/partial/item',
       controller: function (view, item) {
 
+        var app = this;
+
         var hasMedia;
         var yt;
 
@@ -1570,6 +1272,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         else {
           view.find('.promoted-percent').text('0%');
         }
+
+        // ITEM TOGGLE DETAILS
+
+        view.find('.toggle-promote').on('click', function () {
+          app.controller('scroll to point of attention')(view, function () {
+            app.controller('show')(view.closest('.panel').find('.evaluator'));
+          });
+        });
       }
     }
   
@@ -1577,7 +1287,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./controllers/truncate":12,"./controllers/youtube":13}],20:[function(require,module,exports){
+},{"./controllers/truncate":8,"./controllers/youtube":9}],16:[function(require,module,exports){
 /***
 
 
@@ -1687,7 +1397,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /***
 
 
@@ -1869,7 +1579,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /***
 
 
@@ -2037,7 +1747,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2075,7 +1785,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":24}],24:[function(require,module,exports){
+},{"events":20}],20:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2378,7 +2088,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],25:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2403,7 +2113,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],26:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2491,14 +2201,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],27:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],28:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3088,7 +2798,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":27,"_process":26,"inherits":25}],29:[function(require,module,exports){
+},{"./support/isBuffer":23,"_process":22,"inherits":21}],25:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -3147,7 +2857,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":30}],30:[function(require,module,exports){
+},{"./lib/TrueStory.js":26}],26:[function(require,module,exports){
 (function (process){
 /***
 
@@ -3947,7 +3657,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":31,"./TrueStory/parse-dot-notation":32,"./TrueStory/render":33,"./When":34,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":26,"domain":23,"events":24,"util":28}],31:[function(require,module,exports){
+},{"./TrueStory/model":27,"./TrueStory/parse-dot-notation":28,"./TrueStory/render":29,"./When":30,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":22,"domain":19,"events":20,"util":24}],27:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4308,7 +4018,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],32:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4430,7 +4140,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -4537,7 +4247,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":26}],34:[function(require,module,exports){
+},{"_process":22}],30:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5010,4 +4720,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":30,"_process":26}]},{},[2]);
+},{"./TrueStory":26,"_process":22}]},{},[2]);

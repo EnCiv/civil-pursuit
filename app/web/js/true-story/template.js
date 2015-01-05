@@ -64,6 +64,8 @@
       url: '/partial/item',
       controller: function (view, item) {
 
+        var app = this;
+
         var hasMedia;
         var yt;
 
@@ -123,6 +125,14 @@
         else {
           view.find('.promoted-percent').text('0%');
         }
+
+        // ITEM TOGGLE DETAILS
+
+        view.find('.toggle-promote').on('click', function () {
+          app.controller('scroll to point of attention')(view, function () {
+            app.controller('show')(view.closest('.panel').find('.evaluator'));
+          });
+        });
       }
     }
   

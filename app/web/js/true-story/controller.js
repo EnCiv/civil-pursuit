@@ -104,12 +104,9 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = {
-    'bootstrap/responsive-image': require('./controllers/bootstrap/responsive-image'),
-    'get intro':                  require('./controllers/get-intro'),
-    'bind item':                  require('./controllers/bind-item'),
-    'bind panel':                 require('./controllers/bind-panel'),
-    'find panel':                 require('./controllers/find-panel'),
-    'get panel items':            require('./controllers/get-panel-items')
+    'bootstrap/responsive-image':   require('./controllers/bootstrap/responsive-image'),
+    'scroll to point of attention': require('./controllers/scroll-to-point-of-attention'),
+    'show': require('./controllers/show')
   };
 
 } ();
