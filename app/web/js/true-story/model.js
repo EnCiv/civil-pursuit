@@ -54,7 +54,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     "intro":                      null,
     "items":                      [],
     "online users":               0,
-    "panel":                      {}
+    "panel":                      {},
+    "evaluations":                []
   };
 
 } ();

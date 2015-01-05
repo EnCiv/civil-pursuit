@@ -144,6 +144,14 @@
 
           app.controller('scroll to point of attention')(view, function () {
             app.controller('show')(evaluator);
+
+            var evaluationExists = app.model('evaluations').some(function (evaluation) {
+              return evaluation.item === item._id;
+            });
+
+            if ( ! evaluationExists ) {
+              app.emitter('socket').emit('get evaluation', item);
+            }
           });
 
           return false;

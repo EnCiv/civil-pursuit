@@ -619,6 +619,46 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
         });
 
+
+
+        /***
+
+
+
+
+
+
+
+
+
+
+
+
+        ***/
+
+        socket.on('get evaluation', function () {
+          onEvent('get evaluation', arguments);
+        });
+
+        socket.on('get evaluation', function (item) {
+          safe(socket, function () {
+
+            var url = 'models/Item.evaluate/' + item._id;
+
+            monson.get(url)
+
+              .on('error', function (error) {
+
+              })
+
+              .on('success', function (evaluation) {
+                pronto.emit('message', 'socket got evaluation from monson');
+                socket.emit('got evaluation', evaluation);
+              });
+
+          });
+        });
+
       });
 
       io.on('error', function (error) {
