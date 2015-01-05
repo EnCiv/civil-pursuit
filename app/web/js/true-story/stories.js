@@ -41,73 +41,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 ***/
 
 
-
-
-
-
-/***
-
-
-                                     __
-                         .--.      .'  `.
-                       .' . :\    /   :  L
-                       F     :\  /   . : |        .-._
-                      /     :  \/        J      .' ___\
-                     J     :   /      : : L    /--'   ``.
-                     F      : J           |  .<'.o.  `-'>
-                    /        J             L \_>.   .--w)
-                   J        /              \_/|   . `-__|
-                   F                        / `    -' /|)
-                  |   :                    J   '        |
-                 .'   ':                   |    .    :  \
-                /                          J      :     |L
-               F                              |     \   ||
-              F .                             |   :      |
-             F  |                             ; .   :  : F
-            /   |                                     : J
-           J    J             )                ;        F
-           |     L           /      .:'                J
-        .-'F:     L        ./       :: :       .       F
-        `-'F:     .\    `:.J         :::.             J
-          J       ::\    `:|        |::::\            |
-          J        |:`.    J        :`:::\            F
-           L   :':/ \ `-`.  \       : `:::|        .-'
-           |     /   L    >--\         :::|`.    .-'
-           J    J    |    |   L     .  :::: :`, /
-            L   F    J    )   |        >::   : /
-            |  J      L   F   \     .-.:'   . /
-            ): |     J   /     `-   | |   .--'
-            /  |     |: J        L  J J   )
-            L  |     |: |        L   F|   /
-            \: J     \:  L       \  /  L |
-             L |      \  |        F|   | )
-             J F       \ J       J |   |J
-              L|        \ \      | |   | L
-              J L        \ \     F \   F |
-               L\         \ \   J   | J   L
-              /__\_________)_`._)_  |_/   \_____
-                                  ""   `"""
-
-               __                          __                     
-              /  |                        /  |                    
-    _______  _$$ |_     ______    ______  $$/   ______    _______ 
-   /       |/ $$   |   /      \  /      \ /  | /      \  /       |
-  /$$$$$$$/ $$$$$$/   /$$$$$$  |/$$$$$$  |$$ |/$$$$$$  |/$$$$$$$/ 
-  $$      \   $$ | __ $$ |  $$ |$$ |  $$/ $$ |$$    $$ |$$      \ 
-   $$$$$$  |  $$ |/  |$$ \__$$ |$$ |      $$ |$$$$$$$$/  $$$$$$  |
-  /     $$/   $$  $$/ $$    $$/ $$ |      $$ |$$       |/     $$/ 
-  $$$$$$$/     $$$$/   $$$$$$/  $$/       $$/  $$$$$$$/ $$$$$$$/  
-                                                                  
-           
-
-
-
-
-
-
-
-***/
-
 ! function () {
 
   'use strict';
@@ -118,52 +51,70 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     // http://patorjk.com/software/taag/#p=display&f=Small&t=online
 
-    /** EMITTER:SOCKET */
+    /** SOCKET ERROR */
 
     this.emitter('socket')
       
       .on('error', function (error) {
         console.warn('socket error', socket);
-      })
-
-      .on('connect', function () {
-        app.emitter('socket').emit('get intro');
-        app.model('panels').push({ type: 'Topic' });
-      })
-
-      .on('got intro', function (intro) {
-        app.model('intro', intro);
-      })
-
-      .on('got panel items', function (panelItems) {
-        app.render('panel', panelItems);
-
-        app.on('rendered panel', function (panelView) {
-          app.view('panels').append(panelView);
-
-          panelItems.items.forEach(function (item) {
-            app.render('item', item);
-          });
-
-          app.on('rendered item', function (view) {
-            panelView.find('.items').append(view);
-          });
-        });
       });
+
+
+    /** Get intro */
+
+    require('./stories/get-intro').apply(this);
+      
+    /** Get panel */
+
+    require('./stories/get-panel').apply(this);
+
+    /** Get items **/
+
+    require('./stories/get-items').apply(this);
+
+    /** Get more items */
+
+    /** STORY GET TOPICS */
+
+    // ! function getTopicsItems () {
+
+    //   app
+    //     .on('rendered panel', function (panel) {
+
+    //       var panel_id      =   panel.attr('id');
+    //       var panel_type    =   panel_id.split('-')[1];
+    //       var panel_parent  =   panel_id.split('-')[2];
+
+    //       var panel_obj     =   {
+    //         type: panel_type
+    //       };
+
+    //       if ( panel_parent ) {
+    //         panel_obj.parent = panel_parent;
+    //       }
+
+    //       app.emitter('socket')
+    //         .on('got panel items', function (panelItems) {
+
+    //           console.error('oh yeah')
+
+    //           app.on('rendered item', function (itemView) {
+    //             panel.find('.items').append(itemView);
+    //           });
+
+    //           panelItems.items.forEach(function (item, i) {
+    //             // if ( i < panelItems.panel.limit - 1 ) {
+    //               app.render('item', item);
+    //             // }
+    //           });
+    //         });
+        
+    //       app.emitter('socket').emit('get panel items', panel_obj);
+    //     });
+
+    // }();
 
     /** MODEL */
-
-    app.follow
-      
-      .on('update intro', function (intro) {
-        app.render('intro', intro.new);
-      });
-
-    app
-
-      .on('push panels', function (panel) {
-        app.emitter('socket').emit('get panel items', panel);
-      });
 
     /** when emitter socket triggers error  */
     /** then Function */

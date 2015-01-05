@@ -429,35 +429,35 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
                       
                             
                             
-         $$$$$$   $$$$$$$   
-        $$    $$  $$    $$  
-        $$    $$  $$    $$  
-        $$    $$  $$    $$  
-         $$$$$$   $$    $$  
-                            
-                            
-                                                              
-                                                              
-              $$  $$                                          
-              $$                                              
-         $$$$$$$  $$   $$$$$$$   $$$$$$$   $$$$$$   $$$$$$$   
-        $$    $$  $$  $$        $$        $$    $$  $$    $$  
-        $$    $$  $$   $$$$$$   $$        $$    $$  $$    $$  
-        $$    $$  $$        $$  $$        $$    $$  $$    $$  
-         $$$$$$$  $$  $$$$$$$    $$$$$$$   $$$$$$   $$    $$  
-                                                              
-                                                              
-                                                        
-                                                $$      
-                                                $$      
-                $$$$$$$    $$$$$$    $$$$$$$  $$$$$$    
-        $$$$$$  $$    $$  $$    $$  $$          $$      
-                $$    $$  $$$$$$$$  $$          $$      
-                $$    $$  $$        $$          $$  $$  
-                $$    $$   $$$$$$$   $$$$$$$     $$$$   
-                                                        
-                                                        
-                                                                          
+           $$$$$$   $$$$$$$   
+          $$    $$  $$    $$  
+          $$    $$  $$    $$  
+          $$    $$  $$    $$  
+           $$$$$$   $$    $$  
+                              
+                              
+                                                                
+                                                                
+                $$  $$                                          
+                $$                                              
+           $$$$$$$  $$   $$$$$$$   $$$$$$$   $$$$$$   $$$$$$$   
+          $$    $$  $$  $$        $$        $$    $$  $$    $$  
+          $$    $$  $$   $$$$$$   $$        $$    $$  $$    $$  
+          $$    $$  $$        $$  $$        $$    $$  $$    $$  
+           $$$$$$$  $$  $$$$$$$    $$$$$$$   $$$$$$   $$    $$  
+                                                                
+                                                                
+                                                          
+                                                  $$      
+                                                  $$      
+                  $$$$$$$    $$$$$$    $$$$$$$  $$$$$$    
+          $$$$$$  $$    $$  $$    $$  $$          $$      
+                  $$    $$  $$$$$$$$  $$          $$      
+                  $$    $$  $$        $$          $$  $$  
+                  $$    $$   $$$$$$$   $$$$$$$     $$$$   
+                                                          
+                                                          
+                                                                            
                                                   
                                                   
                                             
@@ -473,38 +473,38 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
                     
                       
                             
-                            
-         $$$$$$   $$$$$$$   
-        $$    $$  $$    $$  
-        $$    $$  $$    $$  
-        $$    $$  $$    $$  
-         $$$$$$   $$    $$  
-                            
-                                      
-                                      
-                              $$      
-                              $$      
-         $$$$$$    $$$$$$   $$$$$$    
-        $$    $$  $$    $$    $$      
-        $$    $$  $$$$$$$$    $$      
-        $$    $$  $$          $$  $$  
-         $$$$$$$   $$$$$$$     $$$$   
-              $$                      
-        $$    $$                      
-         $$$$$$                       
+                              
+           $$$$$$   $$$$$$$   
+          $$    $$  $$    $$  
+          $$    $$  $$    $$  
+          $$    $$  $$    $$  
+           $$$$$$   $$    $$  
+                              
+                                        
+                                        
+                                $$      
+                                $$      
+           $$$$$$    $$$$$$   $$$$$$    
+          $$    $$  $$    $$    $$      
+          $$    $$  $$$$$$$$    $$      
+          $$    $$  $$          $$  $$  
+           $$$$$$$   $$$$$$$     $$$$   
+                $$                      
+          $$    $$                      
+           $$$$$$                       
 
 
-                                                    
-        $$              $$                          
-                        $$                          
-        $$  $$$$$$$   $$$$$$     $$$$$$    $$$$$$   
-        $$  $$    $$    $$      $$    $$  $$    $$  
-        $$  $$    $$    $$      $$        $$    $$  
-        $$  $$    $$    $$  $$  $$        $$    $$  
-        $$  $$    $$     $$$$   $$         $$$$$$   
-                                                    
-                                                    
-                                                             
+                                                      
+          $$              $$                          
+                          $$                          
+          $$  $$$$$$$   $$$$$$     $$$$$$    $$$$$$   
+          $$  $$    $$    $$      $$    $$  $$    $$  
+          $$  $$    $$    $$      $$        $$    $$  
+          $$  $$    $$    $$  $$  $$        $$    $$  
+          $$  $$    $$     $$$$   $$         $$$$$$   
+                                                      
+                                                      
+                                                               
                                                   
                                                   
                                             
@@ -562,18 +562,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           .     $$                      
           $$    $$                      
           .$$$$$$       
-                                                                    
-                                                      
-                                                  $$  
-                                                  $$  
-          .$$$$$$    $$$$$$   $$$$$$$    $$$$$$   $$  
-          $$    $$        $$  $$    $$  $$    $$  $$  
-          $$    $$   $$$$$$$  $$    $$  $$$$$$$$  $$  
-          $$    $$  $$    $$  $$    $$  $$        $$  
-          $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$  
-          $$                                          
-          $$                                          
-          $$                                          
+                                                                                                            
 
                                                           
                                                           
@@ -592,22 +581,16 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
         ***/
 
-        socket.on('get panel items', function () {
-          onEvent('get panel items', arguments);
+        socket.on('get items', function () {
+          onEvent('get items', arguments);
         });
 
-        socket.on('get panel items', function (panel, options) {
+        socket.on('get items', function (panel) {
 
           safe(socket, function () {
 
             if ( ! panel || typeof panel !== 'object' ) {
               throw new Error('Missing panel');
-            }
-
-            options = options || {};
-
-            if ( typeof options !== 'object' ) {
-              throw new Error('Missing options');
             }
 
             var url = 'models/Item?type=' + panel.type;
@@ -616,19 +599,38 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
               url += '&parent=' + panel.parent;
             }
 
-            if ( 'limit' in options ) {
-              url += '&' + options.limit;
-            }
+            url += '&' + panel.size + '&$skip=' + panel.skip;
+
+            // if ( 'limit' in options ) {
+            //   url += '&' + options.limit;
+            // }
+
+            // if ( 'skip' in options ) {
+            //   url += '&$skip=' + options.skip;
+            // }
 
             /** Send request to monson */
+
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
+            console.log('monson url', url);
 
             monson.get(url)
               .on('error', function (error) {
                 throw error;
               })
               .on('success', function (items) {
-                pronto.emit('message', 'socket got panel items from monson');
-                socket.emit('got panel items', {
+                pronto.emit('message', 'socket got items from monson');
+                socket.emit('got items', {
                   panel: panel,
                   items: items
                 });

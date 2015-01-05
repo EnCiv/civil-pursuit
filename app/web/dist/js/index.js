@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":17,"util":21}],2:[function(require,module,exports){
+},{"events":21,"util":25}],2:[function(require,module,exports){
 /***
 
 
@@ -292,75 +292,11 @@ Nina Butorac
 
       .view(require('./view'))
 
-      .template({
-        "online users": {
-          template: '.online-users',
-          controller: function (view, online_users) {
-            view.text(online_users);
-          }
-        },
-
-        "panel": {
-          url: '/partial/panel',
-          controller: function (view, panelItems) {
-
-            var id = 'panel-' + panelItems.panel.type;
-
-            if ( panelItems.panel.parent ) {
-              id += '-' + panelItems.panel.parent;
-            }
-
-            view.attr('id', id);
-
-            view.find('.panel-title').text(panelItems.panel.type);
-
-          }
-        },
-
-        "intro": {
-          template: '#intro',
-          controller: function (view, intro) {
-            var app = this;
-
-            // view.find('.panel-title').text('intro.subject');
-            $('#intro').find('.panel-title').text(intro.subject);
-            $('#intro').find('.item-title').text(intro.subject);
-            $('#intro').find('.description').text(intro.description);
-
-            $('#intro').find('.item-media').append(
-              app.controller('bootstrap/responsive-image')({
-                src: intro.image
-              }));
-
-            $('#intro').find('.item-references').hide();
-          }
-        },
-
-        "item": {
-          url: '/partial/item',
-          controller: function (view, item) {
-            view.find('.item-title').text(item.subject);
-          }
-        }
-      })
+      .template(require('./template'))
 
       .controller(require('./controller'))
 
       .tell(require('./stories'))
-
-      /**
-                                                         
-                                                         
-          $$                            $$               
-          $$                            $$               
-        $$$$$$     $$$$$$    $$$$$$$  $$$$$$    $$$$$$$  
-          $$      $$    $$  $$          $$     $$        
-          $$      $$$$$$$$   $$$$$$     $$      $$$$$$   
-          $$  $$  $$              $$    $$  $$       $$  
-           $$$$    $$$$$$$  $$$$$$$      $$$$  $$$$$$$   
-                                                         
-                                                         
-        ***/
 
       .watchDog({
         'story get topics':   require('./watchdogs/story-get-topics'),
@@ -369,7 +305,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":11,"./stories":12,"./view":13,"./watchdogs/story-get-intro":14,"./watchdogs/story-get-topics":15,"/home/francois/Dev/true-story.js":22}],4:[function(require,module,exports){
+},{"./controller":4,"./model":11,"./stories":12,"./template":16,"./view":17,"./watchdogs/story-get-intro":18,"./watchdogs/story-get-topics":19,"/home/francois/Dev/true-story.js":26}],4:[function(require,module,exports){
 /***
 
 
@@ -901,40 +837,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 
 
-
-/***
-
-                           ,-.             __
-                         ,'   `---.___.---'  `.
-                       ,'   ,-                 `-._
-                     ,'    /                       \
-                  ,\/     /                        \\
-              )`._)>)     |                         \\
-              `>,'    _   \                  /       |\
-                )      \   |   |            |        |\\
-       .   ,   /        \  |    `.          |        | ))
-       \`. \`-'          )-|      `.        |        /((
-        \ `-`   a`     _/ ;\ _     )`-.___.--\      /  `'
-         `._         ,'    \`j`.__/        \  `.    \
-           / ,    ,'       _)\   /`        _) ( \   /
-           \__   /        /nn_) (         /nn__\_) (
-             `--'     hjw   /nn__\             /nn__\
-
-
-                                     __            __           
-                                    /  |          /  |          
-       _____  ____    ______    ____$$ |  ______  $$ |  _______ 
-      /     \/    \  /      \  /    $$ | /      \ $$ | /       |
-      $$$$$$ $$$$  |/$$$$$$  |/$$$$$$$ |/$$$$$$  |$$ |/$$$$$$$/ 
-      $$ | $$ | $$ |$$ |  $$ |$$ |  $$ |$$    $$ |$$ |$$      \ 
-      $$ | $$ | $$ |$$ \__$$ |$$ \__$$ |$$$$$$$$/ $$ | $$$$$$  |
-      $$ | $$ | $$ |$$    $$/ $$    $$ |$$       |$$ |/     $$/ 
-      $$/  $$/  $$/  $$$$$$/   $$$$$$$/  $$$$$$$/ $$/ $$$$$$$/  
-                                                                
-                                
-
-***/
-
 ; ! function () {
 
   'use strict';
@@ -995,73 +897,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 ***/
 
 
-
-
-
-
-/***
-
-
-                                     __
-                         .--.      .'  `.
-                       .' . :\    /   :  L
-                       F     :\  /   . : |        .-._
-                      /     :  \/        J      .' ___\
-                     J     :   /      : : L    /--'   ``.
-                     F      : J           |  .<'.o.  `-'>
-                    /        J             L \_>.   .--w)
-                   J        /              \_/|   . `-__|
-                   F                        / `    -' /|)
-                  |   :                    J   '        |
-                 .'   ':                   |    .    :  \
-                /                          J      :     |L
-               F                              |     \   ||
-              F .                             |   :      |
-             F  |                             ; .   :  : F
-            /   |                                     : J
-           J    J             )                ;        F
-           |     L           /      .:'                J
-        .-'F:     L        ./       :: :       .       F
-        `-'F:     .\    `:.J         :::.             J
-          J       ::\    `:|        |::::\            |
-          J        |:`.    J        :`:::\            F
-           L   :':/ \ `-`.  \       : `:::|        .-'
-           |     /   L    >--\         :::|`.    .-'
-           J    J    |    |   L     .  :::: :`, /
-            L   F    J    )   |        >::   : /
-            |  J      L   F   \     .-.:'   . /
-            ): |     J   /     `-   | |   .--'
-            /  |     |: J        L  J J   )
-            L  |     |: |        L   F|   /
-            \: J     \:  L       \  /  L |
-             L |      \  |        F|   | )
-             J F       \ J       J |   |J
-              L|        \ \      | |   | L
-              J L        \ \     F \   F |
-               L\         \ \   J   | J   L
-              /__\_________)_`._)_  |_/   \_____
-                                  ""   `"""
-
-               __                          __                     
-              /  |                        /  |                    
-    _______  _$$ |_     ______    ______  $$/   ______    _______ 
-   /       |/ $$   |   /      \  /      \ /  | /      \  /       |
-  /$$$$$$$/ $$$$$$/   /$$$$$$  |/$$$$$$  |$$ |/$$$$$$  |/$$$$$$$/ 
-  $$      \   $$ | __ $$ |  $$ |$$ |  $$/ $$ |$$    $$ |$$      \ 
-   $$$$$$  |  $$ |/  |$$ \__$$ |$$ |      $$ |$$$$$$$$/  $$$$$$  |
-  /     $$/   $$  $$/ $$    $$/ $$ |      $$ |$$       |/     $$/ 
-  $$$$$$$/     $$$$/   $$$$$$/  $$/       $$/  $$$$$$$/ $$$$$$$/  
-                                                                  
-           
-
-
-
-
-
-
-
-***/
-
 ! function () {
 
   'use strict';
@@ -1072,52 +907,70 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     // http://patorjk.com/software/taag/#p=display&f=Small&t=online
 
-    /** EMITTER:SOCKET */
+    /** SOCKET ERROR */
 
     this.emitter('socket')
       
       .on('error', function (error) {
         console.warn('socket error', socket);
-      })
-
-      .on('connect', function () {
-        app.emitter('socket').emit('get intro');
-        app.model('panels').push({ type: 'Topic' });
-      })
-
-      .on('got intro', function (intro) {
-        app.model('intro', intro);
-      })
-
-      .on('got panel items', function (panelItems) {
-        app.render('panel', panelItems);
-
-        app.on('rendered panel', function (panelView) {
-          app.view('panels').append(panelView);
-
-          panelItems.items.forEach(function (item) {
-            app.render('item', item);
-          });
-
-          app.on('rendered item', function (view) {
-            panelView.find('.items').append(view);
-          });
-        });
       });
+
+
+    /** Get intro */
+
+    require('./stories/get-intro').apply(this);
+      
+    /** Get panel */
+
+    require('./stories/get-panel').apply(this);
+
+    /** Get items **/
+
+    require('./stories/get-items').apply(this);
+
+    /** Get more items */
+
+    /** STORY GET TOPICS */
+
+    // ! function getTopicsItems () {
+
+    //   app
+    //     .on('rendered panel', function (panel) {
+
+    //       var panel_id      =   panel.attr('id');
+    //       var panel_type    =   panel_id.split('-')[1];
+    //       var panel_parent  =   panel_id.split('-')[2];
+
+    //       var panel_obj     =   {
+    //         type: panel_type
+    //       };
+
+    //       if ( panel_parent ) {
+    //         panel_obj.parent = panel_parent;
+    //       }
+
+    //       app.emitter('socket')
+    //         .on('got panel items', function (panelItems) {
+
+    //           console.error('oh yeah')
+
+    //           app.on('rendered item', function (itemView) {
+    //             panel.find('.items').append(itemView);
+    //           });
+
+    //           panelItems.items.forEach(function (item, i) {
+    //             // if ( i < panelItems.panel.limit - 1 ) {
+    //               app.render('item', item);
+    //             // }
+    //           });
+    //         });
+        
+    //       app.emitter('socket').emit('get panel items', panel_obj);
+    //     });
+
+    // }();
 
     /** MODEL */
-
-    app.follow
-      
-      .on('update intro', function (intro) {
-        app.render('intro', intro.new);
-      });
-
-    app
-
-      .on('push panels', function (panel) {
-        app.emitter('socket').emit('get panel items', panel);
-      });
 
     /** when emitter socket triggers error  */
     /** then Function */
@@ -1176,7 +1029,205 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],13:[function(require,module,exports){
+},{"./stories/get-intro":13,"./stories/get-items":14,"./stories/get-panel":15}],13:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function getIntro () {
+
+    var app = this;
+
+    app.emitter('socket')
+
+      .on('connect', function () {
+
+        if ( ! app.model('intro') ) {
+          app.emitter('socket').emit('get intro');
+        }
+
+        app.follow
+      
+          .on('update intro', function (intro) {
+            app.render('intro', intro.new);
+          });
+      
+      })
+
+      .on('got intro', function (intro) {
+        app.model('intro', intro);
+      });
+
+  }
+
+  module.exports = getIntro;
+
+}();
+
+},{}],14:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function getItems () {
+
+    var app = this;
+
+    app.on('panel added', function (panel) {
+      
+      var panelId = '#panel-' + panel.type;
+
+      if ( panel.parent ) {
+        panelId += '-' + panel.parent;
+      }
+
+      app.emitter('socket')
+        
+        .emit('get items', panel)
+        
+        .on('got items', function (panelItems) {
+          
+          panelItems.items.forEach(function (item, index) {
+            
+            if ( index < (panel.size + panel.skip) - 1 ) {
+              app.model('items').push(item);
+            }
+          
+          });
+
+          if ( panelItems.items.length >= (panel.size + panel.skip) ) {
+            $(panelId).find('.load-more').show();
+          }
+          else {
+            $(panelId).find('.load-more').hide();
+          }
+
+          panel.skip += panelItems.items.length;
+        });
+
+      app.on('push items', function (item) {
+        app.render('item', item);
+
+        app.on('rendered item', function (itemView) {
+          $(panelId).find('.items').append(itemView);
+        });
+      });
+
+    });
+
+  }
+
+  module.exports = getItems;
+
+}();
+
+},{}],15:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function getPanel () {
+
+    var app = this;
+
+    app.emitter('socket')
+
+      .on('connect', function () {
+        if ( ! app.model('panels').length ) {
+          app.model('panels').push({
+            type: 'Topic',
+            size: synapp['navigator batch size'],
+            skip: 0
+          });
+        }
+      });
+
+    app
+      .on('push panels', function (panel) {
+        app.render('panel', panel);
+
+        app
+          .once('rendered panel', function (panelView) {
+            app.view('panels').append(panelView);
+            app.emit('panel added', panel);
+          });
+      });
+
+  }
+
+  module.exports = getPanel;
+
+}();
+
+},{}],16:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = {
+    
+    "online users": {
+      template: '.online-users',
+      controller: function (view, online_users) {
+        view.text(online_users);
+      }
+    },
+
+    "panel": {
+      url: '/partial/panel',
+      controller: function (view, panel) {
+
+        var app = this;
+
+        var id = 'panel-' + panel.type;
+
+        if ( panel.parent ) {
+          id += '-' + panel.parent;
+        }
+
+        view.attr('id', id);
+
+        view.find('.panel-title').text(panel.type);
+
+        view.find('.load-more').on('click', function () {
+          app.emitter('socket').emit('get items', panel);
+          return false;
+        });
+
+      }
+    },
+
+    "intro": {
+      template: '#intro',
+      controller: function (view, intro) {
+        var app = this;
+
+        // view.find('.panel-title').text('intro.subject');
+        $('#intro').find('.panel-title').text(intro.subject);
+        $('#intro').find('.item-title').text(intro.subject);
+        $('#intro').find('.description').text(intro.description);
+
+        $('#intro').find('.item-media').append(
+          app.controller('bootstrap/responsive-image')({
+            src: intro.image
+          }));
+
+        $('#intro').find('.item-references').hide();
+      }
+    },
+
+    "item": {
+      url: '/partial/item',
+      controller: function (view, item) {
+        view.find('.item-title').text(item.subject);
+      }
+    }
+  
+  };
+
+}();
+
+},{}],17:[function(require,module,exports){
 /***
 
 
@@ -1286,7 +1337,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /***
 
 
@@ -1468,7 +1519,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /***
 
 
@@ -1636,7 +1687,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1674,7 +1725,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":17}],17:[function(require,module,exports){
+},{"events":21}],21:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1977,7 +2028,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],18:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2002,7 +2053,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],19:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2090,14 +2141,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],20:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],21:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2687,7 +2738,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":20,"_process":19,"inherits":18}],22:[function(require,module,exports){
+},{"./support/isBuffer":24,"_process":23,"inherits":22}],26:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -2746,7 +2797,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":23}],23:[function(require,module,exports){
+},{"./lib/TrueStory.js":27}],27:[function(require,module,exports){
 (function (process){
 /***
 
@@ -3546,7 +3597,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":24,"./TrueStory/parse-dot-notation":25,"./TrueStory/render":26,"./When":27,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":19,"domain":16,"events":17,"util":21}],24:[function(require,module,exports){
+},{"./TrueStory/model":28,"./TrueStory/parse-dot-notation":29,"./TrueStory/render":30,"./When":31,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":23,"domain":20,"events":21,"util":25}],28:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -3907,7 +3958,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],25:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4029,7 +4080,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -4048,8 +4099,6 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
     /** Error if template_name does not exists */
 
     if ( ! template_config ) {
-      console.warn(app.templates)
-
       return app.emit('error', new Error('Could not render unexisting template: ' + template_name));
     }
 
@@ -4129,8 +4178,6 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
       /** Emit render OK */
 
-      console.warn('rendered OK', template_name, HTMLString);
-
       app.emit('rendered ' + template_name, elem);
     });
   };
@@ -4140,7 +4187,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":19}],27:[function(require,module,exports){
+},{"_process":23}],31:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4613,4 +4660,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":23,"_process":19}]},{},[2]);
+},{"./TrueStory":27,"_process":23}]},{},[2]);
