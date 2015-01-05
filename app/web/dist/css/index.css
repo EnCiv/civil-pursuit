@@ -4295,6 +4295,9 @@ a.btn-default {
 .padding-left {
   padding-left: 10px;
 }
+.template-model {
+  display: none;
+}
 .is-section {
   margin-top: -2000px;
   padding: 10px;

@@ -118,6 +118,27 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         item.find('.evaluator .description:eq(1)').text(
           evaluation.items[1].description);
+
+        evaluation.criterias.forEach(function (criteria) {
+          var template_name = 'evaluation-' + evaluation.item +
+            '-' + criteria._id;
+
+          var template = {
+            name: template_name,
+            template: item.find('.evaluator .criteria-slider:eq(0)'),
+            controller: function (view, locals) {
+              view.find('.criteria-name').text(criteria.name);
+            }
+          };
+
+          app.render(template, {});
+
+          app.on('rendered ' + template_name, function (view) {
+            view.css('display', 'block');
+            item.find('.evaluator .sliders').append(view);
+          });
+        });
+
       });
     }
 
