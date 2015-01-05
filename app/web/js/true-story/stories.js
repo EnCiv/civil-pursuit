@@ -128,6 +128,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             template: item.find('.evaluator .criteria-slider:eq(0)'),
             controller: function (view, locals) {
               view.find('.criteria-name').text(criteria.name);
+              view.find('input.slider').slider();
+              view.find('input.slider').slider('setValue', 0);
+              view.find('input.slider').slider('on', 'slideStop',
+                function () {
+                  
+                });
             }
           };
 
