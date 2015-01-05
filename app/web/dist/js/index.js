@@ -1444,6 +1444,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     "item": {
       url: '/partial/item',
       controller: function (view, item) {
+        var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+
         view.attr('id', 'item-' + item._id);
 
         view.find('.item-title').text(item.subject);
@@ -1457,6 +1459,25 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         }
 
         new (require('./controllers/truncate'))(view);
+
+        if ( item.image ) {
+          if ( regexYouTube.test(item.image) ) {
+            var youtube;
+            item.image.replace(regexYouTube, function (m, v) {
+              youtube = v;
+            });
+            var container = $('<div></div>');
+            container.addClass('video-container');
+            var iframe = $('<iframe></iframe>');
+            iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
+            iframe.attr('frameborder', '0');
+            iframe.attr('width', 560);
+            iframe.attr('height', 315);
+            container.append(iframe);
+            
+            view.find('.item-media').append(container);
+          }
+        }
       }
     }
   
