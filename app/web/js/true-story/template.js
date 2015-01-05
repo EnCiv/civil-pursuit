@@ -129,9 +129,24 @@
         // ITEM TOGGLE DETAILS
 
         view.find('.toggle-promote').on('click', function () {
+
+          var evaluator = view.find('.evaluator');
+
+          if ( ! evaluator.hasClass('is-toggable') ) {
+            evaluator.addClass('is-toggable');
+          }
+
+          if ( evaluator.hasClass('is-showing') || evaluator.hasClass('is-hiding') ) {
+            return false;
+          }
+
+          evaluator.removeClass('is-hidden').addClass('is-showing');
+
           app.controller('scroll to point of attention')(view, function () {
-            app.controller('show')(view.closest('.panel').find('.evaluator'));
+            app.controller('show')(evaluator);
           });
+
+          return false;
         });
       }
     }
