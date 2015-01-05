@@ -4645,6 +4645,9 @@ footer {
   display: inline-block;
   margin-bottom: 30px;
 }
+.panel .panel-body .items .item .box-buttons {
+  margin: 10px;
+}
 .panel .panel-body .items .item .collapsers .evaluator,
 .panel .panel-body .items .item .collapsers .details,
 .panel .panel-body .items .item .collapsers .editor {
