@@ -66,12 +66,19 @@
         view.find('.item-title').text(item.subject);
         view.find('.description').text(item.description);
 
+        // REFERENCES
+
         if ( item.references.length ) {
           view.find('.item-references').show();
+          view.find('.item-references a')
+            .attr('src', item.references[0].url)
+            .text(item.references[0].title || item.references[0].url);
         }
         else {
           view.find('.item-references').hide();
         }
+
+        // TRUNCATE
 
         new (require('./controllers/truncate'))(view);
 
