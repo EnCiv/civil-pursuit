@@ -105,7 +105,7 @@
         return false;
       }
 
-      View.scrollToPointOfAttention(self.item, function () {
+      require('./scroll-to-point-of-attention')(self.item, function () {
 
         // Show more
 
@@ -165,6 +165,8 @@
           moreLink.closest('span').find('i').show();
         }
       });
+
+      return false;
     });
 
     this.description.append(this.more);
