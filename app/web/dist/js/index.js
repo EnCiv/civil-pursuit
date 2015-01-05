@@ -1500,6 +1500,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         $('#intro').find('.item-references').hide();
 
         new (require('./controllers/truncate'))($('#intro'));
+
+        $('#intro').find('.promoted').hide();
       }
     },
 
@@ -1538,6 +1540,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         new (require('./controllers/truncate'))(view);
 
+        // ITEM MEDIA
+
         if ( item.image && ! hasMedia ) {
           yt = require('./controllers/youtube')(item.image);
 
@@ -1551,6 +1555,18 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
                 src: item.image
               }));
           }
+        }
+
+        // ITEM STATS
+
+        view.find('.promoted').text(item.promotions);
+        
+        if ( item.promotions ) {
+          view.find('.promoted-percent').text(
+            Math.floor(item.promotions * 100 / item.views) + '%');
+        }
+        else {
+          view.find('.promoted-percent').text('0%');
         }
       }
     }
