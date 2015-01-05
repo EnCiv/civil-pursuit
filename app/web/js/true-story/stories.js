@@ -112,6 +112,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         item.find('.evaluator .subject:eq(1)').text(
           evaluation.items[1].subject);
+
+        item.find('.evaluator .description:eq(0)').text(
+          evaluation.items[0].description);
+
+        item.find('.evaluator .description:eq(1)').text(
+          evaluation.items[1].description);
       });
     }
 
