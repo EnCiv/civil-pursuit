@@ -16,45 +16,56 @@ section
     //- Image
 
     .row
-      .col-sm-6.image
-      .col-sm-6.image
+      .col-sm-6.image.padding
+      .col-sm-6.image.padding
 
     //- Subject
 
     .row
-      .col-sm-6
+      .col-sm-6.padding
         h3.subject Item's subject
-      .col-sm-6
+      .col-sm-6.padding
         h3.subject Item's subject
 
     //- Description
 
     .row
-      .col-sm-6
+      .col-sm-6.padding
         .pre-text.entry-description.description Item's description
-      .col-sm-6
+      .col-sm-6.padding
         .pre-text.entry-description.description Item's description
 
     //- References
 
     .row
-      .col-sm-6.references
-      .col-sm-6.references
+      .col-sm-6.references.padding
+      .col-sm-6.references.padding
 
     //- Sliders
 
     .row
-      .col-sm-6.sliders
+      .col-sm-6.sliders.padding
         .criteria-slider.template-model
           h4.criteria-name Criteria name
           input.slider(type='text' 
             data-slider-tooltip='hide'
             data-slider-min='-1'
             data-slider-max='1')
-      .col-sm-6.sliders
+      .col-sm-6.sliders.padding
         .criteria-slider.template-model
           h4.criteria-name Criteria name
           input.slider(type='text' 
             data-slider-tooltip='hide'
             data-slider-min='-1'
             data-slider-max='1')
+
+
+    //- Feedback
+
+    .row
+      .col-sm-6.padding
+        textarea.feedback-entry.form-control(
+          placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+      .col-sm-6.padding
+        textarea.feedback-entry.form-control(
+          placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')

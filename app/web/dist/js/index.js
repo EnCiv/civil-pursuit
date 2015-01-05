@@ -1010,7 +1010,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
               view.find('input.slider').slider('setValue', 0);
               view.find('input.slider').slider('on', 'slideStop',
                 function () {
-                  
+
                 });
             }
           };
@@ -1028,45 +1028,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     getEvaluation.apply(this);
 
-    /** STORY GET TOPICS */
-
-    // ! function getTopicsItems () {
-
-    //   app
-    //     .on('rendered panel', function (panel) {
-
-    //       var panel_id      =   panel.attr('id');
-    //       var panel_type    =   panel_id.split('-')[1];
-    //       var panel_parent  =   panel_id.split('-')[2];
-
-    //       var panel_obj     =   {
-    //         type: panel_type
-    //       };
-
-    //       if ( panel_parent ) {
-    //         panel_obj.parent = panel_parent;
-    //       }
-
-    //       app.emitter('socket')
-    //         .on('got panel items', function (panelItems) {
-
-    //           console.error('oh yeah')
-
-    //           app.on('rendered item', function (itemView) {
-    //             panel.find('.items').append(itemView);
-    //           });
-
-    //           panelItems.items.forEach(function (item, i) {
-    //             // if ( i < panelItems.panel.limit - 1 ) {
-    //               app.render('item', item);
-    //             // }
-    //           });
-    //         });
-        
-    //       app.emitter('socket').emit('get panel items', panel_obj);
-    //     });
-
-    // }();
 
     /** MODEL */
 
@@ -1090,32 +1051,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     //   .then(function () {
     //     console.log('//////////7')
     //   });
-
-    /** when emitter "socket" on "got intro" */
-
-    // when()
-    //   .emitter('socket')
-    //   .triggers('got intro')
-    //   .then
-    //     .model('intro');
-
-    // when()
-    //   .emitter('socket')
-    //   .triggers('online users')
-    //   .then
-    //     .model('online users');
-
-    // when()
-    //   .model('online users')
-    //   .triggers('all')
-    //   .then
-    //     .render('online users');
-
-    // when()
-    //   .model('intro')
-    //   .triggers('update')
-    //   .then
-    //     .render('intro');
 
     // when()
     //   .model('panels')
