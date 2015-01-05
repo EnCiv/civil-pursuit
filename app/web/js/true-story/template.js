@@ -92,6 +92,13 @@
             
             view.find('.item-media').append(container);
           }
+
+          else {
+            view.find('.item-media').append(
+              app.controller('bootstrap/responsive-image')({
+                src: item.image
+              }));
+          }
         }
       }
     }
