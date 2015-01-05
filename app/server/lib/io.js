@@ -599,7 +599,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
               url += '&parent=' + panel.parent;
             }
 
-            url += '&' + panel.size + '&$skip=' + panel.skip;
+            url += '&' + panel.size + '&$skip=' + panel.skip + '&sort:promotions+,views+,created-';
 
             /** Send request to monson */
 
