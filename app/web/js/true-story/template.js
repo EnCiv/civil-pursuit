@@ -59,7 +59,9 @@
     "item": {
       url: '/partial/item',
       controller: function (view, item) {
-        var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+
+        var hasMedia;
+        var yt;
 
         view.attr('id', 'item-' + item._id);
 
@@ -73,6 +75,13 @@
           view.find('.item-references a')
             .attr('src', item.references[0].url)
             .text(item.references[0].title || item.references[0].url);
+
+          yt = require('./controllers/youtube')(item.references[0].url);
+
+          if ( yt ) {
+            view.find('.item-media').append(yt);
+            hasMedia = true;
+          }
         }
         else {
           view.find('.item-references').hide();
@@ -82,22 +91,11 @@
 
         new (require('./controllers/truncate'))(view);
 
-        if ( item.image ) {
-          if ( regexYouTube.test(item.image) ) {
-            var youtube;
-            item.image.replace(regexYouTube, function (m, v) {
-              youtube = v;
-            });
-            var container = $('<div></div>');
-            container.addClass('video-container');
-            var iframe = $('<iframe></iframe>');
-            iframe.attr('src', 'http://www.youtube.com/embed/' + youtube);
-            iframe.attr('frameborder', '0');
-            iframe.attr('width', 560);
-            iframe.attr('height', 315);
-            container.append(iframe);
-            
-            view.find('.item-media').append(container);
+        if ( item.image && ! hasMedia ) {
+          yt = require('./controllers/youtube')(item.image);
+
+          if ( yt ) {
+            view.find('.item-media').append(yt);
           }
 
           else {
