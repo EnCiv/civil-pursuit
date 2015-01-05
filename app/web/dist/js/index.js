@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/follow.js/lib/Follow.js":[function(require,module,exports){
 /***
 
 
@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":21,"util":25}],2:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/index.js":[function(require,module,exports){
 /***
 
 
@@ -171,7 +171,7 @@ Nina Butorac
 
 }();
 
-},{"./true-story/app":3}],3:[function(require,module,exports){
+},{"./true-story/app":"/home/francois/Dev/syn/app/web/js/true-story/app.js"}],"/home/francois/Dev/syn/app/web/js/true-story/app.js":[function(require,module,exports){
 /***
 
 
@@ -305,7 +305,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":11,"./stories":12,"./template":16,"./view":17,"./watchdogs/story-get-intro":18,"./watchdogs/story-get-topics":19,"/home/francois/Dev/true-story.js":26}],4:[function(require,module,exports){
+},{"./controller":"/home/francois/Dev/syn/app/web/js/true-story/controller.js","./model":"/home/francois/Dev/syn/app/web/js/true-story/model.js","./stories":"/home/francois/Dev/syn/app/web/js/true-story/stories.js","./template":"/home/francois/Dev/syn/app/web/js/true-story/template.js","./view":"/home/francois/Dev/syn/app/web/js/true-story/view.js","./watchdogs/story-get-intro":"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-intro.js","./watchdogs/story-get-topics":"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-topics.js","/home/francois/Dev/true-story.js":"/home/francois/Dev/true-story.js/index.js"}],"/home/francois/Dev/syn/app/web/js/true-story/controller.js":[function(require,module,exports){
 /***
 
 
@@ -422,7 +422,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"./controllers/bind-item":5,"./controllers/bind-panel":6,"./controllers/bootstrap/responsive-image":7,"./controllers/find-panel":8,"./controllers/get-intro":9,"./controllers/get-panel-items":10}],5:[function(require,module,exports){
+},{"./controllers/bind-item":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-item.js","./controllers/bind-panel":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-panel.js","./controllers/bootstrap/responsive-image":"/home/francois/Dev/syn/app/web/js/true-story/controllers/bootstrap/responsive-image.js","./controllers/find-panel":"/home/francois/Dev/syn/app/web/js/true-story/controllers/find-panel.js","./controllers/get-intro":"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-intro.js","./controllers/get-panel-items":"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-panel-items.js"}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-item.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -453,7 +453,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],6:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bind-panel.js":[function(require,module,exports){
 /***
 
 
@@ -515,7 +515,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/bootstrap/responsive-image.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -537,7 +537,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/find-panel.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -572,7 +572,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-intro.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -602,7 +602,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/controllers/get-panel-items.js":[function(require,module,exports){
 /***
 
 
@@ -791,7 +791,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/model.js":[function(require,module,exports){
 /***
 
 
@@ -853,7 +853,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/stories.js":[function(require,module,exports){
 /***
 
 
@@ -1029,7 +1029,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-intro":13,"./stories/get-items":14,"./stories/get-panel":15}],13:[function(require,module,exports){
+},{"./stories/get-intro":"/home/francois/Dev/syn/app/web/js/true-story/stories/get-intro.js","./stories/get-items":"/home/francois/Dev/syn/app/web/js/true-story/stories/get-items.js","./stories/get-panel":"/home/francois/Dev/syn/app/web/js/true-story/stories/get-panel.js"}],"/home/francois/Dev/syn/app/web/js/true-story/stories/get-intro.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1064,7 +1064,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/stories/get-items.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1102,7 +1102,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             $(panelId).find('.load-more').hide();
           }
 
-          panel.skip += panelItems.items.length;
+          panel.skip += (panelItems.items.length - 1);
         });
 
       app.on('push items', function (item) {
@@ -1121,7 +1121,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],15:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/stories/get-panel.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1159,7 +1159,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],16:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/template.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1227,7 +1227,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],17:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/view.js":[function(require,module,exports){
 /***
 
 
@@ -1337,7 +1337,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-intro.js":[function(require,module,exports){
 /***
 
 
@@ -1519,7 +1519,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/true-story/watchdogs/story-get-topics.js":[function(require,module,exports){
 /***
 
 
@@ -1687,7 +1687,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1725,7 +1725,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":21}],21:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2028,7 +2028,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],22:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2053,7 +2053,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],23:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2141,14 +2141,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],24:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],25:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2738,7 +2738,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":24,"_process":23,"inherits":22}],26:[function(require,module,exports){
+},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/true-story.js/index.js":[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -2797,7 +2797,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":27}],27:[function(require,module,exports){
+},{"./lib/TrueStory.js":"/home/francois/Dev/true-story.js/lib/TrueStory.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory.js":[function(require,module,exports){
 (function (process){
 /***
 
@@ -3597,7 +3597,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":28,"./TrueStory/parse-dot-notation":29,"./TrueStory/render":30,"./When":31,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":23,"domain":20,"events":21,"util":25}],28:[function(require,module,exports){
+},{"./TrueStory/model":"/home/francois/Dev/true-story.js/lib/TrueStory/model.js","./TrueStory/parse-dot-notation":"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js","./TrueStory/render":"/home/francois/Dev/true-story.js/lib/TrueStory/render.js","./When":"/home/francois/Dev/true-story.js/lib/When.js","/home/francois/Dev/follow.js/lib/Follow":"/home/francois/Dev/follow.js/lib/Follow.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/true-story.js/lib/TrueStory/model.js":[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -3958,7 +3958,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],29:[function(require,module,exports){
+},{}],"/home/francois/Dev/true-story.js/lib/TrueStory/parse-dot-notation.js":[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4080,7 +4080,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],"/home/francois/Dev/true-story.js/lib/TrueStory/render.js":[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -4187,7 +4187,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":23}],31:[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/true-story.js/lib/When.js":[function(require,module,exports){
 (function (process){
 /***
 
@@ -4660,4 +4660,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":27,"_process":23}]},{},[2]);
+},{"./TrueStory":"/home/francois/Dev/true-story.js/lib/TrueStory.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}]},{},["/home/francois/Dev/syn/app/web/js/index.js"]);

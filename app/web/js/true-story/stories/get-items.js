@@ -35,7 +35,7 @@
             $(panelId).find('.load-more').hide();
           }
 
-          panel.skip += panelItems.items.length;
+          panel.skip += (panelItems.items.length - 1);
         });
 
       app.on('push items', function (item) {
