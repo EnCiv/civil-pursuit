@@ -216,6 +216,6 @@
     }
   };
 
-  module.exports = Truncate;
+  module.exports = Truncate;  
 
 }();

@@ -1010,7 +1010,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     }
   };
 
-  module.exports = Truncate;
+  module.exports = Truncate;  
 
 }();
 
@@ -1437,14 +1437,26 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         $('#intro').find('.item-references').hide();
 
-        new (require('./controllers/truncate'))(view);
+        new (require('./controllers/truncate'))($('#intro'));
       }
     },
 
     "item": {
       url: '/partial/item',
       controller: function (view, item) {
+        view.attr('id', 'item-' + item._id);
+
         view.find('.item-title').text(item.subject);
+        view.find('.description').text(item.description);
+
+        if ( item.references.length ) {
+          view.find('.item-references').show();
+        }
+        else {
+          view.find('.item-references').hide();
+        }
+
+        new (require('./controllers/truncate'))(view);
       }
     }
   
