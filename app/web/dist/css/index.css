@@ -4633,6 +4633,9 @@ footer {
 .panel .panel-body {
   padding: 0;
 }
+.panel .panel-body .creator {
+  display: none;
+}
 .panel .panel-body .items .item {
   background: #fff;
   border: 1px solid #666666;
@@ -4723,6 +4726,9 @@ footer {
   .panel .panel-body .items .item .collapsers .children .split-view .item-media-wrapper {
     width: 100%;
   }
+}
+.panel .panel-body .load-more {
+  text-align: center;
 }
 .panel .panel {
   margin: 0px;
