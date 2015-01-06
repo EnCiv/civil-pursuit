@@ -868,7 +868,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     "templates":                  {},
     "intro":                      null,
     "items":                      [],
-    "online users":               0,
+    "online_users":               0,
     "panel":                      {},
     "evaluations":                []
   };
@@ -1028,6 +1028,21 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     getEvaluation.apply(this);
 
+    /** Online now **/
+
+    function getOnlineUsers () {
+      var app = this;
+
+      app.emitter('socket').on('online users', function (users) {
+        app.model('online_users', users);
+      });
+
+      app.follow.on('update online_users', function (users) {
+        app.view('online now').text(users.new);
+      });
+    }
+
+    getOnlineUsers.apply(this);
 
     /** MODEL */
 
@@ -1441,7 +1456,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   module.exports = {
     "panels":       '.panels',
-    "intro":        '#intro'
+    "intro":        '#intro',
+    "online now":   '.online-users'
   };
 
 } ();

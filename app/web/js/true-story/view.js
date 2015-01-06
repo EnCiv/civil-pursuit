@@ -102,7 +102,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   module.exports = {
     "panels":       '.panels',
-    "intro":        '#intro'
+    "intro":        '#intro',
+    "online now":   '.online-users'
   };
 
 } ();

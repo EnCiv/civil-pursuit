@@ -53,7 +53,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     "templates":                  {},
     "intro":                      null,
     "items":                      [],
-    "online users":               0,
+    "online_users":               0,
     "panel":                      {},
     "evaluations":                []
   };
