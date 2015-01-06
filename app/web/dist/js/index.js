@@ -1030,6 +1030,33 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     require('./stories/get-online-users').apply(this);
 
+    /** sign **/
+
+    function signIn () {
+      var app = this;
+
+      app.view('sign').on('submit', function () {
+
+        var email = app.view('sign').find('[name="email"]');
+        var password = app.view('sign').find('[name="password"]');
+
+        email.removeClass('error');
+        password.removeClass('error');
+
+        if ( ! email.val() ) {
+          email.addClass('error');
+        }
+
+        else if ( ! password.val() ) {
+          password.addClass('error');
+        }
+
+        return false;
+      });
+    }
+
+    signIn.apply(this);
+
     /** MODEL */
 
     /** when emitter socket triggers error  */
@@ -1514,7 +1541,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = {
     "panels":       '.panels',
     "intro":        '#intro',
-    "online now":   '.online-users'
+    "online now":   '.online-users',
+    "sign":         '#signer'
   };
 
 } ();

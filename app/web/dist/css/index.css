@@ -4380,6 +4380,10 @@ textarea.danger {
 #signer {
   margin-top: 80px;
 }
+#signer input.error {
+  border-color: red;
+  background: #ffff00;
+}
 /** ____________________________________________________________________________
 
           FOOTER
