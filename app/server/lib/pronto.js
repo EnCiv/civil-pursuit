@@ -143,6 +143,13 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .cookie(config.secret)
 
+      /** pre router */
+
+      .open(function prerouter (req, res, next) {
+        req.user = req.signedCookies.synuser;
+        next();
+      })
+
       /** /sign/in */
 
       .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
