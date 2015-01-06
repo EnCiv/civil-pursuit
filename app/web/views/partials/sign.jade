@@ -3,11 +3,7 @@
 
 //- # Form
 
-form.form-inline(
-    role                  =     'form' 
-    data-ng-submit        =     'signIn()'
-    novalidate
-  )
+form.form-inline(role = 'form' novalidate)
 
   //- Alert
 
@@ -20,7 +16,6 @@ form.form-inline(
     .col-xs-4
       input.form-control.input-lg(
         type              =   'email' 
-        data-ng-model     =   'sign.email' 
         placeholder       =   'Email'
       )
     
@@ -28,7 +23,6 @@ form.form-inline(
       input.form-control.input-lg(
         type              =   'password' 
         placeholder       =   'Password' 
-        data-ng-model     =   'sign.password'
       )
     
     .col-xs-4
@@ -50,6 +44,11 @@ form.form-inline(
               a(href='/auth/twitter') 
                 i.fa.fa-twitter
                 span  Login with Twitter
+
+            li
+              a(href='#')
+                i.fa.fa-key
+                span  Forgot password?
 
         button.btn.btn-default(type='button' data-toggle='modal' data-target='#join') Join
 

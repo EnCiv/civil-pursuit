@@ -29,10 +29,10 @@ block script-jquery
 //- # Bootstrap
 
 block script-bootstrap
-  //- - if ( settings.env === 'production' )
-  //-   script(src='/dist/js/bootstrap.min.js')
-  //- - else
-  //-   script(src='/dist/js/bootstrap.js')
+  - if ( settings.env === 'production' )
+    script(src='/js/bootstrap.min.js')
+  - else
+    script(src='/js/bootstrap.js')
 
 //- # Shims
 
