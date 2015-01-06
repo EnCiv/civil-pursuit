@@ -171,7 +171,8 @@ Nina Butorac
     'less',
     'minify-css',
     'uglify',
-    'watchify'];
+    'watchify',
+    'watch-less'];
 
   tasks.forEach(function (task) {
     var t = require(buildersDir + '/' + task);

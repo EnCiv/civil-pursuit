@@ -159,6 +159,8 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .open('app/server/routes/sign/', { exec: 'js/middleware', 'append extension': 'js' }, when.prefix('/sign/'))
 
+      .open('app/web/views/pages/item.jade', when('/item/*'))
+
       .on('listening', function (service) {
         require('./io')(server);
       })

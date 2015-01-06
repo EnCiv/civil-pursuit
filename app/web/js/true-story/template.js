@@ -91,7 +91,9 @@
 
         view.attr('id', 'item-' + item._id);
 
-        view.find('.item-title').text(item.subject);
+        view.find('.item-title a')
+          .attr('href', '/item/' + item._id + '/' + require('string')(item.subject).slugify())
+          .text(item.subject);
         view.find('.description').text(item.description);
 
         // REFERENCES

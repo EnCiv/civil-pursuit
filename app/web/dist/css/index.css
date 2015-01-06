@@ -4648,6 +4648,9 @@ footer {
   display: inline-block;
   margin-bottom: 30px;
 }
+.panel .panel-body .items .item .item-title a {
+  color: #444444;
+}
 .panel .panel-body .items .item .box-buttons {
   margin: 10px;
 }
