@@ -139,6 +139,14 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .inject('synapp', config)
 
+      /** cookies */
+
+      .cookie(config.secret)
+
+      /** /sign/in */
+
+      .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
+
       .opener('monson', monson.pronto)
 
       .open('app/business/models/', { with: 'monson', 'append extension': 'js' }, when('/models' ))
@@ -157,8 +165,6 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .open('app/web/dist/css', when.prefix('/css'))
 
-      .open('app/server/routes/sign/', { exec: 'js/middleware', 'append extension': 'js' }, when.prefix('/sign/'))
-
       .open('app/web/views/pages/item.jade', when('/item/*'))
 
       .on('listening', function (service) {
@@ -167,12 +173,6 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .on('error', function (error) {
         console.log('erroooooooooor');
-      })
-
-      .on('identified', function (user) {
-        res.cookie('synuser', { email: user.email, id: user._id }, config.cookie);
-
-        server.emit('cookie ok', user);
       })
 
       // .open ( routes.urlTitleFetcher, when.post ( '/tools/get-title' ) )

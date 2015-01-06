@@ -1,30 +1,38 @@
-(function () {
+! function () {
 
   'use strict';
 
-  function signIn (app) {
-    function middleware (req, res, next) {
-      app.locals.monson.get(
-        '/models/User.identify/' + req.body.email + '/' + req.body.password,
-        
-        function onIdentify (error, user) {
-          if ( error ) {
-            return next(error);
-          }
-          else if ( user ) {
-            res.cookie('synuser', { email: user.email, id: user._id }, synapp.cookie);
-            res.locals.logResponse();
-            res.json({ in: true });
-          }
-          else {
-            next(new Error('No such user'));
-          }
-        });
-    }
+  function signIn (req, res, next) {
+    var monson    =   require('monson')(process.env.MONGOHQ_URL, {
+      base: require('path').join(process.cwd(), 'app/business')
+    });
 
-    return middleware;
+    var url = 'models/User.identify/' + req.body.email + '/' + req.body.password;
+
+    monson.get(url)
+
+      .on('error', function (error) {
+        if ( /^User not found/.test(error.message) ) {
+          res.statusCode = 401;
+          res.json({ 'user not found': req.body.email });
+        }
+        else {
+          throw error;
+        }
+      })
+
+      .on('success', function (user) {
+        res.cookie('synuser',
+          {
+            email: user.email,
+            id: user._id
+          },
+          require('../../business/config.json').cookie);
+        
+        res.json({ in: true });
+      });
   }
 
-  exports.signIn = sign;
+  module.exports = signIn;
 
-}) ();
+} ();

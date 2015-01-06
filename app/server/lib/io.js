@@ -684,13 +684,9 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
               .on('success', function (user) {
                 pronto.emit('message', 'socket got identification from monson');
-                pronto.emit('identified', user);
+                socket.emit('identified', user);
               });
           });
-        });
-
-        pronto.on('cookie ok', function (user) {
-          socket.emit('sign in', user);
         });
 
 

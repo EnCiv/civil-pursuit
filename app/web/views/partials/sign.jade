@@ -4,34 +4,37 @@
 //- # Form
 
 form.form-inline.text-center#signer(role='form' novalidate)
-  input.form-control.input-lg(type='email' placeholder='Email' name='email')
-  input.form-control.input-lg(type='password' placeholder='Password' name='password')
-  .btn-group
-    button.btn.btn-default.btn-lg Login
+  section
+    input.form-control.input-lg(type='email' placeholder='Email' name='email')
+    input.form-control.input-lg(type='password' placeholder='Password' name='password')
+    .btn-group
+      button.btn.btn-default.btn-lg Login
 
-    button.btn.btn-default.dropdown-toggle.btn-lg(type='button' data-toggle='dropdown')
-      span.caret
-        span.sr-only toggle
+      button.btn.btn-default.dropdown-toggle.btn-lg(type='button' data-toggle='dropdown')
+        span.caret
+          span.sr-only toggle
 
-    ul.dropdown-menu(role='menu')
-      li
-        a(href='/auth/facebook') 
-          i.fa.fa-facebook
-          span  Login with Facebook
+      ul.dropdown-menu(role='menu')
+        li
+          a(href='/auth/facebook') 
+            i.fa.fa-facebook
+            span  Login with Facebook
 
-      li
-        a(href='/auth/twitter') 
-          i.fa.fa-twitter
-          span  Login with Twitter
+        li
+          a(href='/auth/twitter') 
+            i.fa.fa-twitter
+            span  Login with Twitter
 
-      li
-        a(href='/auth/twitter') 
-          i.fa.fa-key
-          span  Forgot password?
+        li
+          a(href='/auth/twitter') 
+            i.fa.fa-key
+            span  Forgot password?
 
-  button.btn.btn-default.btn-lg(type='button' data-toggle='modal' data-target='#join') Join
+    button.btn.btn-default.btn-lg(type='button' data-toggle='modal' data-target='#join') Join
 
-  .sign-error
+  .sign-error.bg-danger
+
+  .sign-success.bg-success
 
 hr
 

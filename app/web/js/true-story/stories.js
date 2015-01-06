@@ -182,23 +182,31 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         }
 
         else {
-          app.emitter('socket').emit('sign in', {
-            email: email.val(),
-            password: password.val()
-          });
+          $.ajax({
+            url: '/sign/in',
+            type: 'POST',
+            data: {
+              email: email.val(),
+              password: password.val()
+            }
+          })
+            .error(function (error) {
+
+            })
+            .success(function (data) {
+              app.view('sign').find('section').hide(2000);
+
+              app.view('sign').find('.sign-success')
+                .show(function () {
+                  setTimeout(function () {
+                    app.view('sign').hide(2500);
+                  }, 5000);
+                })
+                .text('Welcome back!');
+            });
         }
 
         return false;
-      });
-
-      app.emitter('socket').on('user not found', function (user) {
-        app.view('sign').find('.sign-error')
-          .text('No such user')
-          .show();
-      });
-
-      app.emitter('socket').on('sign in', function (user) {
-        app.view('sign').hide();
       });
     }
 
