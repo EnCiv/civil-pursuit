@@ -29,6 +29,10 @@
       }
     },
 
+    "sign": {
+      
+    },
+
     "panel": {
       url:          '/partial/panel',
       
