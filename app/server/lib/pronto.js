@@ -169,6 +169,12 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
         console.log('erroooooooooor');
       })
 
+      .on('identified', function (user) {
+        res.cookie('synuser', { email: user.email, id: user._id }, config.cookie);
+
+        server.emit('cookie ok', user);
+      })
+
       // .open ( routes.urlTitleFetcher, when.post ( '/tools/get-title' ) )
 
       ;

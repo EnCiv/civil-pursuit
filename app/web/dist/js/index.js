@@ -1037,6 +1037,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
       app.view('sign').on('submit', function () {
 
+        app.view('sign').find('.sign-error')
+          .text('')
+          .hide();
+
         var email = app.view('sign').find('[name="email"]');
         var password = app.view('sign').find('[name="password"]');
 
@@ -1045,13 +1049,32 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         if ( ! email.val() ) {
           email.addClass('error');
+          email.focus();
         }
 
         else if ( ! password.val() ) {
           password.addClass('error');
+          password.focus();
+        }
+
+        else {
+          app.emitter('socket').emit('sign in', {
+            email: email.val(),
+            password: password.val()
+          });
         }
 
         return false;
+      });
+
+      app.emitter('socket').on('user not found', function (user) {
+        app.view('sign').find('.sign-error')
+          .text('No such user')
+          .show();
+      });
+
+      app.emitter('socket').on('sign in', function (user) {
+        app.view('sign').hide();
       });
     }
 

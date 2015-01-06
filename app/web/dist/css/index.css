@@ -4384,6 +4384,15 @@ textarea.danger {
   border-color: red;
   background: #ffff00;
 }
+#signer .sign-error {
+  margin: 8px;
+  border: 1px solid red;
+  color: red;
+  display: none;
+  padding: 8px;
+  border-radius: 8px;
+  background: #ffff00;
+}
 /** ____________________________________________________________________________
 
           FOOTER

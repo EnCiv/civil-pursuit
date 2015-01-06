@@ -648,7 +648,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
             monson.get(url)
 
               .on('error', function (error) {
-
+                throw error;
               })
 
               .on('success', function (evaluation) {
@@ -658,6 +658,43 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
           });
         });
+
+
+
+
+        socket.on('sign in', function () {
+          onEvent('sign in', arguments);
+        });
+
+        socket.on('sign in', function (credentials) {
+          safe(socket, function () {
+            var url = 'models/User.identify/' + credentials.email +
+              '/' + credentials.password;
+
+            monson.get(url)
+
+              .on('error', function (error) {
+                if ( /^User not found/.test(error.message) ) {
+                  socket.emit('user not found', credentials);
+                }
+                else {
+                  throw error;
+                }
+              })
+
+              .on('success', function (user) {
+                pronto.emit('message', 'socket got identification from monson');
+                pronto.emit('identified', user);
+              });
+          });
+        });
+
+        pronto.on('cookie ok', function (user) {
+          socket.emit('sign in', user);
+        });
+
+
+
 
       });
 
