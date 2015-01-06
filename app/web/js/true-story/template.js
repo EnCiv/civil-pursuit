@@ -104,7 +104,7 @@
           view.find('.promoted-percent').text('0%');
         }
 
-        // ITEM TOGGLE DETAILS
+        // ITEM TOGGLE PROMOTE
 
         view.find('.toggle-promote').on('click', function () {
 
@@ -133,6 +133,28 @@
           });
 
           return false;
+        });
+
+        // ITEM TOGGLE DETAILS
+
+        view.find('.toggle-details').on('click', function () {
+
+          var details = view.find('.details');
+
+          if ( ! details.hasClass('is-toggable') ) {
+            details.addClass('is-toggable');
+          }
+
+          if ( details.hasClass('is-showing') || details.hasClass('is-hiding') ) {
+            return false;
+          }
+
+          details.removeClass('is-hidden').addClass('is-showing');
+
+          app.controller('scroll to point of attention')(view, function () {
+            app.controller('show')(details);
+          });
+
         });
       }
     }

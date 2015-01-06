@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":21,"util":25}],2:[function(require,module,exports){
+},{"events":22,"util":26}],2:[function(require,module,exports){
 /***
 
 
@@ -305,7 +305,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":11,"./stories":12,"./template":16,"./view":17,"./watchdogs/story-get-intro":18,"./watchdogs/story-get-topics":19,"/home/francois/Dev/true-story.js":26}],4:[function(require,module,exports){
+},{"./controller":4,"./model":11,"./stories":12,"./template":17,"./view":18,"./watchdogs/story-get-intro":19,"./watchdogs/story-get-topics":20,"/home/francois/Dev/true-story.js":27}],4:[function(require,module,exports){
 /***
 
 
@@ -1030,19 +1030,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     /** Online now **/
 
-    function getOnlineUsers () {
-      var app = this;
-
-      app.emitter('socket').on('online users', function (users) {
-        app.model('online_users', users);
-      });
-
-      app.follow.on('update online_users', function (users) {
-        app.view('online now').text(users.new);
-      });
-    }
-
-    getOnlineUsers.apply(this);
+    require('./stories/get-online-users').apply(this);
 
     /** MODEL */
 
@@ -1077,7 +1065,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-intro":13,"./stories/get-items":14,"./stories/get-panel":15}],13:[function(require,module,exports){
+},{"./stories/get-intro":13,"./stories/get-items":14,"./stories/get-online-users":15,"./stories/get-panel":16}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1170,6 +1158,26 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 }();
 
 },{}],15:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  function getOnlineUsers () {
+    var app = this;
+
+    app.emitter('socket').on('online users', function (users) {
+      app.model('online_users', users);
+    });
+
+    app.follow.on('update online_users', function (users) {
+      app.view('online now').text(users.new);
+    });
+  }
+
+  module.exports = getOnlineUsers;
+
+} ();
+},{}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1207,7 +1215,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1314,7 +1322,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           view.find('.promoted-percent').text('0%');
         }
 
-        // ITEM TOGGLE DETAILS
+        // ITEM TOGGLE PROMOTE
 
         view.find('.toggle-promote').on('click', function () {
 
@@ -1344,6 +1352,28 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
           return false;
         });
+
+        // ITEM TOGGLE DETAILS
+
+        view.find('.toggle-details').on('click', function () {
+
+          var details = view.find('.details');
+
+          if ( ! details.hasClass('is-toggable') ) {
+            details.addClass('is-toggable');
+          }
+
+          if ( details.hasClass('is-showing') || details.hasClass('is-hiding') ) {
+            return false;
+          }
+
+          details.removeClass('is-hidden').addClass('is-showing');
+
+          app.controller('scroll to point of attention')(view, function () {
+            app.controller('show')(details);
+          });
+
+        });
       }
     }
   
@@ -1351,7 +1381,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./controllers/truncate":9}],17:[function(require,module,exports){
+},{"./controllers/truncate":9}],18:[function(require,module,exports){
 /***
 
 
@@ -1462,7 +1492,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /***
 
 
@@ -1644,7 +1674,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /***
 
 
@@ -1812,7 +1842,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1850,7 +1880,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":21}],21:[function(require,module,exports){
+},{"events":22}],22:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2153,7 +2183,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2178,7 +2208,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2266,14 +2296,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2863,7 +2893,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":24,"_process":23,"inherits":22}],26:[function(require,module,exports){
+},{"./support/isBuffer":25,"_process":24,"inherits":23}],27:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -2922,7 +2952,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":27}],27:[function(require,module,exports){
+},{"./lib/TrueStory.js":28}],28:[function(require,module,exports){
 (function (process){
 /***
 
@@ -3722,7 +3752,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":28,"./TrueStory/parse-dot-notation":29,"./TrueStory/render":30,"./When":31,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":23,"domain":20,"events":21,"util":25}],28:[function(require,module,exports){
+},{"./TrueStory/model":29,"./TrueStory/parse-dot-notation":30,"./TrueStory/render":31,"./When":32,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":24,"domain":21,"events":22,"util":26}],29:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4083,7 +4113,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4205,7 +4235,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -4320,7 +4350,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":23}],31:[function(require,module,exports){
+},{"_process":24}],32:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4793,4 +4823,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":27,"_process":23}]},{},[2]);
+},{"./TrueStory":28,"_process":24}]},{},[2]);
