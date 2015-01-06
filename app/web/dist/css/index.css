@@ -4649,7 +4649,7 @@ footer {
 .panel .panel-body {
   padding: 0;
 }
-.panel .panel-body .items .item {
+.panel .panel-body .item {
   background: #fff;
   border: 1px solid #666666;
   margin: 10px;
@@ -4660,22 +4660,29 @@ footer {
   margin-right: 0;
   border-right: none;
 }
-.panel .panel-body .items .item.is-truncated .truncator {
+.panel .panel-body .item.is-truncated .truncator {
   display: inline-block;
   margin-bottom: 30px;
 }
-.panel .panel-body .items .item .item-title a {
+.panel .panel-body .item .item-text .item-title a {
   color: #444444;
 }
-.panel .panel-body .items .item .box-buttons {
+.panel .panel-body .item .item-text .input-subject {
+  overflow: hidden;
+  padding: 10px;
+}
+.panel .panel-body .item .item-text .input-subject textarea {
+  margin: 10px 0;
+}
+.panel .panel-body .item .box-buttons {
   margin: 10px;
 }
-.panel .panel-body .items .item .collapsers {
+.panel .panel-body .item .collapsers {
   clear: both;
 }
-.panel .panel-body .items .item .collapsers .evaluator,
-.panel .panel-body .items .item .collapsers .details,
-.panel .panel-body .items .item .collapsers .editor {
+.panel .panel-body .item .collapsers .evaluator,
+.panel .panel-body .item .collapsers .details,
+.panel .panel-body .item .collapsers .editor {
   border: 1px solid #666666;
   border-right: none;
   margin-left: 10px;
@@ -4685,61 +4692,61 @@ footer {
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
-.panel .panel-body .items .item .collapsers .evaluator.is-shown,
-.panel .panel-body .items .item .collapsers .details.is-shown,
-.panel .panel-body .items .item .collapsers .editor.is-shown,
-.panel .panel-body .items .item .collapsers .evaluator.is-showing,
-.panel .panel-body .items .item .collapsers .details.is-showing,
-.panel .panel-body .items .item .collapsers .editor.is-showing {
+.panel .panel-body .item .collapsers .evaluator.is-shown,
+.panel .panel-body .item .collapsers .details.is-shown,
+.panel .panel-body .item .collapsers .editor.is-shown,
+.panel .panel-body .item .collapsers .evaluator.is-showing,
+.panel .panel-body .item .collapsers .details.is-showing,
+.panel .panel-body .item .collapsers .editor.is-showing {
   margin-bottom: 50px;
 }
-.panel .panel-body .items .item .collapsers .toggle-arrow i {
+.panel .panel-body .item .collapsers .toggle-arrow i {
   display: block;
   width: 30px;
   margin: auto;
   margin-top: -35px !important;
 }
 @media (max-width: 768px) {
-  .panel .panel-body .items .item .collapsers .toggle-arrow i {
+  .panel .panel-body .item .collapsers .toggle-arrow i {
     margin-top: 0;
   }
 }
-.panel .panel-body .items .item .collapsers .children {
+.panel .panel-body .item .collapsers .children {
   background: #eeeeee;
 }
-.panel .panel-body .items .item .collapsers .children .split-view li:nth-last-child(1) {
+.panel .panel-body .item .collapsers .children .split-view li:nth-last-child(1) {
   text-align: right;
 }
 @media (max-width: 480px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .box-buttons {
+  .panel .panel-body .item .collapsers .children .split-view .box-buttons {
     float: none !important;
     width: 100%;
     clear: both;
     text-align: center;
   }
 }
-.panel .panel-body .items .item .collapsers .children .split-view .box-buttons button {
+.panel .panel-body .item .collapsers .children .split-view .box-buttons button {
   width: 70px !important;
 }
-.panel .panel-body .items .item .collapsers .children .split-view .toggle-arrow {
+.panel .panel-body .item .collapsers .children .split-view .toggle-arrow {
   display: none;
 }
-.panel .panel-body .items .item .collapsers .children .split-view .item-title {
+.panel .panel-body .item .collapsers .children .split-view .item-title {
   width: 50%;
 }
 @media (max-width: 900px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .item-title {
+  .panel .panel-body .item .collapsers .children .split-view .item-title {
     clear: left !important;
     padding: 10px 10px 0 10px;
   }
 }
 @media (max-width: 900px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .item-text {
+  .panel .panel-body .item .collapsers .children .split-view .item-text {
     clear: left !important;
   }
 }
 @media (max-width: 900px) {
-  .panel .panel-body .items .item .collapsers .children .split-view .item-media-wrapper {
+  .panel .panel-body .item .collapsers .children .split-view .item-media-wrapper {
     width: 100%;
   }
 }
