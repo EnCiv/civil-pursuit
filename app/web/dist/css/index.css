@@ -4633,9 +4633,6 @@ footer {
 .panel .panel-body {
   padding: 0;
 }
-.panel .panel-body .creator {
-  display: none;
-}
 .panel .panel-body .items .item {
   background: #fff;
   border: 1px solid #666666;

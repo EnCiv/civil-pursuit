@@ -8,7 +8,7 @@ include ../mixins/bootstrap
 
     // TOGGLE CREATOR
 
-    i.pull-right.fa.fa-plus.cursor-pointer
+    i.pull-right.fa.fa-plus.cursor-pointer.toggle-creator
 
     // TYPE
 
@@ -18,8 +18,9 @@ include ../mixins/bootstrap
 
   +bootstrap-panel-body
 
-    .creator
-      include item
+    .creator.is-container
+      .is-section
+        include item
 
     .items
 

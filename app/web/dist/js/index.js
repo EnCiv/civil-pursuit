@@ -536,8 +536,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       function () {
         elem.removeClass('is-showing').addClass('is-shown');
         
-        // $rootScope.publish('did show view', options);
-        
         if ( elem.css('margin-top') !== 0 ) {
           elem.animate({'margin-top': 0}, 250);
         }
@@ -1220,18 +1218,37 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   'use strict';
 
+  function reveal (elem, poa) {
+    if ( ! elem.hasClass('is-toggable') ) {
+      elem.addClass('is-toggable');
+    }
+
+    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+      return false;
+    }
+
+    elem.removeClass('is-hidden').addClass('is-showing');
+
+    app.controller('scroll to point of attention')(poa, function () {
+      app.controller('show')(elem);
+      // elem.css('display', 'block');
+    });
+  }
+
   module.exports = {
     
     "online users": {
-      template: '.online-users',
-      controller: function (view, online_users) {
+      template:     '.online-users',
+      
+      controller:   function (view, online_users) {
         view.text(online_users);
       }
     },
 
     "panel": {
-      url: '/partial/panel',
-      controller: function (view, panel) {
+      url:          '/partial/panel',
+      
+      controller:   function (view, panel) {
 
         var app = this;
 
@@ -1248,6 +1265,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         view.find('.load-more').on('click', function () {
           app.emitter('socket').emit('get items', panel);
           return false;
+        });
+
+        view.find('.toggle-creator').on('click', function () {
+          reveal(view.find('.creator'), view);
         });
 
       }
