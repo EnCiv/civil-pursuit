@@ -157,6 +157,8 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .open('app/web/dist/css', when.prefix('/css'))
 
+      .open('app/server/routes/sign/', { exec: 'js/middleware', 'append extension': 'js' }, when.prefix('/sign/'))
+
       .on('listening', function (service) {
         require('./io')(server);
       })
