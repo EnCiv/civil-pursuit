@@ -186,7 +186,11 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       /** passport */
 
       .passport({
-        facebook: facebook
+        serialize: function () {},
+        deserialzie: function () {},
+        strategies: {
+          facebook: facebook
+        }
       })
 
       /** pre router */
