@@ -67,6 +67,8 @@
         $('#intro').find('.promoted').hide();
 
         $('#intro').find('.box-buttons').hide();
+
+        $('#intro').find('.toggle-arrow').hide();
       }
     },
 
