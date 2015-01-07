@@ -108,6 +108,7 @@
       // ITEM TOGGLE SUB PANEL
 
       view.find('.toggle-arrow i.fa').on('click', function () {
+        console.warn('SUB #1 clicked');
         app.model('panels').push({
           type: 'Problem',
           parent: item._id,

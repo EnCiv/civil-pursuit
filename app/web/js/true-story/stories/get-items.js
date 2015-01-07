@@ -8,6 +8,8 @@
 
     app.on('panel added', function (panel) {
 
+      console.warn('SUB #4 panel added', panel);
+
       var panelId = '#panel-' + panel.type;
 
       if ( panel.parent ) {
@@ -20,7 +22,7 @@
         
         .on('got items', function (panelItems) {
 
-          console.warn('got item panels', panelItems)
+          console.warn('SUB #5 got panel items from socket, pushing to model items', panel);
           
           panelItems.items.forEach(function (item, index) {
             if ( index < (panel.size + panel.skip) - 1 ) {
@@ -37,29 +39,27 @@
 
           panel.skip += (panelItems.items.length - 1);
         });
+    });
 
-      app.on('push items', function (item) {
+    app.on('push items', function (item) {
 
-        console.warn('new item panel');
+      console.warn('SUB #6 panel item pushed', item);
 
-        app.render('item', item, function (itemView) {
+      app.render('item', item, function (itemView) {
 
-          var panelId = '#panel-' + this.item.type;
+        var panelId = '#panel-' + this.item.type;
 
-          if ( this.item.parent ) {
-            panelId += '-' + this.item.parent;
-          }
-          
-          if ( this.item.is_new ) {
-            $(panelId).find('.items').prepend(itemView);
-          }
-          else {
-            $(panelId).find('.items').append(itemView);
-          }
-        }.bind({ item: item }));
-
-      });
-
+        if ( this.item.parent ) {
+          panelId += '-' + this.item.parent;
+        }
+        
+        if ( this.item.is_new ) {
+          $(panelId).find('.items').prepend(itemView);
+        }
+        else {
+          $(panelId).find('.items').append(itemView);
+        }
+      }.bind({ item: item }));
     });
 
   }
