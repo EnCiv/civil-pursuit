@@ -4380,17 +4380,22 @@ textarea.danger {
 #signer {
   margin-top: 80px;
 }
-#signer input.error {
+/** ____________________________________________________________________________
+
+          FORM
+    ============================================================================
+**/
+.error {
   border-color: red;
   background: #ffff00;
 }
-#signer .sign-error {
+.sign-error {
   margin: 8px;
   display: none;
   padding: 18px;
   border-radius: 4px;
 }
-#signer .sign-success {
+.sign-success {
   margin: 8px;
   display: none;
   padding: 18px;

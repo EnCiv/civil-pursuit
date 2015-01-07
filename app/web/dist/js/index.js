@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":22,"util":26}],2:[function(require,module,exports){
+},{"events":24,"util":28}],2:[function(require,module,exports){
 /***
 
 
@@ -305,7 +305,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":11,"./stories":12,"./template":17,"./view":18,"./watchdogs/story-get-intro":19,"./watchdogs/story-get-topics":20,"/home/francois/Dev/true-story.js":28}],4:[function(require,module,exports){
+},{"./controller":4,"./model":11,"./stories":12,"./template":19,"./view":20,"./watchdogs/story-get-intro":21,"./watchdogs/story-get-topics":22,"/home/francois/Dev/true-story.js":30}],4:[function(require,module,exports){
 /***
 
 
@@ -1030,63 +1030,9 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     require('./stories/get-online-users').apply(this);
 
-    /** sign **/
+    /** sign in **/
 
-    function signIn () {
-      var app = this;
-
-      app.view('sign').on('submit', function () {
-
-        app.view('sign').find('.sign-error')
-          .text('')
-          .hide();
-
-        var email = app.view('sign').find('[name="email"]');
-        var password = app.view('sign').find('[name="password"]');
-
-        email.removeClass('error');
-        password.removeClass('error');
-
-        if ( ! email.val() ) {
-          email.addClass('error');
-          email.focus();
-        }
-
-        else if ( ! password.val() ) {
-          password.addClass('error');
-          password.focus();
-        }
-
-        else {
-          $.ajax({
-            url: '/sign/in',
-            type: 'POST',
-            data: {
-              email: email.val(),
-              password: password.val()
-            }
-          })
-            .error(function (error) {
-
-            })
-            .success(function (data) {
-              app.view('sign').find('section').hide(2000);
-
-              app.view('sign').find('.sign-success')
-                .show(function () {
-                  setTimeout(function () {
-                    app.view('sign').hide(2500);
-                  }, 5000);
-                })
-                .text('Welcome back!');
-            });
-        }
-
-        return false;
-      });
-    }
-
-    signIn.apply(this);
+    require('./stories/sign-in').apply(this);
 
     /** MODEL */
 
@@ -1121,7 +1067,40 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-intro":13,"./stories/get-items":14,"./stories/get-online-users":15,"./stories/get-panel":16}],13:[function(require,module,exports){
+},{"./stories/get-intro":14,"./stories/get-items":15,"./stories/get-online-users":16,"./stories/get-panel":17,"./stories/sign-in":18}],13:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function createItem () {
+    var app = this;
+
+    $('.creator').find('.button-create').on('click',
+      function () {
+        console.warn('hello')
+        var creator = $(this).closest('.creator');
+
+        var subject = creator.find('[name="subject"]');
+        var description = creator.find('[name="description"]');
+
+        subject.removeClass('error');
+        description.removeClass('error');
+
+        if ( ! subject.val() ) {
+          subject.addClass('error').focus();
+        }
+
+        else if ( ! description.val() ) {
+          description.addClass('error').focus();
+        }
+      });
+  }
+
+  module.exports = createItem;
+
+} ();
+
+},{}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1156,7 +1135,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1213,7 +1192,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1233,7 +1212,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = getOnlineUsers;
 
 } ();
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1262,6 +1241,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           .once('rendered panel', function (panelView) {
             app.view('panels').append(panelView);
             app.emit('panel added', panel);
+
+            require('./create-item').apply(app);
           });
       });
 
@@ -1271,7 +1252,70 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],17:[function(require,module,exports){
+},{"./create-item":13}],18:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function signIn () {
+    var app = this;
+
+    app.view('sign').on('submit', function () {
+
+      app.view('sign').find('.sign-error')
+        .text('')
+        .hide();
+
+      var email = app.view('sign').find('[name="email"]');
+      var password = app.view('sign').find('[name="password"]');
+
+      email.removeClass('error');
+      password.removeClass('error');
+
+      if ( ! email.val() ) {
+        email.addClass('error');
+        email.focus();
+      }
+
+      else if ( ! password.val() ) {
+        password.addClass('error');
+        password.focus();
+      }
+
+      else {
+        $.ajax({
+          url: '/sign/in',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          .error(function (error) {
+
+          })
+          .success(function (data) {
+            app.view('sign').find('section').hide(2000);
+
+            app.view('sign').find('.sign-success')
+              .show(function () {
+                setTimeout(function () {
+                  app.view('sign').hide(2500);
+                }, 5000);
+              })
+              .text('Welcome back!');
+          });
+      }
+
+      return false;
+    });
+  }
+
+  module.exports = signIn;
+
+} ();
+
+},{}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1466,7 +1510,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./controllers/truncate":9,"string":27}],18:[function(require,module,exports){
+},{"./controllers/truncate":9,"string":29}],20:[function(require,module,exports){
 /***
 
 
@@ -1510,61 +1554,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 ***/
 
-
-
-
-/***
-
-
-                          ,
-                     ,   /^\     ___
-                    /^\_/   `...'  /`
-                 ,__\    ,'     ~ (
-              ,___\ ,,    .,       \
-               \___ \\\ .'.'   .-.  )
-                 .'.-\\\`.`.  '.-. (
-                / (==== ."".  ( o ) \
-              ,/u  `~~~'|  /   `-'   )
-             "")^u ^u^|~| `""".  ~_ /
-               /^u ^u ^\~\     ".  \\
-       _      /u^  u ^u  ~\      ". \\
-      ( \     )^ ^U ^U ^U\~\      ". \\
-     (_ (\   /^U ^ ^U ^U  ~|       ". `\
-    (_  _ \  )U ^ U^ ^U ^|~|        ". `\.
-   (_  = _(\ \^ U ^U ^ U^ ~|          ".`.;      Joan Stark
-  (_ -(    _\_)U ^ ^ U^ ^|~|            ""
-  (_    =   ( ^ U^ U^ ^ U ~|
-  (_ -  ( ~  = ^ U ^U U ^|~/
-   (_  =     (_^U^ ^ U^ U /
-    (_-   ~_(/ \^ U^ ^U^,"
-     (_ =  _/   |^ u^u."
-      (_  (/    |u^ u.(
-       (__/     )^u^ u/
-               /u^ u^(
-              |^ u^ u/
-              |u^ u^(       ____
-              |^u^ u(    .-'    `-,
-               \^u ^ \  / ' .---.  \
-         jgs    \^ u^u\ |  '  `  ;  |
-                 \u^u^u:` . `-'  ;  |
-                  `-.^ u`._   _.'^'./
-                     "-.^.-```_=~._/
-
-
-            __                                   
-             /  |                                  
-   __     __ $$/   ______   __   __   __   _______ 
-  /  \   /  |/  | /      \ /  | /  | /  | /       |
-  $$  \ /$$/ $$ |/$$$$$$  |$$ | $$ | $$ |/$$$$$$$/ 
-   $$  /$$/  $$ |$$    $$ |$$ | $$ | $$ |$$      \ 
-    $$ $$/   $$ |$$$$$$$$/ $$ \_$$ \_$$ | $$$$$$  |
-     $$$/    $$ |$$       |$$   $$   $$/ /     $$/ 
-      $/     $$/  $$$$$$$/  $$$$$/$$$$/  $$$$$$$/  
-                                                 
-                                             
-
-**/
-
 ; ! function () {
 
   'use strict';
@@ -1573,12 +1562,13 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     "panels":       '.panels',
     "intro":        '#intro',
     "online now":   '.online-users',
-    "sign":         '#signer'
+    "sign":         '#signer',
+    "creator":      '.creator'
   };
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /***
 
 
@@ -1760,7 +1750,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /***
 
 
@@ -1928,7 +1918,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1966,7 +1956,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":22}],22:[function(require,module,exports){
+},{"events":24}],24:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2269,7 +2259,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2294,7 +2284,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2382,14 +2372,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2979,7 +2969,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":25,"_process":24,"inherits":23}],27:[function(require,module,exports){
+},{"./support/isBuffer":27,"_process":26,"inherits":25}],29:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4013,7 +4003,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4072,7 +4062,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":29}],29:[function(require,module,exports){
+},{"./lib/TrueStory.js":31}],31:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4872,7 +4862,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":30,"./TrueStory/parse-dot-notation":31,"./TrueStory/render":32,"./When":33,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":24,"domain":21,"events":22,"util":26}],30:[function(require,module,exports){
+},{"./TrueStory/model":32,"./TrueStory/parse-dot-notation":33,"./TrueStory/render":34,"./When":35,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":26,"domain":23,"events":24,"util":28}],32:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5233,7 +5223,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5355,7 +5345,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5468,7 +5458,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":24}],33:[function(require,module,exports){
+},{"_process":26}],35:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5941,4 +5931,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":29,"_process":24}]},{},[2]);
+},{"./TrueStory":31,"_process":26}]},{},[2]);

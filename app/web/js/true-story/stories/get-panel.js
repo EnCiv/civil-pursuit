@@ -26,6 +26,8 @@
           .once('rendered panel', function (panelView) {
             app.view('panels').append(panelView);
             app.emit('panel added', panel);
+
+            require('./create-item').apply(app);
           });
       });
 

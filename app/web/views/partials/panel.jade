@@ -25,23 +25,21 @@ include ../mixins/bootstrap
             article.item-media
           
           .pull-right.box-buttons
-            button.btn Promote
+            button.btn.button-create Promote
             .text-muted New
-            div.promoted-percent 0
+            .text-muted
             button.btn(disabled) Details
 
           .item-text
             .input-subject
-              input.form-control.input-lg(type='text' placeholder='Item subject')
+              input.form-control.input-lg(type='text' placeholder='Item subject' name='subject')
             
-              textarea.form-control.input-lg(placeholder='Item description')
+              textarea.form-control.input-lg(placeholder='Describe the subject in a concise and complete fashion that is measurable and unbiased' name='description')
             
-              input.form-control.input-lg(placeholder='Item reference')
+              input.form-control.input-lg(placeholder='http://')
 
 
     .items
 
     .load-more
       a(href='') View more
-bnc741_gMaIl1981!?0q
-bnc742_gMaIl1981!?0
