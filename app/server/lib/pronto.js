@@ -156,9 +156,9 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       /** passport */
 
-      .passport({
-        facebook: facebook
-      })
+      // .passport({
+      //   facebook: facebook
+      // })
 
       /** pre router */
 
@@ -203,7 +203,6 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       /** /js/ ==> JS files */
 
       .open('app/web/dist/js',
-        { prepend: ';var synapp = ' + JSON.stringify(exportConfig, null, 2) + ';' },
         when.prefix('/js'))
 
       /** /css/ ==> CSS files */

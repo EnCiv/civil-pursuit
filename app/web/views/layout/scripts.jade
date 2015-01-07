@@ -9,9 +9,9 @@
 //- # pass config public
 block script-backend
   script.
-    var synapp = !{JSON.stringify(synapp.public)} || {};
+    var synapp = !{JSON.stringify(synapp.public)};
     synapp.env = "!{settings.env}";
-    synapp.user = "!{_id}";
+    synapp.user = "!{(req.user && req.user.id)}";
 
 //- socketio
 block script-socketio

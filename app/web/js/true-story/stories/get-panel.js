@@ -28,6 +28,10 @@
             app.emit('panel added', panel);
 
             require('./create-item').apply(app);
+
+            if ( synapp.user ) {
+              $('.is-in').css('visibility', 'visible');
+            }
           });
       });
 

@@ -935,6 +935,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         console.warn('socket error', socket);
       });
 
+    if ( synapp.user ) {
+      $('.is-in').css('visibility', 'visible');
+    }
+
 
     /** Get intro */
 
@@ -1077,7 +1081,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     $('.creator').find('.button-create').on('click',
       function () {
-        console.warn('hello')
         var creator = $(this).closest('.creator');
 
         var subject = creator.find('[name="subject"]');
@@ -1243,6 +1246,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             app.emit('panel added', panel);
 
             require('./create-item').apply(app);
+
+            if ( synapp.user ) {
+              $('.is-in').css('visibility', 'visible');
+            }
           });
       });
 
@@ -1295,6 +1302,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
           })
           .success(function (data) {
+            $('.is-in').css('visibility', 'visible');
+
             app.view('sign').find('section').hide(2000);
 
             app.view('sign').find('.sign-success')

@@ -11,15 +11,13 @@ header.container-fluid
           span.online-users 0
 
         //- User icon
-        - if ( req.user )
-          a.button.btn.btn-lg.btn-default(href='/page/persona' title='Persona')
-            big.fa.fa-user
+        a.button.btn.btn-lg.btn-default.is-in(href='/page/persona' title='Persona')
+          big.fa.fa-user
         
         //- Sign out
-        - if ( req.user )
-          span  
-          a.button.btn.btn-lg.btn-default(href='/sign/out' title='Sign out')
-            big.fa.fa-sign-out
+        span  
+        a.button.btn.btn-lg.btn-default.is-in(href='/sign/out' title='Sign out')
+          big.fa.fa-sign-out
 
         //- Back
         span  

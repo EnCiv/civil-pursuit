@@ -59,6 +59,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         console.warn('socket error', socket);
       });
 
+    if ( synapp.user ) {
+      $('.is-in').css('visibility', 'visible');
+    }
+
 
     /** Get intro */
 

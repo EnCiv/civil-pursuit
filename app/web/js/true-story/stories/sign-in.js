@@ -40,6 +40,8 @@
 
           })
           .success(function (data) {
+            $('.is-in').css('visibility', 'visible');
+
             app.view('sign').find('section').hide(2000);
 
             app.view('sign').find('.sign-success')

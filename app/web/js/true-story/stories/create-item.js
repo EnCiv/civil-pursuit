@@ -7,7 +7,6 @@
 
     $('.creator').find('.button-create').on('click',
       function () {
-        console.warn('hello')
         var creator = $(this).closest('.creator');
 
         var subject = creator.find('[name="subject"]');
