@@ -20,12 +20,13 @@
         
         .on('got items', function (panelItems) {
           
-          panelItems.items.reverse()
-            .forEach(function (item, index) {
-              if ( index ) {
-                app.model('items').push(item);
-              }
-            });
+          panelItems.items.forEach(function (item, index) {
+            
+            if ( index < (panel.size + panel.skip) - 1 ) {
+              app.model('items').push(item);
+            }
+          
+          });
 
           if ( panelItems.items.length >= (panel.size + panel.skip) ) {
             $(panelId).find('.load-more').show();
@@ -41,7 +42,12 @@
         app.render('item', item);
 
         app.on('rendered item', function (itemView) {
-          $(panelId).find('.items').prepend(itemView);
+          if ( item.is_new ) {
+            $(panelId).find('.items').prepend(itemView);
+          }
+          else {
+            $(panelId).find('.items').append(itemView);
+          }
         });
       });
 

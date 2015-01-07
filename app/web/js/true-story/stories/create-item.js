@@ -44,7 +44,8 @@
       });
   
     app.emitter('socket').on('created item', function (item) {
-      app.render('item', item);
+      item.is_new = true;
+      app.model('items').push(item);
     });
   }
 
