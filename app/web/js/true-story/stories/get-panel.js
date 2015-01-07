@@ -24,7 +24,19 @@
 
         app
           .once('rendered panel', function (panelView) {
-            app.view('panels').append(panelView);
+
+            if ( ! panel.parent ) {
+              app.view('panels').append(panelView);
+            }
+
+            else {
+              $('#item-' + panel.parent + ' .children .is-section')
+                .append(panelView);
+
+              app.controller('reveal')($('#item-' + panel.parent + ' .children'),
+                $('#item-' + panel.parent));
+            }
+
             app.emit('panel added', panel);
 
             require('./create-item').apply(app);

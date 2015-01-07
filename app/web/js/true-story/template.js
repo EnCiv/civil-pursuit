@@ -2,23 +2,6 @@
 
   'use strict';
 
-  function reveal (elem, poa) {
-    if ( ! elem.hasClass('is-toggable') ) {
-      elem.addClass('is-toggable');
-    }
-
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-      return false;
-    }
-
-    elem.removeClass('is-hidden').addClass('is-showing');
-
-    app.controller('scroll to point of attention')(poa, function () {
-      app.controller('show')(elem);
-      // elem.css('display', 'block');
-    });
-  }
-
   module.exports = {
     
     "online users": {
@@ -56,7 +39,7 @@
         });
 
         view.find('.toggle-creator').on('click', function () {
-          reveal(view.find('.creator'), view);
+          app.controller('reveal')(view.find('.creator'), view);
         });
 
       }
@@ -188,6 +171,12 @@
             .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
             .text(Math.floor(item.promotions * 100 / item.views) + '%');
 
+        });
+
+        // ITEM TOGGLE SUB PANEL
+
+        view.find('.toggle-arrow i.fa').on('click', function () {
+          app.model('panels').push({ type: 'Problem', parent: item._id });
         });
 
         // IS IN
