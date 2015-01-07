@@ -1554,6 +1554,13 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         item.find('.evaluator .cursor').text(evaluation.cursor); 
         item.find('.evaluator .limit').text(evaluation.limit);
 
+        if ( evaluation.cursor < evaluation.limit ) {
+          item.find('.evaluator .finish').text('Neither');
+        }
+        else {
+          item.find('.evaluator .finish').text('Finish');
+        }
+
         for ( var i = 0; i < 2; i ++ ) {
 
           item.find('.evaluator .image:eq(' + i +')').append(
