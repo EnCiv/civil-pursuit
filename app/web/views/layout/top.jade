@@ -5,14 +5,23 @@ header.container-fluid
   .row
     .col-xs-12
       .pull-right
+        //- Online now
         span
           span Online now: 
           span.online-users 0
-        a.button.btn.btn-lg.btn-default(href='/page/persona')
-          big.fa.fa-user
-        span  
-        a.button.btn.btn-lg.btn-default(href='/sign/out')
-          big.fa.fa-sign-out
+
+        //- User icon
+        - if ( req.user )
+          a.button.btn.btn-lg.btn-default(href='/page/persona')
+            big.fa.fa-user
+        
+        //- Sign out
+        - if ( req.user )
+          span  
+          a.button.btn.btn-lg.btn-default(href='/sign/out')
+            big.fa.fa-sign-out
+
+        //- Back
         span  
         a.button.btn.btn-lg.btn-default(href=back)
           big.fa.fa-chevron-left
