@@ -20,7 +20,6 @@
 
     app
       .on('push panels', function (panel) {
-        console.warn('new panel', panel)
         app.render('panel', panel, function (panelView) {
 
           if ( ! panel.parent ) {

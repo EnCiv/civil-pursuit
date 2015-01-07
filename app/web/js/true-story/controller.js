@@ -109,7 +109,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     'show': require('./controllers/show'),
     'youtube': require('./controllers/youtube'),
     'item media': require('./controllers/item-media'),
-    'reveal': require('./controllers/reveal')
+    'reveal': require('./controllers/reveal'),
+    'upload': require('./controllers/upload')
   };
 
 } ();

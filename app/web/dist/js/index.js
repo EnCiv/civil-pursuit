@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":24,"util":28}],2:[function(require,module,exports){
+},{"events":25,"util":29}],2:[function(require,module,exports){
 /***
 
 
@@ -306,7 +306,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":12,"./stories":13,"./template":21,"./view":22,"/home/francois/Dev/true-story.js":30}],4:[function(require,module,exports){
+},{"./controller":4,"./model":13,"./stories":14,"./template":22,"./view":23,"/home/francois/Dev/true-story.js":31}],4:[function(require,module,exports){
 /***
 
 
@@ -418,12 +418,13 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     'show': require('./controllers/show'),
     'youtube': require('./controllers/youtube'),
     'item media': require('./controllers/item-media'),
-    'reveal': require('./controllers/reveal')
+    'reveal': require('./controllers/reveal'),
+    'upload': require('./controllers/upload')
   };
 
 } ();
 
-},{"./controllers/bootstrap/responsive-image":5,"./controllers/item-media":6,"./controllers/reveal":7,"./controllers/scroll-to-point-of-attention":8,"./controllers/show":9,"./controllers/youtube":11}],5:[function(require,module,exports){
+},{"./controllers/bootstrap/responsive-image":5,"./controllers/item-media":6,"./controllers/reveal":7,"./controllers/scroll-to-point-of-attention":8,"./controllers/show":9,"./controllers/upload":11,"./controllers/youtube":12}],5:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -808,6 +809,17 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 }();
 
 },{"./scroll-to-point-of-attention":8}],11:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function upload () {}
+
+  module.exports = upload;
+
+} ();
+
+},{}],12:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -838,7 +850,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /***
 
 
@@ -901,7 +913,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /***
 
 
@@ -1026,7 +1038,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-evaluation":15,"./stories/get-intro":16,"./stories/get-items":17,"./stories/get-online-users":18,"./stories/get-panel":19,"./stories/sign-in":20}],14:[function(require,module,exports){
+},{"./stories/get-evaluation":16,"./stories/get-intro":17,"./stories/get-items":18,"./stories/get-online-users":19,"./stories/get-panel":20,"./stories/sign-in":21}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1082,7 +1094,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1115,7 +1127,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1150,7 +1162,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1221,7 +1233,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1241,7 +1253,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = getOnlineUsers;
 
 } ();
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1264,7 +1276,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     app
       .on('push panels', function (panel) {
-        console.warn('new panel', panel)
         app.render('panel', panel, function (panelView) {
 
           if ( ! panel.parent ) {
@@ -1295,7 +1306,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./create-item":14}],20:[function(require,module,exports){
+},{"./create-item":15}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1360,7 +1371,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1560,6 +1571,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     "evaluation": {
       template: '.evaluator',
       controller: function (view, evaluation) {
+        var app = this;
+
         var itemID = '#item-' + evaluation.item;
 
         var item = $(itemID);
@@ -1573,6 +1586,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         else {
           item.find('.evaluator .finish').text('Finish');
         }
+
+        item.find('.evaluator .finish').on('click', function () {
+          evaluation.cursor += 2;
+
+          app.render('evaluation', evaluation);
+        });
 
         for ( var i = 0; i < 2; i ++ ) {
 
@@ -1616,7 +1635,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./controllers/truncate":10,"string":29}],22:[function(require,module,exports){
+},{"./controllers/truncate":10,"string":30}],23:[function(require,module,exports){
 /***
 
 
@@ -1674,7 +1693,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1712,7 +1731,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":24}],24:[function(require,module,exports){
+},{"events":25}],25:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2015,7 +2034,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2040,7 +2059,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2128,14 +2147,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2725,7 +2744,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":27,"_process":26,"inherits":25}],29:[function(require,module,exports){
+},{"./support/isBuffer":28,"_process":27,"inherits":26}],30:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -3759,7 +3778,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -3818,7 +3837,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":31}],31:[function(require,module,exports){
+},{"./lib/TrueStory.js":32}],32:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4580,7 +4599,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":32,"./TrueStory/parse-dot-notation":33,"./TrueStory/render":34,"./When":35,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":26,"domain":23,"events":24,"util":28}],32:[function(require,module,exports){
+},{"./TrueStory/model":33,"./TrueStory/parse-dot-notation":34,"./TrueStory/render":35,"./When":36,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":27,"domain":24,"events":25,"util":29}],33:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4941,7 +4960,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5063,7 +5082,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5183,7 +5202,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":26}],35:[function(require,module,exports){
+},{"_process":27}],36:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5656,4 +5675,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":31,"_process":26}]},{},[2]);
+},{"./TrueStory":32,"_process":27}]},{},[2]);

@@ -197,6 +197,8 @@
     "evaluation": {
       template: '.evaluator',
       controller: function (view, evaluation) {
+        var app = this;
+
         var itemID = '#item-' + evaluation.item;
 
         var item = $(itemID);
@@ -210,6 +212,12 @@
         else {
           item.find('.evaluator .finish').text('Finish');
         }
+
+        item.find('.evaluator .finish').on('click', function () {
+          evaluation.cursor += 2;
+
+          app.render('evaluation', evaluation);
+        });
 
         for ( var i = 0; i < 2; i ++ ) {
 
