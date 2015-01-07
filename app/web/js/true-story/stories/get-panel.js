@@ -20,31 +20,29 @@
 
     app
       .on('push panels', function (panel) {
-        app.render('panel', panel);
+        console.warn('new panel', panel)
+        app.render('panel', panel, function (panelView) {
 
-        app
-          .once('rendered panel', function (panelView) {
+          if ( ! panel.parent ) {
+            app.view('panels').append(panelView);
+          }
 
-            if ( ! panel.parent ) {
-              app.view('panels').append(panelView);
-            }
+          else {
+            $('#item-' + panel.parent + ' .children .is-section')
+              .append(panelView);
 
-            else {
-              $('#item-' + panel.parent + ' .children .is-section')
-                .append(panelView);
+            app.controller('reveal')($('#item-' + panel.parent + ' .children'),
+              $('#item-' + panel.parent));
+          }
 
-              app.controller('reveal')($('#item-' + panel.parent + ' .children'),
-                $('#item-' + panel.parent));
-            }
+          app.emit('panel added', panel);
 
-            app.emit('panel added', panel);
+          require('./create-item').apply(app);
 
-            require('./create-item').apply(app);
-
-            if ( synapp.user ) {
-              $('.is-in').css('visibility', 'visible');
-            }
-          });
+          if ( synapp.user ) {
+            $('.is-in').css('visibility', 'visible');
+          }
+        });
       });
 
   }

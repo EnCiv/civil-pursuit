@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":26,"util":30}],2:[function(require,module,exports){
+},{"events":24,"util":28}],2:[function(require,module,exports){
 /***
 
 
@@ -298,14 +298,15 @@ Nina Butorac
 
       .tell(require('./stories'))
 
-      .watchDog({
-        'story get topics':   require('./watchdogs/story-get-topics'),
-        'story get intro':    require('./watchdogs/story-get-intro')
-      });
+      // .watchDog({
+      //   'story get topics':   require('./watchdogs/story-get-topics'),
+      //   'story get intro':    require('./watchdogs/story-get-intro')
+      // })
+      ;
     };
 
 }();
-},{"./controller":4,"./model":12,"./stories":13,"./template":21,"./view":22,"./watchdogs/story-get-intro":23,"./watchdogs/story-get-topics":24,"/home/francois/Dev/true-story.js":32}],4:[function(require,module,exports){
+},{"./controller":4,"./model":12,"./stories":13,"./template":21,"./view":22,"/home/francois/Dev/true-story.js":30}],4:[function(require,module,exports){
 /***
 
 
@@ -1159,7 +1160,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     var app = this;
 
     app.on('panel added', function (panel) {
-      
+
       var panelId = '#panel-' + panel.type;
 
       if ( panel.parent ) {
@@ -1170,14 +1171,14 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         
         .emit('get items', panel)
         
-        .on('got items', function (panelItems) {
+        .once('got items', function (panelItems) {
+
+          console.warn('got item panels', panelItems)
           
           panelItems.items.forEach(function (item, index) {
-            
             if ( index < (panel.size + panel.skip) - 1 ) {
               app.model('items').push(item);
-            }
-          
+            }          
           });
 
           if ( panelItems.items.length >= (panel.size + panel.skip) ) {
@@ -1191,9 +1192,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         });
 
       app.on('push items', function (item) {
-        app.render('item', item);
 
-        app.on('rendered item', function (itemView) {
+        console.warn('new item panel');
+        
+        app.render('item', item, function (itemView) {
+          console.warn('rendered item');
           if ( item.is_new ) {
             $(panelId).find('.items').prepend(itemView);
           }
@@ -1201,6 +1204,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             $(panelId).find('.items').append(itemView);
           }
         });
+
       });
 
     });
@@ -1254,31 +1258,29 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     app
       .on('push panels', function (panel) {
-        app.render('panel', panel);
+        console.warn('new panel', panel)
+        app.render('panel', panel, function (panelView) {
 
-        app
-          .once('rendered panel', function (panelView) {
+          if ( ! panel.parent ) {
+            app.view('panels').append(panelView);
+          }
 
-            if ( ! panel.parent ) {
-              app.view('panels').append(panelView);
-            }
+          else {
+            $('#item-' + panel.parent + ' .children .is-section')
+              .append(panelView);
 
-            else {
-              $('#item-' + panel.parent + ' .children .is-section')
-                .append(panelView);
+            app.controller('reveal')($('#item-' + panel.parent + ' .children'),
+              $('#item-' + panel.parent));
+          }
 
-              app.controller('reveal')($('#item-' + panel.parent + ' .children'),
-                $('#item-' + panel.parent));
-            }
+          app.emit('panel added', panel);
 
-            app.emit('panel added', panel);
+          require('./create-item').apply(app);
 
-            require('./create-item').apply(app);
-
-            if ( synapp.user ) {
-              $('.is-in').css('visibility', 'visible');
-            }
-          });
+          if ( synapp.user ) {
+            $('.is-in').css('visibility', 'visible');
+          }
+        });
       });
 
   }
@@ -1410,7 +1412,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         $('#intro').find('.item-title').text(intro.subject);
         $('#intro').find('.description').text(intro.description);
 
-        $('#intro').find('.item-media').append(
+        $('#intro').find('.item-media').empty().append(
           app.controller('bootstrap/responsive-image')({
             src: intro.image
           }));
@@ -1458,7 +1460,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         // ITEM MEDIA
 
-        view.find('.item-media').append(
+        view.find('.item-media').empty().append(
           app.controller('item media')(item));
 
         // ITEM STATS
@@ -1533,7 +1535,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         // ITEM TOGGLE SUB PANEL
 
         view.find('.toggle-arrow i.fa').on('click', function () {
-          app.model('panels').push({ type: 'Problem', parent: item._id });
+          app.model('panels').push({
+            type: 'Problem',
+            parent: item._id,
+            size: synapp['navigator batch size'],
+            skip: 0
+          });
         });
 
         // IS IN
@@ -1605,7 +1612,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./controllers/truncate":10,"string":31}],22:[function(require,module,exports){
+},{"./controllers/truncate":10,"string":29}],22:[function(require,module,exports){
 /***
 
 
@@ -1664,356 +1671,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 } ();
 
 },{}],23:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                             
-                                                                             
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
-
-
-
-
-
-
-
-                                        _.-.._         _._
-                                     _,/^^,y./  ^^^^"""^^\= \
-                                     \y###XX;/  /     \    ^\^\
-                                       `\Y^   /   .-==||==-.)^^
-                   ,.-=""""=-.__       /^ (  (   -/<0>++<0>(
-                 .^      .: . . :^===(^ \ (  (  /```^^^^^^^)
-                /      .: .,GGGGp,_ .(   \   /    /-(o'~'o))
-              .^      : . gGG"""YGG}. \   )   / /  _/-====-\
-             /       (. .gGP  __ ~~ . .\  \  (    (  _.---._)
-            /        (. (GGb,,)GGp. . . \_-^-.__(_ /______./
-           (          \ . `"!GGP^ . . . . ^=-._--_--^^^^^~)
-           (        /^^^\_. . . . . . . . . . . . . . . . )
-           )       /     /._. . . . . . . . . . . . . ._.=)
-           \      /      |  ^"=.. . . . . . . ._++""\"^    \
-            \    |       |       )^|^^~'---'~^^      \     )
-            )   /        )      /   \                 \    \
-            |`  |        \     /\    \                (    /
-            |   |         (   (  \ . .\               |   (
-            )   |         )   )   ^^^^^^              |   |
-           /. . \         |  '|                       )   (
-           ^^^^^^         )    \                      /. . \
-                          / . . \                     ^^^^^^
-
-
-                          
-
-                                                            
-                                                            
-              $$$$$$$$                     $$               
-                 $$                        $$               
-                 $$   $$$$$$    $$$$$$$  $$$$$$    $$$$$$$  
-                 $$  $$    $$  $$          $$     $$        
-                 $$  $$$$$$$$   $$$$$$     $$      $$$$$$   
-                 $$  $$              $$    $$  $$       $$  
-                 $$   $$$$$$$  $$$$$$$      $$$$  $$$$$$$   
-                                                            
-                                                            
-
-
-                                                                        
-                                                                        
-                    $$                          $$                      
-                    $$                                                  
-         $$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
-        $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
-         $$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
-              $$    $$  $$  $$    $$  $$        $$  $$              $$  
-        $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
-                                                                        
-                                                                        
-                                                                
-                              
-                                                
-                                        $$      
-                                        $$      
-                   $$$$$$    $$$$$$   $$$$$$    
-                  $$    $$  $$    $$    $$      
-                  $$    $$  $$$$$$$$    $$      
-                  $$    $$  $$          $$  $$  
-                   $$$$$$$   $$$$$$$     $$$$   
-                        $$                      
-                  $$    $$                      
-                   $$$$$$                       
-
-
-
-
-                                            
-                                                          
-              $$              $$                          
-                              $$                          
-              $$  $$$$$$$   $$$$$$     $$$$$$    $$$$$$   
-              $$  $$    $$    $$      $$    $$  $$    $$  
-              $$  $$    $$    $$      $$        $$    $$  
-              $$  $$    $$    $$  $$  $$        $$    $$  
-              $$  $$    $$     $$$$   $$         $$$$$$   
-                                                          
-                                                          
-
-
-
-
-
-
-
-
-                                            
-***/
-
-; ! function () {
-
-  'use strict';
-
-  module.exports = [
-    {
-      emitter: 'socket',
-      event: 'connect',
-      listener: 'on'
-    },
-
-    {
-      emitter: 'socket',
-      event: 'got intro',
-      listener: 'on'
-    },
-
-    {
-      model: 'intro',
-      event: 'update',
-      listener: 'on'
-    },
-
-    {
-      event: 'template rendered',
-      listener: 'on',
-      run: function (dom) {
-
-        return [
-
-          dom.attr('id') === this.view('intro').attr('id'),
-
-          ! dom.find('.iddle').length
-
-        
-        ].every(function (assertion) {
-         
-          return assertion;
-        });
-      }
-    }
-  ];
-
-} ();
-
-},{}],24:[function(require,module,exports){
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                             
-                                                                             
-                                                                             
- $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$      $$   $$$$$$$  
-$$        $$    $$  $$    $$        $$  $$    $$  $$    $$         $$        
- $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$     $$   $$$$$$   
-      $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$     $$        $$  
-$$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$   
-                $$                      $$        $$           $$            
-          $$    $$                      $$        $$     $$    $$            
-           $$$$$$                       $$        $$      $$$$$$             
-
-
-
-
-
-
-
-                                        _.-.._         _._
-                                     _,/^^,y./  ^^^^"""^^\= \
-                                     \y###XX;/  /     \    ^\^\
-                                       `\Y^   /   .-==||==-.)^^
-                   ,.-=""""=-.__       /^ (  (   -/<0>++<0>(
-                 .^      .: . . :^===(^ \ (  (  /```^^^^^^^)
-                /      .: .,GGGGp,_ .(   \   /    /-(o'~'o))
-              .^      : . gGG"""YGG}. \   )   / /  _/-====-\
-             /       (. .gGP  __ ~~ . .\  \  (    (  _.---._)
-            /        (. (GGb,,)GGp. . . \_-^-.__(_ /______./
-           (          \ . `"!GGP^ . . . . ^=-._--_--^^^^^~)
-           (        /^^^\_. . . . . . . . . . . . . . . . )
-           )       /     /._. . . . . . . . . . . . . ._.=)
-           \      /      |  ^"=.. . . . . . . ._++""\"^    \
-            \    |       |       )^|^^~'---'~^^      \     )
-            )   /        )      /   \                 \    \
-            |`  |        \     /\    \                (    /
-            |   |         (   (  \ . .\               |   (
-            )   |         )   )   ^^^^^^              |   |
-           /. . \         |  '|                       )   (
-           ^^^^^^         )    \                      /. . \
-                          / . . \                     ^^^^^^
-
-
-                          
-
-                                                            
-                                                            
-              $$$$$$$$                     $$               
-                 $$                        $$               
-                 $$   $$$$$$    $$$$$$$  $$$$$$    $$$$$$$  
-                 $$  $$    $$  $$          $$     $$        
-                 $$  $$$$$$$$   $$$$$$     $$      $$$$$$   
-                 $$  $$              $$    $$  $$       $$  
-                 $$   $$$$$$$  $$$$$$$      $$$$  $$$$$$$   
-                                                            
-                                                            
-
-
-                                                                        
-                                                                        
-                    $$                          $$                      
-                    $$                                                  
-         $$$$$$$  $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$    $$$$$$$  
-        $$          $$      $$    $$  $$    $$  $$  $$    $$  $$        
-         $$$$$$     $$      $$    $$  $$        $$  $$$$$$$$   $$$$$$   
-              $$    $$  $$  $$    $$  $$        $$  $$              $$  
-        $$$$$$$      $$$$    $$$$$$   $$        $$   $$$$$$$  $$$$$$$   
-                                                                        
-                                                                        
-                                                                
-                              
-                                                
-                                        $$      
-                                        $$      
-                   $$$$$$    $$$$$$   $$$$$$    
-                  $$    $$  $$    $$    $$      
-                  $$    $$  $$$$$$$$    $$      
-                  $$    $$  $$          $$  $$  
-                   $$$$$$$   $$$$$$$     $$$$   
-                        $$                      
-                  $$    $$                      
-                   $$$$$$                       
-
-
-
-
-                                                                
-            $$                          $$                      
-            $$                                                  
-          $$$$$$     $$$$$$    $$$$$$   $$   $$$$$$$   $$$$$$$  
-            $$      $$    $$  $$    $$  $$  $$        $$        
-            $$      $$    $$  $$    $$  $$  $$         $$$$$$   
-            $$  $$  $$    $$  $$    $$  $$  $$              $$  
-             $$$$    $$$$$$   $$$$$$$   $$   $$$$$$$  $$$$$$$   
-                              $$                                
-                              $$                                
-                              $$                                
-                                                           
-
-***/
-
-; ! function () {
-
-  'use strict';
-
-  module.exports = [
-    {
-      emitter: 'socket',
-      event: 'connect',
-      listener: 'on'
-    },
-
-    {
-      model: 'panels',
-      event: 'push',
-      listener: 'on'
-    },
-
-    {
-      model: 'panel',
-      event: 'update',
-      listener: 'on'
-    },
-
-    {
-      emitter: 'socket',
-      event: 'got panel items',
-      listener: 'on'
-    },
-
-    {
-      model: 'items',
-      event: 'concat',
-      listener: 'on'
-    }
-  ];
-
-} ();
-
-},{}],25:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2051,7 +1708,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":26}],26:[function(require,module,exports){
+},{"events":24}],24:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2354,7 +2011,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],27:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2379,7 +2036,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],28:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2467,14 +2124,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],29:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],30:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3064,7 +2721,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":29,"_process":28,"inherits":27}],31:[function(require,module,exports){
+},{"./support/isBuffer":27,"_process":26,"inherits":25}],29:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4098,7 +3755,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],32:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4157,7 +3814,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":33}],33:[function(require,module,exports){
+},{"./lib/TrueStory.js":31}],31:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4267,44 +3924,6 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
     this.domain.on('error', function (error) {
       console.warn('An Error Occured! True story!', error, error.stack);
       app.emit('error', error);
-    });
-
-    this.controller('true-story/render-view', function (options) {
-      var template;
-
-      if ( options.template.url ) {
-        if ( options.template.url in app.templates ) {
-          template = app.templates[options.template.url];
-        }
-        else {
-          return $.ajax(options.template.url)
-            .done(function (data, status, response) {
-              if ( status === 'success' ) {
-                app.templates[options.template.url] = data;
-                app.controller('true-story/render-view')(options);
-              }
-            });
-        }
-      }
-
-      else {
-        template = options.template;
-      }
-
-      var rendered = options.engine(template, options.locals || {});
-
-      var dom = $(rendered);
-
-      if ( options.append ) {
-        options.container.append(dom);
-      }
-
-      if ( options.ready ) {
-        options.ready.apply(app, [dom]);
-      }
-
-      this.emit('template rendered', dom);
-
     });
   }
 
@@ -4957,7 +4576,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":34,"./TrueStory/parse-dot-notation":35,"./TrueStory/render":36,"./When":37,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":28,"domain":25,"events":26,"util":30}],34:[function(require,module,exports){
+},{"./TrueStory/model":32,"./TrueStory/parse-dot-notation":33,"./TrueStory/render":34,"./When":35,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":26,"domain":23,"events":24,"util":28}],32:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5318,7 +4937,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],35:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5440,13 +5059,13 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
   'use strict';
 
-  function trueStory_Render (template_name, locals) {
+  function trueStory_Render (template_name, locals, cb) {
 
     /** @type TrueStory */
     
@@ -5463,6 +5082,8 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
       template_config = template_name;
       template_name = template_config.name || 'anonymous';
     }
+
+    console.warn(template_name, cb)
 
     /** Error if template_name does not exists */
 
@@ -5527,7 +5148,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
             /** Relaunch render */
 
-            app.render(template_name, locals);
+            app.render(template_name, locals, cb);
 
           });
       }
@@ -5544,7 +5165,12 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
       /** Emit render OK */
 
-      app.emit('rendered ' + template_name, elem);
+      // app.emit('rendered ' + template_name, elem);
+
+      if ( typeof cb === 'function' ) {
+        console.warn('ok')
+        cb(elem);
+      }
     });
   };
 
@@ -5553,7 +5179,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":28}],37:[function(require,module,exports){
+},{"_process":26}],35:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6026,4 +5652,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":33,"_process":28}]},{},[2]);
+},{"./TrueStory":31,"_process":26}]},{},[2]);

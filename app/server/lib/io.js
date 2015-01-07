@@ -601,6 +601,21 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
             url += '&' + panel.size + '&$skip=' + panel.skip + '&sort:promotions-,views-,created+';
 
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+            console.log(url)
+
             /** Send request to monson */
 
             monson.get(url)

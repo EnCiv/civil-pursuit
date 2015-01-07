@@ -55,7 +55,7 @@
         $('#intro').find('.item-title').text(intro.subject);
         $('#intro').find('.description').text(intro.description);
 
-        $('#intro').find('.item-media').append(
+        $('#intro').find('.item-media').empty().append(
           app.controller('bootstrap/responsive-image')({
             src: intro.image
           }));
@@ -103,7 +103,7 @@
 
         // ITEM MEDIA
 
-        view.find('.item-media').append(
+        view.find('.item-media').empty().append(
           app.controller('item media')(item));
 
         // ITEM STATS
@@ -178,7 +178,12 @@
         // ITEM TOGGLE SUB PANEL
 
         view.find('.toggle-arrow i.fa').on('click', function () {
-          app.model('panels').push({ type: 'Problem', parent: item._id });
+          app.model('panels').push({
+            type: 'Problem',
+            parent: item._id,
+            size: synapp['navigator batch size'],
+            skip: 0
+          });
         });
 
         // IS IN

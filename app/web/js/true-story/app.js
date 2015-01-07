@@ -124,10 +124,11 @@ Nina Butorac
 
       .tell(require('./stories'))
 
-      .watchDog({
-        'story get topics':   require('./watchdogs/story-get-topics'),
-        'story get intro':    require('./watchdogs/story-get-intro')
-      });
+      // .watchDog({
+      //   'story get topics':   require('./watchdogs/story-get-topics'),
+      //   'story get intro':    require('./watchdogs/story-get-intro')
+      // })
+      ;
     };
 
 }();

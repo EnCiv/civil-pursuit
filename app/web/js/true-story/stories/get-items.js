@@ -7,7 +7,7 @@
     var app = this;
 
     app.on('panel added', function (panel) {
-      
+
       var panelId = '#panel-' + panel.type;
 
       if ( panel.parent ) {
@@ -18,14 +18,14 @@
         
         .emit('get items', panel)
         
-        .on('got items', function (panelItems) {
+        .once('got items', function (panelItems) {
+
+          console.warn('got item panels', panelItems)
           
           panelItems.items.forEach(function (item, index) {
-            
             if ( index < (panel.size + panel.skip) - 1 ) {
               app.model('items').push(item);
-            }
-          
+            }          
           });
 
           if ( panelItems.items.length >= (panel.size + panel.skip) ) {
@@ -39,9 +39,11 @@
         });
 
       app.on('push items', function (item) {
-        app.render('item', item);
 
-        app.on('rendered item', function (itemView) {
+        console.warn('new item panel');
+        
+        app.render('item', item, function (itemView) {
+          console.warn('rendered item');
           if ( item.is_new ) {
             $(panelId).find('.items').prepend(itemView);
           }
@@ -49,6 +51,7 @@
             $(panelId).find('.items').append(itemView);
           }
         });
+
       });
 
     });

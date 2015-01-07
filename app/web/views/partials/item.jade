@@ -2,6 +2,7 @@
   
   .item-media-wrapper
     article.item-media
+      img.img-responsive(alt='Synaccord' src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg')
   
   .pull-right.box-buttons
     button.btn.toggle-promote.is-in Promote
@@ -10,12 +11,17 @@
     button.btn.toggle-details Details
 
   .item-text
-    h4.item-title
-      a(href='#') Loading Item Subject...
-    .box-description.description.pre-text.padding-right.padding-left Loading Item Description...
+    h4.item-title.padding-right
+      a(href='#')
+        .subject-placeholder Subject
+    
+    .box-description.description.pre-text.padding-right.padding-left
+      .description-placeholder Description
+
     .item-references
       h4
-        a(href='#' target='_blank') Loading Item Reference
+        a(href='#' target='_blank')
+          .reference-placeholder http://
 
   .collapsers
 
