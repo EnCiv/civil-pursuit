@@ -106,11 +106,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = {
     'bootstrap/responsive-image':   require('./controllers/bootstrap/responsive-image'),
     'scroll to point of attention': require('./controllers/scroll-to-point-of-attention'),
-    'show': require('./controllers/show'),
-    'youtube': require('./controllers/youtube'),
-    'item media': require('./controllers/item-media'),
-    'reveal': require('./controllers/reveal'),
-    'upload': require('./controllers/upload')
+    'show':                         require('./controllers/show'),
+    'youtube':                      require('./controllers/youtube'),
+    'item media':                   require('./controllers/item-media'),
+    'reveal':                       require('./controllers/reveal'),
+    'upload':                       require('./controllers/upload'),
+    'truncate':                     require('./controllers/truncate')
   };
 
 } ();
