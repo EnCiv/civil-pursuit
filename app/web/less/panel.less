@@ -1,8 +1,8 @@
 /**
  *    __________________________________________________________________________
  *
- *    Synapp Style Sheet / Navigator
- *    ------------------   ---------
+ *    Synapp Style Sheet / Panel
+ *    ------------------   -----
  *
  *    @abstract
  *    Navigator + Panel
@@ -21,7 +21,7 @@
 
 @import "mixins/gradient";
 @import "mixins/box-shadow";
-@import "box";
+@import "item";
 
 /** ____________________________________________________________________________
 
@@ -59,133 +59,6 @@
     }
 
     .creator {
-    }
-
-    .item {
-
-      & {
-        background:     #fff;
-        border:         1px solid @panel-border-color;
-        margin:         @syn-padding;
-        border-radius:  4px;
-        .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
-        margin-right:   0;
-        border-right:   none;
-      }
-
-      &.is-truncated .truncator {
-        display: inline-block;
-        margin-bottom: 30px;
-      }
-
-      .item-text {
-        .item-title {
-          a {
-            color: #444
-          }
-        }
-        .input-subject {
-          overflow: hidden;
-          padding: 10px;
-
-          textarea {
-            margin: 10px 0
-          }
-        }
-      }
-
-      .box-buttons {
-        margin: 10px
-      }
-
-      .collapsers {
-
-        & {
-          clear: both;
-        }
-
-        .evaluator, .details, .editor {
-          border: 1px solid @panel-border-color;
-          border-right: none;
-          margin-left: @syn-padding;
-          margin-right: 0;
-          border-radius: 4px;
-          .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
-
-          &.is-shown, &.is-showing {
-            margin-bottom: 50px;
-          }
-        }
-
-        .toggle-arrow {
-          i {
-            display: block;
-            width: 30px;
-            margin: auto;
-            margin-top: -35px !important;
-
-            @media (max-width: 768px) {
-              margin-top: 0
-            }
-          }
-        }
-
-        .children {
-
-          & {
-            background: #eee
-          }
-
-          .split-view {
-            li:nth-last-child(1) {
-              text-align: right
-            }
-
-            .box-buttons {
-
-              @media (max-width: 480px) {
-                float: none !important;
-                width: 100%;
-                clear: both;
-                text-align: center;
-              }
-
-              button {
-                width: 70px !important
-              }
-            }
-
-            .toggle-arrow {
-              display: none
-            }
-
-            .item-title {
-              width: 50%;
-
-              @media (max-width: 900px) {
-                clear: left !important;
-                padding: 10px 10px 0 10px;
-              }
-            }
-
-            .item-text {
-              @media (max-width: 900px) {
-                clear: left !important;
-              }
-            }
-
-            .item-media-wrapper {
-              @media (max-width: 900px) {
-                width: 100%
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .load-more {
-      text-align: center
     }
   }
 
