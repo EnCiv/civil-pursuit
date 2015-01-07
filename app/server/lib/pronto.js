@@ -129,7 +129,12 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
     var exportConfig = config.public;
 
-    exportConfig.user = { name: 'Roger' };
+    var facebook = config.facebook;
+
+    facebook.url = exportConfig.routes['sign in with Facebook'];
+    facebook.okUrl = exportConfig.routes['sign in with Facebook OK'];
+
+    // exportConfig.user = { name: 'Roger' };
 
     var monson = require('monson')(process.env.MONGOHQ_URL, {
       base: require('path').join(process.cwd(), 'app/business')
@@ -137,11 +142,23 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
     var server = pronto ()
 
+      /** inject into scope */
+
       .inject('synapp', config)
+
+      /** Monson custom opener */
+
+      .opener('monson', monson.pronto)
 
       /** cookies */
 
       .cookie(config.secret)
+
+      /** passport */
+
+      .passport({
+        facebook: facebook
+      })
 
       /** pre router */
 
@@ -150,33 +167,56 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
         next();
       })
 
-      /** /sign/in */
+      /** /sign/in ==> Sign in */
 
       .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
 
-      /** /sign/out */
+      /** /sign/out ==> Sign out */
 
       .open('app/server/routes/sign-out.js', { exec: 'js/middleware' }, when('/sign/out'))
 
-      .opener('monson', monson.pronto)
+
+      /** /sign/facebook ==> Sign with facebook */
+
+      .open('app/server/routes/sign-facebook.js', { exec: 'js/middleware' }, when('/sign/facebook'))
+
+      /** /models ==> Monson */
 
       .open('app/business/models/', { with: 'monson', 'append extension': 'js' }, when('/models' ))
 
+      /** / ==> Home page */
+
       .open('app/web/views/pages/index.jade', when.home)
+
+      /** /page/ ==> Static pages */
 
       .open('app/web/views/pages', { 'append extension': 'jade' }, when.prefix('/page/'))
 
+      /** /partial/ ==> Partials */
+
       .open('app/web/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
 
+      /** /bower/ ==> Bower components */
+
       .open('app/web/bower_components/', when.prefix('/bower/'))
+
+      /** /js/ ==> JS files */
 
       .open('app/web/dist/js',
         { prepend: ';var synapp = ' + JSON.stringify(exportConfig, null, 2) + ';' },
         when.prefix('/js'))
 
+      /** /css/ ==> CSS files */
+
       .open('app/web/dist/css', when.prefix('/css'))
 
+      /** /item/ ==> Item static page */
+
       .open('app/web/views/pages/item.jade', when('/item/*'))
+
+      /** 404 */
+
+      .open('app/web/views/pages/not-found.jade', when(404))
 
       .on('listening', function (service) {
         require('./io')(server);

@@ -12,18 +12,18 @@ header.container-fluid
 
         //- User icon
         - if ( req.user )
-          a.button.btn.btn-lg.btn-default(href='/page/persona')
+          a.button.btn.btn-lg.btn-default(href='/page/persona' title='Persona')
             big.fa.fa-user
         
         //- Sign out
         - if ( req.user )
           span  
-          a.button.btn.btn-lg.btn-default(href='/sign/out')
+          a.button.btn.btn-lg.btn-default(href='/sign/out' title='Sign out')
             big.fa.fa-sign-out
 
         //- Back
         span  
-        a.button.btn.btn-lg.btn-default(href=back)
+        a.button.btn.btn-lg.btn-default(href=back title='Go back')
           big.fa.fa-chevron-left
 
       //- # Logo

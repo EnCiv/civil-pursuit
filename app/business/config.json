@@ -31,9 +31,9 @@
 
   "facebook": {
     
-    "app id": "295589523959214",
-    "app secret": "1faefb08184d71117f62eb63eb0e22c7",
-    "callback url": "/sign/facebook/oauth"
+    "id": "295589523959214",
+    "secret": "1faefb08184d71117f62eb63eb0e22c7",
+    "callback_url": "/sign/facebook/oauth"
   },
 
   "twitter": {

@@ -8,7 +8,8 @@ include ../mixins/bootstrap
 
     // TOGGLE CREATOR
 
-    i.pull-right.fa.fa-plus.cursor-pointer.toggle-creator
+    - if ( req.user )
+      i.pull-right.fa.fa-plus.cursor-pointer.toggle-creator
 
     // TYPE
 
