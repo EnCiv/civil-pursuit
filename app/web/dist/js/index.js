@@ -1460,6 +1460,9 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         item.find('.evaluator .description:eq(' + i +')').text(
           evaluation.items[i].description);
 
+        item.find('.evaluator .sliders:eq(' + i + ') .criteria-slider')
+          .not('.template-model').remove();
+
         evaluation.criterias.forEach(function (criteria) {
           var template_name = 'evaluation-' + evaluation.item +
             '-' + i + '-' + criteria._id;
@@ -1479,8 +1482,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           };
 
           app.render(template, {}, function (view) {
-            view.css('display', 'block');
-            item.find('.evaluator .sliders:eq(' + this.index + ')').append(view);
+            view.removeClass('template-model');
+            
+            item.find('.evaluator .sliders:eq(' + this.index + ')')
+              .append(view);
+          
           }.bind({ index: i }));
         });
       }
