@@ -154,6 +154,10 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
 
+      /** /sign/out */
+
+      .open('app/server/routes/sign-out.js', { exec: 'js/middleware' }, when('/sign/out'))
+
       .opener('monson', monson.pronto)
 
       .open('app/business/models/', { with: 'monson', 'append extension': 'js' }, when('/models' ))
