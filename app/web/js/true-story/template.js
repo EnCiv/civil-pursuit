@@ -192,6 +192,56 @@
           view.find('.is-in').css('visibility', 'visible');
         }
       }
+    },
+
+    "evaluation": {
+      template: '.evaluator',
+      controller: function (view, evaluation) {
+        var itemID = '#item-' + evaluation.item;
+
+        var item = $(itemID);
+
+        item.find('.evaluator .cursor').text(evaluation.cursor); 
+        item.find('.evaluator .limit').text(evaluation.limit);
+
+        for ( var i = 0; i < 2; i ++ ) {
+
+          item.find('.evaluator .image:eq(' + i +')').append(
+            app.controller('item media')(evaluation.items[i]));
+
+          item.find('.evaluator .subject:eq(' + i +')').text(
+            evaluation.items[i].subject);
+
+          item.find('.evaluator .description:eq(' + i +')').text(
+            evaluation.items[i].description);
+
+          evaluation.criterias.forEach(function (criteria) {
+            var template_name = 'evaluation-' + evaluation.item +
+              '-' + i + '-' + criteria._id;
+
+            var template = {
+              name: template_name,
+              template: item.find('.evaluator .criteria-slider:eq(0)'),
+              controller: function (view, locals) {
+                view.find('.criteria-name').text(criteria.name);
+                view.find('input.slider').slider();
+                view.find('input.slider').slider('setValue', 0);
+                view.find('input.slider').slider('on', 'slideStop',
+                  function () {
+
+                  });
+              }
+            };
+
+            app.render(template, {});
+
+            app.on('rendered ' + template_name, function (view) {
+              view.css('display', 'block');
+              item.find('.evaluator .sliders:eq(' + this.index + ')').append(view);
+            }.bind({ index: i }));
+          });
+        }
+      }
     }
   
   };
