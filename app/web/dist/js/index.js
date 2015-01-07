@@ -1184,7 +1184,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         
         .emit('get items', panel)
         
-        .once('got items', function (panelItems) {
+        .on('got items', function (panelItems) {
 
           console.warn('got item panels', panelItems)
           
