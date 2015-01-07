@@ -4,8 +4,7 @@
     article.item-media
   
   .pull-right.box-buttons
-    - if ( req.user )
-      button.btn.toggle-promote Promote
+    button.btn.toggle-promote.is-in Promote
     div.promoted 0
     div.promoted-percent 0
     button.btn.toggle-details Details
@@ -27,3 +26,7 @@
     .details.is-container
       .is-section
         include details
+
+    .row.toggle-arrow
+      .col-xs-12.text-center
+        i.fa.cursor-pointer.fa-arrow-down

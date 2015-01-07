@@ -1534,6 +1534,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           });
 
         });
+
+        // IS IN
+
+        if ( synapp.user ) {
+          view.find('.is-in').css('visibility', 'visible');
+        }
       }
     }
   
