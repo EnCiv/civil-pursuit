@@ -129,16 +129,45 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
     var exportConfig = config.public;
 
-    var facebook = config.facebook;
-
-    facebook.url = exportConfig.routes['sign in with Facebook'];
-    facebook.okUrl = exportConfig.routes['sign in with Facebook OK'];
-
     // exportConfig.user = { name: 'Roger' };
 
     var monson = require('monson')(process.env.MONGOHQ_URL, {
       base: require('path').join(process.cwd(), 'app/business')
     });
+
+    var facebook = config.facebook;
+
+    facebook.url    =   exportConfig.routes['sign in with Facebook'];
+    facebook.okUrl  =   exportConfig.routes['sign in with Facebook OK'];
+
+    facebook.associate = function (profile, tokens, done) {
+
+      var email = profile.id + '@facebook.com';
+
+      monson.get('models/User.findOne?email=' + email)
+
+        .on('error', function (error) {
+          done(error);
+        })
+
+        .on('success', function (user) {
+          if ( ! user ) {
+            monson.post('models/User')
+
+              .on('error', function (error) {
+                done(error);
+              })
+
+              .on('success', function (user) {
+                done(null, user);
+              });
+          }
+          else {
+            server.emit('message', { 'facebook user found': user });
+            done(null, user);
+          }
+        });
+    };
 
     var server = pronto ()
 
@@ -156,9 +185,9 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       /** passport */
 
-      // .passport({
-      //   facebook: facebook
-      // })
+      .passport({
+        facebook: facebook
+      })
 
       /** pre router */
 
@@ -174,11 +203,6 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       /** /sign/out ==> Sign out */
 
       .open('app/server/routes/sign-out.js', { exec: 'js/middleware' }, when('/sign/out'))
-
-
-      /** /sign/facebook ==> Sign with facebook */
-
-      .open('app/server/routes/sign-facebook.js', { exec: 'js/middleware' }, when('/sign/facebook'))
 
       /** /models ==> Monson */
 
