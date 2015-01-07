@@ -1194,16 +1194,22 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       app.on('push items', function (item) {
 
         console.warn('new item panel');
-        
+
         app.render('item', item, function (itemView) {
-          console.warn('rendered item');
-          if ( item.is_new ) {
+
+          var panelId = '#panel-' + this.item.type;
+
+          if ( this.item.parent ) {
+            panelId += '-' + this.item.parent;
+          }
+          
+          if ( this.item.is_new ) {
             $(panelId).find('.items').prepend(itemView);
           }
           else {
             $(panelId).find('.items').append(itemView);
           }
-        });
+        }.bind({ item: item }));
 
       });
 
@@ -1597,9 +1603,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
               }
             };
 
-            app.render(template, {});
-
-            app.on('rendered ' + template_name, function (view) {
+            app.render(template, {}, function (view) {
               view.css('display', 'block');
               item.find('.evaluator .sliders:eq(' + this.index + ')').append(view);
             }.bind({ index: i }));

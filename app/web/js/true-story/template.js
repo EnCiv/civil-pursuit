@@ -240,9 +240,7 @@
               }
             };
 
-            app.render(template, {});
-
-            app.on('rendered ' + template_name, function (view) {
+            app.render(template, {}, function (view) {
               view.css('display', 'block');
               item.find('.evaluator .sliders:eq(' + this.index + ')').append(view);
             }.bind({ index: i }));
