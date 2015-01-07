@@ -165,7 +165,7 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       .open(function prerouter (req, res, next) {
         req.user = req.signedCookies.synuser;
         next();
-      })
+      }, when('/*'))
 
       /** /sign/in ==> Sign in */
 
