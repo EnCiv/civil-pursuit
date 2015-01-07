@@ -1083,6 +1083,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       function () {
         var creator = $(this).closest('.creator');
 
+        var panel = $(this).closest('.panel');
+
+        var panelId = panel.attr('id').split('-');
+
         var subject = creator.find('[name="subject"]');
         var description = creator.find('[name="description"]');
 
@@ -1096,7 +1100,26 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         else if ( ! description.val() ) {
           description.addClass('error').focus();
         }
+
+        else {
+          var item = {
+            user: synapp.user,
+            subject: subject.val(),
+            description: description.val(),
+            type: panelId[1]
+          };
+
+          if ( panelId[2] ) {
+            item.parent = panelId[2];
+          }
+
+          app.emitter('socket').emit('create item', item);
+        }
       });
+  
+    app.emitter('socket').on('created item', function (item) {
+      app.render('item', item);
+    });
   }
 
   module.exports = createItem;
@@ -1161,13 +1184,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         
         .on('got items', function (panelItems) {
           
-          panelItems.items.forEach(function (item, index) {
-            
-            if ( index < (panel.size + panel.skip) - 1 ) {
-              app.model('items').push(item);
-            }
-          
-          });
+          panelItems.items.reverse()
+            .forEach(function (item, index) {
+              if ( index ) {
+                app.model('items').push(item);
+              }
+            });
 
           if ( panelItems.items.length >= (panel.size + panel.skip) ) {
             $(panelId).find('.load-more').show();
@@ -1183,7 +1205,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         app.render('item', item);
 
         app.on('rendered item', function (itemView) {
-          $(panelId).find('.items').append(itemView);
+          $(panelId).find('.items').prepend(itemView);
         });
       });
 

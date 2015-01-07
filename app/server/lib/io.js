@@ -692,6 +692,29 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
 
 
+        socket.on('create item', function () {
+          onEvent('create item', arguments);
+        });
+
+        socket.on('create item', function (item) {
+          safe(socket, function () {
+            var url = 'models/Item';
+
+            monson.post(url, item)
+
+              .on('error', function (error) {
+                throw error;
+              })
+
+              .on('success', function (item) {
+                pronto.emit('message', 'socket created item from monson');
+                socket.emit('created item', item);
+              });
+          });
+        });
+
+
+
       });
 
       io.on('error', function (error) {
