@@ -814,7 +814,31 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   'use strict';
 
-  function upload () {}
+  function handler (e) {
+    hover(e);
+
+    var files = e.target.files || e.dataTransfer.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+      parse(f);
+    }
+  }
+
+  function hover (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.target.className = (e.type == "dragover" ? "hover" : "");
+  }
+
+  function parse (file) {
+    console.warn('file parsed', file);
+  }
+
+  function upload (dropbox) {
+    if ( window.File ) {
+      dropbox.find('input').on('change', handler);
+    }
+  }
 
   module.exports = upload;
 
@@ -1673,6 +1697,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       view.find('.toggle-creator').on('click', function () {
         app.controller('reveal')(view.find('.creator'), view);
       });
+
+      // enable file upload
+
+      app.controller('upload')(view.find('.creator:eq(0) .drop-box'));
 
     }
   };
@@ -5150,8 +5178,6 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
       template_name = template_config.name || 'anonymous';
     }
 
-    console.warn(template_name, cb)
-
     /** Error if template_name does not exists */
 
     if ( ! template_config ) {
@@ -5235,7 +5261,6 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
       // app.emit('rendered ' + template_name, elem);
 
       if ( typeof cb === 'function' ) {
-        console.warn('ok')
         cb(elem);
       }
     });

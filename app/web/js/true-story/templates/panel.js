@@ -28,6 +28,10 @@
         app.controller('reveal')(view.find('.creator'), view);
       });
 
+      // enable file upload
+
+      app.controller('upload')(view.find('.creator:eq(0) .drop-box'));
+
     }
   };
 
