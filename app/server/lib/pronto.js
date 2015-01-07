@@ -211,6 +211,21 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       /** /item/ ==> Item static page */
 
+      .open(function staticItemPage (req, res, next) {
+
+        monson.get('models/Item.findById/' + req.params.itemid)
+
+          .on('error', function (error) {
+            next(error);
+          })
+
+          .on('success', function (item) {
+            res.locals.item = item;
+            next();
+          });
+
+      }, when('/item/:itemid/:itemslug'))
+
       .open('app/web/views/pages/item.jade', when('/item/*'))
 
       /** 404 */
