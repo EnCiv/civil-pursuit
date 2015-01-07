@@ -63,46 +63,23 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       $('.is-in').css('visibility', 'visible');
     }
 
+    if ( $('#intro').length ) {
+      /** Get intro */
 
-    /** Get intro */
+      require('./stories/get-intro').apply(this);
+        
+      /** Get panel */
 
-    require('./stories/get-intro').apply(this);
-      
-    /** Get panel */
+      require('./stories/get-panel').apply(this);
 
-    require('./stories/get-panel').apply(this);
+      /** Get items **/
 
-    /** Get items **/
+      require('./stories/get-items').apply(this);
 
-    require('./stories/get-items').apply(this);
+      /** Get evaluations */
 
-    /** Get evaluations */
-
-    function getEvaluation () {
-      var app = this;
-
-      app.emitter('socket').on('got evaluation',
-        function (evaluation) {
-          evaluation.cursor = 1;
-          evaluation.limit = 5;
-
-          if ( evaluation.items.length < 6 ) {
-            evaluation.limit = evaluation.items.length - 1;
-
-            if ( ! evaluation.limit && evaluation.items.length === 1 ) {
-              evaluation.limit = 1;
-            }
-          }
-
-          app.model('evaluations').push(evaluation);
-        });
-
-      app.on('push evaluations', function (evaluation) {
-        app.render('evaluation', evaluation);
-      });
+      require('./stories/get-evaluation').apply(this);
     }
-
-    getEvaluation.apply(this);
 
     /** Online now **/
 
