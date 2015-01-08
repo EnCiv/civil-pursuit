@@ -5,8 +5,8 @@
   function signIn () {
     var app = this;
 
-    app.view('sign').find('.i-agree').on('click', function () {
-      var agreed = app.view('sign').find('.agreed');
+    $('#join').find('.i-agree').on('click', function () {
+      var agreed = $('#join').find('.agreed');
 
       if ( agreed.hasClass('fa-square-o') ) {
         agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
