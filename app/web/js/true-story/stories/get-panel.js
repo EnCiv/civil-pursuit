@@ -20,11 +20,7 @@
 
     app
       .on('push panels', function (panel) {
-        console.warn('SUB #2 new panel', panel);
-
         app.render('panel', panel, function (panelView) {
-
-          console.warn('SUB #3 panel rendered', panel);
 
           if ( ! panel.parent ) {
             app.view('panels').append(panelView);

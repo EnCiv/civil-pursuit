@@ -1409,11 +1409,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     app
       .on('push panels', function (panel) {
-        console.warn('SUB #2 new panel', panel);
-
         app.render('panel', panel, function (panelView) {
-
-          console.warn('SUB #3 panel rendered', panel);
 
           if ( ! panel.parent ) {
             app.view('panels').append(panelView);
@@ -1850,6 +1846,18 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
                 skip: 0
               });
             }
+
+            else if ( Array.isArray(child) ) {
+              child.forEach(function (c) {
+                app.model('panels').push({
+                  type: c,
+                  parent: item._id,
+                  size: synapp['navigator batch size'],
+                  skip: 0,
+                  split: true
+                });
+              });
+            }
           });
         }
       });
@@ -1898,6 +1906,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       }
 
       view.attr('id', id);
+
+      if ( panel.split ) {
+        view.addClass('split-view');
+      }
 
       view.find('.panel-title').text(panel.type);
 

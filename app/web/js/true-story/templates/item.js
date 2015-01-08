@@ -158,6 +158,18 @@
                 skip: 0
               });
             }
+
+            else if ( Array.isArray(child) ) {
+              child.forEach(function (c) {
+                app.model('panels').push({
+                  type: c,
+                  parent: item._id,
+                  size: synapp['navigator batch size'],
+                  skip: 0,
+                  split: true
+                });
+              });
+            }
           });
         }
       });

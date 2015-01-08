@@ -17,6 +17,10 @@
 
       view.attr('id', id);
 
+      if ( panel.split ) {
+        view.addClass('split-view');
+      }
+
       view.find('.panel-title').text(panel.type);
 
       view.find('.load-more').on('click', function () {
