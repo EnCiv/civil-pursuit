@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":31,"util":35}],2:[function(require,module,exports){
+},{"events":32,"util":36}],2:[function(require,module,exports){
 /***
 
 
@@ -306,7 +306,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":14,"./stories":15,"./template":23,"./view":29,"/home/francois/Dev/true-story.js":37}],4:[function(require,module,exports){
+},{"./controller":4,"./model":14,"./stories":15,"./template":23,"./view":30,"/home/francois/Dev/true-story.js":38}],4:[function(require,module,exports){
 /***
 
 
@@ -1525,13 +1525,31 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     "item":           require('./templates/item'),
 
-    "evaluation":     require('./templates/evaluation')
+    "evaluation":     require('./templates/evaluation'),
+
+    "details votes":  require('./templates/details-votes')
   
   };
 
 }();
 
-},{"./templates/evaluation":24,"./templates/intro":25,"./templates/item":26,"./templates/online-users":27,"./templates/panel":28}],24:[function(require,module,exports){
+},{"./templates/details-votes":24,"./templates/evaluation":25,"./templates/intro":26,"./templates/item":27,"./templates/online-users":28,"./templates/panel":29}],24:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = {
+    template: '.votes-by-criteria',
+    controller: function (view, details) {
+      details.criterias.forEach(function (criteria) {
+        view.find('h4').text(criteria.name);
+      });
+    }
+  };
+
+} ();
+
+},{}],25:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1637,7 +1655,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1671,7 +1689,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1798,8 +1816,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         app.emitter('socket').emit('get item details', item);
 
-        app.emitter('socket').once('got item details', function (details) {
-          console.warn('got item details', details);
+        app.emitter('socket').once('got item details', function (itemDetails) {
+          app.render('details votes', itemDetails, function (detailsView) {
+            detailsView.removeClass('template-model');
+            details.find('.details-votes').append(detailsView);
+          });
         });
 
       });
@@ -1843,7 +1864,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"string":36}],27:[function(require,module,exports){
+},{"string":37}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1858,7 +1879,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1911,7 +1932,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /***
 
 
@@ -1969,7 +1990,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2007,7 +2028,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":31}],31:[function(require,module,exports){
+},{"events":32}],32:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2310,7 +2331,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2335,7 +2356,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2423,14 +2444,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3020,7 +3041,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":34,"_process":33,"inherits":32}],36:[function(require,module,exports){
+},{"./support/isBuffer":35,"_process":34,"inherits":33}],37:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4054,7 +4075,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4113,7 +4134,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":38}],38:[function(require,module,exports){
+},{"./lib/TrueStory.js":39}],39:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4875,7 +4896,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":39,"./TrueStory/parse-dot-notation":40,"./TrueStory/render":41,"./When":42,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":33,"domain":30,"events":31,"util":35}],39:[function(require,module,exports){
+},{"./TrueStory/model":40,"./TrueStory/parse-dot-notation":41,"./TrueStory/render":42,"./When":43,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":34,"domain":31,"events":32,"util":36}],40:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5236,7 +5257,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5358,7 +5379,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5475,7 +5496,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":33}],42:[function(require,module,exports){
+},{"_process":34}],43:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5948,4 +5969,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":38,"_process":33}]},{},[2]);
+},{"./TrueStory":39,"_process":34}]},{},[2]);

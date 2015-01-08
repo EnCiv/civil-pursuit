@@ -124,8 +124,11 @@
 
         app.emitter('socket').emit('get item details', item);
 
-        app.emitter('socket').once('got item details', function (details) {
-          console.warn('got item details', details);
+        app.emitter('socket').once('got item details', function (itemDetails) {
+          app.render('details votes', itemDetails, function (detailsView) {
+            detailsView.removeClass('template-model');
+            details.find('.details-votes').append(detailsView);
+          });
         });
 
       });

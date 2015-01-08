@@ -14,7 +14,9 @@
 
     "item":           require('./templates/item'),
 
-    "evaluation":     require('./templates/evaluation')
+    "evaluation":     require('./templates/evaluation'),
+
+    "details votes":  require('./templates/details-votes')
   
   };
 

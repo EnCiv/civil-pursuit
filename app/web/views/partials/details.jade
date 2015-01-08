@@ -22,12 +22,12 @@ section
 
   //- Votes
 
-  .row.details-votes
-    .col-xs-12
+  .row
+    .col-xs-12.details-votes
       
       //- For each criteria
 
-      .row
+      .row.template-model.votes-by-criteria
 
         .col-sm-4.col-xs-12
 
@@ -35,12 +35,7 @@ section
               CRITERIA NAME
           //-
 
-          h4(
-            data-ng-bind      =     'criteria.name'
-            data-toggle       =     "tooltip" 
-            data-placement    =     "top" 
-            title             =     "{{criteria.description}}"
-          )
+          h4(data-toggle="tooltip" data-placement="top")
 
         .col-sm-8.col-xs-12
 
