@@ -9,8 +9,10 @@
 
     socket.on('upload image', function (image) {
       safe(socket, function () {
-        // var name = '/tmp/' + Date.now() + image.name; 
+        // var name = '/tmp/' + Date.now() + image.name;
+        
         var name = '/tmp/coooool.jpg';
+
         var stream = require('fs').createWriteStream(name);
 
         for ( var a in image ) {
@@ -20,6 +22,7 @@
         }
 
         stream.end();
+        
         stream.on('finish', function () {
 
         });
