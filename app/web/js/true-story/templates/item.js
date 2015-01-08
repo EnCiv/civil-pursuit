@@ -133,13 +133,30 @@
       // ITEM TOGGLE SUB PANEL
 
       view.find('.toggle-arrow i.fa').on('click', function () {
-        console.warn('SUB #1 clicked');
-        app.model('panels').push({
-          type: 'Problem',
-          parent: item._id,
-          size: synapp['navigator batch size'],
-          skip: 0
-        });
+        
+        var children = synapp['item relation'][item.type];
+
+        if ( typeof children === 'string' ) {
+          app.model('panels').push({
+            type: children,
+            parent: item._id,
+            size: synapp['navigator batch size'],
+            skip: 0
+          });
+        }
+
+        else if ( Array.isArray(children) ) {
+          children.forEach(function (child) {
+            if ( typeof child === 'string' ) {
+              app.model('panels').push({
+                type: child,
+                parent: item._id,
+                size: synapp['navigator batch size'],
+                skip: 0
+              });
+            }
+          });
+        }
       });
 
       // IS IN
