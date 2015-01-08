@@ -1665,6 +1665,13 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
           .text(Math.floor(item.promotions * 100 / item.views) + '%');
 
+        // mail a friend
+
+        details.find('.invite-people').attr('href',
+          'mailto:?subject=' + item.subject + '&body=' +
+          (details.find('.invite-people-body').val() ||
+          details.find('.invite-people-body').attr('placeholder')));
+
       });
 
       // ITEM TOGGLE SUB PANEL
