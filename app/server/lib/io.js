@@ -755,6 +755,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
         require('./io/upload-image')(socket, safe, pronto, onEvent);
 
+        require('./io/insert-feedback')(socket, safe, pronto, onEvent, monson);
+
 
       });
 

@@ -1670,12 +1670,27 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             function () {
               evaluation.cursor ++;
 
+              var feedback = item.find('.evaluator .feedback:eq(' +
+                this.position + ')');
+
+              if ( feedback.val() ) {
+                app.emitter('socket').emit('insert feedback', {
+                  item: evaluation.items[this.position]._id,
+                  user: synapp.user,
+                  feedback: feedback.val()
+                });
+
+                feedback.val('');
+              }
+
               app.render('evaluation', evaluation, function () {
                 app.controller('scroll to point of attention')(item.find('.evaluator'));
               });
-            });
+            }.bind({ position: i }));
 
-        item.find('.evaluator .promote:eq(' + i + ')').addClass('once');
+        item.find('.evaluator .promote:eq(' + i + ')')
+          .addClass('once')
+          .text(evaluation.items[i].subject);
       }
     }
   };
