@@ -24,7 +24,15 @@
   }
 
   function upload (file) {
-
+    if ( /^image\//.test(file.type) && file.size < 50000 ) {
+      $.ajax({
+        url: '/upload',
+        type: 'POST',
+        headers: {
+          'X_FILENAME': file.name
+        }
+      });
+    }
   }
 
   function init (dropbox) {

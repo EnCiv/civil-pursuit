@@ -249,6 +249,11 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
           .on('success', function (item) {
             res.locals.item = item;
+
+            if ( item.references.length ) {
+              res.locals.youtube = require('../../web/js/true-story/controllers/youtube')(item.references[0].url, true);
+            }
+
             next();
           });
 
