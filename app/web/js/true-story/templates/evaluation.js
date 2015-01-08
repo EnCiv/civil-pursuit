@@ -28,9 +28,22 @@
 
         $(this).off('click');
 
-        app.render('evaluation', evaluation, function () {
-          app.controller('scroll to point of attention')(item.find('.evaluator'));
-        });
+        if ( evaluation.cursor <= evaluation.limit ) {
+          app.render('evaluation', evaluation, function () {
+            app.controller('scroll to point of attention')(item.find('.evaluator'));
+          });
+        }
+        else {
+          var evaluations = app.model('evaluations');
+
+          evaluations = evaluations.filter(function ($evaluation) {
+            return $evaluation.item !== evaluation.item;
+          });
+
+          app.model('evaluations', evaluations);
+
+          app.controller('hide', item.find('.evaluator'));
+        }
       });
 
       for ( var i = 0; i < 2; i ++ ) {

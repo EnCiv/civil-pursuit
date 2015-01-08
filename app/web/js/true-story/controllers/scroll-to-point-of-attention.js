@@ -12,13 +12,15 @@
       (current > poa && (current - poa < 50)) ||
       (poa > current && (poa - current < 50)) ) {
 
-      return cb();
+      return typeof cb === 'function' ? cb() : true;
     }
 
     $('body').animate({
       scrollTop: poa + 'px'
     }, speed || 500, 'swing', function () {
-      cb();
+      if ( typeof cb === 'function' ) {
+        cb();
+      }
     });
   }
 

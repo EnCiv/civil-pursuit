@@ -381,9 +381,9 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
                            OooSP
 
 
-                                   __                          __         
-                                  /  |                        /  |        
-    _______   ______   _______   _$$ |_     ______    ______  $$ |        
+                                   
+                                  
+    _______   ______   _______   _$$                          $$         
    /       | /      \ /       \ / $$   |   /      \  /      \ $$ | ______ 
   /$$$$$$$/ /$$$$$$  |$$$$$$$  |$$$$$$/   /$$$$$$  |/$$$$$$  |$$ |/      |
   $$ |      $$ |  $$ |$$ |  $$ |  $$ | __ $$ |  $$/ $$ |  $$ |$$ |$$$$$$/ 
@@ -522,13 +522,15 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       (current > poa && (current - poa < 50)) ||
       (poa > current && (poa - current < 50)) ) {
 
-      return cb();
+      return typeof cb === 'function' ? cb() : true;
     }
 
     $('body').animate({
       scrollTop: poa + 'px'
     }, speed || 500, 'swing', function () {
-      cb();
+      if ( typeof cb === 'function' ) {
+        cb();
+      }
     });
   }
 
@@ -1493,9 +1495,22 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         $(this).off('click');
 
-        app.render('evaluation', evaluation, function () {
-          app.controller('scroll to point of attention')(item.find('.evaluator'));
-        });
+        if ( evaluation.cursor <= evaluation.limit ) {
+          app.render('evaluation', evaluation, function () {
+            app.controller('scroll to point of attention')(item.find('.evaluator'));
+          });
+        }
+        else {
+          var evaluations = app.model('evaluations');
+
+          evaluations = evaluations.filter(function ($evaluation) {
+            return $evaluation.item !== evaluation.item;
+          });
+
+          app.model('evaluations', evaluations);
+
+          app.controller('hide', item.find('.evaluator'));
+        }
       });
 
       for ( var i = 0; i < 2; i ++ ) {
@@ -1686,10 +1701,18 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         // mail a friend
 
+        var link = window.location.protocol + '//' + window.location.hostname +
+          '/item/' + item._id + '/' + require('string')(item.subject).slugify();
+
+        details.find('.invite-people-body').attr('placeholder',
+          details.find('.invite-people-body').attr('placeholder') +
+          link);
+
         details.find('.invite-people').attr('href',
           'mailto:?subject=' + item.subject + '&body=' +
           (details.find('.invite-people-body').val() ||
-          details.find('.invite-people-body').attr('placeholder')));
+          details.find('.invite-people-body').attr('placeholder')) +
+          "%0A%0A" + ' Synaccord - ' + link);
 
       });
 
