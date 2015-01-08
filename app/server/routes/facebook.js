@@ -95,7 +95,6 @@ module.exports = (function () {
       }
 
       next();
-
     }
 
     function callbackMiddleware (req, res, next) {
