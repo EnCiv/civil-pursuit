@@ -270,6 +270,8 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
               res.locals.youtube = require('../../web/js/true-story/controllers/youtube')(item.references[0].url, true);
             }
 
+            res.locals.title = item.subject + ' | Synaccord';
+
             next();
           });
 
