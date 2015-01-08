@@ -3,11 +3,12 @@ extends ../layout
 block page
   .row
     .col-sm-12.padding
+      h1=item.subject
 
-
+  .row
     .col-sm-4.padding
       - if ( youtube )
-        div !{youtube}
+        !{youtube}
 
       - else if ( item.image )
         img.img-responsive(src=item.image)
@@ -15,10 +16,7 @@ block page
       - else
         img.img-responsive(src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg')
 
-
     .col-sm-8.padding
-      h1=item.subject
-
       .pre-text=item.description
 
       - if ( item.references.length )

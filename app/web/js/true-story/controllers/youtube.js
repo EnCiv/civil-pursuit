@@ -13,7 +13,7 @@
       });
 
       var raw = '<div class="video-container">' +
-          '<iframe src="http://www.youtube.com/embed/' + youtube + '" frameborder="0" width="500" height="315"></iframe>' +
+          '<iframe src="http://www.youtube.com/embed/' + youtube + '" frameborder="0" width="300" height="175"></iframe>' +
         '</div>';
 
       if ( server ) {
@@ -23,8 +23,6 @@
       else {
         return $(raw);
       }
-
-      return container;
     }
   }
 

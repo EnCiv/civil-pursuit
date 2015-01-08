@@ -849,10 +849,17 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       dropbox = $(target).closest('.drop-box');
     }
 
-    var img = document.createElement('img');
-    img.file = file;
+    var img = new Image();
+
+    img.classList.add("img-responsive");
     
-    dropbox.append($(img));
+    img.addEventListener('load', function () {
+      dropbox.append(img);
+    }, false);
+    
+    img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+    console.warn(img);
   }
 
   function upload (file) {
@@ -897,7 +904,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       });
 
       var raw = '<div class="video-container">' +
-          '<iframe src="http://www.youtube.com/embed/' + youtube + '" frameborder="0" width="500" height="315"></iframe>' +
+          '<iframe src="http://www.youtube.com/embed/' + youtube + '" frameborder="0" width="300" height="175"></iframe>' +
         '</div>';
 
       if ( server ) {
@@ -907,8 +914,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       else {
         return $(raw);
       }
-
-      return container;
     }
   }
 

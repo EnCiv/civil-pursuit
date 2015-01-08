@@ -35,10 +35,17 @@
       dropbox = $(target).closest('.drop-box');
     }
 
-    var img = document.createElement('img');
-    img.file = file;
+    var img = new Image();
+
+    img.classList.add("img-responsive");
     
-    dropbox.append($(img));
+    img.addEventListener('load', function () {
+      dropbox.append(img);
+    }, false);
+    
+    img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+    console.warn(img);
   }
 
   function upload (file) {

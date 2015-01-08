@@ -4498,26 +4498,6 @@ footer {
     margin-right: 10px;
   }
 }
-.box .item-media-wrapper .item-media {
-  /** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
-}
-.box .item-media-wrapper .item-media .video-container {
-  position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 30px;
-  height: 0;
-  overflow: hidden;
-  max-width: 300px;
-}
-.box .item-media-wrapper .item-media .video-container iframe,
-.box .item-media-wrapper .item-media .video-container object,
-.box .item-media-wrapper .item-media .video-container embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
 .box .item-media-wrapper .item-media .upload-button {
   margin-top: -85px;
 }
@@ -4681,6 +4661,23 @@ footer {
 }
 .box .item-text .entry-title {
   margin-top: 15px;
+}
+/** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+.video-container iframe,
+.video-container object,
+.video-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 .item {
   background: #fff;
