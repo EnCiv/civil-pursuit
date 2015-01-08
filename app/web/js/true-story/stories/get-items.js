@@ -20,7 +20,7 @@
         
         .emit('get items', panel)
         
-        .on('got items', function (panelItems) {
+        .once('got items', function (panelItems) {
 
           console.warn('SUB #5 got panel items from socket, pushing to model items');
           
