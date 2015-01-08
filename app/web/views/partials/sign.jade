@@ -36,54 +36,54 @@ form.form-inline.text-center#signer(role='form' novalidate)
 
   .sign-success.bg-success
 
-hr
+  hr
 
-//- # modal join 1234
+  //- # modal join 1234
 
-#join.modal.fade(tabindex='-1' role='dialog' aria-labelledby='joinLabel' aria-hidden='true')
-  .modal-dialog
-    .modal-content
-      .modal-header
-        button.close(type='button' data-dismiss="modal")
-          span(aria-hidden='true') &times;
-          span.sr-only Close
+  #join.modal.fade(tabindex='-1' role='dialog' aria-labelledby='joinLabel' aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button' data-dismiss="modal")
+            span(aria-hidden='true') &times;
+            span.sr-only Close
 
-        h4#joinLabel.modal-title Join
+          h4#joinLabel.modal-title Join
 
-      .modal-body
-        include ../layout/alert
+        .modal-body
+          include ../layout/alert
 
-        p
-          button.btn.btn-link
-            i.fa.fa-2x.fa-square-o.agreed
+          p.i-agree
+            button.btn.btn-link
+              i.fa.fa-2x.fa-square-o.agreed
 
-          span.i-agree
-            span  I agree to 
-            a(href='/page/terms-of-service') the terms of service
-            span .
+            span
+              span  I agree to 
+              a(href='/page/terms-of-service') the terms of service
+              span .
 
-        p
-          button.btn.btn-primary
-            i.fa.fa-facebook
-          span  
-          a(href=synapp.public.routes["sign in with Facebook"]) Join with Facebook
+          p
+            button.btn.btn-primary
+              i.fa.fa-facebook
+            span  
+            a(href=synapp.public.routes["sign in with Facebook"]) Join with Facebook
 
-        p
-          button.btn.btn-primary
-            i.fa.fa-twitter
-          span  
-          a(href=synapp.public.routes["sign in with Twitter"]) Join with Twitter
+          p
+            button.btn.btn-primary
+              i.fa.fa-twitter
+            span  
+            a(href=synapp.public.routes["sign in with Twitter"]) Join with Twitter
 
-        h4.text-center Join with email
+          h4.text-center Join with email
 
-        form(role='form' data-ng-submit='signUp()' novalidate)
-          .form-group
-            input.form-control(type='email' placeholder='email' data-ng-model='signByMail.email')
+          form(role='form' data-ng-submit='signUp()' novalidate)
+            .form-group
+              input.form-control(type='email' placeholder='email' data-ng-model='signByMail.email')
 
-          .form-group
-            input.form-control(type='password' placeholder='password' data-ng-model='signByMail.password')
+            .form-group
+              input.form-control(type='password' placeholder='password' data-ng-model='signByMail.password')
 
-          .form-group
-            input.form-control(type='password' placeholder='Confirm password' data-ng-model='signByMail.confirm')
+            .form-group
+              input.form-control(type='password' placeholder='Confirm password' data-ng-model='signByMail.confirm')
 
-          button.btn.btn-primary.btn-block Join with email
+            button.btn.btn-primary.btn-block Join with email
