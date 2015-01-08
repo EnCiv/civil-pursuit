@@ -730,6 +730,29 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
 
 
+        socket.on('get item details', function () {
+          onEvent('get item details', arguments);
+        });
+
+        socket.on('get item details', function (item) {
+          safe(socket, function () {
+            var url = 'models/Item.details/' + item._id;
+
+            monson.get(url)
+
+              .on('error', function (error) {
+                throw error;
+              })
+
+              .on('success', function (details) {
+                pronto.emit('message', 'socket got item details from monson');
+                socket.emit('got item details', details);
+              });
+          });
+        });
+
+
+
       });
 
       io.on('error', function (error) {

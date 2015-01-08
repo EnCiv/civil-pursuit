@@ -99,6 +99,8 @@
           app.controller('show')(details);
         });
 
+        // promoted bar
+
         details.find('.progress-bar')
           .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
           .text(Math.floor(item.promotions * 100 / item.views) + '%');
@@ -117,6 +119,14 @@
           (details.find('.invite-people-body').val() ||
           details.find('.invite-people-body').attr('placeholder')) +
           "%0A%0A" + ' Synaccord - ' + link);
+
+        // Votes
+
+        app.emitter('socket').emit('get item details', item);
+
+        app.emitter('socket').once('got item details', function (details) {
+          console.warn('got item details', details);
+        });
 
       });
 
