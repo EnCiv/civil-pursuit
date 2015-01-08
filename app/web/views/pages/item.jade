@@ -4,7 +4,7 @@ block page
   .row
     .col-sm-4.padding
       - if ( youtube )
-        div=youtube
+        div !{youtube}
 
       - else if ( item.image )
         img.img-responsive(src=item.image)
