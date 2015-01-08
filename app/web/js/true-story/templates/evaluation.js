@@ -22,9 +22,15 @@
       }
 
       item.find('.evaluator .finish').on('click', function () {
+        console.warn('cursor', evaluation.cursor);
+
         evaluation.cursor += 2;
 
-        app.render('evaluation', evaluation);
+        $(this).off('click');
+
+        app.render('evaluation', evaluation, function () {
+          app.controller('scroll to point of attention')(item.find('.evaluator'));
+        });
       });
 
       for ( var i = 0; i < 2; i ++ ) {
