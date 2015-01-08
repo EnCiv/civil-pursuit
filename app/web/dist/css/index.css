@@ -4333,6 +4333,9 @@ textarea.danger {
   overflow: hidden;
   color: #aaaaaa;
 }
+.alert {
+  display: none;
+}
 /** Importing layout */
 /**
  *    __________________________________________________________________________
