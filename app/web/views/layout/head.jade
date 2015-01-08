@@ -12,6 +12,10 @@ meta(http-equiv="X-UA-Compatible" content="IE=edge")
 //- Viewport
 meta(name="viewport" content="width=device-width, initial-scale=1.0")
 
+//- Meta description
+- if ( meta_description )
+  meta(name='description' content=meta_description)
+
 //- Env
 meta(name="env" content=settings.env)
 

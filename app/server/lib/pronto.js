@@ -272,6 +272,9 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
             res.locals.title = item.subject + ' | Synaccord';
 
+            res.locals.meta_description = item.description.split(/\n/)[0]
+              .substr(0, 255);
+
             next();
           });
 
