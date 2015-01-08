@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":30,"util":34}],2:[function(require,module,exports){
+},{"events":31,"util":35}],2:[function(require,module,exports){
 /***
 
 
@@ -306,7 +306,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":13,"./stories":14,"./template":22,"./view":28,"/home/francois/Dev/true-story.js":36}],4:[function(require,module,exports){
+},{"./controller":4,"./model":14,"./stories":15,"./template":23,"./view":29,"/home/francois/Dev/true-story.js":37}],4:[function(require,module,exports){
 /***
 
 
@@ -413,19 +413,30 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   'use strict';
 
   module.exports = {
-    'bootstrap/responsive-image':   require('./controllers/bootstrap/responsive-image'),
-    'scroll to point of attention': require('./controllers/scroll-to-point-of-attention'),
-    'show':                         require('./controllers/show'),
-    'youtube':                      require('./controllers/youtube'),
-    'item media':                   require('./controllers/item-media'),
-    'reveal':                       require('./controllers/reveal'),
-    'upload':                       require('./controllers/upload'),
-    'truncate':                     require('./controllers/truncate')
+    'bootstrap/responsive-image':
+      require('./controllers/bootstrap/responsive-image'),
+    
+    'scroll to point of attention':
+      require('./controllers/scroll-to-point-of-attention'),
+    
+    'show':         require('./controllers/show'),
+    
+    'youtube':      require('./controllers/youtube'),
+    
+    'item media':   require('./controllers/item-media'),
+    
+    'reveal':       require('./controllers/reveal'),
+    
+    'upload':       require('./controllers/upload'),
+    
+    'truncate':     require('./controllers/truncate'),
+    
+    'hide':         require('./controllers/hide')
   };
 
 } ();
 
-},{"./controllers/bootstrap/responsive-image":5,"./controllers/item-media":6,"./controllers/reveal":7,"./controllers/scroll-to-point-of-attention":8,"./controllers/show":9,"./controllers/truncate":10,"./controllers/upload":11,"./controllers/youtube":12}],5:[function(require,module,exports){
+},{"./controllers/bootstrap/responsive-image":5,"./controllers/hide":6,"./controllers/item-media":7,"./controllers/reveal":8,"./controllers/scroll-to-point-of-attention":9,"./controllers/show":10,"./controllers/truncate":11,"./controllers/upload":12,"./controllers/youtube":13}],5:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -448,6 +459,38 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 } ();
 
 },{}],6:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function hide (elem, options, cb) {
+    // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+    if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+      return false;
+    }
+
+    elem.removeClass('is-shown').addClass('is-hiding');;
+
+    elem.find('.is-section:first').animate({
+        'margin-top': '-' + elem.height() + 'px',
+        // 'padding-top': elem.height() + 'px'
+      }, 1000, function () {
+        elem.removeClass('is-hiding').addClass('is-hidden');
+        $rootScope.publish('did hide view', options);
+        if ( cb ) cb();
+      });
+
+    elem.animate({
+       opacity: 0
+      }, 1000);
+  }
+
+  module.exports = hide;
+
+} ();
+
+},{}],7:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -481,7 +524,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -507,7 +550,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -538,7 +581,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -586,7 +629,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -811,7 +854,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./scroll-to-point-of-attention":8}],11:[function(require,module,exports){
+},{"./scroll-to-point-of-attention":9}],12:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -888,7 +931,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -921,7 +964,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /***
 
 
@@ -984,7 +1027,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /***
 
 
@@ -1109,7 +1152,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-evaluation":16,"./stories/get-intro":17,"./stories/get-items":18,"./stories/get-online-users":19,"./stories/get-panel":20,"./stories/sign-in":21}],15:[function(require,module,exports){
+},{"./stories/get-evaluation":17,"./stories/get-intro":18,"./stories/get-items":19,"./stories/get-online-users":20,"./stories/get-panel":21,"./stories/sign-in":22}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1165,7 +1208,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1198,7 +1241,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1233,7 +1276,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1322,7 +1365,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1342,7 +1385,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = getOnlineUsers;
 
 } ();
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1399,7 +1442,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./create-item":15}],21:[function(require,module,exports){
+},{"./create-item":16}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1464,7 +1507,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1487,7 +1530,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./templates/evaluation":23,"./templates/intro":24,"./templates/item":25,"./templates/online-users":26,"./templates/panel":27}],23:[function(require,module,exports){
+},{"./templates/evaluation":24,"./templates/intro":25,"./templates/item":26,"./templates/online-users":27,"./templates/panel":28}],24:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1532,7 +1575,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
           app.model('evaluations', evaluations);
 
-          app.controller('hide', item.find('.evaluator'));
+          app.controller('hide')(item.find('.evaluator'));
         }
       });
 
@@ -1582,7 +1625,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1616,7 +1659,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1761,7 +1804,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"string":35}],26:[function(require,module,exports){
+},{"string":36}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1776,7 +1819,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1829,7 +1872,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /***
 
 
@@ -1887,7 +1930,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1925,7 +1968,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":30}],30:[function(require,module,exports){
+},{"events":31}],31:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2228,7 +2271,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2253,7 +2296,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2341,14 +2384,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2938,7 +2981,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":33,"_process":32,"inherits":31}],35:[function(require,module,exports){
+},{"./support/isBuffer":34,"_process":33,"inherits":32}],36:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -3972,7 +4015,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4031,7 +4074,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":37}],37:[function(require,module,exports){
+},{"./lib/TrueStory.js":38}],38:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4793,7 +4836,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":38,"./TrueStory/parse-dot-notation":39,"./TrueStory/render":40,"./When":41,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":32,"domain":29,"events":30,"util":34}],38:[function(require,module,exports){
+},{"./TrueStory/model":39,"./TrueStory/parse-dot-notation":40,"./TrueStory/render":41,"./When":42,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":33,"domain":30,"events":31,"util":35}],39:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5154,7 +5197,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5276,7 +5319,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5393,7 +5436,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":32}],41:[function(require,module,exports){
+},{"_process":33}],42:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5866,4 +5909,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":37,"_process":32}]},{},[2]);
+},{"./TrueStory":38,"_process":33}]},{},[2]);

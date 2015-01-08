@@ -42,7 +42,7 @@
 
           app.model('evaluations', evaluations);
 
-          app.controller('hide', item.find('.evaluator'));
+          app.controller('hide')(item.find('.evaluator'));
         }
       });
 
