@@ -5,10 +5,11 @@
   function handler (e) {
     hover(e);
 
-    var files = e.target.files || e.dataTransfer.files;
+    var files = e.target.files || e.originalEvent.dataTransfer.files;
 
     for (var i = 0, f; f = files[i]; i++) {
       parse(f);
+      preview(f, e.target);
       upload(f);
     }
   }
@@ -23,7 +24,25 @@
     console.warn('file parsed', file);
   }
 
+  function preview (file, target) {
+
+    var dropbox;
+
+    if ( $(target).hasClass('drop-box') ) {
+      dropbox = $(target);
+    }
+    else {
+      dropbox = $(target).closest('.drop-box');
+    }
+
+    var img = document.createElement('img');
+    img.file = file;
+    
+    dropbox.append($(img));
+  }
+
   function upload (file) {
+    return;
     if ( /^image\//.test(file.type) && file.size < 50000 ) {
       $.ajax({
         url: '/upload',

@@ -817,10 +817,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   function handler (e) {
     hover(e);
 
-    var files = e.target.files || e.dataTransfer.files;
+    var files = e.target.files || e.originalEvent.dataTransfer.files;
 
     for (var i = 0, f; f = files[i]; i++) {
       parse(f);
+      preview(f, e.target);
       upload(f);
     }
   }
@@ -835,7 +836,25 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     console.warn('file parsed', file);
   }
 
+  function preview (file, target) {
+
+    var dropbox;
+
+    if ( $(target).hasClass('drop-box') ) {
+      dropbox = $(target);
+    }
+    else {
+      dropbox = $(target).closest('.drop-box');
+    }
+
+    var img = document.createElement('img');
+    img.file = file;
+    
+    dropbox.append($(img));
+  }
+
   function upload (file) {
+    return;
     if ( /^image\//.test(file.type) && file.size < 50000 ) {
       $.ajax({
         url: '/upload',
@@ -1232,7 +1251,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         
         .on('got items', function (panelItems) {
 
-          console.warn('SUB #5 got panel items from socket, pushing to model items', panel);
+          console.warn('SUB #5 got panel items from socket, pushing to model items');
           
           panelItems.items.forEach(function (item, index) {
             if ( index < (panel.size + panel.skip) - 1 ) {
@@ -1253,7 +1272,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     app.on('push items', function (item) {
 
-      console.warn('SUB #6 panel item pushed', item);
+      console.warn('SUB #6 panel item pushed', item.subject);
 
       app.render('item', item, function (itemView) {
 

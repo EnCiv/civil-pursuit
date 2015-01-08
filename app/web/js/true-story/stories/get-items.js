@@ -22,7 +22,7 @@
         
         .on('got items', function (panelItems) {
 
-          console.warn('SUB #5 got panel items from socket, pushing to model items', panel);
+          console.warn('SUB #5 got panel items from socket, pushing to model items');
           
           panelItems.items.forEach(function (item, index) {
             if ( index < (panel.size + panel.skip) - 1 ) {
@@ -43,7 +43,7 @@
 
     app.on('push items', function (item) {
 
-      console.warn('SUB #6 panel item pushed', item);
+      console.warn('SUB #6 panel item pushed', item.subject);
 
       app.render('item', item, function (itemView) {
 

@@ -3,8 +3,8 @@ extends ../layout
 block page
   .row
     .col-sm-12.padding
-      
-      
+
+
     .col-sm-4.padding
       - if ( youtube )
         div !{youtube}
@@ -20,3 +20,7 @@ block page
       h1=item.subject
 
       .pre-text=item.description
+
+      - if ( item.references.length )
+        h4
+          a(href=item.references[0].url)= item.references[0].title || item.references[0].url

@@ -138,7 +138,7 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
     var facebook = config.facebook;
 
     facebook.url    =   exportConfig.routes['sign in with Facebook'];
-    facebook.okUrl  =   exportConfig.routes['sign in with Facebook OK'];
+    facebook.okURL  =   exportConfig.routes['sign in with Facebook OK'];
 
     facebook.associate = function (profile, tokens, done) {
 
@@ -172,6 +172,15 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
         });
     };
 
+    facebook.success = function (req, res, next) {
+      res.cookie('synuser', {
+          email: req.user.email,
+          id: req.user._id
+        }, config.cookie);
+
+      res.redirect('/');
+    };
+
     var server = pronto ()
 
       /** inject into scope */
@@ -189,8 +198,12 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       /** passport */
 
       .passport({
-        serialize: function () {},
-        deserialzie: function () {},
+        serialize: function (user, done) {
+          done(null, user._id);
+        },
+        deserialize: function (id, done) {
+          monson.get('models/User.findById/' + id, done);
+        },
         strategies: {
           facebook: facebook
         }
