@@ -152,7 +152,10 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
         .on('success', function (user) {
           if ( ! user ) {
-            monson.post('models/User')
+            monson.post('models/User', {
+              email: email,
+              password: profile.id + Date.now()
+            })
 
               .on('error', function (error) {
                 done(error);
