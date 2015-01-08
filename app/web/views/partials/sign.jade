@@ -55,11 +55,9 @@ hr
 
         p
           button.btn.btn-link
-            i.fa.fa-2x(
-              data-ng-class='{ "fa-square-o": ! agreeToTerms, "fa-check-square-o": agreeToTerms }'
-              data-ng-click=' agreeToTerms = ! agreeToTerms ')
+            i.fa.fa-2x.fa-square-o.agreed
 
-          span(data-ng-click="agreeToTerms = ! agreeToTerms")
+          span.i-agree
             span  I agree to 
             a(href='/page/terms-of-service') the terms of service
             span .
