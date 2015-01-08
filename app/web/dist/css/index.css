@@ -4507,6 +4507,7 @@ footer {
   padding-top: 30px;
   height: 0;
   overflow: hidden;
+  max-width: 300px;
 }
 .box .item-media-wrapper .item-media .video-container iframe,
 .box .item-media-wrapper .item-media .video-container object,
