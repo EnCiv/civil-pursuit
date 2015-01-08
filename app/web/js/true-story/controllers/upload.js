@@ -40,7 +40,8 @@
     img.classList.add("img-responsive");
     
     img.addEventListener('load', function () {
-      dropbox.append(img);
+      $(img).insertAfter(dropbox);
+      dropbox.css('display', 'none');
     }, false);
     
     img.src = (window.URL || window.webkitURL).createObjectURL(file);
