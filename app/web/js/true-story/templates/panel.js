@@ -20,7 +20,20 @@
       view.find('.panel-title').text(panel.type);
 
       view.find('.load-more').on('click', function () {
-        app.emitter('socket').emit('get items', panel);
+        var _panel = app.model('panels').filter(function (pan) {
+          if ( pan.type !== panel.type ) {
+            return false;
+          }
+          if ( panel.parent && panel.parent !== pan.parent ) {
+            return false;
+          }
+          return true;
+        });
+
+        if ( _panel.length ) {
+          app.emitter('socket').emit('get items', _panel[0]);
+        }
+
         return false;
       });
 

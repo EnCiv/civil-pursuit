@@ -1241,36 +1241,54 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
       console.warn('SUB #4 panel added', panel);
 
-      var panelId = '#panel-' + panel.type;
-
-      if ( panel.parent ) {
-        panelId += '-' + panel.parent;
-      }
-
-      app.emitter('socket')
-        
-        .emit('get items', panel)
-        
-        .once('got items', function (panelItems) {
-
-          console.warn('SUB #5 got panel items from socket, pushing to model items');
-          
-          panelItems.items.forEach(function (item, index) {
-            if ( index < (panel.size + panel.skip) - 1 ) {
-              app.model('items').push(item);
-            }          
-          });
-
-          if ( panelItems.items.length >= (panel.size + panel.skip) ) {
-            $(panelId).find('.load-more').show();
-          }
-          else {
-            $(panelId).find('.load-more').hide();
-          }
-
-          panel.skip += (panelItems.items.length - 1);
-        });
+      app.emitter('socket').emit('get items', panel);
     });
+
+    app.emitter('socket')
+      
+      .on('got items', function (panelItems) {
+
+        console.warn('SUB #5 got panel items from socket, pushing to model items');
+
+        var panelId = '#panel-' + panelItems.panel.type;
+
+        if ( panelItems.panel.parent ) {
+          panelId += '-' + panelItems.panel.parent;
+        }
+        
+        panelItems.items.forEach(function (item, index) {
+          if ( index < (panelItems.panel.size + panelItems.panel.skip) - 1 ) {
+            app.model('items').push(item);
+          }          
+        });
+
+        if ( panelItems.items.length >= (panelItems.panel.size + panelItems.panel.skip) ) {
+          $(panelId).find('.load-more').show();
+        }
+        else {
+          $(panelId).find('.load-more').hide();
+        }
+
+        panelItems.panel.skip += (panelItems.items.length - 1);
+
+        app.model('panels', app.model('panels').map(function (pane) {
+          var match;
+
+          if ( pane.type === panelItems.panel.type ) {
+            match = true;
+          }
+
+          if ( panelItems.panel.parent && pane.parent !== panelItems.panel.parent ) {
+            match = false;
+          }
+
+          if ( match ) {
+            return panelItems.panel;
+          }
+
+          return pane;
+        }));
+      });
 
     app.on('push items', function (item) {
 
@@ -1776,7 +1794,20 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       view.find('.panel-title').text(panel.type);
 
       view.find('.load-more').on('click', function () {
-        app.emitter('socket').emit('get items', panel);
+        var _panel = app.model('panels').filter(function (pan) {
+          if ( pan.type !== panel.type ) {
+            return false;
+          }
+          if ( panel.parent && panel.parent !== pan.parent ) {
+            return false;
+          }
+          return true;
+        });
+
+        if ( _panel.length ) {
+          app.emitter('socket').emit('get items', _panel[0]);
+        }
+
         return false;
       });
 
