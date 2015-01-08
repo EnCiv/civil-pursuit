@@ -895,9 +895,11 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     var img = new Image();
 
     img.classList.add("img-responsive");
+    img.classList.add("preview-image");
     
     img.addEventListener('load', function () {
       $(img).insertAfter(dropbox);
+      $(img).data('file', file);
       dropbox.css('display', 'none');
     }, false);
     
@@ -1195,12 +1197,23 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             item.parent = panelId[2];
           }
 
-          app.emitter('socket').emit('create item', item);
+          if ( creator.find('.preview-image').length ) {
+            item.image = creator.find('.preview-image').attr('src');
+          }
+
+          if ( item.image ) {
+            app.emitter('socket').emit('upload image', creator.find('.preview-image').data('file'));
+          }
+
+          else {
+            app.emitter('socket').emit('create item', item);
+          }
         }
       });
   
     app.emitter('socket').on('created item', function (item) {
       item.is_new = true;
+      console.warn('created item');
       app.model('items').push(item);
     });
   }
@@ -1593,18 +1606,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         }
       });
 
-      item.find('.evaluator .promote').on('click', function () {
-
-        evaluation.cursor ++;
-
-        $(this).off('click');
-
-        app.render('evaluation', evaluation, function () {
-          app.controller('scroll to point of attention')(item.find('.evaluator'));
-        });
-
-      });
-
       for ( var i = 0; i < 2; i ++ ) {
 
         item.find('.evaluator .image:eq(' + i +')').append(
@@ -1645,6 +1646,19 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           
           }.bind({ index: i }));
         });
+
+        item.find('.evaluator .promote:eq(' + i + ')')
+          .not('.once')
+          .on('click',
+            function () {
+              evaluation.cursor ++;
+
+              app.render('evaluation', evaluation, function () {
+                app.controller('scroll to point of attention')(item.find('.evaluator'));
+              });
+            });
+
+        item.find('.evaluator .promote:eq(' + i + ')').addClass('once');
       }
     }
   };

@@ -39,12 +39,23 @@
             item.parent = panelId[2];
           }
 
-          app.emitter('socket').emit('create item', item);
+          if ( creator.find('.preview-image').length ) {
+            item.image = creator.find('.preview-image').attr('src');
+          }
+
+          if ( item.image ) {
+            app.emitter('socket').emit('upload image', creator.find('.preview-image').data('file'));
+          }
+
+          else {
+            app.emitter('socket').emit('create item', item);
+          }
         }
       });
   
     app.emitter('socket').on('created item', function (item) {
       item.is_new = true;
+      console.warn('created item');
       app.model('items').push(item);
     });
   }

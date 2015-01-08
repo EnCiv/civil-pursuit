@@ -38,9 +38,11 @@
     var img = new Image();
 
     img.classList.add("img-responsive");
+    img.classList.add("preview-image");
     
     img.addEventListener('load', function () {
       $(img).insertAfter(dropbox);
+      $(img).data('file', file);
       dropbox.css('display', 'none');
     }, false);
     

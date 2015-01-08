@@ -753,6 +753,9 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
 
 
+        require('./io/upload-image')(socket, safe, pronto, onEvent);
+
+
       });
 
       io.on('error', function (error) {

@@ -45,18 +45,6 @@
         }
       });
 
-      item.find('.evaluator .promote').on('click', function () {
-
-        evaluation.cursor ++;
-
-        $(this).off('click');
-
-        app.render('evaluation', evaluation, function () {
-          app.controller('scroll to point of attention')(item.find('.evaluator'));
-        });
-
-      });
-
       for ( var i = 0; i < 2; i ++ ) {
 
         item.find('.evaluator .image:eq(' + i +')').append(
@@ -97,6 +85,19 @@
           
           }.bind({ index: i }));
         });
+
+        item.find('.evaluator .promote:eq(' + i + ')')
+          .not('.once')
+          .on('click',
+            function () {
+              evaluation.cursor ++;
+
+              app.render('evaluation', evaluation, function () {
+                app.controller('scroll to point of attention')(item.find('.evaluator'));
+              });
+            });
+
+        item.find('.evaluator .promote:eq(' + i + ')').addClass('once');
       }
     }
   };
