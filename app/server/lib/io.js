@@ -757,6 +757,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
         require('./io/insert-feedback')(socket, safe, pronto, onEvent, monson);
 
+        require('./io/insert-votes')(socket, safe, pronto, onEvent, monson);
+
 
       });
 

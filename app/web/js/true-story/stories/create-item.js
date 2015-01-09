@@ -44,7 +44,15 @@
           }
 
           if ( item.image ) {
-            app.emitter('socket').emit('upload image', creator.find('.preview-image').data('file'));
+            // app.emitter('socket').emit('upload image', creator.find('.preview-image').data('file'));
+
+            var file = creator.find('.preview-image').data('file');
+
+            var stream = ss.createStream();
+
+            ss(app.emitter('socket')).emit('upload image', stream,
+              { size: file.size });
+            ss.createBlobReadStream(file).pipe(stream);
           }
 
           else {

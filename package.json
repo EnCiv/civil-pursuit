@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha",
     "start": "node app/server/server",
-    "postinstall": "cd app/web && ../../node_modules/.bin/bower cache-clean && ../../node_modules/.bin/bower install"
+    "postinstall": "cd app/web && ../../node_modules/.bin/bower install && browserify ../../node_modules/socket.io-stream/index.js -s ss > dist/js/socket.io-stream.js"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
   "license": "BSD-2-Clause",

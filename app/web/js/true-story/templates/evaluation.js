@@ -68,11 +68,19 @@
             template: item.find('.evaluator .criteria-slider:eq(0)'),
             controller: function (view, locals) {
               view.find('.criteria-name').text(criteria.name);
+              view.find('input.slider').data('criteria-id', criteria._id);
               view.find('input.slider').slider();
               view.find('input.slider').slider('setValue', 0);
               view.find('input.slider').slider('on', 'slideStop',
                 function () {
+                  var slider = $(this);
 
+                  if ( slider.attr('type') ) {
+
+                    var value = slider.slider('getValue');
+
+                    $(this).data('slider-value', value);
+                  }
                 });
             }
           };
@@ -108,10 +116,10 @@
                 unpromoted = this.position + 1;
               }
 
+              // feedback
+
               var feedback = item.find('.evaluator .feedback:eq(' +
                 unpromoted + ')');
-
-              console.log('unpromoted', evaluation.items[unpromoted].subject);
 
               if ( feedback.val() ) {
                 app.emitter('socket').emit('insert feedback', {
@@ -122,6 +130,23 @@
 
                 feedback.val('');
               }
+
+              // votes
+
+              var votes = [];
+
+              item.find('.evaluator .sliders:eq(' + unpromoted + ') input.slider').each(function () {
+                  var vote = {
+                    item: evaluation.items[unpromoted]._id,
+                    user: synapp.user,
+                    value: $(this).data('slider-value'),
+                    criteria: $(this).data('criteria-id')
+                  };
+
+                  votes.push(vote);
+                });
+
+              app.emitter('socket').emit('insert votes', votes);
 
               app.render('evaluation', evaluation, function () {
                 app.controller('scroll to point of attention')(item.find('.evaluator'));
