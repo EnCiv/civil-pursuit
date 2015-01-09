@@ -125,9 +125,13 @@
         app.emitter('socket').emit('get item details', item);
 
         app.emitter('socket').once('got item details', function (itemDetails) {
-          app.render('details votes', itemDetails, function (detailsView) {
-            detailsView.removeClass('template-model');
-            details.find('.details-votes').append(detailsView);
+
+          itemDetails.criterias.forEach(function (criteria, index) {
+            app.render('details votes', [itemDetails, index],
+              function (detailsView) {
+                detailsView.removeClass('template-model');
+                details.find('.details-votes').append(detailsView);
+              });
           });
         });
 

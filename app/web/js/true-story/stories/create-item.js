@@ -55,9 +55,7 @@
             ss.createBlobReadStream(file).pipe(stream);
           }
 
-          else {
-            app.emitter('socket').emit('create item', item);
-          }
+          app.emitter('socket').emit('create item', item);
         }
       });
   

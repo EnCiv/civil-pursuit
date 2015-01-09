@@ -1219,9 +1219,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             ss.createBlobReadStream(file).pipe(stream);
           }
 
-          else {
-            app.emitter('socket').emit('create item', item);
-          }
+          app.emitter('socket').emit('create item', item);
         }
       });
   
@@ -1667,77 +1665,82 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   module.exports = {
     template: '.votes-by-criteria',
 
-    controller: function (view, details) {
+    controller: function (view, locals) {
+
+      var details = locals[0];
+      var index = locals[1];
+
       setTimeout(function () {
-        details.criterias.forEach(function (criteria) {
-          view.find('h4').text(criteria.name);
 
-          var vote = details.votes[criteria._id];
+        var criteria = details.criterias[index];
 
-          var svg = $('<svg class="chart"></svg>');
+        view.find('h4').text(criteria.name);
 
-          svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
+        var vote = details.votes[criteria._id];
 
-          console.log('svg!', svg.attr('id'))
+        var svg = $('<svg class="chart"></svg>');
 
-          view.find('.chart').append(svg);
+        svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
 
-          var data = [];
+        console.log('svg!', svg.attr('id'))
 
-          for ( var number in vote.values ) {
-            data.push({
-              label: 'number',
-              value: vote.values[number] * 100 / vote.total
-            });
-          }
+        view.find('.chart').append(svg);
 
-          var columns = ['votes'];
+        var data = [];
 
-          data.forEach(function (d) {
-            columns.push(d.value);
+        for ( var number in vote.values ) {
+          data.push({
+            label: 'number',
+            value: vote.values[number] * 100 / vote.total
           });
+        }
 
-          var chart = c3.generate({
-            bindto: '#' + svg.attr('id'),
+        var columns = ['votes'];
 
-            data: {
-              x: 'x',
-              columns: [['x', -1, 0, 1], columns],
-              type: 'bar'
-            },
+        data.forEach(function (d) {
+          columns.push(d.value);
+        });
 
-            grid: {
-              x: {
-                lines: 3
-              }
-            },
+        var chart = c3.generate({
+          bindto: '#' + svg.attr('id'),
+
+          data: {
+            x: 'x',
+            columns: [['x', -1, 0, 1], columns],
+            type: 'bar'
+          },
+
+          grid: {
+            x: {
+              lines: 3
+            }
+          },
+          
+          axis: {
+            x: {},
             
-            axis: {
-              x: {},
-              
-              y: {
-                max: 90,
+            y: {
+              max: 90,
 
-                show: false,
+              show: false,
 
-                tick: {
-                  count: 5,
+              tick: {
+                count: 5,
 
-                  format: function (y) {
-                    return y;
-                  }
+                format: function (y) {
+                  return y;
                 }
               }
-            },
-
-            size: {
-              height: 80
-            },
-
-            bar: {
-              width: $(window).width() / 5
             }
-          });
+          },
+
+          size: {
+            height: 80
+          },
+
+          bar: {
+            width: $(window).width() / 5
+          }
         });
       }, 1500);
     }
@@ -2073,9 +2076,13 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         app.emitter('socket').emit('get item details', item);
 
         app.emitter('socket').once('got item details', function (itemDetails) {
-          app.render('details votes', itemDetails, function (detailsView) {
-            detailsView.removeClass('template-model');
-            details.find('.details-votes').append(detailsView);
+
+          itemDetails.criterias.forEach(function (criteria, index) {
+            app.render('details votes', [itemDetails, index],
+              function (detailsView) {
+                detailsView.removeClass('template-model');
+                details.find('.details-votes').append(detailsView);
+              });
           });
         });
 
