@@ -66,6 +66,7 @@
             password: password.val()
           }
         })
+          
           .error(function (response, state, code) {
             if ( response.status === 401 ) {
               $('#join').find('.alert')
@@ -73,6 +74,7 @@
                 .find('.alert-message').text('This email address is already in use');
             }
           })
+          
           .success(function (data) {
             $('.is-in').css('visibility', 'visible');
 
