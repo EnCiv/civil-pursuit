@@ -56,6 +56,7 @@
             ss.createBlobReadStream(file).pipe(stream);
 
             stream.on('end', function () {
+              item.image = file.name;
               app.emitter('socket').emit('create item', item);
             });
           }
@@ -68,6 +69,7 @@
   
     app.emitter('socket').on('created item', function (item) {
       item.is_new = true;
+      
       console.warn('created item');
       app.model('items').push(item);
     });

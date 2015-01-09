@@ -8,16 +8,12 @@
 
     app.on('panel added', function (panel) {
 
-      console.warn('SUB #4 panel added', panel);
-
       app.emitter('socket').emit('get items', panel);
     });
 
     app.emitter('socket')
       
       .on('got items', function (panelItems) {
-
-        console.warn('SUB #5 got panel items from socket, pushing to model items');
 
         var panelId = '#panel-' + panelItems.panel.type;
 
@@ -60,8 +56,6 @@
       });
 
     app.on('push items', function (item) {
-
-      console.warn('SUB #6 panel item pushed', item.subject);
 
       app.render('item', item, function (itemView) {
 

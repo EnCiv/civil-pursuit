@@ -16,7 +16,9 @@
 
     "evaluation":     require('./templates/evaluation'),
 
-    "details votes":  require('./templates/details-votes')
+    "details votes":  require('./templates/details-votes'),
+
+    "details feedback": require('./templates/details-feedback')
   
   };
 

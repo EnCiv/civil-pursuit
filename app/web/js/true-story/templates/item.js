@@ -120,7 +120,7 @@
           details.find('.invite-people-body').attr('placeholder')) +
           "%0A%0A" + ' Synaccord - ' + link);
 
-        // Votes
+        // Votes and feedbacks
 
         app.emitter('socket').emit('get item details', item);
 
@@ -133,6 +133,21 @@
                 details.find('.details-votes').append(detailsView);
               });
           });
+
+          if ( itemDetails.feedbacks.length ) {
+            itemDetails.feedbacks.forEach(function (feedback) {
+              app.render('details feedback', feedback,
+                function (feedbackView) {
+                  feedbackView.removeClass('template-model');
+                  details.find('.details-feedbacks').append(feedbackView);
+                });
+            });
+          }
+
+          else {
+            details.find('.details-feedbacks h4').css('display', 'none');
+          }
+
         });
 
       });

@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":33,"util":37}],2:[function(require,module,exports){
+},{"events":34,"util":38}],2:[function(require,module,exports){
 /***
 
 
@@ -306,7 +306,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":14,"./stories":15,"./template":24,"./view":31,"/home/francois/Dev/true-story.js":39}],4:[function(require,module,exports){
+},{"./controller":4,"./model":14,"./stories":15,"./template":24,"./view":32,"/home/francois/Dev/true-story.js":40}],4:[function(require,module,exports){
 /***
 
 
@@ -1220,6 +1220,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             ss.createBlobReadStream(file).pipe(stream);
 
             stream.on('end', function () {
+              item.image = file.name;
               app.emitter('socket').emit('create item', item);
             });
           }
@@ -1232,6 +1233,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   
     app.emitter('socket').on('created item', function (item) {
       item.is_new = true;
+      
       console.warn('created item');
       app.model('items').push(item);
     });
@@ -1320,16 +1322,12 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     app.on('panel added', function (panel) {
 
-      console.warn('SUB #4 panel added', panel);
-
       app.emitter('socket').emit('get items', panel);
     });
 
     app.emitter('socket')
       
       .on('got items', function (panelItems) {
-
-        console.warn('SUB #5 got panel items from socket, pushing to model items');
 
         var panelId = '#panel-' + panelItems.panel.type;
 
@@ -1372,8 +1370,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       });
 
     app.on('push items', function (item) {
-
-      console.warn('SUB #6 panel item pushed', item.subject);
 
       app.render('item', item, function (itemView) {
 
@@ -1658,13 +1654,29 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     "evaluation":     require('./templates/evaluation'),
 
-    "details votes":  require('./templates/details-votes')
+    "details votes":  require('./templates/details-votes'),
+
+    "details feedback": require('./templates/details-feedback')
   
   };
 
 }();
 
-},{"./templates/details-votes":25,"./templates/evaluation":26,"./templates/intro":27,"./templates/item":28,"./templates/online-users":29,"./templates/panel":30}],25:[function(require,module,exports){
+},{"./templates/details-feedback":25,"./templates/details-votes":26,"./templates/evaluation":27,"./templates/intro":28,"./templates/item":29,"./templates/online-users":30,"./templates/panel":31}],25:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = {
+    template: '.feedback-section',
+    controller: function (view, feedback) {
+      view.find('.feedback').text(feedback.feedback);
+    }
+  };
+
+} ();
+
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1755,7 +1767,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1943,7 +1955,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1977,7 +1989,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2100,7 +2112,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           details.find('.invite-people-body').attr('placeholder')) +
           "%0A%0A" + ' Synaccord - ' + link);
 
-        // Votes
+        // Votes and feedbacks
 
         app.emitter('socket').emit('get item details', item);
 
@@ -2113,6 +2125,21 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
                 details.find('.details-votes').append(detailsView);
               });
           });
+
+          if ( itemDetails.feedbacks.length ) {
+            itemDetails.feedbacks.forEach(function (feedback) {
+              app.render('details feedback', feedback,
+                function (feedbackView) {
+                  feedbackView.removeClass('template-model');
+                  details.find('.details-feedbacks').append(feedbackView);
+                });
+            });
+          }
+
+          else {
+            details.find('.details-feedbacks h4').css('display', 'none');
+          }
+
         });
 
       });
@@ -2168,7 +2195,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"string":38}],29:[function(require,module,exports){
+},{"string":39}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2183,7 +2210,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2240,7 +2267,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /***
 
 
@@ -2298,7 +2325,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2336,7 +2363,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":33}],33:[function(require,module,exports){
+},{"events":34}],34:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2639,7 +2666,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2664,7 +2691,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2752,14 +2779,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3349,7 +3376,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":36,"_process":35,"inherits":34}],38:[function(require,module,exports){
+},{"./support/isBuffer":37,"_process":36,"inherits":35}],39:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4383,7 +4410,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4442,7 +4469,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":40}],40:[function(require,module,exports){
+},{"./lib/TrueStory.js":41}],41:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5204,7 +5231,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":41,"./TrueStory/parse-dot-notation":42,"./TrueStory/render":43,"./When":44,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":35,"domain":32,"events":33,"util":37}],41:[function(require,module,exports){
+},{"./TrueStory/model":42,"./TrueStory/parse-dot-notation":43,"./TrueStory/render":44,"./When":45,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":36,"domain":33,"events":34,"util":38}],42:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5565,7 +5592,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5687,7 +5714,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5781,7 +5808,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":35}],44:[function(require,module,exports){
+},{"_process":36}],45:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6254,4 +6281,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":40,"_process":35}]},{},[2]);
+},{"./TrueStory":41,"_process":36}]},{},[2]);
