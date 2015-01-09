@@ -4680,6 +4680,10 @@ footer {
   width: 100%;
   height: 100%;
 }
+.youtube-thumbnail {
+  border: 12px solid black;
+  border-width: 12px 0;
+}
 .item {
   background: #fff;
   border: 1px solid #666666;

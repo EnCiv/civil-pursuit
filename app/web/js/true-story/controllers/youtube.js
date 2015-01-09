@@ -12,9 +12,11 @@
         youtube = v;
       });
 
-      var raw = '<div class="video-container">' +
-          '<iframe src="http://www.youtube.com/embed/' + youtube + '" frameborder="0" width="300" height="175"></iframe>' +
-        '</div>';
+      // var raw = '<div class="video-container">' +
+      //     '<iframe src="http://www.youtube.com/embed/' + youtube + '" frameborder="0" width="300" height="175"></iframe>' +
+      //   '</div>';
+
+      var raw = '<div><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /></div>';
 
       if ( server ) {
         return raw;

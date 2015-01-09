@@ -78,6 +78,8 @@
           .success(function (data) {
             $('.is-in').css('visibility', 'visible');
 
+            $('#join').modal('hide');
+
             app.view('sign').find('section').hide(2000);
 
             app.view('sign').find('.sign-success')
@@ -86,7 +88,7 @@
                   app.view('sign').hide(2500);
                 }, 5000);
               })
-              .text('Welcome back!');
+              .text('Welcome to Synaccord!');
           });
       }
 
