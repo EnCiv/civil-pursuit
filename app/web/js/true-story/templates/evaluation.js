@@ -100,8 +100,6 @@
           .not('.once')
           .on('click',
             function () {
-              evaluation.cursor ++;
-
               var unpromoted;
 
               // odd
@@ -148,9 +146,33 @@
 
               app.emitter('socket').emit('insert votes', votes);
 
-              app.render('evaluation', evaluation, function () {
-                app.controller('scroll to point of attention')(item.find('.evaluator'));
-              });
+              // next
+
+              evaluation.cursor ++;
+
+              if ( evaluation.cursor <= evaluation.limit ) {
+
+                evaluation.items = evaluation.items.filter(
+                  function (_item, index) {
+                    return index !== unpromoted;
+                  });
+
+                app.render('evaluation', evaluation, function () {
+                  app.controller('scroll to point of attention')(item.find('.evaluator'));
+                });
+              }
+              
+              else {
+                var evaluations = app.model('evaluations');
+
+                evaluations = evaluations.filter(function ($evaluation) {
+                  return $evaluation.item !== evaluation.item;
+                });
+
+                app.model('evaluations', evaluations);
+
+                app.controller('hide')(item.find('.evaluator'));
+              }
             
             }.bind({ position: i }));
 

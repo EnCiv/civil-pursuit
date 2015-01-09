@@ -9,7 +9,7 @@
 
     socket.on('insert votes', function (votes) {
       safe(socket, function () {
-        var url = 'models/Votes';
+        var url = 'models/Vote';
 
         monson.post(url, votes)
 

@@ -51,11 +51,18 @@
             var stream = ss.createStream();
 
             ss(app.emitter('socket')).emit('upload image', stream,
-              { size: file.size });
+              { size: file.size, name: file.name });
+            
             ss.createBlobReadStream(file).pipe(stream);
+
+            stream.on('end', function () {
+              app.emitter('socket').emit('create item', item);
+            });
           }
 
-          app.emitter('socket').emit('create item', item);
+          else {
+            app.emitter('socket').emit('create item', item);
+          }
         }
       });
   

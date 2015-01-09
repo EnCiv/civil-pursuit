@@ -1215,11 +1215,18 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
             var stream = ss.createStream();
 
             ss(app.emitter('socket')).emit('upload image', stream,
-              { size: file.size });
+              { size: file.size, name: file.name });
+            
             ss.createBlobReadStream(file).pipe(stream);
+
+            stream.on('end', function () {
+              app.emitter('socket').emit('create item', item);
+            });
           }
 
-          app.emitter('socket').emit('create item', item);
+          else {
+            app.emitter('socket').emit('create item', item);
+          }
         }
       });
   
@@ -1851,8 +1858,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           .not('.once')
           .on('click',
             function () {
-              evaluation.cursor ++;
-
               var unpromoted;
 
               // odd
@@ -1899,9 +1904,33 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
               app.emitter('socket').emit('insert votes', votes);
 
-              app.render('evaluation', evaluation, function () {
-                app.controller('scroll to point of attention')(item.find('.evaluator'));
-              });
+              // next
+
+              evaluation.cursor ++;
+
+              if ( evaluation.cursor <= evaluation.limit ) {
+
+                evaluation.items = evaluation.items.filter(
+                  function (_item, index) {
+                    return index !== unpromoted;
+                  });
+
+                app.render('evaluation', evaluation, function () {
+                  app.controller('scroll to point of attention')(item.find('.evaluator'));
+                });
+              }
+              
+              else {
+                var evaluations = app.model('evaluations');
+
+                evaluations = evaluations.filter(function ($evaluation) {
+                  return $evaluation.item !== evaluation.item;
+                });
+
+                app.model('evaluations', evaluations);
+
+                app.controller('hide')(item.find('.evaluator'));
+              }
             
             }.bind({ position: i }));
 
