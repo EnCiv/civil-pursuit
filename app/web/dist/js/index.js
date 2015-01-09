@@ -1760,18 +1760,36 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           }.bind({ index: i }));
         });
 
+        // Promote
+
         item.find('.evaluator .promote:eq(' + i + ')')
           .not('.once')
           .on('click',
             function () {
               evaluation.cursor ++;
 
+              var unpromoted;
+
+              // odd
+
+              if ( this.position % 2 ) {
+                unpromoted = this.position - 1;
+              }
+
+              // even
+
+              else {
+                unpromoted = this.position + 1;
+              }
+
               var feedback = item.find('.evaluator .feedback:eq(' +
-                this.position + ')');
+                unpromoted + ')');
+
+              console.log('unpromoted', evaluation.items[unpromoted].subject);
 
               if ( feedback.val() ) {
                 app.emitter('socket').emit('insert feedback', {
-                  item: evaluation.items[this.position]._id,
+                  item: evaluation.items[unpromoted]._id,
                   user: synapp.user,
                   feedback: feedback.val()
                 });
@@ -1782,6 +1800,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
               app.render('evaluation', evaluation, function () {
                 app.controller('scroll to point of attention')(item.find('.evaluator'));
               });
+            
             }.bind({ position: i }));
 
         item.find('.evaluator .promote:eq(' + i + ')')

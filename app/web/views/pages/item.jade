@@ -21,4 +21,4 @@ block page
 
       - if ( item.references.length )
         h4
-          a(href=item.references[0].url)= item.references[0].title || item.references[0].url
+          a(href=item.references[0].url rel='nofollow')= item.references[0].title || item.references[0].url
