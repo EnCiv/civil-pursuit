@@ -1735,11 +1735,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
           bar: {
             width: $(window).width() / 5
           }
-      });
-
-        console.log('columns', columns);
-
-        console.warn('details', details);
+        });
       });
     }
   };
