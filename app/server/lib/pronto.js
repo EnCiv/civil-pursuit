@@ -220,6 +220,10 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
 
+      /** /sign/up ==> Sign up */
+
+      .open('app/server/routes/sign-up.js', { exec: 'js/middleware' }, when('/sign/up'))
+
       /** /sign/out ==> Sign out */
 
       .open('app/server/routes/sign-out.js', { exec: 'js/middleware' }, when('/sign/out'))

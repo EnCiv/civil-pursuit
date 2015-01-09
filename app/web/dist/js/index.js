@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":32,"util":36}],2:[function(require,module,exports){
+},{"events":33,"util":37}],2:[function(require,module,exports){
 /***
 
 
@@ -306,7 +306,7 @@ Nina Butorac
     };
 
 }();
-},{"./controller":4,"./model":14,"./stories":15,"./template":23,"./view":30,"/home/francois/Dev/true-story.js":38}],4:[function(require,module,exports){
+},{"./controller":4,"./model":14,"./stories":15,"./template":24,"./view":31,"/home/francois/Dev/true-story.js":39}],4:[function(require,module,exports){
 /***
 
 
@@ -1122,6 +1122,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     require('./stories/sign-in').apply(this);
 
+    /** sign up **/
+
+    require('./stories/sign-up').apply(this);
+
     /** MODEL */
 
     /** when emitter socket triggers error  */
@@ -1155,7 +1159,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./stories/get-evaluation":17,"./stories/get-intro":18,"./stories/get-items":19,"./stories/get-online-users":20,"./stories/get-panel":21,"./stories/sign-in":22}],16:[function(require,module,exports){
+},{"./stories/get-evaluation":17,"./stories/get-intro":18,"./stories/get-items":19,"./stories/get-online-users":20,"./stories/get-panel":21,"./stories/sign-in":22,"./stories/sign-up":23}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1460,17 +1464,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
   function signIn () {
     var app = this;
 
-    $('#join').find('.i-agree').on('click', function () {
-      var agreed = $('#join').find('.agreed');
-
-      if ( agreed.hasClass('fa-square-o') ) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      }
-      else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-
     app.view('sign').on('submit', function () {
 
       app.view('sign').find('.sign-error')
@@ -1533,6 +1526,105 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   'use strict';
 
+  function signUp () {
+    var app = this;
+
+    $('#join').find('.i-agree').on('click', function () {
+      var agreed = $('#join').find('.agreed');
+
+      if ( agreed.hasClass('fa-square-o') ) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      }
+      else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    $('#join').find('form').on('submit', function () {
+      
+      var email = $(this).find('[name="email"]');
+      var password = $(this).find('[name="password"]');
+      var confirm = $(this).find('[name="confirm"]');
+
+      email.removeClass('error');
+      password.removeClass('error');
+      confirm.removeClass('error');
+
+      $('#join').find('.alert')
+          .css('display', 'none');
+
+      if ( ! email.val() ) {
+        email.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please enter an email address');
+      }
+
+      else if ( ! password.val() ) {
+        password.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please enter a password');
+      }
+
+      else if ( ! confirm.val() ) {
+        confirm.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please confirm password');
+      }
+
+      else if ( password.val() !== confirm.val() ) {
+        confirm.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Passwords do not match');
+      }
+
+      else {
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          .error(function (response, state, code) {
+            if ( response.status === 401 ) {
+              $('#join').find('.alert')
+                .css('display', 'block')
+                .find('.alert-message').text('This email address is already in use');
+            }
+          })
+          .success(function (data) {
+            $('.is-in').css('visibility', 'visible');
+
+            app.view('sign').find('section').hide(2000);
+
+            app.view('sign').find('.sign-success')
+              .show(function () {
+                setTimeout(function () {
+                  app.view('sign').hide(2500);
+                }, 5000);
+              })
+              .text('Welcome back!');
+          });
+      }
+
+      return false;
+    })
+  }
+
+  module.exports = signUp;
+
+} ();
+
+},{}],24:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
   module.exports = {
     
     "online users":   require('./templates/online-users'),
@@ -1553,7 +1645,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 }();
 
-},{"./templates/details-votes":24,"./templates/evaluation":25,"./templates/intro":26,"./templates/item":27,"./templates/online-users":28,"./templates/panel":29}],24:[function(require,module,exports){
+},{"./templates/details-votes":25,"./templates/evaluation":26,"./templates/intro":27,"./templates/item":28,"./templates/online-users":29,"./templates/panel":30}],25:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1568,14 +1660,18 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         var svg = $('<svg class="chart"></svg>');
 
+        svg.attr('id', 'chart-' + details.item + '-' + criteria._id);
+
         view.find('.chart').append(svg);
+
+        console.warn('details', details);
       });
     }
   };
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1697,7 +1793,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1731,7 +1827,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1918,7 +2014,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{"string":37}],28:[function(require,module,exports){
+},{"string":38}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1933,7 +2029,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1990,7 +2086,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /***
 
 
@@ -2048,7 +2144,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2086,7 +2182,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":32}],32:[function(require,module,exports){
+},{"events":33}],33:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2389,7 +2485,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2414,7 +2510,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2502,14 +2598,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3099,7 +3195,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":35,"_process":34,"inherits":33}],37:[function(require,module,exports){
+},{"./support/isBuffer":36,"_process":35,"inherits":34}],38:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4133,7 +4229,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4192,7 +4288,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":39}],39:[function(require,module,exports){
+},{"./lib/TrueStory.js":40}],40:[function(require,module,exports){
 (function (process){
 /***
 
@@ -4954,7 +5050,7 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":40,"./TrueStory/parse-dot-notation":41,"./TrueStory/render":42,"./When":43,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":34,"domain":31,"events":32,"util":36}],40:[function(require,module,exports){
+},{"./TrueStory/model":41,"./TrueStory/parse-dot-notation":42,"./TrueStory/render":43,"./When":44,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":35,"domain":32,"events":33,"util":37}],41:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5315,7 +5411,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5437,7 +5533,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5554,7 +5650,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":34}],43:[function(require,module,exports){
+},{"_process":35}],44:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6027,4 +6123,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":39,"_process":34}]},{},[2]);
+},{"./TrueStory":40,"_process":35}]},{},[2]);

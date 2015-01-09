@@ -76,14 +76,14 @@ hr
 
         h4.text-center Join with email
 
-        form(role='form' data-ng-submit='signUp()' novalidate)
+        form(role='form' novalidate)
           .form-group
-            input.form-control(type='email' placeholder='email' data-ng-model='signByMail.email')
+            input.form-control(type='email' placeholder='email' name='email')
 
           .form-group
-            input.form-control(type='password' placeholder='password' data-ng-model='signByMail.password')
+            input.form-control(type='password' placeholder='password' name='password')
 
           .form-group
-            input.form-control(type='password' placeholder='Confirm password' data-ng-model='signByMail.confirm')
+            input.form-control(type='password' placeholder='Confirm password' name='confirm')
 
           button.btn.btn-primary.btn-block Join with email

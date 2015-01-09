@@ -12,7 +12,11 @@
 
         var svg = $('<svg class="chart"></svg>');
 
+        svg.attr('id', 'chart-' + details.item + '-' + criteria._id);
+
         view.find('.chart').append(svg);
+
+        console.warn('details', details);
       });
     }
   };

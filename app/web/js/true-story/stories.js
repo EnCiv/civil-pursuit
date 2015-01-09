@@ -89,6 +89,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     require('./stories/sign-in').apply(this);
 
+    /** sign up **/
+
+    require('./stories/sign-up').apply(this);
+
     /** MODEL */
 
     /** when emitter socket triggers error  */

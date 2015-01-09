@@ -5,17 +5,6 @@
   function signIn () {
     var app = this;
 
-    $('#join').find('.i-agree').on('click', function () {
-      var agreed = $('#join').find('.agreed');
-
-      if ( agreed.hasClass('fa-square-o') ) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      }
-      else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-
     app.view('sign').on('submit', function () {
 
       app.view('sign').find('.sign-error')
