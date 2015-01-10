@@ -29,10 +29,10 @@
 
         else {
           var item = {
-            user: synapp.user,
-            subject: subject.val(),
-            description: description.val(),
-            type: panelId[1]
+            user:         synapp.user,
+            subject:      subject.val(),
+            description:  description.val(),
+            type:         panelId[1]
           };
 
           if ( panelId[2] ) {
@@ -70,8 +70,9 @@
     app.emitter('socket').on('created item', function (item) {
       item.is_new = true;
       
-      console.warn('created item');
       app.model('items').push(item);
+
+      app.controller('hide')($('.creator.' + item.type));
     });
   }
 

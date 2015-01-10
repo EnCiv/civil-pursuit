@@ -2,25 +2,21 @@
 
   'use strict';
 
-  function uploadImage (socket, safe, pronto, onEvent, monson) {
-    socket.on('insert feedback', function () {
-      onEvent('insert feedback');
-    });
-
+  function uploadImage (socket, pronto, monson) {
     socket.on('insert feedback', function (feedback) {
-      safe(socket, function () {
-        var url = 'models/Feedback';
+      
+      var url = 'models/Feedback';
 
-        monson.post(url, feedback)
+      monson.post(url, feedback)
 
-          .on('error', function (error) {
-            throw error;
-          })
+        .on('error', function (error) {
+          throw error;
+        })
 
-          .on('success', function (feedback) {
-            socket.emit('inserted feedback', feedback);
-          });
-      });
+        .on('success', function (feedback) {
+          socket.emit('inserted feedback', feedback);
+        });
+      
     });
   }
 

@@ -45,7 +45,16 @@
         }
       });
 
+      // Items
+
       for ( var i = 0; i < 2; i ++ ) {
+
+        // Increment views counter
+
+        app.emitter('socket').emit('add view',
+          evaluation.items[i]._id);
+
+        // Image
 
         item.find('.evaluator .image:eq(' + i +')').append(
           app.controller('item media')(evaluation.items[i]));

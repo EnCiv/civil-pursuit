@@ -21,8 +21,15 @@
     // image
 
     if ( item.image ) {
+
+      var src = item.image;
+
+      if ( ! /^http/.test(item.image) ) {
+        src = synapp['default item image'];
+      }
+
       return app.controller('bootstrap/responsive-image')({
-        src: item.image
+        src: src
       });
     }
   }

@@ -2,25 +2,21 @@
 
   'use strict';
 
-  function insertVotes (socket, safe, pronto, onEvent, monson) {
-    socket.on('insert votes', function () {
-      onEvent('insert votes');
-    });
-
+  function insertVotes (socket, pronto, monson) {
     socket.on('insert votes', function (votes) {
-      safe(socket, function () {
-        var url = 'models/Vote';
+      
+      var url = 'models/Vote';
 
-        monson.post(url, votes)
+      monson.post(url, votes)
 
-          .on('error', function (error) {
-            throw error;
-          })
+        .on('error', function (error) {
+          throw error;
+        })
 
-          .on('success', function (votes) {
-            socket.emit('inserted votes', votes);
-          });
-      });
+        .on('success', function (votes) {
+          socket.emit('inserted votes', votes);
+        });
+      
     });
   }
 

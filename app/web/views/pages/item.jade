@@ -14,7 +14,7 @@ block page
         img.img-responsive(src=item.image)
 
       - else
-        img.img-responsive(src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg')
+        img.img-responsive(src=synapp.public['default item image'])
 
     .col-sm-8.padding
       .pre-text=item.description

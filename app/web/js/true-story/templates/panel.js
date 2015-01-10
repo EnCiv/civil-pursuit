@@ -23,6 +23,8 @@
 
       view.find('.panel-title').text(panel.type);
 
+      view.find('.creator').eq(0).addClass(panel.type);
+
       view.find('.load-more').on('click', function () {
         var _panel = app.model('panels').filter(function (pan) {
           if ( pan.type !== panel.type ) {

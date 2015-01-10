@@ -67,10 +67,17 @@
         
         if ( this.item.is_new ) {
           $(panelId).find('.items').prepend(itemView);
+          
+          itemView.find('.toggle-promote').click();
+
+          app.controller('scroll to point of attention')(
+            itemView, itemView.find('.evaluator'));
         }
+        
         else {
           $(panelId).find('.items').append(itemView);
         }
+
       }.bind({ item: item }));
     });
 

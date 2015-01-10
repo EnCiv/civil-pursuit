@@ -26,7 +26,7 @@ form.form-inline.text-center#signer(role='form' novalidate)
             span  Login with Twitter
 
         li
-          a(href='/auth/twitter') 
+          a(href='#' type='button' data-toggle='modal' data-target='#forgot-password') 
             i.fa.fa-key
             span  Forgot password?
 
@@ -87,3 +87,24 @@ hr
             input.form-control(type='password' placeholder='Confirm password' name='confirm')
 
           button.btn.btn-primary.btn-block Join with email
+
+//- # Forgot password
+#forgot-password.modal.fade(tabindex='-2' role='dialog' aria-labelledby='forgotLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type='button' data-dismiss='modal')
+          span(aria-hidden='true') &times;
+          span.sr-only Close
+
+        h4#forgotLabel.modal-title Forgot password
+
+      .modal-body
+        include ../layout/alert
+
+        p Enter your email address
+
+        .form-group
+          input.form-control(type='email' placeholder='Enter email address')
+
+        button.btn.btn-block Send me password reactivation key

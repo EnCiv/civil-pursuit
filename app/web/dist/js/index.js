@@ -463,7 +463,7 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
   'use strict';
 
-  function hide (elem, options, cb) {
+  function hide (elem, cb) {
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
 
     if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
@@ -472,12 +472,17 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
     elem.removeClass('is-shown').addClass('is-hiding');;
 
-    elem.find('.is-section:first').animate({
+    elem.find('.is-section:first').animate(
+      {
         'margin-top': '-' + elem.height() + 'px',
         // 'padding-top': elem.height() + 'px'
-      }, 1000, function () {
+      },
+
+      1000,
+
+      function () {
         elem.removeClass('is-hiding').addClass('is-hidden');
-        $rootScope.publish('did hide view', options);
+
         if ( cb ) cb();
       });
 
@@ -514,8 +519,15 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     // image
 
     if ( item.image ) {
+
+      var src = item.image;
+
+      if ( ! /^http/.test(item.image) ) {
+        src = synapp['default item image'];
+      }
+
       return app.controller('bootstrap/responsive-image')({
-        src: item.image
+        src: src
       });
     }
   }
@@ -867,7 +879,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     for (var i = 0, f; f = files[i]; i++) {
       parse(f);
       preview(f, e.target);
-      upload(f);
     }
   }
 
@@ -904,21 +915,6 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     }, false);
     
     img.src = (window.URL || window.webkitURL).createObjectURL(file);
-
-    console.warn(img);
-  }
-
-  function upload (file) {
-    return;
-    if ( /^image\//.test(file.type) && file.size < 50000 ) {
-      $.ajax({
-        url: '/upload',
-        type: 'POST',
-        headers: {
-          'X_FILENAME': file.name
-        }
-      });
-    }
   }
 
   function init (dropbox) {
@@ -1193,10 +1189,10 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
 
         else {
           var item = {
-            user: synapp.user,
-            subject: subject.val(),
-            description: description.val(),
-            type: panelId[1]
+            user:         synapp.user,
+            subject:      subject.val(),
+            description:  description.val(),
+            type:         panelId[1]
           };
 
           if ( panelId[2] ) {
@@ -1234,8 +1230,9 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
     app.emitter('socket').on('created item', function (item) {
       item.is_new = true;
       
-      console.warn('created item');
       app.model('items').push(item);
+
+      app.controller('hide')($('.creator.' + item.type));
     });
   }
 
@@ -1381,10 +1378,17 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         
         if ( this.item.is_new ) {
           $(panelId).find('.items').prepend(itemView);
+          
+          itemView.find('.toggle-promote').click();
+
+          app.controller('scroll to point of attention')(
+            itemView, itemView.find('.evaluator'));
         }
+        
         else {
           $(panelId).find('.items').append(itemView);
         }
+
       }.bind({ item: item }));
     });
 
@@ -1815,7 +1819,16 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
         }
       });
 
+      // Items
+
       for ( var i = 0; i < 2; i ++ ) {
+
+        // Increment views counter
+
+        app.emitter('socket').emit('add view',
+          evaluation.items[i]._id);
+
+        // Image
 
         item.find('.evaluator .image:eq(' + i +')').append(
           app.controller('item media')(evaluation.items[i]));
@@ -2235,6 +2248,8 @@ $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$      $$  $$$$$$$
       }
 
       view.find('.panel-title').text(panel.type);
+
+      view.find('.creator').eq(0).addClass(panel.type);
 
       view.find('.load-more').on('click', function () {
         var _panel = app.model('panels').filter(function (pan) {

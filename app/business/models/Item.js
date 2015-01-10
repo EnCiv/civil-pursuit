@@ -176,7 +176,11 @@ ItemSchema.pre('save', function (next, done) {
 
   if ( this.image && ( this.isNew ? true : ( this.image !== this._original.image ) )  ) {
 
+    // do not block insertion
+
     next();
+
+    // asynchronous - save to cloudinary
     
     var cloudinary = require('cloudinary');
     
@@ -414,6 +418,13 @@ ItemSchema.statics.details = function (id, cb) {
           });
       });
     });
+};
+
+// Add view
+
+ItemSchema.statics.incrementView = function (id, cb) {
+  console.log('got item', id)
+  this.findByIdAndUpdate(id, { $inc: { "views": 1 } }, cb);
 };
 
 // EXPORT

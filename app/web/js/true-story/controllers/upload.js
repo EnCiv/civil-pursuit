@@ -10,7 +10,6 @@
     for (var i = 0, f; f = files[i]; i++) {
       parse(f);
       preview(f, e.target);
-      upload(f);
     }
   }
 
@@ -47,21 +46,6 @@
     }, false);
     
     img.src = (window.URL || window.webkitURL).createObjectURL(file);
-
-    console.warn(img);
-  }
-
-  function upload (file) {
-    return;
-    if ( /^image\//.test(file.type) && file.size < 50000 ) {
-      $.ajax({
-        url: '/upload',
-        type: 'POST',
-        headers: {
-          'X_FILENAME': file.name
-        }
-      });
-    }
   }
 
   function init (dropbox) {
