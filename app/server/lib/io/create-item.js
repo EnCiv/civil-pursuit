@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function createItem (socket, pronto, monson) {
+  function createItem (socket, pronto, monson, domain) {
     
     socket.on('create item', function (item) {
       
@@ -10,9 +10,7 @@
 
       monson.post(url, item)
 
-        .on('error', function (error) {
-          throw error;
-        })
+        .on('error', domain.intercept(function () {}))
 
         .on('success', function (item) {
           pronto.emit('message', 'socket created item from monson');

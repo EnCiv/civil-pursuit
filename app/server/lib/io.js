@@ -182,7 +182,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'get-intro',
           'get-items',
           'get-evaluation',
-          'sign-in'];
+          'sign-in',
+          'get-url-title'];
 
         domain.add(socket);
 

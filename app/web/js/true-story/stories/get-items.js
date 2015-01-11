@@ -70,11 +70,15 @@
         if ( this.item.is_new ) {
           $(panelId).find('.items').prepend(itemView);
 
+          // image if any
+
           var file = $('.creator.' + this.item.type)
             .find('.preview-image').data('file');
 
-          itemView.find('.item-media img').attr('src',
-            (window.URL || window.webkitURL).createObjectURL(file));
+          if ( file ) {
+            itemView.find('.item-media img').attr('src',
+              (window.URL || window.webkitURL).createObjectURL(file));
+          }
 
           // Ready for callback's hell?
 

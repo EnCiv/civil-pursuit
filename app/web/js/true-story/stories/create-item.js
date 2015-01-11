@@ -15,6 +15,7 @@
 
         var subject = creator.find('[name="subject"]');
         var description = creator.find('[name="description"]');
+        var reference = creator.find('[name="reference"]');
 
         subject.removeClass('error');
         description.removeClass('error');
@@ -32,7 +33,13 @@
             user:         synapp.user,
             subject:      subject.val(),
             description:  description.val(),
-            type:         panelId[1]
+            type:         panelId[1],
+            references:   [
+              {
+                url:          reference.val(),
+                title:        reference.data('title')
+              }
+            ]
           };
 
           if ( panelId[2] ) {

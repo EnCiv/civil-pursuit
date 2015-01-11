@@ -167,61 +167,93 @@ ItemSchema.pre('save', function (next, done) {
   // If creating, set default values
 
   if ( this.isNew ) {
-    this.promotions   = 0;
-    this.views        = 0;
-    this.created      = Date.now();
+    this.promotions   =   0;
+    this.views        =   0;
+    this.created      =   Date.now();
   }
 
-  // If image declared (and in case of editing - if image changed)
+  // keep on going with pre middlewares
+  next();
 
-  if ( this.image && ( this.isNew ? true : ( this.image !== this._original.image ) )  ) {
+  var asynchronous_hooks = {
 
-    // do not block insertion
+    saveImage: function (done) {
+      // If image declared (and in case of editing - if image changed)
 
-    next();
+      var upload_image = false;
 
-    // asynchronous - save to cloudinary
-    
-    var cloudinary = require('cloudinary');
-    
-    cloudinary.config({ 
-      cloud_name      :   config.cloudinary.cloud.name, 
-      api_key         :   config.cloudinary.API.key, 
-      api_secret      :   config.cloudinary.API.secret 
-    });
+      if ( self.isNew ) {
+        upload_image = !! self.image;
+      }
+      else if ( self._original ) {
+        upload_image = !! self.image !== self._original.image;
+      }
 
-    return cloudinary.uploader.upload(
-      
-      path.join(config.tmp, this.image),
-      
-      function (result) {
+      if ( upload_image ) {
+
+        // asynchronous - save to cloudinary
         
-        console.log('got answer from cloudinary', result.url);
+        var cloudinary = require('cloudinary');
+        
+        cloudinary.config({ 
+          cloud_name      :   config.cloudinary.cloud.name, 
+          api_key         :   config.cloudinary.API.key, 
+          api_secret      :   config.cloudinary.API.secret 
+        });
 
-        Item.update({ _id: self._id }, { image: result.url }, done);
-      }      
-    );
-  }
+        cloudinary.uploader.upload(
+          
+          path.join(config.tmp, self.image),
+          
+          function (result) {
+            Item.update({ _id: self._id }, { image: result.url }, done);
+          }      
+        );
+      }
 
-  // If no image, use parent's image (if any)
+      // If no image, use parent's image (if any)
 
-  if ( this.isNew && ! this.image && this.parent ) {
-    return Item.findById(this.parent, 'image',
-      function (error, parent) {
-        if ( error ) {
-          return next(error);
-        }
+      else if ( self.isNew && ! self.image && self.parent ) {
+        return Item.findById(self.parent, 'image',
+          function (error, parent) {
+            if ( error ) {
+              return done(error);
+            }
 
-        if ( parent.image ) {
-          this.image = parent.image.replace(/\/upload\//, '/upload/e_grayscale/');
-        }
+            if ( parent.image ) {
+              self.image = parent.image.replace(/\/upload\//, '/upload/e_grayscale/');
+            }
 
-        return next();
-      }.bind(this));
-  }
+            return done();
+          });
+      }
 
-  return next();
+      else {
+        done();
+      }
+    },
+    
+    fetchUrlTitle: function (done) {
+      if ( self.references[0] && ! self.references[0].title ) {
+        require('../lib/get-url-title')(self.references[0].url,
+          function (error, title) {
+            if ( error ) {
+              return done(error);
+            }
+            Item.update({ _id: self._id },
+              {
+                "references.0.title": title
+              },
+            done);
+          });
+      }
+      else {
+        done();
+      }
+    }
+  };
 
+  require('async').parallel(asynchronous_hooks, done);
 });
 
 /** Update Item by ID...
