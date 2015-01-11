@@ -39,7 +39,10 @@
           .error(function (error) {
 
           })
-          .success(function (data) {
+          .success(function (response) {
+
+            synapp.user = response.user;
+
             $('.is-in').css('visibility', 'visible');
 
             app.view('sign').find('section').hide(2000);

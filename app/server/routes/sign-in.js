@@ -29,7 +29,10 @@
           },
           require('../../business/config.json').cookie);
         
-        res.json({ in: true });
+        res.json({
+          in: true,
+          user: user._id
+        });
       });
   }
 

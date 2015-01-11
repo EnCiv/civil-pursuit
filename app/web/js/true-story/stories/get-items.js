@@ -55,6 +55,8 @@
         }));
       });
 
+    /** On new item */
+
     app.on('push items', function (item) {
 
       app.render('item', item, function (itemView) {
@@ -67,11 +69,27 @@
         
         if ( this.item.is_new ) {
           $(panelId).find('.items').prepend(itemView);
-          
-          itemView.find('.toggle-promote').click();
 
-          app.controller('scroll to point of attention')(
-            itemView, itemView.find('.evaluator'));
+          var file = $('.creator.' + this.item.type)
+            .find('.preview-image').data('file');
+
+          itemView.find('.item-media img').attr('src',
+            (window.URL || window.webkitURL).createObjectURL(file));
+
+          // Ready for callback's hell?
+
+          app.controller('hide')($('.creator.' + this.item.type),
+            function () {
+              app.controller('scroll to point of attention')(
+                itemView,
+                function () {
+                  app.controller('show')(itemView.find('.evaluator'), {},
+                    function () {
+                      itemView.find('.toggle-promote').click();
+                    });
+                });
+            });
+              
         }
         
         else {

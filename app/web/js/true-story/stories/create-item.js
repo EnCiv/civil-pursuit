@@ -71,8 +71,6 @@
       item.is_new = true;
       
       app.model('items').push(item);
-
-      app.controller('hide')($('.creator.' + item.type));
     });
   }
 

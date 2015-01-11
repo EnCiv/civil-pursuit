@@ -75,7 +75,9 @@
             }
           })
           
-          .success(function (data) {
+          .success(function (resposne) {
+            synapp.user = response.user;
+            
             $('.is-in').css('visibility', 'visible');
 
             $('#join').modal('hide');

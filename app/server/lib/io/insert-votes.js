@@ -2,16 +2,14 @@
 
   'use strict';
 
-  function insertVotes (socket, pronto, monson) {
+  function insertVotes (socket, pronto, monson, domain) {
     socket.on('insert votes', function (votes) {
       
       var url = 'models/Vote';
 
       monson.post(url, votes)
 
-        .on('error', function (error) {
-          throw error;
-        })
+        .on('error', domain.intercept(function () {}))
 
         .on('success', function (votes) {
           socket.emit('inserted votes', votes);

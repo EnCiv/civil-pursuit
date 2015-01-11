@@ -136,7 +136,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
         domain.on('error', function (error) {
           pronto.emit('error', error);
-          socket.emit('error', error);
+          // socket.emit('error', error);
         });
 
         // On socket error
@@ -146,8 +146,6 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           console.log('   SOCKET ERROR    '.bgYellow.cyan.bold)
           
           pronto.emit('error', error);
-
-          socket.emit('error', error);
 
         });
 
@@ -184,7 +182,9 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'get-intro',
           'get-items',
           'get-evaluation',
-          'sign-in']
+          'sign-in'];
+
+        domain.add(socket);
 
         domain.run(function () {
           events.forEach(function (event) {
@@ -192,7 +192,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
               pronto.emit('message', { socket: { event: event } });
             });
 
-            require('./io/' + event)(socket, pronto, monson);
+            require('./io/' + event)(socket, pronto, monson, domain);
           });
         });
 

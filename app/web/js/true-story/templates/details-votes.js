@@ -28,6 +28,12 @@
 
         var data = [];
 
+        // If no votes, show nothing
+
+        if ( ! vote ) {
+          return view.empty();
+        }
+
         for ( var number in vote.values ) {
           data.push({
             label: 'number',
