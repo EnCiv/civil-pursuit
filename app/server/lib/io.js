@@ -183,7 +183,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'get-items',
           'get-evaluation',
           'sign-in',
-          'get-url-title'];
+          'get-url-title',
+          'get-epics'];
 
         domain.add(socket);
 

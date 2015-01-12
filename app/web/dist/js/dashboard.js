@@ -111,7 +111,195 @@
 
 }();
 
-},{"events":4,"util":8}],2:[function(require,module,exports){
+},{"events":7,"util":11}],2:[function(require,module,exports){
+/***
+
+
+         @\_______/@
+        @|XXXXXXXX |
+       @ |X||    X |
+      @  |X||    X |
+     @   |XXXXXXXX |
+    @    |X||    X |             V
+   @     |X||   .X |
+  @      |X||.  .X |                      V
+ @      |%XXXXXXXX%||
+@       |X||  . . X||
+        |X||   .. X||                               @     @
+        |X||  .   X||.                              ||====%
+        |X|| .    X|| .                             ||    %
+        |X||.     X||   .                           ||====%
+       |XXXXXXXXXXXX||     .                        ||    %
+       |XXXXXXXXXXXX||         .                 .  ||====% .
+       |XX|        X||                .        .    ||    %  .
+       |XX|        X||                   .          ||====%   .
+       |XX|        X||              .          .    ||    %     .
+       |XX|======= X||============================+ || .. %  ........
+===== /            X||                              ||    %
+                   X||           /)                 ||    %
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Nina Butorac
+
+                                                                             
+                                                                             
+
+       $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$ 
+      $$        $$    $$  $$    $$        $$  $$    $$  $$    $$
+       $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$
+            $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$
+      $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$ 
+                      $$                      $$        $$      
+                      $$                      $$        $$     
+                 $$$$$$                       $$        $$                     
+
+
+
+
+
+
+
+              ────────────────────▄▄▄▄
+              ────────────────▄▄█▀▀──▀▀█▄
+              ─────────────▄█▀▀─────────▀▀█▄
+              ────────────▄█▀──▄▄▄▄▄▄──────▀█
+              ────────────█───█▌────▀▀█▄─────█
+              ────────────█──▄█────────▀▀▀█──█
+              ────────────█──█──▀▀▀──▀▀▀▄─▐──█
+              ────────────█──▌────────────▐──█
+              ────────────█──▌─▄▀▀▄───────▐──█
+              ───────────█▀▌█──▄▄▄───▄▀▀▄─▐──█
+              ───────────▌─▀───█▄█▌─▄▄▄────█─█
+              ───────────▌──────▀▀──█▄█▌────█
+              ───────────█───────────▀▀─────▐
+              ────────────█──────▌──────────█
+              ────────────██────█──────────█
+              ─────────────█──▄──█▄█─▄────█
+              ─────────────█──▌─▄▄▄▄▄─█──█
+              ─────────────█─────▄▄──▄▀─█
+              ─────────────█▄──────────█
+              ─────────────█▀█▄▄──▄▄▄▄▄█▄▄▄▄▄
+              ───────────▄██▄──▀▀▀█─────────█
+              ──────────██▄─█▄────█─────────█
+              ───▄▄▄▄███──█▄─█▄───█─────────██▄▄▄
+              ▄█▀▀────█────█──█▄──█▓▓▓▓▓▓▓▓▓█───▀▀▄
+              █──────█─────█───████▓▓▓▓▓▓▓▓▓█────▀█
+              █──────█─────█───█████▓▓▓▓▓▓▓█──────█
+              █─────█──────█───███▀▀▀▀█▓▓▓█───────█
+              █────█───────█───█───▄▄▄▄████───────█
+              █────█───────█──▄▀───────────█──▄───█
+              █────█───────█─▄▀─────█████▀▀▀─▄█───█
+              █────█───────█▄▀────────█─█────█────█
+              █────█───────█▀───────███─█────█────█
+              █─────█────▄█▀──────────█─█────█────█
+              █─────█──▄██▀────────▄▀██─█▄───█────█
+              █────▄███▀─█───────▄█─▄█───█▄──█────█
+              █─▄██▀──█──█─────▄███─█─────█──█────█
+              ██▀────▄█───█▄▄▄█████─▀▀▀▀█▀▀──█────█
+              █──────█────▄▀──█████─────█────▀█───█
+              ───────█──▄█▀───█████─────█─────█───█
+              ──────▄███▀─────▀███▀─────█─────█───█
+              ─────────────────────────────────────
+              ▀█▀─█▀▄─█─█─█▀────▄▀▀─▀█▀─▄▀▄─█▀▄─█─█
+              ─█──█▄▀─█─█─█▀────▀▀█──█──█─█─█▄▀─█▄█
+              ─▀──▀─▀─▀▀▀─▀▀────▀▀───▀───▀──▀─▀─▄▄█
+              ─────────────────────────────────────
+
+
+
+
+
+***/
+
+;! function () {
+
+  'use strict';
+
+  var trueStory = require('/home/francois/Dev/true-story.js');
+
+  module.exports = {
+    name: 'dashboard',
+
+    emitters : {
+      socket: io.connect('http://' + window.location.hostname + ':' +
+        window.location.port)
+    },
+    
+    models: {
+      epics: []
+    },
+
+    views: {
+      epics: '.epics'
+    },
+
+    templates: {
+      epic: require('./templates/epic')
+    },
+
+    controllers: {},
+    
+    stories: {
+      'get epics': require('./stories/get-epics')
+    },
+
+    run: function () {
+
+      this.story('get epics')();
+
+    }
+  };
+
+}();
+},{"./stories/get-epics":3,"./templates/epic":4,"/home/francois/Dev/true-story.js":12}],3:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function getEpics () {
+
+    var app = this;
+
+    app.emitter('socket').on('connect', function () {
+      app.emitter('socket').emit('get epics');
+    });
+
+    app.emitter('socket').on('got epics', function (epics) {
+      epics.forEach(function (epic) {
+        app.model('epics').push(epic);
+      });
+    });
+
+    app.on('push epics', function (epic) {
+      app.render('epic', epic, function (epicView) {
+        epicView.removeClass('template-model');
+
+        app.view('epics').append(epicView);
+      });
+    });
+
+  }
+
+  module.exports = getEpics;
+
+} ();
+
+},{}],4:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = {
+    template: '.epic',
+    controller: function (view, epic) {
+      view.find('.epic-name').text(epic.title);
+
+      view.find('.epic-description').text(epic.description);
+    }
+  };
+
+} ();
+
+},{}],5:[function(require,module,exports){
 /***
 
 
@@ -160,14 +348,13 @@ Nina Butorac
 
   var trueStory = require('/home/francois/Dev/true-story.js');
 
-  var dashboard = require('./dashboard/');
+  var dashboard = trueStory.import(require('./Dashboard/'));
 
-  trueStory()
-    .model(dashboard.model);
+  dashboard.run();
 
 }();
 
-},{"./dashboard/":2,"/home/francois/Dev/true-story.js":9}],3:[function(require,module,exports){
+},{"./Dashboard/":2,"/home/francois/Dev/true-story.js":12}],6:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -205,7 +392,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":4}],4:[function(require,module,exports){
+},{"events":7}],7:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -508,7 +695,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -533,7 +720,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -621,14 +808,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1218,7 +1405,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":7,"_process":6,"inherits":5}],9:[function(require,module,exports){
+},{"./support/isBuffer":10,"_process":9,"inherits":8}],12:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -1277,7 +1464,7 @@ function hasOwnProperty(obj, prop) {
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":10}],10:[function(require,module,exports){
+},{"./lib/TrueStory.js":13}],13:[function(require,module,exports){
 (function (process){
 /***
 
@@ -2160,7 +2347,7 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":11,"./TrueStory/parse-dot-notation":12,"./TrueStory/render":13,"./When":14,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":6,"domain":3,"events":4,"util":8}],11:[function(require,module,exports){
+},{"./TrueStory/model":14,"./TrueStory/parse-dot-notation":15,"./TrueStory/render":16,"./When":17,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":9,"domain":6,"events":7,"util":11}],14:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -2521,7 +2708,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],12:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -2643,7 +2830,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -2738,7 +2925,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":6}],14:[function(require,module,exports){
+},{"_process":9}],17:[function(require,module,exports){
 (function (process){
 /***
 
@@ -3211,4 +3398,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":10,"_process":6}]},{},[2]);
+},{"./TrueStory":13,"_process":9}]},{},[5]);

@@ -103,11 +103,36 @@ Nina Butorac
   var trueStory = require('/home/francois/Dev/true-story.js');
 
   module.exports = {
-    name: 'dashboard'
-    models: {},
-    templates: {},
+    name: 'dashboard',
+
+    emitters : {
+      socket: io.connect('http://' + window.location.hostname + ':' +
+        window.location.port)
+    },
+    
+    models: {
+      epics: []
+    },
+
+    views: {
+      epics: '.epics'
+    },
+
+    templates: {
+      epic: require('./templates/epic')
+    },
+
     controllers: {},
-    stories: {}
+    
+    stories: {
+      'get epics': require('./stories/get-epics')
+    },
+
+    run: function () {
+
+      this.story('get epics')();
+
+    }
   };
 
 }();

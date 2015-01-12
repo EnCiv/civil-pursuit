@@ -1120,6 +1120,10 @@
 
       var app = this;
 
+      var Socket = app.importer.emitter('socket');
+      var Panel = app.importer.extension('Panel');
+      var Evaluation = app.importer.extension('Evaluation');
+
       view.attr('id', 'item-' + item._id);
 
       view.find('.item-title a')
@@ -1176,15 +1180,16 @@
 
         evaluator.removeClass('is-hidden').addClass('is-showing');
 
-        app.controller('scroll to point of attention')(view, function () {
-          app.controller('show')(evaluator);
+        Panel.controller('scroll to point of attention')(view, function () {
+          Panel.controller('show')(evaluator);
 
-          var evaluationExists = app.model('evaluations').some(function (evaluation) {
-            return evaluation.item === item._id;
-          });
+          var evaluationExists = Evaluation.model('evaluations')
+            .some(function (evaluation) {
+              return evaluation.item === item._id;
+            });
 
           if ( ! evaluationExists ) {
-            app.emitter('socket').emit('get evaluation', item);
+            Socket.emit('get evaluation', item);
           }
         });
 
@@ -1234,9 +1239,9 @@
 
         // Votes and feedbacks
 
-        app.emitter('socket').emit('get item details', item);
+        Socket.emit('get item details', item);
 
-        app.emitter('socket').once('got item details', function (itemDetails) {
+        Socket.once('got item details', function (itemDetails) {
 
           itemDetails.criterias.forEach(function (criteria, index) {
             app.render('details votes', [itemDetails, index],
