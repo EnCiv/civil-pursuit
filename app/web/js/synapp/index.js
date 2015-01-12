@@ -66,10 +66,9 @@
       var Panel = this.extension('Panel');
       var Item = this.extension('Item');
 
-      /** User/stories/show-user-features-when-user-is-signed-in */
+      /** User Run() */
 
-      User
-        .story('show user features when user is signed in')();
+      User.run();
 
       /** If panel page */
 

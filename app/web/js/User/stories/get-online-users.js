@@ -5,11 +5,13 @@
   function getOnlineUsers () {
     var app = this;
 
-    app.emitter('socket').on('online users', function (users) {
-      app.model('online_users', users);
+    var Socket = app.importer.emitter('socket');
+
+    Socket.on('online users', function (users) {
+      app.model('online', users);
     });
 
-    app.follow.on('update online_users', function (users) {
+    app.follow.on('update online', function (users) {
       app.view('online now').text(users.new);
     });
   }

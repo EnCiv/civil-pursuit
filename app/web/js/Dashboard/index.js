@@ -105,6 +105,10 @@ Nina Butorac
   module.exports = {
     name: 'dashboard',
 
+    extensions: {
+      synapp: require('../synapp/')
+    },
+
     emitters : {
       socket: io.connect('http://' + window.location.hostname + ':' +
         window.location.port)
@@ -129,6 +133,12 @@ Nina Butorac
     },
 
     run: function () {
+
+      /** Extensions */
+
+      var User = this.extension('synapp').extension('User');
+
+      User.run();
 
       this.story('get epics')();
 
