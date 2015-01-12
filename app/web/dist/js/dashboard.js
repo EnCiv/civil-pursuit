@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":35,"util":39}],2:[function(require,module,exports){
+},{"events":36,"util":40}],2:[function(require,module,exports){
 /***
 
 
@@ -237,7 +237,8 @@ Nina Butorac
     },
 
     templates: {
-      epic: require('./templates/epic')
+      epic: require('./templates/epic'),
+      'epic story': require('./templates/epic-story')
     },
 
     controllers: {},
@@ -260,7 +261,7 @@ Nina Butorac
   };
 
 }();
-},{"../synapp/":33,"./stories/get-epics":3,"./templates/epic":4,"/home/francois/Dev/true-story.js":41}],3:[function(require,module,exports){
+},{"../synapp/":34,"./stories/get-epics":3,"./templates/epic":5,"./templates/epic-story":4,"/home/francois/Dev/true-story.js":42}],3:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -299,17 +300,41 @@ Nina Butorac
   'use strict';
 
   module.exports = {
-    template: '.epic',
-    controller: function (view, epic) {
-      view.find('.epic-name').text(epic.title);
-
-      view.find('.epic-description').text(epic.description);
+    template: '.epic-story',
+    controller: function (view, story) {
+      view.find('.story-name').text(story.story);
     }
   };
 
 } ();
 
 },{}],5:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = {
+    template: '.epic',
+    controller: function (view, epic) {
+      var app = this;
+
+      view.find('.epic-name').text(epic.title);
+
+      view.find('.epic-description').text(epic.description);
+
+      epic.stories.forEach(function (story) {
+        app.render('epic story', story, function (storyView) {
+          storyView.removeClass('template-model');
+
+          view.find('.epic-stories').append(storyView);
+        });
+      });
+    }
+  };
+
+} ();
+
+},{}],6:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -336,7 +361,7 @@ Nina Butorac
 
 } ();
 
-},{"./templates/evaluation":6}],6:[function(require,module,exports){
+},{"./templates/evaluation":7}],7:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -533,7 +558,7 @@ Nina Butorac
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /**
                                                         
             dP            dP                     
@@ -569,7 +594,7 @@ Nina Butorac
 
 } ();
 
-},{"./stories/get-intro":8,"./templates/intro":9}],8:[function(require,module,exports){
+},{"./stories/get-intro":9,"./templates/intro":10}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -605,7 +630,7 @@ Nina Butorac
 
 }();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -642,7 +667,7 @@ Nina Butorac
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -683,7 +708,7 @@ Nina Butorac
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -909,7 +934,7 @@ Nina Butorac
 
 }();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -944,7 +969,7 @@ Nina Butorac
 
 }();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -986,7 +1011,7 @@ Nina Butorac
 
 } ();
 
-},{"./controllers/item-media":10,"./controllers/truncate":11,"./controllers/youtube":12,"./stories/create-item":14,"./stories/get-items":15,"./templates/details-feedback":16,"./templates/details-votes":17,"./templates/item":18}],14:[function(require,module,exports){
+},{"./controllers/item-media":11,"./controllers/truncate":12,"./controllers/youtube":13,"./stories/create-item":15,"./stories/get-items":16,"./templates/details-feedback":17,"./templates/details-votes":18,"./templates/item":19}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1083,7 +1108,7 @@ Nina Butorac
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1196,7 +1221,7 @@ Nina Butorac
 
 }();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1210,7 +1235,7 @@ Nina Butorac
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1307,7 +1332,7 @@ Nina Butorac
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1518,7 +1543,7 @@ Nina Butorac
 
 } ();
 
-},{"string":40}],19:[function(require,module,exports){
+},{"string":41}],20:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1555,7 +1580,7 @@ Nina Butorac
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1583,7 +1608,7 @@ Nina Butorac
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1614,7 +1639,7 @@ Nina Butorac
 
 }();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1662,7 +1687,7 @@ Nina Butorac
 
 }();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1726,7 +1751,7 @@ Nina Butorac
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
                                             
                                                 
@@ -1774,7 +1799,7 @@ Nina Butorac
 
 } ();
 
-},{"./controllers/hide":19,"./controllers/reveal":20,"./controllers/scroll-to-point-of-attention":21,"./controllers/show":22,"./controllers/upload":23,"./stories/get-panel":25,"./templates/panel":26}],25:[function(require,module,exports){
+},{"./controllers/hide":20,"./controllers/reveal":21,"./controllers/scroll-to-point-of-attention":22,"./controllers/show":23,"./controllers/upload":24,"./stories/get-panel":26,"./templates/panel":27}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1833,7 +1858,7 @@ Nina Butorac
 
 }();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1921,7 +1946,7 @@ Nina Butorac
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
                                         
                                             
@@ -1970,7 +1995,7 @@ Nina Butorac
 
 } ();
 
-},{"./stories/get-online-users":28,"./stories/show-user-features-when-user-is-signed-in":29,"./templates/online-users":30}],28:[function(require,module,exports){
+},{"./stories/get-online-users":29,"./stories/show-user-features-when-user-is-signed-in":30,"./templates/online-users":31}],29:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1992,7 +2017,7 @@ Nina Butorac
   module.exports = getOnlineUsers;
 
 } ();
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2005,7 +2030,7 @@ Nina Butorac
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2020,7 +2045,7 @@ Nina Butorac
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /***
 
 
@@ -2075,7 +2100,7 @@ Nina Butorac
 
 }();
 
-},{"./Dashboard/":2,"/home/francois/Dev/true-story.js":41}],32:[function(require,module,exports){
+},{"./Dashboard/":2,"/home/francois/Dev/true-story.js":42}],33:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2097,7 +2122,7 @@ Nina Butorac
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
  /**
                  
 
@@ -2186,7 +2211,7 @@ Nina Butorac
 
 }();
 
-},{"../Evaluation/":5,"../Intro/":7,"../Item/":13,"../Panel/":24,"../User/":27,"./controllers/bootstrap/responsive-image":32}],34:[function(require,module,exports){
+},{"../Evaluation/":6,"../Intro/":8,"../Item/":14,"../Panel/":25,"../User/":28,"./controllers/bootstrap/responsive-image":33}],35:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2224,7 +2249,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":35}],35:[function(require,module,exports){
+},{"events":36}],36:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2527,7 +2552,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2552,7 +2577,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2640,14 +2665,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3237,7 +3262,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":38,"_process":37,"inherits":36}],40:[function(require,module,exports){
+},{"./support/isBuffer":39,"_process":38,"inherits":37}],41:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4271,7 +4296,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4330,7 +4355,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":42}],42:[function(require,module,exports){
+},{"./lib/TrueStory.js":43}],43:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5213,7 +5238,7 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":43,"./TrueStory/parse-dot-notation":44,"./TrueStory/render":45,"./When":46,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":37,"domain":34,"events":35,"util":39}],43:[function(require,module,exports){
+},{"./TrueStory/model":44,"./TrueStory/parse-dot-notation":45,"./TrueStory/render":46,"./When":47,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":38,"domain":35,"events":36,"util":40}],44:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5574,7 +5599,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5696,7 +5721,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5791,7 +5816,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":37}],46:[function(require,module,exports){
+},{"_process":38}],47:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6264,4 +6289,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":42,"_process":37}]},{},[31]);
+},{"./TrueStory":43,"_process":38}]},{},[32]);

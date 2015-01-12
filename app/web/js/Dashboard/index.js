@@ -123,7 +123,8 @@ Nina Butorac
     },
 
     templates: {
-      epic: require('./templates/epic')
+      epic: require('./templates/epic'),
+      'epic story': require('./templates/epic-story')
     },
 
     controllers: {},
