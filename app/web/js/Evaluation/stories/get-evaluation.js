@@ -5,7 +5,9 @@
   function getEvaluation () {
     var app = this;
 
-    app.emitter('socket').on('got evaluation',
+    var Socket = app.importer.emitter('socket');
+
+    Socket.on('got evaluation',
       function (evaluation) {
         evaluation.cursor = 1;
         evaluation.limit = 5;

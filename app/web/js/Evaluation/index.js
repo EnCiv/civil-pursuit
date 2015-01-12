@@ -14,11 +14,21 @@
   'use strict';
 
   module.exports = {
+    
     models: {
       evaluations: []
     },
+    
     templates: {
       evaluation: require('./templates/evaluation')
+    },
+
+    stories: {
+      'get evaluation': require('./stories/get-evaluation')
+    },
+
+    run: function () {
+      this.story('get evaluation')();
     }
   };
 

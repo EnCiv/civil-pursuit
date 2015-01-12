@@ -65,6 +65,7 @@
       var Intro = this.extension('Intro');
       var Panel = this.extension('Panel');
       var Item = this.extension('Item');
+      var Evaluation = this.extension('Evaluation');
 
       /** User Run() */
 
@@ -79,6 +80,8 @@
         Panel.story('get panel')();
 
         Item.story('get items')();
+
+        Evaluation.run();
 
       }
     }

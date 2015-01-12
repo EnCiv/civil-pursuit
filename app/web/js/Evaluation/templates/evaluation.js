@@ -7,6 +7,12 @@
     controller: function (view, evaluation) {
       var app = this;
 
+      var Socket = app.importer.emitter('socket');
+
+      var Panel = app.importer.extension('Panel');
+
+      var Item = app.importer.extension('Item');
+
       var itemID = '#item-' + evaluation.item;
 
       var item = $(itemID);
@@ -29,7 +35,7 @@
 
         if ( evaluation.cursor <= evaluation.limit ) {
           app.render('evaluation', evaluation, function () {
-            app.controller('scroll to point of attention')(item.find('.evaluator'));
+            Panel.controller('scroll to point of attention')(item.find('.evaluator'));
           });
         }
         else {
@@ -41,7 +47,7 @@
 
           app.model('evaluations', evaluations);
 
-          app.controller('hide')(item.find('.evaluator'));
+          Panel.controller('hide')(item.find('.evaluator'));
         }
       });
 
@@ -51,13 +57,13 @@
 
         // Increment views counter
 
-        app.emitter('socket').emit('add view',
+        Socket.emit('add view',
           evaluation.items[i]._id);
 
         // Image
 
         item.find('.evaluator .image:eq(' + i +')').append(
-          app.controller('item media')(evaluation.items[i]));
+          Item.controller('item media')(evaluation.items[i]));
 
         item.find('.evaluator .subject:eq(' + i +')').text(
           evaluation.items[i].subject);
@@ -129,7 +135,7 @@
                 unpromoted + ')');
 
               if ( feedback.val() ) {
-                app.emitter('socket').emit('insert feedback', {
+                Socket.emit('insert feedback', {
                   item: evaluation.items[unpromoted]._id,
                   user: synapp.user,
                   feedback: feedback.val()
@@ -153,7 +159,7 @@
                   votes.push(vote);
                 });
 
-              app.emitter('socket').emit('insert votes', votes);
+              Socket.emit('insert votes', votes);
 
               // next
 
@@ -167,7 +173,7 @@
                   });
 
                 app.render('evaluation', evaluation, function () {
-                  app.controller('scroll to point of attention')(item.find('.evaluator'));
+                  Panel.controller('scroll to point of attention')(item.find('.evaluator'));
                 });
               }
               
@@ -180,7 +186,7 @@
 
                 app.model('evaluations', evaluations);
 
-                app.controller('hide')(item.find('.evaluator'));
+                Panel.controller('hide')(item.find('.evaluator'));
               }
             
             }.bind({ position: i }));
