@@ -6,13 +6,14 @@
 
     var app = this;
 
-    app.on('panel added', function (panel) {
+    var Socket = app.importer.emitter('socket');
+    var Panel = app.importer.extension('Panel');
 
-      app.emitter('socket').emit('get items', panel);
+    Panel.on('panel added', function (panel) {
+      Socket.emit('get items', panel);
     });
 
-    app.emitter('socket')
-      
+    Socket
       .on('got items', function (panelItems) {
 
         var panelId = '#panel-' + panelItems.panel.type;
@@ -36,7 +37,7 @@
 
         panelItems.panel.skip += (panelItems.items.length - 1);
 
-        app.model('panels', app.model('panels').map(function (pane) {
+        Panel.model('panels', Panel.model('panels').map(function (pane) {
           var match;
 
           if ( pane.type === panelItems.panel.type ) {
@@ -82,12 +83,12 @@
 
           // Ready for callback's hell?
 
-          app.controller('hide')($('.creator.' + this.item.type),
+          Panel.controller('hide')($('.creator.' + this.item.type),
             function () {
-              app.controller('scroll to point of attention')(
+              Panel.controller('scroll to point of attention')(
                 itemView,
                 function () {
-                  app.controller('show')(itemView.find('.evaluator'), {},
+                  Panel.controller('show')(itemView.find('.evaluator'), {},
                     function () {
                       itemView.find('.toggle-promote').click();
                     });

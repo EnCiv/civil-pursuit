@@ -102,7 +102,15 @@
 
     "app less": "app/web/less/synapp.less",
 
-    "app css": "app/web/dist/css/index.css"
+    "app css": "app/web/dist/css/index.css",
+
+    "dashboard js": "app/web/js/dashboard.js",
+
+    "dashboard js compiled": "app/web/dist/js/dashboard.js",
+
+    "dashboard less": "app/web/less/dashboard.less",
+
+    "dashboard css": "app/web/dist/css/dashboard.css"
   
   },
 

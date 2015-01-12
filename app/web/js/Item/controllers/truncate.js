@@ -105,7 +105,8 @@
         return false;
       }
 
-      require('./scroll-to-point-of-attention')(self.item, function () {
+      app.extension('Panel').controller('scroll to point of attention')
+        (self.item, function () {
 
         // Show more
 

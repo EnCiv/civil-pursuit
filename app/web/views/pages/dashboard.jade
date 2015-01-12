@@ -1,0 +1,13 @@
+extends ../layout
+
+block script-app
+  - if ( settings.env === 'production' )
+    script(src='/js/dashboard.min.js')
+
+  - else
+    script(src='/js/dashboard.js')
+
+block page
+  h1 Dashboard
+
+  h2 Epics

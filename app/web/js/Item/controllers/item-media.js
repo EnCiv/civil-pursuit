@@ -28,7 +28,7 @@
         src = synapp['default item image'];
       }
 
-      return app.controller('bootstrap/responsive-image')({
+      return app.importer.controller('bootstrap/responsive-image')({
         src: src
       });
     }

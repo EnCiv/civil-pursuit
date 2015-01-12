@@ -211,7 +211,7 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       /** pre router */
 
-      .open(function prerouter (req, res, next) {
+      .open(function synMiddleware_preRouter (req, res, next) {
         req.user = req.signedCookies.synuser;
         next();
       }, when('/*'))
@@ -282,13 +282,25 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
             next();
           });
 
-      }, when('/item/:itemid/:itemslug'))
+        }
+        , when('/item/:itemid/:itemslug'))
 
-      .open('app/web/views/pages/item.jade', when('/item/*'))
+      .open('app/web/views/pages/item.jade'
+        , when('/item/*'))
+
+      /** Admin "/dashboard" */
+
+      .open('app/web/views/pages/dashboard.jade'
+        , when('/dashboard')
+        , when.has.signedCookie('synuser', function (synuser) {
+          return synuser.email === 'francois@vespa.com';
+        })
+        )
 
       /** 404 */
 
-      .open('app/web/views/pages/not-found.jade', when(404))
+      .open('app/web/views/pages/not-found.jade'
+        , when(404))
 
       .on('listening', function (service) {
         require('./io')(server);

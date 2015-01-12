@@ -46,8 +46,9 @@ Nina Butorac
 
   var trueStory = require('/home/francois/Dev/true-story.js');
 
-  window.Synapp = trueStory.import(require('./synapp/index'));
+  var dashboard = require('./dashboard/');
 
-  window.Synapp.run();
+  trueStory()
+    .model(dashboard.model);
 
 }();

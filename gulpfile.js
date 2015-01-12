@@ -166,12 +166,17 @@ Nina Butorac
 
   var tasks         =   [
     'browserify',
+    'browserify-dashboard',
     'build-dev',
     'build-prod',
     'less',
+    'less-dashboard',
     'minify-css',
+    'minify-css-dashboard',
     'uglify',
+    'uglify-dashboard',
     'watchify',
+    'watchify-dashboard',
     'watch-less'];
 
   tasks.forEach(function (task) {

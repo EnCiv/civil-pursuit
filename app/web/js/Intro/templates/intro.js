@@ -5,7 +5,10 @@
   module.exports = {
     template: '#intro',
     controller: function (view, intro) {
+      console.warn('doing my thing')
+
       var app = this;
+      var Item = app.importer.extension('Item');
 
       // view.find('.panel-title').text('intro.subject');
       $('#intro').find('.panel-title').text(intro.subject);
@@ -13,13 +16,13 @@
       $('#intro').find('.description').text(intro.description);
 
       $('#intro').find('.item-media').empty().append(
-        app.controller('bootstrap/responsive-image')({
+        app.importer.controller('bootstrap/responsive-image')({
           src: intro.image
         }));
 
       $('#intro').find('.item-references').hide();
 
-      new (app.controller('truncate'))($('#intro'));
+      new (Item.controller('truncate'))($('#intro'));
 
       $('#intro').find('.promoted').hide();
 

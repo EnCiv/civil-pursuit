@@ -2,9 +2,14 @@
 
   'use strict';
 
-  exports.dependencies  =   ['less', 'browserify'];
+  exports.dependencies = [
+    'less',
+    'browserify',
+    'less-dashboard',
+    'browserify-dashboard'
+  ];
 
-  exports.task          =   function (cb) {
+  exports.task = function (cb) {
     cb();
   };
 

@@ -3,6 +3,8 @@
   'use strict';
 
   function reveal (elem, poa) {
+    var app = this;
+
     if ( ! elem.hasClass('is-toggable') ) {
       elem.addClass('is-toggable');
     }
