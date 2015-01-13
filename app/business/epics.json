@@ -5,7 +5,7 @@
     "stories": [
       "Create item - Basic. Create an item with subject and description",
       "JavaScript libraries - Make sure all libraries are present",
-      "Forgot password - Should reset password"
+      "Intro - Make sure intro gets loaded OK"
     ]
   }
 ]

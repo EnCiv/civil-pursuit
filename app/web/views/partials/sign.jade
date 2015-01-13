@@ -97,14 +97,15 @@ hr
           span(aria-hidden='true') &times;
           span.sr-only Close
 
-        h4#forgotLabel.modal-title Forgot password
+        h4#forgotLabel.modal-title Change password
 
       .modal-body
         include ../layout/alert
 
-        p Enter your email address
+        form(role='form' novalidate)
+          p Enter your email address
 
-        .form-group
-          input.form-control(type='email' placeholder='Enter email address')
+          .form-group
+            input.form-control(type='email' placeholder='Enter email address' name="email")
 
-        button.btn.btn-block Send me password reactivation key
+          button.btn.btn-block Send me password reactivation key

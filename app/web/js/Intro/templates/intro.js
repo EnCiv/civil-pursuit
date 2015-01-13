@@ -8,10 +8,9 @@
       var app = this;
       var Item = app.importer.extension('Item');
 
-      // view.find('.panel-title').text('intro.subject');
       $('#intro').find('.panel-title').text(intro.subject);
       $('#intro').find('.item-title').text(intro.subject);
-      $('#intro').find('.description').text(intro.description);
+      $('#intro').find('.description').eq(0).text(intro.description);
 
       $('#intro').find('.item-media').empty().append(
         app.importer.controller('bootstrap/responsive-image')({

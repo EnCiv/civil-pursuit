@@ -113,6 +113,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
   var online_users = 0;
 
+  var config = require('../../business/config.json');
+
   function WebSocketServer (pronto) {
 
     process.nextTick(function () {
@@ -169,6 +171,18 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           socket.broadcast.emit('online users', online_users);
         });
 
+        /** Email */
+
+        var nodemailer = require("nodemailer");
+
+        var transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: {
+            user: "francoisrvespa@gmail.com",
+            pass: "bcn741_gMaIl1981!?0q"
+          }
+        });
+
         /** Events */
 
         var events = [
@@ -185,7 +199,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'sign-in',
           'get-url-title',
           'get-epics',
-          'get-story'];
+          'send-password'];
 
         domain.add(socket);
 
@@ -195,7 +209,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
               pronto.emit('message', { socket: { event: event } });
             });
 
-            require('./io/' + event)(socket, pronto, monson, domain);
+            require('./io/' + event)(socket, pronto, monson, domain, transporter);
           });
         });
 

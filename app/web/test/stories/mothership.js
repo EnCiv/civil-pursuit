@@ -15,7 +15,7 @@
       done ++;
     }
     else {
-      console.warn('%c [TEST]  KO! ', this.title,
+      console.warn('%c [TEST]  KO!  ' + this.title,
         'background: orange; color: #fff; font-size: 150%');
     }
 
