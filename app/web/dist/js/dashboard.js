@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":37,"util":41}],2:[function(require,module,exports){
+},{"events":38,"util":42}],2:[function(require,module,exports){
 /***
 
 
@@ -229,7 +229,8 @@ Nina Butorac
     },
     
     models: {
-      epics: []
+      epics: [],
+      channelWindow: null
     },
 
     views: {
@@ -244,7 +245,8 @@ Nina Butorac
     controllers: {},
     
     stories: {
-      'get epics': require('./stories/get-epics')
+      'get epics': require('./stories/get-epics'),
+      'open channel': require('./stories/open-channel')
     },
 
     run: function () {
@@ -261,7 +263,7 @@ Nina Butorac
   };
 
 }();
-},{"../synapp/":35,"./stories/get-epics":3,"./templates/epic":5,"./templates/epic-story":4,"/home/francois/Dev/true-story.js":43}],3:[function(require,module,exports){
+},{"../synapp/":36,"./stories/get-epics":3,"./stories/open-channel":4,"./templates/epic":6,"./templates/epic-story":5,"/home/francois/Dev/true-story.js":44}],3:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -299,6 +301,23 @@ Nina Butorac
 
   'use strict';
 
+  function openChannel (url) {
+    var app = this;
+
+    app.model('channelWindow',
+      window.open(url || '/', 'channelWindow',
+        'chrome=yes,width=770,height=956,left=500,centerscreen'));
+  }
+
+  module.exports = openChannel;
+
+} ();
+
+},{}],5:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
   module.exports = {
     template: '.epic-story',
     controller: function (view, story) {
@@ -307,20 +326,14 @@ Nina Butorac
 
       view.find('.story-name')
         .text(story.story)
-        .on('click', function () {
-          app.emitter('socket').emit('run story', story.index,
-            function (error, results) {
-              
-            });
+        .attr('href', '?story=' + story.index);
 
-          return false;
-        });
     }
   };
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -347,7 +360,7 @@ Nina Butorac
 
 } ();
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -384,7 +397,7 @@ Nina Butorac
 
 } ();
 
-},{"./stories/get-evaluation":7,"./templates/evaluation":8}],7:[function(require,module,exports){
+},{"./stories/get-evaluation":8,"./templates/evaluation":9}],8:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -419,7 +432,7 @@ Nina Butorac
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -622,7 +635,7 @@ Nina Butorac
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
                                                         
             dP            dP                     
@@ -658,7 +671,7 @@ Nina Butorac
 
 } ();
 
-},{"./stories/get-intro":10,"./templates/intro":11}],10:[function(require,module,exports){
+},{"./stories/get-intro":11,"./templates/intro":12}],11:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -694,7 +707,7 @@ Nina Butorac
 
 }();
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -702,8 +715,6 @@ Nina Butorac
   module.exports = {
     template: '#intro',
     controller: function (view, intro) {
-      console.warn('doing my thing')
-
       var app = this;
       var Item = app.importer.extension('Item');
 
@@ -731,7 +742,7 @@ Nina Butorac
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -772,7 +783,7 @@ Nina Butorac
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -998,7 +1009,7 @@ Nina Butorac
 
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1033,7 +1044,7 @@ Nina Butorac
 
 }();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -1075,7 +1086,7 @@ Nina Butorac
 
 } ();
 
-},{"./controllers/item-media":12,"./controllers/truncate":13,"./controllers/youtube":14,"./stories/create-item":16,"./stories/get-items":17,"./templates/details-feedback":18,"./templates/details-votes":19,"./templates/item":20}],16:[function(require,module,exports){
+},{"./controllers/item-media":13,"./controllers/truncate":14,"./controllers/youtube":15,"./stories/create-item":17,"./stories/get-items":18,"./templates/details-feedback":19,"./templates/details-votes":20,"./templates/item":21}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1152,7 +1163,6 @@ Nina Butorac
           }
 
           else {
-            console.warn('yoohoo')
             Socket.emit('create item', item);
           }
 
@@ -1163,7 +1173,6 @@ Nina Butorac
       });
   
     Socket.on('created item', function (item) {
-      console.warn('item created')
       item.is_new = true;
       
       app.model('items').push(item);
@@ -1174,7 +1183,7 @@ Nina Butorac
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1287,7 +1296,7 @@ Nina Butorac
 
 }();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1301,7 +1310,7 @@ Nina Butorac
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1398,7 +1407,7 @@ Nina Butorac
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1609,7 +1618,7 @@ Nina Butorac
 
 } ();
 
-},{"string":42}],21:[function(require,module,exports){
+},{"string":43}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1646,7 +1655,7 @@ Nina Butorac
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1674,7 +1683,7 @@ Nina Butorac
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1705,7 +1714,7 @@ Nina Butorac
 
 }();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1753,7 +1762,7 @@ Nina Butorac
 
 }();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1817,7 +1826,7 @@ Nina Butorac
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
                                             
                                                 
@@ -1865,7 +1874,7 @@ Nina Butorac
 
 } ();
 
-},{"./controllers/hide":21,"./controllers/reveal":22,"./controllers/scroll-to-point-of-attention":23,"./controllers/show":24,"./controllers/upload":25,"./stories/get-panel":27,"./templates/panel":28}],27:[function(require,module,exports){
+},{"./controllers/hide":22,"./controllers/reveal":23,"./controllers/scroll-to-point-of-attention":24,"./controllers/show":25,"./controllers/upload":26,"./stories/get-panel":28,"./templates/panel":29}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1924,7 +1933,7 @@ Nina Butorac
 
 }();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2012,7 +2021,7 @@ Nina Butorac
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
                                         
                                             
@@ -2061,7 +2070,7 @@ Nina Butorac
 
 } ();
 
-},{"./stories/get-online-users":30,"./stories/show-user-features-when-user-is-signed-in":31,"./templates/online-users":32}],30:[function(require,module,exports){
+},{"./stories/get-online-users":31,"./stories/show-user-features-when-user-is-signed-in":32,"./templates/online-users":33}],31:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2083,7 +2092,7 @@ Nina Butorac
   module.exports = getOnlineUsers;
 
 } ();
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2096,7 +2105,7 @@ Nina Butorac
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2111,7 +2120,7 @@ Nina Butorac
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /***
 
 
@@ -2166,14 +2175,12 @@ Nina Butorac
 
 }();
 
-},{"./Dashboard/":2,"/home/francois/Dev/true-story.js":43}],34:[function(require,module,exports){
+},{"./Dashboard/":2,"/home/francois/Dev/true-story.js":44}],35:[function(require,module,exports){
 ! function () {
 
   'use strict';
 
   module.exports = function bootstrapResponsiveImage (options) {
-    console.info('[*]', "\tbootstr\*", 'responsive image', options);
-
     var img = $('<img/>');
 
     img.addClass('img-responsive');
@@ -2188,7 +2195,7 @@ Nina Butorac
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
  /**
                  
 
@@ -2280,7 +2287,7 @@ Nina Butorac
 
 }();
 
-},{"../Evaluation/":6,"../Intro/":9,"../Item/":15,"../Panel/":26,"../User/":29,"./controllers/bootstrap/responsive-image":34}],36:[function(require,module,exports){
+},{"../Evaluation/":7,"../Intro/":10,"../Item/":16,"../Panel/":27,"../User/":30,"./controllers/bootstrap/responsive-image":35}],37:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2318,7 +2325,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":37}],37:[function(require,module,exports){
+},{"events":38}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2621,7 +2628,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2646,7 +2653,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2734,14 +2741,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3331,7 +3338,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":40,"_process":39,"inherits":38}],42:[function(require,module,exports){
+},{"./support/isBuffer":41,"_process":40,"inherits":39}],43:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4365,7 +4372,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4424,7 +4431,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":44}],44:[function(require,module,exports){
+},{"./lib/TrueStory.js":45}],45:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5307,7 +5314,7 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":45,"./TrueStory/parse-dot-notation":46,"./TrueStory/render":47,"./When":48,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":39,"domain":36,"events":37,"util":41}],45:[function(require,module,exports){
+},{"./TrueStory/model":46,"./TrueStory/parse-dot-notation":47,"./TrueStory/render":48,"./When":49,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":40,"domain":37,"events":38,"util":42}],46:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5668,7 +5675,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5790,7 +5797,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -5885,7 +5892,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":39}],48:[function(require,module,exports){
+},{"_process":40}],49:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6358,4 +6365,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":44,"_process":39}]},{},[33]);
+},{"./TrueStory":45,"_process":40}]},{},[34]);

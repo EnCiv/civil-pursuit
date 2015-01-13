@@ -185,7 +185,7 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'sign-in',
           'get-url-title',
           'get-epics',
-          'run-story'];
+          'get-story'];
 
         domain.add(socket);
 

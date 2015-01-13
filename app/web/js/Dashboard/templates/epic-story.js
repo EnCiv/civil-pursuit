@@ -10,14 +10,8 @@
 
       view.find('.story-name')
         .text(story.story)
-        .on('click', function () {
-          app.emitter('socket').emit('run story', story.index,
-            function (error, results) {
-              
-            });
+        .attr('href', '?story=' + story.index);
 
-          return false;
-        });
     }
   };
 

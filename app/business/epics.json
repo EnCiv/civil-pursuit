@@ -1,9 +1,11 @@
 [
   {
-    "title": "Create item",
-    "description": "The process of creating a new item",
+    "title": "Epics",
+    "description": "All the UI tests!",
     "stories": [
-      "I should see a white + (plus) sign icon which is located on the right side of Topics panel."
+      "Create item - Basic. Create an item with subject and description",
+      "JavaScript libraries - Make sure all libraries are present",
+      "Forgot password - Should reset password"
     ]
   }
 ]

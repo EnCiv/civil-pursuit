@@ -67,4 +67,28 @@ block script-app
   - else
     script(src='/js/index.js')
 
-  //- script(src='/foo/app.js')
+//- # Test
+- if ( "story" in req.query )
+  script.
+    var story;
+
+    window.location.search
+      .replace(/^\?/, '')
+      .split(/&/)
+      .forEach(function (query) {
+        var bits = query.split('=');
+
+        if ( bits[0] === 'story' ) {
+          story = +bits[1];
+        }
+      });
+
+    var mothership = document.createElement('script');
+    mothership.src = "/test/story/mothership";
+
+    $('body').append($(mothership));
+
+    var script = document.createElement('script');
+    script.src = "/test/story/" + story;
+
+    $('body').append($(script));

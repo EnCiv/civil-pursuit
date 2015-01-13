@@ -257,6 +257,18 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .open('app/web/dist/css', when.prefix('/css'))
 
+      /** /test/story/mothership ==> Stories mothership */
+
+      .open('app/web/test/stories/mothership.js'
+        , { prepend: 'var mothership_stories = ' + JSON.stringify(require('../../business/epics.json')) + ';' }
+        , when('/test/story/mothership'))
+
+      /** /test/story/[n] ==> Stories */
+
+      .open('app/web/test/stories'
+        , { 'append extension': 'js' }
+        , when.prefix('/test/story'))
+
       /** /item/ ==> Item static page */
 
       .open(function staticItemPage (req, res, next) {

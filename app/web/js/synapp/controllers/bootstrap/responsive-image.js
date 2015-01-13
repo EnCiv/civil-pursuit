@@ -3,8 +3,6 @@
   'use strict';
 
   module.exports = function bootstrapResponsiveImage (options) {
-    console.info('[*]', "\tbootstr\*", 'responsive image', options);
-
     var img = $('<img/>');
 
     img.addClass('img-responsive');

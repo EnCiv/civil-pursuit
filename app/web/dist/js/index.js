@@ -466,8 +466,6 @@
   module.exports = {
     template: '#intro',
     controller: function (view, intro) {
-      console.warn('doing my thing')
-
       var app = this;
       var Item = app.importer.extension('Item');
 
@@ -916,7 +914,6 @@
           }
 
           else {
-            console.warn('yoohoo')
             Socket.emit('create item', item);
           }
 
@@ -927,7 +924,6 @@
       });
   
     Socket.on('created item', function (item) {
-      console.warn('item created')
       item.is_new = true;
       
       app.model('items').push(item);
@@ -1929,15 +1925,13 @@ Nina Butorac
   window.Synapp.run();
 
 }();
-
+56
 },{"./synapp/index":31,"/home/francois/Dev/true-story.js":39}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
 
   module.exports = function bootstrapResponsiveImage (options) {
-    console.info('[*]', "\tbootstr\*", 'responsive image', options);
-
     var img = $('<img/>');
 
     img.addClass('img-responsive');

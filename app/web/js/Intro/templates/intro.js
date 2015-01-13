@@ -5,8 +5,6 @@
   module.exports = {
     template: '#intro',
     controller: function (view, intro) {
-      console.warn('doing my thing')
-
       var app = this;
       var Item = app.importer.extension('Item');
 

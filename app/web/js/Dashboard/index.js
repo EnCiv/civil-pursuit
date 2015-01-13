@@ -115,7 +115,8 @@ Nina Butorac
     },
     
     models: {
-      epics: []
+      epics: [],
+      channelWindow: null
     },
 
     views: {
@@ -130,7 +131,8 @@ Nina Butorac
     controllers: {},
     
     stories: {
-      'get epics': require('./stories/get-epics')
+      'get epics': require('./stories/get-epics'),
+      'open channel': require('./stories/open-channel')
     },
 
     run: function () {
