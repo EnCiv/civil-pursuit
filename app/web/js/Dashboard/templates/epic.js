@@ -11,11 +11,12 @@
 
       view.find('.epic-description').text(epic.description);
 
-      epic.stories.forEach(function (story) {
-        app.render('epic story', story, function (storyView) {
+      epic.stories.forEach(function (story, index) {
+        app.render('epic story', { story: story, index: index },
+          function (storyView) {
           storyView.removeClass('template-model');
 
-          view.find('.epic-stories').append(storyView);
+          view.find('.epic-stories ul').append(storyView);
         });
       });
     }

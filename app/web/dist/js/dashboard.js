@@ -302,7 +302,19 @@ Nina Butorac
   module.exports = {
     template: '.epic-story',
     controller: function (view, story) {
-      view.find('.story-name').text(story.story);
+
+      var app = this;
+
+      view.find('.story-name')
+        .text(story.story)
+        .on('click', function () {
+          app.emitter('socket').emit('run story', story.index,
+            function (error, results) {
+              
+            });
+
+          return false;
+        });
     }
   };
 
@@ -322,11 +334,12 @@ Nina Butorac
 
       view.find('.epic-description').text(epic.description);
 
-      epic.stories.forEach(function (story) {
-        app.render('epic story', story, function (storyView) {
+      epic.stories.forEach(function (story, index) {
+        app.render('epic story', { story: story, index: index },
+          function (storyView) {
           storyView.removeClass('template-model');
 
-          view.find('.epic-stories').append(storyView);
+          view.find('.epic-stories ul').append(storyView);
         });
       });
     }
@@ -1139,6 +1152,7 @@ Nina Butorac
           }
 
           else {
+            console.warn('yoohoo')
             Socket.emit('create item', item);
           }
 
@@ -1149,6 +1163,7 @@ Nina Butorac
       });
   
     Socket.on('created item', function (item) {
+      console.warn('item created')
       item.is_new = true;
       
       app.model('items').push(item);

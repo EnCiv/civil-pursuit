@@ -234,7 +234,7 @@ ItemSchema.pre('save', function (next, done) {
     },
     
     fetchUrlTitle: function (done) {
-      if ( self.references[0] && ! self.references[0].title ) {
+      if ( self.references[0] && self.references[0].url && ! self.references[0].title ) {
         require('../lib/get-url-title')(self.references[0].url,
           function (error, title) {
             if ( error ) {

@@ -3,9 +3,7 @@
     "title": "Create item",
     "description": "The process of creating a new item",
     "stories": [
-      {
-        "story": "As a user on home page, I should see a white + (plus) sign icon which is located on the right side of Topics panel."
-      }
+      "As a user on home page, I should see a white + (plus) sign icon which is located on the right side of Topics panel."
     ]
   }
 ]

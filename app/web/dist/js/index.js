@@ -916,6 +916,7 @@
           }
 
           else {
+            console.warn('yoohoo')
             Socket.emit('create item', item);
           }
 
@@ -926,6 +927,7 @@
       });
   
     Socket.on('created item', function (item) {
+      console.warn('item created')
       item.is_new = true;
       
       app.model('items').push(item);
