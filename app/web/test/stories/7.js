@@ -131,6 +131,22 @@
       assert: function () {
         return $item.find('.evaluator').find('section.hidden-xs .col-sm-6.image img.img-responsive').length === 2;
       }
+    },
+
+    {
+      title: 'There should be 2 subjects',
+      wait: 1600,
+      assert: function () {
+        return $item.find('.evaluator').find('section.hidden-xs .col-sm-6 h3.subject').length === 2;
+      }
+    },
+
+    {
+      title: 'There should be 2 descriptions',
+      wait: 1600,
+      assert: function () {
+        return $item.find('.evaluator').find('section.hidden-xs .col-sm-6 .description').length === 2;
+      }
     }
   ];
 

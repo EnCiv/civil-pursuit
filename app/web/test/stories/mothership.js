@@ -35,7 +35,7 @@
 
     todo = tests.length;
 
-    console.log('%c TEST #' + story + '   "' + mothership_stories[0].stories[story] + '"', 'background: #369; color: #fff; font-weight: bold; font-size: 300%; border-radius: 12px');
+    console.log('%c TEST #' + story + ' "' + mothership_stories[0].stories[story] + '"', 'background: #369; color: #fff; font-weight: bold; font-size: 300%; border-radius: 12px');
 
     tests.forEach(function (test) {
   

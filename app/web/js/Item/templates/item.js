@@ -179,7 +179,7 @@
         else if ( Array.isArray(children) ) {
           children.forEach(function (child) {
             if ( typeof child === 'string' ) {
-              app.model('panels').push({
+              Panel.model('panels').push({
                 type: child,
                 parent: item._id,
                 size: synapp['navigator batch size'],
@@ -189,7 +189,7 @@
 
             else if ( Array.isArray(child) ) {
               child.forEach(function (c) {
-                app.model('panels').push({
+                Panel.model('panels').push({
                   type: c,
                   parent: item._id,
                   size: synapp['navigator batch size'],

@@ -1350,7 +1350,7 @@
         else if ( Array.isArray(children) ) {
           children.forEach(function (child) {
             if ( typeof child === 'string' ) {
-              app.model('panels').push({
+              Panel.model('panels').push({
                 type: child,
                 parent: item._id,
                 size: synapp['navigator batch size'],
@@ -1360,7 +1360,7 @@
 
             else if ( Array.isArray(child) ) {
               child.forEach(function (c) {
-                app.model('panels').push({
+                Panel.model('panels').push({
                   type: c,
                   parent: item._id,
                   size: synapp['navigator batch size'],
@@ -1675,11 +1675,39 @@
           }
 
           else {
-            $('#item-' + panel.parent + ' .children .is-section')
-              .append(panelView);
+            var container =  $('#item-' + panel.parent + ' .children:eq(0)');
 
-            app.controller('reveal')($('#item-' + panel.parent + ' .children'),
-              $('#item-' + panel.parent));
+            if ( panel.split ) {
+              var column = '<div class="col-sm-6"></div>';
+
+              if ( container.find('.row-split').length ) {
+                var col2 = $(column);
+
+                col2.append(panelView);
+
+                container.find('.row-split').append(col2);
+              }
+
+              else {
+                var rowSplit = $('<div class="row row-split"></div>');
+
+                container.find('.is-section').eq(0).append(rowSplit);
+
+                var col1 = $(column);
+
+                col1.append(panelView);
+
+                container.find('.row-split').append(col1);
+              }
+            }
+
+            else {
+              $('#item-' + panel.parent + ' .children:eq(0) .is-section')
+                .append(panelView);
+
+              app.controller('reveal')($('#item-' + panel.parent + ' .children:eq(0)'),
+                $('#item-' + panel.parent));
+            }
           }
 
           app.emit('panel added', panel);

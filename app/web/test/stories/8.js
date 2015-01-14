@@ -98,6 +98,17 @@
       assert: function () {
         return typeof details.item === 'object' && details.item._id === itemId;
       }
+    },
+
+    {
+      title: 'Details should have an object votes',
+      when: {
+        emitter: Synapp.emitter('socket'),
+        receives: 'got item details'
+      },
+      assert: function () {
+        return typeof details.votes === 'object';
+      }
     }
   ];
 
