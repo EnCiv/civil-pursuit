@@ -13,6 +13,8 @@
       Socket.emit('get items', panel);
     });
 
+    // On get items
+
     Socket
       .on('got items', function (panelItems) {
 
@@ -28,13 +30,6 @@
           }          
         });
 
-        console.log({
-          "panel items": $(panelId).find('.item:visible').length + panelItems.items.length,
-          "panel size": panelItems.panel.size,
-          "panel offset": panelItems.panel.skip,
-
-        });
-
         if ( panelItems.items.length == synapp['navigator batch size'] ) {
           $(panelId).find('.load-more').show();
         }
@@ -43,6 +38,8 @@
         }
 
         panelItems.panel.skip += (panelItems.items.length - 1);
+
+        // Update panels model
 
         Panel.model('panels', Panel.model('panels').map(function (pane) {
           var match;

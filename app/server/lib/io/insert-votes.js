@@ -13,6 +13,7 @@
 
         .on('success', function (votes) {
           socket.emit('inserted votes', votes);
+          socket.broadcast.emit('inserted votes', votes);
         });
       
     });

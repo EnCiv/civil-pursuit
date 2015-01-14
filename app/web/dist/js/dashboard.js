@@ -672,178 +672,9 @@ Nina Butorac
         Panel.controller('hide')($evaluator,
           function () {
             item.find('.toggle-details').eq(0).click();
+            item.find('.details:eq(0) .feedback-pending')
+              .removeClass('hide');
           });
-      }
-
-      return;
-
-      item.find('.evaluator .finish').on('click', function () {
-
-        evaluation.cursor += 2;
-
-        $(this).off('click');
-
-        if ( evaluation.cursor <= evaluation.limit ) {
-          app.render('evaluation', evaluation, function () {
-            Panel.controller('scroll to point of attention')(item.find('.evaluator'));
-          });
-        }
-        else {
-          var evaluations = app.model('evaluations');
-
-          evaluations = evaluations.filter(function ($evaluation) {
-            return $evaluation.item !== evaluation.item;
-          });
-
-          app.model('evaluations', evaluations);
-
-          Panel.controller('hide')(item.find('.evaluator'));
-        }
-      });
-
-      // Items
-
-      for ( var i = 0; i < 2; i ++ ) {
-
-        // Increment views counter
-
-        Socket.emit('add view',
-          evaluation.items[i]._id);
-
-        // Image
-
-        item.find('.evaluator .image:eq(' + i +')').append(
-          Item.controller('item media')(evaluation.items[i]));
-
-        item.find('.evaluator .subject:eq(' + i +')').text(
-          evaluation.items[i].subject);
-
-        item.find('.evaluator .description:eq(' + i +')').text(
-          evaluation.items[i].description);
-
-        item.find('.evaluator .sliders:eq(' + i + ') .criteria-slider')
-          .not('.template-model').remove();
-
-        evaluation.criterias.forEach(function (criteria) {
-          var template_name = 'evaluation-' + evaluation.item +
-            '-' + i + '-' + criteria._id;
-
-          var template = {
-            name: template_name,
-            template: item.find('.evaluator .criteria-slider:eq(0)'),
-            controller: function (view, locals) {
-              view.find('.criteria-name').text(criteria.name);
-              view.find('input.slider').data('criteria-id', criteria._id);
-              view.find('input.slider').slider();
-              view.find('input.slider').slider('setValue', 0);
-              view.find('input.slider').slider('on', 'slideStop',
-                function () {
-                  var slider = $(this);
-
-                  if ( slider.attr('type') ) {
-
-                    var value = slider.slider('getValue');
-
-                    $(this).data('slider-value', value);
-                  }
-                });
-            }
-          };
-
-          app.render(template, {}, function (view) {
-            view.removeClass('template-model');
-            
-            item.find('.evaluator .sliders:eq(' + this.index + ')')
-              .append(view);
-          
-          }.bind({ index: i }));
-        });
-
-        // Promote
-
-        item.find('.evaluator .promote:eq(' + i + ')')
-          .not('.once')
-          .on('click',
-            function () {
-              var unpromoted;
-
-              // odd
-
-              if ( this.position % 2 ) {
-                unpromoted = this.position - 1;
-              }
-
-              // even
-
-              else {
-                unpromoted = this.position + 1;
-              }
-
-              // feedback
-
-              var feedback = item.find('.evaluator .feedback:eq(' +
-                unpromoted + ')');
-
-              if ( feedback.val() ) {
-                Socket.emit('insert feedback', {
-                  item: evaluation.items[unpromoted]._id,
-                  user: synapp.user,
-                  feedback: feedback.val()
-                });
-
-                feedback.val('');
-              }
-
-              // votes
-
-              var votes = [];
-
-              item.find('.evaluator .sliders:eq(' + unpromoted + ') input.slider').each(function () {
-                  var vote = {
-                    item: evaluation.items[unpromoted]._id,
-                    user: synapp.user,
-                    value: $(this).data('slider-value'),
-                    criteria: $(this).data('criteria-id')
-                  };
-
-                  votes.push(vote);
-                });
-
-              Socket.emit('insert votes', votes);
-
-              // next
-
-              evaluation.cursor ++;
-
-              if ( evaluation.cursor <= evaluation.limit ) {
-
-                evaluation.items = evaluation.items.filter(
-                  function (_item, index) {
-                    return index !== unpromoted;
-                  });
-
-                app.render('evaluation', evaluation, function () {
-                  Panel.controller('scroll to point of attention')(item.find('.evaluator'));
-                });
-              }
-              
-              else {
-                var evaluations = app.model('evaluations');
-
-                evaluations = evaluations.filter(function ($evaluation) {
-                  return $evaluation.item !== evaluation.item;
-                });
-
-                app.model('evaluations', evaluations);
-
-                Panel.controller('hide')(item.find('.evaluator'));
-              }
-            
-            }.bind({ position: i }));
-
-        item.find('.evaluator .promote:eq(' + i + ')')
-          .addClass('once')
-          .text(evaluation.items[i].subject);
       }
     }
   };
@@ -1418,6 +1249,8 @@ Nina Butorac
       Socket.emit('get items', panel);
     });
 
+    // On get items
+
     Socket
       .on('got items', function (panelItems) {
 
@@ -1433,13 +1266,6 @@ Nina Butorac
           }          
         });
 
-        console.log({
-          "panel items": $(panelId).find('.item:visible').length + panelItems.items.length,
-          "panel size": panelItems.panel.size,
-          "panel offset": panelItems.panel.skip,
-
-        });
-
         if ( panelItems.items.length == synapp['navigator batch size'] ) {
           $(panelId).find('.load-more').show();
         }
@@ -1448,6 +1274,8 @@ Nina Butorac
         }
 
         panelItems.panel.skip += (panelItems.items.length - 1);
+
+        // Update panels model
 
         Panel.model('panels', Panel.model('panels').map(function (pane) {
           var match;
@@ -1537,14 +1365,24 @@ Nina Butorac
     Socket.on('inserted feedback', function (feedback) {
       var $item = $('#item-' + feedback.item);
 
-      if ( $item.length ) {
-        app.render('details feedback', feedback,
-          function (feedbackView) {
-            feedbackView.removeClass('template-model');
+      // if ( $item.length ) {
+      //   app.render('details feedback', feedback,
+      //     function (feedbackView) {
+      //       feedbackView.removeClass('template-model');
 
-            feedbackView.insertAfter($item.find('.details').eq(0)
-              .find('.details-feedbacks h4'));
-          });
+      //       feedbackView.insertAfter($item.find('.details').eq(0)
+      //         .find('.details-feedbacks h4'));
+      //     });
+      // }
+    });
+
+    // Inserted votes
+
+    Socket.on('inserted votes', function (votes) {
+      var $item = $('#item-' + votes.item);
+
+      if ( $item.length ) {
+        
       }
     });
   }
