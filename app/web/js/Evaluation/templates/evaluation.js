@@ -184,6 +184,51 @@
         }
       });
 
+      // Neither / Finish
+
+      $evaluator.find('.finish').on('click', function () {
+        console.log('dshgdhs<dgh<sdhsdhshgjd')
+
+        Panel.controller('scroll to point of attention')($evaluator);
+        
+        if ( _evaluation.cursor === _evaluation.limit ) {
+          finish();
+        }
+        else {
+          // Left
+
+          _evaluation.cursor = (_evaluation.cursor + 1);
+
+          saveItem(0, _evaluation.left._id);
+
+          $evaluator.find('.left-item').animate({
+              opacity: 0
+            }, function () {
+              _evaluation.left = evaluation.items[_evaluation.cursor];
+
+              $evaluator.find('.left-item').animate({
+                opacity: 1
+              });
+            });
+
+          // Right
+
+          _evaluation.cursor = (_evaluation.cursor + 1);
+
+          saveItem(1, _evaluation.right._id);
+
+          $evaluator.find('.right-item').animate({
+              opacity: 0
+            }, function () {
+              _evaluation.right = evaluation.items[_evaluation.cursor];
+
+              $evaluator.find('.right-item').animate({
+                opacity: 1
+              });
+            });
+        }
+      });
+
       // Save votes and feeback
 
       function saveItem (pos, id) {
@@ -225,6 +270,7 @@
       function finish () {
 
         $evaluator.find('.promote').off('click');
+        $evaluator.find('.finish').off('click');
 
         var evaluations = app.model('evaluations');
 
