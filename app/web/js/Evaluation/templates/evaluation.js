@@ -236,10 +236,7 @@
 
         Panel.controller('hide')($evaluator,
           function () {
-            Panel.controller('scroll to point of attention')(item,
-              function () {
-
-              })
+            item.find('.toggle-details').eq(0).click();
           });
       }
 
