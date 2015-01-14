@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var $item;
+  var $item, evaluation;
 
   var tests = [
     {
@@ -54,10 +54,58 @@
     },
 
     {
+      title: 'Socket should emit got evaluation',
+      when: {
+        emitter: Synapp.emitter('socket'),
+        receives: 'got evaluation'
+      },
+      assert: function () {
+        return true;
+      }
+    },
+
+    {
+      title: 'Model evaluations should be pushed',
+      when: {
+        emitter: Synapp.extension('Evaluation'),
+        receives: 'push evaluations'
+      },
+      assert: function () {
+        return true;
+      }
+    },
+
+    {
       title: 'Extension Evaluation model evaluations should have 1 evaluation',
       wait: 2000,
       assert: function () {
         return Synapp.extension('Evaluation').model('evaluations').length === 1;
+      }
+    },
+
+    {
+      title: 'Evaluation should be an object',
+      wait: 2000,
+      assert: function () {
+        evaluation = Synapp.extension('Evaluation').model('evaluations')[0];
+
+        return typeof evaluation === 'object';
+      }
+    },
+
+    {
+      title: 'Evaluation should have a cursor set to 1',
+      wait: 2000,
+      assert: function () {
+        return evaluation.cursor === 1;
+      }
+    },
+
+    {
+      title: 'Evaluation should have a limit set to 5',
+      wait: 2000,
+      assert: function () {
+        return evaluation.limit === 5;
       }
     }
   ];

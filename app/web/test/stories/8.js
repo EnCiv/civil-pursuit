@@ -31,6 +31,14 @@
       assert: function () {
         return $item.find('.details:visible').length;
       }
+    },
+
+    {
+      title: 'There should be a progress bar with promotion',
+      wait: 1750,
+      assert: function () {
+        return $item.find('.details .progress-bar').length;
+      }
     }
   ];
 

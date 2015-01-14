@@ -9,6 +9,8 @@
 
       var app = this;
 
+      var Socket = app.importer.emitter('socket');
+
       var id = 'panel-' + panel.type;
 
       if ( panel.parent ) {
@@ -37,7 +39,7 @@
         });
 
         if ( _panel.length ) {
-          app.emitter('socket').emit('get items', _panel[0]);
+          Socket.emit('get items', _panel[0]);
         }
 
         return false;
@@ -59,7 +61,7 @@
 
         board.removeClass('hide').text('Looking up');
 
-        app.emitter('socket').emit('get url title', $(this).val(),
+        Socket.emit('get url title', $(this).val(),
           function (error, ref) {
             if ( ref.title ) {
               board.text(ref.title);

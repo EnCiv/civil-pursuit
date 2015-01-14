@@ -164,7 +164,7 @@
         var children = synapp['item relation'][item.type];
 
         if ( typeof children === 'string' ) {
-          app.model('panels').push({
+          Panel.model('panels').push({
             type: children,
             parent: item._id,
             size: synapp['navigator batch size'],

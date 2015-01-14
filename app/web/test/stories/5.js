@@ -78,6 +78,13 @@
       assert: function () {
         return itemBox.find('.toggle-arrow').length;
       }
+    },
+
+    {
+      title: 'There should be an image',
+      assert: function () {
+        return itemBox.find('.item-media img').length;
+      }
     }
   ];
 

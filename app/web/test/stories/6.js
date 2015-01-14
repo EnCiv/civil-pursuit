@@ -51,6 +51,19 @@
         return fakeItem.find('span.truncator i').length &&
           fakeItem.find('span.truncator i').text() === '... ';
       }
+    },
+
+    {
+      title: 'On clicking on truncator, it should scroll to the POA',
+      before: function () {
+        this.currentScroll = $(window).scrollTop();
+
+        return fakeItem.find('span.truncator a').click();
+      },
+      wait: 3000,
+      assert: function () {
+        return $(window).scrollTop() !== this.currentScroll;
+      }
     }
   ];
 

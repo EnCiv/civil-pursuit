@@ -641,7 +641,7 @@
         return false;
       }
 
-      app.extension('Panel').controller('scroll to point of attention')
+      Synapp.extension('Panel').controller('scroll to point of attention')
         (self.item, function () {
 
         // Show more
@@ -710,8 +710,6 @@
   };
 
   Truncate.prototype.unTruncate = function () {
-
-    console.log('showing more');
       
     var self = this;
 
@@ -736,8 +734,6 @@
   };
 
   Truncate.prototype.reTruncate = function () {
-
-    console.log('showing less');
     
     var self = this;
 
@@ -1324,7 +1320,7 @@
         var children = synapp['item relation'][item.type];
 
         if ( typeof children === 'string' ) {
-          app.model('panels').push({
+          Panel.model('panels').push({
             type: children,
             parent: item._id,
             size: synapp['navigator batch size'],
@@ -1695,6 +1691,8 @@
 
       var app = this;
 
+      var Socket = app.importer.emitter('socket');
+
       var id = 'panel-' + panel.type;
 
       if ( panel.parent ) {
@@ -1723,7 +1721,7 @@
         });
 
         if ( _panel.length ) {
-          app.emitter('socket').emit('get items', _panel[0]);
+          Socket.emit('get items', _panel[0]);
         }
 
         return false;
@@ -1745,7 +1743,7 @@
 
         board.removeClass('hide').text('Looking up');
 
-        app.emitter('socket').emit('get url title', $(this).val(),
+        Socket.emit('get url title', $(this).val(),
           function (error, ref) {
             if ( ref.title ) {
               board.text(ref.title);

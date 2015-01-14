@@ -105,7 +105,7 @@
         return false;
       }
 
-      app.extension('Panel').controller('scroll to point of attention')
+      Synapp.extension('Panel').controller('scroll to point of attention')
         (self.item, function () {
 
         // Show more
@@ -174,8 +174,6 @@
   };
 
   Truncate.prototype.unTruncate = function () {
-
-    console.log('showing more');
       
     var self = this;
 
@@ -200,8 +198,6 @@
   };
 
   Truncate.prototype.reTruncate = function () {
-
-    console.log('showing less');
     
     var self = this;
 
