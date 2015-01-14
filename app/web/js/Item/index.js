@@ -27,7 +27,7 @@
     
     templates: {
       'details votes':  require('./templates/details-votes'),
-      'detail feedbacks': require('./templates/details-feedback'),
+      'details feedback': require('./templates/details-feedback'),
       'item': require('./templates/item')
     },
     

@@ -9,8 +9,10 @@
     var ok = this.assert();
 
     if ( ok ) {
-      console.info('%c [TEST]  OK!  ' + this.title,
-        'background: green; color: #fff; font-size: 150%');
+      console.info('%c ✔ ' + this.title + ' ',
+        'background: green; color: #fff; font-size: 200%; border-radius: 8px');
+      // console.info('%c [TEST]  OK!  ' + this.title,
+      //   'background: green; color: #fff; font-size: 150%');
 
       done ++;
     }
@@ -20,12 +22,12 @@
     }
 
     if ( done === todo ) {
-      console.info('%c OH YEAH BABY YEAH!',
+      console.info('%c ✔ KUDOS! ALL ' + todo + ' TESTS PASSED :)',
         'color: green; font-size: 300%');
 
-      setTimeout(function () {
-        history.back();
-      }, 4000);
+      // setTimeout(function () {
+      //   history.back();
+      // }, 5000);
     }
   }
 
@@ -33,7 +35,7 @@
 
     todo = tests.length;
 
-    console.log('%c [TEST] RUNNING TEST #' + story + '   "' + mothership_stories[0].stories[story] + '"', 'background: #369; color: #fff; font-weight: bold; font-size: 200%');
+    console.log('%c TEST #' + story + '   "' + mothership_stories[0].stories[story] + '"', 'background: #369; color: #fff; font-weight: bold; font-size: 300%; border-radius: 12px');
 
     tests.forEach(function (test) {
   

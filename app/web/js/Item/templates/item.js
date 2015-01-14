@@ -100,8 +100,8 @@
 
         details.removeClass('is-hidden').addClass('is-showing');
 
-        app.controller('scroll to point of attention')(view, function () {
-          app.controller('show')(details);
+        Panel.controller('scroll to point of attention')(view, function () {
+          Panel.controller('show')(details);
         });
 
         // promoted bar

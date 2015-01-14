@@ -177,7 +177,8 @@ Nina Butorac
     'uglify-dashboard',
     'watchify',
     'watchify-dashboard',
-    'watch-less'];
+    'watch-less',
+    'generate-site-map'];
 
   tasks.forEach(function (task) {
     var t = require(buildersDir + '/' + task);

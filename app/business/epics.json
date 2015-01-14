@@ -5,7 +5,15 @@
     "stories": [
       "Create item - Basic. Create an item with subject and description",
       "JavaScript libraries - Make sure all libraries are present",
-      "Intro - Make sure intro gets loaded OK"
+      "Intro - Make sure intro gets loaded OK",
+      "Topics - Make sure topics panel gets loaded",
+      "Topics - Make sure topics items gets loaded",
+      "Item box - The item box",
+      "Truncater - Truncate text with a toggle button",
+      "Promotion - The Evaluator",
+      "Details - Item details",
+      "Topics - Load more link - Should load more topics",
+      "Toggle arrow - Show problems panel"
     ]
   }
 ]
