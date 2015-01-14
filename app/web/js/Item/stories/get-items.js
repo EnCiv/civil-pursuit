@@ -28,7 +28,14 @@
           }          
         });
 
-        if ( panelItems.items.length >= (panelItems.panel.size + panelItems.panel.skip) ) {
+        console.log({
+          "panel items": $(panelId).find('.item:visible').length + panelItems.items.length,
+          "panel size": panelItems.panel.size,
+          "panel offset": panelItems.panel.skip,
+
+        });
+
+        if ( panelItems.items.length == synapp['navigator batch size'] ) {
           $(panelId).find('.load-more').show();
         }
         else {

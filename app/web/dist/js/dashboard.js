@@ -776,6 +776,14 @@ Nina Butorac
         src: src
       });
     }
+
+    // default image
+
+    else {
+      return app.importer.controller('bootstrap/responsive-image')({
+        src: synapp['default item image']
+      });
+    }
   }
 
   module.exports = itemMedia;
@@ -1209,7 +1217,14 @@ Nina Butorac
           }          
         });
 
-        if ( panelItems.items.length >= (panelItems.panel.size + panelItems.panel.skip) ) {
+        console.log({
+          "panel items": $(panelId).find('.item:visible').length + panelItems.items.length,
+          "panel size": panelItems.panel.size,
+          "panel offset": panelItems.panel.skip,
+
+        });
+
+        if ( panelItems.items.length == synapp['navigator batch size'] ) {
           $(panelId).find('.load-more').show();
         }
         else {
@@ -1462,6 +1477,8 @@ Nina Butorac
       // ITEM TOGGLE PROMOTE
 
       view.find('.toggle-promote').on('click', function () {
+
+        $('#modal-tip-evaluate').modal('show');
 
         var evaluator = view.find('.evaluator');
 

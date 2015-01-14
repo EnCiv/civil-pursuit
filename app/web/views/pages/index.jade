@@ -12,3 +12,27 @@ block page
               i.fa.fa-circle-o-notch.fa-spin
         +bootstrap-panel-body
           include ../partials/item
+
+  //- modals
+  #modal-tip-evaluate.modal.fade(tabindex='-1' role='dialog' aria-labelledby='tipEvaluateLabel' aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button' data-dismiss="modal")
+            span(aria-hidden='true') &times;
+            span.sr-only Close
+
+          h4#tipEvaluateLabel.modal-title Promote
+
+        .modal-body
+          p We promote items by evaluating them next to random alternatives and giving feedback. This way everyone gets to heard, and everyone idea gets fair consideration, and everyone gets feedback to help them find the solutions that will unite us
+
+        .modal-footer
+          //
+            span.remember-tip
+              button.btn.btn-link
+                i.fa.fa-2x.fa-square-o.agreed
+
+              span Thanks. I don't need this anymore
+          
+          button.btn.btn-default(type='button' data-dismiss='modal') Close

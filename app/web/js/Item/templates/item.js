@@ -58,6 +58,8 @@
 
       view.find('.toggle-promote').on('click', function () {
 
+        $('#modal-tip-evaluate').modal('show');
+
         var evaluator = view.find('.evaluator');
 
         if ( ! evaluator.hasClass('is-toggable') ) {

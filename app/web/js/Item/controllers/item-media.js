@@ -32,6 +32,14 @@
         src: src
       });
     }
+
+    // default image
+
+    else {
+      return app.importer.controller('bootstrap/responsive-image')({
+        src: synapp['default item image']
+      });
+    }
   }
 
   module.exports = itemMedia;

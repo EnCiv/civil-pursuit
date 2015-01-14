@@ -82,6 +82,8 @@ var ItemSchema = new Schema({
     "required": true
   },
 
+  // Item type
+
   "type": {
     "type": String,
     "required": true,
@@ -90,12 +92,16 @@ var ItemSchema = new Schema({
         .indexOf(type) > -1;
     }
   },
+
+  // Parent item
   
   "parent": {
     "type": Schema.Types.ObjectId,
     "ref": "Item",
     "index": true
   },
+
+  // When created from another item
 
   "from": {
     "type": Schema.Types.ObjectId,
@@ -138,6 +144,7 @@ var ItemSchema = new Schema({
     "type": Date,
     "default": Date.now
   }
+
 });
 
 // PRE INIT

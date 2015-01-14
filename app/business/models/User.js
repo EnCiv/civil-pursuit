@@ -20,14 +20,25 @@ var UserSchema = new Schema({
       "unique": true
     }
   },
+  
   "password": {
     "type": String,
     "required": true
   },
+
   "created": {
     "type": Date,
     "default": Date.now
-  }
+  },
+
+  // preferences
+
+  "preferences": [
+    new Schema({
+      "name": String,
+      "value": Schema.Types.Mixed
+    })
+  ]
 });
 
 UserSchema.pre('save', function (next) {
