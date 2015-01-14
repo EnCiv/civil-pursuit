@@ -152,13 +152,29 @@
           if ( unpromoted ) {
             saveItem(1, _evaluation.right._id);
 
-            _evaluation.right = evaluation.items[_evaluation.cursor];
+            $evaluator.find('.right-item').animate({
+              opacity: 0
+            }, function () {
+              _evaluation.right = evaluation.items[_evaluation.cursor];
+
+              $evaluator.find('.right-item').animate({
+                opacity: 1
+              });
+            });
           }
 
           else {
             saveItem(0, _evaluation.left._id);
 
-            _evaluation.left = evaluation.items[_evaluation.cursor];
+            $evaluator.find('.left-item').animate({
+              opacity: 0
+            }, function () {
+              _evaluation.left = evaluation.items[_evaluation.cursor];
+
+              $evaluator.find('.left-item').animate({
+                opacity: 1
+              });
+            });
           }
 
         }

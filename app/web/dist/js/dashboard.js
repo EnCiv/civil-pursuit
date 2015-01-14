@@ -587,13 +587,29 @@ Nina Butorac
           if ( unpromoted ) {
             saveItem(1, _evaluation.right._id);
 
-            _evaluation.right = evaluation.items[_evaluation.cursor];
+            $evaluator.find('.right-item').animate({
+              opacity: 0
+            }, function () {
+              _evaluation.right = evaluation.items[_evaluation.cursor];
+
+              $evaluator.find('.right-item').animate({
+                opacity: 1
+              });
+            });
           }
 
           else {
             saveItem(0, _evaluation.left._id);
 
-            _evaluation.left = evaluation.items[_evaluation.cursor];
+            $evaluator.find('.left-item').animate({
+              opacity: 0
+            }, function () {
+              _evaluation.left = evaluation.items[_evaluation.cursor];
+
+              $evaluator.find('.left-item').animate({
+                opacity: 1
+              });
+            });
           }
 
         }
@@ -1659,24 +1675,24 @@ Nina Butorac
 
       // ITEM MEDIA
 
-      view.find('.item-media').empty().append(
+      view.find('.item-media').eq(0).empty().append(
         app.controller('item media')(item));
 
       // ITEM STATS
 
-      view.find('.promoted').text(item.promotions);
+      view.find('.promoted').eq(0).text(item.promotions);
       
       if ( item.promotions ) {
-        view.find('.promoted-percent').text(
+        view.find('.promoted-percent').eq(0).text(
           Math.floor(item.promotions * 100 / item.views) + '%');
       }
       else {
-        view.find('.promoted-percent').text('0%');
+        view.find('.promoted-percent').eq(0).text('0%');
       }
 
       // ITEM TOGGLE PROMOTE
 
-      view.find('.toggle-promote').on('click', function () {
+      view.find('.toggle-promote').eq(0).on('click', function () {
 
         $('#modal-tip-evaluate').modal('show');
 
@@ -1710,7 +1726,7 @@ Nina Butorac
 
       // ITEM TOGGLE DETAILS
 
-      view.find('.toggle-details').on('click', function () {
+      view.find('.toggle-details').eq(0).on('click', function () {
 
         var details = view.find('.details');
 
@@ -1778,12 +1794,11 @@ Nina Butorac
           }
 
         });
-
       });
 
       // ITEM TOGGLE SUB PANEL
 
-      view.find('.toggle-arrow i.fa').on('click', function () {
+      view.find('.toggle-arrow:eq(0) i.fa').on('click', function () {
         
         var children = synapp['item relation'][item.type];
 
