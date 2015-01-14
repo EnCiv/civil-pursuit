@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":41,"util":45}],2:[function(require,module,exports){
+},{"events":42,"util":46}],2:[function(require,module,exports){
 /***
 
 
@@ -263,7 +263,7 @@ Nina Butorac
   };
 
 }();
-},{"../synapp/":39,"./stories/get-epics":3,"./stories/open-channel":4,"./templates/epic":6,"./templates/epic-story":5,"/home/francois/Dev/true-story.js":47}],3:[function(require,module,exports){
+},{"../synapp/":40,"./stories/get-epics":3,"./stories/open-channel":4,"./templates/epic":6,"./templates/epic-story":5,"/home/francois/Dev/true-story.js":48}],3:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -645,7 +645,7 @@ Nina Butorac
             var vote = {
               item: id,
               user: synapp.user,
-              value: $(this).data('slider-value'),
+              value: $(this).data('slider-value') || 1,
               criteria: $(this).data('criteria-id')
             };
 
@@ -1298,13 +1298,14 @@ Nina Butorac
     
     stories: {
       'create item': require('./stories/create-item'),
-      'get items': require('./stories/get-items')
+      'get items': require('./stories/get-items'),
+      'listen to broadcast': require('./stories/listen-to-broadcast')
     }
   };
 
 } ();
 
-},{"./controllers/item-media":13,"./controllers/truncate":14,"./controllers/youtube":15,"./stories/create-item":17,"./stories/get-items":18,"./templates/details-feedback":19,"./templates/details-votes":20,"./templates/item":21}],17:[function(require,module,exports){
+},{"./controllers/item-media":13,"./controllers/truncate":14,"./controllers/youtube":15,"./stories/create-item":17,"./stories/get-items":18,"./stories/listen-to-broadcast":19,"./templates/details-feedback":20,"./templates/details-votes":21,"./templates/item":22}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1526,16 +1527,47 @@ Nina Butorac
 
   'use strict';
 
+  function listenToBroadcast () {
+    var app = this;
+
+    var Socket = app.importer.emitter('socket');
+
+    // Inserted feedback
+
+    Socket.on('inserted feedback', function (feedback) {
+      var $item = $('#item-' + feedback.item);
+
+      if ( $item.length ) {
+        app.render('details feedback', feedback,
+          function (feedbackView) {
+            feedbackView.removeClass('template-model');
+
+            feedbackView.insertAfter($item.find('.details').eq(0)
+              .find('.details-feedbacks h4'));
+          });
+      }
+    });
+  }
+
+  module.exports = listenToBroadcast;
+
+} ();
+
+},{}],20:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
   module.exports = {
     template: '.feedback-section',
     controller: function (view, feedback) {
-      view.find('.feedback').text(feedback.feedback);
+      view.find('.feedback .pre-text').text(feedback.feedback);
     }
   };
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1632,7 +1664,7 @@ Nina Butorac
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1847,7 +1879,7 @@ Nina Butorac
 
 } ();
 
-},{"string":46}],22:[function(require,module,exports){
+},{"string":47}],23:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1884,7 +1916,7 @@ Nina Butorac
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1912,7 +1944,7 @@ Nina Butorac
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1943,7 +1975,7 @@ Nina Butorac
 
 }();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1991,7 +2023,7 @@ Nina Butorac
 
 }();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2055,7 +2087,7 @@ Nina Butorac
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2103,7 +2135,7 @@ Nina Butorac
 
 } ();
 
-},{"./controllers/hide":22,"./controllers/reveal":23,"./controllers/scroll-to-point-of-attention":24,"./controllers/show":25,"./controllers/upload":26,"./stories/get-panel":28,"./templates/panel":29}],28:[function(require,module,exports){
+},{"./controllers/hide":23,"./controllers/reveal":24,"./controllers/scroll-to-point-of-attention":25,"./controllers/show":26,"./controllers/upload":27,"./stories/get-panel":29,"./templates/panel":30}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2190,7 +2222,7 @@ Nina Butorac
 
 }();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2280,7 +2312,7 @@ Nina Butorac
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /**
                                         
                                             
@@ -2339,7 +2371,7 @@ Nina Butorac
 
 } ();
 
-},{"./stories/forgot-password":31,"./stories/get-online-users":32,"./stories/show-user-features-when-user-is-signed-in":33,"./stories/sign-in":34,"./stories/sign-up":35,"./templates/online-users":36}],31:[function(require,module,exports){
+},{"./stories/forgot-password":32,"./stories/get-online-users":33,"./stories/show-user-features-when-user-is-signed-in":34,"./stories/sign-in":35,"./stories/sign-up":36,"./templates/online-users":37}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2371,7 +2403,7 @@ Nina Butorac
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2393,7 +2425,7 @@ Nina Butorac
   module.exports = getOnlineUsers;
 
 } ();
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2406,7 +2438,7 @@ Nina Butorac
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2476,7 +2508,7 @@ Nina Butorac
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2581,7 +2613,7 @@ Nina Butorac
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2596,7 +2628,7 @@ Nina Butorac
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /***
 
 
@@ -2651,7 +2683,7 @@ Nina Butorac
 
 }();
 
-},{"./Dashboard/":2,"/home/francois/Dev/true-story.js":47}],38:[function(require,module,exports){
+},{"./Dashboard/":2,"/home/francois/Dev/true-story.js":48}],39:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2671,7 +2703,7 @@ Nina Butorac
 
 } ();
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
  /**
                  
 
@@ -2755,6 +2787,8 @@ Nina Butorac
 
         Item.story('get items')();
 
+        Item.story('listen to broadcast')();
+
         Evaluation.run();
 
       }
@@ -2763,7 +2797,7 @@ Nina Butorac
 
 }();
 
-},{"../Evaluation/":7,"../Intro/":10,"../Item/":16,"../Panel/":27,"../User/":30,"./controllers/bootstrap/responsive-image":38}],40:[function(require,module,exports){
+},{"../Evaluation/":7,"../Intro/":10,"../Item/":16,"../Panel/":28,"../User/":31,"./controllers/bootstrap/responsive-image":39}],41:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2801,7 +2835,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":41}],41:[function(require,module,exports){
+},{"events":42}],42:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3104,7 +3138,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3129,7 +3163,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3217,14 +3251,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3814,7 +3848,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":44,"_process":43,"inherits":42}],46:[function(require,module,exports){
+},{"./support/isBuffer":45,"_process":44,"inherits":43}],47:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4848,7 +4882,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4907,7 +4941,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":48}],48:[function(require,module,exports){
+},{"./lib/TrueStory.js":49}],49:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5790,7 +5824,7 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":49,"./TrueStory/parse-dot-notation":50,"./TrueStory/render":51,"./When":52,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":43,"domain":40,"events":41,"util":45}],49:[function(require,module,exports){
+},{"./TrueStory/model":50,"./TrueStory/parse-dot-notation":51,"./TrueStory/render":52,"./When":53,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":44,"domain":41,"events":42,"util":46}],50:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -6151,7 +6185,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -6273,7 +6307,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -6368,7 +6402,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":43}],52:[function(require,module,exports){
+},{"_process":44}],53:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6841,4 +6875,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":48,"_process":43}]},{},[37]);
+},{"./TrueStory":49,"_process":44}]},{},[38]);

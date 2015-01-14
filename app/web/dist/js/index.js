@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":36,"util":40}],2:[function(require,module,exports){
+},{"events":37,"util":41}],2:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -396,7 +396,7 @@
             var vote = {
               item: id,
               user: synapp.user,
-              value: $(this).data('slider-value'),
+              value: $(this).data('slider-value') || 1,
               criteria: $(this).data('criteria-id')
             };
 
@@ -1049,13 +1049,14 @@
     
     stories: {
       'create item': require('./stories/create-item'),
-      'get items': require('./stories/get-items')
+      'get items': require('./stories/get-items'),
+      'listen to broadcast': require('./stories/listen-to-broadcast')
     }
   };
 
 } ();
 
-},{"./controllers/item-media":8,"./controllers/truncate":9,"./controllers/youtube":10,"./stories/create-item":12,"./stories/get-items":13,"./templates/details-feedback":14,"./templates/details-votes":15,"./templates/item":16}],12:[function(require,module,exports){
+},{"./controllers/item-media":8,"./controllers/truncate":9,"./controllers/youtube":10,"./stories/create-item":12,"./stories/get-items":13,"./stories/listen-to-broadcast":14,"./templates/details-feedback":15,"./templates/details-votes":16,"./templates/item":17}],12:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1277,16 +1278,47 @@
 
   'use strict';
 
+  function listenToBroadcast () {
+    var app = this;
+
+    var Socket = app.importer.emitter('socket');
+
+    // Inserted feedback
+
+    Socket.on('inserted feedback', function (feedback) {
+      var $item = $('#item-' + feedback.item);
+
+      if ( $item.length ) {
+        app.render('details feedback', feedback,
+          function (feedbackView) {
+            feedbackView.removeClass('template-model');
+
+            feedbackView.insertAfter($item.find('.details').eq(0)
+              .find('.details-feedbacks h4'));
+          });
+      }
+    });
+  }
+
+  module.exports = listenToBroadcast;
+
+} ();
+
+},{}],15:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
   module.exports = {
     template: '.feedback-section',
     controller: function (view, feedback) {
-      view.find('.feedback').text(feedback.feedback);
+      view.find('.feedback .pre-text').text(feedback.feedback);
     }
   };
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1383,7 +1415,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1598,7 +1630,7 @@
 
 } ();
 
-},{"string":41}],17:[function(require,module,exports){
+},{"string":42}],18:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1635,7 +1667,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1663,7 +1695,7 @@
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1694,7 +1726,7 @@
 
 }();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1742,7 +1774,7 @@
 
 }();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1806,7 +1838,7 @@
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
                                             
                                                 
@@ -1854,7 +1886,7 @@
 
 } ();
 
-},{"./controllers/hide":17,"./controllers/reveal":18,"./controllers/scroll-to-point-of-attention":19,"./controllers/show":20,"./controllers/upload":21,"./stories/get-panel":23,"./templates/panel":24}],23:[function(require,module,exports){
+},{"./controllers/hide":18,"./controllers/reveal":19,"./controllers/scroll-to-point-of-attention":20,"./controllers/show":21,"./controllers/upload":22,"./stories/get-panel":24,"./templates/panel":25}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1941,7 +1973,7 @@
 
 }();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2031,7 +2063,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
                                         
                                             
@@ -2090,7 +2122,7 @@
 
 } ();
 
-},{"./stories/forgot-password":26,"./stories/get-online-users":27,"./stories/show-user-features-when-user-is-signed-in":28,"./stories/sign-in":29,"./stories/sign-up":30,"./templates/online-users":31}],26:[function(require,module,exports){
+},{"./stories/forgot-password":27,"./stories/get-online-users":28,"./stories/show-user-features-when-user-is-signed-in":29,"./stories/sign-in":30,"./stories/sign-up":31,"./templates/online-users":32}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2122,7 +2154,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2144,7 +2176,7 @@
   module.exports = getOnlineUsers;
 
 } ();
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2157,7 +2189,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2227,7 +2259,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2332,7 +2364,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2347,7 +2379,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /***
 
 
@@ -2402,7 +2434,7 @@ Nina Butorac
 
 }();
 56
-},{"./synapp/index":34,"/home/francois/Dev/true-story.js":42}],33:[function(require,module,exports){
+},{"./synapp/index":35,"/home/francois/Dev/true-story.js":43}],34:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2422,7 +2454,7 @@ Nina Butorac
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
  /**
                  
 
@@ -2506,6 +2538,8 @@ Nina Butorac
 
         Item.story('get items')();
 
+        Item.story('listen to broadcast')();
+
         Evaluation.run();
 
       }
@@ -2514,7 +2548,7 @@ Nina Butorac
 
 }();
 
-},{"../Evaluation/":2,"../Intro/":5,"../Item/":11,"../Panel/":22,"../User/":25,"./controllers/bootstrap/responsive-image":33}],35:[function(require,module,exports){
+},{"../Evaluation/":2,"../Intro/":5,"../Item/":11,"../Panel/":23,"../User/":26,"./controllers/bootstrap/responsive-image":34}],36:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2552,7 +2586,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":36}],36:[function(require,module,exports){
+},{"events":37}],37:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2855,7 +2889,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2880,7 +2914,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2968,14 +3002,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3565,7 +3599,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":39,"_process":38,"inherits":37}],41:[function(require,module,exports){
+},{"./support/isBuffer":40,"_process":39,"inherits":38}],42:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4599,7 +4633,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4658,7 +4692,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":43}],43:[function(require,module,exports){
+},{"./lib/TrueStory.js":44}],44:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5541,7 +5575,7 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":44,"./TrueStory/parse-dot-notation":45,"./TrueStory/render":46,"./When":47,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":38,"domain":35,"events":36,"util":40}],44:[function(require,module,exports){
+},{"./TrueStory/model":45,"./TrueStory/parse-dot-notation":46,"./TrueStory/render":47,"./When":48,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":39,"domain":36,"events":37,"util":41}],45:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -5902,7 +5936,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -6024,7 +6058,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -6119,7 +6153,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":38}],47:[function(require,module,exports){
+},{"_process":39}],48:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6592,4 +6626,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":43,"_process":38}]},{},[32]);
+},{"./TrueStory":44,"_process":39}]},{},[33]);

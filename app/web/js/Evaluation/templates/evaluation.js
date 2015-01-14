@@ -210,7 +210,7 @@
             var vote = {
               item: id,
               user: synapp.user,
-              value: $(this).data('slider-value'),
+              value: $(this).data('slider-value') || 1,
               criteria: $(this).data('criteria-id')
             };
 

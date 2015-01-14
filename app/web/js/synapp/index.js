@@ -81,6 +81,8 @@
 
         Item.story('get items')();
 
+        Item.story('listen to broadcast')();
+
         Evaluation.run();
 
       }

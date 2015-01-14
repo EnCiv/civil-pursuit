@@ -3,3 +3,5 @@
 /*.csv
 /.env.sh
 /.start.sh
+/app/web/sitemap.xml
+/app/web/sitemap-*.xml

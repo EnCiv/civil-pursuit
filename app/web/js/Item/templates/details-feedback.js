@@ -5,7 +5,7 @@
   module.exports = {
     template: '.feedback-section',
     controller: function (view, feedback) {
-      view.find('.feedback').text(feedback.feedback);
+      view.find('.feedback .pre-text').text(feedback.feedback);
     }
   };
 
