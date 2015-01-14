@@ -54,13 +54,34 @@
     },
 
     {
+      title: 'Truncator should have a link that says "more"',
+      wait: 1000,
+      assert: function () {
+        return fakeItem.find('span.truncator a').text() === 'more';
+      }
+    },
+
+    {
       title: 'On clicking on truncator, it should scroll to the POA',
       before: function () {
         this.currentScroll = $(window).scrollTop();
 
         return fakeItem.find('span.truncator a').click();
       },
-      wait: 3000,
+      wait: 15000,
+      assert: function () {
+        return $(window).scrollTop() !== this.currentScroll;
+      }
+    },
+
+    {
+      title: 'On clicking on truncator, it should scroll to the POA',
+      before: function () {
+        this.currentScroll = $(window).scrollTop();
+
+        return fakeItem.find('span.truncator a').click();
+      },
+      wait: 15000,
       assert: function () {
         return $(window).scrollTop() !== this.currentScroll;
       }

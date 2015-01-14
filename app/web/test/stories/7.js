@@ -77,7 +77,7 @@
 
     {
       title: 'Extension Evaluation model evaluations should have 1 evaluation',
-      wait: 2000,
+      wait: 1500,
       assert: function () {
         return Synapp.extension('Evaluation').model('evaluations').length === 1;
       }
@@ -85,7 +85,7 @@
 
     {
       title: 'Evaluation should be an object',
-      wait: 2000,
+      wait: 1500,
       assert: function () {
         evaluation = Synapp.extension('Evaluation').model('evaluations')[0];
 
@@ -95,7 +95,7 @@
 
     {
       title: 'Evaluation should have a cursor set to 1',
-      wait: 2000,
+      wait: 1500,
       assert: function () {
         return evaluation.cursor === 1;
       }
@@ -103,9 +103,17 @@
 
     {
       title: 'Evaluation should have a limit set to 5',
-      wait: 2000,
+      wait: 1500,
       assert: function () {
         return evaluation.limit === 5;
+      }
+    },
+
+    {
+      title: 'There should be a section for normal screen',
+      wait: 1500,
+      assert: function () {
+        return $item.find('.evaluator').find('section.hidden-xs').length;
       }
     }
   ];

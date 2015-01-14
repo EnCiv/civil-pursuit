@@ -387,10 +387,20 @@ ItemSchema.statics.evaluate = function (id, cb) {
             require('./Criteria').find({ type: item.type}, then);
           }
         }, function (error, results) {
+
+          var eItems;
+
+          if ( config['evaluation context item position'] === 'last' ) {
+            eItems = results.items.concat(item);
+          }
+          else {
+            eItems = [item].concat(results.items);
+          }
+
           cb(error, {
             type: item.type,
             item: id,
-            items: results.items.concat(item),
+            items: eItems,
             criterias: results.criterias
           });
         });

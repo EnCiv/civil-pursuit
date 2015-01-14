@@ -1438,7 +1438,9 @@ Nina Butorac
 
       // TRUNCATE
 
-      new (app.controller('truncate'))(view);
+      setTimeout(function () {
+        new (app.controller('truncate'))(view);
+      }, 1000);
 
       // ITEM MEDIA
 

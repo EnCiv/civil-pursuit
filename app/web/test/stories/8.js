@@ -39,6 +39,17 @@
       assert: function () {
         return $item.find('.details .progress-bar').length;
       }
+    },
+
+    {
+      title: 'Socket should emit got item details',
+      when: {
+        emitter: Synapp.emitter('socket'),
+        receives: 'got item details'
+      },
+      assert: function () {
+        return true;
+      }
     }
   ];
 
