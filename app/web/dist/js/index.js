@@ -193,25 +193,224 @@
     controller: function (view, evaluation) {
       var app = this;
 
-      var Socket = app.importer.emitter('socket');
+      var Socket      =   app.importer.emitter('socket');
 
-      var Panel = app.importer.extension('Panel');
+      var Panel       =   app.importer.extension('Panel');
 
-      var Item = app.importer.extension('Item');
+      var Item        =   app.importer.extension('Item');
 
-      var itemID = '#item-' + evaluation.item;
+      var itemID      =   '#item-' + evaluation.item;
 
-      var item = $(itemID);
+      var item        =   $(itemID);
 
-      item.find('.evaluator .cursor').text(evaluation.cursor); 
-      item.find('.evaluator .limit').text(evaluation.limit);
+      var $evaluator  =   item.find('.evaluator').eq(0);
 
-      if ( evaluation.cursor < evaluation.limit ) {
-        item.find('.evaluator .finish').text('Neither');
+      var _evaluation =   {
+        cursor:   0,
+        limit:    0,
+        left:     null,
+        right:    null
+      };
+
+      var follow      =     app.watch(_evaluation);
+
+      // Cursor
+
+      follow.on('update cursor', function (cursor) {
+        $evaluator.find('.cursor').text(cursor.new);
+
+        if ( cursor.new < _evaluation.limit ) {
+          $evaluator.find('.finish').text('Neither');
+        }
+        else {
+          $evaluator.find('.finish').text('Finish');
+        }
+      });
+
+      // Limit
+
+      follow.on('update limit', function (limit) {
+        $evaluator.find('.limit').text(limit.new);
+      });
+
+      // Item
+
+      function evaluationItem (eItem, pos) {
+
+        // Increment views counter
+
+        Socket.emit('add view', eItem._id);
+
+        // Image
+
+        $evaluator.find('.image:eq(' + pos + ')')
+          .empty()
+          .append(Item.controller('item media')(eItem));
+
+        // Subject
+
+        $evaluator.find('.subject:eq(' + pos + ')')
+          .text(eItem.subject);
+
+        // Description
+
+        $evaluator.find('.description:eq(' + pos + ')')
+          .text(eItem.description);
+
+        // Sliders
+
+        $evaluator.find('.sliders:eq(' + pos + ')')
+          .empty();
+
+        evaluation.criterias.forEach(function (criteria) {
+          
+          var template_name = 'evaluation-' + evaluation.item +
+            '-' + pos + '-' + criteria._id;
+
+          var template = {
+            name: template_name,
+            template: $evaluator.find('.criteria-slider.template-model'),
+            controller: function (view, locals) {
+              view.find('.criteria-name').text(criteria.name);
+              view.find('input.slider').data('criteria-id', criteria._id);
+              view.find('input.slider').slider();
+              view.find('input.slider').slider('setValue', 0);
+              view.find('input.slider').slider('on', 'slideStop',
+                function () {
+                  var slider = $(this);
+
+                  if ( slider.attr('type') ) {
+
+                    var value = slider.slider('getValue');
+
+                    $(this).data('slider-value', value);
+                  }
+                });
+            }
+          };
+
+          app.render(template, {}, function (view) {
+            view.removeClass('template-model');
+            
+            $evaluator.find('.sliders:eq(' + this.index + ')')
+              .append(view);
+          
+          }.bind({ index: pos }));
+        
+        });
+
+        // Promote button
+
+        $evaluator.find('.promote:eq(' + pos + ')')
+          .text(eItem.subject)
+          .data('position', pos);
       }
-      else {
-        item.find('.evaluator .finish').text('Finish');
+
+      // Left
+
+      follow.on('update left', function (left) {
+        evaluationItem(left.new, 0);
+      });
+
+      // Right
+
+      follow.on('update right', function (right) {
+        evaluationItem(right.new, 1);
+      });
+
+      _evaluation.cursor  =   evaluation.cursor;
+      _evaluation.limit   =   evaluation.limit;
+      _evaluation.left    =   evaluation.items[0];
+      _evaluation.right   =   evaluation.items[1];
+
+      // Promote
+
+      $evaluator.find('.promote').on('click', function () {
+        Panel.controller('scroll to point of attention')($evaluator);
+
+        var pos = $(this).data('position');
+
+        var unpromoted = pos ? 0 : 1;
+
+        if ( _evaluation.cursor < _evaluation.limit ) {
+          _evaluation.cursor = (_evaluation.cursor + 1);
+
+          if ( unpromoted ) {
+            saveItem(1, _evaluation.right._id);
+
+            _evaluation.right = evaluation.items[_evaluation.cursor];
+          }
+
+          else {
+            saveItem(0, _evaluation.left._id);
+
+            _evaluation.left = evaluation.items[_evaluation.cursor];
+          }
+
+        }
+
+        else {
+          finish();
+        }
+      });
+
+      // Save votes and feeback
+
+      function saveItem (pos, id) {
+        // feedback
+
+        var feedback = $evaluator.find('.feedback:eq(' + pos + ')');
+
+        if ( feedback.val() ) {
+          Socket.emit('insert feedback', {
+            item: id,
+            user: synapp.user,
+            feedback: feedback.val()
+          });
+
+          feedback.val('');
+        }
+
+        // votes
+
+        var votes = [];
+
+        $evaluator.find('.sliders:eq(' + pos + ') input.slider')
+          .each(function () {
+            var vote = {
+              item: id,
+              user: synapp.user,
+              value: $(this).data('slider-value'),
+              criteria: $(this).data('criteria-id')
+            };
+
+            votes.push(vote);
+          });
+
+        Socket.emit('insert votes', votes);
       }
+
+      // Finish
+
+      function finish () {
+        var evaluations = app.model('evaluations');
+
+        evaluations = evaluations.filter(function ($evaluation) {
+          return $evaluation.item !== evaluation.item;
+        });
+
+        app.model('evaluations', evaluations);
+
+        Panel.controller('hide')($evaluator,
+          function () {
+            Panel.controller('scroll to point of attention')(item,
+              function () {
+
+              })
+          });
+      }
+
+      return;
 
       item.find('.evaluator .finish').on('click', function () {
 
@@ -1188,7 +1387,8 @@
       view.find('.item-title a')
         .attr('href', '/item/' + item._id + '/' + require('string')(item.subject).slugify())
         .text(item.subject);
-      view.find('.description').text(item.description);
+      
+      view.find('.description').eq(0).text(item.description);
 
       // REFERENCES
 

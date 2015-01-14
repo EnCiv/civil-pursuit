@@ -25,7 +25,8 @@
         res.cookie('synuser',
           {
             email: user.email,
-            id: user._id
+            id: user._id,
+            prefs: user.preferences
           },
           require('../../business/config.json').cookie);
         

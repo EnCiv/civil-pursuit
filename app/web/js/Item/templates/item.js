@@ -17,7 +17,8 @@
       view.find('.item-title a')
         .attr('href', '/item/' + item._id + '/' + require('string')(item.subject).slugify())
         .text(item.subject);
-      view.find('.description').text(item.description);
+      
+      view.find('.description').eq(0).text(item.description);
 
       // REFERENCES
 
