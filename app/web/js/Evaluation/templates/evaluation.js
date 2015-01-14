@@ -223,6 +223,9 @@
       // Finish
 
       function finish () {
+
+        $evaluator.find('.promote').off('click');
+
         var evaluations = app.model('evaluations');
 
         evaluations = evaluations.filter(function ($evaluation) {
