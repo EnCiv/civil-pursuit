@@ -202,9 +202,11 @@
             });
         }
         else {
-          $(this).find('i.fa')
-            .removeClass('fa-arrow-down')
-            .addClass('fa-arrow-up');
+          setTimeout(function () {
+            $(this).find('i.fa')
+              .removeClass('fa-arrow-down')
+              .addClass('fa-arrow-up');
+            }.bind(this), 1000);
 
           var children = synapp['item relation'][item.type];
 
