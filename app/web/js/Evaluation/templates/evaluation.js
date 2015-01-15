@@ -147,9 +147,13 @@
         var unpromoted = pos ? 0 : 1;
 
         if ( _evaluation.cursor < _evaluation.limit ) {
+
           _evaluation.cursor = (_evaluation.cursor + 1);
 
           if ( unpromoted ) {
+
+            Socket.emit('promote', _evaluation.left);
+
             saveItem(1, _evaluation.right._id);
 
             $evaluator.find('.right-item').animate({
@@ -164,6 +168,8 @@
           }
 
           else {
+            Socket.emit('promote', _evaluation.right);
+
             saveItem(0, _evaluation.left._id);
 
             $evaluator.find('.left-item').animate({

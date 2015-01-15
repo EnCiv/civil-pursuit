@@ -472,8 +472,13 @@ ItemSchema.statics.details = function (id, cb) {
 // Add view
 
 ItemSchema.statics.incrementView = function (id, cb) {
-  console.log('got item', id)
   this.findByIdAndUpdate(id, { $inc: { "views": 1 } }, cb);
+};
+
+// Add promotion
+
+ItemSchema.statics.incrementPromotion = function (id, cb) {
+  this.findByIdAndUpdate(id, { $inc: { "promotions": 1 } }, cb);
 };
 
 // EXPORT
