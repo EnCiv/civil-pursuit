@@ -1933,6 +1933,10 @@
 
       var Socket = app.importer.emitter('socket');
 
+      // DOM elements
+
+      var $creator = view.find('>.panel-body >.creator');
+
       // Set panel ID
 
       var id = 'panel-' + panel.type;
@@ -1959,7 +1963,7 @@
 
       // Add type as class
 
-      view.find('.creator').eq(0).addClass(panel.type);
+      $creator.addClass(panel.type);
 
       // Load more - be verbose about type
 
@@ -1987,8 +1991,18 @@
         return false;
       });
 
+      // Toggle creator view
+
       view.find('.toggle-creator').on('click', function () {
-        app.controller('reveal')(view.find('.creator'), view);
+        if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
+          return;
+        }
+        else if ( $creator.hasClass('is-shown') ) {
+          app.controller('hide')($creator);
+        }
+        else {
+          app.controller('reveal')($creator, view);
+        }
       });
 
       // enable file upload
