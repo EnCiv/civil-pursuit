@@ -214,8 +214,8 @@
           Panel.controller('reveal')($children, $item);
 
           $(this).find('i.fa')
-            .removeClass('fa-arrow-up')
-            .addClass('fa-arrow-down');
+            .removeClass('fa-arrow-down')
+            .addClass('fa-arrow-up');
         }
 
         // else load and show
