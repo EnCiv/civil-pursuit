@@ -21,6 +21,10 @@
 
       view.attr('id', id);
 
+      // Add type as class
+
+      view.addClass('type-' + panel.type);
+
       // Split panel
 
       if ( panel.split ) {

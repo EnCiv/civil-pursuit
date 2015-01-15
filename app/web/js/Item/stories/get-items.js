@@ -80,13 +80,6 @@
           panelId += '-' + this.item.parent;
         }
 
-        console.warn('Trying to insert item', {
-          subject: this.item.subject,
-          type: this.item.type,
-          panel: panelId,
-          "panel exists": $(panelId).find('.items').eq(0).length
-        });
-
         // In case of a new item
         
         if ( this.item.is_new ) {

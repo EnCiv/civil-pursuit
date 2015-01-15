@@ -1119,13 +1119,6 @@
           panelId += '-' + this.item.parent;
         }
 
-        console.warn('Trying to insert item', {
-          subject: this.item.subject,
-          type: this.item.type,
-          panel: panelId,
-          "panel exists": $(panelId).find('.items').eq(0).length
-        });
-
         // In case of a new item
         
         if ( this.item.is_new ) {
@@ -1827,53 +1820,59 @@
       .on('push panels', function (panel) {
         app.render('panel', panel, function (panelView) {
 
+          // If no parent (topic)
+
           if ( ! panel.parent ) {
             app.view('panels').append(panelView);
           }
 
+          // If sub panel
+
           else {
-            var container =  $('#item-' + panel.parent + ' .children:eq(0)');
+            var container =  $('#item-' + panel.parent + ' > .collapsers > .children');
 
             // SPLIT PANELS
 
             if ( panel.split ) {
               var column = '<div class="col-sm-6 col"></div>';
 
-              // RIGHT
-
-              if ( container.find('.row-split').length ) {
-                var col2 = $(column);
-
-                col2.append(panelView);
-
-                container.find('.row-split').append(col2);
-              }
-
               // LEFT
 
-              else {
+              if ( ! container.find('> .is-section > .row-split').length ) {
                 var rowSplit = $('<div class="row row-split"></div>');
 
-                container.find('.is-section').eq(0).append(rowSplit);
+                container.find('> .is-section').append(rowSplit);
 
                 var col1 = $(column);
 
                 col1.append(panelView);
 
-                container.find('.row-split').append(col1);
+                container.find('> .is-section >.row-split').append(col1);
+              }
+
+              // RIGHT
+
+              else {
+                var col2 = $(column);
+
+                col2.append(panelView);
+
+                container.find('> .is-section >.row-split').append(col2);
               }
             }
 
             else {
-              $('#item-' + panel.parent + ' .children:eq(0) .is-section')
-                .append(panelView);
+              container.find('> .is-section').append(panelView);
 
-              app.controller('reveal')($('#item-' + panel.parent + ' .children:eq(0)'),
-                $('#item-' + panel.parent));
+              app.controller('reveal')(container, $('#item-' + panel.parent));
             }
           }
 
+          // Show off about new panel added
+
           app.emit('panel added', panel);
+
+          // Enable create item
 
           Item.story('create item')();
 
@@ -1912,6 +1911,10 @@
       }
 
       view.attr('id', id);
+
+      // Add type as class
+
+      view.addClass('type-' + panel.type);
 
       // Split panel
 
