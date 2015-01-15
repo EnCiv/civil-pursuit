@@ -1,0 +1,42 @@
+[
+	{
+		"name": "Panel",
+		"description": "A panel consists of ...",
+		"selector": ".panel",
+		"children": [
+			{
+				"name": "Item Creator"
+			}
+		]
+	},
+
+	{
+		"name": "Topics Panel",
+		"description": "A panel consists of ...",
+		"selector": "#panel-Topic.type-topic"
+	},
+
+	{
+		"name": "Item Creator",
+		"description": "...",
+		"selector": ".creator",
+		"toggle-view": ".panel>.panel-heading>i.fa.fa-plus"
+	},
+
+	{
+		"I": "User",
+		"visiting": "/",
+		"when": [
+			{
+				"clicking": "Item Creator Toggler"
+			}
+		],
+		"then": [
+			{
+				"view": "Item Creator",
+				"is": "visible",
+				"after": 1000
+			}
+		]
+	}
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "name": "Visitor",
+    "description": "Visitor is a not signed-in user, meaning no session"
+  },
+
+  {
+    "name": "User",
+    "description": "User has a session open",
+    "badge": {
+      "email": "francois@vespa.com",
+      "password": "1234"
+    }
+  }
+]
