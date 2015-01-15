@@ -12,36 +12,56 @@
       var Panel = app.importer.extension('Panel');
       var Evaluation = app.importer.extension('Evaluation');
 
+      // DOM Elements
+
+      var $collapsers   =   view.find('>.collapsers');
+      var $toggleArrow  =   $collapsers.find('>.toggle-arrow');
+      var $subject      =   view.find('>.item-text > h4.item-title a');
+      var $description  =   view.find('>.item-text >.description');
+      var $references   =   view.find('>.item-text >.item-references');
+
+      // Static link
+
+      var staticLink    =   '/item/' + item._id + '/' + require('string')(item.subject).slugify();
+
+      // Assign item id
+
       view.attr('id', 'item-' + item._id);
 
-      view.find('.item-title a')
-        .attr('href', '/item/' + item._id + '/' + require('string')(item.subject).slugify())
+      // Subject
+
+      $subject
+        .attr('href', staticLink)
         .text(item.subject);
+
+      // Description
       
-      view.find('.description').eq(0).text(item.description);
+      $description
+        .text(item.description);
 
       // REFERENCES
 
       if ( item.references.length ) {
-        view.find('.item-references').show();
-        view.find('.item-references a')
+        $references.show();
+
+        $references.find('a')
           .attr('src', item.references[0].url)
           .text(item.references[0].title || item.references[0].url);
       }
       else {
-        view.find('.item-references').hide();
+        $references.hide();
       }
+
+      // ITEM MEDIA
+
+      view.find('.item-media').eq(0).empty().append(
+        app.controller('item media')(item));
 
       // TRUNCATE
 
       setTimeout(function () {
         new (app.controller('truncate'))(view);
       }, 1000);
-
-      // ITEM MEDIA
-
-      view.find('.item-media').eq(0).empty().append(
-        app.controller('item media')(item));
 
       // ITEM STATS
 
@@ -163,7 +183,7 @@
 
       // ITEM TOGGLE SUB PANEL
 
-      view.find('.toggle-arrow:eq(0) i.fa').on('click', function () {
+      $toggleArrow.on('click', function () {
         
         var children = synapp['item relation'][item.type];
 
@@ -178,6 +198,7 @@
 
         else if ( Array.isArray(children) ) {
           children.forEach(function (child) {
+
             if ( typeof child === 'string' ) {
               Panel.model('panels').push({
                 type: child,
@@ -198,6 +219,7 @@
                 });
               });
             }
+
           });
         }
       });

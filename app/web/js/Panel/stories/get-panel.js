@@ -26,6 +26,9 @@
 
     app
       .on('push panels', function (panel) {
+
+        console.log('new panel', panel)
+
         app.render('panel', panel, function (panelView) {
 
           // If no parent (topic)
@@ -71,9 +74,9 @@
 
             else {
               container.find('> .is-section').append(panelView);
-
-              app.controller('reveal')(container, $('#item-' + panel.parent));
             }
+
+            app.controller('reveal')(container, $('#item-' + panel.parent));
           }
 
           // Show off about new panel added
