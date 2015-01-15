@@ -12,6 +12,10 @@
       "required": true,
       "index": true
     },
+    "description": {
+      "type": String,
+      "required": true
+    },
     "badge": [{
       "email": {
         "type": String

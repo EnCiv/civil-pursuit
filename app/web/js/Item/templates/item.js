@@ -184,44 +184,67 @@
       // ITEM TOGGLE SUB PANEL
 
       $toggleArrow.on('click', function () {
-        
-        var children = synapp['item relation'][item.type];
 
-        if ( typeof children === 'string' ) {
-          Panel.model('panels').push({
-            type: children,
-            parent: item._id,
-            size: synapp['navigator batch size'],
-            skip: 0
-          });
+        var $item = $(this).closest('.item');
+        var $children = $item.find('>.collapsers >.children');
+
+        if ( $children.hasClass('is-showing') || $children.hasClass('is-hiding') ) {
+          return;
         }
+        else if ( $children.hasClass('is-shown') ) {
+          Panel.controller('scroll to point of attention')($item,
+            function () {
+              Panel.controller('hide')($children);
 
-        else if ( Array.isArray(children) ) {
-          children.forEach(function (child) {
+              $(this).find('i.fa')
+                .removeClass('fa-arrow-up')
+                .addClass('fa-arrow-down');
+            });
+        }
+        else {
+          $(this).find('i.fa')
+            .removeClass('fa-arrow-down')
+            .addClass('fa-arrow-up');
 
-            if ( typeof child === 'string' ) {
-              Panel.model('panels').push({
-                type: child,
-                parent: item._id,
-                size: synapp['navigator batch size'],
-                skip: 0
-              });
-            }
+          var children = synapp['item relation'][item.type];
 
-            else if ( Array.isArray(child) ) {
-              child.forEach(function (c) {
+          if ( typeof children === 'string' ) {
+            Panel.model('panels').push({
+              type: children,
+              parent: item._id,
+              size: synapp['navigator batch size'],
+              skip: 0
+            });
+          }
+
+          else if ( Array.isArray(children) ) {
+            children.forEach(function (child) {
+
+              if ( typeof child === 'string' ) {
                 Panel.model('panels').push({
-                  type: c,
+                  type: child,
                   parent: item._id,
                   size: synapp['navigator batch size'],
-                  skip: 0,
-                  split: true
+                  skip: 0
                 });
-              });
-            }
+              }
 
-          });
+              else if ( Array.isArray(child) ) {
+                child.forEach(function (c) {
+                  Panel.model('panels').push({
+                    type: c,
+                    parent: item._id,
+                    size: synapp['navigator batch size'],
+                    skip: 0,
+                    split: true
+                  });
+                });
+              }
+
+            });
+          }
         }
+
       });
 
       // IS IN

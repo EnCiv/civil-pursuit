@@ -27,8 +27,6 @@
     app
       .on('push panels', function (panel) {
 
-        console.log('new panel', panel)
-
         app.render('panel', panel, function (panelView) {
 
           // If no parent (topic)
