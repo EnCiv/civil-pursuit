@@ -208,7 +208,7 @@
             }.bind(this));
         }
 
-        // Is loaded so just show
+        // Is loaded so just show  
         
         else if ( $children.hasClass('is-loaded') ) {
           Panel.controller('reveal')($children, $item);
