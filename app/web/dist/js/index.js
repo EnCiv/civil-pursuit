@@ -1526,7 +1526,7 @@
               $(this).find('i.fa')
                 .removeClass('fa-arrow-up')
                 .addClass('fa-arrow-down');
-            });
+            }.bind(this));
         }
         else {
           setTimeout(function () {
