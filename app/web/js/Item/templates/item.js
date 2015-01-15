@@ -188,9 +188,14 @@
         var $item = $(this).closest('.item');
         var $children = $item.find('>.collapsers >.children');
 
+        // Animation in progress - don't do nothing
+
         if ( $children.hasClass('is-showing') || $children.hasClass('is-hiding') ) {
           return;
         }
+
+        // Is shown so hide
+        
         else if ( $children.hasClass('is-shown') ) {
           Panel.controller('scroll to point of attention')($item,
             function () {
@@ -199,9 +204,25 @@
               $(this).find('i.fa')
                 .removeClass('fa-arrow-up')
                 .addClass('fa-arrow-down');
+
             }.bind(this));
         }
+
+        // Is loaded so just show
+        
+        else if ( $children.hasClass('is-loaded') ) {
+          Panel.controller('reveal')($children, $item);
+
+          $(this).find('i.fa')
+            .removeClass('fa-arrow-up')
+            .addClass('fa-arrow-down');
+        }
+
+        // else load and show
+        
         else {
+          $children.addClass('is-loaded')
+
           setTimeout(function () {
             $(this).find('i.fa')
               .removeClass('fa-arrow-down')
