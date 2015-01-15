@@ -4823,6 +4823,12 @@ footer {
   margin-right: -10px;
   border-right: none;
 }
+.panel.split-view {
+  margin-right: 10px;
+}
+.panel .row-split .col + .col .panel {
+  margin-right: -10px;
+}
 .modal {
   top: 200px !important;
 }

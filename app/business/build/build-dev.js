@@ -4,9 +4,7 @@
 
   exports.dependencies = [
     'less',
-    'browserify',
-    'less-dashboard',
-    'browserify-dashboard'
+    'browserify'
   ];
 
   exports.task = function (cb) {

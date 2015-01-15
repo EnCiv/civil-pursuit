@@ -13,7 +13,7 @@
       Socket.emit('get items', panel);
     });
 
-    // On get items
+    // On get items from socket
 
     Socket
       .on('got items', function (panelItems) {
@@ -24,11 +24,15 @@
           panelId += '-' + panelItems.panel.parent;
         }
         
+        // Push Model  [] "items" with each panel item
+
         panelItems.items.forEach(function (item, index) {
           if ( index < (panelItems.panel.size + panelItems.panel.skip) - 1 ) {
             app.model('items').push(item);
-          }          
+          }        
         });
+
+        // Show/Hide load-more
 
         if ( panelItems.items.length == synapp['navigator batch size'] ) {
           $(panelId).find('.load-more').show();
@@ -36,6 +40,8 @@
         else {
           $(panelId).find('.load-more').hide();
         }
+
+        // Update offset (skip)
 
         panelItems.panel.skip += (panelItems.items.length - 1);
 
@@ -71,6 +77,14 @@
         if ( this.item.parent ) {
           panelId += '-' + this.item.parent;
         }
+
+        console.warn('Trying to insert item', {
+          subject: this.item.subject,
+          type: this.item.type,
+          panel: panelId
+        });
+
+        // In case of a new item
         
         if ( this.item.is_new ) {
           $(panelId).find('.items').prepend(itemView);
@@ -101,8 +115,10 @@
               
         }
         
+        // Else, regular fetch
+
         else {
-          $(panelId).find('.items').append(itemView);
+          $(panelId).find('.items').eq(0).append(itemView);
         }
 
       }.bind({ item: item }));

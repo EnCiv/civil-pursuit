@@ -62,13 +62,18 @@
     }
   }
 
-  &.split-view {
-  }
-
   .panel {
     margin: 0px;
     margin-right: -10px;
     border-right: none;
+  }
+
+  &.split-view {
+    margin-right: 10px
+  }
+
+  .row-split .col + .col .panel {
+    margin-right: -10px
   }
 }
 

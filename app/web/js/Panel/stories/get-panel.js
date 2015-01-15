@@ -35,8 +35,10 @@
           else {
             var container =  $('#item-' + panel.parent + ' .children:eq(0)');
 
+            // SPLIT PANELS
+
             if ( panel.split ) {
-              var column = '<div class="col-sm-6"></div>';
+              var column = '<div class="col-sm-6 col"></div>';
 
               if ( container.find('.row-split').length ) {
                 var col2 = $(column);

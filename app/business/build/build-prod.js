@@ -8,13 +8,14 @@
   exports.dependencies  =   ['build-dev'];
 
   exports.task          =   function (cb) {
-    runSequence('minify-css', 'uglify', 'minify-css-dashboard', 'uglify-dashboard', function (error) {
-      if ( error ) {
-        return cb(error);
-      }
-      // spawn('npm', ['test'], cb);
-      cb();
-    });
+    runSequence('minify-css', 'uglify',
+      function (error) {
+        if ( error ) {
+          return cb(error);
+        }
+        // spawn('npm', ['test'], cb);
+        cb();
+      });
   };
 
 }();
