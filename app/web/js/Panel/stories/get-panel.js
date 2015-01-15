@@ -22,7 +22,7 @@
         }
       });
 
-    /** On new panel */
+    /** On push panel */
 
     app
       .on('push panels', function (panel) {
@@ -40,6 +40,8 @@
             if ( panel.split ) {
               var column = '<div class="col-sm-6 col"></div>';
 
+              // RIGHT
+
               if ( container.find('.row-split').length ) {
                 var col2 = $(column);
 
@@ -47,6 +49,8 @@
 
                 container.find('.row-split').append(col2);
               }
+
+              // LEFT
 
               else {
                 var rowSplit = $('<div class="row row-split"></div>');

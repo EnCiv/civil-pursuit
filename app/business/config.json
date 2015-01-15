@@ -91,6 +91,18 @@
 
       "sign in with Facebook OK": "/sign/facebook/ok"
 
+    },
+
+    "plurals": {
+
+      "topic": "topics",
+      "problem": "problems",
+      "agree": "agree",
+      "disagree": "disagree",
+      "solution": "solutions",
+      "pro": "pros",
+      "con": "cons"
+
     }
   },
 
@@ -150,8 +162,8 @@
   "user agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36",
 
   "email": {
-    "user": "francoisrvespa@gmail.com",
-    "password": "bcn741_gMaIl1981!?0q"
+    "user": "",
+    "password": ""
   },
 
   "evaluation context item position": "first"

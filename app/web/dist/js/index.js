@@ -1109,6 +1109,8 @@
 
     app.on('push items', function (item) {
 
+      // Render item template
+
       app.render('item', item, function (itemView) {
 
         var panelId = '#panel-' + this.item.type;
@@ -1120,7 +1122,8 @@
         console.warn('Trying to insert item', {
           subject: this.item.subject,
           type: this.item.type,
-          panel: panelId
+          panel: panelId,
+          "panel exists": $(panelId).find('.items').eq(0).length
         });
 
         // In case of a new item
@@ -1157,10 +1160,11 @@
         // Else, regular fetch
 
         else {
-          $(panelId).find('.items').eq(0).append(itemView);
+          $(panelId).find('> .panel-body > .items').append(itemView);
         }
 
       }.bind({ item: item }));
+    
     });
 
   }
@@ -1817,7 +1821,7 @@
         }
       });
 
-    /** On new panel */
+    /** On push panel */
 
     app
       .on('push panels', function (panel) {
@@ -1835,6 +1839,8 @@
             if ( panel.split ) {
               var column = '<div class="col-sm-6 col"></div>';
 
+              // RIGHT
+
               if ( container.find('.row-split').length ) {
                 var col2 = $(column);
 
@@ -1842,6 +1848,8 @@
 
                 container.find('.row-split').append(col2);
               }
+
+              // LEFT
 
               else {
                 var rowSplit = $('<div class="row row-split"></div>');
@@ -1895,6 +1903,8 @@
 
       var Socket = app.importer.emitter('socket');
 
+      // Set panel ID
+
       var id = 'panel-' + panel.type;
 
       if ( panel.parent ) {
@@ -1903,13 +1913,27 @@
 
       view.attr('id', id);
 
+      // Split panel
+
       if ( panel.split ) {
         view.addClass('split-view');
       }
 
-      view.find('.panel-title').text(panel.type);
+      // Panel heading - type is title
+
+      view.find('.panel-title').eq(0).text(panel.type);
+
+      // Add type as class
 
       view.find('.creator').eq(0).addClass(panel.type);
+
+      // Load more - be verbose about type
+
+      view.find('.load-more a').text(
+        view.find('.load-more a').text() + ' ' +
+          synapp.plurals[panel.type.toLowerCase()]);
+
+      // Load more
 
       view.find('.load-more').on('click', function () {
         var _panel = app.model('panels').filter(function (pan) {

@@ -11,6 +11,8 @@
 
       var Socket = app.importer.emitter('socket');
 
+      // Set panel ID
+
       var id = 'panel-' + panel.type;
 
       if ( panel.parent ) {
@@ -19,13 +21,27 @@
 
       view.attr('id', id);
 
+      // Split panel
+
       if ( panel.split ) {
         view.addClass('split-view');
       }
 
-      view.find('.panel-title').text(panel.type);
+      // Panel heading - type is title
+
+      view.find('.panel-title').eq(0).text(panel.type);
+
+      // Add type as class
 
       view.find('.creator').eq(0).addClass(panel.type);
+
+      // Load more - be verbose about type
+
+      view.find('.load-more a').text(
+        view.find('.load-more a').text() + ' ' +
+          synapp.plurals[panel.type.toLowerCase()]);
+
+      // Load more
 
       view.find('.load-more').on('click', function () {
         var _panel = app.model('panels').filter(function (pan) {

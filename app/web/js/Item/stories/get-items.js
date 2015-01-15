@@ -70,6 +70,8 @@
 
     app.on('push items', function (item) {
 
+      // Render item template
+
       app.render('item', item, function (itemView) {
 
         var panelId = '#panel-' + this.item.type;
@@ -81,7 +83,8 @@
         console.warn('Trying to insert item', {
           subject: this.item.subject,
           type: this.item.type,
-          panel: panelId
+          panel: panelId,
+          "panel exists": $(panelId).find('.items').eq(0).length
         });
 
         // In case of a new item
@@ -118,10 +121,11 @@
         // Else, regular fetch
 
         else {
-          $(panelId).find('.items').eq(0).append(itemView);
+          $(panelId).find('> .panel-body > .items').append(itemView);
         }
 
       }.bind({ item: item }));
+    
     });
 
   }
