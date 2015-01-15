@@ -376,7 +376,7 @@
         console.log('dshgdhs<dgh<sdhsdhshgjd')
 
         Panel.controller('scroll to point of attention')($evaluator);
-        
+
         if ( _evaluation.cursor === _evaluation.limit ) {
           finish();
         }
@@ -412,6 +412,12 @@
                 opacity: 1
               });
             });
+
+          // Adjust cursor
+
+          if ( _evaluation.limit - _evaluation.cursor === 1 ) {
+            _evaluation.cursor = _evaluation.limit;
+          }
         }
       });
 
