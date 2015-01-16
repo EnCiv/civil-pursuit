@@ -60,9 +60,20 @@
 
         // Image
 
-        $sideBySide.find('.image.' + hand + '-item')
+        var image;
+
+        if ( eItem._id === evaluation.item ) {
+          image = $('#item-' + eItem._id)
+            .find('>.item-media-wrapper img')
+            .clone();
+        }
+
+        image = image || Item.controller('item media')(eItem);
+
+        $sideBySide
+          .find('.image.' + hand + '-item')
           .empty()
-          .append(Item.controller('item media')(eItem));
+          .append(image);
 
         // Subject
 
