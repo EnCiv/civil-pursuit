@@ -341,8 +341,6 @@
       _evaluation.left    =   evaluation.items[0];
       _evaluation.right   =   evaluation.items[1];
 
-      console.warn('ok eval', _evaluation);
-
       // Promote
 
       $evaluator.find('.promote').on('click', function () {
