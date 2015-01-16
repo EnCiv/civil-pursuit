@@ -17,7 +17,8 @@
 
       var item        =   $(itemID);
 
-      var $evaluator  =   item.find('.evaluator').eq(0);
+      var $evaluator  =   item.find('>.collapsers >.evaluator');
+      var $sideBySide =   $evaluator.find('.items-side-by-side');
 
       var _evaluation =   {
         cursor:   0,
@@ -51,29 +52,39 @@
 
       function evaluationItem (eItem, pos) {
 
+        var hand = pos ? 'right' : 'left';
+
         // Increment views counter
 
         Socket.emit('add view', eItem._id);
 
         // Image
 
-        $evaluator.find('.image:eq(' + pos + ')')
+        $sideBySide.find('.image.' + hand + '-item')
           .empty()
           .append(Item.controller('item media')(eItem));
 
         // Subject
 
-        $evaluator.find('.subject:eq(' + pos + ')')
+        $sideBySide.find('.subject.' + hand + '-item h3')
           .text(eItem.subject);
 
         // Description
 
-        $evaluator.find('.description:eq(' + pos + ')')
+        $sideBySide.find('.is-des.' + hand + '-item .description')
           .text(eItem.description);
+
+        // References
+
+        if ( eItem.references.length ) {
+          $sideBySide.find('.references.' + hand + '-item a')
+            .attr('href', eItem.references[0].url)
+            .text(eItem.references[0].title || eItem.references[0].url);
+        }
 
         // Sliders
 
-        $evaluator.find('.sliders:eq(' + pos + ')')
+        $sideBySide.find('.sliders.' + hand + '-item')
           .empty();
 
         evaluation.criterias.forEach(function (criteria) {
@@ -81,9 +92,14 @@
           var template_name = 'evaluation-' + evaluation.item +
             '-' + pos + '-' + criteria._id;
 
+          // Sliders template
+
           var template = {
+            
             name: template_name,
+            
             template: $evaluator.find('.criteria-slider.template-model'),
+            
             controller: function (view, locals) {
               view.find('.criteria-name').text(criteria.name);
               view.find('input.slider').data('criteria-id', criteria._id);
@@ -103,19 +119,21 @@
             }
           };
 
+          // Render sliders template
+
           app.render(template, {}, function (view) {
             view.removeClass('template-model');
             
-            $evaluator.find('.sliders:eq(' + this.index + ')')
+            $sideBySide.find('.sliders.' + hand + '-item')
               .append(view);
           
-          }.bind({ index: pos }));
-        
+          }.bind({ index: pos, hand: hand }));
+
         });
 
         // Promote button
 
-        $evaluator.find('.promote:eq(' + pos + ')')
+        $sideBySide.find('.promote.' + hand + '-item')
           .text(eItem.subject)
           .data('position', pos);
       }
@@ -136,6 +154,8 @@
       _evaluation.limit   =   evaluation.limit;
       _evaluation.left    =   evaluation.items[0];
       _evaluation.right   =   evaluation.items[1];
+
+      console.warn('ok eval', _evaluation);
 
       // Promote
 

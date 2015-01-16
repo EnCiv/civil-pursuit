@@ -1,0 +1,82 @@
+[
+	{
+		"story": "View(Topic Panel) should not be shown when page first loads",
+		"I": "User",
+		"visiting": "/",
+		"when": [],
+		"then": [
+			{
+				"view": "Topic Panel",
+				"is not": "visible"
+			}
+		]
+	},
+
+	{
+		"story": "When Emitter(socket) receives Event(connect) for the first time",
+		
+		"I": "User",
+		"visiting": "/",
+		"when": [
+			{
+				"emitter": "Socket",
+				"once": "connect",
+			}
+		],
+		"then": [
+			{
+				"emitter": "Panel",
+				"on": "push panels",
+				"message": {
+					"is": "JSONselect"
+				}
+			}
+		]
+	},
+
+
+	{
+		"story": "Item Creator should be hidden",
+		
+		"I": "User",
+		"visiting": "/",
+		"when": [],
+		"then": [
+			{
+				"view": "Item Creator",
+				"is not": "visible"
+			}
+		]
+	},
+
+	{
+		"story": "Item Creator should be hidden",
+		"I": "User",
+		"visiting": "/",
+		"when": [],
+		"then": [
+			{
+				"view": "Item Creator",
+				"is not": "visible"
+			}
+		]
+	},
+
+
+	{
+		"I": "User",
+		"visiting": "/",
+		"when": [
+			{
+				"clicking": "Item Creator Toggler"
+			}
+		],
+		"then": [
+			{
+				"view": "Item Creator",
+				"is": "visible",
+				"after": 1000
+			}
+		]
+	}
+]

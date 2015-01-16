@@ -4832,6 +4832,15 @@ footer {
 .evaluator .feedback-entry {
   min-height: 200px;
 }
+.evaluator .hidden-sm .image img,
+.evaluator .hidden-sm .sliders input.slider {
+  margin: auto;
+}
+.evaluator .hidden-sm .subject,
+.evaluator .hidden-sm .description,
+.evaluator .hidden-sm .sliders {
+  text-align: center;
+}
 /** Importing the sliders */
 /**
  *    __________________________________________________________________________

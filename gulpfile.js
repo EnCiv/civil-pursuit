@@ -178,7 +178,8 @@ Nina Butorac
     'watchify',
     'watchify-dashboard',
     'watch-less',
-    'generate-site-map'];
+    'generate-site-map',
+    'semver-minor'];
 
   tasks.forEach(function (task) {
     var t = require(buildersDir + '/' + task);
