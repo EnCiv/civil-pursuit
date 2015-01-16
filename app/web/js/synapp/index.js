@@ -79,10 +79,8 @@
 
         Panel.story('get panel')();
 
-        Item.story('get items')();
-
-        Item.story('listen to broadcast')();
-
+        Item.run();
+        
         Evaluation.run();
 
       }

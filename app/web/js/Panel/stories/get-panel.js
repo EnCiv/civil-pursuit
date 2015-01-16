@@ -81,10 +81,6 @@
 
           app.emit('panel added', panel);
 
-          // Enable create item
-
-          Item.story('create item')();
-
           if ( synapp.user ) {
             $('.is-in').css('visibility', 'visible');
           }

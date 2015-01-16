@@ -134,10 +134,10 @@
     },
 
     {
-      title: 'There should be 2 subjects',
+      title: 'There should be 4 subjects, 2 items, 2 screen resolutions',
       wait: 1600,
       assert: function () {
-        return $item.find('.evaluator').find('section.hidden-xs .col-sm-6 h3.subject').length === 2;
+        return $item.find('.evaluator').find('.items-side-by-side .subject h3').length === 4;
       }
     },
 

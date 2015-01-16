@@ -16,6 +16,7 @@
     // On get items from socket
 
     Socket
+    
       .on('got items', function (panelItems) {
 
         var panelId = '#panel-' + panelItems.panel.type;

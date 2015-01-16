@@ -35,6 +35,14 @@
       'create item': require('./stories/create-item'),
       'get items': require('./stories/get-items'),
       'listen to broadcast': require('./stories/listen-to-broadcast')
+    },
+
+    run: function () {
+      this.story('get items')();
+
+      this.story('create item')();
+
+      this.story('listen to broadcast')();
     }
   };
 
