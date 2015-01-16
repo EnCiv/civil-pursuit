@@ -23,6 +23,62 @@
 		"toggle-view": ".panel>.panel-heading>i.fa.fa-plus"
 	},
 
+
+	{
+		"story": "View Topic Panel is not here at first",
+		"I": "User",
+		"visiting": "/",
+		"when": [],
+		"then": [
+			{
+				"view": "Topic Panel",
+				"is not": "visible"
+			}
+		]
+	},
+
+	{
+		"story": "View Topic Panel is shown after socket is connected and model panels gets pushed",
+		"I": "User",
+		"visiting": "/",
+		"when": [],
+		"then": [
+			{
+				"view": "Topic Panel",
+				"is": "visible",
+				"on": "push Panel.panels"
+			}
+		]
+	},
+
+
+	{
+		"story": "Item Creator should be hidden",
+		"I": "User",
+		"visiting": "/",
+		"when": [],
+		"then": [
+			{
+				"view": "Item Creator",
+				"is not": "visible"
+			}
+		]
+	},
+
+	{
+		"story": "Item Creator should be hidden",
+		"I": "User",
+		"visiting": "/",
+		"when": [],
+		"then": [
+			{
+				"view": "Item Creator",
+				"is not": "visible"
+			}
+		]
+	},
+
+
 	{
 		"I": "User",
 		"visiting": "/",
