@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function show (elem, options, cb) {
+  function show (elem, cb) {
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
 
     if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {

@@ -1301,11 +1301,12 @@
 
       // DOM Elements
 
-      var $collapsers   =   view.find('>.collapsers');
-      var $toggleArrow  =   $collapsers.find('>.toggle-arrow');
-      var $subject      =   view.find('>.item-text > h4.item-title a');
-      var $description  =   view.find('>.item-text >.description');
-      var $references   =   view.find('>.item-text >.item-references');
+      var $collapsers     =   view.find('>.collapsers');
+      var $toggleArrow    =   $collapsers.find('>.toggle-arrow');
+      var $subject        =   view.find('>.item-text > h4.item-title a');
+      var $description    =   view.find('>.item-text >.description');
+      var $references     =   view.find('>.item-text >.item-references');
+      var $togglePromote  =   view.find('>.box-buttons .toggle-promote');
 
       // Static link
 
@@ -1364,37 +1365,34 @@
 
       // ITEM TOGGLE PROMOTE
 
-      view.find('.toggle-promote').eq(0).on('click', function () {
+      $togglePromote.on('click',
 
-        $('#modal-tip-evaluate').modal('show');
+        function () {
 
-        var evaluator = view.find('.evaluator');
+          // Show tip
 
-        if ( ! evaluator.hasClass('is-toggable') ) {
-          evaluator.addClass('is-toggable');
-        }
+          $('#modal-tip-evaluate').modal('show');
 
-        if ( evaluator.hasClass('is-showing') || evaluator.hasClass('is-hiding') ) {
-          return false;
-        }
+          // DOM references
 
-        evaluator.removeClass('is-hidden').addClass('is-showing');
+          var $evaluator = view.find('>.collapsers >.evaluator');
 
-        Panel.controller('scroll to point of attention')(view, function () {
-          Panel.controller('show')(evaluator);
+          Panel.controller('reveal')($evaluator, view,
+            function () {
 
-          var evaluationExists = Evaluation.model('evaluations')
-            .some(function (evaluation) {
-              return evaluation.item === item._id;
+              var evaluationExists = Evaluation.model('evaluations')
+                .some(function (evaluation) {
+                  return evaluation.item === item._id;
+                });
+
+              if ( ! evaluationExists ) {
+                Socket.emit('get evaluation', item);
+              }
             });
 
-          if ( ! evaluationExists ) {
-            Socket.emit('get evaluation', item);
-          }
-        });
+          return false;
 
-        return false;
-      });
+        });
 
       // ITEM TOGGLE DETAILS
 
@@ -1472,8 +1470,9 @@
 
       $toggleArrow.on('click', function () {
 
-        var $item = $(this).closest('.item');
-        var $children = $item.find('>.collapsers >.children');
+        var $panel    =   $(this).closest('.panel');
+        var $item     =   $(this).closest('.item');
+        var $children =   $item.find('>.collapsers >.children');
 
         // Animation in progress - don't do nothing
 
@@ -1495,63 +1494,74 @@
             }.bind(this));
         }
 
-        // Is loaded so just show  
-        
-        else if ( $children.hasClass('is-loaded') ) {
-          Panel.controller('reveal')($children, $item);
+        // else, show
 
-          $(this).find('i.fa')
-            .removeClass('fa-arrow-down')
-            .addClass('fa-arrow-up');
-        }
-
-        // else load and show
-        
         else {
-          $children.addClass('is-loaded')
 
-          setTimeout(function () {
+          // Hide panel's creator
+
+          if ( $panel.find('>.panel-body >.creator.is-shown').length ) {
+            Panel.controller('hide')($panel.find('>.panel-body >.creator.is-shown'));
+          }
+
+          // Is loaded so just show  
+          
+          if ( $children.hasClass('is-loaded') ) {
+            Panel.controller('reveal')($children, $item);
+
             $(this).find('i.fa')
               .removeClass('fa-arrow-down')
               .addClass('fa-arrow-up');
-            }.bind(this), 1000);
-
-          var children = synapp['item relation'][item.type];
-
-          if ( typeof children === 'string' ) {
-            Panel.model('panels').push({
-              type: children,
-              parent: item._id,
-              size: synapp['navigator batch size'],
-              skip: 0
-            });
           }
 
-          else if ( Array.isArray(children) ) {
-            children.forEach(function (child) {
+          // else load and show
+          
+          else {
+            $children.addClass('is-loaded')
 
-              if ( typeof child === 'string' ) {
-                Panel.model('panels').push({
-                  type: child,
-                  parent: item._id,
-                  size: synapp['navigator batch size'],
-                  skip: 0
-                });
-              }
+            setTimeout(function () {
+              $(this).find('i.fa')
+                .removeClass('fa-arrow-down')
+                .addClass('fa-arrow-up');
+              }.bind(this), 1000);
 
-              else if ( Array.isArray(child) ) {
-                child.forEach(function (c) {
+            var children = synapp['item relation'][item.type];
+
+            if ( typeof children === 'string' ) {
+              Panel.model('panels').push({
+                type: children,
+                parent: item._id,
+                size: synapp['navigator batch size'],
+                skip: 0
+              });
+            }
+
+            else if ( Array.isArray(children) ) {
+              children.forEach(function (child) {
+
+                if ( typeof child === 'string' ) {
                   Panel.model('panels').push({
-                    type: c,
+                    type: child,
                     parent: item._id,
                     size: synapp['navigator batch size'],
-                    skip: 0,
-                    split: true
+                    skip: 0
                   });
-                });
-              }
+                }
 
-            });
+                else if ( Array.isArray(child) ) {
+                  child.forEach(function (c) {
+                    Panel.model('panels').push({
+                      type: c,
+                      parent: item._id,
+                      size: synapp['navigator batch size'],
+                      skip: 0,
+                      split: true
+                    });
+                  });
+                }
+
+              });
+            }
           }
         }
 
@@ -1609,7 +1619,17 @@
 
   'use strict';
 
-  function reveal (elem, poa) {
+  function _reveal (elem, poa, cb) {
+    var app = this;
+
+    elem.removeClass('is-hidden').addClass('is-showing');
+
+    app.controller('scroll to point of attention')(poa, function () {
+      app.controller('show')(elem, cb);
+    });
+  }
+
+  function reveal (elem, poa, cb) {
     var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {
@@ -1620,12 +1640,32 @@
       return false;
     }
 
-    elem.removeClass('is-hidden').addClass('is-showing');
+    // Eventual element to hide first
 
-    app.controller('scroll to point of attention')(poa, function () {
-      app.controller('show')(elem);
-      // elem.css('display', 'block');
-    });
+    var hider;
+
+    // Find elem's panel
+
+    var $panel = elem.closest('.panel');
+
+    // Hide Creators if any
+
+    if ( ! elem.hasClass('.creator') &&
+      $panel.find('>.panel-body >.creator.is-shown').length ) {
+      hider = $panel.find('>.panel-body >.creator.is-shown');
+    }
+
+    // If hiders
+
+    if (  hider ) {
+      app.controller('hide')(hider, function () {
+        _reveal.apply(app, [elem, poa, cb]);
+      });
+    }
+
+    else {
+      _reveal.apply(app, [elem, poa, cb]);
+    }
   }
 
   module.exports = reveal;
@@ -1668,7 +1708,7 @@
 
   'use strict';
 
-  function show (elem, options, cb) {
+  function show (elem, cb) {
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
 
     if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
