@@ -1102,18 +1102,29 @@
 
           // Ready for callback's hell?
 
-          Panel.controller('hide')($('.creator.' + this.item.type),
-            function () {
-              Panel.controller('scroll to point of attention')(
-                itemView,
-                function () {
-                  Panel.controller('show')(itemView.find('.evaluator'),
-                    function () {
-                      itemView.find('.toggle-promote').click();
-                    });
-                });
-            });
-              
+          if ( $('.creator.is-shown').length ) {
+            Panel.controller('hide')($('.creator.' + this.item.type),
+              function () {
+                Panel.controller('scroll to point of attention')(
+                  itemView,
+                  function () {
+                    Panel.controller('show')(itemView.find('.evaluator'),
+                      function () {
+                        itemView.find('.toggle-promote').click();
+                      });
+                  });
+              });
+          }
+          else {
+            Panel.controller('scroll to point of attention')(
+              itemView,
+              function () {
+                Panel.controller('show')(itemView.find('.evaluator'),
+                  function () {
+                    itemView.find('.toggle-promote').click();
+                  });
+              });
+          }
         }
         
         // Else, regular fetch
@@ -1744,6 +1755,10 @@
 
   function reveal (elem, poa, cb) {
     var app = this;
+
+    if ( elem.hasClass('.creator') ) {
+      console.log('reveal creator')
+    }
 
     if ( ! elem.hasClass('is-toggable') ) {
       elem.addClass('is-toggable');
