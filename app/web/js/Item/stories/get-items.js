@@ -103,7 +103,7 @@
               Panel.controller('scroll to point of attention')(
                 itemView,
                 function () {
-                  Panel.controller('show')(itemView.find('.evaluator'), {},
+                  Panel.controller('show')(itemView.find('.evaluator'),
                     function () {
                       itemView.find('.toggle-promote').click();
                     });

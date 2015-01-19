@@ -111,7 +111,7 @@
 
 }();
 
-},{"events":37,"util":41}],2:[function(require,module,exports){
+},{"events":38,"util":42}],2:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -408,7 +408,6 @@
       // Neither / Finish
 
       $evaluator.find('.finish').on('click', function () {
-        console.log('dshgdhs<dgh<sdhsdhshgjd')
 
         Panel.controller('scroll to point of attention')($evaluator);
 
@@ -960,7 +959,8 @@
     templates: {
       'details votes':  require('./templates/details-votes'),
       'details feedback': require('./templates/details-feedback'),
-      'item': require('./templates/item')
+      'item': require('./templates/item'),
+      'edit and go again': require('./templates/edit-and-go-again')
     },
     
     stories: {
@@ -980,7 +980,7 @@
 
 } ();
 
-},{"./controllers/item-media":8,"./controllers/truncate":9,"./controllers/youtube":10,"./stories/create-item":12,"./stories/get-items":13,"./stories/listen-to-broadcast":14,"./templates/details-feedback":15,"./templates/details-votes":16,"./templates/item":17}],12:[function(require,module,exports){
+},{"./controllers/item-media":8,"./controllers/truncate":9,"./controllers/youtube":10,"./stories/create-item":12,"./stories/get-items":13,"./stories/listen-to-broadcast":14,"./templates/details-feedback":15,"./templates/details-votes":16,"./templates/edit-and-go-again":17,"./templates/item":18}],12:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1107,7 +1107,7 @@
               Panel.controller('scroll to point of attention')(
                 itemView,
                 function () {
-                  Panel.controller('show')(itemView.find('.evaluator'), {},
+                  Panel.controller('show')(itemView.find('.evaluator'),
                     function () {
                       itemView.find('.toggle-promote').click();
                     });
@@ -1290,6 +1290,101 @@
   'use strict';
 
   module.exports = {
+    template: '.creator .is-section',
+    controller: function (view, item) {
+
+      var app = this;
+
+      var $item = view.find('>.item');
+
+      $item.find('[name="subject"]').val(item.subject);
+      $item.find('[name="description"]').val(item.description);
+
+      if ( item.references.length ) {
+        $item.find('[name="reference"]').val(item.references[0].url);
+      }
+
+      $item.find('.item-media-wrapper')
+        .empty()
+        .append(
+          this.controller('item media')(item));
+
+      $item.find('.button-create').on('click', function () {
+
+        var $editor      =   $(this).closest('.editor');
+
+        // Subject field
+
+        var $subject      =   $editor.find('[name="subject"]');
+
+        // Description field
+
+        var $description  =   $editor.find('[name="description"]');
+
+        // Reference field
+        
+        var $reference    =   $editor.find('[name="reference"]');
+
+        // Reset errors in case of any from previous call
+
+        $subject.removeClass('error');
+
+        $description.removeClass('error');
+
+        // Subject empty? Trigger visual error
+
+        if ( ! $subject.val() ) {
+          $subject.addClass('error').focus();
+        }
+
+        // Description empty? Trigger visual error
+
+        else if ( ! $description.val() ) {
+          $description.addClass('error').focus();
+        }
+
+        // No Errors? Proceed to back-end transmission
+
+        else {
+          var _item = item;
+
+          _item.from = item._id;
+          _item.subject = $subject.val();
+          _item.description = $description.val();
+          _item.references = [{
+            url: $reference.val()
+          }];
+
+          delete _item._id;
+
+          app.importer.emitter('socket').emit('edit and go again', _item,
+            function (error, new_item) {
+              if ( error ) {
+
+              }
+              else {
+                new_item.is_new = true;
+
+                app.importer.extension('Panel').controller('hide')(
+                  $editor, function () {
+                    app.model('items').push(new_item);
+                  });
+              }
+            });
+        }
+      });
+
+    }
+  };
+
+} ();
+
+},{}],18:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  module.exports = {
     url: '/partial/item',
     controller: function (view, item) {
 
@@ -1464,6 +1559,24 @@
           }
 
         });
+
+        // Edit and go again
+
+        details.find('.edit-and-go-again').on('click', function () {
+          Panel.controller('scroll to point of attention')(view,
+            function () {
+              Panel.controller('hide')(details, function () {
+                app.render('edit and go again', item, function (editAndGoAgainView) {
+                  view.find('>.collapsers >.editor')
+                    .empty()
+                    .append(editAndGoAgainView);
+
+                  Panel.controller('reveal')(
+                    view.find('>.collapsers >.editor'), view);
+                });
+              });
+            });
+        });
       });
 
       // ITEM TOGGLE SUB PANEL
@@ -1577,7 +1690,7 @@
 
 } ();
 
-},{"string":42}],18:[function(require,module,exports){
+},{"string":43}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1614,7 +1727,7 @@
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1672,7 +1785,7 @@
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1703,7 +1816,7 @@
 
 }();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1751,7 +1864,7 @@
 
 }();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1815,7 +1928,7 @@
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /**
                                             
                                                 
@@ -1863,7 +1976,7 @@
 
 } ();
 
-},{"./controllers/hide":18,"./controllers/reveal":19,"./controllers/scroll-to-point-of-attention":20,"./controllers/show":21,"./controllers/upload":22,"./stories/get-panel":24,"./templates/panel":25}],24:[function(require,module,exports){
+},{"./controllers/hide":19,"./controllers/reveal":20,"./controllers/scroll-to-point-of-attention":21,"./controllers/show":22,"./controllers/upload":23,"./stories/get-panel":25,"./templates/panel":26}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1959,7 +2072,7 @@
 
 }();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2197,7 +2310,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
                                         
                                             
@@ -2256,7 +2369,7 @@
 
 } ();
 
-},{"./stories/forgot-password":27,"./stories/get-online-users":28,"./stories/show-user-features-when-user-is-signed-in":29,"./stories/sign-in":30,"./stories/sign-up":31,"./templates/online-users":32}],27:[function(require,module,exports){
+},{"./stories/forgot-password":28,"./stories/get-online-users":29,"./stories/show-user-features-when-user-is-signed-in":30,"./stories/sign-in":31,"./stories/sign-up":32,"./templates/online-users":33}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2288,7 +2401,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2310,7 +2423,7 @@
   module.exports = getOnlineUsers;
 
 } ();
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2323,7 +2436,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2393,7 +2506,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2498,7 +2611,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2513,7 +2626,7 @@
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /***
 
 
@@ -2568,7 +2681,7 @@ Nina Butorac
 
 }();
 56
-},{"./synapp/index":35,"/home/francois/Dev/true-story.js":43}],34:[function(require,module,exports){
+},{"./synapp/index":36,"/home/francois/Dev/true-story.js":44}],35:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2588,7 +2701,7 @@ Nina Butorac
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
  /**
                  
 
@@ -2680,7 +2793,7 @@ Nina Butorac
 
 }();
 
-},{"../Evaluation/":2,"../Intro/":5,"../Item/":11,"../Panel/":23,"../User/":26,"./controllers/bootstrap/responsive-image":34}],36:[function(require,module,exports){
+},{"../Evaluation/":2,"../Intro/":5,"../Item/":11,"../Panel/":24,"../User/":27,"./controllers/bootstrap/responsive-image":35}],37:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2718,7 +2831,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":37}],37:[function(require,module,exports){
+},{"events":38}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3021,7 +3134,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3046,7 +3159,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3134,14 +3247,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3731,7 +3844,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":40,"_process":39,"inherits":38}],42:[function(require,module,exports){
+},{"./support/isBuffer":41,"_process":40,"inherits":39}],43:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4765,7 +4878,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4824,7 +4937,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":44}],44:[function(require,module,exports){
+},{"./lib/TrueStory.js":45}],45:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5707,7 +5820,7 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":45,"./TrueStory/parse-dot-notation":46,"./TrueStory/render":47,"./When":48,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":39,"domain":36,"events":37,"util":41}],45:[function(require,module,exports){
+},{"./TrueStory/model":46,"./TrueStory/parse-dot-notation":47,"./TrueStory/render":48,"./When":49,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":40,"domain":37,"events":38,"util":42}],46:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -6068,7 +6181,7 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
 
 }();
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -6190,7 +6303,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -6285,7 +6398,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":39}],48:[function(require,module,exports){
+},{"_process":40}],49:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6758,4 +6871,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":44,"_process":39}]},{},[33]);
+},{"./TrueStory":45,"_process":40}]},{},[34]);

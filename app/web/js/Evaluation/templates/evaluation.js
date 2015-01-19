@@ -222,7 +222,6 @@
       // Neither / Finish
 
       $evaluator.find('.finish').on('click', function () {
-        console.log('dshgdhs<dgh<sdhsdhshgjd')
 
         Panel.controller('scroll to point of attention')($evaluator);
 

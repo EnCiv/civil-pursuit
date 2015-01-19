@@ -199,7 +199,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'sign-in',
           'get-url-title',
           'get-epics',
-          'send-password'];
+          'send-password',
+          'edit-and-go-again'];
 
         domain.add(socket);
 

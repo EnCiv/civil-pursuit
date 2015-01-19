@@ -28,7 +28,8 @@
     templates: {
       'details votes':  require('./templates/details-votes'),
       'details feedback': require('./templates/details-feedback'),
-      'item': require('./templates/item')
+      'item': require('./templates/item'),
+      'edit and go again': require('./templates/edit-and-go-again')
     },
     
     stories: {

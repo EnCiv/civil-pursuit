@@ -177,6 +177,24 @@
           }
 
         });
+
+        // Edit and go again
+
+        details.find('.edit-and-go-again').on('click', function () {
+          Panel.controller('scroll to point of attention')(view,
+            function () {
+              Panel.controller('hide')(details, function () {
+                app.render('edit and go again', item, function (editAndGoAgainView) {
+                  view.find('>.collapsers >.editor')
+                    .empty()
+                    .append(editAndGoAgainView);
+
+                  Panel.controller('reveal')(
+                    view.find('>.collapsers >.editor'), view);
+                });
+              });
+            });
+        });
       });
 
       // ITEM TOGGLE SUB PANEL
