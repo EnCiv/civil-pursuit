@@ -38,12 +38,12 @@ block script-bootstrap
 
 //- # Bootstrap sliders
 
-block script-sliders
-  - if ( settings.env === 'production' )
-    script(src='/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
+//- block script-sliders
+//-   - if ( settings.env === 'production' )
+//-     script(src='/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
 
-  - else
-    script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
+//-   - else
+//-     script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
 
 block script-d3
   - if ( settings.env === 'production' )

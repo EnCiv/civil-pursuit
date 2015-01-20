@@ -4853,6 +4853,14 @@ footer {
 .evaluator .hidden-sm .sliders {
   text-align: center;
 }
+.evaluator input[type=range],
+.evaluator ::-moz-range-track,
+.evaluator ::-ms-track {
+  -webkit-appearance: none;
+  background-color: #3f91e5;
+  width: 250px;
+  height: 20px;
+}
 /** Importing the sliders */
 /**
  *    __________________________________________________________________________

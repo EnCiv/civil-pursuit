@@ -99,35 +99,38 @@
           .empty();
 
         evaluation.criterias.forEach(function (criteria) {
-          
-          var template_name = 'evaluation-' + evaluation.item +
-            '-' + pos + '-' + criteria._id;
 
           // Sliders template
 
           var template = {
             
-            name: template_name,
-            
             template: $evaluator.find('.criteria-slider.template-model'),
             
             controller: function (view, locals) {
-              console.log('hahaha ok got it got it')
+              
               view.find('.criteria-name').text(criteria.name);
-              view.find('input.slider').data('criteria-id', criteria._id);
-              view.find('input.slider').slider();
-              view.find('input.slider').slider('setValue', 0);
-              view.find('input.slider').slider('on', 'slideStop',
-                function () {
-                  var slider = $(this);
 
-                  if ( slider.attr('type') ) {
+              
+              // view.find('input.slider')
+              //   .data('criteria-id', criteria._id)
+              //   .slider()
+              //   .slider('on', 'slideEnabled', function () {
+              //     console.log('hdjskj')
+              //   });
+              
+              // view.find('input.slider').slider('setValue', 1);
+              
+              // view.find('input.slider').slider('on', 'slideStop',
+              //   function () {
+              //     var slider = $(this);
 
-                    var value = slider.slider('getValue');
+              //     if ( slider.attr('type') ) {
 
-                    $(this).data('slider-value', value);
-                  }
-                });
+              //       var value = slider.slider('getValue');
+
+              //       $(this).data('slider-value', value);
+              //     }
+              //   });
             }
           };
 

@@ -1,0 +1,180 @@
+section
+  .row
+    .col-xs-12.text-center
+
+      h2
+        span.cursor 1
+        span  of 
+        span.limit 5
+
+      h4 Evaluate each item below
+
+  //- Sliders Template
+
+  .criteria-slider.template-model
+    h4.criteria-name Criteria name
+    input.slider(type="range" min="-1" value="0" max="1" step="1")
+    //- input.slider(type='text' 
+    //-   data-slider-tooltip='hide'
+    //-   data-slider-min='-1'
+    //-   data-slider-max='1')
+
+  //- Normal screen
+
+  section.hidden-xs.items-side-by-side
+
+    //- Image
+
+    .row
+      .col-sm-6.image.padding.left-item
+
+      .col-sm-6.image.padding.right-item
+
+    //- Subject
+
+    .row
+      .col-sm-6.padding.left-item.subject
+        h3 Item's subject
+
+      .col-sm-6.padding.right-item.subject
+        h3 Item's subject
+
+    //- Description
+
+    .row
+      .col-sm-6.padding.left-item.is-des
+        .pre-text.entry-description.description Item's description
+
+      .col-sm-6.padding.right-item.is-des
+        .pre-text.entry-description.description Item's description
+
+    //- References
+
+    .row
+      .col-sm-6.references.padding.left-item
+        a(rel='nofollow' target='_blank')
+        
+      .col-sm-6.references.padding.right-item
+        a(rel='nofollow' target='_blank')
+
+    //- Sliders
+
+    .row
+      .col-sm-6.sliders.padding.left-item
+
+      .col-sm-6.sliders.padding.right-item
+
+    //- Feedback
+
+    .row
+      .col-sm-6.padding.left-item
+        textarea.feedback.feedback-entry.form-control(
+          placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+
+      .col-sm-6.padding.right-item
+        textarea.feedback.feedback-entry.form-control(
+          placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+
+    //- Which one is more important for you?
+
+    .row.padding-bottom
+      .col-xs-12
+        h4.text-center Which of these is most important for the community to consider?
+
+    //- Promote
+
+    .row.padding-bottom
+      .col-sm-6.padding.left-item
+        button.btn.btn-block.promote Promote
+
+      .col-sm-6.padding.right-item
+        button.btn.btn-block.promote Promote
+
+  //- Small screen
+
+  section.hidden-sm.hidden-md.hidden-lg.items-side-by-side
+
+    //- Left
+
+    //- image
+
+    .row
+      .col-xs-12.image.left-item
+
+    //- SUbject
+
+    .row
+      .col-xs-12.left-item.subject.padding
+        h3.subject Item's subject
+
+    //- Description
+
+    .row
+      .col-xs-12.left-item.is-des.padding
+        .pre-text.entry-description.description Item's description
+
+    //- References
+
+    .row.padding-bottom
+      .col-xs-12.references.left-item
+        a(rel='nofollow' target='_blank')
+
+    //-Sliders
+
+    .row
+      .col-xs-12.sliders.left-item.padding
+
+    //- Feedback
+
+    .row
+      .col-xs-12.padding.left-item
+        textarea.feedback-entry.form-control.feedback(
+          placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+          data-ng-show      =   'item.subject')
+
+    .row
+      .col-xs-12.padding.left-item
+        button.btn.btn-block.promote Promote
+
+    //- Right
+
+    //- image
+
+    .row
+      .col-xs-12.image.right-item
+
+    //- Subject
+
+    .row
+      .col-xs-12.right-item.subject.padding
+        h3.subject Item's subject
+
+    //- Description
+
+    .row
+      .col-xs-12.right-item.is-des.padding
+        .pre-text.entry-description.description Item's description
+
+    //- References
+
+    .row.padding-bottom
+      .col-xs-12.references.right-item
+        a(rel='nofollow' target='_blank')
+
+    //-Sliders
+
+    .row
+      .col-xs-12.sliders.right-item.padding
+
+    //- Feedback
+
+    .row
+      .col-xs-12.padding.right-item
+        textarea.feedback-entry.form-control.feedback(
+          placeholder       =   'Can you provide feedback that would encourage the author to create a statement that more people would unite around?',
+          data-ng-show      =   'item.subject')
+
+  //- Continue
+  .row
+    .col-sm-12
+      button.btn.btn-block.finish Finish
