@@ -23,6 +23,7 @@
 
 body {
 	//margin-bottom: 100vh
+	// font-size: 
 }
 
 /** ____________________________________________________________________________
@@ -51,6 +52,16 @@ body {
 		position: fixed;
 		top: 0;
 		left: calc((100% / 2.1));
+
+		@media (max-width: 760px) {
+			right: 250px;
+			left: auto;
+		}
+
+		@media (max-width: 446px) {
+			left: 80px;
+			opacity: .5
+		}
 	}
 
 	/** Icons **/

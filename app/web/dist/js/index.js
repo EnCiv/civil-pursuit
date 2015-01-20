@@ -1764,7 +1764,9 @@
       elem.addClass('is-toggable');
     }
 
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+    // Don't animate if something else is animating
+
+    if ( $('.is-showing').length || $('.is-hiding').length ) {
       return false;
     }
 
@@ -1776,11 +1778,21 @@
 
     var $panel = elem.closest('.panel');
 
+    // Find elem's item if any
+
+    var $item = elem.closest('.item');
+
     // Hide Creators if any
 
     if ( ! elem.hasClass('.creator') &&
       $panel.find('>.panel-body >.creator.is-shown').length ) {
       hider = $panel.find('>.panel-body >.creator.is-shown');
+    }
+
+    // Hide other shown elements that share same item's level
+
+    if ( $item.length && $item.find('.is-shown').length ) {
+      hider = $item.find('.is-shown');
     }
 
     // If hiders

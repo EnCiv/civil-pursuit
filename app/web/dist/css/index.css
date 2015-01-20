@@ -4379,6 +4379,18 @@ textarea.danger {
   top: 0;
   left: calc(47.61904762%);
 }
+@media (max-width: 760px) {
+  [role='header'] .beta {
+    right: 250px;
+    left: auto;
+  }
+}
+@media (max-width: 446px) {
+  [role='header'] .beta {
+    left: 80px;
+    opacity: 0.5;
+  }
+}
 [role='header'] .pull-right {
   padding: 4px;
 }
