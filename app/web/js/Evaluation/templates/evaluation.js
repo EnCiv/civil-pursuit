@@ -112,6 +112,7 @@
             template: $evaluator.find('.criteria-slider.template-model'),
             
             controller: function (view, locals) {
+              console.log('hahaha ok got it got it')
               view.find('.criteria-name').text(criteria.name);
               view.find('input.slider').data('criteria-id', criteria._id);
               view.find('input.slider').slider();
