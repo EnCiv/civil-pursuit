@@ -987,14 +987,7 @@
           if ( $('.creator.is-shown').length ) {
             Panel.controller('hide')($('.creator.' + this.item.type),
               function () {
-                Panel.controller('scroll to point of attention')(
-                  itemView,
-                  function () {
-                    Panel.controller('show')(itemView.find('.evaluator'),
-                      function () {
-                        itemView.find('.toggle-promote').click();
-                      });
-                  });
+                itemView.find('.toggle-promote').click();
               });
           }
           else {
@@ -5598,7 +5591,8 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   TrueStory.prototype.push = function (model, item) {
     if ( Array.isArray(this.models[model]) ) {
       console.log('pushing array', model)
-      this.models[model] = this.models[model].concat([item]);
+      // this.models[model] = this.models[model].concat([item]);
+      this.model(model, this.models[model].concat([item]));
       this.watch.emit('push ' + model, item);
     }
 
@@ -5792,17 +5786,22 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
         
         if ( name in this.models ) {
           this.watch.emit('update ' + name, model, this.models[name]);
-          console.warn('%c update "' + name + '" %c ' + JSON.stringify({
-            new: model, 
-            old: this.models[name]}, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
-          // console.warn('update ' + name);
+          // console.warn('%c update "' + name + '" %c ' + JSON.stringify({
+          //   new: model, 
+          //   old: this.models[name]}, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
+          console.warn('%c update %c ' + name + ' %c ' + JSON.stringify(model, null, 2) + '%c ' + JSON.stringify(this.models[name], null, 2),
+            'color: orange; font-weight: bold', 'color: blue; font-weight: bold', 'color: #666', 'color: #aaa');
           this.models[name] = model;
         }
 
         else {
           this.models[name] = model;
           this.watch.emit('add ' + name, model);
-          console.warn('%c add "' + name + '" %c ' + JSON.stringify(model, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
+          // console.warn('%c add "' + name + '" %c ' + JSON.stringify(model, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
+          console.log('%c add' + '%c ' + name + '%c ' + JSON.stringify(model, null, 2),
+            'color: green; font-weight: bold',
+            'color: blue; font-weight: bold',
+            'color: #666');
         }
 
         return app;

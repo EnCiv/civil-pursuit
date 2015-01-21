@@ -101,14 +101,7 @@
           if ( $('.creator.is-shown').length ) {
             Panel.controller('hide')($('.creator.' + this.item.type),
               function () {
-                Panel.controller('scroll to point of attention')(
-                  itemView,
-                  function () {
-                    Panel.controller('show')(itemView.find('.evaluator'),
-                      function () {
-                        itemView.find('.toggle-promote').click();
-                      });
-                  });
+                itemView.find('.toggle-promote').click();
               });
           }
           else {
