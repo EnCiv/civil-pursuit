@@ -875,7 +875,7 @@
     Socket.on('created item', function (item) {
       item.is_new = true;
       
-      app.model('items').push(item);
+      app.push('items', item);
     });
   }
 
