@@ -29,7 +29,7 @@
 
         panelItems.items.forEach(function (item, index) {
           if ( index < (panelItems.panel.size + panelItems.panel.skip) - 1 ) {
-            app.model('items').push(item);
+            app.push('items', item);
           }        
         });
 
@@ -69,7 +69,7 @@
 
     /** On new item */
 
-    app.on('push items', function (item) {
+    app.watch.on('push items', function (item) {
 
       // Render item template
 

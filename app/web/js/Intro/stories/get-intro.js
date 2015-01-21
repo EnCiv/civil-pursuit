@@ -6,26 +6,24 @@
 
     var app = this;
 
-    app.importer.emitter('socket')
+    var Socket = app.importer.emitter('socket');
 
-      .on('connect', function () {
-
+    Socket.once('connect',
+      function onceSocketConnect () {
         if ( ! app.model('intro') ) {
-          app.importer
-            .emitter('socket').emit('get intro');
-        }
+          
+          Socket.emit('get intro');
 
-        app.follow
-      
-          .on('update intro', function (intro) {
-            app.render('intro', intro.new);
+          Socket.on('got intro', function (intro) {
+            app.model('intro', intro);
           });
-      
-      })
 
-      .on('got intro', function (intro) {
-        app.model('intro', intro);
-      });
+          app.watch.on('update intro', function (intro) {
+            app.render('intro', intro);
+          });
+          
+          }
+    });
 
   }
 

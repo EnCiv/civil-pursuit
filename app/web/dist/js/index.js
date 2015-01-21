@@ -1,117 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/***
-
-
-      >=>             >=>  >=>                                            
-    >>                >=>  >=>                                >=>         
-  >=>> >>    >=>      >=>  >=>    >=>     >=>      >=>             >===>  
-    >=>    >=>  >=>   >=>  >=>  >=>  >=>   >=>  >  >=>        >=> >=>     
-    >=>   >=>    >=>  >=>  >=> >=>    >=>  >=> >>  >=>        >=>   >==>  
-    >=>    >=>  >=>   >=>  >=>  >=>  >=>   >=>>  >=>=>        >=>     >=> 
-    >=>      >=>     >==> >==>    >=>     >==>    >==> >=>    >=> >=> >=> 
-                                                           >==>      
-
-
-
-                                                  .andAHHAbnn.
-                                             .aAHHHAAUUAAHHHAn.
-                                            dHP^~"        "~^THb.
-                                      .   .AHF                YHA.   .
-                                      |  .AHHb.              .dHHA.  |
-                                      |  HHAUAAHAbn      adAHAAUAHA  |
-                                      I  HF~"_____        ____ ]HHH  I
-                                     HHI HAPK""~^YUHb  dAHHHHHHHHHH IHH
-                                     HHI HHHD> .andHH  HHUUP^~YHHHH IHH
-                                     YUI ]HHP     "~Y  P~"     THH[ IUP
-                                      "  `HK                   ]HH'  "
-                                          THAn.  .d.aAAn.b.  .dHHP
-                                          ]HHHHAAUP" ~~ "YUAAHHHH[
-                                          `HHP^~"  .annn.  "~^YHH'
-                                           YHb    ~" "" "~    dHF
-                                            "YAb..abdHHbndbndAP"
-                                             THHAAb.  .adAHHF
-                                              "UHHHHHHHHHHU"
-                                                ]HHUUHHHHHH[
-                                              .adHHb "HHHHHbn.
-                                       ..andAAHHHHHHb.AHHHHHHHAAbnn..
-                                  .ndAAHHHHHHUUHHHHHHHHHHUP^~"~^YUHHHAAbn.
-                                    "~^YUHHP"   "~^YUHHUP"        "^YUP^"
-                                         ""         "~~"
-
-  
-
-
-
-  @repository https://github.com/co2-git/followjs
-  @author https://github.com/co2-git
-
-***/
-
-; ! function () {
-
-  'use strict';
-
-  function Follow (object) {
-    this.object = object;
-
-    this.follower();
-  }
-
-  require('util').inherits(Follow, require('events').EventEmitter);
-
-  Follow.prototype.follower = function () {
-
-    var self = this;
-
-    for ( var prop in this.object ) {
-      self[prop] = this.object[prop];
-    }
-
-    if ( Object.observe ) { 
-      
-      Object.observe(self.object, function (changes) {
-        
-        changes.forEach(function (change) {
-          
-          var event = change.type + ' ' + change.name;
-          
-          var message = {
-            name: change.name,
-            new: change.object[change.name],
-            old: change.oldValue,
-            event: change.type
-          };
-
-          // console.info(new (function __Followed__ () {
-          //   this.event = message.event;
-          //   this.name = message.name;
-          //   this.message = message;
-          // }) ());
-
-          self.emit(event, message);
-        
-        });
-      });
-    }
-
-    else {
-
-    }
-  }
-
-  if ( module && module.exports ) {
-    module.exports = Follow;
-  }
-
-  if ( this ) {
-    this.Follow = Follow;
-  }
-
-  return Follow;
-
-}();
-
-},{"events":38,"util":42}],2:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -148,7 +35,7 @@
 
 } ();
 
-},{"./stories/get-evaluation":3,"./templates/evaluation":4}],3:[function(require,module,exports){
+},{"./stories/get-evaluation":2,"./templates/evaluation":3}],2:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -171,10 +58,10 @@
           }
         }
 
-        app.model('evaluations').push(evaluation);
+        app.push('evaluations', evaluation);
       });
 
-    app.on('push evaluations', function (evaluation) {
+    app.watch.on('push evaluations', function (evaluation) {
       app.render('evaluation', evaluation);
     });
   }
@@ -183,7 +70,7 @@
 
 } ();
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -191,6 +78,7 @@
   module.exports = {
     template: '.evaluator',
     controller: function (view, evaluation) {
+
       var app = this;
 
       var Socket      =   app.importer.emitter('socket');
@@ -206,21 +94,14 @@
       var $evaluator  =   item.find('>.collapsers >.evaluator');
       var $sideBySide =   $evaluator.find('.items-side-by-side');
 
-      var _evaluation =   {
-        cursor:   0,
-        limit:    0,
-        left:     null,
-        right:    null
-      };
-
-      var follow      =     app.watch(_evaluation);
-
       // Cursor
 
-      follow.on('update cursor', function (cursor) {
-        $evaluator.find('.cursor').text(cursor.new);
+      app.bind('cursor', function (cursor) {
+        console.log('cursor updated');
 
-        if ( cursor.new < _evaluation.limit ) {
+        $evaluator.find('.cursor').text(cursor);
+
+        if ( cursor < app.model('limit') ) {
           $evaluator.find('.finish').text('Neither');
         }
         else {
@@ -228,11 +109,15 @@
         }
       });
 
+      app.model('cursor', evaluation.cursor);
+
       // Limit
 
-      follow.on('update limit', function (limit) {
-        $evaluator.find('.limit').text(limit.new);
+      app.bind('limit', function (limit) {
+        $evaluator.find('.limit').text(limit);
       });
+
+      app.model('limit', evaluation.limit);
 
       // Item
 
@@ -296,27 +181,8 @@
               
               view.find('.criteria-name').text(criteria.name);
 
-              
-              // view.find('input.slider')
-              //   .data('criteria-id', criteria._id)
-              //   .slider()
-              //   .slider('on', 'slideEnabled', function () {
-              //     console.log('hdjskj')
-              //   });
-              
-              // view.find('input.slider').slider('setValue', 1);
-              
-              // view.find('input.slider').slider('on', 'slideStop',
-              //   function () {
-              //     var slider = $(this);
 
-              //     if ( slider.attr('type') ) {
-
-              //       var value = slider.slider('getValue');
-
-              //       $(this).data('slider-value', value);
-              //     }
-              //   });
+              view.find('input[type="range"]').rangeslider();
             }
           };
 
@@ -341,20 +207,19 @@
 
       // Left
 
-      follow.on('update left', function (left) {
-        evaluationItem(left.new, 0);
+      app.bind('left', function (left, old, event) {
+        evaluationItem(left, 0);
       });
+
+      app.model('left', evaluation.items[0]);
 
       // Right
 
-      follow.on('update right', function (right) {
-        evaluationItem(right.new, 1);
+      app.bind('right', function (right) {
+        evaluationItem(right, 1);
       });
 
-      _evaluation.cursor  =   evaluation.cursor;
-      _evaluation.limit   =   evaluation.limit;
-      _evaluation.left    =   evaluation.items[0];
-      _evaluation.right   =   evaluation.items[1];
+      app.model('right', evaluation.items[1]);
 
       // Promote
 
@@ -365,20 +230,20 @@
 
         var unpromoted = pos ? 0 : 1;
 
-        if ( _evaluation.cursor < _evaluation.limit ) {
+        if ( app.model('cursor') < app.model('limit') ) {
 
-          _evaluation.cursor = (_evaluation.cursor + 1);
+          app.inc('cursor');
 
           if ( unpromoted ) {
 
-            Socket.emit('promote', _evaluation.left);
+            Socket.emit('promote', app.model('left'));
 
-            saveItem(1, _evaluation.right._id);
+            saveItem(1, app.model('right')._id);
 
             $evaluator.find('.right-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.right = evaluation.items[_evaluation.cursor];
+              app.model('right', evaluation.items[app.model('cursor')]);
 
               $evaluator.find('.right-item').animate({
                 opacity: 1
@@ -387,14 +252,14 @@
           }
 
           else {
-            Socket.emit('promote', _evaluation.right);
+            Socket.emit('promote', app.model('right'));
 
-            saveItem(0, _evaluation.left._id);
+            saveItem(0, app.model('left')._id);
 
             $evaluator.find('.left-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.left = evaluation.items[_evaluation.cursor];
+              app.model('left', evaluation.items[app.model('cursor')]);
 
               $evaluator.find('.left-item').animate({
                 opacity: 1
@@ -415,46 +280,60 @@
 
         Panel.controller('scroll to point of attention')($evaluator);
 
-        if ( _evaluation.cursor === _evaluation.limit ) {
+        if ( app.model('cursor') === app.model('limit') ) {
           finish();
         }
+        
         else {
           // Left
 
-          _evaluation.cursor = (_evaluation.cursor + 1);
+          app.inc('cursor');
 
-          saveItem(0, _evaluation.left._id);
+          saveItem(0, app.model('left')._id);
+
+          var lefts = [$evaluator.find('.left-item').length, 0];
 
           $evaluator.find('.left-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.left = evaluation.items[_evaluation.cursor];
+              lefts[1] ++;
 
-              $evaluator.find('.left-item').animate({
-                opacity: 1
-              });
+              if( lefts[0] === lefts[1] ) {
+                app.model('left', evaluation.items[app.model('cursor')]);
+
+                $evaluator.find('.left-item').animate({
+                  opacity: 1
+                });
+              }
             });
 
           // Right
 
-          _evaluation.cursor = (_evaluation.cursor + 1);
+          app.inc('cursor');
 
-          saveItem(1, _evaluation.right._id);
+          saveItem(1, app.model('right')._id);
+
+          var rights = [$evaluator.find('.right-item').length, 0];
 
           $evaluator.find('.right-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.right = evaluation.items[_evaluation.cursor];
+              rights[1] ++;
 
-              $evaluator.find('.right-item').animate({
-                opacity: 1
-              });
+              if( rights[0] === rights[1] ) {
+                app.model('right', evaluation.items[app.model('cursor')]);
+
+                $evaluator.find('.right-item').animate({
+                  opacity: 1
+                });
+              }
             });
+
 
           // Adjust cursor
 
-          if ( _evaluation.limit - _evaluation.cursor === 1 ) {
-            _evaluation.cursor = _evaluation.limit;
+          if ( app.model('limit') - app.model('cursor') === 1 ) {
+            app.model('cursor', app.model('limit'));
           }
         }
       });
@@ -462,6 +341,7 @@
       // Save votes and feeback
 
       function saveItem (pos, id) {
+        return;
         // feedback
 
         var feedback = $evaluator.find('.feedback:eq(' + pos + ')');
@@ -522,7 +402,7 @@
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
                                                         
             dP            dP                     
@@ -558,7 +438,7 @@
 
 } ();
 
-},{"./stories/get-intro":6,"./templates/intro":7}],6:[function(require,module,exports){
+},{"./stories/get-intro":5,"./templates/intro":6}],5:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -567,26 +447,24 @@
 
     var app = this;
 
-    app.importer.emitter('socket')
+    var Socket = app.importer.emitter('socket');
 
-      .on('connect', function () {
-
+    Socket.once('connect',
+      function onceSocketConnect () {
         if ( ! app.model('intro') ) {
-          app.importer
-            .emitter('socket').emit('get intro');
-        }
+          
+          Socket.emit('get intro');
 
-        app.follow
-      
-          .on('update intro', function (intro) {
-            app.render('intro', intro.new);
+          Socket.on('got intro', function (intro) {
+            app.model('intro', intro);
           });
-      
-      })
 
-      .on('got intro', function (intro) {
-        app.model('intro', intro);
-      });
+          app.watch.on('update intro', function (intro) {
+            app.render('intro', intro);
+          });
+          
+          }
+    });
 
   }
 
@@ -594,7 +472,7 @@
 
 }();
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -628,7 +506,7 @@
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -675,7 +553,7 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -897,7 +775,7 @@
 
 }();
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -932,7 +810,7 @@
 
 }();
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -984,7 +862,7 @@
 
 } ();
 
-},{"./controllers/item-media":8,"./controllers/truncate":9,"./controllers/youtube":10,"./stories/create-item":12,"./stories/get-items":13,"./stories/listen-to-broadcast":14,"./templates/details-feedback":15,"./templates/details-votes":16,"./templates/edit-and-go-again":17,"./templates/item":18}],12:[function(require,module,exports){
+},{"./controllers/item-media":7,"./controllers/truncate":8,"./controllers/youtube":9,"./stories/create-item":11,"./stories/get-items":12,"./stories/listen-to-broadcast":13,"./templates/details-feedback":14,"./templates/details-votes":15,"./templates/edit-and-go-again":16,"./templates/item":17}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1005,7 +883,7 @@
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1037,7 +915,7 @@
 
         panelItems.items.forEach(function (item, index) {
           if ( index < (panelItems.panel.size + panelItems.panel.skip) - 1 ) {
-            app.model('items').push(item);
+            app.push('items', item);
           }        
         });
 
@@ -1077,7 +955,7 @@
 
     /** On new item */
 
-    app.on('push items', function (item) {
+    app.watch.on('push items', function (item) {
 
       // Render item template
 
@@ -1147,7 +1025,7 @@
 
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1188,7 +1066,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1202,7 +1080,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1299,7 +1177,7 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1394,7 +1272,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1718,7 +1596,7 @@
 
 } ();
 
-},{"string":43}],19:[function(require,module,exports){
+},{"string":42}],18:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1755,7 +1633,7 @@
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1829,7 +1707,7 @@
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1837,7 +1715,7 @@
   function scrollToPointOfAttention (pointOfAttention, cb, speed) {
     var poa = (pointOfAttention.offset().top - 80);
 
-    var current = $('body').scrollTop();
+    var current = $('body,html').scrollTop();
 
     if ( 
       (current === poa) || 
@@ -1847,7 +1725,7 @@
       return typeof cb === 'function' ? cb() : true;
     }
 
-    $('body').animate({
+    $('body,html').animate({
       scrollTop: poa + 'px'
     }, speed || 500, 'swing', function () {
       if ( typeof cb === 'function' ) {
@@ -1860,7 +1738,7 @@
 
 }();
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1908,7 +1786,7 @@
 
 }();
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1972,7 +1850,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2020,7 +1898,7 @@
 
 } ();
 
-},{"./controllers/hide":19,"./controllers/reveal":20,"./controllers/scroll-to-point-of-attention":21,"./controllers/show":22,"./controllers/upload":23,"./stories/get-panel":25,"./templates/panel":26}],25:[function(require,module,exports){
+},{"./controllers/hide":18,"./controllers/reveal":19,"./controllers/scroll-to-point-of-attention":20,"./controllers/show":21,"./controllers/upload":22,"./stories/get-panel":24,"./templates/panel":25}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2037,17 +1915,19 @@
     Socket
       .on('connect', function () {
         if ( ! app.model('panels').length ) {
-          app.model('panels').push({
+
+          app.push('panels', {
             type: 'Topic',
             size: synapp['navigator batch size'],
             skip: 0
           });
+
         }
       });
 
     /** On push panel */
 
-    app
+    app.watch
       .on('push panels', function (panel) {
 
         app.render('panel', panel, function (panelView) {
@@ -2116,7 +1996,7 @@
 
 }();
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2354,7 +2234,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
                                         
                                             
@@ -2413,7 +2293,7 @@
 
 } ();
 
-},{"./stories/forgot-password":28,"./stories/get-online-users":29,"./stories/show-user-features-when-user-is-signed-in":30,"./stories/sign-in":31,"./stories/sign-up":32,"./templates/online-users":33}],28:[function(require,module,exports){
+},{"./stories/forgot-password":27,"./stories/get-online-users":28,"./stories/show-user-features-when-user-is-signed-in":29,"./stories/sign-in":30,"./stories/sign-up":31,"./templates/online-users":32}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2445,7 +2325,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2459,15 +2339,15 @@
       app.model('online', users);
     });
 
-    app.follow.on('update online', function (users) {
-      app.view('online now').text(users.new);
+    app.watch.on('update online', function (users) {
+      app.view('online now').text(users);
     });
   }
 
   module.exports = getOnlineUsers;
 
 } ();
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2480,7 +2360,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2550,7 +2430,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2655,7 +2535,7 @@
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2670,7 +2550,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /***
 
 
@@ -2725,7 +2605,7 @@ Nina Butorac
 
 }();
 56
-},{"./synapp/index":36,"/home/francois/Dev/true-story.js":44}],35:[function(require,module,exports){
+},{"./synapp/index":35,"/home/francois/Dev/true-story.js":43}],34:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2745,7 +2625,7 @@ Nina Butorac
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
  /**
                  
 
@@ -2837,7 +2717,7 @@ Nina Butorac
 
 }();
 
-},{"../Evaluation/":2,"../Intro/":5,"../Item/":11,"../Panel/":24,"../User/":27,"./controllers/bootstrap/responsive-image":35}],37:[function(require,module,exports){
+},{"../Evaluation/":1,"../Intro/":4,"../Item/":10,"../Panel/":23,"../User/":26,"./controllers/bootstrap/responsive-image":34}],36:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2875,7 +2755,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":38}],38:[function(require,module,exports){
+},{"events":37}],37:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3178,7 +3058,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3203,7 +3083,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3291,14 +3171,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],41:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3888,7 +3768,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":41,"_process":40,"inherits":39}],43:[function(require,module,exports){
+},{"./support/isBuffer":40,"_process":39,"inherits":38}],42:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4922,7 +4802,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -4981,7 +4861,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   module.exports = require('./lib/TrueStory.js').exports;
 
 } ();
-},{"./lib/TrueStory.js":45}],45:[function(require,module,exports){
+},{"./lib/TrueStory.js":44}],44:[function(require,module,exports){
 (function (process){
 /***
 
@@ -5050,8 +4930,6 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
 
 	'use strict';
 
-  var Follow = require('/home/francois/Dev/follow.js/lib/Follow');
-
 	function TrueStory () {
 
     /** Models - Hash table */
@@ -5083,8 +4961,10 @@ ee    ee/ ee |ee    ee |/     ee//     ee/
     this.stories      =   {};
 
     this.extensions   =   {};
+
+    this.watch        =   new (require('events').EventEmitter)();
     
-    this.follow       =   new Follow(this.models);
+    // this.follow       =   new Follow(this.models);
 
     this.domain       =   require('domain').create();
 
@@ -5345,6 +5225,26 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
 
       return this.tests[name];
     }
+  };
+
+
+
+
+  TrueStory.prototype.bind = function(model, binder) {
+
+    this.watch.on('add ' + model, function (_new, _old) {
+      binder(_new, _old, 'add');
+    });
+
+    this.watch.on('update ' + model, function (_new, _old) {
+      binder(_new, _old, 'update');
+    });
+
+    this.watch.on('delete ' + model, function (_new, _old) {
+      binder(_new, _old, 'delete');
+    });
+
+    return this;
   };
 
   /*
@@ -5691,33 +5591,32 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
     }
   };
 
-  /***********************************************
-
-                   
 
 
 
 
+  TrueStory.prototype.push = function (model, item) {
+    if ( Array.isArray(this.models[model]) ) {
+      console.log('pushing array', model)
+      this.models[model] = this.models[model].concat([item]);
+      this.watch.emit('push ' + model, item);
+    }
+
+    return this;
+  };
 
 
-                              
-    ee                ee  ee  
-    ee                ee  ee  
-  eeeeee     eeeeee   ee  ee  
-    ee      ee    ee  ee  ee  
-    ee      eeeeeeee  ee  ee  
-    ee  ee  ee        ee  ee  
-     eeee    eeeeeee  ee  ee  
-                
+  TrueStory.prototype.inc = function (model, step) {
 
+    if ( typeof step === 'undefined' ) {
+      step = 1;
+    }
 
+    this.model(model, this.model(model) + step);
 
+    return this;
+  };
 
-
-
-                            
-
-  ***********************************************/
 
   TrueStory.prototype.tell = function (story) {
 
@@ -5750,9 +5649,11 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
 
   ***********************************************/
 
-  TrueStory.prototype.watch = function (object) {
-    return new Follow(object);
-  };
+  // TrueStory.prototype.watch = function (object) {
+  //   return new Follow(object);
+  // };
+
+
 
   /***********************************************
 
@@ -5864,87 +5765,10 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
   module.exports = TrueStory;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory/model":46,"./TrueStory/parse-dot-notation":47,"./TrueStory/render":48,"./When":49,"/home/francois/Dev/follow.js/lib/Follow":1,"_process":40,"domain":37,"events":38,"util":42}],46:[function(require,module,exports){
-/***
-
-────────────────────▄▄▄▄
-────────────────▄▄█▀▀──▀▀█▄
-─────────────▄█▀▀─────────▀▀█▄
-────────────▄█▀──▄▄▄▄▄▄──────▀█
-────────────█───█▌────▀▀█▄─────█
-────────────█──▄█────────▀▀▀█──█
-────────────█──█──▀▀▀──▀▀▀▄─▐──█
-────────────█──▌────────────▐──█
-────────────█──▌─▄▀▀▄───────▐──█
-───────────█▀▌█──▄▄▄───▄▀▀▄─▐──█
-───────────▌─▀───█▄█▌─▄▄▄────█─█
-───────────▌──────▀▀──█▄█▌────█
-───────────█───────────▀▀─────▐
-────────────█──────▌──────────█
-────────────██────█──────────█
-─────────────█──▄──█▄█─▄────█
-─────────────█──▌─▄▄▄▄▄─█──█
-─────────────█─────▄▄──▄▀─█
-─────────────█▄──────────█
-─────────────█▀█▄▄──▄▄▄▄▄█▄▄▄▄▄
-───────────▄██▄──▀▀▀█─────────█
-──────────██▄─█▄────█─────────█
-───▄▄▄▄███──█▄─█▄───█─────────██▄▄▄
-▄█▀▀────█────█──█▄──█▓▓▓▓▓▓▓▓▓█───▀▀▄
-█──────█─────█───████▓▓▓▓▓▓▓▓▓█────▀█
-█──────█─────█───█████▓▓▓▓▓▓▓█──────█
-█─────█──────█───███▀▀▀▀█▓▓▓█───────█
-█────█───────█───█───▄▄▄▄████───────█
-█────█───────█──▄▀───────────█──▄───█
-█────█───────█─▄▀─────█████▀▀▀─▄█───█
-█────█───────█▄▀────────█─█────█────█
-█────█───────█▀───────███─█────█────█
-█─────█────▄█▀──────────█─█────█────█
-█─────█──▄██▀────────▄▀██─█▄───█────█
-█────▄███▀─█───────▄█─▄█───█▄──█────█
-█─▄██▀──█──█─────▄███─█─────█──█────█
-██▀────▄█───█▄▄▄█████─▀▀▀▀█▀▀──█────█
-█──────█────▄▀──█████─────█────▀█───█
-───────█──▄█▀───█████─────█─────█───█
-──────▄███▀─────▀███▀─────█─────█───█
-─────────────────────────────────────
-▀█▀─█▀▄─█─█─█▀────▄▀▀─▀█▀─▄▀▄─█▀▄─█─█
-─█──█▄▀─█─█─█▀────▀▀█──█──█─█─█▄▀─█▄█
-─▀──▀─▀─▀▀▀─▀▀────▀▀───▀───▀──▀─▀─▄▄█
-─────────────────────────────────────
-
-                    
-                                                
-                                                
-                              $$            $$  
-                              $$            $$  
-$$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-$$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-$$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-$$   $$   $$  $$    $$  $$    $$  $$        $$  
-$$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                                
-                                                 
-                                           
-                                           
-
-
-***/
-
-! function () {
+},{"./TrueStory/model":45,"./TrueStory/parse-dot-notation":46,"./TrueStory/render":47,"./When":48,"_process":39,"domain":36,"events":37,"util":41}],45:[function(require,module,exports){
+; ! function () {
   
   'use strict';
-
-  function index(obj,is, value) {
-      if (typeof is == 'string')
-          return index(obj,is.split('.'), value);
-      else if (is.length==1 && value!==undefined)
-          return obj[is[0]] = value;
-      else if (is.length==0)
-          return obj;
-      else
-          return index(obj[is[0]],is.slice(1), value);
-  }
 
   module.exports = function (name, model, noFollow) {
     var app = this;
@@ -5952,48 +5776,6 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
     if ( ! name ) {
       return this;
     }
-
-    /***
-
-                                            
-                                                                
-                                                                
-        $$$$$$                                                  
-      $$$    $$$                                                
-     $$        $$   $$$$$$$    $$$$$$   $$$$$$ $$$$    $$$$$$   
-    $$   $$$$$  $$  $$    $$        $$  $$   $$   $$  $$    $$  
-    $$  $$  $$  $$  $$    $$   $$$$$$$  $$   $$   $$  $$$$$$$$  
-    $$  $$  $$  $$  $$    $$  $$    $$  $$   $$   $$  $$        
-    $$   $$$$$$$$   $$    $$   $$$$$$$  $$   $$   $$   $$$$$$$  
-     $$                                                         
-      $$$    $$$                                                
-        $$$$$$                                                   
-                                                
-                                            
-                                            
-    $$                                      
-                                            
-    $$   $$$$$$$         $$$$$$   $$$$$$$   
-    $$  $$                    $$  $$    $$  
-    $$   $$$$$$          $$$$$$$  $$    $$  
-    $$        $$        $$    $$  $$    $$  
-    $$  $$$$$$$          $$$$$$$  $$    $$  
-                                            
-                                            
-                                                             
-                                                             
-              $$                                     $$      
-              $$                                     $$      
-     $$$$$$   $$$$$$$      $$   $$$$$$    $$$$$$$  $$$$$$    
-    $$    $$  $$    $$         $$    $$  $$          $$      
-    $$    $$  $$    $$     $$  $$$$$$$$  $$          $$      
-    $$    $$  $$    $$     $$  $$        $$          $$  $$  
-     $$$$$$   $$$$$$$      $$   $$$$$$$   $$$$$$$     $$$$   
-                           $$                                
-                     $$    $$                                
-                      $$$$$$                                 
-
-    ***/
 
     if ( typeof name === 'object' ) {
       for ( var i in name ) {
@@ -6003,229 +5785,36 @@ $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$
       return app;
     }
 
-    /***
-
-                                            
-                                                                
-                                                                
-        $$$$$$                                                  
-      $$$    $$$                                                
-     $$        $$   $$$$$$$    $$$$$$   $$$$$$ $$$$    $$$$$$   
-    $$   $$$$$  $$  $$    $$        $$  $$   $$   $$  $$    $$  
-    $$  $$  $$  $$  $$    $$   $$$$$$$  $$   $$   $$  $$$$$$$$  
-    $$  $$  $$  $$  $$    $$  $$    $$  $$   $$   $$  $$        
-    $$   $$$$$$$$   $$    $$   $$$$$$$  $$   $$   $$   $$$$$$$  
-     $$                                                         
-      $$$    $$$                                                
-        $$$$$$                                                   
-                                                
-                                  
-                                  
-    $$                            
-                                  
-    $$   $$$$$$$         $$$$$$   
-    $$  $$                    $$  
-    $$   $$$$$$          $$$$$$$  
-    $$        $$        $$    $$  
-    $$  $$$$$$$          $$$$$$$  
-                              
-                                  
-                                                          
-                                                          
-                $$                $$                      
-                $$                                        
-     $$$$$$$  $$$$$$     $$$$$$   $$  $$$$$$$    $$$$$$   
-    $$          $$      $$    $$  $$  $$    $$  $$    $$  
-     $$$$$$     $$      $$        $$  $$    $$  $$    $$  
-          $$    $$  $$  $$        $$  $$    $$  $$    $$  
-    $$$$$$$      $$$$   $$        $$  $$    $$   $$$$$$$  
-                                                      $$  
-                                                $$    $$  
-                                                 $$$$$$                                 
-
-    ***/
-
     if ( typeof name === 'string' ) {
-
-      /**
-
-                                                                    
-                                                                       
-      $$                           $$     $$
-       $$                          $$     $$                          
-        $$   $$$$$$$   $$$$$$   $$$$$$  $$$$$$    $$$$$$    $$$$$$   
-         $$  $$        $$    $$    $$     $$      $$    $$  $$  $$  
-        $$    $$$$$$   $$$$$$$$    $$     $$      $$$$$$$$  $$        
-       $$          $$  $$          $$  $$ $$  $$  $$        $$        
-      $$     $$$$$$$    $$$$$$$     $$$$   $$$$    $$$$$$$   $$        
-                                                                       
-                                                                 
-
-      **/
 
 
       if ( '1' in arguments ) {
-        index(app.models, name, model);
+        
+        if ( name in this.models ) {
+          this.watch.emit('update ' + name, model, this.models[name]);
+          console.warn('%c update "' + name + '" %c ' + JSON.stringify({
+            new: model, 
+            old: this.models[name]}, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
+          // console.warn('update ' + name);
+          this.models[name] = model;
+        }
+
+        else {
+          this.models[name] = model;
+          this.watch.emit('add ' + name, model);
+          console.warn('%c add "' + name + '" %c ' + JSON.stringify(model, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
+        }
 
         return app;
       }
 
-
-      /***
-
-                                                                       
-                                                                       
-      $$                           $$      $$                          
-       $$                          $$      $$                          
-        $$    $$$$$$    $$$$$$   $$$$$$  $$$$$$     $$$$$$    $$$$$$   
-         $$  $$    $$  $$    $$    $$      $$      $$    $$  $$    $$  
-        $$   $$    $$  $$$$$$$$    $$      $$      $$$$$$$$  $$        
-       $$    $$    $$  $$          $$  $$  $$  $$  $$        $$        
-      $$      $$$$$$$   $$$$$$$     $$$$    $$$$    $$$$$$$  $$        
-                   $$                                                  
-             $$    $$                                                  
-              $$$$$$                                                   
-
-      ***/
-
-      var $model;
-
-      /**
-
-                                            
-                                              
-        .     $$              $$                    
-        .     $$              $$                    
-        .$$$$$$$   $$$$$$   $$$$$$                  
-        $$    $$  $$    $$    $$                    
-        $$    $$  $$    $$    $$                    
-        $$    $$  $$    $$    $$  $$                
-         $$$$$$$   $$$$$$      $$$$                 
-                                                    
-                                                    
-        $$$$$$$    $$$$$$   $$$$$$ $$$$    $$$$$$   
-        $$    $$        $$  $$   $$   $$  $$    $$  
-        $$    $$   $$$$$$$  $$   $$   $$  $$$$$$$$  
-        $$    $$  $$    $$  $$   $$   $$  $$        
-        $$    $$   $$$$$$$  $$   $$   $$   $$$$$$$  
-                                                  
-
-      ***/
-
-
-
-      if ( /\./.test(name) ) {
-        $model = index(app.models, name);
-      }
-
-      else {
-        $model = app.models[name];
-      }
-
-
-      if ( ( typeof $model !== 'undefined' && $model !== null ) &&
-        ! $model.__follow ) {
-
-        /***
-
-                                                 
-           $$$$$$                                          
-          $$    $$                                         
-          $$    $$   $$$$$$    $$$$$$   $$$$$$   $$    $$  
-          $$$$$$$$  $$    $$  $$    $$       $$  $$    $$  
-          $$    $$  $$        $$        $$$$$$$  $$    $$  
-          $$    $$  $$        $$       $$    $$  $$    $$  
-          $$    $$  $$        $$        $$$$$$$   $$$$$$$  
-                                                       $$  
-                                                 $$    $$  
-                                                  $$$$$$           
-
-        ***/
-
-        if ( Array.isArray($model) ) {
-          
-          Object.defineProperty($model, '__follow', {
-            value: true,
-            enumerable: false
-          });
-
-          /***
-
-                                        $$        
-                                        $$        
-           $$$$$$   $$    $$   $$$$$$$  $$$$$$$   
-          $$    $$  $$    $$  $$        $$    $$  
-          $$    $$  $$    $$   $$$$$$   $$    $$  
-          $$    $$  $$    $$        $$  $$    $$  
-          $$$$$$$    $$$$$$   $$$$$$$   $$    $$  
-          $$                                      
-          $$                                      
-          $$                                      
-
-          ***/
-
-          $model.push = function push () {
-
-
-            // Do the concatening
-
-            for ( var i in arguments ) {
-              $model = Array.prototype.concat.apply($model, [arguments[i]]);
-
-              index(app.models, name, $model);
-
-              // Emit it
-
-              app.emit('push ' + name, arguments[i]);
-            }
-
-          };
-
-          /***
-                                                              $$      
-                                                              $$      
-           $$$$$$$   $$$$$$   $$$$$$$    $$$$$$$   $$$$$$   $$$$$$    
-          $$        $$    $$  $$    $$  $$              $$    $$      
-          $$        $$    $$  $$    $$  $$         $$$$$$$    $$      
-          $$        $$    $$  $$    $$  $$        $$    $$    $$  $$  
-           $$$$$$$   $$$$$$   $$    $$   $$$$$$$   $$$$$$$     $$$$   
-                                                                      
-                                                                      
-          ***/
-
-          $model.concat = function concat () {
-
-            var more = [];
-
-            // Do the concatening
-
-            for ( var i in arguments ) {
-              $model = Array.prototype.concat.apply(
-                $model,
-                [arguments[i]]);
-
-              more = more.concat(arguments[i]);
-            }
-
-            console.info('[❱❱]', "\twatchAr\t", name, more);
-
-            // Emit it
-
-            var concatenated = [];
-
-            app.emit('concat ' + name, more);
-          }.bind(app);
-
-        }
-      }
-
-      return $model;
+      return this.models[name];
     }
   };
 
 }();
 
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /***
 
 ────────────────────▄▄▄▄
@@ -6347,7 +5936,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 
 } ();
 
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (process){
 ; ! function () {
 
@@ -6442,7 +6031,7 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
 }();
 
 }).call(this,require('_process'))
-},{"_process":40}],49:[function(require,module,exports){
+},{"_process":39}],48:[function(require,module,exports){
 (function (process){
 /***
 
@@ -6915,4 +6504,4 @@ $$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |
   module.exports = TrueStory_When;
 } ();
 }).call(this,require('_process'))
-},{"./TrueStory":45,"_process":40}]},{},[34]);
+},{"./TrueStory":44,"_process":39}]},{},[33]);

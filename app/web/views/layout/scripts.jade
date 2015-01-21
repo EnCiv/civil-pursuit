@@ -45,6 +45,12 @@ block script-bootstrap
 //-   - else
 //-     script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
 
+block script-rangeslider
+  - if ( settings.env === 'production' )
+    script(src='/bower/rangeslider.js/dist/rangeslider.min.js')
+  - else
+    script(src='/bower/rangeslider.js/dist/rangeslider.js')
+
 block script-d3
   - if ( settings.env === 'production' )
     script(src='/bower/d3/d3.min.js')

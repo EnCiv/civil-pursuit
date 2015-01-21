@@ -5,7 +5,7 @@
   function scrollToPointOfAttention (pointOfAttention, cb, speed) {
     var poa = (pointOfAttention.offset().top - 80);
 
-    var current = $('body').scrollTop();
+    var current = $('body,html').scrollTop();
 
     if ( 
       (current === poa) || 
@@ -15,7 +15,7 @@
       return typeof cb === 'function' ? cb() : true;
     }
 
-    $('body').animate({
+    $('body,html').animate({
       scrollTop: poa + 'px'
     }, speed || 500, 'swing', function () {
       if ( typeof cb === 'function' ) {

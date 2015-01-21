@@ -14,17 +14,19 @@
     Socket
       .on('connect', function () {
         if ( ! app.model('panels').length ) {
-          app.model('panels').push({
+
+          app.push('panels', {
             type: 'Topic',
             size: synapp['navigator batch size'],
             skip: 0
           });
+
         }
       });
 
     /** On push panel */
 
-    app
+    app.watch
       .on('push panels', function (panel) {
 
         app.render('panel', panel, function (panelView) {

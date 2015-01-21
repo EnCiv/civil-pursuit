@@ -20,10 +20,10 @@
           }
         }
 
-        app.model('evaluations').push(evaluation);
+        app.push('evaluations', evaluation);
       });
 
-    app.on('push evaluations', function (evaluation) {
+    app.watch.on('push evaluations', function (evaluation) {
       app.render('evaluation', evaluation);
     });
   }

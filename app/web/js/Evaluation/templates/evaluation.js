@@ -5,6 +5,7 @@
   module.exports = {
     template: '.evaluator',
     controller: function (view, evaluation) {
+
       var app = this;
 
       var Socket      =   app.importer.emitter('socket');
@@ -20,21 +21,14 @@
       var $evaluator  =   item.find('>.collapsers >.evaluator');
       var $sideBySide =   $evaluator.find('.items-side-by-side');
 
-      var _evaluation =   {
-        cursor:   0,
-        limit:    0,
-        left:     null,
-        right:    null
-      };
-
-      var follow      =     app.watch(_evaluation);
-
       // Cursor
 
-      follow.on('update cursor', function (cursor) {
-        $evaluator.find('.cursor').text(cursor.new);
+      app.bind('cursor', function (cursor) {
+        console.log('cursor updated');
 
-        if ( cursor.new < _evaluation.limit ) {
+        $evaluator.find('.cursor').text(cursor);
+
+        if ( cursor < app.model('limit') ) {
           $evaluator.find('.finish').text('Neither');
         }
         else {
@@ -42,11 +36,15 @@
         }
       });
 
+      app.model('cursor', evaluation.cursor);
+
       // Limit
 
-      follow.on('update limit', function (limit) {
-        $evaluator.find('.limit').text(limit.new);
+      app.bind('limit', function (limit) {
+        $evaluator.find('.limit').text(limit);
       });
+
+      app.model('limit', evaluation.limit);
 
       // Item
 
@@ -110,27 +108,8 @@
               
               view.find('.criteria-name').text(criteria.name);
 
-              
-              // view.find('input.slider')
-              //   .data('criteria-id', criteria._id)
-              //   .slider()
-              //   .slider('on', 'slideEnabled', function () {
-              //     console.log('hdjskj')
-              //   });
-              
-              // view.find('input.slider').slider('setValue', 1);
-              
-              // view.find('input.slider').slider('on', 'slideStop',
-              //   function () {
-              //     var slider = $(this);
 
-              //     if ( slider.attr('type') ) {
-
-              //       var value = slider.slider('getValue');
-
-              //       $(this).data('slider-value', value);
-              //     }
-              //   });
+              view.find('input[type="range"]').rangeslider();
             }
           };
 
@@ -155,20 +134,19 @@
 
       // Left
 
-      follow.on('update left', function (left) {
-        evaluationItem(left.new, 0);
+      app.bind('left', function (left, old, event) {
+        evaluationItem(left, 0);
       });
+
+      app.model('left', evaluation.items[0]);
 
       // Right
 
-      follow.on('update right', function (right) {
-        evaluationItem(right.new, 1);
+      app.bind('right', function (right) {
+        evaluationItem(right, 1);
       });
 
-      _evaluation.cursor  =   evaluation.cursor;
-      _evaluation.limit   =   evaluation.limit;
-      _evaluation.left    =   evaluation.items[0];
-      _evaluation.right   =   evaluation.items[1];
+      app.model('right', evaluation.items[1]);
 
       // Promote
 
@@ -179,20 +157,20 @@
 
         var unpromoted = pos ? 0 : 1;
 
-        if ( _evaluation.cursor < _evaluation.limit ) {
+        if ( app.model('cursor') < app.model('limit') ) {
 
-          _evaluation.cursor = (_evaluation.cursor + 1);
+          app.inc('cursor');
 
           if ( unpromoted ) {
 
-            Socket.emit('promote', _evaluation.left);
+            Socket.emit('promote', app.model('left'));
 
-            saveItem(1, _evaluation.right._id);
+            saveItem(1, app.model('right')._id);
 
             $evaluator.find('.right-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.right = evaluation.items[_evaluation.cursor];
+              app.model('right', evaluation.items[app.model('cursor')]);
 
               $evaluator.find('.right-item').animate({
                 opacity: 1
@@ -201,14 +179,14 @@
           }
 
           else {
-            Socket.emit('promote', _evaluation.right);
+            Socket.emit('promote', app.model('right'));
 
-            saveItem(0, _evaluation.left._id);
+            saveItem(0, app.model('left')._id);
 
             $evaluator.find('.left-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.left = evaluation.items[_evaluation.cursor];
+              app.model('left', evaluation.items[app.model('cursor')]);
 
               $evaluator.find('.left-item').animate({
                 opacity: 1
@@ -229,46 +207,60 @@
 
         Panel.controller('scroll to point of attention')($evaluator);
 
-        if ( _evaluation.cursor === _evaluation.limit ) {
+        if ( app.model('cursor') === app.model('limit') ) {
           finish();
         }
+        
         else {
           // Left
 
-          _evaluation.cursor = (_evaluation.cursor + 1);
+          app.inc('cursor');
 
-          saveItem(0, _evaluation.left._id);
+          saveItem(0, app.model('left')._id);
+
+          var lefts = [$evaluator.find('.left-item').length, 0];
 
           $evaluator.find('.left-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.left = evaluation.items[_evaluation.cursor];
+              lefts[1] ++;
 
-              $evaluator.find('.left-item').animate({
-                opacity: 1
-              });
+              if( lefts[0] === lefts[1] ) {
+                app.model('left', evaluation.items[app.model('cursor')]);
+
+                $evaluator.find('.left-item').animate({
+                  opacity: 1
+                });
+              }
             });
 
           // Right
 
-          _evaluation.cursor = (_evaluation.cursor + 1);
+          app.inc('cursor');
 
-          saveItem(1, _evaluation.right._id);
+          saveItem(1, app.model('right')._id);
+
+          var rights = [$evaluator.find('.right-item').length, 0];
 
           $evaluator.find('.right-item').animate({
               opacity: 0
             }, function () {
-              _evaluation.right = evaluation.items[_evaluation.cursor];
+              rights[1] ++;
 
-              $evaluator.find('.right-item').animate({
-                opacity: 1
-              });
+              if( rights[0] === rights[1] ) {
+                app.model('right', evaluation.items[app.model('cursor')]);
+
+                $evaluator.find('.right-item').animate({
+                  opacity: 1
+                });
+              }
             });
+
 
           // Adjust cursor
 
-          if ( _evaluation.limit - _evaluation.cursor === 1 ) {
-            _evaluation.cursor = _evaluation.limit;
+          if ( app.model('limit') - app.model('cursor') === 1 ) {
+            app.model('cursor', app.model('limit'));
           }
         }
       });
@@ -276,6 +268,7 @@
       // Save votes and feeback
 
       function saveItem (pos, id) {
+        return;
         // feedback
 
         var feedback = $evaluator.find('.feedback:eq(' + pos + ')');

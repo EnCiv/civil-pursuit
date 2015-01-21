@@ -11,8 +11,8 @@
       app.model('online', users);
     });
 
-    app.follow.on('update online', function (users) {
-      app.view('online now').text(users.new);
+    app.watch.on('update online', function (users) {
+      app.view('online now').text(users);
     });
   }
 
