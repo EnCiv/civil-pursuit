@@ -209,6 +209,7 @@
 
       app.bind('left', function (left, old, event) {
         evaluationItem(left, 0);
+        $evaluator.find('.left-item .promote').text(left.subject);
       });
 
       app.model('left', evaluation.items[0]);
@@ -217,6 +218,7 @@
 
       app.bind('right', function (right) {
         evaluationItem(right, 1);
+        $evaluator.find('.right-item .promote').text(right.subject);
       });
 
       app.model('right', evaluation.items[1]);
@@ -341,7 +343,7 @@
       // Save votes and feeback
 
       function saveItem (pos, id) {
-        return;
+   
         // feedback
 
         var feedback = $evaluator.find('.feedback:eq(' + pos + ')');
