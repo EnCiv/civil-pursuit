@@ -3,11 +3,14 @@
   'use strict';
 
   function hide (elem, cb) {
+
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
 
     if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
       return false;
     }
+
+    console.info('hiding', elem.attr('id'), elem.attr('class'), elem.attr('name'))
 
     elem.removeClass('is-shown').addClass('is-hiding');;
 

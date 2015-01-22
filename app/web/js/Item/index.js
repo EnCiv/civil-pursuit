@@ -22,7 +22,12 @@
     controllers: {
       'youtube':      require('./controllers/youtube'),
       'item media':   require('./controllers/item-media'),
-      'truncate':     require('./controllers/truncate')
+      'truncate':     require('./controllers/truncate'),
+      'toggle details':     require('./controllers/toggle-details'),
+      'progress bar':     require('./controllers/progress-bar'),
+      'invite people in':     require('./controllers/invite-people-in'),
+      'get item details':     require('./controllers/get-item-details'),
+      'toggle edit and go again':     require('./controllers/toggle-edit-and-go-again')
     },
     
     templates: {

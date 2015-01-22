@@ -80,7 +80,7 @@
 
                 app.importer.extension('Panel').controller('hide')(
                   $editor, function () {
-                    app.model('items').push(new_item);
+                    app.push('items', new_item);
                   });
               }
             });

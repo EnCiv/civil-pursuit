@@ -13,11 +13,9 @@
   }
 
   function reveal (elem, poa, cb) {
-    var app = this;
+    console.info('revealing', elem.attr('id'), elem.attr('class'))
 
-    if ( elem.hasClass('.creator') ) {
-      console.log('reveal creator')
-    }
+    var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {
       elem.addClass('is-toggable');
