@@ -187,7 +187,7 @@
             var children = synapp['item relation'][item.type];
 
             if ( typeof children === 'string' ) {
-              Panel.model('panels').push({
+              Panel.push('panels', {
                 type: children,
                 parent: item._id,
                 size: synapp['navigator batch size'],
@@ -199,7 +199,7 @@
               children.forEach(function (child) {
 
                 if ( typeof child === 'string' ) {
-                  Panel.model('panels').push({
+                  Panel.push('panels', {
                     type: child,
                     parent: item._id,
                     size: synapp['navigator batch size'],
@@ -209,7 +209,7 @@
 
                 else if ( Array.isArray(child) ) {
                   child.forEach(function (c) {
-                    Panel.model('panels').push({
+                    Panel.push('panels', {
                       type: c,
                       parent: item._id,
                       size: synapp['navigator batch size'],
