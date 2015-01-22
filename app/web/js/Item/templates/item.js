@@ -96,7 +96,7 @@
           else {
             // Show tip
 
-            // $('#modal-tip-evaluate').modal('show');
+            $('#modal-tip-evaluate').modal('show');
 
             Panel.controller('reveal')($promote, view,
               
