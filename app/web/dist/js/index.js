@@ -1758,8 +1758,8 @@
 
     // Hide other shown elements that share same item's level
 
-    if ( $item.length && $item.find('.is-shown').length ) {
-      hider = $item.find('.is-shown');
+    if ( $item.length && $item.find('.is-shown').not('.children').length ) {
+      hider = $item.find('.is-shown').not('.children');
     }
 
     // If hiders
