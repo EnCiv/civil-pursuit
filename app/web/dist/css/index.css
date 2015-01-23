@@ -4692,7 +4692,7 @@ footer {
   width: 100%;
   height: 100%;
 }
-.youtube-preview .youtube-play {
+.youtube-preview .fa-youtube-play {
   display: none;
   position: absolute;
   cursor: pointer;
