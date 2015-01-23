@@ -1040,7 +1040,7 @@
       //     '<iframe src="http://www.youtube.com/embed/' + youtube + '" frameborder="0" width="300" height="175"></iframe>' +
       //   '</div>';
 
-      var raw = '<div><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /></div>';
+      var raw = '<div class="youtube-preview" data-video="' + youtube + '"><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /><i class="fa fa-play fa-5x"></i></div>';
 
       if ( server ) {
         return raw;
@@ -1561,6 +1561,40 @@
 
       view.find('.item-media').eq(0).empty().append(
         app.controller('item media')(item));
+
+      if ( view.find('.youtube-preview .fa-play').length ) {
+
+        setTimeout(function () {
+          view.find('.youtube-preview .fa-play').show();
+
+          var imgTop =  view.find('.youtube-preview img').offset().top;
+          var imgHeight =  view.find('.youtube-preview img').height();
+          var iconHeight =  view.find('.youtube-preview .fa-play').height();
+
+          var imgLeft =  view.find('.youtube-preview img').offset().left;
+          var imgWidth =  view.find('.youtube-preview img').width();
+          var iconWidth =  view.find('.youtube-preview .fa-play').width();
+
+          view.find('.youtube-preview .fa-play')
+            .css({
+              display: 'block',
+              top: (imgTop + ((imgHeight / 2) - (iconHeight / 2))) + 'px',
+              left: (imgLeft + ((imgWidth / 2) - (iconWidth / 2))) + 'px',
+            })
+            .on('click', function () {
+              var video_container = $('<div class="video-container"></div>');
+              view.find('.youtube-preview')
+                .empty()
+                .append(video_container);
+
+              video_container.append($('<iframe frameborder="0" width="300" height="175"></iframe>'));
+
+              video_container.find('iframe').attr('src', 'http://www.youtube.com/embed/'
+                + view.find('.youtube-preview').data('video')); 
+            });
+
+        }, 1000);
+      }
 
       // TRUNCATE
 
