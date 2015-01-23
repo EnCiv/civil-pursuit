@@ -173,8 +173,6 @@
 
         evaluation.criterias.forEach(function (criteria) {
 
-          console.info('cooool');
-
           // Sliders template
 
           var template = {
@@ -245,7 +243,7 @@
 
             Socket.emit('promote', app.model('left'));
 
-            saveItem(1, app.model('right')._id);
+            saveItem('right');
 
             var rights = [$evaluator.find('.right-item').length, 0];
 
@@ -267,7 +265,7 @@
           else {
             Socket.emit('promote', app.model('right'));
 
-            saveItem(0, app.model('left')._id);
+            saveItem('left');
 
             var lefts = [$evaluator.find('.left-item').length, 0];
 
@@ -309,7 +307,7 @@
 
           app.inc('cursor');
 
-          saveItem(0, app.model('left')._id);
+          saveItem('left');
 
           var lefts = [$evaluator.find('.left-item').length, 0];
 
@@ -331,7 +329,7 @@
 
           app.inc('cursor');
 
-          saveItem(1, app.model('right')._id);
+          saveItem('right');
 
           var rights = [$evaluator.find('.right-item').length, 0];
 
@@ -360,15 +358,15 @@
 
       // Save votes and feeback
 
-      function saveItem (pos, id) {
+      function saveItem (hand) {
    
         // feedback
 
-        var feedback = $evaluator.find('.feedback:eq(' + pos + ')');
+        var feedback = $evaluator.find('.' +  hand + '-item .feedback');
 
         if ( feedback.val() ) {
           Socket.emit('insert feedback', {
-            item: id,
+            item: app.model(hand)._id,
             user: synapp.user,
             feedback: feedback.val()
           });
@@ -380,21 +378,20 @@
 
         var votes = [];
 
-        $evaluator.find('.sliders:eq(' + pos + ') input.slider')
+        $sideBySide
+          .find('.' +  hand + '-item input[type="range"]:visible')
           .each(function () {
             var vote = {
-              item: id,
+              item: app.model(hand)._id,
               user: synapp.user,
-              value: $(this).data('slider-value') || 1,
+              value: +$(this).val(),
               criteria: $(this).data('criteria-id')
             };
 
             votes.push(vote);
           });
 
-        console.info('votes', votes)
-
-        // Socket.emit('insert votes', votes);
+        Socket.emit('insert votes', votes);
       }
 
       // Finish
