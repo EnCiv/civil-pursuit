@@ -125,6 +125,8 @@
 
         var hand = pos ? 'right' : 'left';
 
+        console.info(hand, pos)
+
         // Increment views counter
 
         Socket.emit('add view', eItem._id);
@@ -171,6 +173,8 @@
 
         evaluation.criterias.forEach(function (criteria) {
 
+          console.info('cooool');
+
           // Sliders template
 
           var template = {
@@ -200,8 +204,7 @@
 
         // Promote button
 
-        $sideBySide.find('.promote.' + hand + '-item')
-          .text(eItem.subject)
+        $sideBySide.find('.' + hand + '-item .promote')
           .data('position', pos);
       }
 
@@ -232,6 +235,8 @@
 
         var unpromoted = pos ? 0 : 1;
 
+        console.info('unpromoted', unpromoted, pos)
+
         if ( app.model('cursor') < app.model('limit') ) {
 
           app.inc('cursor');
@@ -242,14 +247,20 @@
 
             saveItem(1, app.model('right')._id);
 
+            var rights = [$evaluator.find('.right-item').length, 0];
+
             $evaluator.find('.right-item').animate({
               opacity: 0
             }, function () {
-              app.model('right', evaluation.items[app.model('cursor')]);
+              rights[1] ++;
 
-              $evaluator.find('.right-item').animate({
-                opacity: 1
-              });
+              if( rights[0] === rights[1] ) {
+                app.model('right', evaluation.items[app.model('cursor')]);
+
+                $evaluator.find('.right-item').animate({
+                  opacity: 1
+                });
+              }
             });
           }
 
@@ -258,14 +269,21 @@
 
             saveItem(0, app.model('left')._id);
 
+            var lefts = [$evaluator.find('.left-item').length, 0];
+
             $evaluator.find('.left-item').animate({
               opacity: 0
             }, function () {
-              app.model('left', evaluation.items[app.model('cursor')]);
 
-              $evaluator.find('.left-item').animate({
-                opacity: 1
-              });
+              lefts[1] ++;
+
+              if( lefts[0] === lefts[1] ) {
+                app.model('left', evaluation.items[app.model('cursor')]);
+  
+                $evaluator.find('.left-item').animate({
+                  opacity: 1
+                });
+              }
             });
           }
 
@@ -374,7 +392,9 @@
             votes.push(vote);
           });
 
-        Socket.emit('insert votes', votes);
+        console.info('votes', votes)
+
+        // Socket.emit('insert votes', votes);
       }
 
       // Finish
@@ -5883,7 +5903,7 @@ $$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$
           this.models[name] = model;
           this.watch.emit('add ' + name, model);
           // console.warn('%c add "' + name + '" %c ' + JSON.stringify(model, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
-          console.log('%c add' + '%c ' + name + '%c ' + JSON.stringify(model, null, 2),
+          console.warn('%c add' + '%c ' + name + '%c ' + JSON.stringify(model, null, 2),
             'color: green; font-weight: bold',
             'color: blue; font-weight: bold',
             'color: #666');
