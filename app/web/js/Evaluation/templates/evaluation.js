@@ -24,8 +24,6 @@
       // Cursor
 
       app.bind('cursor', function (cursor) {
-        console.log('cursor updated');
-
         $evaluator.find('.cursor').text(cursor);
 
         if ( cursor < app.model('limit') ) {
@@ -52,7 +50,41 @@
 
         var hand = pos ? 'right' : 'left';
 
-        console.info(hand, pos)
+        // If null
+
+        if ( ! eItem ) {
+          $sideBySide
+            .find('.subject.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.is-des.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.sliders.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.' + hand + '-item .feedback')
+            .closest('.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.' + hand + '-item .promote')
+            .closest('.' + hand + '-item')
+            .hide();
+
+          // If one missing
+
+          $sideBySide.find('.promote-label').hide();
+          $sideBySide.find('.promote').hide();
+
+          // if ( hand === 'right' && ( ! app.model('left') || ! app.model('right') ) ) {
+          //   $sideBySide.find('.promote-label').hide();
+          // }
+          return;
+        }
 
         // Increment views counter
 
@@ -137,7 +169,10 @@
 
       app.bind('left', function (left, old, event) {
         evaluationItem(left, 0);
-        $evaluator.find('.left-item .promote').text(left.subject);
+        
+        if ( left ) {
+          $evaluator.find('.left-item .promote').text(left.subject);
+        }
       });
 
       app.model('left', evaluation.items[0]);
@@ -146,7 +181,10 @@
 
       app.bind('right', function (right) {
         evaluationItem(right, 1);
-        $evaluator.find('.right-item .promote').text(right.subject);
+        
+        if ( right ) {
+          $evaluator.find('.right-item .promote').text(right.subject);
+        }
       });
 
       app.model('right', evaluation.items[1]);
@@ -328,6 +366,14 @@
         $evaluator.find('.promote').off('click');
         $evaluator.find('.finish').off('click');
 
+        if ( app.model('left') ) {
+          saveItem('left');
+        }
+
+        if ( app.model('right') ) {
+          saveItem('right');
+        }
+
         var evaluations = app.model('evaluations');
 
         evaluations = evaluations.filter(function ($evaluation) {
@@ -343,6 +389,14 @@
               .removeClass('hide');
           });
       }
+
+      // Adjust (on not 6 items)
+
+      function adjust () {
+        console.log(app.model('right'))
+      }
+
+      adjust();
     }
   };
 
