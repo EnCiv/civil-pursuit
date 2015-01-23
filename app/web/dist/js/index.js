@@ -1562,20 +1562,20 @@
       view.find('.item-media').eq(0).empty().append(
         app.controller('item media')(item));
 
-      if ( view.find('.youtube-preview .fa-play').length ) {
+      if ( view.find('.youtube-preview .youtube-play').length ) {
 
         setTimeout(function () {
-          view.find('.youtube-preview .fa-play').show();
+          view.find('.youtube-preview .youtube-play').show();
 
           var imgTop =  view.find('.youtube-preview img').offset().top;
           var imgHeight =  view.find('.youtube-preview img').height();
-          var iconHeight =  view.find('.youtube-preview .fa-play').height();
+          var iconHeight =  view.find('.youtube-preview .youtube-play').height();
 
           var imgLeft =  view.find('.youtube-preview img').offset().left;
           var imgWidth =  view.find('.youtube-preview img').width();
-          var iconWidth =  view.find('.youtube-preview .fa-play').width();
+          var iconWidth =  view.find('.youtube-preview .youtube-play').width();
 
-          view.find('.youtube-preview .fa-play')
+          view.find('.youtube-preview .youtube-play')
             .css({
               display: 'block',
               top: (imgTop + ((imgHeight / 2) - (iconHeight / 2))) + 'px',

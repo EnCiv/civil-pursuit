@@ -4692,11 +4692,11 @@ footer {
   width: 100%;
   height: 100%;
 }
-.youtube-preview .fa-play {
+.youtube-preview .youtube-play {
   display: none;
   position: absolute;
   cursor: pointer;
-  color: #ff0000;
+  color: #ffffff;
 }
 .item {
   background: #fff;
