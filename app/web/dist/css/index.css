@@ -4696,6 +4696,7 @@ footer {
   display: none;
   position: absolute;
   cursor: pointer;
+  color: #ff0000;
 }
 .item {
   background: #fff;
