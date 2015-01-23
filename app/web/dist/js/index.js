@@ -1587,10 +1587,10 @@
                 .empty()
                 .append(video_container);
 
-              video_container.append($('<iframe frameborder="0" width="300" height="175"></iframe>'));
+              video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
 
               video_container.find('iframe').attr('src', 'http://www.youtube.com/embed/'
-                + view.find('.youtube-preview').data('video')); 
+                + view.find('.youtube-preview').data('video') + '?autoplay=1'); 
             });
 
         }, 1000);
