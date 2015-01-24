@@ -61,6 +61,31 @@
       if ( view.find('.youtube-preview .fa-youtube-play').length ) {
 
         setTimeout(function () {
+
+          // view.find('.youtube-preview .icon-play').css('background',
+          //   'url(' + view.find('.youtube-preview img').attr('src') + ')');
+
+          var img = view.find('.youtube-preview img');
+
+          var icon = view.find('.youtube-preview .icon-play');
+
+          icon.css('width', img.width() + 'px');
+
+          icon.css('height', img.height() + 'px');
+
+          icon.css('padding-top', ((img.height() /2) - (icon.find('.fa').height() / 2)) + 'px');
+
+          img.css('margin-bottom', '-' + img.height() + 'px');
+
+          icon.find('.fa').on('click', function () {
+            console.log('hello');
+          });
+
+          // img.hide();
+
+          return;
+
+
           view.find('.youtube-preview .fa-youtube-play').show();
 
           var imgTop =  view.find('.youtube-preview img').offset().top;

@@ -27,11 +27,18 @@
         .after(function (then, listeners) {
           var toggler   =   listeners.view('Create Form Toggler');
           var panel     =   this.controller('Get target panel of')(toggler);
+          var create    =   this.controller('Get panel creator of')(panel);
 
           then(panel).is('point of attention')
-        })
+            .then(create).is('revealed')
+            .then(create).is('Create Form');
+        });
   }
 
   module.exports = showTopicPanelCreatorForm;
 
 } ();
+
+function isPointOfAttention () {
+
+}
