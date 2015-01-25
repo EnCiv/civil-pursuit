@@ -12,16 +12,13 @@
 		"then": {
 			"before": [
 				{
-					"actor": {
-						"identify": {
-							"panel": {
-								"pipe": [
-									{ "trigger"}
-								]
-							}
-						} 
-					},
-					"is": "revealed"
+					"actor": "<Who>",
+					"is": "<Badge>"
+				}
+			],
+			"after": [
+				{
+					"acto": 
 				}
 			]
 		}

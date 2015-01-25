@@ -1,25 +1,85 @@
 [
 	{
-		"name": "Panel",
+		"name": "Any Panel",
 		"description": "A panel consists of ...",
-		"selector": ".panel",
-		"children": [
+		"selector": ".panel"
+	},
+
+	{
+		"name": "Any Creator Toggle",
+		"description": "A View element that can trigger upon click toggling view of Creator (hide if revealed, reveal if hidden)",
+		"selector": ".panel .toggle-create",
+		"method": {
+			"Get target": {
+				"description": "Get Creator targeted by toggle",
+				"selector": ".closest('.panel').find('>.panel-body .creator').first()",
+				"is": "Any Creator"
+			}
+		}
+	},
+
+	{
+		"name": "Any Creator",
+		"description": "The Creator Form",
+		"selector": ".creator",
+		"method": {
+			"Get subject": {
+				"description": "Get Creator targeted by toggle",
+				"selector": ".closest('.panel').find('.creator').first()"
+			}
+		}
+	},
+]
+
+{
+	"when": [
+		{
+			"who": {
+				"view": "Any Creator Toggle"
+			},
+			"action": {
+				"hears": "click"
+			}
+		}
+	],
+
+	"then": {
+		"actors": {
+			"Creator": {
+				"view": {
+					"Any Creator Toggle": "Get target"
+				}
+			},
+
+			"Subject Input": {
+				"actor": {
+					"Creator": "Get subject"
+				} 
+			}
+		},
+
+		"after": [
 			{
-				"name": "Item Creator"
+				"serie": [
+					{
+						"who": {
+							"actor": "Creator"
+						},
+						"action": {
+							"becomes": "revealed"
+						}
+					},
+
+					{
+						"who": {
+							"actor": "Subject Input"
+						},
+						"action": {
+							"is": "real"
+						}
+					}
+				]
 			}
 		]
-	},
-
-	{
-		"name": "Topics Panel",
-		"description": "A panel consists of ...",
-		"selector": "#panel-Topic.type-topic"
-	},
-
-	{
-		"name": "Item Creator",
-		"description": "...",
-		"selector": ".creator",
-		"toggle-view": ".panel>.panel-heading>i.fa.fa-plus"
 	}
-]
+}

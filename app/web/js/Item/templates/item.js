@@ -73,50 +73,39 @@
 
           icon.css('height', img.height() + 'px');
 
-          icon.css('padding-top', ((img.height() /2) - (icon.find('.fa').height() / 2)) + 'px');
-
           img.css('margin-bottom', '-' + img.height() + 'px');
 
+          $(window).on('resize', function () {
+
+            console.log('resizing')
+
+            icon.css('width', img.width() + 'px');
+
+            img.css('margin-bottom', '-' + img.height() + 'px');
+          }); 
+
           icon.find('.fa').on('click', function () {
-            console.log('hello');
+            var video_container = $('<div class="video-container"></div>');
+
+            var preview = $(this).closest('.youtube-preview');
+
+            preview
+              .empty()
+              .append(video_container);
+
+            video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
+
+            video_container.find('iframe')
+              .attr('src', 'http://www.youtube.com/embed/'
+                + preview.data('video') + '?autoplay=1'); 
           });
 
-          // img.hide();
+          icon.show();
 
-          return;
-
-
-          view.find('.youtube-preview .fa-youtube-play').show();
-
-          var imgTop =  view.find('.youtube-preview img').offset().top;
-          var imgHeight =  view.find('.youtube-preview img').height();
-          var iconHeight =  view.find('.youtube-preview .fa-youtube-play').height();
-
-          var imgLeft =  view.find('.youtube-preview img').offset().left;
-          var imgWidth =  view.find('.youtube-preview img').width();
-          var iconWidth =  view.find('.youtube-preview .fa-youtube-play').width();
-
-          view.find('.youtube-preview .fa-youtube-play')
-            .css({
-              display: 'block',
-              top: (imgTop + ((imgHeight / 2) - (iconHeight / 2))) + 'px',
-              left: (imgLeft + ((imgWidth / 2) - (iconWidth / 2))) + 'px',
-            })
-            .on('click', function () {
-              var video_container = $('<div class="video-container"></div>');
-
-              var preview = $(this).closest('.youtube-preview');
-
-              preview
-                .empty()
-                .append(video_container);
-
-              video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
-
-              video_container.find('iframe').attr('src', 'http://www.youtube.com/embed/'
-                + preview.data('video') + '?autoplay=1'); 
-            });
-
+          icon.css('padding-top',
+            ( ( img.height() / 2 ) - ( icon.find('.fa').height() / 2 ) )
+              + 'px');
+          
         }, 1000);
       }
 
