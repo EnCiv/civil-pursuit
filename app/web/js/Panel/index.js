@@ -23,12 +23,15 @@
     
     controllers: {
       'scroll to point of attention':
-                      require('./controllers/scroll-to-point-of-attention'),
-      'show':         require('./controllers/show'),
-      'hide':         require('./controllers/hide'),
-      'reveal':       require('./controllers/reveal'),
-      'upload':       require('./controllers/upload'),
-      'render':       require('./controllers/render')
+        require('./controllers/scroll-to-point-of-attention'),
+
+      'show':             require('./controllers/show'),
+      'hide':             require('./controllers/hide'),
+      'reveal':           require('./controllers/reveal'),
+      'upload':           require('./controllers/upload'),
+      'render':           require('./controllers/render'),
+      'toggle creator':   require('./controllers/toggle-creator'),
+      'create':           require('./controllers/create')
     },
 
     run: function () {

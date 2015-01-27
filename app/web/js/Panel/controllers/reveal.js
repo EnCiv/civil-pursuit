@@ -25,12 +25,6 @@
       elem.addClass('is-toggable');
     }
 
-    // Don't animate if something else is animating
-
-    if ( $('.is-showing').length || $('.is-hiding').length ) {
-      return false;
-    }
-
     // Eventual element to hide first
 
     var hider;
@@ -42,6 +36,12 @@
     // Find elem's item if any
 
     var $item = elem.closest('.item');
+
+    // Don't animate if something else is animating
+
+    if ( $item.find('.is-showing').length || $item.find('.is-hiding').length ) {
+      return false;
+    }
 
     // Hide Creators if any
 

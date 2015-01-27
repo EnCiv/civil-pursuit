@@ -68,6 +68,10 @@
         }.bind(this));
       }
 
+      this.on('error', function (error) {
+        console.error(error);
+      });
+
       var div = this;
 
       /** On socket error */

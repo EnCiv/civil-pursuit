@@ -46,58 +46,31 @@
       // On new panel, get panel items from socket
 
       Panel.watch.on('panel view rendered', function (panel) {
-        console.info('panel view rendered')
         Socket.emit('get items', panel);
       });
 
       Socket.on('got items', function (panelView) {
-        console.info('got items')
         var panel = panelView.panel;
         var items = panelView.items;
 
         div.watch.on('panel model updated', function (panel) {
-          console.log('panel model updated')
           div.controller('update panel view')(panel, items);
 
           if ( items.length ) {
-            var i = 0;
 
-            var nextRender = function (error, item, view) {
-              div.controller('place item in panel')(item, view,
-                function (error, item, view) {
-                  i ++;
-
-                  if ( items[i] ) {
-                    div.controller('render')(items[i], nextRender);
-                  }
-
-                  else {
-
-                    // All items have rendered
-
-                    // TODO place this in a controller called "on all items rendered"
-
-                    var panelId = '#panel-' + panel.type;
-
-                    if ( panel.parent ) {
-                      panelId += '-' + panel.parent;
-                    }
-
-                    var $panel  =   $(panelId);
-
-                    // Show/Hide load-more
-
-                    if ( items.length === synapp['navigator batch size'] ) {
-                      $(panelId).find('.load-more').show();
-                    }
-                    else {
-                      $(panelId).find('.load-more').hide();
-                    }
-                  }
-                });
-            }
-
-            div.controller('render')(items[0], nextRender);
+            require('async').series(items
+              .map(function (item) {
+                return function (cb) {
+                  div.controller('render')(item,
+                    function (error, item, view) {
+                      div.controller('place item in panel')(item, view,
+                        cb);
+                    });
+                };
+              }),
+              div.domain.intercept(function (results) {
+                console.log(results);
+              }));
           }
 
         });

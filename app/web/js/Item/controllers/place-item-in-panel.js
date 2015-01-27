@@ -50,6 +50,7 @@
           
           .controller(function (arrow) {
             arrow.insertAfter(view);
+
             cb();
           });
 

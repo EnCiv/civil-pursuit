@@ -1,8 +1,17 @@
+/**
+  *  Render and insert a panel
+  */
+
 ! function () {
 
   'use strict';
 
   var luigi = require('/home/francois/Dev/luigi/luigi');
+
+  /**
+   *  @return 
+   *  @arg {Object} panel
+   */
 
   function render (panel) {
     var div = this;
@@ -68,9 +77,15 @@
 
           .controller(function (view_creator) {
             view_creator.addClass(panel.type);
+            
             view.find('.panel-body').prepend(view_creator);
+            
+            view_creator.find('>.is-section .button-create')
+              .on('click', div.controller('create'));
+
             renderView();
           });
+
       } ();
 
       // Render view
@@ -103,8 +118,6 @@
         // Toggle creator view
 
         view.find('.toggle-creator').on('click', function () {
-
-          console.log('hello', $creator.attr('class'));
 
           if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
             return;
