@@ -4,6 +4,8 @@
 
   function create () {
 
+    console.info(this)
+
     // Overscoping $creator
 
     var $creator      =   $(this).closest('.creator');

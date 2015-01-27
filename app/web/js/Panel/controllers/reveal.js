@@ -46,7 +46,8 @@
     // Hide Creators if any
 
     if ( ! elem.hasClass('.creator') &&
-      $panel.find('>.panel-body >.creator.is-shown').length ) {
+      $panel.find('>.panel-body >.creator.is-shown').length &&
+      ! $panel.hasClass('is-filling') ) {
       hider = $panel.find('>.panel-body >.creator.is-shown');
     }
 

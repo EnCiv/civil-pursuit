@@ -81,7 +81,9 @@
             view.find('.panel-body').prepend(view_creator);
             
             view_creator.find('>.is-section .button-create')
-              .on('click', div.controller('create'));
+              .on('click', function () {
+                console.log('lool')
+              });
 
             renderView();
           });

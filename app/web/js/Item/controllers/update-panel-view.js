@@ -20,6 +20,8 @@
       throw new Error('Could not find panel ' + panelId);
     }
 
+    $panel.addClass('is-filling');
+
     div.watch.emit('panel view updated');
   }
 

@@ -1388,6 +1388,8 @@
       throw new Error('Could not find panel ' + panelId);
     }
 
+    $panel.addClass('is-filling');
+
     div.watch.emit('panel view updated');
   }
 
@@ -1564,7 +1566,24 @@
                 };
               }),
               div.domain.intercept(function (results) {
-                console.log(results);
+                var panelId = '#panel-' + panel.type;
+
+                if ( panel.parent ) {
+                  panelId += '-' + panel.parent;
+                }
+
+                var $panel  =   $(panelId);
+
+                $panel.removeClass('is-filling')
+
+                // Show/Hide load-more
+
+                if ( items.length === synapp['navigator batch size'] ) {
+                  $(panelId).find('.load-more').show();
+                }
+                else {
+                  $(panelId).find('.load-more').hide();
+                }
               }));
           }
 
@@ -1589,6 +1608,8 @@
   'use strict';
 
   function create () {
+
+    console.info(this)
 
     // Overscoping $creator
 
@@ -1825,7 +1846,9 @@
             view.find('.panel-body').prepend(view_creator);
             
             view_creator.find('>.is-section .button-create')
-              .on('click', div.controller('create'));
+              .on('click', function () {
+                console.log('lool')
+              });
 
             renderView();
           });
@@ -1937,7 +1960,8 @@
     // Hide Creators if any
 
     if ( ! elem.hasClass('.creator') &&
-      $panel.find('>.panel-body >.creator.is-shown').length ) {
+      $panel.find('>.panel-body >.creator.is-shown').length &&
+      ! $panel.hasClass('is-filling') ) {
       hider = $panel.find('>.panel-body >.creator.is-shown');
     }
 
