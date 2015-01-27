@@ -331,7 +331,7 @@
 
 } ();
 
-},{"domain":35,"events":36,"util":40}],2:[function(require,module,exports){
+},{"domain":37,"events":38,"util":42}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -444,7 +444,7 @@
 
 } (this);
 
-},{"events":36,"util":40}],3:[function(require,module,exports){
+},{"events":38,"util":42}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
@@ -548,6 +548,38 @@
 
   'use strict';
 
+  function createItem ($panel) {
+    var div = this;
+
+    var Socket = div.root.emitter('socket');
+
+    Socket.on('created item', function (item) {
+
+      console.info('beat boodee')
+
+      item.is_new = true;
+      
+      div.push('items', item);
+
+      div.controller('render')(item,
+        function (error, item, view) {
+          div.controller('place item in panel')(item, view,
+            function (error) {
+              
+            });
+        });
+    });
+  }
+
+  module.exports = createItem;
+
+} ();
+
+},{}],6:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
   function getItemDetails ($details, item) {
     var app = this;
 
@@ -587,7 +619,78 @@
 
 } ();
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function getItems () {
+    var div       =   this;
+    var Socket    =   div.root.emitter('socket');
+    var Panel     =   div.root.extension('Panel');
+
+    // On new panel, get panel items from socket
+
+    Panel.watch.on('panel view rendered', function (panel) {
+      Socket.emit('get items', panel);
+    });
+
+    Socket.on('got items', function (panelView) {
+      var panel = panelView.panel;
+      var items = panelView.items;
+
+      items.forEach(function (item) {
+        div.push('items', item);
+      });
+
+      div.watch.on('panel model updated', function (panel) {
+        div.controller('update panel view')(panel, items);
+
+        if ( items.length ) {
+
+          require('async').series(items
+            .map(function (item) {
+              return function (cb) {
+                div.controller('render')(item,
+                  function (error, item, view) {
+                    div.controller('place item in panel')(item, view,
+                      cb);
+                  });
+              };
+            }),
+            div.domain.intercept(function (results) {
+              var panelId = '#panel-' + panel.type;
+
+              if ( panel.parent ) {
+                panelId += '-' + panel.parent;
+              }
+
+              var $panel  =   $(panelId);
+
+              $panel.removeClass('is-filling')
+
+              // Show/Hide load-more
+
+              if ( items.length === synapp['navigator batch size'] ) {
+                $(panelId).find('.load-more').show();
+              }
+              else {
+                $(panelId).find('.load-more').hide();
+              }
+            }));
+        }
+
+      });
+
+      div.controller('update panel model')(panel, items);
+    });
+  }
+
+  module.exports = getItems;
+
+} ();
+
+},{"async":36}],8:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -611,7 +714,7 @@
 
 } ();
 
-},{"string":41}],7:[function(require,module,exports){
+},{"string":43}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -667,7 +770,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],8:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],10:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -702,9 +805,11 @@
           (window.URL || window.webkitURL).createObjectURL(file));
       }
 
-      // call promote
+      setTimeout(function () {
+        // call promote
 
-      view.find('.toggle-promote').click();
+        view.find('.toggle-promote').click();
+      });
     }
     
     // Else, regular fetch
@@ -732,7 +837,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],9:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -749,7 +854,7 @@
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1014,7 +1119,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":41}],11:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":43}],13:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1078,7 +1183,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1102,7 +1207,7 @@
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1324,7 +1429,7 @@
 
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1365,7 +1470,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1397,7 +1502,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1459,7 +1564,7 @@
 
 }();
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1494,7 +1599,7 @@
 
 }();
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -1525,6 +1630,8 @@
       'progress bar':             require('./controllers/progress-bar'),
       'invite people in':         require('./controllers/invite-people-in'),
       'get item details':         require('./controllers/get-item-details'),
+      'get items':                require('./controllers/get-items'),
+      'create item':              require('./controllers/create-item'),
       'toggle edit and go again': require('./controllers/toggle-edit-and-go-again'),
       'update panel model':       require('./controllers/update-panel-model'),
       'update panel view':        require('./controllers/update-panel-view'),
@@ -1535,62 +1642,12 @@
     run: function () {
 
       var div       =   this;
-      var Socket    =   div.root.emitter('socket');
-      var Panel     =   div.root.extension('Panel');
+      
+      div.controller('get items')();
+
+      div.controller('create item')();
 
       
-
-      // On new panel, get panel items from socket
-
-      Panel.watch.on('panel view rendered', function (panel) {
-        Socket.emit('get items', panel);
-      });
-
-      Socket.on('got items', function (panelView) {
-        var panel = panelView.panel;
-        var items = panelView.items;
-
-        div.watch.on('panel model updated', function (panel) {
-          div.controller('update panel view')(panel, items);
-
-          if ( items.length ) {
-
-            require('async').series(items
-              .map(function (item) {
-                return function (cb) {
-                  div.controller('render')(item,
-                    function (error, item, view) {
-                      div.controller('place item in panel')(item, view,
-                        cb);
-                    });
-                };
-              }),
-              div.domain.intercept(function (results) {
-                var panelId = '#panel-' + panel.type;
-
-                if ( panel.parent ) {
-                  panelId += '-' + panel.parent;
-                }
-
-                var $panel  =   $(panelId);
-
-                $panel.removeClass('is-filling')
-
-                // Show/Hide load-more
-
-                if ( items.length === synapp['navigator batch size'] ) {
-                  $(panelId).find('.load-more').show();
-                }
-                else {
-                  $(panelId).find('.load-more').hide();
-                }
-              }));
-          }
-
-        });
-
-        div.controller('update panel model')(panel, items);
-      });
       
       // this.story('get items')();
 
@@ -1602,7 +1659,7 @@
 
 } ();
 
-},{"./controllers/get-item-details":5,"./controllers/invite-people-in":6,"./controllers/item-media":7,"./controllers/place-item-in-panel":8,"./controllers/progress-bar":9,"./controllers/render":10,"./controllers/toggle-details":11,"./controllers/toggle-edit-and-go-again":12,"./controllers/truncate":13,"./controllers/update-panel-model":14,"./controllers/update-panel-view":15,"./controllers/youtube":17,"./controllers/youtube-play-icon":16,"async":34}],19:[function(require,module,exports){
+},{"./controllers/create-item":5,"./controllers/get-item-details":6,"./controllers/get-items":7,"./controllers/invite-people-in":8,"./controllers/item-media":9,"./controllers/place-item-in-panel":10,"./controllers/progress-bar":11,"./controllers/render":12,"./controllers/toggle-details":13,"./controllers/toggle-edit-and-go-again":14,"./controllers/truncate":15,"./controllers/update-panel-model":16,"./controllers/update-panel-view":17,"./controllers/youtube":19,"./controllers/youtube-play-icon":18}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1724,7 +1781,7 @@
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1764,7 +1821,7 @@
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /**
   *  Render and insert a panel
   */
@@ -1913,7 +1970,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],22:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],24:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1990,7 +2047,7 @@
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2021,7 +2078,7 @@
 
 }();
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2069,7 +2126,7 @@
 
 }();
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2090,7 +2147,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2154,7 +2211,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2222,7 +2279,7 @@
 
 } ();
 
-},{"./controllers/create":19,"./controllers/hide":20,"./controllers/render":21,"./controllers/reveal":22,"./controllers/scroll-to-point-of-attention":23,"./controllers/show":24,"./controllers/toggle-creator":25,"./controllers/upload":26}],28:[function(require,module,exports){
+},{"./controllers/create":21,"./controllers/hide":22,"./controllers/render":23,"./controllers/reveal":24,"./controllers/scroll-to-point-of-attention":25,"./controllers/show":26,"./controllers/toggle-creator":27,"./controllers/upload":28}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2279,7 +2336,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],29:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2658,7 +2715,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -2692,7 +2749,7 @@
 
 } ();
 
-},{"./controllers/get-evaluation":28,"./controllers/render":29}],31:[function(require,module,exports){
+},{"./controllers/get-evaluation":30,"./controllers/render":31}],33:[function(require,module,exports){
 /**
                                         
                                             
@@ -2742,7 +2799,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /***
 
 
@@ -2797,7 +2854,7 @@ Nina Butorac
 
 }();
 56
-},{"./synapp/index":33,"/home/francois/Dev/div.js/div":1}],33:[function(require,module,exports){
+},{"./synapp/index":35,"/home/francois/Dev/div.js/div":1}],35:[function(require,module,exports){
  /**
                  
 
@@ -2922,7 +2979,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":18,"../Panel/":27,"../Promote/":30,"../User/":31}],34:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":20,"../Panel/":29,"../Promote/":32,"../User/":33}],36:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4049,7 +4106,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":38}],35:[function(require,module,exports){
+},{"_process":40}],37:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4087,7 +4144,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":36}],36:[function(require,module,exports){
+},{"events":38}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4390,7 +4447,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4415,7 +4472,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4503,14 +4560,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5100,7 +5157,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":39,"_process":38,"inherits":37}],41:[function(require,module,exports){
+},{"./support/isBuffer":41,"_process":40,"inherits":39}],43:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6134,4 +6191,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[32]);
+},{}]},{},[34]);

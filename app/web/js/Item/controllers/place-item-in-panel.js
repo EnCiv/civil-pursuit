@@ -32,9 +32,11 @@
           (window.URL || window.webkitURL).createObjectURL(file));
       }
 
-      // call promote
+      setTimeout(function () {
+        // call promote
 
-      view.find('.toggle-promote').click();
+        view.find('.toggle-promote').click();
+      });
     }
     
     // Else, regular fetch

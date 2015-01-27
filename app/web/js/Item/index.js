@@ -28,6 +28,8 @@
       'progress bar':             require('./controllers/progress-bar'),
       'invite people in':         require('./controllers/invite-people-in'),
       'get item details':         require('./controllers/get-item-details'),
+      'get items':                require('./controllers/get-items'),
+      'create item':              require('./controllers/create-item'),
       'toggle edit and go again': require('./controllers/toggle-edit-and-go-again'),
       'update panel model':       require('./controllers/update-panel-model'),
       'update panel view':        require('./controllers/update-panel-view'),
@@ -38,62 +40,12 @@
     run: function () {
 
       var div       =   this;
-      var Socket    =   div.root.emitter('socket');
-      var Panel     =   div.root.extension('Panel');
+      
+      div.controller('get items')();
+
+      div.controller('create item')();
 
       
-
-      // On new panel, get panel items from socket
-
-      Panel.watch.on('panel view rendered', function (panel) {
-        Socket.emit('get items', panel);
-      });
-
-      Socket.on('got items', function (panelView) {
-        var panel = panelView.panel;
-        var items = panelView.items;
-
-        div.watch.on('panel model updated', function (panel) {
-          div.controller('update panel view')(panel, items);
-
-          if ( items.length ) {
-
-            require('async').series(items
-              .map(function (item) {
-                return function (cb) {
-                  div.controller('render')(item,
-                    function (error, item, view) {
-                      div.controller('place item in panel')(item, view,
-                        cb);
-                    });
-                };
-              }),
-              div.domain.intercept(function (results) {
-                var panelId = '#panel-' + panel.type;
-
-                if ( panel.parent ) {
-                  panelId += '-' + panel.parent;
-                }
-
-                var $panel  =   $(panelId);
-
-                $panel.removeClass('is-filling')
-
-                // Show/Hide load-more
-
-                if ( items.length === synapp['navigator batch size'] ) {
-                  $(panelId).find('.load-more').show();
-                }
-                else {
-                  $(panelId).find('.load-more').hide();
-                }
-              }));
-          }
-
-        });
-
-        div.controller('update panel model')(panel, items);
-      });
       
       // this.story('get items')();
 
