@@ -2101,7 +2101,7 @@
     var Item        =   div.root.extension('Item');
 
     return function (view) {
-      var $sideBySide =   view.find('.items-side-by-side');
+      var $sideBySide   =   view.find('.items-side-by-side');
 
       // Cursor
 
@@ -2240,7 +2240,7 @@
         evaluationItem(left, 0);
         
         if ( left ) {
-          $evaluator.find('.left-item .promote').text(left.subject);
+          view.find('.left-item .promote').text(left.subject);
         }
       });
 
@@ -2252,7 +2252,7 @@
         evaluationItem(right, 1);
         
         if ( right ) {
-          $evaluator.find('.right-item .promote').text(right.subject);
+          view.find('.right-item .promote').text(right.subject);
         }
       });
 
@@ -2260,8 +2260,8 @@
 
       // Promote
 
-      $evaluator.find('.promote').on('click', function () {
-        Panel.controller('scroll to point of attention')($evaluator);
+      view.find('.promote').on('click', function () {
+        Panel.controller('scroll to point of attention')(view);
 
         var pos = $(this).data('position');
 
@@ -2279,9 +2279,9 @@
 
             saveItem('right');
 
-            var rights = [$evaluator.find('.right-item').length, 0];
+            var rights = [view.find('.right-item').length, 0];
 
-            $evaluator.find('.right-item').animate({
+            view.find('.right-item').animate({
               opacity: 0
             }, function () {
               rights[1] ++;
@@ -2289,7 +2289,7 @@
               if( rights[0] === rights[1] ) {
                 div.model('right', evaluation.items[div.model('cursor')]);
 
-                $evaluator.find('.right-item').animate({
+                view.find('.right-item').animate({
                   opacity: 1
                 });
               }
@@ -2301,9 +2301,9 @@
 
             saveItem('left');
 
-            var lefts = [$evaluator.find('.left-item').length, 0];
+            var lefts = [view.find('.left-item').length, 0];
 
-            $evaluator.find('.left-item').animate({
+            view.find('.left-item').animate({
               opacity: 0
             }, function () {
 
@@ -2312,7 +2312,7 @@
               if( lefts[0] === lefts[1] ) {
                 div.model('left', evaluation.items[div.model('cursor')]);
 
-                $evaluator.find('.left-item').animate({
+                view.find('.left-item').animate({
                   opacity: 1
                 });
               }
@@ -2328,9 +2328,9 @@
 
       // Neither / Finish
 
-      $evaluator.find('.finish').on('click', function () {
+      view.find('.finish').on('click', function () {
 
-        Panel.controller('scroll to point of attention')($evaluator);
+        Panel.controller('scroll to point of attention')(view);
 
         if ( div.model('cursor') === div.model('limit') ) {
           finish();
@@ -2343,9 +2343,9 @@
 
           saveItem('left');
 
-          var lefts = [$evaluator.find('.left-item').length, 0];
+          var lefts = [view.find('.left-item').length, 0];
 
-          $evaluator.find('.left-item').animate({
+          view.find('.left-item').animate({
               opacity: 0
             }, function () {
               lefts[1] ++;
@@ -2353,7 +2353,7 @@
               if( lefts[0] === lefts[1] ) {
                 div.model('left', evaluation.items[div.model('cursor')]);
 
-                $evaluator.find('.left-item').animate({
+                view.find('.left-item').animate({
                   opacity: 1
                 });
               }
@@ -2365,9 +2365,9 @@
 
           saveItem('right');
 
-          var rights = [$evaluator.find('.right-item').length, 0];
+          var rights = [view.find('.right-item').length, 0];
 
-          $evaluator.find('.right-item').animate({
+          view.find('.right-item').animate({
               opacity: 0
             }, function () {
               rights[1] ++;
@@ -2375,7 +2375,7 @@
               if( rights[0] === rights[1] ) {
                 div.model('right', evaluation.items[div.model('cursor')]);
 
-                $evaluator.find('.right-item').animate({
+                view.find('.right-item').animate({
                   opacity: 1
                 });
               }
@@ -2396,7 +2396,7 @@
    
         // feedback
 
-        var feedback = $evaluator.find('.' +  hand + '-item .feedback');
+        var feedback = view.find('.' +  hand + '-item .feedback');
 
         if ( feedback.val() ) {
           Socket.emit('insert feedback', {
@@ -2432,8 +2432,8 @@
 
       function finish () {
 
-        $evaluator.find('.promote').off('click');
-        $evaluator.find('.finish').off('click');
+        view.find('.promote').off('click');
+        view.find('.finish').off('click');
 
         if ( div.model('left') ) {
           saveItem('left');
@@ -2443,7 +2443,7 @@
           saveItem('right');
         }
 
-        $evaluator.find('.promote,.finish').off('click');
+        view.find('.promote,.finish').off('click');
 
         var evaluations = div.model('evaluations');
 
@@ -2453,7 +2453,7 @@
 
         div.model('evaluations', evaluations);
 
-        Panel.controller('hide')($evaluator,
+        Panel.controller('hide')(view,
           function () {
             item.find('.toggle-details').eq(0).click();
             item.find('.details:eq(0) .feedback-pending')
