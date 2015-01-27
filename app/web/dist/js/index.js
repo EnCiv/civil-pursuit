@@ -1363,15 +1363,6 @@
       throw new Error('Could not find panel ' + panelId);
     }
 
-    // Show/Hide load-more
-
-    if ( items.length == synapp['navigator batch size'] ) {
-      $(panelId).find('.load-more').show();
-    }
-    else {
-      $(panelId).find('.load-more').hide();
-    }
-
     div.watch.emit('panel view updated');
   }
 
@@ -1548,6 +1539,30 @@
 
                   if ( items[i] ) {
                     div.controller('render')(items[i], nextRender);
+                  }
+
+                  else {
+
+                    // All items have rendered
+
+                    // TODO place this in a controller called "on all items rendered"
+
+                    var panelId = '#panel-' + panel.type;
+
+                    if ( panel.parent ) {
+                      panelId += '-' + panel.parent;
+                    }
+
+                    var $panel  =   $(panelId);
+
+                    // Show/Hide load-more
+
+                    if ( items.length === synapp['navigator batch size'] ) {
+                      $(panelId).find('.load-more').show();
+                    }
+                    else {
+                      $(panelId).find('.load-more').hide();
+                    }
                   }
                 });
             }

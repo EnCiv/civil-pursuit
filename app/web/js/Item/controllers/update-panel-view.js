@@ -20,15 +20,6 @@
       throw new Error('Could not find panel ' + panelId);
     }
 
-    // Show/Hide load-more
-
-    if ( items.length == synapp['navigator batch size'] ) {
-      $(panelId).find('.load-more').show();
-    }
-    else {
-      $(panelId).find('.load-more').hide();
-    }
-
     div.watch.emit('panel view updated');
   }
 
