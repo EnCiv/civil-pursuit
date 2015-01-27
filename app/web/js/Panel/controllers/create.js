@@ -6,6 +6,8 @@
 
     var div           =   this;
 
+    var Panel         =   div.root.extension('Panel');
+
     var Socket        =   div.root.emitter('socket');
 
     // Overscoping $creator
@@ -81,31 +83,33 @@
         item.image = $creator.find('.preview-image').attr('src');
       }
 
-      // If item image, stream upload first the image
-      // and then emit to socket create item
+      Panel.controller('hide')($creator, function () {
+        // If item image, stream upload first the image
+        // and then emit to socket create item
 
-      if ( item.image ) {
+        if ( item.image ) {
 
-        var file = $creator.find('.preview-image').data('file');
+          var file = $creator.find('.preview-image').data('file');
 
-        var stream = ss.createStream();
+          var stream = ss.createStream();
 
-        ss(Socket).emit('upload image', stream,
-          { size: file.size, name: file.name });
-        
-        ss.createBlobReadStream(file).pipe(stream);
+          ss(Socket).emit('upload image', stream,
+            { size: file.size, name: file.name });
+          
+          ss.createBlobReadStream(file).pipe(stream);
 
-        stream.on('end', function () {
-          item.image = file.name;
+          stream.on('end', function () {
+            item.image = file.name;
+            Socket.emit('create item', item);
+          });
+        }
+
+        // emit to socket to create item
+
+        else {
           Socket.emit('create item', item);
-        });
-      }
-
-      // emit to socket to create item
-
-      else {
-        Socket.emit('create item', item);
-      }
+        }
+      });
 
       // Cleaning form
 

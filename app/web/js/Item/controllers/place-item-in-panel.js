@@ -15,7 +15,7 @@
       panelId += '-' + item.parent;
     }
 
-    console.warn('placing 2', item.subject, panelId)
+    console.warn('placing 2', item.subject, panelId);
 
     // In case of a new item
     
@@ -46,6 +46,7 @@
     }
 
     setTimeout(function () {
+      
       Panel.controller('reveal')(view, null, function () {
         
         luigi('tpl-toggle-arrow')
