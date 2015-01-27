@@ -74,9 +74,6 @@
           $sideBySide.find('.promote-label').hide();
           $sideBySide.find('.promote').hide();
 
-          // if ( hand === 'right' && ( ! div.model('left') || ! app.model('right') ) ) {
-          //   $sideBySide.find('.promote-label').hide();
-          // }
           return;
         }
 
@@ -90,7 +87,7 @@
 
         if ( eItem._id === evaluation.item ) {
           image = $('#item-' + eItem._id)
-            .find('>.item-media-wrapper img')
+            .find('>.is-section >.item-media-wrapper img')
             .clone();
         }
 
