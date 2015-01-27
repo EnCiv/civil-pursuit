@@ -1609,6 +1609,10 @@
 
   function create ($createButton) {
 
+    var div           =   this;
+
+    var Socket        =   div.root.emitter('socket');
+
     // Overscoping $creator
 
     var $creator      =   $createButton.closest('.creator');
