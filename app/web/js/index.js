@@ -44,11 +44,11 @@ Nina Butorac
 
   'use strict';
 
-  var trueStory = require('/home/francois/Dev/true-story.js');
+  var Div = require('/home/francois/Dev/div.js/div');
 
-  window.Synapp = trueStory.import(require('./synapp/index'));
+  window.Synapp = Div.factory(require('./synapp/index'));
 
-  window.Synapp.run();
+  Synapp.run();
 
 }();
 56

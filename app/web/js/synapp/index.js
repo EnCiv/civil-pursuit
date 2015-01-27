@@ -19,29 +19,46 @@
   'use strict';
 
   module.exports = {
-    on: {
-      error: function (error) {
+
+    /** div events */
+
+    "on": {
+
+      /** on div error */
+
+      "error": function (error) {
         console.error(error);
       }
     },
+
+    models: {
+      socket_conn: false
+    },
+
+    /** div extensions */
     
     extensions: {
-      User:         require('../User/'),
-      Panel:        require('../Panel/'),
-      Item:         require('../Item/'),
-      Intro:        require('../Intro/'),
-      Evaluation:   require('../Evaluation/')
+      "User":         require('../User/'),
+      "Panel":        require('../Panel/'),
+      "Item":         require('../Item/'),
+      "Intro":        require('../Intro/'),
+      "Promote":      require('../Promote/')
     },
     
-    emitters : {
+    /** div emitters */
+
+    "emitters" : {
       socket: io.connect('http://' + window.location.hostname + ':' +
-        window.location.port)
+        window.location.port),
+      // queue: new (require('/home/francois/Dev/queue.js/'))()
     },
     
-    controllers: {
-      'bootstrap/responsive-image':
-        require('./controllers/bootstrap/responsive-image')
-    },
+    // controllers: {
+    //   'bootstrap/responsive-image':
+    //     require('./controllers/bootstrap/responsive-image')
+    // },
+
+    /** run div */
     
     run: function () {
 
@@ -51,21 +68,27 @@
         }.bind(this));
       }
 
+      var div = this;
+
       /** On socket error */
 
       this.emitter('socket')
       
         .on('error', function (error) {
           console.warn('socket error', socket);
+        })
+
+        .on('connect', function () {
+          div.model('socket_conn', true);
         });
 
       /** Extensions */
 
-      var User = this.extension('User');
-      var Intro = this.extension('Intro');
-      var Panel = this.extension('Panel');
-      var Item = this.extension('Item');
-      var Evaluation = this.extension('Evaluation');
+      var User      =     this.extension('User');
+      var Intro     =     this.extension('Intro');
+      var Panel     =     this.extension('Panel');
+      var Item      =     this.extension('Item');
+      var Promote   =     this.extension('Promote');
 
       /** User Run() */
 
@@ -75,13 +98,19 @@
 
       if ( $('#intro').length ) {
         
-        Intro.story('get intro')();
+        setTimeout(function () {
+          Intro.run();
+        }, 500);
 
-        Panel.story('get panel')();
+        setTimeout(function () {
+          Promote.run();
+          Item.run();
+          Panel.run();
+        }, 1000);
 
-        Item.run();
+        // 
         
-        Evaluation.run();
+        // 
 
       }
     }

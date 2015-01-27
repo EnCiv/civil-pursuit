@@ -227,11 +227,16 @@
   }
 
   .fa {
-    cursor: pointer
+    cursor: pointer;
+    color: white
   }
 }
 
 .item {
+
+  & > .is-section {
+    padding-bottom: 0
+  }
 
   & {
     background:     #fff;
@@ -286,20 +291,6 @@
         margin-bottom: 50px;
       }
     }
-
-    .toggle-arrow {
-      i {
-        display: block;
-        width: 30px;
-        margin: auto;
-        // margin-top: -25px !important;
-
-        @media (max-width: 768px) {
-          margin-top: 0
-        }
-      }
-    }
-
     .children {
 
       & {

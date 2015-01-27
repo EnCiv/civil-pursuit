@@ -4697,6 +4697,7 @@ footer {
 }
 .youtube-preview .fa {
   cursor: pointer;
+  color: #ffffff;
 }
 .item {
   background: #fff;
@@ -4708,6 +4709,9 @@ footer {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   margin-right: 0;
   border-right: none;
+}
+.item > .is-section {
+  padding-bottom: 0;
 }
 .item.is-truncated .truncator {
   display: inline-block;
@@ -4748,16 +4752,6 @@ footer {
 .item .collapsers .details.is-showing,
 .item .collapsers .editor.is-showing {
   margin-bottom: 50px;
-}
-.item .collapsers .toggle-arrow i {
-  display: block;
-  width: 30px;
-  margin: auto;
-}
-@media (max-width: 768px) {
-  .item .collapsers .toggle-arrow i {
-    margin-top: 0;
-  }
 }
 .item .collapsers .children {
   background: #eeeeee;
@@ -4841,6 +4835,10 @@ footer {
 }
 .panel .row-split .col + .col .panel {
   margin-right: -10px;
+}
+.panel .toggle-arrow {
+  margin-top: -40px;
+  margin-bottom: 20px;
 }
 .modal {
   top: 200px !important;

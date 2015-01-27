@@ -82,7 +82,7 @@
             icon.css('width', img.width() + 'px');
 
             img.css('margin-bottom', '-' + img.height() + 'px');
-          }); 
+          });
 
           icon.find('.fa').on('click', function () {
             var video_container = $('<div class="video-container"></div>');
@@ -133,6 +133,8 @@
 
         function togglePromote () {
 
+          console.info('I am clicking')
+
           var $panel    =   $(this).closest('.panel');
           var $item     =   $(this).closest('.item');
           var $promote  =   $item.find('>.collapsers >.evaluator');
@@ -159,8 +161,11 @@
                   });
 
                 if ( ! evaluationExists ) {
-                  Socket.emit('get evaluation', item);
+                  Socket.emit('get evaluation', item, function () {
+                    
+                  });
                 }
+
               });
           }
 

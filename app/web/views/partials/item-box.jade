@@ -1,0 +1,28 @@
+.item.box
+
+  .is-section
+  
+    .item-media-wrapper
+      article.item-media
+        img.img-responsive(alt='Synaccord' src=synapp.public['default item image'])
+    
+    .pull-right.box-buttons
+      button.btn.toggle-promote.is-in Promote
+      div.promoted ...
+      div.promoted-percent ...
+      button.btn.toggle-details Details
+
+    .item-text
+      h4.item-title.padding-right
+        a(href='#')
+          .subject-placeholder Subject
+      
+      .box-description.description.pre-text.padding-right.padding-left
+        .description-placeholder Description
+
+      .item-references
+        h4
+          a(href='#' target='_blank')
+            .reference-placeholder http://
+
+    block collapsers

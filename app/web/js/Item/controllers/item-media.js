@@ -2,14 +2,16 @@
 
   'use strict';
 
+  var luigi = require('/home/francois/Dev/luigi/luigi');
+
   function itemMedia (item) {
 
-    var app = this;
+    var div = this;
 
     // youtube video from references
 
     if ( item.references.length ) {
-      var media = app.controller('youtube')(item.references[0].url);
+      var media = div.controller('youtube')(item.references[0].url);
 
       if ( media ) {
         return media;
@@ -26,17 +28,24 @@
         src = synapp['default item image'];
       }
 
-      return app.importer.controller('bootstrap/responsive-image')({
-        src: src
-      });
+      var image = $('<img/>');
 
+      image.addClass('img-responsive');
+
+      image.attr('src', src);
+
+      return image;
     }
 
     // default image
 
-    return app.importer.controller('bootstrap/responsive-image')({
-      src: synapp['default item image']
-    });
+    var image = $('<img/>');
+
+    image.addClass('img-responsive');
+
+    image.attr('src', synapp['default item image']);
+
+    return image;
 
   }
 

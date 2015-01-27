@@ -2,12 +2,13 @@
   
   'use strict';
 
+  var luigi = require('/home/francois/Dev/luigi/luigi');
+
   function getPanel () {
 
-    var app = this;
-
-    var Socket = app.importer.emitter('socket');
-    var Item = app.importer.extension('Item');
+    var app       =   this;
+    var Socket    =   app.importer.emitter('socket');
+    var Item      =   app.importer.extension('Item');
 
     /** On socket connected */
 
@@ -29,7 +30,13 @@
     app.watch
       .on('push panels', function (panel) {
 
-        app.render('panel', panel, function (panelView) {
+        return luigi('tpl-panel', function (error, panelView) {
+          
+          if ( error ) {
+            throw error;
+          }
+
+          console.log(panelView.html())
 
           // If no parent (topic)
 

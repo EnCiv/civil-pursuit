@@ -5,7 +5,8 @@
   function getEvaluation () {
     var app = this;
 
-    var Socket = app.importer.emitter('socket');
+    var Socket = app.root.emitter('socket');
+    var Queue = app.root.queue;
 
     Socket.on('got evaluation',
       function (evaluation) {
@@ -20,12 +21,18 @@
           }
         }
 
-        app.push('evaluations', evaluation);
+        Queue.add(function Promote__push_evaluation (next) {
+          app.push('evaluations', evaluation);
+          next();
+        });
       });
 
     app.watch.on('push evaluations', function (evaluation) {
-      app.render('evaluation', evaluation);
+      // app.render('evaluation', evaluation, function ($promote) {
+        
+      // });
     });
+
   }
 
   module.exports = getEvaluation;

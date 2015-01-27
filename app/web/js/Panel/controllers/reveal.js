@@ -7,14 +7,18 @@
 
     elem.removeClass('is-hidden').addClass('is-showing');
 
-    app.controller('scroll to point of attention')(poa, function () {
+    if ( poa ) {
+      app.controller('scroll to point of attention')(poa, function () {
+        app.controller('show')(elem, cb);
+      });
+    }
+
+    else {
       app.controller('show')(elem, cb);
-    });
+    }
   }
 
   function reveal (elem, poa, cb) {
-    console.info('revealing', elem.attr('id'), elem.attr('class'))
-
     var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {

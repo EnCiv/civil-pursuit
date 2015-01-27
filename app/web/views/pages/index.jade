@@ -1,19 +1,11 @@
 extends ../layout
 
-include ../mixins/bootstrap
-
 block page
   section.panels
-    #intro
-      +bootstrap-panel
-        +bootstrap-panel-heading
-          h4.panel-title
-            span.iddle
-              i.fa.fa-circle-o-notch.fa-spin
-        +bootstrap-panel-body
-          include ../partials/item
+    include ../partials/intro
 
-  //- modals
+  // Modal Tip Promote
+
   #modal-tip-evaluate.modal.fade(tabindex='-1' role='dialog' aria-labelledby='tipEvaluateLabel' aria-hidden='true')
     .modal-dialog
       .modal-content

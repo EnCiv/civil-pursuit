@@ -2,47 +2,41 @@
 
   'use strict';
 
-  module.exports = {
-    template: '.evaluator',
-    controller: function (view, evaluation) {
+  function render (evaluation) {
 
-      var app = this;
+    var div         =   this;
 
-      var Socket      =   app.importer.emitter('socket');
+    var Socket      =   div.root.emitter('socket');
 
-      var Panel       =   app.importer.extension('Panel');
+    var Panel       =   div.root.extension('Panel');
 
-      var Item        =   app.importer.extension('Item');
+    var Item        =   div.root.extension('Item');
 
-      var itemID      =   '#item-' + evaluation.item;
-
-      var item        =   $(itemID);
-
-      var $evaluator  =   item.find('>.collapsers >.evaluator');
-      var $sideBySide =   $evaluator.find('.items-side-by-side');
+    return function (view) {
+      var $sideBySide =   view.find('.items-side-by-side');
 
       // Cursor
 
-      app.bind('cursor', function (cursor) {
-        $evaluator.find('.cursor').text(cursor);
+      div.bind('cursor', function (cursor) {
+        view.find('.cursor').text(cursor);
 
-        if ( cursor < app.model('limit') ) {
-          $evaluator.find('.finish').text('Neither');
+        if ( cursor < div.model('limit') ) {
+          view.find('.finish').text('Neither');
         }
         else {
-          $evaluator.find('.finish').text('Finish');
+          view.find('.finish').text('Finish');
         }
       });
 
-      app.model('cursor', evaluation.cursor);
+      div.model('cursor', evaluation.cursor);
 
       // Limit
 
-      app.bind('limit', function (limit) {
-        $evaluator.find('.limit').text(limit);
+      div.bind('limit', function (limit) {
+        view.find('.limit').text(limit);
       });
 
-      app.model('limit', evaluation.limit);
+      div.model('limit', evaluation.limit);
 
       // Item
 
@@ -80,7 +74,7 @@
           $sideBySide.find('.promote-label').hide();
           $sideBySide.find('.promote').hide();
 
-          // if ( hand === 'right' && ( ! app.model('left') || ! app.model('right') ) ) {
+          // if ( hand === 'right' && ( ! div.model('left') || ! app.model('right') ) ) {
           //   $sideBySide.find('.promote-label').hide();
           // }
           return;
@@ -130,32 +124,19 @@
         $sideBySide.find('.sliders.' + hand + '-item')
           .empty();
 
+        console.info('criterias', evaluation.criterias.length);
+
         evaluation.criterias.forEach(function (criteria) {
 
-          // Sliders template
+          /// Render sliders template
 
-          var template = {
+          // div.render('sliders', criteria, function (view) {
+          //   view.removeClass('template-model');
             
-            template: $evaluator.find('.criteria-slider.template-model'),
-            
-            controller: function (view, locals) {
-              
-              view.find('.criteria-name').text(criteria.name);
-
-
-              view.find('input[type="range"]').rangeslider();
-            }
-          };
-
-          // Render sliders template
-
-          app.render(template, {}, function (view) {
-            view.removeClass('template-model');
-            
-            $sideBySide.find('.sliders.' + hand + '-item')
-              .append(view);
+          //   $sideBySide.find('.sliders.' + hand + '-item')
+          //     .append(view);
           
-          }.bind({ index: pos, hand: hand }));
+          // }.bind({ index: pos, hand: hand }));
 
         });
 
@@ -167,7 +148,7 @@
 
       // Left
 
-      app.bind('left', function (left, old, event) {
+      div.bind('left', function (left, old, event) {
         evaluationItem(left, 0);
         
         if ( left ) {
@@ -175,11 +156,11 @@
         }
       });
 
-      app.model('left', evaluation.items[0]);
+      div.model('left', evaluation.items[0]);
 
       // Right
 
-      app.bind('right', function (right) {
+      div.bind('right', function (right) {
         evaluationItem(right, 1);
         
         if ( right ) {
@@ -187,7 +168,7 @@
         }
       });
 
-      app.model('right', evaluation.items[1]);
+      div.model('right', evaluation.items[1]);
 
       // Promote
 
@@ -200,13 +181,13 @@
 
         console.info('unpromoted', unpromoted, pos)
 
-        if ( app.model('cursor') < app.model('limit') ) {
+        if ( div.model('cursor') < div.model('limit') ) {
 
-          app.inc('cursor');
+          div.inc('cursor');
 
           if ( unpromoted ) {
 
-            Socket.emit('promote', app.model('left'));
+            Socket.emit('promote', div.model('left'));
 
             saveItem('right');
 
@@ -218,7 +199,7 @@
               rights[1] ++;
 
               if( rights[0] === rights[1] ) {
-                app.model('right', evaluation.items[app.model('cursor')]);
+                div.model('right', evaluation.items[div.model('cursor')]);
 
                 $evaluator.find('.right-item').animate({
                   opacity: 1
@@ -228,7 +209,7 @@
           }
 
           else {
-            Socket.emit('promote', app.model('right'));
+            Socket.emit('promote', div.model('right'));
 
             saveItem('left');
 
@@ -241,8 +222,8 @@
               lefts[1] ++;
 
               if( lefts[0] === lefts[1] ) {
-                app.model('left', evaluation.items[app.model('cursor')]);
-  
+                div.model('left', evaluation.items[div.model('cursor')]);
+
                 $evaluator.find('.left-item').animate({
                   opacity: 1
                 });
@@ -263,14 +244,14 @@
 
         Panel.controller('scroll to point of attention')($evaluator);
 
-        if ( app.model('cursor') === app.model('limit') ) {
+        if ( div.model('cursor') === div.model('limit') ) {
           finish();
         }
         
         else {
           // Left
 
-          app.inc('cursor');
+          div.inc('cursor');
 
           saveItem('left');
 
@@ -282,7 +263,7 @@
               lefts[1] ++;
 
               if( lefts[0] === lefts[1] ) {
-                app.model('left', evaluation.items[app.model('cursor')]);
+                div.model('left', evaluation.items[div.model('cursor')]);
 
                 $evaluator.find('.left-item').animate({
                   opacity: 1
@@ -292,7 +273,7 @@
 
           // Right
 
-          app.inc('cursor');
+          div.inc('cursor');
 
           saveItem('right');
 
@@ -304,7 +285,7 @@
               rights[1] ++;
 
               if( rights[0] === rights[1] ) {
-                app.model('right', evaluation.items[app.model('cursor')]);
+                div.model('right', evaluation.items[div.model('cursor')]);
 
                 $evaluator.find('.right-item').animate({
                   opacity: 1
@@ -315,8 +296,8 @@
 
           // Adjust cursor
 
-          if ( app.model('limit') - app.model('cursor') === 1 ) {
-            app.model('cursor', app.model('limit'));
+          if ( div.model('limit') - div.model('cursor') === 1 ) {
+            div.model('cursor', div.model('limit'));
           }
         }
       });
@@ -331,7 +312,7 @@
 
         if ( feedback.val() ) {
           Socket.emit('insert feedback', {
-            item: app.model(hand)._id,
+            item: div.model(hand)._id,
             user: synapp.user,
             feedback: feedback.val()
           });
@@ -347,7 +328,7 @@
           .find('.' +  hand + '-item input[type="range"]:visible')
           .each(function () {
             var vote = {
-              item: app.model(hand)._id,
+              item: div.model(hand)._id,
               user: synapp.user,
               value: +$(this).val(),
               criteria: $(this).data('criteria-id')
@@ -366,21 +347,23 @@
         $evaluator.find('.promote').off('click');
         $evaluator.find('.finish').off('click');
 
-        if ( app.model('left') ) {
+        if ( div.model('left') ) {
           saveItem('left');
         }
 
-        if ( app.model('right') ) {
+        if ( div.model('right') ) {
           saveItem('right');
         }
 
-        var evaluations = app.model('evaluations');
+        $evaluator.find('.promote,.finish').off('click');
+
+        var evaluations = div.model('evaluations');
 
         evaluations = evaluations.filter(function ($evaluation) {
           return $evaluation.item !== evaluation.item;
         });
 
-        app.model('evaluations', evaluations);
+        div.model('evaluations', evaluations);
 
         Panel.controller('hide')($evaluator,
           function () {
@@ -389,15 +372,9 @@
               .removeClass('hide');
           });
       }
-
-      // Adjust (on not 6 items)
-
-      function adjust () {
-        console.log(app.model('right'))
-      }
-
-      adjust();
     }
-  };
+  }
+
+  module.exports = render;
 
 } ();

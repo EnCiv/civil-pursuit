@@ -1,481 +1,493 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /**
-
-  88888888b                   dP                     dP   oo                   
-   88                          88                     88                        
-  a88aaaa    dP   .dP .d8888b. 88 dP    dP .d8888b. d8888P dP .d8888b. 88d888b. 
-   88        88   d8' 88'  `88 88 88    88 88'  `88   88   88 88'  `88 88'  `88 
-   88        88 .88'  88.  .88 88 88.  .88 88.  .88   88   88 88.  .88 88    88 
-   88888888P 8888P'   `88888P8 dP `88888P' `88888P8   dP   dP `88888P' dP    dP
-
-*/
+  *
+  *     ********    ***  ***        ***              ***  ´********
+  *     ***    ***  ***   ***      ***               ***  * 
+  *     ***    ***  ***    ***    ***                ***  `*******`
+  *     ***   ***   ***     ***  ***     ***  ***    ***          *
+  *     ********    ***      ******      ***   ********   ********´
+  *
+ **/
 
 ! function () {
 
   'use strict';
 
-  module.exports = {
-    
-    models: {
-      evaluations: []
-    },
-    
-    templates: {
-      evaluation: require('./templates/evaluation')
-    },
+  /** Div
+   *
+   *  @class
+   *  @extends EventEmitter
+   */
 
-    stories: {
-      'get evaluation': require('./stories/get-evaluation')
-    },
+  function Div () {
 
-    run: function () {
-      this.story('get evaluation')();
-    }
-  };
+    var div           =   this;
 
-} ();
+    this.models       =   {};
 
-},{"./stories/get-evaluation":2,"./templates/evaluation":3}],2:[function(require,module,exports){
-! function () {
+    this.emitters     =   {};
 
-  'use strict';
+    this.controllers  =   {};
 
-  function getEvaluation () {
-    var app = this;
+    this.extensions   =   {};
 
-    var Socket = app.importer.emitter('socket');
+    this.watch        =   new (require('events').EventEmitter)();
 
-    Socket.on('got evaluation',
-      function (evaluation) {
-        evaluation.cursor = 1;
-        evaluation.limit = 5;
+    this.domain       =   require('domain').create();
 
-        if ( evaluation.items.length < 6 ) {
-          evaluation.limit = evaluation.items.length - 1;
-
-          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
-            evaluation.limit = 1;
-          }
-        }
-
-        app.push('evaluations', evaluation);
-      });
-
-    app.watch.on('push evaluations', function (evaluation) {
-      app.render('evaluation', evaluation);
+    this.domain.on('error', function (error) {
+      div.emit('error', error);
     });
   }
 
-  module.exports = getEvaluation;
+  require('util').inherits(Div, require('events').EventEmitter);
 
-} ();
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {String|Object} name
+   *  @arg {Mixed?} model
+   */
 
-},{}],3:[function(require,module,exports){
-! function () {
+  Div.prototype.model       =   function (name, model) {
+    var div = this;
 
-  'use strict';
+    if ( ! name ) {
+      return this;
+    }
 
-  module.exports = {
-    template: '.evaluator',
-    controller: function (view, evaluation) {
-
-      var app = this;
-
-      var Socket      =   app.importer.emitter('socket');
-
-      var Panel       =   app.importer.extension('Panel');
-
-      var Item        =   app.importer.extension('Item');
-
-      var itemID      =   '#item-' + evaluation.item;
-
-      var item        =   $(itemID);
-
-      var $evaluator  =   item.find('>.collapsers >.evaluator');
-      var $sideBySide =   $evaluator.find('.items-side-by-side');
-
-      // Cursor
-
-      app.bind('cursor', function (cursor) {
-        $evaluator.find('.cursor').text(cursor);
-
-        if ( cursor < app.model('limit') ) {
-          $evaluator.find('.finish').text('Neither');
-        }
-        else {
-          $evaluator.find('.finish').text('Finish');
-        }
-      });
-
-      app.model('cursor', evaluation.cursor);
-
-      // Limit
-
-      app.bind('limit', function (limit) {
-        $evaluator.find('.limit').text(limit);
-      });
-
-      app.model('limit', evaluation.limit);
-
-      // Item
-
-      function evaluationItem (eItem, pos) {
-
-        var hand = pos ? 'right' : 'left';
-
-        // If null
-
-        if ( ! eItem ) {
-          $sideBySide
-            .find('.subject.' + hand + '-item')
-            .hide();
-
-          $sideBySide
-            .find('.is-des.' + hand + '-item')
-            .hide();
-
-          $sideBySide
-            .find('.sliders.' + hand + '-item')
-            .hide();
-
-          $sideBySide
-            .find('.' + hand + '-item .feedback')
-            .closest('.' + hand + '-item')
-            .hide();
-
-          $sideBySide
-            .find('.' + hand + '-item .promote')
-            .closest('.' + hand + '-item')
-            .hide();
-
-          // If one missing
-
-          $sideBySide.find('.promote-label').hide();
-          $sideBySide.find('.promote').hide();
-
-          // if ( hand === 'right' && ( ! app.model('left') || ! app.model('right') ) ) {
-          //   $sideBySide.find('.promote-label').hide();
-          // }
-          return;
-        }
-
-        // Increment views counter
-
-        Socket.emit('add view', eItem._id);
-
-        // Image
-
-        var image;
-
-        if ( eItem._id === evaluation.item ) {
-          image = $('#item-' + eItem._id)
-            .find('>.item-media-wrapper img')
-            .clone();
-        }
-
-        image = image || Item.controller('item media')(eItem);
-
-        $sideBySide
-          .find('.image.' + hand + '-item')
-          .empty()
-          .append(image);
-
-        // Subject
-
-        $sideBySide.find('.subject.' + hand + '-item h3')
-          .text(eItem.subject);
-
-        // Description
-
-        $sideBySide.find('.is-des.' + hand + '-item .description')
-          .text(eItem.description);
-
-        // References
-
-        if ( eItem.references.length ) {
-          $sideBySide.find('.references.' + hand + '-item a')
-            .attr('href', eItem.references[0].url)
-            .text(eItem.references[0].title || eItem.references[0].url);
-        }
-
-        // Sliders
-
-        $sideBySide.find('.sliders.' + hand + '-item')
-          .empty();
-
-        evaluation.criterias.forEach(function (criteria) {
-
-          // Sliders template
-
-          var template = {
-            
-            template: $evaluator.find('.criteria-slider.template-model'),
-            
-            controller: function (view, locals) {
-              
-              view.find('.criteria-name').text(criteria.name);
-
-
-              view.find('input[type="range"]').rangeslider();
-            }
-          };
-
-          // Render sliders template
-
-          app.render(template, {}, function (view) {
-            view.removeClass('template-model');
-            
-            $sideBySide.find('.sliders.' + hand + '-item')
-              .append(view);
-          
-          }.bind({ index: pos, hand: hand }));
-
-        });
-
-        // Promote button
-
-        $sideBySide.find('.' + hand + '-item .promote')
-          .data('position', pos);
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        div.model(i, name[i]);
       }
 
-      // Left
+      return div;
+    }
 
-      app.bind('left', function (left, old, event) {
-        evaluationItem(left, 0);
+    if ( typeof name === 'string' ) {
+
+
+      if ( '1' in arguments ) {
         
-        if ( left ) {
-          $evaluator.find('.left-item .promote').text(left.subject);
-        }
-      });
-
-      app.model('left', evaluation.items[0]);
-
-      // Right
-
-      app.bind('right', function (right) {
-        evaluationItem(right, 1);
-        
-        if ( right ) {
-          $evaluator.find('.right-item .promote').text(right.subject);
-        }
-      });
-
-      app.model('right', evaluation.items[1]);
-
-      // Promote
-
-      $evaluator.find('.promote').on('click', function () {
-        Panel.controller('scroll to point of attention')($evaluator);
-
-        var pos = $(this).data('position');
-
-        var unpromoted = pos ? 0 : 1;
-
-        console.info('unpromoted', unpromoted, pos)
-
-        if ( app.model('cursor') < app.model('limit') ) {
-
-          app.inc('cursor');
-
-          if ( unpromoted ) {
-
-            Socket.emit('promote', app.model('left'));
-
-            saveItem('right');
-
-            var rights = [$evaluator.find('.right-item').length, 0];
-
-            $evaluator.find('.right-item').animate({
-              opacity: 0
-            }, function () {
-              rights[1] ++;
-
-              if( rights[0] === rights[1] ) {
-                app.model('right', evaluation.items[app.model('cursor')]);
-
-                $evaluator.find('.right-item').animate({
-                  opacity: 1
-                });
-              }
-            });
-          }
-
-          else {
-            Socket.emit('promote', app.model('right'));
-
-            saveItem('left');
-
-            var lefts = [$evaluator.find('.left-item').length, 0];
-
-            $evaluator.find('.left-item').animate({
-              opacity: 0
-            }, function () {
-
-              lefts[1] ++;
-
-              if( lefts[0] === lefts[1] ) {
-                app.model('left', evaluation.items[app.model('cursor')]);
-  
-                $evaluator.find('.left-item').animate({
-                  opacity: 1
-                });
-              }
-            });
-          }
-
+        if ( name in this.models ) {
+          this.watch.emit('update ' + name, model, this.models[name]);
+          this.models[name] = model;
         }
 
         else {
-          finish();
-        }
-      });
-
-      // Neither / Finish
-
-      $evaluator.find('.finish').on('click', function () {
-
-        Panel.controller('scroll to point of attention')($evaluator);
-
-        if ( app.model('cursor') === app.model('limit') ) {
-          finish();
-        }
-        
-        else {
-          // Left
-
-          app.inc('cursor');
-
-          saveItem('left');
-
-          var lefts = [$evaluator.find('.left-item').length, 0];
-
-          $evaluator.find('.left-item').animate({
-              opacity: 0
-            }, function () {
-              lefts[1] ++;
-
-              if( lefts[0] === lefts[1] ) {
-                app.model('left', evaluation.items[app.model('cursor')]);
-
-                $evaluator.find('.left-item').animate({
-                  opacity: 1
-                });
-              }
-            });
-
-          // Right
-
-          app.inc('cursor');
-
-          saveItem('right');
-
-          var rights = [$evaluator.find('.right-item').length, 0];
-
-          $evaluator.find('.right-item').animate({
-              opacity: 0
-            }, function () {
-              rights[1] ++;
-
-              if( rights[0] === rights[1] ) {
-                app.model('right', evaluation.items[app.model('cursor')]);
-
-                $evaluator.find('.right-item').animate({
-                  opacity: 1
-                });
-              }
-            });
-
-
-          // Adjust cursor
-
-          if ( app.model('limit') - app.model('cursor') === 1 ) {
-            app.model('cursor', app.model('limit'));
-          }
-        }
-      });
-
-      // Save votes and feeback
-
-      function saveItem (hand) {
-   
-        // feedback
-
-        var feedback = $evaluator.find('.' +  hand + '-item .feedback');
-
-        if ( feedback.val() ) {
-          Socket.emit('insert feedback', {
-            item: app.model(hand)._id,
-            user: synapp.user,
-            feedback: feedback.val()
-          });
-
-          feedback.val('');
+          this.models[name] = model;
+          this.watch.emit('add ' + name, model);
         }
 
-        // votes
-
-        var votes = [];
-
-        $sideBySide
-          .find('.' +  hand + '-item input[type="range"]:visible')
-          .each(function () {
-            var vote = {
-              item: app.model(hand)._id,
-              user: synapp.user,
-              value: +$(this).val(),
-              criteria: $(this).data('criteria-id')
-            };
-
-            votes.push(vote);
-          });
-
-        Socket.emit('insert votes', votes);
+        return div;
       }
 
-      // Finish
-
-      function finish () {
-
-        $evaluator.find('.promote').off('click');
-        $evaluator.find('.finish').off('click');
-
-        if ( app.model('left') ) {
-          saveItem('left');
-        }
-
-        if ( app.model('right') ) {
-          saveItem('right');
-        }
-
-        var evaluations = app.model('evaluations');
-
-        evaluations = evaluations.filter(function ($evaluation) {
-          return $evaluation.item !== evaluation.item;
-        });
-
-        app.model('evaluations', evaluations);
-
-        Panel.controller('hide')($evaluator,
-          function () {
-            item.find('.toggle-details').eq(0).click();
-            item.find('.details:eq(0) .feedback-pending')
-              .removeClass('hide');
-          });
-      }
-
-      // Adjust (on not 6 items)
-
-      function adjust () {
-        console.log(app.model('right'))
-      }
-
-      adjust();
+      return this.models[name];
     }
   };
 
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {String|Object} name
+   *  @arg {Mixed?} controller
+   */
+
+  Div.prototype.controller  =   function (name, controller) {
+    var div = this;
+
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.controller(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.controllers[name] = controller.bind(this);
+
+        // this.controllers[name].attach = function () {
+        //   div.controllers[name].call(div, arguments);
+        // };
+
+        return this;
+      }
+
+      return this.controllers[name];
+    }
+  };
+
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {String|Object} name
+   *  @arg {Mixed?} emitter
+   */
+
+  Div.prototype.emitter     =   function (name, emitter) {
+    var div = this;
+
+
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.emitter(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.emitters[name] = emitter;
+
+        return this;
+      }
+
+      return this.emitters[name];
+    }
+  };
+
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {String|Object} name
+   *  @arg {Function} binder
+   */
+
+  Div.prototype.bind        =   function(model, binder) {
+
+    var div = this;
+
+    this.watch.on('add ' + (model.model || model), function (_new, _old) {
+      binder(_new, _old, 'add');
+    });
+
+    this.watch.on('update ' + (model.model || model), function (_new, _old) {
+      binder(_new, _old, 'update');
+    });
+
+    this.watch.on('delete ' + (model.model || model), function (_new, _old) {
+      binder(_new, _old, 'delete');
+    });
+
+    return this;
+  };
+
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {String|Object} name
+   *  @arg {Mixed?} extension
+   */
+
+  Div.prototype.extension   =   function (name, extension) {
+    var div = this;
+
+    if ( typeof name === 'object' ) {
+      for ( var i in name ) {
+        this.extension(i, name[i]);
+      }
+
+      return this;
+    }
+
+    if ( typeof name === 'string' ) {
+      if ( '1' in arguments ) {
+        this.extensions[name]           =   Div.factory(extension);
+        this.extensions[name].root      =   this;
+
+        return this;
+      }
+
+      return this.extensions[name];
+    }
+  };
+
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {Function} fn
+   */
+
+  Div.prototype.run         =   function (fn) {
+
+    var div = this;
+    
+    if ( typeof fn === 'function' ) {
+      setTimeout(function () {
+        
+        div.domain.run(function () {
+          fn.apply(this);
+        });
+
+      });
+    }
+
+    return this;
+  };
+
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {String} model
+   *  @arg {Mixed} item
+   */
+
+  Div.prototype.push        =   function (model, item) {
+
+    var div = this;
+
+    if ( Array.isArray(this.models[model]) ) {
+      setTimeout(function () {
+        div.model(model, div.models[model].concat([item]));
+        div.watch.emit('push ' + model, item);
+      });
+    }
+
+    return this;
+  };
+
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {String} model
+   *  @arg {Number?} step
+   */
+
+  Div.prototype.inc         =   function (model, step) {
+
+    if ( typeof step === 'undefined' ) {
+      step = 1;
+    }
+
+    this.model(model, this.model(model) + step);
+
+    return this;
+  };
+
+  /**
+   *  @method
+   *  @return Div
+   *  @arg {Object} ext
+   */
+
+  Div.factory               =   function (ext) {
+
+    var div = new Div()
+
+      .extension(ext.extensions || {})
+
+      .emitter(ext.emitters || {})
+
+      .model(ext.models || {})
+
+      .controller(ext.controllers || {});
+    ;
+
+    if ( ext.run ) {
+      div.run = ext.run;
+    }
+
+    if ( ext.on ) {
+      for ( var event in ext.on ) {
+        div.on(event, ext.on[event].bind(div));
+      }
+    }
+
+    return div;
+  };
+
+  // export
+
+  if ( typeof module !== 'undefined' && module.exports ) {
+    module.exports = Div;
+  }
+
+  // window
+  
+  else if ( typeof window !== 'undefined' ) {
+    window.Div = Div;
+  }
+
 } ();
 
-},{}],4:[function(require,module,exports){
+},{"domain":32,"events":33,"util":37}],2:[function(require,module,exports){
+/**
+ *  @author https://github.com/co2-git
+ *  @licence MIT
+ */
+
+! function (context) {
+
+  'use strict';
+
+  /** luigi - minimalistic template rendere
+   *
+   *  @function
+   *  @return null
+   *  @arg {String} id
+   */
+
+  function Luigi (id) {
+
+    var luigi = this;
+
+    luigi.id = id;
+
+    setTimeout(function () {
+      luigi.render();
+    });
+  }
+
+  require('util').inherits(Luigi, require('events').EventEmitter);
+
+  Luigi.prototype.render = function () {
+    var luigi = this;
+
+    // Make sure we have jQuery
+
+    if ( typeof $ !== 'function' ) {
+      return luigi.emit('error', new Error('Sorry! I need jQuery to function!'));
+    }
+
+    // Get script template by id
+
+    var template = $('#' + luigi.id);
+
+    // Complain if no script template found by that id 
+
+    if ( ! template.length ) {
+      return luigi.emit('error', new Error('No such template: ' + luigi.id));
+    }
+
+    // If not a script, just pass the view then
+
+    var elem = template[0].nodeName.toLowerCase();
+
+    if ( elem === 'script' ) {
+      // Get src attribute
+
+      var src = template.attr('src');
+
+      // If has src, hence URL
+
+      if ( src ) {
+
+        // Fetch url
+
+        return $.ajax(src)
+
+          // Rejoyce on success
+
+          .success(function (data) {
+            luigi.emit('view', $(data));
+          })
+
+          // Complain on error
+
+          .error(function (error) {
+            luigi.emit('error', error);
+          });
+      }
+
+      // No src attribute, so it is static template
+
+      luigi.emit('view', $(template.text().trim()));
+    }
+
+    else {
+      luigi.emit('view', template);
+    }
+  };
+
+  Luigi.prototype.controller = function (controller) {
+    this.on('view', controller);
+
+    return this;
+  };
+
+  function luigi (id) {
+    return new Luigi(id);
+  }
+
+  // export
+
+  if ( typeof module !== 'undefined' && module.exports ) {
+    module.exports = luigi;
+  }
+
+  // window
+  
+  else if ( typeof window !== 'undefined' ) {
+    window.luigi = luigi;
+  }
+
+} (this);
+
+},{"events":33,"util":37}],3:[function(require,module,exports){
+! function () {
+
+	'use strict';
+
+  var luigi = require('/home/francois/Dev/luigi/luigi');
+
+	function getIntro () {
+    var div = this;
+
+    var Socket = div.root.emitter('socket');
+
+    var Panel = div.root.extension('Panel');
+    if ( ! div.model('intro') ) {
+
+      Socket.emit('get intro');
+
+      Socket.once('got intro', function (intro) {
+        div.model('intro', intro);
+      });
+
+      div.bind('intro', function (intro) {
+
+        luigi('intro')
+
+          .controller(function (view) {
+            var Item = div.root.extension('Item');
+
+            view.find('.panel-title').text(intro.subject);
+            view.find('.item-title').text(intro.subject);
+            view.find('.description').eq(0).text(intro.description);
+
+            luigi('tpl-responsive-image')
+
+              .controller(function (img) {
+                img.attr('src', intro.image);
+
+                view.find('.item-media').empty().append(img);
+              });
+
+            view.find('.item-references').hide();
+
+            new (Item.controller('truncate'))(view);
+
+            view.find('.promoted').hide();
+
+            view.find('.box-buttons').hide();
+
+            view.find('.toggle-arrow').hide();
+
+            Panel.controller('reveal')(view.find('.item.box'));
+          });
+
+      });
+    }
+  }
+
+  module.exports = getIntro;
+
+} ();
+
+},{"/home/francois/Dev/luigi/luigi":2}],4:[function(require,module,exports){
 /**
                                                         
             dP            dP                     
@@ -496,90 +508,24 @@
       intro: null
     },
 
-    views: {
-      intro: '#intro'
+    controllers: {
+      'get intro': require('./controllers/get-intro')
     },
-    
-    templates: {
-      intro: require('./templates/intro')
-    },
-    
-    stories: {
-      'get intro': require('./stories/get-intro')
+
+    run: function () {
+
+      var div = this;
+
+      div.root.model('socket_conn')
+        ?   div.controller('get intro')()
+        :   div.root.emitter('socket').once('connect', div.controller('get intro'));
+
     }
   };
 
 } ();
 
-},{"./stories/get-intro":5,"./templates/intro":6}],5:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function getIntro () {
-
-    var app = this;
-
-    var Socket = app.importer.emitter('socket');
-
-    Socket.once('connect',
-      function onceSocketConnect () {
-        if ( ! app.model('intro') ) {
-          
-          Socket.emit('get intro');
-
-          Socket.on('got intro', function (intro) {
-            app.model('intro', intro);
-          });
-
-          app.watch.on('update intro', function (intro) {
-            app.render('intro', intro);
-          });
-          
-          }
-    });
-
-  }
-
-  module.exports = getIntro;
-
-}();
-
-},{}],6:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = {
-    template: '#intro',
-    controller: function (view, intro) {
-      var app = this;
-      var Item = app.importer.extension('Item');
-
-      $('#intro').find('.panel-title').text(intro.subject);
-      $('#intro').find('.item-title').text(intro.subject);
-      $('#intro').find('.description').eq(0).text(intro.description);
-
-      $('#intro').find('.item-media').empty().append(
-        app.importer.controller('bootstrap/responsive-image')({
-          src: intro.image
-        }));
-
-      $('#intro').find('.item-references').hide();
-
-      new (Item.controller('truncate'))($('#intro'));
-
-      $('#intro').find('.promoted').hide();
-
-      $('#intro').find('.box-buttons').hide();
-
-      $('#intro').find('.toggle-arrow').hide();
-    }
-  };
-
-} ();
-
-},{}],7:[function(require,module,exports){
+},{"./controllers/get-intro":3}],5:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -623,7 +569,7 @@
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -647,19 +593,21 @@
 
 } ();
 
-},{"string":47}],9:[function(require,module,exports){
+},{"string":38}],7:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
+  var luigi = require('/home/francois/Dev/luigi/luigi');
+
   function itemMedia (item) {
 
-    var app = this;
+    var div = this;
 
     // youtube video from references
 
     if ( item.references.length ) {
-      var media = app.controller('youtube')(item.references[0].url);
+      var media = div.controller('youtube')(item.references[0].url);
 
       if ( media ) {
         return media;
@@ -676,17 +624,24 @@
         src = synapp['default item image'];
       }
 
-      return app.importer.controller('bootstrap/responsive-image')({
-        src: src
-      });
+      var image = $('<img/>');
 
+      image.addClass('img-responsive');
+
+      image.attr('src', src);
+
+      return image;
     }
 
     // default image
 
-    return app.importer.controller('bootstrap/responsive-image')({
-      src: synapp['default item image']
-    });
+    var image = $('<img/>');
+
+    image.addClass('img-responsive');
+
+    image.attr('src', synapp['default item image']);
+
+    return image;
 
   }
 
@@ -694,7 +649,71 @@
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],8:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  var luigi = require('/home/francois/Dev/luigi/luigi');
+
+  function placeItemInPanel (item, view, cb) {
+
+    var div = this;
+    var Panel = div.root.extension('Panel');
+
+    var panelId = '#panel-' + item.type;
+
+    if ( item.parent ) {
+      panelId += '-' + item.parent;
+    }
+
+    console.warn('placing 2', item.subject, panelId)
+
+    // In case of a new item
+    
+    if ( item.is_new ) {
+      $(panelId).find('.items').prepend(view);
+
+      // image if any
+
+      var file = $('.creator.' + item.type)
+        .find('.preview-image').data('file');
+
+      if ( file ) {
+        view.find('.item-media img').attr('src',
+          (window.URL || window.webkitURL).createObjectURL(file));
+      }
+
+      // call promote
+
+      view.find('.toggle-promote').click();
+    }
+    
+    // Else, regular fetch
+
+    else {
+      $(panelId).find('> .panel-body > .items').append(view);
+    }
+
+    setTimeout(function () {
+      Panel.controller('reveal')(view, null, function () {
+        
+        luigi('tpl-toggle-arrow')
+          
+          .controller(function (arrow) {
+            arrow.insertAfter(view);
+            cb();
+          });
+
+      });
+    }, 800);
+  }
+
+  module.exports = placeItemInPanel;
+
+} ();
+
+},{"/home/francois/Dev/luigi/luigi":2}],9:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -711,7 +730,266 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  var luigi = require('/home/francois/Dev/luigi/luigi');
+
+  function render (item, cb) {
+
+    var div = this;
+    var Panel = div.root.extension('Panel');
+    var Promote = div.root.extension('Promote');
+    var Socket = div.root.emitter('socket');
+
+    luigi('tpl-item')
+      
+      .controller(function (view) {
+
+        // DOM Elements
+
+        var $collapsers     =   view.find('>.is-section >.collapsers');
+        var $toggleArrow    =   $collapsers.find('>.toggle-arrow');
+        var $subject        =   view.find('>.is-section >.item-text > h4.item-title a');
+        var $description    =   view.find('>.is-section >.item-text >.description');
+        var $references     =   view.find('>.is-section >.item-text >.item-references');
+        var $itemMedia      =   view.find('>.is-section >.item-media-wrapper >.item-media');
+        var $togglePromote  =   view.find('>.is-section >.box-buttons .toggle-promote');
+        var $promoted       =   view.find('>.is-section >.box-buttons .promoted');
+        var $promotedPercent=   view.find('>.is-section >.box-buttons .promoted-percent');
+        var $toggleDetails  =   view.find('>.is-section >.box-buttons .toggle-details');
+
+        // Static link
+
+        var staticLink    =   '/item/' + item._id + '/' + require('string')(item.subject).slugify();
+
+        // Assign item id
+
+        view.attr('id', 'item-' + item._id);
+
+        // Subject
+
+        $subject
+          .attr('href', staticLink)
+          .text(item.subject);
+
+        // Description
+      
+        $description
+          .text(item.description);
+
+        // References
+
+        if ( item.references.length ) {
+          $references.show();
+
+          $references.find('a')
+            .attr('src', item.references[0].url)
+            .text(item.references[0].title || item.references[0].url);
+        }
+        else {
+          $references.hide();
+        }
+
+        // Item media
+
+        $itemMedia.empty().append(
+          div.controller('item media')(item));
+
+        if ( view.find('.youtube-preview .fa-youtube-play').length ) {
+          div.controller('youtube play icon')(view);
+        }
+
+        // Truncate
+
+        setTimeout(function () {
+          new (div.controller('truncate'))(view);
+        }, 1000);
+
+        // stats
+
+        $promoted.text(item.promotions);
+
+        if ( item.promotions ) {
+          $promotedPercent.text(Math.floor(item.promotions * 100 / item.views) + '%');
+        }
+
+        else {
+          $promotedPercent.text('0%');
+        }
+
+        // toggle promote
+
+        $togglePromote.on('click',
+
+          function togglePromote () {
+
+            var $panel    =   $(this).closest('.panel');
+            var $item     =   $(this).closest('.item');
+            var $promote  =   $item.find('>.is-section >.collapsers >.evaluator');
+
+            if ( $promote.hasClass('is-showing') || $promote.hasClass('is-hiding') ) {
+              return false;
+            }
+
+            else if ( $promote.hasClass('is-shown') ) {
+              Panel.controller('scroll to point of attention')($item,
+                function () {
+                  Panel.controller('hide')($promote);
+                });
+            }
+
+            else {
+              // Show tip
+
+              $('#modal-tip-evaluate').modal('show');
+
+              Panel.controller('reveal')($promote, view,
+                
+                function onPromoteShown () {
+
+                  var evaluationExists = Promote.model('evaluations')
+                    .some(function (evaluation) {
+                      return evaluation.item === item._id;
+                    });
+
+                  if ( ! evaluationExists ) {
+                    Socket.emit('get evaluation', item);
+                  }
+
+                });
+            }
+
+            return false;
+
+          });
+
+        // toggle details
+
+        $toggleDetails
+          .on('click', function () {
+            div.controller('toggle details')(this, item);
+          });
+
+        // toggle arrow
+
+        $toggleArrow.on('click', function () {
+
+          var $panel    =   $(this).closest('.panel');
+          var $item     =   $(this).closest('.item');
+          var $children =   $item.find('>.collapsers >.children');
+
+          // Animation in progress - don't do nothing
+
+          if ( $children.hasClass('is-showing') || $children.hasClass('is-hiding') ) {
+            return;
+          }
+
+          // Is shown so hide
+          
+          else if ( $children.hasClass('is-shown') ) {
+            Panel.controller('scroll to point of attention')($item,
+              function () {
+                Panel.controller('hide')($children);
+
+                $(this).find('i.fa')
+                  .removeClass('fa-arrow-up')
+                  .addClass('fa-arrow-down');
+
+              }.bind(this));
+          }
+
+          // else, show
+
+          else {
+
+            // Hide panel's creator
+
+            if ( $panel.find('>.panel-body >.creator.is-shown').length ) {
+              Panel.controller('hide')($panel.find('>.panel-body >.creator.is-shown'));
+            }
+
+            // Is loaded so just show  
+            
+            if ( $children.hasClass('is-loaded') ) {
+              Panel.controller('reveal')($children, $item);
+
+              $(this).find('i.fa')
+                .removeClass('fa-arrow-down')
+                .addClass('fa-arrow-up');
+            }
+
+            // else load and show
+            
+            else {
+              $children.addClass('is-loaded')
+
+              setTimeout(function () {
+                $(this).find('i.fa')
+                  .removeClass('fa-arrow-down')
+                  .addClass('fa-arrow-up');
+                }.bind(this), 1000);
+
+              var children = synapp['item relation'][item.type];
+
+              if ( typeof children === 'string' ) {
+                Panel.push('panels', {
+                  type: children,
+                  parent: item._id,
+                  size: synapp['navigator batch size'],
+                  skip: 0
+                });
+              }
+
+              else if ( Array.isArray(children) ) {
+                children.forEach(function (child) {
+
+                  if ( typeof child === 'string' ) {
+                    Panel.push('panels', {
+                      type: child,
+                      parent: item._id,
+                      size: synapp['navigator batch size'],
+                      skip: 0
+                    });
+                  }
+
+                  else if ( Array.isArray(child) ) {
+                    child.forEach(function (c) {
+                      Panel.push('panels', {
+                        type: c,
+                        parent: item._id,
+                        size: synapp['navigator batch size'],
+                        skip: 0,
+                        split: true
+                      });
+                    });
+                  }
+
+                });
+              }
+            }
+          }
+
+        });
+
+        // is in
+
+        if ( synapp.user ) {
+          view.find('.is-in').css('visibility', 'visible');
+        }
+
+        cb(null, item, view);
+
+      });
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"/home/francois/Dev/luigi/luigi":2,"string":38}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1022,6 +1300,148 @@
 }();
 
 },{}],14:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function updatePanelModel(panel, items) {
+
+    var div     =   this;
+    var Panel   =   this.root.extension('Panel');
+
+    // Update offset (skip)
+
+    panel.skip += (items.length - 1);
+
+    // Update panels model
+
+    Panel.model('panels', Panel.model('panels').map(function (pane) {
+      var match;
+
+      if ( pane.type === panel.type ) {
+        match = true;
+      }
+
+      if ( panel.parent && pane.parent !== panel.parent ) {
+        match = false;
+      }
+
+      if ( match ) {
+        return panel;
+      }
+
+      return pane;
+    }));
+
+    div.watch.emit('panel model updated', panel, items);
+  }
+
+  module.exports = updatePanelModel;
+
+} ();
+
+},{}],15:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function updatePanelView(panel, items) {
+
+    var div     =   this;
+    var Panel   =   this.root.extension('Panel');
+    var Queue   =   this.root.queue;
+
+    var panelId = '#panel-' + panel.type;
+
+    if ( panel.parent ) {
+      panelId += '-' + panel.parent;
+    }
+
+    var $panel  =   $(panelId);
+
+    if ( ! $panel.length ) {
+      throw new Error('Could not find panel ' + panelId);
+    }
+
+    // Show/Hide load-more
+
+    if ( items.length == synapp['navigator batch size'] ) {
+      $(panelId).find('.load-more').show();
+    }
+    else {
+      $(panelId).find('.load-more').hide();
+    }
+
+    div.watch.emit('panel view updated');
+  }
+
+  module.exports = updatePanelView;
+
+} ();
+
+},{}],16:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  function youTubePlayIcon (view) {
+
+    var div = this;
+
+    setTimeout(function () {
+      
+      // view.find('.youtube-preview .icon-play').css('background',
+      //   'url(' + view.find('.youtube-preview img').attr('src') + ')');
+
+      var img = view.find('.youtube-preview img');
+
+      var icon = view.find('.youtube-preview .icon-play');
+
+      icon.css('width', img.width() + 'px');
+
+      icon.css('height', img.height() + 'px');
+
+      img.css('margin-bottom', '-' + img.height() + 'px');
+
+      $(window).on('resize', function () {
+
+        console.log('resizing')
+
+        icon.css('width', img.width() + 'px');
+
+        img.css('margin-bottom', '-' + img.height() + 'px');
+      });
+
+      icon.find('.fa').on('click', function () {
+        var video_container = $('<div class="video-container"></div>');
+
+        var preview = $(this).closest('.youtube-preview');
+
+        preview
+          .empty()
+          .append(video_container);
+
+        video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
+
+        video_container.find('iframe')
+          .attr('src', 'http://www.youtube.com/embed/'
+            + preview.data('video') + '?autoplay=1'); 
+      });
+
+      icon.show();
+
+      icon.css('padding-top',
+        ( ( img.height() / 2 ) - ( icon.find('.fa').height() / 2 ) )
+          + 'px');
+        
+    }, 1000);
+  }
+
+  module.exports = youTubePlayIcon;
+
+}();
+
+},{}],17:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1056,7 +1476,7 @@
 
 }();
 
-},{}],15:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -1079,719 +1499,78 @@
     },
     
     controllers: {
-      'youtube':      require('./controllers/youtube'),
-      'item media':   require('./controllers/item-media'),
-      'truncate':     require('./controllers/truncate'),
-      'toggle details':     require('./controllers/toggle-details'),
-      'progress bar':     require('./controllers/progress-bar'),
-      'invite people in':     require('./controllers/invite-people-in'),
-      'get item details':     require('./controllers/get-item-details'),
-      'toggle edit and go again':     require('./controllers/toggle-edit-and-go-again')
-    },
-    
-    templates: {
-      'details votes':  require('./templates/details-votes'),
-      'details feedback': require('./templates/details-feedback'),
-      'item': require('./templates/item'),
-      'edit and go again': require('./templates/edit-and-go-again')
-    },
-    
-    stories: {
-      'create item': require('./stories/create-item'),
-      'get items': require('./stories/get-items'),
-      'listen to broadcast': require('./stories/listen-to-broadcast')
+      'youtube':                  require('./controllers/youtube'),
+      'youtube play icon':        require('./controllers/youtube-play-icon'),
+      'item media':               require('./controllers/item-media'),
+      'truncate':                 require('./controllers/truncate'),
+      'toggle details':           require('./controllers/toggle-details'),
+      'progress bar':             require('./controllers/progress-bar'),
+      'invite people in':         require('./controllers/invite-people-in'),
+      'get item details':         require('./controllers/get-item-details'),
+      'toggle edit and go again': require('./controllers/toggle-edit-and-go-again'),
+      'update panel model':       require('./controllers/update-panel-model'),
+      'update panel view':        require('./controllers/update-panel-view'),
+      'render':                   require('./controllers/render'),
+      'place item in panel':      require('./controllers/place-item-in-panel')
     },
 
     run: function () {
-      this.story('get items')();
 
-      this.story('create item')();
+      var div       =   this;
+      var Socket    =   div.root.emitter('socket');
+      var Panel     =   div.root.extension('Panel');
 
-      this.story('listen to broadcast')();
-    }
-  };
-
-} ();
-
-},{"./controllers/get-item-details":7,"./controllers/invite-people-in":8,"./controllers/item-media":9,"./controllers/progress-bar":10,"./controllers/toggle-details":11,"./controllers/toggle-edit-and-go-again":12,"./controllers/truncate":13,"./controllers/youtube":14,"./stories/create-item":16,"./stories/get-items":17,"./stories/listen-to-broadcast":18,"./templates/details-feedback":19,"./templates/details-votes":20,"./templates/edit-and-go-again":21,"./templates/item":22}],16:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  function createItem ($panel) {
-    var app = this;
-
-    var Socket = app.importer.emitter('socket');
-
-    Socket.on('created item', function (item) {
-      item.is_new = true;
       
-      app.push('items', item);
-    });
-  }
 
-  module.exports = createItem;
+      // On new panel, get panel items from socket
 
-} ();
-
-},{}],17:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function getItems () {
-
-    var app = this;
-
-    var Socket = app.importer.emitter('socket');
-    var Panel = app.importer.extension('Panel');
-
-    Panel.on('panel added', function (panel) {
-      Socket.emit('get items', panel);
-    });
-
-    // On get items from socket
-
-    Socket
-    
-      .on('got items', function (panelItems) {
-
-        var panelId = '#panel-' + panelItems.panel.type;
-
-        if ( panelItems.panel.parent ) {
-          panelId += '-' + panelItems.panel.parent;
-        }
-        
-        // Push Model  [] "items" with each panel item
-
-        panelItems.items.forEach(function (item, index) {
-          if ( index < (panelItems.panel.size + panelItems.panel.skip) - 1 ) {
-            app.push('items', item);
-          }        
-        });
-
-        // Show/Hide load-more
-
-        if ( panelItems.items.length == synapp['navigator batch size'] ) {
-          $(panelId).find('.load-more').show();
-        }
-        else {
-          $(panelId).find('.load-more').hide();
-        }
-
-        // Update offset (skip)
-
-        panelItems.panel.skip += (panelItems.items.length - 1);
-
-        // Update panels model
-
-        Panel.model('panels', Panel.model('panels').map(function (pane) {
-          var match;
-
-          if ( pane.type === panelItems.panel.type ) {
-            match = true;
-          }
-
-          if ( panelItems.panel.parent && pane.parent !== panelItems.panel.parent ) {
-            match = false;
-          }
-
-          if ( match ) {
-            return panelItems.panel;
-          }
-
-          return pane;
-        }));
+      Panel.watch.on('panel view rendered', function (panel) {
+        console.info('panel view rendered')
+        Socket.emit('get items', panel);
       });
 
-    /** On new item */
+      Socket.on('got items', function (panelView) {
+        console.info('got items')
+        var panel = panelView.panel;
+        var items = panelView.items;
 
-    app.watch.on('push items', function (item) {
+        div.watch.on('panel model updated', function (panel) {
+          console.log('panel model updated')
+          div.controller('update panel view')(panel, items);
 
-      // Render item template
+          if ( items.length ) {
+            var i = 0;
 
-      app.render('item', item, function (itemView) {
+            var nextRender = function (error, item, view) {
+              div.controller('place item in panel')(item, view,
+                function (error, item, view) {
+                  i ++;
 
-        var panelId = '#panel-' + this.item.type;
+                  if ( items[i] ) {
+                    div.controller('render')(items[i], nextRender);
+                  }
+                });
+            }
 
-        if ( this.item.parent ) {
-          panelId += '-' + this.item.parent;
-        }
-
-        // In case of a new item
-        
-        if ( this.item.is_new ) {
-          $(panelId).find('.items').prepend(itemView);
-
-          // image if any
-
-          var file = $('.creator.' + this.item.type)
-            .find('.preview-image').data('file');
-
-          if ( file ) {
-            itemView.find('.item-media img').attr('src',
-              (window.URL || window.webkitURL).createObjectURL(file));
+            div.controller('render')(items[0], nextRender);
           }
 
-          // call promote
-
-          itemView.find('.toggle-promote').click();
-        }
-        
-        // Else, regular fetch
-
-        else {
-          $(panelId).find('> .panel-body > .items').append(itemView);
-        }
-
-      }.bind({ item: item }));
-    
-    });
-
-  }
-
-  module.exports = getItems;
-
-}();
-
-},{}],18:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  function listenToBroadcast () {
-    var app = this;
-
-    var Socket = app.importer.emitter('socket');
-
-    // Inserted feedback
-
-    Socket.on('inserted feedback', function (feedback) {
-      var $item = $('#item-' + feedback.item);
-
-      // if ( $item.length ) {
-      //   app.render('details feedback', feedback,
-      //     function (feedbackView) {
-      //       feedbackView.removeClass('template-model');
-
-      //       feedbackView.insertAfter($item.find('.details').eq(0)
-      //         .find('.details-feedbacks h4'));
-      //     });
-      // }
-    });
-
-    // Inserted votes
-
-    Socket.on('inserted votes', function (votes) {
-      var $item = $('#item-' + votes.item);
-
-      if ( $item.length ) {
-        
-      }
-    });
-  }
-
-  module.exports = listenToBroadcast;
-
-} ();
-
-},{}],19:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = {
-    template: '.feedback-section',
-    controller: function (view, feedback) {
-      view.find('.feedback .pre-text').text(feedback.feedback);
-    }
-  };
-
-} ();
-
-},{}],20:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = {
-    template: '.votes-by-criteria',
-
-    controller: function (view, locals) {
-
-      var details = locals[0];
-      var index = locals[1];
-
-      setTimeout(function () {
-
-        var criteria = details.criterias[index];
-
-        view.find('h4').text(criteria.name);
-
-        var vote = details.votes[criteria._id];
-
-        var svg = $('<svg class="chart"></svg>');
-
-        svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
-
-        console.log('svg!', svg.attr('id'))
-
-        view.find('.chart').append(svg);
-
-        var data = [];
-
-        // If no votes, show nothing
-
-        if ( ! vote ) {
-          return view.empty();
-        }
-
-        for ( var number in vote.values ) {
-          data.push({
-            label: 'number',
-            value: vote.values[number] * 100 / vote.total
-          });
-        }
-
-        var columns = ['votes'];
-
-        data.forEach(function (d) {
-          columns.push(d.value);
         });
 
-        var chart = c3.generate({
-          bindto: '#' + svg.attr('id'),
-
-          data: {
-            x: 'x',
-            columns: [['x', -1, 0, 1], columns],
-            type: 'bar'
-          },
-
-          grid: {
-            x: {
-              lines: 3
-            }
-          },
-          
-          axis: {
-            x: {},
-            
-            y: {
-              max: 90,
-
-              show: false,
-
-              tick: {
-                count: 5,
-
-                format: function (y) {
-                  return y;
-                }
-              }
-            }
-          },
-
-          size: {
-            height: 80
-          },
-
-          bar: {
-            width: $(window).width() / 5
-          }
-        });
-      }, 1500);
-    }
-  };
-
-} ();
-
-},{}],21:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = {
-    template: '.creator .is-section',
-    controller: function (view, item) {
-
-      var app = this;
-
-      var $item = view.find('>.item');
-
-      $item.find('[name="subject"]').val(item.subject);
-      $item.find('[name="description"]').val(item.description);
-
-      if ( item.references.length ) {
-        $item.find('[name="reference"]').val(item.references[0].url);
-      }
-
-      $item.find('.item-media-wrapper')
-        .empty()
-        .append(
-          this.controller('item media')(item));
-
-      $item.find('.button-create').on('click', function () {
-
-        var $editor      =   $(this).closest('.editor');
-
-        // Subject field
-
-        var $subject      =   $editor.find('[name="subject"]');
-
-        // Description field
-
-        var $description  =   $editor.find('[name="description"]');
-
-        // Reference field
-        
-        var $reference    =   $editor.find('[name="reference"]');
-
-        // Reset errors in case of any from previous call
-
-        $subject.removeClass('error');
-
-        $description.removeClass('error');
-
-        // Subject empty? Trigger visual error
-
-        if ( ! $subject.val() ) {
-          $subject.addClass('error').focus();
-        }
-
-        // Description empty? Trigger visual error
-
-        else if ( ! $description.val() ) {
-          $description.addClass('error').focus();
-        }
-
-        // No Errors? Proceed to back-end transmission
-
-        else {
-          var _item = item;
-
-          _item.from = item._id;
-          _item.subject = $subject.val();
-          _item.description = $description.val();
-          _item.references = [{
-            url: $reference.val()
-          }];
-
-          delete _item._id;
-
-          app.importer.emitter('socket').emit('edit and go again', _item,
-            function (error, new_item) {
-              if ( error ) {
-
-              }
-              else {
-                new_item.is_new = true;
-
-                app.importer.extension('Panel').controller('hide')(
-                  $editor, function () {
-                    app.push('items', new_item);
-                  });
-              }
-            });
-        }
+        div.controller('update panel model')(panel, items);
       });
+      
+      // this.story('get items')();
 
+      // this.story('create item')();
+
+      // this.story('listen to broadcast')();
     }
   };
 
 } ();
 
-},{}],22:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = {
-    url: '/partial/item',
-    controller: function (view, item) {
-
-      var app = this;
-
-      var Socket = app.importer.emitter('socket');
-      var Panel = app.importer.extension('Panel');
-      var Evaluation = app.importer.extension('Evaluation');
-
-      // DOM Elements
-
-      var $collapsers     =   view.find('>.collapsers');
-      var $toggleArrow    =   $collapsers.find('>.toggle-arrow');
-      var $subject        =   view.find('>.item-text > h4.item-title a');
-      var $description    =   view.find('>.item-text >.description');
-      var $references     =   view.find('>.item-text >.item-references');
-      var $togglePromote  =   view.find('>.box-buttons .toggle-promote');
-
-      // Static link
-
-      var staticLink    =   '/item/' + item._id + '/' + require('string')(item.subject).slugify();
-
-      // Assign item id
-
-      view.attr('id', 'item-' + item._id);
-
-      // Subject
-
-      $subject
-        .attr('href', staticLink)
-        .text(item.subject);
-
-      // Description
-      
-      $description
-        .text(item.description);
-
-      // REFERENCES
-
-      if ( item.references.length ) {
-        $references.show();
-
-        $references.find('a')
-          .attr('src', item.references[0].url)
-          .text(item.references[0].title || item.references[0].url);
-      }
-      else {
-        $references.hide();
-      }
-
-      // ITEM MEDIA
-
-      view.find('.item-media').eq(0).empty().append(
-        app.controller('item media')(item));
-
-      if ( view.find('.youtube-preview .fa-youtube-play').length ) {
-
-        setTimeout(function () {
-
-          // view.find('.youtube-preview .icon-play').css('background',
-          //   'url(' + view.find('.youtube-preview img').attr('src') + ')');
-
-          var img = view.find('.youtube-preview img');
-
-          var icon = view.find('.youtube-preview .icon-play');
-
-          icon.css('width', img.width() + 'px');
-
-          icon.css('height', img.height() + 'px');
-
-          img.css('margin-bottom', '-' + img.height() + 'px');
-
-          $(window).on('resize', function () {
-
-            console.log('resizing')
-
-            icon.css('width', img.width() + 'px');
-
-            img.css('margin-bottom', '-' + img.height() + 'px');
-          }); 
-
-          icon.find('.fa').on('click', function () {
-            var video_container = $('<div class="video-container"></div>');
-
-            var preview = $(this).closest('.youtube-preview');
-
-            preview
-              .empty()
-              .append(video_container);
-
-            video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
-
-            video_container.find('iframe')
-              .attr('src', 'http://www.youtube.com/embed/'
-                + preview.data('video') + '?autoplay=1'); 
-          });
-
-          icon.show();
-
-          icon.css('padding-top',
-            ( ( img.height() / 2 ) - ( icon.find('.fa').height() / 2 ) )
-              + 'px');
-          
-        }, 1000);
-      }
-
-      // TRUNCATE
-
-      setTimeout(function () {
-        new (app.controller('truncate'))(view);
-      }, 1000);
-
-      // ITEM STATS
-
-      view.find('.promoted').eq(0).text(item.promotions);
-      
-      if ( item.promotions ) {
-        view.find('.promoted-percent').eq(0).text(
-          Math.floor(item.promotions * 100 / item.views) + '%');
-      }
-      else {
-        view.find('.promoted-percent').eq(0).text('0%');
-      }
-
-      // ITEM TOGGLE PROMOTE
-
-      $togglePromote.on('click',
-
-        function togglePromote () {
-
-          var $panel    =   $(this).closest('.panel');
-          var $item     =   $(this).closest('.item');
-          var $promote  =   $item.find('>.collapsers >.evaluator');
-
-          if ( $promote.hasClass('is-shown') ) {
-            Panel.controller('scroll to point of attention')($item,
-              function () {
-                Panel.controller('hide')($promote);
-              });
-          }
-
-          else {
-            // Show tip
-
-            $('#modal-tip-evaluate').modal('show');
-
-            Panel.controller('reveal')($promote, view,
-              
-              function onPromoteShown () {
-
-                var evaluationExists = Evaluation.model('evaluations')
-                  .some(function (evaluation) {
-                    return evaluation.item === item._id;
-                  });
-
-                if ( ! evaluationExists ) {
-                  Socket.emit('get evaluation', item);
-                }
-              });
-          }
-
-          return false;
-
-        });
-
-      // ITEM TOGGLE DETAILS
-
-      view
-        .find('>.box-buttons >.toggle-details')
-        .on('click', function () {
-          app.controller('toggle details')(this, item);
-        });
-
-      // ITEM TOGGLE SUB PANEL
-
-      $toggleArrow.on('click', function () {
-
-        var $panel    =   $(this).closest('.panel');
-        var $item     =   $(this).closest('.item');
-        var $children =   $item.find('>.collapsers >.children');
-
-        // Animation in progress - don't do nothing
-
-        if ( $children.hasClass('is-showing') || $children.hasClass('is-hiding') ) {
-          return;
-        }
-
-        // Is shown so hide
-        
-        else if ( $children.hasClass('is-shown') ) {
-          Panel.controller('scroll to point of attention')($item,
-            function () {
-              Panel.controller('hide')($children);
-
-              $(this).find('i.fa')
-                .removeClass('fa-arrow-up')
-                .addClass('fa-arrow-down');
-
-            }.bind(this));
-        }
-
-        // else, show
-
-        else {
-
-          // Hide panel's creator
-
-          if ( $panel.find('>.panel-body >.creator.is-shown').length ) {
-            Panel.controller('hide')($panel.find('>.panel-body >.creator.is-shown'));
-          }
-
-          // Is loaded so just show  
-          
-          if ( $children.hasClass('is-loaded') ) {
-            Panel.controller('reveal')($children, $item);
-
-            $(this).find('i.fa')
-              .removeClass('fa-arrow-down')
-              .addClass('fa-arrow-up');
-          }
-
-          // else load and show
-          
-          else {
-            $children.addClass('is-loaded')
-
-            setTimeout(function () {
-              $(this).find('i.fa')
-                .removeClass('fa-arrow-down')
-                .addClass('fa-arrow-up');
-              }.bind(this), 1000);
-
-            var children = synapp['item relation'][item.type];
-
-            if ( typeof children === 'string' ) {
-              Panel.push('panels', {
-                type: children,
-                parent: item._id,
-                size: synapp['navigator batch size'],
-                skip: 0
-              });
-            }
-
-            else if ( Array.isArray(children) ) {
-              children.forEach(function (child) {
-
-                if ( typeof child === 'string' ) {
-                  Panel.push('panels', {
-                    type: child,
-                    parent: item._id,
-                    size: synapp['navigator batch size'],
-                    skip: 0
-                  });
-                }
-
-                else if ( Array.isArray(child) ) {
-                  child.forEach(function (c) {
-                    Panel.push('panels', {
-                      type: c,
-                      parent: item._id,
-                      size: synapp['navigator batch size'],
-                      skip: 0,
-                      split: true
-                    });
-                  });
-                }
-
-              });
-            }
-          }
-        }
-
-      });
-
-      // IS IN
-
-      if ( synapp.user ) {
-        view.find('.is-in').css('visibility', 'visible');
-      }
-    }
-  };
-
-} ();
-
-},{"string":47}],23:[function(require,module,exports){
+},{"./controllers/get-item-details":5,"./controllers/invite-people-in":6,"./controllers/item-media":7,"./controllers/place-item-in-panel":8,"./controllers/progress-bar":9,"./controllers/render":10,"./controllers/toggle-details":11,"./controllers/toggle-edit-and-go-again":12,"./controllers/truncate":13,"./controllers/update-panel-model":14,"./controllers/update-panel-view":15,"./controllers/youtube":17,"./controllers/youtube-play-icon":16}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1831,7 +1610,141 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  var luigi = require('/home/francois/Dev/luigi/luigi');
+
+  function render (panel) {
+    var div = this;
+
+    luigi('tpl-panel').controller(function (view) {
+
+      // Insert view in DOM first
+
+      ! function insertViewInDOM () {
+        // If no parent (topic)
+
+        if ( ! panel.parent ) {
+          $('.panels').append(view);
+        }
+
+        // If sub panel
+
+        else {
+          var container =  $('#item-' + panel.parent + ' > .collapsers > .children');
+
+          // Split panels
+
+          if ( panel.split ) {
+            var column = '<div class="col-sm-6 col"></div>';
+
+            // LEFT
+
+            if ( ! container.find('> .is-section > .row-split').length ) {
+              var rowSplit = $('<div class="row row-split"></div>');
+
+              container.find('> .is-section').append(rowSplit);
+
+              var col1 = $(column);
+
+              col1.append(view);
+
+              container.find('> .is-section >.row-split').append(col1);
+            }
+
+            // RIGHT
+
+            else {
+              var col2 = $(column);
+
+              col2.append(view);
+
+              container.find('> .is-section >.row-split').append(col2);
+            }
+          }
+
+          else {
+            container.find('> .is-section').append(view);
+          }
+
+          div.controller('reveal')(container, $('#item-' + panel.parent));
+        }
+      } ();
+
+      // Render creator
+
+      ! function renderCreator () {
+        luigi('tpl-creator')
+
+          .controller(function (view_creator) {
+            view_creator.addClass(panel.type);
+            view.find('.panel-body').prepend(view_creator);
+            renderView();
+          });
+      } ();
+
+      // Render view
+
+      function renderView () {
+        // Set panel ID
+
+        var id = 'panel-' + panel.type;
+
+        if ( panel.parent ) {
+          id += '-' + panel.parent;
+        }
+
+        view.attr('id', id);
+
+        // Add type as class
+
+        view.addClass('type-' + panel.type);
+
+        // Split panel
+
+        if ( panel.split ) {
+          view.addClass('split-view');
+        }
+
+        var $creator = view.find('>.panel-body >.creator');
+        
+        view.find('.panel-title').eq(0).text(panel.type);
+
+        // Toggle creator view
+
+        view.find('.toggle-creator').on('click', function () {
+
+          console.log('hello', $creator.attr('class'));
+
+          if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
+            return;
+          }
+          else if ( $creator.hasClass('is-shown') ) {
+            div.controller('hide')($creator);
+          }
+          else {
+            div.controller('reveal')($creator, view);
+          }
+        });
+
+        if ( synapp.user ) {
+          $('.is-in').css('visibility', 'visible');
+        }
+
+        div.watch.emit('panel view rendered', panel, view);
+      }
+
+    });
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"/home/francois/Dev/luigi/luigi":2}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1841,14 +1754,18 @@
 
     elem.removeClass('is-hidden').addClass('is-showing');
 
-    app.controller('scroll to point of attention')(poa, function () {
+    if ( poa ) {
+      app.controller('scroll to point of attention')(poa, function () {
+        app.controller('show')(elem, cb);
+      });
+    }
+
+    else {
       app.controller('show')(elem, cb);
-    });
+    }
   }
 
   function reveal (elem, poa, cb) {
-    console.info('revealing', elem.attr('id'), elem.attr('class'))
-
     var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {
@@ -1903,7 +1820,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1934,7 +1851,7 @@
 
 }();
 
-},{}],26:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1982,7 +1899,7 @@
 
 }();
 
-},{}],27:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2046,7 +1963,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2065,372 +1982,526 @@
   'use strict';
 
   module.exports = {
+
     models: {
       panels: []
     },
     
     controllers: {
       'scroll to point of attention':
-        require('./controllers/scroll-to-point-of-attention'),
-      'show':     require('./controllers/show'),
-      'hide':     require('./controllers/hide'),
-      'reveal':   require('./controllers/reveal'),
-      'upload':   require('./controllers/upload')
+                      require('./controllers/scroll-to-point-of-attention'),
+      'show':         require('./controllers/show'),
+      'hide':         require('./controllers/hide'),
+      'reveal':       require('./controllers/reveal'),
+      'upload':       require('./controllers/upload'),
+      'render':       require('./controllers/render')
     },
-    
-    views: {
-      'panels': '.panels',
-      'creator': '.creator'
-    },
-    
-    templates: {
-      'panel': require('./templates/panel')
-    },
-    
-    stories: {
-      'get panel': require('./stories/get-panel')
+
+    run: function () {
+      var div = this;
+
+      // function to insert top level panel if not inserted
+
+      function topLevelPanel () {
+        if ( ! div.model('panels').length ) {
+          div.push('panels', {
+            type: 'Topic',
+            size: synapp['navigator batch size'],
+            skip: 0
+          });
+        }
+      }
+
+      // trigger topLevelPanel when socket connects
+
+      div.root.model('socket_conn')
+        ?   topLevelPanel()
+        :   div.root.emitter('socket').once('connect', topLevelPanel);
+
+      // on new panel added to model, render the panel
+
+      div.watch
+        .on('push panels', div.controller('render'));
+
     }
   };
 
 } ();
 
-},{"./controllers/hide":23,"./controllers/reveal":24,"./controllers/scroll-to-point-of-attention":25,"./controllers/show":26,"./controllers/upload":27,"./stories/get-panel":29,"./templates/panel":30}],29:[function(require,module,exports){
+},{"./controllers/hide":19,"./controllers/render":20,"./controllers/reveal":21,"./controllers/scroll-to-point-of-attention":22,"./controllers/show":23,"./controllers/upload":24}],26:[function(require,module,exports){
 ! function () {
-  
+
   'use strict';
 
-  function getPanel () {
+  var luigi = require('/home/francois/Dev/luigi/luigi');
 
-    var app = this;
+  function getEvaluation () {
+    var div = this;
 
-    var Socket = app.importer.emitter('socket');
-    var Item = app.importer.extension('Item');
+    var Socket = div.root.emitter('socket');
+    var Panel = div.root.extension('Panel');
 
-    /** On socket connected */
+    Socket.on('got evaluation', function (evaluation) {
 
-    Socket
-      .on('connect', function () {
-        if ( ! app.model('panels').length ) {
+      evaluation.cursor = 1;
+      evaluation.limit = 5;
 
-          app.push('panels', {
-            type: 'Topic',
-            size: synapp['navigator batch size'],
-            skip: 0
-          });
+      if ( evaluation.items.length < 6 ) {
+        evaluation.limit = evaluation.items.length - 1;
 
+        if ( ! evaluation.limit && evaluation.items.length === 1 ) {
+          evaluation.limit = 1;
         }
-      });
+      }
 
-    /** On push panel */
+      div.push('evaluations', evaluation);
 
-    app.watch
-      .on('push panels', function (panel) {
+    });
 
-        app.render('panel', panel, function (panelView) {
+    div.watch.on('push evaluations', function (evaluation) {
+      luigi('tpl-promote')
 
-          // If no parent (topic)
+        .controller(function (view) {
 
-          if ( ! panel.parent ) {
-            app.view('panels').append(panelView);
+          var item = $('#item-' + evaluation.item);
+
+          if ( ! item.length ) {
+            console.log('item not found');
           }
 
-          // If sub panel
+          var $evaluator = item.find('>.is-section >.collapsers >.evaluator >.is-section');
 
-          else {
-            var container =  $('#item-' + panel.parent + ' > .collapsers > .children');
+          $evaluator
+            .append(view);
 
-            // SPLIT PANELS
+        })
 
-            if ( panel.split ) {
-              var column = '<div class="col-sm-6 col"></div>';
-
-              // LEFT
-
-              if ( ! container.find('> .is-section > .row-split').length ) {
-                var rowSplit = $('<div class="row row-split"></div>');
-
-                container.find('> .is-section').append(rowSplit);
-
-                var col1 = $(column);
-
-                col1.append(panelView);
-
-                container.find('> .is-section >.row-split').append(col1);
-              }
-
-              // RIGHT
-
-              else {
-                var col2 = $(column);
-
-                col2.append(panelView);
-
-                container.find('> .is-section >.row-split').append(col2);
-              }
-            }
-
-            else {
-              container.find('> .is-section').append(panelView);
-            }
-
-            app.controller('reveal')(container, $('#item-' + panel.parent));
-          }
-
-          // Show off about new panel added
-
-          app.emit('panel added', panel);
-
-          if ( synapp.user ) {
-            $('.is-in').css('visibility', 'visible');
-          }
-        });
-      });
+        .controller(div.controller('render')(evaluation));
+    });
 
   }
 
-  module.exports = getPanel;
+  module.exports = getEvaluation;
 
-}();
+} ();
 
-},{}],30:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],27:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function render (evaluation) {
+
+    var div         =   this;
+
+    var Socket      =   div.root.emitter('socket');
+
+    var Panel       =   div.root.extension('Panel');
+
+    var Item        =   div.root.extension('Item');
+
+    return function (view) {
+      var $sideBySide =   view.find('.items-side-by-side');
+
+      // Cursor
+
+      div.bind('cursor', function (cursor) {
+        view.find('.cursor').text(cursor);
+
+        if ( cursor < div.model('limit') ) {
+          view.find('.finish').text('Neither');
+        }
+        else {
+          view.find('.finish').text('Finish');
+        }
+      });
+
+      div.model('cursor', evaluation.cursor);
+
+      // Limit
+
+      div.bind('limit', function (limit) {
+        view.find('.limit').text(limit);
+      });
+
+      div.model('limit', evaluation.limit);
+
+      // Item
+
+      function evaluationItem (eItem, pos) {
+
+        var hand = pos ? 'right' : 'left';
+
+        // If null
+
+        if ( ! eItem ) {
+          $sideBySide
+            .find('.subject.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.is-des.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.sliders.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.' + hand + '-item .feedback')
+            .closest('.' + hand + '-item')
+            .hide();
+
+          $sideBySide
+            .find('.' + hand + '-item .promote')
+            .closest('.' + hand + '-item')
+            .hide();
+
+          // If one missing
+
+          $sideBySide.find('.promote-label').hide();
+          $sideBySide.find('.promote').hide();
+
+          // if ( hand === 'right' && ( ! div.model('left') || ! app.model('right') ) ) {
+          //   $sideBySide.find('.promote-label').hide();
+          // }
+          return;
+        }
+
+        // Increment views counter
+
+        Socket.emit('add view', eItem._id);
+
+        // Image
+
+        var image;
+
+        if ( eItem._id === evaluation.item ) {
+          image = $('#item-' + eItem._id)
+            .find('>.item-media-wrapper img')
+            .clone();
+        }
+
+        image = image || Item.controller('item media')(eItem);
+
+        $sideBySide
+          .find('.image.' + hand + '-item')
+          .empty()
+          .append(image);
+
+        // Subject
+
+        $sideBySide.find('.subject.' + hand + '-item h3')
+          .text(eItem.subject);
+
+        // Description
+
+        $sideBySide.find('.is-des.' + hand + '-item .description')
+          .text(eItem.description);
+
+        // References
+
+        if ( eItem.references.length ) {
+          $sideBySide.find('.references.' + hand + '-item a')
+            .attr('href', eItem.references[0].url)
+            .text(eItem.references[0].title || eItem.references[0].url);
+        }
+
+        // Sliders
+
+        $sideBySide.find('.sliders.' + hand + '-item')
+          .empty();
+
+        console.info('criterias', evaluation.criterias.length);
+
+        evaluation.criterias.forEach(function (criteria) {
+
+          /// Render sliders template
+
+          // div.render('sliders', criteria, function (view) {
+          //   view.removeClass('template-model');
+            
+          //   $sideBySide.find('.sliders.' + hand + '-item')
+          //     .append(view);
+          
+          // }.bind({ index: pos, hand: hand }));
+
+        });
+
+        // Promote button
+
+        $sideBySide.find('.' + hand + '-item .promote')
+          .data('position', pos);
+      }
+
+      // Left
+
+      div.bind('left', function (left, old, event) {
+        evaluationItem(left, 0);
+        
+        if ( left ) {
+          $evaluator.find('.left-item .promote').text(left.subject);
+        }
+      });
+
+      div.model('left', evaluation.items[0]);
+
+      // Right
+
+      div.bind('right', function (right) {
+        evaluationItem(right, 1);
+        
+        if ( right ) {
+          $evaluator.find('.right-item .promote').text(right.subject);
+        }
+      });
+
+      div.model('right', evaluation.items[1]);
+
+      // Promote
+
+      $evaluator.find('.promote').on('click', function () {
+        Panel.controller('scroll to point of attention')($evaluator);
+
+        var pos = $(this).data('position');
+
+        var unpromoted = pos ? 0 : 1;
+
+        console.info('unpromoted', unpromoted, pos)
+
+        if ( div.model('cursor') < div.model('limit') ) {
+
+          div.inc('cursor');
+
+          if ( unpromoted ) {
+
+            Socket.emit('promote', div.model('left'));
+
+            saveItem('right');
+
+            var rights = [$evaluator.find('.right-item').length, 0];
+
+            $evaluator.find('.right-item').animate({
+              opacity: 0
+            }, function () {
+              rights[1] ++;
+
+              if( rights[0] === rights[1] ) {
+                div.model('right', evaluation.items[div.model('cursor')]);
+
+                $evaluator.find('.right-item').animate({
+                  opacity: 1
+                });
+              }
+            });
+          }
+
+          else {
+            Socket.emit('promote', div.model('right'));
+
+            saveItem('left');
+
+            var lefts = [$evaluator.find('.left-item').length, 0];
+
+            $evaluator.find('.left-item').animate({
+              opacity: 0
+            }, function () {
+
+              lefts[1] ++;
+
+              if( lefts[0] === lefts[1] ) {
+                div.model('left', evaluation.items[div.model('cursor')]);
+
+                $evaluator.find('.left-item').animate({
+                  opacity: 1
+                });
+              }
+            });
+          }
+
+        }
+
+        else {
+          finish();
+        }
+      });
+
+      // Neither / Finish
+
+      $evaluator.find('.finish').on('click', function () {
+
+        Panel.controller('scroll to point of attention')($evaluator);
+
+        if ( div.model('cursor') === div.model('limit') ) {
+          finish();
+        }
+        
+        else {
+          // Left
+
+          div.inc('cursor');
+
+          saveItem('left');
+
+          var lefts = [$evaluator.find('.left-item').length, 0];
+
+          $evaluator.find('.left-item').animate({
+              opacity: 0
+            }, function () {
+              lefts[1] ++;
+
+              if( lefts[0] === lefts[1] ) {
+                div.model('left', evaluation.items[div.model('cursor')]);
+
+                $evaluator.find('.left-item').animate({
+                  opacity: 1
+                });
+              }
+            });
+
+          // Right
+
+          div.inc('cursor');
+
+          saveItem('right');
+
+          var rights = [$evaluator.find('.right-item').length, 0];
+
+          $evaluator.find('.right-item').animate({
+              opacity: 0
+            }, function () {
+              rights[1] ++;
+
+              if( rights[0] === rights[1] ) {
+                div.model('right', evaluation.items[div.model('cursor')]);
+
+                $evaluator.find('.right-item').animate({
+                  opacity: 1
+                });
+              }
+            });
+
+
+          // Adjust cursor
+
+          if ( div.model('limit') - div.model('cursor') === 1 ) {
+            div.model('cursor', div.model('limit'));
+          }
+        }
+      });
+
+      // Save votes and feeback
+
+      function saveItem (hand) {
+   
+        // feedback
+
+        var feedback = $evaluator.find('.' +  hand + '-item .feedback');
+
+        if ( feedback.val() ) {
+          Socket.emit('insert feedback', {
+            item: div.model(hand)._id,
+            user: synapp.user,
+            feedback: feedback.val()
+          });
+
+          feedback.val('');
+        }
+
+        // votes
+
+        var votes = [];
+
+        $sideBySide
+          .find('.' +  hand + '-item input[type="range"]:visible')
+          .each(function () {
+            var vote = {
+              item: div.model(hand)._id,
+              user: synapp.user,
+              value: +$(this).val(),
+              criteria: $(this).data('criteria-id')
+            };
+
+            votes.push(vote);
+          });
+
+        Socket.emit('insert votes', votes);
+      }
+
+      // Finish
+
+      function finish () {
+
+        $evaluator.find('.promote').off('click');
+        $evaluator.find('.finish').off('click');
+
+        if ( div.model('left') ) {
+          saveItem('left');
+        }
+
+        if ( div.model('right') ) {
+          saveItem('right');
+        }
+
+        $evaluator.find('.promote,.finish').off('click');
+
+        var evaluations = div.model('evaluations');
+
+        evaluations = evaluations.filter(function ($evaluation) {
+          return $evaluation.item !== evaluation.item;
+        });
+
+        div.model('evaluations', evaluations);
+
+        Panel.controller('hide')($evaluator,
+          function () {
+            item.find('.toggle-details').eq(0).click();
+            item.find('.details:eq(0) .feedback-pending')
+              .removeClass('hide');
+          });
+      }
+    }
+  }
+
+  module.exports = render;
+
+} ();
+
+},{}],28:[function(require,module,exports){
+/**
+
+  88888888b                   dP                     dP   oo                   
+   88                          88                     88                        
+  a88aaaa    dP   .dP .d8888b. 88 dP    dP .d8888b. d8888P dP .d8888b. 88d888b. 
+   88        88   d8' 88'  `88 88 88    88 88'  `88   88   88 88'  `88 88'  `88 
+   88        88 .88'  88.  .88 88 88.  .88 88.  .88   88   88 88.  .88 88    88 
+   88888888P 8888P'   `88888P8 dP `88888P' `88888P8   dP   dP `88888P' dP    dP
+
+*/
+
 ! function () {
 
   'use strict';
 
   module.exports = {
-    url: '/partial/panel',
     
-    controller: function (view, panel) {
-
-      var app = this;
-
-      var Socket = app.importer.emitter('socket');
-
-      // DOM elements
-
-      var $creator = view.find('>.panel-body >.creator');
-
-      // Set panel ID
-
-      var id = 'panel-' + panel.type;
-
-      if ( panel.parent ) {
-        id += '-' + panel.parent;
-      }
-
-      view.attr('id', id);
-
-      // Add type as class
-
-      view.addClass('type-' + panel.type);
-
-      // Split panel
-
-      if ( panel.split ) {
-        view.addClass('split-view');
-      }
-
-      // Panel heading - type is title
-
-      view.find('.panel-title').eq(0).text(panel.type);
-
-      // Add type as class
-
-      $creator.addClass(panel.type);
-
-      // Load more - be verbose about type
-
-      view.find('.load-more a').text(
-        view.find('.load-more a').text() + ' ' +
-          synapp.plurals[panel.type.toLowerCase()]);
-
-      // Load more
-
-      view.find('.load-more').on('click', function () {
-        var _panel = app.model('panels').filter(function (pan) {
-          if ( pan.type !== panel.type ) {
-            return false;
-          }
-          if ( panel.parent && panel.parent !== pan.parent ) {
-            return false;
-          }
-          return true;
-        });
-
-        if ( _panel.length ) {
-          Socket.emit('get items', _panel[0]);
-        }
-
-        return false;
-      });
-
-      // Toggle creator view
-
-      view.find('.toggle-creator').on('click', function () {
-        if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
-          return;
-        }
-        else if ( $creator.hasClass('is-shown') ) {
-          app.controller('hide')($creator);
-        }
-        else {
-          app.controller('reveal')($creator, view);
-        }
-      });
-
-      // enable file upload
-
-      app.controller('upload')(view.find('.creator:eq(0) .drop-box'));
-
-      // url title fecther
-
-      view.find('.reference').on('change', function () {
-        var board = $('.reference-board');
-        var reference = $(this);
-
-        board.removeClass('hide').text('Looking up');
-
-        Socket.emit('get url title', $(this).val(),
-          function (error, ref) {
-            if ( ref.title ) {
-              board.text(ref.title);
-              reference.data('title', ref.title);
-
-              var yt = app.controller('youtube')(ref.url);
-
-              if ( yt ) {
-                view.find('.creator').eq(0).find('.item-media')
-                  .empty()
-                  .append(yt);
-              }
-            }
-            else {
-              board.text('Looking up')
-                .addClass('hide');
-            }
-          });
-      });
-
-      // On create item
-      $creator
-        
-        .find('.button-create')
-        
-        .on('click', function onClickingCreateButton () {
-
-          // Overscoping $creator
-
-          var $creator      =   $(this).closest('.creator');
-
-          // Identify Panel
-
-          var $panel        =   $(this).closest('.panel');
-
-          // Panel ID split to easily get panel parent(1) and panel type(2)
-
-          var panelId       =   $panel.attr('id').split('-');
-
-          // Subject field
-
-          var $subject      =   $creator.find('[name="subject"]');
-
-          // Description field
-
-          var $description  =   $creator.find('[name="description"]');
-
-          // Reference field
-          
-          var $reference    =   $creator.find('[name="reference"]');
-
-          // Reset errors in case of any from previous call
-
-          $subject.removeClass('error');
-
-          $description.removeClass('error');
-
-          // Subject empty? Trigger visual error
-
-          if ( ! $subject.val() ) {
-            $subject.addClass('error').focus();
-          }
-
-          // Description empty? Trigger visual error
-
-          else if ( ! $description.val() ) {
-            $description.addClass('error').focus();
-          }
-
-          // No Errors? Proceed to back-end transmission
-
-          else {
-
-            // Building item to send
-
-            var item = {
-              user:         synapp.user,
-              subject:      $subject.val(),
-              description:  $description.val(),
-              type:         panelId[1],
-              references:   [
-                {
-                  url:          $reference.val(),
-                  title:        $reference.data('title')
-                }
-              ]
-            };
-
-            // If item has parent
-
-            if ( panelId[2] ) {
-              item.parent = panelId[2];
-            }
-
-            // If item has image
-
-            if ( $creator.find('.preview-image').length ) {
-              item.image = $creator.find('.preview-image').attr('src');
-            }
-
-            // If item image, stream upload first the image
-            // and then emit to socket create item
-
-            if ( item.image ) {
-
-              var file = $creator.find('.preview-image').data('file');
-
-              var stream = ss.createStream();
-
-              ss(Socket).emit('upload image', stream,
-                { size: file.size, name: file.name });
-              
-              ss.createBlobReadStream(file).pipe(stream);
-
-              stream.on('end', function () {
-                item.image = file.name;
-                Socket.emit('create item', item);
-              });
-            }
-
-            // emit to socket to create item
-
-            else {
-              Socket.emit('create item', item);
-            }
-
-            // Cleaning form
-
-            $subject.val('');
-            $description.val('');
-            $reference.val('');
-          }
-        })
-
+    models: {
+      evaluations: []
+    },
+
+    controllers: {
+      'get evaluation': require('./controllers/get-evaluation'),
+      'render': require('./controllers/render')
+    },
+
+    run: function () {
+      this.controller('get evaluation')();
     }
   };
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{"./controllers/get-evaluation":26,"./controllers/render":27}],29:[function(require,module,exports){
 /**
                                         
                                             
@@ -2455,298 +2526,32 @@
       user:   synapp.user,
       online: 0
     },
-    
-    views: {
-      'online now': '.online-users',
-      'sign': '#signer',
-      'forgot password': '#forgot-password'
-    },
-    
-    templates: {
-      'online users': require('./templates/online-users')
-    },
-    
-    stories: {
-      'show user features when user is signed in': 
-        require('./stories/show-user-features-when-user-is-signed-in'),
-
-      'get online users': require('./stories/get-online-users'),
-
-      'forgot password': require('./stories/forgot-password'),
-
-      'sign in': require('./stories/sign-in'),
-
-      'sign up': require('./stories/sign-up')
-    },
 
     run: function () {
-      this.story('get online users')();  
-      this.story('forgot password')();
-      this.story('sign in')();
-      this.story('sign up')();
-    }
-  };
-
-} ();
-
-},{"./stories/forgot-password":32,"./stories/get-online-users":33,"./stories/show-user-features-when-user-is-signed-in":34,"./stories/sign-in":35,"./stories/sign-up":36,"./templates/online-users":37}],32:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  function forgotPassword () {
-    var app = this;
-
-    var Socket = app.importer.emitter('socket');
-
-    app.view('forgot password').find('form').on('submit', function () {
-
-      var email = app.view('forgot password').find('[name="email"]');
-
-      email.removeClass('error');
-
-      if ( ! email.val() ) {
-        email.addClass('error').focus();
-      }
-
-      else {
-        Socket.emit('send password', email.val());
-      }
-
-      return false;
-    });
-  }
-
-  module.exports = forgotPassword;
-
-} ();
-
-},{}],33:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  function getOnlineUsers () {
-    var app = this;
-
-    var Socket = app.importer.emitter('socket');
-
-    Socket.on('online users', function (users) {
-      app.model('online', users);
-    });
-
-    app.watch.on('update online', function (users) {
-      app.view('online now').text(users);
-    });
-  }
-
-  module.exports = getOnlineUsers;
-
-} ();
-},{}],34:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = function synapp_User_story () {
-    if ( synapp.user ) {
-      $('.is-in').css('visibility', 'visible');
-    }
-  };
-
-} ();
-
-},{}],35:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  function signIn () {
-    var app = this;
-
-    var signForm = app.view('sign');
-
-    signForm.on('submit', function () {
-
-      signForm.find('.sign-error')
-        .text('')
-        .hide();
-
-      var email = signForm.find('[name="email"]');
-      var password = signForm.find('[name="password"]');
-
-      email.removeClass('error');
-      password.removeClass('error');
-
-      if ( ! email.val() ) {
-        email.addClass('error');
-        email.focus();
-      }
-
-      else if ( ! password.val() ) {
-        password.addClass('error');
-        password.focus();
-      }
-
-      else {
-        $.ajax({
-          url: '/sign/in',
-          type: 'POST',
-          data: {
-            email: email.val(),
-            password: password.val()
-          }
-        })
-          .error(function (error) {
-
-          })
-          .success(function (response) {
-
-            synapp.user = response.user;
-
-            $('.is-in').css('visibility', 'visible');
-
-            signForm.find('section').hide(2000);
-
-            signForm.find('.sign-success')
-              .show(function () {
-                setTimeout(function () {
-                  signForm.hide(2500);
-                }, 5000);
-              })
-              .text('Welcome back!');
-          });
-      }
-
-      return false;
-    });
-  }
-
-  module.exports = signIn;
-
-} ();
-
-},{}],36:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  function signUp () {
-    var app = this;
-
-    $('#join').find('.i-agree').on('click', function () {
-      var agreed = $('#join').find('.agreed');
-
-      if ( agreed.hasClass('fa-square-o') ) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      }
-      else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-
-    $('#join').find('form').on('submit', function () {
       
-      var email = $(this).find('[name="email"]');
-      var password = $(this).find('[name="password"]');
-      var confirm = $(this).find('[name="confirm"]');
+      var div = this;
 
-      email.removeClass('error');
-      password.removeClass('error');
-      confirm.removeClass('error');
+      var Socket = div.root.emitter('socket');
 
-      $('#join').find('.alert')
-          .css('display', 'none');
+      var Queue = div.root.queue;
 
-      if ( ! email.val() ) {
-        email.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Please enter an email address');
+      Socket.on('online users', function (online) {
+        div.model('online', online);
+      });
+
+      div.bind({ model: 'online' }, function (users) {
+        $('.online-users').text(users);
+      });
+
+      if ( synapp.user ) {
+        $('.is-in').css('visibility', 'visible');
       }
-
-      else if ( ! password.val() ) {
-        password.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Please enter a password');
-      }
-
-      else if ( ! confirm.val() ) {
-        confirm.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Please confirm password');
-      }
-
-      else if ( password.val() !== confirm.val() ) {
-        confirm.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Passwords do not match');
-      }
-
-      else {
-        $.ajax({
-          url: '/sign/up',
-          type: 'POST',
-          data: {
-            email: email.val(),
-            password: password.val()
-          }
-        })
-          
-          .error(function (response, state, code) {
-            if ( response.status === 401 ) {
-              $('#join').find('.alert')
-                .css('display', 'block')
-                .find('.alert-message').text('This email address is already in use');
-            }
-          })
-          
-          .success(function (resposne) {
-            synapp.user = response.user;
-            
-            $('.is-in').css('visibility', 'visible');
-
-            $('#join').modal('hide');
-
-            app.view('sign').find('section').hide(2000);
-
-            app.view('sign').find('.sign-success')
-              .show(function () {
-                setTimeout(function () {
-                  app.view('sign').hide(2500);
-                }, 5000);
-              })
-              .text('Welcome to Synaccord!');
-          });
-      }
-
-      return false;
-    })
-  }
-
-  module.exports = signUp;
-
-} ();
-
-},{}],37:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = {
-    template: '.online-users',
-    
-    controller: function (view, online_users) {
-      view.text(online_users);
     }
   };
 
 } ();
 
-},{}],38:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /***
 
 
@@ -2793,35 +2598,15 @@ Nina Butorac
 
   'use strict';
 
-  var trueStory = require('/home/francois/Dev/true-story.js');
+  var Div = require('/home/francois/Dev/div.js/div');
 
-  window.Synapp = trueStory.import(require('./synapp/index'));
+  window.Synapp = Div.factory(require('./synapp/index'));
 
-  window.Synapp.run();
+  Synapp.run();
 
 }();
 56
-},{"./synapp/index":40,"/home/francois/Dev/true-story.js":48}],39:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  module.exports = function bootstrapResponsiveImage (options) {
-    var img = $('<img/>');
-
-    img.addClass('img-responsive');
-
-    if ( options.src ) {
-      img.attr('src', options.src);
-    }
-
-    return img;
-
-  };
-
-} ();
-
-},{}],40:[function(require,module,exports){
+},{"./synapp/index":31,"/home/francois/Dev/div.js/div":1}],31:[function(require,module,exports){
  /**
                  
 
@@ -2843,29 +2628,46 @@ Nina Butorac
   'use strict';
 
   module.exports = {
-    on: {
-      error: function (error) {
+
+    /** div events */
+
+    "on": {
+
+      /** on div error */
+
+      "error": function (error) {
         console.error(error);
       }
     },
+
+    models: {
+      socket_conn: false
+    },
+
+    /** div extensions */
     
     extensions: {
-      User:         require('../User/'),
-      Panel:        require('../Panel/'),
-      Item:         require('../Item/'),
-      Intro:        require('../Intro/'),
-      Evaluation:   require('../Evaluation/')
+      "User":         require('../User/'),
+      "Panel":        require('../Panel/'),
+      "Item":         require('../Item/'),
+      "Intro":        require('../Intro/'),
+      "Promote":      require('../Promote/')
     },
     
-    emitters : {
+    /** div emitters */
+
+    "emitters" : {
       socket: io.connect('http://' + window.location.hostname + ':' +
-        window.location.port)
+        window.location.port),
+      // queue: new (require('/home/francois/Dev/queue.js/'))()
     },
     
-    controllers: {
-      'bootstrap/responsive-image':
-        require('./controllers/bootstrap/responsive-image')
-    },
+    // controllers: {
+    //   'bootstrap/responsive-image':
+    //     require('./controllers/bootstrap/responsive-image')
+    // },
+
+    /** run div */
     
     run: function () {
 
@@ -2875,21 +2677,27 @@ Nina Butorac
         }.bind(this));
       }
 
+      var div = this;
+
       /** On socket error */
 
       this.emitter('socket')
       
         .on('error', function (error) {
           console.warn('socket error', socket);
+        })
+
+        .on('connect', function () {
+          div.model('socket_conn', true);
         });
 
       /** Extensions */
 
-      var User = this.extension('User');
-      var Intro = this.extension('Intro');
-      var Panel = this.extension('Panel');
-      var Item = this.extension('Item');
-      var Evaluation = this.extension('Evaluation');
+      var User      =     this.extension('User');
+      var Intro     =     this.extension('Intro');
+      var Panel     =     this.extension('Panel');
+      var Item      =     this.extension('Item');
+      var Promote   =     this.extension('Promote');
 
       /** User Run() */
 
@@ -2899,13 +2707,19 @@ Nina Butorac
 
       if ( $('#intro').length ) {
         
-        Intro.story('get intro')();
+        setTimeout(function () {
+          Intro.run();
+        }, 500);
 
-        Panel.story('get panel')();
+        setTimeout(function () {
+          Promote.run();
+          Item.run();
+          Panel.run();
+        }, 1000);
 
-        Item.run();
+        // 
         
-        Evaluation.run();
+        // 
 
       }
     }
@@ -2913,7 +2727,7 @@ Nina Butorac
 
 }();
 
-},{"../Evaluation/":1,"../Intro/":4,"../Item/":15,"../Panel/":28,"../User/":31,"./controllers/bootstrap/responsive-image":39}],41:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":18,"../Panel/":25,"../Promote/":28,"../User/":29}],32:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2951,7 +2765,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":42}],42:[function(require,module,exports){
+},{"events":33}],33:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3254,7 +3068,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],43:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3279,7 +3093,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],44:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3367,14 +3181,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],45:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],46:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3964,7 +3778,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":45,"_process":44,"inherits":43}],47:[function(require,module,exports){
+},{"./support/isBuffer":36,"_process":35,"inherits":34}],38:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -4998,1714 +4812,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],48:[function(require,module,exports){
-/***
-
-────────────────────▄▄▄▄
-────────────────▄▄█▀▀──▀▀█▄
-─────────────▄█▀▀─────────▀▀█▄
-────────────▄█▀──▄▄▄▄▄▄──────▀█
-────────────█───█▌────▀▀█▄─────█
-────────────█──▄█────────▀▀▀█──█
-────────────█──█──▀▀▀──▀▀▀▄─▐──█
-────────────█──▌────────────▐──█
-────────────█──▌─▄▀▀▄───────▐──█
-───────────█▀▌█──▄▄▄───▄▀▀▄─▐──█
-───────────▌─▀───█▄█▌─▄▄▄────█─█
-───────────▌──────▀▀──█▄█▌────█
-───────────█───────────▀▀─────▐
-────────────█──────▌──────────█
-────────────██────█──────────█
-─────────────█──▄──█▄█─▄────█
-─────────────█──▌─▄▄▄▄▄─█──█
-─────────────█─────▄▄──▄▀─█
-─────────────█▄──────────█
-─────────────█▀█▄▄──▄▄▄▄▄█▄▄▄▄▄
-───────────▄██▄──▀▀▀█─────────█
-──────────██▄─█▄────█─────────█
-───▄▄▄▄███──█▄─█▄───█─────────██▄▄▄
-▄█▀▀────█────█──█▄──█▓▓▓▓▓▓▓▓▓█───▀▀▄
-█──────█─────█───████▓▓▓▓▓▓▓▓▓█────▀█
-█──────█─────█───█████▓▓▓▓▓▓▓█──────█
-█─────█──────█───███▀▀▀▀█▓▓▓█───────█
-█────█───────█───█───▄▄▄▄████───────█
-█────█───────█──▄▀───────────█──▄───█
-█────█───────█─▄▀─────█████▀▀▀─▄█───█
-█────█───────█▄▀────────█─█────█────█
-█────█───────█▀───────███─█────█────█
-█─────█────▄█▀──────────█─█────█────█
-█─────█──▄██▀────────▄▀██─█▄───█────█
-█────▄███▀─█───────▄█─▄█───█▄──█────█
-█─▄██▀──█──█─────▄███─█─────█──█────█
-██▀────▄█───█▄▄▄█████─▀▀▀▀█▀▀──█────█
-█──────█────▄▀──█████─────█────▀█───█
-───────█──▄█▀───█████─────█─────█───█
-──────▄███▀─────▀███▀─────█─────█───█
-─────────────────────────────────────
-▀█▀─█▀▄─█─█─█▀────▄▀▀─▀█▀─▄▀▄─█▀▄─█─█
-─█──█▄▀─█─█─█▀────▀▀█──█──█─█─█▄▀─█▄█
-─▀──▀─▀─▀▀▀─▀▀────▀▀───▀───▀──▀─▀─▄▄█
-─────────────────────────────────────
-
-
-***/
-
-! function () {
-	
-  'use strict';
-
-  module.exports = require('./lib/TrueStory.js').exports;
-
-} ();
-},{"./lib/TrueStory.js":49}],49:[function(require,module,exports){
-(function (process){
-/***
-
-────────────────────▄▄▄▄
-────────────────▄▄█▀▀──▀▀█▄
-─────────────▄█▀▀─────────▀▀█▄
-────────────▄█▀──▄▄▄▄▄▄──────▀█
-────────────█───█▌────▀▀█▄─────█
-────────────█──▄█────────▀▀▀█──█
-────────────█──█──▀▀▀──▀▀▀▄─▐──█
-────────────█──▌────────────▐──█
-────────────█──▌─▄▀▀▄───────▐──█
-───────────█▀▌█──▄▄▄───▄▀▀▄─▐──█
-───────────▌─▀───█▄█▌─▄▄▄────█─█
-───────────▌──────▀▀──█▄█▌────█
-───────────█───────────▀▀─────▐
-────────────█──────▌──────────█
-────────────██────█──────────█
-─────────────█──▄──█▄█─▄────█
-─────────────█──▌─▄▄▄▄▄─█──█
-─────────────█─────▄▄──▄▀─█
-─────────────█▄──────────█
-─────────────█▀█▄▄──▄▄▄▄▄█▄▄▄▄▄
-───────────▄██▄──▀▀▀█─────────█
-──────────██▄─█▄────█─────────█
-───▄▄▄▄███──█▄─█▄───█─────────██▄▄▄
-▄█▀▀────█────█──█▄──█▓▓▓▓▓▓▓▓▓█───▀▀▄
-█──────█─────█───████▓▓▓▓▓▓▓▓▓█────▀█
-█──────█─────█───█████▓▓▓▓▓▓▓█──────█
-█─────█──────█───███▀▀▀▀█▓▓▓█───────█
-█────█───────█───█───▄▄▄▄████───────█
-█────█───────█──▄▀───────────█──▄───█
-█────█───────█─▄▀─────█████▀▀▀─▄█───█
-█────█───────█▄▀────────█─█────█────█
-█────█───────█▀───────███─█────█────█
-█─────█────▄█▀──────────█─█────█────█
-█─────█──▄██▀────────▄▀██─█▄───█────█
-█────▄███▀─█───────▄█─▄█───█▄──█────█
-█─▄██▀──█──█─────▄███─█─────█──█────█
-██▀────▄█───█▄▄▄█████─▀▀▀▀█▀▀──█────█
-█──────█────▄▀──█████─────█────▀█───█
-───────█──▄█▀───█████─────█─────█───█
-──────▄███▀─────▀███▀─────█─────█───█
-─────────────────────────────────────
-▀█▀─█▀▄─█─█─█▀────▄▀▀─▀█▀─▄▀▄─█▀▄─█─█
-─█──█▄▀─█─█─█▀────▀▀█──█──█─█─█▄▀─█▄█
-─▀──▀─▀─▀▀▀─▀▀────▀▀───▀───▀──▀─▀─▄▄█
-─────────────────────────────────────
-
-  ______   __                              
- /      \ /  |                             
-/eeeeee  |ee |  ______    _______  _______ 
-ee |  ee/ ee | /      \  /       |/       |
-ee |      ee | eeeeee  |/eeeeeee//eeeeeee/ 
-ee |   __ ee | /    ee |ee      \ee      \ 
-ee \__/  |ee |/eeeeeee | eeeeee  |eeeeee  |
-ee    ee/ ee |ee    ee |/     ee//     ee/ 
- eeeeee/  ee/  eeeeeee/ eeeeeee/ eeeeeee/  
-                                           
-                                           
-
-
-***/
-
-; ! function () {
-
-	'use strict';
-
-	function TrueStory () {
-
-    /** Models - Hash table */
-
-    this.models 			=   {};
-
-    /** Controllers - Hash table */
-    
-    this.controllers 	=   {};
-
-    /** Emitters - Hash table */
-    
-    this.emitters     =   {};
-
-    /** Views - Hash table */
-    
-    this.views 				=   {};
-
-    /** Views - Hash Table { String: Object } */
-
-    this.templates    =   {};
-
-    /** Watch dogs - Hash table */
-
-    this.watchDogs    =   {};
-    
-    this.watched      =   [];
-
-    this.stories      =   {};
-
-    this.extensions   =   {};
-
-    this.watch        =   new (require('events').EventEmitter)();
-    
-    // this.follow       =   new Follow(this.models);
-
-    this.domain       =   require('domain').create();
-
-    var app           =   this;
-
-    this.domain.on('error', function (error) {
-      console.warn('An Error Occured! True story!', error, error.stack);
-      app.emit('error', error);
-    });
-  }
-
-  require('util').inherits(TrueStory, require('events').EventEmitter);
-
-  /***********************************************
-    .                                               
-    .                                               
-    .                             ee            ee  
-    .                             ee            ee  
-    eeeeee eeee    eeeeee    eeeeeee   eeeeee   ee  
-    ee   ee   ee  ee    ee  ee    ee  ee    ee  ee  
-    ee   ee   ee  ee    ee  ee    ee  eeeeeeee  ee  
-    ee   ee   ee  ee    ee  ee    ee  ee        ee  
-    ee   ee   ee   eeeeee    eeeeeee   eeeeeee  ee  
-                                                  
-                                                
-  ***********************************************/
-
-  TrueStory.prototype.model = require('./TrueStory/model');
-
-  /***********************************************
-    .                                                             
-    .                                                             
-    .                               ee                          ee  
-    .                               ee                          ee  
-     eeeeeee   eeeeee   eeeeeee   eeeeee     eeeeee    eeeeee   ee  
-    ee        ee    ee  ee    ee    ee      ee    ee  ee    ee  ee  
-    ee        ee    ee  ee    ee    ee      ee        ee    ee  ee  
-    ee        ee    ee  ee    ee    ee  ee  ee        ee    ee  ee  
-     eeeeeee   eeeeee   ee    ee     eeee   ee         eeeeee   ee  
-                                                                    
-                                                                    
-                            
-                            
-    ee                      
-    ee                      
-    ee   eeeeee    eeeeee   
-    ee  ee    ee  ee    ee  
-    ee  eeeeeeee  ee        
-    ee  ee        ee        
-    ee   eeeeeee  ee        
-                          
-                        
-  ***********************************************/
-
-  TrueStory.prototype.controller = function (name, controller) {
-    var app = this;
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.controller(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.controllers[name] = controller.bind(this);
-
-        this.controllers[name].attach = function () {
-          app.controllers[name].call(app, arguments);
-        };
-
-        return this;
-      }
-
-      return this.controllers[name];
-    }
-  };
-
-  /***********************************************
-                                         
-                                         
-             ee                          
-                                         
-  ee     ee  ee   eeeeee   ee   ee   ee  
-   ee   ee   ee  ee    ee  ee   ee   ee  
-    ee ee    ee  eeeeeeee  ee   ee   ee  
-     eee     ee  ee        ee   ee   ee  
-      e      ee   eeeeeee   eeeee eeee   
-                                         
-                                         
-  ***********************************************/
-
-  TrueStory.prototype.view = function (name, view) {
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.view(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.views[name] = view;
-
-        return this;
-      }
-
-      return $(this.views[name]);
-    }
-  };
-
-  /*
-
-                                                                              
-                                                                              
-  $$                                        $$              $$                
-  $$                                        $$              $$                
-$$$$$$     $$$$$$   $$$$$$ $$$$    $$$$$$   $$   $$$$$$   $$$$$$     $$$$$$   
-  $$      $$    $$  $$   $$   $$  $$    $$  $$        $$    $$      $$    $$  
-  $$      $$$$$$$$  $$   $$   $$  $$    $$  $$   $$$$$$$    $$      $$$$$$$$  
-  $$  $$  $$        $$   $$   $$  $$    $$  $$  $$    $$    $$  $$  $$        
-   $$$$    $$$$$$$  $$   $$   $$  $$$$$$$   $$   $$$$$$$     $$$$    $$$$$$$  
-                                  $$                                          
-                                  $$                                          
-                                  $$                                                                                      
-
-  */
-
-  TrueStory.prototype.template = function (name, template) {
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.template(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.templates[name] = template;
-
-        return this;
-      }
-
-      return this.templates[name];
-    }
-  };
-
-  /**
-
-                                                              
-                                                              
-                                      $$                      
-                                      $$                      
-   $$$$$$    $$$$$$   $$$$$$$    $$$$$$$   $$$$$$    $$$$$$   
-  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$  
-  $$        $$$$$$$$  $$    $$  $$    $$  $$$$$$$$  $$        
-  $$        $$        $$    $$  $$    $$  $$        $$        
-  $$         $$$$$$$  $$    $$   $$$$$$$   $$$$$$$  $$        
-                                                              
-                                                              
-                                                            
-  */
-
-  TrueStory.prototype.render = require('./TrueStory/render');
-
-  /***********************************************
-                       
-
-
-
-
-
-                                                                    
-                          $$    $$      $$                          
-                                $$      $$                          
-   $$$$$$   $$$$$$ $$$$   $$  $$$$$$  $$$$$$     $$$$$$    $$$$$$   
-  $$    $$  $$   $$   $$  $$    $$      $$      $$    $$  $$    $$  
-  $$$$$$$$  $$   $$   $$  $$    $$      $$      $$$$$$$$  $$        
-  $$        $$   $$   $$  $$    $$  $$  $$  $$  $$        $$        
-   $$$$$$$  $$   $$   $$  $$     $$$$    $$$$    $$$$$$$  $$        
-                                                                    
-                       
-
-
-
-
-
-
-  ***********************************************/                                                         
-
-
-  TrueStory.prototype.emitter = function (name, emitter) {
-    var app = this;
-
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.emitter(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.emitters[name] = emitter;
-
-        return this;
-      }
-
-      return this.emitters[name];
-    }
-  };
-
-  /***********************************************
-
-
-
-
-
-
-                                          
-                                          
-    . ee                            ee      
-    . ee                            ee      
-    eeeeee     eeeeee    eeeeeee  eeeeee    
-    . ee      ee    ee  ee          ee      
-    . ee      eeeeeeee   eeeeee     ee      
-    . ee  ee  ee              ee    ee  ee  
-    .  eeee    eeeeeee  eeeeeee      eeee   
-                                          
-
-
-
-
-
-                                          
-
-  ***********************************************/
-
-  TrueStory.prototype.test = function (name, test) {
-    var app = this;
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.test(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.tests[name] = test.bind(this);
-
-        return this;
-      }
-
-      return this.tests[name];
-    }
-  };
-
-
-
-
-  TrueStory.prototype.bind = function(model, binder) {
-
-    this.watch.on('add ' + model, function (_new, _old) {
-      binder(_new, _old, 'add');
-    });
-
-    this.watch.on('update ' + model, function (_new, _old) {
-      binder(_new, _old, 'update');
-    });
-
-    this.watch.on('delete ' + model, function (_new, _old) {
-      binder(_new, _old, 'delete');
-    });
-
-    return this;
-  };
-
-  /*
-
-
-                                                              
-                                                              
-                        $$                                $$  
-                        $$                                $$  
-   $$$$$$   $$    $$  $$$$$$     $$$$$$   $$$$$$$    $$$$$$$  
-  $$    $$   $$  $$<    $$      $$    $$  $$    $$  $$    $$  
-  $$$$$$$$    $$$$      $$      $$$$$$$$  $$    $$  $$    $$  
-  $$         $$  $$     $$  $$  $$        $$    $$  $$    $$  
-   $$$$$$$  $$    $$     $$$$    $$$$$$$  $$    $$   $$$$$$$  
-                                                              
-                                                              
-                                                            
-
-
-  */
-
-  TrueStory.prototype.extension = function (name, extension) {
-    var app = this;
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.extension(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.extensions[name] = TrueStory.exports.import(extension);
-        this.extensions[name].importer = this;
-
-        return this;
-      }
-
-      return this.extensions[name];
-    }
-  };
-
-
-
-
-
-  TrueStory.prototype.story = function (name, story) {
-    var app = this;
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.story(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-      if ( '1' in arguments ) {
-        this.stories[name] = story.bind(app);
-
-        return this;
-      }
-
-      return this.stories[name];
-    }
-  };
-
-
-
-  /***********************************************
-
-                          
-
-
-
-
-                                
-                                
-   eeeeee   ee    ee  eeeeeee   
-  ee    ee  ee    ee  ee    ee  
-  ee        ee    ee  ee    ee  
-  ee        ee    ee  ee    ee  
-  ee         eeeeee   ee    ee  
-                                
-                              
-
-
-
-
-
-  ***********************************************/
-
-  TrueStory.prototype.run = function (fn) {
-    if ( typeof fn === 'function' ) {
-      process.nextTick(function () {
-        fn.apply(this);
-      }.bind(this));
-    }
-
-    return this;
-  };
-
-  /***********************************************
-
-                                
-                 
-
-
-
-
-
-
-
-                                
-    .eeeeee   ee    ee  eeeeeee   
-    ee    ee  ee    ee  ee    ee  
-    ee        ee    ee  ee    ee  
-    ee        ee    ee  ee    ee  
-    ee         eeeeee   ee    ee  
-                                  
-                                                   
-                                                     
-    . $$                            $$               
-    . $$                            $$               
-    $$$$$$     $$$$$$    $$$$$$$  $$$$$$    $$$$$$$  
-    . $$      $$    $$  $$          $$     $$        
-    . $$      $$$$$$$$   $$$$$$     $$      $$$$$$   
-    . $$  $$  $$              $$    $$  $$       $$  
-    .  $$$$    $$$$$$$  $$$$$$$      $$$$  $$$$$$$   
-                                                     
-                   
-
-
-
-
-
-
-  ***********************************************/
-
-  TrueStory.prototype.runTests = function (tests) {
-    if ( ! tests ) {
-      console.info(new (
-        function TrueStory_Running_all_tests () {}) ());
-
-      for ( var test in this.tests ) {
-        console.info(new (
-          function TrueStory_Running_test () {
-            this.test = test;
-          }) ());
-
-        this.test(test)();
-      }
-
-      return this;
-    }
-
-    for ( var i in arguments ) {
-      if ( typeof arguments[i] === 'string' ) {
-        console.info("True story!", new (
-          function TrueStory_Running_test (test) {
-            this.test = test;
-          }) (arguments[i]) );
-
-        this.test(arguments[i])();
-      }
-    }
-
-    return this;
-  };
-
-  /***
-
-                                                        
-                                                        
-                                $$                $$        
-                                $$                $$        
-      $$   $$   $$   $$$$$$   $$$$$$     $$$$$$$  $$$$$$$   
-      $$   $$   $$        $$    $$      $$        $$    $$  
-      $$   $$   $$   $$$$$$$    $$      $$        $$    $$  
-      $$   $$   $$  $$    $$    $$  $$  $$        $$    $$  
-       $$$$$ $$$$    $$$$$$$     $$$$    $$$$$$$  $$    $$  
-                                                            
-                                                            
-                                                            
-                                                            
-                                                            
-            $$                                              
-            $$                                              
-       $$$$$$$   $$$$$$    $$$$$$                           
-      $$    $$  $$    $$  $$    $$                          
-      $$    $$  $$    $$  $$    $$                          
-      $$    $$  $$    $$  $$    $$                          
-       $$$$$$$   $$$$$$    $$$$$$$                          
-                                $$                          
-                          $$    $$                          
-                           $$$$$$    
-
-  
-  ***/
-
-  TrueStory.prototype.watchDog = function (name, stories) {
-    var app = this;
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        this.watchDog(i, name[i]);
-      }
-
-      return this;
-    }
-
-    if ( typeof name === 'string' ) {
-
-      /** 
-       *
-       * SETTER
-       *
-       */
-
-      var watched = {
-        watchDog:   name,
-        stories:    stories,
-        results:    []
-      };
-
-
-      if ( '1' in arguments ) {
-        this.watchDogs[name] = stories;
-
-        return this;
-      }
-
-      /** 
-       *
-       * GETTER
-       *
-       */
-
-      // if ( ! name in this.watchDogs ) {
-
-      // }
-
-      return ! function () {
-
-        var stories = app.watchDogs[name];
-
-        var watch_dog = new (function TrueStory_WatchDog () {
-          this.name         = name;
-          this.stories      = stories;
-          this.watched      = [];
-          this.doneWatching = false;
-        })();
-
-        new Follow(watch_dog)
-          .on('update watched', function () {
-            if ( watch_dog.watched.length === stories.length ) {
-              watch_dog.doneWatching = true;
-            }
-          });
-
-        // Running each watch dog stories
-
-        stories.forEach(function (story) {
-
-          var role = 'emitter';
-
-          if ( 'model' in story ) {
-            role = 'model';
-          }
-
-          if ( role === 'emitter' && ! story.emitter ) {
-            story.emitter = null;
-          }
-
-          // Pass stories to app
-
-          app.tell(function (when) {
-
-            when()
-              
-              [role](story[role])
-              
-              .triggers(story.event)
-              
-              .then(function (event) {
-
-                var yes = true;
-
-                if ( this.run ) {
-                  yes = this.run.apply(app, [event]);
-                  
-                  watched.results.push({
-                    story:  story,
-                    ok:     yes
-                  });
-                }
-
-                if ( yes ) {
-                  
-                  console.info(new (function TrueStory_WatchDog_OK() {
-                    this.name     =  name;
-                    this.story    =  JSON.stringify(story);
-                    this.pos      =  (watch_dog.watched.length + 1) + '/' +
-                      stories.length
-                  })());
-
-                  console.info("\t  -");
-
-
-                  watch_dog.watched = watch_dog.watched.concat(story);
-                }
-              
-              }.bind(story));
-            });
-
-          });
-
-          setTimeout(function () {
-            if ( ! watch_dog.doneWatching ) {
-
-              var missing = watch_dog.stories.length - watch_dog.watched.length;
-
-              var error = new Error('Watch dog timed out -- ' + missing + ' test(s) could not be watched');
-              error.name = 'TrueStory_WatchDog_Error';
-              throw error;
-            }
-            else {
-
-              app.watched.push(watched);
-
-              console.info("True story!", new (function TrueStory_WatchDog_Done () {
-                this.name     =   name;
-                this.watched  =   watch_dog.watched;
-                this.stories  =   watch_dog.stories;
-              })());
-
-            }
-          }, 2000);
-
-      } (); 
-    }
-  };
-
-
-
-
-
-  TrueStory.prototype.push = function (model, item) {
-    if ( Array.isArray(this.models[model]) ) {
-      this.model(model, this.models[model].concat([item]));
-      this.watch.emit('push ' + model, item);
-    }
-
-    return this;
-  };
-
-
-  TrueStory.prototype.inc = function (model, step) {
-
-    if ( typeof step === 'undefined' ) {
-      step = 1;
-    }
-
-    this.model(model, this.model(model) + step);
-
-    return this;
-  };
-
-
-  TrueStory.prototype.tell = function (story) {
-
-    var app = this;
-
-    if ( typeof story === 'function' ) {
-      this.domain.run(function () {
-        story.apply(app, [function () {
-          return new (require('./When'))(app);
-        }]);
-      });
-    }
-
-    return this;
-  };
-
-  /***********************************************
-
-                                                        
-                                                        
-                            ee                ee        
-                            ee                ee        
-  ee   ee   ee   eeeeee   eeeeee     eeeeeee  eeeeeee   
-  ee   ee   ee        ee    ee      ee        ee    ee  
-  ee   ee   ee   eeeeeee    ee      ee        ee    ee  
-  ee   ee   ee  ee    ee    ee  ee  ee        ee    ee  
-   eeeee eeee    eeeeeee     eeee    eeeeeee  ee    ee  
-                                                        
-                                                        
-
-  ***********************************************/
-
-  // TrueStory.prototype.watch = function (object) {
-  //   return new Follow(object);
-  // };
-
-
-
-  /***********************************************
-
-                                                                       
-                                                                       
-                                                      ee               
-                                                      ee               
-   eeeeee   ee    ee   eeeeee    eeeeee    eeeeee   eeeeee    eeeeeee  
-  ee    ee   ee  ee   ee    ee  ee    ee  ee    ee    ee     ee        
-  eeeeeeee    eeee    ee    ee  ee    ee  ee          ee      eeeeee   
-  ee         ee  ee   ee    ee  ee    ee  ee          ee  ee       ee  
-   eeeeeee  ee    ee  eeeeeee    eeeeee   ee           eeee  eeeeeee   
-                      ee                                               
-                      ee                                               
-                      ee                                               
-
-  ***********************************************/
-
-  TrueStory.exports = function () {
-    return new TrueStory();
-  };
-
-
-
-
-
-
-
-
-
-  TrueStory.exports.import = function (ts) {
-
-    var app = new TrueStory()
-
-      .extension(ts.extensions || {})
-
-      .emitter(ts.emitters || {})
-
-      .model(ts.models || {})
-
-      .controller(ts.controllers || {})
-
-      .view(ts.views || {})
-
-      .template(ts.templates || {})
-
-      .story(ts.stories || {});
-    ;
-
-    if ( ts.run ) {
-      app.run = ts.run;
-    }
-
-    if ( ts.on ) {
-      for ( var event in ts.on ) {
-        app.on(event, ts.on[event].bind(app));
-      }
-    }
-
-    return app;
-
-  };
-
-  /***********************************************
-
-                                                  
-                                                    
-                                                    
-                                                    
-   eeeeee    eeeeee    eeeeee    eeeeeee   eeeeee   
-  ee    ee        ee  ee    ee  ee        ee    ee  
-  ee    ee   eeeeeee  ee         eeeeee   eeeeeeee  
-  ee    ee  ee    ee  ee              ee  ee        
-  eeeeeee    eeeeeee  ee        eeeeeee    eeeeeee  
-  ee                                                
-  ee                                                
-  ee                                                
-
-
-                                
-                                
-        ee              ee      
-        ee              ee      
-   eeeeeee   eeeeee   eeeeee    
-  ee    ee  ee    ee    ee      
-  ee    ee  ee    ee    ee      
-  ee    ee  ee    ee    ee  ee  
-   eeeeeee   eeeeee      eeee   
-                                
-                                
-
-                                                                            
-                                                                            
-                        ee                  ee      ee                      
-                        ee                  ee                              
-  eeeeeee    eeeeee   eeeeee     eeeeee   eeeeee    ee   eeeeee   eeeeeee   
-  ee    ee  ee    ee    ee            ee    ee      ee  ee    ee  ee    ee  
-  ee    ee  ee    ee    ee       eeeeeee    ee      ee  ee    ee  ee    ee  
-  ee    ee  ee    ee    ee  ee  ee    ee    ee  ee  ee  ee    ee  ee    ee  
-  ee    ee   eeeeee      eeee    eeeeeee     eeee   ee   eeeeee   ee    ee  
-                                                                            
-                                              
-                                            
-
-  ***/
-
-  TrueStory.exports.parseDotNotation = require('./TrueStory/parse-dot-notation');
-
-  module.exports = TrueStory;
-} ();
-}).call(this,require('_process'))
-},{"./TrueStory/model":50,"./TrueStory/parse-dot-notation":51,"./TrueStory/render":52,"./When":53,"_process":44,"domain":41,"events":42,"util":46}],50:[function(require,module,exports){
-; ! function () {
-  
-  'use strict';
-
-  module.exports = function (name, model, noFollow) {
-    var app = this;
-
-    if ( ! name ) {
-      return this;
-    }
-
-    if ( typeof name === 'object' ) {
-      for ( var i in name ) {
-        app.model(i, name[i]);
-      }
-
-      return app;
-    }
-
-    if ( typeof name === 'string' ) {
-
-
-      if ( '1' in arguments ) {
-        
-        if ( name in this.models ) {
-          this.watch.emit('update ' + name, model, this.models[name]);
-          // console.warn('%c update "' + name + '" %c ' + JSON.stringify({
-          //   new: model, 
-          //   old: this.models[name]}, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
-          console.warn('%c update %c ' + name + ' %c ' + JSON.stringify(model, null, 2) + '%c ' + JSON.stringify(this.models[name], null, 2),
-            'color: orange; font-weight: bold', 'color: blue; font-weight: bold', 'color: #666', 'color: #aaa');
-          this.models[name] = model;
-        }
-
-        else {
-          this.models[name] = model;
-          this.watch.emit('add ' + name, model);
-          // console.warn('%c add "' + name + '" %c ' + JSON.stringify(model, null, 2), 'font-size: 300%', 'color: #666; font-size: 150%');
-          console.warn('%c add' + '%c ' + name + '%c ' + JSON.stringify(model, null, 2),
-            'color: green; font-weight: bold',
-            'color: blue; font-weight: bold',
-            'color: #666');
-        }
-
-        return app;
-      }
-
-      return this.models[name];
-    }
-  };
-
-}();
-
-},{}],51:[function(require,module,exports){
-/***
-
-────────────────────▄▄▄▄
-────────────────▄▄█▀▀──▀▀█▄
-─────────────▄█▀▀─────────▀▀█▄
-────────────▄█▀──▄▄▄▄▄▄──────▀█
-────────────█───█▌────▀▀█▄─────█
-────────────█──▄█────────▀▀▀█──█
-────────────█──█──▀▀▀──▀▀▀▄─▐──█
-────────────█──▌────────────▐──█
-────────────█──▌─▄▀▀▄───────▐──█
-───────────█▀▌█──▄▄▄───▄▀▀▄─▐──█
-───────────▌─▀───█▄█▌─▄▄▄────█─█
-───────────▌──────▀▀──█▄█▌────█
-───────────█───────────▀▀─────▐
-────────────█──────▌──────────█
-────────────██────█──────────█
-─────────────█──▄──█▄█─▄────█
-─────────────█──▌─▄▄▄▄▄─█──█
-─────────────█─────▄▄──▄▀─█
-─────────────█▄──────────█
-─────────────█▀█▄▄──▄▄▄▄▄█▄▄▄▄▄
-───────────▄██▄──▀▀▀█─────────█
-──────────██▄─█▄────█─────────█
-───▄▄▄▄███──█▄─█▄───█─────────██▄▄▄
-▄█▀▀────█────█──█▄──█▓▓▓▓▓▓▓▓▓█───▀▀▄
-█──────█─────█───████▓▓▓▓▓▓▓▓▓█────▀█
-█──────█─────█───█████▓▓▓▓▓▓▓█──────█
-█─────█──────█───███▀▀▀▀█▓▓▓█───────█
-█────█───────█───█───▄▄▄▄████───────█
-█────█───────█──▄▀───────────█──▄───█
-█────█───────█─▄▀─────█████▀▀▀─▄█───█
-█────█───────█▄▀────────█─█────█────█
-█────█───────█▀───────███─█────█────█
-█─────█────▄█▀──────────█─█────█────█
-█─────█──▄██▀────────▄▀██─█▄───█────█
-█────▄███▀─█───────▄█─▄█───█▄──█────█
-█─▄██▀──█──█─────▄███─█─────█──█────█
-██▀────▄█───█▄▄▄█████─▀▀▀▀█▀▀──█────█
-█──────█────▄▀──█████─────█────▀█───█
-───────█──▄█▀───█████─────█─────█───█
-──────▄███▀─────▀███▀─────█─────█───█
-─────────────────────────────────────
-▀█▀─█▀▄─█─█─█▀────▄▀▀─▀█▀─▄▀▄─█▀▄─█─█
-─█──█▄▀─█─█─█▀────▀▀█──█──█─█─█▄▀─█▄█
-─▀──▀─▀─▀▀▀─▀▀────▀▀───▀───▀──▀─▀─▄▄█
-─────────────────────────────────────
-
-                                                  
-                                                  
-  ______    ______    ______    _______   ______  
- /      \  /      \  /      \  /       | /      \ 
-/$$$$$$  | $$$$$$  |/$$$$$$  |/$$$$$$$/ /$$$$$$  |
-$$ |  $$ | /    $$ |$$ |  $$/ $$      \ $$    $$ |
-$$ |__$$ |/$$$$$$$ |$$ |       $$$$$$  |$$$$$$$$/ 
-$$    $$/ $$    $$ |$$ |      /     $$/ $$       |
-$$$$$$$/   $$$$$$$/ $$/       $$$$$$$/   $$$$$$$/ 
-$$ |                                              
-$$ |                                              
-$$/                                               
-       __              __                         
-      /  |            /  |                        
-  ____$$ |  ______   _$$ |_                       
- /    $$ | /      \ / $$   |                      
-/$$$$$$$ |/$$$$$$  |$$$$$$/                       
-$$ |  $$ |$$ |  $$ |  $$ | __                     
-$$ \__$$ |$$ \__$$ |  $$ |/  |                    
-$$    $$ |$$    $$/   $$  $$/                     
- $$$$$$$/  $$$$$$/     $$$$/                      
-                                                  
-                                                  
-                                                  
-                       __                         
-                      /  |                        
- _______    ______   _$$ |_     ______            
-/       \  /      \ / $$   |   /      \           
-$$$$$$$  |/$$$$$$  |$$$$$$/    $$$$$$  |          
-$$ |  $$ |$$ |  $$ |  $$ | __  /    $$ |          
-$$ |  $$ |$$ \__$$ |  $$ |/  |/$$$$$$$ |          
-$$ |  $$ |$$    $$/   $$  $$/ $$    $$ |          
-$$/   $$/  $$$$$$/     $$$$/   $$$$$$$/           
-                                                  
-                                                  
-                                                  
-           __      __                             
-          /  |    /  |                            
-         _$$ |_   $$/   ______   _______          
- ______ / $$   |  /  | /      \ /       \         
-/      |$$$$$$/   $$ |/$$$$$$  |$$$$$$$  |        
-$$$$$$/   $$ | __ $$ |$$ |  $$ |$$ |  $$ |        
-          $$ |/  |$$ |$$ \__$$ |$$ |  $$ |        
-          $$  $$/ $$ |$$    $$/ $$ |  $$ |        
-           $$$$/  $$/  $$$$$$/  $$/   $$/         
-                                                  
-                                                  
-***/
-; ! function () {
-  
-  'use strict';
-
-  module.exports = function parseDotNotation (obj, notation) {
-
-    if ( ! /\./.test(notation) ) {
-      return obj[notation];
-    }
-
-    var dots = notation.split(/\./);
-
-    var noCopy = obj[dots[0]];
-
-    if ( dots[1] ) {
-      return parseDotNotation(noCopy, dots.filter(function (dot, index) {
-        return index;
-      }).join('.'));
-    }
-
-    return noCopy;
-  }
-
-} ();
-
-},{}],52:[function(require,module,exports){
-(function (process){
-; ! function () {
-
-  'use strict';
-
-  function trueStory_Render (template_name, locals, cb) {
-
-    /** @type TrueStory */
-    
-    var app = this;
-
-    /** @type Object */
-
-    var template_config;
-
-    if ( typeof template_name === 'string' ) {
-      template_config = app.template(template_name);
-    }
-    else {
-      template_config = template_name;
-      template_name = template_config.name || 'anonymous';
-    }
-
-    /** Error if template_name does not exists */
-
-    if ( ! template_config ) {
-      return app.emit('error',
-        new Error('Could not render unexisting template: ' + template_name));
-    }
-
-    /** Using nextTick @because */
-
-    process.nextTick(function () {
-
-      /** String */
-
-      var HTMLString;
-
-      /** If view already as a HTML string defined in its template property */
-
-      if ( template_config.template && template_config.template.length ) {
-        HTMLString = $(template_config.template)[0].outerHTML;
-      }
-
-      /** If template URL defined */
-
-      else if ( template_config.url ) {
-
-        /** AJAX call to get template by URL */
-
-        return $.ajax({
-          url: template_config.url
-        })
-
-          /** On AJAX done */
-
-          .done(function (data) {
-
-            /** Save HTML string as template property */
-
-            template_config.template    =     data;
-
-            /** Relaunch render */
-
-            app.render(template_name, locals, cb);
-
-          });
-      }
-
-      /** Convert HTML String into jQuery */
-
-      var elem = $(HTMLString);
-
-      /** If template has a controller */
-
-      if ( template_config.controller ) {
-        template_config.controller.apply(app, [elem, locals]);
-      }
-
-      /** Emit render OK */
-
-      // app.emit('rendered ' + template_name, elem);
-
-      if ( typeof cb === 'function' ) {
-        cb(elem);
-      }
-    });
-  };
-
-  module.exports = trueStory_Render;
-
-}();
-
-}).call(this,require('_process'))
-},{"_process":44}],53:[function(require,module,exports){
-(function (process){
-/***
-
-────────────────────▄▄▄▄
-────────────────▄▄█▀▀──▀▀█▄
-─────────────▄█▀▀─────────▀▀█▄
-────────────▄█▀──▄▄▄▄▄▄──────▀█
-────────────█───█▌────▀▀█▄─────█
-────────────█──▄█────────▀▀▀█──█
-────────────█──█──▀▀▀──▀▀▀▄─▐──█
-────────────█──▌────────────▐──█
-────────────█──▌─▄▀▀▄───────▐──█
-───────────█▀▌█──▄▄▄───▄▀▀▄─▐──█
-───────────▌─▀───█▄█▌─▄▄▄────█─█
-───────────▌──────▀▀──█▄█▌────█
-───────────█───────────▀▀─────▐
-────────────█──────▌──────────█
-────────────██────█──────────█
-─────────────█──▄──█▄█─▄────█
-─────────────█──▌─▄▄▄▄▄─█──█
-─────────────█─────▄▄──▄▀─█
-─────────────█▄──────────█
-─────────────█▀█▄▄──▄▄▄▄▄█▄▄▄▄▄
-───────────▄██▄──▀▀▀█─────────█
-──────────██▄─█▄────█─────────█
-───▄▄▄▄███──█▄─█▄───█─────────██▄▄▄
-▄█▀▀────█────█──█▄──█▓▓▓▓▓▓▓▓▓█───▀▀▄
-█──────█─────█───████▓▓▓▓▓▓▓▓▓█────▀█
-█──────█─────█───█████▓▓▓▓▓▓▓█──────█
-█─────█──────█───███▀▀▀▀█▓▓▓█───────█
-█────█───────█───█───▄▄▄▄████───────█
-█────█───────█──▄▀───────────█──▄───█
-█────█───────█─▄▀─────█████▀▀▀─▄█───█
-█────█───────█▄▀────────█─█────█────█
-█────█───────█▀───────███─█────█────█
-█─────█────▄█▀──────────█─█────█────█
-█─────█──▄██▀────────▄▀██─█▄───█────█
-█────▄███▀─█───────▄█─▄█───█▄──█────█
-█─▄██▀──█──█─────▄███─█─────█──█────█
-██▀────▄█───█▄▄▄█████─▀▀▀▀█▀▀──█────█
-█──────█────▄▀──█████─────█────▀█───█
-───────█──▄█▀───█████─────█─────█───█
-──────▄███▀─────▀███▀─────█─────█───█
-─────────────────────────────────────
-▀█▀─█▀▄─█─█─█▀────▄▀▀─▀█▀─▄▀▄─█▀▄─█─█
-─█──█▄▀─█─█─█▀────▀▀█──█──█─█─█▄▀─█▄█
-─▀──▀─▀─▀▀▀─▀▀────▀▀───▀───▀──▀─▀─▄▄█
-─────────────────────────────────────
-
-   __       __  __                           
-  /  |  _  /  |/  |                          
-  $$ | / \ $$ |$$ |____    ______   _______  
-  $$ |/$  \$$ |$$      \  /      \ /       \ 
-  $$ /$$$  $$ |$$$$$$$  |/$$$$$$  |$$$$$$$  |
-  $$ $$/$$ $$ |$$ |  $$ |$$    $$ |$$ |  $$ |
-  $$$$/  $$$$ |$$ |  $$ |$$$$$$$$/ $$ |  $$ |
-  $$$/    $$$ |$$ |  $$ |$$       |$$ |  $$ |
-  $$/      $$/ $$/   $$/  $$$$$$$/ $$/   $$/ 
-                                           
-
-
-***/
-
-; ! function () {
-
-	'use strict';
-
-  var thens = {
-    render: function (template, locals) {
-      var when = this;
-
-      this.and_then.push(function (x) {
-        when.app.render(template, x);
-      });
-
-      return when.then;
-    },
-
-    controller: function (controller, args) {
-      var when = this;
-
-      console.warn('controller');
-
-      this.and_then.push(function (x) {
-        when.app.controller(controller);
-      });
-
-      return when.then;
-    },
-
-    push: function (model, item) {
-
-
-      var when = this;
-
-      this.and_then.push(function (x) {
-        when.app.model(model).push(item);
-      });
-
-      return when.then;
-    },
-
-    model: function (model) {
-      
-      var when = this;
-
-      this.and_then.push(function (x) {
-        console.error('then model', model);
-        when.app.model(model, x);
-      });
-
-      return when.then;
-    },
-
-    trigger: function (emitter, event, message) {
-
-      var when = this;
-
-      this.and_then.push(function (x) {
-        console.log()
-        console.warn('triggering', event)
-        console.log()
-        when.app.emitter(emitter).emit(event, message || x);
-      });
-
-      return when.then;
-    }
-  };
-
-  /** @class
-   *  @arg {TrueStory} app
-   **/
-
-  function TrueStory_When (app) {
-    this.who = {};
-
-    /** @type TrueStory */
-    this.app = app;
-
-    this.and_then = [];
-
-    for ( var then in thens ) {
-      this.then[then] = thens[then].bind(this);
-    }
-
-    var when = this;
-
-    process.nextTick(function () {
-
-      /** If stack (means not called by then()) */
-
-      if ( when.and_then.length ) {
-
-        /** pass stack to then() */
-
-        when.then(function () {
-          console.warn('boooom');
-
-          when.and_then.forEach(function (and_then) {
-            and_then.call(when, arguments);
-          });
-        });
-      }
-    });
-  }
-
-  /***
-
-                                                  
-                                                  
-                                $$            $$  
-                                $$            $$  
-  $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-  $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-  $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-  $$   $$   $$  $$    $$  $$    $$  $$        $$  
-  $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$  
-                                                  
-                                                
-  ***/
-
-  /** @method
-   *  @arg {Function} model
-   *  @return TrueStory_When
-   */
-
-  TrueStory_When.prototype.model = function (model) {
-    
-    this.who.model = model;
-
-    return this;
-  };
-
-  /***
-
-                                                                  
-                                                                    
-                          $$    $$      $$                          
-                                $$      $$                          
-   $$$$$$   $$$$$$ $$$$   $$  $$$$$$  $$$$$$     $$$$$$    $$$$$$   
-  $$    $$  $$   $$   $$  $$    $$      $$      $$    $$  $$    $$  
-  $$$$$$$$  $$   $$   $$  $$    $$      $$      $$$$$$$$  $$        
-  $$        $$   $$   $$  $$    $$  $$  $$  $$  $$        $$        
-   $$$$$$$  $$   $$   $$  $$     $$$$    $$$$    $$$$$$$  $$        
-                                                                    
-                                                                  
-  ***/
-
-  /** @method
-   *  @arg {Function} emitter
-   *  @return TrueStory_When
-   */
-
-  TrueStory_When.prototype.emitter = function (emitter) {
-    
-    this.who.emitter = emitter;
-
-    return this;
-  };
-
-  /***
-
-                                                                            
-                                                                            
-    $$                $$                                                    
-    $$                                                                      
-  $$$$$$     $$$$$$   $$   $$$$$$    $$$$$$    $$$$$$    $$$$$$    $$$$$$$  
-    $$      $$    $$  $$  $$    $$  $$    $$  $$    $$  $$    $$  $$        
-    $$      $$        $$  $$    $$  $$    $$  $$$$$$$$  $$         $$$$$$   
-    $$  $$  $$        $$  $$    $$  $$    $$  $$        $$              $$  
-     $$$$   $$        $$   $$$$$$$   $$$$$$$   $$$$$$$  $$        $$$$$$$   
-                                $$        $$                                
-                          $$    $$  $$    $$                                
-                           $$$$$$    $$$$$$                                 
-
-  ***/
-
-  /** @method
-   *  @arg {String} event
-   *  @return TrueStory_When
-   */
-
-  TrueStory_When.prototype.triggers = function (event) {
-    this.listener = 'on';
-    this.event = event;
-
-    return this;
-  };
-
-  /***
-
-                                            
-                                          
-    $$      $$                            
-    $$      $$                            
-  $$$$$$    $$$$$$$    $$$$$$   $$$$$$$   
-    $$      $$    $$  $$    $$  $$    $$  
-    $$      $$    $$  $$$$$$$$  $$    $$  
-    $$  $$  $$    $$  $$        $$    $$  
-     $$$$   $$    $$   $$$$$$$  $$    $$  
-                                          
-                                        
-  ***/
-
-  /** @method
-   *  @arg {Function} fn
-   *  @return void
-   */
-
-  TrueStory_When.prototype.then = function (fn) {
-    var when = this;
-
-    if ( this.app instanceof require('./TrueStory') ) {
-      this.app.stories.push(when);
-    }
-
-    console.info(when);
-
-    if ( when.who.model ) {
-
-      if ( when.listener ) {
-
-        /***
-
-                                                    
-                                                    
-          .             $$                            
-          .             $$                            
-          $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$   
-          $$   $$   $$  $$    $$  $$    $$  $$    $$  
-          $$   $$   $$  $$    $$  $$$$$$$$  $$    $$  
-          $$   $$   $$  $$    $$  $$        $$    $$  
-          .$$$$$ $$$$   $$    $$   $$$$$$$  $$    $$  
-          .                                           
-          .                                               
-          .                                               
-          .                             $$            $$  
-          .                             $$            $$  
-          $$$$$$ $$$$    $$$$$$    $$$$$$$   $$$$$$   $$  
-          $$   $$   $$  $$    $$  $$    $$  $$    $$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$$$$$$$  $$  
-          $$   $$   $$  $$    $$  $$    $$  $$        $$  
-          $$   $$   $$   $$$$$$    $$$$$$$   $$$$$$$  $$    
-          .
-          .
-          .                   
-          .                   
-          .$$$$$$   $$$$$$$   
-          $$    $$  $$    $$  
-          $$    $$  $$    $$  
-          $$    $$  $$    $$  
-          .$$$$$$   $$    $$  
-                            
-                            
-                            
-        ***/
-
-        switch ( when.event ) {
-
-          case 'all':
-            return ! function () {
-              
-              var app = this;
-              
-              this.follow[when.listener]('add ' + when.who.model,
-                function (obj) {
-                  app.domain.run(function () {
-                    fn.apply(app, [obj]);
-                  });
-                });
-              
-              this.follow[when.listener]('update ' + when.who.model,
-                function (obj) {
-                  // console.log('event update');
-                  app.domain.run(function () {
-                    fn.apply(app, [obj]);
-                  });
-                });
-            
-            }.apply(this.app);
-
-          case 'add':
-          case 'update':
-
-            return ! function () {
-              var app = this;
-              
-              this.follow[when.listener](when.event + ' ' + when.who.model,
-                function (obj) {
-                  app.domain.run(function () {
-                    fn.apply(app, [obj]);
-                  });
-                });
-            }.apply(this.app);
-
-          case 'push':
-          case 'concat':
-            return ! function () {
-              this[when.listener](when.event + ' ' + when.who.model, fn.bind(this));
-            }.apply(this.app);
-
-          /**
-
-                                                   
-                                                                        
-                                        $$                              
-                                        $$                              
-         $$$$$$$  $$    $$   $$$$$$$  $$$$$$     $$$$$$   $$$$$$ $$$$   
-        $$        $$    $$  $$          $$      $$    $$  $$   $$   $$  
-        $$        $$    $$   $$$$$$     $$      $$    $$  $$   $$   $$  
-        $$        $$    $$        $$    $$  $$  $$    $$  $$   $$   $$  
-         $$$$$$$   $$$$$$   $$$$$$$      $$$$    $$$$$$   $$   $$   $$  
-                     
-
-                                                                
-          **/
-
-
-          default:
-            console.error('CUSTOM', when)
-            return ! function () {
-              this.model(when.who.model)[when.listener](when.event, fn.bind(this));
-            }.apply(this.app);
-        }
-      }
-
-      else if ( 'is' in when ) {
-        return ! function () {
-          function onAny (event) {
-            if ( event.new === when.is ) {
-              fn.apply(this);
-            }
-          }
-
-          this.follow[when.listener]('add ' + when.who.model, onAny.bind(this));
-          this.follow[when.listener]('update ' + when.who.model, onAny.bind(this));
-        }.apply(this.app);
-      }
-    }
-
-    else if ( 'emitter' in when.who ) {
-      /***
-
-                                                                        
-                                                                        
-                    $$                                                  
-                    $$                                                  
-      $$   $$   $$  $$$$$$$    $$$$$$   $$$$$$$                         
-      $$   $$   $$  $$    $$  $$    $$  $$    $$                        
-      $$   $$   $$  $$    $$  $$$$$$$$  $$    $$                        
-      $$   $$   $$  $$    $$  $$        $$    $$                        
-       $$$$$ $$$$   $$    $$   $$$$$$$  $$    $$                        
-                                                                        
-
-                                                                        
-                              $$    $$      $$                          
-                                    $$      $$                          
-       $$$$$$   $$$$$$ $$$$   $$  $$$$$$  $$$$$$     $$$$$$    $$$$$$   
-      $$    $$  $$   $$   $$  $$    $$      $$      $$    $$  $$    $$  
-      $$$$$$$$  $$   $$   $$  $$    $$      $$      $$$$$$$$  $$        
-      $$        $$   $$   $$  $$    $$  $$  $$  $$  $$        $$        
-       $$$$$$$  $$   $$   $$  $$     $$$$    $$$$    $$$$$$$  $$        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-       $$$$$$   $$$$$$$                                                 
-      $$    $$  $$    $$                                                
-      $$    $$  $$    $$                                                
-      $$    $$  $$    $$                                                
-       $$$$$$   $$    $$                                                
-                                                                        
-                                                                  
-      ***/
-
-      return ! function () {
-        var app = this;
-
-        var emitter = when.who.emitter;
-
-        if ( ! emitter ) {
-          emitter = this;
-        }
-
-        else {
-          emitter = this.emitters[emitter];
-        }
-        
-        emitter[when.listener](when.event, function () {
-          console.error({ listener: when.listener, event: when.event, args: arguments});
-          // fn.apply(app);
-          app.emitter('socket').emit('get intro');
-        });
-      }.apply(this.app);
-    }
-
-    else if ( when.who.view ) {
-      if ( when.on ) {
-
-      }
-    }
-  };
-
-
-  function then_render () {
-
-  }
-
-  module.exports = TrueStory_When;
-} ();
-}).call(this,require('_process'))
-},{"./TrueStory":49,"_process":44}]},{},[38]);
+},{}]},{},[30]);

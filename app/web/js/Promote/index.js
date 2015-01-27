@@ -18,17 +18,14 @@
     models: {
       evaluations: []
     },
-    
-    templates: {
-      evaluation: require('./templates/evaluation')
-    },
 
-    stories: {
-      'get evaluation': require('./stories/get-evaluation')
+    controllers: {
+      'get evaluation': require('./controllers/get-evaluation'),
+      'render': require('./controllers/render')
     },
 
     run: function () {
-      this.story('get evaluation')();
+      this.controller('get evaluation')();
     }
   };
 

@@ -16,30 +16,47 @@
   'use strict';
 
   module.exports = {
+
     models: {
       panels: []
     },
     
     controllers: {
       'scroll to point of attention':
-        require('./controllers/scroll-to-point-of-attention'),
-      'show':     require('./controllers/show'),
-      'hide':     require('./controllers/hide'),
-      'reveal':   require('./controllers/reveal'),
-      'upload':   require('./controllers/upload')
+                      require('./controllers/scroll-to-point-of-attention'),
+      'show':         require('./controllers/show'),
+      'hide':         require('./controllers/hide'),
+      'reveal':       require('./controllers/reveal'),
+      'upload':       require('./controllers/upload'),
+      'render':       require('./controllers/render')
     },
-    
-    views: {
-      'panels': '.panels',
-      'creator': '.creator'
-    },
-    
-    templates: {
-      'panel': require('./templates/panel')
-    },
-    
-    stories: {
-      'get panel': require('./stories/get-panel')
+
+    run: function () {
+      var div = this;
+
+      // function to insert top level panel if not inserted
+
+      function topLevelPanel () {
+        if ( ! div.model('panels').length ) {
+          div.push('panels', {
+            type: 'Topic',
+            size: synapp['navigator batch size'],
+            skip: 0
+          });
+        }
+      }
+
+      // trigger topLevelPanel when socket connects
+
+      div.root.model('socket_conn')
+        ?   topLevelPanel()
+        :   div.root.emitter('socket').once('connect', topLevelPanel);
+
+      // on new panel added to model, render the panel
+
+      div.watch
+        .on('push panels', div.controller('render'));
+
     }
   };
 

@@ -20,35 +20,72 @@
     },
     
     controllers: {
-      'youtube':      require('./controllers/youtube'),
-      'item media':   require('./controllers/item-media'),
-      'truncate':     require('./controllers/truncate'),
-      'toggle details':     require('./controllers/toggle-details'),
-      'progress bar':     require('./controllers/progress-bar'),
-      'invite people in':     require('./controllers/invite-people-in'),
-      'get item details':     require('./controllers/get-item-details'),
-      'toggle edit and go again':     require('./controllers/toggle-edit-and-go-again')
-    },
-    
-    templates: {
-      'details votes':  require('./templates/details-votes'),
-      'details feedback': require('./templates/details-feedback'),
-      'item': require('./templates/item'),
-      'edit and go again': require('./templates/edit-and-go-again')
-    },
-    
-    stories: {
-      'create item': require('./stories/create-item'),
-      'get items': require('./stories/get-items'),
-      'listen to broadcast': require('./stories/listen-to-broadcast')
+      'youtube':                  require('./controllers/youtube'),
+      'youtube play icon':        require('./controllers/youtube-play-icon'),
+      'item media':               require('./controllers/item-media'),
+      'truncate':                 require('./controllers/truncate'),
+      'toggle details':           require('./controllers/toggle-details'),
+      'progress bar':             require('./controllers/progress-bar'),
+      'invite people in':         require('./controllers/invite-people-in'),
+      'get item details':         require('./controllers/get-item-details'),
+      'toggle edit and go again': require('./controllers/toggle-edit-and-go-again'),
+      'update panel model':       require('./controllers/update-panel-model'),
+      'update panel view':        require('./controllers/update-panel-view'),
+      'render':                   require('./controllers/render'),
+      'place item in panel':      require('./controllers/place-item-in-panel')
     },
 
     run: function () {
-      this.story('get items')();
 
-      this.story('create item')();
+      var div       =   this;
+      var Socket    =   div.root.emitter('socket');
+      var Panel     =   div.root.extension('Panel');
 
-      this.story('listen to broadcast')();
+      
+
+      // On new panel, get panel items from socket
+
+      Panel.watch.on('panel view rendered', function (panel) {
+        console.info('panel view rendered')
+        Socket.emit('get items', panel);
+      });
+
+      Socket.on('got items', function (panelView) {
+        console.info('got items')
+        var panel = panelView.panel;
+        var items = panelView.items;
+
+        div.watch.on('panel model updated', function (panel) {
+          console.log('panel model updated')
+          div.controller('update panel view')(panel, items);
+
+          if ( items.length ) {
+            var i = 0;
+
+            var nextRender = function (error, item, view) {
+              div.controller('place item in panel')(item, view,
+                function (error, item, view) {
+                  i ++;
+
+                  if ( items[i] ) {
+                    div.controller('render')(items[i], nextRender);
+                  }
+                });
+            }
+
+            div.controller('render')(items[0], nextRender);
+          }
+
+        });
+
+        div.controller('update panel model')(panel, items);
+      });
+      
+      // this.story('get items')();
+
+      // this.story('create item')();
+
+      // this.story('listen to broadcast')();
     }
   };
 

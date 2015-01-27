@@ -18,16 +18,18 @@
       intro: null
     },
 
-    views: {
-      intro: '#intro'
+    controllers: {
+      'get intro': require('./controllers/get-intro')
     },
-    
-    templates: {
-      intro: require('./templates/intro')
-    },
-    
-    stories: {
-      'get intro': require('./stories/get-intro')
+
+    run: function () {
+
+      var div = this;
+
+      div.root.model('socket_conn')
+        ?   div.controller('get intro')()
+        :   div.root.emitter('socket').once('connect', div.controller('get intro'));
+
     }
   };
 

@@ -49,13 +49,7 @@
 				"view": {
 					"Any Creator Toggle": "Get target"
 				}
-			},
-
-			"Subject Input": {
-				"actor": {
-					"Creator": "Get subject"
-				} 
-			}
+			},  
 		},
 
 		"after": [
