@@ -82,7 +82,7 @@
             
             view_creator.find('>.is-section .button-create')
               .on('click', function () {
-                console.log('lool')
+                div.controller('create')($(this));
               });
 
             renderView();

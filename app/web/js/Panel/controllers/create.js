@@ -2,17 +2,15 @@
 
   'use strict';
 
-  function create () {
-
-    console.info(this)
+  function create ($createButton) {
 
     // Overscoping $creator
 
-    var $creator      =   $(this).closest('.creator');
+    var $creator      =   $createButton.closest('.creator');
 
     // Identify Panel
 
-    var $panel        =   $(this).closest('.panel');
+    var $panel        =   $createButton.closest('.panel');
 
     // Panel ID split to easily get panel parent(1) and panel type(2)
 
