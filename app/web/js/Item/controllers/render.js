@@ -82,7 +82,7 @@
             $references.show();
 
             $references.find('a')
-              .attr('src', item.references[0].url)
+              .attr('href', item.references[0].url)
               .text(item.references[0].title || item.references[0].url);
           }
           else {

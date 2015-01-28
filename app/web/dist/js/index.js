@@ -1240,7 +1240,7 @@
             $references.show();
 
             $references.find('a')
-              .attr('src', item.references[0].url)
+              .attr('href', item.references[0].url)
               .text(item.references[0].title || item.references[0].url);
           }
           else {
@@ -2199,6 +2199,8 @@
   function render (panel) {
     var div = this;
 
+    console.warn('OH MY GOD');
+
     var Item = div.root.extension('Item');
 
     var intercept = div.domain.intercept;
@@ -2369,12 +2371,17 @@
             .on('error', div.domain.intercept())
             .controller(function (panelView) {
 
+              panelView.attr('id', id);
+
               var item = $('#item-' + panel.parent);
 
               item.find('>.collapsers >.children >.is-section')
                 .append(panelView);
 
-              div.controller('reveal')(item.find('>.collapsers >.children'), item);
+              div.controller('reveal')(item.find('>.collapsers >.children'), item,
+                function () {
+                  luigi(id).controller(_render);
+                });
 
             });
         }
