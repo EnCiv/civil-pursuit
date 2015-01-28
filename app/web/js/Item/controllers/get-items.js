@@ -13,6 +13,8 @@
       Socket.emit('get items', panel);
     });
 
+    // On items from socket
+
     Socket.on('got items', function (panelView) {
       var panel = panelView.panel;
       var items = panelView.items;
@@ -22,49 +24,52 @@
       });
 
       div.watch.on('panel model updated', function (panel) {
-        div.controller('update panel view')(panel, items);
 
         if ( items.length ) {
 
-          require('async').series(items
+          div.watch.on('panel view updated', function () {
+            console.log('panel view updated');
+            require('async').series(items
 
-            .filter(function (item, i) {
-              return i < synapp['navigator batch size'];
-            })
+              .filter(function (item, i) {
+                return i < synapp['navigator batch size'];
+              })
 
-            .map(function (item, i) {
+              .map(function (item, i) {
 
-              return function (cb) {
-                div.controller('render')(item,
-                  function (error, item, view) {
-                    div.controller('place item in panel')(item, view,
-                      cb);
-                  });
-              };
-            }),
-            
+                return function (cb) {
+                  div.controller('render')(item, cb);
+                };
+              }),
+              
 
-            div.domain.intercept(function (results) {
-              var panelId = '#panel-' + panel.type;
+              div.domain.intercept(function (results) {
+                var panelId = '#panel-' + panel.type;
 
-              if ( panel.parent ) {
-                panelId += '-' + panel.parent;
-              }
+                if ( panel.parent ) {
+                  panelId += '-' + panel.parent;
+                }
 
-              var $panel  =   $(panelId);
+                var $panel  =   $(panelId);
 
-              $panel.removeClass('is-filling')
+                $panel.removeClass('is-filling')
 
-              // Show/Hide load-more
+                // Show/Hide load-more
 
-              if ( items.length === synapp['navigator batch size'] ) {
-                $(panelId).find('.load-more').show();
-              }
-              else {
-                $(panelId).find('.load-more').hide();
-              }
-            }));
+                if ( items.length === synapp['navigator batch size'] ) {
+                  $(panelId).find('.load-more').show();
+                }
+                else {
+                  $(panelId).find('.load-more').hide();
+                }
+              }));
+          });
+          
         }
+
+        setTimeout(function () {
+          div.controller('update panel view')(panel, items);
+        });
 
       });
 

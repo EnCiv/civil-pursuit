@@ -43,7 +43,7 @@
       
       div.controller('get items')();
 
-      div.controller('create item')();
+      // div.controller('create item')();
 
       
       

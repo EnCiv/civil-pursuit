@@ -11,6 +11,10 @@
     var Promote = div.root.extension('Promote');
     var Socket = div.root.emitter('socket');
 
+    if ( ! $('#item-' + item._id).length ) {
+      return cb();
+    }
+
     luigi('item-' + item._id)
 
       .on('error', function (error) {
@@ -22,18 +26,20 @@
         cb(null, item, view);
 
         setTimeout(function () {
+          console.log('rendering item', item.subject)
+
           // DOM Elements
 
-          var $collapsers     =   view.find('>.is-section >.collapsers');
+          var $collapsers     =   view.find('>.collapsers');
           var $toggleArrow    =   $collapsers.find('>.toggle-arrow');
-          var $subject        =   view.find('>.is-section >.item-text > h4.item-title a');
-          var $description    =   view.find('>.is-section >.item-text >.description');
-          var $references     =   view.find('>.is-section >.item-text >.item-references');
-          var $itemMedia      =   view.find('>.is-section >.item-media-wrapper >.item-media');
-          var $togglePromote  =   view.find('>.is-section >.box-buttons .toggle-promote');
-          var $promoted       =   view.find('>.is-section >.box-buttons .promoted');
-          var $promotedPercent=   view.find('>.is-section >.box-buttons .promoted-percent');
-          var $toggleDetails  =   view.find('>.is-section >.box-buttons .toggle-details');
+          var $subject        =   view.find('>.item-text > h4.item-title a');
+          var $description    =   view.find('>.item-text >.description');
+          var $references     =   view.find('>.item-text >.item-references');
+          var $itemMedia      =   view.find('>.item-media-wrapper >.item-media');
+          var $togglePromote  =   view.find('>.box-buttons .toggle-promote');
+          var $promoted       =   view.find('>.box-buttons .promoted');
+          var $promotedPercent=   view.find('>.box-buttons .promoted-percent');
+          var $toggleDetails  =   view.find('>.box-buttons .toggle-details');
 
           // Static link
 
