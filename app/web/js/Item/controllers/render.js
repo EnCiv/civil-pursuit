@@ -91,8 +91,10 @@
 
           // Item media
 
-          $itemMedia.empty().append(
-            div.controller('item media')(item));
+          if ( ! item.is_new ) {
+            $itemMedia.empty().append(
+              div.controller('item media')(item));
+          }
 
           if ( view.find('.youtube-preview .fa-youtube-play').length ) {
             div.controller('youtube play icon')(view);

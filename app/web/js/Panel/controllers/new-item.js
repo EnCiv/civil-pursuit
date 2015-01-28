@@ -11,6 +11,14 @@
     Panel.controller('hide')($creator, function () {
       luigi('tpl-item')
         .controller(function ($item) {
+
+          var image = $creator.find('.item-media img');
+
+          if ( image.length ) {
+            $item.find('.item-media img')
+              .attr('src', image.attr('src'));
+          }
+
           $panel.find('.new-item:first').append($item);
 
           Panel.controller('reveal')($panel.find('.new-item:first'),
