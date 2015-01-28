@@ -157,14 +157,6 @@
                 .append($sliders);
             });
 
-          // div.render('sliders', criteria, function (view) {
-          //   view.removeClass('template-model');
-            
-          //   $sideBySide.find('.sliders.' + hand + '-item')
-          //     .append(view);
-          
-          // }.bind({ index: pos, hand: hand }));
-
         });
 
         // Promote button
