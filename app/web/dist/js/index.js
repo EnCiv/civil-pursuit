@@ -2007,8 +2007,16 @@
           var image = $creator.find('.item-media img');
 
           if ( image.length ) {
-            $item.find('.item-media img')
-              .attr('src', image.attr('src'));
+
+            if ( image.hasClass('youtube-thumbnail') ) {
+              $item.find('.item-media').empty()
+                .append(image.closest('.youtube-preview'));
+            }
+
+            else {
+              $item.find('.item-media img')
+                .attr('src', image.attr('src'));
+            }
           }
 
           $panel.find('.new-item:first').append($item);
@@ -2045,6 +2053,8 @@
 
   function render (panel) {
     var div = this;
+
+    var Item = div.root.extension('Item');
 
     var intercept = div.domain.intercept;
 
@@ -2115,12 +2125,14 @@
               board.text(ref.title);
               reference.data('title', ref.title);
 
-              var yt = div.root.extension('Item').controller('youtube')(ref.url);
+              var yt = Item.controller('youtube')(ref.url);
 
               if ( yt ) {
-                $creator.find('.creator').eq(0).find('.item-media')
+                $creator.find('.item-media')
                   .empty()
                   .append(yt);
+
+                Item.controller('youtube play icon')($creator);
               }
             }
             else {
@@ -2570,7 +2582,7 @@
     var Item        =   div.root.extension('Item');
 
     var promoteDiv  =   Div.factory({
-      
+
     });
 
     return function (view) {
@@ -2650,6 +2662,15 @@
           image = $('#item-' + eItem._id)
             .find('>.item-media-wrapper img')
             .clone();
+
+          if ( image.hasClass('youtube-thumbnail') ) {
+
+            image = $('#item-' + eItem._id).find('.youtube-preview');
+            
+            setTimeout(function () {
+              Item.controller('youtube play icon')(view);
+            }, 1000);
+          }
         }
 
         image = image || Item.controller('item media')(eItem);

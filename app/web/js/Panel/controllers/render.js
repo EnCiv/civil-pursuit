@@ -14,6 +14,8 @@
   function render (panel) {
     var div = this;
 
+    var Item = div.root.extension('Item');
+
     var intercept = div.domain.intercept;
 
     // Set panel ID
@@ -83,12 +85,14 @@
               board.text(ref.title);
               reference.data('title', ref.title);
 
-              var yt = div.root.extension('Item').controller('youtube')(ref.url);
+              var yt = Item.controller('youtube')(ref.url);
 
               if ( yt ) {
-                $creator.find('.creator').eq(0).find('.item-media')
+                $creator.find('.item-media')
                   .empty()
                   .append(yt);
+
+                Item.controller('youtube play icon')($creator);
               }
             }
             else {

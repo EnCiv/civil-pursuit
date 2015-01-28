@@ -13,7 +13,7 @@
     var Item        =   div.root.extension('Item');
 
     var promoteDiv  =   Div.factory({
-      
+
     });
 
     return function (view) {
@@ -93,6 +93,15 @@
           image = $('#item-' + eItem._id)
             .find('>.item-media-wrapper img')
             .clone();
+
+          if ( image.hasClass('youtube-thumbnail') ) {
+
+            image = $('#item-' + eItem._id).find('.youtube-preview');
+            
+            setTimeout(function () {
+              Item.controller('youtube play icon')(view);
+            }, 1000);
+          }
         }
 
         image = image || Item.controller('item media')(eItem);

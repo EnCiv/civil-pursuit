@@ -15,8 +15,16 @@
           var image = $creator.find('.item-media img');
 
           if ( image.length ) {
-            $item.find('.item-media img')
-              .attr('src', image.attr('src'));
+
+            if ( image.hasClass('youtube-thumbnail') ) {
+              $item.find('.item-media').empty()
+                .append(image.closest('.youtube-preview'));
+            }
+
+            else {
+              $item.find('.item-media img')
+                .attr('src', image.attr('src'));
+            }
           }
 
           $panel.find('.new-item:first').append($item);
