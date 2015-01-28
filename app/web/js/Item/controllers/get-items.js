@@ -17,6 +17,9 @@
     // On items from socket
 
     Socket.on('got items', function (panelView) {
+
+      console.log('got items', panelView);
+
       var panel = panelView.panel;
       var items = panelView.items;
 
@@ -26,10 +29,14 @@
 
       div.watch.on('panel model updated', function (panel) {
 
+        console.log('panel model updated', panel)
+
+        console.log('hahaha')
+
         if ( items.length ) {
 
           div.watch.on('panel view updated', function () {
-            console.log('panel view updated');
+            console.log('panel view updated', panel, items);
             require('async').series(items
 
               .filter(function (item, i) {

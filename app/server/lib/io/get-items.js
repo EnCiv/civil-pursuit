@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function getItems (socket, pronto, monson) {
+  function getItems (socket, pronto, monson, domain) {
     
     socket.on('get items', function (panel, cb) {
       
@@ -23,9 +23,9 @@
       /** Send request to monson */
 
       monson.get(url)
-        .on('error', function (error) {
-          throw error;
-        })
+
+        .on('error', domain.intercept(function () {}))
+      
         .on('success', function (items) {
           pronto.emit('message', 'socket got items from monson');
           socket.emit('got items', {

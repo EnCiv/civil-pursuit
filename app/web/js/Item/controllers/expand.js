@@ -27,7 +27,8 @@
     if ( $children.hasClass('is-loaded') ) {
       Panel.controller('reveal')($children, $item);
 
-      $toggleArrow.find('i.fa')
+      $toggleArrow
+        .find('i.fa')
         .removeClass('fa-arrow-down')
         .addClass('fa-arrow-up');
     }

@@ -20,8 +20,6 @@
 
   function reveal (elem, poa, cb) {
 
-    console.log('revealing', elem.length)
-
     var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {
@@ -42,10 +40,10 @@
 
     // Don't animate if something else is animating
 
-    if ( $item.find('.is-showing').length || $item.find('.is-hiding').length ) {
-      console.log('revealing', 'other animations in progress in item');
-      return cb(new Error('arrrgh so'));
-    }
+    // if ( $item.find('.is-showing').length || $item.find('.is-hiding').length ) {
+    //   console.log('revealing', 'other animations in progress in item');
+    //   return cb(new Error('arrrgh so'));
+    // }
 
     // // Hide Creators if any
 

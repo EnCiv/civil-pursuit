@@ -39,12 +39,22 @@
           .eq(0)
           .on('click', function () {
 
-            luigi('tpl-creator')
+            scrollToPOA($item, function () {
+              Panel.controller('hide')($details, function () {
+                luigi('tpl-creator')
 
-              .controller(function (view) {
-                $editor.empty().append(view);
-                Panel.controller('reveal')($editor, $item);
+                  .controller(function (view) {
+                    $editor
+                      .find('.is-section')
+                      .empty()
+                      .append(view.find('.item'));
+
+                    Panel.controller('reveal')($editor, $item);
+                  });
               });
+            });
+
+              
 
             // div.render('edit and go again', item, function (editView) {
             //   console.log(editView)

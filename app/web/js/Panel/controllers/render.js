@@ -28,6 +28,8 @@
       id += '-' + panel.parent;
     }
 
+    console.log('rendering panel', panel)
+
     // render function
 
     function _render(view) {
@@ -133,7 +135,7 @@
 
           // Panel skip is updated by Item which in turns updated model, so reference to panel got from push event is now obsolete, so let's fetch it again
 
-          panel = div.model('panels').reduce(function (c, p) {
+          var panel2 = div.model('panels').reduce(function (c, p) {
             var match = false;
 
             if ( p.type === panel.type ) {
@@ -151,9 +153,12 @@
             return c;
           }, null) || panel;
 
-          Socket.emit('get items', panel);
+          Socket.emit('get items', panel2);
 
-          Socket.on('got items', function (panelItems) {
+          Socket.once('got items', function (panelItems) {
+
+            console.warn('kamikaze')
+
             view.find('>.panel-body >.loading-more .fa-spin')
               .hide();
 
@@ -196,8 +201,6 @@
 
       div.watch.emit('panel view rendered', panel, view);
     }
-
-    console.log('rendering panel', panel)
 
     luigi(id)
       .on('error', function (error) {

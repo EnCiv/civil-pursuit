@@ -818,7 +818,8 @@
     if ( $children.hasClass('is-loaded') ) {
       Panel.controller('reveal')($children, $item);
 
-      $toggleArrow.find('i.fa')
+      $toggleArrow
+        .find('i.fa')
         .removeClass('fa-arrow-down')
         .addClass('fa-arrow-up');
     }
@@ -938,6 +939,9 @@
     // On items from socket
 
     Socket.on('got items', function (panelView) {
+
+      console.log('got items', panelView);
+
       var panel = panelView.panel;
       var items = panelView.items;
 
@@ -947,10 +951,14 @@
 
       div.watch.on('panel model updated', function (panel) {
 
+        console.log('panel model updated', panel)
+
+        console.log('hahaha')
+
         if ( items.length ) {
 
           div.watch.on('panel view updated', function () {
-            console.log('panel view updated');
+            console.log('panel view updated', panel, items);
             require('async').series(items
 
               .filter(function (item, i) {
@@ -1436,12 +1444,22 @@
           .eq(0)
           .on('click', function () {
 
-            luigi('tpl-creator')
+            scrollToPOA($item, function () {
+              Panel.controller('hide')($details, function () {
+                luigi('tpl-creator')
 
-              .controller(function (view) {
-                $editor.empty().append(view);
-                Panel.controller('reveal')($editor, $item);
+                  .controller(function (view) {
+                    $editor
+                      .find('.is-section')
+                      .empty()
+                      .append(view.find('.item'));
+
+                    Panel.controller('reveal')($editor, $item);
+                  });
               });
+            });
+
+              
 
             // div.render('edit and go again', item, function (editView) {
             //   console.log(editView)
@@ -2219,6 +2237,8 @@
       id += '-' + panel.parent;
     }
 
+    console.log('rendering panel', panel)
+
     // render function
 
     function _render(view) {
@@ -2324,7 +2344,7 @@
 
           // Panel skip is updated by Item which in turns updated model, so reference to panel got from push event is now obsolete, so let's fetch it again
 
-          panel = div.model('panels').reduce(function (c, p) {
+          var panel2 = div.model('panels').reduce(function (c, p) {
             var match = false;
 
             if ( p.type === panel.type ) {
@@ -2342,9 +2362,12 @@
             return c;
           }, null) || panel;
 
-          Socket.emit('get items', panel);
+          Socket.emit('get items', panel2);
 
-          Socket.on('got items', function (panelItems) {
+          Socket.once('got items', function (panelItems) {
+
+            console.warn('kamikaze')
+
             view.find('>.panel-body >.loading-more .fa-spin')
               .hide();
 
@@ -2387,8 +2410,6 @@
 
       div.watch.emit('panel view rendered', panel, view);
     }
-
-    console.log('rendering panel', panel)
 
     luigi(id)
       .on('error', function (error) {
@@ -2442,8 +2463,6 @@
 
   function reveal (elem, poa, cb) {
 
-    console.log('revealing', elem.length)
-
     var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {
@@ -2464,10 +2483,10 @@
 
     // Don't animate if something else is animating
 
-    if ( $item.find('.is-showing').length || $item.find('.is-hiding').length ) {
-      console.log('revealing', 'other animations in progress in item');
-      return cb(new Error('arrrgh so'));
-    }
+    // if ( $item.find('.is-showing').length || $item.find('.is-hiding').length ) {
+    //   console.log('revealing', 'other animations in progress in item');
+    //   return cb(new Error('arrrgh so'));
+    // }
 
     // // Hide Creators if any
 
