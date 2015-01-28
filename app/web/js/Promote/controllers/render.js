@@ -150,7 +150,9 @@
             .controller(function ($sliders) {
               $sliders.find('.criteria-name').text(criteria.name);
 
-              $sliders.find('input[type="range"]').rangeslider();
+              $sliders.find('input[type="range"]')
+                .data('criteria', criteria._id)
+                .rangeslider();
 
               $sideBySide
                 .find('.sliders.' + hand + '-item')
@@ -197,8 +199,6 @@
         var pos = $(this).data('position');
 
         var unpromoted = pos ? 0 : 1;
-
-        console.info('unpromoted', unpromoted, pos)
 
         if ( promoteDiv.model('cursor') < promoteDiv.model('limit') ) {
 
@@ -350,7 +350,7 @@
               item: promoteDiv.model(hand)._id,
               user: synapp.user,
               value: +$(this).val(),
-              criteria: $(this).data('criteria-id')
+              criteria: $(this).data('criteria')
             };
 
             votes.push(vote);
