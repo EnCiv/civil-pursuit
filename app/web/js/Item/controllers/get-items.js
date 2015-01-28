@@ -10,6 +10,7 @@
     // On new panel, get panel items from socket
 
     Panel.watch.on('panel view rendered', function (panel) {
+      console.info('panel view rendered', panel)
       Socket.emit('get items', panel);
     });
 

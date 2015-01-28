@@ -14,8 +14,6 @@
   function render (panel) {
     var div = this;
 
-    console.warn('OH MY GOD');
-
     var Item = div.root.extension('Item');
 
     var intercept = div.domain.intercept;
@@ -133,6 +131,26 @@
           view.find('>.panel-body >.loading-more')
             .show();
 
+          // Panel skip is updated by Item which in turns updated model, so reference to panel got from push event is now obsolete, so let's fetch it again
+
+          panel = div.model('panels').reduce(function (c, p) {
+            var match = false;
+
+            if ( p.type === panel.type ) {
+              match = true;
+            }
+
+            if ( panel.parent && (p.parent !== panel.parent) ) {
+              match = false;
+            }
+
+            if ( match ) {
+              c = p;
+            }
+
+            return c;
+          }, null) || panel;
+
           Socket.emit('get items', panel);
 
           Socket.on('got items', function (panelItems) {
@@ -173,6 +191,8 @@
       if ( synapp.user ) {
         $('.is-in').css('visibility', 'visible');
       }
+
+      // Emit about it
 
       div.watch.emit('panel view rendered', panel, view);
     }
