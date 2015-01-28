@@ -18,6 +18,8 @@
 
     var intercept = div.domain.intercept;
 
+    var Socket = div.root.emitter('socket');
+
     // Set panel ID
 
     var id = 'panel-' + panel.type;
@@ -123,31 +125,45 @@
             div.controller('hide')($creator);
           }
 
+          view.find('>.panel-body >.loading-more .fa-check')
+            .hide();
+
           view.find('>.panel-body >.loading-more')
             .show();
 
-          return false;
+          Socket.emit('get items', panel);
 
-          var len = ( synapp['navigator batch size'] - 1 );
+          Socket.on('got items', function (panelItems) {
+            view.find('>.panel-body >.loading-more .fa-spin')
+              .hide();
 
-          for ( var i = 0; i < len; i ++ ) {
-            setTimeout(function () {
-              luigi('tpl-item')
+            view.find('>.panel-body >.loading-more .fa-check')
+              .show();
 
-                .controller(function ($item) {
-                  
-                  view.find('.next-item:first').append($item);
-                  
-                  div.controller('reveal')(
-                    view.find('.next-item:first'),
-                    $(load_more),
-                    function () {
-                      $item.insertBefore(view.find('.next-item:first'));
-                      view.find('.next-item:first').empty().hide();
-                    });
-                });
-              }, 800 * i);
-          }
+            view.find('>.panel-body >.loading-more span')
+              .text(panelItems.items.length + ' items found');
+
+            var len = ( synapp['navigator batch size'] - 1 );
+
+            for ( var i = 0; i < len; i ++ ) {
+              setTimeout(function () {
+                luigi('tpl-item')
+
+                  .controller(function ($item) {
+                    
+                    view.find('.next-item:first').append($item);
+                    
+                    div.controller('reveal')(
+                      view.find('.next-item:first'),
+                      $(load_more),
+                      function () {
+                        $item.insertBefore(view.find('.next-item:first'));
+                        view.find('.next-item:first').empty().hide();
+                      });
+                  });
+                }, 800 * i);
+              }
+          });
 
           return false;
         });

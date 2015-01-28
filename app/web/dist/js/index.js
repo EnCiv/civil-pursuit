@@ -1070,10 +1070,10 @@
 
   function render (item, cb) {
 
-    var div = this;
-    var Panel = div.root.extension('Panel');
-    var Promote = div.root.extension('Promote');
-    var Socket = div.root.emitter('socket');
+    var div       =   this;
+    var Panel     =   div.root.extension('Panel');
+    var Promote   =   div.root.extension('Promote');
+    var Socket    =   div.root.emitter('socket');
 
     var id = 'item-' + item._id;
 
@@ -2087,6 +2087,8 @@
 
     var intercept = div.domain.intercept;
 
+    var Socket = div.root.emitter('socket');
+
     // Set panel ID
 
     var id = 'panel-' + panel.type;
@@ -2192,31 +2194,45 @@
             div.controller('hide')($creator);
           }
 
+          view.find('>.panel-body >.loading-more .fa-check')
+            .hide();
+
           view.find('>.panel-body >.loading-more')
             .show();
 
-          return false;
+          Socket.emit('get items', panel);
 
-          var len = ( synapp['navigator batch size'] - 1 );
+          Socket.on('got items', function (panelItems) {
+            view.find('>.panel-body >.loading-more .fa-spin')
+              .hide();
 
-          for ( var i = 0; i < len; i ++ ) {
-            setTimeout(function () {
-              luigi('tpl-item')
+            view.find('>.panel-body >.loading-more .fa-check')
+              .show();
 
-                .controller(function ($item) {
-                  
-                  view.find('.next-item:first').append($item);
-                  
-                  div.controller('reveal')(
-                    view.find('.next-item:first'),
-                    $(load_more),
-                    function () {
-                      $item.insertBefore(view.find('.next-item:first'));
-                      view.find('.next-item:first').empty().hide();
-                    });
-                });
-              }, 800 * i);
-          }
+            view.find('>.panel-body >.loading-more span')
+              .text(panelItems.items.length + ' items found');
+
+            var len = ( synapp['navigator batch size'] - 1 );
+
+            for ( var i = 0; i < len; i ++ ) {
+              setTimeout(function () {
+                luigi('tpl-item')
+
+                  .controller(function ($item) {
+                    
+                    view.find('.next-item:first').append($item);
+                    
+                    div.controller('reveal')(
+                      view.find('.next-item:first'),
+                      $(load_more),
+                      function () {
+                        $item.insertBefore(view.find('.next-item:first'));
+                        view.find('.next-item:first').empty().hide();
+                      });
+                  });
+                }, 800 * i);
+              }
+          });
 
           return false;
         });
@@ -2638,12 +2654,20 @@
     return function (view) {
       var $sideBySide   =   view.find('.items-side-by-side');
 
+      // Limit
+
+      promoteDiv.bind('limit', function (limit) {
+        view.find('.limit').text(limit);
+      });
+
+      promoteDiv.model('limit', evaluation.limit);
+
       // Cursor
 
       promoteDiv.bind('cursor', function (cursor) {
         view.find('.cursor').text(cursor);
 
-        if ( cursor < div.model('limit') ) {
+        if ( cursor < promoteDiv.model('limit') ) {
           view.find('.finish').text('Neither');
         }
         else {
@@ -2652,14 +2676,6 @@
       });
 
       promoteDiv.model('cursor', evaluation.cursor);
-
-      // Limit
-
-      promoteDiv.bind('limit', function (limit) {
-        view.find('.limit').text(limit);
-      });
-
-      promoteDiv.model('limit', evaluation.limit);
 
       // Item
 

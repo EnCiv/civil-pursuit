@@ -19,12 +19,20 @@
     return function (view) {
       var $sideBySide   =   view.find('.items-side-by-side');
 
+      // Limit
+
+      promoteDiv.bind('limit', function (limit) {
+        view.find('.limit').text(limit);
+      });
+
+      promoteDiv.model('limit', evaluation.limit);
+
       // Cursor
 
       promoteDiv.bind('cursor', function (cursor) {
         view.find('.cursor').text(cursor);
 
-        if ( cursor < div.model('limit') ) {
+        if ( cursor < promoteDiv.model('limit') ) {
           view.find('.finish').text('Neither');
         }
         else {
@@ -33,14 +41,6 @@
       });
 
       promoteDiv.model('cursor', evaluation.cursor);
-
-      // Limit
-
-      promoteDiv.bind('limit', function (limit) {
-        view.find('.limit').text(limit);
-      });
-
-      promoteDiv.model('limit', evaluation.limit);
 
       // Item
 

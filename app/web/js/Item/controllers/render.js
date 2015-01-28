@@ -6,10 +6,10 @@
 
   function render (item, cb) {
 
-    var div = this;
-    var Panel = div.root.extension('Panel');
-    var Promote = div.root.extension('Promote');
-    var Socket = div.root.emitter('socket');
+    var div       =   this;
+    var Panel     =   div.root.extension('Panel');
+    var Promote   =   div.root.extension('Promote');
+    var Socket    =   div.root.emitter('socket');
 
     var id = 'item-' + item._id;
 
