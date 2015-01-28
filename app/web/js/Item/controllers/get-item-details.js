@@ -21,17 +21,14 @@
           .controller(function ($votes) {
             $details.find('.votes-by-criteria').append($votes);
           });
-        // app.render('details votes', [details, index],
-        //   function (detailsView) {
-        //     detailsView.removeClass('template-model');
-        //     $details.find('.details-votes').append(detailsView);
-        //   });
       });
 
       if ( details.feedbacks.length ) {
         details.feedbacks.forEach(function (feedback) {
           luigi('tpl-details-feedback')
             .controller(function ($feedback) {
+              $feedback.find('.feedback .pre-text').text(feedback.feedback);
+              
               $details.find('.feedback-list').append($feedback);
             });
           // app.render('details feedback', feedback,

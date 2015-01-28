@@ -34,6 +34,7 @@
       'update panel model':       require('./controllers/update-panel-model'),
       'update panel view':        require('./controllers/update-panel-view'),
       'render':                   require('./controllers/render'),
+      'expand':                   require('./controllers/expand'),
       'place item in panel':      require('./controllers/place-item-in-panel'),
       'details votes':            require('./controllers/details-votes')
     },

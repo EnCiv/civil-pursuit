@@ -24,8 +24,6 @@
 
     items.forEach(function (item) {
 
-      console.log('setting id', item.subject);
-
       $panel.find('.is-canvas:first')
         .attr('id', 'item-' + item._id)
         .removeClass('is-canvas');

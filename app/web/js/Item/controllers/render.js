@@ -47,7 +47,7 @@
           // DOM Elements
 
           var $collapsers     =   view.find('>.collapsers');
-          var $toggleArrow    =   $collapsers.find('>.toggle-arrow');
+          var $toggleArrow    =   view.find('>.toggle-arrow');
           var $subject        =   view.find('>.item-text > h4.item-title a');
           var $description    =   view.find('>.item-text >.description');
           var $references     =   view.find('>.item-text >.item-references');
@@ -202,72 +202,7 @@
             // else, show
 
             else {
-
-              // Hide panel's creator
-
-              if ( $panel.find('>.panel-body >.creator.is-shown').length ) {
-                Panel.controller('hide')($panel.find('>.panel-body >.creator.is-shown'));
-              }
-
-              // Is loaded so just show  
-              
-              if ( $children.hasClass('is-loaded') ) {
-                Panel.controller('reveal')($children, $item);
-
-                $(this).find('i.fa')
-                  .removeClass('fa-arrow-down')
-                  .addClass('fa-arrow-up');
-              }
-
-              // else load and show
-              
-              else {
-                $children.addClass('is-loaded')
-
-                setTimeout(function () {
-                  $(this).find('i.fa')
-                    .removeClass('fa-arrow-down')
-                    .addClass('fa-arrow-up');
-                  }.bind(this), 1000);
-
-                var children = synapp['item relation'][item.type];
-
-                if ( typeof children === 'string' ) {
-                  Panel.push('panels', {
-                    type: children,
-                    parent: item._id,
-                    size: synapp['navigator batch size'],
-                    skip: 0
-                  });
-                }
-
-                else if ( Array.isArray(children) ) {
-                  children.forEach(function (child) {
-
-                    if ( typeof child === 'string' ) {
-                      Panel.push('panels', {
-                        type: child,
-                        parent: item._id,
-                        size: synapp['navigator batch size'],
-                        skip: 0
-                      });
-                    }
-
-                    else if ( Array.isArray(child) ) {
-                      child.forEach(function (c) {
-                        Panel.push('panels', {
-                          type: c,
-                          parent: item._id,
-                          size: synapp['navigator batch size'],
-                          skip: 0,
-                          split: true
-                        });
-                      });
-                    }
-
-                  });
-                }
-              }
+              div.controller('expand')(item, $panel, $item, $children, $(this));
             }
 
           });

@@ -96,7 +96,8 @@
 
           if ( image.hasClass('youtube-thumbnail') ) {
 
-            image = $('#item-' + eItem._id).find('.youtube-preview');
+            image = $('#item-' + eItem._id).find('.youtube-preview')
+              .clone();
             
             setTimeout(function () {
               Item.controller('youtube play icon')(view);

@@ -26,8 +26,9 @@
       id += '-' + panel.parent;
     }
 
-    luigi(id).controller(function (view) {
+    // render function
 
+    function _render(view) {
       // Add type as class
 
       view.addClass('type-' + panel.type);
@@ -156,8 +157,28 @@
       }
 
       div.watch.emit('panel view rendered', panel, view);
+    }
 
-    });
+    console.log('rendering panel', panel)
+
+    luigi(id)
+      .on('error', function (error) {
+        if ( error.code === 'NO_SUCH_TEMPLATE' ) {
+          luigi('tpl-panel')
+            .on('error', div.domain.intercept())
+            .controller(function (panelView) {
+
+              var item = $('#item-' + panel.parent);
+
+              item.find('>.collapsers >.children >.is-section')
+                .append(panelView);
+
+              div.controller('reveal')(item.find('>.collapsers >.children'), item);
+
+            });
+        }
+      })
+      .controller(_render);
   }
 
   module.exports = render;

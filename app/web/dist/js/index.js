@@ -335,7 +335,7 @@
 
 } ();
 
-},{"domain":40,"events":41,"util":45}],2:[function(require,module,exports){
+},{"domain":41,"events":42,"util":46}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -371,7 +371,7 @@
     // Make sure we have jQuery
 
     if ( typeof $ !== 'function' ) {
-      return luigi.emit('error', new Error('Sorry! I need jQuery to function!'));
+      return luigi.emit('error', Luigi.Error.Missing_Dependency('jQuery'));
     }
 
     // Get script template by id
@@ -389,7 +389,8 @@
     // Complain if no script template found by that id 
 
     if ( ! template.length ) {
-      return luigi.emit('error', new Error('No such template: ' + luigi.id));
+      return luigi.emit('error',
+        Luigi.Error.No_Such_Template(template, luigi.id));
     }
 
     // If not a script, just pass the view then
@@ -438,6 +439,25 @@
     return this;
   };
 
+  Luigi.Error = {};
+
+  Luigi.Error.Missing_Dependency = function (dep) {
+    var error = new Error('Luigi Dependency Error! Missing: ' + dep);
+    error.code = 'MISSING_DEPENDENCY';
+    error.dep = dep;
+    return error;
+  };
+
+  Luigi.Error.No_Such_Template = function (template, id) {
+
+    var tpl = typeof id === 'string' ? id : id.selector;
+
+    var error = new Error('Luigi Error! No such template: ' + tpl);
+    error.code = 'NO_SUCH_TEMPLATE';
+    error.tpl = tpl;
+    return error;
+  };
+
   function luigi (id) {
     return new Luigi(id);
   }
@@ -456,7 +476,7 @@
 
 } (this);
 
-},{"events":41,"util":45}],3:[function(require,module,exports){
+},{"events":42,"util":46}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
@@ -671,6 +691,84 @@
 
 },{}],7:[function(require,module,exports){
 ! function () {
+  
+  'use strict';
+
+  function expand (item, $panel, $item, $children, $toggleArrow) {
+
+    var div = this;
+    var Panel = div.root.extension('Panel');
+
+    function panel () {
+      return {
+        type: children,
+        parent: item._id,
+        size: synapp['navigator batch size'],
+        skip: 0
+      };
+    };
+
+    // Hide panel's creator
+
+    if ( $panel.find('>.panel-body >.creator.is-shown').length ) {
+      Panel.controller('hide')($panel.find('>.panel-body >.creator.is-shown'));
+    }
+
+    // Is loaded so just show  
+    
+    if ( $children.hasClass('is-loaded') ) {
+      Panel.controller('reveal')($children, $item);
+
+      $toggleArrow.find('i.fa')
+        .removeClass('fa-arrow-down')
+        .addClass('fa-arrow-up');
+    }
+
+    // else load and show
+    
+    else {
+      $children.addClass('is-loaded');
+
+      setTimeout(function () {
+        $toggleArrow.find('i.fa')
+          .removeClass('fa-arrow-down')
+          .addClass('fa-arrow-up');
+        }.bind(this), 1000);
+
+      var children = synapp['item relation'][item.type];
+
+      if ( typeof children === 'string' ) {
+        Panel.push('panels', panel());
+      }
+
+      else if ( Array.isArray(children) ) {
+        children.forEach(function (child) {
+
+          if ( typeof child === 'string' ) {
+            Panel.push('panels', panel());
+          }
+
+          else if ( Array.isArray(child) ) {
+            child.forEach(function (c) {
+
+              var p = panel();
+              p.split = true;
+
+              Panel.push('panels', p);
+            });
+          }
+
+        });
+      }
+    }
+  }
+
+  module.exports =  expand;
+
+}();
+
+},{}],8:[function(require,module,exports){
+! function () {
 
   'use strict';
 
@@ -693,17 +791,14 @@
           .controller(function ($votes) {
             $details.find('.votes-by-criteria').append($votes);
           });
-        // app.render('details votes', [details, index],
-        //   function (detailsView) {
-        //     detailsView.removeClass('template-model');
-        //     $details.find('.details-votes').append(detailsView);
-        //   });
       });
 
       if ( details.feedbacks.length ) {
         details.feedbacks.forEach(function (feedback) {
           luigi('tpl-details-feedback')
             .controller(function ($feedback) {
+              $feedback.find('.feedback .pre-text').text(feedback.feedback);
+              
               $details.find('.feedback-list').append($feedback);
             });
           // app.render('details feedback', feedback,
@@ -724,7 +819,7 @@
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -808,7 +903,7 @@
 
 } ();
 
-},{"async":39}],9:[function(require,module,exports){
+},{"async":40}],10:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -832,7 +927,7 @@
 
 } ();
 
-},{"string":46}],10:[function(require,module,exports){
+},{"string":47}],11:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -888,7 +983,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],11:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],12:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -949,7 +1044,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],12:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],13:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -966,7 +1061,7 @@
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1016,7 +1111,7 @@
           // DOM Elements
 
           var $collapsers     =   view.find('>.collapsers');
-          var $toggleArrow    =   $collapsers.find('>.toggle-arrow');
+          var $toggleArrow    =   view.find('>.toggle-arrow');
           var $subject        =   view.find('>.item-text > h4.item-title a');
           var $description    =   view.find('>.item-text >.description');
           var $references     =   view.find('>.item-text >.item-references');
@@ -1171,72 +1266,7 @@
             // else, show
 
             else {
-
-              // Hide panel's creator
-
-              if ( $panel.find('>.panel-body >.creator.is-shown').length ) {
-                Panel.controller('hide')($panel.find('>.panel-body >.creator.is-shown'));
-              }
-
-              // Is loaded so just show  
-              
-              if ( $children.hasClass('is-loaded') ) {
-                Panel.controller('reveal')($children, $item);
-
-                $(this).find('i.fa')
-                  .removeClass('fa-arrow-down')
-                  .addClass('fa-arrow-up');
-              }
-
-              // else load and show
-              
-              else {
-                $children.addClass('is-loaded')
-
-                setTimeout(function () {
-                  $(this).find('i.fa')
-                    .removeClass('fa-arrow-down')
-                    .addClass('fa-arrow-up');
-                  }.bind(this), 1000);
-
-                var children = synapp['item relation'][item.type];
-
-                if ( typeof children === 'string' ) {
-                  Panel.push('panels', {
-                    type: children,
-                    parent: item._id,
-                    size: synapp['navigator batch size'],
-                    skip: 0
-                  });
-                }
-
-                else if ( Array.isArray(children) ) {
-                  children.forEach(function (child) {
-
-                    if ( typeof child === 'string' ) {
-                      Panel.push('panels', {
-                        type: child,
-                        parent: item._id,
-                        size: synapp['navigator batch size'],
-                        skip: 0
-                      });
-                    }
-
-                    else if ( Array.isArray(child) ) {
-                      child.forEach(function (c) {
-                        Panel.push('panels', {
-                          type: c,
-                          parent: item._id,
-                          size: synapp['navigator batch size'],
-                          skip: 0,
-                          split: true
-                        });
-                      });
-                    }
-
-                  });
-                }
-              }
+              div.controller('expand')(item, $panel, $item, $children, $(this));
             }
 
           });
@@ -1264,7 +1294,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":46}],14:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":47}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1328,7 +1358,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1352,7 +1382,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1574,7 +1604,7 @@
 
 }();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1615,7 +1645,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1642,8 +1672,6 @@
 
     items.forEach(function (item) {
 
-      console.log('setting id', item.subject);
-
       $panel.find('.is-canvas:first')
         .attr('id', 'item-' + item._id)
         .removeClass('is-canvas');
@@ -1656,7 +1684,7 @@
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1718,7 +1746,7 @@
 
 }();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1753,7 +1781,7 @@
 
 }();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -1790,6 +1818,7 @@
       'update panel model':       require('./controllers/update-panel-model'),
       'update panel view':        require('./controllers/update-panel-view'),
       'render':                   require('./controllers/render'),
+      'expand':                   require('./controllers/expand'),
       'place item in panel':      require('./controllers/place-item-in-panel'),
       'details votes':            require('./controllers/details-votes')
     },
@@ -1814,7 +1843,7 @@
 
 } ();
 
-},{"./controllers/create-item":5,"./controllers/details-votes":6,"./controllers/get-item-details":7,"./controllers/get-items":8,"./controllers/invite-people-in":9,"./controllers/item-media":10,"./controllers/place-item-in-panel":11,"./controllers/progress-bar":12,"./controllers/render":13,"./controllers/toggle-details":14,"./controllers/toggle-edit-and-go-again":15,"./controllers/truncate":16,"./controllers/update-panel-model":17,"./controllers/update-panel-view":18,"./controllers/youtube":20,"./controllers/youtube-play-icon":19}],22:[function(require,module,exports){
+},{"./controllers/create-item":5,"./controllers/details-votes":6,"./controllers/expand":7,"./controllers/get-item-details":8,"./controllers/get-items":9,"./controllers/invite-people-in":10,"./controllers/item-media":11,"./controllers/place-item-in-panel":12,"./controllers/progress-bar":13,"./controllers/render":14,"./controllers/toggle-details":15,"./controllers/toggle-edit-and-go-again":16,"./controllers/truncate":17,"./controllers/update-panel-model":18,"./controllers/update-panel-view":19,"./controllers/youtube":21,"./controllers/youtube-play-icon":20}],23:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1936,7 +1965,7 @@
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1949,7 +1978,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1989,7 +2018,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2037,7 +2066,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /**
   *  Render and insert a panel
   */
@@ -2066,8 +2095,9 @@
       id += '-' + panel.parent;
     }
 
-    luigi(id).controller(function (view) {
+    // render function
 
+    function _render(view) {
       // Add type as class
 
       view.addClass('type-' + panel.type);
@@ -2196,15 +2226,35 @@
       }
 
       div.watch.emit('panel view rendered', panel, view);
+    }
 
-    });
+    console.log('rendering panel', panel)
+
+    luigi(id)
+      .on('error', function (error) {
+        if ( error.code === 'NO_SUCH_TEMPLATE' ) {
+          luigi('tpl-panel')
+            .on('error', div.domain.intercept())
+            .controller(function (panelView) {
+
+              var item = $('#item-' + panel.parent);
+
+              item.find('>.collapsers >.children >.is-section')
+                .append(panelView);
+
+              div.controller('reveal')(item.find('>.collapsers >.children'), item);
+
+            });
+        }
+      })
+      .controller(_render);
   }
 
   module.exports = render;
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2284,7 +2334,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2315,7 +2365,7 @@
 
 }();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2363,7 +2413,7 @@
 
 }();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2384,7 +2434,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2448,7 +2498,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2519,7 +2569,7 @@
 
 } ();
 
-},{"./controllers/create":22,"./controllers/find-creator":23,"./controllers/hide":24,"./controllers/new-item":25,"./controllers/render":26,"./controllers/reveal":27,"./controllers/scroll-to-point-of-attention":28,"./controllers/show":29,"./controllers/toggle-creator":30,"./controllers/upload":31}],33:[function(require,module,exports){
+},{"./controllers/create":23,"./controllers/find-creator":24,"./controllers/hide":25,"./controllers/new-item":26,"./controllers/render":27,"./controllers/reveal":28,"./controllers/scroll-to-point-of-attention":29,"./controllers/show":30,"./controllers/toggle-creator":31,"./controllers/upload":32}],34:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2566,7 +2616,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],34:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],35:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2665,7 +2715,8 @@
 
           if ( image.hasClass('youtube-thumbnail') ) {
 
-            image = $('#item-' + eItem._id).find('.youtube-preview');
+            image = $('#item-' + eItem._id).find('.youtube-preview')
+              .clone();
             
             setTimeout(function () {
               Item.controller('youtube play icon')(view);
@@ -2970,7 +3021,7 @@
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -3004,7 +3055,7 @@
 
 } ();
 
-},{"./controllers/get-evaluation":33,"./controllers/render":34}],36:[function(require,module,exports){
+},{"./controllers/get-evaluation":34,"./controllers/render":35}],37:[function(require,module,exports){
 /**
                                         
                                             
@@ -3054,7 +3105,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /***
 
 
@@ -3111,7 +3162,7 @@ Nina Butorac
 
 }();
 56
-},{"./synapp/index":38,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],38:[function(require,module,exports){
+},{"./synapp/index":39,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],39:[function(require,module,exports){
  /**
                  
 
@@ -3236,7 +3287,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":21,"../Panel/":32,"../Promote/":35,"../User/":36}],39:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":22,"../Panel/":33,"../Promote/":36,"../User/":37}],40:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4363,7 +4414,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":43}],40:[function(require,module,exports){
+},{"_process":44}],41:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4401,7 +4452,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":41}],41:[function(require,module,exports){
+},{"events":42}],42:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4704,7 +4755,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4729,7 +4780,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4817,14 +4868,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5414,7 +5465,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":44,"_process":43,"inherits":42}],46:[function(require,module,exports){
+},{"./support/isBuffer":45,"_process":44,"inherits":43}],47:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6448,4 +6499,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[37]);
+},{}]},{},[38]);
