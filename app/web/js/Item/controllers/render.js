@@ -126,7 +126,7 @@
 
               var $panel    =   $(this).closest('.panel');
               var $item     =   $(this).closest('.item');
-              var $promote  =   $item.find('>.is-section >.collapsers >.evaluator');
+              var $promote  =   $item.find('>.collapsers >.evaluator');
 
               if ( $promote.hasClass('is-showing') || $promote.hasClass('is-hiding') ) {
                 return false;
@@ -277,6 +277,15 @@
           if ( synapp.user ) {
             view.find('.is-in').css('visibility', 'visible');
           }
+
+          // is new
+
+          if ( item.is_new ) {
+            setTimeout(function () {
+              $togglePromote.click();
+            });
+          }
+
         }, 2000);
 
       });

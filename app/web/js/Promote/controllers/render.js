@@ -12,12 +12,16 @@
 
     var Item        =   div.root.extension('Item');
 
+    var promoteDiv  =   Div.factory({
+      
+    });
+
     return function (view) {
       var $sideBySide   =   view.find('.items-side-by-side');
 
       // Cursor
 
-      div.bind('cursor', function (cursor) {
+      promoteDiv.bind('cursor', function (cursor) {
         view.find('.cursor').text(cursor);
 
         if ( cursor < div.model('limit') ) {
@@ -28,15 +32,15 @@
         }
       });
 
-      div.model('cursor', evaluation.cursor);
+      promoteDiv.model('cursor', evaluation.cursor);
 
       // Limit
 
-      div.bind('limit', function (limit) {
+      promoteDiv.bind('limit', function (limit) {
         view.find('.limit').text(limit);
       });
 
-      div.model('limit', evaluation.limit);
+      promoteDiv.model('limit', evaluation.limit);
 
       // Item
 
@@ -87,7 +91,7 @@
 
         if ( eItem._id === evaluation.item ) {
           image = $('#item-' + eItem._id)
-            .find('>.is-section >.item-media-wrapper img')
+            .find('>.item-media-wrapper img')
             .clone();
         }
 
@@ -145,7 +149,7 @@
 
       // Left
 
-      div.bind('left', function (left, old, event) {
+      promoteDiv.bind('left', function (left, old, event) {
         evaluationItem(left, 0);
         
         if ( left ) {
@@ -153,11 +157,11 @@
         }
       });
 
-      div.model('left', evaluation.items[0]);
+      promoteDiv.model('left', evaluation.items[0]);
 
       // Right
 
-      div.bind('right', function (right) {
+      promoteDiv.bind('right', function (right) {
         evaluationItem(right, 1);
         
         if ( right ) {
@@ -165,7 +169,7 @@
         }
       });
 
-      div.model('right', evaluation.items[1]);
+      promoteDiv.model('right', evaluation.items[1]);
 
       // Promote
 
@@ -178,13 +182,13 @@
 
         console.info('unpromoted', unpromoted, pos)
 
-        if ( div.model('cursor') < div.model('limit') ) {
+        if ( promoteDiv.model('cursor') < promoteDiv.model('limit') ) {
 
-          div.inc('cursor');
+          promoteDiv.inc('cursor');
 
           if ( unpromoted ) {
 
-            Socket.emit('promote', div.model('left'));
+            Socket.emit('promote', promoteDiv.model('left'));
 
             saveItem('right');
 
@@ -196,7 +200,7 @@
               rights[1] ++;
 
               if( rights[0] === rights[1] ) {
-                div.model('right', evaluation.items[div.model('cursor')]);
+                promoteDiv.model('right', evaluation.items[promoteDiv.model('cursor')]);
 
                 view.find('.right-item').animate({
                   opacity: 1
@@ -206,7 +210,7 @@
           }
 
           else {
-            Socket.emit('promote', div.model('right'));
+            Socket.emit('promote', promoteDiv.model('right'));
 
             saveItem('left');
 
@@ -219,7 +223,7 @@
               lefts[1] ++;
 
               if( lefts[0] === lefts[1] ) {
-                div.model('left', evaluation.items[div.model('cursor')]);
+                promoteDiv.model('left', evaluation.items[promoteDiv.model('cursor')]);
 
                 view.find('.left-item').animate({
                   opacity: 1
@@ -241,14 +245,14 @@
 
         Panel.controller('scroll to point of attention')(view);
 
-        if ( div.model('cursor') === div.model('limit') ) {
+        if ( promoteDiv.model('cursor') === promoteDiv.model('limit') ) {
           finish();
         }
         
         else {
           // Left
 
-          div.inc('cursor');
+          promoteDiv.inc('cursor');
 
           saveItem('left');
 
@@ -260,7 +264,7 @@
               lefts[1] ++;
 
               if( lefts[0] === lefts[1] ) {
-                div.model('left', evaluation.items[div.model('cursor')]);
+                promoteDiv.model('left', evaluation.items[promoteDiv.model('cursor')]);
 
                 view.find('.left-item').animate({
                   opacity: 1
@@ -270,7 +274,7 @@
 
           // Right
 
-          div.inc('cursor');
+          promoteDiv.inc('cursor');
 
           saveItem('right');
 
@@ -282,7 +286,7 @@
               rights[1] ++;
 
               if( rights[0] === rights[1] ) {
-                div.model('right', evaluation.items[div.model('cursor')]);
+                promoteDiv.model('right', evaluation.items[promoteDiv.model('cursor')]);
 
                 view.find('.right-item').animate({
                   opacity: 1
@@ -293,8 +297,8 @@
 
           // Adjust cursor
 
-          if ( div.model('limit') - div.model('cursor') === 1 ) {
-            div.model('cursor', div.model('limit'));
+          if ( promoteDiv.model('limit') - promoteDiv.model('cursor') === 1 ) {
+            promoteDiv.model('cursor', promoteDiv.model('limit'));
           }
         }
       });
@@ -309,7 +313,7 @@
 
         if ( feedback.val() ) {
           Socket.emit('insert feedback', {
-            item: div.model(hand)._id,
+            item: promoteDiv.model(hand)._id,
             user: synapp.user,
             feedback: feedback.val()
           });
@@ -325,7 +329,7 @@
           .find('.' +  hand + '-item input[type="range"]:visible')
           .each(function () {
             var vote = {
-              item: div.model(hand)._id,
+              item: promoteDiv.model(hand)._id,
               user: synapp.user,
               value: +$(this).val(),
               criteria: $(this).data('criteria-id')
@@ -344,23 +348,23 @@
         view.find('.promote').off('click');
         view.find('.finish').off('click');
 
-        if ( div.model('left') ) {
+        if ( promoteDiv.model('left') ) {
           saveItem('left');
         }
 
-        if ( div.model('right') ) {
+        if ( promoteDiv.model('right') ) {
           saveItem('right');
         }
 
         view.find('.promote,.finish').off('click');
 
-        var evaluations = div.model('evaluations');
+        var evaluations = promoteDiv.model('evaluations');
 
         evaluations = evaluations.filter(function ($evaluation) {
           return $evaluation.item !== evaluation.item;
         });
 
-        div.model('evaluations', evaluations);
+        promoteDiv.model('evaluations', evaluations);
 
         Panel.controller('hide')(view,
           function () {

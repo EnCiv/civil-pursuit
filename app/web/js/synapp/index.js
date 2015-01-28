@@ -107,7 +107,7 @@
         }, 500);
 
         setTimeout(function () {
-          // Promote.run();
+          Promote.run();
           Item.run();
           Panel.run();
         }, 1500);

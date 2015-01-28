@@ -44,7 +44,7 @@ Nina Butorac
 
   'use strict';
 
-  var Div = require('/home/francois/Dev/div.js/div');
+  window.Div = require('/home/francois/Dev/div.js/div');
 
   window.luigi = require('/home/francois/Dev/luigi/luigi');
 

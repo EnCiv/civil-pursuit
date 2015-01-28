@@ -28,22 +28,12 @@
     });
 
     div.watch.on('push evaluations', function (evaluation) {
-      luigi('tpl-promote')
 
-        .controller(function (view) {
+      var $promote = $('#item-' + evaluation.item + ' >.collapsers >.evaluator');
 
-          var item = $('#item-' + evaluation.item);
+      console.info('render evaluation', evaluation.item);
 
-          if ( ! item.length ) {
-            console.log('item not found');
-          }
-
-          var $evaluator = item.find('>.is-section >.collapsers >.evaluator >.is-section');
-
-          $evaluator
-            .append(view);
-
-        })
+      luigi($promote)
 
         .controller(div.controller('render')(evaluation));
     });
