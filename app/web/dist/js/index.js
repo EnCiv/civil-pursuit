@@ -2707,7 +2707,19 @@
 
         evaluation.criterias.forEach(function (criteria) {
 
-          /// Render sliders template
+          // Render sliders template
+
+          luigi('tpl-promote-sliders')
+
+            .controller(function ($sliders) {
+              $sliders.find('.criteria-name').text(criteria.name);
+
+              $sliders.find('input[type="range"]').rangeslider();
+
+              $sideBySide
+                .find('.sliders.' + hand + '-item')
+                .append($sliders);
+            });
 
           // div.render('sliders', criteria, function (view) {
           //   view.removeClass('template-model');
