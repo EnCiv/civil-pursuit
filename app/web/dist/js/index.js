@@ -3109,13 +3109,13 @@
 
         view.find('.promote,.finish').off('click');
 
-        var evaluations = promoteDiv.model('evaluations');
+        var evaluations = div.model('evaluations');
 
         evaluations = evaluations.filter(function ($evaluation) {
           return $evaluation.item !== evaluation.item;
         });
 
-        promoteDiv.model('evaluations', evaluations);
+        div.model('evaluations', evaluations);
 
         Panel.controller('hide')(view,
           function () {
