@@ -27,7 +27,13 @@
         if ( items.length ) {
 
           require('async').series(items
-            .map(function (item) {
+
+            .filter(function (item, i) {
+              return i < synapp['navigator batch size'];
+            })
+
+            .map(function (item, i) {
+
               return function (cb) {
                 div.controller('render')(item,
                   function (error, item, view) {
@@ -36,6 +42,8 @@
                   });
               };
             }),
+            
+
             div.domain.intercept(function (results) {
               var panelId = '#panel-' + panel.type;
 

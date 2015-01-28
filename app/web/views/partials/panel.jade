@@ -1,26 +1,38 @@
-include ../mixins/bootstrap
-
 // Panel
 
-+bootstrap-panel
+.panel.panel-default(id=panel_id)
 
-  //- PANEL HEADING
+  .panel-heading
+    block toggle-creator
+      i.pull-right.fa.fa-plus.cursor-pointer.toggle-creator.is-in
 
-  +bootstrap-panel-heading
+    h4.panel-title
+      span.iddle
+        i.fa.fa-circle-o-notch.fa-spin
 
-    //- TOGGLE CREATOR
+  .panel-body
+    block panel-body
 
-    i.pull-right.fa.fa-plus.cursor-pointer.toggle-creator.is-in
+      include creator
+      
+      // Items
+      
+      .items
+        // New item
 
-    //- TYPE
+        .new-item.is-container
+          .is-section
 
-    h4.panel-title Loading Panel Title...
+        - len = synapp.public['navigator batch size'] - 1
 
-  //- PANEL BODY
+        - for ( var i = 0; i < len; i ++ )
+          include item-box
+            include item-box-collapsers
 
-  +bootstrap-panel-body
+        // Next item
 
-    .items
+        .next-item.is-container
+          .is-section
 
-    .load-more
-      a(href='') View more
+      .load-more
+        a(href='') View more

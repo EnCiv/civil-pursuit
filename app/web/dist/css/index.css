@@ -4311,28 +4311,6 @@ textarea.danger {
   color: red !important;
   border: 1px solid #ff0000 !important;
 }
-.subject-placeholder {
-  background: #ccc;
-  padding: 8px;
-  color: #999;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.description-placeholder {
-  background: #eee;
-  padding: 8px;
-  color: #aaa;
-  border-radius: 4px;
-  overflow: hidden;
-  height: 100px;
-}
-.reference-placeholder {
-  background: #eee;
-  padding: 8px;
-  border-radius: 4px;
-  overflow: hidden;
-  color: #aaaaaa;
-}
 .alert {
   display: none;
 }
@@ -4463,6 +4441,24 @@ footer {
 #intro .toggle-arrow {
   display: none;
 }
+#nav {
+  position: fixed;
+  top: 60px;
+  right: 15px;
+  left: 15px;
+  background: #39683c;
+  background-color: rgba(0, 0, 0, 0.6);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.6)), to(#000000));
+  background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
+  background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
+  background: -ms-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
+  background: -o-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
+  color: #fff;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #444;
+  display: none;
+}
 /** Importing panel */
 /**
  *    __________________________________________________________________________
@@ -4570,6 +4566,28 @@ footer {
 .box .item-text {
   padding-left: 10px;
   border: 1px solid #fff;
+}
+.box .item-text .subject-placeholder {
+  background: #ccc;
+  padding: 8px;
+  color: #999;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.box .item-text .description-placeholder {
+  background: #eee;
+  padding: 8px;
+  color: #aaa;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 100px;
+}
+.box .item-text .reference-placeholder {
+  background: #eee;
+  padding: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  color: #aaaaaa;
 }
 @media (min-width: 901px) {
   .box .item-text {
@@ -4771,7 +4789,7 @@ footer {
   width: 70px !important;
 }
 .item .collapsers .children .split-view .toggle-arrow {
-  display: none;
+  padding: 0;
 }
 .item .collapsers .children .split-view .item-title {
   width: 50%;
@@ -4833,12 +4851,7 @@ footer {
 .panel .row-split .col + .col .panel {
   margin-right: -10px;
 }
-.panel .toggle-arrow {
-  margin-top: -40px;
-  margin-bottom: 20px;
-}
 .panel .load-more {
-  display: none;
   text-align: center;
 }
 .modal {

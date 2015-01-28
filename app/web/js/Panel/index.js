@@ -18,7 +18,8 @@
   module.exports = {
 
     models: {
-      panels: []
+      panels: [],
+      $creator: '.creator:first'
     },
     
     controllers: {
@@ -31,7 +32,9 @@
       'upload':           require('./controllers/upload'),
       'render':           require('./controllers/render'),
       'toggle creator':   require('./controllers/toggle-creator'),
-      'create':           require('./controllers/create')
+      'create':           require('./controllers/create'),
+      'find creator':     require('./controllers/find-creator'),
+      'new item':         require('./controllers/new-item')
     },
 
     run: function () {

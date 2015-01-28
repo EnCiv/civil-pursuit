@@ -41,6 +41,10 @@
 
     this.domain.intercept = function (fn, self) {
 
+      if ( typeof fn !== 'function' ) {
+        fn = function () {};
+      }
+
       return function (error) {
         if ( error && error instanceof error ) {
           div.domain.emit('error', error);
@@ -331,7 +335,7 @@
 
 } ();
 
-},{"domain":37,"events":38,"util":42}],2:[function(require,module,exports){
+},{"domain":39,"events":40,"util":44}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -345,7 +349,7 @@
    *
    *  @function
    *  @return null
-   *  @arg {String} id
+   *  @arg {String|Object} id
    */
 
   function Luigi (id) {
@@ -372,7 +376,15 @@
 
     // Get script template by id
 
-    var template = $('#' + luigi.id);
+    var template;
+
+    if ( typeof luigi.id === 'string' ) {
+      template = $('#' + luigi.id);
+    }
+
+    else {
+      template = luigi.id;
+    }
 
     // Complain if no script template found by that id 
 
@@ -444,12 +456,10 @@
 
 } (this);
 
-},{"events":38,"util":42}],3:[function(require,module,exports){
+},{"events":40,"util":44}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
-
-  var luigi = require('/home/francois/Dev/luigi/luigi');
 
 	function getIntro () {
     var div = this;
@@ -493,8 +503,6 @@
             view.find('.box-buttons').hide();
 
             view.find('.toggle-arrow').hide();
-
-            Panel.controller('reveal')(view.find('.item.box'));
           });
 
       });
@@ -505,7 +513,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],4:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /**
                                                         
             dP            dP                     
@@ -649,7 +657,13 @@
         if ( items.length ) {
 
           require('async').series(items
-            .map(function (item) {
+
+            .filter(function (item, i) {
+              return i < synapp['navigator batch size'];
+            })
+
+            .map(function (item, i) {
+
               return function (cb) {
                 div.controller('render')(item,
                   function (error, item, view) {
@@ -658,6 +672,8 @@
                   });
               };
             }),
+            
+
             div.domain.intercept(function (results) {
               var panelId = '#panel-' + panel.type;
 
@@ -690,7 +706,7 @@
 
 } ();
 
-},{"async":36}],8:[function(require,module,exports){
+},{"async":38}],8:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -714,7 +730,7 @@
 
 } ();
 
-},{"string":43}],9:[function(require,module,exports){
+},{"string":45}],9:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -818,20 +834,13 @@
       $(panelId).find('> .panel-body > .items').append(view);
     }
 
-    setTimeout(function () {
+    luigi('tpl-toggle-arrow')
       
-      Panel.controller('reveal')(view, null, function () {
-        
-        luigi('tpl-toggle-arrow')
-          
-          .controller(function (arrow) {
-            arrow.insertAfter(view);
+      .controller(function (arrow) {
+        arrow.insertAfter(view);
 
-            cb();
-          });
-
+        cb();
       });
-    }, 800);
   }
 
   module.exports = placeItemInPanel;
@@ -864,14 +873,12 @@
 
   function render (item, cb) {
 
-    console.log('Item/controllers/render');
-
     var div = this;
     var Panel = div.root.extension('Panel');
     var Promote = div.root.extension('Promote');
     var Socket = div.root.emitter('socket');
 
-    luigi('tpl-item')
+    luigi('item-' + item._id)
 
       .on('error', function (error) {
         div.emit('error', error);
@@ -1122,7 +1129,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":43}],13:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":45}],13:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1496,7 +1503,13 @@
       throw new Error('Could not find panel ' + panelId);
     }
 
-    $panel.addClass('is-filling');
+    // $panel.addClass('is-filling');
+
+    items.forEach(function (item) {
+      $panel.find('.is-canvas:first')
+        .attr('id', 'item-' + item._id)
+        .removeClass('is-canvas');
+    });
 
     div.watch.emit('panel view updated');
   }
@@ -1748,33 +1761,29 @@
         item.image = $creator.find('.preview-image').attr('src');
       }
 
-      Panel.controller('hide')($creator, function () {
-        // If item image, stream upload first the image
-        // and then emit to socket create item
+      // If item image, stream upload first the image
+      // and then emit to socket create item
 
-        if ( item.image ) {
+      if ( item.image ) {
 
-          var file = $creator.find('.preview-image').data('file');
+        var file = $creator.find('.preview-image').data('file');
 
-          var stream = ss.createStream();
+        var stream = ss.createStream();
 
-          ss(Socket).emit('upload image', stream,
-            { size: file.size, name: file.name });
-          
-          ss.createBlobReadStream(file).pipe(stream);
+        ss(Socket).emit('upload image', stream,
+          { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
 
-          stream.on('end', function () {
-            item.image = file.name;
-            Socket.emit('create item', item);
-          });
-        }
+        stream.on('end', function () {
+          item.image = file.name;
+          div.controller('new item')($creator, $panel, item);
+        });
+      }
 
-        // emit to socket to create item
-
-        else {
-          Socket.emit('create item', item);
-        }
-      });
+      else {
+        div.controller('new item')($creator, $panel, item);
+      }
 
       // Cleaning form
 
@@ -1789,6 +1798,19 @@
 } ();
 
 },{}],22:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function findCreator (view) {
+    return view.find('.creator:first');
+  }
+
+  module.exports = findCreator;
+
+} ();
+
+},{}],23:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1828,7 +1850,38 @@
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function newItem ($creator, $panel, item) {
+
+    var div     =   this;
+    var Socket  =   div.root.emitter('socket');
+    var Panel   =   div.root.extension('Panel');
+
+    Panel.controller('hide')($creator, function () {
+      luigi('tpl-item')
+        .controller(function ($item) {
+          $panel.find('.new-item:first').append($item);
+
+          Panel.controller('reveal')($panel.find('.new-item:first'),
+            $panel, function () {
+              $item.insertAfter($panel.find('.new-item:first'));
+              $panel.find('.new-item:first').empty().hide();
+
+              Socket.emit('create item', item);
+            });
+        });
+    });
+  }
+
+  module.exports = newItem;
+
+} ();
+
+},{}],25:[function(require,module,exports){
 /**
   *  Render and insert a panel
   */
@@ -1836,8 +1889,6 @@
 ! function () {
 
   'use strict';
-
-  var luigi = require('/home/francois/Dev/luigi/luigi');
 
   /**
    *  @return 
@@ -1847,128 +1898,99 @@
   function render (panel) {
     var div = this;
 
-    luigi('tpl-panel').controller(function (view) {
+    var intercept = div.domain.intercept;
 
-      // Insert view in DOM first
+    // Set panel ID
 
-      ! function insertViewInDOM () {
-        // If no parent (topic)
+    var id = 'panel-' + panel.type;
 
-        if ( ! panel.parent ) {
-          $('.panels').append(view);
-        }
+    if ( panel.parent ) {
+      id += '-' + panel.parent;
+    }
 
-        // If sub panel
+    luigi(id).controller(function (view) {
 
-        else {
-          var container =  $('#item-' + panel.parent + ' > .collapsers > .children');
+      // Add type as class
 
-          // Split panels
+      view.addClass('type-' + panel.type);
 
-          if ( panel.split ) {
-            var column = '<div class="col-sm-6 col"></div>';
+      // Split panel
 
-            // LEFT
+      if ( panel.split ) {
+        view.addClass('split-view');
+      }
 
-            if ( ! container.find('> .is-section > .row-split').length ) {
-              var rowSplit = $('<div class="row row-split"></div>');
+      // Panel title
+      
+      view.find('.panel-title').eq(0).text(panel.type);
 
-              container.find('> .is-section').append(rowSplit);
+      var $creator = view.find(div.model('$creator'));
 
-              var col1 = $(column);
-
-              col1.append(view);
-
-              container.find('> .is-section >.row-split').append(col1);
-            }
-
-            // RIGHT
-
-            else {
-              var col2 = $(column);
-
-              col2.append(view);
-
-              container.find('> .is-section >.row-split').append(col2);
-            }
-          }
-
-          else {
-            container.find('> .is-section').append(view);
-          }
-
-          div.controller('reveal')(container, $('#item-' + panel.parent));
-        }
-      } ();
-
-      // Render creator
-
-      ! function renderCreator () {
-        luigi('tpl-creator')
-
-          .controller(function (view_creator) {
-            view_creator.addClass(panel.type);
-            
-            view.find('.panel-body').prepend(view_creator);
-            
-            view_creator.find('>.is-section .button-create')
-              .on('click', function () {
-                div.controller('create')($(this));
-              });
-
-            renderView();
-          });
-
-      } ();
-
-      // Render view
-
-      function renderView () {
-        // Set panel ID
-
-        var id = 'panel-' + panel.type;
-
-        if ( panel.parent ) {
-          id += '-' + panel.parent;
-        }
-
-        view.attr('id', id);
-
-        // Add type as class
-
-        view.addClass('type-' + panel.type);
-
-        // Split panel
-
-        if ( panel.split ) {
-          view.addClass('split-view');
-        }
-
-        var $creator = view.find('>.panel-body >.creator');
-        
-        view.find('.panel-title').eq(0).text(panel.type);
-
-        // Toggle creator view
-
-        view.find('.toggle-creator').on('click', function () {
-
-          if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
-            return;
-          }
-          else if ( $creator.hasClass('is-shown') ) {
-            div.controller('hide')($creator);
-          }
-          else {
-            div.controller('reveal')($creator, view);
-          }
+      $creator.addClass(panel.type);
+                  
+      $creator.find('>.is-section .button-create')
+        .on('click', function () {
+          div.controller('create')($(this));
         });
 
-        if ( synapp.user ) {
-          $('.is-in').css('visibility', 'visible');
-        }
+      // Toggle creator view
 
-        div.watch.emit('panel view rendered', panel, view);
+      view.find('.toggle-creator').on('click', function () {
+
+        if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
+          return;
+        }
+        else if ( $creator.hasClass('is-shown') ) {
+          div.controller('hide')($creator);
+        }
+        else {
+          // console.log('revealing')
+          div.controller('reveal')($creator, view, intercept());
+        }
+      });
+
+      view.find('>.panel-body >.load-more a')
+        .on('click', function loadMore () {
+
+          var load_more = this;
+
+          if ( $creator.hasClass('is-showing') ) {
+            return false;
+          }
+
+          if ( $creator.hasClass('is-shown') ) {
+            div.controller('hide')($creator);
+          }
+
+          var len = ( synapp['navigator batch size'] - 1 );
+
+          for ( var i = 0; i < len; i ++ ) {
+            setTimeout(function () {
+              luigi('tpl-item')
+
+                .controller(function ($item) {
+                  
+                  view.find('.next-item:first').append($item);
+                  
+                  div.controller('reveal')(
+                    view.find('.next-item:first'),
+                    $(load_more),
+                    function () {
+                      $item.insertBefore(view.find('.next-item:first'));
+                      view.find('.next-item:first').empty().hide();
+                    });
+                });
+              }, 800 * i);
+          }
+
+          return false;
+        });
+
+      if ( synapp.user ) {
+        $('.is-in').css('visibility', 'visible');
       }
+
+      div.watch.emit('panel view rendered', panel, view);
 
     });
   }
@@ -1977,7 +1999,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1999,6 +2021,9 @@
   }
 
   function reveal (elem, poa, cb) {
+
+    console.log('revealing', elem.length)
+
     var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {
@@ -2020,22 +2045,22 @@
     // Don't animate if something else is animating
 
     if ( $item.find('.is-showing').length || $item.find('.is-hiding').length ) {
-      return false;
+      console.log('revealing', 'other animations in progress in item');
+      return cb(new Error('arrrgh so'));
     }
 
-    // Hide Creators if any
+    // // Hide Creators if any
 
-    if ( ! elem.hasClass('.creator') &&
-      $panel.find('>.panel-body >.creator.is-shown').length &&
-      ! $panel.hasClass('is-filling') ) {
-      hider = $panel.find('>.panel-body >.creator.is-shown');
-    }
+    // if ( ! elem.hasClass('.creator') &&
+    //   $panel.find('>.panel-body >.creator.is-shown').length ) {
+    //   hider = $panel.find('>.panel-body >.creator.is-shown');
+    // }
 
-    // Hide other shown elements that share same item's level
+    // // Hide other shown elements that share same item's level
 
-    if ( $item.length && $item.find('.is-shown').not('.children').length ) {
-      hider = $item.find('.is-shown').not('.children');
-    }
+    // if ( $item.length && $item.find('.is-shown').not('.children').length ) {
+    //   hider = $item.find('.is-shown').not('.children');
+    // }
 
     // If hiders
 
@@ -2054,7 +2079,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2085,14 +2110,14 @@
 
 }();
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
 
   function show (elem, cb) {
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
+    console.log('show', elem.length)
     if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
       return false;
     }
@@ -2133,7 +2158,7 @@
 
 }();
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2154,7 +2179,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2218,7 +2243,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2239,7 +2264,8 @@
   module.exports = {
 
     models: {
-      panels: []
+      panels: [],
+      $creator: '.creator:first'
     },
     
     controllers: {
@@ -2252,7 +2278,9 @@
       'upload':           require('./controllers/upload'),
       'render':           require('./controllers/render'),
       'toggle creator':   require('./controllers/toggle-creator'),
-      'create':           require('./controllers/create')
+      'create':           require('./controllers/create'),
+      'find creator':     require('./controllers/find-creator'),
+      'new item':         require('./controllers/new-item')
     },
 
     run: function () {
@@ -2286,7 +2314,7 @@
 
 } ();
 
-},{"./controllers/create":21,"./controllers/hide":22,"./controllers/render":23,"./controllers/reveal":24,"./controllers/scroll-to-point-of-attention":25,"./controllers/show":26,"./controllers/toggle-creator":27,"./controllers/upload":28}],30:[function(require,module,exports){
+},{"./controllers/create":21,"./controllers/find-creator":22,"./controllers/hide":23,"./controllers/new-item":24,"./controllers/render":25,"./controllers/reveal":26,"./controllers/scroll-to-point-of-attention":27,"./controllers/show":28,"./controllers/toggle-creator":29,"./controllers/upload":30}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2343,7 +2371,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],31:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],33:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2722,7 +2750,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -2756,7 +2784,7 @@
 
 } ();
 
-},{"./controllers/get-evaluation":30,"./controllers/render":31}],33:[function(require,module,exports){
+},{"./controllers/get-evaluation":32,"./controllers/render":33}],35:[function(require,module,exports){
 /**
                                         
                                             
@@ -2806,7 +2834,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /***
 
 
@@ -2855,13 +2883,15 @@ Nina Butorac
 
   var Div = require('/home/francois/Dev/div.js/div');
 
+  window.luigi = require('/home/francois/Dev/luigi/luigi');
+
   window.Synapp = Div.factory(require('./synapp/index'));
 
   Synapp.run();
 
 }();
 56
-},{"./synapp/index":35,"/home/francois/Dev/div.js/div":1}],35:[function(require,module,exports){
+},{"./synapp/index":37,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],37:[function(require,module,exports){
  /**
                  
 
@@ -2971,10 +3001,10 @@ Nina Butorac
         }, 500);
 
         setTimeout(function () {
-          Promote.run();
-          Item.run();
+          // Promote.run();
+          // Item.run();
           Panel.run();
-        }, 1000);
+        }, 1500);
 
         // 
         
@@ -2986,7 +3016,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":20,"../Panel/":29,"../Promote/":32,"../User/":33}],36:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":20,"../Panel/":31,"../Promote/":34,"../User/":35}],38:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4113,7 +4143,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":40}],37:[function(require,module,exports){
+},{"_process":42}],39:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4151,7 +4181,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":38}],38:[function(require,module,exports){
+},{"events":40}],40:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4454,7 +4484,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4479,7 +4509,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4567,14 +4597,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5164,7 +5194,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":41,"_process":40,"inherits":39}],43:[function(require,module,exports){
+},{"./support/isBuffer":43,"_process":42,"inherits":41}],45:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6198,4 +6228,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[34]);
+},{}]},{},[36]);

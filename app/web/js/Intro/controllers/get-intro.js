@@ -2,8 +2,6 @@
 
 	'use strict';
 
-  var luigi = require('/home/francois/Dev/luigi/luigi');
-
 	function getIntro () {
     var div = this;
 
@@ -46,8 +44,6 @@
             view.find('.box-buttons').hide();
 
             view.find('.toggle-arrow').hide();
-
-            Panel.controller('reveal')(view.find('.item.box'));
           });
 
       });

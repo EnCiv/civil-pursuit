@@ -107,10 +107,10 @@
         }, 500);
 
         setTimeout(function () {
-          Promote.run();
-          Item.run();
+          // Promote.run();
+          // Item.run();
           Panel.run();
-        }, 1000);
+        }, 1500);
 
         // 
         

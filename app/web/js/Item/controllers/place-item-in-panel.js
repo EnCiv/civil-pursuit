@@ -45,20 +45,13 @@
       $(panelId).find('> .panel-body > .items').append(view);
     }
 
-    setTimeout(function () {
+    luigi('tpl-toggle-arrow')
       
-      Panel.controller('reveal')(view, null, function () {
-        
-        luigi('tpl-toggle-arrow')
-          
-          .controller(function (arrow) {
-            arrow.insertAfter(view);
+      .controller(function (arrow) {
+        arrow.insertAfter(view);
 
-            cb();
-          });
-
+        cb();
       });
-    }, 800);
   }
 
   module.exports = placeItemInPanel;

@@ -19,6 +19,9 @@
   }
 
   function reveal (elem, poa, cb) {
+
+    console.log('revealing', elem.length)
+
     var app = this;
 
     if ( ! elem.hasClass('is-toggable') ) {
@@ -40,22 +43,22 @@
     // Don't animate if something else is animating
 
     if ( $item.find('.is-showing').length || $item.find('.is-hiding').length ) {
-      return false;
+      console.log('revealing', 'other animations in progress in item');
+      return cb(new Error('arrrgh so'));
     }
 
-    // Hide Creators if any
+    // // Hide Creators if any
 
-    if ( ! elem.hasClass('.creator') &&
-      $panel.find('>.panel-body >.creator.is-shown').length &&
-      ! $panel.hasClass('is-filling') ) {
-      hider = $panel.find('>.panel-body >.creator.is-shown');
-    }
+    // if ( ! elem.hasClass('.creator') &&
+    //   $panel.find('>.panel-body >.creator.is-shown').length ) {
+    //   hider = $panel.find('>.panel-body >.creator.is-shown');
+    // }
 
-    // Hide other shown elements that share same item's level
+    // // Hide other shown elements that share same item's level
 
-    if ( $item.length && $item.find('.is-shown').not('.children').length ) {
-      hider = $item.find('.is-shown').not('.children');
-    }
+    // if ( $item.length && $item.find('.is-shown').not('.children').length ) {
+    //   hider = $item.find('.is-shown').not('.children');
+    // }
 
     // If hiders
 

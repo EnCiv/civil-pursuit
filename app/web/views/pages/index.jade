@@ -2,7 +2,12 @@ extends ../layout
 
 block page
   section.panels
-    include ../partials/intro
+    #intro
+      include ../partials/intro
+
+    - panel_id = 'panel-Topic'
+
+    include ../partials/panel
 
   // Modal Tip Promote
 

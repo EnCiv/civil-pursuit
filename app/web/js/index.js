@@ -46,6 +46,8 @@ Nina Butorac
 
   var Div = require('/home/francois/Dev/div.js/div');
 
+  window.luigi = require('/home/francois/Dev/luigi/luigi');
+
   window.Synapp = Div.factory(require('./synapp/index'));
 
   Synapp.run();

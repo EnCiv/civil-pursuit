@@ -6,14 +6,12 @@
 
   function render (item, cb) {
 
-    console.log('Item/controllers/render');
-
     var div = this;
     var Panel = div.root.extension('Panel');
     var Promote = div.root.extension('Promote');
     var Socket = div.root.emitter('socket');
 
-    luigi('tpl-item')
+    luigi('item-' + item._id)
 
       .on('error', function (error) {
         div.emit('error', error);
