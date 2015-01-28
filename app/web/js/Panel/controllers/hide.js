@@ -10,7 +10,8 @@
       return false;
     }
 
-    console.info('hiding', elem.attr('id'), elem.attr('class'), elem.attr('name'))
+    console.log('%c hide', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
 
     elem.removeClass('is-shown').addClass('is-hiding');;
 

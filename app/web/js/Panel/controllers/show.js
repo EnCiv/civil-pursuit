@@ -3,9 +3,18 @@
   'use strict';
 
   function show (elem, cb) {
+
+    if ( typeof cb !== 'function' ) {
+      cb = function () {};
+    }
+
+    console.log('%c show', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-    console.log('show', elem.length)
+    
     if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+      cb(new Error('Show failed'));
       return false;
     }
 

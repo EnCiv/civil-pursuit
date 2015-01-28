@@ -12,6 +12,9 @@
    */
 
   function render (panel) {
+
+    console.log('%c push panels', 'font-weight: bold; color: magenta', panel);
+
     var div = this;
 
     var Item = div.root.extension('Item');
@@ -28,7 +31,7 @@
       id += '-' + panel.parent;
     }
 
-    console.log('rendering panel', panel)
+    console.log('%c render panel', 'font-weight: bold; color: #369', panel);
 
     // render function
 

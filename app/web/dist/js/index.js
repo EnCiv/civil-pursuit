@@ -932,7 +932,7 @@
     // On new panel, get panel items from socket
 
     Panel.watch.on('panel view rendered', function (panel) {
-      console.info('panel view rendered', panel)
+      console.log('%c panel view rendered', 'font-weight: bold; color: magenta', panel);
       Socket.emit('get items', panel);
     });
 
@@ -940,7 +940,7 @@
 
     Socket.on('got items', function (panelView) {
 
-      console.log('got items', panelView);
+      console.log('%c got items', 'font-weight: bold; color: magenta', panelView);
 
       var panel = panelView.panel;
       var items = panelView.items;
@@ -951,14 +951,13 @@
 
       div.watch.on('panel model updated', function (panel) {
 
-        console.log('panel model updated', panel)
-
-        console.log('hahaha')
+        console.log('%c panel model updated', 'font-weight: bold; color: magenta', panel);
 
         if ( items.length ) {
 
           div.watch.on('panel view updated', function () {
-            console.log('panel view updated', panel, items);
+            console.log('%c panel viewo updated', 'font-weight: bold; color: magenta', panel);
+
             require('async').series(items
 
               .filter(function (item, i) {
@@ -2131,7 +2130,8 @@
       return false;
     }
 
-    console.info('hiding', elem.attr('id'), elem.attr('class'), elem.attr('name'))
+    console.log('%c hide', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
 
     elem.removeClass('is-shown').addClass('is-hiding');;
 
@@ -2221,6 +2221,9 @@
    */
 
   function render (panel) {
+
+    console.log('%c push panels', 'font-weight: bold; color: magenta', panel);
+
     var div = this;
 
     var Item = div.root.extension('Item');
@@ -2237,7 +2240,7 @@
       id += '-' + panel.parent;
     }
 
-    console.log('rendering panel', panel)
+    console.log('%c render panel', 'font-weight: bold; color: #369', panel);
 
     // render function
 
@@ -2469,6 +2472,9 @@
       elem.addClass('is-toggable');
     }
 
+    console.log('%c reveal', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
     // Eventual element to hide first
 
     var hider;
@@ -2555,9 +2561,18 @@
   'use strict';
 
   function show (elem, cb) {
+
+    if ( typeof cb !== 'function' ) {
+      cb = function () {};
+    }
+
+    console.log('%c show', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-    console.log('show', elem.length)
+    
     if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+      cb(new Error('Show failed'));
       return false;
     }
 

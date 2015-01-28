@@ -26,6 +26,9 @@
       elem.addClass('is-toggable');
     }
 
+    console.log('%c reveal', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
     // Eventual element to hide first
 
     var hider;

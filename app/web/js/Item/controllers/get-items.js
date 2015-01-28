@@ -10,7 +10,7 @@
     // On new panel, get panel items from socket
 
     Panel.watch.on('panel view rendered', function (panel) {
-      console.info('panel view rendered', panel)
+      console.log('%c panel view rendered', 'font-weight: bold; color: magenta', panel);
       Socket.emit('get items', panel);
     });
 
@@ -18,7 +18,7 @@
 
     Socket.on('got items', function (panelView) {
 
-      console.log('got items', panelView);
+      console.log('%c got items', 'font-weight: bold; color: magenta', panelView);
 
       var panel = panelView.panel;
       var items = panelView.items;
@@ -29,14 +29,13 @@
 
       div.watch.on('panel model updated', function (panel) {
 
-        console.log('panel model updated', panel)
-
-        console.log('hahaha')
+        console.log('%c panel model updated', 'font-weight: bold; color: magenta', panel);
 
         if ( items.length ) {
 
           div.watch.on('panel view updated', function () {
-            console.log('panel view updated', panel, items);
+            console.log('%c panel viewo updated', 'font-weight: bold; color: magenta', panel);
+
             require('async').series(items
 
               .filter(function (item, i) {
