@@ -118,8 +118,27 @@ script(type='text/html' id='tpl-toggle-arrow')
     .col-xs-12.text-center
       i.fa.cursor-pointer.fa-arrow-down
 
-script(type='text/html' id='tpl-promote')
-  include ../partials/promote
+script(type='text/html' id='tpl-details-votes')
+  .col-sm-4.col-xs-12
 
-script(type='text/html' id='tpl-new-item')
+    //-
+        CRITERIA NAME
+    //-
 
+    h4(data-toggle="tooltip" data-placement="top")
+
+  .col-sm-8.col-xs-12
+
+    //-
+        CHART
+    //-
+
+    .chart
+
+      hr
+
+script(type='text/html' id='tpl-details-feedback')
+  .feedback-section
+    div.pre-text.feedback
+      hr
+      .pre-text

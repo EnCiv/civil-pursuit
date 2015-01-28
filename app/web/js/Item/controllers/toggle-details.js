@@ -3,9 +3,9 @@
   'use strict';
 
   function toggleDetails (trigger, item) {
-    var app = this;
+    var div = this;
 
-    var Panel = app.importer.extension('Panel');
+    var Panel = div.root.extension('Panel');
 
     // DOM elements
 
@@ -32,18 +32,18 @@
     else {
       reveal($details, $item, function () {
 
-        app.controller('progress bar')($details, item);
+        div.controller('progress bar')($details, item);
 
-        app.controller('invite people in')($details, item);
+        div.controller('invite people in')($details, item);
 
         if ( ! $details.hasClass('is-loaded') ) {
-          app.controller('get item details')($details, item);
+          div.controller('get item details')($details, item);
 
           $details
             .find('.edit-and-go-again-toggler')
             .eq(0)
             .on('click', function () {
-              app.render('edit and go again', item, function (editView) {
+              div.render('edit and go again', item, function (editView) {
                 console.log(editView)
                 $editor
                   .empty()

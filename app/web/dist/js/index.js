@@ -335,7 +335,7 @@
 
 } ();
 
-},{"domain":39,"events":40,"util":44}],2:[function(require,module,exports){
+},{"domain":40,"events":41,"util":45}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -456,7 +456,7 @@
 
 } (this);
 
-},{"events":40,"util":44}],3:[function(require,module,exports){
+},{"events":41,"util":45}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
@@ -582,32 +582,135 @@
 
   'use strict';
 
-  function getItemDetails ($details, item) {
-    var app = this;
+  function detailsVotes (details, criteria) {
 
-    var Socket = app.importer.emitter('socket');
+    return function (view) {
+      setTimeout(function () {
+
+        view.find('h4').text(criteria.name);
+
+        var vote = details.votes[criteria._id];
+
+        var svg = $('<svg class="chart"></svg>');
+
+        svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
+
+        console.log('svg!', svg.attr('id'))
+
+        view.find('.chart').append(svg);
+
+        var data = [];
+
+        // If no votes, show nothing
+
+        if ( ! vote ) {
+          return view.empty();
+        }
+
+        for ( var number in vote.values ) {
+          data.push({
+            label: 'number',
+            value: vote.values[number] * 100 / vote.total
+          });
+        }
+
+        var columns = ['votes'];
+
+        data.forEach(function (d) {
+          columns.push(d.value);
+        });
+
+        var chart = c3.generate({
+          bindto: '#' + svg.attr('id'),
+
+          data: {
+            x: 'x',
+            columns: [['x', -1, 0, 1], columns],
+            type: 'bar'
+          },
+
+          grid: {
+            x: {
+              lines: 3
+            }
+          },
+          
+          axis: {
+            x: {},
+            
+            y: {
+              max: 90,
+
+              show: false,
+
+              tick: {
+                count: 5,
+
+                format: function (y) {
+                  return y;
+                }
+              }
+            }
+          },
+
+          size: {
+            height: 80
+          },
+
+          bar: {
+            width: $(window).width() / 5
+          }
+        });
+      }, 800);
+    };
+  }
+
+  module.exports = detailsVotes;
+
+} ();
+
+},{}],7:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function getItemDetails ($details, item) {
+    var div = this;
+
+    var Socket = div.root.emitter('socket');
 
     $details.addClass('is-loaded');
 
     Socket.emit('get item details', item);
 
-    Socket.once('got item details', function (itemDetails) {
+    Socket.once('got item details', function (details) {
 
-      itemDetails.criterias.forEach(function (criteria, index) {
-        app.render('details votes', [itemDetails, index],
-          function (detailsView) {
-            detailsView.removeClass('template-model');
-            $details.find('.details-votes').append(detailsView);
+      console.warn('got details', details)
+
+      details.criterias.forEach(function (criteria, index) {
+        luigi('tpl-details-votes')
+          .controller(div.controller('details votes')(details, criteria))
+          .controller(function ($votes) {
+            $details.find('.votes-by-criteria').append($votes);
           });
+        // app.render('details votes', [details, index],
+        //   function (detailsView) {
+        //     detailsView.removeClass('template-model');
+        //     $details.find('.details-votes').append(detailsView);
+        //   });
       });
 
-      if ( itemDetails.feedbacks.length ) {
-        itemDetails.feedbacks.forEach(function (feedback) {
-          app.render('details feedback', feedback,
-            function (feedbackView) {
-              feedbackView.removeClass('template-model');
-              $details.find('.details-feedbacks').append(feedbackView);
+      if ( details.feedbacks.length ) {
+        details.feedbacks.forEach(function (feedback) {
+          luigi('tpl-details-feedback')
+            .controller(function ($feedback) {
+              $details.find('.feedback-list').append($feedback);
             });
+          // app.render('details feedback', feedback,
+          //   function (feedbackView) {
+          //     feedbackView.removeClass('template-model');
+          //     $details.find('.details-feedbacks').append(feedbackView);
+          //   });
         });
       }
 
@@ -621,7 +724,7 @@
 
 } ();
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -705,7 +808,7 @@
 
 } ();
 
-},{"async":38}],8:[function(require,module,exports){
+},{"async":39}],9:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -729,7 +832,7 @@
 
 } ();
 
-},{"string":45}],9:[function(require,module,exports){
+},{"string":46}],10:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -785,7 +888,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],10:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -846,7 +949,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],11:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],12:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -863,7 +966,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1161,15 +1264,15 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":45}],13:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":46}],14:[function(require,module,exports){
 ! function () {
 
   'use strict';
 
   function toggleDetails (trigger, item) {
-    var app = this;
+    var div = this;
 
-    var Panel = app.importer.extension('Panel');
+    var Panel = div.root.extension('Panel');
 
     // DOM elements
 
@@ -1196,18 +1299,18 @@
     else {
       reveal($details, $item, function () {
 
-        app.controller('progress bar')($details, item);
+        div.controller('progress bar')($details, item);
 
-        app.controller('invite people in')($details, item);
+        div.controller('invite people in')($details, item);
 
         if ( ! $details.hasClass('is-loaded') ) {
-          app.controller('get item details')($details, item);
+          div.controller('get item details')($details, item);
 
           $details
             .find('.edit-and-go-again-toggler')
             .eq(0)
             .on('click', function () {
-              app.render('edit and go again', item, function (editView) {
+              div.render('edit and go again', item, function (editView) {
                 console.log(editView)
                 $editor
                   .empty()
@@ -1225,7 +1328,7 @@
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1249,7 +1352,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1471,7 +1574,7 @@
 
 }();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1512,7 +1615,7 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1553,7 +1656,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1615,7 +1718,7 @@
 
 }();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1650,7 +1753,7 @@
 
 }();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -1687,7 +1790,8 @@
       'update panel model':       require('./controllers/update-panel-model'),
       'update panel view':        require('./controllers/update-panel-view'),
       'render':                   require('./controllers/render'),
-      'place item in panel':      require('./controllers/place-item-in-panel')
+      'place item in panel':      require('./controllers/place-item-in-panel'),
+      'details votes':            require('./controllers/details-votes')
     },
 
     run: function () {
@@ -1710,7 +1814,7 @@
 
 } ();
 
-},{"./controllers/create-item":5,"./controllers/get-item-details":6,"./controllers/get-items":7,"./controllers/invite-people-in":8,"./controllers/item-media":9,"./controllers/place-item-in-panel":10,"./controllers/progress-bar":11,"./controllers/render":12,"./controllers/toggle-details":13,"./controllers/toggle-edit-and-go-again":14,"./controllers/truncate":15,"./controllers/update-panel-model":16,"./controllers/update-panel-view":17,"./controllers/youtube":19,"./controllers/youtube-play-icon":18}],21:[function(require,module,exports){
+},{"./controllers/create-item":5,"./controllers/details-votes":6,"./controllers/get-item-details":7,"./controllers/get-items":8,"./controllers/invite-people-in":9,"./controllers/item-media":10,"./controllers/place-item-in-panel":11,"./controllers/progress-bar":12,"./controllers/render":13,"./controllers/toggle-details":14,"./controllers/toggle-edit-and-go-again":15,"./controllers/truncate":16,"./controllers/update-panel-model":17,"./controllers/update-panel-view":18,"./controllers/youtube":20,"./controllers/youtube-play-icon":19}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1832,7 +1936,7 @@
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1845,7 +1949,7 @@
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1885,7 +1989,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1925,7 +2029,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
   *  Render and insert a panel
   */
@@ -2059,7 +2163,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2139,7 +2243,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2170,7 +2274,7 @@
 
 }();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2218,7 +2322,7 @@
 
 }();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2239,7 +2343,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2303,7 +2407,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2374,7 +2478,7 @@
 
 } ();
 
-},{"./controllers/create":21,"./controllers/find-creator":22,"./controllers/hide":23,"./controllers/new-item":24,"./controllers/render":25,"./controllers/reveal":26,"./controllers/scroll-to-point-of-attention":27,"./controllers/show":28,"./controllers/toggle-creator":29,"./controllers/upload":30}],32:[function(require,module,exports){
+},{"./controllers/create":22,"./controllers/find-creator":23,"./controllers/hide":24,"./controllers/new-item":25,"./controllers/render":26,"./controllers/reveal":27,"./controllers/scroll-to-point-of-attention":28,"./controllers/show":29,"./controllers/toggle-creator":30,"./controllers/upload":31}],33:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2421,7 +2525,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],33:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],34:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2804,7 +2908,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -2838,7 +2942,7 @@
 
 } ();
 
-},{"./controllers/get-evaluation":32,"./controllers/render":33}],35:[function(require,module,exports){
+},{"./controllers/get-evaluation":33,"./controllers/render":34}],36:[function(require,module,exports){
 /**
                                         
                                             
@@ -2888,7 +2992,7 @@
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /***
 
 
@@ -2945,7 +3049,7 @@ Nina Butorac
 
 }();
 56
-},{"./synapp/index":37,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],37:[function(require,module,exports){
+},{"./synapp/index":38,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],38:[function(require,module,exports){
  /**
                  
 
@@ -3070,7 +3174,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":20,"../Panel/":31,"../Promote/":34,"../User/":35}],38:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":21,"../Panel/":32,"../Promote/":35,"../User/":36}],39:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4197,7 +4301,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":42}],39:[function(require,module,exports){
+},{"_process":43}],40:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4235,7 +4339,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":40}],40:[function(require,module,exports){
+},{"events":41}],41:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4538,7 +4642,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4563,7 +4667,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4651,14 +4755,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5248,7 +5352,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":43,"_process":42,"inherits":41}],45:[function(require,module,exports){
+},{"./support/isBuffer":44,"_process":43,"inherits":42}],46:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6282,4 +6386,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[36]);
+},{}]},{},[37]);

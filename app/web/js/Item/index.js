@@ -34,7 +34,8 @@
       'update panel model':       require('./controllers/update-panel-model'),
       'update panel view':        require('./controllers/update-panel-view'),
       'render':                   require('./controllers/render'),
-      'place item in panel':      require('./controllers/place-item-in-panel')
+      'place item in panel':      require('./controllers/place-item-in-panel'),
+      'details votes':            require('./controllers/details-votes')
     },
 
     run: function () {
