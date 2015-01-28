@@ -43,13 +43,21 @@
             .find('.edit-and-go-again-toggler')
             .eq(0)
             .on('click', function () {
-              div.render('edit and go again', item, function (editView) {
-                console.log(editView)
-                $editor
-                  .empty()
-                  .append(editView);
-              });
-              Panel.controller('reveal')($editor, $item);
+
+              luigi('tpl-creator')
+
+                .controller(function (view) {
+                  $editor.empty().append(view);
+                  Panel.controller('reveal')($editor, $item);
+                });
+
+              // div.render('edit and go again', item, function (editView) {
+              //   console.log(editView)
+              //   $editor
+              //     .empty()
+              //     .append(editView);
+              // });
+              // Panel.controller('reveal')($editor, $item);
             });
         }
 

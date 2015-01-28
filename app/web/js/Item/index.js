@@ -36,24 +36,16 @@
       'render':                   require('./controllers/render'),
       'expand':                   require('./controllers/expand'),
       'place item in panel':      require('./controllers/place-item-in-panel'),
-      'details votes':            require('./controllers/details-votes')
+      'details votes':            require('./controllers/details-votes'),
+      'edit and go again':        require('./controllers/edit-and-go-again')
     },
 
     run: function () {
-
-      var div       =   this;
       
-      div.controller('get items')();
+      this.controller('get items')();
 
-      div.controller('create item')();
+      this.controller('create item')();
 
-      
-      
-      // this.story('get items')();
-
-      // this.story('create item')();
-
-      // this.story('listen to broadcast')();
     }
   };
 
