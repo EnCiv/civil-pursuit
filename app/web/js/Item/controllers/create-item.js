@@ -9,19 +9,13 @@
 
     Socket.on('created item', function (item) {
 
-      console.info('beat boodee')
+      console.info('beat dump')
 
       item.is_new = true;
       
       div.push('items', item);
 
-      div.controller('render')(item,
-        function (error, item, view) {
-          div.controller('place item in panel')(item, view,
-            function (error) {
-              
-            });
-        });
+      div.controller('render')(item, div.domain.intercept());
     });
   }
 

@@ -11,11 +11,27 @@
     var Promote = div.root.extension('Promote');
     var Socket = div.root.emitter('socket');
 
-    if ( ! $('#item-' + item._id).length ) {
+    var id = 'item-' + item._id;
+
+    if ( item.is_new ) {
+      var panel = 'panel-' + item.type;
+
+      if ( item.parent ) {
+        panel += '-' + item.parent;
+      }
+
+      id = $('#' + panel + ' >.panel-body >.items >.is-new');
+    }
+
+    console.log('id', id, item.subject);
+
+    if ( ( typeof id === 'string' && ! $('#' + id).length ) || ( typeof
+       id === 'object' && ! id.length ) ) {
+      console.log('Item view not found', item.subject);
       return cb();
     }
 
-    luigi('item-' + item._id)
+    luigi(id)
 
       .on('error', function (error) {
         div.emit('error', error);

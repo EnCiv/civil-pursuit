@@ -4854,6 +4854,10 @@ footer {
 .panel .load-more {
   text-align: center;
 }
+.panel .loading-more {
+  text-align: center;
+  display: none;
+}
 .modal {
   top: 200px !important;
 }

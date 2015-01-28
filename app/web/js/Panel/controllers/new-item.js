@@ -15,6 +15,7 @@
 
           Panel.controller('reveal')($panel.find('.new-item:first'),
             $panel, function () {
+              $item.addClass('is-new');
               $item.insertAfter($panel.find('.new-item:first'));
               $panel.find('.new-item:first').empty().hide();
 

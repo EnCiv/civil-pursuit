@@ -563,19 +563,13 @@
 
     Socket.on('created item', function (item) {
 
-      console.info('beat boodee')
+      console.info('beat dump')
 
       item.is_new = true;
       
       div.push('items', item);
 
-      div.controller('render')(item,
-        function (error, item, view) {
-          div.controller('place item in panel')(item, view,
-            function (error) {
-              
-            });
-        });
+      div.controller('render')(item, div.domain.intercept());
     });
   }
 
@@ -883,11 +877,27 @@
     var Promote = div.root.extension('Promote');
     var Socket = div.root.emitter('socket');
 
-    if ( ! $('#item-' + item._id).length ) {
+    var id = 'item-' + item._id;
+
+    if ( item.is_new ) {
+      var panel = 'panel-' + item.type;
+
+      if ( item.parent ) {
+        panel += '-' + item.parent;
+      }
+
+      id = $('#' + panel + ' >.panel-body >.items >.is-new');
+    }
+
+    console.log('id', id, item.subject);
+
+    if ( ( typeof id === 'string' && ! $('#' + id).length ) || ( typeof
+       id === 'object' && ! id.length ) ) {
+      console.log('Item view not found', item.subject);
       return cb();
     }
 
-    luigi('item-' + item._id)
+    luigi(id)
 
       .on('error', function (error) {
         div.emit('error', error);
@@ -1675,7 +1685,7 @@
       
       div.controller('get items')();
 
-      // div.controller('create item')();
+      div.controller('create item')();
 
       
       
@@ -1882,6 +1892,7 @@
 
           Panel.controller('reveal')($panel.find('.new-item:first'),
             $panel, function () {
+              $item.addClass('is-new');
               $item.insertAfter($panel.find('.new-item:first'));
               $panel.find('.new-item:first').empty().hide();
 
@@ -1963,6 +1974,12 @@
         }
       });
 
+      // Upload
+
+      div.controller('upload')($creator.find('.drop-box'));
+
+      // Load more
+
       view.find('>.panel-body >.load-more a')
         .on('click', function loadMore () {
 
@@ -1972,9 +1989,19 @@
             return false;
           }
 
+          if ( view.find('>.panel-body >.loading-more:visible').length ) {
+            console.log('in proggress');
+            return false;
+          }
+
           if ( $creator.hasClass('is-shown') ) {
             div.controller('hide')($creator);
           }
+
+          view.find('>.panel-body >.loading-more')
+            .show();
+
+          return false;
 
           var len = ( synapp['navigator batch size'] - 1 );
 

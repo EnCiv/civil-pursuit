@@ -65,6 +65,12 @@
         }
       });
 
+      // Upload
+
+      div.controller('upload')($creator.find('.drop-box'));
+
+      // Load more
+
       view.find('>.panel-body >.load-more a')
         .on('click', function loadMore () {
 
@@ -74,9 +80,19 @@
             return false;
           }
 
+          if ( view.find('>.panel-body >.loading-more:visible').length ) {
+            console.log('in proggress');
+            return false;
+          }
+
           if ( $creator.hasClass('is-shown') ) {
             div.controller('hide')($creator);
           }
+
+          view.find('>.panel-body >.loading-more')
+            .show();
+
+          return false;
 
           var len = ( synapp['navigator batch size'] - 1 );
 
