@@ -98,14 +98,16 @@
 
             image = $('#item-' + eItem._id).find('.youtube-preview')
               .clone();
-            
-            setTimeout(function () {
-              Item.controller('youtube play icon')(view);
-            }, 1000);
           }
         }
 
         image = image || Item.controller('item media')(eItem);
+
+        if ( image.hasClass('youtube-preview') ) {
+          setTimeout(function () {
+            Item.controller('youtube play icon')(view);
+          }, 1000);
+        }
 
         $sideBySide
           .find('.image.' + hand + '-item')
