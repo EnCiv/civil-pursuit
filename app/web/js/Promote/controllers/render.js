@@ -19,6 +19,8 @@
     return function (view) {
       var $sideBySide   =   view.find('.items-side-by-side');
 
+      var $item = view.closest('.item');
+
       // Limit
 
       promoteDiv.bind('limit', function (limit) {
@@ -392,8 +394,8 @@
 
         Panel.controller('hide')(view,
           function () {
-            item.find('.toggle-details').eq(0).click();
-            item.find('.details:eq(0) .feedback-pending')
+            $item.find('.toggle-details').eq(0).click();
+            $item.find('.details:eq(0) .feedback-pending')
               .removeClass('hide');
           });
       }
