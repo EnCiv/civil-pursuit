@@ -69,6 +69,35 @@
 
       div.controller('upload')($creator.find('.drop-box'));
 
+      // url title fecther
+
+      $creator.find('.reference').on('change', function () {
+        var board = $('.reference-board');
+        var reference = $(this);
+
+        board.removeClass('hide').text('Looking up');
+
+        div.root.emitter('socket').emit('get url title', $(this).val(),
+          function (error, ref) {
+            if ( ref.title ) {
+              board.text(ref.title);
+              reference.data('title', ref.title);
+
+              var yt = div.root.extension('Item').controller('youtube')(ref.url);
+
+              if ( yt ) {
+                $creator.find('.creator').eq(0).find('.item-media')
+                  .empty()
+                  .append(yt);
+              }
+            }
+            else {
+              board.text('Looking up')
+                .addClass('hide');
+            }
+          });
+      });
+
       // Load more
 
       view.find('>.panel-body >.load-more a')
