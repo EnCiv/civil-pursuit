@@ -33,74 +33,92 @@
       };
     };
 
-    // Hide panel's creator
+    // Stuff to hide
 
-    if ( $panel.find('>.panel-body >.creator.is-shown').length ) {
-      Panel.controller('hide')($panel.find('>.panel-body >.creator.is-shown'));
-    }
+    var hide = [];
 
-    // Is loaded so just show  
-    
-    if ( $children.hasClass('is-loaded') ) {
-      Panel.controller('reveal')($children, $item);
+    [
+      $panel.find('>.panel-body >.creator.is-shown'),
+      $item.find(' >.collapsers >.evaluator.is-shown'),
+      $item.find(' >.collapsers >.details.is-shown')
+    ]
+    .forEach(function (e) {
+      if ( e.length ) {
+        hide.push(function (cb) {
+          Panel.controller('hide')(e, cb);
+        });
+      }
+    });
 
-      $toggleArrow
-        .find('i.fa')
-        .removeClass('fa-arrow-down')
-        .addClass('fa-arrow-up');
-    }
+    hide.push(function (cb) {
+      // Is loaded so just show  
+      
+      if ( $children.hasClass('is-loaded') ) {
+        Panel.controller('reveal')($children, $item);
 
-    // else load and show
-    
-    else {
+        $toggleArrow
+          .find('i.fa')
+          .removeClass('fa-arrow-down')
+          .addClass('fa-arrow-up');
+      }
 
-      Panel.controller('reveal')($children, $item, function () {
-        $children.addClass('is-loaded');
+      // else load and show
+      
+      else {
 
-        setTimeout(function () {
-          $toggleArrow.find('i.fa')
-            .removeClass('fa-arrow-down')
-            .addClass('fa-arrow-up');
-          });
+        Panel.controller('reveal')($children, $item, function () {
+          $children.addClass('is-loaded');
 
-        var children = synapp['item relation'][item.type];
-
-        if ( typeof children === 'string' ) {
-          Panel.controller('make')(children, item._id)
-            .controller(function (view) {
-              $children.find('.is-section').append(view);
-
-              Panel.push('panels', {
-                type: children,
-                parent: item._id,
-                size: synapp['navigator batch size'],
-                skip: 0
-              });
+          setTimeout(function () {
+            $toggleArrow.find('i.fa')
+              .removeClass('fa-arrow-down')
+              .addClass('fa-arrow-up');
             });
-        }
 
-        else if ( Array.isArray(children) ) {
-          children.forEach(function (child) {
+          var children = synapp['item relation'][item.type];
 
-            if ( typeof child === 'string' ) {
-              Panel.push('panels', panel());
-            }
+          if ( typeof children === 'string' ) {
+            Panel.controller('make')(children, item._id)
+              .controller(function (view) {
+                $children.find('.is-section').append(view);
 
-            else if ( Array.isArray(child) ) {
-              child.forEach(function (c) {
-
-                var p = panel();
-                p.split = true;
-
-                Panel.push('panels', p);
+                Panel.push('panels', {
+                  type: children,
+                  parent: item._id,
+                  size: synapp['navigator batch size'],
+                  skip: 0
+                });
               });
-            }
+          }
 
-          });
-        }
-      });
+          else if ( Array.isArray(children) ) {
+            children.forEach(function (child) {
 
-    }
+              if ( typeof child === 'string' ) {
+                Panel.push('panels', panel());
+              }
+
+              else if ( Array.isArray(child) ) {
+                child.forEach(function (c) {
+
+                  var p = panel();
+                  p.split = true;
+
+                  Panel.push('panels', p);
+                });
+              }
+
+            });
+          }
+        });
+      }
+
+      cb();
+    });
+
+    require('async').series(hide, div.domain.intercept(function () {
+
+    }));
   }
 
   module.exports =  expand;
