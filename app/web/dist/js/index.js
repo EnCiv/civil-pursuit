@@ -335,7 +335,7 @@
 
 } ();
 
-},{"domain":44,"events":45,"util":49}],2:[function(require,module,exports){
+},{"domain":45,"events":46,"util":50}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -476,7 +476,7 @@
 
 } (this);
 
-},{"events":45,"util":49}],3:[function(require,module,exports){
+},{"events":46,"util":50}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
@@ -813,6 +813,8 @@
     var div     =   this;
     var Panel   =   div.root.extension('Panel');
 
+    console.log('%c Expanding item', 'font-weight:bold', item)
+
     function panel () {
       return {
         type: children,
@@ -842,41 +844,47 @@
     // else load and show
     
     else {
-      $children.addClass('is-loaded');
 
-      setTimeout(function () {
-        $toggleArrow.find('i.fa')
-          .removeClass('fa-arrow-down')
-          .addClass('fa-arrow-up');
-        }.bind(this), 1000);
+      Panel.controller('reveal')($children, $item, function () {
+        $children.addClass('is-loaded');
 
-      return;
+        setTimeout(function () {
+          $toggleArrow.find('i.fa')
+            .removeClass('fa-arrow-down')
+            .addClass('fa-arrow-up');
+          });
 
-      var children = synapp['item relation'][item.type];
+        var children = synapp['item relation'][item.type];
 
-      if ( typeof children === 'string' ) {
-        Panel.push('panels', panel());
-      }
-
-      else if ( Array.isArray(children) ) {
-        children.forEach(function (child) {
-
-          if ( typeof child === 'string' ) {
-            Panel.push('panels', panel());
-          }
-
-          else if ( Array.isArray(child) ) {
-            child.forEach(function (c) {
-
-              var p = panel();
-              p.split = true;
-
-              Panel.push('panels', p);
+        if ( typeof children === 'string' ) {
+          Panel.controller('make')(children)
+            .controller(function (view) {
+              $children.find('.is-section').append(view);
             });
-          }
+          // Panel.push('panels', panel());
+        }
 
-        });
-      }
+        else if ( Array.isArray(children) ) {
+          children.forEach(function (child) {
+
+            if ( typeof child === 'string' ) {
+              Panel.push('panels', panel());
+            }
+
+            else if ( Array.isArray(child) ) {
+              child.forEach(function (c) {
+
+                var p = panel();
+                p.split = true;
+
+                Panel.push('panels', p);
+              });
+            }
+
+          });
+        }
+      });
+
     }
   }
 
@@ -1027,7 +1035,7 @@
 
 } ();
 
-},{"async":43}],11:[function(require,module,exports){
+},{"async":44}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1051,7 +1059,7 @@
 
 } ();
 
-},{"string":50}],12:[function(require,module,exports){
+},{"string":51}],12:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1348,7 +1356,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":50}],16:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":51}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1373,11 +1381,11 @@
     else if ( $children.hasClass('is-shown') ) {
       Panel.controller('scroll to point of attention')($item,
         function () {
-          Panel.controller('hide')($children);
+          // Panel.controller('hide')($children);
 
-          $target.find('i.fa')
-            .removeClass('fa-arrow-up')
-            .addClass('fa-arrow-down');
+          // $target.find('i.fa')
+          //   .removeClass('fa-arrow-up')
+          //   .addClass('fa-arrow-down');
 
         }.bind(this));
     }
@@ -2211,6 +2219,32 @@
 
   'use strict';
 
+  function makePanel (type, parent) {
+
+    var div     =   this;
+    var id      =   'panel-' + type;
+
+    if ( parent ) {
+      id += '-' + parent;
+    }
+
+    return luigi('tpl-panel')
+      .controller(function ($subPanel) {
+
+        $subPanel.attr('id', id);
+      });
+
+  }
+
+  module.exports = makePanel;
+
+} ();
+
+},{}],30:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
   function newItem ($creator, $panel, item) {
 
     var div     =   this;
@@ -2254,7 +2288,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /**
   *  Render and insert a panel
   */
@@ -2491,23 +2525,28 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
 
   function _reveal (elem, poa, cb) {
+
+
     var app = this;
 
     elem.removeClass('is-hidden').addClass('is-showing');
 
     if ( poa ) {
+       console.log('revealing with POA')
+
       app.controller('scroll to point of attention')(poa, function () {
         app.controller('show')(elem, cb);
       });
     }
 
     else {
+      console.log('revealing without POA')
       app.controller('show')(elem, cb);
     }
   }
@@ -2558,9 +2597,9 @@
     // If hiders
 
     if (  hider ) {
-      app.controller('hide')(hider, function () {
-        _reveal.apply(app, [elem, poa, cb]);
-      });
+      // app.controller('hide')(hider, function () {
+      //   _reveal.apply(app, [elem, poa, cb]);
+      // });
     }
 
     else {
@@ -2572,7 +2611,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2582,6 +2621,10 @@
 
     var current = $('body,html').scrollTop();
 
+    if ( typeof cb !== 'function' ) {
+      cb = function () {};
+    }
+
     if ( 
       (current === poa) || 
       (current > poa && (current - poa < 50)) ||
@@ -2590,20 +2633,26 @@
       return typeof cb === 'function' ? cb() : true;
     }
 
-    $('body,html').animate({
-      scrollTop: poa + 'px'
-    }, speed || 500, 'swing', function () {
-      if ( typeof cb === 'function' ) {
-        cb();
-      }
-    });
+    $.when($('body,html')
+      .animate({
+        scrollTop: poa + 'px'
+      }, 500, 'swing'))
+      .then(cb);
+
+    // $('body,html').animate({
+    //   scrollTop: poa + 'px'
+    // }, speed || 500, 'swing', function () {
+    //   if ( typeof cb === 'function' ) {
+    //     cb();
+    //   }
+    // });
   }
 
   module.exports = scrollToPointOfAttention;
 
 }();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2630,17 +2679,12 @@
 
     // animate is-section
 
-    elem.find('.is-section:first').animate(
-      
-      {
-        'margin-top': 0,
-        // 'padding-top': 0,
-      },
-
-      500,
-
-      function () {
-        elem.removeClass('is-showing').addClass('is-shown');
+    $.when(elem.find('.is-section:first')
+      .animate({
+        marginTop: 0
+      }, 500))
+    .then(function () {
+      elem.removeClass('is-showing').addClass('is-shown');
         
         if ( elem.css('margin-top') !== 0 ) {
           elem.animate({'margin-top': 0}, 250);
@@ -2648,8 +2692,29 @@
         
         if ( cb ) {
           cb();
-        }
-      });
+        }      
+    });
+
+    // elem.find('.is-section:first').animate(
+      
+    //   {
+    //     'margin-top': 0,
+    //     // 'padding-top': 0,
+    //   },
+
+    //   500,
+
+    //   function () {
+    //     elem.removeClass('is-showing').addClass('is-shown');
+        
+    //     if ( elem.css('margin-top') !== 0 ) {
+    //       elem.animate({'margin-top': 0}, 250);
+    //     }
+        
+    //     if ( cb ) {
+    //       cb();
+    //     }
+    //   });
 
     elem.animate({
        opacity: 1
@@ -2660,7 +2725,7 @@
 
 }();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2681,7 +2746,7 @@
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2745,7 +2810,7 @@
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2775,6 +2840,7 @@
         require('./controllers/scroll-to-point-of-attention'),
 
       'show':             require('./controllers/show'),
+      'make':             require('./controllers/make'),
       'hide':             require('./controllers/hide'),
       'reveal':           require('./controllers/reveal'),
       'upload':           require('./controllers/upload'),
@@ -2816,7 +2882,7 @@
 
 } ();
 
-},{"./controllers/create":26,"./controllers/find-creator":27,"./controllers/hide":28,"./controllers/new-item":29,"./controllers/render":30,"./controllers/reveal":31,"./controllers/scroll-to-point-of-attention":32,"./controllers/show":33,"./controllers/toggle-creator":34,"./controllers/upload":35}],37:[function(require,module,exports){
+},{"./controllers/create":26,"./controllers/find-creator":27,"./controllers/hide":28,"./controllers/make":29,"./controllers/new-item":30,"./controllers/render":31,"./controllers/reveal":32,"./controllers/scroll-to-point-of-attention":33,"./controllers/show":34,"./controllers/toggle-creator":35,"./controllers/upload":36}],38:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2863,7 +2929,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],38:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],39:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3264,7 +3330,7 @@
 
 } ();
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -3298,7 +3364,7 @@
 
 } ();
 
-},{"./controllers/get-evaluation":37,"./controllers/render":38}],40:[function(require,module,exports){
+},{"./controllers/get-evaluation":38,"./controllers/render":39}],41:[function(require,module,exports){
 /**
                                         
                                             
@@ -3348,7 +3414,7 @@
 
 } ();
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /***
 
 
@@ -3405,7 +3471,7 @@ Nina Butorac
 
 }();
 
-},{"./synapp/index":42,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],42:[function(require,module,exports){
+},{"./synapp/index":43,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],43:[function(require,module,exports){
  /**
                  
 
@@ -3530,7 +3596,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":25,"../Panel/":36,"../Promote/":39,"../User/":40}],43:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":25,"../Panel/":37,"../Promote/":40,"../User/":41}],44:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4657,7 +4723,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":47}],44:[function(require,module,exports){
+},{"_process":48}],45:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4695,7 +4761,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":45}],45:[function(require,module,exports){
+},{"events":46}],46:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4998,7 +5064,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5023,7 +5089,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5111,14 +5177,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5708,7 +5774,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":48,"_process":47,"inherits":46}],50:[function(require,module,exports){
+},{"./support/isBuffer":49,"_process":48,"inherits":47}],51:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6742,4 +6808,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[41]);
+},{}]},{},[42]);

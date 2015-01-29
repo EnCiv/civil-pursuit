@@ -3,17 +3,22 @@
   'use strict';
 
   function _reveal (elem, poa, cb) {
+
+
     var app = this;
 
     elem.removeClass('is-hidden').addClass('is-showing');
 
     if ( poa ) {
+       console.log('revealing with POA')
+
       app.controller('scroll to point of attention')(poa, function () {
         app.controller('show')(elem, cb);
       });
     }
 
     else {
+      console.log('revealing without POA')
       app.controller('show')(elem, cb);
     }
   }
@@ -64,9 +69,9 @@
     // If hiders
 
     if (  hider ) {
-      app.controller('hide')(hider, function () {
-        _reveal.apply(app, [elem, poa, cb]);
-      });
+      // app.controller('hide')(hider, function () {
+      //   _reveal.apply(app, [elem, poa, cb]);
+      // });
     }
 
     else {

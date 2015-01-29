@@ -24,17 +24,12 @@
 
     // animate is-section
 
-    elem.find('.is-section:first').animate(
-      
-      {
-        'margin-top': 0,
-        // 'padding-top': 0,
-      },
-
-      500,
-
-      function () {
-        elem.removeClass('is-showing').addClass('is-shown');
+    $.when(elem.find('.is-section:first')
+      .animate({
+        marginTop: 0
+      }, 500))
+    .then(function () {
+      elem.removeClass('is-showing').addClass('is-shown');
         
         if ( elem.css('margin-top') !== 0 ) {
           elem.animate({'margin-top': 0}, 250);
@@ -42,8 +37,29 @@
         
         if ( cb ) {
           cb();
-        }
-      });
+        }      
+    });
+
+    // elem.find('.is-section:first').animate(
+      
+    //   {
+    //     'margin-top': 0,
+    //     // 'padding-top': 0,
+    //   },
+
+    //   500,
+
+    //   function () {
+    //     elem.removeClass('is-showing').addClass('is-shown');
+        
+    //     if ( elem.css('margin-top') !== 0 ) {
+    //       elem.animate({'margin-top': 0}, 250);
+    //     }
+        
+    //     if ( cb ) {
+    //       cb();
+    //     }
+    //   });
 
     elem.animate({
        opacity: 1

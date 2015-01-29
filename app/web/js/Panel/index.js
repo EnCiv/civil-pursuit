@@ -27,6 +27,7 @@
         require('./controllers/scroll-to-point-of-attention'),
 
       'show':             require('./controllers/show'),
+      'make':             require('./controllers/make'),
       'hide':             require('./controllers/hide'),
       'reveal':           require('./controllers/reveal'),
       'upload':           require('./controllers/upload'),
