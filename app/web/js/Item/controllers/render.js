@@ -120,49 +120,9 @@
 
           // toggle promote
 
-          $togglePromote.on('click',
-
-            function togglePromote () {
-
-              var $panel    =   $(this).closest('.panel');
-              var $item     =   $(this).closest('.item');
-              var $promote  =   $item.find('>.collapsers >.evaluator');
-
-              if ( $promote.hasClass('is-showing') || $promote.hasClass('is-hiding') ) {
-                return false;
-              }
-
-              else if ( $promote.hasClass('is-shown') ) {
-                Panel.controller('scroll to point of attention')($item,
-                  function () {
-                    Panel.controller('hide')($promote);
-                  });
-              }
-
-              else {
-                // Show tip
-
-                $('#modal-tip-evaluate').modal('show');
-
-                Panel.controller('reveal')($promote, view,
-                  
-                  function onPromoteShown () {
-
-                    var evaluationExists = Promote.model('evaluations')
-                      .some(function (evaluation) {
-                        return evaluation.item === item._id;
-                      });
-
-                    if ( ! evaluationExists ) {
-                      Socket.emit('get evaluation', item);
-                    }
-
-                  });
-              }
-
-              return false;
-
-            });
+          $togglePromote.on('click', function togglePromoteWrapper () {
+            div.controller('toggle promote')($(this), view, item);
+          });
 
           // toggle details
 
@@ -174,37 +134,7 @@
           // toggle arrow
 
           $toggleArrow.on('click', function () {
-
-            var $panel    =   $(this).closest('.panel');
-            var $item     =   $(this).closest('.item');
-            var $children =   $item.find('>.collapsers >.children');
-
-            // Animation in progress - don't do nothing
-
-            if ( $children.hasClass('is-showing') || $children.hasClass('is-hiding') ) {
-              return;
-            }
-
-            // Is shown so hide
-            
-            else if ( $children.hasClass('is-shown') ) {
-              Panel.controller('scroll to point of attention')($item,
-                function () {
-                  Panel.controller('hide')($children);
-
-                  $(this).find('i.fa')
-                    .removeClass('fa-arrow-up')
-                    .addClass('fa-arrow-down');
-
-                }.bind(this));
-            }
-
-            // else, show
-
-            else {
-              div.controller('expand')(item, $panel, $item, $children, $(this));
-            }
-
+            div.controller('toggle arrow')($(this), item);
           });
 
           // is in

@@ -37,7 +37,9 @@
       'expand':                   require('./controllers/expand'),
       'place item in panel':      require('./controllers/place-item-in-panel'),
       'details votes':            require('./controllers/details-votes'),
-      'edit and go again':        require('./controllers/edit-and-go-again')
+      'edit and go again':        require('./controllers/edit-and-go-again'),
+      'toggle promote':           require('./controllers/toggle-promote'),
+      'toggle arrow':             require('./controllers/toggle-arrow')
     },
 
     run: function () {

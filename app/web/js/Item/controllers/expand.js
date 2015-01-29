@@ -1,11 +1,26 @@
+/** Item/Expand
+ *
+ *  Expands an item's subpanel
+ */
+
+
 ! function () {
   
   'use strict';
 
+  /**
+   *  @function expand
+   *  @arg {Object} item
+   *  @arg {Object} $panel
+   *  @arg {Object} $item
+   *  @arg {Object} $children
+   *  @arg {Object} $toggleArrow
+  */
+
   function expand (item, $panel, $item, $children, $toggleArrow) {
 
-    var div = this;
-    var Panel = div.root.extension('Panel');
+    var div     =   this;
+    var Panel   =   div.root.extension('Panel');
 
     function panel () {
       return {
@@ -43,6 +58,8 @@
           .removeClass('fa-arrow-down')
           .addClass('fa-arrow-up');
         }.bind(this), 1000);
+
+      return;
 
       var children = synapp['item relation'][item.type];
 

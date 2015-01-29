@@ -335,7 +335,7 @@
 
 } ();
 
-},{"domain":42,"events":43,"util":47}],2:[function(require,module,exports){
+},{"domain":44,"events":45,"util":49}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -476,7 +476,7 @@
 
 } (this);
 
-},{"events":43,"util":47}],3:[function(require,module,exports){
+},{"events":45,"util":49}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
@@ -789,14 +789,29 @@
 } ();
 
 },{}],8:[function(require,module,exports){
+/** Item/Expand
+ *
+ *  Expands an item's subpanel
+ */
+
+
 ! function () {
   
   'use strict';
 
+  /**
+   *  @function expand
+   *  @arg {Object} item
+   *  @arg {Object} $panel
+   *  @arg {Object} $item
+   *  @arg {Object} $children
+   *  @arg {Object} $toggleArrow
+  */
+
   function expand (item, $panel, $item, $children, $toggleArrow) {
 
-    var div = this;
-    var Panel = div.root.extension('Panel');
+    var div     =   this;
+    var Panel   =   div.root.extension('Panel');
 
     function panel () {
       return {
@@ -834,6 +849,8 @@
           .removeClass('fa-arrow-down')
           .addClass('fa-arrow-up');
         }.bind(this), 1000);
+
+      return;
 
       var children = synapp['item relation'][item.type];
 
@@ -1010,7 +1027,7 @@
 
 } ();
 
-},{"async":41}],11:[function(require,module,exports){
+},{"async":43}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1034,7 +1051,7 @@
 
 } ();
 
-},{"string":48}],12:[function(require,module,exports){
+},{"string":50}],12:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1291,49 +1308,9 @@
 
           // toggle promote
 
-          $togglePromote.on('click',
-
-            function togglePromote () {
-
-              var $panel    =   $(this).closest('.panel');
-              var $item     =   $(this).closest('.item');
-              var $promote  =   $item.find('>.collapsers >.evaluator');
-
-              if ( $promote.hasClass('is-showing') || $promote.hasClass('is-hiding') ) {
-                return false;
-              }
-
-              else if ( $promote.hasClass('is-shown') ) {
-                Panel.controller('scroll to point of attention')($item,
-                  function () {
-                    Panel.controller('hide')($promote);
-                  });
-              }
-
-              else {
-                // Show tip
-
-                $('#modal-tip-evaluate').modal('show');
-
-                Panel.controller('reveal')($promote, view,
-                  
-                  function onPromoteShown () {
-
-                    var evaluationExists = Promote.model('evaluations')
-                      .some(function (evaluation) {
-                        return evaluation.item === item._id;
-                      });
-
-                    if ( ! evaluationExists ) {
-                      Socket.emit('get evaluation', item);
-                    }
-
-                  });
-              }
-
-              return false;
-
-            });
+          $togglePromote.on('click', function togglePromoteWrapper () {
+            div.controller('toggle promote')($(this), view, item);
+          });
 
           // toggle details
 
@@ -1345,37 +1322,7 @@
           // toggle arrow
 
           $toggleArrow.on('click', function () {
-
-            var $panel    =   $(this).closest('.panel');
-            var $item     =   $(this).closest('.item');
-            var $children =   $item.find('>.collapsers >.children');
-
-            // Animation in progress - don't do nothing
-
-            if ( $children.hasClass('is-showing') || $children.hasClass('is-hiding') ) {
-              return;
-            }
-
-            // Is shown so hide
-            
-            else if ( $children.hasClass('is-shown') ) {
-              Panel.controller('scroll to point of attention')($item,
-                function () {
-                  Panel.controller('hide')($children);
-
-                  $(this).find('i.fa')
-                    .removeClass('fa-arrow-up')
-                    .addClass('fa-arrow-down');
-
-                }.bind(this));
-            }
-
-            // else, show
-
-            else {
-              div.controller('expand')(item, $panel, $item, $children, $(this));
-            }
-
+            div.controller('toggle arrow')($(this), item);
           });
 
           // is in
@@ -1401,7 +1348,52 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":48}],16:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":50}],16:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function toggleArrow ($target, item) {
+
+    var div       =   this;
+    var Panel     =   div.root.extension('Panel');
+
+    var $panel    =   $target.closest('.panel');
+    var $item     =   $target.closest('.item');
+    var $children =   $item.find('>.collapsers >.children');
+
+    // Animation in progress - don't do nothing
+
+    if ( $children.hasClass('is-showing') || $children.hasClass('is-hiding') ) {
+      return;
+    }
+
+    // Is shown so hide
+    
+    else if ( $children.hasClass('is-shown') ) {
+      Panel.controller('scroll to point of attention')($item,
+        function () {
+          Panel.controller('hide')($children);
+
+          $target.find('i.fa')
+            .removeClass('fa-arrow-up')
+            .addClass('fa-arrow-down');
+
+        }.bind(this));
+    }
+
+    // else, show
+
+    else {
+      div.controller('expand')(item, $panel, $item, $children, $target);
+    }
+  }
+
+  module.exports = toggleArrow;
+
+} ();
+
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1505,7 +1497,7 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1529,7 +1521,61 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function togglePromote ($target, view, item) {
+    var div       =   this;
+    var Panel     =   div.root.extension('Panel');
+    var Promote   =   div.root.extension('Promote');
+    var Socket    =   div.root.emitter('socket');
+
+    var $panel    =   $target.closest('.panel');
+    var $item     =   $target.closest('.item');
+    var $promote  =   $item.find('>.collapsers >.evaluator');
+
+    if ( $promote.hasClass('is-showing') || $promote.hasClass('is-hiding') ) {
+      return false;
+    }
+
+    else if ( $promote.hasClass('is-shown') ) {
+      Panel.controller('scroll to point of attention')($item,
+        function () {
+          Panel.controller('hide')($promote);
+        });
+    }
+
+    else {
+      // Show tip
+
+      $('#modal-tip-evaluate').modal('show');
+
+      Panel.controller('reveal')($promote, view,
+        
+        function onPromoteShown () {
+
+          var evaluationExists = Promote.model('evaluations')
+            .some(function (evaluation) {
+              return evaluation.item === item._id;
+            });
+
+          if ( ! evaluationExists ) {
+            Socket.emit('get evaluation', item);
+          }
+
+        });
+    }
+
+    return false;
+  }
+
+  module.exports = togglePromote;
+
+} ();
+
+},{}],20:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1751,7 +1797,7 @@
 
 }();
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1792,7 +1838,7 @@
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1831,7 +1877,7 @@
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1893,7 +1939,7 @@
 
 }();
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1928,7 +1974,7 @@
 
 }();
 
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
 
   oo   dP                                
@@ -1968,7 +2014,9 @@
       'expand':                   require('./controllers/expand'),
       'place item in panel':      require('./controllers/place-item-in-panel'),
       'details votes':            require('./controllers/details-votes'),
-      'edit and go again':        require('./controllers/edit-and-go-again')
+      'edit and go again':        require('./controllers/edit-and-go-again'),
+      'toggle promote':           require('./controllers/toggle-promote'),
+      'toggle arrow':             require('./controllers/toggle-arrow')
     },
 
     run: function () {
@@ -1982,7 +2030,7 @@
 
 } ();
 
-},{"./controllers/create-item":5,"./controllers/details-votes":6,"./controllers/edit-and-go-again":7,"./controllers/expand":8,"./controllers/get-item-details":9,"./controllers/get-items":10,"./controllers/invite-people-in":11,"./controllers/item-media":12,"./controllers/place-item-in-panel":13,"./controllers/progress-bar":14,"./controllers/render":15,"./controllers/toggle-details":16,"./controllers/toggle-edit-and-go-again":17,"./controllers/truncate":18,"./controllers/update-panel-model":19,"./controllers/update-panel-view":20,"./controllers/youtube":22,"./controllers/youtube-play-icon":21}],24:[function(require,module,exports){
+},{"./controllers/create-item":5,"./controllers/details-votes":6,"./controllers/edit-and-go-again":7,"./controllers/expand":8,"./controllers/get-item-details":9,"./controllers/get-items":10,"./controllers/invite-people-in":11,"./controllers/item-media":12,"./controllers/place-item-in-panel":13,"./controllers/progress-bar":14,"./controllers/render":15,"./controllers/toggle-arrow":16,"./controllers/toggle-details":17,"./controllers/toggle-edit-and-go-again":18,"./controllers/toggle-promote":19,"./controllers/truncate":20,"./controllers/update-panel-model":21,"./controllers/update-panel-view":22,"./controllers/youtube":24,"./controllers/youtube-play-icon":23}],26:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2104,7 +2152,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2117,7 +2165,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2158,7 +2206,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2206,7 +2254,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
   *  Render and insert a panel
   */
@@ -2443,7 +2491,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2524,7 +2572,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2555,7 +2603,7 @@
 
 }();
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2612,7 +2660,7 @@
 
 }();
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2633,7 +2681,7 @@
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2697,7 +2745,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /**
                                             
                                                 
@@ -2768,7 +2816,7 @@
 
 } ();
 
-},{"./controllers/create":24,"./controllers/find-creator":25,"./controllers/hide":26,"./controllers/new-item":27,"./controllers/render":28,"./controllers/reveal":29,"./controllers/scroll-to-point-of-attention":30,"./controllers/show":31,"./controllers/toggle-creator":32,"./controllers/upload":33}],35:[function(require,module,exports){
+},{"./controllers/create":26,"./controllers/find-creator":27,"./controllers/hide":28,"./controllers/new-item":29,"./controllers/render":30,"./controllers/reveal":31,"./controllers/scroll-to-point-of-attention":32,"./controllers/show":33,"./controllers/toggle-creator":34,"./controllers/upload":35}],37:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2815,7 +2863,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2}],36:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2}],38:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3216,7 +3264,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /**
 
   88888888b                   dP                     dP   oo                   
@@ -3250,7 +3298,7 @@
 
 } ();
 
-},{"./controllers/get-evaluation":35,"./controllers/render":36}],38:[function(require,module,exports){
+},{"./controllers/get-evaluation":37,"./controllers/render":38}],40:[function(require,module,exports){
 /**
                                         
                                             
@@ -3300,7 +3348,7 @@
 
 } ();
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /***
 
 
@@ -3357,7 +3405,7 @@ Nina Butorac
 
 }();
 
-},{"./synapp/index":40,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],40:[function(require,module,exports){
+},{"./synapp/index":42,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],42:[function(require,module,exports){
  /**
                  
 
@@ -3482,7 +3530,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":23,"../Panel/":34,"../Promote/":37,"../User/":38}],41:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":25,"../Panel/":36,"../Promote/":39,"../User/":40}],43:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4609,7 +4657,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":45}],42:[function(require,module,exports){
+},{"_process":47}],44:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4647,7 +4695,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":43}],43:[function(require,module,exports){
+},{"events":45}],45:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4950,7 +4998,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4975,7 +5023,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5063,14 +5111,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],46:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],47:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5660,7 +5708,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":46,"_process":45,"inherits":44}],48:[function(require,module,exports){
+},{"./support/isBuffer":48,"_process":47,"inherits":46}],50:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6694,4 +6742,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[39]);
+},{}]},{},[41]);
