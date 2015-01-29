@@ -1433,13 +1433,13 @@
     else if ( $children.hasClass('is-shown') ) {
       Panel.controller('scroll to point of attention')($item,
         function () {
-          // Panel.controller('hide')($children);
+          Panel.controller('hide')($children);
 
-          // $target.find('i.fa')
-          //   .removeClass('fa-arrow-up')
-          //   .addClass('fa-arrow-down');
+          $target.find('i.fa')
+            .removeClass('fa-arrow-up')
+            .addClass('fa-arrow-down');
 
-        }.bind(this));
+        });
     }
 
     // else, show
