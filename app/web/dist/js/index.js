@@ -335,7 +335,7 @@
 
 } ();
 
-},{"domain":46,"events":47,"util":51}],2:[function(require,module,exports){
+},{"domain":47,"events":48,"util":52}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -476,7 +476,7 @@
 
 } (this);
 
-},{"events":47,"util":51}],3:[function(require,module,exports){
+},{"events":48,"util":52}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
@@ -944,7 +944,7 @@
 
 }();
 
-},{"async":45}],9:[function(require,module,exports){
+},{"async":46}],9:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1087,7 +1087,7 @@
 
 } ();
 
-},{"async":45}],11:[function(require,module,exports){
+},{"async":46}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1111,7 +1111,7 @@
 
 } ();
 
-},{"string":52}],12:[function(require,module,exports){
+},{"string":53}],12:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1408,7 +1408,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":52}],16:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":53}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3491,6 +3491,111 @@
 } ();
 
 },{}],42:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function signUp () {
+    var app = this;
+
+    $('#join').find('.i-agree').on('click', function () {
+      var agreed = $('#join').find('.agreed');
+
+      if ( agreed.hasClass('fa-square-o') ) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      }
+      else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    $('#join').find('form').on('submit', function () {
+      
+      var email = $(this).find('[name="email"]');
+      var password = $(this).find('[name="password"]');
+      var confirm = $(this).find('[name="confirm"]');
+
+      email.removeClass('error');
+      password.removeClass('error');
+      confirm.removeClass('error');
+
+      $('#join').find('.alert')
+          .css('display', 'none');
+
+      if ( ! email.val() ) {
+        email.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please enter an email address');
+      }
+
+      else if ( ! password.val() ) {
+        password.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please enter a password');
+      }
+
+      else if ( ! confirm.val() ) {
+        confirm.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please confirm password');
+      }
+
+      else if ( password.val() !== confirm.val() ) {
+        confirm.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Passwords do not match');
+      }
+
+      else {
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          
+          .error(function (response, state, code) {
+            if ( response.status === 401 ) {
+              $('#join').find('.alert')
+                .css('display', 'block')
+                .find('.alert-message').text('This email address is already in use');
+            }
+          })
+          
+          .success(function (response) {
+            synapp.user = response.user;
+            
+            $('.is-in').css('visibility', 'visible');
+
+            $('#join').modal('hide');
+
+            $('#signer').find('section').hide(2000);
+
+            $('#signer').find('.sign-success')
+              .show(function () {
+                setTimeout(function () {
+                  $('#signer').hide(2500);
+                }, 5000);
+              })
+              .text('Welcome to Synaccord!');
+          });
+      }
+
+      return false;
+    })
+  }
+
+  module.exports = signUp;
+
+} ();
+
+},{}],43:[function(require,module,exports){
 /**
                                         
                                             
@@ -3518,7 +3623,8 @@
     },
 
     controllers: {
-      'sign in': require('./controllers/sign-in')
+      'sign in': require('./controllers/sign-in'),
+      'sign up': require('./controllers/sign-up')
     },
 
     run: function () {
@@ -3542,12 +3648,13 @@
       }
 
       div.controller('sign in')();
+      div.controller('sign up')();
     }
   };
 
 } ();
 
-},{"./controllers/sign-in":41}],43:[function(require,module,exports){
+},{"./controllers/sign-in":41,"./controllers/sign-up":42}],44:[function(require,module,exports){
 /***
 
 
@@ -3604,7 +3711,7 @@ Nina Butorac
 
 }();
 
-},{"./synapp/index":44,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],44:[function(require,module,exports){
+},{"./synapp/index":45,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],45:[function(require,module,exports){
  /**
                  
 
@@ -3729,7 +3836,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":25,"../Panel/":37,"../Promote/":40,"../User/":42}],45:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":25,"../Panel/":37,"../Promote/":40,"../User/":43}],46:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4856,7 +4963,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":49}],46:[function(require,module,exports){
+},{"_process":50}],47:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4894,7 +5001,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":47}],47:[function(require,module,exports){
+},{"events":48}],48:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5197,7 +5304,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5222,7 +5329,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5310,14 +5417,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5907,7 +6014,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":50,"_process":49,"inherits":48}],52:[function(require,module,exports){
+},{"./support/isBuffer":51,"_process":50,"inherits":49}],53:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6941,4 +7048,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[43]);
+},{}]},{},[44]);

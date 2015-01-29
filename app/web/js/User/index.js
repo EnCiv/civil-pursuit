@@ -25,7 +25,8 @@
     },
 
     controllers: {
-      'sign in': require('./controllers/sign-in')
+      'sign in': require('./controllers/sign-in'),
+      'sign up': require('./controllers/sign-up')
     },
 
     run: function () {
@@ -49,6 +50,7 @@
       }
 
       div.controller('sign in')();
+      div.controller('sign up')();
     }
   };
 
