@@ -10,15 +10,12 @@
     elem.removeClass('is-hidden').addClass('is-showing');
 
     if ( poa ) {
-       console.log('revealing with POA')
-
       app.controller('scroll to point of attention')(poa, function () {
         app.controller('show')(elem, cb);
       });
     }
 
     else {
-      console.log('revealing without POA')
       app.controller('show')(elem, cb);
     }
   }

@@ -15,6 +15,8 @@
       .controller(function ($subPanel) {
 
         $subPanel.attr('id', id);
+
+        $subPanel.addClass('type-' + type);
       });
 
   }

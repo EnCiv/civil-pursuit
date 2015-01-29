@@ -27,14 +27,14 @@
         div.push('items', item);
       });
 
-      div.watch.on('panel model updated', function (panel) {
+      div.watch.once('panel model updated', function (panel) {
 
         console.log('%c panel model updated', 'font-weight: bold; color: magenta', panel);
 
         if ( items.length ) {
 
-          div.watch.on('panel view updated', function () {
-            console.log('%c panel viewo updated', 'font-weight: bold; color: magenta', panel);
+          div.watch.once('panel view updated', function () {
+            console.log('%c panel view updated', 'font-weight: bold; color: magenta', panel);
 
             require('async').series(items
 

@@ -31,7 +31,7 @@
       id += '-' + panel.parent;
     }
 
-    console.log('%c render panel', 'font-weight: bold; color: #369', panel);
+    console.log('%c render panel', 'font-weight: bold', panel);
 
     // render function
 
@@ -208,6 +208,7 @@
     luigi(id)
       .on('error', function (error) {
         if ( error.code === 'NO_SUCH_TEMPLATE' ) {
+          console.warn('%c Render Panel: Panel not found', 'font-weight: bold; color: orange', panel);
           luigi('tpl-panel')
             .on('error', div.domain.intercept())
             .controller(function (panelView) {

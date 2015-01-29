@@ -857,11 +857,17 @@
         var children = synapp['item relation'][item.type];
 
         if ( typeof children === 'string' ) {
-          Panel.controller('make')(children)
+          Panel.controller('make')(children, item._id)
             .controller(function (view) {
               $children.find('.is-section').append(view);
+
+              Panel.push('panels', {
+                type: children,
+                parent: item._id,
+                size: synapp['navigator batch size'],
+                skip: 0
+              });
             });
-          // Panel.push('panels', panel());
         }
 
         else if ( Array.isArray(children) ) {
@@ -974,14 +980,14 @@
         div.push('items', item);
       });
 
-      div.watch.on('panel model updated', function (panel) {
+      div.watch.once('panel model updated', function (panel) {
 
         console.log('%c panel model updated', 'font-weight: bold; color: magenta', panel);
 
         if ( items.length ) {
 
-          div.watch.on('panel view updated', function () {
-            console.log('%c panel viewo updated', 'font-weight: bold; color: magenta', panel);
+          div.watch.once('panel view updated', function () {
+            console.log('%c panel view updated', 'font-weight: bold; color: magenta', panel);
 
             require('async').series(items
 
@@ -2232,6 +2238,8 @@
       .controller(function ($subPanel) {
 
         $subPanel.attr('id', id);
+
+        $subPanel.addClass('type-' + type);
       });
 
   }
@@ -2322,7 +2330,7 @@
       id += '-' + panel.parent;
     }
 
-    console.log('%c render panel', 'font-weight: bold; color: #369', panel);
+    console.log('%c render panel', 'font-weight: bold', panel);
 
     // render function
 
@@ -2499,6 +2507,7 @@
     luigi(id)
       .on('error', function (error) {
         if ( error.code === 'NO_SUCH_TEMPLATE' ) {
+          console.warn('%c Render Panel: Panel not found', 'font-weight: bold; color: orange', panel);
           luigi('tpl-panel')
             .on('error', div.domain.intercept())
             .controller(function (panelView) {
@@ -2538,15 +2547,12 @@
     elem.removeClass('is-hidden').addClass('is-showing');
 
     if ( poa ) {
-       console.log('revealing with POA')
-
       app.controller('scroll to point of attention')(poa, function () {
         app.controller('show')(elem, cb);
       });
     }
 
     else {
-      console.log('revealing without POA')
       app.controller('show')(elem, cb);
     }
   }

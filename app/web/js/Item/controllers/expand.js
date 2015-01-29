@@ -66,11 +66,17 @@
         var children = synapp['item relation'][item.type];
 
         if ( typeof children === 'string' ) {
-          Panel.controller('make')(children)
+          Panel.controller('make')(children, item._id)
             .controller(function (view) {
               $children.find('.is-section').append(view);
+
+              Panel.push('panels', {
+                type: children,
+                parent: item._id,
+                size: synapp['navigator batch size'],
+                skip: 0
+              });
             });
-          // Panel.push('panels', panel());
         }
 
         else if ( Array.isArray(children) ) {
