@@ -2412,16 +2412,23 @@
 
       view.find('.toggle-creator').on('click', function () {
 
-        if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
-          return;
+        if ( synapp.user ) {
+          if ( $creator.hasClass('is-showing') || $creator.hasClass('is-hiding') ) {
+            return;
+          }
+          else if ( $creator.hasClass('is-shown') ) {
+            div.controller('hide')($creator);
+          }
+          else {
+            // console.log('revealing')
+            div.controller('reveal')($creator, view, intercept());
+          }
         }
-        else if ( $creator.hasClass('is-shown') ) {
-          div.controller('hide')($creator);
-        }
+
         else {
-          // console.log('revealing')
-          div.controller('reveal')($creator, view, intercept());
+          $('#join').modal('show');
         }
+          
       });
 
       // Upload
