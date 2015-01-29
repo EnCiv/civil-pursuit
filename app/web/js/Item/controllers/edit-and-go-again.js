@@ -82,12 +82,6 @@
 
         div.root.emitter('socket').emit('edit and go again', _item,
           div.domain.intercept(function (new_item) {
-          
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
 
             new_item.is_new = true;
 
@@ -100,22 +94,6 @@
 
                     Panel.controller('reveal')($panel.find('.new-item:first'),
                       $panel, function () {
-
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
 
                         $item.addClass('is-new');
                         

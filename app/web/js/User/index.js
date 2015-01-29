@@ -18,9 +18,14 @@
   'use strict';
 
   module.exports = {
+    
     models: {
       user:   synapp.user,
       online: 0
+    },
+
+    controllers: {
+      'sign in': require('./controllers/sign-in')
     },
 
     run: function () {
@@ -42,6 +47,8 @@
       if ( synapp.user ) {
         $('.is-in').css('visibility', 'visible');
       }
+
+      div.controller('sign in')();
     }
   };
 

@@ -335,7 +335,7 @@
 
 } ();
 
-},{"domain":45,"events":46,"util":50}],2:[function(require,module,exports){
+},{"domain":46,"events":47,"util":51}],2:[function(require,module,exports){
 /**
  *  @author https://github.com/co2-git
  *  @licence MIT
@@ -476,7 +476,7 @@
 
 } (this);
 
-},{"events":46,"util":50}],3:[function(require,module,exports){
+},{"events":47,"util":51}],3:[function(require,module,exports){
 ! function () {
 
 	'use strict';
@@ -776,12 +776,6 @@
 
         div.root.emitter('socket').emit('edit and go again', _item,
           div.domain.intercept(function (new_item) {
-          
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
-            console.log('//////////////', new_item)
 
             new_item.is_new = true;
 
@@ -794,22 +788,6 @@
 
                     Panel.controller('reveal')($panel.find('.new-item:first'),
                       $panel, function () {
-
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
-                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
 
                         $item.addClass('is-new');
                         
@@ -966,7 +944,7 @@
 
 }();
 
-},{"async":44}],9:[function(require,module,exports){
+},{"async":45}],9:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1109,7 +1087,7 @@
 
 } ();
 
-},{"async":44}],11:[function(require,module,exports){
+},{"async":45}],11:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1133,7 +1111,7 @@
 
 } ();
 
-},{"string":51}],12:[function(require,module,exports){
+},{"string":52}],12:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -1430,7 +1408,7 @@
 
 } ();
 
-},{"/home/francois/Dev/luigi/luigi":2,"string":51}],16:[function(require,module,exports){
+},{"/home/francois/Dev/luigi/luigi":2,"string":52}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3443,6 +3421,76 @@
 } ();
 
 },{"./controllers/get-evaluation":38,"./controllers/render":39}],41:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function signIn () {
+    var app = this;
+
+    var signForm = $('#signer');
+
+    signForm.on('submit', function () {
+
+      signForm.find('.sign-error')
+        .text('')
+        .hide();
+
+      var email = signForm.find('[name="email"]');
+      var password = signForm.find('[name="password"]');
+
+      email.removeClass('error');
+      password.removeClass('error');
+
+      if ( ! email.val() ) {
+        email.addClass('error');
+        email.focus();
+      }
+
+      else if ( ! password.val() ) {
+        password.addClass('error');
+        password.focus();
+      }
+
+      else {
+        $.ajax({
+          url: '/sign/in',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          .error(function (error) {
+
+          })
+          .success(function (response) {
+
+            synapp.user = response.user;
+
+            $('.is-in').css('visibility', 'visible');
+
+            signForm.find('section').hide(2000);
+
+            signForm.find('.sign-success')
+              .show(function () {
+                setTimeout(function () {
+                  signForm.hide(2500);
+                }, 5000);
+              })
+              .text('Welcome back!');
+          });
+      }
+
+      return false;
+    });
+  }
+
+  module.exports = signIn;
+
+} ();
+
+},{}],42:[function(require,module,exports){
 /**
                                         
                                             
@@ -3463,9 +3511,14 @@
   'use strict';
 
   module.exports = {
+    
     models: {
       user:   synapp.user,
       online: 0
+    },
+
+    controllers: {
+      'sign in': require('./controllers/sign-in')
     },
 
     run: function () {
@@ -3487,12 +3540,14 @@
       if ( synapp.user ) {
         $('.is-in').css('visibility', 'visible');
       }
+
+      div.controller('sign in')();
     }
   };
 
 } ();
 
-},{}],42:[function(require,module,exports){
+},{"./controllers/sign-in":41}],43:[function(require,module,exports){
 /***
 
 
@@ -3549,7 +3604,7 @@ Nina Butorac
 
 }();
 
-},{"./synapp/index":43,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],43:[function(require,module,exports){
+},{"./synapp/index":44,"/home/francois/Dev/div.js/div":1,"/home/francois/Dev/luigi/luigi":2}],44:[function(require,module,exports){
  /**
                  
 
@@ -3674,7 +3729,7 @@ Nina Butorac
 
 }();
 
-},{"../Intro/":4,"../Item/":25,"../Panel/":37,"../Promote/":40,"../User/":41}],44:[function(require,module,exports){
+},{"../Intro/":4,"../Item/":25,"../Panel/":37,"../Promote/":40,"../User/":42}],45:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -4801,7 +4856,7 @@ Nina Butorac
 }());
 
 }).call(this,require('_process'))
-},{"_process":48}],45:[function(require,module,exports){
+},{"_process":49}],46:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4839,7 +4894,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":46}],46:[function(require,module,exports){
+},{"events":47}],47:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5142,7 +5197,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5167,7 +5222,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5255,14 +5310,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5852,7 +5907,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":49,"_process":48,"inherits":47}],51:[function(require,module,exports){
+},{"./support/isBuffer":50,"_process":49,"inherits":48}],52:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6886,4 +6941,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[42]);
+},{}]},{},[43]);
