@@ -2,9 +2,15 @@ module.exports =(function () {
 
   'use strict';
 
+  var monson = require('monson')(process.env.MONGOHQ_URL, {
+      base: require('path').join(process.cwd(), 'app/business')
+    });
+
   return (
 
     function twitterMiddlewares (app, synapp, passport) {
+
+      var email;
 
       var callback_url = synapp.twitter[process.env.SYNAPP_ENV]['callback url'];
 
@@ -53,13 +59,11 @@ module.exports =(function () {
             else if ( user ) {
               synappUser = user;
 
-              res.locals.logMessage({ 'twitter user has a synapp account': user.email });
-
               done(null, user);
             }
 
             else {
-              app.locals.monson.post('models/User',
+              monson.post('models/User',
                 { email: email, password: profile.id + Date.now() },
                 createUser)
             }
@@ -98,11 +102,9 @@ module.exports =(function () {
            */
 
           function main () {
-            res.locals.logMessage({ 'got response from twitter': profile.id });
+            email = profile.id + '@twitter.com';
 
-            var email = profile.id + '@twitter.com';
-
-            app.locals.monson.get('models/User.findOne?email=' + email,
+            monson.get('models/User.findOne?email=' + email,
               associateUser);
           }
 
@@ -167,11 +169,7 @@ module.exports =(function () {
           if ( error ) {
             return next(error);
           }
-          app.locals.logSystemMessage({
-            user: user,
-            info: info,
-            reqUser: req.user
-          });
+
           res.redirect('/sign/twitter/ok');
         }
 
@@ -193,8 +191,6 @@ module.exports =(function () {
        */
 
       function okMiddleware (req, res, next) {
-
-        app.locals.logSystemMessage({ 'ok user': synappUser });
 
         res.cookie('synuser', {
             email: synappUser.email,

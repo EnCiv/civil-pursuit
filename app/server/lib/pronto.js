@@ -119,9 +119,11 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
   'use strict';
 
-  var pronto = require('prontojs');
+  var pronto      =   require('prontojs');
 
-  var when = pronto.when;
+  var when        =   pronto.when;
+
+  var passport    =   require('passport');
 
   module.exports = function () {
 
@@ -129,7 +131,7 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
     var exportConfig = config.public;
 
-    // exportConfig.user = { name: 'Roger' };
+    var session       =   require('express-session');
 
     var monson = require('monson')(process.env.MONGOHQ_URL, {
       base: require('path').join(process.cwd(), 'app/business')
@@ -195,19 +197,38 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       .cookie(config.secret)
 
-      /** passport */
+      .open(passport.initialize());
 
-      .passport({
-        serialize: function (user, done) {
-          done(null, user._id);
-        },
-        deserialize: function (id, done) {
-          monson.get('models/User.findById/' + id, done);
-        },
-        strategies: {
-          facebook: facebook
-        }
-      })
+    /** passport */
+
+    // server
+      
+    //   .app
+        
+    //     .use(function () {
+    //       passport.initialize()
+    //     });
+
+    passport.serializeUser(function(user, done) {
+      done(null, user._id);
+    });
+
+    passport.deserializeUser(function(id, done) {
+      monson.get('models/User.findById/' + id, done);
+    });
+
+    server.app.use(require('cookie-parser')(config.secret));
+
+    server.app.use(session({
+      secret:             config.secret,
+      resave:             true,
+      saveUninitialized:  true
+    }));
+
+    require('../routes/facebook')(server.app, config, passport);
+    require('../routes/twitter')(server.app, config, passport);
+
+    server
 
       /** pre router */
 

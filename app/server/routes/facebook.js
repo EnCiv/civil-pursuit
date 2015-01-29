@@ -16,6 +16,10 @@ module.exports = (function () {
 
     var callback_url = synapp.facebook['callback url'];
 
+    var monson = require('monson')(process.env.MONGOHQ_URL, {
+      base: require('path').join(process.cwd(), 'app/business')
+    });
+
     var synappUser;
     
     function strategyMiddleware (req, res, next) {
@@ -31,13 +35,11 @@ module.exports = (function () {
           else if ( user ) {
             synappUser = user;
 
-            res.locals.logMessage({ 'facebook user has a synapp account': user.email });
-
             done(null, user);
           }
 
           else {
-            app.locals.monson.post('models/User',
+            monson.post('models/User',
               { email: email, password: profile.id + Date.now() },
               createUser);
           }
@@ -45,8 +47,6 @@ module.exports = (function () {
 
         function createUser (error, user) {
           if ( error ) {
-            app.locals.logSystemError(error);
-
             if ( error.message && /duplicate/.test(error.message) ) {
               return done(new Error('Duplicate user'));
             }
@@ -59,11 +59,9 @@ module.exports = (function () {
           done(null, user);
         }
 
-        res.locals.logMessage({ 'got response from facebook': profile.id });
-
         var email = profile.id + '@facebook.com';
 
-        app.locals.monson.get('models/User.findOne?email=' + email,
+        monson.get('models/User.findOne?email=' + email,
             associateUser);
 
       }
@@ -103,11 +101,6 @@ module.exports = (function () {
         if ( error ) {
           return next(error);
         }
-        app.locals.logSystemMessage({
-          user: user,
-          info: info,
-          reqUser: req.user
-        });
         res.redirect('/sign/facebook/ok');
       }
 
@@ -115,8 +108,6 @@ module.exports = (function () {
     }
 
     function okMiddleware (req, res, next) {
-      app.locals.logSystemMessage({ 'ok user': synappUser });
-
       res.cookie('synuser', {
           email: synappUser.email,
           id: synappUser.id
@@ -132,80 +123,6 @@ module.exports = (function () {
     app.get(callback_url, callbackMiddleware);
 
     app.get(synapp.public.routes['sign in with Facebook OK'], okMiddleware);
-
-    // return function (req, res, next) {
-    //   if ( ! app.locals.FacebookStrategy ) {
-    //     app.locals.FacebookStrategy = require('passport-facebook').Strategy;
-
-    //     var callback;
-
-    //     if ( req.hostname === 'localhost' ) {
-    //       callback = require('util').format("http://%s:%d%s",
-    //         req.hostname, app.get('port'), synapp.facebook['callback url']);
-    //     }
-
-    //     else {
-    //       callback = require('util').format("http://%s%s",
-    //         req.hostname, synapp.facebook['callback url']);
-    //     }
-
-    //     passport.use(
-    //       new app.locals.FacebookStrategy({
-    //         clientID:       synapp.facebook['app id'],
-    //         clientSecret:   synapp.facebook['app secret'],
-    //         callbackURL:    callback
-    //       },
-          
-    //       function (accessToken, refreshToken, profile, done) {
-    //         console.log('Got response from Facebook');
-
-    //         var email = profile.id + '@facebook.com';
-
-    //         var User = require('../../business/models/User');
-
-    //         User.findOne({ email: email }, function (error, user) {
-    //           if ( error ) {
-    //             console.error('Something bad happened while looking for user', error.format()); 
-
-    //             return done(error);
-    //           }
-
-    //           if ( user ) {
-    //             req.session.email =   email;
-    //             req.session.userid    =   user._id;
-
-    //             console.log('User found');
-
-    //             return done(null, user);
-    //           }
-
-    //           User.create({ email: email, password: profile.id + Date.now() },
-    //             function (error, user) {
-    //               if ( error ) {
-    //                 console.error('Could not sign up user', error.format());
-
-    //                 if ( error.message && /duplicate/.test(error.message) ) {
-    //                   return done(new Error('Duplicate user'));
-    //                 }
-                    
-    //                 return next(error);
-    //               }
-
-    //               req.session.email   =   email;
-    //               req.session.userid      =   user._id;
-
-    //               console.log('User created', user);
-                  
-    //               done(null, user);
-
-    //             });
-    //         });
-    //       }
-    //     ));
-    //   }
-
-    //   next();
-    // };
   });
 
 })();
