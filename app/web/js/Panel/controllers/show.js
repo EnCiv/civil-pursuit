@@ -31,13 +31,13 @@
     .then(function () {
       elem.removeClass('is-showing').addClass('is-shown');
         
-        if ( elem.css('margin-top') !== 0 ) {
-          elem.animate({'margin-top': 0}, 250);
-        }
-        
-        if ( cb ) {
-          cb();
-        }      
+      if ( elem.css('margin-top') !== 0 ) {
+        elem.animate({'margin-top': 0}, 250);
+      }
+      
+      if ( cb ) {
+        cb();
+      }      
     });
 
     // elem.find('.is-section:first').animate(

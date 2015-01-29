@@ -27,7 +27,7 @@
 
     if ( ( typeof id === 'string' && ! $('#' + id).length ) || ( typeof
        id === 'object' && ! id.length ) ) {
-      console.log('Item view not found', item.subject);
+      console.warn('Item view not found', item.subject, id);
       return cb();
     }
 

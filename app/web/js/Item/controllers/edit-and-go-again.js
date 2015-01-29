@@ -4,13 +4,13 @@
 
   function editAndGoAgain (view, item) {
 
-    var app = this;
+    var div = this;
+
+    var Panel = div.root.extension('Panel');
 
     console.log('%c Rendering Edit and go again', 'font-weight:bold', item);
 
     var $item = view.find('.item');
-
-    console.log($item.length)
 
     $item.find('[name="subject"]').val(item.subject);
     $item.find('[name="description"]').val(item.description);
@@ -40,6 +40,14 @@
       
       var $reference    =   $editor.find('[name="reference"]');
 
+      // Item
+
+      var $item         =    $editor.closest('.item');
+
+      // Panel
+
+      var $panel        =    $editor.closest('.panel');
+
       // Reset errors in case of any from previous call
 
       $subject.removeClass('error');
@@ -63,29 +71,70 @@
       else {
         var _item = item;
 
-        _item.from = item._id;
-        _item.subject = $subject.val();
-        _item.description = $description.val();
-        _item.references = [{
+        _item.from          =   item._id;
+        _item.subject       =   $subject.val();
+        _item.description   =   $description.val();
+        _item.references    =   [{
           url: $reference.val()
         }];
 
         delete _item._id;
 
-        app.importer.emitter('socket').emit('edit and go again', _item,
-          function (error, new_item) {
-            if ( error ) {
+        div.root.emitter('socket').emit('edit and go again', _item,
+          div.domain.intercept(function (new_item) {
+          
+            console.log('//////////////', new_item)
+            console.log('//////////////', new_item)
+            console.log('//////////////', new_item)
+            console.log('//////////////', new_item)
+            console.log('//////////////', new_item)
 
-            }
-            else {
-              new_item.is_new = true;
+            new_item.is_new = true;
 
-              app.importer.extension('Panel').controller('hide')(
-                $editor, function () {
-                  app.push('items', new_item);
-                });
-            }
-          });
+            div.root.extension('Panel').controller('hide')(
+              $editor, function () {
+                div.push('items', new_item);
+                luigi('tpl-item')
+                  .controller(function ($item) {
+                    $panel.find('.new-item:first').append($item);
+
+                    Panel.controller('reveal')($panel.find('.new-item:first'),
+                      $panel, function () {
+
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+                        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!', new_item._id);
+
+                        $item.addClass('is-new');
+                        
+                        $item.attr('id', 'item-' + new_item._id);
+                        
+                        $item.insertAfter($panel.find('.new-item:first'));
+                        
+                        $panel.find('.new-item:first').empty().hide();
+                        
+                        div.controller('render')(new_item, div.domain.intercept());
+                      });
+                  })
+                // div.controller('render')(item, div.domain.intercept());
+              });
+          
+
+
+
+          }));
       }
     });
 
