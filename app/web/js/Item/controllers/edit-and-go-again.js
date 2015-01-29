@@ -6,7 +6,11 @@
 
     var app = this;
 
-    var $item = view.find('>.item');
+    console.log('%c Rendering Edit and go again', 'font-weight:bold', item);
+
+    var $item = view.find('.item');
+
+    console.log($item.length)
 
     $item.find('[name="subject"]').val(item.subject);
     $item.find('[name="description"]').val(item.description);

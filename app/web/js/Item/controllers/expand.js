@@ -22,7 +22,7 @@
     var div     =   this;
     var Panel   =   div.root.extension('Panel');
 
-    console.log('%c Expanding item', 'font-weight:bold', item)
+    console.log('%c Expanding item', 'font-weight:bold', item);
 
     function panel () {
       return {

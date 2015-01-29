@@ -44,6 +44,10 @@
                 luigi('tpl-creator')
 
                   .controller(function (view) {
+                    div.controller('edit and go again')(view, item);
+                  })
+
+                  .controller(function (view) {
                     $editor
                       .find('.is-section')
                       .empty()

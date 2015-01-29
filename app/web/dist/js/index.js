@@ -703,7 +703,11 @@
 
     var app = this;
 
-    var $item = view.find('>.item');
+    console.log('%c Rendering Edit and go again', 'font-weight:bold', item);
+
+    var $item = view.find('.item');
+
+    console.log($item.length)
 
     $item.find('[name="subject"]').val(item.subject);
     $item.find('[name="description"]').val(item.description);
@@ -813,7 +817,7 @@
     var div     =   this;
     var Panel   =   div.root.extension('Panel');
 
-    console.log('%c Expanding item', 'font-weight:bold', item)
+    console.log('%c Expanding item', 'font-weight:bold', item);
 
     function panel () {
       return {
@@ -1452,6 +1456,10 @@
             scrollToPOA($item, function () {
               Panel.controller('hide')($details, function () {
                 luigi('tpl-creator')
+
+                  .controller(function (view) {
+                    div.controller('edit and go again')(view, item);
+                  })
 
                   .controller(function (view) {
                     $editor
