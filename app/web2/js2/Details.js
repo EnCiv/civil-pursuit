@@ -1,8 +1,28 @@
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  DETAILS
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
 
+  var Nav = require('./Nav');
+
   function Details(item) {
+
     if ( ! app ) {
       throw new Error('Missing app');
     }
@@ -34,6 +54,9 @@
 
       case 'votes':
         return this.template.find('.details-votes');
+
+      case 'toggle edit and go again':
+        return this.template.find('.edit-and-go-again-toggler');
     }
   };
 
@@ -45,6 +68,10 @@
     self.find('promoted bar')
       .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
       .text(Math.floor(item.promotions * 100 / item.views) + '%');
+
+    self.find('toggle edit and go again').on('click', function () {
+      Nav.unreveal(self.template, self.item.template);
+    });
 
     if ( synapp.user ) {
       $('.is-in').removeClass('is-in');

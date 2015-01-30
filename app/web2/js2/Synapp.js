@@ -1,3 +1,20 @@
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  SYNAPP
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -42,7 +59,11 @@
 
     this.socket = io.connect('http://' + location.hostname + ':' + location.port);
 
-    this.socket.on('connect', this.topLevelPanel.bind(this));
+    this.socket.on('connect', function () {
+      self.topLevelPanel(self.domain.intercept(function () {
+        self.intro();
+      }));
+    });
 
     this.evaluations = [];
 
@@ -57,13 +78,9 @@
     if ( synapp.user ) {
       $('.is-in').removeClass('is-in');
     }
-
-    new Sign().render();
-
-    new Intro().render();
   }
 
-  Synapp.prototype.topLevelPanel = function () {
+  Synapp.prototype.topLevelPanel = function (cb) {
     var self = this;
 
     var panel = new Panel('Topic');
@@ -76,10 +93,15 @@
 
         setTimeout(function () {
           panel.render(self.domain.intercept(function () {
-            panel.fill(self.domain.intercept());
+            panel.fill(cb);
           }));
         }, 700);
       }));
+  };
+
+  Synapp.prototype.intro = function () {
+    console.log('hello')
+    new Intro().render();
   };
 
   window.Synapp = Synapp;

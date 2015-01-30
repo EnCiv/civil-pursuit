@@ -1,4 +1,21 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/web2/js2/Creator.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  CREATOR
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -165,11 +182,31 @@
 } ();
 
 },{"./Form":"/home/francois/Dev/syn/app/web2/js2/Form.js","./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","./Upload":"/home/francois/Dev/syn/app/web2/js2/Upload.js","./YouTube":"/home/francois/Dev/syn/app/web2/js2/YouTube.js"}],"/home/francois/Dev/syn/app/web2/js2/Details.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  DETAILS
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
 
+  var Nav = require('./Nav');
+
   function Details(item) {
+
     if ( ! app ) {
       throw new Error('Missing app');
     }
@@ -201,6 +238,9 @@
 
       case 'votes':
         return this.template.find('.details-votes');
+
+      case 'toggle edit and go again':
+        return this.template.find('.edit-and-go-again-toggler');
     }
   };
 
@@ -212,6 +252,10 @@
     self.find('promoted bar')
       .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
       .text(Math.floor(item.promotions * 100 / item.views) + '%');
+
+    self.find('toggle edit and go again').on('click', function () {
+      Nav.unreveal(self.template, self.item.template);
+    });
 
     if ( synapp.user ) {
       $('.is-in').removeClass('is-in');
@@ -333,7 +377,24 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web2/js2/Form.js":[function(require,module,exports){
+},{"./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js"}],"/home/francois/Dev/syn/app/web2/js2/Form.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  FORM
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -394,6 +455,23 @@
 } ();
 
 },{}],"/home/francois/Dev/syn/app/web2/js2/Intro.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  INTRO
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function Intro () {
 
   'use strict';
@@ -403,7 +481,11 @@
   }
 
   Intro.prototype.render = function () {
-    
+    app.socket.emit('get intro');
+
+    app.socket.on('got intro', function (intro) {
+      $('#intro').find('.panel-title').text(intro.subject);
+    });
   };
 
   module.exports = Intro;
@@ -411,6 +493,23 @@
 } ();
 
 },{}],"/home/francois/Dev/syn/app/web2/js2/Item.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  ITEM
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
   
   'use strict';
@@ -419,6 +518,7 @@
   var Promote     =   require('./Promote');
   var Details     =   require('./Details');
   var YouTube     =   require('./YouTube');
+  var Truncate    =   require('./Truncate');
 
   function Item (item) {
 
@@ -550,6 +650,12 @@
     // Percent of promotions
 
     item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
+
+    // Truncate
+
+    setTimeout(function () {
+      new Truncate(item.template);
+    }, 800);
 
     // Toggle promote
 
@@ -772,7 +878,24 @@
 
 } ();
 
-},{"./Details":"/home/francois/Dev/syn/app/web2/js2/Details.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","./Promote":"/home/francois/Dev/syn/app/web2/js2/Promote.js","./YouTube":"/home/francois/Dev/syn/app/web2/js2/YouTube.js"}],"/home/francois/Dev/syn/app/web2/js2/Nav.js":[function(require,module,exports){
+},{"./Details":"/home/francois/Dev/syn/app/web2/js2/Details.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","./Promote":"/home/francois/Dev/syn/app/web2/js2/Promote.js","./Truncate":"/home/francois/Dev/syn/app/web2/js2/Truncate.js","./YouTube":"/home/francois/Dev/syn/app/web2/js2/YouTube.js"}],"/home/francois/Dev/syn/app/web2/js2/Nav.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  NAV
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -962,6 +1085,23 @@
 } ();
 
 },{}],"/home/francois/Dev/syn/app/web2/js2/Panel.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  PANEL
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -1096,7 +1236,7 @@
     return json;
   };
 
-  Panel.prototype.fill = function () {
+  Panel.prototype.fill = function (cb) {
     var self = this;
 
     app.socket.emit('get items', this.toJSON());
@@ -1107,33 +1247,11 @@
 
       self.skip += items.length;
 
-      return self.insertItem(items, 0);
-
-      require('async').series(
-        items.map(function (_item) {
-          return function (cb) {
-
-            var item  = new Item(this);
-
-            console.log('get item template', item.item.subject)
-
-            item.get(app.domain.intercept(function () {
-              console.log('inserting item', item.item.subject)
-
-              self.find('items').append(item.template);
-              cb();
-              // item.render(cb);
-            }));
-          }.bind(_item);
-        }),
-
-        app.domain.intercept(function () {
-          console.log('filling done', items.length)
-        }));
+      self.insertItem(items, 0, cb);
     });
   };
 
-  Panel.prototype.insertItem = function (items, i) {
+  Panel.prototype.insertItem = function (items, i, cb) {
 
     var self = this;
 
@@ -1147,10 +1265,13 @@
         self.find('items').append(template);
 
         item.render(app.domain.intercept(function () {
-          self.insertItem(items, ++ i);
+          self.insertItem(items, ++ i, cb);
         }));
 
       }));
+    }
+    else {
+      cb && cb();
     }
   };
 
@@ -1160,7 +1281,24 @@
 
 } ();
 
-},{"./Creator":"/home/francois/Dev/syn/app/web2/js2/Creator.js","./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","async":"/home/francois/Dev/syn/app/web2/node_modules/async/lib/async.js"}],"/home/francois/Dev/syn/app/web2/js2/Promote.js":[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web2/js2/Creator.js","./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js"}],"/home/francois/Dev/syn/app/web2/js2/Promote.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  PROMOTE
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -1247,7 +1385,7 @@
   };
 
   Promote.prototype.renderItem = function (hand) {
-    var self = this;
+    var promote = this;
 
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
@@ -1264,21 +1402,25 @@
 
     this.find('item description', hand).text(this.evaluation[hand].description);
 
-    self.find('sliders', hand).find('h4').each(function (i) {
+    promote.find('sliders', hand).find('h4').each(function (i) {
       var cid = i;
 
       if ( cid > 3 ) {
         cid -= 4;
       }
 
-      self.find('sliders', hand).find('h4').eq(i).text(self.evaluation.criterias[cid].name);
+      promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
     });
 
-    self.find('promote button', hand)
+    promote.find('promote button', hand)
       .text(this.evaluation[hand].subject)
       .on('click', function () {
-        Nav.scroll(self.template, app.domain.intercept(function () {
-          self.edit('cursor', self.evaluation.cursor + 1);
+        Nav.scroll(promote.template, app.domain.intercept(function () {
+        
+          if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+            promote.edit('cursor', promote.evaluation.cursor + 1);
+          }
+
         }));
       });
   };
@@ -1304,7 +1446,11 @@
 
         promote.find('finish button').on('click', function () {
           Nav.scroll(promote.template, app.domain.intercept(function () {
-            promote.edit('cursor', promote.evaluation.cursor + 2);
+
+            if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+              promote.edit('cursor', promote.evaluation.cursor + 2);
+            }
+
           }));
         });
       });
@@ -1326,6 +1472,23 @@
 } ();
 
 },{"./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","events":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web2/js2/Sign.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  SIGN
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -1335,6 +1498,11 @@
   }
 
   Sign.prototype.render = function () {
+    this.signIn();
+    this.signUp();
+  };
+
+  Sign.prototype.signIn = function() {
     var signForm = $('#signer');
 
     signForm.on('submit', function () {
@@ -1393,11 +1561,123 @@
     });
   };
 
+  Sign.prototype.signUp = function () {
+
+    $('#join').find('.i-agree').on('click', function () {
+      var agreed = $('#join').find('.agreed');
+
+      if ( agreed.hasClass('fa-square-o') ) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      }
+      else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    $('#join').find('form').on('submit', function () {
+      
+      var email = $(this).find('[name="email"]');
+      var password = $(this).find('[name="password"]');
+      var confirm = $(this).find('[name="confirm"]');
+
+      email.removeClass('error');
+      password.removeClass('error');
+      confirm.removeClass('error');
+
+      $('#join').find('.alert')
+          .css('display', 'none');
+
+      if ( ! email.val() ) {
+        email.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please enter an email address');
+      }
+
+      else if ( ! password.val() ) {
+        password.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please enter a password');
+      }
+
+      else if ( ! confirm.val() ) {
+        confirm.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Please confirm password');
+      }
+
+      else if ( password.val() !== confirm.val() ) {
+        confirm.addClass('error').focus();
+        $('#join').find('.alert')
+          .css('display', 'block')
+          .find('.alert-message').text('Passwords do not match');
+      }
+
+      else {
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          
+          .error(function (response, state, code) {
+            if ( response.status === 401 ) {
+              $('#join').find('.alert')
+                .css('display', 'block')
+                .find('.alert-message').text('This email address is already in use');
+            }
+          })
+          
+          .success(function (response) {
+            synapp.user = response.user;
+            
+            $('.is-in').css('visibility', 'visible');
+
+            $('#join').modal('hide');
+
+            $('#signer').find('section').hide(2000);
+
+            $('#signer').find('.sign-success')
+              .show(function () {
+                setTimeout(function () {
+                  $('#signer').hide(2500);
+                }, 5000);
+              })
+              .text('Welcome to Synaccord!');
+          });
+      }
+
+      return false;
+    })
+  }
+
   module.exports = Sign;
 
 } ();
 
 },{}],"/home/francois/Dev/syn/app/web2/js2/Synapp.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  SYNAPP
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -1442,7 +1722,11 @@
 
     this.socket = io.connect('http://' + location.hostname + ':' + location.port);
 
-    this.socket.on('connect', this.topLevelPanel.bind(this));
+    this.socket.on('connect', function () {
+      self.topLevelPanel(self.domain.intercept(function () {
+        self.intro();
+      }));
+    });
 
     this.evaluations = [];
 
@@ -1457,13 +1741,9 @@
     if ( synapp.user ) {
       $('.is-in').removeClass('is-in');
     }
-
-    new Sign().render();
-
-    new Intro().render();
   }
 
-  Synapp.prototype.topLevelPanel = function () {
+  Synapp.prototype.topLevelPanel = function (cb) {
     var self = this;
 
     var panel = new Panel('Topic');
@@ -1476,17 +1756,244 @@
 
         setTimeout(function () {
           panel.render(self.domain.intercept(function () {
-            panel.fill(self.domain.intercept());
+            panel.fill(cb);
           }));
         }, 700);
       }));
+  };
+
+  Synapp.prototype.intro = function () {
+    console.log('hello')
+    new Intro().render();
   };
 
   window.Synapp = Synapp;
 
 } ();
 
-},{"./Intro":"/home/francois/Dev/syn/app/web2/js2/Intro.js","./Panel":"/home/francois/Dev/syn/app/web2/js2/Panel.js","./Sign":"/home/francois/Dev/syn/app/web2/js2/Sign.js","domain":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web2/js2/Upload.js":[function(require,module,exports){
+},{"./Intro":"/home/francois/Dev/syn/app/web2/js2/Intro.js","./Panel":"/home/francois/Dev/syn/app/web2/js2/Panel.js","./Sign":"/home/francois/Dev/syn/app/web2/js2/Sign.js","domain":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web2/js2/Truncate.js":[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  function Truncate (item) {
+
+    // ============
+
+    this.item = item;
+
+    this.description = this.item.find('.description:first');
+
+    this.textWrapper = this.item.find('.item-text:first');
+
+    this.reference = this.item.find('.reference:first');
+
+    this.text = this.description.text();
+
+    this.words = this.text.split(' ');
+
+    this.height = parseInt(this.textWrapper.css('paddingBottom'));
+
+    this.truncated = false;
+
+    this.moreLabel = 'more';
+
+    this.lessLabel = 'less';
+
+    this.isIntro = ( this.item.attr('id') === 'intro' );
+
+    if ( ! this.isIntro ) {
+      this._id = this.item.attr('id').split('-')[1];
+    }
+
+    // ============
+
+    this.tagify();
+
+    if ( this.truncated ) {
+      item.addClass('is-truncated');
+      this.appendMoreButton();
+    }
+  }
+
+  Truncate.prototype.tagify = function () {
+
+    var self = this;
+
+    this.description.empty();
+
+    this.reference.hide();
+
+    var i = 0;
+
+    this.words.forEach(function (word, index) {
+
+      var span = $('<span class="word"></span>');
+
+      if ( self.truncated ) {
+        span.addClass('truncated');
+        span.hide();
+      }
+
+      span.text(word + ' ');
+
+      self.description.append(span);
+
+      if ( i === 5 ) {
+
+        var diff = self.textWrapper.height() > self.height;
+
+        if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
+
+          self.truncated = true;
+        }
+
+        i = -1;
+      }
+
+      i ++;
+    });
+  };
+
+  Truncate.prototype.appendMoreButton = function () {
+
+    var self = this;
+
+    // create more button
+
+    this.more = $('<span class="truncator"><i>... </i>[<a href=""></a>]</span>');
+
+    // more button's text
+
+    this.more.find('a').text(self.moreLabel);
+
+    // more button's on click behavior
+
+    this.more.find('a').on('click', function () {
+
+      var moreLink = $(this);
+
+      // Exit if already an animation in progress
+
+      if ( self.item.find('.is-showing').length ) {
+        return false;
+      }
+
+      Synapp.extension('Panel').controller('scroll to point of attention')
+        (self.item, function () {
+
+        // Show more
+
+        if ( moreLink.text() === self.moreLabel ) {
+          
+          // If is intro
+
+          if ( self.isIntro ) {
+            self.unTruncate();
+            moreLink.closest('span').find('.reference').show();
+            moreLink.text(self.lessLabel);
+            moreLink.closest('span').find('i').hide();
+          }
+          
+          else {
+            // If there is already stuff shown, hide it first
+
+            if ( self.item.find('.is-shown').length ) {
+              
+              // Trigger the toggle view to hide current shown items
+
+              $rootScope.publish("toggle view",
+                { view: "text", item: self._id });
+
+              // Listen on hiding done
+
+              $rootScope.subscribe('did hide view', function (options) {
+
+                // Make sure it concerns our item
+
+                if ( options.item === self._id )  {
+
+                  // untruncate
+
+                  setTimeout(function () {
+                    self.unTruncate();
+                  });
+                }
+              });
+            }
+
+            else {
+              self.unTruncate();
+              moreLink.closest('span').find('.reference').show();
+              moreLink.text(self.lessLabel);
+              moreLink.closest('span').find('i').hide();
+            }
+          }
+        }
+
+        // hide
+
+        else {
+          self.reTruncate();
+          moreLink.closest('span').find('.reference').hide();
+          moreLink.text(self.moreLabel);
+          moreLink.closest('span').find('i').show();
+        }
+      });
+
+      return false;
+    });
+
+    this.description.append(this.more);
+  };
+
+  Truncate.prototype.unTruncate = function () {
+      
+    var self = this;
+
+    var interval = 0;
+
+    var inc = 50;
+
+    // var inc = Math.ceil(self.height / self.words.length);
+
+    // show words 50 by 50
+
+    for ( var i = 0; i < this.words.length ; i += inc ) {
+      setTimeout(function () {
+        var k = this.i + inc;
+        for ( var j = this.i; j < k ; j ++ ) {
+          self.item.find('.truncated:eq(' + j + ')').show();
+        }
+      }.bind({ i: i }), interval += (inc * 1.5));
+    }
+
+    // on done showing words, wrap up
+  };
+
+  Truncate.prototype.reTruncate = function () {
+    
+    var self = this;
+
+    var interval = 0;
+
+    var inc = Math.ceil(self.height / self.words.length);
+
+    for ( var i = 0; i < this.words.length ; i += inc ) {
+      setTimeout(function () {
+        var k = this.i + inc;
+        for ( var j = this.i; j < k ; j ++ ) {
+          self.item.find('.truncated:eq(' + j + ')').hide();
+        }
+      }.bind({ i: i }), interval += (inc * 2));
+    }
+  };
+
+  module.exports = Truncate;  
+
+}();
+
+},{}],"/home/francois/Dev/syn/app/web2/js2/Upload.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -1632,1134 +2139,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web2/node_modules/async/lib/async.js":[function(require,module,exports){
-(function (process){
-/*!
- * async
- * https://github.com/caolan/async
- *
- * Copyright 2010-2014 Caolan McMahon
- * Released under the MIT license
- */
-/*jshint onevar: false, indent:4 */
-/*global setImmediate: false, setTimeout: false, console: false */
-(function () {
-
-    var async = {};
-
-    // global on the server, window in the browser
-    var root, previous_async;
-
-    root = this;
-    if (root != null) {
-      previous_async = root.async;
-    }
-
-    async.noConflict = function () {
-        root.async = previous_async;
-        return async;
-    };
-
-    function only_once(fn) {
-        var called = false;
-        return function() {
-            if (called) throw new Error("Callback was already called.");
-            called = true;
-            fn.apply(root, arguments);
-        }
-    }
-
-    //// cross-browser compatiblity functions ////
-
-    var _toString = Object.prototype.toString;
-
-    var _isArray = Array.isArray || function (obj) {
-        return _toString.call(obj) === '[object Array]';
-    };
-
-    var _each = function (arr, iterator) {
-        if (arr.forEach) {
-            return arr.forEach(iterator);
-        }
-        for (var i = 0; i < arr.length; i += 1) {
-            iterator(arr[i], i, arr);
-        }
-    };
-
-    var _map = function (arr, iterator) {
-        if (arr.map) {
-            return arr.map(iterator);
-        }
-        var results = [];
-        _each(arr, function (x, i, a) {
-            results.push(iterator(x, i, a));
-        });
-        return results;
-    };
-
-    var _reduce = function (arr, iterator, memo) {
-        if (arr.reduce) {
-            return arr.reduce(iterator, memo);
-        }
-        _each(arr, function (x, i, a) {
-            memo = iterator(memo, x, i, a);
-        });
-        return memo;
-    };
-
-    var _keys = function (obj) {
-        if (Object.keys) {
-            return Object.keys(obj);
-        }
-        var keys = [];
-        for (var k in obj) {
-            if (obj.hasOwnProperty(k)) {
-                keys.push(k);
-            }
-        }
-        return keys;
-    };
-
-    //// exported async module functions ////
-
-    //// nextTick implementation with browser-compatible fallback ////
-    if (typeof process === 'undefined' || !(process.nextTick)) {
-        if (typeof setImmediate === 'function') {
-            async.nextTick = function (fn) {
-                // not a direct alias for IE10 compatibility
-                setImmediate(fn);
-            };
-            async.setImmediate = async.nextTick;
-        }
-        else {
-            async.nextTick = function (fn) {
-                setTimeout(fn, 0);
-            };
-            async.setImmediate = async.nextTick;
-        }
-    }
-    else {
-        async.nextTick = process.nextTick;
-        if (typeof setImmediate !== 'undefined') {
-            async.setImmediate = function (fn) {
-              // not a direct alias for IE10 compatibility
-              setImmediate(fn);
-            };
-        }
-        else {
-            async.setImmediate = async.nextTick;
-        }
-    }
-
-    async.each = function (arr, iterator, callback) {
-        callback = callback || function () {};
-        if (!arr.length) {
-            return callback();
-        }
-        var completed = 0;
-        _each(arr, function (x) {
-            iterator(x, only_once(done) );
-        });
-        function done(err) {
-          if (err) {
-              callback(err);
-              callback = function () {};
-          }
-          else {
-              completed += 1;
-              if (completed >= arr.length) {
-                  callback();
-              }
-          }
-        }
-    };
-    async.forEach = async.each;
-
-    async.eachSeries = function (arr, iterator, callback) {
-        callback = callback || function () {};
-        if (!arr.length) {
-            return callback();
-        }
-        var completed = 0;
-        var iterate = function () {
-            iterator(arr[completed], function (err) {
-                if (err) {
-                    callback(err);
-                    callback = function () {};
-                }
-                else {
-                    completed += 1;
-                    if (completed >= arr.length) {
-                        callback();
-                    }
-                    else {
-                        iterate();
-                    }
-                }
-            });
-        };
-        iterate();
-    };
-    async.forEachSeries = async.eachSeries;
-
-    async.eachLimit = function (arr, limit, iterator, callback) {
-        var fn = _eachLimit(limit);
-        fn.apply(null, [arr, iterator, callback]);
-    };
-    async.forEachLimit = async.eachLimit;
-
-    var _eachLimit = function (limit) {
-
-        return function (arr, iterator, callback) {
-            callback = callback || function () {};
-            if (!arr.length || limit <= 0) {
-                return callback();
-            }
-            var completed = 0;
-            var started = 0;
-            var running = 0;
-
-            (function replenish () {
-                if (completed >= arr.length) {
-                    return callback();
-                }
-
-                while (running < limit && started < arr.length) {
-                    started += 1;
-                    running += 1;
-                    iterator(arr[started - 1], function (err) {
-                        if (err) {
-                            callback(err);
-                            callback = function () {};
-                        }
-                        else {
-                            completed += 1;
-                            running -= 1;
-                            if (completed >= arr.length) {
-                                callback();
-                            }
-                            else {
-                                replenish();
-                            }
-                        }
-                    });
-                }
-            })();
-        };
-    };
-
-
-    var doParallel = function (fn) {
-        return function () {
-            var args = Array.prototype.slice.call(arguments);
-            return fn.apply(null, [async.each].concat(args));
-        };
-    };
-    var doParallelLimit = function(limit, fn) {
-        return function () {
-            var args = Array.prototype.slice.call(arguments);
-            return fn.apply(null, [_eachLimit(limit)].concat(args));
-        };
-    };
-    var doSeries = function (fn) {
-        return function () {
-            var args = Array.prototype.slice.call(arguments);
-            return fn.apply(null, [async.eachSeries].concat(args));
-        };
-    };
-
-
-    var _asyncMap = function (eachfn, arr, iterator, callback) {
-        arr = _map(arr, function (x, i) {
-            return {index: i, value: x};
-        });
-        if (!callback) {
-            eachfn(arr, function (x, callback) {
-                iterator(x.value, function (err) {
-                    callback(err);
-                });
-            });
-        } else {
-            var results = [];
-            eachfn(arr, function (x, callback) {
-                iterator(x.value, function (err, v) {
-                    results[x.index] = v;
-                    callback(err);
-                });
-            }, function (err) {
-                callback(err, results);
-            });
-        }
-    };
-    async.map = doParallel(_asyncMap);
-    async.mapSeries = doSeries(_asyncMap);
-    async.mapLimit = function (arr, limit, iterator, callback) {
-        return _mapLimit(limit)(arr, iterator, callback);
-    };
-
-    var _mapLimit = function(limit) {
-        return doParallelLimit(limit, _asyncMap);
-    };
-
-    // reduce only has a series version, as doing reduce in parallel won't
-    // work in many situations.
-    async.reduce = function (arr, memo, iterator, callback) {
-        async.eachSeries(arr, function (x, callback) {
-            iterator(memo, x, function (err, v) {
-                memo = v;
-                callback(err);
-            });
-        }, function (err) {
-            callback(err, memo);
-        });
-    };
-    // inject alias
-    async.inject = async.reduce;
-    // foldl alias
-    async.foldl = async.reduce;
-
-    async.reduceRight = function (arr, memo, iterator, callback) {
-        var reversed = _map(arr, function (x) {
-            return x;
-        }).reverse();
-        async.reduce(reversed, memo, iterator, callback);
-    };
-    // foldr alias
-    async.foldr = async.reduceRight;
-
-    var _filter = function (eachfn, arr, iterator, callback) {
-        var results = [];
-        arr = _map(arr, function (x, i) {
-            return {index: i, value: x};
-        });
-        eachfn(arr, function (x, callback) {
-            iterator(x.value, function (v) {
-                if (v) {
-                    results.push(x);
-                }
-                callback();
-            });
-        }, function (err) {
-            callback(_map(results.sort(function (a, b) {
-                return a.index - b.index;
-            }), function (x) {
-                return x.value;
-            }));
-        });
-    };
-    async.filter = doParallel(_filter);
-    async.filterSeries = doSeries(_filter);
-    // select alias
-    async.select = async.filter;
-    async.selectSeries = async.filterSeries;
-
-    var _reject = function (eachfn, arr, iterator, callback) {
-        var results = [];
-        arr = _map(arr, function (x, i) {
-            return {index: i, value: x};
-        });
-        eachfn(arr, function (x, callback) {
-            iterator(x.value, function (v) {
-                if (!v) {
-                    results.push(x);
-                }
-                callback();
-            });
-        }, function (err) {
-            callback(_map(results.sort(function (a, b) {
-                return a.index - b.index;
-            }), function (x) {
-                return x.value;
-            }));
-        });
-    };
-    async.reject = doParallel(_reject);
-    async.rejectSeries = doSeries(_reject);
-
-    var _detect = function (eachfn, arr, iterator, main_callback) {
-        eachfn(arr, function (x, callback) {
-            iterator(x, function (result) {
-                if (result) {
-                    main_callback(x);
-                    main_callback = function () {};
-                }
-                else {
-                    callback();
-                }
-            });
-        }, function (err) {
-            main_callback();
-        });
-    };
-    async.detect = doParallel(_detect);
-    async.detectSeries = doSeries(_detect);
-
-    async.some = function (arr, iterator, main_callback) {
-        async.each(arr, function (x, callback) {
-            iterator(x, function (v) {
-                if (v) {
-                    main_callback(true);
-                    main_callback = function () {};
-                }
-                callback();
-            });
-        }, function (err) {
-            main_callback(false);
-        });
-    };
-    // any alias
-    async.any = async.some;
-
-    async.every = function (arr, iterator, main_callback) {
-        async.each(arr, function (x, callback) {
-            iterator(x, function (v) {
-                if (!v) {
-                    main_callback(false);
-                    main_callback = function () {};
-                }
-                callback();
-            });
-        }, function (err) {
-            main_callback(true);
-        });
-    };
-    // all alias
-    async.all = async.every;
-
-    async.sortBy = function (arr, iterator, callback) {
-        async.map(arr, function (x, callback) {
-            iterator(x, function (err, criteria) {
-                if (err) {
-                    callback(err);
-                }
-                else {
-                    callback(null, {value: x, criteria: criteria});
-                }
-            });
-        }, function (err, results) {
-            if (err) {
-                return callback(err);
-            }
-            else {
-                var fn = function (left, right) {
-                    var a = left.criteria, b = right.criteria;
-                    return a < b ? -1 : a > b ? 1 : 0;
-                };
-                callback(null, _map(results.sort(fn), function (x) {
-                    return x.value;
-                }));
-            }
-        });
-    };
-
-    async.auto = function (tasks, callback) {
-        callback = callback || function () {};
-        var keys = _keys(tasks);
-        var remainingTasks = keys.length
-        if (!remainingTasks) {
-            return callback();
-        }
-
-        var results = {};
-
-        var listeners = [];
-        var addListener = function (fn) {
-            listeners.unshift(fn);
-        };
-        var removeListener = function (fn) {
-            for (var i = 0; i < listeners.length; i += 1) {
-                if (listeners[i] === fn) {
-                    listeners.splice(i, 1);
-                    return;
-                }
-            }
-        };
-        var taskComplete = function () {
-            remainingTasks--
-            _each(listeners.slice(0), function (fn) {
-                fn();
-            });
-        };
-
-        addListener(function () {
-            if (!remainingTasks) {
-                var theCallback = callback;
-                // prevent final callback from calling itself if it errors
-                callback = function () {};
-
-                theCallback(null, results);
-            }
-        });
-
-        _each(keys, function (k) {
-            var task = _isArray(tasks[k]) ? tasks[k]: [tasks[k]];
-            var taskCallback = function (err) {
-                var args = Array.prototype.slice.call(arguments, 1);
-                if (args.length <= 1) {
-                    args = args[0];
-                }
-                if (err) {
-                    var safeResults = {};
-                    _each(_keys(results), function(rkey) {
-                        safeResults[rkey] = results[rkey];
-                    });
-                    safeResults[k] = args;
-                    callback(err, safeResults);
-                    // stop subsequent errors hitting callback multiple times
-                    callback = function () {};
-                }
-                else {
-                    results[k] = args;
-                    async.setImmediate(taskComplete);
-                }
-            };
-            var requires = task.slice(0, Math.abs(task.length - 1)) || [];
-            var ready = function () {
-                return _reduce(requires, function (a, x) {
-                    return (a && results.hasOwnProperty(x));
-                }, true) && !results.hasOwnProperty(k);
-            };
-            if (ready()) {
-                task[task.length - 1](taskCallback, results);
-            }
-            else {
-                var listener = function () {
-                    if (ready()) {
-                        removeListener(listener);
-                        task[task.length - 1](taskCallback, results);
-                    }
-                };
-                addListener(listener);
-            }
-        });
-    };
-
-    async.retry = function(times, task, callback) {
-        var DEFAULT_TIMES = 5;
-        var attempts = [];
-        // Use defaults if times not passed
-        if (typeof times === 'function') {
-            callback = task;
-            task = times;
-            times = DEFAULT_TIMES;
-        }
-        // Make sure times is a number
-        times = parseInt(times, 10) || DEFAULT_TIMES;
-        var wrappedTask = function(wrappedCallback, wrappedResults) {
-            var retryAttempt = function(task, finalAttempt) {
-                return function(seriesCallback) {
-                    task(function(err, result){
-                        seriesCallback(!err || finalAttempt, {err: err, result: result});
-                    }, wrappedResults);
-                };
-            };
-            while (times) {
-                attempts.push(retryAttempt(task, !(times-=1)));
-            }
-            async.series(attempts, function(done, data){
-                data = data[data.length - 1];
-                (wrappedCallback || callback)(data.err, data.result);
-            });
-        }
-        // If a callback is passed, run this as a controll flow
-        return callback ? wrappedTask() : wrappedTask
-    };
-
-    async.waterfall = function (tasks, callback) {
-        callback = callback || function () {};
-        if (!_isArray(tasks)) {
-          var err = new Error('First argument to waterfall must be an array of functions');
-          return callback(err);
-        }
-        if (!tasks.length) {
-            return callback();
-        }
-        var wrapIterator = function (iterator) {
-            return function (err) {
-                if (err) {
-                    callback.apply(null, arguments);
-                    callback = function () {};
-                }
-                else {
-                    var args = Array.prototype.slice.call(arguments, 1);
-                    var next = iterator.next();
-                    if (next) {
-                        args.push(wrapIterator(next));
-                    }
-                    else {
-                        args.push(callback);
-                    }
-                    async.setImmediate(function () {
-                        iterator.apply(null, args);
-                    });
-                }
-            };
-        };
-        wrapIterator(async.iterator(tasks))();
-    };
-
-    var _parallel = function(eachfn, tasks, callback) {
-        callback = callback || function () {};
-        if (_isArray(tasks)) {
-            eachfn.map(tasks, function (fn, callback) {
-                if (fn) {
-                    fn(function (err) {
-                        var args = Array.prototype.slice.call(arguments, 1);
-                        if (args.length <= 1) {
-                            args = args[0];
-                        }
-                        callback.call(null, err, args);
-                    });
-                }
-            }, callback);
-        }
-        else {
-            var results = {};
-            eachfn.each(_keys(tasks), function (k, callback) {
-                tasks[k](function (err) {
-                    var args = Array.prototype.slice.call(arguments, 1);
-                    if (args.length <= 1) {
-                        args = args[0];
-                    }
-                    results[k] = args;
-                    callback(err);
-                });
-            }, function (err) {
-                callback(err, results);
-            });
-        }
-    };
-
-    async.parallel = function (tasks, callback) {
-        _parallel({ map: async.map, each: async.each }, tasks, callback);
-    };
-
-    async.parallelLimit = function(tasks, limit, callback) {
-        _parallel({ map: _mapLimit(limit), each: _eachLimit(limit) }, tasks, callback);
-    };
-
-    async.series = function (tasks, callback) {
-        callback = callback || function () {};
-        if (_isArray(tasks)) {
-            async.mapSeries(tasks, function (fn, callback) {
-                if (fn) {
-                    fn(function (err) {
-                        var args = Array.prototype.slice.call(arguments, 1);
-                        if (args.length <= 1) {
-                            args = args[0];
-                        }
-                        callback.call(null, err, args);
-                    });
-                }
-            }, callback);
-        }
-        else {
-            var results = {};
-            async.eachSeries(_keys(tasks), function (k, callback) {
-                tasks[k](function (err) {
-                    var args = Array.prototype.slice.call(arguments, 1);
-                    if (args.length <= 1) {
-                        args = args[0];
-                    }
-                    results[k] = args;
-                    callback(err);
-                });
-            }, function (err) {
-                callback(err, results);
-            });
-        }
-    };
-
-    async.iterator = function (tasks) {
-        var makeCallback = function (index) {
-            var fn = function () {
-                if (tasks.length) {
-                    tasks[index].apply(null, arguments);
-                }
-                return fn.next();
-            };
-            fn.next = function () {
-                return (index < tasks.length - 1) ? makeCallback(index + 1): null;
-            };
-            return fn;
-        };
-        return makeCallback(0);
-    };
-
-    async.apply = function (fn) {
-        var args = Array.prototype.slice.call(arguments, 1);
-        return function () {
-            return fn.apply(
-                null, args.concat(Array.prototype.slice.call(arguments))
-            );
-        };
-    };
-
-    var _concat = function (eachfn, arr, fn, callback) {
-        var r = [];
-        eachfn(arr, function (x, cb) {
-            fn(x, function (err, y) {
-                r = r.concat(y || []);
-                cb(err);
-            });
-        }, function (err) {
-            callback(err, r);
-        });
-    };
-    async.concat = doParallel(_concat);
-    async.concatSeries = doSeries(_concat);
-
-    async.whilst = function (test, iterator, callback) {
-        if (test()) {
-            iterator(function (err) {
-                if (err) {
-                    return callback(err);
-                }
-                async.whilst(test, iterator, callback);
-            });
-        }
-        else {
-            callback();
-        }
-    };
-
-    async.doWhilst = function (iterator, test, callback) {
-        iterator(function (err) {
-            if (err) {
-                return callback(err);
-            }
-            var args = Array.prototype.slice.call(arguments, 1);
-            if (test.apply(null, args)) {
-                async.doWhilst(iterator, test, callback);
-            }
-            else {
-                callback();
-            }
-        });
-    };
-
-    async.until = function (test, iterator, callback) {
-        if (!test()) {
-            iterator(function (err) {
-                if (err) {
-                    return callback(err);
-                }
-                async.until(test, iterator, callback);
-            });
-        }
-        else {
-            callback();
-        }
-    };
-
-    async.doUntil = function (iterator, test, callback) {
-        iterator(function (err) {
-            if (err) {
-                return callback(err);
-            }
-            var args = Array.prototype.slice.call(arguments, 1);
-            if (!test.apply(null, args)) {
-                async.doUntil(iterator, test, callback);
-            }
-            else {
-                callback();
-            }
-        });
-    };
-
-    async.queue = function (worker, concurrency) {
-        if (concurrency === undefined) {
-            concurrency = 1;
-        }
-        function _insert(q, data, pos, callback) {
-          if (!q.started){
-            q.started = true;
-          }
-          if (!_isArray(data)) {
-              data = [data];
-          }
-          if(data.length == 0) {
-             // call drain immediately if there are no tasks
-             return async.setImmediate(function() {
-                 if (q.drain) {
-                     q.drain();
-                 }
-             });
-          }
-          _each(data, function(task) {
-              var item = {
-                  data: task,
-                  callback: typeof callback === 'function' ? callback : null
-              };
-
-              if (pos) {
-                q.tasks.unshift(item);
-              } else {
-                q.tasks.push(item);
-              }
-
-              if (q.saturated && q.tasks.length === q.concurrency) {
-                  q.saturated();
-              }
-              async.setImmediate(q.process);
-          });
-        }
-
-        var workers = 0;
-        var q = {
-            tasks: [],
-            concurrency: concurrency,
-            saturated: null,
-            empty: null,
-            drain: null,
-            started: false,
-            paused: false,
-            push: function (data, callback) {
-              _insert(q, data, false, callback);
-            },
-            kill: function () {
-              q.drain = null;
-              q.tasks = [];
-            },
-            unshift: function (data, callback) {
-              _insert(q, data, true, callback);
-            },
-            process: function () {
-                if (!q.paused && workers < q.concurrency && q.tasks.length) {
-                    var task = q.tasks.shift();
-                    if (q.empty && q.tasks.length === 0) {
-                        q.empty();
-                    }
-                    workers += 1;
-                    var next = function () {
-                        workers -= 1;
-                        if (task.callback) {
-                            task.callback.apply(task, arguments);
-                        }
-                        if (q.drain && q.tasks.length + workers === 0) {
-                            q.drain();
-                        }
-                        q.process();
-                    };
-                    var cb = only_once(next);
-                    worker(task.data, cb);
-                }
-            },
-            length: function () {
-                return q.tasks.length;
-            },
-            running: function () {
-                return workers;
-            },
-            idle: function() {
-                return q.tasks.length + workers === 0;
-            },
-            pause: function () {
-                if (q.paused === true) { return; }
-                q.paused = true;
-                q.process();
-            },
-            resume: function () {
-                if (q.paused === false) { return; }
-                q.paused = false;
-                q.process();
-            }
-        };
-        return q;
-    };
-    
-    async.priorityQueue = function (worker, concurrency) {
-        
-        function _compareTasks(a, b){
-          return a.priority - b.priority;
-        };
-        
-        function _binarySearch(sequence, item, compare) {
-          var beg = -1,
-              end = sequence.length - 1;
-          while (beg < end) {
-            var mid = beg + ((end - beg + 1) >>> 1);
-            if (compare(item, sequence[mid]) >= 0) {
-              beg = mid;
-            } else {
-              end = mid - 1;
-            }
-          }
-          return beg;
-        }
-        
-        function _insert(q, data, priority, callback) {
-          if (!q.started){
-            q.started = true;
-          }
-          if (!_isArray(data)) {
-              data = [data];
-          }
-          if(data.length == 0) {
-             // call drain immediately if there are no tasks
-             return async.setImmediate(function() {
-                 if (q.drain) {
-                     q.drain();
-                 }
-             });
-          }
-          _each(data, function(task) {
-              var item = {
-                  data: task,
-                  priority: priority,
-                  callback: typeof callback === 'function' ? callback : null
-              };
-              
-              q.tasks.splice(_binarySearch(q.tasks, item, _compareTasks) + 1, 0, item);
-
-              if (q.saturated && q.tasks.length === q.concurrency) {
-                  q.saturated();
-              }
-              async.setImmediate(q.process);
-          });
-        }
-        
-        // Start with a normal queue
-        var q = async.queue(worker, concurrency);
-        
-        // Override push to accept second parameter representing priority
-        q.push = function (data, priority, callback) {
-          _insert(q, data, priority, callback);
-        };
-        
-        // Remove unshift function
-        delete q.unshift;
-
-        return q;
-    };
-
-    async.cargo = function (worker, payload) {
-        var working     = false,
-            tasks       = [];
-
-        var cargo = {
-            tasks: tasks,
-            payload: payload,
-            saturated: null,
-            empty: null,
-            drain: null,
-            drained: true,
-            push: function (data, callback) {
-                if (!_isArray(data)) {
-                    data = [data];
-                }
-                _each(data, function(task) {
-                    tasks.push({
-                        data: task,
-                        callback: typeof callback === 'function' ? callback : null
-                    });
-                    cargo.drained = false;
-                    if (cargo.saturated && tasks.length === payload) {
-                        cargo.saturated();
-                    }
-                });
-                async.setImmediate(cargo.process);
-            },
-            process: function process() {
-                if (working) return;
-                if (tasks.length === 0) {
-                    if(cargo.drain && !cargo.drained) cargo.drain();
-                    cargo.drained = true;
-                    return;
-                }
-
-                var ts = typeof payload === 'number'
-                            ? tasks.splice(0, payload)
-                            : tasks.splice(0, tasks.length);
-
-                var ds = _map(ts, function (task) {
-                    return task.data;
-                });
-
-                if(cargo.empty) cargo.empty();
-                working = true;
-                worker(ds, function () {
-                    working = false;
-
-                    var args = arguments;
-                    _each(ts, function (data) {
-                        if (data.callback) {
-                            data.callback.apply(null, args);
-                        }
-                    });
-
-                    process();
-                });
-            },
-            length: function () {
-                return tasks.length;
-            },
-            running: function () {
-                return working;
-            }
-        };
-        return cargo;
-    };
-
-    var _console_fn = function (name) {
-        return function (fn) {
-            var args = Array.prototype.slice.call(arguments, 1);
-            fn.apply(null, args.concat([function (err) {
-                var args = Array.prototype.slice.call(arguments, 1);
-                if (typeof console !== 'undefined') {
-                    if (err) {
-                        if (console.error) {
-                            console.error(err);
-                        }
-                    }
-                    else if (console[name]) {
-                        _each(args, function (x) {
-                            console[name](x);
-                        });
-                    }
-                }
-            }]));
-        };
-    };
-    async.log = _console_fn('log');
-    async.dir = _console_fn('dir');
-    /*async.info = _console_fn('info');
-    async.warn = _console_fn('warn');
-    async.error = _console_fn('error');*/
-
-    async.memoize = function (fn, hasher) {
-        var memo = {};
-        var queues = {};
-        hasher = hasher || function (x) {
-            return x;
-        };
-        var memoized = function () {
-            var args = Array.prototype.slice.call(arguments);
-            var callback = args.pop();
-            var key = hasher.apply(null, args);
-            if (key in memo) {
-                async.nextTick(function () {
-                    callback.apply(null, memo[key]);
-                });
-            }
-            else if (key in queues) {
-                queues[key].push(callback);
-            }
-            else {
-                queues[key] = [callback];
-                fn.apply(null, args.concat([function () {
-                    memo[key] = arguments;
-                    var q = queues[key];
-                    delete queues[key];
-                    for (var i = 0, l = q.length; i < l; i++) {
-                      q[i].apply(null, arguments);
-                    }
-                }]));
-            }
-        };
-        memoized.memo = memo;
-        memoized.unmemoized = fn;
-        return memoized;
-    };
-
-    async.unmemoize = function (fn) {
-      return function () {
-        return (fn.unmemoized || fn).apply(null, arguments);
-      };
-    };
-
-    async.times = function (count, iterator, callback) {
-        var counter = [];
-        for (var i = 0; i < count; i++) {
-            counter.push(i);
-        }
-        return async.map(counter, iterator, callback);
-    };
-
-    async.timesSeries = function (count, iterator, callback) {
-        var counter = [];
-        for (var i = 0; i < count; i++) {
-            counter.push(i);
-        }
-        return async.mapSeries(counter, iterator, callback);
-    };
-
-    async.seq = function (/* functions... */) {
-        var fns = arguments;
-        return function () {
-            var that = this;
-            var args = Array.prototype.slice.call(arguments);
-            var callback = args.pop();
-            async.reduce(fns, args, function (newargs, fn, cb) {
-                fn.apply(that, newargs.concat([function () {
-                    var err = arguments[0];
-                    var nextargs = Array.prototype.slice.call(arguments, 1);
-                    cb(err, nextargs);
-                }]))
-            },
-            function (err, results) {
-                callback.apply(that, [err].concat(results));
-            });
-        };
-    };
-
-    async.compose = function (/* functions... */) {
-      return async.seq.apply(null, Array.prototype.reverse.call(arguments));
-    };
-
-    var _applyEach = function (eachfn, fns /*args...*/) {
-        var go = function () {
-            var that = this;
-            var args = Array.prototype.slice.call(arguments);
-            var callback = args.pop();
-            return eachfn(fns, function (fn, cb) {
-                fn.apply(that, args.concat([cb]));
-            },
-            callback);
-        };
-        if (arguments.length > 2) {
-            var args = Array.prototype.slice.call(arguments, 2);
-            return go.apply(this, args);
-        }
-        else {
-            return go;
-        }
-    };
-    async.applyEach = doParallel(_applyEach);
-    async.applyEachSeries = doSeries(_applyEach);
-
-    async.forever = function (fn, callback) {
-        function next(err) {
-            if (err) {
-                if (callback) {
-                    return callback(err);
-                }
-                throw err;
-            }
-            fn(next);
-        }
-        next();
-    };
-
-    // Node.js
-    if (typeof module !== 'undefined' && module.exports) {
-        module.exports = async;
-    }
-    // AMD / RequireJS
-    else if (typeof define !== 'undefined' && define.amd) {
-        define([], function () {
-            return async;
-        });
-    }
-    // included directly via <script> tag
-    else {
-        root.async = async;
-    }
-
-}());
-
-}).call(this,require('_process'))
-},{"_process":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js"}],"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{}],"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3090,70 +2470,5 @@ function isObject(arg) {
 function isUndefined(arg) {
   return arg === void 0;
 }
-
-},{}],"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
 
 },{}]},{},["/home/francois/Dev/syn/app/web2/js2/Synapp.js"]);

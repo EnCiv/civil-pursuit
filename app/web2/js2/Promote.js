@@ -1,3 +1,20 @@
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  PROMOTE
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -84,7 +101,7 @@
   };
 
   Promote.prototype.renderItem = function (hand) {
-    var self = this;
+    var promote = this;
 
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
@@ -101,21 +118,25 @@
 
     this.find('item description', hand).text(this.evaluation[hand].description);
 
-    self.find('sliders', hand).find('h4').each(function (i) {
+    promote.find('sliders', hand).find('h4').each(function (i) {
       var cid = i;
 
       if ( cid > 3 ) {
         cid -= 4;
       }
 
-      self.find('sliders', hand).find('h4').eq(i).text(self.evaluation.criterias[cid].name);
+      promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
     });
 
-    self.find('promote button', hand)
+    promote.find('promote button', hand)
       .text(this.evaluation[hand].subject)
       .on('click', function () {
-        Nav.scroll(self.template, app.domain.intercept(function () {
-          self.edit('cursor', self.evaluation.cursor + 1);
+        Nav.scroll(promote.template, app.domain.intercept(function () {
+        
+          if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+            promote.edit('cursor', promote.evaluation.cursor + 1);
+          }
+
         }));
       });
   };
@@ -141,7 +162,11 @@
 
         promote.find('finish button').on('click', function () {
           Nav.scroll(promote.template, app.domain.intercept(function () {
-            promote.edit('cursor', promote.evaluation.cursor + 2);
+
+            if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+              promote.edit('cursor', promote.evaluation.cursor + 2);
+            }
+
           }));
         });
       });

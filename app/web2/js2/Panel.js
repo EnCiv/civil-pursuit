@@ -1,3 +1,20 @@
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  PANEL
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
 ! function () {
 
   'use strict';
@@ -132,7 +149,7 @@
     return json;
   };
 
-  Panel.prototype.fill = function () {
+  Panel.prototype.fill = function (cb) {
     var self = this;
 
     app.socket.emit('get items', this.toJSON());
@@ -143,33 +160,11 @@
 
       self.skip += items.length;
 
-      return self.insertItem(items, 0);
-
-      require('async').series(
-        items.map(function (_item) {
-          return function (cb) {
-
-            var item  = new Item(this);
-
-            console.log('get item template', item.item.subject)
-
-            item.get(app.domain.intercept(function () {
-              console.log('inserting item', item.item.subject)
-
-              self.find('items').append(item.template);
-              cb();
-              // item.render(cb);
-            }));
-          }.bind(_item);
-        }),
-
-        app.domain.intercept(function () {
-          console.log('filling done', items.length)
-        }));
+      self.insertItem(items, 0, cb);
     });
   };
 
-  Panel.prototype.insertItem = function (items, i) {
+  Panel.prototype.insertItem = function (items, i, cb) {
 
     var self = this;
 
@@ -183,10 +178,13 @@
         self.find('items').append(template);
 
         item.render(app.domain.intercept(function () {
-          self.insertItem(items, ++ i);
+          self.insertItem(items, ++ i, cb);
         }));
 
       }));
+    }
+    else {
+      cb && cb();
     }
   };
 
