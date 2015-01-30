@@ -198,6 +198,9 @@
 
       case 'feedback list':
         return this.template.find('.feedback-list');
+
+      case 'votes':
+        return this.template.find('.details-votes');
     }
   };
 
@@ -216,6 +219,8 @@
       app.socket.once('got item details', function (details) {
         self.details = details;
 
+        console.log('details', details)
+
         // Feedback
 
         details.feedbacks.forEach(function (feedback) {
@@ -224,9 +229,18 @@
           self.find('feedback list')
             .append(tpl)
             .append('<hr/>');
+
         });
 
-        // Vote
+        // Votes
+
+        details.criterias.forEach(function (criteria, i) {
+          self.find('votes').eq(i).find('h4').text(criteria.name);
+        });
+
+        // details.votes.forEach(function (vote) {
+
+        // });
 
       });
     }

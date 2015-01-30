@@ -225,7 +225,9 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       /** /css/ ==> CSS files */
 
-      .open('app/web2/css/synapp.css', when('/css/index.css'))
+      .open('app/web/dist/css', when.prefix('/css/'))
+
+      // .open('app/web/dist/css/index.min.css', when('/css/index.min.css'))
 
       /** /test/story/mothership ==> Stories mothership */
 
