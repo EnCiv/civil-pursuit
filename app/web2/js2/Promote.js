@@ -81,6 +81,10 @@
   Promote.prototype.renderItem = function (hand) {
     var self = this;
 
+    // Increment views counter
+
+    app.socket.emit('add view', this.evaluation[hand]._id);
+
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
     this.find('item description', hand).text(this.evaluation[hand].description);

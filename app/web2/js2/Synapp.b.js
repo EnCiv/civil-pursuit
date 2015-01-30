@@ -216,6 +216,8 @@
       app.socket.once('got item details', function (details) {
         self.details = details;
 
+        // Feedback
+
         details.feedbacks.forEach(function (feedback) {
           var tpl = $('<div class="pretext feedback"></div>');
           tpl.text(feedback.feedback);
@@ -223,6 +225,9 @@
             .append(tpl)
             .append('<hr/>');
         });
+
+        // Vote
+
       });
     }
   };
@@ -1115,6 +1120,10 @@
 
   Promote.prototype.renderItem = function (hand) {
     var self = this;
+
+    // Increment views counter
+
+    app.socket.emit('add view', this.evaluation[hand]._id);
 
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 

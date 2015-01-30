@@ -49,6 +49,8 @@
       app.socket.once('got item details', function (details) {
         self.details = details;
 
+        // Feedback
+
         details.feedbacks.forEach(function (feedback) {
           var tpl = $('<div class="pretext feedback"></div>');
           tpl.text(feedback.feedback);
@@ -56,6 +58,9 @@
             .append(tpl)
             .append('<hr/>');
         });
+
+        // Vote
+
       });
     }
   };
