@@ -127,7 +127,7 @@
 
     // Image
 
-    this.find('item image', hand).append(
+    this.find('item image', hand).empty().append(
       new (require('./Item'))(this.evaluation[hand]).media());
 
 
@@ -144,10 +144,34 @@
     promote.find('promote button', hand)
       .text(this.evaluation[hand].subject)
       .on('click', function () {
+
+        var left = $(this).closest('.left-item').length;
+
+        var opposite = left ? 'right' : 'left';
+
         Nav.scroll(promote.template, app.domain.intercept(function () {
         
           if ( promote.evaluation.cursor < promote.evaluation.limit ) {
             promote.edit('cursor', promote.evaluation.cursor + 1);
+
+            $.when(
+              promote
+                .find('side by side')
+                .find('.' + opposite + '-item')
+                .animate({
+                  opacity: 0
+                })
+            )
+              .then(function () {
+                promote.edit(opposite, promote.evaluation.items[promote.evaluation.cursor]);
+
+                promote
+                  .find('side by side')
+                  .find('.' + opposite + '-item')
+                  .animate({
+                    opacity: 1
+                  });
+              });
           }
 
         }));
@@ -178,6 +202,18 @@
 
             if ( promote.evaluation.cursor < promote.evaluation.limit ) {
               promote.edit('cursor', promote.evaluation.cursor + 2);
+
+              $.when(
+                promote
+                  .find('side by side')
+                  .find('.left-item, .right-item')
+                  .animate({
+                    opacity: 0
+                  })
+              )
+                .then(function () {
+                  console.log('respire');
+                });
             }
 
             else {

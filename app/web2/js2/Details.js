@@ -77,18 +77,22 @@
         }
 
         else {
-          new Edit(item)
-            .get(app.domain.intercept(function (template) {
+          var edit = new Edit(self.item);
+            
+          edit.get(app.domain.intercept(function (template) {
 
-              console.log('OH YEAH', template);
+            console.log('OH YEAH', template);
 
-              self.item.find('editor').find('.is-section').append(template);
+            self.item.find('editor').find('.is-section').append(template);
 
-              Nav.reveal(self.item.find('editor'), self.item.template,
-                app.domain.intercept(function () {
-                  Nav.show(template);
+            Nav.reveal(self.item.find('editor'), self.item.template,
+              app.domain.intercept(function () {
+                Nav.show(template, app.domain.intercept(function () {
+                  edit.render();
                 }));
-            }));
+              }));
+          }));
+
         }
 
       }));

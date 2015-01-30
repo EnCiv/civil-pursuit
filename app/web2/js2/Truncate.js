@@ -2,6 +2,8 @@
 
   'use strict';
 
+  var Nav = require('./Nav');
+
   function Truncate (item) {
 
     // ============
@@ -105,8 +107,7 @@
         return false;
       }
 
-      Synapp.extension('Panel').controller('scroll to point of attention')
-        (self.item, function () {
+      Nav.scroll(self.item, function () {
 
         // Show more
 

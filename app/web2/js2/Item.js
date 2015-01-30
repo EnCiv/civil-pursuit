@@ -192,8 +192,21 @@
         Nav.hide(item.find('promote'));
       }
 
+      var hiders = $('.details.is-shown');
+
       Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
-        details.render(app.domain.intercept());
+        if ( item.find('details').hasClass('is-shown') ) {
+
+          if ( ! item.find('details').hasClass('is-loaded') ) {
+            item.find('details').addClass('is-loaded');
+
+            details.render(app.domain.intercept());
+          }
+
+          if ( hiders.length ) {
+            Nav.hide(hiders);
+          }
+        }
       }));
 
     });

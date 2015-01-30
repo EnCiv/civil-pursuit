@@ -40,13 +40,13 @@
 
     var self = this;
 
-    // app.domain.run(function () {
-    //   if ( ! item || item.constructor.name !== 'Item' ) {
-    //     throw new Error('Item must be an Item');
-    //   }
+    app.domain.run(function () {
+      if ( ! item || item.constructor.name !== 'Item' ) {
+        throw new Error('Item must be an Item');
+      }
 
-    //   self.item = item;
-    // });
+      self.item = item;
+    });
   }
 
   Edit.prototype.get = function (cb) {
@@ -89,6 +89,9 @@
   Edit.prototype.render = function (cb) {
 
     var edit = this;
+
+    this.template.find('[name="subject"]').val(edit.item.item.subject);
+    this.template.find('[name="description"]').val(edit.item.item.description);
 
     return this;
   };

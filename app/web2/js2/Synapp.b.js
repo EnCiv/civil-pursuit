@@ -267,18 +267,22 @@
         }
 
         else {
-          new Edit(item)
-            .get(app.domain.intercept(function (template) {
+          var edit = new Edit(self.item);
+            
+          edit.get(app.domain.intercept(function (template) {
 
-              console.log('OH YEAH', template);
+            console.log('OH YEAH', template);
 
-              self.item.find('editor').find('.is-section').append(template);
+            self.item.find('editor').find('.is-section').append(template);
 
-              Nav.reveal(self.item.find('editor'), self.item.template,
-                app.domain.intercept(function () {
-                  Nav.show(template);
+            Nav.reveal(self.item.find('editor'), self.item.template,
+              app.domain.intercept(function () {
+                Nav.show(template, app.domain.intercept(function () {
+                  edit.render();
                 }));
-            }));
+              }));
+          }));
+
         }
 
       }));
@@ -447,13 +451,13 @@
 
     var self = this;
 
-    // app.domain.run(function () {
-    //   if ( ! item || item.constructor.name !== 'Item' ) {
-    //     throw new Error('Item must be an Item');
-    //   }
+    app.domain.run(function () {
+      if ( ! item || item.constructor.name !== 'Item' ) {
+        throw new Error('Item must be an Item');
+      }
 
-    //   self.item = item;
-    // });
+      self.item = item;
+    });
   }
 
   Edit.prototype.get = function (cb) {
@@ -496,6 +500,9 @@
   Edit.prototype.render = function (cb) {
 
     var edit = this;
+
+    this.template.find('[name="subject"]').val(edit.item.item.subject);
+    this.template.find('[name="description"]').val(edit.item.item.description);
 
     return this;
   };
@@ -604,6 +611,7 @@
   'use strict';
 
   var Truncate = require('./Truncate');
+  var Item = require('./Item');
 
   function Intro () {
 
@@ -621,6 +629,9 @@
 
       $('#intro').find('.item-references').remove();
 
+      $('#intro').find('.item-media')
+        .empty().append(new Item(intro).media());
+
       new Truncate($('#intro'));
     });
   };
@@ -629,7 +640,7 @@
 
 } ();
 
-},{"./Truncate":"/home/francois/Dev/syn/app/web2/js2/Truncate.js"}],"/home/francois/Dev/syn/app/web2/js2/Item.js":[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Truncate":"/home/francois/Dev/syn/app/web2/js2/Truncate.js"}],"/home/francois/Dev/syn/app/web2/js2/Item.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -824,8 +835,21 @@
         Nav.hide(item.find('promote'));
       }
 
+      var hiders = $('.details.is-shown');
+
       Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
-        details.render(app.domain.intercept());
+        if ( item.find('details').hasClass('is-shown') ) {
+
+          if ( ! item.find('details').hasClass('is-loaded') ) {
+            item.find('details').addClass('is-loaded');
+
+            details.render(app.domain.intercept());
+          }
+
+          if ( hiders.length ) {
+            Nav.hide(hiders);
+          }
+        }
       }));
 
     });
@@ -1551,7 +1575,7 @@
 
     // Image
 
-    this.find('item image', hand).append(
+    this.find('item image', hand).empty().append(
       new (require('./Item'))(this.evaluation[hand]).media());
 
 
@@ -1568,10 +1592,34 @@
     promote.find('promote button', hand)
       .text(this.evaluation[hand].subject)
       .on('click', function () {
+
+        var left = $(this).closest('.left-item').length;
+
+        var opposite = left ? 'right' : 'left';
+
         Nav.scroll(promote.template, app.domain.intercept(function () {
         
           if ( promote.evaluation.cursor < promote.evaluation.limit ) {
             promote.edit('cursor', promote.evaluation.cursor + 1);
+
+            $.when(
+              promote
+                .find('side by side')
+                .find('.' + opposite + '-item')
+                .animate({
+                  opacity: 0
+                })
+            )
+              .then(function () {
+                promote.edit(opposite, promote.evaluation.items[promote.evaluation.cursor]);
+
+                promote
+                  .find('side by side')
+                  .find('.' + opposite + '-item')
+                  .animate({
+                    opacity: 1
+                  });
+              });
           }
 
         }));
@@ -1602,6 +1650,18 @@
 
             if ( promote.evaluation.cursor < promote.evaluation.limit ) {
               promote.edit('cursor', promote.evaluation.cursor + 2);
+
+              $.when(
+                promote
+                  .find('side by side')
+                  .find('.left-item, .right-item')
+                  .animate({
+                    opacity: 0
+                  })
+              )
+                .then(function () {
+                  console.log('respire');
+                });
             }
 
             else {
@@ -1945,6 +2005,8 @@
 
   'use strict';
 
+  var Nav = require('./Nav');
+
   function Truncate (item) {
 
     // ============
@@ -2048,8 +2110,7 @@
         return false;
       }
 
-      Synapp.extension('Panel').controller('scroll to point of attention')
-        (self.item, function () {
+      Nav.scroll(self.item, function () {
 
         // Show more
 
@@ -2162,7 +2223,7 @@
 
 }();
 
-},{}],"/home/francois/Dev/syn/app/web2/js2/Upload.js":[function(require,module,exports){
+},{"./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js"}],"/home/francois/Dev/syn/app/web2/js2/Upload.js":[function(require,module,exports){
 ! function () {
 
   'use strict';

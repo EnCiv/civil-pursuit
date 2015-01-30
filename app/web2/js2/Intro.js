@@ -20,6 +20,7 @@
   'use strict';
 
   var Truncate = require('./Truncate');
+  var Item = require('./Item');
 
   function Intro () {
 
@@ -36,6 +37,9 @@
       $('#intro').find('.description').text(intro.description);
 
       $('#intro').find('.item-references').remove();
+
+      $('#intro').find('.item-media')
+        .empty().append(new Item(intro).media());
 
       new Truncate($('#intro'));
     });
