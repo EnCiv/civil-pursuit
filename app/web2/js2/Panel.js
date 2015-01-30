@@ -137,7 +137,8 @@
 
     app.socket.emit('get items', this.toJSON());
 
-    app.socket.once('got items', function (panel, items) {
+    app.socket.once('got items ' + this.id, function (panel, items) {
+      
       console.log(panel, items, self.toJSON());
 
       self.skip += items.length;

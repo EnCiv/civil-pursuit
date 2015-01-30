@@ -69,6 +69,8 @@
 
         details.criterias.forEach(function (criteria, i) {
           self.find('votes').eq(i).find('h4').text(criteria.name);
+
+          self.votes(criteria, self.find('votes').eq(i).find('svg'));
         });
 
         // details.votes.forEach(function (vote) {
@@ -77,6 +79,87 @@
 
       });
     }
+  };
+
+  Details.prototype.votes = function (criteria, svg) {
+    var self = this;
+
+    setTimeout(function () {
+
+      var vote = self.details.votes[criteria._id];
+
+      svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
+
+      var data = [];
+
+      // If no votes, show nothing
+
+      if ( ! vote ) {
+        vote = {
+          values: {
+            '-1': 0,
+            '0': 0,
+            '1': 0
+          },
+          total: 0
+        }
+      }
+
+      for ( var number in vote.values ) {
+        data.push({
+          label: 'number',
+          value: vote.values[number] * 100 / vote.total
+        });
+      }
+
+      var columns = ['votes'];
+
+      data.forEach(function (d) {
+        columns.push(d.value);
+      });
+
+      var chart = c3.generate({
+        bindto: '#' + svg.attr('id'),
+
+        data: {
+          x: 'x',
+          columns: [['x', -1, 0, 1], columns],
+          type: 'bar'
+        },
+
+        grid: {
+          x: {
+            lines: 3
+          }
+        },
+        
+        axis: {
+          x: {},
+          
+          y: {
+            max: 90,
+
+            show: false,
+
+            tick: {
+              count: 5,
+
+              format: function (y) {
+                return y;
+              }
+            }
+          }
+        },
+
+        size: {
+          height: 80
+        },
+
+        bar: {
+          width: $(window).width() / 5
+        }
+      });
+      }, 250);
   };
 
   module.exports = Details;

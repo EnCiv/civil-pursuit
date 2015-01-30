@@ -236,6 +236,8 @@
 
         details.criterias.forEach(function (criteria, i) {
           self.find('votes').eq(i).find('h4').text(criteria.name);
+
+          self.votes(criteria, self.find('votes').eq(i).find('svg'));
         });
 
         // details.votes.forEach(function (vote) {
@@ -244,6 +246,87 @@
 
       });
     }
+  };
+
+  Details.prototype.votes = function (criteria, svg) {
+    var self = this;
+
+    setTimeout(function () {
+
+      var vote = self.details.votes[criteria._id];
+
+      svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
+
+      var data = [];
+
+      // If no votes, show nothing
+
+      if ( ! vote ) {
+        vote = {
+          values: {
+            '-1': 0,
+            '0': 0,
+            '1': 0
+          },
+          total: 0
+        }
+      }
+
+      for ( var number in vote.values ) {
+        data.push({
+          label: 'number',
+          value: vote.values[number] * 100 / vote.total
+        });
+      }
+
+      var columns = ['votes'];
+
+      data.forEach(function (d) {
+        columns.push(d.value);
+      });
+
+      var chart = c3.generate({
+        bindto: '#' + svg.attr('id'),
+
+        data: {
+          x: 'x',
+          columns: [['x', -1, 0, 1], columns],
+          type: 'bar'
+        },
+
+        grid: {
+          x: {
+            lines: 3
+          }
+        },
+        
+        axis: {
+          x: {},
+          
+          y: {
+            max: 90,
+
+            show: false,
+
+            tick: {
+              count: 5,
+
+              format: function (y) {
+                return y;
+              }
+            }
+          }
+        },
+
+        size: {
+          height: 80
+        },
+
+        bar: {
+          width: $(window).width() / 5
+        }
+      });
+      }, 250);
   };
 
   module.exports = Details;
@@ -993,7 +1076,8 @@
 
     app.socket.emit('get items', this.toJSON());
 
-    app.socket.once('got items', function (panel, items) {
+    app.socket.once('got items ' + this.id, function (panel, items) {
+      
       console.log(panel, items, self.toJSON());
 
       self.skip += items.length;
@@ -1057,6 +1141,8 @@
   'use strict';
 
   var Item = require('./Item');
+
+  var Nav = require('./Nav');
 
   function Promote (item) {
     if ( ! app ) {
@@ -1135,6 +1221,12 @@
   Promote.prototype.renderItem = function (hand) {
     var self = this;
 
+    if ( ! this.evaluation[hand] ) {
+      this.find('item subject', hand).hide();
+
+      return;
+    }
+
     // Increment views counter
 
     app.socket.emit('add view', this.evaluation[hand]._id);
@@ -1153,7 +1245,11 @@
       self.find('sliders', hand).find('h4').eq(i).text(self.evaluation.criterias[cid].name);
     });
 
-    self.find('promote button', hand).text(this.evaluation[hand].subject);
+    self.find('promote button', hand)
+      .text(this.evaluation[hand].subject)
+      .on('click', function () {
+        Nav.scroll(self.template);
+      });
   };
 
   Promote.prototype.render = function (cb) {
@@ -1192,7 +1288,7 @@
 
 } ();
 
-},{"./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","events":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web2/js2/Synapp.js":[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","events":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web2/js2/Synapp.js":[function(require,module,exports){
 ! function () {
 
   'use strict';

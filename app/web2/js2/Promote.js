@@ -4,6 +4,8 @@
 
   var Item = require('./Item');
 
+  var Nav = require('./Nav');
+
   function Promote (item) {
     if ( ! app ) {
       throw new Error('Missing app');
@@ -81,6 +83,12 @@
   Promote.prototype.renderItem = function (hand) {
     var self = this;
 
+    if ( ! this.evaluation[hand] ) {
+      this.find('item subject', hand).hide();
+
+      return;
+    }
+
     // Increment views counter
 
     app.socket.emit('add view', this.evaluation[hand]._id);
@@ -99,7 +107,11 @@
       self.find('sliders', hand).find('h4').eq(i).text(self.evaluation.criterias[cid].name);
     });
 
-    self.find('promote button', hand).text(this.evaluation[hand].subject);
+    self.find('promote button', hand)
+      .text(this.evaluation[hand].subject)
+      .on('click', function () {
+        Nav.scroll(self.template);
+      });
   };
 
   Promote.prototype.render = function (cb) {

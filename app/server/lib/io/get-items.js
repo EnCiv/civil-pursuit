@@ -7,7 +7,15 @@
     socket.on('get items', function (panel, cb) {
       
       if ( ! panel || typeof panel !== 'object' ) {
-        throw new Error('Missing panel');
+        domain.run(function () {
+          throw new Error('Missing panel');
+        });
+      }
+
+      var id = 'panel-' + panel.type;
+
+      if ( panel.parent ) {
+        id += '-' + panel.parent;
       }
 
       var url = 'models/Item?type=' + panel.type;
@@ -28,7 +36,7 @@
       
         .on('success', function (items) {
           pronto.emit('message', 'socket got items from monson');
-          socket.emit('got items', panel, items);
+          socket.emit('got items ' + id, panel, items);
         });
 
     });
