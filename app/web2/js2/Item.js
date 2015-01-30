@@ -157,6 +157,14 @@
       var $item   =   $(this).closest('.item');
       var item    =   $item.data('item');
 
+      if ( item.find('promote').hasClass('is-showing') ) {
+        return false;
+      }
+
+      if ( item.find('promote').hasClass('is-shown') ) {
+        Nav.hide(item.find('promote'));
+      }
+
       Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
         details.render(app.domain.intercept());
       }));

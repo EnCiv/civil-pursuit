@@ -5,18 +5,21 @@
       i.pull-right.fa.fa-plus.cursor-pointer.toggle-creator
 
     h4.panel-title
-      span.iddle
-        i.fa.fa-circle-o-notch.fa-spin
+      block title
+        span.iddle
+          i.fa.fa-circle-o-notch.fa-spin
 
   .panel-body
 
-    include creator
-    
-    // Items
-    
-    .items
+    block panel-body
 
-    // Load more
+      include creator
+      
+      // Items
+      
+      .items
 
-    .load-more
-      a(href='') View more
+      // Load more
+
+      .load-more
+        a(href='') View more

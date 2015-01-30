@@ -3,6 +3,8 @@
   'use strict';
 
   var Panel = require('./Panel');
+  var Sign = require('./Sign');
+  var Intro = require('./Intro');
   var domain = require('domain');
 
   function Synapp () {
@@ -55,6 +57,10 @@
     if ( synapp.user ) {
       $('.is-in').removeClass('is-in');
     }
+
+    new Sign().render();
+
+    new Intro().render();
   }
 
   Synapp.prototype.topLevelPanel = function () {

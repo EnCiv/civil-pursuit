@@ -46,6 +46,10 @@
       .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
       .text(Math.floor(item.promotions * 100 / item.views) + '%');
 
+    if ( synapp.user ) {
+      $('.is-in').removeClass('is-in');
+    }
+
     if ( ! self.details ) {
       app.socket.emit('get item details', self.item.item._id);
 

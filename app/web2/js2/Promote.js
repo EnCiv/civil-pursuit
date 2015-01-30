@@ -50,6 +50,9 @@
       case 'side by side':
         return this.template.find('.items-side-by-side');
 
+      case 'finish button':
+        return this.template.find('.finish');
+
       case 'item subject':
         return this.find('side by side').find('.subject.' + more + '-item h3');
 
@@ -135,6 +138,12 @@
         promote.edit('left', evaluation.items[0]);
 
         promote.edit('right', evaluation.items[1]);
+
+        promote.find('finish button').on('click', function () {
+          Nav.scroll(promote.template, app.domain.intercept(function () {
+            promote.edit('cursor', promote.evaluation.cursor + 2);
+          }));
+        });
       });
     }
   };

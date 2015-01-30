@@ -213,6 +213,10 @@
       .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
       .text(Math.floor(item.promotions * 100 / item.views) + '%');
 
+    if ( synapp.user ) {
+      $('.is-in').removeClass('is-in');
+    }
+
     if ( ! self.details ) {
       app.socket.emit('get item details', self.item.item._id);
 
@@ -389,6 +393,23 @@
 
 } ();
 
+},{}],"/home/francois/Dev/syn/app/web2/js2/Intro.js":[function(require,module,exports){
+! function Intro () {
+
+  'use strict';
+
+  function Intro () {
+
+  }
+
+  Intro.prototype.render = function () {
+    
+  };
+
+  module.exports = Intro;
+
+} ();
+
 },{}],"/home/francois/Dev/syn/app/web2/js2/Item.js":[function(require,module,exports){
 ! function () {
   
@@ -548,6 +569,14 @@
       
       var $item   =   $(this).closest('.item');
       var item    =   $item.data('item');
+
+      if ( item.find('promote').hasClass('is-showing') ) {
+        return false;
+      }
+
+      if ( item.find('promote').hasClass('is-shown') ) {
+        Nav.hide(item.find('promote'));
+      }
 
       Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
         details.render(app.domain.intercept());
@@ -1184,6 +1213,9 @@
       case 'side by side':
         return this.template.find('.items-side-by-side');
 
+      case 'finish button':
+        return this.template.find('.finish');
+
       case 'item subject':
         return this.find('side by side').find('.subject.' + more + '-item h3');
 
@@ -1269,6 +1301,12 @@
         promote.edit('left', evaluation.items[0]);
 
         promote.edit('right', evaluation.items[1]);
+
+        promote.find('finish button').on('click', function () {
+          Nav.scroll(promote.template, app.domain.intercept(function () {
+            promote.edit('cursor', promote.evaluation.cursor + 2);
+          }));
+        });
       });
     }
   };
@@ -1287,12 +1325,86 @@
 
 } ();
 
-},{"./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","events":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web2/js2/Synapp.js":[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js","events":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web2/js2/Sign.js":[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function Sign () {
+
+  }
+
+  Sign.prototype.render = function () {
+    var signForm = $('#signer');
+
+    signForm.on('submit', function () {
+
+      signForm.find('.sign-error')
+        .text('')
+        .hide();
+
+      var email = signForm.find('[name="email"]');
+      var password = signForm.find('[name="password"]');
+
+      email.removeClass('error');
+      password.removeClass('error');
+
+      if ( ! email.val() ) {
+        email.addClass('error');
+        email.focus();
+      }
+
+      else if ( ! password.val() ) {
+        password.addClass('error');
+        password.focus();
+      }
+
+      else {
+        $.ajax({
+          url: '/sign/in',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          .error(function (error) {
+
+          })
+          .success(function (response) {
+
+            synapp.user = response.user;
+
+            $('.is-in').css('visibility', 'visible');
+
+            signForm.find('section').hide(2000);
+
+            signForm.find('.sign-success')
+              .show(function () {
+                setTimeout(function () {
+                  signForm.hide(2500);
+                }, 5000);
+              })
+              .text('Welcome back!');
+          });
+      }
+
+      return false;
+    });
+  };
+
+  module.exports = Sign;
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web2/js2/Synapp.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
 
   var Panel = require('./Panel');
+  var Sign = require('./Sign');
+  var Intro = require('./Intro');
   var domain = require('domain');
 
   function Synapp () {
@@ -1345,6 +1457,10 @@
     if ( synapp.user ) {
       $('.is-in').removeClass('is-in');
     }
+
+    new Sign().render();
+
+    new Intro().render();
   }
 
   Synapp.prototype.topLevelPanel = function () {
@@ -1370,7 +1486,7 @@
 
 } ();
 
-},{"./Panel":"/home/francois/Dev/syn/app/web2/js2/Panel.js","domain":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web2/js2/Upload.js":[function(require,module,exports){
+},{"./Intro":"/home/francois/Dev/syn/app/web2/js2/Intro.js","./Panel":"/home/francois/Dev/syn/app/web2/js2/Panel.js","./Sign":"/home/francois/Dev/syn/app/web2/js2/Sign.js","domain":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web2/js2/Upload.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
