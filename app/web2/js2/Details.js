@@ -20,6 +20,7 @@
   'use strict';
 
   var Nav = require('./Nav');
+  var Edit = require('./Edit');
 
   function Details(item) {
 
@@ -70,7 +71,27 @@
       .text(Math.floor(item.promotions * 100 / item.views) + '%');
 
     self.find('toggle edit and go again').on('click', function () {
-      Nav.unreveal(self.template, self.item.template);
+      Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
+        if ( self.item.find('editor').find('form').length ) {
+          console.warn('already loaded')
+        }
+
+        else {
+          new Edit(item)
+            .get(app.domain.intercept(function (template) {
+
+              console.log('OH YEAH', template);
+
+              self.item.find('editor').find('.is-section').append(template);
+
+              Nav.reveal(self.item.find('editor'), self.item.template,
+                app.domain.intercept(function () {
+                  Nav.show(template);
+                }));
+            }));
+        }
+
+      }));
     });
 
     if ( synapp.user ) {

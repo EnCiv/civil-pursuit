@@ -79,6 +79,9 @@
       case 'sliders':
         return this.find('side by side').find('.sliders.' + more + '-item');
 
+      case 'item image':
+        return this.find('side by side').find('.image.' + more + '-item');
+
       case 'promote button':
         return this.find('side by side').find('.' + more + '-item .promote');
     }
@@ -114,9 +117,19 @@
 
     app.socket.emit('add view', this.evaluation[hand]._id);
 
+    // Subject
+
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
+    // Description
+
     this.find('item description', hand).text(this.evaluation[hand].description);
+
+    // Image
+
+    this.find('item image', hand).append(
+      new (require('./Item'))(this.evaluation[hand]).media());
+
 
     promote.find('sliders', hand).find('h4').each(function (i) {
       var cid = i;
@@ -165,6 +178,15 @@
 
             if ( promote.evaluation.cursor < promote.evaluation.limit ) {
               promote.edit('cursor', promote.evaluation.cursor + 2);
+            }
+
+            else {
+
+              Nav.unreveal(promote.template, promote.item.template,
+                app.domain.intercept(function () {
+                  promote.evaluation = null;
+                }));
+
             }
 
           }));

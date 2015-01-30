@@ -129,6 +129,8 @@
 
         app.socket.once('created item', function (item) {
 
+          console.log('created item', item);
+
           if ( new_item.upload ) {
             item.upload = new_item.upload;
           }
@@ -161,6 +163,10 @@
       subject:      this.find('subject').val(),
       description:  this.find('description').val()
     };
+
+    if ( this.panel.parent ) {
+      item.parent = this.panel.parent;
+    }
 
     if ( this.find('item media').find('img').length ) {
 

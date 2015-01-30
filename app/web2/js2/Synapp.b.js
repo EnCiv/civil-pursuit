@@ -130,6 +130,8 @@
 
         app.socket.once('created item', function (item) {
 
+          console.log('created item', item);
+
           if ( new_item.upload ) {
             item.upload = new_item.upload;
           }
@@ -162,6 +164,10 @@
       subject:      this.find('subject').val(),
       description:  this.find('description').val()
     };
+
+    if ( this.panel.parent ) {
+      item.parent = this.panel.parent;
+    }
 
     if ( this.find('item media').find('img').length ) {
 
@@ -204,6 +210,7 @@
   'use strict';
 
   var Nav = require('./Nav');
+  var Edit = require('./Edit');
 
   function Details(item) {
 
@@ -254,7 +261,27 @@
       .text(Math.floor(item.promotions * 100 / item.views) + '%');
 
     self.find('toggle edit and go again').on('click', function () {
-      Nav.unreveal(self.template, self.item.template);
+      Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
+        if ( self.item.find('editor').find('form').length ) {
+          console.warn('already loaded')
+        }
+
+        else {
+          new Edit(item)
+            .get(app.domain.intercept(function (template) {
+
+              console.log('OH YEAH', template);
+
+              self.item.find('editor').find('.is-section').append(template);
+
+              Nav.reveal(self.item.find('editor'), self.item.template,
+                app.domain.intercept(function () {
+                  Nav.show(template);
+                }));
+            }));
+        }
+
+      }));
     });
 
     if ( synapp.user ) {
@@ -377,7 +404,107 @@
 
 } ();
 
-},{"./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js"}],"/home/francois/Dev/syn/app/web2/js2/Form.js":[function(require,module,exports){
+},{"./Edit":"/home/francois/Dev/syn/app/web2/js2/Edit.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js"}],"/home/francois/Dev/syn/app/web2/js2/Edit.js":[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  EDIT
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Nav       =   require('./Nav');
+  var Creator   =   require('./Creator');
+  var Item      =   require('./Item');
+
+  /**
+   *  @class
+   *
+   *  @arg {String} type
+   *  @arg {String?} parent
+   */
+
+  function Edit (item) {
+
+    console.log('EDIT', item)
+
+    if ( ! app ) {
+      throw new Error('Missing app');
+    }
+
+    var self = this;
+
+    // app.domain.run(function () {
+    //   if ( ! item || item.constructor.name !== 'Item' ) {
+    //     throw new Error('Item must be an Item');
+    //   }
+
+    //   self.item = item;
+    // });
+  }
+
+  Edit.prototype.get = function (cb) {
+    var edit = this;
+
+    $.ajax({
+      url: '/partial/creator'
+    })
+
+      .error(cb)
+
+      .success(function (data) {
+        edit.template = $(data);
+
+        cb(null, edit.template);
+      });
+
+    return this;
+  };
+
+  Edit.prototype.find = function (name) {
+    switch ( name ) {
+      case 'title':
+        return this.template.find('.Edit-title:first');
+
+      case 'toggle creator':
+        return this.template.find('.toggle-creator:first');
+
+      case 'creator':
+        return this.template.find('.creator:first');
+
+      case 'items':
+        return this.template.find('.items:first');
+
+      case 'load more':
+        return this.template.find('.load-more:first');
+    }
+  };
+
+  Edit.prototype.render = function (cb) {
+
+    var edit = this;
+
+    return this;
+  };
+
+  module.exports = Edit;
+
+} ();
+
+},{"./Creator":"/home/francois/Dev/syn/app/web2/js2/Creator.js","./Item":"/home/francois/Dev/syn/app/web2/js2/Item.js","./Nav":"/home/francois/Dev/syn/app/web2/js2/Nav.js"}],"/home/francois/Dev/syn/app/web2/js2/Form.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -476,6 +603,8 @@
 
   'use strict';
 
+  var Truncate = require('./Truncate');
+
   function Intro () {
 
   }
@@ -485,6 +614,14 @@
 
     app.socket.on('got intro', function (intro) {
       $('#intro').find('.panel-title').text(intro.subject);
+
+      $('#intro').find('.item-title').text(intro.subject);
+
+      $('#intro').find('.description').text(intro.description);
+
+      $('#intro').find('.item-references').remove();
+
+      new Truncate($('#intro'));
     });
   };
 
@@ -492,7 +629,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web2/js2/Item.js":[function(require,module,exports){
+},{"./Truncate":"/home/francois/Dev/syn/app/web2/js2/Truncate.js"}],"/home/francois/Dev/syn/app/web2/js2/Item.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -585,6 +722,9 @@
 
       case 'details':
         return this.template.find('.details:first');
+
+       case 'editor':
+        return this.template.find('.editor:first');
 
       case 'toggle arrow':
         return this.template.find('>.toggle-arrow');
@@ -1363,6 +1503,9 @@
       case 'sliders':
         return this.find('side by side').find('.sliders.' + more + '-item');
 
+      case 'item image':
+        return this.find('side by side').find('.image.' + more + '-item');
+
       case 'promote button':
         return this.find('side by side').find('.' + more + '-item .promote');
     }
@@ -1398,9 +1541,19 @@
 
     app.socket.emit('add view', this.evaluation[hand]._id);
 
+    // Subject
+
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
+    // Description
+
     this.find('item description', hand).text(this.evaluation[hand].description);
+
+    // Image
+
+    this.find('item image', hand).append(
+      new (require('./Item'))(this.evaluation[hand]).media());
+
 
     promote.find('sliders', hand).find('h4').each(function (i) {
       var cid = i;
@@ -1451,6 +1604,15 @@
               promote.edit('cursor', promote.evaluation.cursor + 2);
             }
 
+            else {
+
+              Nav.unreveal(promote.template, promote.item.template,
+                app.domain.intercept(function () {
+                  promote.evaluation = null;
+                }));
+
+            }
+
           }));
         });
       });
@@ -1494,12 +1656,16 @@
   'use strict';
 
   function Sign () {
-
+    
   }
 
   Sign.prototype.render = function () {
     this.signIn();
     this.signUp();
+
+    app.socket.on('online users', function (online) {
+      $('.online-users').text(online);
+    });
   };
 
   Sign.prototype.signIn = function() {
@@ -1682,10 +1848,10 @@
 
   'use strict';
 
-  var Panel = require('./Panel');
-  var Sign = require('./Sign');
-  var Intro = require('./Intro');
-  var domain = require('domain');
+  var Panel     =   require('./Panel');
+  var Sign      =   require('./Sign');
+  var Intro     =   require('./Intro');
+  var domain    =   require('domain');
 
   function Synapp () {
     var self = this;
@@ -1723,6 +1889,9 @@
     this.socket = io.connect('http://' + location.hostname + ':' + location.port);
 
     this.socket.on('connect', function () {
+
+      new Sign().render();
+
       self.topLevelPanel(self.domain.intercept(function () {
         self.intro();
       }));

@@ -19,10 +19,10 @@
 
   'use strict';
 
-  var Panel = require('./Panel');
-  var Sign = require('./Sign');
-  var Intro = require('./Intro');
-  var domain = require('domain');
+  var Panel     =   require('./Panel');
+  var Sign      =   require('./Sign');
+  var Intro     =   require('./Intro');
+  var domain    =   require('domain');
 
   function Synapp () {
     var self = this;
@@ -60,6 +60,9 @@
     this.socket = io.connect('http://' + location.hostname + ':' + location.port);
 
     this.socket.on('connect', function () {
+
+      new Sign().render();
+
       self.topLevelPanel(self.domain.intercept(function () {
         self.intro();
       }));

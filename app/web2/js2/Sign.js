@@ -20,12 +20,16 @@
   'use strict';
 
   function Sign () {
-
+    
   }
 
   Sign.prototype.render = function () {
     this.signIn();
     this.signUp();
+
+    app.socket.on('online users', function (online) {
+      $('.online-users').text(online);
+    });
   };
 
   Sign.prototype.signIn = function() {

@@ -91,6 +91,9 @@
       case 'details':
         return this.template.find('.details:first');
 
+       case 'editor':
+        return this.template.find('.editor:first');
+
       case 'toggle arrow':
         return this.template.find('>.toggle-arrow');
 
