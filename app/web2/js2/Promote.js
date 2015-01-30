@@ -85,6 +85,7 @@
 
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
+      this.find('item description', hand).hide();
 
       return;
     }
@@ -110,7 +111,9 @@
     self.find('promote button', hand)
       .text(this.evaluation[hand].subject)
       .on('click', function () {
-        Nav.scroll(self.template);
+        Nav.scroll(self.template, app.domain.intercept(function () {
+          self.edit('cursor', self.evaluation.cursor + 1);
+        }));
       });
   };
 

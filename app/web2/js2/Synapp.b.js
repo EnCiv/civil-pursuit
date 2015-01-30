@@ -240,10 +240,6 @@
           self.votes(criteria, self.find('votes').eq(i).find('svg'));
         });
 
-        // details.votes.forEach(function (vote) {
-
-        // });
-
       });
     }
   };
@@ -1223,6 +1219,7 @@
 
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
+      this.find('item description', hand).hide();
 
       return;
     }
@@ -1248,7 +1245,9 @@
     self.find('promote button', hand)
       .text(this.evaluation[hand].subject)
       .on('click', function () {
-        Nav.scroll(self.template);
+        Nav.scroll(self.template, app.domain.intercept(function () {
+          self.edit('cursor', self.evaluation.cursor + 1);
+        }));
       });
   };
 
@@ -1340,6 +1339,12 @@
         item: null
       }
     };
+
+    console.info(synapp.user, $('.is-in'))
+
+    if ( synapp.user ) {
+      $('.is-in').removeClass('is-in');
+    }
   }
 
   Synapp.prototype.topLevelPanel = function () {

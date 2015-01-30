@@ -73,10 +73,6 @@
           self.votes(criteria, self.find('votes').eq(i).find('svg'));
         });
 
-        // details.votes.forEach(function (vote) {
-
-        // });
-
       });
     }
   };

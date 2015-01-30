@@ -49,6 +49,12 @@
         item: null
       }
     };
+
+    console.info(synapp.user, $('.is-in'))
+
+    if ( synapp.user ) {
+      $('.is-in').removeClass('is-in');
+    }
   }
 
   Synapp.prototype.topLevelPanel = function () {
