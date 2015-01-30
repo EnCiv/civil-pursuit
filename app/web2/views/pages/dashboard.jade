@@ -1,0 +1,22 @@
+extends ../layout
+
+block script-app
+  - if ( settings.env === 'production' )
+    script(src='/js/dashboard.min.js')
+
+  - else
+    script(src='/js/dashboard.js')
+
+block page
+  section.epics
+
+    .epic.template-model
+      h1.epic-name Epic Name
+      .epic-description
+
+      .epic-stories
+        h2 Stories
+
+        ul
+          li.epic-story.template-model
+            a(href='#').story-name Story

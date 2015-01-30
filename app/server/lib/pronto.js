@@ -137,52 +137,6 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       base: require('path').join(process.cwd(), 'app/business')
     });
 
-    var facebook = config.facebook;
-
-    facebook.url    =   exportConfig.routes['sign in with Facebook'];
-    facebook.okURL  =   exportConfig.routes['sign in with Facebook OK'];
-
-    facebook.associate = function (profile, tokens, done) {
-
-      var email = profile.id + '@facebook.com';
-
-      monson.get('models/User.findOne?email=' + email)
-
-        .on('error', function (error) {
-          done(error);
-        })
-
-        .on('success', function (user) {
-          if ( ! user ) {
-            monson.post('models/User', {
-              email: email,
-              password: profile.id + Date.now()
-            })
-
-              .on('error', function (error) {
-                done(error);
-              })
-
-              .on('success', function (user) {
-                done(null, user);
-              });
-          }
-          else {
-            server.emit('message', { 'facebook user found': user });
-            done(null, user);
-          }
-        });
-    };
-
-    facebook.success = function (req, res, next) {
-      res.cookie('synuser', {
-          email: req.user.email,
-          id: req.user._id
-        }, config.cookie);
-
-      res.redirect('/');
-    };
-
     var server = pronto ()
 
       /** inject into scope */
@@ -200,14 +154,6 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       .open(passport.initialize());
 
     /** passport */
-
-    // server
-      
-    //   .app
-        
-    //     .use(function () {
-    //       passport.initialize()
-    //     });
 
     passport.serializeUser(function(user, done) {
       done(null, user._id);
@@ -255,7 +201,7 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       /** / ==> Home page */
 
-      .open('app/web/views/pages/index.jade', when.home)
+      .open('app/web2/views/pages/index.jade', when.home)
 
       /** /page/ ==> Static pages */
 
@@ -263,7 +209,7 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
 
       /** /partial/ ==> Partials */
 
-      .open('app/web/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
+      .open('app/web2/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
 
       /** /bower/ ==> Bower components */
 
@@ -274,9 +220,12 @@ $T!!!!!!!!!8$$$$$$$$$$$$:~~~~~~~~~~"""""~~~~~~~~~~~:@!~E!!!!!!?$$$$c
       .open('app/web/dist/js',
         when.prefix('/js'))
 
+      .open('app/web2/js2',
+        when.prefix('/js2'))
+
       /** /css/ ==> CSS files */
 
-      .open('app/web/dist/css', when.prefix('/css'))
+      .open('app/web2/css/synapp.css', when('/css/index.css'))
 
       /** /test/story/mothership ==> Stories mothership */
 

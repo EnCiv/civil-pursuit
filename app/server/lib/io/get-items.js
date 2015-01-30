@@ -28,10 +28,7 @@
       
         .on('success', function (items) {
           pronto.emit('message', 'socket got items from monson');
-          socket.emit('got items', {
-            panel: panel,
-            items: items
-          });
+          socket.emit('got items', panel, items);
         });
 
     });

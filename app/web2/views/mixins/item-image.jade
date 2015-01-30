@@ -1,0 +1,60 @@
+mixin item-image(name)
+
+  - if ( name === 'intro' )
+    .item-media
+      img.img-responsive.pull-left(data-ng-src='{{intro.image}}')
+
+  - else if ( name === 'creator' || name === 'editor' )
+    section.item-media
+      //- Drop image box
+
+      .drop-box(
+        data-ng-show                     =   'dropSupported && !item.image'
+        data-ng-file-drop                =   'onFileSelect($files)'
+        data-ng-file-drop-available      =   "dropSupported=true"
+        data-ng-file-drag-over-class     =   "dragOverClass($event)"
+        data-ng-file-drag-over-delay     =   "100"
+        data-ng-hide                     =   'dataUrls.length'
+        title                            =   'Optional – Drop your own graphic or image here that describes the subject'
+          ) Drop image here
+
+      //- Uploaded image if any
+
+      image.img-responsive(
+        alt               =   'image'
+        data-ng-src       =   "{{dataUrls[0]}}"
+        data-ng-show      =   'dataUrls.length'
+      )
+
+      //- In case of editing, show entry image or default topic image
+      div(data-ng-show='item._id && !dataUrls.length')
+        +item-image('item')
+
+      .upload-button.btn.btn-default.btn-sm(
+        ng-file-select  =   "onFileSelect($files)"
+        data-multiple   =   "true"
+        title           =   "select file"
+        onclick         =   "this.value = null"
+          ) Upload image
+
+  - else
+   - name = name || 'item';
+    
+    //- Get URL
+
+    - var url = [name + '.references', name + '.references[0]']
+
+    - url.push([name + '.references[0].url', name + '.references[0].title'].join(' || '))
+
+    - url = url.map(function (u) { return '(' + u + ')' })
+
+    - url = url.join(' && ')
+
+    //- HTML
+
+    article.item-media(
+      data-subject='{{' + name + '.subject}}'
+      data-url='{{' + url + '}}' 
+      data-image='{{' + name + '.image}}'
+      data-upload='{{$root.dataUrls[0]}}'
+    )

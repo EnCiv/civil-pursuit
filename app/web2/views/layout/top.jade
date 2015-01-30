@@ -1,0 +1,48 @@
+//- TOP BAR
+    =======
+
+    Whatever whatever
+
+    OK OK OK
+
+// Top bar
+
+header.container-fluid
+
+  .row
+    .col-xs-12
+      .pull-right
+
+        //- Online now
+        span
+          span Online now: 
+          span.online-users 0
+
+        //- User icon ??
+        a.button.btn.btn-lg.btn-default.is-in(href='/page/persona' title='Persona')
+          big.fa.fa-user
+        
+        //- Sign out
+        span  
+        a.button.btn.btn-lg.btn-default.is-in(href='/sign/out' title='Sign out')
+          big.fa.fa-sign-out
+
+        //- Back
+        span  
+        a.button.btn.btn-lg.btn-default(href=back title='Go back')
+          big.fa.fa-chevron-left
+
+      //- # Logo
+
+      //- ## Regular screen
+
+      a(href='/')
+        img.img-responsive.logo.logo-title-image.visible-lg-inline.visible-md-inline.visible-sm-inline(alt='Logo' src='http://res.cloudinary.com/hscbexf6a/image/upload/v1415218424/Synaccord_logo_name_300x61_xyohja.png')
+
+        //- ## Small screen
+
+        img.img-responsive.logo.logo-image.visible-xs-inline(alt='Logo' src='http://res.cloudinary.com/hscbexf6a/image/upload/v1415218424/Synaccord_logo_64x61_znpxlc.png')
+
+      //- ## Beta
+
+      img.beta(alt='beta' src='http://res.cloudinary.com/hscbexf6a/image/upload/v1415218424/beta_cwjuwd.png')

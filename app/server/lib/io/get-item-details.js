@@ -2,16 +2,14 @@
 
   'use strict';
 
-  function getItemDetails (socket, pronto, monson) {
+  function getItemDetails (socket, pronto, monson, domain) {
     socket.on('get item details', function (item, cb) {
       
-      var url = 'models/Item.details/' + item._id;
+      var url = 'models/Item.details/' + item;
 
       monson.get(url)
 
-        .on('error', function (error) {
-          throw error;
-        })
+        .on('error', domain.intercept(function () {}))
 
         .on('success', function (details) {
           socket.emit('got item details', details);

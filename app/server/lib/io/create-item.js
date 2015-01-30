@@ -10,7 +10,9 @@
 
       monson.post(url, item)
 
-        .on('error', domain.intercept(function () {}))
+        .on('error', domain.bind(function (error) {
+          socket.emit('could not create item', error);
+        }))
 
         .on('success', function (item) {
           pronto.emit('message', 'socket created item from monson');

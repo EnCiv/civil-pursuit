@@ -1,0 +1,85 @@
+//- SCRIPTS
+    =======
+
+    All the bottom script tags
+
+
+// javascript
+
+
+//- # pass config public
+block script-backend
+  script.
+    var synapp = !{JSON.stringify(synapp.public)};
+    synapp.env = "!{settings.env}";
+    synapp.user = "!{(req.user && req.user.id)}";
+
+//- socketio
+block script-socketio
+  script(src='/socket.io/socket.io.js')
+
+//- socket stream
+block script-socketio-stream
+  script(src='/js/socket.io-stream.js')
+
+//- # jQuery
+block script-jquery
+  - if ( settings.env === 'production')
+    script(src=synapp.jquery.cdn)
+
+  - else
+    script(src='/bower/jquery/dist/jquery.js')
+
+//- # Bootstrap
+//- block script-bootstrap
+//-   - if ( settings.env === 'production' )
+//-     script(src='/js/bootstrap.min.js')
+//-   - else
+//-     script(src='/js/bootstrap.js')
+
+//- # Bootstrap sliders
+
+//- block script-sliders
+//-   - if ( settings.env === 'production' )
+//-     script(src='/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
+
+//-   - else
+//-     script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
+
+block script-rangeslider
+  - if ( settings.env === 'production' )
+    script(src='/bower/rangeslider.js/dist/rangeslider.min.js')
+  - else
+    script(src='/bower/rangeslider.js/dist/rangeslider.js')
+
+block script-d3
+  - if ( settings.env === 'production' )
+    script(src='/bower/d3/d3.min.js')
+  - else
+    script(src='/bower/d3/d3.js')
+    //- script(src='http://d3js.org/d3.v3.min.js' charset='utf-8')
+
+block script-c3
+  - if ( settings.env === 'production' )
+    script(src='/bower/c3/c3.min.js')
+  - else
+    script(src='/bower/c3/c3.js')
+
+//- # synapp
+
+//- block script-app
+//-   - if ( settings.env === 'production' )
+//-     script(src='/js/index.min.js')
+
+//-   - else
+//-     script(src='/js/index.js')
+
+
+//- script(src='/js2/Bootstrap.b.js')
+script(src='/bower/bootstrap/dist/js/bootstrap.min.js')
+
+script(src='/js2/jQuery.b.js')
+script(src='/js2/Synapp.b.js')
+
+script.
+  var app = new Synapp();

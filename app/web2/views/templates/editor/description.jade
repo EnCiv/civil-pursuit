@@ -1,0 +1,14 @@
+//- Description
+
+- var legend = 'Describe the subject in a concise and complete fashion that is measurable and unbiased'
+
+textarea(
+  auto-grow
+  name              =   'description'
+  placeholder       =   legend
+  title				=	legend 
+  spellcheck        =   'true'
+  lang              =   'en'  
+  data-ng-model     =   'item.description'
+  data-ng-disabled	=	'is.in.progress'
+  required          )

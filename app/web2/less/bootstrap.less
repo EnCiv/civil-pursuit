@@ -1,0 +1,61 @@
+/**
+ *    __________________________________________________________________________
+ *
+ *    Synapp Style Sheet / Bootstrap Customizer
+ *    ------------------   --------------------
+ *
+ *    @abstract
+ *    Everyhting regarding Bootstrap
+ *
+ *    @author   francois
+ *
+ *    __________________________________________________________________________
+ *  
+*/
+
+/** Variables */
+
+@syn-bs-path: "../bower_components/bootstrap/less";
+
+/** Import Bootstrap variables */
+
+// @import "@{syn-bs-path}/variables";
+// @import "@{syn-bs-path}/mixins";
+// @import "@{syn-bs-path}/normalize";
+// @import "@{syn-bs-path}/print";
+// @import "@{syn-bs-path}/component-animations";
+// @import "@{syn-bs-path}/scaffolding";
+// @import "@{syn-bs-path}/type";
+// @import "@{syn-bs-path}/grid";
+// @import "@{syn-bs-path}/forms";
+// @import "@{syn-bs-path}/buttons";
+// @import "@{syn-bs-path}/panels";
+// @import "@{syn-bs-path}/alerts";
+// @import "@{syn-bs-path}/media";
+// @import "@{syn-bs-path}/navbar";
+// @import "@{syn-bs-path}/tooltip.less";
+// @import "@{syn-bs-path}/popover.less";
+// @import "@{syn-bs-path}/modals.less";
+// @import "@{syn-bs-path}/dropdowns.less";
+// @import "@{syn-bs-path}/button-groups.less";
+// @import "@{syn-bs-path}/progress-bars.less";
+// @import "@{syn-bs-path}/utilities.less";
+// @import "@{syn-bs-path}/close.less";
+// @import "@{syn-bs-path}/responsive-utilities.less";
+
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+[class^=col-] {
+  // border: 1px solid #ccc;
+  margin: 0;
+  padding:0;
+  word-wrap: break-word;
+
+  &.padding {
+    padding: 12px 8px
+  }
+}

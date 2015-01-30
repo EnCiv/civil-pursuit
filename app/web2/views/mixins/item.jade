@@ -1,0 +1,115 @@
+include item-image
+
+mixin item-media (ref)
+  .item-media-wrapper
+    +item-image(ref)
+
+mixin item-buttons (ref)
+  .pull-right.box-buttons.padding
+
+    - if ( ref === 'creator' )
+      button.btn(data-ng-click='$root.publish("create item", { type: type, parent: parent, elem: $event })') Promote
+
+    - else if ( ref === 'editor' )
+      button.btn(data-ng-click='$root.publish("edit item", { type: type, item: item._id, elem: $event })') Promote
+
+    - else if ( isSignedIn )
+      button.btn(data-ng-click='$root.publish("toggle view", { view: "evaluator", item: ' + ref + '._id })') Promote
+
+    - if ( ref === 'creator' )
+      .text-muted New
+
+    - else if ( ref === 'editor' )
+      .text-muted Edit and go again
+
+    - else
+      div(data-ng-bind=ref + '.promotions')
+
+    div(data-ng-bind='((' + ref + ' | calculatePromotionPercentage) || 0) + "%"')
+
+    - if ( ref === 'creator' || ref === 'editor' )
+      button.btn(disabled) Details
+
+    - else
+      button.btn(data-ng-click='$root.publish("toggle view", { view: "details", item: ' + ref + '._id })') Details
+
+mixin item-text (ref)
+  .item-text
+    - if ( ref === 'creator' || ref === 'editor' )
+      input.subject.item-title(
+        name              =   'subject'
+        type              =   'text' 
+        placeholder       =   'Subject'
+        data-ng-disabled  =   'is.in.progress'
+        title             =   'Enter subject'
+        value             =   '{{item.subject}}'
+        autofocus
+        required          )
+
+    - else
+      h4.item-title(data-ng-bind=ref + '.subject' title='{{ ' + ref + '.subject }}')
+    
+    
+    - if ( ref === 'creator' || ref === 'editor' )
+      .box-description.description
+        textarea(
+          auto-grow
+          name              =   'description'
+          placeholder       =   'Describe the subject in a concise and complete fashion that is measurable and unbiased'
+          title             =   'Describe the subject in a concise and complete fashion that is measurable and unbiased' 
+          spellcheck        =   'true'
+          lang              =   'en'  
+          data-ng-model     =   'item.description'
+          data-ng-disabled  =   'is.in.progress'
+          required          )
+
+    - else
+      .box-description.description.pre-text.padding-right.padding-left(ng-bind=ref + '.description')
+
+    - if ( ref === 'creator' || ref === 'editor' )
+      
+      //- Title
+
+      input.url-fetcher(
+        type              =   'text' 
+        name              =   'title'
+        placeholder       =   'http://'
+        value             =   '{{' + ref + '.references[0].title}}'
+        title             =  'Optional reference'
+      )
+
+      code.text-primary(ng-show='searchingTitle') Searching title for 
+        span(ng-bind=ref + '.references[0].title | shorten:100' title='{{' + ref + '.references[0].title}}')
+
+      code.text-muted(ng-bind=ref + '.references[0].url | shorten:100' title='{{' + ref + '.references[0].url}}')
+
+      code.text-warning(ng-show='searchingTitleFailed') Could not resolve title
+
+      //- URL
+
+      input.entry-url(
+        type              =   'hidden'
+        name              =   'url'
+      )
+
+    - else
+      h4(data-ng-repeat='reference in ' + ref + '.references' data-ng-show=ref + '.references.length')
+        a(data-ng-href='{{ reference.url }}' target='_blank' data-ng-bind='reference.title || reference.url')
+
+mixin item (ref)
+
+  - if ( ref === 'creator' || ref === 'editor' )
+    .box(data-ng-init=ref + '= { references: [] }' data-ng-controller='UploadCtrl')
+      +box(ref)
+
+  - else
+    .box
+      +box(ref)
+
+mixin box(ref)
+  +item-media(ref)
+
+  - if ( ref !== 'intro' )
+    +item-buttons(ref)
+
+  +item-text(ref)

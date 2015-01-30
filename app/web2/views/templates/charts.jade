@@ -1,0 +1,47 @@
+// Votes
+
+.row
+  .col-xs-12
+    h3 Votes
+      small(ng-bind='$root.criterias.length')
+
+    //- For each criteria
+
+    .row(
+      data-ng-repeat        =   'criteria in $root.criterias | criteriaFilter:{type:item.type}'
+    )
+
+      .col-xs-4
+
+        //-
+            CRITERIA NAME
+        //-
+
+        h4(
+          data-ng-bind      =     'criteria.name'
+          data-toggle       =     "tooltip" 
+          data-placement    =     "top" 
+          title             =     "{{criteria.description}}"
+        )
+
+      .col-xs-8
+
+        //-
+            CHART
+        //-
+
+        div(data-syn-charts='{{criteria._id}}' data-ng-show='$root.isCool')
+
+          svg.chart(
+            id                  =   'chart-{{criteria._id}}'
+          )
+
+          //-
+              CHART SEPARATOR
+          //-
+          
+          hr(
+            data-ng-hide      =   'votes[criteria._id]'
+          )
+
+  hr

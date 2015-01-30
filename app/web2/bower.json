@@ -1,0 +1,23 @@
+{
+  "name": "synaccord",
+  "version": "0.0.0",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "font-awesome": "~4.2.0",
+    "bootstrap": "~3.3.1",
+    "jquery": "~2.1.1",
+    "d3": "~3.5.2",
+    "c3": "~0.4.8",
+    "rangeslider.js": "~0.3.7"
+  },
+  "resolutions": {
+    "d3": "~3.5.2"
+  }
+}

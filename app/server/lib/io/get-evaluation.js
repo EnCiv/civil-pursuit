@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function getEvaluation (socket, pronto, monson) {
+  function getEvaluation (socket, pronto, monson, domain) {
     
     socket.on('get evaluation', function (item, cb) {
       
@@ -10,9 +10,7 @@
 
       monson.get(url)
 
-        .on('error', function (error) {
-          throw error;
-        })
+        .on('error', domain.intercept(function () {}))
 
         .on('success', function (evaluation) {
           pronto.emit('message', 'socket got evaluation from monson');
