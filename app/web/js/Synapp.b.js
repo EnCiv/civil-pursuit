@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/web/js/Creator.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -191,7 +191,7 @@
 
 } ();
 
-},{"./Form":4,"./Item":6,"./Nav":7,"./Upload":13,"./YouTube":14}],2:[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Upload":"/home/francois/Dev/syn/app/web/js/Upload.js","./YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Details.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -412,7 +412,7 @@
 
 } ();
 
-},{"./Edit":3,"./Nav":7}],3:[function(require,module,exports){
+},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -604,7 +604,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":7}],4:[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Form.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -681,7 +681,7 @@
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Intro.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -733,7 +733,7 @@
 
 } ();
 
-},{"./Item":6,"./Truncate":12}],6:[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js"}],"/home/francois/Dev/syn/app/web/js/Item.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1135,7 +1135,7 @@
 
 } ();
 
-},{"./Details":2,"./Nav":7,"./Promote":9,"./Truncate":12,"./YouTube":14}],7:[function(require,module,exports){
+},{"./Details":"/home/francois/Dev/syn/app/web/js/Details.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Promote":"/home/francois/Dev/syn/app/web/js/Promote.js","./Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js","./YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Nav.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1341,7 +1341,7 @@
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Panel.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1538,7 +1538,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":7}],9:[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1883,7 +1883,7 @@
 
 } ();
 
-},{"./Item":6,"./Nav":7,"events":16}],10:[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","events":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Sign.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2076,7 +2076,7 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Synapp.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2190,7 +2190,7 @@
 
 } ();
 
-},{"./Intro":5,"./Panel":8,"./Sign":10,"domain":15}],12:[function(require,module,exports){
+},{"./Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","domain":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Truncate.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2413,7 +2413,7 @@
 
 }();
 
-},{"./Nav":7}],13:[function(require,module,exports){
+},{"./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Upload.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2484,7 +2484,7 @@
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/YouTube.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2559,7 +2559,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2569,17 +2569,6 @@ module.exports = (function(){
 	var domain = {};
 	domain.createDomain = domain.create = function(){
 		var d = new events.EventEmitter();
-
-		function emitError(e) {
-			d.emit('error', e)
-		}
-
-		d.add = function(emitter){
-			emitter.on('error', emitError);
-		}
-		d.remove = function(emitter){
-			emitter.removeListener('error', emitError);
-		}
 		d.run = function(fn){
 			try {
 				fn();
@@ -2597,7 +2586,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":16}],16:[function(require,module,exports){
+},{"events":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js"}],"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -2657,8 +2646,10 @@ EventEmitter.prototype.emit = function(type) {
       er = arguments[1];
       if (er instanceof Error) {
         throw er; // Unhandled 'error' event
+      } else {
+        throw TypeError('Uncaught, unspecified "error" event.');
       }
-      throw TypeError('Uncaught, unspecified "error" event.');
+      return false;
     }
   }
 
@@ -2900,4 +2891,4 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}]},{},[11]);
+},{}]},{},["/home/francois/Dev/syn/app/web/js/Synapp.js"]);

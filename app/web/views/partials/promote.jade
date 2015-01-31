@@ -53,8 +53,36 @@ section
 
     .row
       .col-sm-6.sliders.padding.left-item
+        - for ( var i = 0; i < 4; i ++ )
+          .row
+            .col-sm-4.col-xs-12
+
+              //-
+                  CRITERIA NAME
+              //-
+
+              h4(data-toggle="tooltip" data-placement="top") Criteria
+
+            .col-sm-8.col-xs-12
+
+              input(type="range" min="-1" value="0" max="1" step="1")
+
+
 
       .col-sm-6.sliders.padding.right-item
+        - for ( var i = 0; i < 4; i ++ )
+          .row
+            .col-sm-4.col-xs-12
+
+              //-
+                  CRITERIA NAME
+              //-
+
+              h4(data-toggle="tooltip" data-placement="top") Criteria
+
+            .col-sm-8.col-xs-12
+
+              input(type="range" min="-1" value="0" max="1" step="1")
 
     //- Feedback
 
@@ -115,6 +143,10 @@ section
 
     .row
       .col-xs-12.sliders.left-item.padding
+        - for ( var i = 0; i < 4 ; i ++ )
+          h4(data-toggle="tooltip" data-placement="top") Criteria
+
+          input(type="range" min="-1" value="0" max="1" step="1")
 
     //- Feedback
 
@@ -159,6 +191,10 @@ section
 
     .row
       .col-xs-12.sliders.right-item.padding
+        - for ( var i = 0; i < 4 ; i ++ )
+          h4(data-toggle="tooltip" data-placement="top") Criteria
+
+          input(type="range" min="-1" value="0" max="1" step="1")
 
     //- Feedback
 

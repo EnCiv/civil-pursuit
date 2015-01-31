@@ -30,22 +30,6 @@ block script-jquery
   - else
     script(src='/bower/jquery/dist/jquery.js')
 
-//- # Bootstrap
-block script-bootstrap
-  - if ( settings.env === 'production' )
-    script(src='/js/bootstrap.min.js')
-  - else
-    script(src='/js/bootstrap.js')
-
-//- # Bootstrap sliders
-
-//- block script-sliders
-//-   - if ( settings.env === 'production' )
-//-     script(src='/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
-
-//-   - else
-//-     script(src='/bower/seiyria-bootstrap-slider/js/bootstrap-slider.js')
-
 block script-rangeslider
   - if ( settings.env === 'production' )
     script(src='/bower/rangeslider.js/dist/rangeslider.min.js')
@@ -65,6 +49,12 @@ block script-c3
   - else
     script(src='/bower/c3/c3.js')
 
+script(src='/bower/bootstrap/dist/js/bootstrap.min.js')
+
+script(src='/js/jQuery.b.js')
+
+//- script(src='/js/Bootstrap.b.js')
+
 //- # synapp
 
 block script-app
@@ -74,82 +64,5 @@ block script-app
   - else
     script(src='/js/index.js')
 
-//- # Test
-- if ( "story" in req.query )
-  script.
-    var story;
-
-    window.location.search
-      .replace(/^\?/, '')
-      .split(/&/)
-      .forEach(function (query) {
-        var bits = query.split('=');
-
-        if ( bits[0] === 'story' ) {
-          story = +bits[1];
-        }
-      });
-
-    var mothership = document.createElement('script');
-    mothership.src = "/test/story/mothership";
-
-    $('body').append($(mothership));
-
-    var script = document.createElement('script');
-    script.src = "/test/story/" + story;
-
-    $('body').append($(script));
-
-
-// luigi - templates
-
-script(type='text/html' id='tpl-panel')
-  include ../partials/panel
-
-script(type='text/html' id='tpl-creator')
-  include ../partials/creator
-
-script(type='text/html' id='tpl-promote')
-  include ../partials/promote
-
-script(type='text/html' id='tpl-item')
-  include ../partials/item-box
-    include ../partials/item-box-collapsers
-
-script(type='text/html' id='tpl-responsive-image')
-  img.img-responsive
-
-script(type='text/html' id='tpl-toggle-arrow')
-  .row.toggle-arrow
-    .col-xs-12.text-center
-      i.fa.cursor-pointer.fa-arrow-down
-
-script(type='text/html' id='tpl-details-votes')
-  .col-sm-4.col-xs-12
-
-    //-
-        CRITERIA NAME
-    //-
-
-    h4(data-toggle="tooltip" data-placement="top")
-
-  .col-sm-8.col-xs-12
-
-    //-
-        CHART
-    //-
-
-    .chart
-
-      hr
-
-script(type='text/html' id='tpl-details-feedback')
-  .feedback-section
-    div.pre-text.feedback
-      hr
-      .pre-text
-
-script(type='text/html' id='tpl-promote-sliders')
-  .criteria-slider
-    h4.criteria-name Criteria name
-    input(type="range" min="-1" value="0" max="1" step="1")
+script.
+  var app = new Synapp();

@@ -113,9 +113,7 @@ a.btn-default {
 textarea {
   width: 100%;
   min-height: 120px;
-  overflow: hidden;
-}
-textarea {
+  overflow: hidden !important;
   resize: none;
   transition: 0.05s;
   -moz-transition: 0.05s;
@@ -124,7 +122,7 @@ textarea {
 }
 /** ____________________________________________________________________________
 
-          CLASSES
+          CLASSES SPIROU
     ============================================================================
 **/
 /*

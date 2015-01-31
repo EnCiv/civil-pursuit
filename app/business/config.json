@@ -108,11 +108,11 @@
 
   "files": {
     
-    "app js": "app/web/js/index.js",
+    "app js": "app/web/js/Synapp.js",
 
     "app js compiled": "app/web/dist/js/index.js",
 
-    "app less": "app/web2/less/synapp.less",
+    "app less": "app/web/less/synapp.less",
 
     "app css": "app/web/dist/css/index.css",
 

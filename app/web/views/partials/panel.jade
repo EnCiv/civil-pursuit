@@ -1,14 +1,16 @@
-.panel.panel-default(id=panel_id)
+.panel.panel-default
 
   .panel-heading
     block toggle-creator
       i.pull-right.fa.fa-plus.cursor-pointer.toggle-creator
 
     h4.panel-title
-      span.iddle
-        i.fa.fa-circle-o-notch.fa-spin
+      block title
+        span.iddle
+          i.fa.fa-circle-o-notch.fa-spin
 
   .panel-body
+
     block panel-body
 
       include creator
@@ -16,26 +18,8 @@
       // Items
       
       .items
-        // New item
 
-        .new-item.is-container
-          .is-section
-
-        - len = synapp.public['navigator batch size'] - 1
-
-        - for ( var i = 0; i < len; i ++ )
-          include item-box
-            include item-box-collapsers
-
-        // Next item
-
-        .next-item.is-container
-          .is-section
-
-      .loading-more
-        i.fa.fa-circle-o-notch.fa-spin
-        i.fa.fa-check
-        span  Loading more...
+      // Load more
 
       .load-more
         a(href='') View more
