@@ -93,6 +93,14 @@
     this.template.find('[name="subject"]').val(edit.item.item.subject);
     this.template.find('[name="description"]').val(edit.item.item.description);
 
+    if ( edit.item.item.references.length ) {
+      this.template.find('[name="reference"]').val(edit.item.item.references[0].url);
+    }
+
+    this.template.find('.item-media')
+      .empty()
+      .append(edit.item.media());
+
     return this;
   };
 

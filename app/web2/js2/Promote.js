@@ -82,6 +82,9 @@
       case 'item image':
         return this.find('side by side').find('.image.' + more + '-item');
 
+      case 'item feedback':
+        return this.find('side by side').find('.' + more + '-item .feedback');
+
       case 'promote button':
         return this.find('side by side').find('.' + more + '-item .promote');
     }
@@ -152,7 +155,12 @@
         Nav.scroll(promote.template, app.domain.intercept(function () {
         
           if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+
             promote.edit('cursor', promote.evaluation.cursor + 1);
+
+            app.socket.emit('promote', promote.evaluation[left ? 'left' : 'right']._id);
+
+            promote.save(left ? 'left' : 'right');
 
             $.when(
               promote
@@ -239,6 +247,44 @@
 
   Promote.prototype.$bind = function (key, binder) {
     this.watch.on(key, binder);
+  };
+
+  Promote.prototype.save = function (hand) {
+
+    var promote = this;
+   
+    // feedback
+
+    var feedback = promote.find('item feedback', hand);
+
+    if ( feedback.val() ) {
+      app.socket.emit('insert feedback', {
+        item: promote.evaluation[hand]._id,
+        user: synapp.user,
+        feedback: feedback.val()
+      });
+
+      feedback.val('');
+    }
+
+    // votes
+
+    var votes = [];
+
+    promote.template
+      .find('.items-side-by-side:visible .' +  hand + '-item input[type="range"]:visible')
+      .each(function () {
+        var vote = {
+          item: promote.evaluation[hand]._id,
+          user: synapp.user,
+          value: +$(this).val(),
+          criteria: $(this).data('criteria')
+        };
+
+        votes.push(vote);
+      });
+
+    app.socket.emit('insert votes', votes);
   };
 
   module.exports = Promote;

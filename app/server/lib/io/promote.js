@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function addView (socket, pronto, monson) {
+  function addView (socket, pronto, monson, domain) {
     
     socket.on('add view', function (item, cb) {
       
@@ -10,9 +10,7 @@
 
       monson.get(url)
 
-        .on('error', function (error) {
-          throw error;
-        })
+        .on('error', domain.intercept(function () {}))
 
         .on('success', function (item) {
           socket.emit('promoted', item);
