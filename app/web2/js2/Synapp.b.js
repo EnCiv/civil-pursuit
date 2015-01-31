@@ -117,45 +117,49 @@
 
     var form = new Form(creator.template);
     
-    form.send(function () {
-      Nav.hide(creator.template, app.domain.intercept(function () {
-
-        var new_item = creator.toItem();
-
-        new_item.user = synapp.user;
-
-        app.socket.emit('create item', new_item);
-
-        app.socket.once('could not create item', app.domain.intercept());
-
-        app.socket.once('created item', function (item) {
-
-          console.log('created item', item);
-
-          if ( new_item.upload ) {
-            item.upload = new_item.upload;
-          }
-
-          if ( new_item.youtube ) {
-            item.youtube = new_item.youtube;
-          }
-
-          var item  = new Item(item);
-
-          var items = creator.panel.find('items');
-
-          item.get(app.domain.intercept(function () {
-            items.prepend(item.template);
-            item.render(app.domain.intercept(function () {
-              item.find('toggle promote').click();
-            }));
-          }));
-        });
-
-      }));
-    });
+    form.send(creator.save.bind(creator));
 
     cb();
+  };
+
+  Creator.prototype.save = function () {
+    var creator = this;
+
+    Nav.hide(creator.template, app.domain.intercept(function () {
+
+      var new_item = creator.toItem();
+
+      new_item.user = synapp.user;
+
+      app.socket.emit('create item', new_item);
+
+      app.socket.once('could not create item', app.domain.intercept());
+
+      app.socket.once('created item', function (item) {
+
+        console.log('created item', item);
+
+        if ( new_item.upload ) {
+          item.upload = new_item.upload;
+        }
+
+        if ( new_item.youtube ) {
+          item.youtube = new_item.youtube;
+        }
+
+        var item  = new Item(item);
+
+        var items = creator.panel.find('items');
+
+        item.get(app.domain.intercept(function () {
+          items.prepend(item.template);
+          item.render(app.domain.intercept(function () {
+            item.find('toggle promote').click();
+          }));
+        }));
+      });
+
+    }));
   };
 
   Creator.prototype.toItem = function () {
@@ -480,20 +484,26 @@
 
   Edit.prototype.find = function (name) {
     switch ( name ) {
-      case 'title':
-        return this.template.find('.Edit-title:first');
+      case 'create button':
+        return this.template.find('.button-create:first');
 
-      case 'toggle creator':
-        return this.template.find('.toggle-creator:first');
+      case 'dropbox':
+        return this.template.find('.drop-box');
 
-      case 'creator':
-        return this.template.find('.creator:first');
+      case 'subject':
+        return this.template.find('[name="subject"]');
 
-      case 'items':
-        return this.template.find('.items:first');
+      case 'description':
+        return this.template.find('[name="description"]');
 
-      case 'load more':
-        return this.template.find('.load-more:first');
+      case 'item media':
+        return this.template.find('.item-media');
+
+      case 'reference':
+        return this.template.find('.reference');
+
+      case 'reference board':
+        return this.template.find('.reference-board');
     }
   };
 
@@ -512,7 +522,78 @@
       .empty()
       .append(edit.item.media());
 
+    this.template.on('submit', function () {
+
+      edit.save();
+
+      return false;
+    });
+
     return this;
+  };
+
+  Edit.prototype.save = function () {
+    var edit = this;
+
+    console.log(edit.toItem());
+
+    Nav.hide(edit.template, app.domain.intercept(function () {
+      Nav.hide(edit.template.closest('.editor'), app.domain.intercept(function () {
+        
+        var new_item = edit.toItem();
+
+        app.socket.emit('create item', new_item);
+
+        app.socket.once('could not create item', function (error) {
+          console.error(error)
+        });
+        
+        app.socket.once('created item', function (item) {
+          console.log('created item', item);
+
+            if ( new_item.upload ) {
+              item.upload = new_item.upload;
+            }
+
+            if ( new_item.youtube ) {
+              item.youtube = new_item.youtube;
+            }
+
+            var item  = new (require('./Item'))(item);
+
+            item.get(app.domain.intercept(function () {
+              item.template.insertBefore(edit.item.template);
+              
+              item.render(app.domain.intercept(function () {
+                item.find('toggle promote').click();
+              }));
+            }));
+        });
+      }));
+    }));
+  };
+
+  Edit.prototype.toItem = function () {
+    var item = {
+      from:         this.item.item._id,
+      subject:      this.find('subject').val(),
+      description:  this.find('description').val(),
+      user:         synapp.user,
+      type:         this.item.item.type
+    };
+
+    if ( this.find('item media').find('img').length ) {
+
+      if ( this.find('item media').find('.youtube-preview').length ) {
+        item.youtube = this.find('item media').find('.youtube-preview').data('video');
+      }
+
+      else {
+        item.upload = this.find('item media').find('img').attr('src');
+      }
+    }
+ 
+    return item;
   };
 
   module.exports = Edit;
@@ -1589,6 +1670,7 @@
     this.find('item image', hand).empty().append(
       new (require('./Item'))(this.evaluation[hand]).media());
 
+    // Sliders
 
     promote.find('sliders', hand).find('h4').each(function (i) {
       var cid = i;
@@ -1600,8 +1682,11 @@
       promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
     });
 
+    // Promote button
+
     promote.find('promote button', hand)
       .text(this.evaluation[hand].subject)
+      .off('click')
       .on('click', function () {
 
         var left = $(this).closest('.left-item').length;
@@ -1638,6 +1723,14 @@
               });
           }
 
+          else {
+
+            console.log('we are done')
+
+            promote.finish();
+
+          }
+
         }));
       });
   };
@@ -1665,7 +1758,11 @@
           Nav.scroll(promote.template, app.domain.intercept(function () {
 
             if ( promote.evaluation.cursor < promote.evaluation.limit ) {
-              promote.edit('cursor', promote.evaluation.cursor + 2);
+              
+
+              promote.save('left');
+
+              promote.save('right');
 
               $.when(
                 promote
@@ -1676,16 +1773,33 @@
                   })
               )
                 .then(function () {
-                  console.log('respire');
+                  promote.edit('cursor', promote.evaluation.cursor + 1);
+
+                  promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+
+                  promote.edit('cursor', promote.evaluation.cursor + 1);
+
+                  promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+
+                  promote
+                    .find('side by side')
+                    .find('.left-item')
+                    .animate({
+                      opacity: 1
+                    });
+
+                  promote
+                    .find('side by side')
+                    .find('.right-item')
+                    .animate({
+                      opacity: 1
+                    });
                 });
             }
 
             else {
 
-              Nav.unreveal(promote.template, promote.item.template,
-                app.domain.intercept(function () {
-                  promote.evaluation = null;
-                }));
+              promote.finish();
 
             }
 
@@ -1693,6 +1807,24 @@
         });
       });
     }
+  };
+
+  Promote.prototype.finish = function () {
+    var promote = this;
+
+    promote.find('promote button').off('click');
+    promote.find('finish button').off('click');
+
+    Nav.unreveal(promote.template, promote.item.template,
+      app.domain.intercept(function () {
+
+        promote.item.find('toggle details').click();
+
+        promote.item.find('details').find('.feedback-pending')
+          .removeClass('hide');
+
+        promote.evaluation = null;
+      }));
   };
 
   Promote.prototype.edit = function (key, value) {

@@ -133,6 +133,7 @@
     this.find('item image', hand).empty().append(
       new (require('./Item'))(this.evaluation[hand]).media());
 
+    // Sliders
 
     promote.find('sliders', hand).find('h4').each(function (i) {
       var cid = i;
@@ -144,8 +145,11 @@
       promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
     });
 
+    // Promote button
+
     promote.find('promote button', hand)
       .text(this.evaluation[hand].subject)
+      .off('click')
       .on('click', function () {
 
         var left = $(this).closest('.left-item').length;
@@ -182,6 +186,14 @@
               });
           }
 
+          else {
+
+            console.log('we are done')
+
+            promote.finish();
+
+          }
+
         }));
       });
   };
@@ -209,7 +221,11 @@
           Nav.scroll(promote.template, app.domain.intercept(function () {
 
             if ( promote.evaluation.cursor < promote.evaluation.limit ) {
-              promote.edit('cursor', promote.evaluation.cursor + 2);
+              
+
+              promote.save('left');
+
+              promote.save('right');
 
               $.when(
                 promote
@@ -220,16 +236,33 @@
                   })
               )
                 .then(function () {
-                  console.log('respire');
+                  promote.edit('cursor', promote.evaluation.cursor + 1);
+
+                  promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+
+                  promote.edit('cursor', promote.evaluation.cursor + 1);
+
+                  promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+
+                  promote
+                    .find('side by side')
+                    .find('.left-item')
+                    .animate({
+                      opacity: 1
+                    });
+
+                  promote
+                    .find('side by side')
+                    .find('.right-item')
+                    .animate({
+                      opacity: 1
+                    });
                 });
             }
 
             else {
 
-              Nav.unreveal(promote.template, promote.item.template,
-                app.domain.intercept(function () {
-                  promote.evaluation = null;
-                }));
+              promote.finish();
 
             }
 
@@ -237,6 +270,24 @@
         });
       });
     }
+  };
+
+  Promote.prototype.finish = function () {
+    var promote = this;
+
+    promote.find('promote button').off('click');
+    promote.find('finish button').off('click');
+
+    Nav.unreveal(promote.template, promote.item.template,
+      app.domain.intercept(function () {
+
+        promote.item.find('toggle details').click();
+
+        promote.item.find('details').find('.feedback-pending')
+          .removeClass('hide');
+
+        promote.evaluation = null;
+      }));
   };
 
   Promote.prototype.edit = function (key, value) {

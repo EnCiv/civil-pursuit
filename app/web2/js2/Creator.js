@@ -116,45 +116,49 @@
 
     var form = new Form(creator.template);
     
-    form.send(function () {
-      Nav.hide(creator.template, app.domain.intercept(function () {
-
-        var new_item = creator.toItem();
-
-        new_item.user = synapp.user;
-
-        app.socket.emit('create item', new_item);
-
-        app.socket.once('could not create item', app.domain.intercept());
-
-        app.socket.once('created item', function (item) {
-
-          console.log('created item', item);
-
-          if ( new_item.upload ) {
-            item.upload = new_item.upload;
-          }
-
-          if ( new_item.youtube ) {
-            item.youtube = new_item.youtube;
-          }
-
-          var item  = new Item(item);
-
-          var items = creator.panel.find('items');
-
-          item.get(app.domain.intercept(function () {
-            items.prepend(item.template);
-            item.render(app.domain.intercept(function () {
-              item.find('toggle promote').click();
-            }));
-          }));
-        });
-
-      }));
-    });
+    form.send(creator.save.bind(creator));
 
     cb();
+  };
+
+  Creator.prototype.save = function () {
+    var creator = this;
+
+    Nav.hide(creator.template, app.domain.intercept(function () {
+
+      var new_item = creator.toItem();
+
+      new_item.user = synapp.user;
+
+      app.socket.emit('create item', new_item);
+
+      app.socket.once('could not create item', app.domain.intercept());
+
+      app.socket.once('created item', function (item) {
+
+        console.log('created item', item);
+
+        if ( new_item.upload ) {
+          item.upload = new_item.upload;
+        }
+
+        if ( new_item.youtube ) {
+          item.youtube = new_item.youtube;
+        }
+
+        var item  = new Item(item);
+
+        var items = creator.panel.find('items');
+
+        item.get(app.domain.intercept(function () {
+          items.prepend(item.template);
+          item.render(app.domain.intercept(function () {
+            item.find('toggle promote').click();
+          }));
+        }));
+      });
+
+    }));
   };
 
   Creator.prototype.toItem = function () {
