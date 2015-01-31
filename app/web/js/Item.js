@@ -27,7 +27,7 @@
 
   function Item (item) {
 
-    if ( typeof app === 'undefined' || app.constructor.name !== 'Synapp' ) {
+    if ( typeof app === 'undefined' || ! ( app instanceof Synapp ) ) {
       throw new Error('Missing app');
     }
 

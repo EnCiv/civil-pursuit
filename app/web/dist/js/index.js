@@ -32,7 +32,7 @@
       throw new Error('Missing app');
     }
 
-    if ( panel.constructor.name !== 'Panel' ) {
+    if ( ! ( panel instanceof Panel ) ) {
       throw new Error('Creator: Panel must be a Panel object');
     }
 
@@ -225,7 +225,7 @@
     var self = this;
 
     app.domain.run(function () {
-      if ( ! item || item.constructor.name !== 'Item' ) {
+      if ( ! item || ( ! item instanceof require('./Item') ) ) {
         throw new Error('Item must be an Item');
       }
 
@@ -412,7 +412,7 @@
 
 } ();
 
-},{"./Edit":3,"./Nav":7}],3:[function(require,module,exports){
+},{"./Edit":3,"./Item":6,"./Nav":7}],3:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -456,7 +456,7 @@
     var self = this;
 
     app.domain.run(function () {
-      if ( ! item || item.constructor.name !== 'Item' ) {
+      if ( ! item || ( ! item instanceof require('./Item') ) ) {
         throw new Error('Item must be an Item');
       }
 
@@ -763,7 +763,7 @@
 
   function Item (item) {
 
-    if ( typeof app === 'undefined' || app.constructor.name !== 'Synapp' ) {
+    if ( typeof app === 'undefined' || ! ( app instanceof Synapp ) ) {
       throw new Error('Missing app');
     }
 
@@ -1572,7 +1572,7 @@
     var self = this;
 
     app.domain.run(function () {
-      if ( ! item || item.constructor.name !== 'Item' ) {
+      if ( ! item || ( ! item instanceof require('./Item') ) ) {
         throw new Error('Item must be an Item');
       }
 

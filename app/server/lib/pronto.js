@@ -215,7 +215,7 @@ Nina Butorac
       })
 
       .on('error', function (error) {
-        console.log('erroooooooooor');
+        console.log('erroooooooooor', error);
       })
 
       // .open ( routes.urlTitleFetcher, when.post ( '/tools/get-title' ) )

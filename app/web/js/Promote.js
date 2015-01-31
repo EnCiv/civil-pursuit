@@ -31,7 +31,7 @@
     var self = this;
 
     app.domain.run(function () {
-      if ( ! item || item.constructor.name !== 'Item' ) {
+      if ( ! item || ( ! item instanceof require('./Item') ) ) {
         throw new Error('Item must be an Item');
       }
 

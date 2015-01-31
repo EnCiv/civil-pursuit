@@ -31,7 +31,7 @@
       throw new Error('Missing app');
     }
 
-    if ( panel.constructor.name !== 'Panel' ) {
+    if ( ! ( panel instanceof Panel ) ) {
       throw new Error('Creator: Panel must be a Panel object');
     }
 
