@@ -11,7 +11,7 @@
   app.connect(function () {
     new Sign().render();
 
-    var panel = new Panel('Topic');
+    var panel = new Panel('Persona');
 
     panel
       

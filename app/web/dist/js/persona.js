@@ -1502,6 +1502,8 @@
 
     app.socket.once('got items ' + this.id, function (panel, items) {
       
+      console.log('got items', panel, items)
+
       self.skip += items.length;
 
       self.insertItem(items, 0, cb);
@@ -2571,7 +2573,7 @@
   app.connect(function () {
     new Sign().render();
 
-    var panel = new Panel('Topic');
+    var panel = new Panel('Persona');
 
     panel
       

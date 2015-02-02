@@ -156,6 +156,8 @@
 
     app.socket.once('got items ' + this.id, function (panel, items) {
       
+      console.log('got items', panel, items)
+
       self.skip += items.length;
 
       self.insertItem(items, 0, cb);
