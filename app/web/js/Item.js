@@ -24,6 +24,7 @@
   var Details     =   require('./Details');
   var YouTube     =   require('./YouTube');
   var Truncate    =   require('./Truncate');
+  var Panel       =   require('./Panel');
 
   function Item (item) {
 
@@ -228,7 +229,7 @@
 
               item.find('children').addClass('is-loaded');
 
-              var panelProblem = new Panel('Problem', item.item._id);
+              var panelProblem = new (require('./Panel'))('Problem', item.item._id);
 
               panelProblem.get(app.domain.intercept(function (template) {
                 item.find('children').append(template);
@@ -243,7 +244,7 @@
 
             case 'Problem':
 
-              var panelSolution = new Panel('Solution', item.item._id);
+              var panelSolution = new (require('./Panel'))('Solution', item.item._id);
 
               panelSolution.get(app.domain.intercept(function (template) {
                 item.find('children').append(template);
@@ -259,7 +260,7 @@
 
               item.find('children').append(split);
 
-              var panelAgree = new Panel('Agree', item.item._id);
+              var panelAgree = new (require('./Panel'))('Agree', item.item._id);
 
               panelAgree.get(app.domain.intercept(function (template) {
                 template.addClass('split-view');
@@ -273,7 +274,7 @@
                 }, 700);
               }));
 
-              var panelDisagree = new Panel('Disagree', item.item._id);
+              var panelDisagree = new (require('./Panel'))('Disagree', item.item._id);
 
               panelDisagree.get(app.domain.intercept(function (template) {
                 template.addClass('split-view');
@@ -294,7 +295,7 @@
 
               item.find('children').append(split);
 
-              var panelPro = new Panel('Pro', item.item._id);
+              var panelPro = new (require('./Panel'))('Pro', item.item._id);
 
               panelPro.get(app.domain.intercept(function (template) {
                 template.addClass('split-view');
@@ -308,7 +309,7 @@
                 }, 700);
               }));
 
-              var panelCon = new Panel('Con', item.item._id);
+              var panelCon = new (require('./Panel'))('Con', item.item._id);
 
               panelCon.get(app.domain.intercept(function (template) {
                 template.addClass('split-view');

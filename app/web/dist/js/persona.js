@@ -2564,14 +2564,12 @@
 
   var Synapp = require('../Synapp');
   var Sign = require('../Sign');
-  var Intro = require('../Intro');
   var Panel = require('../Panel');
 
   window.app = new Synapp();
 
   app.connect(function () {
     new Sign().render();
-    new Intro().render();
 
     var panel = new Panel('Topic');
 
@@ -2591,7 +2589,7 @@
 
 } ();
 
-},{"../Intro":5,"../Panel":8,"../Sign":10,"../Synapp":11}],16:[function(require,module,exports){
+},{"../Panel":8,"../Sign":10,"../Synapp":11}],16:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events

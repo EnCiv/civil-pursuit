@@ -129,7 +129,12 @@ Nina Butorac
 
       /** /page/ ==> Static pages */
 
-      .open('app/web/views/pages', { 'append extension': 'jade' }, when.prefix('/page/'))
+      .open(function (req, res, next) {
+        res.locals.page = req.params.page || 'index';
+        next();
+      }, when('/page/:page'))
+
+      .open('app/web/views/pages', { 'append extension': 'jade' }, when.prefix('/page'))
 
       /** /partial/ ==> Partials */
 

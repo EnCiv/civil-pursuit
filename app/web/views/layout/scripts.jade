@@ -6,7 +6,6 @@
 
 // javascript
 
-
 //- # pass config public
 block script-backend
   script.
@@ -58,11 +57,21 @@ script(src='/js/jQuery.b.js')
 //- # synapp
 
 block script-app
-  - if ( settings.env === 'production' )
-    script(src='/js/index.min.js')
+  - var js = 'index'
 
-  - else
-    script(src='/js/index.js')
+  - if ( req.path === '/persona' )
+    - js = 'persona'
 
-script.
-  var app = new Synapp();
+  - if ( req.path === '/terms-of-service' )
+    - js = 'terms-of-service'
+
+  script(src='/js/' + js + ( settings.env === 'production' ? '.min.js' : '.js' ))
+
+- if ( settings.env === 'development' )
+  script.
+    $('.test-list').popover({
+      html: true,
+      content: function () {
+        return $('.test-list-popover').clone();
+      }
+    });

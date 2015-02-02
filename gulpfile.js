@@ -165,16 +165,18 @@ Nina Butorac
   var buildersDir   =   './app/business/build';
 
   var tasks         =   [
-    'browserify',
-    'browserify-dashboard',
+    'browserify-home',
+    'browserify-terms-of-service',
+    'browserify-persona',
     'build-dev',
     'build-prod',
     'less',
     'less-dashboard',
     'minify-css',
     'minify-css-dashboard',
-    'uglify',
-    'uglify-dashboard',
+    'uglify-home',
+    'uglify-terms-of-service',
+    'uglify-persona',
     'watchify',
     'watchify-dashboard',
     'watch-less',
@@ -189,6 +191,8 @@ Nina Butorac
   gulp.task('default', tasks.filter(function (task) {
     return task !== 'watchify';
   }));
+
+  module.exports = gulp;
 
 }();
 

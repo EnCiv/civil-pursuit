@@ -31,32 +31,21 @@ base(href='/')
 //- Stylesheets
 // Stylesheets
 block stylesheets
-  //- Font Awesome
-  block stylesheet-font-awesome
-    - var href
 
-    //- When in production, use CDN
-    
-    - if ( settings.env === 'production' )
-      - href = synapp['font awesome'].cdn
+  block stylesheet-bootstrap
+    link(rel='stylesheet' href='/bower/bootstrap/dist/css/bootstrap.min.css')
 
-    - else
-      //- Otherwise use bower
-      - href = '/bower/font-awesome/css/font-awesome.css'
-    
-    link(rel='stylesheet' href=href)
-
-
-  link(rel='stylesheet' href='/bower/bootstrap/dist/css/bootstrap.min.css')
-
-
-      
   block css-app
     - if ( settings.env === 'production' )
       link(rel='stylesheet' href='/css/index.min.css')
     
     - else
       link(rel='stylesheet' href='/css/index.css')
+
+  //- Font Awesome
+  block stylesheet-font-awesome
+    link(rel='stylesheet' 
+      href=(( settings.env === 'production' ) ? synapp['font awesome'].cdn : '/bower/font-awesome/css/font-awesome.css' ))
 
   //- C3 CSS
   block css-c3

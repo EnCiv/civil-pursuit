@@ -4,7 +4,9 @@
 
   exports.dependencies = [
     'less',
-    'browserify'
+    'browserify-home',
+    'browserify-terms-of-service',
+    'browserify-persona'
   ];
 
   exports.task = function (cb) {

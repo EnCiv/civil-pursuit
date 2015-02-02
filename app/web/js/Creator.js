@@ -21,6 +21,7 @@
 
   var Form      =   require('./Form');
   var Nav       =   require('./Nav');
+  var Panel     =   require('./Panel');
   var Item      =   require('./Item');
   var Upload    =   require('./Upload');
   var YouTube   =   require('./YouTube');
@@ -31,7 +32,7 @@
       throw new Error('Missing app');
     }
 
-    if ( ! ( panel instanceof Panel ) ) {
+    if ( ! ( panel instanceof require('./Panel') ) ) {
       throw new Error('Creator: Panel must be a Panel object');
     }
 

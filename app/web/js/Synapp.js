@@ -60,12 +60,7 @@
     this.socket = io.connect('http://' + location.hostname + ':' + location.port);
 
     this.socket.on('connect', function () {
-
-      new Sign().render();
-
-      self.topLevelPanel(self.domain.intercept(function () {
-        self.intro();
-      }));
+      self.emit('connect');
     });
 
     this.evaluations = [];
@@ -76,12 +71,18 @@
       }
     };
 
-    console.info(synapp.user, $('.is-in'))
-
     if ( synapp.user ) {
       $('.is-in').removeClass('is-in');
     }
   }
+
+  require('util').inherits(Synapp, require('events').EventEmitter);
+
+  Synapp.prototype.connect = function (fn) {
+    this.on('connect', fn);
+
+    return this;
+  };
 
   Synapp.prototype.topLevelPanel = function (cb) {
     var self = this;
@@ -102,11 +103,12 @@
       }));
   };
 
-  Synapp.prototype.intro = function () {
-    console.log('hello')
-    new Intro().render();
-  };
+  if ( module && module.exports ) {
+    module.exports = Synapp;
+  }
 
-  window.Synapp = Synapp;
+  if ( typeof window === 'object' ) {
+    window.Synapp = Synapp;
+  }
 
 } ();

@@ -156,8 +156,6 @@
 
     app.socket.once('got items ' + this.id, function (panel, items) {
       
-      console.log(panel, items, self.toJSON());
-
       self.skip += items.length;
 
       self.insertItem(items, 0, cb);
@@ -169,8 +167,6 @@
     var self = this;
 
     if ( items[i] ) {
-
-      console.log('rendering item', items[i].subject);
 
       var item  = new Item(items[i]);
 
@@ -189,7 +185,5 @@
   };
 
   module.exports = Panel;
-
-  window.Panel = Panel;
 
 } ();
