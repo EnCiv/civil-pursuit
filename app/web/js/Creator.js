@@ -78,7 +78,7 @@
 
     creator.template.data('creator', this);
 
-    Upload(creator.find('dropbox'));
+    new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
 
     creator.template.find('textarea').autogrow();
 
@@ -131,7 +131,26 @@
 
       new_item.user = synapp.user;
 
-      app.socket.emit('create item', new_item);
+      if ( new_item.upload ) {
+        var file = creator.template.find('.preview-image').data('file');
+
+        var stream = ss.createStream();
+
+        ss(app.socket).emit('upload image', stream,
+          { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          new_item.image = file.name;
+
+          app.socket.emit('create item', new_item);
+        });
+      }
+
+      else {
+        app.socket.emit('create item', new_item);
+      }
 
       app.socket.once('could not create item', app.domain.intercept());
 
@@ -181,6 +200,7 @@
 
       else {
         item.upload = this.find('item media').find('img').attr('src');
+        item.image = item.upload;
       }
     }
  

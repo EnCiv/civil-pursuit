@@ -171,6 +171,8 @@ ItemSchema.pre('save', function (next, done) {
 
   var self = this;
 
+  var isNew = this.isNew;
+
   // If creating, set default values
 
   if ( this.isNew ) {
@@ -189,7 +191,7 @@ ItemSchema.pre('save', function (next, done) {
 
       var upload_image = false;
 
-      if ( self.isNew ) {
+      if ( isNew ) {
         upload_image = !! self.image;
       }
       else if ( self._original ) {
@@ -207,6 +209,8 @@ ItemSchema.pre('save', function (next, done) {
           api_key         :   config.cloudinary.API.key, 
           api_secret      :   config.cloudinary.API.secret 
         });
+
+        console.log('uploading', path.join(config.tmp, self.image))
 
         cloudinary.uploader.upload(
           

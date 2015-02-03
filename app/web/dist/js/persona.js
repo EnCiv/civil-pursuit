@@ -79,7 +79,7 @@
 
     creator.template.data('creator', this);
 
-    Upload(creator.find('dropbox'));
+    new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
 
     creator.template.find('textarea').autogrow();
 
@@ -132,7 +132,26 @@
 
       new_item.user = synapp.user;
 
-      app.socket.emit('create item', new_item);
+      if ( new_item.upload ) {
+        var file = creator.template.find('.preview-image').data('file');
+
+        var stream = ss.createStream();
+
+        ss(app.socket).emit('upload image', stream,
+          { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          new_item.image = file.name;
+
+          app.socket.emit('create item', new_item);
+        });
+      }
+
+      else {
+        app.socket.emit('create item', new_item);
+      }
 
       app.socket.once('could not create item', app.domain.intercept());
 
@@ -182,6 +201,7 @@
 
       else {
         item.upload = this.find('item media').find('img').attr('src');
+        item.image = item.upload;
       }
     }
  
@@ -192,7 +212,7 @@
 
 } ();
 
-},{"./Form":4,"./Item":6,"./Nav":7,"./Panel":8,"./Upload":14,"./YouTube":15}],2:[function(require,module,exports){
+},{"./Form":4,"./Item":7,"./Nav":8,"./Panel":9,"./Upload":15,"./YouTube":16}],2:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -413,7 +433,7 @@
 
 } ();
 
-},{"./Edit":3,"./Item":6,"./Nav":7}],3:[function(require,module,exports){
+},{"./Edit":3,"./Item":7,"./Nav":8}],3:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -605,7 +625,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":7}],4:[function(require,module,exports){
+},{"./Creator":1,"./Item":7,"./Nav":8}],4:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -683,6 +703,78 @@
 } ();
 
 },{}],5:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('./Nav');
+  var Upload = require('./Upload');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Identity () {
+    this.template = $('#identity');
+  }
+
+  Identity.prototype.find = function (name) {
+    switch ( name ) {
+      case 'expand':
+        return this.template.find('.profile-expand');
+
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'title':
+        return this.template.find('.item-title');
+
+      case 'description':
+        return this.template.find('.description');
+
+      case 'upload button':
+        return this.template.find('.upload-identity-picture');
+    }
+  };
+
+  Identity.prototype.render = function () {
+
+    var identity = this;
+
+    this.find('expand').find('.is-section').append($('#identity-expand').clone());
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(identity.find('expand'), identity.template, function () {
+        if ( identity.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    this.find('title').text('Identity');
+
+    this.find('description').text('This information is used to identify you and make sure that you are unique');
+
+    this.template.find('.item-references').remove();
+
+    this.template.find('.box-buttons').remove();
+
+    new Upload(null, this.find('upload button'), this.template.find('.item-media'));
+  };
+
+  module.exports = Identity;
+
+} ();
+
+},{"./Nav":8,"./Upload":15}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -734,7 +826,7 @@
 
 } ();
 
-},{"./Item":6,"./Truncate":13}],6:[function(require,module,exports){
+},{"./Item":7,"./Truncate":14}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1137,7 +1229,7 @@
 
 } ();
 
-},{"./Details":2,"./Nav":7,"./Panel":8,"./Promote":10,"./Truncate":13,"./YouTube":15}],7:[function(require,module,exports){
+},{"./Details":2,"./Nav":8,"./Panel":9,"./Promote":11,"./Truncate":14,"./YouTube":16}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1343,7 +1435,7 @@
 
 } ();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1536,12 +1628,13 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":7}],9:[function(require,module,exports){
+},{"./Creator":1,"./Item":7,"./Nav":8}],10:[function(require,module,exports){
 ! function () {
   
   'use strict';
 
   var Nav = require('./Nav');
+  var Identity = require('./Identity');
 
   /**
    *  @function
@@ -1598,38 +1691,16 @@
 
     this.find('panel load more').append(togglePanel);
 
-    this.find('Identity').find('.profile-expand .is-section').append($('#identity-expand').clone());
+    this.find('Identity').attr('id', 'identity');
 
-    this.find('Identity').find('.toggle-arrow i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(profile.find('Identity').find('.profile-expand'), profile.find('Identity'), function () {
-        if ( profile.find('Identity').find('.profile-expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    this.find('Identity').find('.item-title').text('Identity');
-
-    this.find('Identity').find('.description').text('This information is used to identify you and make sure that you are unique');
-
-    this.find('Identity').find('.item-references').remove();
-
-    this.find('Identity').find('.box-buttons').remove();
-
-
+    new Identity().render();
   };
 
   module.exports = Profile;
 
 } ();
 
-},{"./Nav":7}],10:[function(require,module,exports){
+},{"./Identity":5,"./Nav":8}],11:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1974,7 +2045,7 @@
 
 } ();
 
-},{"./Item":6,"./Nav":7,"events":18}],11:[function(require,module,exports){
+},{"./Item":7,"./Nav":8,"events":19}],12:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2167,7 +2238,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2283,7 +2354,7 @@
 
 } ();
 
-},{"./Intro":5,"./Panel":8,"./Sign":11,"domain":17,"events":18,"util":22}],13:[function(require,module,exports){
+},{"./Intro":6,"./Panel":9,"./Sign":12,"domain":18,"events":19,"util":23}],14:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2506,10 +2577,79 @@
 
 }();
 
-},{"./Nav":7}],14:[function(require,module,exports){
+},{"./Nav":8}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
+
+  function Upload (dropzone, file_input, thumbnail) {
+    this.dropzone = dropzone;
+    this.file_input = file_input;
+    this.thumbnail = thumbnail;
+
+    this.init();
+  }
+
+  Upload.prototype.init = function () {
+    console.log("let's do some upload", {
+      dropzone: this.dropzone,
+      file_input: this.file_input,
+      thumbnail: this.thumbnail
+    })
+
+    if ( window.File ) {
+      if ( this.dropzone ) {
+        this.dropzone
+          .on('dragover',   this.hover.bind(this))
+          .on('dragleave',  this.hover.bind(this))
+          .on('drop',       this.handler.bind(this));
+      }
+
+      if ( this.file_input ) {
+        this.file_input.on('change', this.handler.bind(this));
+      }
+    }
+
+    else {
+      if ( dropzone ) {
+        dropzone.find('.modern').hide();
+      }
+    }
+  };
+
+  Upload.prototype.hover = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  Upload.prototype.handler = function (e) {
+    this.hover(e);
+
+    var files = e.target.files || e.originalEvent.dataTransfer.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+      this.preview(f, e.target);
+    }
+  };
+
+  Upload.prototype.preview = function(file, target) {
+    var upload = this;
+
+    var img = new Image();
+
+    img.classList.add("img-responsive");
+    img.classList.add("preview-image");
+    
+    img.addEventListener('load', function () {
+
+      $(img).data('file', file);
+
+      upload.thumbnail.empty().append(img);
+
+    }, false);
+    
+    img.src = (window.URL || window.webkitURL).createObjectURL(file);
+  };
 
   function handler (e) {
     hover(e);
@@ -2539,7 +2679,7 @@
     if ( $(target).hasClass('drop-box') ) {
       dropbox = $(target);
     }
-    else {
+    else if ( $(target).closest('.drop-box').length ) {
       dropbox = $(target).closest('.drop-box');
     }
 
@@ -2560,12 +2700,19 @@
   function init (dropbox) {
 
     if ( window.File ) {
-      dropbox
-        .on('dragover', hover)
-        .on('dragleave', hover)
-        .on('drop', handler)
-        .find('input')
-          .on('change', handler);
+      console.log('we have File', dropbox.attr('type'))
+      if ( dropbox.hasClass('dropbox') ) {
+        dropbox
+          .on('dragover', hover)
+          .on('dragleave', hover)
+          .on('drop', handler)
+          .find('input')
+            .on('change', handler);
+      }
+      else if ( dropbox.attr('type') === 'file' ) {
+        console.log('rock n roll');
+        dropbox.on('change', handler);
+      }
     }
 
     else {
@@ -2573,11 +2720,11 @@
     }
   }
 
-  module.exports = init;
+  module.exports = Upload;
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2652,7 +2799,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2672,7 +2819,7 @@
 
 } ();
 
-},{"../Panel":8,"../Profile":9,"../Sign":11,"../Synapp":12}],17:[function(require,module,exports){
+},{"../Panel":9,"../Profile":10,"../Sign":12,"../Synapp":13}],18:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2710,7 +2857,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":18}],18:[function(require,module,exports){
+},{"events":19}],19:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3013,7 +3160,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3038,7 +3185,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3126,14 +3273,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3723,4 +3870,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":21,"_process":20,"inherits":19}]},{},[16]);
+},{"./support/isBuffer":22,"_process":21,"inherits":20}]},{},[17]);
