@@ -106,6 +106,8 @@ UserSchema.statics.identify = function (email, password, cb) {
 
 UserSchema.statics.saveImage = function (id, image, cb) {
 
+  var self = this;
+
   var cloudinary = require('cloudinary');
         
   cloudinary.config({ 
@@ -114,13 +116,68 @@ UserSchema.statics.saveImage = function (id, image, cb) {
     api_secret      :   config.cloudinary.API.secret 
   });
 
-  var stream = cloudinary.uploader.upload_stream(function (result) {
-    User.update({ _id: id }, { image: result.url }, cb);
+  cloudinary.uploader.upload(path.join(config.tmp, image), function (result) {
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo')
+    console.log('oooooooooooooooooooooooooooooooooooooooo', result)
+    // self.update({ _id: id }, { image: result.url }, cb);
   });
 
-  var imageStream = require('fs').createReadStream(path.join(config.tmp, image));
+  // var imageStream = require('fs').createReadStream(path.join(config.tmp, image), { encoding: 'binary' });
 
-  imageStream.pipe(stream);
+  // imageStream.pipe(stream);
 };
 
 module.exports = mongoose.model('User', UserSchema);

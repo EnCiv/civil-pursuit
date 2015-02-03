@@ -210,8 +210,6 @@ ItemSchema.pre('save', function (next, done) {
           api_secret      :   config.cloudinary.API.secret 
         });
 
-        console.log('uploading', path.join(config.tmp, self.image))
-
         cloudinary.uploader.upload(
           
           path.join(config.tmp, self.image),
