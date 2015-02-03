@@ -2438,10 +2438,12 @@
 
   'use strict';
 
-  function Upload (dropzone, file_input, thumbnail) {
+  function Upload (dropzone, file_input, thumbnail, cb) {
     this.dropzone = dropzone;
     this.file_input = file_input;
     this.thumbnail = thumbnail;
+    this.cb = cb;
+
 
     this.init();
   }
@@ -2505,6 +2507,10 @@
     }, false);
     
     img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+    if ( this.cb ) {
+      this.cb(null, file);
+    }
   };
 
   function handler (e) {

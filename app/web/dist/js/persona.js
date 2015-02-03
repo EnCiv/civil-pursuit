@@ -774,7 +774,26 @@
 
     this.template.find('.box-buttons').remove();
 
-    new Upload(null, this.find('upload button'), this.template.find('.item-media'));
+    this.template.find('.item-media img').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
+
+    new Upload(null, this.find('upload button'), this.template.find('.item-media'),
+      function (error, file) {
+        var stream = ss.createStream();
+
+        ss(app.socket).emit('upload image', stream,
+          { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          // new_item.image = file.name;
+          app.socket.emit('save user image', synapp.user, file.name);
+
+          app.socket.once('saved user image', function (user) {
+            console.log('image saved', user);
+          });
+        });
+      });
   };
 
   module.exports = Identity;
@@ -1666,6 +1685,9 @@
 
       case 'Identity':
         return this.template.find('.items .item:eq(0)');
+
+      case 'toggle creator':
+        return this.template.find('.toggle-creator');
     }
   };
 
@@ -1674,6 +1696,8 @@
     var profile = this;
 
     this.find('panel title').text('Profile');
+
+    this.find('toggle creator').remove();
 
     this.find('panel load more')
       .find('a').remove();
@@ -2589,10 +2613,12 @@
 
   'use strict';
 
-  function Upload (dropzone, file_input, thumbnail) {
+  function Upload (dropzone, file_input, thumbnail, cb) {
     this.dropzone = dropzone;
     this.file_input = file_input;
     this.thumbnail = thumbnail;
+    this.cb = cb;
+
 
     this.init();
   }
@@ -2656,6 +2682,10 @@
     }, false);
     
     img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+    if ( this.cb ) {
+      this.cb(null, file);
+    }
   };
 
   function handler (e) {

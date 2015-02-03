@@ -69,7 +69,26 @@
 
     this.template.find('.box-buttons').remove();
 
-    new Upload(null, this.find('upload button'), this.template.find('.item-media'));
+    this.template.find('.item-media img').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
+
+    new Upload(null, this.find('upload button'), this.template.find('.item-media'),
+      function (error, file) {
+        var stream = ss.createStream();
+
+        ss(app.socket).emit('upload image', stream,
+          { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          // new_item.image = file.name;
+          app.socket.emit('save user image', synapp.user, file.name);
+
+          app.socket.once('saved user image', function (user) {
+            console.log('image saved', user);
+          });
+        });
+      });
   };
 
   module.exports = Identity;

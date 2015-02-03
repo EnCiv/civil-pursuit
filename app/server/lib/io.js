@@ -200,7 +200,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'get-url-title',
           'get-epics',
           'send-password',
-          'edit-and-go-again'];
+          'edit-and-go-again',
+          'save-user-image'];
 
         domain.add(socket);
 

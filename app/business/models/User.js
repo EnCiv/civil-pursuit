@@ -12,6 +12,8 @@ var Schema = mongoose.Schema;
 
 var bcrypt = require('bcrypt');
 
+var config = require('../config.json');
+
 var UserSchema = new Schema({
   "email": {
     "type": String,
@@ -29,6 +31,10 @@ var UserSchema = new Schema({
   "created": {
     "type": Date,
     "default": Date.now
+  },
+
+  "image": {
+    "type": String
   },
 
   // preferences
@@ -96,6 +102,25 @@ UserSchema.statics.identify = function (email, password, cb) {
       return cb(null, user);
     });
   });
+};
+
+UserSchema.statics.saveImage = function (id, image, cb) {
+
+  var cloudinary = require('cloudinary');
+        
+  cloudinary.config({ 
+    cloud_name      :   config.cloudinary.cloud.name, 
+    api_key         :   config.cloudinary.API.key, 
+    api_secret      :   config.cloudinary.API.secret 
+  });
+
+  var stream = cloudinary.uploader.upload_stream(function (result) {
+    User.update({ _id: id }, { image: result.url }, cb);
+  });
+
+  var imageStream = require('fs').createReadStream(path.join(config.tmp, image));
+
+  imageStream.pipe(stream);
 };
 
 module.exports = mongoose.model('User', UserSchema);

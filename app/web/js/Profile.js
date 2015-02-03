@@ -28,6 +28,9 @@
 
       case 'Identity':
         return this.template.find('.items .item:eq(0)');
+
+      case 'toggle creator':
+        return this.template.find('.toggle-creator');
     }
   };
 
@@ -36,6 +39,8 @@
     var profile = this;
 
     this.find('panel title').text('Profile');
+
+    this.find('toggle creator').remove();
 
     this.find('panel load more')
       .find('a').remove();
