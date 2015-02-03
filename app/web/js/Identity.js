@@ -31,6 +31,9 @@
 
       case 'upload button':
         return this.template.find('.upload-identity-picture');
+
+      case 'upload button pretty':
+        return this.template.find('.upload-image');
     }
   };
 
@@ -39,6 +42,10 @@
     var identity = this;
 
     this.find('expand').find('.is-section').append($('#identity-expand').clone());
+
+    this.find('upload button pretty').on('click', function () {
+      identity.find('upload button').click();
+    });
 
     this.find('toggle arrow').find('i').on('click', function () {
       
