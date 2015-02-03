@@ -1,5 +1,17 @@
 extends ../layout
 
+block item-collapsers
+  .is-container.profile-expand
+    .is-section
+
+block items
+  .is-container
+    .is-section
+      include ../partials/item-box
+
 block page
-  .panels
-    
+  include ../partials/panel
+
+  .hide
+    #identity-expand
+      h1 IDENTITY

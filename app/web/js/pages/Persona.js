@@ -5,26 +5,14 @@
   var Synapp = require('../Synapp');
   var Sign = require('../Sign');
   var Panel = require('../Panel');
+  var Profile = require('../Profile');
 
   window.app = new Synapp();
 
   app.connect(function () {
     new Sign().render();
 
-    var panel = new Panel('Persona');
-
-    panel
-      
-      .get(app.domain.intercept(function (template) {
-
-        $('.panels').append(template);
-
-        setTimeout(function () {
-          panel.render(app.domain.intercept(function () {
-            panel.fill();
-          }));
-        }, 700);
-      }));
+    new Profile().render();
   });
 
 } ();

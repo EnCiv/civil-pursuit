@@ -177,8 +177,7 @@ Nina Butorac
     'uglify-home',
     'uglify-terms-of-service',
     'uglify-persona',
-    'watchify',
-    'watchify-dashboard',
+    'watchify-persona',
     'watch-less',
     'generate-site-map',
     'semver-minor'];
