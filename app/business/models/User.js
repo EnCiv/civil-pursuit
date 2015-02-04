@@ -1,183 +1,148 @@
-/**
- * The User Model
- * 
- * @module Models
- * @class UserSchema
- * @author francoisrvespa@gmail.com
-*/
-
-var mongoose = require('mongoose');
-
-var Schema = mongoose.Schema;
-
-var bcrypt = require('bcrypt');
-
-var config = require('../config.json');
-
-var UserSchema = new Schema({
-  "email": {
-    "type": String,
-    "required": true,
-    "index": {
-      "unique": true
-    }
-  },
+! function () {
   
-  "password": {
-    "type": String,
-    "required": true
-  },
+  'use strict';
 
-  "created": {
-    "type": Date,
-    "default": Date.now
-  },
+  var mongoose    =   require('mongoose');
 
-  "image": {
-    "type": String
-  },
+  var Schema      =   mongoose.Schema;
 
-  // preferences
+  var bcrypt      =   require('bcrypt');
 
-  "preferences": [
-    new Schema({
-      "name": String,
-      "value": Schema.Types.Mixed
-    })
-  ]
-});
+  var config      =   require('../config.json');
 
-UserSchema.pre('save', function (next) {
+  var path        =   require('path');
 
-  if ( ! this.isNew ) {
-    return next();
-  }
-
-  this.email = this.email.toLowerCase();
-
-  var self = this;
-
-  var domain = require('domain').create();
-
-  domain.on('error', function (error) {
-    next(error);
-  });
-
-  domain.run(function () {
-    bcrypt.genSalt(10, domain.intercept(function (salt) {
-      bcrypt.hash(self.password, salt, domain.intercept(function (hash) {
-        self.password  = hash;
-        next();
-      }));
-    }));
-  });
-});
-
-UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb) {
-  bcrypt.compare(requestPassword, realPassword, cb);
-};
-
-UserSchema.statics.identify = function (email, password, cb) {
-
-  var self = this;
-
-  this.findOne({ email: email }, function (error, user) {
-    if ( error ) {
-      return cb(error);
-    }
-
-    if ( ! user ) {
-      return cb(new Error('User not found ' + email));
-    }
+  var UserSchema = new Schema({
+    "email": {
+      "type": String,
+      "required": true,
+      "index": {
+        "unique": true
+      }
+    },
     
-    self.isValidPassword(password, user.password, function (error, isValid) {
+    "password": {
+      "type": String,
+      "required": true
+    },
+
+    "created": {
+      "type": Date,
+      "default": Date.now
+    },
+
+    "image": {
+      "type": String
+    },
+
+    "twitter": {
+      "type": String
+    },
+
+    "facebook": {
+      "type": String
+    },
+
+     "first_name": {
+      "type": String
+    },
+
+     "middle_name": {
+      "type": String
+    },
+
+     "last_name": {
+      "type": String
+    },
+
+    // preferences
+
+    "preferences": [
+      new Schema({
+        "name": String,
+        "value": Schema.Types.Mixed
+      })
+    ]
+  });
+
+  UserSchema.pre('save', function (next) {
+
+    if ( ! this.isNew ) {
+      return next();
+    }
+
+    this.email = this.email.toLowerCase();
+
+    var self = this;
+
+    var domain = require('domain').create();
+
+    domain.on('error', function (error) {
+      next(error);
+    });
+
+    domain.run(function () {
+      bcrypt.genSalt(10, domain.intercept(function (salt) {
+        bcrypt.hash(self.password, salt, domain.intercept(function (hash) {
+          self.password  = hash;
+          next();
+        }));
+      }));
+    });
+  });
+
+  UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb) {
+    bcrypt.compare(requestPassword, realPassword, cb);
+  };
+
+  UserSchema.statics.identify = function (email, password, cb) {
+
+    var self = this;
+
+    this.findOne({ email: email }, function (error, user) {
       if ( error ) {
         return cb(error);
       }
-      
-      if ( ! isValid ) {
-        return cb(new Error('Wrong password'));
+
+      if ( ! user ) {
+        return cb(new Error('User not found ' + email));
       }
       
-      return cb(null, user);
-    });
-  });
-};
-
-UserSchema.statics.saveImage = function (id, image, cb) {
-
-  var self = this;
-
-  var cloudinary = require('cloudinary');
+      self.isValidPassword(password, user.password, function (error, isValid) {
+        if ( error ) {
+          return cb(error);
+        }
         
-  cloudinary.config({ 
-    cloud_name      :   config.cloudinary.cloud.name, 
-    api_key         :   config.cloudinary.API.key, 
-    api_secret      :   config.cloudinary.API.secret 
-  });
+        if ( ! isValid ) {
+          return cb(new Error('Wrong password'));
+        }
+        
+        return cb(null, user);
+      });
+    });
+  };
 
-  cloudinary.uploader.upload(path.join(config.tmp, image), function (result) {
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo')
-    console.log('oooooooooooooooooooooooooooooooooooooooo', result)
-    // self.update({ _id: id }, { image: result.url }, cb);
-  });
+  UserSchema.statics.saveImage = function (id, image, cb) {
 
-  // var imageStream = require('fs').createReadStream(path.join(config.tmp, image), { encoding: 'binary' });
+    var self = this;
 
-  // imageStream.pipe(stream);
-};
+    var cloudinary = require('cloudinary');
+          
+    cloudinary.config({ 
+      cloud_name      :   config.cloudinary.cloud.name, 
+      api_key         :   config.cloudinary.API.key, 
+      api_secret      :   config.cloudinary.API.secret 
+    });
 
-module.exports = mongoose.model('User', UserSchema);
+    cloudinary.uploader.upload(path.join(config.tmp, image), function (result) {
+      self.update({ _id: id }, { image: result.url }, cb);
+    });
+
+    // var imageStream = require('fs').createReadStream(path.join(config.tmp, image), { encoding: 'binary' });
+
+    // imageStream.pipe(stream);
+  };
+
+  module.exports = mongoose.model('User', UserSchema);
+
+} ();

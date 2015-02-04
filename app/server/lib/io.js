@@ -198,10 +198,11 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'get-evaluation',
           'sign-in',
           'get-url-title',
-          'get-epics',
           'send-password',
           'edit-and-go-again',
-          'save-user-image'];
+          'save-user-image',
+          'change-user-name',
+          'get-user-info'];
 
         domain.add(socket);
 

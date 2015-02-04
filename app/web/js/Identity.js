@@ -13,6 +13,8 @@
 
   function Identity () {
     this.template = $('#identity');
+
+    this.template.data('identity', this);
   }
 
   Identity.prototype.find = function (name) {
@@ -34,6 +36,18 @@
 
       case 'upload button pretty':
         return this.template.find('.upload-image');
+
+      case 'first name':
+        return this.template.find('[name="first-name"]');
+
+      case 'middle name':
+        return this.template.find('[name="middle-name"]');
+
+      case 'last name':
+        return this.template.find('[name="last-name"]');
+
+      case 'image':
+        return this.template.find('.item-media img');
     }
   };
 
@@ -69,7 +83,7 @@
 
     this.template.find('.box-buttons').remove();
 
-    this.template.find('.item-media img').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
+    this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
 
     new Upload(null, this.find('upload button'), this.template.find('.item-media'),
       function (error, file) {
@@ -89,6 +103,49 @@
           });
         });
       });
+
+    // First name - save on change
+
+    this.find('first name').on('change', this.saveName.bind(this));
+
+    // Last name - save on change
+
+    this.find('last name').on('change', this.saveName.bind(this));
+
+    // Middle name - save on change
+
+    this.find('middle name').on('change', this.saveName.bind(this));
+  };
+
+  Identity.prototype.saveName = function () {
+    var name = {
+      first_name: this.find('first name').val(),
+      middle_name: this.find('middle name').val(),
+      last_name: this.find('last name').val()
+    };
+
+    app.socket.emit('change user name', synapp.user, name);
+  };
+
+  Identity.prototype.renderUser = function () {
+
+    // User image
+
+    if ( this.user.image ) {
+      this.find('image').attr('src', this.user.image);
+    }
+
+    // First name
+
+    this.find('first name').val(this.user.first_name);
+
+    // Middle name
+
+    this.find('middle name').val(this.user.middle_name);
+
+    // Last name
+
+    this.find('last name').val(this.user.last_name);
   };
 
   module.exports = Identity;

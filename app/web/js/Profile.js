@@ -12,7 +12,18 @@
    */
 
   function Profile () {
+
+    var profile = this;
+
     this.template = $('.panel');
+
+    app.socket.emit('get user info', synapp.user);
+
+    app.socket.once('got user info', function (user) {
+      profile.user = user;
+
+      profile.renderUser();
+    });
   }
 
   Profile.prototype.find = function (name) {
@@ -68,6 +79,14 @@
     this.find('Identity').attr('id', 'identity');
 
     new Identity().render();
+  };
+
+  Profile.prototype.renderUser = function () {
+    var profile = this;
+
+    this.find('Identity').data('identity').user = this.user;
+
+    this.find('Identity').data('identity').renderUser();
   };
 
   module.exports = Profile;
