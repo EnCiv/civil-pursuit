@@ -22,6 +22,11 @@
   var Nav = require('./Nav');
   var Edit = require('./Edit');
 
+  /**
+   *  @class Details
+   *  @arg {Item} item
+   */
+
   function Details(item) {
 
     if ( ! app ) {
@@ -45,6 +50,13 @@
     });
   }
 
+  /**
+   *  @method find
+   *  @description DOM selectors abstractions
+   *  @return null
+   *  @arg {string} name
+   */
+
   Details.prototype.find = function (name) {
     switch ( name ) {
       case 'promoted bar':
@@ -60,6 +72,12 @@
         return this.template.find('.edit-and-go-again-toggler');
     }
   };
+
+  /**
+   *  @method render
+   *  @description DOM manipulation
+   *  @arg {function} cb
+   */
 
   Details.prototype.render = function (cb) {
     var self = this;
@@ -103,35 +121,16 @@
     }
 
     if ( ! self.details ) {
-      app.socket.emit('get item details', self.item.item._id);
-
-      app.socket.once('got item details', function (details) {
-        self.details = details;
-
-        console.log('details', details)
-
-        // Feedback
-
-        details.feedbacks.forEach(function (feedback) {
-          var tpl = $('<div class="pretext feedback"></div>');
-          tpl.text(feedback.feedback);
-          self.find('feedback list')
-            .append(tpl)
-            .append('<hr/>');
-
-        });
-
-        // Votes
-
-        details.criterias.forEach(function (criteria, i) {
-          self.find('votes').eq(i).find('h4').text(criteria.name);
-
-          self.votes(criteria, self.find('votes').eq(i).find('svg'));
-        });
-
-      });
+      this.get();
     }
   };
+
+  /**
+   *  @method votes
+   *  @description Display votes using c3.js
+   *  @arg {object} criteria
+   *  @arg {HTMLElement} svg
+   */
 
   Details.prototype.votes = function (criteria, svg) {
     var self = this;
@@ -212,6 +211,44 @@
         }
       });
       }, 250);
+  };
+
+  /**
+   *
+   */
+
+  Details.prototype.get = function () {
+
+    var self = this;
+
+    app.socket.emit('get item details', self.item.item._id);
+
+    app.socket.once('got item details', function (details) {
+
+      console.log('got item details', details);
+
+      self.details = details;
+
+      // Feedback
+
+      details.feedbacks.forEach(function (feedback) {
+        var tpl = $('<div class="pretext feedback"></div>');
+        tpl.text(feedback.feedback);
+        self.find('feedback list')
+          .append(tpl)
+          .append('<hr/>');
+
+      });
+
+      // Votes
+
+      details.criterias.forEach(function (criteria, i) {
+        self.find('votes').eq(i).find('h4').text(criteria.name);
+
+        self.votes(criteria, self.find('votes').eq(i).find('svg'));
+      });
+
+    });
   };
 
   module.exports = Details;

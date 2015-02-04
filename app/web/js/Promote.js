@@ -23,6 +23,11 @@
 
   var Nav = require('./Nav');
 
+  /**
+   *  @class Promote
+   *  @arg {Item} item
+   */
+
   function Promote (item) {
     if ( ! app ) {
       throw new Error('Missing app');
@@ -55,6 +60,12 @@
     });
       
   }
+
+  /**
+   *  @method find
+   *  @arg {string} name
+   *  @arg {Mixed} more
+   */
 
   Promote.prototype.find = function (name, more) {
     switch ( name ) {
@@ -90,21 +101,41 @@
     }
   };
 
+  /**
+   *  @method renderLimit
+   */
+
   Promote.prototype.renderLimit = function () {
     this.find('limit').text(this.evaluation.limit);
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.renderCursor = function () {
     this.find('cursor').text(this.evaluation.cursor);
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.renderLeft = function () {
     this.renderItem('left');
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.renderRight = function () {
     this.renderItem('right');
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.renderItem = function (hand) {
     var promote = this;
@@ -143,6 +174,7 @@
       }
 
       promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
+      promote.find('sliders', hand).find('input').eq(i).data('criteria', promote.evaluation.criterias[cid]._id);
     });
 
     // Promote button
@@ -157,6 +189,8 @@
         var opposite = left ? 'right' : 'left';
 
         Nav.scroll(promote.template, app.domain.intercept(function () {
+
+          // If cursor is smaller than limit, then keep on going
         
           if ( promote.evaluation.cursor < promote.evaluation.limit ) {
 
@@ -186,9 +220,9 @@
               });
           }
 
-          else {
+          // If cursor equals limit, means end of evaluation cycle
 
-            console.log('we are done')
+          else {
 
             promote.finish();
 
@@ -197,6 +231,10 @@
         }));
       });
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.render = function (cb) {
     var promote = this;
@@ -272,14 +310,28 @@
     }
   };
 
+  /**
+   *  @method finish
+   */
+
   Promote.prototype.finish = function () {
     var promote = this;
 
     promote.find('promote button').off('click');
     promote.find('finish button').off('click');
 
+    if ( promote.evaluation.left ) {
+      this.save('left');
+    }
+
+    if ( promote.evaluation.right ) {
+      this.save('right');
+    }
+
     Nav.unreveal(promote.template, promote.item.template,
       app.domain.intercept(function () {
+
+        promote.item.details.get();
 
         promote.item.find('toggle details').click();
 
@@ -290,15 +342,27 @@
       }));
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.edit = function (key, value) {
     this.evaluation[key] = value;
 
     this.watch.emit(key);
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.$bind = function (key, binder) {
     this.watch.on(key, binder);
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.save = function (hand) {
 

@@ -237,6 +237,11 @@
   var Nav = require('./Nav');
   var Edit = require('./Edit');
 
+  /**
+   *  @class Details
+   *  @arg {Item} item
+   */
+
   function Details(item) {
 
     if ( ! app ) {
@@ -260,6 +265,13 @@
     });
   }
 
+  /**
+   *  @method find
+   *  @description DOM selectors abstractions
+   *  @return null
+   *  @arg {string} name
+   */
+
   Details.prototype.find = function (name) {
     switch ( name ) {
       case 'promoted bar':
@@ -275,6 +287,12 @@
         return this.template.find('.edit-and-go-again-toggler');
     }
   };
+
+  /**
+   *  @method render
+   *  @description DOM manipulation
+   *  @arg {function} cb
+   */
 
   Details.prototype.render = function (cb) {
     var self = this;
@@ -318,35 +336,16 @@
     }
 
     if ( ! self.details ) {
-      app.socket.emit('get item details', self.item.item._id);
-
-      app.socket.once('got item details', function (details) {
-        self.details = details;
-
-        console.log('details', details)
-
-        // Feedback
-
-        details.feedbacks.forEach(function (feedback) {
-          var tpl = $('<div class="pretext feedback"></div>');
-          tpl.text(feedback.feedback);
-          self.find('feedback list')
-            .append(tpl)
-            .append('<hr/>');
-
-        });
-
-        // Votes
-
-        details.criterias.forEach(function (criteria, i) {
-          self.find('votes').eq(i).find('h4').text(criteria.name);
-
-          self.votes(criteria, self.find('votes').eq(i).find('svg'));
-        });
-
-      });
+      this.get();
     }
   };
+
+  /**
+   *  @method votes
+   *  @description Display votes using c3.js
+   *  @arg {object} criteria
+   *  @arg {HTMLElement} svg
+   */
 
   Details.prototype.votes = function (criteria, svg) {
     var self = this;
@@ -427,6 +426,44 @@
         }
       });
       }, 250);
+  };
+
+  /**
+   *
+   */
+
+  Details.prototype.get = function () {
+
+    var self = this;
+
+    app.socket.emit('get item details', self.item.item._id);
+
+    app.socket.once('got item details', function (details) {
+
+      console.log('got item details', details);
+
+      self.details = details;
+
+      // Feedback
+
+      details.feedbacks.forEach(function (feedback) {
+        var tpl = $('<div class="pretext feedback"></div>');
+        tpl.text(feedback.feedback);
+        self.find('feedback list')
+          .append(tpl)
+          .append('<hr/>');
+
+      });
+
+      // Votes
+
+      details.criterias.forEach(function (criteria, i) {
+        self.find('votes').eq(i).find('h4').text(criteria.name);
+
+        self.votes(criteria, self.find('votes').eq(i).find('svg'));
+      });
+
+    });
   };
 
   module.exports = Details;
@@ -876,7 +913,7 @@
 
     // Create reference to details
 
-    var details = new Details(this);
+    this.details = new Details(this);
 
     // Set ID
 
@@ -958,7 +995,7 @@
           if ( ! item.find('details').hasClass('is-loaded') ) {
             item.find('details').addClass('is-loaded');
 
-            details.render(app.domain.intercept());
+            item.details.render(app.domain.intercept());
           }
 
           if ( hiders.length ) {
@@ -1582,6 +1619,11 @@
 
   var Nav = require('./Nav');
 
+  /**
+   *  @class Promote
+   *  @arg {Item} item
+   */
+
   function Promote (item) {
     if ( ! app ) {
       throw new Error('Missing app');
@@ -1614,6 +1656,12 @@
     });
       
   }
+
+  /**
+   *  @method find
+   *  @arg {string} name
+   *  @arg {Mixed} more
+   */
 
   Promote.prototype.find = function (name, more) {
     switch ( name ) {
@@ -1649,21 +1697,41 @@
     }
   };
 
+  /**
+   *  @method renderLimit
+   */
+
   Promote.prototype.renderLimit = function () {
     this.find('limit').text(this.evaluation.limit);
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.renderCursor = function () {
     this.find('cursor').text(this.evaluation.cursor);
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.renderLeft = function () {
     this.renderItem('left');
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.renderRight = function () {
     this.renderItem('right');
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.renderItem = function (hand) {
     var promote = this;
@@ -1702,6 +1770,7 @@
       }
 
       promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
+      promote.find('sliders', hand).find('input').eq(i).data('criteria', promote.evaluation.criterias[cid]._id);
     });
 
     // Promote button
@@ -1716,6 +1785,8 @@
         var opposite = left ? 'right' : 'left';
 
         Nav.scroll(promote.template, app.domain.intercept(function () {
+
+          // If cursor is smaller than limit, then keep on going
         
           if ( promote.evaluation.cursor < promote.evaluation.limit ) {
 
@@ -1745,9 +1816,9 @@
               });
           }
 
-          else {
+          // If cursor equals limit, means end of evaluation cycle
 
-            console.log('we are done')
+          else {
 
             promote.finish();
 
@@ -1756,6 +1827,10 @@
         }));
       });
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.render = function (cb) {
     var promote = this;
@@ -1831,14 +1906,28 @@
     }
   };
 
+  /**
+   *  @method finish
+   */
+
   Promote.prototype.finish = function () {
     var promote = this;
 
     promote.find('promote button').off('click');
     promote.find('finish button').off('click');
 
+    if ( promote.evaluation.left ) {
+      this.save('left');
+    }
+
+    if ( promote.evaluation.right ) {
+      this.save('right');
+    }
+
     Nav.unreveal(promote.template, promote.item.template,
       app.domain.intercept(function () {
+
+        promote.item.details.get();
 
         promote.item.find('toggle details').click();
 
@@ -1849,15 +1938,27 @@
       }));
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.edit = function (key, value) {
     this.evaluation[key] = value;
 
     this.watch.emit(key);
   };
 
+  /**
+   *
+   */
+
   Promote.prototype.$bind = function (key, binder) {
     this.watch.on(key, binder);
   };
+
+  /**
+   *
+   */
 
   Promote.prototype.save = function (hand) {
 

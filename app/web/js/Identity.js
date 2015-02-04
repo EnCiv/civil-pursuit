@@ -117,6 +117,10 @@
     this.find('middle name').on('change', this.saveName.bind(this));
   };
 
+  /**
+   *  @method saveName
+   */
+
   Identity.prototype.saveName = function () {
     var name = {
       first_name: this.find('first name').val(),

@@ -119,7 +119,7 @@
 
     // Create reference to details
 
-    var details = new Details(this);
+    this.details = new Details(this);
 
     // Set ID
 
@@ -201,7 +201,7 @@
           if ( ! item.find('details').hasClass('is-loaded') ) {
             item.find('details').addClass('is-loaded');
 
-            details.render(app.domain.intercept());
+            item.details.render(app.domain.intercept());
           }
 
           if ( hiders.length ) {
