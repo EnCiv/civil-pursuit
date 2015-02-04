@@ -1975,7 +1975,7 @@
         feedback: feedback.val()
       });
 
-      feedback.val('');
+      // feedback.val('');
     }
 
     // votes
