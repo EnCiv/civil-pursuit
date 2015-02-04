@@ -174,7 +174,9 @@
       }
 
       promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
-      promote.find('sliders', hand).find('input').eq(i).data('criteria', promote.evaluation.criterias[cid]._id);
+      promote.find('sliders', hand).find('input').eq(i)
+        .val(0)
+        .data('criteria', promote.evaluation.criterias[cid]._id);
     });
 
     // Promote button
