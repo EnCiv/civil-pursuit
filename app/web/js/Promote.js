@@ -109,7 +109,10 @@
       case 'promote button':
         return this.find('side by side').find('.' + more + '-item .promote');
 
-      case 'toggle edit and go again':
+      case 'promote label':
+        return this.find('side by side').find('.promote-label');
+
+      case 'edit and go again button':
         return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
     }
   };
@@ -153,10 +156,19 @@
   Promote.prototype.renderItem = function (hand) {
     var promote = this;
 
+    var reverse = hand === 'left' ? 'right' : 'left';
+
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
       this.find('item description', hand).hide();
-
+      this.find('item feedback', hand).hide();
+      this.find('sliders', hand).hide();
+      this.find('promote button', hand).hide();
+      this.find('promote label').hide();
+      this.find('edit and go again button', hand).hide();
+      this.find('promote button', reverse).hide();
+      this.find('edit and go again button', reverse).hide();
+      // this.find('finish button').hide();
       return;
     }
 
@@ -258,7 +270,7 @@
   
     // Edit and go again
 
-    promote.find('toggle edit and go again', hand).on('click', function () {
+    promote.find('edit and go again button', hand).on('click', function () {
       Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
         return;
 

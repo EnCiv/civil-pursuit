@@ -1703,7 +1703,10 @@
       case 'promote button':
         return this.find('side by side').find('.' + more + '-item .promote');
 
-      case 'toggle edit and go again':
+      case 'promote label':
+        return this.find('side by side').find('.promote-label');
+
+      case 'edit and go again button':
         return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
     }
   };
@@ -1747,10 +1750,19 @@
   Promote.prototype.renderItem = function (hand) {
     var promote = this;
 
+    var reverse = hand === 'left' ? 'right' : 'left';
+
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
       this.find('item description', hand).hide();
-
+      this.find('item feedback', hand).hide();
+      this.find('sliders', hand).hide();
+      this.find('promote button', hand).hide();
+      this.find('promote label').hide();
+      this.find('edit and go again button', hand).hide();
+      this.find('promote button', reverse).hide();
+      this.find('edit and go again button', reverse).hide();
+      // this.find('finish button').hide();
       return;
     }
 
@@ -1852,7 +1864,7 @@
   
     // Edit and go again
 
-    promote.find('toggle edit and go again', hand).on('click', function () {
+    promote.find('edit and go again button', hand).on('click', function () {
       Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
         return;
 
@@ -2268,14 +2280,9 @@
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
- *  SYNAPP
+ *  S   Y   N   A   P   P
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -2289,6 +2296,11 @@
   var Sign      =   require('./Sign');
   var Intro     =   require('./Intro');
   var domain    =   require('domain');
+
+  /**
+   *  @class Synapp
+   *  @extends EventEmitter
+   */
 
   function Synapp () {
     var self = this;
@@ -2325,7 +2337,7 @@
 
     this.socket = io.connect('http://' + location.hostname + ':' + location.port);
 
-    this.socket.on('connect', function () {
+    this.socket.once('connect', function () {
       self.emit('connect');
     });
 
@@ -2344,11 +2356,23 @@
 
   require('util').inherits(Synapp, require('events').EventEmitter);
 
+  /**
+   *  @method connect
+   *  @description Sugar to register a listener to the "connect" event
+   *  @arg {function} fn
+   */
+
   Synapp.prototype.connect = function (fn) {
     this.on('connect', fn);
 
     return this;
   };
+
+  /**
+   *  @method topLevelPanel
+   *  @description Insert a new top-level panel
+   *  @arg {function} cb
+   */
 
   Synapp.prototype.topLevelPanel = function (cb) {
     var self = this;
@@ -2368,6 +2392,8 @@
         }, 700);
       }));
   };
+
+  // Export
 
   if ( module && module.exports ) {
     module.exports = Synapp;

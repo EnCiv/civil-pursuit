@@ -2,14 +2,9 @@
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
- *  SYNAPP
+ *  S   Y   N   A   P   P
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -23,6 +18,11 @@
   var Sign      =   require('./Sign');
   var Intro     =   require('./Intro');
   var domain    =   require('domain');
+
+  /**
+   *  @class Synapp
+   *  @extends EventEmitter
+   */
 
   function Synapp () {
     var self = this;
@@ -59,7 +59,7 @@
 
     this.socket = io.connect('http://' + location.hostname + ':' + location.port);
 
-    this.socket.on('connect', function () {
+    this.socket.once('connect', function () {
       self.emit('connect');
     });
 
@@ -78,11 +78,23 @@
 
   require('util').inherits(Synapp, require('events').EventEmitter);
 
+  /**
+   *  @method connect
+   *  @description Sugar to register a listener to the "connect" event
+   *  @arg {function} fn
+   */
+
   Synapp.prototype.connect = function (fn) {
     this.on('connect', fn);
 
     return this;
   };
+
+  /**
+   *  @method topLevelPanel
+   *  @description Insert a new top-level panel
+   *  @arg {function} cb
+   */
 
   Synapp.prototype.topLevelPanel = function (cb) {
     var self = this;
@@ -102,6 +114,8 @@
         }, 700);
       }));
   };
+
+  // Export
 
   if ( module && module.exports ) {
     module.exports = Synapp;
