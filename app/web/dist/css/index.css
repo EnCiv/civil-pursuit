@@ -713,13 +713,13 @@ footer {
 }
 .panel .panel {
   margin: 0px;
-  margin-right: -10px;
+  margin-right: 0;
   border-right: none;
 }
 .panel.split-view {
   margin-right: 10px;
 }
-.panel .row-split .col + .col .panel {
+.panel .right-split .panel {
   margin-right: -10px;
 }
 .panel .load-more,
