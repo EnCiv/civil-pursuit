@@ -1293,7 +1293,7 @@
 
     // youtube video from references
 
-    if ( this.item.references.length ) {
+    if ( this.item.references && this.item.references.length ) {
       var media = YouTube(this.item.references[0].url);
 
       if ( media ) {
