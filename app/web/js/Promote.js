@@ -22,6 +22,7 @@
   var Item = require('./Item');
 
   var Nav = require('./Nav');
+  var Edit = require('./Edit');
 
   /**
    *  @class Promote
@@ -93,11 +94,23 @@
       case 'item image':
         return this.find('side by side').find('.image.' + more + '-item');
 
+      case 'item persona':
+        return this.find('side by side').find('.persona.' + more + '-item');
+
+      case 'item persona image':
+        return this.find('item persona', more).find('img');
+
+      case 'item persona name':
+        return this.find('item persona', more).find('.user-full-name');
+
       case 'item feedback':
         return this.find('side by side').find('.' + more + '-item .feedback');
 
       case 'promote button':
         return this.find('side by side').find('.' + more + '-item .promote');
+
+      case 'toggle edit and go again':
+        return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
     }
   };
 
@@ -179,6 +192,16 @@
         .data('criteria', promote.evaluation.criterias[cid]._id);
     });
 
+    // Persona
+
+    promote.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
+
+    promote.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
+
+    // Feedback
+
+    promote.find('item feedback', hand).val('');
+
     // Promote button
 
     promote.find('promote button', hand)
@@ -232,17 +255,107 @@
 
         }));
       });
+  
+    // Edit and go again
+
+    promote.find('toggle edit and go again', hand).on('click', function () {
+      Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
+        return;
+
+        if ( self.item.find('editor').find('form').length ) {
+          console.warn('already loaded')
+        }
+
+        else {
+          var edit = new Edit(self.item);
+            
+          edit.get(app.domain.intercept(function (template) {
+
+            self.item.find('editor').find('.is-section').append(template);
+
+            Nav.reveal(self.item.find('editor'), self.item.template,
+              app.domain.intercept(function () {
+                Nav.show(template, app.domain.intercept(function () {
+                  edit.render();
+                }));
+              }));
+          }));
+
+        }
+
+      }));
+    });
+
   };
 
   /**
-   *
+   *  @method
+   *  @arg {function} cb
    */
 
   Promote.prototype.render = function (cb) {
     var promote = this;
 
+    promote.find('finish button').on('click', function () {
+      Nav.scroll(promote.template, app.domain.intercept(function () {
+
+        if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+
+          promote.save('left');
+
+          promote.save('right');
+
+          $.when(
+            promote
+              .find('side by side')
+              .find('.left-item, .right-item')
+              .animate({
+                opacity: 0
+              }, 1000)
+          )
+            .then(function () {
+              promote.edit('cursor', promote.evaluation.cursor + 1);
+
+              promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+
+              promote.edit('cursor', promote.evaluation.cursor + 1);
+
+              promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+
+              promote
+                .find('side by side')
+                .find('.left-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+
+              promote
+                .find('side by side')
+                .find('.right-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+            });
+        }
+
+        else {
+
+          promote.finish();
+
+        }
+
+      }));
+    });
+  };
+
+  Promote.prototype.get = function (cb) {
+    var promote = this;
+
     if ( ! this.evaluation ) {
-      app.socket.emit('get evaluation', this.item.item);
+
+      // Get evaluation via sockets
+
+      app.socket.emit('get evaluation', this.item.item._id);
 
       app.socket.once('got evaluation', function (evaluation) {
         console.log('got evaluation', evaluation);
@@ -257,58 +370,13 @@
 
         promote.edit('right', evaluation.items[1]);
 
-        promote.find('finish button').on('click', function () {
-          Nav.scroll(promote.template, app.domain.intercept(function () {
+        cb();
 
-            if ( promote.evaluation.cursor < promote.evaluation.limit ) {
-              
-
-              promote.save('left');
-
-              promote.save('right');
-
-              $.when(
-                promote
-                  .find('side by side')
-                  .find('.left-item, .right-item')
-                  .animate({
-                    opacity: 0
-                  })
-              )
-                .then(function () {
-                  promote.edit('cursor', promote.evaluation.cursor + 1);
-
-                  promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
-
-                  promote.edit('cursor', promote.evaluation.cursor + 1);
-
-                  promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
-
-                  promote
-                    .find('side by side')
-                    .find('.left-item')
-                    .animate({
-                      opacity: 1
-                    });
-
-                  promote
-                    .find('side by side')
-                    .find('.right-item')
-                    .animate({
-                      opacity: 1
-                    });
-                });
-            }
-
-            else {
-
-              promote.finish();
-
-            }
-
-          }));
-        });
       });
+    }
+
+    else {
+      cb();
     }
   };
 

@@ -1,5 +1,14 @@
 // Promote
 
+mixin persona (hand)
+  .persona(class=hand + '-item')
+    .row
+      .col-xs-3.padding
+        img.img-responsive.avatar
+
+      .col-xs-9.padding.user-names
+        h4.user-full-name
+
 section
   .row
     .col-xs-12.text-center
@@ -48,6 +57,15 @@ section
         
       .col-sm-6.references.padding.right-item
         a(rel='nofollow' target='_blank')
+
+    //- Persona
+
+    .row
+      .col-sm-6
+        +persona('left')
+
+      .col-sm-6
+        +persona('right')
 
     //- Sliders
 
@@ -103,12 +121,21 @@ section
 
     //- Promote
 
-    .row.padding-bottom
+    .row
       .col-sm-6.padding.left-item
         button.btn.btn-block.promote Promote
 
       .col-sm-6.padding.right-item
         button.btn.btn-block.promote Promote
+
+    //- Edit and go again
+
+    .row.padding-bottom
+      .col-sm-6.padding.left-item
+        button.btn.btn-block.edit-and-go-again-toggle Edit and go again
+
+      .col-sm-6.padding.right-item
+        button.btn.btn-block.edit-and-go-again-toggle Edit and go again
 
   //- Small screen
 
@@ -139,6 +166,12 @@ section
       .col-xs-12.references.left-item
         a(rel='nofollow' target='_blank')
 
+    //- Persona
+
+    .row.padding-bottom
+      .col-xs-12
+        +persona('left')
+
     //-Sliders
 
     .row
@@ -161,6 +194,12 @@ section
     .row
       .col-xs-12.padding.left-item
         button.btn.btn-block.promote Promote
+
+    //- Edit and go again
+
+    .row
+      .col-xs-12.padding.left-item
+        button.btn.btn-block.edit-and-go-again-toggle Edit and go again
 
     //- Right
 
@@ -187,6 +226,12 @@ section
       .col-xs-12.references.right-item
         a(rel='nofollow' target='_blank')
 
+    //- Persona
+
+    .row.padding-bottom
+      .col-xs-12
+        +persona('right')
+
     //-Sliders
 
     .row
@@ -209,6 +254,12 @@ section
     .row
       .col-xs-12.padding.right-item
         button.btn.btn-block.promote Promote
+
+    //- Edit and go again
+
+    .row
+      .col-xs-12.padding.right-item
+        button.btn.btn-block.edit-and-go-again-toggle Edit and go again
 
   //- Continue
   .row

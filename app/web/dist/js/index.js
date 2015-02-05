@@ -314,8 +314,6 @@
             
           edit.get(app.domain.intercept(function (template) {
 
-            console.log('OH YEAH', template);
-
             self.item.find('editor').find('.is-section').append(template);
 
             Nav.reveal(self.item.find('editor'), self.item.template,
@@ -909,7 +907,7 @@
 
     // Create reference to promote
 
-    var promote = new Promote(this);
+    this.promote = new Promote(this);
 
     // Create reference to details
 
@@ -968,7 +966,7 @@
       var item    =   $item.data('item');
 
       Nav.toggle(item.find('promote'), item.template, app.domain.intercept(function () {
-        promote.render(app.domain.intercept());
+        item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
       }));
     });
 
@@ -1618,6 +1616,7 @@
   var Item = require('./Item');
 
   var Nav = require('./Nav');
+  var Edit = require('./Edit');
 
   /**
    *  @class Promote
@@ -1689,11 +1688,23 @@
       case 'item image':
         return this.find('side by side').find('.image.' + more + '-item');
 
+      case 'item persona':
+        return this.find('side by side').find('.persona.' + more + '-item');
+
+      case 'item persona image':
+        return this.find('item persona', more).find('img');
+
+      case 'item persona name':
+        return this.find('item persona', more).find('.user-full-name');
+
       case 'item feedback':
         return this.find('side by side').find('.' + more + '-item .feedback');
 
       case 'promote button':
         return this.find('side by side').find('.' + more + '-item .promote');
+
+      case 'toggle edit and go again':
+        return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
     }
   };
 
@@ -1775,6 +1786,16 @@
         .data('criteria', promote.evaluation.criterias[cid]._id);
     });
 
+    // Persona
+
+    promote.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
+
+    promote.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
+
+    // Feedback
+
+    promote.find('item feedback', hand).val('');
+
     // Promote button
 
     promote.find('promote button', hand)
@@ -1828,17 +1849,107 @@
 
         }));
       });
+  
+    // Edit and go again
+
+    promote.find('toggle edit and go again', hand).on('click', function () {
+      Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
+        return;
+
+        if ( self.item.find('editor').find('form').length ) {
+          console.warn('already loaded')
+        }
+
+        else {
+          var edit = new Edit(self.item);
+            
+          edit.get(app.domain.intercept(function (template) {
+
+            self.item.find('editor').find('.is-section').append(template);
+
+            Nav.reveal(self.item.find('editor'), self.item.template,
+              app.domain.intercept(function () {
+                Nav.show(template, app.domain.intercept(function () {
+                  edit.render();
+                }));
+              }));
+          }));
+
+        }
+
+      }));
+    });
+
   };
 
   /**
-   *
+   *  @method
+   *  @arg {function} cb
    */
 
   Promote.prototype.render = function (cb) {
     var promote = this;
 
+    promote.find('finish button').on('click', function () {
+      Nav.scroll(promote.template, app.domain.intercept(function () {
+
+        if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+
+          promote.save('left');
+
+          promote.save('right');
+
+          $.when(
+            promote
+              .find('side by side')
+              .find('.left-item, .right-item')
+              .animate({
+                opacity: 0
+              }, 1000)
+          )
+            .then(function () {
+              promote.edit('cursor', promote.evaluation.cursor + 1);
+
+              promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+
+              promote.edit('cursor', promote.evaluation.cursor + 1);
+
+              promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+
+              promote
+                .find('side by side')
+                .find('.left-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+
+              promote
+                .find('side by side')
+                .find('.right-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+            });
+        }
+
+        else {
+
+          promote.finish();
+
+        }
+
+      }));
+    });
+  };
+
+  Promote.prototype.get = function (cb) {
+    var promote = this;
+
     if ( ! this.evaluation ) {
-      app.socket.emit('get evaluation', this.item.item);
+
+      // Get evaluation via sockets
+
+      app.socket.emit('get evaluation', this.item.item._id);
 
       app.socket.once('got evaluation', function (evaluation) {
         console.log('got evaluation', evaluation);
@@ -1853,58 +1964,13 @@
 
         promote.edit('right', evaluation.items[1]);
 
-        promote.find('finish button').on('click', function () {
-          Nav.scroll(promote.template, app.domain.intercept(function () {
+        cb();
 
-            if ( promote.evaluation.cursor < promote.evaluation.limit ) {
-              
-
-              promote.save('left');
-
-              promote.save('right');
-
-              $.when(
-                promote
-                  .find('side by side')
-                  .find('.left-item, .right-item')
-                  .animate({
-                    opacity: 0
-                  })
-              )
-                .then(function () {
-                  promote.edit('cursor', promote.evaluation.cursor + 1);
-
-                  promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
-
-                  promote.edit('cursor', promote.evaluation.cursor + 1);
-
-                  promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
-
-                  promote
-                    .find('side by side')
-                    .find('.left-item')
-                    .animate({
-                      opacity: 1
-                    });
-
-                  promote
-                    .find('side by side')
-                    .find('.right-item')
-                    .animate({
-                      opacity: 1
-                    });
-                });
-            }
-
-            else {
-
-              promote.finish();
-
-            }
-
-          }));
-        });
       });
+    }
+
+    else {
+      cb();
     }
   };
 
@@ -2004,7 +2070,7 @@
 
 } ();
 
-},{"./Item":6,"./Nav":7,"events":17}],10:[function(require,module,exports){
+},{"./Edit":3,"./Item":6,"./Nav":7,"events":17}],10:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2552,11 +2618,6 @@
   }
 
   Upload.prototype.init = function () {
-    console.log("let's do some upload", {
-      dropzone: this.dropzone,
-      file_input: this.file_input,
-      thumbnail: this.thumbnail
-    })
 
     if ( window.File ) {
       if ( this.dropzone ) {
@@ -2615,75 +2676,6 @@
       this.cb(null, file);
     }
   };
-
-  function handler (e) {
-    hover(e);
-
-    var files = e.target.files || e.originalEvent.dataTransfer.files;
-
-    for (var i = 0, f; f = files[i]; i++) {
-      parse(f);
-      preview(f, e.target);
-    }
-  }
-
-  function hover (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    // e.target.className = (e.type == "dragover" ? "hover" : "");
-  }
-
-  function parse (file) {
-    console.warn('file parsed', file);
-  }
-
-  function preview (file, target) {
-
-    var dropbox;
-
-    if ( $(target).hasClass('drop-box') ) {
-      dropbox = $(target);
-    }
-    else if ( $(target).closest('.drop-box').length ) {
-      dropbox = $(target).closest('.drop-box');
-    }
-
-    var img = new Image();
-
-    img.classList.add("img-responsive");
-    img.classList.add("preview-image");
-    
-    img.addEventListener('load', function () {
-      $(img).insertAfter(dropbox);
-      $(img).data('file', file);
-      dropbox.css('display', 'none');
-    }, false);
-    
-    img.src = (window.URL || window.webkitURL).createObjectURL(file);
-  }
-
-  function init (dropbox) {
-
-    if ( window.File ) {
-      console.log('we have File', dropbox.attr('type'))
-      if ( dropbox.hasClass('dropbox') ) {
-        dropbox
-          .on('dragover', hover)
-          .on('dragleave', hover)
-          .on('drop', handler)
-          .find('input')
-            .on('change', handler);
-      }
-      else if ( dropbox.attr('type') === 'file' ) {
-        console.log('rock n roll');
-        dropbox.on('change', handler);
-      }
-    }
-
-    else {
-      dropbox.find('.modern').hide();
-    }
-  }
 
   module.exports = Upload;
 

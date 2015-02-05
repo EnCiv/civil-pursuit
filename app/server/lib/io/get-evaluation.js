@@ -2,24 +2,29 @@
 
   'use strict';
 
-  function getEvaluation (socket, pronto, monson, domain) {
-    
-    socket.on('get evaluation', function (item, cb) {
-      
-      var url = 'models/Item.evaluate/' + item._id;
+  var Item = require('../../../business/models/Item');
 
-      monson.get(url)
+  /**
+   *  @arg {String} item - Item ObjectID String (_id)
+   *  @arg {Function} cb
+   */
 
-        .on('error', domain.intercept(function () {}))
+  function getEvaluation (item, cb) {
+    var socket = this;
 
-        .on('success', function (evaluation) {
-          pronto.emit('message', 'socket got evaluation from monson');
-          socket.emit('got evaluation', evaluation);
-        });
+    socket.domain.run(function () {
+      Item.evaluate(item, socket.domain.intercept(function (evaluation) {
+        socket.emit('got evaluation', evaluation);
+      }));
     });
-
   }
 
-  module.exports = getEvaluation;
+  /**
+   *  Export as a socket event listener
+   */
+
+  module.exports = function (socket) {
+    socket.on('get evaluation', getEvaluation.bind(socket));
+  };
 
 } ();

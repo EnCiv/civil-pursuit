@@ -134,6 +134,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
 
         var domain = require('domain').create();
 
+        socket.domain = domain;
+
         // On domain error
 
         domain.on('error', function (error) {

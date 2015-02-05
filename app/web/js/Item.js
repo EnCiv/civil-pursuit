@@ -115,7 +115,7 @@
 
     // Create reference to promote
 
-    var promote = new Promote(this);
+    this.promote = new Promote(this);
 
     // Create reference to details
 
@@ -174,7 +174,7 @@
       var item    =   $item.data('item');
 
       Nav.toggle(item.find('promote'), item.template, app.domain.intercept(function () {
-        promote.render(app.domain.intercept());
+        item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
       }));
     });
 

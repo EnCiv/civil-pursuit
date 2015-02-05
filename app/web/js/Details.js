@@ -99,8 +99,6 @@
             
           edit.get(app.domain.intercept(function (template) {
 
-            console.log('OH YEAH', template);
-
             self.item.find('editor').find('.is-section').append(template);
 
             Nav.reveal(self.item.find('editor'), self.item.template,
