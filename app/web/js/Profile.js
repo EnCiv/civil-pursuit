@@ -79,6 +79,7 @@
     this.find('Identity').attr('id', 'identity');
 
     new Identity().render();
+    
   };
 
   Profile.prototype.renderUser = function () {

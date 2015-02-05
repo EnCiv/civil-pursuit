@@ -722,12 +722,9 @@ footer {
 .panel .row-split .col + .col .panel {
   margin-right: -10px;
 }
-.panel .load-more {
+.panel .load-more,
+.panel .create-new {
   text-align: center;
-}
-.panel .loading-more {
-  text-align: center;
-  display: none;
 }
 .modal {
   top: 200px !important;

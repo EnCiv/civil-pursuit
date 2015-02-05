@@ -70,15 +70,6 @@
 
     "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
     
-    "item relation": {
-
-      "Topic": "Problem",
-      
-      "Problem": [["Agree", "Disagree"], "Solution"],
-      
-      "Solution": [["Pro", "Con"]]
-    },
-    
     "routes": {
 
       "terms of service": "/page/terms-of-service",
@@ -93,16 +84,14 @@
 
     },
 
-    "plurals": {
-
-      "topic": "topics",
-      "problem": "problems",
-      "agree": "agree",
-      "disagree": "disagree",
-      "solution": "solutions",
-      "pro": "pros",
-      "con": "cons"
-
+    "items structure": {
+      "Intro": {},
+      "Topic": {
+        "many": "Topics"
+      },
+      "Problem": {
+        "many": "Problems"
+      }
     }
   },
 

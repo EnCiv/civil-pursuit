@@ -3,6 +3,8 @@ extends ../layout
 block item-collapsers
   .is-container.profile-expand
     .is-section
+      include ../partials/identity
+      include ../partials/residence
 
 block items
   .is-container
@@ -12,6 +14,6 @@ block items
 block page
   include ../partials/panel
 
-  .hide
-    #identity-expand
-      include ../partials/identity
+  //- .hide
+  //-   #identity-expand
+  //-     include ../partials/identity

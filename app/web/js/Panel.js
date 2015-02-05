@@ -100,6 +100,9 @@
 
       case 'load more':
         return this.template.find('.load-more:first');
+
+      case 'create new':
+        return this.template.find('.create-new:first');
     }
   };
 
@@ -132,6 +135,11 @@
       return false;
     });
 
+    this.find('create new').on('click', function () {
+      panel.find('toggle creator').click();
+      return false;
+    });
+
     return this;
   };
 
@@ -149,6 +157,11 @@
     return json;
   };
 
+  /**
+   *  @method fill
+   *  @arg {function} cb
+   **/
+
   Panel.prototype.fill = function (cb) {
     var self = this;
 
@@ -158,9 +171,28 @@
       
       console.log('got items', panel, items)
 
-      self.skip += items.length;
+      self.template.find('.hide.pre').removeClass('hide');
 
-      self.insertItem(items, 0, cb);
+      if ( items.length ) {
+
+        self.find('create new').hide();
+        self.find('load more').show();
+
+        if ( items.length < synapp['navigator batch size'] ) {
+          self.find('load more').hide();
+        }
+
+        self.skip += items.length;
+
+        self.insertItem(items, 0, cb);
+      }
+
+      else {
+        self.find('create new').show();
+        self.find('load more').hide();
+      }
+
+        
     });
   };
 
