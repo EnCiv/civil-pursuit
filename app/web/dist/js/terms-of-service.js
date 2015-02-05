@@ -1048,7 +1048,7 @@
                 }, 700);
               }));
 
-              var split = $('<div class="row"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
+              var split = $('<div class="row padding-bottom"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
 
               item.find('children').append(split);
 
@@ -1083,7 +1083,7 @@
 
             case 'Solution':
 
-              var split = $('<div class="row"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
+              var split = $('<div class="row padding-bottom"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
 
               item.find('children').append(split);
 
