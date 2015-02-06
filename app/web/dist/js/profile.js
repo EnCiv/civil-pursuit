@@ -2227,6 +2227,10 @@
 
     promote.find('item feedback', hand).val('');
 
+    // Feedback - remove any marker from previous post / see #164
+
+    promote.find('item feedback', hand).removeClass('do-not-save-again');
+
     // Promote button
 
     promote.find('promote button', hand)
@@ -2478,11 +2482,16 @@
     var feedback = promote.find('item feedback', hand);
 
     if ( feedback.val() ) {
-      app.socket.emit('insert feedback', {
-        item: promote.evaluation[hand]._id,
-        user: synapp.user,
-        feedback: feedback.val()
-      });
+
+      if ( ! feedback.hasClass('do-not-save-again') ) {
+        app.socket.emit('insert feedback', {
+          item: promote.evaluation[hand]._id,
+          user: synapp.user,
+          feedback: feedback.val()
+        });
+
+        feedback.addClass('do-not-save-again');
+      }
 
       // feedback.val('');
     }
