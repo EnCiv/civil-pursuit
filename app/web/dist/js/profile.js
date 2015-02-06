@@ -1006,7 +1006,9 @@
       $('#intro').find('.item-media')
         .empty().append(new Item(intro).media());
 
-      new Truncate($('#intro'));
+      setTimeout(function () {
+        new Truncate($('#intro'));
+      });
     });
   };
 

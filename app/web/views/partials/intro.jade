@@ -1,9 +1,17 @@
-// Intro
+block item-collapsers
+  span
 
-extends panel
+.panel.panel-default
 
-block panel-body
-  include item-box
+  .panel-heading
+    h4.panel-title
+      block title
+        span.iddle
+          i.fa.fa-circle-o-notch.fa-spin
 
-block toggle-creator
-  
+  .panel-body
+
+    block panel-body
+
+      .items
+        include item
