@@ -374,7 +374,17 @@
 
         promote.evaluation = evaluation;
 
-        promote.edit('limit', 5);
+        var limit = 5;
+
+        if ( evaluation.items.length < 6 ) {
+          limit = evaluation.items.length - 1;
+
+          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
+            limit = 1;
+          }
+        }
+
+        promote.edit('limit', limit);
 
         promote.edit('cursor', 1);
 

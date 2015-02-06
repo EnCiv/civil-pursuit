@@ -173,6 +173,10 @@
       var $item   =   $(this).closest('.item');
       var item    =   $item.data('item');
 
+      if ( $('.creator.is-shown') ) {
+        Nav.hide($('.creator.is-shown'));
+      }
+
       Nav.toggle(item.find('promote'), item.template, app.domain.intercept(function () {
         item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
       }));

@@ -204,7 +204,8 @@ $$$$$$$/   $$$$$$/   $$$$$$$/ $$/   $$/  $$$$$$$/    $$$$/ $$$$$$/  $$$$$$/
           'edit-and-go-again',
           'save-user-image',
           'change-user-name',
-          'get-user-info'];
+          'get-user-info',
+          'validate-gps'];
 
         domain.add(socket);
 

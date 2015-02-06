@@ -14,45 +14,54 @@
 
   var UserSchema = new Schema({
     "email": {
-      "type": String,
-      "required": true,
+      type: String,
+      required: true,
       "index": {
         "unique": true
       }
     },
     
     "password": {
-      "type": String,
-      "required": true
+      type: String,
+      required: true
     },
 
     "created": {
-      "type": Date,
-      "default": Date.now
+      type: Date,
+      default: Date.now
     },
 
     "image": {
-      "type": String
+      type: String
     },
 
     "twitter": {
-      "type": String
+      type: String
     },
 
     "facebook": {
-      "type": String
+      type: String
     },
 
      "first_name": {
-      "type": String
+      type: String
     },
 
      "middle_name": {
-      "type": String
+      type: String
     },
 
      "last_name": {
-      "type": String
+      type: String
+    },
+
+    "gps": {
+      type: [Number], // [<longitude>, <latitude>]
+      index: '2d'
+    },
+
+    "gps validated": {
+      type: Date
     },
 
     // preferences

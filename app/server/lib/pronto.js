@@ -61,6 +61,8 @@ Nina Butorac
       base: require('path').join(process.cwd(), 'app/business')
     });
 
+    require('mongoose').connect(process.env.MONGOHQ_URL);
+
     var server = pronto ()
 
       /** inject into scope */

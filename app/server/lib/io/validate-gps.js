@@ -6,20 +6,21 @@
 
   /**
    *  @arg {String} item - Item ObjectID String (_id)
-   *  @arg {Function} cb
+   *  @arg {Function
    */
 
-  function getUserInfo (user_id) {
+  function validateGPS (user_id, lng, lat) {
     var socket = this;
 
     socket.domain.run(function () {
+      User.update({ _id: user_id },
+        {
+          'gps': [lng, lat],
+          'gps validated': Date.now()
+        },
 
-      User
-        .findById(user_id)
-        .lean()
-        .exec(socket.domain.intercept(function (user) {
-          delete user.password;
-          socket.emit('got user info', user);
+        socket.domain.intercept(function () {
+          socket.emit('validated gps');
         }));
     });
   }
@@ -29,7 +30,7 @@
    */
 
   module.exports = function (socket) {
-    socket.on('get user info', getUserInfo.bind(socket));
+    socket.on('validate gps', validateGPS.bind(socket));
   };
 
 } ();

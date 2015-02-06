@@ -2,14 +2,9 @@
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
- *  NAV
+ *  N   A   V
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -18,6 +13,12 @@
 ! function () {
 
   'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function toggle (elem, poa, cb) {
     if ( ! elem.hasClass('is-toggable') ) {
@@ -37,6 +38,12 @@
       reveal(elem, poa, cb);
     }
   }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function reveal (elem, poa, cb) {
     if ( ! elem.hasClass('is-toggable') ) {
@@ -65,6 +72,12 @@
     }
   }
 
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
   function unreveal (elem, poa, cb) {
     if ( ! elem.hasClass('is-toggable') ) {
       elem.addClass('is-toggable');
@@ -92,9 +105,18 @@
     }
   }
 
+  /**
+   *  @function scroll
+   *  @description Scroll the page till the point of attention is at the top of the screen
+   *  @return null
+   *  @arg {function} pointOfAttention - jQuery List
+   *  @arg {function} cb - Function to call once scroll is complete
+   *  @arg {number} speed - A number of milliseconds to set animation duration
+   */
+
   function scroll (pointOfAttention, cb, speed) {
-    console.log('%c scroll', 'font-weight: bold',
-      (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
+    // console.log('%c scroll', 'font-weight: bold',
+    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
 
     var poa = (pointOfAttention.offset().top - 80);
 
@@ -118,6 +140,12 @@
       }, 500, 'swing'))
       .then(cb);
   }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function show (elem, cb) {
     if ( typeof cb !== 'function' ) {
@@ -160,6 +188,12 @@
        opacity: 1
       }, 500);
   }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function hide (elem, cb) {
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker

@@ -214,7 +214,7 @@
 
 } ();
 
-},{"./Form":4,"./Item":7,"./Nav":8,"./Panel":9,"./Upload":15,"./YouTube":16}],2:[function(require,module,exports){
+},{"./Form":4,"./Item":7,"./Nav":8,"./Panel":9,"./Upload":16,"./YouTube":17}],2:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -898,7 +898,7 @@
 
 } ();
 
-},{"./Nav":8,"./Upload":15}],6:[function(require,module,exports){
+},{"./Nav":8,"./Upload":16}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -950,7 +950,7 @@
 
 } ();
 
-},{"./Item":7,"./Truncate":14}],7:[function(require,module,exports){
+},{"./Item":7,"./Truncate":15}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1125,6 +1125,10 @@
 
       var $item   =   $(this).closest('.item');
       var item    =   $item.data('item');
+
+      if ( $('.creator.is-shown') ) {
+        Nav.hide($('.creator.is-shown'));
+      }
 
       Nav.toggle(item.find('promote'), item.template, app.domain.intercept(function () {
         item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
@@ -1353,19 +1357,14 @@
 
 } ();
 
-},{"./Details":2,"./Nav":8,"./Panel":9,"./Promote":11,"./Truncate":14,"./YouTube":16}],8:[function(require,module,exports){
+},{"./Details":2,"./Nav":8,"./Panel":9,"./Promote":11,"./Truncate":15,"./YouTube":17}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
- *  NAV
+ *  N   A   V
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -1374,6 +1373,12 @@
 ! function () {
 
   'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function toggle (elem, poa, cb) {
     if ( ! elem.hasClass('is-toggable') ) {
@@ -1393,6 +1398,12 @@
       reveal(elem, poa, cb);
     }
   }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function reveal (elem, poa, cb) {
     if ( ! elem.hasClass('is-toggable') ) {
@@ -1421,6 +1432,12 @@
     }
   }
 
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
   function unreveal (elem, poa, cb) {
     if ( ! elem.hasClass('is-toggable') ) {
       elem.addClass('is-toggable');
@@ -1448,9 +1465,18 @@
     }
   }
 
+  /**
+   *  @function scroll
+   *  @description Scroll the page till the point of attention is at the top of the screen
+   *  @return null
+   *  @arg {function} pointOfAttention - jQuery List
+   *  @arg {function} cb - Function to call once scroll is complete
+   *  @arg {number} speed - A number of milliseconds to set animation duration
+   */
+
   function scroll (pointOfAttention, cb, speed) {
-    console.log('%c scroll', 'font-weight: bold',
-      (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
+    // console.log('%c scroll', 'font-weight: bold',
+    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
 
     var poa = (pointOfAttention.offset().top - 80);
 
@@ -1474,6 +1500,12 @@
       }, 500, 'swing'))
       .then(cb);
   }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function show (elem, cb) {
     if ( typeof cb !== 'function' ) {
@@ -1516,6 +1548,12 @@
        opacity: 1
       }, 500);
   }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
 
   function hide (elem, cb) {
     // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
@@ -1792,6 +1830,7 @@
 
   var Nav = require('./Nav');
   var Identity = require('./Identity');
+  var Residence = require('./Residence');
 
   /**
    *  @function
@@ -1804,6 +1843,8 @@
     var profile = this;
 
     this.template = $('.panel');
+
+    this.residence = new Residence(this);
 
     app.socket.emit('get user info', synapp.user);
 
@@ -1866,7 +1907,9 @@
 
     this.find('Identity').attr('id', 'identity');
 
-    new Identity().render();
+    this.identity = new Identity().render();
+
+    this.residence.render();
 
   };
 
@@ -1876,13 +1919,15 @@
     this.find('Identity').data('identity').user = this.user;
 
     this.find('Identity').data('identity').renderUser();
+
+    this.residence.renderUser();
   };
 
   module.exports = Profile;
 
 } ();
 
-},{"./Identity":5,"./Nav":8}],11:[function(require,module,exports){
+},{"./Identity":5,"./Nav":8,"./Residence":12}],11:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2259,7 +2304,17 @@
 
         promote.evaluation = evaluation;
 
-        promote.edit('limit', 5);
+        var limit = 5;
+
+        if ( evaluation.items.length < 6 ) {
+          limit = evaluation.items.length - 1;
+
+          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
+            limit = 1;
+          }
+        }
+
+        promote.edit('limit', limit);
 
         promote.edit('cursor', 1);
 
@@ -2373,7 +2428,113 @@
 
 } ();
 
-},{"./Edit":3,"./Item":7,"./Nav":8,"events":19}],12:[function(require,module,exports){
+},{"./Edit":3,"./Item":7,"./Nav":8,"events":20}],12:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('./Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Residence (profile) {
+    this.template = $('#residence');
+
+    this.template.data('residence', this);
+
+    this.profile = profile;
+  }
+
+  Residence.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'expand':
+        return this.template.find('.residence-collapse');
+
+      case 'validate gps button':
+        return this.template.find('.validate-gps');
+
+      case 'not yet validated':
+        return this.template.find('.not-yet-validated');
+
+      case 'is validated':
+        return this.template.find('.is-validated');
+
+      case 'validated moment':
+        return this.template.find('.validated-moment');
+    }
+  };
+
+  Residence.prototype.render = function () {
+
+    var residence = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(residence.find('expand'), residence.template, function () {
+        if ( residence.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    // Validate GPS button
+
+    this.find('validate gps button').on('click', function () {
+      navigator.geolocation.watchPosition(function(position) {
+
+        console.log('location');
+
+        app.socket.emit('validate gps', synapp.user, position.coords.longitude, position.coords.latitude);
+
+        app.socket.once('validated gps', function () {
+          console.log('validated');
+        });
+      });
+    });
+  };
+
+  Residence.prototype.renderUser = function () {
+
+    var residence = this;
+
+    if ( this.profile.user ) {
+
+      // GPS
+
+      if ( this.profile.user.gps ) {
+        this.find('not yet validated').hide();
+        this.find('is validated').removeClass('hide').show();
+        this.find('validated moment').text(function () {
+          var date = new Date(residence.profile.user['gps validated']);
+          return [(date.getMonth() + 1 ), (date.getDay() + 1), date.getFullYear()].join('/');
+        });
+      }
+
+      // NO GPS
+
+      else {
+        this.find('validate gps button').attr('disabled', false);
+      }
+    }
+  };
+
+  module.exports = Residence;
+
+} ();
+
+},{"./Nav":8}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2566,7 +2727,7 @@
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2696,7 +2857,7 @@
 
 } ();
 
-},{"./Intro":6,"./Panel":9,"./Sign":12,"domain":18,"events":19,"util":23}],14:[function(require,module,exports){
+},{"./Intro":6,"./Panel":9,"./Sign":13,"domain":19,"events":20,"util":24}],15:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2919,7 +3080,7 @@
 
 }();
 
-},{"./Nav":8}],15:[function(require,module,exports){
+},{"./Nav":8}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2998,7 +3159,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3073,7 +3234,7 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3093,7 +3254,7 @@
 
 } ();
 
-},{"../Panel":9,"../Profile":10,"../Sign":12,"../Synapp":13}],18:[function(require,module,exports){
+},{"../Panel":9,"../Profile":10,"../Sign":13,"../Synapp":14}],19:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3131,7 +3292,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":19}],19:[function(require,module,exports){
+},{"events":20}],20:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3434,7 +3595,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3459,7 +3620,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3547,14 +3708,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4144,4 +4305,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":22,"_process":21,"inherits":20}]},{},[17]);
+},{"./support/isBuffer":23,"_process":22,"inherits":21}]},{},[18]);

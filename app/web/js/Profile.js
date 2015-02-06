@@ -4,6 +4,7 @@
 
   var Nav = require('./Nav');
   var Identity = require('./Identity');
+  var Residence = require('./Residence');
 
   /**
    *  @function
@@ -16,6 +17,8 @@
     var profile = this;
 
     this.template = $('.panel');
+
+    this.residence = new Residence(this);
 
     app.socket.emit('get user info', synapp.user);
 
@@ -78,7 +81,9 @@
 
     this.find('Identity').attr('id', 'identity');
 
-    new Identity().render();
+    this.identity = new Identity().render();
+
+    this.residence.render();
 
   };
 
@@ -88,6 +93,8 @@
     this.find('Identity').data('identity').user = this.user;
 
     this.find('Identity').data('identity').renderUser();
+
+    this.residence.renderUser();
   };
 
   module.exports = Profile;
