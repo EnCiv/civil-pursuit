@@ -1,28 +1,37 @@
 extends ../layout
 
 block items
-  .is-container
-    .is-section
-      include ../partials/identity
+  .row
+    .col-xs-12.col-lg-6
+      .is-container.is-profile-section
+        .is-section
+          include ../partials/identity
 
-  .is-container
-    .is-section
-      include ../partials/residence
+    .col-xs-12.col-lg-6
+      .is-container.is-profile-section
+        .is-section
+          include ../partials/residence
 
-  .is-container
-    .is-section
-      include ../partials/demographics
+  .row
+    .col-xs-12.col-lg-6
+      .is-container.is-profile-section
+        .is-section
+          include ../partials/demographics
 
-  .is-container
-    .is-section
-      include ../partials/voter
+    .col-xs-12.col-lg-6
+      .is-container.is-profile-section
+        .is-section
+          include ../partials/voter
 
-  .is-container
-    .is-section
-      include ../partials/public-persona
+  .row
+    .col-xs-12.col-lg-6
+      .is-container.is-profile-section
+        .is-section
+          include ../partials/public-persona
 
 block page
-  include ../partials/panel
+  #profile
+    include ../partials/panel
 
   //- .hide
   //-   #identity-expand

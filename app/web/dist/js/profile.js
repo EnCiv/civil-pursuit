@@ -214,7 +214,71 @@
 
 } ();
 
-},{"./Form":4,"./Item":7,"./Nav":8,"./Panel":9,"./Upload":16,"./YouTube":17}],2:[function(require,module,exports){
+},{"./Form":5,"./Item":8,"./Nav":9,"./Panel":10,"./Upload":18,"./YouTube":20}],2:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('./Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Demographics (profile) {
+    this.template = $('#demographics');
+
+    this.template.data('demographics', this);
+
+    this.profile = profile;
+  }
+
+  Demographics.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'expand':
+        return this.template.find('.demographics-collapse');
+    }
+  };
+
+  Demographics.prototype.render = function () {
+
+    var demographics = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(demographics.find('expand'), demographics.template, function () {
+        if ( demographics.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+  };
+
+  Demographics.prototype.renderUser = function () {
+
+    var demographics = this;
+
+    if ( this.profile.user ) {
+
+     
+    }
+  };
+
+  module.exports = Demographics;
+
+} ();
+
+},{"./Nav":9}],3:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -470,7 +534,7 @@
 
 } ();
 
-},{"./Edit":3,"./Item":7,"./Nav":8}],3:[function(require,module,exports){
+},{"./Edit":4,"./Item":8,"./Nav":9}],4:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -662,7 +726,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":7,"./Nav":8}],4:[function(require,module,exports){
+},{"./Creator":1,"./Item":8,"./Nav":9}],5:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -739,7 +803,7 @@
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -898,7 +962,7 @@
 
 } ();
 
-},{"./Nav":8,"./Upload":16}],6:[function(require,module,exports){
+},{"./Nav":9,"./Upload":18}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -950,7 +1014,7 @@
 
 } ();
 
-},{"./Item":7,"./Truncate":15}],7:[function(require,module,exports){
+},{"./Item":8,"./Truncate":17}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1357,7 +1421,7 @@
 
 } ();
 
-},{"./Details":2,"./Nav":8,"./Panel":9,"./Promote":11,"./Truncate":15,"./YouTube":17}],8:[function(require,module,exports){
+},{"./Details":3,"./Nav":9,"./Panel":10,"./Promote":12,"./Truncate":17,"./YouTube":20}],9:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1597,7 +1661,7 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1823,7 +1887,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":7,"./Nav":8}],10:[function(require,module,exports){
+},{"./Creator":1,"./Item":8,"./Nav":9}],11:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1831,6 +1895,9 @@
   var Nav = require('./Nav');
   var Identity = require('./Identity');
   var Residence = require('./Residence');
+  var Demographics = require('./Demographics');
+  var Voter = require('./Voter');
+  var Public_Persona = require('./Public_Persona');
 
   /**
    *  @function
@@ -1845,6 +1912,9 @@
     this.template = $('.panel');
 
     this.residence = new Residence(this);
+    this.demographics = new Demographics(this);
+    this.voter = new Voter(this);
+    this.public_persona = new Public_Persona(this);
 
     app.socket.emit('get user info', synapp.user);
 
@@ -1861,10 +1931,10 @@
         return this.template.find('.panel-title');
 
       case 'items section':
-        return this.template.find('.items>.is-container');
+        return this.template.find('.items .is-container.is-profile-section');
 
       case 'panel load more':
-        return this.template.find('.load-more');
+        return this.template.find('.loading-items');
 
       case 'Identity':
         return this.template.find('#identity');
@@ -1882,8 +1952,7 @@
 
     this.find('toggle creator').remove();
 
-    this.find('panel load more')
-      .find('a').remove();
+    this.find('panel load more').find('i,span').hide();
 
     var togglePanel = $('<i class="fa cursor-pointer fa-arrow-up"></i>');
 
@@ -1911,6 +1980,12 @@
 
     this.residence.render();
 
+    this.demographics.render();
+
+    this.voter.render();
+
+    this.public_persona.render();
+
   };
 
   Profile.prototype.renderUser = function () {
@@ -1921,13 +1996,19 @@
     this.find('Identity').data('identity').renderUser();
 
     this.residence.renderUser();
+
+    this.demographics.renderUser();
+
+    this.voter.renderUser();
+
+    this.public_persona.renderUser();
   };
 
   module.exports = Profile;
 
 } ();
 
-},{"./Identity":5,"./Nav":8,"./Residence":12}],11:[function(require,module,exports){
+},{"./Demographics":2,"./Identity":6,"./Nav":9,"./Public_Persona":13,"./Residence":14,"./Voter":19}],12:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2428,7 +2509,71 @@
 
 } ();
 
-},{"./Edit":3,"./Item":7,"./Nav":8,"events":20}],12:[function(require,module,exports){
+},{"./Edit":4,"./Item":8,"./Nav":9,"events":23}],13:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('./Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Public_Persona (profile) {
+    this.template = $('#public_persona');
+
+    this.template.data('public_persona', this);
+
+    this.profile = profile;
+  }
+
+  Public_Persona.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'expand':
+        return this.template.find('.public_persona-collapse');
+    }
+  };
+
+  Public_Persona.prototype.render = function () {
+
+    var public_persona = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(public_persona.find('expand'), public_persona.template, function () {
+        if ( public_persona.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+  };
+
+  Public_Persona.prototype.renderUser = function () {
+
+    var public_persona = this;
+
+    if ( this.profile.user ) {
+
+     
+    }
+  };
+
+  module.exports = Public_Persona;
+
+} ();
+
+},{"./Nav":9}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2534,7 +2679,7 @@
 
 } ();
 
-},{"./Nav":8}],13:[function(require,module,exports){
+},{"./Nav":9}],15:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2727,7 +2872,7 @@
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2857,7 +3002,7 @@
 
 } ();
 
-},{"./Intro":6,"./Panel":9,"./Sign":13,"domain":19,"events":20,"util":24}],15:[function(require,module,exports){
+},{"./Intro":7,"./Panel":10,"./Sign":15,"domain":22,"events":23,"util":27}],17:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3080,7 +3225,7 @@
 
 }();
 
-},{"./Nav":8}],16:[function(require,module,exports){
+},{"./Nav":9}],18:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3159,7 +3304,71 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('./Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Voter (profile) {
+    this.template = $('#voter');
+
+    this.template.data('voter', this);
+
+    this.profile = profile;
+  }
+
+  Voter.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'expand':
+        return this.template.find('.voter-collapse');
+    }
+  };
+
+  Voter.prototype.render = function () {
+
+    var voter = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(voter.find('expand'), voter.template, function () {
+        if ( voter.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+  };
+
+  Voter.prototype.renderUser = function () {
+
+    var voter = this;
+
+    if ( this.profile.user ) {
+
+     
+    }
+  };
+
+  module.exports = Voter;
+
+} ();
+
+},{"./Nav":9}],20:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3234,7 +3443,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3254,7 +3463,7 @@
 
 } ();
 
-},{"../Panel":9,"../Profile":10,"../Sign":13,"../Synapp":14}],19:[function(require,module,exports){
+},{"../Panel":10,"../Profile":11,"../Sign":15,"../Synapp":16}],22:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3292,7 +3501,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":20}],20:[function(require,module,exports){
+},{"events":23}],23:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3595,7 +3804,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3620,7 +3829,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3708,14 +3917,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],24:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4305,4 +4514,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":23,"_process":22,"inherits":21}]},{},[18]);
+},{"./support/isBuffer":26,"_process":25,"inherits":24}]},{},[21]);

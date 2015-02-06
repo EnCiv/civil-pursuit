@@ -784,3 +784,10 @@ footer {
 .details .c3-legend-item {
   display: none;
 }
+/** Importing the profile */
+#profile .section {
+  border: 1px solid #666;
+  margin: -9px;
+  border-radius: 4px;
+  padding: 10px;
+}

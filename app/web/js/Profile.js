@@ -5,6 +5,9 @@
   var Nav = require('./Nav');
   var Identity = require('./Identity');
   var Residence = require('./Residence');
+  var Demographics = require('./Demographics');
+  var Voter = require('./Voter');
+  var Public_Persona = require('./Public_Persona');
 
   /**
    *  @function
@@ -19,6 +22,9 @@
     this.template = $('.panel');
 
     this.residence = new Residence(this);
+    this.demographics = new Demographics(this);
+    this.voter = new Voter(this);
+    this.public_persona = new Public_Persona(this);
 
     app.socket.emit('get user info', synapp.user);
 
@@ -35,10 +41,10 @@
         return this.template.find('.panel-title');
 
       case 'items section':
-        return this.template.find('.items>.is-container');
+        return this.template.find('.items .is-container.is-profile-section');
 
       case 'panel load more':
-        return this.template.find('.load-more');
+        return this.template.find('.loading-items');
 
       case 'Identity':
         return this.template.find('#identity');
@@ -56,8 +62,7 @@
 
     this.find('toggle creator').remove();
 
-    this.find('panel load more')
-      .find('a').remove();
+    this.find('panel load more').find('i,span').hide();
 
     var togglePanel = $('<i class="fa cursor-pointer fa-arrow-up"></i>');
 
@@ -85,6 +90,12 @@
 
     this.residence.render();
 
+    this.demographics.render();
+
+    this.voter.render();
+
+    this.public_persona.render();
+
   };
 
   Profile.prototype.renderUser = function () {
@@ -95,6 +106,12 @@
     this.find('Identity').data('identity').renderUser();
 
     this.residence.renderUser();
+
+    this.demographics.renderUser();
+
+    this.voter.renderUser();
+
+    this.public_persona.renderUser();
   };
 
   module.exports = Profile;

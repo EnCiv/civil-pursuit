@@ -1,6 +1,6 @@
-#identity
+#identity.section
   .row
-    .col-xs-4.padding.user-image-container
+    .col-xs-4.user-image-container
       img.img-responsive.user-image(src=synapp.public['user image'])
 
     .col-xs-8.padding
@@ -12,9 +12,9 @@
 
       .image-buttons.row.padding
         .col-xs-4.padding
-          button.btn.btn-block Facebook Image
+          button.btn.btn-block(disabled) Facebook Image
         .col-xs-4.padding
-          button.btn.btn-block Twitter Image
+          button.btn.btn-block(disabled) Twitter Image
         .col-xs-4.padding
           button.btn.btn-block.upload-image Upload Image
           input.upload-identity-picture.hide(type='file')
