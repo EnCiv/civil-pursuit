@@ -6,7 +6,7 @@
  *  ******************************************************
  *  ******************************************************
  
- *  CREATOR
+ *  C   R   E   A   T   O   R
 
  *  ******************************************************
  *  ******************************************************
@@ -158,6 +158,8 @@
       app.socket.once('created item', function (item) {
 
         console.log('created item', item);
+
+        creator.panel.template.find('.create-new').hide();
 
         if ( new_item.upload ) {
           item.upload = new_item.upload;

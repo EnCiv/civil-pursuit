@@ -69,6 +69,8 @@
     },
 
     "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
+
+    "user image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg",
     
     "routes": {
 
@@ -92,6 +94,24 @@
       "Problem": {
         "many": "Problems"
       }
+    }
+  },
+
+  "profile": {
+    "identity": {
+      "description": "This information is used to identify you and make sure that you are unique"
+    },
+    "residence": {
+      "description": "This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident."
+    },
+    "demographics": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there."
+    },
+    "voter": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there."
+    },
+    "public persona": {
+      "description": "This is the information shown about you that others can wee when they are evaluating your postings."
     }
   },
 

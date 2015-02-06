@@ -38,7 +38,7 @@
         return this.template.find('.load-more');
 
       case 'Identity':
-        return this.template.find('.items .item:eq(0)');
+        return this.template.find('#identity');
 
       case 'toggle creator':
         return this.template.find('.toggle-creator');
@@ -79,7 +79,7 @@
     this.find('Identity').attr('id', 'identity');
 
     new Identity().render();
-    
+
   };
 
   Profile.prototype.renderUser = function () {

@@ -167,7 +167,7 @@ Nina Butorac
   var tasks         =   [
     'browserify-home',
     'browserify-terms-of-service',
-    'browserify-persona',
+    'browserify-profile',
     'build-dev',
     'build-prod',
     'less',
@@ -177,7 +177,7 @@ Nina Butorac
     'uglify-home',
     'uglify-terms-of-service',
     'uglify-persona',
-    'watchify-persona',
+    'watchify-profile',
     'watchify-home',
     'watch-less',
     'generate-site-map',

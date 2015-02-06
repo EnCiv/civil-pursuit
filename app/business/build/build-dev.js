@@ -6,7 +6,7 @@
     'less',
     'browserify-home',
     'browserify-terms-of-service',
-    'browserify-persona'
+    'browserify-profile'
   ];
 
   exports.task = function (cb) {

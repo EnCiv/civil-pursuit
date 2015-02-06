@@ -1,24 +1,39 @@
-.image-buttons.row.padding
-  .col-xs-4.padding
-    button.btn.btn-block Facebook Image
-  .col-xs-4.padding
-    button.btn.btn-block Twitter Image
-  .col-xs-4.padding
-    button.btn.btn-block.upload-image Upload Image
-    input.upload-identity-picture.hide(type='file')
+#identity
+  .row
+    .col-xs-4.padding.user-image-container
+      img.img-responsive.user-image(src=synapp.public['user image'])
 
-.names.row.padding
-  .col-xs-4.padding
-    input.form-control(type='text' placeholder='First name' name='first-name')
-  .col-xs-4.padding
-    input.form-control(type='text' placeholder='Middle name' name='middle-name')
-  .col-xs-4.padding
-    input.form-control(type='text' placeholder='Last name' name='last-name')
+    .col-xs-8.padding
+      h2 Identity
+      .pre-text=synapp.profile.identity.description
 
-//- .row.padding
-//-   .col-xs-12.col-sm-6
-//-     form.form-inline
-//-       .form-group
-//-         label Citizenship
-//-         select
-//-           option Country
+  .identity-collapse.is-container
+    .is-section
+
+      .image-buttons.row.padding
+        .col-xs-4.padding
+          button.btn.btn-block Facebook Image
+        .col-xs-4.padding
+          button.btn.btn-block Twitter Image
+        .col-xs-4.padding
+          button.btn.btn-block.upload-image Upload Image
+          input.upload-identity-picture.hide(type='file')
+
+      .names.row.padding
+        .col-xs-4.padding
+          input.form-control(type='text' placeholder='First name' name='first-name')
+        .col-xs-4.padding
+          input.form-control(type='text' placeholder='Middle name' name='middle-name')
+        .col-xs-4.padding
+          input.form-control(type='text' placeholder='Last name' name='last-name')
+
+  //- .row.padding
+  //-   .col-xs-12.col-sm-6
+  //-     form.form-inline
+  //-       .form-group
+  //-         label Citizenship
+  //-         select
+  //-           option Country
+
+  .row.toggle-arrow.padding.text-center
+    i.fa.fa-arrow-down

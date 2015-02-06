@@ -20,7 +20,7 @@
   Identity.prototype.find = function (name) {
     switch ( name ) {
       case 'expand':
-        return this.template.find('.profile-expand');
+        return this.template.find('.identity-collapse');
 
       case 'toggle arrow':
         return this.template.find('.toggle-arrow');
@@ -47,15 +47,15 @@
         return this.template.find('[name="last-name"]');
 
       case 'image':
-        return this.template.find('.item-media img');
+        return this.template.find('img.user-image');
     }
   };
 
   Identity.prototype.render = function () {
 
-    var identity = this;
+    console.log('rendering item')
 
-    this.find('expand').find('.is-section').append($('#identity-expand').clone());
+    var identity = this;
 
     this.find('upload button pretty').on('click', function () {
       identity.find('upload button').click();
@@ -85,7 +85,7 @@
 
     this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
 
-    new Upload(null, this.find('upload button'), this.template.find('.item-media'),
+    new Upload(null, this.find('upload button'), this.template.find('.user-image-container'),
       function (error, file) {
         var stream = ss.createStream();
 
