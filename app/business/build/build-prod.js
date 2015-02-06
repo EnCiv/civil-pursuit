@@ -8,7 +8,7 @@
   exports.dependencies  =   ['build-dev'];
 
   exports.task          =   function (cb) {
-    runSequence('minify-css', 'uglify-home', 'uglify-terms-of-service', 'uglify-persona',
+    runSequence('minify-css', 'uglify-home', 'uglify-terms-of-service', 'uglify-profile',
       function (error) {
         if ( error ) {
           return cb(error);
