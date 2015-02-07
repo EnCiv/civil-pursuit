@@ -781,8 +781,8 @@
     app.socket.on('got intro', function (intro) {
       $('#intro').find('.panel-title').text(intro.subject);
 
-      // $('#intro').find('.item-title').text(intro.subject);
-      $('#intro').find('.item-title').hide();
+      $('#intro').find('.item-title').text(intro.subject);
+      // $('#intro').find('.item-title').hide();
 
       $('#intro').find('.description').text(intro.description);
 
