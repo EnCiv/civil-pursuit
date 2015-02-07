@@ -486,18 +486,18 @@ footer {
   }
 }
 .box .item-text .item-title {
-  font-size: 24px;
+  font-size: 26px;
   word-wrap: break-word;
   border: none;
 }
 @media (max-width: 800px) {
   .box .item-text .item-title {
-    font-size: 22px;
+    font-size: 24px;
   }
 }
 @media (max-width: 700px) {
   .box .item-text .item-title {
-    font-size: 20px;
+    font-size: 22px;
   }
 }
 @media (max-width: 600px) {
@@ -707,6 +707,9 @@ footer {
   background: -o-linear-gradient(top, rgba(0, 0, 0, 0.6), #000000);
   color: #fff;
   text-align: center;
+}
+.panel .panel-heading .panel-title {
+  font-size: 24px;
 }
 .panel .panel-body {
   padding: 0;
