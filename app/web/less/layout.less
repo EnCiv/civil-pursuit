@@ -24,6 +24,7 @@
 body {
 	//margin-bottom: 100vh
 	// font-size: 
+  padding-top: 70px; 
 }
 
 /** ____________________________________________________________________________
@@ -32,36 +33,61 @@ body {
     ============================================================================
 **/
 
+#logo {
+  position: fixed;
+  top: 0;
+  z-index: 9999
+}
+
+.logo-full {
+  @media (max-width: 496px) {
+    display: none
+  }
+}
+
+.logo-image {
+  @media (max-width: 496px) {
+    display: inline !important
+  }
+}
+
+.online-now {
+  @media (max-width: 640px) {
+    display: none
+  }
+}
+
 [role='header'] {
-	position: fixed;
-	top: 0;
-	left:0 ;
-	width: 100%;
-	z-index: 9999;
+	// position: fixed;
+	// top: 0;
+	// left:0 ;
+	// width: 100%;
+	// z-index: 9999;
 	// background: rgb(255, 255, 255);
 
 	/** Logo **/
 
-	.logo {
-		float: left
-	}
+	// .logo {
+	// 	float: left
+	// }
 
 	/** Beta image **/
 
 	.beta {
 		position: fixed;
 		top: 0;
-		left: calc((100% / 2.1));
+		left: calc((100% / 2.5));
+    // -webkit-transform: rotate(90deg);
 
-		@media (max-width: 760px) {
-			right: 250px;
-			left: auto;
-		}
+		// @media (max-width: 760px) {
+		// 	right: 250px;
+		// 	left: auto;
+		// }
 
-		@media (max-width: 446px) {
-			left: 80px;
-			opacity: .5
-		}
+		// @media (max-width: 446px) {
+		// 	left: 80px;
+		// 	opacity: .5
+		// }
 	}
 
 	/** Icons **/
@@ -82,11 +108,11 @@ body {
 **/
 
 [role='main'] {
- 	margin-top: @syn-top-bar-margin-bottom;
+ 	// margin-top: @syn-top-bar-margin-bottom;
 
  	#intro {
- 		margin-top: 20px;
- 		margin-bottom: 40px;
+ 		margin-top: 10px;
+ 		margin-bottom: 20px;
  	}
 }
 

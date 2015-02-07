@@ -1,11 +1,9 @@
 #identity.section
-  .row
-    .col-xs-4.user-image-container
-      img.img-responsive.user-image(src=synapp.public['user image'])
-
-    .col-xs-8.padding
-      h2 Identity
-      .pre-text=synapp.profile.identity.description
+  .section-box-image
+    img.img-responsive.user-image(src=synapp.public['user image'])
+  div
+    h2.profile-section-title Identity
+    .pre-text=synapp.profile.identity.description
 
   .identity-collapse.is-container
     .is-section

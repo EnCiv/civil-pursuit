@@ -7,42 +7,19 @@
 
 // Top bar
 
-header.container-fluid
+.navbar.navbar-default.navbar-fixed-top
+  .container-fluid
+    .btn-group.pull-right
+      a.button.btn.btn-default.btn-lg.online-now.btn-info Online now: 
+        span.online-users
+      a.button.btn.btn-default.btn-lg.btn-warning.is-in(href='/page/profile' title='Profile')
+        big.fa.fa-user
+      a.button.btn.btn-default.btn-lg.btn-danger.is-in(href='/sign/out' title='Sign out')
+        big.fa.fa-sign-out
+      //- a.button.btn.btn-lg.btn-default.btn-reverse(href='#' style='background: #333; color: #fff') Beta
 
-  .row
-    .col-xs-12
-      .pull-right
-
-        //- Online now
-        span
-          span Online now: 
-          span.online-users 0
-
-        //- User icon ??
-        a.button.btn.btn-lg.btn-default.is-in(href='/page/profile' title='Profile')
-          big.fa.fa-user
-        
-        //- Sign out
-        span  
-        a.button.btn.btn-lg.btn-default.is-in(href='/sign/out' title='Sign out')
-          big.fa.fa-sign-out
-
-        //- Back
-        span  
-        a.button.btn.btn-lg.btn-default(href=back title='Go back')
-          big.fa.fa-chevron-left
-
-      //- # Logo
-
-      //- ## Regular screen
-
-      a(href='/')
-        img.img-responsive.logo.logo-title-image.visible-lg-inline.visible-md-inline.visible-sm-inline(alt='Logo' src='http://res.cloudinary.com/hscbexf6a/image/upload/v1415218424/Synaccord_logo_name_300x61_xyohja.png')
-
-        //- ## Small screen
-
-        img.img-responsive.logo.logo-image.visible-xs-inline(alt='Logo' src='http://res.cloudinary.com/hscbexf6a/image/upload/v1415218424/Synaccord_logo_64x61_znpxlc.png')
-
-      //- ## Beta
-
-      img.beta(alt='beta' src='http://res.cloudinary.com/hscbexf6a/image/upload/v1415218424/beta_cwjuwd.png')
+#logo
+  a.pull-left(href='/' data-toggle='tooltip' data-placement='bottom' title=title || synapp.title)
+    img.img-responsive.logo-full(alt='Synapp' src='http://res.cloudinary.com/hscbexf6a/image/upload/e_make_transparent/v1415218424/Synaccord_logo_name_300x61_xyohja.png')
+    img.img-responsive.logo-image.hide(alt='Synapp' src='http://res.cloudinary.com/hscbexf6a/image/upload/e_make_transparent/v1415218424/Synaccord_logo_64x61_znpxlc.png')
+  a.button.btn.btn-lg.btn-default.btn-reverse.pull-right(href='#' style='background: #333; color: #fff; padding: 10px; margin-top: 5px; margin-left: 10px') Beta

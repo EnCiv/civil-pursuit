@@ -7,7 +7,9 @@ form(role='form' novalidate method='POST').creator.is-container
             .modern
               h4 Drop image here
               p or
-            input(type='file' value='Upload image')
+            .padding
+              button.btn.btn-block.upload-image-button(type='button') Choose a file
+            input.hide(type='file' value='Upload image')
       
       .pull-right.box-buttons
         button.btn.button-create Promote

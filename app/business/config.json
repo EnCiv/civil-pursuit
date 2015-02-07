@@ -102,16 +102,20 @@
       "description": "This information is used to identify you and make sure that you are unique"
     },
     "residence": {
-      "description": "This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident."
+      "description": "This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png"
     },
     "demographics": {
-      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there."
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
     },
     "voter": {
-      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there."
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
     },
     "public persona": {
-      "description": "This is the information shown about you that others can wee when they are evaluating your postings."
+      "description": "This is the information shown about you that others can wee when they are evaluating your postings.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
     }
   },
 

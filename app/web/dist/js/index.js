@@ -67,6 +67,9 @@
 
       case 'reference board':
         return this.template.find('.reference-board');
+
+      case 'upload image button':
+        return this.template.find('.upload-image-button');
     }
   };
 
@@ -78,6 +81,10 @@
     var creator = this;
 
     creator.template.data('creator', this);
+
+    this.find('upload image button').on('click', function () {
+      creator.find('dropbox').find('[type="file"]').click();
+    });
 
     new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
 

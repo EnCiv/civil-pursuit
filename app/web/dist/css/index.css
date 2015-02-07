@@ -202,40 +202,43 @@ textarea.danger {
           IMPORTS
     ============================================================================
 **/
+body {
+  padding-top: 70px;
+}
 /** ____________________________________________________________________________
 
           TOP BAR
     ============================================================================
 **/
-[role='header'] {
+#logo {
   position: fixed;
   top: 0;
-  left: 0 ;
-  width: 100%;
   z-index: 9999;
+}
+@media (max-width: 496px) {
+  .logo-full {
+    display: none;
+  }
+}
+@media (max-width: 496px) {
+  .logo-image {
+    display: inline !important;
+  }
+}
+@media (max-width: 640px) {
+  .online-now {
+    display: none;
+  }
+}
+[role='header'] {
   /** Logo **/
   /** Beta image **/
   /** Icons **/
 }
-[role='header'] .logo {
-  float: left;
-}
 [role='header'] .beta {
   position: fixed;
   top: 0;
-  left: calc(47.61904762%);
-}
-@media (max-width: 760px) {
-  [role='header'] .beta {
-    right: 250px;
-    left: auto;
-  }
-}
-@media (max-width: 446px) {
-  [role='header'] .beta {
-    left: 80px;
-    opacity: 0.5;
-  }
+  left: calc(40%);
 }
 [role='header'] .pull-right {
   padding: 4px;
@@ -248,12 +251,9 @@ textarea.danger {
           MAIN
     ============================================================================
 **/
-[role='main'] {
-  margin-top: 80px;
-}
 [role='main'] #intro {
-  margin-top: 20px;
-  margin-bottom: 40px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 /** ____________________________________________________________________________
 
@@ -789,5 +789,10 @@ footer {
   border: 1px solid #666;
   margin: -9px;
   border-radius: 4px;
+  padding: 10px;
+}
+#profile .section-box-image {
+  float: left;
+  width: 40%;
   padding: 10px;
 }
