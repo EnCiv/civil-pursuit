@@ -711,6 +711,9 @@ footer {
 .panel .panel-heading .panel-title {
   font-size: 20px;
 }
+.panel .panel-heading .toggle-creator {
+  padding-top: 5px;
+}
 .panel .panel-body {
   padding: 0;
 }
