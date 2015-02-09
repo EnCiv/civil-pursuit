@@ -333,6 +333,9 @@ footer {
 #forgot-password .modal-backdrop {
   opacity: 0.3;
 }
+.online-now:hover {
+  cursor: default !important;
+}
 /** Importing panel */
 /**
  *    __________________________________________________________________________
