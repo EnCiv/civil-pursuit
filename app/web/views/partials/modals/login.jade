@@ -25,7 +25,17 @@
       .modal-body
 
         form#signer(role='form' novalidate method='POST')
-          .sign-error.bg-danger
+          .login-error-404.is-container
+            .is-section
+              .bg-danger.text-danger.padding
+                p
+                  strong User not found
+
+          .login-error-401.is-container
+            .is-section
+              .bg-danger.text-danger.padding
+                p
+                  strong Wrong email
 
           .sign-success.bg-success
 

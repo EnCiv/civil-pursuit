@@ -2206,6 +2206,8 @@
 
   'use strict';
 
+  var Nav = require('./Nav');
+
   function Sign () {
     
   }
@@ -2244,6 +2246,9 @@
 
     signForm.on('submit', function () {
 
+      Nav.hide($('.login-error-401'));
+      Nav.hide($('.login-error-404'));
+
       signForm.find('.sign-error')
         .text('')
         .hide();
@@ -2273,8 +2278,16 @@
             password: password.val()
           }
         })
-          .error(function (error) {
+          .error(function (response) {
+            switch ( response.status ) {
+              case 404:
+                Nav.show($('.login-error-404'));
+                break;
 
+              case 401:
+                Nav.show($('.login-error-401'));
+                break;
+            }
           })
           .success(function (response) {
 
@@ -2401,7 +2414,7 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{"./Nav":7}],11:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
