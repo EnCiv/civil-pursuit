@@ -86,14 +86,6 @@
 /*
  *  Buttons
  */
-a.btn {
-  background: #ddd;
-  color: #000;
-}
-a.btn-default {
-  background: #fff;
-  border: none;
-}
 .syn-btn {
   min-width: 100px;
 }
@@ -121,7 +113,7 @@ textarea {
 }
 /** ____________________________________________________________________________
 
-          CLASSES SPIROU
+          CLASSES
     ============================================================================
 **/
 /*
@@ -260,8 +252,12 @@ body {
           SIGN IN/ UP
     ============================================================================
 **/
-#signer {
-  margin-top: 80px;
+.forgot-password-link {
+  color: #337AB7;
+}
+.forgot-password-link:hover {
+  color: #337AB7;
+  text-decoration: underline;
 }
 /** ____________________________________________________________________________
 
@@ -269,7 +265,7 @@ body {
     ============================================================================
 **/
 .is-in {
-  visibility: hidden;
+  display: none;
 }
 /** ____________________________________________________________________________
 
@@ -326,6 +322,16 @@ footer {
   border-radius: 8px 8px 0 0;
   border: 1px solid #444;
   display: none;
+}
+#login-modal,
+#join,
+#forgot-password {
+  top: 55px !important;
+}
+#login-modal .modal-backdrop,
+#join .modal-backdrop,
+#forgot-password .modal-backdrop {
+  opacity: 0.3;
 }
 /** Importing panel */
 /**

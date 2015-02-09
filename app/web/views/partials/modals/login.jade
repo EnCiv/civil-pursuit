@@ -1,0 +1,54 @@
+#login-modal.syn-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='loginLabel' aria-hidden='true')
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header.text-center.bg-default
+        button.close(type='button' data-dismiss="modal")
+          span(aria-hidden='true') &times;
+          span.sr-only Close
+
+        h4#loginLabel.modal-title Login with
+
+      .modal-body
+        .btn-group.btn-group-justified
+
+          a.btn.btn-lg.btn-primary(href='/sign/facebook')
+            i.fa.fa-facebook
+            span  Facebook
+
+          a.btn.btn-info.btn-lg(href='/sign/twitter')
+            i.fa.fa-twitter
+            span  Twitter
+
+      .modal-header.text-center.bg-default
+        h4#loginLabel.modal-title Or login with email
+
+      .modal-body
+
+        form#signer(role='form' novalidate method='POST')
+          .sign-error.bg-danger
+
+          .sign-success.bg-success
+
+          .row.padding-bottom
+            .col-xs-6.form-group.padding-right
+              .padding-top.padding-bottom
+                big.padding-top.padding-bottom
+                  b Email
+              input.form-control.input-lg(type='email' placeholder='Email' name='email')
+
+            .col-xs-6.form-group.padding-left
+              .padding-top.padding-bottom
+                big.padding-top.padding-bottom
+                  b Password
+              input.form-control.input-lg(type='password' placeholder='Password' name='password')
+
+          a.btn.btn-default.btn-lg.btn-block.btn-primary.login-submit(href='#')
+            i.fa.fa-sign-in
+            big  Login
+
+
+        .padding
+
+        .padding-bottom
+          h4.text-center.padding-top
+            a.forgot-password-link(href='#' type='button' data-toggle='modal' data-target='#forgot-password' data-dismiss="modal") Forgot password?

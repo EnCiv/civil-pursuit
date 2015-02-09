@@ -2731,6 +2731,26 @@
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
     });
+
+    if ( ! synapp.user ) {
+      $('.navbar .login-button').on('click', function () {
+        $('#join.in').modal('hide');
+        $('#forgot-password.in').modal('hide');
+      });
+
+      $('.navbar .join-button').on('click', function () {
+        $('#login-modal.in').modal('hide');
+        $('#forgot-password.in').modal('hide');
+      });
+
+      $('.login-submit').on('click', function () {
+        $('#signer').submit();
+      });
+    }
+
+    else {
+      $('.navbar .is-out').remove();
+    }
   };
 
   Sign.prototype.signIn = function() {
@@ -2774,7 +2794,11 @@
 
             synapp.user = response.user;
 
-            $('.is-in').css('visibility', 'visible');
+            $('a.is-in').css('display', 'inline');
+
+            $('.navbar .is-out').remove();
+
+            $('#login-modal').modal('hide');
 
             signForm.find('section').hide(2000);
 
@@ -2867,7 +2891,7 @@
           .success(function (response) {
             synapp.user = response.user;
             
-            $('.is-in').css('visibility', 'visible');
+            $('.is-in').css('display', 'block');
 
             $('#join').modal('hide');
 

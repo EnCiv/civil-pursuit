@@ -123,7 +123,16 @@ body {
 **/
 
 #signer {
-	margin-top: @syn-top-bar-margin-bottom;
+	// margin-top: @syn-top-bar-margin-bottom;
+}
+
+.forgot-password-link {
+  color: #337AB7;
+}
+
+.forgot-password-link:hover {
+  color: #337AB7;
+  text-decoration: underline;
 }
 
 /** ____________________________________________________________________________
@@ -133,7 +142,7 @@ body {
 **/
 
 .is-in {
-	visibility: hidden
+	display: none
 }
 
 /** ____________________________________________________________________________
@@ -187,10 +196,30 @@ footer {
 	right: 15px;
 	left: 15px;
 	background: @panel-heading-bg;
-    .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
-    color: #fff;
-    text-align: center;
-    border-radius: 8px 8px 0 0;
-    border: 1px solid #444;
-    display: none
+  .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+  color: #fff;
+  text-align: center;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #444;
+  display: none
+}
+
+
+// MODALS
+
+#login-modal, #join, #forgot-password {
+  top: 55px !important;
+
+  .modal-backdrop {
+    opacity: .3
+  }
+
+  .modal-header {
+    // .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+    // color: #fff;
+
+    .close span {
+      // color: #fff !important
+    }
+  }
 }

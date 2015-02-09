@@ -10,13 +10,20 @@
 .navbar.navbar-default.navbar-fixed-top
   .container-fluid
     .btn-group.pull-right
-      a.button.btn.btn-default.btn-lg.online-now.btn-info Online now: 
+      a.button.btn.btn-default.btn-lg.online-now Online now: 
         span.online-users
-      a.button.btn.btn-default.btn-lg.btn-warning.is-in(href='/page/profile' title='Profile')
+
+      a.button.btn.btn-default.btn-lg.is-out.login-button(href='#' data-toggle='modal' data-target='#login-modal')
+        b Login
+      
+      a.button.btn.btn-default.btn-lg.is-in(href='/page/profile' title='Profile')
         big.fa.fa-user
-      a.button.btn.btn-default.btn-lg.btn-danger.is-in(href='/sign/out' title='Sign out')
+      
+      a.button.btn.btn-default.btn-lg.is-in(href='/sign/out' title='Sign out')
         big.fa.fa-sign-out
-      //- a.button.btn.btn-lg.btn-default.btn-reverse(href='#' style='background: #333; color: #fff') Beta
+      
+      a.button.btn.btn-default.btn-lg.is-out.join-button(href='#' data-toggle='modal' data-target='#join')
+        b Join
 
 #logo
   a.pull-left(href='/' data-toggle='tooltip' data-placement='bottom' title=title || synapp.title)
