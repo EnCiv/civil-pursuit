@@ -2,14 +2,9 @@
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
  *  C   R   E   A   T   O   R
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -25,6 +20,15 @@
   var Item      =   require('./Item');
   var Upload    =   require('./Upload');
   var YouTube   =   require('./YouTube');
+
+  var text      =   {
+    'looking up title': 'Looking up'
+  };
+
+  /**
+   *  @class
+   *  @arg {Panel} - panel
+   */
 
   function Creator (panel) {
 
@@ -96,7 +100,7 @@
       var board       =   creator.find('reference board');
       var reference   =   $(this);
 
-      board.removeClass('hide').text('Looking up');
+      board.removeClass('hide').text(text['looking up title']);
 
       app.socket.emit('get url title', $(this).val(),
         function (error, ref) {
@@ -129,14 +133,30 @@
     cb();
   };
 
+  /**
+   *  @method save
+   *  @return null
+   */
+
   Creator.prototype.save = function () {
+
+    // Self reference
+
     var creator = this;
+
+    // Hide the Creator
 
     Nav.hide(creator.template, app.domain.intercept(function () {
 
+      // Build the JSON object to save to MongoDB
+
       var new_item = creator.toItem();
 
+      // Adding user from global synapp
+
       new_item.user = synapp.user;
+
+      // In case a file was uploaded
 
       if ( new_item.upload ) {
         var file = creator.template.find('.preview-image').data('file');
@@ -155,7 +175,11 @@
         });
       }
 
+      // If nof ile was uploaded
+
       else {
+        console.log('create item', new_item);
+
         app.socket.emit('create item', new_item);
       }
 
@@ -200,6 +224,15 @@
     if ( this.panel.parent ) {
       item.parent = this.panel.parent;
     }
+
+    if ( this.find('reference').val() ) {
+      item.references = [{ url: this.find('reference').val() }];
+
+      if ( this.find('reference board').text() && this.find('reference board').text() !== text['looking up title'] ) {
+        item.references[0].title = this.find('reference board').text();
+      }
+    }
+
 
     if ( this.find('item media').find('img').length ) {
 

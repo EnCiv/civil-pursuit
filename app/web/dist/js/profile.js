@@ -3,14 +3,9 @@
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
  *  C   R   E   A   T   O   R
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -26,6 +21,15 @@
   var Item      =   require('./Item');
   var Upload    =   require('./Upload');
   var YouTube   =   require('./YouTube');
+
+  var text      =   {
+    'looking up title': 'Looking up'
+  };
+
+  /**
+   *  @class
+   *  @arg {Panel} - panel
+   */
 
   function Creator (panel) {
 
@@ -97,7 +101,7 @@
       var board       =   creator.find('reference board');
       var reference   =   $(this);
 
-      board.removeClass('hide').text('Looking up');
+      board.removeClass('hide').text(text['looking up title']);
 
       app.socket.emit('get url title', $(this).val(),
         function (error, ref) {
@@ -130,14 +134,30 @@
     cb();
   };
 
+  /**
+   *  @method save
+   *  @return null
+   */
+
   Creator.prototype.save = function () {
+
+    // Self reference
+
     var creator = this;
+
+    // Hide the Creator
 
     Nav.hide(creator.template, app.domain.intercept(function () {
 
+      // Build the JSON object to save to MongoDB
+
       var new_item = creator.toItem();
 
+      // Adding user from global synapp
+
       new_item.user = synapp.user;
+
+      // In case a file was uploaded
 
       if ( new_item.upload ) {
         var file = creator.template.find('.preview-image').data('file');
@@ -156,7 +176,11 @@
         });
       }
 
+      // If nof ile was uploaded
+
       else {
+        console.log('create item', new_item);
+
         app.socket.emit('create item', new_item);
       }
 
@@ -202,6 +226,15 @@
       item.parent = this.panel.parent;
     }
 
+    if ( this.find('reference').val() ) {
+      item.references = [{ url: this.find('reference').val() }];
+
+      if ( this.find('reference board').text() && this.find('reference board').text() !== text['looking up title'] ) {
+        item.references[0].title = this.find('reference board').text();
+      }
+    }
+
+
     if ( this.find('item media').find('img').length ) {
 
       if ( this.find('item media').find('.youtube-preview').length ) {
@@ -221,7 +254,7 @@
 
 } ();
 
-},{"./Form":5,"./Item":8,"./Nav":9,"./Panel":10,"./Upload":18,"./YouTube":20}],2:[function(require,module,exports){
+},{"./Form":5,"./Item":8,"./Nav":10,"./Panel":11,"./Upload":19,"./YouTube":21}],2:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -285,7 +318,7 @@
 
 } ();
 
-},{"./Nav":9}],3:[function(require,module,exports){
+},{"./Nav":10}],3:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -541,7 +574,7 @@
 
 } ();
 
-},{"./Edit":4,"./Item":8,"./Nav":9}],4:[function(require,module,exports){
+},{"./Edit":4,"./Item":8,"./Nav":10}],4:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -733,7 +766,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":8,"./Nav":9}],5:[function(require,module,exports){
+},{"./Creator":1,"./Item":8,"./Nav":10}],5:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -969,7 +1002,7 @@
 
 } ();
 
-},{"./Nav":9,"./Upload":18}],7:[function(require,module,exports){
+},{"./Nav":10,"./Upload":19}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1024,7 +1057,7 @@
 
 } ();
 
-},{"./Item":8,"./Truncate":17}],8:[function(require,module,exports){
+},{"./Item":8,"./Truncate":18}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1369,7 +1402,28 @@
     cb();
   };
 
-  Item.prototype.media = function () {
+  Item.prototype.media = require('./Item/media');
+
+  module.exports = Item;
+
+} ();
+
+},{"./Details":3,"./Item/media":9,"./Nav":10,"./Panel":11,"./Promote":13,"./Truncate":18,"./YouTube":21}],9:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var YouTube     =   require('../YouTube');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function itemMedia () {
+
+    console.log('getting item media of', this.item)
 
     // youtube video from references
 
@@ -1425,13 +1479,13 @@
     image.attr('src', synapp['default item image']);
 
     return image;
-  };
+  }
 
-  module.exports = Item;
+  module.exports = itemMedia;
 
 } ();
 
-},{"./Details":3,"./Nav":9,"./Panel":10,"./Promote":12,"./Truncate":17,"./YouTube":20}],9:[function(require,module,exports){
+},{"../YouTube":21}],10:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1671,7 +1725,7 @@
 
 } ();
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1897,7 +1951,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":8,"./Nav":9}],11:[function(require,module,exports){
+},{"./Creator":1,"./Item":8,"./Nav":10}],12:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2018,19 +2072,14 @@
 
 } ();
 
-},{"./Demographics":2,"./Identity":6,"./Nav":9,"./Public_Persona":13,"./Residence":14,"./Voter":19}],12:[function(require,module,exports){
+},{"./Demographics":2,"./Identity":6,"./Nav":10,"./Public_Persona":14,"./Residence":15,"./Voter":20}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
- *  PROMOTE
+ *  P   R   O   M   O   T   E
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -2528,7 +2577,7 @@
 
 } ();
 
-},{"./Edit":4,"./Item":8,"./Nav":9,"events":23}],13:[function(require,module,exports){
+},{"./Edit":4,"./Item":8,"./Nav":10,"events":24}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2592,7 +2641,7 @@
 
 } ();
 
-},{"./Nav":9}],14:[function(require,module,exports){
+},{"./Nav":10}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2698,7 +2747,7 @@
 
 } ();
 
-},{"./Nav":9}],15:[function(require,module,exports){
+},{"./Nav":10}],16:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2928,7 +2977,7 @@
 
 } ();
 
-},{"./Nav":9}],16:[function(require,module,exports){
+},{"./Nav":10}],17:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3058,7 +3107,7 @@
 
 } ();
 
-},{"./Intro":7,"./Panel":10,"./Sign":15,"domain":22,"events":23,"util":27}],17:[function(require,module,exports){
+},{"./Intro":7,"./Panel":11,"./Sign":16,"domain":23,"events":24,"util":28}],18:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3281,7 +3330,7 @@
 
 }();
 
-},{"./Nav":9}],18:[function(require,module,exports){
+},{"./Nav":10}],19:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3360,7 +3409,7 @@
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3424,7 +3473,7 @@
 
 } ();
 
-},{"./Nav":9}],20:[function(require,module,exports){
+},{"./Nav":10}],21:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3499,7 +3548,7 @@
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3519,7 +3568,7 @@
 
 } ();
 
-},{"../Panel":10,"../Profile":11,"../Sign":15,"../Synapp":16}],22:[function(require,module,exports){
+},{"../Panel":11,"../Profile":12,"../Sign":16,"../Synapp":17}],23:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3557,7 +3606,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":23}],23:[function(require,module,exports){
+},{"events":24}],24:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3860,7 +3909,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3885,7 +3934,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3973,14 +4022,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4570,4 +4619,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":26,"_process":25,"inherits":24}]},{},[21]);
+},{"./support/isBuffer":27,"_process":26,"inherits":25}]},{},[22]);
