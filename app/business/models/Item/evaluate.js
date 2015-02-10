@@ -2,6 +2,8 @@
   
   'use strict';
 
+  var others = 5;
+
   var async = require('async');
 
   var config = require('../../config.json');
@@ -103,7 +105,7 @@
       },
 
       right: function (done) {
-        self.findOthers(3, done);
+        self.findOthers(3, done, right);
       },
 
       criterias: function (done) {
@@ -112,7 +114,7 @@
 
     };
 
-    async.parallel(parallels, domain.intercept(self.packAndGo.bind(self)));
+    async.parallel(parallels, self.domain.intercept(self.packAndGo.bind(self)));
   }
 
   /**
@@ -120,9 +122,10 @@
    *  @return null
    *  @arg {number} limit
    *  @arg {function} done
+   *  @arg {string} type - default self.item.type
    */
 
-  Evaluate.prototype.findOthers = function (limit, done) {
+  Evaluate.prototype.findOthers = function (limit, done, type) {
     
     var self = this;
 
@@ -131,7 +134,7 @@
       .model
 
       .find({
-        type:     self.item.type,
+        type:     type || self.item.type,
         parent:   self.item.parent
       })
 
@@ -157,6 +160,20 @@
   Evaluate.prototype.packAndGo = function (results) {
 
     var self = this;
+
+    if ( ! ( 'items' in results ) && ( 'left' in results ) ) {
+      results.items = [];
+
+      for ( var i = 0; i < 3; i ++ ) {
+        if ( results.left[i] ) {
+          results.items.push(results.left[i]);
+        }
+
+        if ( results.right[i] ) {
+          results.items.push(results.right[i]);
+        }
+      }
+    }
 
     if ( config['evaluation context item position'] === 'last' ) {
       results.items.push(self.item);
@@ -197,7 +214,7 @@
     var parallels = {
 
       items: function (done) {
-        self.findOthers(5, done);
+        self.findOthers(others, done);
       },
       
       criterias: function (done) {
