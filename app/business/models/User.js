@@ -13,92 +13,85 @@
   var path        =   require('path');
 
   var UserSchema = new Schema({
-    "email": {
-      type: String,
-      required: true,
-      "index": {
-        "unique": true
+
+    /** email */
+
+    "email": {        
+      type:             String,
+      required:         true,
+      index: {
+        unique:         true
       }
     },
+
+    /** password **/
     
     "password": {
-      type: String,
-      required: true
+      type:             String,
+      required:         true
     },
+
+    /** created **/
 
     "created": {
-      type: Date,
-      default: Date.now
+      type:             Date,
+      default:          Date.now
     },
 
-    "image": {
-      type: String
-    },
+    /** image url **/
 
-    "twitter": {
-      type: String
-    },
+    "image":            String,
 
-    "facebook": {
-      type: String
-    },
+    /** twitter ID if any **/
 
-     "first_name": {
-      type: String
-    },
+    "twitter":          String,
 
-     "middle_name": {
-      type: String
-    },
+    /** Facebook ID if any **/
 
-     "last_name": {
-      type: String
-    },
+    "facebook":         String,
+
+    /** first name **/
+
+     "first_name":      String,
+
+    /** middle name **/
+
+     "middle_name":     String,
+
+    /** last name **/
+
+     "last_name":       String,
+
+    /** gps location **/
 
     "gps": {
-      type: [Number], // [<longitude>, <latitude>]
-      index: '2d'
+      type:             [Number], // [<longitude>, <latitude>]
+      index:            '2d'
     },
 
-    "gps validated": {
-      type: Date
-    },
+    /** Date when GPS was validate **/
+
+    "gps validated":    Date,
 
     // preferences
 
     "preferences": [
       new Schema({
-        "name": String,
-        "value": Schema.Types.Mixed
+        "name":         String,
+        "value":        Schema.Types.Mixed
       })
-    ]
+    ],
+
+    /** Activation key */
+
+    "activation_key":   String,
+
+    /** Activation URL */
+
+    "activation_url":   String
   });
 
-  UserSchema.pre('save', function (next) {
-
-    if ( ! this.isNew ) {
-      return next();
-    }
-
-    this.email = this.email.toLowerCase();
-
-    var self = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      next(error);
-    });
-
-    domain.run(function () {
-      bcrypt.genSalt(10, domain.intercept(function (salt) {
-        bcrypt.hash(self.password, salt, domain.intercept(function (hash) {
-          self.password  = hash;
-          next();
-        }));
-      }));
-    });
-  });
+  UserSchema.pre('save', require('./User/pre.save'));
 
   UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb) {
     bcrypt.compare(requestPassword, realPassword, cb);

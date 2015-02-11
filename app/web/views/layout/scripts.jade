@@ -65,13 +65,7 @@ block script-app
   - if ( req.path === '/terms-of-service' )
     - js = 'terms-of-service'
 
-  script(src='/js/' + js + ( settings.env === 'production' ? '.min.js' : '.js' ))
+  - if ( req.path === '/reset-password' )
+    - js = 'reset-password'
 
-- if ( settings.env === 'development' )
-  script.
-    $('.test-list').popover({
-      html: true,
-      content: function () {
-        return $('.test-list-popover').clone();
-      }
-    });
+  script(src='/js/' + js + ( settings.env === 'production' ? '.min.js' : '.js' ))

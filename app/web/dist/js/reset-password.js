@@ -254,71 +254,7 @@
 
 } ();
 
-},{"./Form":5,"./Item":8,"./Nav":10,"./Panel":11,"./Upload":19,"./YouTube":21}],2:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Demographics (profile) {
-    this.template = $('#demographics');
-
-    this.template.data('demographics', this);
-
-    this.profile = profile;
-  }
-
-  Demographics.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.demographics-collapse');
-    }
-  };
-
-  Demographics.prototype.render = function () {
-
-    var demographics = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(demographics.find('expand'), demographics.template, function () {
-        if ( demographics.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-  };
-
-  Demographics.prototype.renderUser = function () {
-
-    var demographics = this;
-
-    if ( this.profile.user ) {
-
-     
-    }
-  };
-
-  module.exports = Demographics;
-
-} ();
-
-},{"./Nav":10}],3:[function(require,module,exports){
+},{"./Form":4,"./Item":6,"./Nav":8,"./Panel":9,"./Upload":15,"./YouTube":16}],2:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -574,7 +510,7 @@
 
 } ();
 
-},{"./Edit":4,"./Item":8,"./Nav":10}],4:[function(require,module,exports){
+},{"./Edit":3,"./Item":6,"./Nav":8}],3:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -766,7 +702,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":8,"./Nav":10}],5:[function(require,module,exports){
+},{"./Creator":1,"./Item":6,"./Nav":8}],4:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -843,166 +779,7 @@
 
 } ();
 
-},{}],6:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-  var Upload = require('./Upload');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Identity () {
-    this.template = $('#identity');
-
-    this.template.data('identity', this);
-  }
-
-  Identity.prototype.find = function (name) {
-    switch ( name ) {
-      case 'expand':
-        return this.template.find('.identity-collapse');
-
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'title':
-        return this.template.find('.item-title');
-
-      case 'description':
-        return this.template.find('.description');
-
-      case 'upload button':
-        return this.template.find('.upload-identity-picture');
-
-      case 'upload button pretty':
-        return this.template.find('.upload-image');
-
-      case 'first name':
-        return this.template.find('[name="first-name"]');
-
-      case 'middle name':
-        return this.template.find('[name="middle-name"]');
-
-      case 'last name':
-        return this.template.find('[name="last-name"]');
-
-      case 'image':
-        return this.template.find('img.user-image');
-    }
-  };
-
-  Identity.prototype.render = function () {
-
-    console.log('rendering item')
-
-    var identity = this;
-
-    this.find('upload button pretty').on('click', function () {
-      identity.find('upload button').click();
-    });
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(identity.find('expand'), identity.template, function () {
-        if ( identity.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    this.find('title').text('Identity');
-
-    this.find('description').text('This information is used to identify you and make sure that you are unique');
-
-    this.template.find('.item-references').remove();
-
-    this.template.find('.box-buttons').remove();
-
-    this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
-
-    new Upload(null, this.find('upload button'), this.template.find('.user-image-container'),
-      function (error, file) {
-        var stream = ss.createStream();
-
-        ss(app.socket).emit('upload image', stream,
-          { size: file.size, name: file.name });
-        
-        ss.createBlobReadStream(file).pipe(stream);
-
-        stream.on('end', function () {
-          // new_item.image = file.name;
-          app.socket.emit('save user image', synapp.user, file.name);
-
-          app.socket.once('saved user image', function (user) {
-            console.log('image saved', user);
-          });
-        });
-      });
-
-    // First name - save on change
-
-    this.find('first name').on('change', this.saveName.bind(this));
-
-    // Last name - save on change
-
-    this.find('last name').on('change', this.saveName.bind(this));
-
-    // Middle name - save on change
-
-    this.find('middle name').on('change', this.saveName.bind(this));
-  };
-
-  /**
-   *  @method saveName
-   */
-
-  Identity.prototype.saveName = function () {
-    var name = {
-      first_name: this.find('first name').val(),
-      middle_name: this.find('middle name').val(),
-      last_name: this.find('last name').val()
-    };
-
-    app.socket.emit('change user name', synapp.user, name);
-  };
-
-  Identity.prototype.renderUser = function () {
-
-    // User image
-
-    if ( this.user.image ) {
-      this.find('image').attr('src', this.user.image);
-    }
-
-    // First name
-
-    this.find('first name').val(this.user.first_name);
-
-    // Middle name
-
-    this.find('middle name').val(this.user.middle_name);
-
-    // Last name
-
-    this.find('last name').val(this.user.last_name);
-  };
-
-  module.exports = Identity;
-
-} ();
-
-},{"./Nav":10,"./Upload":19}],7:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1057,7 +834,7 @@
 
 } ();
 
-},{"./Item":8,"./Truncate":18}],8:[function(require,module,exports){
+},{"./Item":6,"./Truncate":14}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1408,7 +1185,7 @@
 
 } ();
 
-},{"./Details":3,"./Item/media":9,"./Nav":10,"./Panel":11,"./Promote":13,"./Truncate":18,"./YouTube":21}],9:[function(require,module,exports){
+},{"./Details":2,"./Item/media":7,"./Nav":8,"./Panel":9,"./Promote":10,"./Truncate":14,"./YouTube":16}],7:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1485,7 +1262,7 @@
 
 } ();
 
-},{"../YouTube":21}],10:[function(require,module,exports){
+},{"../YouTube":16}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1725,7 +1502,7 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1951,128 +1728,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":8,"./Nav":10}],12:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-  var Identity = require('./Identity');
-  var Residence = require('./Residence');
-  var Demographics = require('./Demographics');
-  var Voter = require('./Voter');
-  var Public_Persona = require('./Public_Persona');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Profile () {
-
-    var profile = this;
-
-    this.template = $('.panel');
-
-    this.residence = new Residence(this);
-    this.demographics = new Demographics(this);
-    this.voter = new Voter(this);
-    this.public_persona = new Public_Persona(this);
-
-    app.socket.emit('get user info', synapp.user);
-
-    app.socket.once('got user info', function (user) {
-      profile.user = user;
-
-      profile.renderUser();
-    });
-  }
-
-  Profile.prototype.find = function (name) {
-    switch ( name ) {
-      case 'panel title':
-        return this.template.find('.panel-title');
-
-      case 'items section':
-        return this.template.find('.items .is-container.is-profile-section');
-
-      case 'panel load more':
-        return this.template.find('.loading-items');
-
-      case 'Identity':
-        return this.template.find('#identity');
-
-      case 'toggle creator':
-        return this.template.find('.toggle-creator');
-    }
-  };
-
-  Profile.prototype.render = function () {
-
-    var profile = this;
-
-    this.find('panel title').text('Profile');
-
-    this.find('toggle creator').remove();
-
-    this.find('panel load more').find('i,span').hide();
-
-    var togglePanel = $('<i class="fa cursor-pointer fa-arrow-up"></i>');
-
-    togglePanel.on('click', function () {
-
-      var arrow = $(this);
-
-      Nav.toggle(profile.find('items section'), null, function () {
-        if ( profile.find('items section').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    Nav.show(this.find('items section'));
-
-    this.find('panel load more').append(togglePanel);
-
-    this.find('Identity').attr('id', 'identity');
-
-    this.identity = new Identity().render();
-
-    this.residence.render();
-
-    this.demographics.render();
-
-    this.voter.render();
-
-    this.public_persona.render();
-
-  };
-
-  Profile.prototype.renderUser = function () {
-    var profile = this;
-
-    this.find('Identity').data('identity').user = this.user;
-
-    this.find('Identity').data('identity').renderUser();
-
-    this.residence.renderUser();
-
-    this.demographics.renderUser();
-
-    this.voter.renderUser();
-
-    this.public_persona.renderUser();
-  };
-
-  module.exports = Profile;
-
-} ();
-
-},{"./Demographics":2,"./Identity":6,"./Nav":10,"./Public_Persona":14,"./Residence":15,"./Voter":20}],13:[function(require,module,exports){
+},{"./Creator":1,"./Item":6,"./Nav":8}],10:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2577,177 +2233,60 @@
 
 } ();
 
-},{"./Edit":4,"./Item":8,"./Nav":10,"events":24}],14:[function(require,module,exports){
+},{"./Edit":3,"./Item":6,"./Nav":8,"events":19}],11:[function(require,module,exports){
 ! function () {
   
   'use strict';
 
-  var Nav = require('./Nav');
-
   /**
-   *  @class
+   *  @function
    *  @return
    *  @arg
    */
 
-  function Public_Persona (profile) {
-    this.template = $('#public_persona');
-
-    this.template.data('public_persona', this);
-
-    this.profile = profile;
+  function ResetPassword () {
+    
   }
 
-  Public_Persona.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
+  ResetPassword.prototype.render = function () {
+    this.form = $('#reset-password');
 
-      case 'expand':
-        return this.template.find('.public_persona-collapse');
-    }
-  };
+    this.form.on('submit', function () {
+    
+      var key = $(this).find('[name="key"]');
+      var password = $(this).find('[name="password"]');
+      var confirm = $(this).find('[name="confirm"]');
 
-  Public_Persona.prototype.render = function () {
+      key.removeclass('error');
+      password.removeclass('error');
+      confirm.removeclass('error');
 
-    var public_persona = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(public_persona.find('expand'), public_persona.template, function () {
-        if ( public_persona.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-  };
-
-  Public_Persona.prototype.renderUser = function () {
-
-    var public_persona = this;
-
-    if ( this.profile.user ) {
-
-     
-    }
-  };
-
-  module.exports = Public_Persona;
-
-} ();
-
-},{"./Nav":10}],15:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Residence (profile) {
-    this.template = $('#residence');
-
-    this.template.data('residence', this);
-
-    this.profile = profile;
-  }
-
-  Residence.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.residence-collapse');
-
-      case 'validate gps button':
-        return this.template.find('.validate-gps');
-
-      case 'not yet validated':
-        return this.template.find('.not-yet-validated');
-
-      case 'is validated':
-        return this.template.find('.is-validated');
-
-      case 'validated moment':
-        return this.template.find('.validated-moment');
-    }
-  };
-
-  Residence.prototype.render = function () {
-
-    var residence = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(residence.find('expand'), residence.template, function () {
-        if ( residence.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    // Validate GPS button
-
-    this.find('validate gps button').on('click', function () {
-      navigator.geolocation.watchPosition(function(position) {
-
-        console.log('location');
-
-        app.socket.emit('validate gps', synapp.user, position.coords.longitude, position.coords.latitude);
-
-        app.socket.once('validated gps', function () {
-          console.log('validated');
-        });
-      });
-    });
-  };
-
-  Residence.prototype.renderUser = function () {
-
-    var residence = this;
-
-    if ( this.profile.user ) {
-
-      // GPS
-
-      if ( this.profile.user.gps ) {
-        this.find('not yet validated').hide();
-        this.find('is validated').removeClass('hide').show();
-        this.find('validated moment').text(function () {
-          var date = new Date(residence.profile.user['gps validated']);
-          return [(date.getMonth() + 1 ), (date.getDay() + 1), date.getFullYear()].join('/');
-        });
+      if ( ! key.val() ) {
+        key.addClass('error').focus();
       }
 
-      // NO GPS
+      else if ( ! password.val() ) {
+        password.addClass('error').focus();
+      }
+
+      else if ( ! confirm.val() || confirm.val() !== password.val() ) {
+        confirm.addClass('error').focus();
+      }
 
       else {
-        this.find('validate gps button').attr('disabled', false);
+        // socket.emit('reset password', )
+        console.log(location)
       }
-    }
+
+      return false;
+    });
   };
 
-  module.exports = Residence;
+  module.exports = ResetPassword;
 
 } ();
 
-},{"./Nav":10}],16:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2992,7 +2531,7 @@
 
 } ();
 
-},{"./Nav":10}],17:[function(require,module,exports){
+},{"./Nav":8}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3122,7 +2661,7 @@
 
 } ();
 
-},{"./Intro":7,"./Panel":11,"./Sign":16,"domain":23,"events":24,"util":28}],18:[function(require,module,exports){
+},{"./Intro":5,"./Panel":9,"./Sign":12,"domain":18,"events":19,"util":23}],14:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3345,7 +2884,7 @@
 
 }();
 
-},{"./Nav":10}],19:[function(require,module,exports){
+},{"./Nav":8}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3424,71 +2963,7 @@
 
 } ();
 
-},{}],20:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Voter (profile) {
-    this.template = $('#voter');
-
-    this.template.data('voter', this);
-
-    this.profile = profile;
-  }
-
-  Voter.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.voter-collapse');
-    }
-  };
-
-  Voter.prototype.render = function () {
-
-    var voter = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(voter.find('expand'), voter.template, function () {
-        if ( voter.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-  };
-
-  Voter.prototype.renderUser = function () {
-
-    var voter = this;
-
-    if ( this.profile.user ) {
-
-     
-    }
-  };
-
-  module.exports = Voter;
-
-} ();
-
-},{"./Nav":10}],21:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3563,27 +3038,26 @@
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
 
   var Synapp = require('../Synapp');
   var Sign = require('../Sign');
-  var Panel = require('../Panel');
-  var Profile = require('../Profile');
+  var ResetPassword = require('../Reset-password');
 
   window.app = new Synapp();
 
   app.connect(function () {
     new Sign().render();
 
-    new Profile().render();
+    new ResetPassword().render();
   });
 
 } ();
 
-},{"../Panel":11,"../Profile":12,"../Sign":16,"../Synapp":17}],23:[function(require,module,exports){
+},{"../Reset-password":11,"../Sign":12,"../Synapp":13}],18:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3621,7 +3095,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":24}],24:[function(require,module,exports){
+},{"events":19}],19:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3924,7 +3398,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],25:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3949,7 +3423,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],26:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4037,14 +3511,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],27:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],28:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4634,4 +4108,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":27,"_process":26,"inherits":25}]},{},[22]);
+},{"./support/isBuffer":22,"_process":21,"inherits":20}]},{},[17]);

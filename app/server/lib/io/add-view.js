@@ -2,26 +2,30 @@
 
   'use strict';
 
-  function addView (socket, pronto, monson) {
+  var Item = require('../../../business/models/Item');
+
+  /**
+   *  @function addView
+   *  @arg {string} itemId - The Item Object ID
+   *  @arg {function} cb
+   */
+
+  function addView (itemId, cb) {
+
+    var socket = this;
+
+    socket.domain.run(function () {
+      
+      Item.incrementView(itemId, socket.domain.intercept(function (item) {
+        socket.emit('view added', item);
+      }));
     
-    socket.on('add view', function (item, cb) {
-      
-      var url = 'models/Item.incrementView/' + item;
-
-      monson.get(url)
-
-        .on('error', function (error) {
-          throw error;
-        })
-
-        .on('success', function (item) {
-          socket.emit('view added', item);
-        });
-      
     });
 
   }
 
-  module.exports = addView;
+  module.exports = function (socket) {
+    socket.on('add view', addView.bind(socket));
+  };
 
 } ();

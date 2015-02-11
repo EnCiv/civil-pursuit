@@ -2,14 +2,9 @@
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  
- *  SIGN
+ *  S   I   G   N
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
  *  ******************************************************
  *  ******************************************************
  *  ******************************************************
@@ -28,6 +23,7 @@
   Sign.prototype.render = function () {
     this.signIn();
     this.signUp();
+    this.forgotPassword();
 
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
@@ -221,7 +217,26 @@
 
       return false;
     })
-  }
+  };
+
+  Sign.prototype.forgotPassword = function () {
+    $('#forgot-password form[name="forgot-password"]').on('submit', function () {
+    
+      var email = $(this).find('[name="email"]');
+
+      email.removeClass('error');
+
+      if ( ! email.val() ) {
+        email.addClass('error').focus();
+      }
+
+      else {
+        app.socket.emit('send password', email.val());
+      }
+
+      return false;
+    });
+  };
 
   module.exports = Sign;
 

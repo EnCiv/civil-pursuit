@@ -3,38 +3,97 @@
   'use strict';
 
   var config = require('../../../business/config.json');
- 
-  function sendPassword (socket, pronto, monson, domain, transporter) {
-    socket.on('send password', function (email, cb) {
+  var User = require('../../../business/models/User');
 
-      transporter.sendMail({
-        from: config.email.user,
-        to: email,
-        subject: 'Reset your password',
-        text: 'You have one new email'
-      }, domain.bind(function (error, response) {
+  function sendEmail (email, activation_key, activation_url, cb) {
+    var socket = this;
 
-        if ( error ) {
-          socket.emit('error', error);
+    socket.domain.run(function () {
+      console.log('hellllo')
 
-          if ( typeof cb === 'function' ) {
-            cb(error);
-          }
+      var nodemailer = require("nodemailer");
+
+      var transporter = nodemailer.createTransport({
+        service: "Zoho",
+        auth: {
+          user: config.email.user,
+          pass: config.email.password
         }
+      });
 
-        else {
-          socket.emit('sent password', response);
+      transporter.sendMail(
+        {
+          from:       config.email.user,
+          to:         email,
+          subject:    'Reset your password',
+          text:       config['forgot password email']
+                        .replace(/\{key\}/g, activation_key)
+                        .replace(/\{url\}/g, 'http://' + socket.handshake.headers.host + '/page/reset-password?token=' + activation_url)
+        },
 
-          if ( typeof cb === 'function' ) {
-            cb(null, response);
+        socket.domain.bind(function onMailSent (error, response) {
+
+          if ( error ) {
+            socket.emit('error', error);
+
+            if ( typeof cb === 'function' ) {
+              cb(error);
+            }
           }
-        }
+
+          else {
+            socket.emit('sent password', response);
+
+            if ( typeof cb === 'function' ) {
+              cb(null, response);
+            }
+          }
 
       }));
-      
+
     });
   }
 
-  module.exports = sendPassword;
+  function sendPassword (email) {
+    var socket = this;
+
+    socket.pronto.emit('message', {
+      'forgot password': email
+    });
+
+    socket.domain.run(function () {
+
+      var activation_key = require('crypto').randomBytes(5).toString('hex');
+
+      var activation_url = require('crypto').randomBytes(5).toString('hex');
+
+      User.update({ email: email }, { activation_key: activation_key, activation_url: activation_url },
+        socket.domain.intercept(function (number) {
+
+          console.log('number', number);
+          
+          if ( ! number ) {
+
+            socket.pronto.emit('message', {
+              'forgot password': {
+                'no such email': email
+              }
+            });
+
+            return socket.emit('no such email', email);
+          }
+
+          sendEmail.apply(socket, [email, activation_key, activation_url, socket.domain.intercept(function (stat) {
+            console.log('email ok', stat);
+          })]);
+
+
+        }));
+    });
+  }
+
+  module.exports = function (socket) {
+    socket.on('send password', sendPassword.bind(socket));
+  };
 
 } ();

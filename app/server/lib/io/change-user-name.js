@@ -2,20 +2,24 @@
 
   'use strict';
 
-  function changeUserName (socket, pronto, monson, domain) {
-    
-    socket.on('change user name', function (user, name) {
-      
-      var User = require('../../../business/models/User');
+  var User = require('../../../business/models/User');
 
-      User.update({ _id: user }, name, domain.intercept(function (user) {
+  function changeUserName (user_id) {
+
+    var socket = this;
+
+    socket.domain.run(function () {
+      
+      User.update({ _id: user_id }, name, socket.domain.intercept(function (user) {
         socket.emit('changed user name', user);
       }));
-      
+    
     });
   
   }
 
-  module.exports = changeUserName;
+  module.exports = function (socket) {
+    socket.on('change user name', changeUserName.bind(socket));
+  };
 
 } ();
