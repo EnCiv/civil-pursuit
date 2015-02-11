@@ -9,8 +9,6 @@
     var socket = this;
 
     socket.domain.run(function () {
-      console.log('hellllo')
-
       var nodemailer = require("nodemailer");
 
       var transporter = nodemailer.createTransport({
@@ -31,25 +29,7 @@
                         .replace(/\{url\}/g, 'http://' + socket.handshake.headers.host + '/page/reset-password?token=' + activation_url)
         },
 
-        socket.domain.bind(function onMailSent (error, response) {
-
-          if ( error ) {
-            socket.emit('error', error);
-
-            if ( typeof cb === 'function' ) {
-              cb(error);
-            }
-          }
-
-          else {
-            socket.emit('sent password', response);
-
-            if ( typeof cb === 'function' ) {
-              cb(null, response);
-            }
-          }
-
-      }));
+        socket.domain.bind(cb));
 
     });
   }
@@ -70,8 +50,6 @@
       User.update({ email: email }, { activation_key: activation_key, activation_url: activation_url },
         socket.domain.intercept(function (number) {
 
-          console.log('number', number);
-          
           if ( ! number ) {
 
             socket.pronto.emit('message', {
@@ -84,7 +62,12 @@
           }
 
           sendEmail.apply(socket, [email, activation_key, activation_url, socket.domain.intercept(function (stat) {
-            console.log('email ok', stat);
+            socket.pronto.emit('message', {
+              'forgot password': {
+                'reset email sent': email
+              }
+            });
+            socket.emit('sent password', email);
           })]);
 
 
