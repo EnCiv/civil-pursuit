@@ -219,42 +219,7 @@
     })
   };
 
-  Sign.prototype.forgotPassword = function () {
-    $('#forgot-password form[name="forgot-password"]').on('submit', function () {
-    
-      var email = $(this).find('[name="email"]');
-
-      email.removeClass('error');
-
-      $('.forgot-password-email-not-found').collapse('hide');
-
-      if ( ! email.val() ) {
-        email.addClass('error').focus();
-      }
-
-      else {
-
-        setTimeout(function () {
-          app.socket.once('no such email', function (_email) {
-            if ( _email === email.val() ) {
-              $('.forgot-password-email-not-found').collapse('show');
-            }
-          });
-
-          app.socket.on('sent password', function (_email) {
-            if ( _email === email.val() ) {
-              $('.forgot-password-ok').collapse('show');
-            }
-          });
-
-          app.socket.emit('send password', email.val());
-        }, 750);
-
-      }
-
-      return false;
-    });
-  };
+  Sign.prototype.forgotPassword = require('./Sign/forgot-password');
 
   module.exports = Sign;
 

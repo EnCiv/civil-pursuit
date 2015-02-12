@@ -254,7 +254,7 @@
 
 } ();
 
-},{"./Form":5,"./Item":8,"./Nav":10,"./Panel":11,"./Upload":19,"./YouTube":21}],2:[function(require,module,exports){
+},{"./Form":5,"./Item":8,"./Nav":10,"./Panel":11,"./Upload":20,"./YouTube":22}],2:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1002,7 +1002,7 @@
 
 } ();
 
-},{"./Nav":10,"./Upload":19}],7:[function(require,module,exports){
+},{"./Nav":10,"./Upload":20}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1057,7 +1057,7 @@
 
 } ();
 
-},{"./Item":8,"./Truncate":18}],8:[function(require,module,exports){
+},{"./Item":8,"./Truncate":19}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1408,7 +1408,7 @@
 
 } ();
 
-},{"./Details":3,"./Item/media":9,"./Nav":10,"./Panel":11,"./Promote":13,"./Truncate":18,"./YouTube":21}],9:[function(require,module,exports){
+},{"./Details":3,"./Item/media":9,"./Nav":10,"./Panel":11,"./Promote":13,"./Truncate":19,"./YouTube":22}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1485,7 +1485,7 @@
 
 } ();
 
-},{"../YouTube":21}],10:[function(require,module,exports){
+},{"../YouTube":22}],10:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2072,7 +2072,7 @@
 
 } ();
 
-},{"./Demographics":2,"./Identity":6,"./Nav":10,"./Public_Persona":14,"./Residence":15,"./Voter":20}],13:[function(require,module,exports){
+},{"./Demographics":2,"./Identity":6,"./Nav":10,"./Public_Persona":14,"./Residence":15,"./Voter":21}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2577,7 +2577,7 @@
 
 } ();
 
-},{"./Edit":4,"./Item":8,"./Nav":10,"events":24}],14:[function(require,module,exports){
+},{"./Edit":4,"./Item":8,"./Nav":10,"events":25}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2969,14 +2969,65 @@
     })
   };
 
-  Sign.prototype.forgotPassword = function () {
+  Sign.prototype.forgotPassword = require('./Sign/forgot-password');
+
+  module.exports = Sign;
+
+} ();
+
+},{"./Nav":10,"./Sign/forgot-password":17}],17:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function forgotPassword () {
+
+    var signComponent = this;
+
+    this.form = $('#forgot-password form');
+
+    // On close modal, reset form
+
+    $('#forgot-password .close').on('click', function () {
+      
+      signComponent.form.find('[name="email"]').val('').removeClass('error');
+
+      if ( $('.forgot-password-email-not-found.in').length ) {
+        $('.forgot-password-email-not-found').collapse('hide');
+      }
+
+      if ( $('.forgot-password-pending.in').length ) {
+        $('.forgot-password-pending').collapse('hide');
+      }
+
+      if ( $('.forgot-password-ok.in').length ) {
+        $('.forgot-password-ok').collapse('hide');
+      }
+
+    });
+
+
     $('#forgot-password form[name="forgot-password"]').on('submit', function () {
+
+      // If previous operation still in course, abort
+
+      if ( $('.forgot-password-pending.in').length ) {
+        return false;
+      }
     
       var email = $(this).find('[name="email"]');
 
       email.removeClass('error');
 
-      $('.forgot-password-email-not-found').collapse('hide');
+      if ( $('.forgot-password-email-not-found.in').length ) {
+        $('.forgot-password-email-not-found').collapse('hide');
+      }
 
       if ( ! email.val() ) {
         email.addClass('error').focus();
@@ -2984,15 +3035,28 @@
 
       else {
 
+        $('.forgot-password-pending').collapse('show');
+
         setTimeout(function () {
           app.socket.once('no such email', function (_email) {
             if ( _email === email.val() ) {
+
+              $('.forgot-password-pending').css('display', 'none');
+
+              $('.forgot-password-pending').collapse('hide');
+
+              setTimeout(function () {
+                $('.forgot-password-pending').css('display', 'block');
+              });
+
               $('.forgot-password-email-not-found').collapse('show');
             }
           });
 
           app.socket.on('sent password', function (_email) {
             if ( _email === email.val() ) {
+              $('.forgot-password-pending').collapse('hide');
+
               $('.forgot-password-ok').collapse('show');
             }
           });
@@ -3004,13 +3068,14 @@
 
       return false;
     });
-  };
+  
+  }
 
-  module.exports = Sign;
+  module.exports = forgotPassword;
 
 } ();
 
-},{"./Nav":10}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3140,7 +3205,7 @@
 
 } ();
 
-},{"./Intro":7,"./Panel":11,"./Sign":16,"domain":23,"events":24,"util":28}],18:[function(require,module,exports){
+},{"./Intro":7,"./Panel":11,"./Sign":16,"domain":24,"events":25,"util":29}],19:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3363,7 +3428,7 @@
 
 }();
 
-},{"./Nav":10}],19:[function(require,module,exports){
+},{"./Nav":10}],20:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3442,7 +3507,7 @@
 
 } ();
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3506,7 +3571,7 @@
 
 } ();
 
-},{"./Nav":10}],21:[function(require,module,exports){
+},{"./Nav":10}],22:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3581,7 +3646,7 @@
 
 } ();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3601,7 +3666,7 @@
 
 } ();
 
-},{"../Panel":11,"../Profile":12,"../Sign":16,"../Synapp":17}],23:[function(require,module,exports){
+},{"../Panel":11,"../Profile":12,"../Sign":16,"../Synapp":18}],24:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3639,7 +3704,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":24}],24:[function(require,module,exports){
+},{"events":25}],25:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3942,7 +4007,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3967,7 +4032,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4055,14 +4120,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4652,4 +4717,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":27,"_process":26,"inherits":25}]},{},[22]);
+},{"./support/isBuffer":28,"_process":27,"inherits":26}]},{},[23]);

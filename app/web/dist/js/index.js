@@ -254,7 +254,7 @@
 
 } ();
 
-},{"./Form":4,"./Item":6,"./Nav":8,"./Panel":9,"./Upload":14,"./YouTube":15}],2:[function(require,module,exports){
+},{"./Form":4,"./Item":6,"./Nav":8,"./Panel":9,"./Upload":15,"./YouTube":16}],2:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -834,7 +834,7 @@
 
 } ();
 
-},{"./Item":6,"./Truncate":13}],6:[function(require,module,exports){
+},{"./Item":6,"./Truncate":14}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1185,7 +1185,7 @@
 
 } ();
 
-},{"./Details":2,"./Item/media":7,"./Nav":8,"./Panel":9,"./Promote":10,"./Truncate":13,"./YouTube":15}],7:[function(require,module,exports){
+},{"./Details":2,"./Item/media":7,"./Nav":8,"./Panel":9,"./Promote":10,"./Truncate":14,"./YouTube":16}],7:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1262,7 +1262,7 @@
 
 } ();
 
-},{"../YouTube":15}],8:[function(require,module,exports){
+},{"../YouTube":16}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2233,7 +2233,7 @@
 
 } ();
 
-},{"./Edit":3,"./Item":6,"./Nav":8,"events":18}],11:[function(require,module,exports){
+},{"./Edit":3,"./Item":6,"./Nav":8,"events":19}],11:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2455,14 +2455,65 @@
     })
   };
 
-  Sign.prototype.forgotPassword = function () {
+  Sign.prototype.forgotPassword = require('./Sign/forgot-password');
+
+  module.exports = Sign;
+
+} ();
+
+},{"./Nav":8,"./Sign/forgot-password":12}],12:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function forgotPassword () {
+
+    var signComponent = this;
+
+    this.form = $('#forgot-password form');
+
+    // On close modal, reset form
+
+    $('#forgot-password .close').on('click', function () {
+      
+      signComponent.form.find('[name="email"]').val('').removeClass('error');
+
+      if ( $('.forgot-password-email-not-found.in').length ) {
+        $('.forgot-password-email-not-found').collapse('hide');
+      }
+
+      if ( $('.forgot-password-pending.in').length ) {
+        $('.forgot-password-pending').collapse('hide');
+      }
+
+      if ( $('.forgot-password-ok.in').length ) {
+        $('.forgot-password-ok').collapse('hide');
+      }
+
+    });
+
+
     $('#forgot-password form[name="forgot-password"]').on('submit', function () {
+
+      // If previous operation still in course, abort
+
+      if ( $('.forgot-password-pending.in').length ) {
+        return false;
+      }
     
       var email = $(this).find('[name="email"]');
 
       email.removeClass('error');
 
-      $('.forgot-password-email-not-found').collapse('hide');
+      if ( $('.forgot-password-email-not-found.in').length ) {
+        $('.forgot-password-email-not-found').collapse('hide');
+      }
 
       if ( ! email.val() ) {
         email.addClass('error').focus();
@@ -2470,15 +2521,28 @@
 
       else {
 
+        $('.forgot-password-pending').collapse('show');
+
         setTimeout(function () {
           app.socket.once('no such email', function (_email) {
             if ( _email === email.val() ) {
+
+              $('.forgot-password-pending').css('display', 'none');
+
+              $('.forgot-password-pending').collapse('hide');
+
+              setTimeout(function () {
+                $('.forgot-password-pending').css('display', 'block');
+              });
+
               $('.forgot-password-email-not-found').collapse('show');
             }
           });
 
           app.socket.on('sent password', function (_email) {
             if ( _email === email.val() ) {
+              $('.forgot-password-pending').collapse('hide');
+
               $('.forgot-password-ok').collapse('show');
             }
           });
@@ -2490,13 +2554,14 @@
 
       return false;
     });
-  };
+  
+  }
 
-  module.exports = Sign;
+  module.exports = forgotPassword;
 
 } ();
 
-},{"./Nav":8}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2626,7 +2691,7 @@
 
 } ();
 
-},{"./Intro":5,"./Panel":9,"./Sign":11,"domain":17,"events":18,"util":22}],13:[function(require,module,exports){
+},{"./Intro":5,"./Panel":9,"./Sign":11,"domain":18,"events":19,"util":23}],14:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2849,7 +2914,7 @@
 
 }();
 
-},{"./Nav":8}],14:[function(require,module,exports){
+},{"./Nav":8}],15:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -2928,7 +2993,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3003,7 +3068,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3037,7 +3102,7 @@
 
 } ();
 
-},{"../Intro":5,"../Panel":9,"../Sign":11,"../Synapp":12}],17:[function(require,module,exports){
+},{"../Intro":5,"../Panel":9,"../Sign":11,"../Synapp":13}],18:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3075,7 +3140,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":18}],18:[function(require,module,exports){
+},{"events":19}],19:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3378,7 +3443,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3403,7 +3468,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3491,14 +3556,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4088,4 +4153,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":21,"_process":20,"inherits":19}]},{},[16]);
+},{"./support/isBuffer":22,"_process":21,"inherits":20}]},{},[17]);
