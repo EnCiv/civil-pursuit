@@ -17,7 +17,7 @@
     // On close modal, reset form
 
     $('#forgot-password .close').on('click', function () {
-      
+
       signComponent.form.find('[name="email"]').val('').removeClass('error');
 
       if ( $('.forgot-password-email-not-found.in').length ) {
@@ -40,6 +40,12 @@
       // If previous operation still in course, abort
 
       if ( $('.forgot-password-pending.in').length ) {
+        return false;
+      }
+
+      // If previous operation OK, abort
+
+      if ( $('.forgot-password-ok.in').length ) {
         return false;
       }
     
@@ -75,11 +81,17 @@
             }
           });
 
-          app.socket.on('sent password', function (_email) {
+          app.socket.on('password is resettable', function (_email) {
             if ( _email === email.val() ) {
               $('.forgot-password-pending').collapse('hide');
 
               $('.forgot-password-ok').collapse('show');
+
+              $('.form-section.collapse').collapse('hide');
+
+              setTimeout(function () {
+                $('#forgot-password').modal('hide');
+              }, 2500);
             }
           });
 

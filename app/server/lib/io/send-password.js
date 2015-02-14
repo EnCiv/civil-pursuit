@@ -2,56 +2,38 @@
 
   'use strict';
 
-  var config = require('../../../business/config.json');
-  var User = require('../../../business/models/User');
+  var src         =   require(require('path').join(process.cwd(), 'src'));
 
-  function sendEmail (email, activation_key, activation_url, cb) {
-    var socket = this;
+  var config      =   src('config');
 
-    socket.domain.run(function () {
-      var nodemailer = require("nodemailer");
+  var User        =   src('models/User');
 
-      var transporter = nodemailer.createTransport({
-        service: "Zoho",
-        auth: {
-          user: config.email.user,
-          pass: config.email.password
-        }
-      });
+  var sendEmail   =   src('lib/send-email');
 
-      transporter.sendMail(
-        {
-          from:       config.email.user,
-          to:         email,
-          subject:    'Reset your password',
-          text:       config['forgot password email']
-                        .replace(/\{key\}/g, activation_key)
-                        .replace(/\{url\}/g, 'http://' + socket.handshake.headers.host + '/page/reset-password?token=' + activation_url)
-        },
-
-        socket.domain.bind(cb));
-
-    });
-  }
+  /**
+   *  @function sendPassword
+   *  @arg {string} email
+   *  @this {Socket}
+   */
 
   function sendPassword (email) {
     var socket = this;
 
-    socket.pronto.emit('message', {
-      'forgot password': email
-    });
+    process.nextTick(function () {
 
-    socket.domain.run(function () {
+      socket.pronto.emit('message', {
+        'forgot password': email
+      });
 
-      var activation_key = require('crypto').randomBytes(5).toString('hex');
+      socket.domain.run(function () {
 
-      var activation_url = require('crypto').randomBytes(5).toString('hex');
+        if ( typeof email !== 'string' ) {
+          throw new Error('Email should be a string');
+        }
 
-      User.update({ email: email }, { activation_key: activation_key, activation_url: activation_url },
-        socket.domain.intercept(function (number) {
+        User.makePasswordResettable(email, socket.domain.bind(function (error, keys) {
 
-          if ( ! number ) {
-
+          if ( error && error.code === 'DOCUMENT_NOT_FOUND' ) {
             socket.pronto.emit('message', {
               'forgot password': {
                 'no such email': email
@@ -61,22 +43,40 @@
             return socket.emit('no such email', email);
           }
 
-          sendEmail.apply(socket, [email, activation_key, activation_url, socket.domain.intercept(function (stat) {
+          if ( error ) {
+            throw error;
+          }
+
+          socket.emit('password is resettable', email);
+
+          var $email = {
+            from:       config.email.user,
+            to:         email,
+            subject:    'Reset password',
+            text:       config['forgot password email']
+              .replace(/\{key\}/g, keys.key)
+              .replace(/\{url\}/g, 'http://' +
+                socket.handshake.headers.host + '/page/reset-password?token=' + keys.token)
+          };
+
+          function intercept (stats) {
             socket.pronto.emit('message', {
               'forgot password': {
                 'reset email sent': email
               }
             });
-            socket.emit('sent password', email);
-          })]);
 
+            socket.emit('sent password reset email', email);
+          }
+
+          sendEmail.apply(socket, [$email, socket.domain.intercept(intercept)]);
 
         }));
+
+      });
     });
   }
 
-  module.exports = function (socket) {
-    socket.on('send password', sendPassword.bind(socket));
-  };
+  module.exports = sendPassword;
 
 } ();

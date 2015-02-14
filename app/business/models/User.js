@@ -8,7 +8,9 @@
 
   var bcrypt      =   require('bcrypt');
 
-  var config      =   require('../config.json');
+  var src         =   require(require('path').join(process.cwd(), 'src'));
+
+  var config      =   src('config');
 
   var path        =   require('path');
 
@@ -88,41 +90,38 @@
 
     /** Activation URL */
 
-    "activation_url":   String
+    "activation_token":   String
   });
 
+  
+
   UserSchema.pre('save', require('./User/pre.save'));
+
+  [
+    'encrypt-password',
+    'identify',
+    'reset-password',
+    'make-password-resettable'
+  ]
+
+    .forEach(function (method) {
+
+      UserSchema.statics[method
+        .replace(/-([a-z])/ig, function (m, letter) { return letter.toUpperCase(); })] = src('models/User/' + method);
+
+    });
+
+  /**
+    * @method User.statics.isValidPassword
+    */
 
   UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb) {
     bcrypt.compare(requestPassword, realPassword, cb);
   };
 
-  UserSchema.statics.identify = function (email, password, cb) {
-
-    var self = this;
-
-    this.findOne({ email: email }, function (error, user) {
-      if ( error ) {
-        return cb(error);
-      }
-
-      if ( ! user ) {
-        return cb(new Error('User not found ' + email));
-      }
-      
-      self.isValidPassword(password, user.password, function (error, isValid) {
-        if ( error ) {
-          return cb(error);
-        }
-        
-        if ( ! isValid ) {
-          return cb(new Error('Wrong password'));
-        }
-        
-        return cb(null, user);
-      });
-    });
-  };
+  /**
+    * @method User.statics.saveImage
+    */
 
   UserSchema.statics.saveImage = function (id, image, cb) {
 

@@ -1,9 +1,0 @@
-[
-  {
-    "title": "Create item - Basic",
-    "description": "Test creating an item",
-    "stories": [
-      "I should see the panel of Topics"
-    ]
-  }
-]

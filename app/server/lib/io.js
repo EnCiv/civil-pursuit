@@ -1,53 +1,12 @@
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                             
-
-       $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$ 
-      $$        $$    $$  $$    $$        $$  $$    $$  $$    $$
-       $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$
-            $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$
-      $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$ 
-                      $$                      $$        $$      
-                $$    $$                      $$        $$     
-                 $$$$$$                       $$        $$      $$$$$$                
-
-
-***/
-
 ! function () {
 
   'use strict';
 
   var online_users = 0;
 
-  var config = require('../../business/config.json');
+  var src = require(require('path').join(process.cwd(), 'src'));
+
+  var config = src('config');
 
   function WebSocketServer (pronto) {
 
@@ -100,16 +59,27 @@ Nina Butorac
         /** Let clients know about new user count */
 
         io.emit('online users', online_users);
+        
         socket.broadcast.emit('online users', online_users);
 
-        /** On disconnect */
+        socket
 
-        socket.on('disconnect', function (why) {
-          online_users --;
-          socket.broadcast.emit('online users', online_users);
-        });
+          /** On disconnect */
 
-        
+          .on('disconnect', function (why) {
+            online_users --;
+            socket.broadcast.emit('online users', online_users);
+          })
+
+          /** reset password */
+
+          .on('reset password',         src('io/reset-password').bind(socket))
+
+          /** create and send a password reset email */
+
+          .on('send password',          src('io/send-password').bind(socket))
+
+        ;
 
         /** Events */
 
@@ -119,11 +89,10 @@ Nina Butorac
 
           'add-view',
 
-          /** send a password reset email */
-
-          'send-password',
+          /** upload an image using socket.io-stream to /tmp */
 
           'upload-image',
+
           'insert-feedback',
           'insert-votes',
           'create-item',

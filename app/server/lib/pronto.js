@@ -49,17 +49,15 @@ Nina Butorac
 
   var passport    =   require('passport');
 
+  var src         =   require(require('path').join(process.cwd(), 'src'));
+
   module.exports = function () {
 
-    var config = require('../../business/config.json');
+    var config = src('config');
 
     var exportConfig = config.public;
 
     var session       =   require('express-session');
-
-    var monson = require('monson')(process.env.MONGOHQ_URL, {
-      base: require('path').join(process.cwd(), 'app/business')
-    });
 
     require('mongoose').connect(process.env.MONGOHQ_URL);
 
@@ -69,13 +67,11 @@ Nina Butorac
 
       .inject('synapp', config)
 
-      /** Monson custom opener */
-
-      .opener('monson', monson.pronto)
-
       /** cookies */
 
       .cookie(config.secret)
+
+      /** passport initialize */
 
       .open(passport.initialize());
 
@@ -86,10 +82,12 @@ Nina Butorac
     });
 
     passport.deserializeUser(function(id, done) {
-      monson.get('models/User.findById/' + id, done);
+      src('models/User').findById(id, done);
     });
 
     server.app.use(require('cookie-parser')(config.secret));
+
+    /**       S   E   S   S   I   O   N       **/
 
     server.app.use(session({
       secret:             config.secret,
@@ -97,39 +95,50 @@ Nina Butorac
       saveUninitialized:  true
     }));
 
+    /**       F   A   C   E   B   O   O   K       **/
+
     require('../routes/facebook')(server.app, config, passport);
+
+    /**       T   W   I   T   T   E   R       **/
+
     require('../routes/twitter')(server.app, config, passport);
 
     server
 
-      /** pre router */
+    /**       P   R   E       R   O   U   T   E   R       **/
 
       .open(function synMiddleware_preRouter (req, res, next) {
         req.user = req.signedCookies.synuser;
         next();
       }, when('/*'))
 
-      /** /sign/in ==> Sign in */
+      /**       S   I   G   N       I   N       **/
+
+        //  /sign/in
 
       .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
 
-      /** /sign/up ==> Sign up */
+      /**       S   I   G   N       U   P       **/
+
+        //  /sign/up
 
       .open('app/server/routes/sign-up.js', { exec: 'js/middleware' }, when('/sign/up'))
 
-      /** /sign/out ==> Sign out */
+      /**       S   I   G   N       O   U   T       **/
+
+        //  /sign/out
 
       .open('app/server/routes/sign-out.js', { exec: 'js/middleware' }, when('/sign/out'))
 
-      /** /models ==> Monson */
+      /**       H   O   M   E         **/
 
-      .open('app/business/models/', { with: 'monson', 'append extension': 'js' }, when('/models' ))
-
-      /** / ==> Home page */
+        //  /home
 
       .open('app/web/views/pages/index.jade', when.home)
 
-      /** /page/ ==> Static pages */
+      /**       P   A   G   E   S       **/
+
+        // /page/:page
 
       .open(function (req, res, next) {
         res.locals.page = req.params.page || 'index';
@@ -138,7 +147,9 @@ Nina Butorac
 
       .open('app/web/views/pages', { 'append extension': 'jade' }, when.prefix('/page'))
 
-      /** /partial/ ==> Partials */
+      /**       P   A   R   T   I   A   L   S       **/
+
+        //  /partial/:partial
 
       .open('app/web/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
 
@@ -158,47 +169,45 @@ Nina Butorac
 
       .open('app/web/dist/css', when.prefix('/css/'))
 
-      // .open('app/web/dist/css/index.min.css', when('/css/index.min.css'))
-
-      /** /test/story/mothership ==> Stories mothership */
-
-      .open('app/web/test/stories/mothership.js'
-        , { prepend: 'var mothership_stories = ' + JSON.stringify(require('../../business/epics.json')) + ';' }
-        , when('/test/story/mothership'))
-
-      /** /test/story/[n] ==> Stories */
-
-      .open('app/web/test/stories'
-        , { 'append extension': 'js' }
-        , when.prefix('/test/story'))
-
       /** /item/ ==> Item static page */
 
-      .open(function staticItemPage (req, res, next) {
+      .open(
 
-        monson.get('models/Item.findById/' + req.params.itemid)
+        function staticItemPage (req, res, next) {
 
-          .on('error', function (error) {
+          var domain = require('domain').create();
+          
+          domain.on('error', function (error) {
             next(error);
-          })
-
-          .on('success', function (item) {
-            res.locals.item = item;
-
-            if ( item.references.length ) {
-              res.locals.youtube = require('../../web/js/Item/controllers/youtube')(item.references[0].url, true);
-            }
-
-            res.locals.title = item.subject + ' | Synaccord';
-
-            res.locals.meta_description = item.description.split(/\n/)[0]
-              .substr(0, 255);
-
-            next();
           });
+          
+          domain.run(function () {
+            src('models/Item')
 
-        }
-        , when('/item/:itemid/:itemslug'))
+              .findById(req.params.item_id)
+
+              .lean()
+
+              .exec(domain.intercept(function (item) {
+                res.locals.item = item;
+
+                if ( item.references.length ) {
+                  res.locals.youtube = require('../../web/js/Item/controllers/youtube')(item.references[0].url, true);
+                }
+
+                res.locals.title = item.subject + ' | Synaccord';
+
+                res.locals.meta_description = item.description.split(/\n/)[0]
+                  .substr(0, 255);
+
+                next(); 
+              }));
+            });
+          }
+
+        , when('/item/:item_id/:item_slug')
+
+      )
 
       .open('app/web/views/pages/item.jade'
         , when('/item/*'))
@@ -218,7 +227,7 @@ Nina Butorac
         , when(404))
 
       .on('listening', function (service) {
-        require('./io')(server);
+        src('io')(server);
       })
 
       .on('error', function (error) {

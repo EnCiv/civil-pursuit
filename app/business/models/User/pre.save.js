@@ -2,8 +2,6 @@
   
   'use strict';
 
-  var bcrypt      =   require('bcrypt');
-
   /**
    *  @function
    *  @return
@@ -26,12 +24,12 @@
     });
 
     domain.run(function () {
-      bcrypt.genSalt(10, domain.intercept(function (salt) {
-        bcrypt.hash(self.password, salt, domain.intercept(function (hash) {
-          self.password  = hash;
-          next();
-        }));
+
+      self.constructor.encryptPassword(self.password, domain.intercept(function (hash) {
+        self.password  = hash;
+        next();
       }));
+
     });
   }
 

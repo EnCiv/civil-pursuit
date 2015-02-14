@@ -63,6 +63,10 @@
       self.emit('connect');
     });
 
+    this.socket.on('error', function (error) {
+      console.log('socket error', error);
+    });
+
     this.evaluations = [];
 
     this.cache = {
