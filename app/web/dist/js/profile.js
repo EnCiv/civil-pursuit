@@ -2860,13 +2860,6 @@
 
             signForm.find('section').hide(2000);
 
-            signForm.find('.sign-success')
-              .show(function () {
-                setTimeout(function () {
-                  signForm.hide(2500);
-                }, 5000);
-              })
-              .text('Welcome back!');
           });
       }
 

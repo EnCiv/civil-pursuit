@@ -24,17 +24,13 @@
           throw new Error('User not found ' + email);
         }
         
-        self.isValidPassword(password, user.password, function (error, isValid) {
-          if ( error ) {
-            throw error;
-          }
-          
+        self.isValidPassword(password, user.password, domain.intercept(function (isValid) {
           if ( ! isValid ) {
             throw new Error('Wrong password');
           }
           
           cb(null, user);
-        });
+        }));
       }));
 
     });
