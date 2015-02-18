@@ -5,10 +5,20 @@
       img.img-responsive(alt='Synaccord' src=synapp.public['default item image'])
   
   .pull-right.box-buttons
-    button.btn.toggle-promote Promote
-    div.promoted 0
-    div.promoted-percent 0%
-    button.btn.toggle-details Details
+    button.btn.toggle-promote
+      i.fa.fa-bullhorn
+      span  Promote 
+      span  
+      span.promoted  0
+
+    div
+    
+    //- div.promoted-percent 0%
+    button.btn.toggle-details
+      i.fa.fa-signal
+      span  Details
+      span  
+      span.promoted-percent  0%
 
   .item-text
     h4.item-title.padding-right
