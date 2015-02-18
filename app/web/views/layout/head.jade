@@ -35,6 +35,9 @@ block stylesheets
   block stylesheet-bootstrap
     link(rel='stylesheet' href='/bower/bootstrap/dist/css/bootstrap.min.css')
 
+  block gooogle-fonts
+    link(href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css')
+
   block css-app
     - if ( settings.env === 'production' )
       link(rel='stylesheet' href='/css/index.min.css')
