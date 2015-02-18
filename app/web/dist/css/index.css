@@ -455,6 +455,7 @@ footer {
 }
 .box .box-buttons .btn {
   width: 100px;
+  border-color: white !important;
 }
 @media (max-width: 600px) {
   .box .box-buttons .btn {
