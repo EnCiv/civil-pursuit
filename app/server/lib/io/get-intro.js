@@ -2,20 +2,30 @@
 
   'use strict';
 
-  function getIntro (socket, pronto, monson) {
+  var src         =   require(require('path').join(process.cwd(), 'src'));
+
+  var Item        =   src('models/Item');
+
+  function getIntro () {
     
-    socket.on('get intro', function (cb) {
-      
-      monson.get('models/Item.findOne?type=Intro')
+    var socket = this;
 
-        .on('error', function (error) {
-          throw error;
-        })
+    var domain = require('domain').create();
+    
+    domain.on('error', function (error) {
+      cb(error);
+    });
+    
+    domain.run(function () {
+      Item
 
-        .on('success', function (intro) {
-          socket.emit('got intro', intro);
-        });
+        .findOne({ type: 'Intro' })
 
+        .lean()
+
+        .exec(domain.intercept(function (intro) {
+          socket.emit('got intro', intro);  
+        }));
     });
 
   }

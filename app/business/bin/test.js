@@ -10,6 +10,8 @@
 
   var suite = {};
 
+  var nightwatch = src('test/nightwatch');
+
   var args = process.argv
 
     .filter(function (arg, i) {
@@ -24,6 +26,12 @@
         b = arg.replace(/^models\//, 'app/business/models/test/');
       }
 
+      if ( /^web\//.test(arg) ) {
+        suite[arg] = nightwatch.bind({ file: arg.replace(/^web\//, 'app/web/test/') });
+
+        return arg;
+      }
+
       suite[arg] = src(b);
 
       return arg;
@@ -31,6 +39,8 @@
     });
 
   require('mongoose').connect(process.env.MONGOHQ_URL);
+
+  // return console.log(suite);
 
   require('mongoose').connection.on('connected', function () {
     new Test.suite('Running test from command line', suite, function (error) {

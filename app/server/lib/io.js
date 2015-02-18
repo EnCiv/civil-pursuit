@@ -71,6 +71,10 @@
             socket.broadcast.emit('online users', online_users);
           })
 
+          /** get intro */
+
+          .on('get intro',              src('io/get-intro').bind(socket))
+
           /** reset password */
 
           .on('reset password',         src('io/reset-password').bind(socket))
@@ -99,7 +103,6 @@
           'get-item-by-id',
           'get-item-details',
           'add-view',
-          'get-intro',
           'get-items',
           'get-evaluation',
           'sign-in',
