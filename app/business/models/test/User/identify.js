@@ -17,23 +17,18 @@
 
     Test.suite('Model User Statics Identify', {
       
-      'this should be an object': function (done) {
-        test.should.be.an.Object;
+      'there should be an enviornment variable called "SYNAPP_TEST_EMAIL"': function (done) {
+        process.env.SYNAPP_TEST_EMAIL.should.be.a.String;
         done();
       },
 
-      'this should have an email': function (done) {
-        test.should.have.property('email').which.is.a.String;
-        done();
-      },
-
-      'this should have an password': function (done) {
-        test.should.have.property('password').which.is.a.String;
+      'there should be an enviornment variable called "SYNAPP_TEST_PASSWORD"': function (done) {
+        process.env.SYNAPP_TEST_PASSWORD.should.be.a.String;
         done();
       },
 
       'should identify user': function (done) {
-        User.identify(test.email, test.password, function (error, _user) {
+        User.identify(process.env.SYNAPP_TEST_EMAIL, process.env.SYNAPP_TEST_PASSWORD, function (error, _user) {
 
           if ( error ) {
             return done(error);
@@ -63,14 +58,14 @@
       'identified user should have email': function (done) {
         should(user).have.property('email')
           .which.is.a.String
-          .and.eql(test.email);
+          .and.eql(process.env.SYNAPP_TEST_EMAIL);
         done();
       },
 
       'identified user should have a different password': function (done) {
         should(user).have.property('password')
           .which.is.a.String
-          .and.not.eql(test.password);
+          .and.not.eql(process.env.SYNAPP_TEST_PASSWORD);
 
         done();
       }

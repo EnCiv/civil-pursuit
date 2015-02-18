@@ -2,8 +2,6 @@
   
   'use strict';
 
-  var should = require('should');
-
   module.exports = function testConnexion (done) {
 
     var domain = require('domain').create();

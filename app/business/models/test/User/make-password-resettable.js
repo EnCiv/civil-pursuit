@@ -16,13 +16,8 @@
 
     Test.suite('User.makePasswordResettable()', {
 
-      'this should be an object': function (done) {
-        test.should.be.an.Object;
-        done();
-      },
-
-      'this should have an email': function (done) {
-        test.should.have.property('email').which.is.a.String;
+      'there should be an environment variable called "SYNAPP_TEST_EMAIL"': function (done) {
+        process.env.SYNAPP_TEST_EMAIL.should.be.a.String;
         done();
       },
 
@@ -35,7 +30,7 @@
       },
 
       'should emit a callback': function (done) {
-        User.makePasswordResettable(test.email, function (error, keys) {
+        User.makePasswordResettable(process.env.SYNAPP_TEST_EMAIL, function (error, keys) {
           if ( error ) {
             return done(error);
           }

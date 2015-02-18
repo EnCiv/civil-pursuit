@@ -12,29 +12,22 @@
 
     var user;
 
-    var test = this;
-
     var should = require('should');
 
     Test.suite('Model User Create', {
 
-      'this should be an object': function (done) {
-        test.should.be.an.Object;
+      'there should be an enviornment variable called "SYNAPP_TEST_EMAIL"': function (done) {
+        process.env.SYNAPP_TEST_EMAIL.should.be.a.String;
         done();
       },
 
-      'this should have an email': function (done) {
-        test.should.have.property('email').which.is.a.String;
-        done();
-      },
-
-      'this should have an password': function (done) {
-        test.should.have.property('password').which.is.a.String;
+      'there should be an enviornment variable called "SYNAPP_TEST_PASSWORD"': function (done) {
+        process.env.SYNAPP_TEST_PASSWORD.should.be.a.String;
         done();
       },
 
       'should create a new User': function (done) {
-        User.create({ email: test.email, password: test.password }, function (error, created) {
+        User.create({ email: process.env.SYNAPP_TEST_EMAIL, password: process.env.SYNAPP_TEST_PASSWORD }, function (error, created) {
 
           if ( error ) {
             return done(error);
@@ -64,14 +57,14 @@
       'should have email': function (done) {
         should(user).have.property('email')
           .which.is.a.String
-          .and.eql(test.email);
+          .and.eql(process.env.SYNAPP_TEST_EMAIL);
         done();
       },
 
       'should have a password that is different from password': function (done) {
         should(user).have.property('password')
           .which.is.a.String
-          .and.not.eql(test.password);
+          .and.not.eql(process.env.SYNAPP_TEST_PASSWORD);
 
         done();
       }

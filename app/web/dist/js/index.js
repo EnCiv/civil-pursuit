@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/web/js/Creator.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -254,7 +254,7 @@
 
 } ();
 
-},{"./Form":4,"./Item":6,"./Nav":8,"./Panel":9,"./Upload":15,"./YouTube":16}],2:[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","./Upload":"/home/francois/Dev/syn/app/web/js/Upload.js","./YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Details.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -510,7 +510,7 @@
 
 } ();
 
-},{"./Edit":3,"./Item":6,"./Nav":8}],3:[function(require,module,exports){
+},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -702,7 +702,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":8}],4:[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Form.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -779,7 +779,7 @@
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Intro.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -834,7 +834,7 @@
 
 } ();
 
-},{"./Item":6,"./Truncate":14}],6:[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js"}],"/home/francois/Dev/syn/app/web/js/Item.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1185,7 +1185,7 @@
 
 } ();
 
-},{"./Details":2,"./Item/media":7,"./Nav":8,"./Panel":9,"./Promote":10,"./Truncate":14,"./YouTube":16}],7:[function(require,module,exports){
+},{"./Details":"/home/francois/Dev/syn/app/web/js/Details.js","./Item/media":"/home/francois/Dev/syn/app/web/js/Item/media.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","./Promote":"/home/francois/Dev/syn/app/web/js/Promote.js","./Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js","./YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Item/media.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1262,7 +1262,7 @@
 
 } ();
 
-},{"../YouTube":16}],8:[function(require,module,exports){
+},{"../YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Nav.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1502,7 +1502,7 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Panel.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1728,7 +1728,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":8}],10:[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1745,10 +1745,9 @@
 
   'use strict';
 
-  var Item = require('./Item');
-
-  var Nav = require('./Nav');
-  var Edit = require('./Edit');
+  var Item      =   require('./Item');
+  var Nav       =   require('./Nav');
+  var Edit      =   require('./Edit');
 
   /**
    *  @class Promote
@@ -1789,12 +1788,111 @@
   }
 
   /**
-   *  @method find
-   *  @arg {string} name
-   *  @arg {Mixed} more
+   *  @method renderLimit
    */
 
-  Promote.prototype.find = function (name, more) {
+  Promote.prototype.renderLimit = function () {
+    this.find('limit').text(this.evaluation.limit);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderCursor = function () {
+    this.find('cursor').text(this.evaluation.cursor);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderLeft = function () {
+    this.renderItem('left');
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.edit = function (key, value) {
+    this.evaluation[key] = value;
+
+    this.watch.emit(key);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.$bind = function (key, binder) {
+    this.watch.on(key, binder);
+  };
+
+  /**
+   *
+   */
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderRight = function () {
+    this.renderItem('right');
+  };
+
+  /**
+   *  @description Selector aliases getter
+   */
+
+  Promote.prototype.find            =     require('./Promote/find');
+
+  /**
+   *  @description render one of the sides in a side by side
+   */
+
+  Promote.prototype.renderItem      =     require('./Promote/render-item');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.render          =     require('./Promote/render');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.get             =     require('./Promote/get');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.finish          =     require('./Promote/finish');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.save            =     require('./Promote/save');
+
+  module.exports = Promote;
+
+} ();
+
+},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Promote/find":"/home/francois/Dev/syn/app/web/js/Promote/find.js","./Promote/finish":"/home/francois/Dev/syn/app/web/js/Promote/finish.js","./Promote/get":"/home/francois/Dev/syn/app/web/js/Promote/get.js","./Promote/render":"/home/francois/Dev/syn/app/web/js/Promote/render.js","./Promote/render-item":"/home/francois/Dev/syn/app/web/js/Promote/render-item.js","./Promote/save":"/home/francois/Dev/syn/app/web/js/Promote/save.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Promote/find.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function find (name, more) {
     switch ( name ) {
       case 'cursor':
         return this.template.find('.cursor');
@@ -1841,45 +1939,148 @@
       case 'edit and go again button':
         return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
     }
-  };
+  }
+
+  module.exports = find;
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/Promote/finish.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../Nav');
 
   /**
-   *  @method renderLimit
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.renderLimit = function () {
-    this.find('limit').text(this.evaluation.limit);
-  };
+  function finish () {
+    var promote = this;
+
+    promote.find('promote button').off('click');
+    promote.find('finish button').off('click');
+
+    if ( promote.evaluation.left ) {
+      this.save('left');
+    }
+
+    if ( promote.evaluation.right ) {
+      this.save('right');
+    }
+
+    Nav.unreveal(promote.template, promote.item.template,
+      app.domain.intercept(function () {
+
+        promote.item.details.get();
+
+        promote.item.find('toggle details').click();
+
+        promote.item.find('details').find('.feedback-pending')
+          .removeClass('hide');
+
+        promote.evaluation = null;
+      }));
+  }
+
+  module.exports = finish;
+
+} ();
+
+},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/get.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
 
   /**
-   *
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.renderCursor = function () {
-    this.find('cursor').text(this.evaluation.cursor);
-  };
+  function get (cb) {
+    var promote = this;
+
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+    console.log('i')
+
+    if ( ! this.evaluation ) {
+
+      // Get evaluation via sockets
+
+      app.socket.emit('get evaluation', this.item.item._id);
+
+      app.socket.once('got evaluation', function (evaluation) {
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+        console.log('got evaluation', evaluation);
+
+        promote.evaluation = evaluation;
+
+        var limit = 5;
+
+        if ( evaluation.items.length < 6 ) {
+          limit = evaluation.items.length - 1;
+
+          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
+            limit = 1;
+          }
+        }
+
+        promote.edit('limit', limit);
+
+        promote.edit('cursor', 1);
+
+        promote.edit('left', evaluation.items[0]);
+
+        promote.edit('right', evaluation.items[1]);
+
+        cb();
+
+      });
+    }
+
+    else {
+      cb();
+    }
+  }
+
+  module.exports = get;
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/Promote/render-item.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../Nav');
 
   /**
-   *
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.renderLeft = function () {
-    this.renderItem('left');
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.renderRight = function () {
-    this.renderItem('right');
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.renderItem = function (hand) {
+  function renderItem (hand) {
     var promote = this;
 
     var reverse = hand === 'left' ? 'right' : 'left';
@@ -1913,7 +2114,7 @@
     // Image
 
     this.find('item image', hand).empty().append(
-      new (require('./Item'))(this.evaluation[hand]).media());
+      new (require('../Item'))(this.evaluation[hand]).media());
 
     // Sliders
 
@@ -2028,14 +2229,26 @@
       }));
     });
 
-  };
+  }
+
+  module.exports = renderItem;
+
+} ();
+
+},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/render.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../Nav');
 
   /**
-   *  @method
-   *  @arg {function} cb
+   *  @method Promote.render
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.render = function (cb) {
+  function render (cb) {
     var promote = this;
 
     promote.find('finish button').on('click', function () {
@@ -2088,105 +2301,24 @@
 
       }));
     });
-  };
+  }
 
-  Promote.prototype.get = function (cb) {
-    var promote = this;
+  module.exports = render;
 
-    if ( ! this.evaluation ) {
+} ();
 
-      // Get evaluation via sockets
-
-      app.socket.emit('get evaluation', this.item.item._id);
-
-      app.socket.once('got evaluation', function (evaluation) {
-        console.log('got evaluation', evaluation);
-
-        promote.evaluation = evaluation;
-
-        var limit = 5;
-
-        if ( evaluation.items.length < 6 ) {
-          limit = evaluation.items.length - 1;
-
-          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
-            limit = 1;
-          }
-        }
-
-        promote.edit('limit', limit);
-
-        promote.edit('cursor', 1);
-
-        promote.edit('left', evaluation.items[0]);
-
-        promote.edit('right', evaluation.items[1]);
-
-        cb();
-
-      });
-    }
-
-    else {
-      cb();
-    }
-  };
+},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/save.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
 
   /**
-   *  @method finish
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.finish = function () {
-    var promote = this;
-
-    promote.find('promote button').off('click');
-    promote.find('finish button').off('click');
-
-    if ( promote.evaluation.left ) {
-      this.save('left');
-    }
-
-    if ( promote.evaluation.right ) {
-      this.save('right');
-    }
-
-    Nav.unreveal(promote.template, promote.item.template,
-      app.domain.intercept(function () {
-
-        promote.item.details.get();
-
-        promote.item.find('toggle details').click();
-
-        promote.item.find('details').find('.feedback-pending')
-          .removeClass('hide');
-
-        promote.evaluation = null;
-      }));
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.edit = function (key, value) {
-    this.evaluation[key] = value;
-
-    this.watch.emit(key);
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.$bind = function (key, binder) {
-    this.watch.on(key, binder);
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.save = function (hand) {
+  function save (hand) {
 
     var promote = this;
    
@@ -2227,13 +2359,13 @@
       });
 
     app.socket.emit('insert votes', votes);
-  };
+  }
 
-  module.exports = Promote;
+  module.exports = save;
 
 } ();
 
-},{"./Edit":3,"./Item":6,"./Nav":8,"events":19}],11:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Sign.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2454,7 +2586,7 @@
 
 } ();
 
-},{"./Nav":8,"./Sign/forgot-password":12}],12:[function(require,module,exports){
+},{"./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Sign/forgot-password":"/home/francois/Dev/syn/app/web/js/Sign/forgot-password.js"}],"/home/francois/Dev/syn/app/web/js/Sign/forgot-password.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2566,7 +2698,7 @@
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Synapp.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2700,7 +2832,7 @@
 
 } ();
 
-},{"./Intro":5,"./Panel":9,"./Sign":11,"domain":18,"events":19,"util":23}],14:[function(require,module,exports){
+},{"./Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/Truncate.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -2923,7 +3055,7 @@
 
 }();
 
-},{"./Nav":8}],15:[function(require,module,exports){
+},{"./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Upload.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3002,7 +3134,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/YouTube.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3077,15 +3209,15 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/pages/Home.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
 
-  var Synapp = require('../Synapp');
-  var Sign = require('../Sign');
-  var Intro = require('../Intro');
-  var Panel = require('../Panel');
+  var Synapp    =   require('../Synapp');
+  var Sign      =   require('../Sign');
+  var Intro     =   require('../Intro');
+  var Panel     =   require('../Panel');
 
   window.app = new Synapp();
 
@@ -3106,12 +3238,13 @@
             panel.fill();
           }));
         }, 700);
+
       }));
   });
 
 } ();
 
-},{"../Intro":5,"../Panel":9,"../Sign":11,"../Synapp":13}],18:[function(require,module,exports){
+},{"../Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","../Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","../Synapp":"/home/francois/Dev/syn/app/web/js/Synapp.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3149,7 +3282,7 @@ module.exports = (function(){
 	};
 	return domain;
 }).call(this);
-},{"events":19}],19:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3452,7 +3585,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],20:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3477,7 +3610,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],21:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3565,14 +3698,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],22:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],23:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4162,4 +4295,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":22,"_process":21,"inherits":20}]},{},[17]);
+},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}]},{},["/home/francois/Dev/syn/app/web/js/pages/Home.js"]);

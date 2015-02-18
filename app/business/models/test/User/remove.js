@@ -17,18 +17,13 @@
 
     Test.suite('Model User Remove', {
 
-      'this should be an object': function (done) {
-        test.should.be.an.Object;
-        done();
-      },
-
-      'this should have an email': function (done) {
-        test.should.have.property('email').which.is.a.String;
+      'there should be an enviornment variable called "SYNAPP_TEST_EMAIL"': function (done) {
+        process.env.SYNAPP_TEST_EMAIL.should.be.a.String;
         done();
       },
 
       'should remove User': function (done) {
-        User.remove({ email: test.email }, function (error, removed) {
+        User.remove({ email: process.env.SYNAPP_TEST_EMAIL }, function (error, removed) {
 
           if ( error ) {
             return done(error);

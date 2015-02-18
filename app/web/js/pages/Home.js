@@ -2,10 +2,10 @@
   
   'use strict';
 
-  var Synapp = require('../Synapp');
-  var Sign = require('../Sign');
-  var Intro = require('../Intro');
-  var Panel = require('../Panel');
+  var Synapp    =   require('../Synapp');
+  var Sign      =   require('../Sign');
+  var Intro     =   require('../Intro');
+  var Panel     =   require('../Panel');
 
   window.app = new Synapp();
 
@@ -26,6 +26,7 @@
             panel.fill();
           }));
         }, 700);
+
       }));
   });
 

@@ -19,25 +19,20 @@
     var token;
 
     Test.suite('Model User Statics resetPassword', {
-      'this should be an object': function (done) {
-        test.should.be.an.Object;
+      'there should be an environment variable called "SYNAPP_TEST_EMAIL"': function (done) {
+        process.env.SYNAPP_TEST_EMAIL.should.be.a.String;
         done();
       },
 
-      'this should have an email': function (done) {
-        test.should.have.property('email').which.is.a.String;
-        done();
-      },
-
-      'this should have an password': function (done) {
-        test.should.have.property('password').which.is.a.String;
+      'there should be an environment variable called "SYNAPP_TEST_PASSWORD"': function (done) {
+        process.env.SYNAPP_TEST_PASSWORD.should.be.a.String;
         done();
       },
 
       'should fetch user': function (done) {
         User
 
-          .findOne({ email: test.email })
+          .findOne({ email: process.env.SYNAPP_TEST_EMAIL })
 
           .exec(function (error, user) {
 
@@ -46,7 +41,7 @@
             }
 
             if ( ! user ) {
-              return done(new Error('Could not find test user ' + test.email));
+              return done(new Error('Could not find test user ' + process.env.SYNAPP_TEST_EMAIL));
             }
 
             key = user.activation_key;
@@ -63,7 +58,7 @@
       },
 
       'should reset password on the model': function (done) {
-        User.resetPassword(key, token, test.password, function (error) {
+        User.resetPassword(key, token, process.env.SYNAPP_TEST_PASSWORD, function (error) {
           if ( error ) {
             return done(error);
           }
@@ -73,14 +68,14 @@
       },
 
       'should allow user to log in with new password': function (done) {
-        User.identify(test.email, test.password, function (error, user) {
+        User.identify(process.env.SYNAPP_TEST_EMAIL, process.env.SYNAPP_TEST_PASSWORD, function (error, user) {
           if ( error ) {
             return done(error);
           }
           if ( ! user ) {
-            return done(new Error('Could not identify test user with new password ' + test.email));
+            return done(new Error('Could not identify test user with new password ' + process.env.SYNAPP_TEST_EMAIL));
           }
-          user.email.should.eql(test.email);
+          user.email.should.eql(process.env.SYNAPP_TEST_EMAIL);
           done();
         });
       }
