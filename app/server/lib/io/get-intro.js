@@ -24,7 +24,7 @@
         .lean()
 
         .exec(domain.intercept(function (intro) {
-          socket.emit('got intro', intro);  
+          socket.emit('got intro', intro);
         }));
     });
 
