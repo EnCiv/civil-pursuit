@@ -196,34 +196,72 @@
    */
 
   function hide (elem, cb) {
-    // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+    var emitter = new (require('events').EventEmitter)();
 
-    if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-      return false;
-    }
+    emitter.hiding = function (cb) {
+      this.on('hiding', cb);
+      return this;
+    };
 
-    console.log('%c hide', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+    emitter.hidden = function (cb) {
+      this.on('hidden', cb);
+      return this;
+    };
 
-    elem.removeClass('is-shown').addClass('is-hiding');;
+    emitter.error = function (cb) {
+      this.on('error', cb);
+      return this;
+    };
 
-    elem.find('.is-section:first').animate(
-      {
-        'margin-top': '-' + elem.height() + 'px',
-        // 'padding-top': elem.height() + 'px'
-      },
+    process.nextTick(function () {
 
-      1000,
+      var domain = require('domain').create();
 
-      function () {
-        elem.removeClass('is-hiding').addClass('is-hidden');
-
-        if ( cb ) cb();
+      domain.on('error', function (error) {
+        emitter.emit('error', error);
       });
 
-    elem.animate({
-       opacity: 0
-      }, 1000);
+      domain.run(function () {
+
+        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+        if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+          emitter.emit('bounced');
+          return false;
+        }
+
+        emitter.emit('hiding');
+
+        console.log('%c hide', 'font-weight: bold',
+          (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+        elem.removeClass('is-shown').addClass('is-hiding');;
+
+        elem.find('.is-section:first').animate(
+          {
+            'margin-top': '-' + elem.height() + 'px',
+            // 'padding-top': elem.height() + 'px'
+          },
+
+          1000,
+
+          function () {
+            elem.removeClass('is-hiding').addClass('is-hidden');
+
+            emitter.emit('hidden');
+
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 0
+          }, 1000);
+
+      });
+
+    })
+
+    return emitter;
   }
 
   module.exports = {

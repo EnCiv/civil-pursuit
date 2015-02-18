@@ -14,7 +14,7 @@
     // Assertion item already loaded
   }
 
-  function assertItem () {
+  function assertEvaluation () {
 
     var self = this;
     
@@ -23,9 +23,13 @@
     this.obj
       .should.be.an.Object;
 
+    // Evaluation's type should be a string
+
     this.obj
       .should.have.property('type')
         .which.is.a.String;
+
+    // Evaluation's item should be an ObjectID
 
     this.obj
       .should.have.property('item');
@@ -34,14 +38,20 @@
       .item.constructor.name
         .should.be.exactly('ObjectID');
 
+    // Evaluation's items should be an array
+
     this.obj
       .should.have.property('items')
         .which.is.an.Array;
+
+    // ... each item should be an item
 
     this.obj
       .items.forEach(function (item) {
         item.should.be.an.item;
       });
+
+    // Item should not be in items
 
     this.obj
       .items.forEach(function (item) {
@@ -50,14 +60,20 @@
         }
       });
 
+    // Evaluation's criterias should be an array
+
     this.obj
       .should.have.property('criterias')
         .which.is.an.Array;
+
+    // ... each criteria should be a criteria
 
     this.obj
       .criterias.forEach(function (criteria) {
         criteria.should.be.a.criteria;
       });
+
+    // Evaluation's crierias type should match
 
     this.obj
       .criterias.forEach(function (criteria) {
@@ -66,6 +82,6 @@
 
   }
 
-  module.exports = assertItem;
+  module.exports = assertEvaluation;
 
 } ();

@@ -15,12 +15,7 @@
 
   'use strict';
 
-  var Form      =   require('./Form');
-  var Nav       =   require('./Nav');
   var Panel     =   require('./Panel');
-  var Item      =   require('./Item');
-  var Upload    =   require('./Upload');
-  var YouTube   =   require('./YouTube');
 
   var text      =   {
     'looking up title': 'Looking up'
@@ -77,7 +72,223 @@
     }
   };
 
-  Creator.prototype.render = function (cb) {
+  Creator.prototype.render      =   require('./Creator/render');
+
+  Creator.prototype.create      =   require('./Creator/create');
+
+  Creator.prototype.created     =   require('./Creator/created');
+
+  Creator.prototype.packItem    =   require('./Creator/pack-item');
+
+  module.exports = Creator;
+
+} ();
+
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":13}],2:[function(require,module,exports){
+(function (process){
+! function () {
+  
+  'use strict';
+
+  var Nav       =   require('../Nav');
+  var Item      =   require('../Item');
+  var Stream    =   require('../Stream');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function save () {
+
+    // Self reference
+
+    var creator = this;
+
+    process.nextTick(function () {
+
+      app.domain.run(function () {
+
+        // Hide the Creator           // Catch errors
+
+        Nav.hide(creator.template)    .error(app.domain.intercept())
+
+          // Hiding complete
+
+          .hidden(function () {
+            
+            // Build the JSON object to save to MongoDB
+
+            creator.packItem();
+
+            // In case a file was uploaded
+
+            if ( creator.packaged.upload ) {
+
+              // Get file from template's data
+
+              var file = creator.template.find('.preview-image').data('file');
+
+              // New stream         //  Catch stream errors
+
+              new Stream(file)      .on('error', app.domain.intercept(function () {}))
+
+                .on('end', function () {
+                  creator.packaged.image = file.name;
+
+                  console.log('create item', creator.packaged);
+
+                  app.socket.emit('create item', creator.packaged);
+                })
+            }
+
+            // If nof ile was uploaded
+
+            else {
+              console.log('create item', creator.packaged);
+
+              app.socket.emit('create item', creator.packaged);
+            }
+
+            // Listen to answers
+
+            app.socket.once('could not create item', app.domain.intercept());
+
+            app.socket.once('created item', creator.created.bind(creator));
+          })
+
+      });
+
+    });
+
+    return false;
+  }
+
+  module.exports = save;
+
+} ();
+
+}).call(this,require('_process'))
+},{"../Item":10,"../Nav":12,"../Stream":24,"_process":33}],3:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Item    =   require('../Item');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function created (item) {
+    console.log('created item', item);
+
+    this.panel.template.find('.create-new').hide();
+
+    if ( this.packaged.upload ) {
+      item.upload = this.packaged.upload;
+    }
+
+    if ( this.packaged.youtube ) {
+      item.youtube = this.packaged.youtube;
+    }
+
+    var item  = new Item(item);
+
+    var items = this.panel.find('items');
+
+    item.get(app.domain.intercept(function () {
+      items.prepend(item.template);
+      item.render(app.domain.intercept(function () {
+        item.find('toggle promote').click();
+      }));
+    }));
+  }
+
+  module.exports = created;
+
+} ();
+
+},{"../Item":10}],4:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function packItem () {
+    
+    var item = {
+      type:           this.panel.type,
+      subject:        this.find('subject').val(),
+      description:    this.find('description').val(),
+      user:           synapp.user
+    };
+
+    // Parent
+
+    if ( this.panel.parent ) {
+      item.parent = this.panel.parent;
+    }
+
+    // References
+
+    if ( this.find('reference').val() ) {
+      item.references = [{ url: this.find('reference').val() }];
+
+      if ( this.find('reference board').text() && this.find('reference board').text() !== text['looking up title'] ) {
+        item.references[0].title = this.find('reference board').text();
+      }
+    }
+
+    // Image
+
+    if ( this.find('item media').find('img').length ) {
+
+      // YouTube
+
+      if ( this.find('item media').find('.youtube-preview').length ) {
+        item.youtube = this.find('item media').find('.youtube-preview').data('video');
+      }
+
+      // Upload
+
+      else {
+        item.upload = this.find('item media').find('img').attr('src');
+        item.image = item.upload;
+      }
+    }
+ 
+    this.packaged = item;
+  }
+
+  module.exports = packItem;
+
+} ();
+          synapp.user
+},{}],5:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Upload    =   require('../Upload');
+  var Form      =   require('../Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function render (cb) {
+    
     if ( ! this.template.length ) {
       return cb(new Error('Creator not found in panel ' + this.panel.getId()));  
     }
@@ -129,132 +340,16 @@
 
     var form = new Form(creator.template);
     
-    form.send(creator.save.bind(creator));
+    form.send(creator.create.bind(creator));
 
     cb();
-  };
+  }
 
-  /**
-   *  @method save
-   *  @return null
-   */
-
-  Creator.prototype.save = function () {
-
-    // Self reference
-
-    var creator = this;
-
-    // Hide the Creator
-
-    Nav.hide(creator.template, app.domain.intercept(function () {
-
-      // Build the JSON object to save to MongoDB
-
-      var new_item = creator.toItem();
-
-      // Adding user from global synapp
-
-      new_item.user = synapp.user;
-
-      // In case a file was uploaded
-
-      if ( new_item.upload ) {
-        var file = creator.template.find('.preview-image').data('file');
-
-        var stream = ss.createStream();
-
-        ss(app.socket).emit('upload image', stream,
-          { size: file.size, name: file.name });
-        
-        ss.createBlobReadStream(file).pipe(stream);
-
-        stream.on('end', function () {
-          new_item.image = file.name;
-
-          app.socket.emit('create item', new_item);
-        });
-      }
-
-      // If nof ile was uploaded
-
-      else {
-        console.log('create item', new_item);
-
-        app.socket.emit('create item', new_item);
-      }
-
-      app.socket.once('could not create item', app.domain.intercept());
-
-      app.socket.once('created item', function (item) {
-
-        console.log('created item', item);
-
-        creator.panel.template.find('.create-new').hide();
-
-        if ( new_item.upload ) {
-          item.upload = new_item.upload;
-        }
-
-        if ( new_item.youtube ) {
-          item.youtube = new_item.youtube;
-        }
-
-        var item  = new Item(item);
-
-        var items = creator.panel.find('items');
-
-        item.get(app.domain.intercept(function () {
-          items.prepend(item.template);
-          item.render(app.domain.intercept(function () {
-            item.find('toggle promote').click();
-          }));
-        }));
-      });
-
-    }));
-  };
-
-  Creator.prototype.toItem = function () {
-    var item = {
-      type:         this.panel.type,
-      subject:      this.find('subject').val(),
-      description:  this.find('description').val()
-    };
-
-    if ( this.panel.parent ) {
-      item.parent = this.panel.parent;
-    }
-
-    if ( this.find('reference').val() ) {
-      item.references = [{ url: this.find('reference').val() }];
-
-      if ( this.find('reference board').text() && this.find('reference board').text() !== text['looking up title'] ) {
-        item.references[0].title = this.find('reference board').text();
-      }
-    }
-
-
-    if ( this.find('item media').find('img').length ) {
-
-      if ( this.find('item media').find('.youtube-preview').length ) {
-        item.youtube = this.find('item media').find('.youtube-preview').data('video');
-      }
-
-      else {
-        item.upload = this.find('item media').find('img').attr('src');
-        item.image = item.upload;
-      }
-    }
- 
-    return item;
-  };
-
-  module.exports = Creator;
+  module.exports = render;
 
 } ();
 
-},{"./Form":4,"./Item":6,"./Nav":8,"./Panel":9,"./Upload":16,"./YouTube":17}],2:[function(require,module,exports){
+},{"../Form":8,"../Upload":27}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -510,7 +605,7 @@
 
 } ();
 
-},{"./Edit":3,"./Item":6,"./Nav":8}],3:[function(require,module,exports){
+},{"./Edit":7,"./Item":10,"./Nav":12}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -702,7 +797,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":8}],4:[function(require,module,exports){
+},{"./Creator":1,"./Item":10,"./Nav":12}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -779,7 +874,7 @@
 
 } ();
 
-},{}],5:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -834,7 +929,7 @@
 
 } ();
 
-},{"./Item":6,"./Truncate":15}],6:[function(require,module,exports){
+},{"./Item":10,"./Truncate":26}],10:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1185,7 +1280,7 @@
 
 } ();
 
-},{"./Details":2,"./Item/media":7,"./Nav":8,"./Panel":9,"./Promote":10,"./Truncate":15,"./YouTube":17}],7:[function(require,module,exports){
+},{"./Details":6,"./Item/media":11,"./Nav":12,"./Panel":13,"./Promote":14,"./Truncate":26,"./YouTube":28}],11:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1200,8 +1295,6 @@
 
   function itemMedia () {
 
-    console.log('getting item media of', this.item)
-
     // youtube video from references
 
     if ( this.item.references && this.item.references.length ) {
@@ -1214,13 +1307,9 @@
 
     // image
 
-    if ( this.item.image ) {
+    if ( this.item.image && /^http/.test(this.item.image) ) {
 
       var src = this.item.image;
-
-      if ( ! /^http/.test(this.item.image) ) {
-        src = synapp['default item image'];
-      }
 
       var image = $('<img/>');
 
@@ -1231,9 +1320,13 @@
       return image;
     }
 
+    // YouTube Cover Image
+
     if ( this.item.youtube ) {
       return YouTube('http://youtube.com/watch?v=' + this.item.youtube);
     }
+
+    // Uploaded image
 
     if ( this.item.upload ) {
       var src = this.item.image;
@@ -1262,7 +1355,8 @@
 
 } ();
 
-},{"../YouTube":17}],8:[function(require,module,exports){
+},{"../YouTube":28}],12:[function(require,module,exports){
+(function (process){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1461,34 +1555,72 @@
    */
 
   function hide (elem, cb) {
-    // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+    var emitter = new (require('events').EventEmitter)();
 
-    if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-      return false;
-    }
+    emitter.hiding = function (cb) {
+      this.on('hiding', cb);
+      return this;
+    };
 
-    console.log('%c hide', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+    emitter.hidden = function (cb) {
+      this.on('hidden', cb);
+      return this;
+    };
 
-    elem.removeClass('is-shown').addClass('is-hiding');;
+    emitter.error = function (cb) {
+      this.on('error', cb);
+      return this;
+    };
 
-    elem.find('.is-section:first').animate(
-      {
-        'margin-top': '-' + elem.height() + 'px',
-        // 'padding-top': elem.height() + 'px'
-      },
+    process.nextTick(function () {
 
-      1000,
+      var domain = require('domain').create();
 
-      function () {
-        elem.removeClass('is-hiding').addClass('is-hidden');
-
-        if ( cb ) cb();
+      domain.on('error', function (error) {
+        emitter.emit('error', error);
       });
 
-    elem.animate({
-       opacity: 0
-      }, 1000);
+      domain.run(function () {
+
+        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+        if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+          emitter.emit('bounced');
+          return false;
+        }
+
+        emitter.emit('hiding');
+
+        console.log('%c hide', 'font-weight: bold',
+          (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+        elem.removeClass('is-shown').addClass('is-hiding');;
+
+        elem.find('.is-section:first').animate(
+          {
+            'margin-top': '-' + elem.height() + 'px',
+            // 'padding-top': elem.height() + 'px'
+          },
+
+          1000,
+
+          function () {
+            elem.removeClass('is-hiding').addClass('is-hidden');
+
+            emitter.emit('hidden');
+
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 0
+          }, 1000);
+
+      });
+
+    })
+
+    return emitter;
   }
 
   module.exports = {
@@ -1502,7 +1634,8 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":33,"domain":30,"events":31}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1728,7 +1861,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":6,"./Nav":8}],10:[function(require,module,exports){
+},{"./Creator":1,"./Item":10,"./Nav":12}],14:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1745,10 +1878,9 @@
 
   'use strict';
 
-  var Item = require('./Item');
-
-  var Nav = require('./Nav');
-  var Edit = require('./Edit');
+  var Item      =   require('./Item');
+  var Nav       =   require('./Nav');
+  var Edit      =   require('./Edit');
 
   /**
    *  @class Promote
@@ -1789,12 +1921,111 @@
   }
 
   /**
-   *  @method find
-   *  @arg {string} name
-   *  @arg {Mixed} more
+   *  @method renderLimit
    */
 
-  Promote.prototype.find = function (name, more) {
+  Promote.prototype.renderLimit = function () {
+    this.find('limit').text(this.evaluation.limit);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderCursor = function () {
+    this.find('cursor').text(this.evaluation.cursor);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderLeft = function () {
+    this.renderItem('left');
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.edit = function (key, value) {
+    this.evaluation[key] = value;
+
+    this.watch.emit(key);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.$bind = function (key, binder) {
+    this.watch.on(key, binder);
+  };
+
+  /**
+   *
+   */
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderRight = function () {
+    this.renderItem('right');
+  };
+
+  /**
+   *  @description Selector aliases getter
+   */
+
+  Promote.prototype.find            =     require('./Promote/find');
+
+  /**
+   *  @description render one of the sides in a side by side
+   */
+
+  Promote.prototype.renderItem      =     require('./Promote/render-item');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.render          =     require('./Promote/render');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.get             =     require('./Promote/get');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.finish          =     require('./Promote/finish');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.save            =     require('./Promote/save');
+
+  module.exports = Promote;
+
+} ();
+
+},{"./Edit":7,"./Item":10,"./Nav":12,"./Promote/find":15,"./Promote/finish":16,"./Promote/get":17,"./Promote/render":19,"./Promote/render-item":18,"./Promote/save":20,"events":31}],15:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function find (name, more) {
     switch ( name ) {
       case 'cursor':
         return this.template.find('.cursor');
@@ -1841,45 +2072,128 @@
       case 'edit and go again button':
         return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
     }
-  };
+  }
+
+  module.exports = find;
+
+} ();
+
+},{}],16:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../Nav');
 
   /**
-   *  @method renderLimit
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.renderLimit = function () {
-    this.find('limit').text(this.evaluation.limit);
-  };
+  function finish () {
+    var promote = this;
+
+    promote.find('promote button').off('click');
+    promote.find('finish button').off('click');
+
+    if ( promote.evaluation.left ) {
+      this.save('left');
+    }
+
+    if ( promote.evaluation.right ) {
+      this.save('right');
+    }
+
+    Nav.unreveal(promote.template, promote.item.template,
+      app.domain.intercept(function () {
+
+        promote.item.details.get();
+
+        promote.item.find('toggle details').click();
+
+        promote.item.find('details').find('.feedback-pending')
+          .removeClass('hide');
+
+        promote.evaluation = null;
+      }));
+  }
+
+  module.exports = finish;
+
+} ();
+
+},{"../Nav":12}],17:[function(require,module,exports){
+! function () {
+  
+  'use strict';
 
   /**
-   *
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.renderCursor = function () {
-    this.find('cursor').text(this.evaluation.cursor);
-  };
+  function get (cb) {
+    var promote = this;
+
+    if ( ! this.evaluation ) {
+
+      // Get evaluation via sockets
+
+      app.socket.emit('get evaluation', this.item.item._id);
+
+      app.socket.once('got evaluation', function (evaluation) {
+        console.info('got evaluation', evaluation);
+
+        promote.evaluation = evaluation;
+
+        var limit = 5;
+
+        if ( evaluation.items.length < 6 ) {
+          limit = evaluation.items.length - 1;
+
+          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
+            limit = 1;
+          }
+        }
+
+        promote.edit('limit', limit);
+
+        promote.edit('cursor', 1);
+
+        promote.edit('left', evaluation.items[0]);
+
+        promote.edit('right', evaluation.items[1]);
+
+        cb();
+
+      });
+    }
+
+    else {
+      cb();
+    }
+  }
+
+  module.exports = get;
+
+} ();
+
+},{}],18:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../Nav');
 
   /**
-   *
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.renderLeft = function () {
-    this.renderItem('left');
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.renderRight = function () {
-    this.renderItem('right');
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.renderItem = function (hand) {
+  function renderItem (hand) {
     var promote = this;
 
     var reverse = hand === 'left' ? 'right' : 'left';
@@ -1913,7 +2227,7 @@
     // Image
 
     this.find('item image', hand).empty().append(
-      new (require('./Item'))(this.evaluation[hand]).media());
+      new (require('../Item'))(this.evaluation[hand]).media());
 
     // Sliders
 
@@ -2028,14 +2342,26 @@
       }));
     });
 
-  };
+  }
+
+  module.exports = renderItem;
+
+} ();
+
+},{"../Item":10,"../Nav":12}],19:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../Nav');
 
   /**
-   *  @method
-   *  @arg {function} cb
+   *  @method Promote.render
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.render = function (cb) {
+  function render (cb) {
     var promote = this;
 
     promote.find('finish button').on('click', function () {
@@ -2088,105 +2414,24 @@
 
       }));
     });
-  };
+  }
 
-  Promote.prototype.get = function (cb) {
-    var promote = this;
+  module.exports = render;
 
-    if ( ! this.evaluation ) {
+} ();
 
-      // Get evaluation via sockets
-
-      app.socket.emit('get evaluation', this.item.item._id);
-
-      app.socket.once('got evaluation', function (evaluation) {
-        console.log('got evaluation', evaluation);
-
-        promote.evaluation = evaluation;
-
-        var limit = 5;
-
-        if ( evaluation.items.length < 6 ) {
-          limit = evaluation.items.length - 1;
-
-          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
-            limit = 1;
-          }
-        }
-
-        promote.edit('limit', limit);
-
-        promote.edit('cursor', 1);
-
-        promote.edit('left', evaluation.items[0]);
-
-        promote.edit('right', evaluation.items[1]);
-
-        cb();
-
-      });
-    }
-
-    else {
-      cb();
-    }
-  };
+},{"../Nav":12}],20:[function(require,module,exports){
+! function () {
+  
+  'use strict';
 
   /**
-   *  @method finish
+   *  @function
+   *  @return
+   *  @arg
    */
 
-  Promote.prototype.finish = function () {
-    var promote = this;
-
-    promote.find('promote button').off('click');
-    promote.find('finish button').off('click');
-
-    if ( promote.evaluation.left ) {
-      this.save('left');
-    }
-
-    if ( promote.evaluation.right ) {
-      this.save('right');
-    }
-
-    Nav.unreveal(promote.template, promote.item.template,
-      app.domain.intercept(function () {
-
-        promote.item.details.get();
-
-        promote.item.find('toggle details').click();
-
-        promote.item.find('details').find('.feedback-pending')
-          .removeClass('hide');
-
-        promote.evaluation = null;
-      }));
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.edit = function (key, value) {
-    this.evaluation[key] = value;
-
-    this.watch.emit(key);
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.$bind = function (key, binder) {
-    this.watch.on(key, binder);
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.save = function (hand) {
+  function save (hand) {
 
     var promote = this;
    
@@ -2227,13 +2472,13 @@
       });
 
     app.socket.emit('insert votes', votes);
-  };
+  }
 
-  module.exports = Promote;
+  module.exports = save;
 
 } ();
 
-},{"./Edit":3,"./Item":6,"./Nav":8,"events":20}],11:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2341,7 +2586,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2562,7 +2807,7 @@
 
 } ();
 
-},{"./Nav":8,"./Sign/forgot-password":13}],13:[function(require,module,exports){
+},{"./Nav":12,"./Sign/forgot-password":23}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2674,7 +2919,46 @@
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Stream (file) {
+
+    var stream = ss.createStream();
+
+    // stream.end = function (cb) {
+    //   this.on('end', cb);
+
+    //   return this;
+    // };
+
+    // stream.error = function (cb) {
+    //   this.on('error', cb);
+
+    //   return this;
+    // };
+
+    ss(app.socket).emit('upload image', stream,
+      { size: file.size, name: file.name });
+    
+    ss.createBlobReadStream(file).pipe(stream);
+
+    return stream;
+  }
+
+  module.exports = Stream;
+
+} ();
+
+},{}],25:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2808,7 +3092,7 @@
 
 } ();
 
-},{"./Intro":5,"./Panel":9,"./Sign":12,"domain":19,"events":20,"util":24}],15:[function(require,module,exports){
+},{"./Intro":9,"./Panel":13,"./Sign":22,"domain":30,"events":31,"util":35}],26:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3031,7 +3315,7 @@
 
 }();
 
-},{"./Nav":8}],16:[function(require,module,exports){
+},{"./Nav":12}],27:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3110,7 +3394,7 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3185,7 +3469,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3204,45 +3488,75 @@
 
 } ();
 
-},{"../Reset-password":11,"../Sign":12,"../Synapp":14}],19:[function(require,module,exports){
+},{"../Reset-password":21,"../Sign":22,"../Synapp":25}],30:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
-	var events = require('events');
+	var events = require('events')
 
 	// Export Domain
-	var domain = {};
+	var domain = {}
 	domain.createDomain = domain.create = function(){
-		var d = new events.EventEmitter();
+		var d = new events.EventEmitter()
 
 		function emitError(e) {
 			d.emit('error', e)
 		}
 
 		d.add = function(emitter){
-			emitter.on('error', emitError);
+			emitter.on('error', emitError)
 		}
 		d.remove = function(emitter){
-			emitter.removeListener('error', emitError);
+			emitter.removeListener('error', emitError)
+		}
+		d.bind = function(fn){
+			return function(){
+				var args = Array.prototype.slice.call(arguments)
+				try {
+					fn.apply(null, args)
+				}
+				catch (err){
+					emitError(err)
+				}
+			}
+		}
+		d.intercept = function(fn){
+			return function(err){
+				if ( err ) {
+					emitError(err)
+				}
+				else {
+					var args = Array.prototype.slice.call(arguments, 1)
+					try {
+						fn.apply(null, args)
+					}
+					catch (err){
+						emitError(err)
+					}
+				}
+			}
 		}
 		d.run = function(fn){
 			try {
-				fn();
+				fn()
 			}
 			catch (err) {
-				this.emit('error', err);
+				emitError(err)
 			}
-			return this;
+			return this
 		};
 		d.dispose = function(){
-			this.removeAllListeners();
-			return this;
+			this.removeAllListeners()
+			return this
 		};
-		return d;
+		d.enter = d.exit = function(){
+			return this
+		}
+		return d
 	};
-	return domain;
-}).call(this);
-},{"events":20}],20:[function(require,module,exports){
+	return domain
+}).call(this)
+},{"events":31}],31:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3545,7 +3859,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],21:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3570,7 +3884,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],22:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3658,14 +3972,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],23:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],24:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4255,4 +4569,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":23,"_process":22,"inherits":21}]},{},[18]);
+},{"./support/isBuffer":34,"_process":33,"inherits":32}]},{},[29]);

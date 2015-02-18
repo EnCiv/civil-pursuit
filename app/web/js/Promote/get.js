@@ -11,18 +11,6 @@
   function get (cb) {
     var promote = this;
 
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-    console.log('i')
-
     if ( ! this.evaluation ) {
 
       // Get evaluation via sockets
@@ -30,15 +18,7 @@
       app.socket.emit('get evaluation', this.item.item._id);
 
       app.socket.once('got evaluation', function (evaluation) {
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
-        console.log('got evaluation', evaluation);
+        console.info('got evaluation', evaluation);
 
         promote.evaluation = evaluation;
 

@@ -12,8 +12,6 @@
 
   function itemMedia () {
 
-    console.log('getting item media of', this.item)
-
     // youtube video from references
 
     if ( this.item.references && this.item.references.length ) {
@@ -26,13 +24,9 @@
 
     // image
 
-    if ( this.item.image ) {
+    if ( this.item.image && /^http/.test(this.item.image) ) {
 
       var src = this.item.image;
-
-      if ( ! /^http/.test(this.item.image) ) {
-        src = synapp['default item image'];
-      }
 
       var image = $('<img/>');
 
@@ -43,9 +37,13 @@
       return image;
     }
 
+    // YouTube Cover Image
+
     if ( this.item.youtube ) {
       return YouTube('http://youtube.com/watch?v=' + this.item.youtube);
     }
+
+    // Uploaded image
 
     if ( this.item.upload ) {
       var src = this.item.image;
