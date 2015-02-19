@@ -84,7 +84,7 @@
 
 } ();
 
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":13}],2:[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":16}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -170,7 +170,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":10,"../Nav":12,"../Stream":23,"_process":32}],3:[function(require,module,exports){
+},{"../Item":10,"../Nav":15,"../Stream":26,"_process":35}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -349,7 +349,7 @@
 
 } ();
 
-},{"../Form":8,"../Upload":26}],6:[function(require,module,exports){
+},{"../Form":8,"../Upload":29}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -605,7 +605,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":10,"./Nav":12}],7:[function(require,module,exports){
+},{"./Edit":7,"./Item":10,"./Nav":15}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -797,7 +797,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":10,"./Nav":12}],8:[function(require,module,exports){
+},{"./Creator":1,"./Item":10,"./Nav":15}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -929,34 +929,21 @@
 
 } ();
 
-},{"./Item":10,"./Truncate":25}],10:[function(require,module,exports){
+},{"./Item":10,"./Truncate":28}],10:[function(require,module,exports){
 /*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  ITEM
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
+ *   ::    I   t   e   m     ::
+ *
+ *
 */
 
-! function () {
+! function _Item_ () {
   
   'use strict';
 
-  var Nav         =   require('./Nav');
-  var Promote     =   require('./Promote');
-  var Details     =   require('./Details');
-  var YouTube     =   require('./YouTube');
-  var Truncate    =   require('./Truncate');
-  var Panel       =   require('./Panel');
+  /**
+    * @class  Item
+    * @arg    {Item} item
+    */
 
   function Item (item) {
 
@@ -975,27 +962,30 @@
     });
   }
 
-  Item.prototype.get = function (cb) {
-    var item = this;
+  Item.prototype.get        =   require('./Item/get');
 
-    $.ajax({
-      url: '/partial/item-box'
-    })
+  Item.prototype.find       =   require('./Item/find');
 
-      .error(cb)
+  Item.prototype.render     =   require('./Item/render');
 
-      .success(function (data) {
-        item.template = $(data);
+  Item.prototype.media      =   require('./Item/media');
 
-        app.cache.template.item = item.template;
+  module.exports = Item;
 
-        cb(null, item.template);
-      });
+} ();
 
-    return this;
-  };
+},{"./Item/find":11,"./Item/get":12,"./Item/media":13,"./Item/render":14}],11:[function(require,module,exports){
+! function () {
+  
+  'use strict';
 
-  Item.prototype.find = function (name) {
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function find (name) {
     switch ( name ) {
       case 'subject':
         return this.template.find('.item-title:first a');
@@ -1039,248 +1029,48 @@
       case 'children':
         return this.template.find('.children:first');
     }
-  };
+  }
 
-  Item.prototype.render = function (cb) {
-
-    var item = this;
-
-    // Create reference to promote
-
-    this.promote = new Promote(this);
-
-    // Create reference to details
-
-    this.details = new Details(this);
-
-    // Set ID
-
-    item.template.attr('id', 'item-' + item.item._id);
-
-    // Set Data
-
-    item.template.data('item', this);
-
-    // Subject
-
-    item.find('subject').text(item.item.subject);
-
-    // Description
-
-    item.find('description').text(item.item.description);
-
-    // Media
-
-    item.find('media').empty().append(this.media());
-
-    // References
-
-    if ( item.item.references.length ) {
-      item.find('reference')
-        .attr('href', item.item.references[0].url)
-        .text(item.item.references[0].title || item.item.references[0].url);
-    }
-    else {
-      item.find('reference').empty();
-    }
-
-    // Number of promotions
-
-    item.find('promotions').text(item.item.promotions);
-
-    // Percent of promotions
-
-    item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
-
-    // Truncate
-
-    setTimeout(function () {
-      new Truncate(item.template);
-    }, 800);
-
-    // Toggle promote
-
-    item.find('toggle promote').on('click', function () {
-
-      var $item   =   $(this).closest('.item');
-      var item    =   $item.data('item');
-
-      if ( $('.creator.is-shown') ) {
-        Nav.hide($('.creator.is-shown'));
-      }
-
-      Nav.toggle(item.find('promote'), item.template, app.domain.intercept(function () {
-        item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
-      }));
-    });
-
-    // Toggle details
-
-    item.find('toggle details').on('click', function () {
-      
-      var $item   =   $(this).closest('.item');
-      var item    =   $item.data('item');
-
-      if ( item.find('promote').hasClass('is-showing') ) {
-        return false;
-      }
-
-      if ( item.find('promote').hasClass('is-shown') ) {
-        Nav.hide(item.find('promote'));
-      }
-
-      var hiders = $('.details.is-shown');
-
-      Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
-        if ( item.find('details').hasClass('is-shown') ) {
-
-          if ( ! item.find('details').hasClass('is-loaded') ) {
-            item.find('details').addClass('is-loaded');
-
-            item.details.render(app.domain.intercept());
-          }
-
-          if ( hiders.length ) {
-            Nav.hide(hiders);
-          }
-        }
-      }));
-
-    });
-
-    // Toggle arrow
-
-    item.find('toggle arrow').on('click', function () {
-
-      var $item   =   $(this).closest('.item');
-      var item    =   $item.data('item');
-      var arrow   =   $(this).find('i');
-
-      Nav.toggle(item.find('children'), item.template, app.domain.intercept(function () {
-
-        if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
-
-          switch ( item.item.type ) {
-            case 'Topic':
-
-              item.find('children').addClass('is-loaded');
-
-              var panelProblem = new (require('./Panel'))('Problem', item.item._id);
-
-              panelProblem.get(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelProblem.render(app.domain.intercept(function () {
-                    panelProblem.fill(app.domain.intercept());
-                  }));
-                }, 700);
-              }));
-              break;
-
-            case 'Problem':
-
-              var panelSolution = new (require('./Panel'))('Solution', item.item._id);
-
-              panelSolution.get(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelSolution.render(app.domain.intercept(function () {
-                    panelSolution.fill(app.domain.intercept());
-                  }));
-                }, 700);
-              }));
-
-              var split = $('<div class="row padding-bottom"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelAgree = new (require('./Panel'))('Agree', item.item._id);
-
-              panelAgree.get(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelAgree.render(app.domain.intercept(function () {
-                    panelAgree.fill(app.domain.intercept());
-                  }));
-                }, 700);
-              }));
-
-              var panelDisagree = new (require('./Panel'))('Disagree', item.item._id);
-
-              panelDisagree.get(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-                
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelDisagree.render(app.domain.intercept(function () {
-                    panelDisagree.fill(app.domain.intercept());
-                  }));
-                }, 700);
-              }));
-              break;
-
-            case 'Solution':
-
-              var split = $('<div class="row padding-bottom"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelPro = new (require('./Panel'))('Pro', item.item._id);
-
-              panelPro.get(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelPro.render(app.domain.intercept(function () {
-                    panelPro.fill(app.domain.intercept());
-                  }));
-                }, 700);
-              }));
-
-              var panelCon = new (require('./Panel'))('Con', item.item._id);
-
-              panelCon.get(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelCon.render(app.domain.intercept(function () {
-                    panelCon.fill(app.domain.intercept());
-                  }));
-                }, 700);
-              }));
-              break;
-          }
-        }
-
-        if ( arrow.hasClass('fa-arrow-down') ) {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-        else {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-      }));
-    });
-
-    cb();
-  };
-
-  Item.prototype.media = require('./Item/media');
-
-  module.exports = Item;
+  module.exports = find;
 
 } ();
 
-},{"./Details":6,"./Item/media":11,"./Nav":12,"./Panel":13,"./Promote":14,"./Truncate":25,"./YouTube":27}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function get (cb) {
+    var item = this;
+
+    $.ajax({
+      url: '/partial/item-box'
+    })
+
+      .error(cb)
+
+      .success(function (data) {
+        item.template = $(data);
+
+        app.cache.template.item = item.template;
+
+        cb(null, item.template);
+      });
+
+    return this;
+  }
+
+  module.exports = get;
+
+} ();
+
+},{}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1355,7 +1145,267 @@
 
 } ();
 
-},{"../YouTube":27}],12:[function(require,module,exports){
+},{"../YouTube":30}],14:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Truncate    =   require('../Truncate');
+  var Promote     =   require('../Promote');
+  var Details     =   require('../Details');
+  var Nav         =   require('../Nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function render (cb) {
+  
+    var item = this;
+
+    // Create reference to promote
+
+    this.promote = new Promote(this);
+
+    // Create reference to details
+
+    this.details = new Details(this);
+
+    // Set ID
+
+    item.template.attr('id', 'item-' + item.item._id);
+
+    // Set Data
+
+    item.template.data('item', this);
+
+    // Subject
+
+    item.find('subject').text(item.item.subject);
+
+    // Description
+
+    item.find('description').text(item.item.description);
+
+    // Media
+
+    item.find('media').empty().append(this.media());
+
+    // References
+
+    if ( (item.item.references) && item.item.references.length ) {
+      item.find('reference')
+        .attr('href', item.item.references[0].url)
+        .text(item.item.references[0].title || item.item.references[0].url);
+    }
+    else {
+      item.find('reference').empty();
+    }
+
+    // Number of promotions
+
+    item.find('promotions').text(item.item.promotions);
+
+    // Percent of promotions
+
+    item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
+
+    // Truncate
+
+    setTimeout(function () {
+      new Truncate(item.template);
+    }, 800);
+
+    // Toggle promote
+
+    item.find('toggle promote').on('click', function (e) {
+
+      var $trigger    =   $(this);
+      var $item       =   $trigger.closest('.item');
+      var item        =   $item.data('item');
+
+      if ( $('.creator.is-shown').length ) {
+        Nav
+          .hide($('.creator.is-shown'))
+          .hidden(function () {
+            $trigger.click();
+          });
+
+        return false;
+      }
+
+      Nav.toggle(item.find('promote'), item.template, app.domain.intercept(function () {
+        item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
+      }));
+    });
+
+    // Toggle details
+
+    item.find('toggle details').on('click', function () {
+      
+      var $item   =   $(this).closest('.item');
+      var item    =   $item.data('item');
+
+      if ( item.find('promote').hasClass('is-showing') ) {
+        return false;
+      }
+
+      if ( item.find('promote').hasClass('is-shown') ) {
+        Nav.hide(item.find('promote'));
+      }
+
+      var hiders = $('.details.is-shown');
+
+      Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
+        if ( item.find('details').hasClass('is-shown') ) {
+
+          if ( ! item.find('details').hasClass('is-loaded') ) {
+            item.find('details').addClass('is-loaded');
+
+            item.details.render(app.domain.intercept());
+          }
+
+          if ( hiders.length ) {
+            Nav.hide(hiders);
+          }
+        }
+      }));
+
+    });
+
+    // Toggle arrow
+
+    item.find('toggle arrow').on('click', function () {
+
+      var $item   =   $(this).closest('.item');
+      var item    =   $item.data('item');
+      var arrow   =   $(this).find('i');
+
+      Nav.toggle(item.find('children'), item.template, app.domain.intercept(function () {
+
+        if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
+
+          switch ( item.item.type ) {
+            case 'Topic':
+
+              item.find('children').addClass('is-loaded');
+
+              var panelProblem = new (require('../Panel'))('Problem', item.item._id);
+
+              panelProblem.get(app.domain.intercept(function (template) {
+                item.find('children').append(template);
+
+                setTimeout(function () {
+                  panelProblem.render(app.domain.intercept(function () {
+                    panelProblem.fill(app.domain.intercept());
+                  }));
+                }, 700);
+              }));
+              break;
+
+            case 'Problem':
+
+              var panelSolution = new (require('../Panel'))('Solution', item.item._id);
+
+              panelSolution.get(app.domain.intercept(function (template) {
+                item.find('children').append(template);
+
+                setTimeout(function () {
+                  panelSolution.render(app.domain.intercept(function () {
+                    panelSolution.fill(app.domain.intercept());
+                  }));
+                }, 700);
+              }));
+
+              var split = $('<div class="row padding-bottom"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
+
+              item.find('children').append(split);
+
+              var panelAgree = new (require('../Panel'))('Agree', item.item._id);
+
+              panelAgree.get(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+
+                split.find('.left-split').append(template);
+
+                setTimeout(function () {
+                  panelAgree.render(app.domain.intercept(function () {
+                    panelAgree.fill(app.domain.intercept());
+                  }));
+                }, 700);
+              }));
+
+              var panelDisagree = new (require('../Panel'))('Disagree', item.item._id);
+
+              panelDisagree.get(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+                
+                split.find('.right-split').append(template);
+
+                setTimeout(function () {
+                  panelDisagree.render(app.domain.intercept(function () {
+                    panelDisagree.fill(app.domain.intercept());
+                  }));
+                }, 700);
+              }));
+              break;
+
+            case 'Solution':
+
+              var split = $('<div class="row padding-bottom"><div class="col-xs-12 col-sm-6 left-split"></div><div class="col-xs-12 col-sm-6 right-split"></div></div>');
+
+              item.find('children').append(split);
+
+              var panelPro = new (require('../Panel'))('Pro', item.item._id);
+
+              panelPro.get(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+
+                split.find('.left-split').append(template);
+
+                setTimeout(function () {
+                  panelPro.render(app.domain.intercept(function () {
+                    panelPro.fill(app.domain.intercept());
+                  }));
+                }, 700);
+              }));
+
+              var panelCon = new (require('../Panel'))('Con', item.item._id);
+
+              panelCon.get(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+
+                split.find('.right-split').append(template);
+
+                setTimeout(function () {
+                  panelCon.render(app.domain.intercept(function () {
+                    panelCon.fill(app.domain.intercept());
+                  }));
+                }, 700);
+              }));
+              break;
+          }
+        }
+
+        if ( arrow.hasClass('fa-arrow-down') ) {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+        else {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+      }));
+    });
+
+    cb();
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"../Details":6,"../Nav":15,"../Panel":16,"../Promote":17,"../Truncate":28}],15:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -1405,30 +1455,52 @@
    */
 
   function reveal (elem, poa, cb) {
-    if ( ! elem.hasClass('is-toggable') ) {
-      elem.addClass('is-toggable');
-    }
+    var emitter = new (require('events').EventEmitter)();
 
-    console.log('%c reveal', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
+    emitter.revealed = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
 
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
 
-    elem.removeClass('is-hidden').addClass('is-showing');
+    setTimeout(function () {
+      if ( ! elem.hasClass('is-toggable') ) {
+        elem.addClass('is-toggable');
+      }
 
-    if ( poa ) {
-      scroll(poa, function () {
-        show(elem, cb);
-      });
-    }
+      console.log('%c reveal', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
 
-    else {
-      show(elem, cb);
-    }
+      if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+        var error = new Error('Animation already in progress');
+        error.code = 'ANIMATION_IN_PROGRESS';
+        return cb(error);
+      }
+
+      elem.removeClass('is-hidden').addClass('is-showing');
+
+      if ( poa ) {
+        scroll(poa, function () {
+          show(elem, function () {
+            emitter.emit('success');
+            cb();
+          });
+        });
+      }
+
+      else {
+        show(elem, function () {
+          emitter.emit('success');
+          cb();
+        });
+      }
+    });
+
+    return emitter;
   }
 
   /**
@@ -1477,7 +1549,19 @@
     // console.log('%c scroll', 'font-weight: bold',
     //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
 
-    var poa = (pointOfAttention.offset().top - 80);
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.scrolled = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    var poa = (pointOfAttention.offset().top - 50);
 
     var current = $('body,html').scrollTop();
 
@@ -1490,14 +1574,24 @@
       (current > poa && (current - poa < 50)) ||
       (poa > current && (poa - current < 50)) ) {
 
+      emitter.emit('success');
+
       return typeof cb === 'function' ? cb() : true;
     }
 
-    $.when($('body,html')
-      .animate({
-        scrollTop: poa + 'px'
-      }, 500, 'swing'))
-      .then(cb);
+    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing'))
+      
+      .then(function () {
+
+        emitter.emit('success');
+
+        if ( typeof cb === 'function' ) {
+          cb();
+        }
+
+      });
+
+    return emitter;
   }
 
   /**
@@ -1507,45 +1601,68 @@
    */
 
   function show (elem, cb) {
-    if ( typeof cb !== 'function' ) {
-      cb = function () {};
-    }
 
-    console.log('%c show', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+    var emitter = new (require('events').EventEmitter)();
 
-    // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-    
-    if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-      cb(new Error('Show failed'));
-      return false;
-    }
+    emitter.shown = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
 
-    // make sure margin-top is equal to height for smooth scrolling
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
 
-    elem.css('margin-top', '-' + elem.height() + 'px');
+    setTimeout(function () {
 
-    // animate is-section
+      console.log('%c show', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
 
-    $.when(elem.find('.is-section:first')
-      .animate({
-        marginTop: 0
-      }, 500))
-    .then(function () {
-      elem.removeClass('is-showing').addClass('is-shown');
-        
-      if ( elem.css('margin-top') !== 0 ) {
-        elem.animate({'margin-top': 0}, 250);
-      }
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
       
-      if ( cb ) {
-        cb();
-      }      
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+
+        emitter.emit('error', new Error('Already in progress'));
+        
+        if ( typeof cb === 'function' ) {
+          cb(new Error('Show failed'));
+        }
+
+        return false;
+      }
+
+      // make sure margin-top is equal to height for smooth scrolling
+
+      elem.css('margin-top', '-' + elem.height() + 'px');
+
+      // animate is-section
+
+      $.when(elem.find('.is-section:first')
+        .animate({
+          marginTop: 0
+        }, 500))
+      .then(function () {
+        elem.removeClass('is-showing').addClass('is-shown');
+          
+        if ( elem.css('margin-top') !== 0 ) {
+          elem.animate({'margin-top': 0}, 250);
+        }
+
+        emitter.emit('success');
+        
+        if ( cb ) {
+          cb();
+        }      
+      });
+
+      elem.animate({
+         opacity: 1
+        }, 500);
+
     });
 
-    elem.animate({
-       opacity: 1
-      }, 500);
+    return emitter;
   }
 
   /**
@@ -1635,7 +1752,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":32,"domain":29,"events":30}],13:[function(require,module,exports){
+},{"_process":35,"domain":32,"events":33}],16:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1861,7 +1978,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":10,"./Nav":12}],14:[function(require,module,exports){
+},{"./Creator":1,"./Item":10,"./Nav":15}],17:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2014,7 +2131,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":10,"./Nav":12,"./Promote/find":15,"./Promote/finish":16,"./Promote/get":17,"./Promote/render":19,"./Promote/render-item":18,"./Promote/save":20,"events":30}],15:[function(require,module,exports){
+},{"./Edit":7,"./Item":10,"./Nav":15,"./Promote/find":18,"./Promote/finish":19,"./Promote/get":20,"./Promote/render":22,"./Promote/render-item":21,"./Promote/save":23,"events":33}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2078,7 +2195,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2123,7 +2240,7 @@
 
 } ();
 
-},{"../Nav":12}],17:[function(require,module,exports){
+},{"../Nav":15}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2180,7 +2297,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2348,7 +2465,7 @@
 
 } ();
 
-},{"../Item":10,"../Nav":12}],19:[function(require,module,exports){
+},{"../Item":10,"../Nav":15}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2420,7 +2537,7 @@
 
 } ();
 
-},{"../Nav":12}],20:[function(require,module,exports){
+},{"../Nav":15}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2478,7 +2595,7 @@
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2699,7 +2816,7 @@
 
 } ();
 
-},{"./Nav":12,"./Sign/forgot-password":22}],22:[function(require,module,exports){
+},{"./Nav":15,"./Sign/forgot-password":25}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2811,7 +2928,7 @@
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2850,7 +2967,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2984,7 +3101,7 @@
 
 } ();
 
-},{"./Intro":9,"./Panel":13,"./Sign":21,"domain":29,"events":30,"util":34}],25:[function(require,module,exports){
+},{"./Intro":9,"./Panel":16,"./Sign":24,"domain":32,"events":33,"util":37}],28:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3207,7 +3324,7 @@
 
 }();
 
-},{"./Nav":12}],26:[function(require,module,exports){
+},{"./Nav":15}],29:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3286,7 +3403,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3361,7 +3478,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3396,7 +3513,7 @@
 
 } ();
 
-},{"../Intro":9,"../Panel":13,"../Sign":21,"../Synapp":24}],29:[function(require,module,exports){
+},{"../Intro":9,"../Panel":16,"../Sign":24,"../Synapp":27}],32:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3464,7 +3581,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":30}],30:[function(require,module,exports){
+},{"events":33}],33:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3767,7 +3884,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],31:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3792,7 +3909,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],32:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3880,14 +3997,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],33:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4477,4 +4594,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":33,"_process":32,"inherits":31}]},{},[28]);
+},{"./support/isBuffer":36,"_process":35,"inherits":34}]},{},[31]);

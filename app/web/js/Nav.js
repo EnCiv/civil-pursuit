@@ -46,30 +46,52 @@
    */
 
   function reveal (elem, poa, cb) {
-    if ( ! elem.hasClass('is-toggable') ) {
-      elem.addClass('is-toggable');
-    }
+    var emitter = new (require('events').EventEmitter)();
 
-    console.log('%c reveal', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
+    emitter.revealed = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
 
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
 
-    elem.removeClass('is-hidden').addClass('is-showing');
+    setTimeout(function () {
+      if ( ! elem.hasClass('is-toggable') ) {
+        elem.addClass('is-toggable');
+      }
 
-    if ( poa ) {
-      scroll(poa, function () {
-        show(elem, cb);
-      });
-    }
+      console.log('%c reveal', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
 
-    else {
-      show(elem, cb);
-    }
+      if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+        var error = new Error('Animation already in progress');
+        error.code = 'ANIMATION_IN_PROGRESS';
+        return cb(error);
+      }
+
+      elem.removeClass('is-hidden').addClass('is-showing');
+
+      if ( poa ) {
+        scroll(poa, function () {
+          show(elem, function () {
+            emitter.emit('success');
+            cb();
+          });
+        });
+      }
+
+      else {
+        show(elem, function () {
+          emitter.emit('success');
+          cb();
+        });
+      }
+    });
+
+    return emitter;
   }
 
   /**
@@ -118,7 +140,19 @@
     // console.log('%c scroll', 'font-weight: bold',
     //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
 
-    var poa = (pointOfAttention.offset().top - 80);
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.scrolled = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    var poa = (pointOfAttention.offset().top - 50);
 
     var current = $('body,html').scrollTop();
 
@@ -131,14 +165,24 @@
       (current > poa && (current - poa < 50)) ||
       (poa > current && (poa - current < 50)) ) {
 
+      emitter.emit('success');
+
       return typeof cb === 'function' ? cb() : true;
     }
 
-    $.when($('body,html')
-      .animate({
-        scrollTop: poa + 'px'
-      }, 500, 'swing'))
-      .then(cb);
+    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing'))
+      
+      .then(function () {
+
+        emitter.emit('success');
+
+        if ( typeof cb === 'function' ) {
+          cb();
+        }
+
+      });
+
+    return emitter;
   }
 
   /**
@@ -148,45 +192,68 @@
    */
 
   function show (elem, cb) {
-    if ( typeof cb !== 'function' ) {
-      cb = function () {};
-    }
 
-    console.log('%c show', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+    var emitter = new (require('events').EventEmitter)();
 
-    // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-    
-    if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-      cb(new Error('Show failed'));
-      return false;
-    }
+    emitter.shown = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
 
-    // make sure margin-top is equal to height for smooth scrolling
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
 
-    elem.css('margin-top', '-' + elem.height() + 'px');
+    setTimeout(function () {
 
-    // animate is-section
+      console.log('%c show', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
 
-    $.when(elem.find('.is-section:first')
-      .animate({
-        marginTop: 0
-      }, 500))
-    .then(function () {
-      elem.removeClass('is-showing').addClass('is-shown');
-        
-      if ( elem.css('margin-top') !== 0 ) {
-        elem.animate({'margin-top': 0}, 250);
-      }
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
       
-      if ( cb ) {
-        cb();
-      }      
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+
+        emitter.emit('error', new Error('Already in progress'));
+        
+        if ( typeof cb === 'function' ) {
+          cb(new Error('Show failed'));
+        }
+
+        return false;
+      }
+
+      // make sure margin-top is equal to height for smooth scrolling
+
+      elem.css('margin-top', '-' + elem.height() + 'px');
+
+      // animate is-section
+
+      $.when(elem.find('.is-section:first')
+        .animate({
+          marginTop: 0
+        }, 500))
+      .then(function () {
+        elem.removeClass('is-showing').addClass('is-shown');
+          
+        if ( elem.css('margin-top') !== 0 ) {
+          elem.animate({'margin-top': 0}, 250);
+        }
+
+        emitter.emit('success');
+        
+        if ( cb ) {
+          cb();
+        }      
+      });
+
+      elem.animate({
+         opacity: 1
+        }, 500);
+
     });
 
-    elem.animate({
-       opacity: 1
-      }, 500);
+    return emitter;
   }
 
   /**

@@ -249,6 +249,9 @@ body {
     display: inline !important;
   }
 }
+.navbar {
+  background: rgba(255, 255, 255, 0.9);
+}
 @media (max-width: 640px) {
   .online-now {
     display: none;
@@ -780,6 +783,15 @@ footer {
 }
 /** Importing editor */
 /** Importing evaluator */
+.evaluator h2 {
+  margin-top: 0;
+}
+.evaluator h3 {
+  margin-top: 10px;
+}
+.evaluator h4 {
+  margin-top: 0;
+}
 .evaluator .feedback-entry {
   min-height: 200px;
 }
