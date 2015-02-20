@@ -84,7 +84,7 @@
 
 } ();
 
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":16}],2:[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":18}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -170,7 +170,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":10,"../Nav":15,"../Stream":27,"_process":36}],3:[function(require,module,exports){
+},{"../Item":11,"../Nav":17,"../Stream":29,"_process":38}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -200,7 +200,7 @@
 
     var items = this.panel.find('items');
 
-    item.get(app.domain.intercept(function () {
+    item.load(app.domain.intercept(function () {
       items.prepend(item.template);
       item.render(app.domain.intercept(function () {
         item.find('toggle promote').click();
@@ -212,7 +212,7 @@
 
 } ();
 
-},{"../Item":10}],4:[function(require,module,exports){
+},{"../Item":11}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -349,7 +349,7 @@
 
 } ();
 
-},{"../Form":8,"../Upload":30}],6:[function(require,module,exports){
+},{"../Form":9,"../Upload":32}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -605,7 +605,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":10,"./Nav":15}],7:[function(require,module,exports){
+},{"./Edit":7,"./Item":11,"./Nav":17}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -729,46 +729,7 @@
     return this;
   };
 
-  Edit.prototype.save = function () {
-    var edit = this;
-
-    console.log(edit.toItem());
-
-    Nav.hide(edit.template, app.domain.intercept(function () {
-      Nav.hide(edit.template.closest('.editor'), app.domain.intercept(function () {
-        
-        var new_item = edit.toItem();
-
-        app.socket.emit('create item', new_item);
-
-        app.socket.once('could not create item', function (error) {
-          console.error(error)
-        });
-        
-        app.socket.once('created item', function (item) {
-          console.log('created item', item);
-
-            if ( new_item.upload ) {
-              item.upload = new_item.upload;
-            }
-
-            if ( new_item.youtube ) {
-              item.youtube = new_item.youtube;
-            }
-
-            var item  = new (require('./Item'))(item);
-
-            item.get(app.domain.intercept(function () {
-              item.template.insertBefore(edit.item.template);
-              
-              item.render(app.domain.intercept(function () {
-                item.find('toggle promote').click();
-              }));
-            }));
-        });
-      }));
-    }));
-  };
+  Edit.prototype.save = require('./Edit/save');
 
   Edit.prototype.toItem = function () {
     var item = {
@@ -797,7 +758,65 @@
 
 } ();
 
-},{"./Creator":1,"./Item":10,"./Nav":15}],8:[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":8,"./Item":11,"./Nav":17}],8:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../Nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function save () {
+    var edit = this;
+
+    console.log(edit.toItem());
+
+    Nav.hide(edit.template, app.domain.intercept(function () {
+      Nav.hide(edit.template.closest('.editor'), app.domain.intercept(function () {
+        
+        var new_item = edit.toItem();
+
+        app.socket.emit('create item', new_item);
+
+        app.socket.once('could not create item', function (error) {
+          console.error(error)
+        });
+        
+        app.socket.once('created item', function (item) {
+          console.log('created item', item);
+
+            if ( new_item.upload ) {
+              item.upload = new_item.upload;
+            }
+
+            if ( new_item.youtube ) {
+              item.youtube = new_item.youtube;
+            }
+
+            var item  = new (require('../Item'))(item);
+
+            item.load(app.domain.intercept(function () {
+              item.template.insertBefore(edit.item.template);
+              
+              item.render(app.domain.intercept(function () {
+                item.find('toggle promote').click();
+              }));
+            }));
+        });
+      }));
+    }));
+  }
+
+  module.exports = save;
+
+} ();
+
+},{"../Item":11,"../Nav":17}],9:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -874,7 +893,7 @@
 
 } ();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -929,7 +948,7 @@
 
 } ();
 
-},{"./Item":10,"./Truncate":29}],10:[function(require,module,exports){
+},{"./Item":11,"./Truncate":31}],11:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -962,7 +981,7 @@
     });
   }
 
-  Item.prototype.get        =   require('./Item/get');
+  Item.prototype.load       =   require('./Item/load');
 
   Item.prototype.find       =   require('./Item/find');
 
@@ -974,7 +993,7 @@
 
 } ();
 
-},{"./Item/find":11,"./Item/get":12,"./Item/media":13,"./Item/render":14}],11:[function(require,module,exports){
+},{"./Item/find":12,"./Item/load":13,"./Item/media":14,"./Item/render":15}],12:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1035,7 +1054,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1046,7 +1065,7 @@
    *  @arg
    */
 
-  function get (cb) {
+  function load (cb) {
     var item = this;
 
     $.ajax({
@@ -1066,11 +1085,11 @@
     return this;
   }
 
-  module.exports = get;
+  module.exports = load;
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1145,7 +1164,7 @@
 
 } ();
 
-},{"../YouTube":31}],14:[function(require,module,exports){
+},{"../YouTube":33}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1220,45 +1239,40 @@
 
     // Toggle promote
 
-    item.find('toggle promote').on('click', function (e) {
-
-      var $trigger    =   $(this);
-      var $item       =   $trigger.closest('.item');
-      var item        =   $item.data('item');
-
-      if ( $('.creator.is-shown').length ) {
-        Nav
-          .hide($('.creator.is-shown'))
-          .hidden(function () {
-            $trigger.click();
-          });
-
-        return false;
-      }
-
-      Nav.toggle(item.find('promote'), item.template, app.domain.intercept(function () {
-        item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
-      }));
-    });
+    item.find('toggle promote').on('click', require('./view/toggle-promote'));
 
     // Toggle details
 
     item.find('toggle details').on('click', function () {
       
-      var $item   =   $(this).closest('.item');
-      var item    =   $item.data('item');
+      var $trigger    =   $(this);
+      var $item       =   $trigger.closest('.item');
+      var item        =   $item.data('item');
+
+      function showHideCaret () {
+        if ( item.find('details').hasClass('is-shown') ) {
+          $trigger.find('.caret').removeClass('hide');
+        }
+        else {
+          $trigger.find('.caret').addClass('hide');
+        }
+      }
 
       if ( item.find('promote').hasClass('is-showing') ) {
         return false;
       }
 
       if ( item.find('promote').hasClass('is-shown') ) {
+        item.find('toggle promote').find('.caret').addClass('hide');
         Nav.hide(item.find('promote'));
       }
 
       var hiders = $('.details.is-shown');
 
       Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
+
+        showHideCaret();
+
         if ( item.find('details').hasClass('is-shown') ) {
 
           if ( ! item.find('details').hasClass('is-loaded') ) {
@@ -1405,7 +1419,85 @@
 
 } ();
 
-},{"../Details":6,"../Nav":15,"../Panel":16,"../Promote":17,"../Truncate":29}],15:[function(require,module,exports){
+},{"../Details":6,"../Nav":17,"../Panel":18,"../Promote":19,"../Truncate":31,"./view/toggle-promote":16}],16:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('../../Nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function togglePromote () {
+
+    var $trigger    =   $(this);
+    var $item       =   $trigger.closest('.item');
+    var item        =   $item.data('item');
+
+    function hideOthers () {
+      if ( $('.is-showing').length || $('.is-hidding').length ) {
+        return false;
+      }
+
+      if ( $('.creator.is-shown').length ) {
+        Nav
+          .hide($('.creator.is-shown'))
+          .hidden(function () {
+            $trigger.click();
+          });
+
+        return false;
+      }
+
+      if ( item.find('details').hasClass('is-shown') ) {
+        Nav
+          .hide(item.find('details'))
+          .hidden(function () {
+            $trigger.click();
+          });
+
+        item.find('toggle details').find('.caret').addClass('hide');
+
+        return false;
+      }
+    }
+
+    function promote () {
+      item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
+    }
+
+    function showHideCaret () {
+      if ( item.find('promote').hasClass('is-shown') ) {
+        $trigger.find('.caret').removeClass('hide');
+      }
+      else {
+        $trigger.find('.caret').addClass('hide');
+      }
+    }
+
+    if ( hideOthers() === false ) {
+      return false;
+    }
+
+    Nav.toggle(item.find('promote'), item.template, function (error) {
+
+      promote();
+
+      showHideCaret();
+
+    });
+
+  }
+
+  module.exports = togglePromote;
+
+} ();
+
+},{"../../Nav":17}],17:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -1558,6 +1650,12 @@
 
     emitter.error = function (fn) {
       emitter.on('error', fn);
+      return this;
+    };
+
+    emitter.then = function (fn, fn2) {
+      emitter.on('success', fn);
+      if ( fn2 ) emitter.on('error', fn2);
       return this;
     };
 
@@ -1752,7 +1850,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":36,"domain":33,"events":34}],16:[function(require,module,exports){
+},{"_process":38,"domain":35,"events":36}],18:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1960,7 +2058,7 @@
 
       var item  = new Item(items[i]);
 
-      item.get(app.domain.intercept(function (template) {
+      item.load(app.domain.intercept(function (template) {
         self.find('items').append(template);
 
         item.render(app.domain.intercept(function () {
@@ -1978,7 +2076,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":10,"./Nav":15}],17:[function(require,module,exports){
+},{"./Creator":1,"./Item":11,"./Nav":17}],19:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2131,7 +2229,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":10,"./Nav":15,"./Promote/find":18,"./Promote/finish":19,"./Promote/get":20,"./Promote/render":22,"./Promote/render-item":21,"./Promote/save":23,"events":34}],18:[function(require,module,exports){
+},{"./Edit":7,"./Item":11,"./Nav":17,"./Promote/find":20,"./Promote/finish":21,"./Promote/get":22,"./Promote/render":24,"./Promote/render-item":23,"./Promote/save":25,"events":36}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2195,7 +2293,7 @@
 
 } ();
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2240,7 +2338,7 @@
 
 } ();
 
-},{"../Nav":15}],20:[function(require,module,exports){
+},{"../Nav":17}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2297,7 +2395,7 @@
 
 } ();
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2465,7 +2563,7 @@
 
 } ();
 
-},{"../Item":10,"../Nav":15}],22:[function(require,module,exports){
+},{"../Item":11,"../Nav":17}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2537,7 +2635,7 @@
 
 } ();
 
-},{"../Nav":15}],23:[function(require,module,exports){
+},{"../Nav":17}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2595,7 +2693,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2703,7 +2801,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2924,7 +3022,7 @@
 
 } ();
 
-},{"./Nav":15,"./Sign/forgot-password":26}],26:[function(require,module,exports){
+},{"./Nav":17,"./Sign/forgot-password":28}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3036,7 +3134,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3075,7 +3173,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3209,7 +3307,7 @@
 
 } ();
 
-},{"./Intro":9,"./Panel":16,"./Sign":25,"domain":33,"events":34,"util":38}],29:[function(require,module,exports){
+},{"./Intro":10,"./Panel":18,"./Sign":27,"domain":35,"events":36,"util":40}],31:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3432,7 +3530,7 @@
 
 }();
 
-},{"./Nav":15}],30:[function(require,module,exports){
+},{"./Nav":17}],32:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3511,7 +3609,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3586,7 +3684,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3605,7 +3703,7 @@
 
 } ();
 
-},{"../Reset-password":24,"../Sign":25,"../Synapp":28}],33:[function(require,module,exports){
+},{"../Reset-password":26,"../Sign":27,"../Synapp":30}],35:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3673,7 +3771,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":34}],34:[function(require,module,exports){
+},{"events":36}],36:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3976,7 +4074,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4001,7 +4099,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4089,14 +4187,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4686,4 +4784,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":37,"_process":36,"inherits":35}]},{},[32]);
+},{"./support/isBuffer":39,"_process":38,"inherits":37}]},{},[34]);

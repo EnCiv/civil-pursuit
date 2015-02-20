@@ -152,6 +152,12 @@
       return this;
     };
 
+    emitter.then = function (fn, fn2) {
+      emitter.on('success', fn);
+      if ( fn2 ) emitter.on('error', fn2);
+      return this;
+    };
+
     var poa = (pointOfAttention.offset().top - 50);
 
     var current = $('body,html').scrollTop();

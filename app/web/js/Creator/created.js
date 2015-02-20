@@ -27,7 +27,7 @@
 
     var items = this.panel.find('items');
 
-    item.get(app.domain.intercept(function () {
+    item.load(app.domain.intercept(function () {
       items.prepend(item.template);
       item.render(app.domain.intercept(function () {
         item.find('toggle promote').click();

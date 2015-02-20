@@ -205,7 +205,7 @@
 
       var item  = new Item(items[i]);
 
-      item.get(app.domain.intercept(function (template) {
+      item.load(app.domain.intercept(function (template) {
         self.find('items').append(template);
 
         item.render(app.domain.intercept(function () {

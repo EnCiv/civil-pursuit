@@ -30,7 +30,7 @@
     });
   }
 
-  Item.prototype.get        =   require('./Item/get');
+  Item.prototype.load       =   require('./Item/load');
 
   Item.prototype.find       =   require('./Item/find');
 
