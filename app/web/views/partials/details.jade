@@ -18,37 +18,32 @@ section
   //- Promoted
 
   .row
-    .tablet-50.middle
+    .tablet-40.middle
       h4 Promoted
-    .tablet-50.middle
+    .tablet-60.middle
       .progress
 
   //- Votes
 
-  .row
-    .col-xs-12
-      
-      - for ( var i = 0; i < 4 ; i ++ )
+  - for ( var i = 0; i < 4 ; i ++ )
 
-        .row.details-votes
+    .row.details-votes
 
-          .col-sm-4.col-xs-12
+      .tablet-40.middle
 
-            //-
-                CRITERIA NAME
-            //-
+        //-
+            CRITERIA NAME
+        //-
 
-            h4(data-toggle="tooltip" data-placement="top")
+        h4(data-toggle="tooltip" data-placement="top")
 
-          .col-sm-8.col-xs-12
+      .tablet-60.middle
 
-            //-
-                CHART
-            //-
+        //-
+            CHART
+        //-
 
-            svg.chart
-
-            hr
+        svg.chart
 
     hr
 

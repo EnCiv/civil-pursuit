@@ -47,36 +47,24 @@ body {
   vertical-align: bottom;
 }
 
-.phone-50 {
-  @media (min-width: @screenPhone) {
-    width: 50%;
-    float: left;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
+.split(@percent) {
+  width:                  @percent;
+  float:                  left;
+  -webkit-box-sizing:     border-box;
+  -moz-box-sizing:        border-box;
+  box-sizing:             border-box;
+  height:                 100%;
 }
 
-.tablet-50 {
-  @media (min-width: @screenTablet) {
-    width: 50%;
-    float: left;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    height: 100%;
-    // border: 1px solid blue;
-
-    &.middle {
-      position:             relative;
-      vertical-align:       middle;
-      padding-bottom: 5em;
-      margin-bottom: -5em;
-      // display: inline-block;
-      // border: 2px dotted #999;
-      // width: 100%;
-      // top:                  20%;
-      // transform:            translateY(-20%);
+.scaffolding (@screen, @dim, @counter: 100) when (@counter > 0) {
+  .@{screen}-@{counter} {
+    @media (min-width: @dim) {
+      .split(@counter + 0%);
     }
   }
+
+  .scaffolding(@screen, @dim, @counter - 5);
 }
+
+.scaffolding(phone, @screenPhone);
+.scaffolding(tablet, @screenTablet);

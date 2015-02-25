@@ -27,8 +27,40 @@
   p
     input.block(type='text' placeholder='This is a block text field')
 
-  .phone-50 Column 50% (phone)
-  .phone-50 Column 50% (phone)
+  h1 Grids
+
+  h2 Phone
+
+  .phone-25 25%
+  .phone-25 25%
+  .phone-25 25%
+  .phone-25 25%
+
+  .phone-50 50%
+  .phone-50 50%
+
+  .phone-10 10%
+  .phone-20 20%
+  .phone-30 30%
+  .phone-40 40%
+
+  h2 Phone with rows
+
+  .row
+    .phone-25 25%
+    .phone-25 25%
+    .phone-25 25%
+    .phone-25 25%
+
+  .row
+    .phone-50 50%
+    .phone-50 50%
+
+  .row
+    .phone-10 10%
+    .phone-20 20%
+    .phone-30 30%
+    .phone-40 40%
 
   .row
     .phone-50 Column 50% within a row (phone)
@@ -48,23 +80,5 @@
   .row
     .tablet-50.middle Column 50% within a row (tablet, middle)
     .tablet-50.middle Column 50% within a row (tablet, middle)
-
-  form(role='form' novalidate name='join' method='POST')
-    .row
-      .form-group.tablet-50.middle
-        label Email
-        input(type='email' placeholder='Email' name='email' required)
-
-      .form-group.tablet-50.middle
-        label Password
-        input.block(type='password' placeholder='Password' name='password')
-
-    .row
-      .form-group.tablet-50.middle
-        label Confirm
-        input.form-control.input-lg(type='password' placeholder='Confirm password' name='confirm')
-
-      p.tablet-50.middle
-        button.primary.login-submit.block Join
 
   hr

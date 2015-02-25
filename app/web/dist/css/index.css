@@ -166,12 +166,303 @@ body {
   vertical-align: bottom;
 }
 @media (min-width: 440px) {
+  .phone-100 {
+    width: 100%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-95 {
+    width: 95%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-90 {
+    width: 90%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-85 {
+    width: 85%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-80 {
+    width: 80%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-75 {
+    width: 75%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-70 {
+    width: 70%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-65 {
+    width: 65%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-60 {
+    width: 60%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-55 {
+    width: 55%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
   .phone-50 {
     width: 50%;
     float: left;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-45 {
+    width: 45%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-40 {
+    width: 40%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-35 {
+    width: 35%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-30 {
+    width: 30%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-25 {
+    width: 25%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-20 {
+    width: 20%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-15 {
+    width: 15%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-10 {
+    width: 10%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 440px) {
+  .phone-5 {
+    width: 5%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-100 {
+    width: 100%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-95 {
+    width: 95%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-90 {
+    width: 90%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-85 {
+    width: 85%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-80 {
+    width: 80%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-75 {
+    width: 75%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-70 {
+    width: 70%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-65 {
+    width: 65%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-60 {
+    width: 60%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-55 {
+    width: 55%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
   }
 }
 @media (min-width: 768px) {
@@ -183,11 +474,95 @@ body {
     box-sizing: border-box;
     height: 100%;
   }
-  .tablet-50.middle {
-    position: relative;
-    vertical-align: middle;
-    padding-bottom: 5em;
-    margin-bottom: -5em;
+}
+@media (min-width: 768px) {
+  .tablet-45 {
+    width: 45%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-40 {
+    width: 40%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-35 {
+    width: 35%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-30 {
+    width: 30%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-25 {
+    width: 25%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-20 {
+    width: 20%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-15 {
+    width: 15%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-10 {
+    width: 10%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .tablet-5 {
+    width: 5%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
   }
 }
 .clear {
@@ -708,6 +1083,23 @@ a.button {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
+}
+.details {
+  padding: 0.8em;
+}
+.details .progress {
+  margin-bottom: 0;
+}
+.details textarea {
+  width: 100%;
+  min-height: 70px;
+}
+.details svg.chart {
+  width: 100%;
+  margin-bottom: -40px;
+}
+.details .c3-legend-item {
+  display: none;
 }
 .drop-box {
   background: #F8F8F8;
