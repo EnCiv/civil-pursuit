@@ -1,4 +1,4 @@
-#join.hide
+script#join(type='text/html')
   .join-modal
     h4 Join with
 
@@ -14,28 +14,28 @@
     h4 Join with email
 
     form(role='form' novalidate name='join' method='POST')
-      .form-group.tablet-50
-        label Email
-        input(type='email' placeholder='Email' name='email' required)
+      .row
+        .form-group.tablet-50.middle
+          label Email
+          input(type='email' placeholder='Email' name='email' required)
 
-    .form-group.tablet-50
-      label Password
-      input.block(type='password' placeholder='Password' name='password')
+        .form-group.tablet-50.middle
+          label Password
+          input.block(type='password' placeholder='Password' name='password')
 
-    .form-group.tablet-50
-      label Confirm
-      input.form-control.input-lg(type='password' placeholder='Confirm password' name='confirm')
+      .row
+        .form-group.tablet-50.middle
+          label Confirm
+          input.form-control.input-lg(type='password' placeholder='Confirm password' name='confirm')
 
-    p.tablet-50
-      button.primary.login-submit.block
-        i.fa.fa-sign-in
-        span  Join
+        p.tablet-50.middle
+          button.primary.login-submit.block Join
 
-    .i-agree
-      button.shy
-        i.fa.fa-2x.fa-square-o.agreed
+      .i-agree
+        button.shy
+          i.fa.fa-2x.fa-square-o.agreed
 
-      span
-        span  I agree to 
-        a(href='/page/terms-of-service') the terms of service
-        span .
+        span
+          span  I agree to 
+          a(href='/page/terms-of-service') the terms of service
+          span .

@@ -3009,7 +3009,7 @@
           $('.join-button').on('click', Sign.dialog.join);
         },
 
-        message: $('#join').html(),
+        message: $('#join').text(),
         buttons: [
            //- $.extend({}, vex.dialog.buttons.YES, {
            //-    text: 'Login'
@@ -3040,6 +3040,8 @@
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
     });
+
+    $('.topbar-right').removeClass('hide');
 
     if ( ! synapp.user ) {
       $('.login-button').on('click', Sign.dialog.login);

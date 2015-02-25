@@ -115,9 +115,11 @@ h5 {
   white-space: pre-line;
   text-align: justify;
 }
-input {
+input,
+button,
+.online-now {
   font-size: 1.8rem;
-  line-height: 2em;
+  line-height: 1.5em;
   padding: 0.15em 0.25em;
 }
 .img-responsive {
@@ -161,7 +163,7 @@ body {
   overflow: hidden;
   width: 100%;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 @media (min-width: 440px) {
   .phone-50 {
@@ -184,9 +186,8 @@ body {
   .tablet-50.middle {
     position: relative;
     vertical-align: middle;
-    padding-bottom: 500em;
-    margin-bottom: -500em;
-    display: inline-block;
+    padding-bottom: 5em;
+    margin-bottom: -5em;
   }
 }
 .clear {
@@ -329,6 +330,8 @@ textarea.block {
   border-width: 0 0 0 1px;
   background: transparent;
   vertical-align: middle;
+  height: 100%;
+  padding: 1em 0.8em;
 }
 .topbar-right .button i {
   position: relative;
@@ -349,7 +352,7 @@ textarea.block {
   position: fixed;
   top: 0;
   z-index: 9999;
-  left: 2em;
+  left: 1em;
 }
 @media (max-width: 567px) {
   #logo .logo-full {

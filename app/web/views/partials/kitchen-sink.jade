@@ -26,3 +26,45 @@
 
   p
     input.block(type='text' placeholder='This is a block text field')
+
+  .phone-50 Column 50% (phone)
+  .phone-50 Column 50% (phone)
+
+  .row
+    .phone-50 Column 50% within a row (phone)
+    .phone-50 Column 50% within a row (phone)
+
+  .tablet-50 Column 50% (tablet)
+  .tablet-50 Column 50% (tablet)
+
+  .row
+    .tablet-50 Column 50% within a row (tablet)
+    .tablet-50 Column 50% within a row (tablet)
+
+  .row
+    .tablet-50.middle Column 50% within a row (tablet, middle)
+    .tablet-50.middle Column 50% within a row (tablet, middle)
+
+  .row
+    .tablet-50.middle Column 50% within a row (tablet, middle)
+    .tablet-50.middle Column 50% within a row (tablet, middle)
+
+  form(role='form' novalidate name='join' method='POST')
+    .row
+      .form-group.tablet-50.middle
+        label Email
+        input(type='email' placeholder='Email' name='email' required)
+
+      .form-group.tablet-50.middle
+        label Password
+        input.block(type='password' placeholder='Password' name='password')
+
+    .row
+      .form-group.tablet-50.middle
+        label Confirm
+        input.form-control.input-lg(type='password' placeholder='Confirm password' name='confirm')
+
+      p.tablet-50.middle
+        button.primary.login-submit.block Join
+
+  hr
