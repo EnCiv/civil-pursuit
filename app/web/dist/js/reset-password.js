@@ -2754,23 +2754,25 @@
       }
     }
 
-    var more = $('<a href="#" class="more">more</a>');
+    if ( $item.find('.item-description .hidden-word').length ) {
+      var more = $('<a href="#" class="more">more</a>');
 
-    more.on('click', function () {
+      more.on('click', function () {
 
-      if ( $(this).hasClass('more') ) {
-        $(this).removeClass('more').addClass('less').text('less');
-        $(this).closest('.item-description').find('.hidden-word').show();
-      }
+        if ( $(this).hasClass('more') ) {
+          $(this).removeClass('more').addClass('less').text('less');
+          $(this).closest('.item-description').find('.hidden-word').show();
+        }
 
-      else {
-        $(this).removeClass('less').addClass('more').text('more');
-        $(this).closest('.item-description').find('.hidden-word').hide();
-      }
+        else {
+          $(this).removeClass('less').addClass('more').text('more');
+          $(this).closest('.item-description').find('.hidden-word').hide();
+        }
 
-      return false;
+        return false;
 
-    });
+      });
+    }
 
     $item.find('.item-description').append(more);
   }
