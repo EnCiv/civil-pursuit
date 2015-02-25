@@ -7,6 +7,7 @@
   var Details     =   require('../Details');
   var Nav         =   require('../Nav');
   var readMore    =   require('../ReadMore');
+  var Sign        =   require('../Sign');
 
   /**
    *  @function

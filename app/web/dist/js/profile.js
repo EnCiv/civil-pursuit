@@ -1401,6 +1401,7 @@
   var Details     =   require('../Details');
   var Nav         =   require('../Nav');
   var readMore    =   require('../ReadMore');
+  var Sign        =   require('../Sign');
 
   /**
    *  @function
@@ -1653,12 +1654,13 @@
 
 } ();
 
-},{"../Details":7,"../Nav":19,"../Panel":20,"../Promote":22,"../ReadMore":30,"../Truncate":37,"./view/toggle-promote":18}],18:[function(require,module,exports){
+},{"../Details":7,"../Nav":19,"../Panel":20,"../Promote":22,"../ReadMore":30,"../Sign":32,"../Truncate":37,"./view/toggle-promote":18}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
 
   var Nav = require('../../Nav');
+  var Sign = require('../../Sign');
 
   /**
    *  @function
@@ -1668,11 +1670,14 @@
 
   function togglePromote () {
 
+    if ( ! synapp.user ) {
+      Sign.dialog.join();
+      return;
+    }
+
     var $trigger    =   $(this);
     var $item       =   $trigger.closest('.item');
     var item        =   $item.data('item');
-
-    console.log('hegdhsfhgdfhgsdghsghfds')
 
     function hideOthers () {
       if ( $('.is-showing').length || $('.is-hidding').length ) {
@@ -1733,7 +1738,7 @@
 
 } ();
 
-},{"../../Nav":19}],19:[function(require,module,exports){
+},{"../../Nav":19,"../../Sign":32}],19:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************

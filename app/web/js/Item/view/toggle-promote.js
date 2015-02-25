@@ -3,6 +3,7 @@
   'use strict';
 
   var Nav = require('../../Nav');
+  var Sign = require('../../Sign');
 
   /**
    *  @function
@@ -12,11 +13,14 @@
 
   function togglePromote () {
 
+    if ( ! synapp.user ) {
+      Sign.dialog.join();
+      return;
+    }
+
     var $trigger    =   $(this);
     var $item       =   $trigger.closest('.item');
     var item        =   $item.data('item');
-
-    console.log('hegdhsfhgdfhgsdghsghfds')
 
     function hideOthers () {
       if ( $('.is-showing').length || $('.is-hidding').length ) {
