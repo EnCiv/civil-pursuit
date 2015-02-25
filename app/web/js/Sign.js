@@ -116,6 +116,7 @@
     if ( ! synapp.user ) {
       $('.login-button').on('click', Sign.dialog.login);
       $('.join-button').on('click', Sign.dialog.join);
+      $('.topbar .is-in').hide();
     }
 
     else {

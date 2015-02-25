@@ -412,7 +412,7 @@
   Details.prototype.find = function (name) {
     switch ( name ) {
       case 'promoted bar':
-        return this.template.find('.progress-bar');
+        return this.template.find('.progress');
 
       case 'feedback list':
         return this.template.find('.feedback-list');
@@ -437,8 +437,14 @@
     var item = self.item.item;
 
     self.find('promoted bar')
-      .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
-      .text(Math.floor(item.promotions * 100 / item.views) + '%');
+      // .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
+      // .text(Math.floor(item.promotions * 100 / item.views) + '%')
+      .goalProgress({
+        goalAmount: 100,
+        currentAmount: Math.floor(item.promotions * 100 / item.views),
+        textBefore: '',
+        textAfter: '%'
+      });
 
     self.find('toggle edit and go again').on('click', function () {
       Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
@@ -3017,6 +3023,7 @@
     if ( ! synapp.user ) {
       $('.login-button').on('click', Sign.dialog.login);
       $('.join-button').on('click', Sign.dialog.join);
+      $('.topbar .is-in').hide();
     }
 
     else {

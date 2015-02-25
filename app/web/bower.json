@@ -16,7 +16,8 @@
     "c3": "~0.4.8",
     "rangeslider.js": "~0.3.7",
     "bootstrap": "~3.3.2",
-    "toolkit": "~2.0.2"
+    "toolkit": "~2.0.2",
+    "goalProgress": "*"
   },
   "resolutions": {
     "d3": "~3.5.2"

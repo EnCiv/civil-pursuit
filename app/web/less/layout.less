@@ -15,3 +15,65 @@ html, body {
 body {
   padding-top: @syn-topbar-height - 10px;
 }
+
+/*
+ *    Layout
+ */
+
+#screens {
+  position: absolute;
+  top: -1000px
+}
+
+#screen-phone {
+  width: @screenPhone
+}
+
+#screen-tablet {
+  width: @screenTablet
+}
+
+.row {
+  // border: 3px solid black;
+  clear: both;
+  height: 100%;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  width: 100%;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.phone-50 {
+  @media (min-width: @screenPhone) {
+    width: 50%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+}
+
+.tablet-50 {
+  @media (min-width: @screenTablet) {
+    width: 50%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+    // border: 1px solid blue;
+
+    &.middle {
+      position:             relative;
+      vertical-align:       middle;
+      padding-bottom: 500em;
+      margin-bottom: -500em;
+      display: inline-block;
+      // top:                  20%;
+      // transform:            translateY(-20%);
+    }
+  }
+}
