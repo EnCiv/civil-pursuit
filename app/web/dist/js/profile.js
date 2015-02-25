@@ -84,7 +84,7 @@
 
 } ();
 
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":20}],2:[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":21}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -170,7 +170,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":13,"../Nav":19,"../Stream":35,"_process":45}],3:[function(require,module,exports){
+},{"../Item":13,"../Nav":20,"../Stream":36,"_process":46}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -349,7 +349,7 @@
 
 } ();
 
-},{"../Form":10,"../Upload":38}],6:[function(require,module,exports){
+},{"../Form":10,"../Upload":39}],6:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -413,7 +413,7 @@
 
 } ();
 
-},{"./Nav":19}],7:[function(require,module,exports){
+},{"./Nav":20}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -675,7 +675,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":13,"./Nav":19}],8:[function(require,module,exports){
+},{"./Edit":8,"./Item":13,"./Nav":20}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -828,7 +828,7 @@
 
 } ();
 
-},{"./Creator":1,"./Edit/save":9,"./Item":13,"./Nav":19}],9:[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":9,"./Item":13,"./Nav":20}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -886,7 +886,7 @@
 
 } ();
 
-},{"../Item":13,"../Nav":19}],10:[function(require,module,exports){
+},{"../Item":13,"../Nav":20}],10:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -902,7 +902,7 @@
    */
 
   function Form (form) {
-    console.log('new Form', form)
+
     var self = this;
 
     this.form = form;
@@ -930,8 +930,7 @@
         if ( ! errors.length ) {
           $(this)
             .addClass('error')
-            .focus()
-            .popover('show');
+            .focus();
         }
 
         errors.push({ required: $(this).attr('name') });
@@ -939,8 +938,7 @@
 
       else {
         $(this)
-          .removeClass('error')
-          .popover('hide');
+          .removeClass('error');
       }
     });
 
@@ -1118,7 +1116,7 @@
 
 } ();
 
-},{"./Nav":19,"./Upload":38}],12:[function(require,module,exports){
+},{"./Nav":20,"./Upload":39}],12:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1181,7 +1179,7 @@
 
 } ();
 
-},{"./Item":13,"./ReadMore":30,"./Truncate":37}],13:[function(require,module,exports){
+},{"./Item":13,"./ReadMore":31,"./Truncate":38}],13:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1397,7 +1395,7 @@
 
 } ();
 
-},{"../YouTube":40}],17:[function(require,module,exports){
+},{"../YouTube":41}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1660,7 +1658,7 @@
 
 } ();
 
-},{"../Details":7,"../Nav":19,"../Panel":20,"../Promote":22,"../ReadMore":30,"../Sign":32,"../Truncate":37,"./view/toggle-promote":18}],18:[function(require,module,exports){
+},{"../Details":7,"../Nav":20,"../Panel":21,"../Promote":23,"../ReadMore":31,"../Sign":33,"../Truncate":38,"./view/toggle-promote":18}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1744,7 +1742,34 @@
 
 } ();
 
-},{"../../Nav":19,"../../Sign":32}],19:[function(require,module,exports){
+},{"../../Nav":20,"../../Sign":33}],19:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('./Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function login () {
+    var signForm = $('form[name="login"]');
+
+    new Form(signForm)
+
+      .send(function () {
+        
+      });
+  }
+
+  module.exports = login;
+
+} ();
+
+},{"./Form":10}],20:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2097,7 +2122,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":45,"domain":42,"events":43}],20:[function(require,module,exports){
+},{"_process":46,"domain":43,"events":44}],21:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2327,7 +2352,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":13,"./Nav":19,"./Sign":32}],21:[function(require,module,exports){
+},{"./Creator":1,"./Item":13,"./Nav":20,"./Sign":33}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2448,7 +2473,7 @@
 
 } ();
 
-},{"./Demographics":6,"./Identity":11,"./Nav":19,"./Public_Persona":29,"./Residence":31,"./Voter":39}],22:[function(require,module,exports){
+},{"./Demographics":6,"./Identity":11,"./Nav":20,"./Public_Persona":30,"./Residence":32,"./Voter":40}],23:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2601,7 +2626,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":13,"./Nav":19,"./Promote/find":23,"./Promote/finish":24,"./Promote/get":25,"./Promote/render":27,"./Promote/render-item":26,"./Promote/save":28,"events":43}],23:[function(require,module,exports){
+},{"./Edit":8,"./Item":13,"./Nav":20,"./Promote/find":24,"./Promote/finish":25,"./Promote/get":26,"./Promote/render":28,"./Promote/render-item":27,"./Promote/save":29,"events":44}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2665,7 +2690,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2710,7 +2735,7 @@
 
 } ();
 
-},{"../Nav":19}],25:[function(require,module,exports){
+},{"../Nav":20}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2767,7 +2792,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2935,7 +2960,7 @@
 
 } ();
 
-},{"../Item":13,"../Nav":19}],27:[function(require,module,exports){
+},{"../Item":13,"../Nav":20}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3007,7 +3032,7 @@
 
 } ();
 
-},{"../Nav":19}],28:[function(require,module,exports){
+},{"../Nav":20}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3065,7 +3090,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3129,7 +3154,7 @@
 
 } ();
 
-},{"./Nav":19}],30:[function(require,module,exports){
+},{"./Nav":20}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3204,7 +3229,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3310,7 +3335,7 @@
 
 } ();
 
-},{"./Nav":19}],32:[function(require,module,exports){
+},{"./Nav":20}],33:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3328,6 +3353,7 @@
   'use strict';
 
   var Nav = require('./Nav');
+  var login = require('./Login');
 
   function Sign () {
     
@@ -3339,8 +3365,6 @@
 
       vex.defaultOptions.className = 'vex-theme-flat-attack';
 
-      var content = $($('#login-modal').html());
-
       vex.dialog.confirm({
 
         afterOpen: function () {
@@ -3349,13 +3373,16 @@
             .on('click', function () {
               vex.close();
             });
+
+          login();
         },
 
         afterClose: function () {
           $('.login-button').on('click', Sign.dialog.login);
         },
 
-        message: $('#login-modal').html(),
+        message: $('#login').text(),
+
         buttons: [
            //- $.extend({}, vex.dialog.buttons.YES, {
            //-    text: 'Login'
@@ -3364,15 +3391,7 @@
            $.extend({}, vex.dialog.buttons.NO, {
               text: 'x Close'
             })
-        ],
-        callback: function(value) {
-          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-        },
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
-        }
+        ]
       });
     },
 
@@ -3388,6 +3407,8 @@
             .on('click', function () {
               vex.close();
             });
+
+
         },
 
         afterClose: function () {
@@ -3418,7 +3439,7 @@
   };
 
   Sign.prototype.render = function () {
-    this.signIn();
+    // this.signIn();
     this.signUp();
     this.forgotPassword();
 
@@ -3540,7 +3561,7 @@
 
 } ();
 
-},{"./Nav":19,"./Sign/forgot-password":33,"./Sign/sign-in":34}],33:[function(require,module,exports){
+},{"./Login":19,"./Nav":20,"./Sign/forgot-password":34,"./Sign/sign-in":35}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3652,7 +3673,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3667,7 +3688,7 @@
 
   function signIn () {
     
-    var signForm = $('.vex-content');
+    var signForm = $('form[name="login"]');
 
     console.log('sign in form', signForm.length);
 
@@ -3757,7 +3778,7 @@
 
 } ();
 
-},{"../Form":10}],35:[function(require,module,exports){
+},{"../Form":10}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3796,7 +3817,7 @@
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3930,7 +3951,7 @@
 
 } ();
 
-},{"./Intro":12,"./Panel":20,"./Sign":32,"domain":42,"events":43,"util":47}],37:[function(require,module,exports){
+},{"./Intro":12,"./Panel":21,"./Sign":33,"domain":43,"events":44,"util":48}],38:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4153,7 +4174,7 @@
 
 }();
 
-},{"./Nav":19}],38:[function(require,module,exports){
+},{"./Nav":20}],39:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4232,7 +4253,7 @@
 
 } ();
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4296,7 +4317,7 @@
 
 } ();
 
-},{"./Nav":19}],40:[function(require,module,exports){
+},{"./Nav":20}],41:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4371,7 +4392,7 @@
 
 } ();
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4391,7 +4412,7 @@
 
 } ();
 
-},{"../Panel":20,"../Profile":21,"../Sign":32,"../Synapp":36}],42:[function(require,module,exports){
+},{"../Panel":21,"../Profile":22,"../Sign":33,"../Synapp":37}],43:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4459,7 +4480,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":43}],43:[function(require,module,exports){
+},{"events":44}],44:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4762,7 +4783,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4787,7 +4808,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4875,14 +4896,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5472,4 +5493,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":46,"_process":45,"inherits":44}]},{},[41]);
+},{"./support/isBuffer":47,"_process":46,"inherits":45}]},{},[42]);

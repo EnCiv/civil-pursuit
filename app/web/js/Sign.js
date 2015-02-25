@@ -15,6 +15,7 @@
   'use strict';
 
   var Nav = require('./Nav');
+  var login = require('./Login');
 
   function Sign () {
     
@@ -26,8 +27,6 @@
 
       vex.defaultOptions.className = 'vex-theme-flat-attack';
 
-      var content = $($('#login-modal').html());
-
       vex.dialog.confirm({
 
         afterOpen: function () {
@@ -36,13 +35,16 @@
             .on('click', function () {
               vex.close();
             });
+
+          login();
         },
 
         afterClose: function () {
           $('.login-button').on('click', Sign.dialog.login);
         },
 
-        message: $('#login-modal').html(),
+        message: $('#login').text(),
+
         buttons: [
            //- $.extend({}, vex.dialog.buttons.YES, {
            //-    text: 'Login'
@@ -51,15 +53,7 @@
            $.extend({}, vex.dialog.buttons.NO, {
               text: 'x Close'
             })
-        ],
-        callback: function(value) {
-          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-        },
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
-        }
+        ]
       });
     },
 
@@ -75,6 +69,8 @@
             .on('click', function () {
               vex.close();
             });
+
+
         },
 
         afterClose: function () {
@@ -105,7 +101,7 @@
   };
 
   Sign.prototype.render = function () {
-    this.signIn();
+    // this.signIn();
     this.signUp();
     this.forgotPassword();
 

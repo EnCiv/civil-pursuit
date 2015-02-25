@@ -13,7 +13,7 @@
    */
 
   function Form (form) {
-    console.log('new Form', form)
+
     var self = this;
 
     this.form = form;
@@ -41,8 +41,7 @@
         if ( ! errors.length ) {
           $(this)
             .addClass('error')
-            .focus()
-            .popover('show');
+            .focus();
         }
 
         errors.push({ required: $(this).attr('name') });
@@ -50,8 +49,7 @@
 
       else {
         $(this)
-          .removeClass('error')
-          .popover('hide');
+          .removeClass('error');
       }
     });
 

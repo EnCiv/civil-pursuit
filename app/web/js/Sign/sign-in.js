@@ -12,7 +12,7 @@
 
   function signIn () {
     
-    var signForm = $('.vex-content');
+    var signForm = $('form[name="login"]');
 
     console.log('sign in form', signForm.length);
 
