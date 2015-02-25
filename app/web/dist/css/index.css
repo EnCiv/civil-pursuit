@@ -35,22 +35,11 @@
 /** Buttons */
 /** Colors **/
 html {
-  font-size: 63.5%;
+  font-size: 1em;
   font-family: Helvetica, Arial, sans-serif;
-}
-@media (max-width: 768px) {
-  html {
-    font-size: 59.5%;
-  }
-}
-@media (min-width: 1200px) {
-  html {
-    font-size: 68.5%;
-  }
 }
 body {
   color: #333;
-  font-size: 1.6rem;
 }
 h1,
 h2,
@@ -59,54 +48,29 @@ h4,
 h5 {
   font-family: 'Oswald', sans-serif;
   font-weight: 100;
-  line-height: 1.45em;
+  line-height: 1.3em;
 }
 h1 {
-  font-size: 4.5rem;
-  line-height: 2em;
+  font-size: 2.5em;
+  font-weight: 900;
   margin: 0.5em 0;
-}
-@media (max-width: 440px) {
-  h1 {
-    font-size: 4rem;
-    line-height: 4.2rem;
-  }
 }
 h2 {
-  font-size: 3.9rem;
-  line-height: 2em;
+  font-size: 2.1rem;
+  font-weight: 700;
   margin: 0.5em 0;
-}
-@media (max-width: 440px) {
-  h2 {
-    font-size: 3.4rem;
-    line-height: 3.8rem;
-  }
 }
 h3 {
-  font-size: 3.4rem;
-  line-height: 2em;
+  font-size: 1.8rem;
+  font-weight: 500;
   margin: 0.5em 0;
-}
-@media (max-width: 440px) {
-  h3 {
-    font-size: 2.9rem;
-    line-height: 3.4rem;
-  }
 }
 h4 {
-  font-size: 2.8rem;
-  line-height: 2em;
   margin: 0.5em 0;
-}
-@media (max-width: 440px) {
-  h4 {
-    font-size: 2.5rem;
-    line-height: 3rem;
-  }
+  font-size: 1.4rem;
+  font-weight: 300;
 }
 h5 {
-  font-size: 2rem;
   line-height: 2em;
   margin: 0.5em 0;
 }
@@ -118,7 +82,6 @@ h5 {
 input,
 button,
 .online-now {
-  font-size: 1.8rem;
   line-height: 1.5em;
   padding: 0.15em 0.25em;
 }
