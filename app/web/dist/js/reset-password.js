@@ -2998,26 +2998,12 @@
     });
 
     if ( ! synapp.user ) {
-      $('.navbar .login-button').on('click', function () {
-        $('#join.in').modal('hide');
-        $('#forgot-password.in').modal('hide');
-      });
-
-      $('.navbar .join-button').on('click', function () {
-        $('#login-modal.in').modal('hide');
-        $('#forgot-password.in').modal('hide');
-      });
-
-      $('.login-submit').on('click', function () {
-        $('#signer').submit();
-      });
+      $('.login-button').on('click', showLoginDialog);
+      $('.join-button').on('click', showJoinDialog);
     }
 
     else {
       $('.navbar .is-out').remove();
-
-      $('.login-button').on('click', showLoginDialog);
-      $('.join-button').on('click', showJoinDialog);
     }
   };
 
