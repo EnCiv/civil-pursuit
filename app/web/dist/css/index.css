@@ -806,17 +806,10 @@ textarea.block {
 }
 .item .item-media {
   float: left;
-  width: 40%;
-  max-width: 450px;
+  width: 25%;
+  max-width: 250px;
   /*border: 1px solid #999;*/
   padding-right: 1.5em;
-}
-@media (max-width: 440px) {
-  .item .item-media {
-    width: 100%;
-    float: none;
-    padding-bottom: 1.5em;
-  }
 }
 .item .item-buttons {
   float: right;
