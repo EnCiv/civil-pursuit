@@ -825,6 +825,11 @@ textarea.block {
 .panel .create-new {
   text-align: center;
 }
+.panel .loading-items {
+  text-align: center;
+  color: #999;
+  padding: 0.8em;
+}
 .item {
   margin: 0.8em;
   margin-right: 0;
