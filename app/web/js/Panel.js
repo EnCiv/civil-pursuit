@@ -22,6 +22,7 @@
   var Nav       =   require('./Nav');
   var Creator   =   require('./Creator');
   var Item      =   require('./Item');
+  var Sign      =   require('./Sign');
 
   /**
    *  @class
@@ -109,6 +110,9 @@
   Panel.prototype.toggleCreator = function (target) {
     if ( synapp.user ) {
       Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
+    }
+    else {
+      Sign.dialog.join();
     }
   };
 

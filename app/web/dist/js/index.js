@@ -1888,6 +1888,7 @@
   var Nav       =   require('./Nav');
   var Creator   =   require('./Creator');
   var Item      =   require('./Item');
+  var Sign      =   require('./Sign');
 
   /**
    *  @class
@@ -1975,6 +1976,9 @@
   Panel.prototype.toggleCreator = function (target) {
     if ( synapp.user ) {
       Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
+    }
+    else {
+      Sign.dialog.join();
     }
   };
 
@@ -2089,7 +2093,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":11,"./Nav":17}],19:[function(require,module,exports){
+},{"./Creator":1,"./Item":11,"./Nav":17,"./Sign":27}],19:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2804,12 +2808,10 @@
     
   }
 
-  Sign.prototype.render = function () {
-    this.signIn();
-    this.signUp();
-    this.forgotPassword();
+  Sign.dialog = {
 
-    function showLoginDialog () {
+    login: function () {
+
       vex.defaultOptions.className = 'vex-theme-flat-attack';
 
       var content = $($('#login-modal').html());
@@ -2825,7 +2827,7 @@
         },
 
         afterClose: function () {
-          $('.login-button').on('click', showLoginDialog);
+          $('.login-button').on('click', Sign.dialog.login);
         },
 
         message: $('#login-modal').html(),
@@ -2847,9 +2849,10 @@
           }
         }
       });
-    }
+    },
 
-    function showJoinDialog () {
+    join: function () {
+
       vex.defaultOptions.className = 'vex-theme-flat-attack';
 
       vex.dialog.confirm({
@@ -2863,7 +2866,7 @@
         },
 
         afterClose: function () {
-          $('.join-button').on('click', showJoinDialog);
+          $('.join-button').on('click', Sign.dialog.join);
         },
 
         message: $('#join').html(),
@@ -2887,13 +2890,20 @@
       });
     }
 
+  };
+
+  Sign.prototype.render = function () {
+    this.signIn();
+    this.signUp();
+    this.forgotPassword();
+
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
     });
 
     if ( ! synapp.user ) {
-      $('.login-button').on('click', showLoginDialog);
-      $('.join-button').on('click', showJoinDialog);
+      $('.login-button').on('click', Sign.dialog.login);
+      $('.join-button').on('click', Sign.dialog.join);
     }
 
     else {
