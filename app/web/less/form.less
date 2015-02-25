@@ -1,0 +1,53 @@
+textarea {
+  width: calc(100% - 1px);
+  min-height: 120px;
+  overflow: hidden !important;
+  resize: none;
+  transition: 0.05s;
+  -moz-transition: 0.05s;
+  -webkit-transition: 0.05s;
+  -o-transition: 0.05s;
+}
+
+input.danger, textarea.danger {
+  color: red !important;
+  border: 1px solid red !important
+}
+
+.error {
+  border-color: red;
+  background: yellow
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+
+  border: 1px solid #999;
+  border-radius: 4px;
+
+  &.block {
+    width: calc(100% - 1px);
+  }
+}
+
+.form-group {
+  label {
+    font-weight: bold
+  }
+
+  input {
+    width: calc(100% - 1px);
+  }
+}

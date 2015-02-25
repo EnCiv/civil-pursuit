@@ -1,47 +1,41 @@
-#join.modal.fade(tabindex='-1' role='dialog' aria-labelledby='joinLabel' aria-hidden='true')
-  .modal-dialog.modal-lg
-    .modal-content
-      .modal-header
-        button.close(type='button' data-dismiss="modal")
-          span(aria-hidden='true') &times;
-          span.sr-only Close
+#join.hide
+  .join-modal
+    h4 Join with
 
-        h4#joinLabel.modal-title.text-center Join with
+    .button-group-2
+      a.button(href='/sign/facebook')
+        i.fa.fa-facebook
+        span  Facebook
 
-      .modal-body
-        include ../../layout/alert
+      a.button(href='/sign/twitter')
+        i.fa.fa-twitter
+        span  Twitter
 
-        .btn-group.btn-group-justified
-          a.btn.btn-primary.btn-lg(href=synapp.public.routes["sign in with Facebook"])
-            i.fa.fa-facebook
-            span  Facebook
+    h4 Join with email
 
-          a.btn.btn-info.btn-lg(href=synapp.public.routes["sign in with Twitter"])
-            i.fa.fa-twitter
-            span  Twitter
+    form(role='form' novalidate name='join' method='POST')
+      .form-group.tablet-50
+        label Email
+        input(type='email' placeholder='Email' name='email' required)
 
-      .modal-header
-        h4#joinLabel.modal-title.text-center Or join with email
+    .form-group.tablet-50
+      label Password
+      input.block(type='password' placeholder='Password' name='password')
 
-      .modal-body
+    .form-group.tablet-50
+      label Confirm
+      input.form-control.input-lg(type='password' placeholder='Confirm password' name='confirm')
 
-        form(role='form' novalidate)
-          .form-group
-            input.form-control.input-lg(type='email' placeholder='Email' name='email')
+    p.tablet-50
+      button.primary.login-submit.block
+        i.fa.fa-sign-in
+        span  Join
 
-          .form-group
-            input.form-control.input-lg(type='password' placeholder='Password' name='password')
+    .i-agree
+      button.shy
+        i.fa.fa-2x.fa-square-o.agreed
 
-          .form-group
-            input.form-control.input-lg(type='password' placeholder='Confirm password' name='confirm')
-
-          button.btn.btn-primary.btn-block.btn-lg Join with email
-
-        .i-agree.text-center.padding
-          button.btn.btn-link
-            i.fa.fa-2x.fa-square-o.agreed
-
-          span
-            span  I agree to 
-            a(href='/page/terms-of-service') the terms of service
-            span .
+      span
+        span  I agree to 
+        a(href='/page/terms-of-service') the terms of service
+        span .

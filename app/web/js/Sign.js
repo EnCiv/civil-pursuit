@@ -25,6 +25,84 @@
     this.signUp();
     this.forgotPassword();
 
+    function showLoginDialog () {
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      var content = $($('#login-modal').html());
+
+      vex.dialog.confirm({
+
+        afterOpen: function () {
+          $('.login-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+        },
+
+        afterClose: function () {
+          $('.login-button').on('click', showLoginDialog);
+        },
+
+        message: $('#login-modal').html(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
+
+    function showJoinDialog () {
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function () {
+          $('.join-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+        },
+
+        afterClose: function () {
+          $('.join-button').on('click', showJoinDialog);
+        },
+
+        message: $('#join').html(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
+
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
     });
@@ -47,75 +125,13 @@
 
     else {
       $('.navbar .is-out').remove();
+
+      $('.login-button').on('click', showLoginDialog);
+      $('.join-button').on('click', showJoinDialog);
     }
   };
 
-  Sign.prototype.signIn = function() {
-    var signForm = $('#signer');
-
-    signForm.on('submit', function () {
-
-      Nav.hide($('.login-error-401'));
-      Nav.hide($('.login-error-404'));
-
-      signForm.find('.sign-error')
-        .text('')
-        .hide();
-
-      var email = signForm.find('[name="email"]');
-      var password = signForm.find('[name="password"]');
-
-      email.removeClass('error');
-      password.removeClass('error');
-
-      if ( ! email.val() ) {
-        email.addClass('error');
-        email.focus();
-      }
-
-      else if ( ! password.val() ) {
-        password.addClass('error');
-        password.focus();
-      }
-
-      else {
-        $.ajax({
-          url: '/sign/in',
-          type: 'POST',
-          data: {
-            email: email.val(),
-            password: password.val()
-          }
-        })
-          .error(function (response) {
-            switch ( response.status ) {
-              case 404:
-                Nav.show($('.login-error-404'));
-                break;
-
-              case 401:
-                Nav.show($('.login-error-401'));
-                break;
-            }
-          })
-          .success(function (response) {
-
-            synapp.user = response.user;
-
-            $('a.is-in').css('display', 'inline');
-
-            $('.navbar .is-out').remove();
-
-            $('#login-modal').modal('hide');
-
-            signForm.find('section').hide(2000);
-
-          });
-      }
-
-      return false;
-    });
-  };
+  Sign.prototype.signIn = require('./Sign/sign-in');
 
   Sign.prototype.signUp = function () {
 

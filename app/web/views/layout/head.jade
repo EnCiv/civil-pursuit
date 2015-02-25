@@ -32,11 +32,15 @@ base(href='/')
 // Stylesheets
 block stylesheets
 
-  block stylesheet-bootstrap
-    link(rel='stylesheet' href='/bower/bootstrap/dist/css/bootstrap.min.css')
+  block stylesheet-normalize
+    link(rel='stylesheet' href='/css/normalize.css')
 
   block gooogle-fonts
     link(href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css')
+
+  block stylesheet-vex
+    link(rel='stylesheet' href='/assets/vex-2.2.1/css/vex.css')
+    link(rel='stylesheet' href='/assets/vex-2.2.1/css/vex-theme-flat-attack.css')
 
   block css-app
     - if ( settings.env === 'production' )
@@ -57,3 +61,7 @@ block stylesheets
     
     - else
       link(rel='stylesheet' href='/bower/c3/c3.css')
+
+  //- Toolkit
+  block css-toolkit
+    link(rel='stylesheet' href='/assets/toolkit/tooltip.css')

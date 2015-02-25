@@ -1,25 +1,6 @@
 /**
  *    __________________________________________________________________________
  *
- *    Synapp Style Sheet / Main
- *    ------------------   ----
- *
- *    @abstract
- *    Main classes and app defaults
- *
- *    @author   francois
- *
- *    __________________________________________________________________________
- *  
-*/
-/** ____________________________________________________________________________
-
-          MIXINS
-    ============================================================================
-**/
-/**
- *    __________________________________________________________________________
- *
  *    Synapp Style Sheet / Variables
  *    ------------------   ---------
  *
@@ -31,109 +12,81 @@
  *    __________________________________________________________________________
  *    
 */
-/** ____________________________________________________________________________
-
-          ELEMENTS
-    ============================================================================
-**/
+/** BREAK POINTS **/
+/** The height of the top bar **/
+/** Buttons */
+/** Colors **/
+.clear {
+  zoom: 1;
+}
+.clear:after {
+  display: block;
+  visibility: hidden;
+  height: 0;
+  clear: both;
+  content: ".";
+  margin: 0;
+  padding: 0;
+}
 /*
- *  Buttons
+ *    Links
  */
-a.btn {
-  background: #ddd;
-  color: #000;
+a {
+  color: #337ab7;
+  text-decoration: none;
 }
-a.btn-default {
-  background: #fff;
-  border: none;
+a:hover {
+  text-decoration: underline;
 }
-.syn-btn {
-  min-width: 100px;
+/*
+ *    Layout
+ */
+#screens {
+  position: absolute;
+  top: -1000px;
 }
-@media (max-width: 600px) {
-  .syn-btn {
-    font-size: 80%;
-    min-width: 70px;
-    border-radius: 10px;
+#screen-phone {
+  width: 440px;
+}
+#screen-tablet {
+  width: 768px;
+}
+@media (min-width: 440px) {
+  .phone-50 {
+    width: 50%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
 }
-/** ____________________________________________________________________________
-
-          FORMS
-    ============================================================================
-**/
-textarea {
-  width: 100%;
-  min-height: 120px;
-  overflow: hidden;
-}
-textarea {
-  resize: none;
-  transition: 0.05s;
-  -moz-transition: 0.05s;
-  -webkit-transition: 0.05s;
-  -o-transition: 0.05s;
-}
-/** ____________________________________________________________________________
-
-          CLASSES
-    ============================================================================
-**/
-/*
- *  Format raw text
- */
-.pre-text {
-  /** Parse \n into line breaks */
-  white-space: pre-line;
-  text-align: justify;
+@media (min-width: 768px) {
+  .tablet-50 {
+    width: 50%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
 }
 /*
- *  Text bigger than max size
- */
-.too-long::after {
-  content: ' ...';
-  color: #999;
-}
-/*
- *  Force cursor to be a pointer
+ *    Force cursor to be a pointer
  */
 .cursor-pointer {
   cursor: pointer;
 }
 /*
- *	Padding
+ *    Hide
  */
-.padding {
-  padding: 10px;
-}
-.padding-top {
-  padding-top: 10px;
-}
-.padding-bottom {
-  padding-bottom: 10px;
-}
-.padding-right {
-  padding-right: 10px;
-}
-.padding-left {
-  padding-left: 10px;
-}
-.template-model {
+.hide {
   display: none;
-}
-.is-section {
-  margin-top: -2000px;
-  padding: 10px;
-}
-.is-container {
-  overflow: hidden;
-  opacity: 0;
-}
-input.danger,
-textarea.danger {
-  color: red !important;
-  border: 1px solid #ff0000 !important;
 }
 .alert {
   display: none;
+}
+.is-in {
+  display: none;
+}
+.vex-dialog-button-primary {
+  background: #337ab7 !important;
 }

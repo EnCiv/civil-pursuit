@@ -1,0 +1,94 @@
+/**
+ *    __________________________________________________________________________
+ *
+ *    Synapp Style Sheet / Panel
+ *    ------------------   -----
+ *
+ *    @abstract
+ *    Navigator + Panel
+ *
+ *    @author   francois
+ *
+ *    __________________________________________________________________________
+ *  
+*/
+
+/** ____________________________________________________________________________
+
+          IMPORTS
+    ============================================================================
+**/
+
+@import "mixins/gradient";
+@import "mixins/box-shadow";
+@import "item";
+
+/** ____________________________________________________________________________
+
+          VARIABLES
+    ============================================================================
+**/
+
+@panel-heading-bg: #39683C;
+@panel-border-color: #666;
+
+/** ____________________________________________________________________________
+
+          LAYOUT
+    ============================================================================
+**/
+
+.panel {
+  
+  & {
+    border-color: @panel-border-color;
+    .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+  }
+
+  .panel-heading {
+    background: @panel-heading-bg;
+    .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+    color: #fff;
+    text-align: center;
+
+    .panel-title {
+      font-size: 20px
+    }
+
+    .toggle-creator {
+      padding-top: 5px
+    }
+  }
+
+  .panel-body {
+    
+    & {
+      padding: 0;
+    }
+
+    .creator {
+    }
+  }
+
+  .panel {
+    margin: 0px;
+    margin-right: 0;
+    border-right: none;
+  }
+
+  &.split-view {
+    margin-right: 10px
+  }
+
+  .right-split .panel {
+    margin-right: -10px;
+  }
+
+  .load-more, .create-new {
+    text-align: center
+  }
+}
+
+.modal {
+  top: 200px !important;
+}

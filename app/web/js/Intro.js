@@ -21,6 +21,7 @@
 
   var Truncate = require('./Truncate');
   var Item = require('./Item');
+  var readMore = require('./ReadMore');
 
   function Intro () {
 
@@ -30,20 +31,27 @@
     app.socket.emit('get intro');
 
     app.socket.on('got intro', function (intro) {
+
+      console.warn('got intro')
+
       $('#intro').find('.panel-title').text(intro.subject);
 
-      $('#intro').find('.item-title').text(intro.subject);
+      $('#intro').find('.item-subject').text(intro.subject);
       // $('#intro').find('.item-title').hide();
 
-      $('#intro').find('.description').text(intro.description);
+      readMore(intro, $('#intro'));
 
-      $('#intro').find('.item-references').remove();
+      $('#intro').find('.item-reference').remove();
+      $('#intro').find('.item-buttons').remove();
+      $('#intro').find('.item-arrow').remove();
+
+      // adjustBox($('#intro .item'));
 
       $('#intro').find('.item-media')
         .empty().append(new Item(intro).media());
 
       setTimeout(function () {
-        new Truncate($('#intro'));
+        //new Truncate($('#intro'));
       });
     });
   };

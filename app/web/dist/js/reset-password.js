@@ -170,7 +170,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":11,"../Nav":17,"../Stream":29,"_process":38}],3:[function(require,module,exports){
+},{"../Item":11,"../Nav":17,"../Stream":31,"_process":40}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -349,7 +349,7 @@
 
 } ();
 
-},{"../Form":9,"../Upload":32}],6:[function(require,module,exports){
+},{"../Form":9,"../Upload":34}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -818,40 +818,36 @@
 
 },{"../Item":11,"../Nav":17}],9:[function(require,module,exports){
 /*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  FORM
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
+ *  F   O   R   M
+ *  *****************
 */
 
 ! function () {
 
   'use strict';
 
-  function Form (form) {
+  /**
+   *  @class    Form
+   *  @arg      {HTMLElement} form
+   */
 
+  function Form (form) {
+    console.log('new Form', form)
     var self = this;
 
     this.form = form;
 
     this.form.on('submit', function () {
-      self.submit();
+      setTimeout(self.submit.bind(self));
 
       return false;
     });
   }
 
   Form.prototype.submit = function () {
+
+    console.warn('submitting', this.form.attr('name'))
+
     var self = this;
 
     var errors = [];
@@ -917,6 +913,7 @@
 
   var Truncate = require('./Truncate');
   var Item = require('./Item');
+  var readMore = require('./ReadMore');
 
   function Intro () {
 
@@ -926,20 +923,27 @@
     app.socket.emit('get intro');
 
     app.socket.on('got intro', function (intro) {
+
+      console.warn('got intro')
+
       $('#intro').find('.panel-title').text(intro.subject);
 
-      $('#intro').find('.item-title').text(intro.subject);
+      $('#intro').find('.item-subject').text(intro.subject);
       // $('#intro').find('.item-title').hide();
 
-      $('#intro').find('.description').text(intro.description);
+      readMore(intro, $('#intro'));
 
-      $('#intro').find('.item-references').remove();
+      $('#intro').find('.item-reference').remove();
+      $('#intro').find('.item-buttons').remove();
+      $('#intro').find('.item-arrow').remove();
+
+      // adjustBox($('#intro .item'));
 
       $('#intro').find('.item-media')
         .empty().append(new Item(intro).media());
 
       setTimeout(function () {
-        new Truncate($('#intro'));
+        //new Truncate($('#intro'));
       });
     });
   };
@@ -948,7 +952,7 @@
 
 } ();
 
-},{"./Item":11,"./Truncate":31}],11:[function(require,module,exports){
+},{"./Item":11,"./ReadMore":26,"./Truncate":33}],11:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1007,13 +1011,13 @@
   function find (name) {
     switch ( name ) {
       case 'subject':
-        return this.template.find('.item-title:first a');
+        return this.template.find('.item-subject:first a');
 
       case 'description':
-        return this.template.find('.description:first');
+        return this.template.find('.item-description:first');
 
       case 'reference':
-        return this.template.find('.item-references:first a');
+        return this.template.find('.item-reference:first a');
 
       case 'media':
         return this.template.find('.item-media:first');
@@ -1022,13 +1026,13 @@
         return this.template.find('.youtube-preview:first');
 
       case 'toggle promote':
-        return this.template.find('.toggle-promote:first');
+        return this.template.find('.item-toggle-promote:first');
 
       case 'promote':
-        return this.template.find('.evaluator:first');
+        return this.template.find('.promote:first');
 
       case 'toggle details':
-        return this.template.find('.toggle-details:first');
+        return this.template.find('.item-toggle-details:first');
 
       case 'details':
         return this.template.find('.details:first');
@@ -1037,7 +1041,7 @@
         return this.template.find('.editor:first');
 
       case 'toggle arrow':
-        return this.template.find('>.toggle-arrow');
+        return this.template.find('.item-arrow:first');
 
       case 'promotions':
         return this.template.find('.promoted:first');
@@ -1069,7 +1073,7 @@
     var item = this;
 
     $.ajax({
-      url: '/partial/item-box'
+      url: '/partial/item'
     })
 
       .error(cb)
@@ -1164,7 +1168,7 @@
 
 } ();
 
-},{"../YouTube":33}],15:[function(require,module,exports){
+},{"../YouTube":35}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1173,6 +1177,7 @@
   var Promote     =   require('../Promote');
   var Details     =   require('../Details');
   var Nav         =   require('../Nav');
+  var readMore    =   require('../ReadMore');
 
   /**
    *  @function
@@ -1233,11 +1238,15 @@
 
     // Truncate
 
-    setTimeout(function () {
-      new Truncate(item.template);
-    }, 800);
+    // setTimeout(function () {
+    //   new Truncate(item.template);
+    // }, 800);
+
+    readMore(item.item, item.template);
 
     // Toggle promote
+
+    console.log('wew', item.template)
 
     item.find('toggle promote').on('click', require('./view/toggle-promote'));
 
@@ -1291,7 +1300,9 @@
 
     // Toggle arrow
 
-    item.find('toggle arrow').on('click', function () {
+    item.find('toggle arrow')
+      .removeClass('hide')
+      .on('click', function () {
 
       var $item   =   $(this).closest('.item');
       var item    =   $item.data('item');
@@ -1419,7 +1430,7 @@
 
 } ();
 
-},{"../Details":6,"../Nav":17,"../Panel":18,"../Promote":19,"../Truncate":31,"./view/toggle-promote":16}],16:[function(require,module,exports){
+},{"../Details":6,"../Nav":17,"../Panel":18,"../Promote":19,"../ReadMore":26,"../Truncate":33,"./view/toggle-promote":16}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1437,6 +1448,8 @@
     var $trigger    =   $(this);
     var $item       =   $trigger.closest('.item');
     var item        =   $item.data('item');
+
+    console.log('hegdhsfhgdfhgsdghsghfds')
 
     function hideOthers () {
       if ( $('.is-showing').length || $('.is-hidding').length ) {
@@ -1659,7 +1672,7 @@
       return this;
     };
 
-    var poa = (pointOfAttention.offset().top - 50);
+    var poa = (pointOfAttention.offset().top - 60);
 
     var current = $('body,html').scrollTop();
 
@@ -1850,7 +1863,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":38,"domain":35,"events":36}],18:[function(require,module,exports){
+},{"_process":40,"domain":37,"events":38}],18:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2229,7 +2242,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":11,"./Nav":17,"./Promote/find":20,"./Promote/finish":21,"./Promote/get":22,"./Promote/render":24,"./Promote/render-item":23,"./Promote/save":25,"events":36}],20:[function(require,module,exports){
+},{"./Edit":7,"./Item":11,"./Nav":17,"./Promote/find":20,"./Promote/finish":21,"./Promote/get":22,"./Promote/render":24,"./Promote/render-item":23,"./Promote/save":25,"events":38}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2698,6 +2711,79 @@
   
   'use strict';
 
+  function spanify (des) {
+
+    return des.replace(/\n/g, "\n ").split(' ')
+
+      .map(function (word) {
+        var span = $('<span class="word"></span>');
+        span.text(word + ' ');
+        return span;
+      });
+  }
+
+  function readMore (item, $item) {
+    $item.find('.item-description').text('');
+
+    spanify(item.description).forEach(function (word) {
+      $item.find('.item-description').append(word);
+    });
+
+    var limit = $item.find('.item-media img').height();
+
+    var top = $item.find('.item-text').offset().top;
+
+    if ( $('body').width() >= $('#screen-tablet').width() ) {
+      if ( $item.attr('id') !== 'intro' ) {
+        top -= ($item.find('.item-subject').height());
+      }
+
+      else {
+        top -= 40;
+      }
+    }
+    else if ( $('body').width() >= $('#screen-phone').width() ) {
+      limit *= 2;
+    }
+
+    for ( var i = $item.find('.item-description .word').length - 1; i >= 0; i -- ) {
+      var word = $item.find('.item-description .word').eq(i);
+
+      if ( (word.offset().top - top) > limit ) {
+        word.addClass('hidden-word').hide();
+      }
+    }
+
+    var more = $('<a href="#" class="more">more</a>');
+
+    more.on('click', function () {
+
+      if ( $(this).hasClass('more') ) {
+        $(this).removeClass('more').addClass('less').text('less');
+        $(this).closest('.item-description').find('.hidden-word').show();
+      }
+
+      else {
+        $(this).removeClass('less').addClass('more').text('more');
+        $(this).closest('.item-description').find('.hidden-word').hide();
+      }
+
+      return false;
+
+    });
+
+    $item.find('.item-description').append(more);
+  }
+
+  module.exports = readMore;
+
+} ();
+
+},{}],27:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
   /**
    *  @function
    *  @return
@@ -2801,7 +2887,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2829,6 +2915,84 @@
     this.signUp();
     this.forgotPassword();
 
+    function showLoginDialog () {
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      var content = $($('#login-modal').html());
+
+      vex.dialog.confirm({
+
+        afterOpen: function () {
+          $('.login-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+        },
+
+        afterClose: function () {
+          $('.login-button').on('click', showLoginDialog);
+        },
+
+        message: $('#login-modal').html(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
+
+    function showJoinDialog () {
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function () {
+          $('.join-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+        },
+
+        afterClose: function () {
+          $('.join-button').on('click', showJoinDialog);
+        },
+
+        message: $('#join').html(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
+
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
     });
@@ -2851,75 +3015,13 @@
 
     else {
       $('.navbar .is-out').remove();
+
+      $('.login-button').on('click', showLoginDialog);
+      $('.join-button').on('click', showJoinDialog);
     }
   };
 
-  Sign.prototype.signIn = function() {
-    var signForm = $('#signer');
-
-    signForm.on('submit', function () {
-
-      Nav.hide($('.login-error-401'));
-      Nav.hide($('.login-error-404'));
-
-      signForm.find('.sign-error')
-        .text('')
-        .hide();
-
-      var email = signForm.find('[name="email"]');
-      var password = signForm.find('[name="password"]');
-
-      email.removeClass('error');
-      password.removeClass('error');
-
-      if ( ! email.val() ) {
-        email.addClass('error');
-        email.focus();
-      }
-
-      else if ( ! password.val() ) {
-        password.addClass('error');
-        password.focus();
-      }
-
-      else {
-        $.ajax({
-          url: '/sign/in',
-          type: 'POST',
-          data: {
-            email: email.val(),
-            password: password.val()
-          }
-        })
-          .error(function (response) {
-            switch ( response.status ) {
-              case 404:
-                Nav.show($('.login-error-404'));
-                break;
-
-              case 401:
-                Nav.show($('.login-error-401'));
-                break;
-            }
-          })
-          .success(function (response) {
-
-            synapp.user = response.user;
-
-            $('a.is-in').css('display', 'inline');
-
-            $('.navbar .is-out').remove();
-
-            $('#login-modal').modal('hide');
-
-            signForm.find('section').hide(2000);
-
-          });
-      }
-
-      return false;
-    });
-  };
+  Sign.prototype.signIn = require('./Sign/sign-in');
 
   Sign.prototype.signUp = function () {
 
@@ -3022,7 +3124,7 @@
 
 } ();
 
-},{"./Nav":17,"./Sign/forgot-password":28}],28:[function(require,module,exports){
+},{"./Nav":17,"./Sign/forgot-password":29,"./Sign/sign-in":30}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3134,7 +3236,112 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('../Form');
+
+  /**
+   *  @method Sign.signIn
+   *  @return
+   *  @arg
+   */
+
+  function signIn () {
+    
+    var signForm = $('.vex-content');
+
+    console.log('sign in form', signForm.length);
+
+    new Form(signForm)
+
+      .send(function () {
+        console.log('hahaha')
+      });
+
+    // signForm.on('submit', function () {
+
+    //   var domain = require('domain').create();
+      
+    //   domain.on('error', function (error) {
+    //     throw error;
+    //   });
+      
+    //   domain.run(function () {
+    //     // ... code
+    //   });
+
+    //   return false;
+
+    //   Nav.hide($('.login-error-401'));
+    //   Nav.hide($('.login-error-404'));
+
+    //   signForm.find('.sign-error')
+    //     .text('')
+    //     .hide();
+
+    //   var email = signForm.find('[name="email"]');
+    //   var password = signForm.find('[name="password"]');
+
+    //   email.removeClass('error');
+    //   password.removeClass('error');
+
+    //   if ( ! email.val() ) {
+    //     email.addClass('error');
+    //     email.focus();
+    //   }
+
+    //   else if ( ! password.val() ) {
+    //     password.addClass('error');
+    //     password.focus();
+    //   }
+
+    //   else {
+    //     $.ajax({
+    //       url: '/sign/in',
+    //       type: 'POST',
+    //       data: {
+    //         email: email.val(),
+    //         password: password.val()
+    //       }
+    //     })
+    //       .error(function (response) {
+    //         switch ( response.status ) {
+    //           case 404:
+    //             Nav.show($('.login-error-404'));
+    //             break;
+
+    //           case 401:
+    //             Nav.show($('.login-error-401'));
+    //             break;
+    //         }
+    //       })
+    //       .success(function (response) {
+
+    //         synapp.user = response.user;
+
+    //         $('a.is-in').css('display', 'inline');
+
+    //         $('.navbar .is-out').remove();
+
+    //         $('#login-modal').modal('hide');
+
+    //         signForm.find('section').hide(2000);
+
+    //       });
+    //   }
+
+    //   return false;
+    // });
+  }
+
+  module.exports = signIn;
+
+} ();
+
+},{"../Form":9}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3173,7 +3380,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3307,7 +3514,7 @@
 
 } ();
 
-},{"./Intro":10,"./Panel":18,"./Sign":27,"domain":35,"events":36,"util":40}],31:[function(require,module,exports){
+},{"./Intro":10,"./Panel":18,"./Sign":28,"domain":37,"events":38,"util":42}],33:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3530,7 +3737,7 @@
 
 }();
 
-},{"./Nav":17}],32:[function(require,module,exports){
+},{"./Nav":17}],34:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3609,7 +3816,7 @@
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3684,7 +3891,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3703,7 +3910,7 @@
 
 } ();
 
-},{"../Reset-password":26,"../Sign":27,"../Synapp":30}],35:[function(require,module,exports){
+},{"../Reset-password":27,"../Sign":28,"../Synapp":32}],37:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3771,7 +3978,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":36}],36:[function(require,module,exports){
+},{"events":38}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4074,7 +4281,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4099,7 +4306,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4187,14 +4394,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4784,4 +4991,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":39,"_process":38,"inherits":37}]},{},[34]);
+},{"./support/isBuffer":41,"_process":40,"inherits":39}]},{},[36]);

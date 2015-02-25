@@ -1,0 +1,49 @@
+@import "var";
+
+button, .button {
+  display: inline-block;
+  padding: 0.9em 0.7em;
+  border: 1px solid #ccc;
+  background: 1px solid #ccc;
+  vertical-align: middle;
+  touch-action: manipulation;
+  text-align: center;
+
+  &[disabled] {
+    background-color: #eee !important;
+    color: #ccc;
+    text-decoration: line-through;
+    // pointer-events: none;
+  }
+
+  &.shy {
+    background: transparent;
+    border-color: transparent;
+  }
+
+  &.primary {
+    background: @syn-primary-color;
+    border-color: @syn-primary-color;
+    color: #fff
+  }
+
+  &.medium {
+    font-size: 125%;
+    border-width: 2px;
+  }
+
+  &.block {
+    width: calc(100% - 1px);
+  }
+}
+
+a.button {
+  text-decoration:      none;
+  color:                @syn-button-text-color
+}
+
+.button-group-2 {
+  &>button, &>.button {
+    width: 50%
+  }
+}

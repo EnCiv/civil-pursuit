@@ -170,7 +170,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":13,"../Nav":19,"../Stream":33,"_process":43}],3:[function(require,module,exports){
+},{"../Item":13,"../Nav":19,"../Stream":35,"_process":45}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -349,7 +349,7 @@
 
 } ();
 
-},{"../Form":10,"../Upload":36}],6:[function(require,module,exports){
+},{"../Form":10,"../Upload":38}],6:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -882,40 +882,36 @@
 
 },{"../Item":13,"../Nav":19}],10:[function(require,module,exports){
 /*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  FORM
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
+ *  F   O   R   M
+ *  *****************
 */
 
 ! function () {
 
   'use strict';
 
-  function Form (form) {
+  /**
+   *  @class    Form
+   *  @arg      {HTMLElement} form
+   */
 
+  function Form (form) {
+    console.log('new Form', form)
     var self = this;
 
     this.form = form;
 
     this.form.on('submit', function () {
-      self.submit();
+      setTimeout(self.submit.bind(self));
 
       return false;
     });
   }
 
   Form.prototype.submit = function () {
+
+    console.warn('submitting', this.form.attr('name'))
+
     var self = this;
 
     var errors = [];
@@ -1116,7 +1112,7 @@
 
 } ();
 
-},{"./Nav":19,"./Upload":36}],12:[function(require,module,exports){
+},{"./Nav":19,"./Upload":38}],12:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1140,6 +1136,7 @@
 
   var Truncate = require('./Truncate');
   var Item = require('./Item');
+  var readMore = require('./ReadMore');
 
   function Intro () {
 
@@ -1149,20 +1146,27 @@
     app.socket.emit('get intro');
 
     app.socket.on('got intro', function (intro) {
+
+      console.warn('got intro')
+
       $('#intro').find('.panel-title').text(intro.subject);
 
-      $('#intro').find('.item-title').text(intro.subject);
+      $('#intro').find('.item-subject').text(intro.subject);
       // $('#intro').find('.item-title').hide();
 
-      $('#intro').find('.description').text(intro.description);
+      readMore(intro, $('#intro'));
 
-      $('#intro').find('.item-references').remove();
+      $('#intro').find('.item-reference').remove();
+      $('#intro').find('.item-buttons').remove();
+      $('#intro').find('.item-arrow').remove();
+
+      // adjustBox($('#intro .item'));
 
       $('#intro').find('.item-media')
         .empty().append(new Item(intro).media());
 
       setTimeout(function () {
-        new Truncate($('#intro'));
+        //new Truncate($('#intro'));
       });
     });
   };
@@ -1171,7 +1175,7 @@
 
 } ();
 
-},{"./Item":13,"./Truncate":35}],13:[function(require,module,exports){
+},{"./Item":13,"./ReadMore":30,"./Truncate":37}],13:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1230,13 +1234,13 @@
   function find (name) {
     switch ( name ) {
       case 'subject':
-        return this.template.find('.item-title:first a');
+        return this.template.find('.item-subject:first a');
 
       case 'description':
-        return this.template.find('.description:first');
+        return this.template.find('.item-description:first');
 
       case 'reference':
-        return this.template.find('.item-references:first a');
+        return this.template.find('.item-reference:first a');
 
       case 'media':
         return this.template.find('.item-media:first');
@@ -1245,13 +1249,13 @@
         return this.template.find('.youtube-preview:first');
 
       case 'toggle promote':
-        return this.template.find('.toggle-promote:first');
+        return this.template.find('.item-toggle-promote:first');
 
       case 'promote':
-        return this.template.find('.evaluator:first');
+        return this.template.find('.promote:first');
 
       case 'toggle details':
-        return this.template.find('.toggle-details:first');
+        return this.template.find('.item-toggle-details:first');
 
       case 'details':
         return this.template.find('.details:first');
@@ -1260,7 +1264,7 @@
         return this.template.find('.editor:first');
 
       case 'toggle arrow':
-        return this.template.find('>.toggle-arrow');
+        return this.template.find('.item-arrow:first');
 
       case 'promotions':
         return this.template.find('.promoted:first');
@@ -1292,7 +1296,7 @@
     var item = this;
 
     $.ajax({
-      url: '/partial/item-box'
+      url: '/partial/item'
     })
 
       .error(cb)
@@ -1387,7 +1391,7 @@
 
 } ();
 
-},{"../YouTube":38}],17:[function(require,module,exports){
+},{"../YouTube":40}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1396,6 +1400,7 @@
   var Promote     =   require('../Promote');
   var Details     =   require('../Details');
   var Nav         =   require('../Nav');
+  var readMore    =   require('../ReadMore');
 
   /**
    *  @function
@@ -1456,11 +1461,15 @@
 
     // Truncate
 
-    setTimeout(function () {
-      new Truncate(item.template);
-    }, 800);
+    // setTimeout(function () {
+    //   new Truncate(item.template);
+    // }, 800);
+
+    readMore(item.item, item.template);
 
     // Toggle promote
+
+    console.log('wew', item.template)
 
     item.find('toggle promote').on('click', require('./view/toggle-promote'));
 
@@ -1514,7 +1523,9 @@
 
     // Toggle arrow
 
-    item.find('toggle arrow').on('click', function () {
+    item.find('toggle arrow')
+      .removeClass('hide')
+      .on('click', function () {
 
       var $item   =   $(this).closest('.item');
       var item    =   $item.data('item');
@@ -1642,7 +1653,7 @@
 
 } ();
 
-},{"../Details":7,"../Nav":19,"../Panel":20,"../Promote":22,"../Truncate":35,"./view/toggle-promote":18}],18:[function(require,module,exports){
+},{"../Details":7,"../Nav":19,"../Panel":20,"../Promote":22,"../ReadMore":30,"../Truncate":37,"./view/toggle-promote":18}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1660,6 +1671,8 @@
     var $trigger    =   $(this);
     var $item       =   $trigger.closest('.item');
     var item        =   $item.data('item');
+
+    console.log('hegdhsfhgdfhgsdghsghfds')
 
     function hideOthers () {
       if ( $('.is-showing').length || $('.is-hidding').length ) {
@@ -1882,7 +1895,7 @@
       return this;
     };
 
-    var poa = (pointOfAttention.offset().top - 50);
+    var poa = (pointOfAttention.offset().top - 60);
 
     var current = $('body,html').scrollTop();
 
@@ -2073,7 +2086,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":43,"domain":40,"events":41}],20:[function(require,module,exports){
+},{"_process":45,"domain":42,"events":43}],20:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2420,7 +2433,7 @@
 
 } ();
 
-},{"./Demographics":6,"./Identity":11,"./Nav":19,"./Public_Persona":29,"./Residence":30,"./Voter":37}],22:[function(require,module,exports){
+},{"./Demographics":6,"./Identity":11,"./Nav":19,"./Public_Persona":29,"./Residence":31,"./Voter":39}],22:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2573,7 +2586,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":13,"./Nav":19,"./Promote/find":23,"./Promote/finish":24,"./Promote/get":25,"./Promote/render":27,"./Promote/render-item":26,"./Promote/save":28,"events":41}],23:[function(require,module,exports){
+},{"./Edit":8,"./Item":13,"./Nav":19,"./Promote/find":23,"./Promote/finish":24,"./Promote/get":25,"./Promote/render":27,"./Promote/render-item":26,"./Promote/save":28,"events":43}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3106,6 +3119,79 @@
   
   'use strict';
 
+  function spanify (des) {
+
+    return des.replace(/\n/g, "\n ").split(' ')
+
+      .map(function (word) {
+        var span = $('<span class="word"></span>');
+        span.text(word + ' ');
+        return span;
+      });
+  }
+
+  function readMore (item, $item) {
+    $item.find('.item-description').text('');
+
+    spanify(item.description).forEach(function (word) {
+      $item.find('.item-description').append(word);
+    });
+
+    var limit = $item.find('.item-media img').height();
+
+    var top = $item.find('.item-text').offset().top;
+
+    if ( $('body').width() >= $('#screen-tablet').width() ) {
+      if ( $item.attr('id') !== 'intro' ) {
+        top -= ($item.find('.item-subject').height());
+      }
+
+      else {
+        top -= 40;
+      }
+    }
+    else if ( $('body').width() >= $('#screen-phone').width() ) {
+      limit *= 2;
+    }
+
+    for ( var i = $item.find('.item-description .word').length - 1; i >= 0; i -- ) {
+      var word = $item.find('.item-description .word').eq(i);
+
+      if ( (word.offset().top - top) > limit ) {
+        word.addClass('hidden-word').hide();
+      }
+    }
+
+    var more = $('<a href="#" class="more">more</a>');
+
+    more.on('click', function () {
+
+      if ( $(this).hasClass('more') ) {
+        $(this).removeClass('more').addClass('less').text('less');
+        $(this).closest('.item-description').find('.hidden-word').show();
+      }
+
+      else {
+        $(this).removeClass('less').addClass('more').text('more');
+        $(this).closest('.item-description').find('.hidden-word').hide();
+      }
+
+      return false;
+
+    });
+
+    $item.find('.item-description').append(more);
+  }
+
+  module.exports = readMore;
+
+} ();
+
+},{}],31:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
   var Nav = require('./Nav');
 
   /**
@@ -3207,7 +3293,7 @@
 
 } ();
 
-},{"./Nav":19}],31:[function(require,module,exports){
+},{"./Nav":19}],32:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3235,6 +3321,84 @@
     this.signUp();
     this.forgotPassword();
 
+    function showLoginDialog () {
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      var content = $($('#login-modal').html());
+
+      vex.dialog.confirm({
+
+        afterOpen: function () {
+          $('.login-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+        },
+
+        afterClose: function () {
+          $('.login-button').on('click', showLoginDialog);
+        },
+
+        message: $('#login-modal').html(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
+
+    function showJoinDialog () {
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function () {
+          $('.join-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+        },
+
+        afterClose: function () {
+          $('.join-button').on('click', showJoinDialog);
+        },
+
+        message: $('#join').html(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
+
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
     });
@@ -3257,75 +3421,13 @@
 
     else {
       $('.navbar .is-out').remove();
+
+      $('.login-button').on('click', showLoginDialog);
+      $('.join-button').on('click', showJoinDialog);
     }
   };
 
-  Sign.prototype.signIn = function() {
-    var signForm = $('#signer');
-
-    signForm.on('submit', function () {
-
-      Nav.hide($('.login-error-401'));
-      Nav.hide($('.login-error-404'));
-
-      signForm.find('.sign-error')
-        .text('')
-        .hide();
-
-      var email = signForm.find('[name="email"]');
-      var password = signForm.find('[name="password"]');
-
-      email.removeClass('error');
-      password.removeClass('error');
-
-      if ( ! email.val() ) {
-        email.addClass('error');
-        email.focus();
-      }
-
-      else if ( ! password.val() ) {
-        password.addClass('error');
-        password.focus();
-      }
-
-      else {
-        $.ajax({
-          url: '/sign/in',
-          type: 'POST',
-          data: {
-            email: email.val(),
-            password: password.val()
-          }
-        })
-          .error(function (response) {
-            switch ( response.status ) {
-              case 404:
-                Nav.show($('.login-error-404'));
-                break;
-
-              case 401:
-                Nav.show($('.login-error-401'));
-                break;
-            }
-          })
-          .success(function (response) {
-
-            synapp.user = response.user;
-
-            $('a.is-in').css('display', 'inline');
-
-            $('.navbar .is-out').remove();
-
-            $('#login-modal').modal('hide');
-
-            signForm.find('section').hide(2000);
-
-          });
-      }
-
-      return false;
-    });
-  };
+  Sign.prototype.signIn = require('./Sign/sign-in');
 
   Sign.prototype.signUp = function () {
 
@@ -3428,7 +3530,7 @@
 
 } ();
 
-},{"./Nav":19,"./Sign/forgot-password":32}],32:[function(require,module,exports){
+},{"./Nav":19,"./Sign/forgot-password":33,"./Sign/sign-in":34}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3540,7 +3642,112 @@
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('../Form');
+
+  /**
+   *  @method Sign.signIn
+   *  @return
+   *  @arg
+   */
+
+  function signIn () {
+    
+    var signForm = $('.vex-content');
+
+    console.log('sign in form', signForm.length);
+
+    new Form(signForm)
+
+      .send(function () {
+        console.log('hahaha')
+      });
+
+    // signForm.on('submit', function () {
+
+    //   var domain = require('domain').create();
+      
+    //   domain.on('error', function (error) {
+    //     throw error;
+    //   });
+      
+    //   domain.run(function () {
+    //     // ... code
+    //   });
+
+    //   return false;
+
+    //   Nav.hide($('.login-error-401'));
+    //   Nav.hide($('.login-error-404'));
+
+    //   signForm.find('.sign-error')
+    //     .text('')
+    //     .hide();
+
+    //   var email = signForm.find('[name="email"]');
+    //   var password = signForm.find('[name="password"]');
+
+    //   email.removeClass('error');
+    //   password.removeClass('error');
+
+    //   if ( ! email.val() ) {
+    //     email.addClass('error');
+    //     email.focus();
+    //   }
+
+    //   else if ( ! password.val() ) {
+    //     password.addClass('error');
+    //     password.focus();
+    //   }
+
+    //   else {
+    //     $.ajax({
+    //       url: '/sign/in',
+    //       type: 'POST',
+    //       data: {
+    //         email: email.val(),
+    //         password: password.val()
+    //       }
+    //     })
+    //       .error(function (response) {
+    //         switch ( response.status ) {
+    //           case 404:
+    //             Nav.show($('.login-error-404'));
+    //             break;
+
+    //           case 401:
+    //             Nav.show($('.login-error-401'));
+    //             break;
+    //         }
+    //       })
+    //       .success(function (response) {
+
+    //         synapp.user = response.user;
+
+    //         $('a.is-in').css('display', 'inline');
+
+    //         $('.navbar .is-out').remove();
+
+    //         $('#login-modal').modal('hide');
+
+    //         signForm.find('section').hide(2000);
+
+    //       });
+    //   }
+
+    //   return false;
+    // });
+  }
+
+  module.exports = signIn;
+
+} ();
+
+},{"../Form":10}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3579,7 +3786,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3713,7 +3920,7 @@
 
 } ();
 
-},{"./Intro":12,"./Panel":20,"./Sign":31,"domain":40,"events":41,"util":45}],35:[function(require,module,exports){
+},{"./Intro":12,"./Panel":20,"./Sign":32,"domain":42,"events":43,"util":47}],37:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3936,7 +4143,7 @@
 
 }();
 
-},{"./Nav":19}],36:[function(require,module,exports){
+},{"./Nav":19}],38:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4015,7 +4222,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4079,7 +4286,7 @@
 
 } ();
 
-},{"./Nav":19}],38:[function(require,module,exports){
+},{"./Nav":19}],40:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4154,7 +4361,7 @@
 
 } ();
 
-},{}],39:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4174,7 +4381,7 @@
 
 } ();
 
-},{"../Panel":20,"../Profile":21,"../Sign":31,"../Synapp":34}],40:[function(require,module,exports){
+},{"../Panel":20,"../Profile":21,"../Sign":32,"../Synapp":36}],42:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4242,7 +4449,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":41}],41:[function(require,module,exports){
+},{"events":43}],43:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4545,7 +4752,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4570,7 +4777,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],43:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4658,14 +4865,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5255,4 +5462,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":44,"_process":43,"inherits":42}]},{},[39]);
+},{"./support/isBuffer":46,"_process":45,"inherits":44}]},{},[41]);

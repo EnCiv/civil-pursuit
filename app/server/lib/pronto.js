@@ -153,9 +153,17 @@ Nina Butorac
 
       .open('app/web/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
 
-      /** /bower/ ==> Bower components */
+      /**       B   O   W   E   R       C   O   M   P   O   N   E   N   T   S       **/
+
+      /** /bower/ */
 
       .open('app/web/bower_components/', when.prefix('/bower/'))
+
+      /**       A   S   S   E   T       **/
+
+      /** /assets/ */
+
+      .open('app/web/assets/', when.prefix('/assets/'))
 
       /** /js/ ==> JS files */
 

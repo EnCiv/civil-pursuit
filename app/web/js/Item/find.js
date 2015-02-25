@@ -11,13 +11,13 @@
   function find (name) {
     switch ( name ) {
       case 'subject':
-        return this.template.find('.item-title:first a');
+        return this.template.find('.item-subject:first a');
 
       case 'description':
-        return this.template.find('.description:first');
+        return this.template.find('.item-description:first');
 
       case 'reference':
-        return this.template.find('.item-references:first a');
+        return this.template.find('.item-reference:first a');
 
       case 'media':
         return this.template.find('.item-media:first');
@@ -26,13 +26,13 @@
         return this.template.find('.youtube-preview:first');
 
       case 'toggle promote':
-        return this.template.find('.toggle-promote:first');
+        return this.template.find('.item-toggle-promote:first');
 
       case 'promote':
-        return this.template.find('.evaluator:first');
+        return this.template.find('.promote:first');
 
       case 'toggle details':
-        return this.template.find('.toggle-details:first');
+        return this.template.find('.item-toggle-details:first');
 
       case 'details':
         return this.template.find('.details:first');
@@ -41,7 +41,7 @@
         return this.template.find('.editor:first');
 
       case 'toggle arrow':
-        return this.template.find('>.toggle-arrow');
+        return this.template.find('.item-arrow:first');
 
       case 'promotions':
         return this.template.find('.promoted:first');

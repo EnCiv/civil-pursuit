@@ -1,397 +1,189 @@
-/**
- *    __________________________________________________________________________
- *
- *    Synapp Style Sheet / Box
- *    ------------------   ---
- *
- *    @abstract
- *    Navigator + Panel
- *
- *    @author   francois
- *
- *    __________________________________________________________________________
- *  
-*/
-
 @import "var";
+@import "mixins/box-shadow";
 
-.box {
-  overflow: hidden;
+.item {
+  
+  & {
+    margin: 0.8em;
+    margin-right: 0;
+    border: 1px solid #999;
+    border-radius: 4px 0 0 4px;
+    padding: 0.8em;
+    overflow: hidden;
+    .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+  }
 
-  .item-media-wrapper {
-    
-    & {
-      width: 35%;
-      float: left;
-      padding: @syn-padding;
-      text-align: center !important;
+  .item-media {
+    float: left;
+    width: 40%;
+    max-width: 450px;
+    /*border: 1px solid #999;*/
+    padding-right: 1.5em;
+    // padding-bottom: 1.5em;
+
+    @media (max-width: @screenPhone) {
+      width: 100%;
+      float: none;
+      padding-bottom: 1.5em;
+    }
+  }
+
+  .item-buttons {
+    float: right;
+    // border: 1px solid green;
+
+    button, .button {
+      background:     transparent;
+      border-color:   transparent;
+      padding: 0.3em !important;
+      font-size: 1.3em;
     }
 
-    @media (min-width: 760px) {
-      margin-right: 10px;
-    }
+    @media (max-width: @screenPhone) {
+      float: none;
+      margin-bottom: 0.8em;
 
-    .item-media {
-      
-      .upload-button {
-        margin-top: -85px;
-        // width: 90%;
-        // font-size: 14px
-      }
-
-      input.upload-button {
-        width: 20px !important
-      }
-
-      &.youtube + .upload-button {
-        margin-top: 0;
-        margin-bottom: 50px
-      }
-
-      .drop-box {
-        background: #F8F8F8;
-        border: 5px dashed #DDD;
-        min-height: 65px !important; 
-        text-align: center !important;
-        padding-bottom: 80px !important;
-        // min-height: 230px !important;
-        margin-left: -10px !important;
-        padding-top: 25px !important;
-
-        input {
-          margin: auto
-        }
-      }
-
-      .drop-box.dragover {
-        border: 5px dashed blue;
-      }
-
-      .drop-box.dragover-err {
-        border: 5px dashed red;
+      button, .button {
+        width: 50%;
+        float:left;
       }
     }
   }
 
-  .box-buttons {
-    text-align: right;
-    width: 120px;
-
-    @media (max-width: 600px) {
-      width: 90px;
-    }
-
-    .toggle-promote {
-      // color: #555 !important;
-      // font-size: 1.9em;
-      // font-weight: bold
-    }
-
-    .toggle-details {
-      // color: #999 !important
-    }
-
-    .btn {
-      width: 100px;
-      border-color: white !important;
-
-      @media (max-width: 600px) {
-        font-size: 80%;
-        width: 70px;
-        border-radius: 10px;
-      }
-    }
-
-    div {
-      padding: @syn-padding;
-
-      @media (max-width: 600px) {
-        padding: 2px;
-        font-size: 80%;
-      }
-    }
+  .item-toggle-promote, .item-toggle-details {
+    // font-size: 1.5em;
+    width: 5em;
   }
 
   .item-text {
+    // border: 2px solid red;
+    margin-left: 0
+  }
 
-    & {
-      padding-left: @syn-padding;
-      border: 1px solid #fff;
-      // overflow: hidden;
+  .item-truncatable {
+    // border: 1px solid blue;
+    // overflow: hidden;
+  }
+
+  h4.item-subject {
+    line-height: 1.3em;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 0.4em;
+
+    a {
+      color: #444
     }
 
-    // PLACEHOLDERS
+    @media (max-width: @screenPhone) {
+      // line-height: 1em;
+      top: 0;
+      text-align: center
+    }
+  }
 
-    .subject-placeholder {
+  .item-description {
+    font-size: 1.1em;
+    margin: 0em;
+    margin-right: 0.8em;
+    // overflow: hidden;
+
+    @media (max-width: @screenPhone) {
+      margin-right: 0
+    }
+
+    @media (max-width: calc(@screenTablet - 1px)) {
+      clear: both;
+      margin-top: 0.8em;
+      padding-bottom: 40px;
+    }
+  }
+
+  .item-reference {
+    word-wrap: break-word;
+    /*border: 1px solid #999;*/
+    // margin: 0 0.9em;
+    // padding: 0.8em;
+    background: #fff;
+  }
+
+  .item-arrow {
+    // clear: both;
+    // border: 3px solid blue;
+    text-align: center;
+    margin-left: 0;
+    // margin-left: 40%;
+    padding: 0;
+    background: #fff;
+    // margin: -1.5em;
+    height: 40px;
+    margin-top: -40px;
+
+    @media (max-width: @screenPhone) {
+      margin-top: 0
+    }
+
+    i {
+      background: white;
+      padding: 15px 30px;
+      border-radius: 8px 8px 0 0;
+      opacity: .95
+    }
+
+    div {
+      // // margin-top: -20px;
+      // background: red;
+      // display: inline-block;
+      // width: 100%;
+      // height: 40px;
+    }
+  }
+
+  .subject-placeholder {
       background: #ccc;
-      padding: 8px;
+      padding: 0.2em;
+      text-align: center;
       color: #999;
       border-radius: 4px;
       overflow: hidden;
     }
 
-    .description-placeholder {
-      background: #eee;
-      padding: 8px;
-      color: #aaa;
-      border-radius: 4px;
-      overflow: hidden;
-      // margin-top: -20px;
-      height: 100px
-    }
+  .description-placeholder {
+    background: #eee;
+    // padding: 0.6em;
+    text-align: center;
+    color: #aaa;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: -20px;
+    height: 3.7em;
 
-    .reference-placeholder {
-      background: #eee;
-      padding: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      // margin-top: -20px;
-      color: #aaa
-    }
-
-    @media (min-width: 901px) {
-      padding-bottom: 200px;
-      margin-bottom: -200px;
-      padding-left: 0;
-    }
-
-    @media (max-width: 900px) {
-      padding-bottom: 150px;
-      margin-bottom: -150px;
-      padding-left: 0;
-    }
-
-    @media (max-width: 620px) {
-      padding-bottom: 130px;
-      margin-bottom: -130px;
-      padding-left: 0;
-    }
-
-    @media (max-width: 320px) {
-      padding-bottom: 200px;
-      margin-bottom: -200px;
-      padding-left: 0;
-    }
-
-    .item-title {
-      // font-size: 26px;
-      font-size: 1.75em;
-      margin-top: 10px;
-      word-wrap: break-word;
-      border: none;
-      // padding-left: @syn-padding;
-
-      @media (max-width: 800px) {
-        font-size: 24px
-      }
-      
-      @media (max-width: 700px) {
-        font-size: 22px
-      }
-
-      @media (max-width: 600px) {
-        font-size: 18px
-      }
-
-      @media (max-width: 500px) {
-        font-size: 16px
-      }
-    }
-
-    input.item-title, .box-description textarea {
-
-      @media (min-width: 1280px) {
-        width: 50%
-      }
-
-      @media (max-width:1280px) {
-        width: 45%
-      }
-
-      @media (max-width: 680px) {
-        width: 40%
-      }
-
-      @media (max-width: 500px) {
-        width: 35%
-      }
-
-      @media (max-width: 400px) {
-        width: 60%
-      }
-    }
-
-    input.item-title {
-      margin-top: 8px
-    }
-
-    .box-description {
-      font-size: 16px;
-      margin-top: 0 !important;
-      padding: 10px;
-      padding-top: 0 !important;
-
-      @media (max-width: 500px) {
-        font-size: 14px
-      }
-
-      textarea {
-        border: none;
-        min-height: 120px
-      }
-    }
-
-    .entry-title {
-      margin-top: 15px
+    @media (max-width: @screenPhone) {
+      margin-right: 0
     }
   }
-}
 
-/** YouTube Responsive - http://avexdesigns.com/responsive-youtube-embed */
-.video-container {
-  position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 30px;
-  height: 0;
-  overflow: hidden;
-
-  iframe, object, embed {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%
-  }
-}
-
-.youtube-thumbnail {
-  // border: 12px solid black;
-  // border-width: 12px 0;
-}
-
-.youtube-preview {
-  text-align: center;
-
-  .icon-play { 
-    display: none;
+  .reference-placeholder {
+    background: #eee;
+    // padding: 0.4em;
+    border-radius: 4px;
+    text-align: center;
+    overflow: hidden;
+    margin-top: -20px;
+    color: #aaa
   }
 
-  .fa {
-    cursor: pointer;
-    color: white
-  }
-}
+  .item-collapsers {
+    clear: both;
 
-.item {
+    .is-container {
+      border: 1px solid #999;
 
-  & > .is-section {
-    padding-bottom: 0
-  }
-
-  & {
-    background:     #fff;
-    border:         1px solid @panel-border-color;
-    margin:         @syn-padding;
-    border-radius:  4px;
-    .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
-    margin-right:   0;
-    border-right:   none;
-  }
-
-  &.is-truncated .truncator {
-    display: inline-block;
-    margin-bottom: 30px;
-  }
-
-  .item-text {
-    .item-title {
-      a {
-        color: #444
-      }
-    }
-    .input-subject {
-      overflow: hidden;
-      padding: 10px;
-
-      textarea {
-        margin: 10px 0
+      &.is-shown {
+        margin-top: 0.8em !important;
+        margin-bottom: 40px;
       }
     }
   }
 
-  .box-buttons {
-    margin: 10px
-  }
-
-  .collapsers {
-
-    & {
-      clear: both;
-    }
-
-    .evaluator, .details, .editor {
-      border: 1px solid @panel-border-color;
-      border-right: none;
-      margin-left: @syn-padding;
-      margin-right: 0;
-      border-radius: 4px;
-      .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
-
-      &.is-shown, &.is-showing {
-        margin-bottom: 50px;
-      }
-    }
-    .children {
-
-      & {
-        background: #eee
-      }
-
-      .split-view {
-
-        li:nth-last-child(1) {
-          text-align: right
-        }
-
-        .box-buttons {
-
-          @media (max-width: 480px) {
-            float: none !important;
-            width: 100%;
-            clear: both;
-            text-align: center;
-          }
-
-          button {
-            width: 70px !important
-          }
-        }
-
-        .toggle-arrow {
-          padding: 0
-        }
-
-        .item-title {
-          width: 50%;
-
-          @media (max-width: 900px) {
-            clear: left !important;
-            padding: 10px 10px 0 10px;
-          }
-        }
-
-        .item-text {
-          @media (max-width: 900px) {
-            clear: left !important;
-          }
-        }
-
-        .item-media-wrapper {
-          @media (max-width: 900px) {
-            width: 100%
-          }
-        }
-      }
-    }
-  }
 }

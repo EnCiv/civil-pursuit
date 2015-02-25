@@ -25,9 +25,25 @@ block script-socketio-stream
 block script-jquery
   - if ( settings.env === 'production')
     script(src=synapp.jquery.cdn)
+    script(src='/js/jQuery.b.js')
 
   - else
     script(src='/bower/jquery/dist/jquery.js')
+    script(src='/js/jQuery.b.js')
+
+block script-app
+  - var js = 'index'
+
+  - if ( req.path === '/profile' )
+    - js = 'profile'
+
+  - if ( req.path === '/terms-of-service' )
+    - js = 'terms-of-service'
+
+  - if ( req.path === '/reset-password' )
+    - js = 'reset-password'
+
+  script(src='/js/' + js + ( settings.env === 'production' ? '.min.js' : '.js' ))
 
 block script-rangeslider
   - if ( settings.env === 'production' )
@@ -48,24 +64,11 @@ block script-c3
   - else
     script(src='/bower/c3/c3.js')
 
-script(src='/bower/bootstrap/dist/js/bootstrap.min.js')
+block script-vex
+  script(src='/assets/vex-2.2.1/js/vex.combined.min.js')
 
-script(src='/js/jQuery.b.js')
+//- script(src='/bower/bootstrap/dist/js/bootstrap.min.js')
 
 //- script(src='/js/Bootstrap.b.js')
 
 //- # synapp
-
-block script-app
-  - var js = 'index'
-
-  - if ( req.path === '/profile' )
-    - js = 'profile'
-
-  - if ( req.path === '/terms-of-service' )
-    - js = 'terms-of-service'
-
-  - if ( req.path === '/reset-password' )
-    - js = 'reset-password'
-
-  script(src='/js/' + js + ( settings.env === 'production' ? '.min.js' : '.js' ))

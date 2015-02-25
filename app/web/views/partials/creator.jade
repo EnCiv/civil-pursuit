@@ -1,6 +1,6 @@
 form(role='form' novalidate method='POST').creator.is-container
   .is-section
-    .item.box
+    .item
       .item-media-wrapper
         article.item-media.padding
           .drop-box
@@ -11,11 +11,12 @@ form(role='form' novalidate method='POST').creator.is-container
               button.btn.btn-block.upload-image-button(type='button') Choose a file
             input.hide(type='file' value='Upload image')
       
-      .pull-right.box-buttons
-        button.btn.button-create Promote
-        .text-muted New
-        .text-muted
-        button.btn(disabled) Details
+      .item-buttons
+        button.button-create.shy.medium
+          i.fa.fa-bullhorn
+
+        button.button-create.shy.medium(disabled)
+          i.fa.fa-signal
 
       .item-text
         .input-subject

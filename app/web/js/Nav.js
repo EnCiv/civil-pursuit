@@ -158,7 +158,7 @@
       return this;
     };
 
-    var poa = (pointOfAttention.offset().top - 50);
+    var poa = (pointOfAttention.offset().top - 60);
 
     var current = $('body,html').scrollTop();
 

@@ -12,7 +12,7 @@
     var item = this;
 
     $.ajax({
-      url: '/partial/item-box'
+      url: '/partial/item'
     })
 
       .error(cb)

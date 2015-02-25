@@ -21,7 +21,6 @@
 
 @import "mixins/gradient";
 @import "mixins/box-shadow";
-@import "item";
 
 /** ____________________________________________________________________________
 
@@ -41,32 +40,50 @@
 .panel {
   
   & {
-    border-color: @panel-border-color;
-    .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+    border-color:       @panel-border-color;
+    .box-shadow         (-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+    margin:             1.5rem;
+    border-radius:      6px;
+    padding-bottom:     0.8em;
   }
+
+  /** Panel heading */
 
   .panel-heading {
-    background: @panel-heading-bg;
-    .gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
-    color: #fff;
-    text-align: center;
+
+    background:         @panel-heading-bg;
+    .gradient           (rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+    color:              #fff;
+    text-align:         center;
+    vertical-align:     baseline;
+    border-radius:      6px 6px 0 0;
+    // padding:            1px;
+
+    /** Panel title */
 
     .panel-title {
-      font-size: 20px
+      // font-size:        20px
+      border: 1px solid white
     }
 
+    /** Toggle creator icon */
+
     .toggle-creator {
-      padding-top: 5px
+      float: right;
+      padding: 0.4em 0.7em;
+      // vertical-align: middle;
+      // position:             relative;
+      // top:                  50%;
+      // transform:            translateY(-50%);
     }
   }
+
+  /** Panel body */
 
   .panel-body {
     
     & {
       padding: 0;
-    }
-
-    .creator {
     }
   }
 
@@ -87,8 +104,4 @@
   .load-more, .create-new {
     text-align: center
   }
-}
-
-.modal {
-  top: 200px !important;
 }

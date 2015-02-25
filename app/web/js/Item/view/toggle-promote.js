@@ -16,6 +16,8 @@
     var $item       =   $trigger.closest('.item');
     var item        =   $item.data('item');
 
+    console.log('hegdhsfhgdfhgsdghsghfds')
+
     function hideOthers () {
       if ( $('.is-showing').length || $('.is-hidding').length ) {
         return false;

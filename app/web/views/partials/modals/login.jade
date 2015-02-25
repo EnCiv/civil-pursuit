@@ -1,64 +1,45 @@
-#login-modal.syn-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='loginLabel' aria-hidden='true')
-  .modal-dialog.modal-lg
-    .modal-content
-      .modal-header.text-center.bg-default
-        button.close(type='button' data-dismiss="modal")
-          span(aria-hidden='true') &times;
-          span.sr-only Close
+#login-modal.hide
+  .login-modal
+    h4 Login with
 
-        h4#loginLabel.modal-title Login with
+    .button-group-2
+      a.button(href='/sign/facebook')
+        i.fa.fa-facebook
+        span  Facebook
 
-      .modal-body
-        .btn-group.btn-group-justified
+      a.button(href='/sign/twitter')
+        i.fa.fa-twitter
+        span  Twitter
 
-          a.btn.btn-lg.btn-primary(href='/sign/facebook')
-            i.fa.fa-facebook
-            span  Facebook
+    h4 Login with email
 
-          a.btn.btn-info.btn-lg(href='/sign/twitter')
-            i.fa.fa-twitter
-            span  Twitter
+    form(role='form' novalidate method='POST' name='login')
+      .login-error-404.is-container
+        .is-section
+          .danger
+            p
+              strong Wrong email
 
-      .modal-header.text-center.bg-default
-        h4#loginLabel.modal-title Or login with email
+      .login-error-401.is-container
+        .is-section
+          .danger
+            p
+              strong Wrong password
 
-      .modal-body
+      .sign-success.success
 
-        form#signer(role='form' novalidate method='POST' name='login')
-          .login-error-404.is-container
-            .is-section
-              .bg-danger.text-danger.padding
-                p
-                  strong Wrong email
+      .form-group
+        label Email
+        input(type='email' placeholder='Email' name='email' required)
 
-          .login-error-401.is-container
-            .is-section
-              .bg-danger.text-danger.padding
-                p
-                  strong Wrong password
+      .form-group
+        label Password
+        input.block(type='password' placeholder='Password' name='password')
 
-          .sign-success.bg-success
+      p
+        button.primary.login-submit.block
+          i.fa.fa-sign-in
+          span  Login
 
-          .row.padding-bottom
-            .col-xs-6.form-group.padding-right
-              .padding-top.padding-bottom
-                big.padding-top.padding-bottom
-                  b Email
-              input.form-control.input-lg(type='email' placeholder='Email' name='email')
-
-            .col-xs-6.form-group.padding-left
-              .padding-top.padding-bottom
-                big.padding-top.padding-bottom
-                  b Password
-              input.form-control.input-lg(type='password' placeholder='Password' name='password')
-
-          a.btn.btn-default.btn-lg.btn-block.btn-primary.login-submit(href='#')
-            i.fa.fa-sign-in
-            big  Login
-
-
-        .padding
-
-        .padding-bottom
-          h4.text-center.padding-top
-            a.forgot-password-link(href='#' type='button' data-toggle='modal' data-target='#forgot-password' data-dismiss="modal") Forgot password?
+    h5
+      a.forgot-password-link(href='#') Forgot password?

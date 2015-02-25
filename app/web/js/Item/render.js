@@ -6,6 +6,7 @@
   var Promote     =   require('../Promote');
   var Details     =   require('../Details');
   var Nav         =   require('../Nav');
+  var readMore    =   require('../ReadMore');
 
   /**
    *  @function
@@ -66,11 +67,15 @@
 
     // Truncate
 
-    setTimeout(function () {
-      new Truncate(item.template);
-    }, 800);
+    // setTimeout(function () {
+    //   new Truncate(item.template);
+    // }, 800);
+
+    readMore(item.item, item.template);
 
     // Toggle promote
+
+    console.log('wew', item.template)
 
     item.find('toggle promote').on('click', require('./view/toggle-promote'));
 
@@ -124,7 +129,9 @@
 
     // Toggle arrow
 
-    item.find('toggle arrow').on('click', function () {
+    item.find('toggle arrow')
+      .removeClass('hide')
+      .on('click', function () {
 
       var $item   =   $(this).closest('.item');
       var item    =   $item.data('item');
