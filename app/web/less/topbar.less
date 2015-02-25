@@ -38,8 +38,9 @@
   // top:                  50%;
   // transform:            translateY(-50%);
   height:               @syn-topbar-height;
-  margin:               0 2em 0 0;
+  margin:               0 @syn-gutter-width 0 0;
   padding:              0;
+  background:           rgba(255, 255, 255, 0.5);
 
   span {
     padding-right: 8px;
@@ -50,12 +51,18 @@
     border:               1px solid #ccc;
     border-width:         0 0 0 1px;
     background:           transparent;
+    vertical-align: middle;
     // line-height:          1.45em;
-    height:               100%;
-    // position:             relative;
-    // top:                  25%;
-    // transform:            translateY(-25%);
+    // height:               100%;
     // padding:              1em 0.8em;
+  }
+
+  .button i {
+    
+    position:             relative;
+    top:                  25%;
+    transform:            translateY(-25%);
+    vertical-align:       middle;
   }
 }
 

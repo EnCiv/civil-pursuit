@@ -113,7 +113,7 @@
     }
 
     else {
-      $('.navbar .is-out').remove();
+      $('.topbar .is-out').remove();
     }
   };
 
