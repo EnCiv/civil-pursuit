@@ -137,7 +137,7 @@ body {
   padding: 0;
 }
 body {
-  padding-top: 50px;
+  padding-top: 70px;
 }
 /*
  *    Layout
@@ -400,7 +400,7 @@ textarea.block {
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  margin: 1.5rem;
+  margin: 0 1.5rem 1.5rem 1.5rem;
   border-radius: 6px;
   padding-bottom: 0.8em;
   /** Panel heading */
@@ -435,6 +435,7 @@ textarea.block {
   margin: 0px;
   margin-right: 0;
   border-right: none;
+  margin-top: -10px;
 }
 .panel.split-view {
   margin-right: 10px;
@@ -590,6 +591,10 @@ textarea.block {
 }
 .item .item-collapsers .is-container {
   border: 1px solid #999;
+  border-radius: 4px 0 0 4px;
+  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
 .item .item-collapsers .is-container.is-shown {
   margin-top: 0.8em !important;

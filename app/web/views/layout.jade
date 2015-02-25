@@ -8,34 +8,32 @@ include layout/head
   #screen-phone
   #screen-tablet
 
-.container-fluid
+//- Top bar
 
-  //- Top bar
+section(role='header')
 
-  section(role='header')
+  include layout/top
 
-    include layout/top
+#flash.text-center
+  // Flash message here
 
-  #flash.text-center
-    // Flash message here
+//- Session bar
 
-  //- Session bar
+- if ( ! req.user )
 
-  - if ( ! req.user )
+  include partials/sign
 
-    include partials/sign
+//- Page
 
-  //- Page
+section(role='main')
+  
+  block page
 
-  section(role='main')
-    
-    block page
+//- Footer
 
-  //- Footer
-
-  block footer
-    
-    include layout/footer
+block footer
+  
+  include layout/footer
 
 //- Modals
 
