@@ -3,10 +3,7 @@
   border:             5px dashed #DDD;
   min-height:         65px !important; 
   text-align:         center !important;
-  padding-bottom:     80px !important;
-  // min-height: 230px !important;
-  // margin-left: -10px !important;
-  padding-top:        25px !important;
+  padding-bottom:     1.5em;
 
   input {
     margin: auto
@@ -23,10 +20,8 @@
 
 .creator {
 
-  input, textarea {
-    display: block;
-    width: calc(60% - 80px) !important;
-    overflow: hidden
+  & {
+    clear: both;
   }
 
   .item {
@@ -37,7 +32,19 @@
         display: block;
         width: 40px
       }
+    }
 
+    .item-inputs {
+
+      left: 0;
+      position: relative;
+      overflow: hidden;
+
+      input[type="text"], input[type="url"], textarea {
+        width:          100%;
+        overflow:       hidden;
+        box-sizing:     border-box;
+      }
     }
 
   }

@@ -643,6 +643,50 @@ textarea.block {
 .form-group input {
   width: calc(99%);
 }
+button,
+.button {
+  display: inline-block;
+  padding: 0.9em 0.7em;
+  border: 1px solid #ccc;
+  background: 1px solid #ccc;
+  vertical-align: middle;
+  touch-action: manipulation;
+  text-align: center;
+}
+button[disabled],
+.button[disabled] {
+  background-color: #eee !important;
+  color: #ccc;
+  text-decoration: line-through;
+}
+button.shy,
+.button.shy {
+  background: transparent;
+  border-color: transparent;
+}
+button.primary,
+.button.primary {
+  background: #337ab7;
+  border-color: #337ab7;
+  color: #ffffff;
+}
+button.medium,
+.button.medium {
+  font-size: 125%;
+  border-width: 2px;
+}
+button.block,
+.button.block {
+  width: calc(99%);
+}
+a.button {
+  text-decoration: none;
+  color: #333333;
+}
+.button-group-2 > button,
+.button-group-2 > .button {
+  width: 50%;
+}
 .topbar {
   /** Position */
   position: fixed;
@@ -827,6 +871,7 @@ textarea.block {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   margin: 1px 0;
   padding: 0.3em 0.6em 0.6em 0.6em;
+  clear: both;
 }
 .item + .item {
   margin-top: 3px;
@@ -1001,50 +1046,6 @@ footer {
   overflow: hidden;
   opacity: 0;
 }
-button,
-.button {
-  display: inline-block;
-  padding: 0.9em 0.7em;
-  border: 1px solid #ccc;
-  background: 1px solid #ccc;
-  vertical-align: middle;
-  touch-action: manipulation;
-  text-align: center;
-}
-button[disabled],
-.button[disabled] {
-  background-color: #eee !important;
-  color: #ccc;
-  text-decoration: line-through;
-}
-button.shy,
-.button.shy {
-  background: transparent;
-  border-color: transparent;
-}
-button.primary,
-.button.primary {
-  background: #337ab7;
-  border-color: #337ab7;
-  color: #ffffff;
-}
-button.medium,
-.button.medium {
-  font-size: 125%;
-  border-width: 2px;
-}
-button.block,
-.button.block {
-  width: calc(99%);
-}
-a.button {
-  text-decoration: none;
-  color: #333333;
-}
-.button-group-2 > button,
-.button-group-2 > .button {
-  width: 50%;
-}
 .promote-steps {
   text-align: center;
 }
@@ -1079,8 +1080,7 @@ a.button {
   border: 5px dashed #DDD;
   min-height: 65px !important;
   text-align: center !important;
-  padding-bottom: 80px !important;
-  padding-top: 25px !important;
+  padding-bottom: 1.5em;
 }
 .drop-box input {
   margin: auto;
@@ -1091,14 +1091,23 @@ a.button {
 .drop-box.dragover-err {
   border: 5px dashed red;
 }
-.creator input,
-.creator textarea {
-  display: block;
-  width: calc(-20%) !important;
-  overflow: hidden;
+.creator {
+  clear: both;
 }
 .creator .item .item-buttons button,
 .creator .item .item-buttons .button {
   display: block;
   width: 40px;
+}
+.creator .item .item-inputs {
+  left: 0;
+  position: relative;
+  overflow: hidden;
+}
+.creator .item .item-inputs input[type="text"],
+.creator .item .item-inputs input[type="url"],
+.creator .item .item-inputs textarea {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }

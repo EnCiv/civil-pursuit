@@ -1,4 +1,4 @@
-form(role='form' novalidate method='POST').creator.is-container
+form(role='form' novalidate method='POST' name='create').creator.is-container
   .is-section
     .item
       .item-media-wrapper
@@ -8,7 +8,7 @@ form(role='form' novalidate method='POST').creator.is-container
               h4 Drop image here
               p or
             .padding
-              button.btn.btn-block.upload-image-button(type='button') Choose a file
+              button.upload-image-button(type='button') Choose a file
             input.hide(type='file' value='Upload image')
       
       .item-buttons
@@ -18,12 +18,12 @@ form(role='form' novalidate method='POST').creator.is-container
         button.button-create.shy.medium(disabled)
           i.fa.fa-signal
 
-      .item-text
-        .input-subject
-          input.form-control.input-lg(type='text' placeholder='Item subject' name='subject' required data-title="Missing field" data-placement="auto top" data-content="Please enter a subject")
-        
-          textarea.form-control.input-lg(placeholder='Describe the subject in a concise and complete fashion that is measurable and unbiased' name='description' required data-title='Missing field' data-placement="auto top" data-content="Please enter a description")
-        
-          input.form-control.input-lg.reference(placeholder='http://' name="reference")
+      .item-inputs
+        //- .input-subject
+        input(type='text' placeholder='Item subject' name='subject' required)
+      
+        textarea(placeholder='Describe the subject in a concise and complete fashion that is measurable and unbiased' name='description' required)
+      
+        input.reference(type='url' placeholder='http://' name="reference")
 
-          .reference-board.hide Looking up
+        .reference-board.hide Looking up
