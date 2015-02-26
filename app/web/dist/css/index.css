@@ -836,14 +836,14 @@ a.button {
 }
 .panel .panel {
   margin: 0px;
-  margin-right: -10px;
+  margin-right: 0px;
   border-right: none;
 }
 .panel.split-view {
   margin-right: 10px;
 }
 .panel .right-split .panel {
-  margin-right: -10px;
+  margin-right: 0;
 }
 .panel .load-more,
 .panel .create-new {
@@ -997,7 +997,7 @@ a.button {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
 .item .item-collapsers .is-container.is-shown {
-  margin-top: 0.8em !important;
+  margin-top: 0.8em;
   margin-bottom: 40px;
 }
 #intro {
@@ -1079,6 +1079,9 @@ footer {
 .details .progress {
   margin-bottom: 0;
 }
+.details .progressBar {
+  background: #288C11;
+}
 .details textarea {
   width: 100%;
   min-height: 70px;
@@ -1125,4 +1128,10 @@ footer {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
+}
+.editor,
+.editor.is-shown {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }

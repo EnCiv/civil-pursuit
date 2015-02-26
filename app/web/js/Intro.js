@@ -32,8 +32,6 @@
 
     app.socket.on('got intro', function (intro) {
 
-      console.warn('got intro')
-
       $('#intro').find('.panel-title').text(intro.subject);
 
       $('#intro').find('.item-subject').text(intro.subject);
