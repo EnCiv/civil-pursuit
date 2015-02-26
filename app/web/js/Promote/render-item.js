@@ -48,7 +48,7 @@
 
     // References
 
-    if ( this.evaluation[hand].references.length ) {
+    if ( this.evaluation[hand].references && this.evaluation[hand].references.length ) {
       this.find('item references', hand)
         .attr('href', this.evaluation[hand].references[0].url)
         .text(this.evaluation[hand].references[0].title || this.evaluation[hand].references[0].url);

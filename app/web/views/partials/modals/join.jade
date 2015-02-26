@@ -14,6 +14,10 @@ script#join(type='text/html')
     h4 Join with email
 
     form(role='form' novalidate name='join' method='POST')
+      .block-warning.hide.please-agree Please agree to our Terms of service
+      .block-danger.hide Email not found
+      .block-warning.hide Email already taken
+
       .row
         .form-group.tablet-50.middle
           label Email
@@ -32,7 +36,7 @@ script#join(type='text/html')
           button.primary.login-submit.block Join
 
       .i-agree
-        button.shy(type='button' required)
+        button.shy(type='button')
           i.fa.fa-2x.fa-square-o.agreed
 
         span

@@ -37,4 +37,37 @@ section
       .side.references.right-item
         a(rel='nofollow' target='_blank')
 
+    //- Sliders
+
+    .row
+      .side.sliders.left-item
+        - for ( var i = 0; i < 4; i ++ )
+          .row
+            .tablet-40.middle
+
+              //-
+                  CRITERIA NAME
+              //-
+
+              h4 Criteria
+
+            .tablet-60.middle
+
+              input(type="range" min="-1" value="0" max="1" step="1")
+
+      .side.sliders.right-item
+        - for ( var i = 0; i < 4; i ++ )
+          .row
+            .tablet-40
+
+              //-
+                  CRITERIA NAME
+              //-
+
+              h4 Criteria
+
+            .tablet-60
+
+              input(type="range" min="-1" value="0" max="1" step="1")
+
     .clear
