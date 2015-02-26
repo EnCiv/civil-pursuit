@@ -1,16 +1,22 @@
 @import "var";
 @import "mixins/box-shadow";
 
+.item-boxing {
+  border: 1px solid #aaa;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+}
+
 .item {
   
   & {
-    margin: 0.8em;
-    margin-right: 0;
-    border: 1px solid #999;
-    border-radius: 4px 0 0 4px;
-    padding: 0.8em;
-    overflow: hidden;
-    .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+    .item-boxing();
+    margin:           1px 0;
+    // margin-right:     -1em;
+    padding:          0.8em;
+    overflow:         hidden;
+    // background:       blue
   }
 
   .item-media {
@@ -19,6 +25,7 @@
     max-width: 250px;
     /*border: 1px solid #999;*/
     padding-right: 1.5em;
+    padding-top: 0.37em;
     // padding-bottom: 1.5em;
 
     // @media (max-width: @screenPhone) {
@@ -36,18 +43,18 @@
       background:     transparent;
       border-color:   transparent;
       padding: 0.3em !important;
-      font-size: 1.3em;
+      // font-size: 1.3em;
     }
 
-    @media (max-width: @screenPhone) {
-      float: none;
-      margin-bottom: 0.8em;
+    // @media (max-width: @screenPhone) {
+    //   float: none;
+    //   margin-bottom: 0.8em;
 
-      button, .button {
-        width: 50%;
-        float:left;
-      }
-    }
+    //   button, .button {
+    //     width: 50%;
+    //     float:left;
+    //   }
+    // }
   }
 
   .item-toggle-promote, .item-toggle-details {
@@ -57,7 +64,8 @@
 
   .item-text {
     // border: 2px solid red;
-    margin-left: 0
+    margin-left: 0;
+    margin-bottom: -1em;
   }
 
   .item-truncatable {
@@ -83,7 +91,7 @@
   }
 
   .item-description {
-    font-size: 1.1em;
+    // font-size: 1.1em;
     margin: 0em;
     margin-right: 0.8em;
     // overflow: hidden;
@@ -109,25 +117,22 @@
 
   .item-arrow {
     // clear: both;
-    // border: 3px solid blue;
+    // border: 1px solid blue;
     text-align: center;
     margin-left: 0;
     // margin-left: 40%;
     padding: 0;
     background: #fff;
     // margin: -1.5em;
-    height: 40px;
-    margin-top: -40px;
+    // height: 40px;
+    // margin-top: -40px;
 
     @media (max-width: @screenPhone) {
       margin-top: 0
     }
 
     i {
-      background: white;
-      padding: 15px 30px;
-      border-radius: 8px 8px 0 0;
-      opacity: .95
+ 
     }
 
     div {

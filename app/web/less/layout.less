@@ -9,11 +9,18 @@
 
 html, body {
   margin: 0;
-  padding: 0
+  padding: 0;
+  text-align: center;
 }
 
 body {
-  padding-top: @syn-topbar-height + 10px;
+  padding-top: @syn-topbar-height;
+  text-align: left;
+
+  @media (min-width: @screenDesktop) {
+    width: @screenDesktop;
+    margin: auto;
+  }
 }
 
 /*

@@ -56,23 +56,24 @@ h1 {
   margin: 0.5em 0;
 }
 h2 {
-  font-size: 2.1rem;
+  font-size: 2.1em;
   font-weight: 700;
   margin: 0.5em 0;
 }
 h3 {
-  font-size: 1.8rem;
+  font-size: 1.8em;
   font-weight: 500;
   margin: 0.5em 0;
 }
 h4 {
   margin: 0.5em 0;
-  font-size: 1.4rem;
+  font-size: 1.4em;
   font-weight: 300;
 }
 h5 {
-  line-height: 2em;
   margin: 0.5em 0;
+  font-size: 0.9em;
+  font-weight: 300;
 }
 .pre-text {
   /** Parse \n into line breaks */
@@ -100,9 +101,17 @@ html,
 body {
   margin: 0;
   padding: 0;
+  text-align: center;
 }
 body {
-  padding-top: 70px;
+  padding-top: 60px;
+  text-align: left;
+}
+@media (min-width: 992px) {
+  body {
+    width: 992px;
+    margin: auto;
+  }
 }
 /*
  *    Layout
@@ -633,6 +642,7 @@ textarea.block {
   /** Position */
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 9999;
   /** Boxing */
   width: 100%;
@@ -741,9 +751,9 @@ textarea.block {
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  margin: 0 1.5rem 1.5rem 1.5rem;
+  margin: 1.5em 0;
   border-radius: 6px;
-  padding-bottom: 0.8em;
+  padding: 1px;
   /** Panel heading */
   /** Panel body */
 }
@@ -759,18 +769,19 @@ textarea.block {
   text-align: center;
   vertical-align: baseline;
   border-radius: 6px 6px 0 0;
+  padding: 1px;
   /** Panel title */
   /** Toggle creator icon */
 }
 .panel .panel-heading .panel-title {
-  border: 1px solid #ffffff;
+  margin: 0.25em;
 }
 .panel .panel-heading .toggle-creator {
   float: right;
   padding: 0.4em 0.7em;
 }
 .panel .panel-body {
-  padding: 0;
+  padding: 1px;
 }
 .panel .panel {
   margin: 0px;
@@ -793,16 +804,24 @@ textarea.block {
   color: #999;
   padding: 0.8em;
 }
-.item {
-  margin: 0.8em;
-  margin-right: 0;
-  border: 1px solid #999;
+.item-boxing {
+  border: 1px solid #aaa;
+  border-right: none;
   border-radius: 4px 0 0 4px;
-  padding: 0.8em;
-  overflow: hidden;
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+}
+.item {
+  border: 1px solid #aaa;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  margin: 1px 0;
+  padding: 0.8em;
+  overflow: hidden;
 }
 .item .item-media {
   float: left;
@@ -810,6 +829,7 @@ textarea.block {
   max-width: 250px;
   /*border: 1px solid #999;*/
   padding-right: 1.5em;
+  padding-top: 0.37em;
 }
 .item .item-buttons {
   float: right;
@@ -819,18 +839,6 @@ textarea.block {
   background: transparent;
   border-color: transparent;
   padding: 0.3em !important;
-  font-size: 1.3em;
-}
-@media (max-width: 440px) {
-  .item .item-buttons {
-    float: none;
-    margin-bottom: 0.8em;
-  }
-  .item .item-buttons button,
-  .item .item-buttons .button {
-    width: 50%;
-    float: left;
-  }
 }
 .item .item-toggle-promote,
 .item .item-toggle-details {
@@ -838,6 +846,7 @@ textarea.block {
 }
 .item .item-text {
   margin-left: 0;
+  margin-bottom: -1em;
 }
 .item h4.item-subject {
   line-height: 1.3em;
@@ -855,7 +864,6 @@ textarea.block {
   }
 }
 .item .item-description {
-  font-size: 1.1em;
   margin: 0em;
   margin-right: 0.8em;
 }
@@ -881,19 +889,11 @@ textarea.block {
   margin-left: 0;
   padding: 0;
   background: #fff;
-  height: 40px;
-  margin-top: -40px;
 }
 @media (max-width: 440px) {
   .item .item-arrow {
     margin-top: 0;
   }
-}
-.item .item-arrow i {
-  background: white;
-  padding: 15px 30px;
-  border-radius: 8px 8px 0 0;
-  opacity: 0.95;
 }
 .item .subject-placeholder {
   background: #ccc;

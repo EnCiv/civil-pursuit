@@ -42,9 +42,10 @@
   & {
     border-color:       @panel-border-color;
     .box-shadow         (-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
-    margin:             0 1.5rem 1.5rem 1.5rem;
+    margin:             1.5em 0;
     border-radius:      6px;
-    padding-bottom:     0.8em;
+    padding:            1px;
+    // padding-bottom:     0.8em;
   }
 
   /** Panel heading */
@@ -57,13 +58,14 @@
     text-align:         center;
     vertical-align:     baseline;
     border-radius:      6px 6px 0 0;
-    // padding:            1px;
+    padding:            1px;
 
     /** Panel title */
 
     .panel-title {
       // font-size:        20px
-      border: 1px solid white
+      // border: 1px solid white
+      margin: 0.25em;
     }
 
     /** Toggle creator icon */
@@ -83,7 +85,8 @@
   .panel-body {
     
     & {
-      padding: 0;
+      padding: 1px;
+      // background: red;
     }
   }
 

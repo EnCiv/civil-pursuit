@@ -1,60 +1,59 @@
 .item
-  .item-box
-    .item-media-wrapper
-      .item-media
-        include ../default-image
+  .item-media-wrapper
+    .item-media
+      include ../default-image
 
-    .item-buttons
-      button.item-toggle-promote
-        i.fa.fa-bullhorn
-        span  
-        span.promoted  0
-        span  
-        span.hide.caret
-        span  
+  .item-buttons
+    button.item-toggle-promote
+      i.fa.fa-bullhorn
+      span  
+      span.promoted  0
+      span  
+      span.hide.caret
+      span  
 
-      div
-      
-      //- div.promoted-percent 0%
-      button.item-toggle-details
-        i.fa.fa-signal
-        span  
-        span.promoted-percent  0%
-        span  
-        span.hide.caret
+    div
+    
+    //- div.promoted-percent 0%
+    button.item-toggle-details
+      i.fa.fa-signal
+      span  
+      span.promoted-percent  0%
+      span  
+      span.hide.caret
 
-      .clear
+    .clear
 
-    .item-text
-      .item-truncatable
-        h4.item-subject.header
-          a(href='#')
-            block item-subject-text
-              .subject-placeholder ...
-
-        .item-description.pre-text
-          .description-placeholder ...
-
-      h5.item-reference
+  .item-text
+    .item-truncatable
+      h4.item-subject.header
         a(href='#')
-          .reference-placeholder ...
+          block item-subject-text
+            .subject-placeholder ...
 
-      .clear
+      .item-description.pre-text
+        .description-placeholder ...
 
-    .item-collapsers
-      .promote.is-container
-        .is-section
-          include promote
+    h5.item-reference
+      a(href='#')
+        .reference-placeholder ...
 
-      .details.is-container
-        .is-section
-          include details
+    .clear
 
-      .children.is-container
-        .is-section
+  .item-arrow.hide
+    div
+      i.fa.fa-arrow-down
 
-    .item-arrow.hide
-      div
-        i.fa.fa-arrow-down
+  .item-collapsers
+    .promote.is-container
+      .is-section
+        include promote
+
+    .details.is-container
+      .is-section
+        include details
+
+    .children.is-container
+      .is-section
 
   .clear
