@@ -10,8 +10,8 @@
    *  @arg
    */
 
-  function login () {
-    var signForm = $('form[name="login"]');
+  function join () {
+    var signForm = $('form[name="join"]');
 
     new Form(signForm)
 
@@ -30,6 +30,6 @@
       });
   }
 
-  module.exports = login;
+  module.exports = join;
 
 } ();

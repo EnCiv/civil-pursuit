@@ -805,7 +805,7 @@ textarea.block {
   padding: 0.8em;
 }
 .item-boxing {
-  border: 1px solid #aaa;
+  border: 1px solid #bbb;
   border-right: none;
   border-radius: 4px 0 0 4px;
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
@@ -813,15 +813,18 @@ textarea.block {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
 .item {
-  border: 1px solid #aaa;
+  border: 1px solid #bbb;
   border-right: none;
   border-radius: 4px 0 0 4px;
   -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   margin: 1px 0;
-  padding: 0.8em;
+  padding: 0.3em 0.6em 0.6em 0.6em;
   overflow: hidden;
+}
+.item + .item {
+  margin-top: 3px;
 }
 .item .item-media {
   float: left;
@@ -927,6 +930,7 @@ textarea.block {
 }
 .item .item-collapsers {
   clear: both;
+  display: none;
 }
 .item .item-collapsers .is-container {
   border: 1px solid #999;
@@ -944,7 +948,8 @@ textarea.block {
   margin-bottom: 20px;
 }
 #intro .box-buttons,
-#intro .toggle-arrow {
+#intro .toggle-arrow,
+#intro .item-collapsers {
   display: none;
 }
 .forgot-password-link {

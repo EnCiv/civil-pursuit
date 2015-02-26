@@ -47,6 +47,10 @@
 
     item.find('media').empty().append(this.media());
 
+    item.find('media').find('img').on('load', function () {
+      readMore(this.item, this.template);
+    }.bind(item));
+
     // References
 
     if ( (item.item.references) && item.item.references.length ) {
@@ -71,8 +75,6 @@
     // setTimeout(function () {
     //   new Truncate(item.template);
     // }, 800);
-
-    readMore(item.item, item.template);
 
     // Toggle promote
 
@@ -108,9 +110,17 @@
 
       var hiders = $('.details.is-shown');
 
+      if ( item.find('collapsers hidden').length ) {
+        item.find('collapsers').show();
+      }
+
       Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
 
         showHideCaret();
+
+        if ( item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+          item.find('collapsers').hide();
+        }
 
         if ( item.find('details').hasClass('is-shown') ) {
 
@@ -138,7 +148,19 @@
       var item    =   $item.data('item');
       var arrow   =   $(this).find('i');
 
+      if ( item.find('collapsers hidden').length ) {
+        item.find('collapsers').show();
+      }
+
+      // item.find('collapsers visible').hide();
+
+      // item.find('collapsers hidden').show();
+
       Nav.toggle(item.find('children'), item.template, app.domain.intercept(function () {
+
+        if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+          item.find('collapsers').hide();
+        }
 
         if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
 

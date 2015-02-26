@@ -84,7 +84,7 @@
 
 } ();
 
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":21}],2:[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":22}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -170,7 +170,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":13,"../Nav":20,"../Stream":36,"_process":46}],3:[function(require,module,exports){
+},{"../Item":13,"../Nav":21,"../Stream":37,"_process":47}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -349,7 +349,7 @@
 
 } ();
 
-},{"../Form":10,"../Upload":39}],6:[function(require,module,exports){
+},{"../Form":10,"../Upload":40}],6:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -413,7 +413,7 @@
 
 } ();
 
-},{"./Nav":20}],7:[function(require,module,exports){
+},{"./Nav":21}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -675,7 +675,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":13,"./Nav":20}],8:[function(require,module,exports){
+},{"./Edit":8,"./Item":13,"./Nav":21}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -828,7 +828,7 @@
 
 } ();
 
-},{"./Creator":1,"./Edit/save":9,"./Item":13,"./Nav":20}],9:[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":9,"./Item":13,"./Nav":21}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -886,7 +886,7 @@
 
 } ();
 
-},{"../Item":13,"../Nav":20}],10:[function(require,module,exports){
+},{"../Item":13,"../Nav":21}],10:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -1116,7 +1116,7 @@
 
 } ();
 
-},{"./Nav":20,"./Upload":39}],12:[function(require,module,exports){
+},{"./Nav":21,"./Upload":40}],12:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1179,7 +1179,7 @@
 
 } ();
 
-},{"./Item":13,"./ReadMore":31,"./Truncate":38}],13:[function(require,module,exports){
+},{"./Item":13,"./ReadMore":32,"./Truncate":39}],13:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1237,47 +1237,39 @@
 
   function find (name) {
     switch ( name ) {
-      case 'subject':
-        return this.template.find('.item-subject:first a');
+      case "subject":             return this.template.find('.item-subject:first a');
 
-      case 'description':
-        return this.template.find('.item-description:first');
+      case "description":         return this.template.find('.item-description:first');
 
-      case 'reference':
-        return this.template.find('.item-reference:first a');
+      case "reference":           return this.template.find('.item-reference:first a');
 
-      case 'media':
-        return this.template.find('.item-media:first');
+      case "media":               return this.template.find('.item-media:first');
 
-      case 'youtube preview':
-        return this.template.find('.youtube-preview:first');
+      case "youtube preview":     return this.template.find('.youtube-preview:first');
 
-      case 'toggle promote':
-        return this.template.find('.item-toggle-promote:first');
+      case "toggle promote":      return this.template.find('.item-toggle-promote:first');
 
-      case 'promote':
-        return this.template.find('.promote:first');
+      case "promote":             return this.template.find('.promote:first');
 
-      case 'toggle details':
-        return this.template.find('.item-toggle-details:first');
+      case "toggle details":      return this.template.find('.item-toggle-details:first');
 
-      case 'details':
-        return this.template.find('.details:first');
+      case "details":             return this.template.find('.details:first');
 
-       case 'editor':
-        return this.template.find('.editor:first');
+      case "editor":              return this.template.find('.editor:first');
 
-      case 'toggle arrow':
-        return this.template.find('.item-arrow:first');
+      case "toggle arrow":        return this.template.find('.item-arrow:first');
 
-      case 'promotions':
-        return this.template.find('.promoted:first');
+      case "promotions":          return this.template.find('.promoted:first');
 
-      case 'promotions %':
-        return this.template.find('.promoted-percent:first');
+      case "promotions %":        return this.template.find('.promoted-percent:first');
 
-      case 'children':
-        return this.template.find('.children:first');
+      case "children":            return this.template.find('.children:first');
+
+      case "collapsers":          return this.template.find('.item-collapsers:first');
+
+      case "collapsers hidden":   return this.template.find('.item-collapsers:first:hidden');
+
+      case "collapsers visible":  return this.template.find('.item-collapsers:first:visible');
     }
   }
 
@@ -1395,7 +1387,7 @@
 
 } ();
 
-},{"../YouTube":41}],17:[function(require,module,exports){
+},{"../YouTube":42}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1445,6 +1437,10 @@
 
     item.find('media').empty().append(this.media());
 
+    item.find('media').find('img').on('load', function () {
+      readMore(this.item, this.template);
+    }.bind(item));
+
     // References
 
     if ( (item.item.references) && item.item.references.length ) {
@@ -1469,8 +1465,6 @@
     // setTimeout(function () {
     //   new Truncate(item.template);
     // }, 800);
-
-    readMore(item.item, item.template);
 
     // Toggle promote
 
@@ -1506,9 +1500,17 @@
 
       var hiders = $('.details.is-shown');
 
+      if ( item.find('collapsers hidden').length ) {
+        item.find('collapsers').show();
+      }
+
       Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
 
         showHideCaret();
+
+        if ( item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+          item.find('collapsers').hide();
+        }
 
         if ( item.find('details').hasClass('is-shown') ) {
 
@@ -1536,7 +1538,19 @@
       var item    =   $item.data('item');
       var arrow   =   $(this).find('i');
 
+      if ( item.find('collapsers hidden').length ) {
+        item.find('collapsers').show();
+      }
+
+      // item.find('collapsers visible').hide();
+
+      // item.find('collapsers hidden').show();
+
       Nav.toggle(item.find('children'), item.template, app.domain.intercept(function () {
+
+        if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+          item.find('collapsers').hide();
+        }
 
         if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
 
@@ -1658,7 +1672,7 @@
 
 } ();
 
-},{"../Details":7,"../Nav":20,"../Panel":21,"../Promote":23,"../ReadMore":31,"../Sign":33,"../Truncate":38,"./view/toggle-promote":18}],18:[function(require,module,exports){
+},{"../Details":7,"../Nav":21,"../Panel":22,"../Promote":24,"../ReadMore":32,"../Sign":34,"../Truncate":39,"./view/toggle-promote":18}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1728,7 +1742,15 @@
       return false;
     }
 
+    if ( item.find('collapsers hidden').length ) {
+      item.find('collapsers').show();
+    }
+
     Nav.toggle(item.find('promote'), item.template, function (error) {
+
+      if ( item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+        item.find('collapsers').hide();
+      }
 
       promote();
 
@@ -1742,7 +1764,44 @@
 
 } ();
 
-},{"../../Nav":20,"../../Sign":33}],19:[function(require,module,exports){
+},{"../../Nav":21,"../../Sign":34}],19:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('./Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function join () {
+    var signForm = $('form[name="join"]');
+
+    new Form(signForm)
+
+      .send(function () {
+        var domain = require('domain').create();
+        
+        domain.on('error', function (error) {
+          //
+        });
+        
+        domain.run(function () {
+          
+          
+
+        });
+      });
+  }
+
+  module.exports = join;
+
+} ();
+
+},{"./Form":10,"domain":44}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1761,7 +1820,17 @@
     new Form(signForm)
 
       .send(function () {
+        var domain = require('domain').create();
         
+        domain.on('error', function (error) {
+          //
+        });
+        
+        domain.run(function () {
+          
+          
+
+        });
       });
   }
 
@@ -1769,7 +1838,7 @@
 
 } ();
 
-},{"./Form":10}],20:[function(require,module,exports){
+},{"./Form":10,"domain":44}],21:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2122,7 +2191,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":46,"domain":43,"events":44}],21:[function(require,module,exports){
+},{"_process":47,"domain":44,"events":45}],22:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2352,7 +2421,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":13,"./Nav":20,"./Sign":33}],22:[function(require,module,exports){
+},{"./Creator":1,"./Item":13,"./Nav":21,"./Sign":34}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2473,7 +2542,7 @@
 
 } ();
 
-},{"./Demographics":6,"./Identity":11,"./Nav":20,"./Public_Persona":30,"./Residence":32,"./Voter":40}],23:[function(require,module,exports){
+},{"./Demographics":6,"./Identity":11,"./Nav":21,"./Public_Persona":31,"./Residence":33,"./Voter":41}],24:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2626,7 +2695,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":13,"./Nav":20,"./Promote/find":24,"./Promote/finish":25,"./Promote/get":26,"./Promote/render":28,"./Promote/render-item":27,"./Promote/save":29,"events":44}],24:[function(require,module,exports){
+},{"./Edit":8,"./Item":13,"./Nav":21,"./Promote/find":25,"./Promote/finish":26,"./Promote/get":27,"./Promote/render":29,"./Promote/render-item":28,"./Promote/save":30,"events":45}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2690,7 +2759,7 @@
 
 } ();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2735,7 +2804,7 @@
 
 } ();
 
-},{"../Nav":20}],26:[function(require,module,exports){
+},{"../Nav":21}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2792,7 +2861,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2960,7 +3029,7 @@
 
 } ();
 
-},{"../Item":13,"../Nav":20}],28:[function(require,module,exports){
+},{"../Item":13,"../Nav":21}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3032,7 +3101,7 @@
 
 } ();
 
-},{"../Nav":20}],29:[function(require,module,exports){
+},{"../Nav":21}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3090,7 +3159,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3154,7 +3223,7 @@
 
 } ();
 
-},{"./Nav":20}],31:[function(require,module,exports){
+},{"./Nav":21}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3171,11 +3240,18 @@
   }
 
   function readMore (item, $item) {
+
+    // Clear description
+
     $item.find('.item-description').text('');
+
+    // Spanify each word
 
     spanify(item.description).forEach(function (word) {
       $item.find('.item-description').append(word);
     });
+
+    // Height limit
 
     var limit = $item.find('.item-media img').height();
 
@@ -3229,7 +3305,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3335,7 +3411,7 @@
 
 } ();
 
-},{"./Nav":20}],33:[function(require,module,exports){
+},{"./Nav":21}],34:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3354,6 +3430,7 @@
 
   var Nav = require('./Nav');
   var login = require('./Login');
+  var join = require('./Join');
 
   function Sign () {
     
@@ -3408,7 +3485,7 @@
               vex.close();
             });
 
-
+          join();
         },
 
         afterClose: function () {
@@ -3440,7 +3517,7 @@
 
   Sign.prototype.render = function () {
     // this.signIn();
-    this.signUp();
+    // this.signUp();
     this.forgotPassword();
 
     app.socket.on('online users', function (online) {
@@ -3563,7 +3640,7 @@
 
 } ();
 
-},{"./Login":19,"./Nav":20,"./Sign/forgot-password":34,"./Sign/sign-in":35}],34:[function(require,module,exports){
+},{"./Join":19,"./Login":20,"./Nav":21,"./Sign/forgot-password":35,"./Sign/sign-in":36}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3675,7 +3752,7 @@
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3700,87 +3777,87 @@
         console.log('hahaha')
       });
 
-    // signForm.on('submit', function () {
+    signForm.on('submit', function () {
 
-    //   var domain = require('domain').create();
+      var domain = require('domain').create();
       
-    //   domain.on('error', function (error) {
-    //     throw error;
-    //   });
+      domain.on('error', function (error) {
+        throw error;
+      });
       
-    //   domain.run(function () {
-    //     // ... code
-    //   });
+      domain.run(function () {
+        // ... code
+      });
 
-    //   return false;
+      return false;
 
-    //   Nav.hide($('.login-error-401'));
-    //   Nav.hide($('.login-error-404'));
+      Nav.hide($('.login-error-401'));
+      Nav.hide($('.login-error-404'));
 
-    //   signForm.find('.sign-error')
-    //     .text('')
-    //     .hide();
+      signForm.find('.sign-error')
+        .text('')
+        .hide();
 
-    //   var email = signForm.find('[name="email"]');
-    //   var password = signForm.find('[name="password"]');
+      var email = signForm.find('[name="email"]');
+      var password = signForm.find('[name="password"]');
 
-    //   email.removeClass('error');
-    //   password.removeClass('error');
+      email.removeClass('error');
+      password.removeClass('error');
 
-    //   if ( ! email.val() ) {
-    //     email.addClass('error');
-    //     email.focus();
-    //   }
+      if ( ! email.val() ) {
+        email.addClass('error');
+        email.focus();
+      }
 
-    //   else if ( ! password.val() ) {
-    //     password.addClass('error');
-    //     password.focus();
-    //   }
+      else if ( ! password.val() ) {
+        password.addClass('error');
+        password.focus();
+      }
 
-    //   else {
-    //     $.ajax({
-    //       url: '/sign/in',
-    //       type: 'POST',
-    //       data: {
-    //         email: email.val(),
-    //         password: password.val()
-    //       }
-    //     })
-    //       .error(function (response) {
-    //         switch ( response.status ) {
-    //           case 404:
-    //             Nav.show($('.login-error-404'));
-    //             break;
+      else {
+        $.ajax({
+          url: '/sign/in',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          .error(function (response) {
+            switch ( response.status ) {
+              case 404:
+                Nav.show($('.login-error-404'));
+                break;
 
-    //           case 401:
-    //             Nav.show($('.login-error-401'));
-    //             break;
-    //         }
-    //       })
-    //       .success(function (response) {
+              case 401:
+                Nav.show($('.login-error-401'));
+                break;
+            }
+          })
+          .success(function (response) {
 
-    //         synapp.user = response.user;
+            synapp.user = response.user;
 
-    //         $('a.is-in').css('display', 'inline');
+            $('a.is-in').css('display', 'inline');
 
-    //         $('.navbar .is-out').remove();
+            $('.navbar .is-out').remove();
 
-    //         $('#login-modal').modal('hide');
+            $('#login-modal').modal('hide');
 
-    //         signForm.find('section').hide(2000);
+            signForm.find('section').hide(2000);
 
-    //       });
-    //   }
+          });
+      }
 
-    //   return false;
-    // });
+      return false;
+    });
   }
 
   module.exports = signIn;
 
 } ();
 
-},{"../Form":10}],36:[function(require,module,exports){
+},{"../Form":10,"domain":44}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3819,7 +3896,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3953,7 +4030,7 @@
 
 } ();
 
-},{"./Intro":12,"./Panel":21,"./Sign":33,"domain":43,"events":44,"util":48}],38:[function(require,module,exports){
+},{"./Intro":12,"./Panel":22,"./Sign":34,"domain":44,"events":45,"util":49}],39:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4176,7 +4253,7 @@
 
 }();
 
-},{"./Nav":20}],39:[function(require,module,exports){
+},{"./Nav":21}],40:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4255,7 +4332,7 @@
 
 } ();
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4319,7 +4396,7 @@
 
 } ();
 
-},{"./Nav":20}],41:[function(require,module,exports){
+},{"./Nav":21}],42:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4394,7 +4471,7 @@
 
 } ();
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4414,7 +4491,7 @@
 
 } ();
 
-},{"../Panel":21,"../Profile":22,"../Sign":33,"../Synapp":37}],43:[function(require,module,exports){
+},{"../Panel":22,"../Profile":23,"../Sign":34,"../Synapp":38}],44:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4482,7 +4559,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":44}],44:[function(require,module,exports){
+},{"events":45}],45:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4785,7 +4862,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4810,7 +4887,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4898,14 +4975,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5495,4 +5572,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":47,"_process":46,"inherits":45}]},{},[42]);
+},{"./support/isBuffer":48,"_process":47,"inherits":46}]},{},[43]);

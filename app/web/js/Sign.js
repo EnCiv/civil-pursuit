@@ -16,6 +16,7 @@
 
   var Nav = require('./Nav');
   var login = require('./Login');
+  var join = require('./Join');
 
   function Sign () {
     
@@ -70,7 +71,7 @@
               vex.close();
             });
 
-
+          join();
         },
 
         afterClose: function () {
@@ -102,7 +103,7 @@
 
   Sign.prototype.render = function () {
     // this.signIn();
-    this.signUp();
+    // this.signUp();
     this.forgotPassword();
 
     app.socket.on('online users', function (online) {

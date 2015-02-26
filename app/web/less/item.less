@@ -2,10 +2,10 @@
 @import "mixins/box-shadow";
 
 .item-boxing {
-  border: 1px solid #aaa;
-  border-right: none;
-  border-radius: 4px 0 0 4px;
-  .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
+  border:             1px solid #bbb;
+  border-right:       none;
+  border-radius:      4px 0 0 4px;
+  .box-shadow         (-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 }
 
 .item {
@@ -14,9 +14,13 @@
     .item-boxing();
     margin:           1px 0;
     // margin-right:     -1em;
-    padding:          0.8em;
+    padding:          0.3em 0.6em 0.6em 0.6em;
     overflow:         hidden;
     // background:       blue
+  }
+
+  & + .item {
+    margin-top: 3px;
   }
 
   .item-media {
@@ -26,6 +30,7 @@
     /*border: 1px solid #999;*/
     padding-right: 1.5em;
     padding-top: 0.37em;
+    // background: yellow;
     // padding-bottom: 1.5em;
 
     // @media (max-width: @screenPhone) {
@@ -66,6 +71,7 @@
     // border: 2px solid red;
     margin-left: 0;
     margin-bottom: -1em;
+    // background: green;
   }
 
   .item-truncatable {
@@ -180,6 +186,7 @@
 
   .item-collapsers {
     clear: both;
+    display: none;
 
     .is-container {
       border: 1px solid #999;

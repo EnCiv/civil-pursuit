@@ -22,80 +22,80 @@
         console.log('hahaha')
       });
 
-    // signForm.on('submit', function () {
+    signForm.on('submit', function () {
 
-    //   var domain = require('domain').create();
+      var domain = require('domain').create();
       
-    //   domain.on('error', function (error) {
-    //     throw error;
-    //   });
+      domain.on('error', function (error) {
+        throw error;
+      });
       
-    //   domain.run(function () {
-    //     // ... code
-    //   });
+      domain.run(function () {
+        // ... code
+      });
 
-    //   return false;
+      return false;
 
-    //   Nav.hide($('.login-error-401'));
-    //   Nav.hide($('.login-error-404'));
+      Nav.hide($('.login-error-401'));
+      Nav.hide($('.login-error-404'));
 
-    //   signForm.find('.sign-error')
-    //     .text('')
-    //     .hide();
+      signForm.find('.sign-error')
+        .text('')
+        .hide();
 
-    //   var email = signForm.find('[name="email"]');
-    //   var password = signForm.find('[name="password"]');
+      var email = signForm.find('[name="email"]');
+      var password = signForm.find('[name="password"]');
 
-    //   email.removeClass('error');
-    //   password.removeClass('error');
+      email.removeClass('error');
+      password.removeClass('error');
 
-    //   if ( ! email.val() ) {
-    //     email.addClass('error');
-    //     email.focus();
-    //   }
+      if ( ! email.val() ) {
+        email.addClass('error');
+        email.focus();
+      }
 
-    //   else if ( ! password.val() ) {
-    //     password.addClass('error');
-    //     password.focus();
-    //   }
+      else if ( ! password.val() ) {
+        password.addClass('error');
+        password.focus();
+      }
 
-    //   else {
-    //     $.ajax({
-    //       url: '/sign/in',
-    //       type: 'POST',
-    //       data: {
-    //         email: email.val(),
-    //         password: password.val()
-    //       }
-    //     })
-    //       .error(function (response) {
-    //         switch ( response.status ) {
-    //           case 404:
-    //             Nav.show($('.login-error-404'));
-    //             break;
+      else {
+        $.ajax({
+          url: '/sign/in',
+          type: 'POST',
+          data: {
+            email: email.val(),
+            password: password.val()
+          }
+        })
+          .error(function (response) {
+            switch ( response.status ) {
+              case 404:
+                Nav.show($('.login-error-404'));
+                break;
 
-    //           case 401:
-    //             Nav.show($('.login-error-401'));
-    //             break;
-    //         }
-    //       })
-    //       .success(function (response) {
+              case 401:
+                Nav.show($('.login-error-401'));
+                break;
+            }
+          })
+          .success(function (response) {
 
-    //         synapp.user = response.user;
+            synapp.user = response.user;
 
-    //         $('a.is-in').css('display', 'inline');
+            $('a.is-in').css('display', 'inline');
 
-    //         $('.navbar .is-out').remove();
+            $('.navbar .is-out').remove();
 
-    //         $('#login-modal').modal('hide');
+            $('#login-modal').modal('hide');
 
-    //         signForm.find('section').hide(2000);
+            signForm.find('section').hide(2000);
 
-    //       });
-    //   }
+          });
+      }
 
-    //   return false;
-    // });
+      return false;
+    });
   }
 
   module.exports = signIn;

@@ -14,11 +14,18 @@
   }
 
   function readMore (item, $item) {
+
+    // Clear description
+
     $item.find('.item-description').text('');
+
+    // Spanify each word
 
     spanify(item.description).forEach(function (word) {
       $item.find('.item-description').append(word);
     });
+
+    // Height limit
 
     var limit = $item.find('.item-media img').height();
 

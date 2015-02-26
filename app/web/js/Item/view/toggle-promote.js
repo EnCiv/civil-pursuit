@@ -67,7 +67,15 @@
       return false;
     }
 
+    if ( item.find('collapsers hidden').length ) {
+      item.find('collapsers').show();
+    }
+
     Nav.toggle(item.find('promote'), item.template, function (error) {
+
+      if ( item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+        item.find('collapsers').hide();
+      }
 
       promote();
 
