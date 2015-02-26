@@ -598,6 +598,12 @@ a:hover {
   border-color: #f0ad4e;
   color: #ffffff;
 }
+/*
+ *  Text
+ */
+.text-center {
+  text-align: center;
+}
 textarea {
   width: calc(99%);
   min-height: 120px;

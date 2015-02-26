@@ -1550,7 +1550,7 @@
    *  @arg
    */
 
-  function join () {
+  function join ($vexContent) {
     var $form = $('form[name="join"]');
 
     $form.find('.i-agree').on('click', function () {
@@ -1577,12 +1577,44 @@
       domain.run(function () {
 
         $form.find('.please-agree').hide();
+        $form.find('.already-taken').hide();
         
         if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
           $form.find('.please-agree').show();
 
           return;
         }
+
+        if ( form.labels.password.val() !== form.labels.confirm.val() ) {
+          form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: form.labels.email.val(),
+            password: form.labels.password.val()
+          }
+        })
+          
+          .error(function (response, state, code) {
+            if ( response.status === 401 ) {
+              $form.find('.already-taken').show();
+            }
+          })
+          
+          .success(function (response) {
+            synapp.user = response.user;
+            
+            $('a.is-in').css('display', 'inline');
+
+            $('.topbar .is-out').remove();
+
+            vex.close($vexContent.data().vex.id);
+          });
 
       });
     });
@@ -2440,7 +2472,7 @@
 
       case 'item persona name':       return this.find('item persona', more).find('.user-full-name');
 
-      case 'item feedback':           return this.find('side by side').find('.' + more + '-item .feedback');
+      case 'item feedback':           return this.find('side by side').find('.' + more + '-item.feedback .feedback-entry');
 
       case 'promote button':          return this.find('side by side').find('.' + more + '-item .promote');
 
@@ -3119,14 +3151,14 @@
 
       vex.dialog.confirm({
 
-        afterOpen: function () {
+        afterOpen: function ($vexContent) {
           $('.join-button')
             .off('click')
             .on('click', function () {
               vex.close();
             });
 
-          join();
+          join($vexContent);
         },
 
         afterClose: function () {

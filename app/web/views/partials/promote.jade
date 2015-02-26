@@ -70,4 +70,34 @@ section
 
               input(type="range" min="-1" value="0" max="1" step="1")
 
+    //- Feedback
+
+    .row
+      .side.feedback.left-item
+        textarea.feedback-entry.block(
+          placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+      .side.feedback.right-item
+        textarea.feedback-entry.block(
+          placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+
+    //- Promote
+
+    h4.text-center Which of these is most important for the community to consider?
+
+    .row
+      .side.left-item
+        button.block.promote Promote
+      .side.right-item
+        button.block.promote Promote
+
+    //- Edit and go again
+
+    .row
+      .side.left-item
+        button.block.edit-and-go-again-toggle Edit and go again
+      .side.right-item
+        button.block.edit-and-go-again-toggle Edit and go again
+
+    button.finish.block Neither
+
     .clear

@@ -64,14 +64,14 @@
 
       vex.dialog.confirm({
 
-        afterOpen: function () {
+        afterOpen: function ($vexContent) {
           $('.join-button')
             .off('click')
             .on('click', function () {
               vex.close();
             });
 
-          join();
+          join($vexContent);
         },
 
         afterClose: function () {

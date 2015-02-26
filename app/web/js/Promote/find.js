@@ -34,7 +34,7 @@
 
       case 'item persona name':       return this.find('item persona', more).find('.user-full-name');
 
-      case 'item feedback':           return this.find('side by side').find('.' + more + '-item .feedback');
+      case 'item feedback':           return this.find('side by side').find('.' + more + '-item.feedback .feedback-entry');
 
       case 'promote button':          return this.find('side by side').find('.' + more + '-item .promote');
 
