@@ -843,6 +843,12 @@
 
     this.form = form;
 
+    this.labels = {};
+
+    this.form.find('[name]').each(function () {
+      self.labels[$(this).attr('name')] = $(this);
+    });
+
     this.form.on('submit', function () {
       setTimeout(self.submit.bind(self));
 
@@ -1594,21 +1600,54 @@
   function login () {
     var signForm = $('form[name="login"]');
 
-    new Form(signForm)
+    var form = new Form(signForm)
 
-      .send(function () {
-        var domain = require('domain').create();
-        
-        domain.on('error', function (error) {
-          //
-        });
-        
-        domain.run(function () {
-          
-          
-
-        });
+    form.send(function () {
+      var domain = require('domain').create();
+      
+      domain.on('error', function (error) {
+        //
       });
+      
+      domain.run(function () {
+        
+        $.ajax({
+          url: '/sign/in',
+          type: 'POST',
+          data: {
+            email: form.labels.email.val(),
+            password: form.labels.password.val()
+          }
+          })
+
+          .error(function (response) {
+            switch ( response.status ) {
+              case 404:
+                Nav.show($('.login-error-404'));
+                break;
+
+              case 401:
+                Nav.show($('.login-error-401'));
+                break;
+            }
+          })
+
+          .success(function (response) {
+
+            synapp.user = response.user;
+
+            $('a.is-in').css('display', 'inline');
+
+            $('.topbar .is-out').remove();
+
+            // $('.login-modal').modal('hide');
+
+            // signForm.find('section').hide(2000);
+
+          });
+
+      });
+    });
   }
 
   module.exports = login;

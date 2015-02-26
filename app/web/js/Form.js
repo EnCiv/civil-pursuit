@@ -18,6 +18,12 @@
 
     this.form = form;
 
+    this.labels = {};
+
+    this.form.find('[name]').each(function () {
+      self.labels[$(this).attr('name')] = $(this);
+    });
+
     this.form.on('submit', function () {
       setTimeout(self.submit.bind(self));
 

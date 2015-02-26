@@ -70,6 +70,11 @@ h4 {
   font-size: 1.4em;
   font-weight: 300;
 }
+@media (max-width: 440px) {
+  h4 {
+    font-size: 1.1rem;
+  }
+}
 h5 {
   margin: 0.5em 0;
   font-size: 0.9em;
@@ -842,6 +847,7 @@ textarea.block {
   background: transparent;
   border-color: transparent;
   padding: 0.3em !important;
+  text-align: right;
 }
 .item .item-toggle-promote,
 .item .item-toggle-details {
