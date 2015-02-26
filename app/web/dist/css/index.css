@@ -683,14 +683,7 @@ textarea.block {
   border-width: 0 0 0 1px;
   background: transparent;
   vertical-align: middle;
-  height: 100%;
   padding: 1em 0.8em;
-}
-.topbar-right .button i {
-  position: relative;
-  top: 25%;
-  transform: translateY(-25%);
-  vertical-align: middle;
 }
 /** Online now */
 @media (max-width: 640px) {
@@ -721,6 +714,14 @@ textarea.block {
   #logo .logo-image {
     display: none;
   }
+}
+#logo .beta {
+  background: #333;
+  color: #fff;
+  padding: 10px;
+  margin-top: 10px;
+  margin-left: 10px;
+  border-radius: 6px;
 }
 /**
  *    __________________________________________________________________________
