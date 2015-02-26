@@ -2188,6 +2188,8 @@
       self.template.find('.hide.pre').removeClass('hide');
       self.template.find('.show.pre').removeClass('show').hide();
 
+      self.template.find('.loading-items').hide();
+
       if ( items.length ) {
 
         self.find('create new').hide();
