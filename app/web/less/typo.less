@@ -4,6 +4,10 @@ html {
   font-size:        1em;
   font-family:      Helvetica, Arial, sans-serif;
 
+  @media (max-width: @screenPhone) {
+    font-size:      0.8em;
+  }
+
   // @media (max-width: @screenTablet) {
   //   font-size:        59.5%;
   // }
@@ -65,10 +69,6 @@ h4 {
   margin:           0.5em 0;
   font-size:        1.4em;
   font-weight:      300;
-
-  @media (max-width: @screenPhone) {
-    font-size:      1.1rem;
-  }
 }
 
 h5 {

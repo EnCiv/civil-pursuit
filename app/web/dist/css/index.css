@@ -38,6 +38,11 @@ html {
   font-size: 1em;
   font-family: Helvetica, Arial, sans-serif;
 }
+@media (max-width: 440px) {
+  html {
+    font-size: 0.8em;
+  }
+}
 body {
   color: #333;
 }
@@ -69,11 +74,6 @@ h4 {
   margin: 0.5em 0;
   font-size: 1.4em;
   font-weight: 300;
-}
-@media (max-width: 440px) {
-  h4 {
-    font-size: 1.1rem;
-  }
 }
 h5 {
   margin: 0.5em 0;
@@ -835,9 +835,8 @@ textarea.block {
   float: left;
   width: 25%;
   max-width: 250px;
-  /*border: 1px solid #999;*/
-  padding-right: 1.5em;
-  padding-top: 0.37em;
+  padding-right: 0.75em;
+  padding-top: 0.36em;
 }
 .item .item-buttons {
   float: right;
@@ -864,7 +863,8 @@ textarea.block {
   margin-bottom: 0.4em;
 }
 .item h4.item-subject a {
-  color: #444444;
+  color: #444;
+  margin: 0;
 }
 @media (max-width: 440px) {
   .item h4.item-subject {
