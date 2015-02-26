@@ -28,6 +28,8 @@
 
       case 'item persona':            return this.find('side by side').find('.persona.' + more + '-item');
 
+      case 'item references':         return this.find('side by side').find('.references.' + more + '-item a');
+
       case 'item persona image':      return this.find('item persona', more).find('img');
 
       case 'item persona name':       return this.find('item persona', more).find('.user-full-name');

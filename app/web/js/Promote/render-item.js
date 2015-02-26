@@ -38,13 +38,21 @@
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
     // Description
-console.warn(this.find('item description', hand).length)
+
     this.find('item description', hand).text(this.evaluation[hand].description);
 
     // Image
 
     this.find('item image', hand).empty().append(
       new (require('../Item'))(this.evaluation[hand]).media());
+
+    // References
+
+    if ( this.evaluation[hand].references.length ) {
+      this.find('item references', hand)
+        .attr('href', this.evaluation[hand].references[0].url)
+        .text(this.evaluation[hand].references[0].title || this.evaluation[hand].references[0].url);
+    }
 
     // Sliders
 

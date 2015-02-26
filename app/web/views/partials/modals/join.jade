@@ -17,22 +17,22 @@ script#join(type='text/html')
       .row
         .form-group.tablet-50.middle
           label Email
-          input(type='email' placeholder='Email' name='email' required)
+          input.block(type='email' placeholder='Email' name='email' required)
 
         .form-group.tablet-50.middle
           label Password
-          input.block(type='password' placeholder='Password' name='password')
+          input.block(type='password' placeholder='Password' name='password' required)
 
       .row
         .form-group.tablet-50.middle
           label Confirm
-          input.form-control.input-lg(type='password' placeholder='Confirm password' name='confirm')
+          input.block(type='password' placeholder='Confirm password' name='confirm' required)
 
         p.tablet-50.middle
           button.primary.login-submit.block Join
 
       .i-agree
-        button.shy
+        button.shy(type='button' required)
           i.fa.fa-2x.fa-square-o.agreed
 
         span

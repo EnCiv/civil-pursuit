@@ -14,21 +14,73 @@
         youtube = v;
       });
 
-      var raw = '<div class="youtube-preview" data-video="' + youtube + '"><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /><button class="icon-play hide"><i class="fa fa-youtube-play fa-5x"></i></button></div>';
+      var div = $('<div></div>');
 
-      var elem = $(raw);
+      div.addClass('youtube-preview');
 
-      Play(elem);
+      div.data('video', youtube);
 
-      return elem;
+      var img = $('<img>');
+
+      img.attr({
+        alt: 'YouTube',
+        src: 'http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg'
+      });
+
+      img.addClass('img-responsive youtube-thumbnail');
+
+      var button = $('<button></button>');
+
+      button.addClass('icon-play danger');
+
+      var i = $('<i></i>');
+
+      i.addClass('fa fa-youtube-play fa-3x');
+
+      // var raw = '<div class="youtube-preview" data-video="' + youtube + '"><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /><button class="icon-play hide"><i class="fa fa-youtube-play fa-3x"></i></button></div>';
+
+      // var elem = $(raw);
+
+      button.append(i);
+
+      div.append(img, button);
+
+      Play(div);
+
+      return div;
     }
   }
 
   function Play (elem) {
-    setTimeout(function () {
-      var img   =   elem.find('img');
 
-      var icon  =   elem.find('.icon-play');
+    var img   =   elem.find('img');
+
+    var icon  =   elem.find('.icon-play');
+
+    icon.removeClass('hide');
+
+    img.on('load', function () {
+      icon.find('.fa').on('click', function () {
+        var video_container = $('<div class="video-container"></div>');
+
+        var preview = $(this).closest('.youtube-preview');
+
+        preview
+          .empty()
+          .append(video_container);
+
+        video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
+
+        video_container.find('iframe')
+          .attr('src', 'http://www.youtube.com/embed/'
+            + preview.data('video') + '?autoplay=1'); 
+      });
+    });
+
+    setTimeout(function () {
+
+
+      return;
 
       icon.css('width', img.width() + 'px');
 

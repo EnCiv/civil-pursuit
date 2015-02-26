@@ -1551,9 +1551,22 @@
    */
 
   function join () {
-    var signForm = $('form[name="join"]');
+    var $form = $('form[name="join"]');
 
-    new Form(signForm)
+    $form.find('.i-agree').on('click', function () {
+      console.warn('dhsdjk')
+
+      var agreed = $(this).find('.agreed');
+
+      if ( agreed.hasClass('fa-square-o') ) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      }
+      else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    new Form($form)
 
       .send(function () {
         var domain = require('domain').create();
@@ -2416,6 +2429,8 @@
 
       case 'item persona':            return this.find('side by side').find('.persona.' + more + '-item');
 
+      case 'item references':         return this.find('side by side').find('.references.' + more + '-item a');
+
       case 'item persona image':      return this.find('item persona', more).find('img');
 
       case 'item persona name':       return this.find('item persona', more).find('.user-full-name');
@@ -2577,13 +2592,21 @@
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
     // Description
-console.warn(this.find('item description', hand).length)
+
     this.find('item description', hand).text(this.evaluation[hand].description);
 
     // Image
 
     this.find('item image', hand).empty().append(
       new (require('../Item'))(this.evaluation[hand]).media());
+
+    // References
+
+    if ( this.evaluation[hand].references.length ) {
+      this.find('item references', hand)
+        .attr('href', this.evaluation[hand].references[0].url)
+        .text(this.evaluation[hand].references[0].title || this.evaluation[hand].references[0].url);
+    }
 
     // Sliders
 
@@ -3854,21 +3877,73 @@ console.warn(this.find('item description', hand).length)
         youtube = v;
       });
 
-      var raw = '<div class="youtube-preview" data-video="' + youtube + '"><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /><button class="icon-play hide"><i class="fa fa-youtube-play fa-5x"></i></button></div>';
+      var div = $('<div></div>');
 
-      var elem = $(raw);
+      div.addClass('youtube-preview');
 
-      Play(elem);
+      div.data('video', youtube);
 
-      return elem;
+      var img = $('<img>');
+
+      img.attr({
+        alt: 'YouTube',
+        src: 'http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg'
+      });
+
+      img.addClass('img-responsive youtube-thumbnail');
+
+      var button = $('<button></button>');
+
+      button.addClass('icon-play danger');
+
+      var i = $('<i></i>');
+
+      i.addClass('fa fa-youtube-play fa-3x');
+
+      // var raw = '<div class="youtube-preview" data-video="' + youtube + '"><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /><button class="icon-play hide"><i class="fa fa-youtube-play fa-3x"></i></button></div>';
+
+      // var elem = $(raw);
+
+      button.append(i);
+
+      div.append(img, button);
+
+      Play(div);
+
+      return div;
     }
   }
 
   function Play (elem) {
-    setTimeout(function () {
-      var img   =   elem.find('img');
 
-      var icon  =   elem.find('.icon-play');
+    var img   =   elem.find('img');
+
+    var icon  =   elem.find('.icon-play');
+
+    icon.removeClass('hide');
+
+    img.on('load', function () {
+      icon.find('.fa').on('click', function () {
+        var video_container = $('<div class="video-container"></div>');
+
+        var preview = $(this).closest('.youtube-preview');
+
+        preview
+          .empty()
+          .append(video_container);
+
+        video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
+
+        video_container.find('iframe')
+          .attr('src', 'http://www.youtube.com/embed/'
+            + preview.data('video') + '?autoplay=1'); 
+      });
+    });
+
+    setTimeout(function () {
+
+
+      return;
 
       icon.css('width', img.width() + 'px');
 
