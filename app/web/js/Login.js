@@ -3,6 +3,7 @@
   'use strict';
 
   var Form = require('./Form');
+  var Nav = require('./Nav');
 
   /**
    *  @function

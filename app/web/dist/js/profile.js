@@ -1465,16 +1465,8 @@
     // Percent of promotions
 
     item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
-
-    // Truncate
-
-    // setTimeout(function () {
-    //   new Truncate(item.template);
-    // }, 800);
-
+    
     // Toggle promote
-
-    console.log('wew', item.template)
 
     item.find('toggle promote').on('click', require('./view/toggle-promote'));
 
@@ -1813,6 +1805,7 @@
   'use strict';
 
   var Form = require('./Form');
+  var Nav = require('./Nav');
 
   /**
    *  @function
@@ -1879,7 +1872,7 @@
 
 } ();
 
-},{"./Form":10,"domain":44}],21:[function(require,module,exports){
+},{"./Form":10,"./Nav":21,"domain":44}],21:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
