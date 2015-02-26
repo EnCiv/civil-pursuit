@@ -30,7 +30,7 @@
  *    
 */
 /** BREAK POINTS **/
-/** Gutter */
+/** Gutters */
 /** The height of the top bar **/
 /** Buttons */
 /** Colors **/
@@ -754,6 +754,7 @@ textarea.block {
   margin: 1.5em 0;
   border-radius: 6px;
   padding: 1px;
+  clear: both;
   /** Panel heading */
   /** Panel body */
 }
@@ -785,9 +786,8 @@ textarea.block {
 }
 .panel .panel {
   margin: 0px;
-  margin-right: 0;
+  margin-right: -10px;
   border-right: none;
-  margin-top: -10px;
 }
 .panel.split-view {
   margin-right: 10px;
@@ -931,6 +931,7 @@ textarea.block {
 .item .item-collapsers {
   clear: both;
   display: none;
+  margin-right: -0.75em;
 }
 .item .item-collapsers .is-container {
   border: 1px solid #999;
