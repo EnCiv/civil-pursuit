@@ -30,14 +30,14 @@
 
       vex.dialog.confirm({
 
-        afterOpen: function () {
+        afterOpen: function ($vexContent) {
           $('.login-button')
             .off('click')
             .on('click', function () {
               vex.close();
             });
 
-          login();
+          login($vexContent);
         },
 
         afterClose: function () {

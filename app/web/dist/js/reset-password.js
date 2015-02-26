@@ -1597,7 +1597,7 @@
    *  @arg
    */
 
-  function login () {
+  function login ($vexContent) {
     var signForm = $('form[name="login"]');
 
     var form = new Form(signForm)
@@ -1639,6 +1639,8 @@
             $('a.is-in').css('display', 'inline');
 
             $('.topbar .is-out').remove();
+
+            vex.close($vexContent.data().vex.id);
 
             // $('.login-modal').modal('hide');
 
@@ -3079,14 +3081,14 @@
 
       vex.dialog.confirm({
 
-        afterOpen: function () {
+        afterOpen: function ($vexContent) {
           $('.login-button')
             .off('click')
             .on('click', function () {
               vex.close();
             });
 
-          login();
+          login($vexContent);
         },
 
         afterClose: function () {

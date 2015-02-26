@@ -10,7 +10,7 @@
    *  @arg
    */
 
-  function login () {
+  function login ($vexContent) {
     var signForm = $('form[name="login"]');
 
     var form = new Form(signForm)
@@ -52,6 +52,8 @@
             $('a.is-in').css('display', 'inline');
 
             $('.topbar .is-out').remove();
+
+            vex.close($vexContent.data().vex.id);
 
             // $('.login-modal').modal('hide');
 
