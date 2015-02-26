@@ -939,15 +939,20 @@ a.button {
   background: #fff;
 }
 .item .item-arrow {
-  text-align: center;
   margin-left: 0;
   padding: 0;
   background: #fff;
+  position: relative;
+  left: 25%;
+  width: 75%;
 }
 @media (max-width: 440px) {
   .item .item-arrow {
     margin-top: 0;
   }
+}
+.item .item-arrow i {
+  margin-left: -2em;
 }
 .item .subject-placeholder {
   background: #ccc;
@@ -1049,7 +1054,17 @@ footer {
 .promote-steps {
   text-align: center;
 }
-@media (min-width: 500px) {
+.items-side-by-side .side {
+  padding: 0.75em;
+  border: 1px solid #ccc;
+}
+.items-side-by-side .side .left-item {
+  padding-right: 0 !important;
+}
+.items-side-by-side .side .right-item {
+  padding-left: 0 !important;
+}
+@media (min-width: 440px) {
   .items-side-by-side .side {
     width: 50%;
     float: left;

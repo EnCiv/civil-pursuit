@@ -1,3 +1,5 @@
+@import "var";
+
 .promote-steps {
   text-align: center
 }
@@ -5,7 +7,18 @@
 .items-side-by-side {
 
   .side {
-    @media (min-width: 500px) {
+    padding: @syn-panel-gutter / 2;
+    border: 1px solid #ccc;
+
+    .left-item {
+      padding-right: 0 !important;
+    }
+
+    .right-item {
+      padding-left: 0 !important;
+    }
+
+    @media (min-width: @screenPhone) {
       width: 50%;
       float: left;
       -webkit-box-sizing: border-box;
