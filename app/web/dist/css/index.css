@@ -889,17 +889,17 @@ a.button {
   border: 1px solid #bbb;
   border-right: none;
   border-radius: 4px 0 0 4px;
-  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  -webkit-box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
+  box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
 }
 .item {
   border: 1px solid #bbb;
   border-right: none;
   border-radius: 4px 0 0 4px;
-  -webkit-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  -moz-box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
-  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  -webkit-box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
+  box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
   margin: 1px 0;
   padding: 0.3em 0.6em 0.6em 0.6em;
   clear: both;
@@ -1180,5 +1180,8 @@ footer {
   height: 100%;
 }
 .icon-play {
-  margin-top: -6.1em;
+  display: block !important;
+  padding: 0 !important;
+  position: absolute;
+  top: -1000px;
 }
