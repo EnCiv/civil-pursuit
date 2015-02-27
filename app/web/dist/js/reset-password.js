@@ -4024,17 +4024,11 @@
 
       var video_container = $('<div class="video-container"></div>');
 
-      var preview = $(this).closest('.youtube-preview');
-
-      preview
-        .empty()
-        .append(video_container);
-
       video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
 
       video_container.find('iframe')
         .attr('src', 'http://www.youtube.com/embed/'
-          + preview.data('video') + '?autoplay=1');
+          + youtube + '?autoplay=0');
 
       return video_container;
 
