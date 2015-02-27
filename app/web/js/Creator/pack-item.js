@@ -28,7 +28,7 @@
     if ( this.find('reference').val() ) {
       item.references = [{ url: this.find('reference').val() }];
 
-      if ( this.find('reference board').text() && this.find('reference board').text() !== text['looking up title'] ) {
+      if ( this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title' ) {
         item.references[0].title = this.find('reference board').text();
       }
     }

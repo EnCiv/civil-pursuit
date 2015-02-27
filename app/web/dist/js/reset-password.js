@@ -243,7 +243,7 @@
     if ( this.find('reference').val() ) {
       item.references = [{ url: this.find('reference').val() }];
 
-      if ( this.find('reference board').text() && this.find('reference board').text() !== text['looking up title'] ) {
+      if ( this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title' ) {
         item.references[0].title = this.find('reference board').text();
       }
     }
@@ -280,6 +280,7 @@
 
   var Upload    =   require('../Upload');
   var Form      =   require('../Form');
+  var YouTube      =   require('../YouTube');
 
   /**
    *  @function
@@ -312,7 +313,7 @@
       var board       =   creator.find('reference board');
       var reference   =   $(this);
 
-      board.removeClass('hide').text(text['looking up title']);
+      board.removeClass('hide').text('Looking up title');
 
       app.socket.emit('get url title', $(this).val(),
         function (error, ref) {
@@ -349,7 +350,7 @@
 
 } ();
 
-},{"../Form":9,"../Upload":36}],6:[function(require,module,exports){
+},{"../Form":9,"../Upload":36,"../YouTube":37}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************

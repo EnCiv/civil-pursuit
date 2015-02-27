@@ -4,6 +4,7 @@
 
   var Upload    =   require('../Upload');
   var Form      =   require('../Form');
+  var YouTube      =   require('../YouTube');
 
   /**
    *  @function
@@ -36,7 +37,7 @@
       var board       =   creator.find('reference board');
       var reference   =   $(this);
 
-      board.removeClass('hide').text(text['looking up title']);
+      board.removeClass('hide').text('Looking up title');
 
       app.socket.emit('get url title', $(this).val(),
         function (error, ref) {
