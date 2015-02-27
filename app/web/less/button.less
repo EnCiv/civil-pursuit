@@ -5,10 +5,14 @@ button, .button {
   display: inline-block;
   padding: 0.9em 0.7em;
   border: 1px solid #ccc;
-  background: 1px solid #ccc;
+  background: #ccc;
   vertical-align: middle;
   touch-action: manipulation;
   text-align: center;
+
+  &:hover {
+    background: #999
+  }
 
   &[disabled] {
     background-color: #eee !important;
@@ -20,6 +24,10 @@ button, .button {
   &.shy {
     background: transparent;
     border-color: transparent;
+
+    &:hover {
+      background: #ddd !important
+    }
   }
 
   &.primary {

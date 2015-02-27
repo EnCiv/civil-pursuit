@@ -43,11 +43,12 @@
 
   .item-buttons {
     float: right;
+    text-align: right;
+    padding-left: 1em;
+    padding-bottom: 1em;
     // border: 1px solid green;
 
     button, .button {
-      background:     transparent;
-      border-color:   transparent;
       padding: 0.3em !important;
       text-align: right;
       // font-size: 1.3em;
@@ -66,7 +67,7 @@
 
   .item-toggle-promote, .item-toggle-details {
     // font-size: 1.5em;
-    width: 5em;
+    // width: 5em;
   }
 
   .item-text {
@@ -104,7 +105,7 @@
   .item-description {
     // font-size: 1.1em;
     margin: 0em;
-    margin-right: 0.8em;
+    margin-right: 1em;
     // overflow: hidden;
 
     @media (max-width: @screenPhone) {
@@ -176,7 +177,7 @@
     color: #aaa;
     border-radius: 4px;
     overflow: hidden;
-    margin-top: -20px;
+    // margin-top: -20px;
     height: 3.7em;
 
     @media (max-width: @screenPhone) {
@@ -190,7 +191,7 @@
     border-radius: 4px;
     text-align: center;
     overflow: hidden;
-    margin-top: -20px;
+    // margin-top: -20px;
     color: #aaa
   }
 
@@ -207,6 +208,13 @@
       &.is-shown {
         margin-top: 0.8em;
         margin-bottom: 40px;
+      }
+    }
+
+    .children {
+      &.is-shown {
+        padding: 1px;
+        border: none;
       }
     }
   }
