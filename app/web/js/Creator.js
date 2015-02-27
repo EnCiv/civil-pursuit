@@ -42,32 +42,23 @@
 
   Creator.prototype.find = function (name) {
     switch ( name ) {
-      case 'create button':
-        return this.template.find('.button-create:first');
+      case 'create button':           return this.template.find('.button-create:first');
 
-      case 'form':
-        return this.template.find('form');
+      case 'form':                    return this.template.find('form');
 
-      case 'dropbox':
-        return this.template.find('.drop-box');
+      case 'dropbox':                 return this.template.find('.drop-box');
 
-      case 'subject':
-        return this.template.find('[name="subject"]');
+      case 'subject':                 return this.template.find('[name="subject"]');
 
-      case 'description':
-        return this.template.find('[name="description"]');
+      case 'description':             return this.template.find('[name="description"]');
 
-      case 'item media':
-        return this.template.find('.item-media');
+      case 'item media':              return this.template.find('.item-media');
 
-      case 'reference':
-        return this.template.find('.reference');
+      case 'reference':               return this.template.find('.reference');
 
-      case 'reference board':
-        return this.template.find('.reference-board');
+      case 'reference board':         return this.template.find('.reference-board');
 
-      case 'upload image button':
-        return this.template.find('.upload-image-button');
+      case 'upload image button':     return this.template.find('.upload-image-button');
     }
   };
 

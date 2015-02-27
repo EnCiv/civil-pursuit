@@ -842,7 +842,7 @@ a.button {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
   margin: 0 0 0.75em 0;
   border-radius: 6px;
-  padding: 1px;
+  padding: 0;
   clear: both;
   /** Panel heading */
   /** Panel body */
@@ -858,7 +858,7 @@ a.button {
   color: #fff;
   text-align: center;
   vertical-align: baseline;
-  border-radius: 6px 6px 0 0;
+  border-radius: 3px 3px 0 0;
   padding: 1px;
   /** Panel title */
   /** Toggle creator icon */
@@ -894,7 +894,7 @@ a.button {
   padding: 0.8em;
 }
 .item-boxing {
-  border: 1px solid #bbb;
+  border: 1px solid #111;
   border-right: none;
   border-radius: 4px 0 0 4px;
   -webkit-box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
@@ -902,7 +902,7 @@ a.button {
   box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
 }
 .item {
-  border: 1px solid #bbb;
+  border: 1px solid #111;
   border-right: none;
   border-radius: 4px 0 0 4px;
   -webkit-box-shadow: -1px 1px 1.5px 1.5px rgba(0, 0, 0, 0.14);
