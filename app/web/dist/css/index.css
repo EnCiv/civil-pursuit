@@ -1088,6 +1088,9 @@ a.button {
 #intro .item-collapsers {
   display: none;
 }
+#intro .item-text {
+  margin-bottom: 0 !important;
+}
 .forgot-password-link {
   color: #337AB7;
 }

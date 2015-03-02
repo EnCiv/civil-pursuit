@@ -92,7 +92,33 @@
       });
   }
 
-  require('async').series([gulpBuildProd, synTestModelUser, gitPushHerokuMaster], function (error) {
+  function synTestModelItem (cb) {
+    var action = 'syn-test model Item';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['models/Item'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  require('async').series([gulpBuildProd, synTestModelUser, synTestModelItem, gitPushHerokuMaster], function (error) {
 
   });
 
