@@ -2,6 +2,8 @@
   
   'use strict';
 
+  var Form = require('../Form');
+
   /**
    *  @function
    *  @return

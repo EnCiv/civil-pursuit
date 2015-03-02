@@ -17,6 +17,7 @@
   var Nav = require('./Nav');
   var login = require('./Login');
   var join = require('./Join');
+  var forgotPassword = require('./Forgot-Password');
 
   function Sign () {
     
@@ -38,6 +39,12 @@
             });
 
           login($vexContent);
+
+          $vexContent.find('.forgot-password-link').on('click', function () {
+            Sign.dialog.forgotPassword();
+            vex.close($vexContent.data().vex.id);
+            return false;
+          });
         },
 
         afterClose: function () {
@@ -97,6 +104,52 @@
           }
         }
       });
+    },
+
+    forgotPassword: function () {
+
+      console.log('helllo')
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function ($vexContent) {
+          $('.forgot-password-link')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+              return false;
+            });
+
+          forgotPassword($vexContent);
+        },
+
+        afterClose: function () {
+          $('.forgot-password-link').on('click', Sign.dialog.forgotPassword);
+        },
+
+        message: $('#forgot-password').text(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+
+      return false;
     }
 
   };
@@ -104,7 +157,7 @@
   Sign.prototype.render = function () {
     // this.signIn();
     // this.signUp();
-    this.forgotPassword();
+    // this.forgotPassword();
 
     app.socket.on('online users', function (online) {
       $('.online-users').text(online);
@@ -122,105 +175,6 @@
       $('.topbar .is-out').remove();
     }
   };
-
-  Sign.prototype.signIn = require('./Sign/sign-in');
-
-  Sign.prototype.signUp = function () {
-
-    $('#join').find('.i-agree').on('click', function () {
-      var agreed = $('#join').find('.agreed');
-
-      if ( agreed.hasClass('fa-square-o') ) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      }
-      else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-
-    $('#join').find('form').on('submit', function () {
-      
-      var email = $(this).find('[name="email"]');
-      var password = $(this).find('[name="password"]');
-      var confirm = $(this).find('[name="confirm"]');
-
-      email.removeClass('error');
-      password.removeClass('error');
-      confirm.removeClass('error');
-
-      $('#join').find('.alert')
-          .css('display', 'none');
-
-      if ( ! email.val() ) {
-        email.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Please enter an email address');
-      }
-
-      else if ( ! password.val() ) {
-        password.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Please enter a password');
-      }
-
-      else if ( ! confirm.val() ) {
-        confirm.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Please confirm password');
-      }
-
-      else if ( password.val() !== confirm.val() ) {
-        confirm.addClass('error').focus();
-        $('#join').find('.alert')
-          .css('display', 'block')
-          .find('.alert-message').text('Passwords do not match');
-      }
-
-      else {
-        $.ajax({
-          url: '/sign/up',
-          type: 'POST',
-          data: {
-            email: email.val(),
-            password: password.val()
-          }
-        })
-          
-          .error(function (response, state, code) {
-            if ( response.status === 401 ) {
-              $('#join').find('.alert')
-                .css('display', 'block')
-                .find('.alert-message').text('This email address is already in use');
-            }
-          })
-          
-          .success(function (response) {
-            synapp.user = response.user;
-            
-            $('.is-in').css('display', 'block');
-
-            $('#join').modal('hide');
-
-            $('#signer').find('section').hide(2000);
-
-            $('#signer').find('.sign-success')
-              .show(function () {
-                setTimeout(function () {
-                  $('#signer').hide(2500);
-                }, 5000);
-              })
-              .text('Welcome to Synaccord!');
-          });
-      }
-
-      return false;
-    })
-  };
-
-  Sign.prototype.forgotPassword = require('./Sign/forgot-password');
 
   module.exports = Sign;
 

@@ -1,0 +1,1 @@
+/home/francois/Dev/syn/app/web/test/components/login-button/appearance.js

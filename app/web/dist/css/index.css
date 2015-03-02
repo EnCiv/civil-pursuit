@@ -542,6 +542,9 @@ body {
     height: 100%;
   }
 }
+.gutter {
+  padding: 0.75em;
+}
 .clear {
   zoom: 1;
 }
@@ -588,15 +591,40 @@ a:hover {
 /*
  *  Colors
  */
-.block-danger {
+.block.info {
+  background: #5bc0de;
+  border-color: #5bc0de;
+  color: #ffffff;
+}
+.block.success {
+  background: #5cb85c;
+  border-color: #5cb85c;
+  color: #ffffff;
+}
+.block.warning {
+  background: #f0ad4e;
+  border-color: #f0ad4e;
+  color: #ffffff;
+}
+.block.error {
   background: #cd3232;
   border-color: #cd3232;
   color: #ffffff;
 }
-.block-warning {
-  background: #f0ad4e;
-  border-color: #f0ad4e;
-  color: #ffffff;
+.block.medium {
+  font-size: 125%;
+  line-height: 1.3em;
+  padding: 0.5em;
+}
+.block.large {
+  font-size: 175%;
+  line-height: 1.3em;
+  padding: 0.5em;
+}
+.block.huge {
+  font-size: 250%;
+  line-height: 1.3em;
+  padding: 0.5em;
 }
 /*
  *  Text
@@ -638,7 +666,7 @@ input[type="time"],
 input[type="url"],
 textarea {
   border: 1px solid #999;
-  border-radius: 4px;
+  border-radius: 1px;
 }
 input[type="text"].block,
 input[type="password"].block,
@@ -671,6 +699,7 @@ button,
   vertical-align: middle;
   touch-action: manipulation;
   text-align: center;
+  border-radius: 1px;
 }
 button:hover,
 .button:hover {
@@ -697,8 +726,8 @@ button.primary,
   border-color: #337ab7;
   color: #ffffff;
 }
-button.danger,
-.button.danger {
+button.error,
+.button.error {
   background: #cd3232;
   border-color: #cd3232;
   color: #ffffff;
@@ -714,9 +743,21 @@ button.medium,
   font-size: 125%;
   border-width: 2px;
 }
+button.large,
+.button.large {
+  font-size: 175%;
+  border-width: 2px;
+  line-height: 1.3em;
+}
+button.huge,
+.button.huge {
+  font-size: 250%;
+  border-width: 4px;
+  line-height: 1.3em;
+}
 button.block,
 .button.block {
-  width: calc(99%);
+  width: calc(100%);
 }
 a.button {
   text-decoration: none;

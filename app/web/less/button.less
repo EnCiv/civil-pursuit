@@ -2,13 +2,14 @@
 @import "main";
 
 button, .button {
-  display: inline-block;
-  padding: 0.9em 0.7em;
-  border: 1px solid #ccc;
-  background: #ccc;
-  vertical-align: middle;
-  touch-action: manipulation;
-  text-align: center;
+  display:              inline-block;
+  padding:              0.9em 0.7em;
+  border:               1px solid #ccc;
+  background:           #ccc;
+  vertical-align:       middle;
+  touch-action:         manipulation;
+  text-align:           center;
+  border-radius:        1px;
 
   &:hover {
     background: #999
@@ -36,12 +37,12 @@ button, .button {
     color: #fff
   }
 
-  &.danger {
-    .block-danger();
+  &.error {
+    .block.error();
   }
 
   &.warning {
-    .block-warning();
+    .block.warning();
   }
 
   &.medium {
@@ -49,8 +50,20 @@ button, .button {
     border-width: 2px;
   }
 
+  &.large {
+    font-size: 175%;
+    border-width: 2px;
+    line-height: 1.3em
+  }
+
+  &.huge {
+    font-size: 250%;
+    border-width: 4px;
+    line-height: 1.3em
+  }
+
   &.block {
-    width: calc(100% - 1px);
+    width: calc(100%);
   }
 }
 
