@@ -632,9 +632,6 @@ a:hover {
 .text-center {
   text-align: center;
 }
-.hidden-word {
-  color: #ff0000 !important;
-}
 textarea {
   width: calc(99%);
   min-height: 120px;
