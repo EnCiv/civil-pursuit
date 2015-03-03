@@ -14,6 +14,10 @@
         youtube = v;
       });
 
+      if ( synapp.env === 'development' ) {
+        return;
+      }
+
       var video_container = $('<div class="video-container"></div>');
 
       video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));

@@ -3400,7 +3400,7 @@
 
     // If screen >= phone, then divide imgHeight by 2
 
-    if ( $('body').width() >= $('#screen-tablet').width() ) {
+    if ( $('body').width() <= $('#screen-tablet').width() ) {
       imgHeight *= 2;
     }
 
@@ -3428,6 +3428,8 @@
       }
     }
 
+    console.info( item.subject.substr(0, 30) + '...', 'top', Math.ceil(top), ',', Math.ceil(imgHeight) );
+
     // Clear description
 
     $description.text('');
@@ -3442,7 +3444,8 @@
 
     for ( var i = $description.find('.word').length - 1; i >= 0; i -- ) {
       var word = $description.find('.word').eq(i);
-
+      console.log(Math.ceil(word.offset().top), Math.ceil(top),
+        { word: Math.ceil(word.offset().top - top), limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
       if ( (word.offset().top - top) > imgHeight ) {
         word.addClass('hidden-word').hide();
       }
@@ -4319,6 +4322,10 @@
       url.replace(regexYouTube, function (m, v) {
         youtube = v;
       });
+
+      if ( synapp.env === 'development' ) {
+        return;
+      }
 
       var video_container = $('<div class="video-container"></div>');
 
