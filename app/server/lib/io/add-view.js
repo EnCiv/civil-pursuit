@@ -7,25 +7,26 @@
   /**
    *  @function addView
    *  @arg {string} itemId - The Item Object ID
-   *  @arg {function} cb
    */
 
-  function addView (itemId, cb) {
+  function addView (itemId) {
 
     var socket = this;
 
-    socket.domain.run(function () {
-      
+    var domain = require('domain').create();
+    
+    domain.on('error', function (error) {
+      socket.pronto.emit('error', error);
+    });
+    
+    domain.run(function () {
       Item.incrementView(itemId, socket.domain.intercept(function (item) {
         socket.emit('view added', item);
       }));
-    
     });
 
   }
 
-  module.exports = function (socket) {
-    socket.on('add view', addView.bind(socket));
-  };
+  module.exports = addView;
 
 } ();

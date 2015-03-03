@@ -181,5 +181,15 @@
 
   "evaluation context item position": "first",
 
-  "forgot password email": "Hey,\r\n\r\nYou are receiving this email because you requested a password reset.\r\n\r\nYour reset key is:\r\n\r\n\t{key}\r\n\r\nTo reset your password, copy the reset key above and go to {url}\r\n\n\nThank you,\nThe Synaccord Team"
+  "forgot password email": "Hey,\r\n\r\nYou are receiving this email because you requested a password reset.\r\n\r\nYour reset key is:\r\n\r\n\t{key}\r\n\r\nTo reset your password, copy the reset key above and go to {url}\r\n\n\nThank you,\nThe Synaccord Team",
+
+  "items": {
+    "Topic": {},
+    "Problem": {},
+    "Agree": {},
+    "Disagree": {},
+    "Solution": {},
+    "Pro": {},
+    "Con": {}
+  }
 }

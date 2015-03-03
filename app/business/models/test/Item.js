@@ -15,7 +15,15 @@
 
     Test.suite('Model Item Full Test', {
 
-      'Class':                      src('models/test/Item/Class')
+      'Class':                      src('models/test/Item/Class'),
+
+      'schema':                     src('models/test/Item/schema'),
+
+      'evaluate':                   src('models/test/Item/evaluate'),
+
+      'incrementView':              src('models/test/Item/incrementView'),
+
+      'incrementPromotion':         src('models/test/Item/incrementPromotion')
 
     }, done);
   }

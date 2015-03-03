@@ -118,7 +118,59 @@
       });
   }
 
-  require('async').series([gulpBuildProd, synTestModelUser, synTestModelItem, gitPushHerokuMaster], function (error) {
+  function synTestSocketAddView (cb) {
+    var action = 'syn-test socket "add view"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/add-view'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  function synTestSocketPromote (cb) {
+    var action = 'syn-test socket "promote"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/promote'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  require('async').series([gulpBuildProd, synTestModelUser, synTestModelItem, synTestSocketAddView, synTestSocketPromote, gitPushHerokuMaster], function (error) {
 
   });
 

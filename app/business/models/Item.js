@@ -52,17 +52,17 @@ Nina Butorac
    * @author francoisrvespa@gmail.com
   */
 
-  var config = require('../config.json');
+  var config        =     require('../config.json');
 
-  var path = require('path');
+  var path          =     require('path');
 
-  var mongoose = require('mongoose');
+  var mongoose      =     require('mongoose');
 
-  var Schema = mongoose.Schema;
+  var Schema        =     mongoose.Schema;
 
-  var User    = require('./User');
+  var User          =     require('./User');
 
-  var ItemSchema = new Schema(require('./Item/schema'));
+  var ItemSchema    =     new Schema(require('./Item/schema'));
 
   ItemSchema.plugin(require('mongoose-simple-random'));
 
@@ -272,15 +272,11 @@ Nina Butorac
 
   // Add view
 
-  ItemSchema.statics.incrementView = function (id, cb) {
-    this.findByIdAndUpdate(id, { $inc: { "views": 1 } }, cb);
-  };
+  ItemSchema.statics.incrementView = require('./Item/incrementView');
 
   // Add promotion
 
-  ItemSchema.statics.incrementPromotion = function (id, cb) {
-    this.findByIdAndUpdate(id, { $inc: { "promotions": 1 } }, cb);
-  };
+  ItemSchema.statics.incrementPromotion = require('./Item/incrementPromotion');
 
 
 

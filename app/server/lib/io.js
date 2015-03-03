@@ -83,15 +83,19 @@
 
           .on('send password',          src('io/send-password').bind(socket))
 
+          /** increment item views by 1 */
+
+          .on('add view',               src('io/add-view').bind(socket))
+
+          /** increment item promotions by 1 */
+
+          .on('promote',               src('io/promote').bind(socket))
+
         ;
 
         /** Events */
 
         var events = [
-          
-          /** increment item views by 1 */
-
-          'add-view',
 
           /** upload an image using socket.io-stream to /tmp */
 
@@ -102,7 +106,6 @@
           'create-item',
           'get-item-by-id',
           'get-item-details',
-          'add-view',
           'get-items',
           'get-evaluation',
           'sign-in',

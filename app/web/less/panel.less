@@ -22,6 +22,7 @@
 @import "mixins/gradient";
 @import "mixins/box-shadow";
 @import "var";
+@import "layout";
 
 /** ____________________________________________________________________________
 
@@ -109,7 +110,8 @@
   }
 
   .load-more, .create-new {
-    text-align: center
+    text-align: center;
+    .gutter();
   }
 
   .loading-items {

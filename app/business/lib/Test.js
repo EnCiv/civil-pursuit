@@ -49,7 +49,7 @@
 
             var cell = '';
 
-            for ( var i = 0; i < 40; i ++ ) {
+            for ( var i = 0; i < 55; i ++ ) {
               cell += ' ';
             }
 

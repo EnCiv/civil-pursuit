@@ -15,44 +15,77 @@
 
   function readMore (item, $item) {
 
-    // Clear description
+    /** {HTMLElement} Description wrapper in DOM */
 
-    $item.find('.item-description').text('');
+    var $description    =     $item.find('.item-description');
 
-    // Spanify each word
+    /** {HTMLElement} Image container in DOM */
 
-    spanify(item.description).forEach(function (word) {
-      $item.find('.item-description').append(word);
-    });
+    var $image          =     $item.find('.item-media img');
 
-    // Height limit
+    /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
 
-    var limit = $item.find('.item-media img').height();
+    var $text           =     $item.find('.item-text');
 
-    var top = $item.find('.item-text').offset().top;
+    /** {HTMLElement} Subject container in DOM */
+
+    var $subject        =     $item.find('.item-subject')
+
+    /** {Number} Image height */
+
+    var imgHeight       =     $image.height();
+
+    // If screen >= phone, then divide imgHeight by 2
 
     if ( $('body').width() >= $('#screen-tablet').width() ) {
+      imgHeight *= 2;
+    }
+
+    /** {Number} Top position of text wrapper */
+
+    var top             =     $text.offset().top;
+
+    // If screen >= tablet
+
+    if ( $('body').width() >= $('#screen-tablet').width() ) {
+
+      // If intro
+
       if ( $item.attr('id') !== 'intro' ) {
-        top -= ($item.find('.item-subject').height());
+
+        // Subtract height of subject from top
+        
+        top -= $subject.height();
       }
+
+      // Subtract 40 pixels from top
 
       else {
         top -= 40;
       }
     }
-    else if ( $('body').width() >= $('#screen-phone').width() ) {
-      limit *= 2;
-    }
 
-    for ( var i = $item.find('.item-description .word').length - 1; i >= 0; i -- ) {
-      var word = $item.find('.item-description .word').eq(i);
+    // Clear description
 
-      if ( (word.offset().top - top) > limit ) {
+    $description.text('');
+
+    // Spanify each word
+
+    spanify(item.description).forEach(function (word) {
+      $description.append(word);
+    });
+
+    // Hide words that are below limit
+
+    for ( var i = $description.find('.word').length - 1; i >= 0; i -- ) {
+      var word = $description.find('.word').eq(i);
+
+      if ( (word.offset().top - top) > imgHeight ) {
         word.addClass('hidden-word').hide();
       }
     }
 
-    if ( $item.find('.item-description .hidden-word').length ) {
+    if ( $description.find('.hidden-word').length ) {
       var more = $('<a href="#" class="more">more</a>');
 
       more.on('click', function () {
@@ -72,7 +105,7 @@
       });
     }
 
-    $item.find('.item-description').append(more);
+    $description.append(more);
   }
 
   module.exports = readMore;

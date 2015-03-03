@@ -26,7 +26,11 @@
         b = arg.replace(/^models\//, 'app/business/models/test/');
       }
 
-      if ( /^web\//.test(arg) ) {
+      else if ( /^io\//.test(arg) ) {
+        b = arg.replace(/^io\//, 'app/server/lib/io/test/');
+      }
+
+      else if ( /^web\//.test(arg) ) {
         suite[arg] = nightwatch.bind({ file: arg.replace(/^web\//, 'app/web/test/') });
 
         return arg;

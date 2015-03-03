@@ -2,24 +2,27 @@
 
   'use strict';
 
-  function addView (socket, pronto, monson, domain) {
+  function promote (item_id) {
+
+    var socket = this;
+
+    var src = require(require('path').join(process.cwd(), 'src'));
+
+    var domain = require('domain').create();
     
-    socket.on('add view', function (item, cb) {
-      
-      var url = 'models/Item.incrementPromotion/' + item;
-
-      monson.get(url)
-
-        .on('error', domain.intercept(function () {}))
-
-        .on('success', function (item) {
-          socket.emit('promoted', item);
-        });
-      
+    domain.on('error', function (error) {
+      socket.pronto.emit('error', error);
+    });
+    
+    domain.run(function () {
+      src('models/Item')
+        .incrementPromotion(item_id, domain.intercept(function (item) {
+          socket.emit('promoted', item);  
+        }));
     });
 
   }
 
-  module.exports = addView;
+  module.exports = promote;
 
 } ();
