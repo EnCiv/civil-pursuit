@@ -692,6 +692,7 @@
   var Nav       =   require('./Nav');
   var Creator   =   require('./Creator');
   var Item      =   require('./Item');
+  var Form      =   require('./Form');
 
   /**
    *  @class
@@ -781,12 +782,9 @@
       .empty()
       .append(edit.item.media());
 
-    this.template.on('submit', function () {
+    var form = new Form(this.template);
 
-      edit.save();
-
-      return false;
-    });
+    form.send(edit.save);
 
     return this;
   };
@@ -820,7 +818,7 @@
 
 } ();
 
-},{"./Creator":1,"./Edit/save":9,"./Item":14,"./Nav":22}],9:[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":9,"./Form":11,"./Item":14,"./Nav":22}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';

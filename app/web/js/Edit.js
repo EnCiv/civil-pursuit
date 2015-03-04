@@ -22,6 +22,7 @@
   var Nav       =   require('./Nav');
   var Creator   =   require('./Creator');
   var Item      =   require('./Item');
+  var Form      =   require('./Form');
 
   /**
    *  @class
@@ -111,12 +112,9 @@
       .empty()
       .append(edit.item.media());
 
-    this.template.on('submit', function () {
+    var form = new Form(this.template);
 
-      edit.save();
-
-      return false;
-    });
+    form.send(edit.save);
 
     return this;
   };
