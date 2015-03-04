@@ -24,16 +24,26 @@
       self.labels[$(this).attr('name')] = $(this);
     });
 
-    this.form.on('submit', function () {
-      setTimeout(self.submit.bind(self));
+    // #193 Disable <Enter> keys
+
+    this.form.find('input').on('keydown', function (e) {
+      if ( e.keyCode === 13 ) {
+        return false;
+      }
+    });
+
+    this.form.on('submit', function (e) {
+      setTimeout(function () {
+        self.submit(e);
+      });
 
       return false;
     });
   }
 
-  Form.prototype.submit = function () {
+  Form.prototype.submit = function (e) {
 
-    console.warn('submitting', this.form.attr('name'))
+    console.warn('submitting', this.form.attr('name'), e);
 
     var self = this;
 
