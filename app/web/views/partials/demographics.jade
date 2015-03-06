@@ -1,19 +1,47 @@
 #demographics.section
-  .row
-    .col-xs-4
-      img.img-responsive(src=synapp.profile.demographics.image)
+  img.img-responsive.tablet-40(src=synapp.profile.demographics.image)
 
-    .col-xs-8
-      h2 Demographics
+  h2 Demographics
 
-      .pre-text=synapp.profile.demographics.description
+  .gutter.pre-text=synapp.profile.demographics.description
 
   .demographics-collapse.is-container
     .is-section
 
-      h1.text-center.text-muted 
-        i.fa.fa-cog
-        span  Coming soon
+      .gutter
+        .row
+          .phone-30.gutter Race:
+
+          .phone-70
+            each race in config.race
+
+              .row.gutter
+                .watch-70.left=race.name
+                .watch-30.left
+                  input(type='checkbox')
+        
+        .row
+          .phone-30.gutter Education:
+
+          .phone-70.gutter
+            select.watch-100
+              option High School
+
+        .row
+          .phone-30.gutter Relationship:
+
+          .phone-70.gutter
+            select.watch-100
+              each married in config.married
+                option=married.name
+
+        .row
+          .phone-30.gutter Employment:
+
+          .phone-70.gutter
+            select.watch-100
+              each employment in config.employment
+                option=employment.name
 
   .row.toggle-arrow.padding.text-center
     i.fa.fa-arrow-down

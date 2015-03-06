@@ -41,8 +41,6 @@ body {
 }
 
 .row {
-  // border: 3px dashed black;
-  // border-radius: 6px;
   clear: both;
   height: 100%;
   -webkit-transform-style: preserve-3d;
@@ -52,7 +50,16 @@ body {
   width: 100%;
   display: inline-block;
   vertical-align: bottom;
+
+  &.column-gutter {
+
+    .column {
+      border: 2px solid red;
+    }
+  }
 }
+
+
 
 .split(@percent) {
   width:                  @percent;
@@ -63,19 +70,93 @@ body {
   height:                 100%;
 }
 
-.scaffolding (@screen, @dim, @counter: 100) when (@counter > 0) {
+@syn-default-column-gutter: @syn-panel-gutter;
+
+.scaffolding (@screen, @min-width, @max-width, @counter: 100, @step: 5) when (@counter > 0) {
+  
   .@{screen}-@{counter} {
-    @media (min-width: @dim) {
+
+    @media (min-width: @min-width) {
       .split(@counter + 0%);
+    }
+  
+  }
+
+  /*
+   * Push
+   */
+
+  .@{screen}-push-@{counter} {
+    @media (min-width: @min-width) {
+      margin-left: ~"@{counter}%";
     }
   }
 
-  .scaffolding(@screen, @dim, @counter - 5);
+  /*
+   * Column gutters
+   */
+
+   @columns-length: 100/@counter;
+
+   @subtract: @syn-default-column-gutter / @columns-length;
+
+   @reduced-width: @counter - @subtract;
+
+  .row.column-gutter > .@{screen}-@{counter} {
+
+    @media (min-width: @min-width) {
+      width:            @reduced-width;
+      margin-left:      @subtract;
+      margin-right:     @subtract;
+
+      &:first-child {
+        margin-left:    0%;
+      }
+
+      &:last-child {
+        margin-right:    0%;
+      }
+    }
+
+  }
+;
+  .scaffolding(@screen, @min-width, @max-width, @counter - @step);
 }
 
-.scaffolding(phone, @screenPhone);
-.scaffolding(tablet, @screenTablet);
+.scaffolding(watch, 0px, @screenPhone);
+.scaffolding(phone, @screenPhone, @screenTablet);
+.scaffolding(tablet, @screenTablet, @screenDesktop);
 
 .gutter {
-  padding: @syn-panel-gutter / 2;
+  padding: @syn-panel-gutter;
+  // border: 1px dotted red
+}
+
+.gutter-left {
+  padding-left: @syn-panel-gutter;
+}
+
+.gutter-bottom {
+  padding-bottom: @syn-panel-gutter;
+}
+
+.gutter-top {
+  padding-top: @syn-panel-gutter;
+}
+
+.gutter-sample {
+  border: @syn-panel-gutter / 2 solid;
+  padding: 50px
+}
+
+.center {
+  text-align: center
+}
+
+.column-group {
+  .row();
+
+  .column:not(:first-child) {
+    border-left: none
+  }
 }

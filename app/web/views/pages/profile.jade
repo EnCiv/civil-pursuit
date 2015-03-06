@@ -1,36 +1,37 @@
 extends ../layout
 
 block items
-  .row
-    .col-xs-12.col-lg-6
-      .is-container.is-profile-section
-        .is-section
-          include ../partials/identity
+  .gutter
+    .row.gutter-bottom
+      .tablet-50
+        .is-container.is-profile-section
+          .is-section
+            include ../partials/identity
 
-    .col-xs-12.col-lg-6
-      .is-container.is-profile-section
-        .is-section
-          include ../partials/residence
+      .tablet-50
+        .is-container.is-profile-section
+          .is-section
+            include ../partials/residence
 
-  .row
-    .col-xs-12.col-lg-6
-      .is-container.is-profile-section
-        .is-section
-          include ../partials/demographics
+    .row
+      .tablet-50
+        .is-container.is-profile-section
+          .is-section
+            include ../partials/demographics
 
-    .col-xs-12.col-lg-6
-      .is-container.is-profile-section
-        .is-section
-          include ../partials/voter
+      .tablet-50
+        .is-container.is-profile-section
+          .is-section
+            include ../partials/voter
 
-  .row
-    .col-xs-12.col-lg-6
-      .is-container.is-profile-section
-        .is-section
-          include ../partials/public-persona
+    .row.gutter-top
+      .tablet-45.tablet-push-30
+        .is-container.is-profile-section
+          .is-section
+            include ../partials/public-persona
 
 block page
-  #profile
+  #profile.center
     include ../partials/panel
 
   //- .hide

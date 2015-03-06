@@ -12,7 +12,8 @@ button, .button {
   border-radius:        1px;
 
   &:hover {
-    background: #999
+    background: #999;
+    border-color: #999;
   }
 
   &[disabled] {
@@ -31,23 +32,50 @@ button, .button {
     }
   }
 
-  &.primary {
-    background: @syn-primary-color;
-    border-color: @syn-primary-color;
-    color: #fff
-  }
-
   &.error {
-    .block.error();
+    .error-bg();
+
+    &:hover {
+      background: darken(@syn-error-color, 20%);
+    }
   }
 
   &.warning {
-    .block.warning();
+    .warning-bg();
+
+    &:hover {
+      background: darken(@syn-warning-color, 20%);
+    }
+  }
+
+  &.info {
+    .info-bg();
+
+    &:hover {
+      background: darken(@syn-info-color, 20%);
+    }
+  }
+
+  &.success {
+    .success-bg();
+
+    &:hover {
+      background: darken(@syn-success-color, 20%);
+    }
+  }
+
+  &.primary {
+    .primary-bg();
+
+    &:hover {
+      background: darken(@syn-primary-color, 20%);
+    }
   }
 
   &.medium {
     font-size: 125%;
     border-width: 2px;
+    padding: 1em
   }
 
   &.large {

@@ -61,190 +61,203 @@ Nina Butorac
 
     require('mongoose').connect(process.env.MONGOHQ_URL);
 
-    var server = pronto ()
+    var server = pronto ();
 
-      /** inject into scope */
+    src('models/Config')
+      .find()
+      .lean()
+      .exec(function (error, $config) {
+        if ( error ) {
+          throw error;
+        }
 
-      .inject('synapp', config)
+        server
 
-      /** cookies */
+          /** inject into scope */
 
-      .cookie(config.secret)
+          .inject('synapp', config)
 
-      /** passport initialize */
+          .inject('config', $config)
 
-      .open(passport.initialize());
+          /** cookies */
 
-    /** passport */
+          .cookie(config.secret)
 
-    passport.serializeUser(function(user, done) {
-      done(null, user._id);
-    });
+          /** passport initialize */
 
-    passport.deserializeUser(function(id, done) {
-      src('models/User').findById(id, done);
-    });
+          .open(passport.initialize());
 
-    server.app.use(require('cookie-parser')(config.secret));
+        /** passport */
 
-    /**       S   E   S   S   I   O   N       **/
+        passport.serializeUser(function(user, done) {
+          done(null, user._id);
+        });
 
-    server.app.use(session({
-      secret:             config.secret,
-      resave:             true,
-      saveUninitialized:  true
-    }));
+        passport.deserializeUser(function(id, done) {
+          src('models/User').findById(id, done);
+        });
 
-    /**       F   A   C   E   B   O   O   K       **/
+        server.app.use(require('cookie-parser')(config.secret));
 
-    require('../routes/facebook')(server.app, config, passport);
+        /**       S   E   S   S   I   O   N       **/
 
-    /**       T   W   I   T   T   E   R       **/
+        server.app.use(session({
+          secret:             config.secret,
+          resave:             true,
+          saveUninitialized:  true
+        }));
 
-    require('../routes/twitter')(server.app, config, passport);
+        /**       F   A   C   E   B   O   O   K       **/
 
-    server
+        require('../routes/facebook')(server.app, config, passport);
 
-    /**       P   R   E       R   O   U   T   E   R       **/
+        /**       T   W   I   T   T   E   R       **/
 
-      .open(function synMiddleware_preRouter (req, res, next) {
-        req.user = req.signedCookies.synuser;
-        next();
-      }, when('/*'))
+        require('../routes/twitter')(server.app, config, passport);
 
-      /**       S   I   G   N       I   N       **/
+        server
 
-        //  /sign/in
+        /**       P   R   E       R   O   U   T   E   R       **/
 
-      .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
+          .open(function synMiddleware_preRouter (req, res, next) {
+            req.user = req.signedCookies.synuser;
+            next();
+          }, when('/*'))
 
-      /**       S   I   G   N       U   P       **/
+          /**       S   I   G   N       I   N       **/
 
-        //  /sign/up
+            //  /sign/in
 
-      .open('app/server/routes/sign-up.js', { exec: 'js/middleware' }, when('/sign/up'))
+          .open('app/server/routes/sign-in.js', { exec: 'js/middleware' }, when('/sign/in'))
 
-      /**       S   I   G   N       O   U   T       **/
+          /**       S   I   G   N       U   P       **/
 
-        //  /sign/out
+            //  /sign/up
 
-      .open('app/server/routes/sign-out.js', { exec: 'js/middleware' }, when('/sign/out'))
+          .open('app/server/routes/sign-up.js', { exec: 'js/middleware' }, when('/sign/up'))
 
-      /**       H   O   M   E         **/
+          /**       S   I   G   N       O   U   T       **/
 
-        //  /home
+            //  /sign/out
 
-      .open('app/web/views/pages/index.jade', when.home)
+          .open('app/server/routes/sign-out.js', { exec: 'js/middleware' }, when('/sign/out'))
 
-      /**       P   A   G   E   S       **/
+          /**       H   O   M   E         **/
 
-        // /page/:page
+            //  /home
 
-      .open(function (req, res, next) {
-        res.locals.page = req.params.page || 'index';
-        next();
-      }, when('/page/:page'))
+          .open('app/web/views/pages/index.jade', when.home)
 
-      .open('app/web/views/pages', { 'append extension': 'jade' }, when.prefix('/page'))
+          /**       P   A   G   E   S       **/
 
-      /**       P   A   R   T   I   A   L   S       **/
+            // /page/:page
 
-        //  /partial/:partial
+          .open(function (req, res, next) {
+            res.locals.page = req.params.page || 'index';
+            next();
+          }, when('/page/:page'))
 
-      .open('app/web/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
+          .open('app/web/views/pages', { 'append extension': 'jade' }, when.prefix('/page'))
 
-      /**       B   O   W   E   R       C   O   M   P   O   N   E   N   T   S       **/
+          /**       P   A   R   T   I   A   L   S       **/
 
-      /** /bower/ */
+            //  /partial/:partial
 
-      .open('app/web/bower_components/', when.prefix('/bower/'))
+          .open('app/web/views/partials', { 'append extension': 'jade' }, when.prefix('/partial/'))
 
-      /**       A   S   S   E   T       **/
+          /**       B   O   W   E   R       C   O   M   P   O   N   E   N   T   S       **/
 
-      /** /assets/ */
+          /** /bower/ */
 
-      .open('app/web/assets/', when.prefix('/assets/'))
+          .open('app/web/bower_components/', when.prefix('/bower/'))
 
-      /** /js/ ==> JS files */
+          /**       A   S   S   E   T       **/
 
-      .open('app/web/dist/js',
-        when.prefix('/js'))
+          /** /assets/ */
 
-      .open('app/web/js',
-        when.prefix('/js'))
+          .open('app/web/assets/', when.prefix('/assets/'))
 
-      /** /css/ ==> CSS files */
+          /** /js/ ==> JS files */
 
-      .open('app/web/dist/css', when.prefix('/css/'))
+          .open('app/web/dist/js',
+            when.prefix('/js'))
 
-      /** /item/ ==> Item static page */
+          .open('app/web/js',
+            when.prefix('/js'))
 
-      .open(
+          /** /css/ ==> CSS files */
 
-        function staticItemPage (req, res, next) {
+          .open('app/web/dist/css', when.prefix('/css/'))
 
-          var domain = require('domain').create();
-          
-          domain.on('error', function (error) {
-            next(error);
-          });
-          
-          domain.run(function () {
-            src('models/Item')
+          /** /item/ ==> Item static page */
 
-              .findById(req.params.item_id)
+          .open(
 
-              .lean()
+            function staticItemPage (req, res, next) {
 
-              .exec(domain.intercept(function (item) {
-                res.locals.item = item;
+              var domain = require('domain').create();
+              
+              domain.on('error', function (error) {
+                next(error);
+              });
+              
+              domain.run(function () {
+                src('models/Item')
 
-                if ( item.references.length ) {
-                  res.locals.youtube = require('../../web/js/Item/controllers/youtube')(item.references[0].url, true);
-                }
+                  .findById(req.params.item_id)
 
-                res.locals.title = item.subject + ' | Synaccord';
+                  .lean()
 
-                res.locals.meta_description = item.description.split(/\n/)[0]
-                  .substr(0, 255);
+                  .exec(domain.intercept(function (item) {
+                    res.locals.item = item;
 
-                next(); 
-              }));
-            });
-          }
+                    if ( item.references.length ) {
+                      res.locals.youtube = require('../../web/js/Item/controllers/youtube')(item.references[0].url, true);
+                    }
 
-        , when('/item/:item_id/:item_slug')
+                    res.locals.title = item.subject + ' | Synaccord';
 
-      )
+                    res.locals.meta_description = item.description.split(/\n/)[0]
+                      .substr(0, 255);
 
-      .open('app/web/views/pages/item.jade'
-        , when('/item/*'))
+                    next(); 
+                  }));
+                });
+              }
 
-      /** Admin "/dashboard" */
+            , when('/item/:item_id/:item_slug')
 
-      .open('app/web/views/pages/dashboard.jade'
-        , when('/dashboard')
-        , when.has.signedCookie('synuser', function (synuser) {
-          return synuser.email === 'francois@vespa.com';
-        })
-        )
+          )
 
-      /** 404 */
+          .open('app/web/views/pages/item.jade'
+            , when('/item/*'))
 
-      .open('app/web/views/pages/not-found.jade'
-        , when(404))
+          /** Admin "/dashboard" */
 
-      .on('listening', function (service) {
-        src('io')(server);
-      })
+          .open('app/web/views/pages/dashboard.jade'
+            , when('/dashboard')
+            , when.has.signedCookie('synuser', function (synuser) {
+              return synuser.email === 'francois@vespa.com';
+            })
+            )
 
-      .on('error', function (error) {
-        console.log('erroooooooooor', error);
-      })
+          /** 404 */
 
-      // .open ( routes.urlTitleFetcher, when.post ( '/tools/get-title' ) )
+          .open('app/web/views/pages/not-found.jade'
+            , when(404))
 
-      ;
+          .on('listening', function (service) {
+            src('io')(server);
+          })
+
+          .on('error', function (error) {
+            console.log('erroooooooooor', error);
+          })
+
+          // .open ( routes.urlTitleFetcher, when.post ( '/tools/get-title' ) )
+
+          ;
+      });
 
     return server;
 

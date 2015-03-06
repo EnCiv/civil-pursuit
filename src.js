@@ -22,6 +22,10 @@
       module = ('app/server/lib/' + module).replace(/\/\//g, '/');
     }
 
+    if ( /^\/?server(\/|$)/.test(module) ) {
+      module = ('app/' + module).replace(/\/\//g, '/');
+    }
+
     return require(path.join(process.cwd(), _path || '', module));
   }
 

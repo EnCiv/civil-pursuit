@@ -1,3 +1,7 @@
+@import "button";
+@import "layout";
+@import "var";
+
 textarea {
   width: calc(100% - 1px);
   min-height: 120px;
@@ -12,11 +16,6 @@ textarea {
 input.danger, textarea.danger {
   color: red !important;
   border: 1px solid red !important
-}
-
-.error {
-  border-color: red;
-  background: yellow
 }
 
 input[type="text"],
@@ -36,9 +35,28 @@ textarea {
 
   border: 1px solid #999;
   border-radius: 1px;
+  padding: .5em;
+
+  &:hover {
+    background: #eee;
+  }
 
   &.block {
-    width: calc(100% - 1px);
+    width: calc(100% - 2px);
+  }
+
+  &.error {
+    border-color: red;
+    background: yellow
+  }
+
+  &.medium {
+    .button.medium();
+
+    &.block {
+      width: calc(100% - 2.5em);
+      padding: 1em .5em
+    }
   }
 }
 
@@ -49,5 +67,23 @@ textarea {
 
   input {
     width: calc(100% - 1px);
+  }
+}
+
+.input-group {
+  .row();
+
+  input:not(:first-child) {
+    border-left: none
+  }
+}
+
+.input-group-tablet {
+  @media (min-width: @screenTablet) {
+    // .row();
+
+    input:not(:first-child) {
+      border-left: none
+    }
   }
 }

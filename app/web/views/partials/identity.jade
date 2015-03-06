@@ -1,31 +1,28 @@
-#identity.section
-  .section-box-image
-    img.img-responsive.user-image(src=synapp.public['user image'])
-  div
-    h2.profile-section-title Identity
-    .pre-text=synapp.profile.identity.description
+#identity.section.center
+  .gutter
+    img.img-responsive.user-image.tablet-40.radius(src=synapp.public['user image'])
 
-  .identity-collapse.is-container
+    h2.profile-section-title Identity
+
+    .tablet-push-40.gutter
+      .pre-text=synapp.profile.identity.description
+
+  .identity-collapse.is-container.row
     .is-section
 
-      .image-buttons.row.padding
-        .col-xs-4.padding
-          button.btn.btn-block(disabled) Facebook Image
-        .col-xs-4.padding
-          button.btn.btn-block(disabled) Twitter Image
-        .col-xs-4.padding
-          button.btn.btn-block.upload-image Upload Image
+      .gutter
+        p.image-buttons.row
+          button.block.upload-image Upload Image
           input.upload-identity-picture.hide(type='file')
 
-      .names.row.padding
-        .col-xs-4.padding
-          input.form-control(type='text' placeholder='First name' name='first-name')
-        .col-xs-4.padding
-          input.form-control(type='text' placeholder='Middle name' name='middle-name')
-        .col-xs-4.padding
-          input.form-control(type='text' placeholder='Last name' name='last-name')
+        .names.input-group-tablet
+          input.watch-100.tablet-40(type='text' placeholder='First name' name='first-name')
+          
+          input.watch-100.tablet-20(type='text' placeholder='Middle name' name='middle-name')
+          
+          input.watch-100.tablet-40(type='text' placeholder='Last name' name='last-name')
 
-  //- .row.padding
+  //- .row.gutter
   //-   .col-xs-12.col-sm-6
   //-     form.form-inline
   //-       .form-group
@@ -33,5 +30,5 @@
   //-         select
   //-           option Country
 
-  .row.toggle-arrow.padding.text-center
+  .row.toggle-arrow.gutter.text-center
     i.fa.fa-arrow-down

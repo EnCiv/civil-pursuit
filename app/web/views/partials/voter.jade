@@ -1,19 +1,27 @@
 #voter.section
-  .row
-    .col-xs-4
-      img.img-responsive(src=synapp.profile.voter.image)
+  .gutter
+    img.img-responsive.tablet-40(src=synapp.profile.voter.image)
 
-    .col-xs-8
-      h2 Voter
+    h2 Voter
 
-      .pre-text=synapp.profile.voter.description
+    .gutter.pre-text=synapp.profile.voter.description
 
   .voter-collapse.is-container
     .is-section
 
-      h1.text-center.text-muted 
-        i.fa.fa-cog
-        span  Coming soon
+      .row
+        .phone-30.gutter Registered:
+
+        .phone-70.left
+          input(type='checkbox')
+
+      .row
+        .phone-30.gutter Political Party:
+
+        .phone-70.left
+          select
+            option Republican
+            option Democrat
 
   .row.toggle-arrow.padding.text-center
     i.fa.fa-arrow-down

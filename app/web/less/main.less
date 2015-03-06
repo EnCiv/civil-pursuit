@@ -60,45 +60,43 @@ a {
 }
 
 /*
- *  Colors
+ *  Background
  */
 
-.block {
-  &.info {
-    background:       @syn-info-color;
-    border-color:     @syn-info-color;
-    color:            #fff
-  }
-  &.success {
-    background:       @syn-success-color;
-    border-color:     @syn-success-color;
-    color:            #fff
-  }
-  &.warning {
-    background:       @syn-warning-color;
-    border-color:     @syn-warning-color;
-    color:            #fff
-  }
-  &.error {
-    background:       @syn-error-color;
-    border-color:     @syn-error-color;
-    color:            #fff
-  }
-  &.medium {
-    font-size:        125%;
-    line-height:      1.3em;
-    padding:          .5em
-  }
-  &.large {
-    font-size:        175%;
-    line-height:      1.3em;
-    padding:          .5em
-  }
-  &.huge {
-    font-size:        250%;
-    line-height:      1.3em;
-    padding:          .5em
-  }
+.muted-bg {
+  background:         @syn-muted-color;
+  border-color:       @syn-muted-color;
+  color:              #fff
+}
+
+.info-bg {
+  background:         @syn-info-color;
+  border-color:       @syn-info-color;
+  color:              #fff
+}
+
+.success-bg {
+  background:         @syn-success-color;
+  border-color:       @syn-success-color;
+  color:              #fff
+}
+
+.error-bg {
+  background:         @syn-error-color;
+  border-color:       @syn-error-color;
+  color:              #fff
+}
+
+.primary-bg {
+  background:         @syn-primary-color;
+  border-color:       @syn-primary-color;
+  color:              #fff
+}
+
+.warning-bg {
+  background:         @syn-warning-color;
+  border-color:       @syn-warning-color;
+  color:              #fff
 }
 
 /*
@@ -107,4 +105,16 @@ a {
 
 .text-center {
   text-align: center
+}
+
+/*
+ *  Boxes
+ */
+
+.frame {
+  border: 1px solid;
+}
+
+.radius {
+  border-radius: 4px;
 }

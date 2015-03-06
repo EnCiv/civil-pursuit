@@ -1,17 +1,15 @@
 #public_persona.section
   .row
-    .col-xs-4
-      img.img-responsive(src=synapp.profile['public persona'].image)
+    img.img-responsive.tablet-40(src=synapp.profile['public persona'].image)
 
-    .col-xs-8
-      h2 Public Persona
+    h2 Public Persona
 
-      .pre-text=synapp.profile['public persona'].description
+    .gutter.pre-text=synapp.profile['public persona'].description
 
   .public_persona-collapse.is-container
     .is-section
 
-      h1.text-center.text-muted 
+      h1.center.muted 
         i.fa.fa-cog
         span  Coming soon
 
