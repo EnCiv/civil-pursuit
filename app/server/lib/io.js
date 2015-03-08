@@ -25,11 +25,12 @@
 
       io.on('connection', function (socket) {
 
-        socket.pronto = pronto;
+        socket.pronto   =   pronto;
 
-        var domain = require('domain').create();
+        var domain      =   require('domain').create();
 
-        socket.domain = domain;
+        /** @deprecated */
+        socket.domain   =   domain;
 
         // On domain error
 
@@ -71,9 +72,25 @@
             socket.broadcast.emit('online users', online_users);
           })
 
+          /** happens when User identifies herself to a new race */
+
+          .on('add race',               src('io/add-race').bind(socket))
+
+          /** increment item views by 1 */
+
+          .on('add view',               src('io/add-view').bind(socket))
+
           /** get intro */
 
           .on('get intro',              src('io/get-intro').bind(socket))
+
+          /** get user info */
+
+          .on('get user info',          src('io/get-user-info').bind(socket))
+
+          /** increment item promotions by 1 */
+
+          .on('promote',                src('io/promote').bind(socket))
 
           /** reset password */
 
@@ -82,14 +99,6 @@
           /** create and send a password reset email */
 
           .on('send password',          src('io/send-password').bind(socket))
-
-          /** increment item views by 1 */
-
-          .on('add view',               src('io/add-view').bind(socket))
-
-          /** increment item promotions by 1 */
-
-          .on('promote',               src('io/promote').bind(socket))
 
         ;
 
@@ -113,7 +122,6 @@
           'edit-and-go-again',
           'save-user-image',
           'change-user-name',
-          'get-user-info',
           'validate-gps'];
 
         domain.add(socket);

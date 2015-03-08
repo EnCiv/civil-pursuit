@@ -31,4 +31,14 @@
 
   module.exports = src;
 
+  src.domain = function (onError, run) {
+    var domain = require('domain').create();
+    
+    domain.on('error', onError);
+    
+    domain.run(function () {
+      run(domain);
+    });
+  };
+
 } ();

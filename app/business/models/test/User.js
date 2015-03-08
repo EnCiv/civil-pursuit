@@ -27,6 +27,8 @@
 
       'reset-password':             src('models/test/User/reset-password'),
 
+      'add-race':                   src('models/test/User/add-race'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);

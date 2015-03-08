@@ -14,6 +14,10 @@
     console.log()
   }
 
+  /**
+   *
+   */
+
   function gulpBuildProd (cb) {
     var action = 'gulp build-prod';
 
@@ -39,6 +43,10 @@
 
       });
   }
+
+  /**
+   *
+   */
 
   function gitPushHerokuMaster (cb) {
     var action = 'git push heroku master';
@@ -66,6 +74,10 @@
       });
   }
 
+  /**
+   *
+   */
+
   function synTestModelUser (cb) {
     var action = 'syn-test model user';
 
@@ -91,6 +103,10 @@
 
       });
   }
+
+  /**
+   *
+   */
 
   function synTestModelItem (cb) {
     var action = 'syn-test model Item';
@@ -118,6 +134,10 @@
       });
   }
 
+  /**
+   *
+   */
+
   function synTestSocketAddView (cb) {
     var action = 'syn-test socket "add view"';
 
@@ -143,6 +163,10 @@
 
       });
   }
+
+  /**
+   *
+   */
 
   function synTestSocketPromote (cb) {
     var action = 'syn-test socket "promote"';
@@ -170,8 +194,48 @@
       });
   }
 
-  require('async').series([gulpBuildProd, synTestModelUser, synTestModelItem, synTestSocketAddView, synTestSocketPromote, gitPushHerokuMaster], function (error) {
+  /**
+   *    SOCKET "add race"
+   */
 
-  });
+  function synTestSocketAddRace (cb) {
+    var action = 'syn-test socket "add race"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/add-race'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  require('async').series([
+      gulpBuildProd,
+      synTestModelUser,
+      synTestModelItem,
+      synTestSocketAddView,
+      synTestSocketPromote,
+      synTestSocketAddRace,
+      gitPushHerokuMaster
+    ],
+
+    function (error) {
+
+    });
 
 } ();

@@ -69,6 +69,8 @@
     // imageStream.pipe(stream);
   };
 
+  UserSchema.statics.addRace = require('./User/add-race');
+
   module.exports = mongoose.model('User', UserSchema);
 
 } ();

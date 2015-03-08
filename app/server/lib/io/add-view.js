@@ -2,7 +2,8 @@
 
   'use strict';
 
-  var Item = require('../../../business/models/Item');
+  var src     =   require(require('path').join(process.cwd(), 'src'));
+  var Item    =   src('models/Item');
 
   /**
    *  @function addView

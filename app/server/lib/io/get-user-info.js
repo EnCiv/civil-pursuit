@@ -2,34 +2,37 @@
 
   'use strict';
 
-  var User = require('../../../business/models/User');
+  var src = require(require('path').join(process.cwd(), 'src'));
+
+  var User = src('models/User');
 
   /**
-   *  @arg {String} item - Item ObjectID String (_id)
-   *  @arg {Function} cb
+   *  @arg {ObjectID} user_id - User ID
    */
 
   function getUserInfo (user_id) {
     var socket = this;
 
-    socket.domain.run(function () {
+    src.domain(
+      function (error) {
+        socket.emit('error', error);
+      },
 
-      User
-        .findById(user_id)
-        .lean()
-        .exec(socket.domain.intercept(function (user) {
-          delete user.password;
-          socket.emit('got user info', user);
-        }));
-    });
+      function (domain) {
+        User
+          .findById(user_id)
+          .lean()
+          .exec(domain.intercept(function (user) {
+            delete user.password;
+            socket.emit('got user info', user);
+          }));
+      });
   }
 
   /**
    *  Export as a socket event listener
    */
 
-  module.exports = function (socket) {
-    socket.on('get user info', getUserInfo.bind(socket));
-  };
+  module.exports = getUserInfo;
 
 } ();

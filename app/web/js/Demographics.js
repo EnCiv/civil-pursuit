@@ -25,6 +25,8 @@
 
       case 'expand':
         return this.template.find('.demographics-collapse');
+
+      case 'race':    return this.template.find('input.race');
     }
   };
 
@@ -44,6 +46,24 @@
           arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
         }
       });
+    });
+
+    /** Save race **/
+
+    this.find('race').on('change', function () {
+      var is_checked = $(this).is(':checked');
+
+      app.socket.once('race removed', function () {
+        console.log('race removed', arguments);
+      });
+
+      if ( is_checked ) {
+        app.socket.once('race added', function () {
+          console.log('race added', arguments);
+        });
+
+        app.socket.emit('add race', synapp.user, $(this).val());
+      }
     });
   };
 
