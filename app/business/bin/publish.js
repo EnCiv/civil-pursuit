@@ -224,6 +224,36 @@
       });
   }
 
+  /**
+   *    SOCKET "remove race"
+   */
+
+  function synTestSocketRemoveRace (cb) {
+    var action = 'syn-test socket "remove race"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/remove-race'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
   require('async').series([
       gulpBuildProd,
       synTestModelUser,
@@ -231,6 +261,7 @@
       synTestSocketAddView,
       synTestSocketPromote,
       synTestSocketAddRace,
+      synTestSocketRemoveRace,
       gitPushHerokuMaster
     ],
 
