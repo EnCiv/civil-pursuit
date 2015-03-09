@@ -448,6 +448,10 @@
 
         });
       }
+
+      if ( this.profile.user.married ) {
+        this.find('married').val(this.profile.user.married);
+      }
     }
   };
 
