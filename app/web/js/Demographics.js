@@ -121,6 +121,10 @@
       if ( this.profile.user.married ) {
         this.find('married').val(this.profile.user.married);
       }
+
+      if ( this.profile.user.employment ) {
+        this.find('employment').val(this.profile.user.employment);
+      }
     }
   };
 
