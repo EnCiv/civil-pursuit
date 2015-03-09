@@ -104,6 +104,10 @@
 
           .on('send password',          src('io/send-password').bind(socket))
 
+          /** set marital status */
+
+          .on('set marital status',     src('io/set-marital-status').bind(socket))
+
         ;
 
         /** Events */

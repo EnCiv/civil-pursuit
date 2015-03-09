@@ -254,6 +254,36 @@
       });
   }
 
+  /**
+   *    SOCKET "set marital status"
+   */
+
+  function synTestSocketSetMaritalStatus (cb) {
+    var action = 'syn-test socket "set marital status"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/set-marital-status'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
   require('async').series([
       gulpBuildProd,
       synTestModelUser,
@@ -262,6 +292,7 @@
       synTestSocketPromote,
       synTestSocketAddRace,
       synTestSocketRemoveRace,
+      synTestSocketSetMaritalStatus,
       gitPushHerokuMaster
     ],
 
