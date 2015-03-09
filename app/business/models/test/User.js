@@ -33,6 +33,8 @@
 
       'remove-race':                src('models/test/User/remove-race'),
 
+      'set-marital-status':         src('models/test/User/set-marital-status'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);
