@@ -15,9 +15,9 @@
 
     var Test        =   src('lib/Test');
 
-    var user_id, status_id;
+    var user_id, employment_id;
 
-    Test.suite('User.setMaritalStatus(user_id, status_id)', {
+    Test.suite('User.setEmployment(user_id, employment_id)', {
 
       'should create a disposable user': function (done) {
 
@@ -42,7 +42,7 @@
 
           Config.findOne(domain.intercept(function (config) {
 
-            status_id = config.married[0]._id;
+            employment_id = config.married[0]._id;
 
             done();
 
@@ -52,21 +52,21 @@
       },
 
       'should be a function': function (done) {
-        User.schema.statics.should.have.property('setMaritalStatus').which.is.a.Function;
+        User.schema.statics.should.have.property('setEmployment').which.is.a.Function;
         done();
       },
 
       'should set marital status': function (done) {
 
         src.domain(done, function (domain) {
-          User.setMaritalStatus(user_id, status_id, domain.intercept(function (user) {
+          User.setEmployment(user_id, employment_id, domain.intercept(function (user) {
 
             user.should.be.a.user;
 
-            user.should.have.property('married')
+            user.should.have.property('employment')
               .which.is.an.Object;
 
-            user.married.toString().should.eql(status_id.toString());
+            user.employment.toString().should.eql(employment_id.toString());
 
             user.remove();
 

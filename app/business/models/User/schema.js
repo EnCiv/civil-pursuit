@@ -100,6 +100,13 @@
     "married": {
       "type":         Schema.Types.ObjectId,
       "ref":          "Config.married"
+    },
+
+    /** Employment **/
+
+    "employment": {
+      "type":         Schema.Types.ObjectId,
+      "ref":          "Config.employment"
     }
   };
 

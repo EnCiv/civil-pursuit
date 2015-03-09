@@ -35,6 +35,8 @@
 
       'set-marital-status':         src('models/test/User/set-marital-status'),
 
+      'set-employment':             src('models/test/User/set-employment'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);
