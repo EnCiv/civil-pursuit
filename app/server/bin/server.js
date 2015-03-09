@@ -19,7 +19,7 @@
         throw error;
       }
 
-      var server = pronto();
+      var server = pronto({ debug: true });
 
       server.inject('synapp', src('config'));
 
@@ -30,7 +30,7 @@
       })
 
       server.on('error', function (error) {
-        console.log('erroooooooooor', error);
+        console.log('error', error.stack);
       });
 
       ! function _cookies () {

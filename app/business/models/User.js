@@ -71,6 +71,17 @@
 
   UserSchema.statics.addRace = require('./User/add-race');
 
+  UserSchema.statics.disposable = function (cb) {
+
+    var disposableUser = {
+      "email":        Math.random().toString() + process.pid.toString() + Date.now().toString() + '@synaccord.com',
+      "password":     "1234"
+    };
+
+    this.create(disposableUser, cb);
+  
+  };
+
   module.exports = mongoose.model('User', UserSchema);
 
 } ();

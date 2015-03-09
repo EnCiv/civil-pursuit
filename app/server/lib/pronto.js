@@ -251,7 +251,7 @@ Nina Butorac
           })
 
           .on('error', function (error) {
-            console.log('erroooooooooor', error);
+            console.log('Pronto Error', error.stack);
           })
 
           // .open ( routes.urlTitleFetcher, when.post ( '/tools/get-title' ) )

@@ -41,4 +41,16 @@
     });
   };
 
+  src.domain.nextTick = function (onError, run) {
+    process.nextTick(function () {
+      var domain = require('domain').create();
+      
+      domain.on('error', onError);
+
+      domain.run(function () {
+        run(domain);
+      });
+    });
+  };
+
 } ();
