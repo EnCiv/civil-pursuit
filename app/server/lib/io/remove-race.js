@@ -1,0 +1,35 @@
+! function () {
+
+  'use strict';
+
+  var src = require(require('path').join(process.cwd(), 'src'));
+
+  var User = src('models/User');
+
+  /**
+   *  @function removeRace
+   *  @arg {ObjectID} user_id - The User ID
+   *  @arg {ObjectID} rcae_id - The Config.Race ID
+   */
+
+  function removeRace (user_id, race_id) {
+
+    var socket = this;
+
+    var domain = require('domain').create();
+    
+    domain.on('error', function (error) {
+      socket.pronto.emit('error', error);
+    });
+    
+    domain.run(function () {
+      User.removeRace(user_id, race_id, domain.intercept(function (item) {
+        socket.emit('race removed', item);
+      }));
+    });
+
+  }
+
+  module.exports = removeRace;
+
+} ();

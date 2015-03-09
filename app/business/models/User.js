@@ -70,6 +70,7 @@
   };
 
   UserSchema.statics.addRace = require('./User/add-race');
+  UserSchema.statics.removeRace = require('./User/remove-race');
 
   UserSchema.statics.disposable = function (cb) {
 

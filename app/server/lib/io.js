@@ -92,6 +92,10 @@
 
           .on('promote',                src('io/promote').bind(socket))
 
+          /** happens when User unselect a race */
+
+          .on('remove race',            src('io/remove-race').bind(socket))
+
           /** reset password */
 
           .on('reset password',         src('io/reset-password').bind(socket))

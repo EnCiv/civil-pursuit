@@ -31,6 +31,8 @@
 
       'add-existing-race':          src('models/test/User/add-race/add-existing-race'),
 
+      'remove-race':                src('models/test/User/remove-race'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);

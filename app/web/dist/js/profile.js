@@ -397,16 +397,20 @@
     this.find('race').on('change', function () {
       var is_checked = $(this).is(':checked');
 
-      app.socket.once('race removed', function () {
-        console.log('race removed', arguments);
-      });
-
       if ( is_checked ) {
         app.socket.once('race added', function () {
           console.log('race added', arguments);
         });
 
         app.socket.emit('add race', synapp.user, $(this).val());
+      }
+
+      else {
+        app.socket.once('race removed', function () {
+          console.log('race removed', arguments);
+        });
+
+        app.socket.emit('remove race', synapp.user, $(this).val());
       }
     });
   };

@@ -24,9 +24,9 @@
       // Assertion item already loaded
     }
 
-    Test.suite('User.addRace(user_id, race_id)', {
+    Test.suite('User.removeRace(user_id, race_id)', {
 
-      'should create a disposavle user': function (done) {
+      'should create a disposable user': function (done) {
 
         src.domain(done, function (domain) {
 
@@ -59,7 +59,7 @@
       },
 
       'should be a function': function (done) {
-        User.schema.statics.should.have.property('addRace').which.is.a.Function;
+        User.schema.statics.should.have.property('removeRace').which.is.a.Function;
         done();
       },
 
@@ -75,6 +75,25 @@
 
             user.race[0].should.eql(race_id);
 
+            done();
+
+          }));
+        });
+
+      },
+
+      'should remove race': function (done) {
+
+        src.domain(done, function (domain) {
+          User.removeRace(user_id, race_id, domain.intercept(function (user) {
+            
+            user.should.be.a.user;
+
+            user.should.have.property('race')
+              .which.is.an.Array;
+
+            user.race.length.should.be.exactly(0);
+
             user.remove();
 
             done();
@@ -84,18 +103,6 @@
 
       },
 
-      // 'should allow user to log in with new password': function (done) {
-      //   User.identify(process.env.SYNAPP_TEST_EMAIL, process.env.SYNAPP_TEST_PASSWORD, function (error, user) {
-      //     if ( error ) {
-      //       return done(error);
-      //     }
-      //     if ( ! user ) {
-      //       return done(new Error('Could not identify test user with new password ' + process.env.SYNAPP_TEST_EMAIL));
-      //     }
-      //     user.email.should.eql(process.env.SYNAPP_TEST_EMAIL);
-      //     done();
-      //   });
-      // }
 
 
     }, done)
