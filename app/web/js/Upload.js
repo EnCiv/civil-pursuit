@@ -2,12 +2,19 @@
 
   'use strict';
 
-  function Upload (dropzone, file_input, thumbnail, cb) {
-    this.dropzone = dropzone;
-    this.file_input = file_input;
-    this.thumbnail = thumbnail;
-    this.cb = cb;
+  /**
+   *  @class    Upload
+   *  @arg      {HTMLElement} dropzone
+   *  @arg      {Input} file_input
+   *  @arg      {HTMLElement} thumbnail - Preview container
+   *  @arg      {Function} cb
+   */
 
+  function Upload (dropzone, file_input, thumbnail, cb) {
+    this.dropzone     =   dropzone;
+    this.file_input   =   file_input;
+    this.thumbnail    =   thumbnail;
+    this.cb           =   cb;
 
     this.init();
   }

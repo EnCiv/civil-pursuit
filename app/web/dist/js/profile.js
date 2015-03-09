@@ -75,7 +75,7 @@
 
 } ();
 
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":23}],2:[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":24}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -161,7 +161,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":14,"../Nav":22,"../Stream":36,"_process":46}],3:[function(require,module,exports){
+},{"../Item":15,"../Nav":23,"../Stream":37,"_process":47}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -203,7 +203,7 @@
 
 } ();
 
-},{"../Item":14}],4:[function(require,module,exports){
+},{"../Item":15}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -341,7 +341,7 @@
 
 } ();
 
-},{"../Form":11,"../Upload":39,"../YouTube":41}],6:[function(require,module,exports){
+},{"../Form":11,"../Upload":40,"../YouTube":42}],6:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -442,7 +442,7 @@
 
 } ();
 
-},{"./Nav":22}],7:[function(require,module,exports){
+},{"./Nav":23}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -704,7 +704,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":14,"./Nav":22}],8:[function(require,module,exports){
+},{"./Edit":8,"./Item":15,"./Nav":23}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -855,7 +855,7 @@
 
 } ();
 
-},{"./Creator":1,"./Edit/save":9,"./Form":11,"./Item":14,"./Nav":22}],9:[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":9,"./Form":11,"./Item":15,"./Nav":23}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -913,7 +913,7 @@
 
 } ();
 
-},{"../Item":14,"../Nav":22}],10:[function(require,module,exports){
+},{"../Item":15,"../Nav":23}],10:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -979,7 +979,7 @@
 
 } ();
 
-},{"./Form":11,"domain":43}],11:[function(require,module,exports){
+},{"./Form":11,"domain":44}],11:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -1120,71 +1120,7 @@
     }
   };
 
-  Identity.prototype.render = function () {
-
-    console.log('rendering item')
-
-    var identity = this;
-
-    this.find('upload button pretty').on('click', function () {
-      identity.find('upload button').click();
-    });
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(identity.find('expand'), identity.template, function () {
-        if ( identity.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    this.find('title').text('Identity');
-
-    this.find('description').text('This information is used to identify you and make sure that you are unique');
-
-    this.template.find('.item-references').remove();
-
-    this.template.find('.box-buttons').remove();
-
-    this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
-
-    new Upload(null, this.find('upload button'), this.template.find('.user-image-container'),
-      function (error, file) {
-        var stream = ss.createStream();
-
-        ss(app.socket).emit('upload image', stream,
-          { size: file.size, name: file.name });
-        
-        ss.createBlobReadStream(file).pipe(stream);
-
-        stream.on('end', function () {
-          // new_item.image = file.name;
-          app.socket.emit('save user image', synapp.user, file.name);
-
-          app.socket.once('saved user image', function (user) {
-            console.log('image saved', user);
-          });
-        });
-      });
-
-    // First name - save on change
-
-    this.find('first name').on('change', this.saveName.bind(this));
-
-    // Last name - save on change
-
-    this.find('last name').on('change', this.saveName.bind(this));
-
-    // Middle name - save on change
-
-    this.find('middle name').on('change', this.saveName.bind(this));
-  };
+  Identity.prototype.render = require('./Identity/render');
 
   /**
    *  @method saveName
@@ -1225,7 +1161,105 @@
 
 } ();
 
-},{"./Nav":22,"./Upload":39}],13:[function(require,module,exports){
+},{"./Identity/render":13,"./Nav":23,"./Upload":40}],13:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Upload = require('../Upload');
+  var Nav = require('../Nav');
+
+  /**
+   *  @method     Identity.render
+   *  @return     null
+   */
+
+  function render () {
+    
+    var identity = this;
+
+    /** input[type=file] is hidden for cosmetic reasons
+          and is substituted visually by a button.
+        This snippet binds clicking button with clicking the input[type=file]
+    */
+
+    this.find('upload button pretty').on('click', function () {
+      identity.find('upload button').click();
+    });
+
+    /** Toggle arrow: expand/collapse identity */
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(identity.find('expand'), identity.template, function () {
+        if ( identity.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    /** Write title */
+
+    this.find('title').text('Identity');
+
+    /** Write description */
+
+    this.find('description').text('This information is used to identify you and make sure that you are unique');
+
+    /** Remove references */
+
+    this.template.find('.item-references').remove();
+
+    /** Remove item buttons */
+
+    this.template.find('.box-buttons').remove();
+
+    /** Default user image */
+
+    this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
+
+    new Upload(null, this.find('upload button'), this.template.find('.user-image-container'),
+      function (error, file) {
+        var stream = ss.createStream();
+
+        ss(app.socket).emit('upload image', stream,
+          { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          // new_item.image = file.name;
+          app.socket.emit('save user image', synapp.user, file.name);
+
+          app.socket.once('saved user image', function (user) {
+            console.log('image saved', user);
+          });
+        });
+      });
+
+    // First name - save on change
+
+    this.find('first name').on('change', this.saveName.bind(this));
+
+    // Last name - save on change
+
+    this.find('last name').on('change', this.saveName.bind(this));
+
+    // Middle name - save on change
+
+    this.find('middle name').on('change', this.saveName.bind(this));
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"../Nav":23,"../Upload":40}],14:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1286,7 +1320,7 @@
 
 } ();
 
-},{"./Item":14,"./ReadMore":33,"./Truncate":38}],14:[function(require,module,exports){
+},{"./Item":15,"./ReadMore":34,"./Truncate":39}],15:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1331,7 +1365,7 @@
 
 } ();
 
-},{"./Item/find":15,"./Item/load":16,"./Item/media":17,"./Item/render":18}],15:[function(require,module,exports){
+},{"./Item/find":16,"./Item/load":17,"./Item/media":18,"./Item/render":19}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1384,7 +1418,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1419,7 +1453,7 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1494,7 +1528,7 @@
 
 } ();
 
-},{"../YouTube":41}],18:[function(require,module,exports){
+},{"../YouTube":42}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1771,7 +1805,7 @@
 
 } ();
 
-},{"../Details":7,"../Nav":22,"../Panel":23,"../Promote":25,"../ReadMore":33,"../Sign":35,"../Truncate":38,"./view/toggle-promote":19}],19:[function(require,module,exports){
+},{"../Details":7,"../Nav":23,"../Panel":24,"../Promote":26,"../ReadMore":34,"../Sign":36,"../Truncate":39,"./view/toggle-promote":20}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1863,7 +1897,7 @@
 
 } ();
 
-},{"../../Nav":22,"../../Sign":35}],20:[function(require,module,exports){
+},{"../../Nav":23,"../../Sign":36}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1950,7 +1984,7 @@
 
 } ();
 
-},{"./Form":11,"domain":43}],21:[function(require,module,exports){
+},{"./Form":11,"domain":44}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2023,7 +2057,7 @@
 
 } ();
 
-},{"./Form":11,"./Nav":22,"domain":43}],22:[function(require,module,exports){
+},{"./Form":11,"./Nav":23,"domain":44}],23:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2376,7 +2410,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":46,"domain":43,"events":44}],23:[function(require,module,exports){
+},{"_process":47,"domain":44,"events":45}],24:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2608,7 +2642,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":14,"./Nav":22,"./Sign":35}],24:[function(require,module,exports){
+},{"./Creator":1,"./Item":15,"./Nav":23,"./Sign":36}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2730,7 +2764,7 @@
 
 } ();
 
-},{"./Demographics":6,"./Identity":12,"./Nav":22,"./Public_Persona":32,"./Residence":34,"./Voter":40}],25:[function(require,module,exports){
+},{"./Demographics":6,"./Identity":12,"./Nav":23,"./Public_Persona":33,"./Residence":35,"./Voter":41}],26:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2883,7 +2917,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":14,"./Nav":22,"./Promote/find":26,"./Promote/finish":27,"./Promote/get":28,"./Promote/render":30,"./Promote/render-item":29,"./Promote/save":31,"events":44}],26:[function(require,module,exports){
+},{"./Edit":8,"./Item":15,"./Nav":23,"./Promote/find":27,"./Promote/finish":28,"./Promote/get":29,"./Promote/render":31,"./Promote/render-item":30,"./Promote/save":32,"events":45}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2934,7 +2968,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2979,7 +3013,7 @@
 
 } ();
 
-},{"../Nav":22}],28:[function(require,module,exports){
+},{"../Nav":23}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3036,7 +3070,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3212,7 +3246,7 @@
 
 } ();
 
-},{"../Item":14,"../Nav":22}],30:[function(require,module,exports){
+},{"../Item":15,"../Nav":23}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3284,7 +3318,7 @@
 
 } ();
 
-},{"../Nav":22}],31:[function(require,module,exports){
+},{"../Nav":23}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3342,7 +3376,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3406,7 +3440,7 @@
 
 } ();
 
-},{"./Nav":22}],33:[function(require,module,exports){
+},{"./Nav":23}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3524,7 +3558,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3630,7 +3664,7 @@
 
 } ();
 
-},{"./Nav":22}],35:[function(require,module,exports){
+},{"./Nav":23}],36:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3813,7 +3847,7 @@
 
 } ();
 
-},{"./Forgot-Password":10,"./Join":20,"./Login":21,"./Nav":22}],36:[function(require,module,exports){
+},{"./Forgot-Password":10,"./Join":21,"./Login":22,"./Nav":23}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3852,7 +3886,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3986,7 +4020,7 @@
 
 } ();
 
-},{"./Intro":13,"./Panel":23,"./Sign":35,"domain":43,"events":44,"util":48}],38:[function(require,module,exports){
+},{"./Intro":14,"./Panel":24,"./Sign":36,"domain":44,"events":45,"util":49}],39:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4209,17 +4243,24 @@
 
 }();
 
-},{"./Nav":22}],39:[function(require,module,exports){
+},{"./Nav":23}],40:[function(require,module,exports){
 ! function () {
 
   'use strict';
 
-  function Upload (dropzone, file_input, thumbnail, cb) {
-    this.dropzone = dropzone;
-    this.file_input = file_input;
-    this.thumbnail = thumbnail;
-    this.cb = cb;
+  /**
+   *  @class    Upload
+   *  @arg      {HTMLElement} dropzone
+   *  @arg      {Input} file_input
+   *  @arg      {HTMLElement} thumbnail - Preview container
+   *  @arg      {Function} cb
+   */
 
+  function Upload (dropzone, file_input, thumbnail, cb) {
+    this.dropzone     =   dropzone;
+    this.file_input   =   file_input;
+    this.thumbnail    =   thumbnail;
+    this.cb           =   cb;
 
     this.init();
   }
@@ -4288,7 +4329,7 @@
 
 } ();
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4352,7 +4393,7 @@
 
 } ();
 
-},{"./Nav":22}],41:[function(require,module,exports){
+},{"./Nav":23}],42:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4471,7 +4512,7 @@
 
 } ();
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4491,7 +4532,7 @@
 
 } ();
 
-},{"../Panel":23,"../Profile":24,"../Sign":35,"../Synapp":37}],43:[function(require,module,exports){
+},{"../Panel":24,"../Profile":25,"../Sign":36,"../Synapp":38}],44:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4559,7 +4600,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":44}],44:[function(require,module,exports){
+},{"events":45}],45:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4862,7 +4903,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4887,7 +4928,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4975,14 +5016,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5572,4 +5613,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":47,"_process":46,"inherits":45}]},{},[42]);
+},{"./support/isBuffer":48,"_process":47,"inherits":46}]},{},[43]);

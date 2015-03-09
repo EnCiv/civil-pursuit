@@ -1,6 +1,7 @@
 #identity.section.center
   .gutter
-    img.img-responsive.user-image.tablet-40.radius(src=synapp.public['user image'])
+    .tablet-40.user-image-container
+      img.img-responsive.user-image.radius(src=synapp.public['user image'])
 
     h2.profile-section-title Identity
 
@@ -22,13 +23,5 @@
           
           input.watch-100.tablet-40(type='text' placeholder='Last name' name='last-name')
 
-  //- .row.gutter
-  //-   .col-xs-12.col-sm-6
-  //-     form.form-inline
-  //-       .form-group
-  //-         label Citizenship
-  //-         select
-  //-           option Country
-
   .row.toggle-arrow.gutter.text-center
-    i.fa.fa-arrow-down
+    i.fa.fa-arrow-down.cursor-pointer
