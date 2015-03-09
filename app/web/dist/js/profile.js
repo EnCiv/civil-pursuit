@@ -370,8 +370,9 @@
       case 'expand':
         return this.template.find('.demographics-collapse');
 
-      case 'race':      return this.template.find('input.race');
-      case 'married':   return this.template.find('select.married');
+      case 'race':          return this.template.find('input.race');
+      case 'married':       return this.template.find('select.married');
+      case 'employment':    return this.template.find('select.employment');
     }
   };
 
@@ -424,6 +425,18 @@
         });
 
         app.socket.emit('set marital status', synapp.user, $(this).val());
+      }
+    });
+
+    /** Set employment **/
+
+    this.find('employment').on('change', function () {
+      if ( $(this).val() ) {
+        app.socket.once('employment set', function () {
+          console.log('employment set', arguments);
+        });
+
+        app.socket.emit('set employment', synapp.user, $(this).val());
       }
     });
   };

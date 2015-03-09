@@ -40,9 +40,10 @@
           .phone-30.gutter Employment:
 
           .phone-70.gutter
-            select.watch-100
+            select.watch-100.employment
+              option(value='') Choose one
               each employment in config.employment
-                option=employment.name
+                option(value=employment._id)=employment.name
 
   .row.toggle-arrow.padding.text-center
     i.fa.fa-arrow-down.cursor-pointer
