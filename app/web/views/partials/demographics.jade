@@ -31,9 +31,10 @@
           .phone-30.gutter Relationship:
 
           .phone-70.gutter
-            select.watch-100
+            select.watch-100.married
+              option(value='') Choose one
               each married in config.married
-                option=married.name
+                option(value=married._id)=married.name
 
         .row
           .phone-30.gutter Employment:
