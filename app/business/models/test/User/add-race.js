@@ -25,24 +25,14 @@
     }
 
     Test.suite('User.addRace(user_id, race_id)', {
-      'there should be an environment variable called "SYNAPP_TEST_EMAIL"': function (done) {
-        process.env.SYNAPP_TEST_EMAIL.should.be.a.String;
-        done();
-      },
 
-      'should fetch user': function (done) {
+      'should create a disposavle user': function (done) {
 
         src.domain(done, function (domain) {
 
           User
 
-            .findOne      ({ email: process.env.SYNAPP_TEST_EMAIL })
-
-            .exec         (domain.intercept(function (user) {
-
-              if ( ! user ) {
-                return done(new Error('Could not find test user ' + process.env.SYNAPP_TEST_EMAIL));
-              }
+            .disposable(domain.intercept(function (user) {
 
               user_id = user._id;
 

@@ -29,6 +29,7 @@
     app.socket.emit('get user info', synapp.user);
 
     app.socket.once('got user info', function (user) {
+      console.log('got user info', user);
       profile.user = user;
 
       profile.renderUser();

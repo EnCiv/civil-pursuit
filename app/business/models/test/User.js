@@ -29,6 +29,8 @@
 
       'add-race':                   src('models/test/User/add-race'),
 
+      'add-existing-race':          src('models/test/User/add-race/add-existing-race'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);

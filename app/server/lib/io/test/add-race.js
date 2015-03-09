@@ -42,7 +42,7 @@
           });
 
           src('models/User')
-            .findOne({ "email": "test@synaccord.com" }, domain.intercept(function (user) {
+            .disposable(domain.intercept(function (user) {
 
               user.should.be.a.user;
 

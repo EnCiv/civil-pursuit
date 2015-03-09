@@ -417,7 +417,20 @@
 
     if ( this.profile.user ) {
 
-     
+      if ( this.profile.user.race && this.profile.user.race.length ) {
+        this.profile.user.race.forEach(function (race) {
+
+          demographics.find('race').each(function () {
+
+            if ( $(this).val() === race ) {
+              $(this).attr('checked', true);
+            }
+
+          });
+
+
+        });
+      }
     }
   };
 
@@ -2623,6 +2636,7 @@
     app.socket.emit('get user info', synapp.user);
 
     app.socket.once('got user info', function (user) {
+      console.log('got user info', user);
       profile.user = user;
 
       profile.renderUser();
