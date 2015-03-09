@@ -107,6 +107,13 @@
     "employment": {
       "type":         Schema.Types.ObjectId,
       "ref":          "Config.employment"
+    },
+
+    /** Education **/
+
+    "education": {
+      "type":         Schema.Types.ObjectId,
+      "ref":          "Config.education"
     }
   };
 

@@ -104,9 +104,13 @@
 
           .on('send password',          src('io/send-password').bind(socket))
 
+          /** set education */
+
+          .on('set education',          src('io/set-education').bind(socket))
+
           /** set employment */
 
-          .on('set employment',     src('io/set-employment').bind(socket))
+          .on('set employment',         src('io/set-employment').bind(socket))
 
           /** set marital status */
 

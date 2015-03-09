@@ -37,6 +37,8 @@
 
       'set-employment':             src('models/test/User/set-employment'),
 
+      'set-education':              src('models/test/User/set-education'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);

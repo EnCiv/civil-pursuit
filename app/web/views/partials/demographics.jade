@@ -24,8 +24,10 @@
           .phone-30.gutter Education:
 
           .phone-70.gutter
-            select.watch-100
-              option High School
+            select.watch-100.education
+              option(value='') Choose one
+              each education in config.education
+                option(value=education._id)=education.name
 
         .row
           .phone-30.gutter Relationship:

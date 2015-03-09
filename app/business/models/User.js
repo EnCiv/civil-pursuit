@@ -73,6 +73,7 @@
   UserSchema.statics.removeRace         =   require('./User/remove-race');
   UserSchema.statics.setMaritalStatus   =   require('./User/set-marital-status');
   UserSchema.statics.setEmployment      =   require('./User/set-employment');
+  UserSchema.statics.setEducation       =   require('./User/set-education');
   UserSchema.statics.disposable         =   require('./User/disposable');
 
   module.exports = mongoose.model('User', UserSchema);

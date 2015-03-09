@@ -29,6 +29,7 @@
       case 'race':          return this.template.find('input.race');
       case 'married':       return this.template.find('select.married');
       case 'employment':    return this.template.find('select.employment');
+      case 'education':     return this.template.find('select.education');
     }
   };
 
@@ -95,6 +96,18 @@
         app.socket.emit('set employment', synapp.user, $(this).val());
       }
     });
+
+    /** Set education **/
+
+    this.find('education').on('change', function () {
+      if ( $(this).val() ) {
+        app.socket.once('education set', function () {
+          console.log('education set', arguments);
+        });
+
+        app.socket.emit('set education', synapp.user, $(this).val());
+      }
+    });
   };
 
   Demographics.prototype.renderUser = function () {
@@ -124,6 +137,10 @@
 
       if ( this.profile.user.employment ) {
         this.find('employment').val(this.profile.user.employment);
+      }
+
+      if ( this.profile.user.education ) {
+        this.find('education').val(this.profile.user.education);
       }
     }
   };
