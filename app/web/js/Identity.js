@@ -11,8 +11,10 @@
    *  @arg
    */
 
-  function Identity () {
+  function Identity (profile) {
     this.template = $('#identity');
+
+    this.profile = profile;
 
     this.template.data('identity', this);
   }
@@ -48,6 +50,8 @@
 
       case 'image':
         return this.template.find('img.user-image');
+
+      case 'citizenship':   return this.template.find('.citizenship');
     }
   };
 
@@ -88,6 +92,25 @@
     // Last name
 
     this.find('last name').val(this.user.last_name);
+  };
+
+  Identity.prototype.renderCountries = function () {
+    var identity = this;
+
+    this.find('citizenship').each(function () {
+
+      var select = $(this);
+
+      identity.profile.countries.forEach(function (country) {
+        var option = $('<option></option>');
+
+        option.val(country._id);
+
+        option.text(country.name);
+
+        select.append(option);
+      });
+    });
   };
 
   module.exports = Identity;

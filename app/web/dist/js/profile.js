@@ -1131,8 +1131,10 @@
    *  @arg
    */
 
-  function Identity () {
+  function Identity (profile) {
     this.template = $('#identity');
+
+    this.profile = profile;
 
     this.template.data('identity', this);
   }
@@ -1168,6 +1170,8 @@
 
       case 'image':
         return this.template.find('img.user-image');
+
+      case 'citizenship':   return this.template.find('.citizenship');
     }
   };
 
@@ -1208,6 +1212,25 @@
     // Last name
 
     this.find('last name').val(this.user.last_name);
+  };
+
+  Identity.prototype.renderCountries = function () {
+    var identity = this;
+
+    this.find('citizenship').each(function () {
+
+      var select = $(this);
+
+      identity.profile.countries.forEach(function (country) {
+        var option = $('<option></option>');
+
+        option.val(country._id);
+
+        option.text(country.name);
+
+        select.append(option);
+      });
+    });
   };
 
   module.exports = Identity;
@@ -2700,38 +2723,95 @@
   
   'use strict';
 
-  var Nav = require('./Nav');
-  var Identity = require('./Identity');
-  var Residence = require('./Residence');
-  var Demographics = require('./Demographics');
-  var Voter = require('./Voter');
-  var Public_Persona = require('./Public_Persona');
+  var Nav               =   require('./Nav');
+  var Identity          =   require('./Identity');
+  var Residence         =   require('./Residence');
+  var Demographics      =   require('./Demographics');
+  var Voter             =   require('./Voter');
+  var Public_Persona    =   require('./Public_Persona');
 
   /**
-   *  @function
-   *  @return
-   *  @arg
+   *  @class      Profile
    */
 
   function Profile () {
 
-    var profile = this;
+    /** Persistent this
+     *
+     *  @type           Profile
+    */
 
-    this.template = $('.panel');
+    var profile         =   this;
 
-    this.residence = new Residence(this);
-    this.demographics = new Demographics(this);
-    this.voter = new Voter(this);
-    this.public_persona = new Public_Persona(this);
+    /** DOM Container
+     *
+     *  @type           HTMLElement
+    */
 
-    app.socket.emit('get user info', synapp.user);
+    this.template       =   $('.panel');
 
-    app.socket.once('got user info', function (user) {
-      console.log('got user info', user);
-      profile.user = user;
+    /** Local instance of Identity
+     *
+     *  @type           Identity
+    */
 
-      profile.renderUser();
-    });
+    this.identity       =   new Identity(this);
+
+    /** Local instance of Residence
+     *
+     *  @type           Residence
+    */
+
+    this.residence      =   new Residence(this);
+
+    /** Local instance of Demographics
+     *
+     *  @type           Demographics
+    */
+
+    this.demographics   =   new Demographics(this);
+
+    /** Local instance of Voter
+     *
+     *  @type           Voter
+    */
+
+    this.voter          =   new Voter(this);
+
+    /** Local instance of Public_Persona
+     *
+     *  @type           Public_Persona
+    */
+
+    this.public_persona =   new Public_Persona(this);
+
+    /** Get User Info from socket
+     *
+     *  @type           Socket
+    */
+
+    app.socket
+      .once('got user info', function (user) {
+        console.log('got user info', user);
+        profile.user = user;
+
+        profile.renderUser();
+      })
+      .emit('get user info', synapp.user);
+
+    /** Get list of countries from socket
+     *
+     *  @type           Socket
+    */
+
+    app.socket
+      .once('got countries', function (countries) {
+        console.log('got countries', countries);
+        profile.countries = countries;
+
+        profile.identity.renderCountries();
+      })
+      .emit('get countries');
   }
 
   Profile.prototype.find = function (name) {
@@ -2785,7 +2865,7 @@
 
     this.find('Identity').attr('id', 'identity');
 
-    this.identity = new Identity().render();
+    this.identity.render();
 
     this.residence.render();
 

@@ -84,6 +84,10 @@
 
           .on('change user name',       src('io/change-user-name').bind(socket))
 
+          /** get countries */
+
+          .on('get countries',          src('io/get-countries').bind(socket))
+
           /** get intro */
 
           .on('get intro',              src('io/get-intro').bind(socket))

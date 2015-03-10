@@ -60,6 +60,17 @@ textarea {
   }
 }
 
+select {
+  &.medium {
+    .button.medium();
+
+    &.block {
+      width: calc(100% - 2.5em);
+      padding: 1em .5em
+    }
+  }
+}
+
 .form-group {
   label {
     font-weight: bold

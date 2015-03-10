@@ -2219,6 +2219,9 @@ body {
 .gutter-left {
   padding-left: 0.75rem;
 }
+.gutter-right {
+  padding-right: 0.75rem;
+}
 .gutter-bottom {
   padding-bottom: 0.75rem;
 }
@@ -2565,6 +2568,15 @@ input[type="tel"].medium.block,
 input[type="time"].medium.block,
 input[type="url"].medium.block,
 textarea.medium.block {
+  width: calc(97.5%);
+  padding: 1em 0.5em;
+}
+select.medium {
+  font-size: 125%;
+  border-width: 2px;
+  padding: 1em;
+}
+select.medium.block {
   width: calc(97.5%);
   padding: 1em 0.5em;
 }

@@ -11,17 +11,48 @@
   .identity-collapse.is-container.row
     .is-section
 
-      .gutter
+      .row.gutter
         p.image-buttons.row
           button.block.upload-image Upload Image
           input.upload-identity-picture.hide(type='file')
 
-        .names.input-group-tablet
+        .names.input-group-tablet.gutter-right
           input.watch-100.tablet-40(type='text' placeholder='First name' name='first-name')
           
           input.watch-100.tablet-20(type='text' placeholder='Middle name' name='middle-name')
           
           input.watch-100.tablet-40(type='text' placeholder='Last name' name='last-name')
+
+      .row
+
+        button.shy.tablet-30 Citizenship
+        
+        select.citizenship.tablet-70.gutter
+          option(value='') Choose one
+
+
+      .row
+
+        button.shy.tablet-30 Citizenship
+        
+        select.citizenship.tablet-70.gutter
+          option(value='') Choose one
+
+
+        //-   .row
+        //-     .phone-50.tablet-100.gutter Citizenship
+        //-     .phone-50.tablet-100.gutter
+        //-       select.citizenship
+        //-         option(value='') Choose one
+        //- .tablet-50
+        //-   .row
+        //-     .watch-85.gutter Citizen of another country
+        //-     .watch-15.gutter
+        //-       input(type='checkbox')
+        //-   .row
+        //-     .watch-85.gutter Citizen of another country
+        //-     .watch-15.gutter
+        //-       input(type='checkbox')
 
   .row.toggle-arrow.gutter.text-center
     i.fa.fa-arrow-down.cursor-pointer
