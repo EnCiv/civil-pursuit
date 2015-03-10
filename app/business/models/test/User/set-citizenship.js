@@ -27,7 +27,7 @@
 
     var position = Math.round(Math.random());
 
-    Test.suite('User.setCitizenship(user_id, country_id)', {
+    Test.suite('User.setCitizenship(user_id, country_id, position)', {
 
       'should create a disposable user': function (done) {
 

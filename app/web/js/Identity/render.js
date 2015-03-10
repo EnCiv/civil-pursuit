@@ -90,41 +90,30 @@
 
     this.find('middle name').on('change', this.saveName.bind(this));
 
-    // First citizenship
+    // Set citizenships (2 selects)
 
-    var firstCitizenship = $(this.find('citizenship')[0]).val();
+    var citizenships = [
+      $(this.find('citizenship')[0]).val(),
+      $(this.find('citizenship')[1]).val()
+    ];
 
-    for ( var i = 0; i < 2; i ++ ) {
-      $(this.find('citizenship')[i]).on('change', function () {
+    this.find('citizenship').each(function (index) {
 
-        var select = $(this);
+      var select = $(this);
 
-        function add () {
+      select.on('change', function () {
+        if ( select.val() ) {
           app.socket
 
-            .on('citizenship added', function () {
-              console.log('citizenship added');
-              firstCitizenship = select.val();
+            .on('citizenship set', function () {
+              console.log('citizenship set', select.val(), index);
             })
 
-            .emit('add citizenship', synapp.user, select.val());
-        }
-
-        if ( firstCitizenship ) {
-          app.socket
-
-          .on('citizenship removed', function () {
-            console.log('citizenship removed');
-          })
-
-          .emit('remove citizenship', synapp.user, firstCitizenship);
-        }
-
-        else {
-          add();
+            .emit('set citizenship', synapp.user, select.val(), index);
         }
       });
-    }
+
+    });
   }
 
   module.exports = render;

@@ -97,24 +97,37 @@
   Identity.prototype.renderCountries = function () {
     var identity = this;
 
+    function addOption (country, index) {
+      var option = $('<option></option>');
+
+      option.val(country._id);
+
+      option.text(country.name);
+
+      if ( identity.profile.user && identity.profile.user.citizenship
+        && identity.profile.user.citizenship[index] === country._id ) {
+        option.attr('selected', true);
+      } 
+
+      return option;
+    }
+
     this.find('citizenship').each(function (index) {
 
       var select = $(this);
 
       identity.profile.countries.forEach(function (country) {
-        var option = $('<option></option>');
-
-        option.val(country._id);
-
-        option.text(country.name);
-
-        if ( identity.profile.user && identity.profile.user.citizenship
-          && identity.profile.user.citizenship[index] === country._id ) {
-          option.attr('selected', true);
-        } 
-
-        select.append(option);
+        if ( country.name === 'USA' ) {
+          select.append(addOption(country, index));
+        }
       });
+
+      identity.profile.countries.forEach(function (country) {
+        if ( country.name !== 'USA' ) {
+          select.append(addOption(country, index));
+        }
+      });
+
     });
   };
 

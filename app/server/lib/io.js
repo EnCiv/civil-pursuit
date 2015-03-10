@@ -72,10 +72,6 @@
             socket.broadcast.emit('online users', online_users);
           })
 
-          /** add citizenship */
-
-          .on('add citizenship',        src('io/add-citizenship').bind(socket))
-
           /** happens when User identifies herself to a new race */
 
           .on('add race',               src('io/add-race').bind(socket))
@@ -104,10 +100,6 @@
 
           .on('promote',                src('io/promote').bind(socket))
 
-          /** remove a citizenship */
-
-          .on('remove citizenship',     src('io/remove-citizenship').bind(socket))
-
           /** happens when User unselect a race */
 
           .on('remove race',            src('io/remove-race').bind(socket))
@@ -119,6 +111,10 @@
           /** create and send a password reset email */
 
           .on('send password',          src('io/send-password').bind(socket))
+
+          /** set citizenship */
+
+          .on('set citizenship',        src('io/set-citizenship').bind(socket))
 
           /** set education */
 

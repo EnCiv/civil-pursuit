@@ -1217,24 +1217,37 @@
   Identity.prototype.renderCountries = function () {
     var identity = this;
 
+    function addOption (country, index) {
+      var option = $('<option></option>');
+
+      option.val(country._id);
+
+      option.text(country.name);
+
+      if ( identity.profile.user && identity.profile.user.citizenship
+        && identity.profile.user.citizenship[index] === country._id ) {
+        option.attr('selected', true);
+      } 
+
+      return option;
+    }
+
     this.find('citizenship').each(function (index) {
 
       var select = $(this);
 
       identity.profile.countries.forEach(function (country) {
-        var option = $('<option></option>');
-
-        option.val(country._id);
-
-        option.text(country.name);
-
-        if ( identity.profile.user && identity.profile.user.citizenship
-          && identity.profile.user.citizenship[index] === country._id ) {
-          option.attr('selected', true);
-        } 
-
-        select.append(option);
+        if ( country.name === 'USA' ) {
+          select.append(addOption(country, index));
+        }
       });
+
+      identity.profile.countries.forEach(function (country) {
+        if ( country.name !== 'USA' ) {
+          select.append(addOption(country, index));
+        }
+      });
+
     });
   };
 
@@ -1335,41 +1348,30 @@
 
     this.find('middle name').on('change', this.saveName.bind(this));
 
-    // First citizenship
+    // Set citizenships (2 selects)
 
-    var firstCitizenship = $(this.find('citizenship')[0]).val();
+    var citizenships = [
+      $(this.find('citizenship')[0]).val(),
+      $(this.find('citizenship')[1]).val()
+    ];
 
-    for ( var i = 0; i < 2; i ++ ) {
-      $(this.find('citizenship')[i]).on('change', function () {
+    this.find('citizenship').each(function (index) {
 
-        var select = $(this);
+      var select = $(this);
 
-        function add () {
+      select.on('change', function () {
+        if ( select.val() ) {
           app.socket
 
-            .on('citizenship added', function () {
-              console.log('citizenship added');
-              firstCitizenship = select.val();
+            .on('citizenship set', function () {
+              console.log('citizenship set', select.val(), index);
             })
 
-            .emit('add citizenship', synapp.user, select.val());
-        }
-
-        if ( firstCitizenship ) {
-          app.socket
-
-          .on('citizenship removed', function () {
-            console.log('citizenship removed');
-          })
-
-          .emit('remove citizenship', synapp.user, firstCitizenship);
-        }
-
-        else {
-          add();
+            .emit('set citizenship', synapp.user, select.val(), index);
         }
       });
-    }
+
+    });
   }
 
   module.exports = render;
