@@ -2,24 +2,33 @@
 
   'use strict';
 
-  var User = require('../../../business/models/User');
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-  function changeUserName (user_id) {
+  function changeUserName (user_id, name) {
 
     var socket = this;
 
-    socket.domain.run(function () {
+    src.domain.nextTick(
+
+      function (error) {
+
+        socket.pronto.emit('error', error);
       
-      User.update({ _id: user_id }, name, socket.domain.intercept(function (user) {
-        socket.emit('changed user name', user);
-      }));
-    
-    });
+      },
+
+      function (domain) {
+
+        src('models/User').update({ _id: user_id }, name,
+          domain.intercept(function (user) {
+            socket.emit('user name changed', user);  
+          }));
+
+      }
+
+    );
   
   }
 
-  module.exports = function (socket) {
-    socket.on('change user name', changeUserName.bind(socket));
-  };
+  module.exports = changeUserName;
 
 } ();

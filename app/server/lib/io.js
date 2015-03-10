@@ -80,6 +80,10 @@
 
           .on('add view',               src('io/add-view').bind(socket))
 
+          /** change user name */
+
+          .on('change user name',       src('io/change-user-name').bind(socket))
+
           /** get intro */
 
           .on('get intro',              src('io/get-intro').bind(socket))
@@ -137,7 +141,6 @@
           'get-url-title',
           'edit-and-go-again',
           'save-user-image',
-          'change-user-name',
           'validate-gps'];
 
         domain.add(socket);

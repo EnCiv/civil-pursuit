@@ -284,6 +284,36 @@
       });
   }
 
+  /**
+   *    SOCKET "change user name"
+   */
+
+  function synTestSocketSetMaritalStatus (cb) {
+    var action = 'syn-test socket "change user name"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/change-user-name'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
   require('async').series([
       gulpBuildProd,
       synTestModelUser,
