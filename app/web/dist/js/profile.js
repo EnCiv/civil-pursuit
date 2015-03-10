@@ -1179,10 +1179,12 @@
 
   Identity.prototype.saveName = function () {
     var name = {
-      first_name: this.find('first name').val(),
-      middle_name: this.find('middle name').val(),
-      last_name: this.find('last name').val()
+      first_name:   this.find('first name').val(),
+      middle_name:  this.find('middle name').val(),
+      last_name:    this.find('last name').val()
     };
+
+    console.log('////')
 
     app.socket.emit('change user name', synapp.user, name);
   };
