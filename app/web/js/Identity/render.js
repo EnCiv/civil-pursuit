@@ -89,6 +89,42 @@
     // Middle name - save on change
 
     this.find('middle name').on('change', this.saveName.bind(this));
+
+    // First citizenship
+
+    var firstCitizenship = $(this.find('citizenship')[0]).val();
+
+    for ( var i = 0; i < 2; i ++ ) {
+      $(this.find('citizenship')[i]).on('change', function () {
+
+        var select = $(this);
+
+        function add () {
+          app.socket
+
+            .on('citizenship added', function () {
+              console.log('citizenship added');
+              firstCitizenship = select.val();
+            })
+
+            .emit('add citizenship', synapp.user, select.val());
+        }
+
+        if ( firstCitizenship ) {
+          app.socket
+
+          .on('citizenship removed', function () {
+            console.log('citizenship removed');
+          })
+
+          .emit('remove citizenship', synapp.user, firstCitizenship);
+        }
+
+        else {
+          add();
+        }
+      });
+    }
   }
 
   module.exports = render;

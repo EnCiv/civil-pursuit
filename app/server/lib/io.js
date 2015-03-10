@@ -72,6 +72,10 @@
             socket.broadcast.emit('online users', online_users);
           })
 
+          /** add citizenship */
+
+          .on('add citizenship',        src('io/add-citizenship').bind(socket))
+
           /** happens when User identifies herself to a new race */
 
           .on('add race',               src('io/add-race').bind(socket))
@@ -99,6 +103,10 @@
           /** increment item promotions by 1 */
 
           .on('promote',                src('io/promote').bind(socket))
+
+          /** remove a citizenship */
+
+          .on('remove citizenship',     src('io/remove-citizenship').bind(socket))
 
           /** happens when User unselect a race */
 

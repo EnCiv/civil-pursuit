@@ -9,6 +9,7 @@
   var src         =   require(require('path').join(process.cwd(), 'src'));
 
   src('models/Config');
+  src('models/Country');
 
   module.exports = {
 
@@ -114,7 +115,14 @@
     "education": {
       "type":         Schema.Types.ObjectId,
       "ref":          "Config.education"
-    }
+    },
+
+    /** Citizenship **/
+
+    "citizenship": [{
+      "type":         Schema.Types.ObjectId,
+      "ref":          "Country"
+    }]
   };
 
 } ();

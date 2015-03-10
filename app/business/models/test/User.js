@@ -39,6 +39,8 @@
 
       'set-education':              src('models/test/User/set-education'),
 
+      'set-citizenship':            src('models/test/User/set-citizenship'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);

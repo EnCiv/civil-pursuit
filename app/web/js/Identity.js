@@ -97,7 +97,7 @@
   Identity.prototype.renderCountries = function () {
     var identity = this;
 
-    this.find('citizenship').each(function () {
+    this.find('citizenship').each(function (index) {
 
       var select = $(this);
 
@@ -107,6 +107,11 @@
         option.val(country._id);
 
         option.text(country.name);
+
+        if ( identity.profile.user && identity.profile.user.citizenship
+          && identity.profile.user.citizenship[index] === country._id ) {
+          option.attr('selected', true);
+        } 
 
         select.append(option);
       });

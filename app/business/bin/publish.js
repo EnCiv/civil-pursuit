@@ -314,6 +314,66 @@
       });
   }
 
+  /**
+   *    SOCKET "add citizenship"
+   */
+
+  function synTestSocketAddCitizenship (cb) {
+    var action = 'syn-test socket "add citizenship"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/add-citizenship'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  /**
+   *    SOCKET "remove citizenship"
+   */
+
+  function synTestSocketRemoveCitizenship (cb) {
+    var action = 'syn-test socket "remove citizenship"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/remove-citizenship'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
   require('async').series([
       gulpBuildProd,
       synTestModelUser,
@@ -323,6 +383,8 @@
       synTestSocketAddRace,
       synTestSocketRemoveRace,
       synTestSocketSetMaritalStatus,
+      synTestSocketAddCitizenship,
+      synTestSocketRemoveCitizenship,
       gitPushHerokuMaster
     ],
 
