@@ -122,7 +122,11 @@
     "citizenship": [{
       "type":         Schema.Types.ObjectId,
       "ref":          "Country"
-    }]
+    }],
+
+    /** DOB **/
+
+    "dob": Date
   };
 
 } ();

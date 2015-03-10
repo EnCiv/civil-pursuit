@@ -2370,9 +2370,13 @@ button.shy,
   background: transparent;
   border-color: transparent;
 }
-button.shy:hover,
-.button.shy:hover {
+button.shy:hover:not(.very),
+.button.shy:hover:not(.very) {
   background: #dddddd !important;
+}
+button.shy.very,
+.button.shy.very {
+  cursor: default;
 }
 button.error,
 .button.error {

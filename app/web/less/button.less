@@ -27,8 +27,12 @@ button, .button {
     background: transparent;
     border-color: transparent;
 
-    &:hover {
+    &:hover:not(.very) {
       background: #ddd !important
+    }
+
+    &.very {
+      cursor: default;
     }
   }
 
