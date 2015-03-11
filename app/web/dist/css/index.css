@@ -2343,6 +2343,10 @@ a:hover {
 .radius {
   border-radius: 4px;
 }
+.block-center,
+.center-block {
+  margin: auto;
+}
 button,
 .button {
   display: inline-block;

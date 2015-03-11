@@ -4,6 +4,8 @@
 
   var when = require('prontojs').when;
 
+  var src = require(require('path').join(process.cwd(), 'src'));
+
   function _routes (server) {
     server
 
@@ -72,6 +74,8 @@
 
       .open('app/web/dist/css', when.prefix('/css/'))
 
+      /**     S T A T I C   I T E M   P A G E   **/
+
       /** /item/ ==> Item static page */
 
       .open(
@@ -92,9 +96,10 @@
               .lean()
 
               .exec(domain.intercept(function (item) {
+
                 res.locals.item = item;
 
-                if ( item.references.length ) {
+                if ( item.references && item.references.length ) {
                   res.locals.youtube = require('../../web/js/Item/controllers/youtube')(item.references[0].url, true);
                 }
 

@@ -1,24 +1,21 @@
 extends ../layout
 
 block page
-  .row
-    .col-sm-12.padding
-      h1=item.subject
+  h1.center=item.subject
 
   .row
-    .col-sm-4.padding
-      - if ( youtube )
-        !{youtube}
+    - if ( youtube )
+      div !{youtube}
 
-      - else if ( item.image )
-        img.img-responsive(src=item.image)
+    - else if ( item.image )
+      img.img-responsive.center-block(src=item.image)
 
-      - else
-        img.img-responsive(src=synapp.public['default item image'])
+    - else
+      img.img-responsive.center-block(src=synapp.public['default item image'])
 
-    .col-sm-8.padding
-      .pre-text=item.description
+  .gutter.center-block
+    .pre-text.center=item.description
 
-      - if ( item.references.length )
-        h4
-          a(href=item.references[0].url rel='nofollow')= item.references[0].title || item.references[0].url
+    - if ( item.references && item.references.length )
+      h4
+        a(href=item.references[0].url rel='nofollow')= item.references[0].title || item.references[0].url

@@ -9,6 +9,8 @@
   var readMore    =   require('../ReadMore');
   var Sign        =   require('../Sign');
 
+  var S           =   require('string');
+
   /**
    *  @function
    *  @return
@@ -37,7 +39,9 @@
 
     // Subject
 
-    item.find('subject').text(item.item.subject);
+    item.find('subject')
+      .attr('href', '/item/' + item.item._id + '/' + S(item.item.subject).slugify().s)
+      .text(item.item.subject);
 
     // Description
 
