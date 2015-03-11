@@ -131,7 +131,18 @@
 
     /** Gender */
 
-    "gender": String /** M for male, F for female */
+    "gender": String, /** M for male, F for female */
+
+    /** Registered voter */
+
+    "registered_voter": Boolean,
+
+    /** Political party **/
+
+    "party": {
+      "type":         Schema.Types.ObjectId,
+      "ref":          "Config.party"
+    }
   };
 
 } ();

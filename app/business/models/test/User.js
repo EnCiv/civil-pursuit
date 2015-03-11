@@ -43,6 +43,12 @@
 
       'set-birthdate':              src('models/test/User/set-birthdate'),
 
+      'set-gender':                 src('models/test/User/set-gender'),
+
+      'set-registered-voter':       src('models/test/User/set-registered-voter'),
+
+      'set-party':                  src('models/test/User/set-party'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);

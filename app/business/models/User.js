@@ -69,15 +69,17 @@
     // imageStream.pipe(stream);
   };
 
-  UserSchema.statics.addRace            =   require('./User/add-race');
-  UserSchema.statics.removeRace         =   require('./User/remove-race');
-  UserSchema.statics.setMaritalStatus   =   require('./User/set-marital-status');
-  UserSchema.statics.setEmployment      =   require('./User/set-employment');
-  UserSchema.statics.setEducation       =   require('./User/set-education');
-  UserSchema.statics.setCitizenship     =   require('./User/set-citizenship');
-  UserSchema.statics.setBirthdate       =   require('./User/set-birthdate');
-  UserSchema.statics.setGender          =   require('./User/set-gender');
-  UserSchema.statics.disposable         =   require('./User/disposable');
+  UserSchema.statics.addRace              =   require('./User/add-race');
+  UserSchema.statics.removeRace           =   require('./User/remove-race');
+  UserSchema.statics.setMaritalStatus     =   require('./User/set-marital-status');
+  UserSchema.statics.setEmployment        =   require('./User/set-employment');
+  UserSchema.statics.setEducation         =   require('./User/set-education');
+  UserSchema.statics.setCitizenship       =   require('./User/set-citizenship');
+  UserSchema.statics.setBirthdate         =   require('./User/set-birthdate');
+  UserSchema.statics.setGender            =   require('./User/set-gender');
+  UserSchema.statics.setRegisteredVoter   =   require('./User/set-registered-voter');
+  UserSchema.statics.setParty             =   require('./User/set-party');
+  UserSchema.statics.disposable           =   require('./User/disposable');
 
   module.exports = mongoose.model('User', UserSchema);
 

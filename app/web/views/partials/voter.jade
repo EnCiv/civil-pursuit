@@ -9,19 +9,22 @@
   .voter-collapse.is-container
     .is-section
 
-      .row
-        .phone-30.gutter Registered:
+      .gutter
 
-        .phone-70.left
-          input(type='checkbox')
+        .row
+          .phone-30.gutter Registered:
 
-      .row
-        .phone-30.gutter Political Party:
+          .phone-70.left.gutter
+            input.is-registered-voter(type='checkbox')
 
-        .phone-70.left
-          select
-            option Republican
-            option Democrat
+        .row
+          .phone-30.gutter Political Party:
+
+          .phone-70.left.gutter
+            select.block.party
+              option(value='') Choose one
+              each party in config.party
+                option(value=party._id)=party.name
 
   .row.toggle-arrow.padding.text-center
-    i.fa.fa-arrow-down
+    i.fa.fa-arrow-down.cursor-pointer

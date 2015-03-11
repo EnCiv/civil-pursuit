@@ -132,6 +132,14 @@
 
           .on('set gender',             src('io/set-gender').bind(socket))
 
+          /** set party */
+
+          .on('set party',              src('io/set-party').bind(socket))
+
+          /** set registered voter */
+
+          .on('set registered voter',   src('io/set-registered-voter').bind(socket))
+
           /** set marital status */
 
           .on('set marital status',     src('io/set-marital-status').bind(socket))

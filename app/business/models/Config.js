@@ -18,6 +18,9 @@
     }],
     "education": [{
       "name": String
+    }],
+    "party": [{
+      "name": String
     }]
   });
 
@@ -29,10 +32,10 @@
 
   // Config.findOne(function (error, config) {
 
-  //   config.education = [];
+  //   config.party = [];
 
-  //   require('./Config/education.json').forEach(function (education) {
-  //     config.education.push(education);
+  //   require('./Config/party.json').forEach(function (party) {
+  //     config.party.push(party);
   //   });
 
   //   config.save();

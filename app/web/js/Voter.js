@@ -20,11 +20,13 @@
 
   Voter.prototype.find = function (name) {
     switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
+      case 'toggle arrow':    return this.template.find('.toggle-arrow');
 
-      case 'expand':
-        return this.template.find('.voter-collapse');
+      case 'expand':          return this.template.find('.voter-collapse');
+
+      case 'registered':      return this.template.find('.is-registered-voter');
+
+      case 'party':           return this.template.find('.party');
     }
   };
 
@@ -45,6 +47,37 @@
         }
       });
     });
+
+    /** Save registered voter */
+
+    this.find('registered').on('change', function () {
+
+      app.socket
+
+        .on('registered voter set', function () {
+          console.log('registered voter set');
+        })
+
+        .emit('set registered voter', synapp.user, $(this).is(':checked'));
+
+    });
+
+    /** Save political party */
+
+    this.find('party').on('change', function () {
+
+      if ( $(this).val() ) {
+        app.socket
+
+          .on('party set', function () {
+            console.log('party set');
+          })
+
+          .emit('set party', synapp.user, $(this).val());
+      }
+
+    });
+
   };
 
   Voter.prototype.renderUser = function () {
@@ -53,6 +86,9 @@
 
     if ( this.profile.user ) {
 
+      this.find('registered').attr('checked', this.profile.user.registered_voter);
+
+      this.find('party').val(this.profile.user.party);
      
     }
   };

@@ -344,6 +344,126 @@
       });
   }
 
+  /**
+   *    SOCKET "set birthdate"
+   */
+
+  function synTestSocketSetCitizenship (cb) {
+    var action = 'syn-test socket "set birthdate"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/set-birthdate'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  /**
+   *    SOCKET "set gender"
+   */
+
+  function synTestSocketSetCitizenship (cb) {
+    var action = 'syn-test socket "set gender"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/set-gender'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  /**
+   *    SOCKET "set registered voter"
+   */
+
+  function synTestSocketSetRegisteredVoter (cb) {
+    var action = 'syn-test socket "set registered voter"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/set-registered-voter'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
+  /**
+   *    SOCKET "set party"
+   */
+
+  function synTestSocketSetParty (cb) {
+    var action = 'syn-test socket "set party"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['io/set-party'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
   require('async').series([
       gulpBuildProd,
       synTestModelUser,
@@ -354,6 +474,8 @@
       synTestSocketRemoveRace,
       synTestSocketSetMaritalStatus,
       synTestSocketSetCitizenship,
+      synTestSocketSetRegisteredVoter,
+      synTestSocketSetParty,
       gitPushHerokuMaster
     ],
 
