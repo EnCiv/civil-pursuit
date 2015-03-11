@@ -126,7 +126,12 @@
 
     /** DOB **/
 
-    "dob": Date
+    "dob": Date,
+
+
+    /** Gender */
+
+    "gender": String /** M for male, F for female */
   };
 
 } ();

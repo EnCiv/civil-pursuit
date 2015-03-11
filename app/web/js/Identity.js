@@ -54,6 +54,8 @@
       case 'citizenship':   return this.template.find('.citizenship');
 
       case 'dob':           return this.template.find('.dob');
+
+      case 'gender':        return this.template.find('.gender');
     }
   };
 
@@ -70,10 +72,12 @@
       last_name:    this.find('last name').val()
     };
 
-    console.log('////')
-
     app.socket.emit('change user name', synapp.user, name);
   };
+
+  /**
+   *  @method
+  */
 
   Identity.prototype.renderUser = function () {
 
@@ -112,7 +116,15 @@
     }
 
     this.find('dob').val([dob_year, dob_month, dob_day].join('-'));
+
+    // Gender
+
+    this.find('gender').val(this.user.gender);
   };
+
+  /**
+   *  @method
+  */
 
   Identity.prototype.renderCountries = function () {
     var identity = this;

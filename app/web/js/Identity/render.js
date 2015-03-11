@@ -128,6 +128,23 @@
         .emit('set birthdate', synapp.user, $(this).val());
 
     });
+
+    // Set gender
+
+    this.find('gender').on('change', function () {
+
+      if ( $(this).val() ) {
+        app.socket
+
+          .on('gender set', function () {
+            console.log('gender set');
+          })
+
+          .emit('set gender', synapp.user, $(this).val());
+      }
+
+    });
+
   }
 
   module.exports = render;

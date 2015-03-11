@@ -128,6 +128,10 @@
 
           .on('set employment',         src('io/set-employment').bind(socket))
 
+          /** set gender */
+
+          .on('set gender',             src('io/set-gender').bind(socket))
+
           /** set marital status */
 
           .on('set marital status',     src('io/set-marital-status').bind(socket))
