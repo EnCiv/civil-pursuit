@@ -114,6 +114,20 @@
       });
 
     });
+
+    // Set birthdate
+
+    this.find('dob').on('change', function () {
+
+      app.socket
+
+        .on('birthdate set', function () {
+          console.log('birthdate set');
+        })
+
+        .emit('set birthdate', synapp.user, $(this).val());
+
+    });
   }
 
   module.exports = render;

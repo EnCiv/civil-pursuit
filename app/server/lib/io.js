@@ -112,6 +112,10 @@
 
           .on('send password',          src('io/send-password').bind(socket))
 
+          /** set birthdate */
+
+          .on('set birthdate',          src('io/set-birthdate').bind(socket))
+
           /** set citizenship */
 
           .on('set citizenship',        src('io/set-citizenship').bind(socket))

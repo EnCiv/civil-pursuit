@@ -41,6 +41,8 @@
 
       'set-citizenship':            src('models/test/User/set-citizenship'),
 
+      'set-birthdate':              src('models/test/User/set-birthdate'),
+
       'remove':                     src('models/test/User/remove')
 
     }, done);

@@ -21,7 +21,7 @@
             return cb(new Error('No such user ' + user_id));
           }
 
-          user.citizenship[0] = country_id;
+          user.citizenship[position] = country_id;
 
           console.log()
           console.log()

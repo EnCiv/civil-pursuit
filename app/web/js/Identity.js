@@ -52,6 +52,8 @@
         return this.template.find('img.user-image');
 
       case 'citizenship':   return this.template.find('.citizenship');
+
+      case 'dob':           return this.template.find('.dob');
     }
   };
 
@@ -92,6 +94,24 @@
     // Last name
 
     this.find('last name').val(this.user.last_name);
+
+    // Date of birth
+
+    var dob = new Date(this.user.dob);
+
+    var dob_year = dob.getFullYear();
+    var dob_month = dob.getMonth() + 1;
+    var dob_day = dob.getDate() + 1;
+
+    if ( dob_month < 10 ) {
+      dob_month = "0" + dob_month;
+    }
+
+    if ( dob_day < 10 ) {
+      dob_day = "0" + dob_day;
+    }
+
+    this.find('dob').val([dob_year, dob_month, dob_day].join('-'));
   };
 
   Identity.prototype.renderCountries = function () {
