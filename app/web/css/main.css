@@ -1,0 +1,114 @@
+/**
+ *    __________________________________________________________________________
+ *
+ *    Synapp Style Sheet / Variables
+ *    ------------------   ---------
+ *
+ *    @abstract
+ *    Variables
+ *
+ *    @author   francois
+ * 
+ *    __________________________________________________________________________
+ *    
+*/
+/** BREAK POINTS **/
+/** Gutters */
+/** The height of the top bar **/
+/** Buttons */
+/** Colors **/
+.clear {
+  zoom: 1;
+}
+.clear:after {
+  display: block;
+  visibility: hidden;
+  height: 0;
+  clear: both;
+  content: ".";
+  margin: 0;
+  padding: 0;
+}
+/*
+ *    Links
+ */
+a {
+  color: #337ab7;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+/*
+ *    Force cursor to be a pointer
+ */
+.cursor-pointer {
+  cursor: pointer;
+}
+/*
+ *    Hide
+ */
+.hide {
+  display: none;
+}
+.alert {
+  display: none;
+}
+.is-in {
+  display: none;
+}
+.vex-dialog-button-primary {
+  background: #337ab7 !important;
+}
+/*
+ *  Background
+ */
+.muted-bg {
+  background: #999999;
+  border-color: #999999;
+  color: #ffffff;
+}
+.info-bg {
+  background: #5bc0de;
+  border-color: #5bc0de;
+  color: #ffffff;
+}
+.success-bg {
+  background: #5cb85c;
+  border-color: #5cb85c;
+  color: #ffffff;
+}
+.error-bg {
+  background: #cd3232;
+  border-color: #cd3232;
+  color: #ffffff;
+}
+.primary-bg {
+  background: #337ab7;
+  border-color: #337ab7;
+  color: #ffffff;
+}
+.warning-bg {
+  background: #f0ad4e;
+  border-color: #f0ad4e;
+  color: #ffffff;
+}
+/*
+ *  Text
+ */
+.text-center {
+  text-align: center;
+}
+/*
+ *  Boxes
+ */
+.frame {
+  border: 1px solid;
+}
+.radius {
+  border-radius: 4px;
+}
+.block-center,
+.center-block {
+  margin: auto;
+}
