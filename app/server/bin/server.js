@@ -73,6 +73,29 @@
 
       ! function _initPipeLine () {
         server.open(function synMiddleware_preRouter (req, res, next) {
+
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log(req.cookies)
+          console.log()
+          console.log()
+          console.log()
+          console.log(req.signedCookies)
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+          console.log()
+
           req.user = req.signedCookies.synuser;
           next();
         }, when('/*'));

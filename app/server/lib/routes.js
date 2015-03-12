@@ -99,8 +99,14 @@
 
                 res.locals.item = item;
 
+                var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+
                 if ( item.references && item.references.length ) {
-                  res.locals.youtube = require('../../web/js/Item/controllers/youtube')(item.references[0].url, true);
+                  if ( regexYouTube.test(item.references[0].url) ) {
+                    item.references[0].url.replace(regexYouTube, function (m, v) {
+                      res.locals.youtube = v;
+                    });
+                  }
                 }
 
                 res.locals.title = item.subject + ' | Synaccord';

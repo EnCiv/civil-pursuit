@@ -5,7 +5,8 @@ block page
 
   .row
     - if ( youtube )
-      div !{youtube}
+      .video-container
+        iframe(frameborder="0" width="300" height="175" allowfullscreen src="http://www.youtube.com/embed/" + youtube)
 
     - else if ( item.image )
       img.img-responsive.center-block(src=item.image)
@@ -17,5 +18,5 @@ block page
     .pre-text.center=item.description
 
     - if ( item.references && item.references.length )
-      h4
+      h4.center
         a(href=item.references[0].url rel='nofollow')= item.references[0].title || item.references[0].url
