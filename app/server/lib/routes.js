@@ -103,16 +103,6 @@
 
                 res.locals.item = item;
 
-                var regexYouTube = /youtu\.?be.+v=([^&]+)/;
-
-                if ( item.references && item.references.length ) {
-                  if ( regexYouTube.test(item.references[0].url) ) {
-                    item.references[0].url.replace(regexYouTube, function (m, v) {
-                      res.locals.youtube = v;
-                    });
-                  }
-                }
-
                 res.locals.title = item.subject + ' | Synaccord';
 
                 res.locals.meta_description = item.description.split(/\n/)[0]

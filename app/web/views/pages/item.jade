@@ -1,6 +1,14 @@
 extends ../layout
 
 block page
+  - var regexYouTube = /(youtu\.?be.+v=)([^&]+)/;
+
+  - var youtube;
+
+  - if ( item.references && item.references.length )
+    - if ( regexYouTube.test(item.references[0].url) )
+      - youtube = item.references[0].url.replace(regexYouTube, '$1');
+
   h1.center=item.subject
 
   .row
