@@ -82,6 +82,10 @@
 
         function staticItemPage (req, res, next) {
 
+          if ( 'youtube' in res.locals ) {
+            delete res.locals.youtube;
+          }
+
           var domain = require('domain').create();
           
           domain.on('error', function (error) {

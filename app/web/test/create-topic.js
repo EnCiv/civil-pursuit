@@ -25,13 +25,7 @@
     "before": function (browser, done) { 
       User.disposable(function (error, user) {
         testUser = user;
-        browser.setCookie({
-          "name":     "synuser",
-          "value":    "JSON.stringify({ email: testUser.email, id: testUser._id })",
-          "path":     "/",
-          "secure":   true,
-          "httpOnly": true
-        });
+        
         done();
       });
     },
@@ -39,6 +33,17 @@
     "Create topic" : function (browser) {
       
       browser.url(process.env.SYNAPP_SELENIUM_TARGET);
+
+      browser.setCookie({
+        "name":     "synuser",
+        "value":    "JSON.stringify({ email: testUser.email, id: testUser._id })",
+        "path":     "/",
+        "secure":   true,
+        "httpOnly": true,
+        "domain":   "localhost"
+      }, function () {
+        console.log(arguments)
+      });
         
       browser.waitForElementVisible(           'body', 1000)
 
