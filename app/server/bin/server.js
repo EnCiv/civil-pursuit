@@ -37,6 +37,7 @@
         server.cookie(src('config').secret);
 
         server.app.use(require('cookie-parser')(src('config').secret));
+        // server.app.use(require('cookie-parser'));
       }();
 
       ! function _session () {

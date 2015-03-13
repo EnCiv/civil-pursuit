@@ -35,12 +35,13 @@
       browser.url(process.env.SYNAPP_SELENIUM_TARGET);
 
       browser.setCookie({
-        "name":     "synuser",
-        "value":    "JSON.stringify({ email: testUser.email, id: testUser._id })",
-        "path":     "/",
-        "secure":   true,
-        "httpOnly": true,
-        "domain":   "localhost"
+        name     : "synuser",
+        value    : "test_value",
+        path     : "/", 
+        // domain   : "example.org", 
+        secure   : false, 
+        httpOnly : false, // (Optional)
+        expiry   : 1395002765 // (Optional) time in seconds since midnight, January 1, 1970 UTC
       }, function () {
         console.log(arguments)
       });
@@ -57,7 +58,7 @@
 
         // Wait for panel creator to show up
 
-        // .waitForElementVisible(__(        'creator'), 2000)
+        .waitForElementVisible(__(        'creator'), 2000)
 
         .pause(60000)
         
