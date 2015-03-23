@@ -23,12 +23,12 @@
 
       item.load(app.domain.intercept(function (template) {
 
-        var img = template.find('.item-media img');
-        var loading = $('<i class="fa fa-refresh fa-5x fa-spin center block-center muted"></i>');
+        // var img = template.find('.item-media img');
+        // var loading = $('<i class="fa fa-refresh fa-5x fa-spin center block-center muted"></i>');
 
-        loading.insertAfter(img);
+        // loading.insertAfter(img);
 
-        img.remove();
+        // img.remove();
 
         self.find('items').append(template); 
       }));
@@ -36,43 +36,22 @@
       return item;
     });
 
+    var i = 0;
+    var len = items.length;
 
+    function next () {
+      i ++;
 
-    // items = items.map(function (item) {
+      if ( i === len && cb ) {
+        cb();
+      }
+    }
 
-    //   item = new Item(item);
-
-    //   item.load(app.domain.intercept(function (template) {}));
-
-    //   return item;
-    // });
-
-    // var templates = items.map(function (item) {
-    //   return item.template;
-    // });
-
-    // self.find('items').append(templates);
-
-    // if ( items[i] ) {
-
-    //   var item  = new Item(items[i]);
-
-    //   console.log('inserting item 'tem)
-
-    //   item.load(app.domain.intercept(function (template) {
-    //     self.find('items').append(template);
-
-    //     self.preInsertItem(items, ++ i, cb);
-
-    //     // item.render(app.domain.intercept(function () {
-    //     //   self.insertItem(items, ++ i, cb);
-    //     // }));
-
-    //   }));
-    // }
-    // else {
-    //   cb && cb();
-    // }
+    items.forEach(function (item) {
+      item.render(app.domain.intercept(function (args) {
+        next();  
+      }));
+    });
   }
 
   module.exports = preInsertItem;

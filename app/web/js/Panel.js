@@ -63,13 +63,7 @@
   */
 
   Panel.prototype.getId = function () {
-    var id = 'panel-' + this.type;
-
-    if ( this.parent ) {
-      id += '-' + this.parent;
-    }
-
-    return id;
+    return this.id;
   };
 
   Panel.prototype.load = require('./Panel/load');
@@ -105,36 +99,7 @@
     }
   };
 
-  Panel.prototype.render = function (cb) {
-
-    var panel = this;
-
-    this.find('title').text(this.type);
-
-    this.find('toggle creator').on('click', function () {
-      panel.toggleCreator($(this));
-    });
-
-    panel.template.attr('id', panel.getId());
-
-    var creator = new Creator(panel);
-
-    creator.render(app.domain.intercept(function () {
-      cb();     
-    }));
-
-    this.find('load more').on('click', function () {
-      panel.fill();
-      return false;
-    });
-
-    this.find('create new').on('click', function () {
-      panel.find('toggle creator').click();
-      return false;
-    });
-
-    return this;
-  };
+  Panel.prototype.render = require('./Panel/render');
 
   Panel.prototype.toJSON = function () {
     var json = {

@@ -2204,13 +2204,7 @@
   */
 
   Panel.prototype.getId = function () {
-    var id = 'panel-' + this.type;
-
-    if ( this.parent ) {
-      id += '-' + this.parent;
-    }
-
-    return id;
+    return this.id;
   };
 
   Panel.prototype.load = require('./Panel/load');
@@ -2246,36 +2240,7 @@
     }
   };
 
-  Panel.prototype.render = function (cb) {
-
-    var panel = this;
-
-    this.find('title').text(this.type);
-
-    this.find('toggle creator').on('click', function () {
-      panel.toggleCreator($(this));
-    });
-
-    panel.template.attr('id', panel.getId());
-
-    var creator = new Creator(panel);
-
-    creator.render(app.domain.intercept(function () {
-      cb();     
-    }));
-
-    this.find('load more').on('click', function () {
-      panel.fill();
-      return false;
-    });
-
-    this.find('create new').on('click', function () {
-      panel.find('toggle creator').click();
-      return false;
-    });
-
-    return this;
-  };
+  Panel.prototype.render = require('./Panel/render');
 
   Panel.prototype.toJSON = function () {
     var json = {
@@ -2328,7 +2293,7 @@
 
 } ();
 
-},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Panel/fill":"/home/francois/Dev/syn/app/web/js/Panel/fill.js","./Panel/load":"/home/francois/Dev/syn/app/web/js/Panel/load.js","./Panel/pre-insert-item":"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Panel/fill.js":[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Panel/fill":"/home/francois/Dev/syn/app/web/js/Panel/fill.js","./Panel/load":"/home/francois/Dev/syn/app/web/js/Panel/load.js","./Panel/pre-insert-item":"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js","./Panel/render":"/home/francois/Dev/syn/app/web/js/Panel/render.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Panel/fill.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2440,12 +2405,12 @@
 
       item.load(app.domain.intercept(function (template) {
 
-        var img = template.find('.item-media img');
-        var loading = $('<i class="fa fa-refresh fa-5x fa-spin center block-center muted"></i>');
+        // var img = template.find('.item-media img');
+        // var loading = $('<i class="fa fa-refresh fa-5x fa-spin center block-center muted"></i>');
 
-        loading.insertAfter(img);
+        // loading.insertAfter(img);
 
-        img.remove();
+        // img.remove();
 
         self.find('items').append(template); 
       }));
@@ -2453,50 +2418,76 @@
       return item;
     });
 
+    var i = 0;
+    var len = items.length;
 
+    function next () {
+      i ++;
 
-    // items = items.map(function (item) {
+      if ( i === len && cb ) {
+        cb();
+      }
+    }
 
-    //   item = new Item(item);
-
-    //   item.load(app.domain.intercept(function (template) {}));
-
-    //   return item;
-    // });
-
-    // var templates = items.map(function (item) {
-    //   return item.template;
-    // });
-
-    // self.find('items').append(templates);
-
-    // if ( items[i] ) {
-
-    //   var item  = new Item(items[i]);
-
-    //   console.log('inserting item 'tem)
-
-    //   item.load(app.domain.intercept(function (template) {
-    //     self.find('items').append(template);
-
-    //     self.preInsertItem(items, ++ i, cb);
-
-    //     // item.render(app.domain.intercept(function () {
-    //     //   self.insertItem(items, ++ i, cb);
-    //     // }));
-
-    //   }));
-    // }
-    // else {
-    //   cb && cb();
-    // }
+    items.forEach(function (item) {
+      item.render(app.domain.intercept(function (args) {
+        next();  
+      }));
+    });
   }
 
   module.exports = preInsertItem;
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Promote.js":[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Panel/render.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Creator = require('../Creator');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function render (cb) {
+    var panel = this;
+
+    this.find('title').text(this.type);
+
+    this.find('toggle creator').on('click', function () {
+      panel.toggleCreator($(this));
+    });
+
+    panel.template.attr('id', panel.getId());
+
+    var creator = new Creator(panel);
+
+    creator.render(app.domain.intercept(function () {
+      cb();     
+    }));
+
+    this.find('load more').on('click', function () {
+      panel.fill();
+      return false;
+    });
+
+    this.find('create new').on('click', function () {
+      panel.find('toggle creator').click();
+      return false;
+    });
+
+    return this;
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"../Creator":"/home/francois/Dev/syn/app/web/js/Creator.js"}],"/home/francois/Dev/syn/app/web/js/Promote.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
