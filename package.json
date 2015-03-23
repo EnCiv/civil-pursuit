@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node test/",
     "start": "app/server/bin/server.js",
-    "postinstall": "cd app/web/dist && ../../node_modules/.bin/bower install",
+    "postinstall": "cd app/web/dist && ../../../node_modules/.bin/bower install",
     "postinstall-x": "browserify ../../node_modules/socket.io-stream/index.js -s ss > dist/js/socket.io-stream.js"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
