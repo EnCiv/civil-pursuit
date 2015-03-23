@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/web/js/Creator.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -75,7 +75,7 @@
 
 } ();
 
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":21}],2:[function(require,module,exports){
+},{"./Creator/create":"/home/francois/Dev/syn/app/web/js/Creator/create.js","./Creator/created":"/home/francois/Dev/syn/app/web/js/Creator/created.js","./Creator/pack-item":"/home/francois/Dev/syn/app/web/js/Creator/pack-item.js","./Creator/render":"/home/francois/Dev/syn/app/web/js/Creator/render.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js"}],"/home/francois/Dev/syn/app/web/js/Creator/create.js":[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -161,7 +161,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":12,"../Nav":20,"../Stream":31,"_process":40}],3:[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../Stream":"/home/francois/Dev/syn/app/web/js/Stream.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/app/web/js/Creator/created.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -203,7 +203,7 @@
 
 } ();
 
-},{"../Item":12}],4:[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Creator/pack-item.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -264,7 +264,7 @@
 
 } ();
           synapp.user
-},{}],5:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Creator/render.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -341,7 +341,7 @@
 
 } ();
 
-},{"../Form":10,"../Upload":34,"../YouTube":35}],6:[function(require,module,exports){
+},{"../Form":"/home/francois/Dev/syn/app/web/js/Form.js","../Upload":"/home/francois/Dev/syn/app/web/js/Upload.js","../YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Details.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -603,7 +603,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":12,"./Nav":20}],7:[function(require,module,exports){
+},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -754,7 +754,7 @@
 
 } ();
 
-},{"./Creator":1,"./Edit/save":8,"./Form":10,"./Item":12,"./Nav":20}],8:[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Edit/save":"/home/francois/Dev/syn/app/web/js/Edit/save.js","./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit/save.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -812,7 +812,7 @@
 
 } ();
 
-},{"../Item":12,"../Nav":20}],9:[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Forgot-Password.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -878,7 +878,7 @@
 
 } ();
 
-},{"./Form":10,"domain":37}],10:[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Form.js":[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -965,7 +965,7 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Intro.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1026,7 +1026,7 @@
 
 } ();
 
-},{"./Item":12,"./ReadMore":29,"./Truncate":33}],12:[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./ReadMore":"/home/francois/Dev/syn/app/web/js/ReadMore.js","./Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js"}],"/home/francois/Dev/syn/app/web/js/Item.js":[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1059,19 +1059,33 @@
     });
   }
 
+  /** Load template */
+
   Item.prototype.load       =   require('./Item/load');
+
+  /** DOM finder */
 
   Item.prototype.find       =   require('./Item/find');
 
+  /** Render method */
+
   Item.prototype.render     =   require('./Item/render');
 
+  /** Resolve item's media */
+
   Item.prototype.media      =   require('./Item/media');
+
+  /** Template cache */
+
+  Item.cache = {
+    template: undefined
+  };
 
   module.exports = Item;
 
 } ();
 
-},{"./Item/find":13,"./Item/load":14,"./Item/media":15,"./Item/render":16}],13:[function(require,module,exports){
+},{"./Item/find":"/home/francois/Dev/syn/app/web/js/Item/find.js","./Item/load":"/home/francois/Dev/syn/app/web/js/Item/load.js","./Item/media":"/home/francois/Dev/syn/app/web/js/Item/media.js","./Item/render":"/home/francois/Dev/syn/app/web/js/Item/render.js"}],"/home/francois/Dev/syn/app/web/js/Item/find.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1124,19 +1138,23 @@
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Item/load.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
   function load (cb) {
     var item = this;
+
+    if ( app.cache.template.item ) {
+      item.template = $(app.cache.template.item[0].outerHTML);
+      
+      if ( cb ) {
+        cb(null, item.template);
+      }
+
+      return;
+    }
 
     $.ajax({
       url: '/partial/item'
@@ -1159,7 +1177,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Item/media.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1234,7 +1252,7 @@
 
 } ();
 
-},{"../YouTube":35}],16:[function(require,module,exports){
+},{"../YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Item/render.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1515,7 +1533,7 @@
 
 } ();
 
-},{"../Details":6,"../Nav":20,"../Panel":21,"../Promote":22,"../ReadMore":29,"../Sign":30,"../Truncate":33,"./view/toggle-promote":17,"string":43}],17:[function(require,module,exports){
+},{"../Details":"/home/francois/Dev/syn/app/web/js/Details.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","../Promote":"/home/francois/Dev/syn/app/web/js/Promote.js","../ReadMore":"/home/francois/Dev/syn/app/web/js/ReadMore.js","../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","../Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js","./view/toggle-promote":"/home/francois/Dev/syn/app/web/js/Item/view/toggle-promote.js","string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/app/web/js/Item/view/toggle-promote.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1607,7 +1625,7 @@
 
 } ();
 
-},{"../../Nav":20,"../../Sign":30}],18:[function(require,module,exports){
+},{"../../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Join.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1694,7 +1712,7 @@
 
 } ();
 
-},{"./Form":10,"domain":37}],19:[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Login.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1767,7 +1785,7 @@
 
 } ();
 
-},{"./Form":10,"./Nav":20,"domain":37}],20:[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Nav.js":[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2120,7 +2138,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":40,"domain":37,"events":38}],21:[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Panel.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2151,7 +2169,9 @@
    *  @class
    *
    *  @arg {String} type
-   *  @arg {String?} parent
+   *  @arg {ObjectID?} parent
+   *  @arg {Number} size
+   *  @arg {Number} skip
    */
 
   function Panel (type, parent, size, skip) {
@@ -2178,7 +2198,10 @@
     }
   }
 
-  // require('util').inherits(Panel, require('events').EventEmitter);
+  /**
+   *  @method       Panel.getId
+   *  @return       {String} panelId
+  */
 
   Panel.prototype.getId = function () {
     var id = 'panel-' + this.type;
@@ -2190,23 +2213,7 @@
     return id;
   };
 
-  Panel.prototype.get = function (cb) {
-    var panel = this;
-
-    $.ajax({
-      url: '/partial/panel'
-    })
-
-      .error(cb)
-
-      .success(function (data) {
-        panel.template = $(data);
-
-        cb(null, panel.template);
-      });
-
-    return this;
-  };
+  Panel.prototype.load = require('./Panel/load');
 
   Panel.prototype.find = function (name) {
     switch ( name ) {
@@ -2289,42 +2296,9 @@
    *  @arg {function} cb
    **/
 
-  Panel.prototype.fill = function (cb) {
-    var self = this;
+  Panel.prototype.fill            =   require('./Panel/fill');
 
-    app.socket.emit('get items', this.toJSON());
-
-    app.socket.once('got items ' + this.id, function (panel, items) {
-      
-      console.log('got items', panel, items)
-
-      self.template.find('.hide.pre').removeClass('hide');
-      self.template.find('.show.pre').removeClass('show').hide();
-
-      self.template.find('.loading-items').hide();
-
-      if ( items.length ) {
-
-        self.find('create new').hide();
-        self.find('load more').show();
-
-        if ( items.length < synapp['navigator batch size'] ) {
-          self.find('load more').hide();
-        }
-
-        self.skip += items.length;
-
-        self.insertItem(items, 0, cb);
-      }
-
-      else {
-        self.find('create new').show();
-        self.find('load more').hide();
-      }
-
-        
-    });
-  };
+  Panel.prototype.preInsertItem   =   require('./Panel/pre-insert-item');
 
   Panel.prototype.insertItem = function (items, i, cb) {
 
@@ -2333,6 +2307,8 @@
     if ( items[i] ) {
 
       var item  = new Item(items[i]);
+
+      console.log('inserting item ', i, item)
 
       item.load(app.domain.intercept(function (template) {
         self.find('items').append(template);
@@ -2352,7 +2328,175 @@
 
 } ();
 
-},{"./Creator":1,"./Item":12,"./Nav":20,"./Sign":30}],22:[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Panel/fill":"/home/francois/Dev/syn/app/web/js/Panel/fill.js","./Panel/load":"/home/francois/Dev/syn/app/web/js/Panel/load.js","./Panel/pre-insert-item":"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Panel/fill.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function fill (cb) {
+    var self = this;
+
+    app.socket
+
+      .once('got items ' + this.id, function (panel, items) {
+
+        // console.log('got items', panel, items)
+
+        self.template.find('.hide.pre').removeClass('hide');
+        self.template.find('.show.pre').removeClass('show').hide();
+
+        self.template.find('.loading-items').hide();
+
+        if ( items.length ) {
+
+          self.find('create new').hide();
+          self.find('load more').show();
+
+          if ( items.length < synapp['navigator batch size'] ) {
+            self.find('load more').hide();
+          }
+
+          self.skip += items.length;
+
+          self.preInsertItem(items, cb);
+        }
+
+        else {
+          self.find('create new').show();
+          self.find('load more').hide();
+        }
+
+      })
+
+      .emit('get items', this.toJSON());
+  }
+
+  module.exports = fill;
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/Panel/load.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function load (cb) {
+    var panel = this;
+
+    if ( app.cache.template.panel ) {
+      panel.template = $(app.cache.template.panel[0].outerHTML);
+      
+      if ( cb ) {
+        cb(null, panel.template);
+      }
+
+      return;
+    }
+
+    $.ajax({
+      url: '/partial/panel'
+    })
+
+      .error(cb)
+
+      .success(function (data) {
+        panel.template = $(data);
+
+        app.cache.template.panel = panel.template;
+
+        cb(null, panel.template);
+      });
+
+    return this;
+  }
+
+  module.exports = load;
+
+} ();
+
+},{}],"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Item =require('../Item');
+
+  function preInsertItem (items, cb) {
+    var self = this;
+
+    /** Load template */
+
+    if ( ! app.cache.template.item ) {
+      return new Item({}).load(app.domain.intercept(function (template) {
+        self.preInsertItem(items, cb); 
+      }));
+    }
+
+    /** Items to object */
+
+    items = items.map(function (item) {
+      console.log(item.subject)
+      item = new Item(item);
+
+      item.load(app.domain.intercept(function (template) {
+
+        var img = template.find('.item-media img');
+        var loading = $('<i class="fa fa-refresh fa-5x fa-spin center block-center muted"></i>');
+
+        loading.insertAfter(img);
+
+        img.remove();
+
+        self.find('items').append(template); 
+      }));
+
+      return item;
+    });
+
+
+
+    // items = items.map(function (item) {
+
+    //   item = new Item(item);
+
+    //   item.load(app.domain.intercept(function (template) {}));
+
+    //   return item;
+    // });
+
+    // var templates = items.map(function (item) {
+    //   return item.template;
+    // });
+
+    // self.find('items').append(templates);
+
+    // if ( items[i] ) {
+
+    //   var item  = new Item(items[i]);
+
+    //   console.log('inserting item 'tem)
+
+    //   item.load(app.domain.intercept(function (template) {
+    //     self.find('items').append(template);
+
+    //     self.preInsertItem(items, ++ i, cb);
+
+    //     // item.render(app.domain.intercept(function () {
+    //     //   self.insertItem(items, ++ i, cb);
+    //     // }));
+
+    //   }));
+    // }
+    // else {
+    //   cb && cb();
+    // }
+  }
+
+  module.exports = preInsertItem;
+
+} ();
+
+},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Promote.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2505,7 +2649,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":12,"./Nav":20,"./Promote/find":23,"./Promote/finish":24,"./Promote/get":25,"./Promote/render":27,"./Promote/render-item":26,"./Promote/save":28,"events":38}],23:[function(require,module,exports){
+},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Promote/find":"/home/francois/Dev/syn/app/web/js/Promote/find.js","./Promote/finish":"/home/francois/Dev/syn/app/web/js/Promote/finish.js","./Promote/get":"/home/francois/Dev/syn/app/web/js/Promote/get.js","./Promote/render":"/home/francois/Dev/syn/app/web/js/Promote/render.js","./Promote/render-item":"/home/francois/Dev/syn/app/web/js/Promote/render-item.js","./Promote/save":"/home/francois/Dev/syn/app/web/js/Promote/save.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Promote/find.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2556,7 +2700,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Promote/finish.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2601,7 +2745,7 @@
 
 } ();
 
-},{"../Nav":20}],25:[function(require,module,exports){
+},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/get.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2658,7 +2802,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Promote/render-item.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2834,7 +2978,7 @@
 
 } ();
 
-},{"../Item":12,"../Nav":20}],27:[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/render.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2906,7 +3050,7 @@
 
 } ();
 
-},{"../Nav":20}],28:[function(require,module,exports){
+},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/save.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2964,7 +3108,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/ReadMore.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3131,7 +3275,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Sign.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3314,7 +3458,7 @@
 
 } ();
 
-},{"./Forgot-Password":9,"./Join":18,"./Login":19,"./Nav":20}],31:[function(require,module,exports){
+},{"./Forgot-Password":"/home/francois/Dev/syn/app/web/js/Forgot-Password.js","./Join":"/home/francois/Dev/syn/app/web/js/Join.js","./Login":"/home/francois/Dev/syn/app/web/js/Login.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Stream.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3353,7 +3497,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/Synapp.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3413,7 +3557,7 @@
       console.error(error);
     });
 
-    this.socket = io.connect('http://' + location.hostname + ':' + location.port);
+    this.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
 
     this.socket.once('connect', function () {
       self.emit('connect');
@@ -3487,7 +3631,7 @@
 
 } ();
 
-},{"./Intro":11,"./Panel":21,"./Sign":30,"domain":37,"events":38,"util":42}],33:[function(require,module,exports){
+},{"./Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/Truncate.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3710,7 +3854,7 @@
 
 }();
 
-},{"./Nav":20}],34:[function(require,module,exports){
+},{"./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Upload.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3796,7 +3940,7 @@
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/YouTube.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3915,7 +4059,7 @@
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/web/js/pages/Home.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3927,7 +4071,7 @@
 
   window.app = new Synapp();
 
-  app.connect(function () {
+  app.connect(function onceAppConnects_HomePage () {
     new Sign().render();
     new Intro().render();
 
@@ -3935,22 +4079,23 @@
 
     panel
       
-      .get(app.domain.intercept(function (template) {
+      .load(app.domain.intercept(function onGotPanels (template) {
 
         $('.panels').append(template);
 
-        setTimeout(function () {
+        setTimeout(function renderPanel_Pause () {
           panel.render(app.domain.intercept(function () {
             panel.fill();
           }));
         }, 700);
 
       }));
+  
   });
 
 } ();
 
-},{"../Intro":11,"../Panel":21,"../Sign":30,"../Synapp":32}],37:[function(require,module,exports){
+},{"../Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","../Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","../Synapp":"/home/francois/Dev/syn/app/web/js/Synapp.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4018,7 +4163,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":38}],38:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4321,7 +4466,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],39:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4346,7 +4491,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],40:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4434,14 +4579,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],41:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],42:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5031,7 +5176,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":41,"_process":40,"inherits":39}],43:[function(require,module,exports){
+},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6065,4 +6210,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[36]);
+},{}]},{},["/home/francois/Dev/syn/app/web/js/pages/Home.js"]);

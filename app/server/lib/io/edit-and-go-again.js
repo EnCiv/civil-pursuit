@@ -2,31 +2,28 @@
 
   'use strict';
 
-  function editAndGoAgain (socket, pronto, monson, domain) {
-    
-    socket.on('edit and go again', function (item, cb) {
-      
-      var url = 'models/Item';
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-      monson.post(url, item)
+  function editAndGoAgain (item_id) {
 
-        .on('error', domain.bind(function (error) {
-          socket.emit('could not edit item', error);
+    var socket = this;
 
-          if ( typeof cb === 'function' ) {
-            cb(error);
-          }
-        }))
+    src.domain(
 
-        .on('success', function (item) {
-          socket.emit('edited item', item);
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
 
-          if ( typeof cb === 'function' ) {
-            cb(null, item);
-          }
-        });
-      
-    });
+      function (domain) {
+
+        src('models/Item')
+          .editAndGoAgain(item_id, domain.intercept(function (item) {
+            socket.emit('edited item', item);
+          }));
+
+      }
+
+    );
   
   }
 

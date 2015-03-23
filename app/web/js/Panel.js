@@ -28,7 +28,9 @@
    *  @class
    *
    *  @arg {String} type
-   *  @arg {String?} parent
+   *  @arg {ObjectID?} parent
+   *  @arg {Number} size
+   *  @arg {Number} skip
    */
 
   function Panel (type, parent, size, skip) {
@@ -55,7 +57,10 @@
     }
   }
 
-  // require('util').inherits(Panel, require('events').EventEmitter);
+  /**
+   *  @method       Panel.getId
+   *  @return       {String} panelId
+  */
 
   Panel.prototype.getId = function () {
     var id = 'panel-' + this.type;
@@ -67,23 +72,7 @@
     return id;
   };
 
-  Panel.prototype.get = function (cb) {
-    var panel = this;
-
-    $.ajax({
-      url: '/partial/panel'
-    })
-
-      .error(cb)
-
-      .success(function (data) {
-        panel.template = $(data);
-
-        cb(null, panel.template);
-      });
-
-    return this;
-  };
+  Panel.prototype.load = require('./Panel/load');
 
   Panel.prototype.find = function (name) {
     switch ( name ) {
@@ -166,42 +155,9 @@
    *  @arg {function} cb
    **/
 
-  Panel.prototype.fill = function (cb) {
-    var self = this;
+  Panel.prototype.fill            =   require('./Panel/fill');
 
-    app.socket.emit('get items', this.toJSON());
-
-    app.socket.once('got items ' + this.id, function (panel, items) {
-      
-      console.log('got items', panel, items)
-
-      self.template.find('.hide.pre').removeClass('hide');
-      self.template.find('.show.pre').removeClass('show').hide();
-
-      self.template.find('.loading-items').hide();
-
-      if ( items.length ) {
-
-        self.find('create new').hide();
-        self.find('load more').show();
-
-        if ( items.length < synapp['navigator batch size'] ) {
-          self.find('load more').hide();
-        }
-
-        self.skip += items.length;
-
-        self.insertItem(items, 0, cb);
-      }
-
-      else {
-        self.find('create new').show();
-        self.find('load more').hide();
-      }
-
-        
-    });
-  };
+  Panel.prototype.preInsertItem   =   require('./Panel/pre-insert-item');
 
   Panel.prototype.insertItem = function (items, i, cb) {
 
@@ -210,6 +166,8 @@
     if ( items[i] ) {
 
       var item  = new Item(items[i]);
+
+      console.log('inserting item ', i, item)
 
       item.load(app.domain.intercept(function (template) {
         self.find('items').append(template);

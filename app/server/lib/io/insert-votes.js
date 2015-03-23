@@ -2,21 +2,26 @@
 
   'use strict';
 
-  function insertVotes (socket, pronto, monson, domain) {
-    socket.on('insert votes', function (votes) {
-      
-      var url = 'models/Vote';
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-      monson.post(url, votes)
+  function insertVotes (votes) {
 
-        .on('error', domain.intercept(function () {}))
+    var socket = this;
 
-        .on('success', function (votes) {
-          socket.emit('inserted votes', votes);
-          socket.broadcast.emit('inserted votes', votes);
-        });
-      
-    });
+    src.domain(
+
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
+
+      function (domain) {
+        src('models/Vote')
+          .insert(votes, domain.intercept(function (votes) {
+            socket.emit('inserted votes', votes);  
+          }));
+      }
+
+    );
   }
 
   module.exports = insertVotes;

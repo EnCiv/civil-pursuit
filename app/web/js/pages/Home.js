@@ -9,7 +9,7 @@
 
   window.app = new Synapp();
 
-  app.connect(function () {
+  app.connect(function onceAppConnects_HomePage () {
     new Sign().render();
     new Intro().render();
 
@@ -17,17 +17,18 @@
 
     panel
       
-      .get(app.domain.intercept(function (template) {
+      .load(app.domain.intercept(function onGotPanels (template) {
 
         $('.panels').append(template);
 
-        setTimeout(function () {
+        setTimeout(function renderPanel_Pause () {
           panel.render(app.domain.intercept(function () {
             panel.fill();
           }));
         }, 700);
 
       }));
+  
   });
 
 } ();

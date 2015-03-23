@@ -1,226 +1,227 @@
-module.exports =(function () {
+! function () {
 
   'use strict';
 
-  var monson = require('monson')(process.env.MONGOHQ_URL, {
-      base: require('path').join(process.cwd(), 'app/business')
-    });
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-  return (
+  function twitterMiddlewares (synapp, passport) {
 
-    function twitterMiddlewares (app, synapp, passport) {
+    var app = this;
 
-      var email;
+    var email;
 
-      var callback_url = synapp.twitter[process.env.SYNAPP_ENV]['callback url'];
+    var callback_url = synapp.twitter[process.env.SYNAPP_ENV]['callback url'];
 
-      var synappUser;
+    var synappUser;
 
-      /**  Define strategy
+    var User = src('models/User');
+
+    /**  Define strategy
+     *
+     *  @function
+     *  @description Define the passport strategy for Twitter
+     *  @return void{}
+     *  @arg {Object} req - HTTP request 
+     *  @arg {Object} res - HTTP response 
+     *  @arg {Function} next - Call next() middleware in stack 
+     */
+
+    function strategyMiddleware (req, res, next) {
+
+      /**  On Access Token
        *
        *  @function
-       *  @description Define the passport strategy for Twitter
-       *  @return void{}
-       *  @arg {Object} req - HTTP request 
-       *  @arg {Object} res - HTTP response 
-       *  @arg {Function} next - Call next() middleware in stack 
+       *  @description Behavior to be triggered upon receiving access token from Twitter
+       *  @return void
+       *  @arg {Object} accessToken -  
+       *  @arg {Object} refreshToken -  
+       *  @arg {Object} profile -  
+       *  @arg {Function} done -  
        */
 
-      function strategyMiddleware (req, res, next) {
+      function onAccessToken (accessToken, refreshToken, profile, done) {
 
-        /**  On Access Token
+        /**  Associate User
          *
          *  @function
-         *  @description Behavior to be triggered upon receiving access token from Twitter
-         *  @return void
-         *  @arg {Object} accessToken -  
-         *  @arg {Object} refreshToken -  
-         *  @arg {Object} profile -  
-         *  @arg {Function} done -  
+         *  @description Associate Twitter account with Synapp account
+         *  @return void{}
+         *  @arg {Error} error - Eventual error 
+         *  @arg {Object} user - Eventual found user 
          */
 
-        function onAccessToken (accessToken, refreshToken, profile, done) {
+        function associateUser (error, user) {
 
-          /**  Associate User
-           *
-           *  @function
-           *  @description Associate Twitter account with Synapp account
-           *  @return void{}
-           *  @arg {Error} error - Eventual error 
-           *  @arg {Object} user - Eventual found user 
-           */
-
-          function associateUser (error, user) {
-
-            if ( error ) {
-              return done(error);
-            }
-
-            else if ( user ) {
-              synappUser = user;
-
-              done(null, user);
-            }
-
-            else {
-              monson.post('models/User',
-                { email: email, password: profile.id + Date.now() },
-                createUser)
-            }
+          if ( error ) {
+            return done(error);
           }
 
-          /**  Create User
-           *
-           *  @function
-           *  @description Create user if there is no associated account
-           *  @return void
-           *  @arg {Error} error - Eventual error 
-           *  @arg {Object} user - Eventual found user 
-           */
-
-          function createUser (error, user) {
-            if ( error ) {
-              app.locals.logSystemError(error);
-
-              if ( error.message && /duplicate/.test(error.message) ) {
-                return done(new Error('Duplicate user'));
-              }
-              
-              return next(error);
-            }
-
+          else if ( user ) {
             synappUser = user;
-            
+
             done(null, user);
           }
 
-          /**  Main
-           *
-           *  @function
-           *  @description Main function
-           *  @return void
-           */
-
-          function main () {
-            email = profile.id + '@twitter.com';
-
-            monson.get('models/User.findOne?email=' + email,
-              associateUser);
+          else {
+            User
+              .create({ email: email, password: profile.id + Date.now() },
+                createUser);
           }
-
-          main();
         }
 
-        function main () {
-          if ( ! app.locals.TwitterStrategy ) {
-            app.locals.TwitterStrategy = require('passport-twitter').Strategy;
-
-            var callback;
-
-            if ( req.hostname === 'localhost' ) {
-              callback = require('util').format("http://%s:%d%s",
-                req.hostname, app.get('port'), synapp.twitter[process.env.SYNAPP_ENV]['callback url']);
-            }
-
-            else {
-              callback = require('util').format("http://%s%s",
-                req.hostname, synapp.twitter[process.env.SYNAPP_ENV]['callback url'])
-            }
-
-            passport.use(
-              new app.locals.TwitterStrategy({
-                consumerKey:       synapp.twitter[process.env.SYNAPP_ENV]['key'],
-                consumerSecret:   synapp.twitter[process.env.SYNAPP_ENV]['secret'],
-                callbackURL:    callback
-              },
-              
-              onAccessToken
-            ));
-          }
-
-          next();
-        }
-
-        main();
-      }
-
-      /**  Callback middleware
-       *
-       *  @function
-       *  @description The callback middleware
-       *  @return void
-       *  @arg {Object} req - HTTP request 
-       *  @arg {Object} res - HTTP response 
-       *  @arg {Function} next - Call next() middleware in stack  
-       */
-
-      function callbackMiddleware (req, res, next) {
-        /**  Redirect middleware
+        /**  Create User
          *
          *  @function
-         *  @description Previous to last middleware, redirect to OK
+         *  @description Create user if there is no associated account
          *  @return void
-         *  @arg {Error} error? - Eventual error
-         *  @arg {Object} user? - Eventual user
-         *  @arg {Object} info? - Eventual user info
+         *  @arg {Error} error - Eventual error 
+         *  @arg {Object} user - Eventual found user 
          */
 
-        function redirectMiddleware (error, user, info) {
+        function createUser (error, user) {
           if ( error ) {
+            app.locals.logSystemError(error);
+
+            if ( error.message && /duplicate/.test(error.message) ) {
+              return done(new Error('Duplicate user'));
+            }
+            
             return next(error);
           }
 
-          res.redirect('/sign/twitter/ok');
+          synappUser = user;
+          
+          done(null, user);
         }
 
+        /**  Main
+         *
+         *  @function
+         *  @description Main function
+         *  @return void
+         */
+
         function main () {
-          passport.authenticate('twitter', redirectMiddleware)(req, res, next);
+          email = profile.id + '@twitter.com';
+
+          User.findOne({ email: email }, associateUser);
         }
 
         main();
       }
 
-      /**  OK Middleware
+      function main () {
+        if ( ! app.locals.TwitterStrategy ) {
+          app.locals.TwitterStrategy = require('passport-twitter').Strategy;
+
+          var callback;
+
+          if ( req.hostname === 'localhost' ) {
+            callback = require('util').format("http://%s:%d%s",
+              req.hostname, app.get('port'), synapp.twitter[process.env.SYNAPP_ENV]['callback url']);
+          }
+
+          else {
+            callback = require('util').format("http://%s%s",
+              req.hostname, synapp.twitter[process.env.SYNAPP_ENV]['callback url'])
+          }
+
+          passport.use(
+            new app.locals.TwitterStrategy({
+              consumerKey:       synapp.twitter[process.env.SYNAPP_ENV]['key'],
+              consumerSecret:   synapp.twitter[process.env.SYNAPP_ENV]['secret'],
+              callbackURL:    callback
+            },
+            
+            onAccessToken
+          ));
+        }
+
+        next();
+      }
+
+      main();
+    }
+
+    /**  Callback middleware
+     *
+     *  @function
+     *  @description The callback middleware
+     *  @return void
+     *  @arg {Object} req - HTTP request 
+     *  @arg {Object} res - HTTP response 
+     *  @arg {Function} next - Call next() middleware in stack  
+     */
+
+    function callbackMiddleware (req, res, next) {
+      /**  Redirect middleware
        *
        *  @function
-       *  @description Last middleware, the OK Middleware
+       *  @description Previous to last middleware, redirect to OK
        *  @return void
-       *  @arg {Object} req - HTTP request 
-       *  @arg {Object} res - HTTP response 
-       *  @arg {Function} next - Call next() middleware in stack 
+       *  @arg {Error} error? - Eventual error
+       *  @arg {Object} user? - Eventual user
+       *  @arg {Object} info? - Eventual user info
        */
 
-      function okMiddleware (req, res, next) {
+      function redirectMiddleware (error, user, info) {
+        if ( error ) {
+          return next(error);
+        }
 
-        res.cookie('synuser', {
-            email: synappUser.email,
-            id: synappUser.id
-          }, synapp.cookie);
-
-        res.redirect('/');
+        res.redirect('/sign/twitter/ok');
       }
 
-      /**  Apply routes
-       *
-       *  @function
-       *  @description Attach routes to Express app
-       *  @return void{}
-       */
-
-      function applyRoutes () {
-        app.get(synapp.public.routes['sign in with Twitter'],
-          strategyMiddleware,
-          passport.authenticate('twitter'));
-
-        app.get(callback_url, callbackMiddleware);
-
-        app.get(synapp.public.routes['sign in with Twitter OK'], okMiddleware);
+      function main () {
+        passport.authenticate('twitter', redirectMiddleware)(req, res, next);
       }
 
-      /** Apply routes */
+      main();
+    }
 
-      applyRoutes();
-    
-    });
+    /**  OK Middleware
+     *
+     *  @function
+     *  @description Last middleware, the OK Middleware
+     *  @return void
+     *  @arg {Object} req - HTTP request 
+     *  @arg {Object} res - HTTP response 
+     *  @arg {Function} next - Call next() middleware in stack 
+     */
 
-}) ();
+    function okMiddleware (req, res, next) {
+
+      res.cookie('synuser', {
+          email: synappUser.email,
+          id: synappUser.id
+        }, synapp.cookie);
+
+      res.redirect('/');
+    }
+
+    /**  Apply routes
+     *
+     *  @function
+     *  @description Attach routes to Express app
+     *  @return void{}
+     */
+
+    function applyRoutes () {
+      app.get(synapp.public.routes['sign in with Twitter'],
+        strategyMiddleware,
+        passport.authenticate('twitter'));
+
+      app.get(callback_url, callbackMiddleware);
+
+      app.get(synapp.public.routes['sign in with Twitter OK'], okMiddleware);
+    }
+
+    /** Apply routes */
+
+    applyRoutes();
+  
+  }
+
+  module.exports = twitterMiddlewares;
+
+} ();

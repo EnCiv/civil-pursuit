@@ -12,6 +12,7 @@ block script-backend
     var synapp = !{JSON.stringify(synapp.public)};
     synapp.env = "!{settings.env}";
     synapp.user = "!{(req.user && req.user.id)}";
+    synapp.protocol = "!{protocol}";
 
 //- socketio
 block script-socketio
@@ -28,7 +29,7 @@ block script-jquery
     script(src='/js/jQuery.b.js')
 
   - else
-    script(src='/bower/jquery/dist/jquery.js')
+    script(src='/bower_components/jquery/dist/jquery.js')
     script(src='/js/jQuery.b.js')
 
 block script-app
@@ -47,30 +48,30 @@ block script-app
 
 block script-rangeslider
   - if ( settings.env === 'production' )
-    script(src='/bower/rangeslider.js/dist/rangeslider.min.js')
+    script(src='/bower_components/rangeslider.js/dist/rangeslider.min.js')
   - else
-    script(src='/bower/rangeslider.js/dist/rangeslider.js')
+    script(src='/bower_components/rangeslider.js/dist/rangeslider.js')
 
 block script-d3
   - if ( settings.env === 'production' )
-    script(src='/bower/d3/d3.min.js')
+    script(src='/bower_components/d3/d3.min.js')
   - else
-    script(src='/bower/d3/d3.js')
+    script(src='/bower_components/d3/d3.js')
     //- script(src='http://d3js.org/d3.v3.min.js' charset='utf-8')
 
 block script-c3
   - if ( settings.env === 'production' )
-    script(src='/bower/c3/c3.min.js')
+    script(src='/bower_components/c3/c3.min.js')
   - else
-    script(src='/bower/c3/c3.js')
+    script(src='/bower_components/c3/c3.js')
 
 block script-vex
   script(src='/assets/vex-2.2.1/js/vex.combined.min.js')
 
 block script-goal-progress
-  script(src='/bower/goalProgress/goalProgress.js')
+  script(src='/bower_components/goalProgress/goalProgress.js')
 
-//- script(src='/bower/bootstrap/dist/js/bootstrap.min.js')
+//- script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
 
 //- script(src='/js/Bootstrap.b.js')
 

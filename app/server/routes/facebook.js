@@ -2,6 +2,8 @@ module.exports = (function () {
 
   'use strict';
 
+  var src = require(require('path').join(process.cwd(), 'src'));
+
   /**  Facebook
    *
    *  @function
@@ -12,13 +14,13 @@ module.exports = (function () {
    *  @arg {Passport} passport
    */
 
-  return (function facebookPassport (app, synapp, passport) {
+  return (function facebookPassport (synapp, passport) {
+
+    var app = this;
 
     var callback_url = synapp.facebook['callback url'];
 
-    var monson = require('monson')(process.env.MONGOHQ_URL, {
-      base: require('path').join(process.cwd(), 'app/business')
-    });
+    var User = src('models/User');
 
     var synappUser;
     
@@ -39,9 +41,7 @@ module.exports = (function () {
           }
 
           else {
-            monson.post('models/User',
-              { email: email, password: profile.id + Date.now() },
-              createUser);
+            User.create({ email: email, password: profile.id + Date.now() }, createUser);
           }
         }
 
@@ -61,8 +61,7 @@ module.exports = (function () {
 
         var email = profile.id + '@facebook.com';
 
-        monson.get('models/User.findOne?email=' + email,
-            associateUser);
+        User.findOne({ email: email }, associateUser);
 
       }
 

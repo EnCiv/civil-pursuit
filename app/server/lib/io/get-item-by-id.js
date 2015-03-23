@@ -2,29 +2,28 @@
 
   'use strict';
 
-  function getItemById (socket, pronto, monson) {
-    socket.on('get item by id', function (id, cb) {
-      
-      var url = 'models/Item.findById/' + id;
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-      monson.get(url)
+  function getItemById (id) {
 
-        .on('error', function (error) {
-          if ( typeof cb === 'function' ) {
-            cb(error);
-          }
-          throw error;
-        })
+    var socket = this;
 
-        .on('success', function (item) {
-          socket.emit('got item by id', item);
+    src.domain(
 
-          if ( typeof cb === 'function' ) {
-            cb(null, item);
-          }
-        });
-      
-    });
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
+
+      function (domain) {
+        src('models/Item')
+          .findById(id)
+          .lean()
+          .exec(domain.intercept(function (item) {
+            socket.emit('got item by id', item);  
+          }));
+      }
+
+    );
   }
 
   module.exports = getItemById;

@@ -57,7 +57,7 @@
       console.error(error);
     });
 
-    this.socket = io.connect('http://' + location.hostname + ':' + location.port);
+    this.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
 
     this.socket.once('connect', function () {
       self.emit('connect');

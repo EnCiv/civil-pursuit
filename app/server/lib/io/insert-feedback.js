@@ -2,23 +2,28 @@
 
   'use strict';
 
-  function uploadImage (socket, pronto, monson, domain) {
-    socket.on('insert feedback', function (feedback) {
-      
-      var url = 'models/Feedback';
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-      monson.post(url, feedback)
+  function insertFeedback (feedback) {
 
-        .on('error', domain.intercept(function () {}))
+    var socket = this;
 
-        .on('success', function (feedback) {
-          socket.emit('inserted feedback', feedback);
-          socket.broadcast.emit('inserted feedback', feedback);
-        });
-      
-    });
+    src.domain(
+
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
+
+      function (domain) {
+        src('models/Feedback')
+          .insert(feedback, domain.intercept(function (inserted) {
+            socket.emit('inserted feedback', inserted);  
+          }));
+      }
+
+    );
   }
 
-  module.exports = uploadImage;
+  module.exports = insertFeedback;
 
 } ();

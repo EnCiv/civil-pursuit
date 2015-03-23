@@ -30,13 +30,27 @@
     });
   }
 
+  /** Load template */
+
   Item.prototype.load       =   require('./Item/load');
+
+  /** DOM finder */
 
   Item.prototype.find       =   require('./Item/find');
 
+  /** Render method */
+
   Item.prototype.render     =   require('./Item/render');
 
+  /** Resolve item's media */
+
   Item.prototype.media      =   require('./Item/media');
+
+  /** Template cache */
+
+  Item.cache = {
+    template: undefined
+  };
 
   module.exports = Item;
 

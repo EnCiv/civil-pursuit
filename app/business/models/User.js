@@ -52,21 +52,19 @@
 
     var self = this;
 
-    var cloudinary = require('cloudinary');
-          
-    cloudinary.config({ 
-      cloud_name      :   config.cloudinary.cloud.name, 
-      api_key         :   config.cloudinary.API.key, 
-      api_secret      :   config.cloudinary.API.secret 
+    src.domain.nextTick(cb, function (domain) {
+      var cloudinary = require('cloudinary');
+            
+      cloudinary.config({ 
+        cloud_name      :   config.cloudinary.cloud.name, 
+        api_key         :   config.cloudinary.API.key, 
+        api_secret      :   config.cloudinary.API.secret 
+      });
+
+      cloudinary.uploader.upload(path.join(config.tmp, image), function (result) {
+        self.update({ _id: id }, { image: result.url }, cb);
+      });
     });
-
-    cloudinary.uploader.upload(path.join(config.tmp, image), function (result) {
-      self.update({ _id: id }, { image: result.url }, cb);
-    });
-
-    // var imageStream = require('fs').createReadStream(path.join(config.tmp, image), { encoding: 'binary' });
-
-    // imageStream.pipe(stream);
   };
 
   UserSchema.statics.addRace              =   require('./User/add-race');

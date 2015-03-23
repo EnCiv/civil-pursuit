@@ -2,24 +2,26 @@
 
   'use strict';
 
-  function createItem (socket, pronto, monson, domain) {
-    
-    socket.on('create item', function (item) {
-      
-      var url = 'models/Item';
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-      monson.post(url, item)
+  function createItem (item) {
 
-        .on('error', domain.bind(function (error) {
-          socket.emit('could not create item', error);
-        }))
+    var socket = this;
 
-        .on('success', function (item) {
-          pronto.emit('message', 'socket created item from monson');
-          socket.emit('created item', item);
-        });
-      
-    });
+    src.domain(
+
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
+
+      function (domain) {
+        scr('models/Item')
+          .insert(item, domain.intercept(function (item) {
+            socket.emit('created item', item);  
+          }));
+      }
+
+    );
   
   }
 

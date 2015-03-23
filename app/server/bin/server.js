@@ -12,48 +12,48 @@
   var when        =   pronto.when;
 
   src('models/Config')
-    .find()
+    .findOne()
     .lean()
     .exec(function (error, config) {
+      
       if ( error ) {
         throw error;
       }
 
-      var server = pronto({ debug: true });
+      var express = require('express');
+      var app = express();
+      var cookieParser = require('cookie-parser');
+      var session = require('express-session');
+      var passport = require('passport');
+      var cache = require('express-redis-cache')();
 
-      server.inject('synapp', src('config'));
+      ! function emitter () {
 
-      server.inject('config', config[0]);
+        app.arte = new (require('events').EventEmitter)();
 
-      server.on('listening', function (service) {
-        src('io')(server);
-      })
+        app.arte.on('error', function (error) {
+          console.log(error.stack.split(/\n/));
+        });
 
-      server.on('error', function (error) {
-        console.log('error', error.stack);
-      });
+        app.arte.on('message', function (message) {
+          console.log(message);
+        });
 
-      ! function _cookies () {
-        server.cookie(src('config').secret);
+      } ();
 
-        server.app.use(require('cookie-parser')(src('config').secret));
-        // server.app.use(require('cookie-parser'));
-      }();
+      ! function configureApp () {
 
-      ! function _session () {
-        var session       =   require('express-session');
+        app.set('port', process.env.PORT || 3012);
+        app.set('view engine', 'jade');
+        app.set('views', 'app/web/views');
 
-        server.app.use(session({
-          secret:             src('config').secret,
-          resave:             true,
-          saveUninitialized:  true
-        }));
-      }();
+        if (app.get('env') === 'development') {
+          app.locals.pretty = true;
+        }
 
-      ! function _passport () {
-        var passport    =   require('passport');
-        
-        server.open(passport.initialize());
+      } ();
+
+      ! function usePassport () {
 
         passport.serializeUser(function(user, done) {
           done(null, user._id);
@@ -63,46 +63,110 @@
           src('models/User').findById(id, done);
         });
 
-        ! function _twitter () {
-          require('../routes/twitter')(server.app, src('config'), passport);
-        }();
+      } ();
 
-        ! function _facebook () {
-          require('../routes/facebook')(server.app, src('config'), passport);
-        }();
-      }();
+      ! function routesAndMiddlewares () {
 
-      ! function _initPipeLine () {
-        server.open(function synMiddleware_preRouter (req, res, next) {
+        app
 
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log(req.cookies)
-          console.log()
-          console.log()
-          console.log()
-          console.log(req.signedCookies)
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
-          console.log()
+          .use(cookieParser(src('config').secret))
 
-          req.user = req.signedCookies.synuser;
-          next();
-        }, when('/*'));
-      }();
+          .use(session({
+            secret:             src('config').secret,
+            resave:             true,
+            saveUninitialized:  true
+          }))
 
-      src('server/lib/routes')(server);
+          .use(passport.initialize())
+
+          .use(function initPipeLine (req, res, next) {
+
+            console.log('cookies', req.cookies, req.signedCookies);
+
+            req.user            =   req.signedCookies.synuser;
+            res.locals.req      =   req;
+            res.locals.synapp   =   src('config');
+            res.locals.config   =   config;
+            res.locals.protocol =   process.env.SYNAPP_PROTOCOL;
+            res.locals.package  =   src('package.json');
+            next();
+          });
+
+        ! function thirdParties () {
+
+          require('../routes/twitter').apply(app, [src('config'), passport]);
+          require('../routes/facebook').apply(app, [src('config'), passport]);
+
+        } ();
+
+        app
+
+          .get('/',
+            // cache.route('synapp:homepage', (1000 * 60 * 60)),
+            function landingPage (req, res, next) {
+              res.render('pages/index.jade')
+            })
+
+          .get('/partial/:partial', function getPartial (req, res, next) {
+            res.render('partials/' + req.params.partial);
+          })
+
+          .get('/page/:page', function getPage (req, res, next) {
+            res.locals.page = req.params.page || 'index';
+            res.render('pages/' + req.params.page + '.jade');
+          })
+
+          .get('/item/:item_id/:item_slug', require('../routes/item'))
+
+          .all('/sign/in', require('../routes/sign-in'))
+
+          .all('/sign/up', require('../routes/sign-up'))
+
+          .all('/sign/out', require('../routes/sign-out'))
+
+          .use(express.static('app/web/dist'))
+
+          .use(function onRouteError (err, req, res, next) {
+            console.log('error', err.stack.split(/\n/));
+          })
+
+          .use(function notFound (req, res, next) {
+            res.render('pages/not-found.jade');
+          })
+
+        ;
+
+      } ();
+
+      
+      ! function startServer () {
+
+        var server;
+
+        if ( process.env.SYNAPP_PROTOCOL === 'https' ) {
+          if ( app.get('env') === 'development' ) {
+            var hskey = require('fs').readFileSync(require('path').join(process.cwd(), 'synaccord-key.pem'));
+            var hscert = require('fs').readFileSync(require('path').join(process.cwd(), 'synaccord-cert.pem'));
+
+            var options = {
+              key: hskey,
+              cert: hscert
+            };
+
+            server = require('https').createServer(options, app);
+          }
+        }
+
+        else {
+          server = require('http').createServer(app);
+        }
+
+        server.listen(app.get('port'), function () {
+          console.log("Server is listening on port: " + app.get('port'));
+          src('io')(app, server);
+        });
+
+      } ();
 
     });
 

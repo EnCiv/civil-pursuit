@@ -2,23 +2,26 @@
 
   'use strict';
 
-  function saveUserImage (socket, pronto, monson, domain) {
-    
-    socket.on('save user image', function (user, image) {
-      
-      var url = 'models/User.saveImage/' + user + '/' + image;
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-      monson.get(url)
+  function saveUserImage (user_id, image) {
 
-        .on('error', domain.bind(function (error) {
-          socket.emit('could not save user image', error);
-        }))
+    var socket = this;
 
-        .on('success', function (item) {
-          socket.emit('saved user image', item);
-        });
-      
-    });
+    src.domain(
+
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
+
+      function (domain) {
+        src('models/User')
+          .saveImage(user_id, image, domain.intercept(function (user) {
+            socket.emit('saved user image', user);
+          }));
+      }
+
+    );
   
   }
 

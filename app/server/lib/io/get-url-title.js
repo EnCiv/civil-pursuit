@@ -1,32 +1,27 @@
 ! function () {
 
   'use strict';
+
+  var src = require(require('path').join(process.cwd(), 'src'));
  
-  function getUrlTitle (socket, pronto, monson, domain) {
-    socket.on('get url title', function (url, cb) {
-      
-      require('../../../business/lib/get-url-title')(url,
-        domain.bind(function (error, title) {
+  function getUrlTitle (url) {
 
-          if ( error ) {
-            socket.emit('could not get url title', url);
+    var socket = this;
 
-            if ( typeof cb === 'function' ) {
-              cb(error);
-            }
-          }
+    src.domain(
 
-          else {
-            socket.emit('got url title', { url: url, title: title });
-            
-            if ( typeof cb === 'function' ) {
-              cb(null, { url: url, title: title });
-            }
-          }
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
 
+      function (domain) {
+        src('lib/get-url-title')(url, domain.intercept(function (title) {
+          socket.emit('got url title', url);
         }));
-      
-    });
+      }
+
+    );
+    
   }
 
   module.exports = getUrlTitle;

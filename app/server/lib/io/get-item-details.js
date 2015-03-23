@@ -2,24 +2,27 @@
 
   'use strict';
 
-  function getItemDetails (socket, pronto, monson, domain) {
-    socket.on('get item details', function (item, cb) {
-      
-      var url = 'models/Item.details/' + item;
+  var src = require(require('path').join(process.cwd(), 'src'));
 
-      monson.get(url)
+  function getItemDetails (id) {
 
-        .on('error', domain.intercept(function () {}))
+    var socket = this;
 
-        .on('success', function (details) {
-          socket.emit('got item details', details);
+    src.domain(
 
-          if ( typeof cb === 'function' ) {
-            cb(null, details);
-          }
-        });
+      function (error) {
+        socket.app.arte.emit('error', error);
+      },
 
-    });
+      function (domain) {
+        src('models/Item')
+          .details(id, domain.intercept(function (details) {
+            socket.emit('got item details', details);  
+          }));
+      }
+
+    );
+    
   }
 
   module.exports = getItemDetails;

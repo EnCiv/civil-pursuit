@@ -2,14 +2,18 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
   function load (cb) {
     var item = this;
+
+    if ( app.cache.template.item ) {
+      item.template = $(app.cache.template.item[0].outerHTML);
+      
+      if ( cb ) {
+        cb(null, item.template);
+      }
+
+      return;
+    }
 
     $.ajax({
       url: '/partial/item'

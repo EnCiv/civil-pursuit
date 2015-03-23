@@ -1,0 +1,19 @@
+/**
+ * @copyright   2010-2015, The Titon Project
+ * @license     http://opensource.org/licenses/BSD-3-Clause
+ * @link        http://titon.io
+ */
+
+@import "../common";
+
+#{$pin-class} {
+    position: absolute;
+}
+
+#{$pin-class}.sticky {
+    transition: top .6s ease-in-out, right $pin-transition ease-in-out, left $pin-transition ease-in-out;
+}
+
+#{$pin-class}.slide {
+    transition: top $pin-transition linear, right $pin-transition linear, left $pin-transition linear;
+}

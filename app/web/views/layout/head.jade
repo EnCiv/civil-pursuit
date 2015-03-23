@@ -36,8 +36,8 @@ block stylesheets
     link(rel='stylesheet' href='/css/normalize.css')
 
   block stylesheet-vex
-    link(rel='stylesheet' href='/assets/vex-2.2.1/css/vex.css')
-    link(rel='stylesheet' href='/assets/vex-2.2.1/css/vex-theme-flat-attack.css')
+    //- link(rel='stylesheet' href='/assets/vex-2.2.1/css/vex.css')
+    //- link(rel='stylesheet' href='/assets/vex-2.2.1/css/vex-theme-flat-attack.css')
 
   block css-app
     - if ( settings.env === 'production' )
@@ -49,7 +49,7 @@ block stylesheets
   //- Font Awesome
   block stylesheet-font-awesome
     link(rel='stylesheet' 
-      href=(( settings.env === 'production' ) ? synapp['font awesome'].cdn : '/bower/font-awesome/css/font-awesome.css' ))
+      href=(( settings.env === 'production' ) ? synapp['font awesome'].cdn : '/bower_components/font-awesome/css/font-awesome.css' ))
 
   //- C3 CSS
   block css-c3
@@ -57,7 +57,7 @@ block stylesheets
       link(rel='stylesheet' href='/css/c3.min.css')
     
     - else
-      link(rel='stylesheet' href='/bower/c3/c3.css')
+      link(rel='stylesheet' href='/bower_components/c3/c3.css')
 
   //- Toolkit
   block css-toolkit
@@ -65,7 +65,7 @@ block stylesheets
 
   //- goal progress
   block css-goal-progress
-    link(rel='stylesheet' href='/bower/goalProgress/goalProgress.css')
+    link(rel='stylesheet' href='/bower_components/goalProgress/goalProgress.css')
 
   block gooogle-fonts
-    link(href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css')
+    link(href=protocol + '://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css')
