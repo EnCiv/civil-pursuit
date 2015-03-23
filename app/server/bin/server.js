@@ -151,7 +151,7 @@
             res.locals.req      =   req;
             res.locals.synapp   =   src('config');
             res.locals.config   =   config;
-            res.locals.protocol =   process.env.SYNAPP_PROTOCOL;
+            res.locals.protocol =   process.env.SYNAPP_PROTOCOL || 'http';
             res.locals.package  =   src('package.json');
 
             res.superRender     =   function superRender (tpl, options) {
