@@ -39,6 +39,70 @@
           console.log(message);
         });
 
+        app.arte.on('request', function (req) {
+
+          var d = new Date();
+
+          var hours = d.getHours();
+
+          if ( hours < 10 ) {
+            hours = '0' + hours;
+          }
+
+          var minutes = d.getMinutes();
+
+          if ( minutes < 10 ) {
+            minutes = '0' + minutes;
+          }
+
+          var seconds = d.getMinutes();
+
+          if ( seconds < 10 ) {
+            seconds = '0' + seconds;
+          }
+
+          var user = 'visitor'.magenta;
+
+          console.log([hours, minutes, seconds].join(':').cyan, user, '...'.grey, req.method.grey, req.url.grey);
+        });
+
+        app.arte.on('response', function (res) {
+
+          var d = new Date();
+
+          var hours = d.getHours();
+
+          if ( hours < 10 ) {
+            hours = '0' + hours;
+          }
+
+          var minutes = d.getMinutes();
+
+          if ( minutes < 10 ) {
+            minutes = '0' + minutes;
+          }
+
+          var seconds = d.getMinutes();
+
+          if ( seconds < 10 ) {
+            seconds = '0' + seconds;
+          }
+
+          var user = 'visitor'.magenta;
+
+          var color = 'grey';
+
+          if ( res.statusCode.toString().substr(0, 1) === '3' ) {
+            color = 'cyan';
+          }
+
+          else if ( res.statusCode.toString().substr(0, 1) === '4' ) {
+            color = 'yellow';
+          }
+
+          console.log([hours, minutes, seconds].join(':').cyan, user, res.statusCode.toString()[color], res.req.method[color], res.req.url[color]);
+        });
+
       } ();
 
       ! function configureApp () {
@@ -69,19 +133,19 @@
 
         app
 
-          .use(cookieParser(src('config').secret))
+          .use(
+            cookieParser(src('config').secret))
 
-          .use(session({
-            secret:             src('config').secret,
-            resave:             true,
-            saveUninitialized:  true
-          }))
+          .use(
+            session({
+              secret:             src('config').secret,
+              resave:             true,
+              saveUninitialized:  true
+            }))
 
           .use(passport.initialize())
 
           .use(function initPipeLine (req, res, next) {
-
-            console.log('cookies', req.cookies, req.signedCookies);
 
             req.user            =   req.signedCookies.synuser;
             res.locals.req      =   req;
@@ -89,7 +153,16 @@
             res.locals.config   =   config;
             res.locals.protocol =   process.env.SYNAPP_PROTOCOL;
             res.locals.package  =   src('package.json');
+
+            res.superRender     =   function superRender (tpl, options) {
+              res.render(tpl, options);
+              app.arte.emit('response', res);
+            };
+
+            app.arte.emit('request', req);
+
             next();
+
           });
 
         ! function thirdParties () {
@@ -104,19 +177,25 @@
           .get('/',
             // cache.route('synapp:homepage', (1000 * 60 * 60)),
             function landingPage (req, res, next) {
-              res.render('pages/index.jade')
+              res.superRender('pages/index.jade')
             })
 
           .get('/partial/:partial', function getPartial (req, res, next) {
-            res.render('partials/' + req.params.partial);
+            res.superRender('partials/' + req.params.partial);
           })
 
           .get('/page/:page', function getPage (req, res, next) {
             res.locals.page = req.params.page || 'index';
-            res.render('pages/' + req.params.page + '.jade');
+            res.superRender('pages/' + req.params.page + '.jade');
           })
 
-          .get('/item/:item_id/:item_slug', require('../routes/item'))
+          /** Item's page */
+
+          .get('/item/:item_id/:item_slug',
+            require('../routes/item'),
+            function renderItem (req, res, next) {
+              res.superRender('pages/item.jade');
+            })
 
           .all('/sign/in', require('../routes/sign-in'))
 
@@ -131,7 +210,8 @@
           })
 
           .use(function notFound (req, res, next) {
-            res.render('pages/not-found.jade');
+            res.status(404);
+            res.superRender('pages/not-found.jade');
           })
 
         ;
