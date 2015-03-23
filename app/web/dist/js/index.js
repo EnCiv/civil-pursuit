@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/web/js/Creator.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -75,7 +75,7 @@
 
 } ();
 
-},{"./Creator/create":"/home/francois/Dev/syn/app/web/js/Creator/create.js","./Creator/created":"/home/francois/Dev/syn/app/web/js/Creator/created.js","./Creator/pack-item":"/home/francois/Dev/syn/app/web/js/Creator/pack-item.js","./Creator/render":"/home/francois/Dev/syn/app/web/js/Creator/render.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js"}],"/home/francois/Dev/syn/app/web/js/Creator/create.js":[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":21}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -161,7 +161,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../Stream":"/home/francois/Dev/syn/app/web/js/Stream.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/app/web/js/Creator/created.js":[function(require,module,exports){
+},{"../Item":12,"../Nav":20,"../Stream":35,"_process":44}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -203,7 +203,7 @@
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Creator/pack-item.js":[function(require,module,exports){
+},{"../Item":12}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -264,7 +264,7 @@
 
 } ();
           synapp.user
-},{}],"/home/francois/Dev/syn/app/web/js/Creator/render.js":[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -341,7 +341,7 @@
 
 } ();
 
-},{"../Form":"/home/francois/Dev/syn/app/web/js/Form.js","../Upload":"/home/francois/Dev/syn/app/web/js/Upload.js","../YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Details.js":[function(require,module,exports){
+},{"../Form":10,"../Upload":38,"../YouTube":39}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -603,7 +603,7 @@
 
 } ();
 
-},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit.js":[function(require,module,exports){
+},{"./Edit":7,"./Item":12,"./Nav":20}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -754,7 +754,7 @@
 
 } ();
 
-},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Edit/save":"/home/francois/Dev/syn/app/web/js/Edit/save.js","./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit/save.js":[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":8,"./Form":10,"./Item":12,"./Nav":20}],8:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -812,7 +812,7 @@
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Forgot-Password.js":[function(require,module,exports){
+},{"../Item":12,"../Nav":20}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -878,7 +878,7 @@
 
 } ();
 
-},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Form.js":[function(require,module,exports){
+},{"./Form":10,"domain":41}],10:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -965,7 +965,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Intro.js":[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1026,7 +1026,7 @@
 
 } ();
 
-},{"./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./ReadMore":"/home/francois/Dev/syn/app/web/js/ReadMore.js","./Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js"}],"/home/francois/Dev/syn/app/web/js/Item.js":[function(require,module,exports){
+},{"./Item":12,"./ReadMore":33,"./Truncate":37}],12:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1085,7 +1085,7 @@
 
 } ();
 
-},{"./Item/find":"/home/francois/Dev/syn/app/web/js/Item/find.js","./Item/load":"/home/francois/Dev/syn/app/web/js/Item/load.js","./Item/media":"/home/francois/Dev/syn/app/web/js/Item/media.js","./Item/render":"/home/francois/Dev/syn/app/web/js/Item/render.js"}],"/home/francois/Dev/syn/app/web/js/Item/find.js":[function(require,module,exports){
+},{"./Item/find":13,"./Item/load":14,"./Item/media":15,"./Item/render":16}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1138,7 +1138,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Item/load.js":[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1177,7 +1177,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Item/media.js":[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1252,7 +1252,7 @@
 
 } ();
 
-},{"../YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Item/render.js":[function(require,module,exports){
+},{"../YouTube":39}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1533,7 +1533,7 @@
 
 } ();
 
-},{"../Details":"/home/francois/Dev/syn/app/web/js/Details.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","../Promote":"/home/francois/Dev/syn/app/web/js/Promote.js","../ReadMore":"/home/francois/Dev/syn/app/web/js/ReadMore.js","../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","../Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js","./view/toggle-promote":"/home/francois/Dev/syn/app/web/js/Item/view/toggle-promote.js","string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/app/web/js/Item/view/toggle-promote.js":[function(require,module,exports){
+},{"../Details":6,"../Nav":20,"../Panel":21,"../Promote":26,"../ReadMore":33,"../Sign":34,"../Truncate":37,"./view/toggle-promote":17,"string":47}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1625,7 +1625,7 @@
 
 } ();
 
-},{"../../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Join.js":[function(require,module,exports){
+},{"../../Nav":20,"../../Sign":34}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1712,7 +1712,7 @@
 
 } ();
 
-},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Login.js":[function(require,module,exports){
+},{"./Form":10,"domain":41}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1785,7 +1785,7 @@
 
 } ();
 
-},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Nav.js":[function(require,module,exports){
+},{"./Form":10,"./Nav":20,"domain":41}],20:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2138,7 +2138,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Panel.js":[function(require,module,exports){
+},{"_process":44,"domain":41,"events":42}],21:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2293,7 +2293,7 @@
 
 } ();
 
-},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Panel/fill":"/home/francois/Dev/syn/app/web/js/Panel/fill.js","./Panel/load":"/home/francois/Dev/syn/app/web/js/Panel/load.js","./Panel/pre-insert-item":"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js","./Panel/render":"/home/francois/Dev/syn/app/web/js/Panel/render.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Panel/fill.js":[function(require,module,exports){
+},{"./Creator":1,"./Item":12,"./Nav":20,"./Panel/fill":22,"./Panel/load":23,"./Panel/pre-insert-item":24,"./Panel/render":25,"./Sign":34}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2340,7 +2340,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Panel/load.js":[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2379,7 +2379,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js":[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2440,7 +2440,7 @@
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Panel/render.js":[function(require,module,exports){
+},{"../Item":12}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2487,7 +2487,7 @@
 
 } ();
 
-},{"../Creator":"/home/francois/Dev/syn/app/web/js/Creator.js"}],"/home/francois/Dev/syn/app/web/js/Promote.js":[function(require,module,exports){
+},{"../Creator":1}],26:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2640,7 +2640,7 @@
 
 } ();
 
-},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Promote/find":"/home/francois/Dev/syn/app/web/js/Promote/find.js","./Promote/finish":"/home/francois/Dev/syn/app/web/js/Promote/finish.js","./Promote/get":"/home/francois/Dev/syn/app/web/js/Promote/get.js","./Promote/render":"/home/francois/Dev/syn/app/web/js/Promote/render.js","./Promote/render-item":"/home/francois/Dev/syn/app/web/js/Promote/render-item.js","./Promote/save":"/home/francois/Dev/syn/app/web/js/Promote/save.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Promote/find.js":[function(require,module,exports){
+},{"./Edit":7,"./Item":12,"./Nav":20,"./Promote/find":27,"./Promote/finish":28,"./Promote/get":29,"./Promote/render":31,"./Promote/render-item":30,"./Promote/save":32,"events":42}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2691,7 +2691,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Promote/finish.js":[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2736,7 +2736,7 @@
 
 } ();
 
-},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/get.js":[function(require,module,exports){
+},{"../Nav":20}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2793,7 +2793,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Promote/render-item.js":[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2969,7 +2969,7 @@
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/render.js":[function(require,module,exports){
+},{"../Item":12,"../Nav":20}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3041,7 +3041,7 @@
 
 } ();
 
-},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/save.js":[function(require,module,exports){
+},{"../Nav":20}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3099,7 +3099,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/ReadMore.js":[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3266,7 +3266,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Sign.js":[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3449,7 +3449,7 @@
 
 } ();
 
-},{"./Forgot-Password":"/home/francois/Dev/syn/app/web/js/Forgot-Password.js","./Join":"/home/francois/Dev/syn/app/web/js/Join.js","./Login":"/home/francois/Dev/syn/app/web/js/Login.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Stream.js":[function(require,module,exports){
+},{"./Forgot-Password":9,"./Join":18,"./Login":19,"./Nav":20}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3488,7 +3488,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Synapp.js":[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3622,7 +3622,7 @@
 
 } ();
 
-},{"./Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/Truncate.js":[function(require,module,exports){
+},{"./Intro":11,"./Panel":21,"./Sign":34,"domain":41,"events":42,"util":46}],37:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3845,7 +3845,7 @@
 
 }();
 
-},{"./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Upload.js":[function(require,module,exports){
+},{"./Nav":20}],38:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3931,7 +3931,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/YouTube.js":[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4050,7 +4050,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/pages/Home.js":[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4086,7 +4086,7 @@
 
 } ();
 
-},{"../Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","../Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","../Synapp":"/home/francois/Dev/syn/app/web/js/Synapp.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"../Intro":11,"../Panel":21,"../Sign":34,"../Synapp":36}],41:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4154,7 +4154,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{"events":42}],42:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4457,7 +4457,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4482,7 +4482,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4570,14 +4570,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5167,7 +5167,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
+},{"./support/isBuffer":45,"_process":44,"inherits":43}],47:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6201,4 +6201,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},["/home/francois/Dev/syn/app/web/js/pages/Home.js"]);
+},{}]},{},[40]);
