@@ -25,7 +25,7 @@
       var cookieParser = require('cookie-parser');
       var session = require('express-session');
       var passport = require('passport');
-      var cache = require('express-redis-cache')();
+      // var cache = require('express-redis-cache')();
 
       ! function emitter () {
 
