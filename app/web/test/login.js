@@ -3,8 +3,11 @@
   'use strict';
 
   var _ = {
-    'toggle creator':                       'h4.toggle-creator',
-    'creator':                              '.creator'
+    'login button'      :     '.login-button',
+    'vex'               :     '.vex',
+    'email'             :     '.vex input[name="email"][type="email"][required]',
+    'password'          :     '.vex input[name="password"][type="password"][required]',
+    'submit'            :     '.vex .login-submit'
   };
 
   function __ (n) {
@@ -30,46 +33,47 @@
       });
     },
 
-    "Create topic" : function (browser) {
+    "Login" : function (browser) {
       
 
       browser.url(process.env.SYNAPP_SELENIUM_TARGET);
-
-      browser.setCookie({
-        name     : "synuser",
-        value    : JSON.stringify({ email: testUser.email, id: testUser._id }),
-        // path     : "/", 
-        // domain   : "example.org", 
-        secure   : false,
-        // httpOnly : false, // (Optional)
-        // expiry   : 1395002765 // (Optional) time in seconds since midnight, January 1, 1970 UTC
-      }, function () {
-        console.log(arguments)
-      });
-
-      browser.refresh();
         
-      browser.waitForElementVisible(           'body', 1000)
+      browser.waitForElementVisible(      'body', 500, "Page is visible")
 
-        // // There is a toggle creator icon
+        .assert.elementPresent(__(        'login button'), "There is a login button")
 
-        // .waitForElementVisible(__(        'toggle creator'), 5000, "Toggle creator is present")
+        .click(__(                        'login button'))
 
-        // // Click toggle creator
-        
-        // .click(__(                        'toggle creator'))
+        .waitForElementVisible(__(        'vex'), 500, "After clicking on login button, there should be a login panel")
 
-        // // Wait for panel creator to show up
+        .assert.elementPresent(__(        'email'), "There should be an input field to enter email")
 
-        // .waitForElementVisible(__(        'creator'), 2000)
+        .assert.elementPresent(__(        'password'), "There should be an input field to enter password")
 
-        .pause(60000)
+        .assert.elementPresent(__(        'submit'), "There should be a submit button")
+
+        .click(__(                        'submit'))
+
+        .assert.cssClassPresent(__(       'email'), 'error', "After clicking on the submit button, email input should be have the CSS class error (because it's empty)")
+
+        .setValue(__(                     'email'), 'fake-em@il.com')
+
+        .click(__(                        'submit'))
+
+        .assert.cssClassPresent(__(       'password'), 'error', "After clicking on the submit button, password input should be have the CSS class error (because it's empty)")
+
+        .setValue(__(                     'password'), '1234')
+
+        .click(__(                        'submit'))
+
+        .pause(2500)
         
         .end();
     },
 
     "after": function (browser, done) {
       testUser.remove(done);
+      require('mongoose').disconnect();
     }
   };
 

@@ -24,7 +24,7 @@
   "cookie":{
     
     "path":"/",
-    "signed": true,
+    "signed": false,
     "maxAge": 604800000,
     "httpOnly": true
   },

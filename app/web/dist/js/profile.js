@@ -2147,22 +2147,17 @@
     var form = new Form(signForm)
 
     form.send(function () {
-      var domain = require('domain').create();
-      
-      domain.on('error', function (error) {
-        //
-      });
-      
-      domain.run(function () {
+      app.domain.run(function () {
+
+        console.log('form login', form.labels);
         
         $.ajax({
-          url: '/sign/in',
-          type: 'POST',
-          data: {
-            email: form.labels.email.val(),
-            password: form.labels.password.val()
-          }
-          })
+            url         :   '/sign/in',
+            type        :   'POST',
+            data        :   {
+              email     :   form.labels.email.val(),
+              password  :   form.labels.password.val()
+            }})
 
           .error(function (response) {
             switch ( response.status ) {
@@ -2200,7 +2195,7 @@
 
 } ();
 
-},{"./Form":11,"./Nav":22,"domain":47}],22:[function(require,module,exports){
+},{"./Form":11,"./Nav":22}],22:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************

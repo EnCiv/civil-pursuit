@@ -60,12 +60,14 @@
         value    : JSON.stringify({ email: testUser.email, id: testUser._id }),
         // path     : "/", 
         // domain   : "example.org", 
-        secure   : true,
+        secure   : false,
         // httpOnly : false, // (Optional)
         // expiry   : 1395002765 // (Optional) time in seconds since midnight, January 1, 1970 UTC
       }, function () {
         console.log(arguments)
       });
+
+      browser.refresh();
         
       browser.waitForElementVisible(           'body', 1000)
 

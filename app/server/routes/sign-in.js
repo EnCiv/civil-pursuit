@@ -2,6 +2,8 @@
 
   'use strict';
 
+  var src = require(require('path').join(process.cwd(), 'src'));
+
   function signIn (req, res, next) {
 
     // require('mongoose').connect(process.env.MONGOHQ_URL);
@@ -14,7 +16,7 @@
     
     domain.run(function () {
 
-      var User = require('../../business/models/User');
+      var User = src('models/User');
 
       User.identify(req.body.email, req.body.password, domain.bind(function (error, user) {
         if ( error ) {

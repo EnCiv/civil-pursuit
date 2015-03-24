@@ -13,6 +13,7 @@ block script-backend
     synapp.env = "!{settings.env}";
     synapp.user = "!{(req.user && req.user.id)}";
     synapp.protocol = "!{protocol}";
+    console.log('user', synapp)
 
 //- socketio
 block script-socketio

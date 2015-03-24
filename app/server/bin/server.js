@@ -20,6 +20,7 @@
 
       var express = require('express');
       var app = express();
+      var bodyParser = require('body-parser');
       var cookieParser = require('cookie-parser');
       var session = require('express-session');
       var passport = require('passport');
@@ -149,6 +150,10 @@
 
       ! function routesAndMiddlewares () {
 
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(bodyParser.json());
+        app.use(bodyParser.text());
+
         app
 
           /**   Cookies   */
@@ -172,21 +177,30 @@
 
           .use(function initPipeLine (req, res, next) {
 
-            req.user            =   req.cookies.synuser;
-            res.locals.req      =   req;
-            res.locals.synapp   =   src('config');
-            res.locals.config   =   config;
-            res.locals.protocol =   process.env.SYNAPP_PROTOCOL || 'http';
-            res.locals.package  =   src('package.json');
+            src.domain(next, function (domain) {
+              req.user            =   req.cookies.synuser;
 
-            res.superRender     =   function superRender (tpl, options) {
-              res.render(tpl, options);
-              app.arte.emit('response', res);
-            };
+              if ( typeof req.user === 'string' ) {
+                req.user = JSON.parse(req.user);
+              }
 
-            app.arte.emit('request', req);
+              res.locals.req      =   req;
+              res.locals.synapp   =   src('config');
+              res.locals.config   =   config;
+              res.locals.protocol =   process.env.SYNAPP_PROTOCOL || 'http';
+              res.locals.package  =   src('package.json');
 
-            next();
+              res.superRender     =   function superRender (tpl, options) {
+                res.render(tpl, options);
+                app.arte.emit('response', res);
+              };
+
+              app.arte.emit('request', req);
+
+              console.log('user', req.user)
+
+              next();
+            });
 
           });
 
