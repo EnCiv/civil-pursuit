@@ -117,6 +117,32 @@ topicsPanel.renderItems(app.domain.intercept());
 
 Panel keeps an internal count of the pages in the properties `skip` and `size`. `skip` is a `Number` representing the start offset. `size` is a `Number` representing batch size of items.
 
+# Workflows
+
+## Insert a new top-level panel
+
+```js
+var panel = new (require('synapp-js/Panel'))('Topic');
+
+function loadPanel () {
+    panel.load(app.domain.intercept(renderPanel));
+}
+
+function renderPanel () {
+    panel.render(app.domain.intercept(fillPanel));
+}
+
+function fillPanel () {
+    panel.fill(app.domain.intercept(doSomething));
+}
+
+function doSomething () {
+    // DO something
+}
+
+loadPanel();
+```
+
 
 
 

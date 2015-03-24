@@ -9,7 +9,7 @@
 
   window.app = new Synapp();
 
-  app.connect(function onceAppConnects_HomePage () {
+  app.ready(function onceAppConnects_HomePage () {
     new Sign().render();
     new Intro().render();
 

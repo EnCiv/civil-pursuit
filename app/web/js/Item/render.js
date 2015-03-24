@@ -167,14 +167,14 @@
 
               var panelProblem = new (require('../Panel'))('Problem', item.item._id);
 
-              panelProblem.get(app.domain.intercept(function (template) {
+              panelProblem.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
 
                 setTimeout(function () {
                   panelProblem.render(app.domain.intercept(function () {
                     panelProblem.fill(app.domain.intercept());
                   }));
-                }, 700);
+                });
               }));
               break;
 
@@ -182,7 +182,7 @@
 
               var panelSolution = new (require('../Panel'))('Solution', item.item._id);
 
-              panelSolution.get(app.domain.intercept(function (template) {
+              panelSolution.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
 
                 setTimeout(function () {
@@ -198,7 +198,7 @@
 
               var panelAgree = new (require('../Panel'))('Agree', item.item._id);
 
-              panelAgree.get(app.domain.intercept(function (template) {
+              panelAgree.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
 
                 split.find('.left-split').append(template);
@@ -212,7 +212,7 @@
 
               var panelDisagree = new (require('../Panel'))('Disagree', item.item._id);
 
-              panelDisagree.get(app.domain.intercept(function (template) {
+              panelDisagree.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
                 
                 split.find('.right-split').append(template);
@@ -233,7 +233,7 @@
 
               var panelPro = new (require('../Panel'))('Pro', item.item._id);
 
-              panelPro.get(app.domain.intercept(function (template) {
+              panelPro.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
 
                 split.find('.left-split').append(template);
@@ -247,7 +247,7 @@
 
               var panelCon = new (require('../Panel'))('Con', item.item._id);
 
-              panelCon.get(app.domain.intercept(function (template) {
+              panelCon.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
 
                 split.find('.right-split').append(template);

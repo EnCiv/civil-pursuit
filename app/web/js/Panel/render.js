@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var Creator = require('../Creator');
+  // var Creator = require('../Creator');
 
   /**
    *  @function
@@ -21,7 +21,7 @@
 
     panel.template.attr('id', panel.getId());
 
-    var creator = new Creator(panel);
+    var creator = new (require('../Creator'))(panel);
 
     creator.render(app.domain.intercept(function () {
       cb();     

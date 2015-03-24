@@ -24,7 +24,7 @@
       .success(function (data) {
         panel.template = $(data);
 
-        app.cache.template.panel = panel.template;
+        app.cache.template.panel = $(data);
 
         cb(null, panel.template);
       });

@@ -9,7 +9,7 @@
 
       .once('got items ' + this.id, function (panel, items) {
 
-        // console.log('got items', panel, items)
+        console.log('got items', panel, items)
 
         self.template.find('.hide.pre').removeClass('hide');
         self.template.find('.show.pre').removeClass('show').hide();

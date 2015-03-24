@@ -14,9 +14,6 @@
 
   'use strict';
 
-  var Panel     =   require('./Panel');
-  var Sign      =   require('./Sign');
-  var Intro     =   require('./Intro');
   var domain    =   require('domain');
 
   /**
@@ -26,8 +23,6 @@
 
   function Synapp () {
     var self = this;
-
-    self.Panel = Panel;
 
     this.domain = domain.create();
 
@@ -60,7 +55,10 @@
     this.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
 
     this.socket.once('connect', function () {
+      /** @deprecated */
       self.emit('connect');
+
+      self.emit('ready');
     });
 
     this.socket.on('error', function (error) {
@@ -86,6 +84,7 @@
    *  @method connect
    *  @description Sugar to register a listener to the "connect" event
    *  @arg {function} fn
+   *  @deprecated Use ready instead
    */
 
   Synapp.prototype.connect = function (fn) {
@@ -95,28 +94,15 @@
   };
 
   /**
-   *  @method topLevelPanel
-   *  @description Insert a new top-level panel
-   *  @arg {function} cb
+   *  @method ready
+   *  @description Sugar to register a listener to the "ready" event
+   *  @arg {function} fn
    */
 
-  Synapp.prototype.topLevelPanel = function (cb) {
-    var self = this;
+  Synapp.prototype.ready = function (fn) {
+    this.on('ready', fn);
 
-    var panel = new Panel('Topic');
-
-    panel
-      
-      .get(self.domain.intercept(function (template) {
-
-        $('.panels').append(template);
-
-        setTimeout(function () {
-          panel.render(self.domain.intercept(function () {
-            panel.fill(cb);
-          }));
-        }, 700);
-      }));
+    return this;
   };
 
   // Export

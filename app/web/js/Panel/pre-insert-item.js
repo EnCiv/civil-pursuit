@@ -10,7 +10,7 @@
     /** Load template */
 
     if ( ! app.cache.template.item ) {
-      return new Item({}).load(app.domain.intercept(function (template) {
+      return new (require('../Item'))({}).load(app.domain.intercept(function (template) {
         self.preInsertItem(items, cb); 
       }));
     }
@@ -19,7 +19,7 @@
 
     items = items.map(function (item) {
       console.log(item.subject)
-      item = new Item(item);
+      item = new (require('../Item'))(item);
 
       item.load(app.domain.intercept(function (template) {
 

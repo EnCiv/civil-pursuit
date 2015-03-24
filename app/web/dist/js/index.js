@@ -1422,14 +1422,14 @@
 
               var panelProblem = new (require('../Panel'))('Problem', item.item._id);
 
-              panelProblem.get(app.domain.intercept(function (template) {
+              panelProblem.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
 
                 setTimeout(function () {
                   panelProblem.render(app.domain.intercept(function () {
                     panelProblem.fill(app.domain.intercept());
                   }));
-                }, 700);
+                });
               }));
               break;
 
@@ -1437,7 +1437,7 @@
 
               var panelSolution = new (require('../Panel'))('Solution', item.item._id);
 
-              panelSolution.get(app.domain.intercept(function (template) {
+              panelSolution.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
 
                 setTimeout(function () {
@@ -1453,7 +1453,7 @@
 
               var panelAgree = new (require('../Panel'))('Agree', item.item._id);
 
-              panelAgree.get(app.domain.intercept(function (template) {
+              panelAgree.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
 
                 split.find('.left-split').append(template);
@@ -1467,7 +1467,7 @@
 
               var panelDisagree = new (require('../Panel'))('Disagree', item.item._id);
 
-              panelDisagree.get(app.domain.intercept(function (template) {
+              panelDisagree.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
                 
                 split.find('.right-split').append(template);
@@ -1488,7 +1488,7 @@
 
               var panelPro = new (require('../Panel'))('Pro', item.item._id);
 
-              panelPro.get(app.domain.intercept(function (template) {
+              panelPro.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
 
                 split.find('.left-split').append(template);
@@ -1502,7 +1502,7 @@
 
               var panelCon = new (require('../Panel'))('Con', item.item._id);
 
-              panelCon.get(app.domain.intercept(function (template) {
+              panelCon.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
 
                 split.find('.right-split').append(template);
@@ -2305,7 +2305,7 @@
 
       .once('got items ' + this.id, function (panel, items) {
 
-        // console.log('got items', panel, items)
+        console.log('got items', panel, items)
 
         self.template.find('.hide.pre').removeClass('hide');
         self.template.find('.show.pre').removeClass('show').hide();
@@ -2367,7 +2367,7 @@
       .success(function (data) {
         panel.template = $(data);
 
-        app.cache.template.panel = panel.template;
+        app.cache.template.panel = $(data);
 
         cb(null, panel.template);
       });
@@ -2392,7 +2392,7 @@
     /** Load template */
 
     if ( ! app.cache.template.item ) {
-      return new Item({}).load(app.domain.intercept(function (template) {
+      return new (require('../Item'))({}).load(app.domain.intercept(function (template) {
         self.preInsertItem(items, cb); 
       }));
     }
@@ -2401,7 +2401,7 @@
 
     items = items.map(function (item) {
       console.log(item.subject)
-      item = new Item(item);
+      item = new (require('../Item'))(item);
 
       item.load(app.domain.intercept(function (template) {
 
@@ -2445,7 +2445,7 @@
   
   'use strict';
 
-  var Creator = require('../Creator');
+  // var Creator = require('../Creator');
 
   /**
    *  @function
@@ -2464,7 +2464,7 @@
 
     panel.template.attr('id', panel.getId());
 
-    var creator = new Creator(panel);
+    var creator = new (require('../Creator'))(panel);
 
     creator.render(app.domain.intercept(function () {
       cb();     
@@ -3505,9 +3505,6 @@
 
   'use strict';
 
-  var Panel     =   require('./Panel');
-  var Sign      =   require('./Sign');
-  var Intro     =   require('./Intro');
   var domain    =   require('domain');
 
   /**
@@ -3517,8 +3514,6 @@
 
   function Synapp () {
     var self = this;
-
-    self.Panel = Panel;
 
     this.domain = domain.create();
 
@@ -3551,7 +3546,10 @@
     this.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
 
     this.socket.once('connect', function () {
+      /** @deprecated */
       self.emit('connect');
+
+      self.emit('ready');
     });
 
     this.socket.on('error', function (error) {
@@ -3577,6 +3575,7 @@
    *  @method connect
    *  @description Sugar to register a listener to the "connect" event
    *  @arg {function} fn
+   *  @deprecated Use ready instead
    */
 
   Synapp.prototype.connect = function (fn) {
@@ -3586,28 +3585,15 @@
   };
 
   /**
-   *  @method topLevelPanel
-   *  @description Insert a new top-level panel
-   *  @arg {function} cb
+   *  @method ready
+   *  @description Sugar to register a listener to the "ready" event
+   *  @arg {function} fn
    */
 
-  Synapp.prototype.topLevelPanel = function (cb) {
-    var self = this;
+  Synapp.prototype.ready = function (fn) {
+    this.on('ready', fn);
 
-    var panel = new Panel('Topic');
-
-    panel
-      
-      .get(self.domain.intercept(function (template) {
-
-        $('.panels').append(template);
-
-        setTimeout(function () {
-          panel.render(self.domain.intercept(function () {
-            panel.fill(cb);
-          }));
-        }, 700);
-      }));
+    return this;
   };
 
   // Export
@@ -3622,7 +3608,7 @@
 
 } ();
 
-},{"./Intro":11,"./Panel":21,"./Sign":34,"domain":41,"events":42,"util":46}],37:[function(require,module,exports){
+},{"domain":41,"events":42,"util":46}],37:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4062,7 +4048,7 @@
 
   window.app = new Synapp();
 
-  app.connect(function onceAppConnects_HomePage () {
+  app.ready(function onceAppConnects_HomePage () {
     new Sign().render();
     new Intro().render();
 
