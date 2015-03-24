@@ -3,13 +3,11 @@
   
   'use strict';
 
+  require('colors');
+
   require('mongoose').connect(process.env.MONGOHQ_URL);
 
-  var src         =   require(require('path').join(process.cwd(), 'src'));
-
-  var pronto      =   require('prontojs');
-
-  var when        =   pronto.when;
+  var src = require(require('path').join(process.cwd(), 'src'));
 
   src('models/Config')
     .findOne()
@@ -63,6 +61,16 @@
 
           var user = 'visitor'.magenta;
 
+          if ( req.cookies && req.cookies.synuser ) {
+            var isIn = req.cookies.synuser;
+
+            if ( typeof isIn === 'string' ) {
+              isIn = JSON.parse(isIn);
+            }
+
+            user = isIn.email.blue;
+          }
+
           console.log([hours, minutes, seconds].join(':').cyan, user, '...'.grey, req.method.grey, req.url.grey);
         });
 
@@ -89,6 +97,16 @@
           }
 
           var user = 'visitor'.magenta;
+
+          if ( res.req.cookies && res.req.cookies.synuser ) {
+            var isIn = res.req.cookies.synuser;
+
+            if ( typeof isIn === 'string' ) {
+              isIn = JSON.parse(isIn);
+            }
+
+            user = isIn.email.blue;
+          }
 
           var color = 'grey';
 
@@ -133,8 +151,13 @@
 
         app
 
+          /**   Cookies   */
+
           .use(
-            cookieParser(src('config').secret))
+            // cookieParser(src('config').secret))
+            cookieParser())
+
+          /**   Session   */
 
           .use(
             session({
@@ -143,11 +166,13 @@
               saveUninitialized:  true
             }))
 
+          /**   Passport  */
+
           .use(passport.initialize())
 
           .use(function initPipeLine (req, res, next) {
 
-            req.user            =   req.signedCookies.synuser;
+            req.user            =   req.cookies.synuser;
             res.locals.req      =   req;
             res.locals.synapp   =   src('config');
             res.locals.config   =   config;
@@ -207,6 +232,7 @@
 
           .use(function onRouteError (err, req, res, next) {
             console.log('error', err.stack.split(/\n/));
+            app.arte.emit('error', err);
           })
 
           .use(function notFound (req, res, next) {
