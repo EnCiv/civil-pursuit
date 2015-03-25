@@ -1844,18 +1844,6 @@
 
             case 'Problem':
 
-              var panelSolution = new (require('../Panel'))('Solution', item.item._id);
-
-              panelSolution.load(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelSolution.render(app.domain.intercept(function () {
-                    panelSolution.fill(app.domain.intercept());
-                  }));
-                }, 700);
-              }));
-
               var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
 
               item.find('children').append(split);
@@ -1871,7 +1859,7 @@
                   panelAgree.render(app.domain.intercept(function () {
                     panelAgree.fill(app.domain.intercept());
                   }));
-                }, 700);
+                });
               }));
 
               var panelDisagree = new (require('../Panel'))('Disagree', item.item._id);
@@ -1885,8 +1873,21 @@
                   panelDisagree.render(app.domain.intercept(function () {
                     panelDisagree.fill(app.domain.intercept());
                   }));
-                }, 700);
+                });
               }));
+
+              var panelSolution = new (require('../Panel'))('Solution', item.item._id);
+
+              panelSolution.load(app.domain.intercept(function (template) {
+                item.find('children').append(template);
+
+                setTimeout(function () {
+                  panelSolution.render(app.domain.intercept(function () {
+                    panelSolution.fill(app.domain.intercept());
+                  }));
+                });
+              }));
+              
               break;
 
             case 'Solution':
@@ -1906,7 +1907,7 @@
                   panelPro.render(app.domain.intercept(function () {
                     panelPro.fill(app.domain.intercept());
                   }));
-                }, 700);
+                });
               }));
 
               var panelCon = new (require('../Panel'))('Con', item.item._id);
@@ -1920,7 +1921,7 @@
                   panelCon.render(app.domain.intercept(function () {
                     panelCon.fill(app.domain.intercept());
                   }));
-                }, 700);
+                });
               }));
               break;
           }
