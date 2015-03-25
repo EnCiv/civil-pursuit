@@ -43,7 +43,7 @@
 
   Form.prototype.submit = function (e) {
 
-    console.warn('submitting', this.form.attr('name'), e);
+    console.warn('form submitting', this.form.attr('name'), e);
 
     var self = this;
 
@@ -78,6 +78,8 @@
 
   Form.prototype.send = function (fn) {
     this.ok = fn;
+
+    return this;
   };
 
   module.exports = Form;

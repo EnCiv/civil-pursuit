@@ -924,7 +924,7 @@
 
   Form.prototype.submit = function (e) {
 
-    console.warn('submitting', this.form.attr('name'), e);
+    console.warn('form submitting', this.form.attr('name'), e);
 
     var self = this;
 
@@ -959,6 +959,8 @@
 
   Form.prototype.send = function (fn) {
     this.ok = fn;
+
+    return this;
   };
 
   module.exports = Form;
@@ -1729,12 +1731,24 @@
   function login ($vexContent) {
     var signForm = $('form[name="login"]');
 
-    var form = new Form(signForm)
+    var form = new Form(signForm);
 
-    form.send(function () {
+    function login () {
       app.domain.run(function () {
 
-        console.log('form login', form.labels);
+        if ( $('.login-error-404').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-404'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
+
+        if ( $('.login-error-401').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-401'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
         
         $.ajax({
             url         :   '/sign/in',
@@ -1773,7 +1787,9 @@
           });
 
       });
-    });
+    }
+
+    form.send(login);
   }
 
   module.exports = login;
@@ -3535,7 +3551,7 @@
     };
 
     this.domain.on('error', function (error) {
-      console.error(error);
+      console.error('Synapp error', error.stack.split(/\n/));
     });
 
     this.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);

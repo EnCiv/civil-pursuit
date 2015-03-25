@@ -49,7 +49,7 @@
     };
 
     this.domain.on('error', function (error) {
-      console.error(error);
+      console.error('Synapp error', error.stack.split(/\n/));
     });
 
     this.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);

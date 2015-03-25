@@ -14,12 +14,24 @@
   function login ($vexContent) {
     var signForm = $('form[name="login"]');
 
-    var form = new Form(signForm)
+    var form = new Form(signForm);
 
-    form.send(function () {
+    function login () {
       app.domain.run(function () {
 
-        console.log('form login', form.labels);
+        if ( $('.login-error-404').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-404'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
+
+        if ( $('.login-error-401').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-401'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
         
         $.ajax({
             url         :   '/sign/in',
@@ -58,7 +70,9 @@
           });
 
       });
-    });
+    }
+
+    form.send(login);
   }
 
   module.exports = login;

@@ -464,10 +464,42 @@
       });
   }
 
+  /**
+   *    SELENIUM "login"
+   */
+
+  function synTestSeleniumLogin (cb) {
+    var action = 'syn-test selenium "login"';
+
+    console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+
+    cp
+
+      .spawn('app/business/bin/test.js', ['web/login'], { stdio: 'inherit' })
+
+      .on('exit', function (status) {
+
+        if ( status === 0 ) {
+
+          console.log("\n", ('✔ ' + action).bgGreen, "\n");
+
+          cb();
+
+        }
+
+        else {
+          throw new Error(action);
+        }
+
+      });
+  }
+
   require('async').series([
       gulpBuildProd,
+
       synTestModelUser,
       synTestModelItem,
+      
       synTestSocketAddView,
       synTestSocketPromote,
       synTestSocketAddRace,
@@ -476,6 +508,9 @@
       synTestSocketSetCitizenship,
       synTestSocketSetRegisteredVoter,
       synTestSocketSetParty,
+      
+      synTestSeleniumLogin,
+      
       gitPushHerokuMaster
     ],
 
