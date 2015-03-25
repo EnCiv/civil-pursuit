@@ -15,8 +15,8 @@
       },
 
       function (domain) {
-        scr('models/Item')
-          .insert(item, domain.intercept(function (item) {
+        src('models/Item')
+          .create(item, domain.intercept(function (item) {
             socket.emit('created item', item);  
           }));
       }

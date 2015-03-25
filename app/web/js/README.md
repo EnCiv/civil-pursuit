@@ -64,6 +64,21 @@ app.on('error', function (error) {
 });
 ```
 
+## Domain
+
+You can use `app.domain` to safe-run code:
+
+```js
+app.domain.run(function () {
+    // Errors will be emitted
+});
+
+app.domain.intercept(function () {
+    // If first argument is an error, it is emitted
+    // Otherwise this is run ...
+});
+```
+
 ## Socket
 
 **Each instance of Synapp is creating a new connection to Web Socket**. The socket connection is saved in the `socket` property.

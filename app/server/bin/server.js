@@ -228,6 +228,11 @@
             res.superRender('pages/' + req.params.page + '.jade');
           })
 
+          .get('/profile', function getPage (req, res, next) {
+            res.locals.page = 'profile';
+            res.superRender('pages/profile.jade');
+          })
+
           /** Item's page */
 
           .get('/item/:item_id/:item_slug',
@@ -236,9 +241,25 @@
               res.superRender('pages/item.jade');
             })
 
-          .all('/sign/in', require('../routes/sign-in'))
+          .all('/sign/in',
+            require('../routes/sign-in'),
+            require('../routes/set-user-cookie'),
+            function (req, res) {
+              res.json({
+                in: true,
+                id: req.user._id
+              });
+            })
 
-          .all('/sign/up', require('../routes/sign-up'))
+          .all('/sign/up', 
+            require('../routes/sign-up'),
+            require('../routes/set-user-cookie'),
+            function (req, res) {
+              res.json({
+                up: true,
+                id: req.user._id
+              });
+            })
 
           .all('/sign/out', require('../routes/sign-out'))
 

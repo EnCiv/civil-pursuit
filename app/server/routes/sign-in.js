@@ -6,8 +6,6 @@
 
   function signIn (req, res, next) {
 
-    // require('mongoose').connect(process.env.MONGOHQ_URL);
-
     var domain = require('domain').create();
     
     domain.on('error', function (error) {
@@ -33,18 +31,8 @@
           }
         }
         else {
-          res.cookie('synuser',
-            {
-              email: user.email,
-              id: user._id,
-              prefs: user.preferences
-            },
-            require('../../business/config.json').cookie);
-          
-          res.json({
-            in: true,
-            user: user._id
-          });
+          req.user = user;
+          next();
         }
       }));
     });

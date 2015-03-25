@@ -16,7 +16,7 @@
 
       function (domain) {
         src('models/Feedback')
-          .insert(feedback, domain.intercept(function (inserted) {
+          .create(feedback, domain.intercept(function (inserted) {
             socket.emit('inserted feedback', inserted);  
           }));
       }

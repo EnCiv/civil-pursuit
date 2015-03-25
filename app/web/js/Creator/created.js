@@ -2,14 +2,6 @@
   
   'use strict';
 
-  var Item    =   require('../Item');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
   function created (item) {
     console.log('created item', item);
 
@@ -23,7 +15,7 @@
       item.youtube = this.packaged.youtube;
     }
 
-    var item  = new Item(item);
+    var item  = new (require('../Item'))(item);
 
     var items = this.panel.find('items');
 

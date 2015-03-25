@@ -183,14 +183,8 @@
 
     var form = new Form($form);
 
-    form.send(function () {
-      var domain = require('domain').create();
-      
-      domain.on('error', function (error) {
-        //
-      });
-      
-      domain.run(function () {
+    function join () {
+      app.domain.run(function () {
 
         $form.find('.please-agree').hide();
         $form.find('.already-taken').hide();
@@ -233,14 +227,16 @@
           });
 
       });
-    });
+    }
+
+    form.send(join);
   }
 
   module.exports = join;
 
 } ();
 
-},{"./Form":2,"domain":10}],4:[function(require,module,exports){
+},{"./Form":2}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';

@@ -16,7 +16,7 @@
 
       function (domain) {
         src('models/Vote')
-          .insert(votes, domain.intercept(function (votes) {
+          .create(votes, domain.intercept(function (votes) {
             socket.emit('inserted votes', votes);  
           }));
       }

@@ -166,14 +166,6 @@
   
   'use strict';
 
-  var Item    =   require('../Item');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
   function created (item) {
     console.log('created item', item);
 
@@ -187,7 +179,7 @@
       item.youtube = this.packaged.youtube;
     }
 
-    var item  = new Item(item);
+    var item  = new (require('../Item'))(item);
 
     var items = this.panel.find('items');
 
@@ -2072,14 +2064,8 @@
 
     var form = new Form($form);
 
-    form.send(function () {
-      var domain = require('domain').create();
-      
-      domain.on('error', function (error) {
-        //
-      });
-      
-      domain.run(function () {
+    function join () {
+      app.domain.run(function () {
 
         $form.find('.please-agree').hide();
         $form.find('.already-taken').hide();
@@ -2122,14 +2108,16 @@
           });
 
       });
-    });
+    }
+
+    form.send(join);
   }
 
   module.exports = join;
 
 } ();
 
-},{"./Form":11,"domain":47}],21:[function(require,module,exports){
+},{"./Form":11}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';

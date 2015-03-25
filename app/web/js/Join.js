@@ -27,14 +27,8 @@
 
     var form = new Form($form);
 
-    form.send(function () {
-      var domain = require('domain').create();
-      
-      domain.on('error', function (error) {
-        //
-      });
-      
-      domain.run(function () {
+    function join () {
+      app.domain.run(function () {
 
         $form.find('.please-agree').hide();
         $form.find('.already-taken').hide();
@@ -77,7 +71,9 @@
           });
 
       });
-    });
+    }
+
+    form.send(join);
   }
 
   module.exports = join;
