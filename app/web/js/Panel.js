@@ -99,32 +99,15 @@
     }
   };
 
-  Panel.prototype.render = require('./Panel/render');
+  Panel.prototype.render          =   require('./Panel/render');
 
-  Panel.prototype.toJSON = function () {
-    var json = {
-      type: this.type,
-      size: this.size,
-      skip: this.skip
-    };
-
-    if ( this.parent ) {
-      json.parent = this.parent;
-    }
-
-    return json;
-  };
-
-  /**
-   *  @method fill
-   *  @arg {function} cb
-   **/
+  Panel.prototype.toJSON          =   require('./Panel/to-json');
 
   Panel.prototype.fill            =   require('./Panel/fill');
 
   Panel.prototype.preInsertItem   =   require('./Panel/pre-insert-item');
 
-  Panel.prototype.insertItem = function (items, i, cb) {
+  Panel.prototype.insertItem      =   function (items, i, cb) {
 
     var self = this;
 
@@ -146,6 +129,7 @@
     else {
       cb && cb();
     }
+    
   };
 
   module.exports = Panel;

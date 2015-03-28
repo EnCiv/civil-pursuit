@@ -41,7 +41,19 @@
 
     item.find('subject')
       .attr('href', '/item/' + item.item._id + '/' + S(item.item.subject).slugify().s)
-      .text(item.item.subject);
+      .text(item.item.subject)
+      .on('click', function (e) {
+        var link = $(this);
+
+        var item = link.closest('.item');
+
+        Nav.scroll(item, function () {
+          history.pushState(null, null, link.attr('href'));
+          item.find('.item-text .more').click();
+        });
+
+        return false;
+      });
 
     // Description
 
@@ -223,7 +235,7 @@
                   }));
                 });
               }));
-              
+
               break;
 
             case 'Solution':

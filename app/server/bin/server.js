@@ -35,7 +35,7 @@
         });
 
         app.arte.on('message', function (message) {
-          console.log(message);
+          console.log(JSON.stringify(message, null, 2));
         });
 
         app.arte.on('request', function (req) {
@@ -197,8 +197,6 @@
 
               app.arte.emit('request', req);
 
-              console.log('user', req.user)
-
               next();
             });
 
@@ -238,7 +236,7 @@
           .get('/item/:item_id/:item_slug',
             require('../routes/item'),
             function renderItem (req, res, next) {
-              res.superRender('pages/item.jade');
+              res.superRender('pages/index.jade');
             })
 
           .all('/sign/in',

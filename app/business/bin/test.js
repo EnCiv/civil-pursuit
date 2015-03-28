@@ -6,6 +6,14 @@
 
   var src = require(require('path').join(process.cwd(), 'src'));
 
+  if ( process.argv[2] === 'ls' ) {
+    console.log('Models');
+    console.log('IO');
+    console.log('Web');
+
+    return;
+  }
+
   var Test  = src('lib/Test');
 
   var suite = {};

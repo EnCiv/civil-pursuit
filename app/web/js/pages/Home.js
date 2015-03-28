@@ -10,6 +10,7 @@
   window.app = new Synapp();
 
   app.ready(function onceAppConnects_HomePage () {
+
     new Sign().render();
     new Intro().render();
 
@@ -23,7 +24,7 @@
 
         setTimeout(function renderPanel_Pause () {
           panel.render(app.domain.intercept(function () {
-            panel.fill();
+            panel.fill(app.location.item);
           }));
         }, 700);
 

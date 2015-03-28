@@ -2,8 +2,22 @@
   
   'use strict';
 
-  function fill (cb) {
+  function fill (item, cb) {
     var self = this;
+
+    if ( typeof item === 'function' && ! cb ) {
+      cb = item;
+      item = undefined;
+    }
+
+    var panel = self.toJSON();
+
+    if ( item ) {
+      panel.item = item;
+      panel.type = item.type;
+    }
+
+    console.log(panel)
 
     app.socket
 
@@ -37,7 +51,7 @@
 
       })
 
-      .emit('get items', this.toJSON());
+      .emit('get items', panel);
   }
 
   module.exports = fill;

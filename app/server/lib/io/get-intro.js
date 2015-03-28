@@ -17,6 +17,9 @@
     });
     
     domain.run(function () {
+
+      socket.app.arte.emit('message', { socket: 'get intro' });
+
       Item
 
         .findOne({ type: 'Intro' })

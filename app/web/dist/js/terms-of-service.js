@@ -909,30 +909,46 @@
       console.error('Synapp error', error.stack.split(/\n/));
     });
 
-    this.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
+    this.location = {};
 
-    this.socket.once('connect', function () {
-      /** @deprecated */
-      self.emit('connect');
+    this.domain.run(function () {
 
-      self.emit('ready');
-    });
+      /** Location */
 
-    this.socket.on('error', function (error) {
-      console.log('socket error', error);
-    });
+      if ( window.location.pathname ) {
 
-    this.evaluations = [];
+        if ( /^\/item\//.test(window.location.pathname) ) {
+          self.location.item = window.location.pathname.split(/\//)[2];
+        }
 
-    this.cache = {
-      template: {
-        item: null
       }
-    };
 
-    if ( synapp.user ) {
-      $('.is-in').removeClass('is-in');
-    }
+      /** Socket */
+      self.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
+
+      self.socket.once('connect', function () {
+        /** @deprecated */
+        self.emit('connect');
+
+        self.emit('ready');
+      });
+
+      self.socket.on('error', function (error) {
+        console.log('socket error', error);
+      });
+
+      self.evaluations = [];
+
+      self.cache = {
+        template: {
+          item: null
+        }
+      };
+
+      if ( synapp.user ) {
+        $('.is-in').removeClass('is-in');
+      }
+    });
   }
 
   require('util').inherits(Synapp, require('events').EventEmitter);

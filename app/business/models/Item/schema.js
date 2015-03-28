@@ -80,20 +80,23 @@
 
     "promotions": {
       "type":       Number,
-      "index":      true
+      "index":      true,
+      "default"     :   0
     },
 
     // The number of times Item has been viewed
 
     "views":  {
       "type":       Number,
-      "index":      true
+      "index":      true,
+      "default"     :   0
     },
 
     // When Item was created
 
     "created": {
-      "type":       Date
+      "type":       Date,
+      "default":    Date.now
     },
 
     // When Item was last edited

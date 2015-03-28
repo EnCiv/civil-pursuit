@@ -78,7 +78,7 @@ topicsPanel.load(app.domain.intercept(function (template) {
 After rendering your panel, you can fill it with items. **Items are not filled automatically**. You need to explicitly call `fill()`.
 
 ```js
-Panel.fill(Function cb);
+Panel.fill({String?} item_id, {Function} cb);
 ```
 
 ```js

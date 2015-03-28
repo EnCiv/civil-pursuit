@@ -3,8 +3,9 @@
   'use strict';
 
   var _ = {
-    'toggle creator':                       'h4.toggle-creator',
-    'creator':                              '.creator'
+    'panels'                :         '.panels',
+    'topics panel'          :         '#panel-Topic',
+    'toggle'                :         '.toggle-creator'
   };
 
   function __ (n) {
@@ -32,64 +33,33 @@
 
     "Create topic" : function (browser) {
       
-      
-      // browser.url('http://localhost:3020');
-
-      // browser.setCookie({
-      //   name     : "test1234",
-      //   value    : "test_value"
-      //   // path     : "/", 
-      //   // // domain   : "example.org", 
-      //   // secure   : false, 
-      //   // httpOnly : false, // (Optional)
-      //   // expiry   : 1395002765 // (Optional) time in seconds since midnight, January 1, 1970 UTC
-      // }, function () {
-      //   console.log(arguments)
-      // });
-        
-      // browser.waitForElementVisible(           'body', 1000)
-
-      //   .pause(6000)
-        
-      //   .end();
-
       browser.url(process.env.SYNAPP_SELENIUM_TARGET);
 
       browser.setCookie({
         name     : "synuser",
         value    : JSON.stringify({ email: testUser.email, id: testUser._id }),
-        // path     : "/", 
-        // domain   : "example.org", 
         secure   : false,
-        // httpOnly : false, // (Optional)
-        // expiry   : 1395002765 // (Optional) time in seconds since midnight, January 1, 1970 UTC
       }, function () {
         console.log(arguments)
       });
 
       browser.refresh();
         
-      browser.waitForElementVisible(           'body', 1000)
+      browser.waitForElementVisible(            'body', 1000)
 
-        // // There is a toggle creator icon
+        .assert.visible(__(                     'panels'), "There should be a panels container")
+        .waitForElementVisible(__(              'topics panel'), 2000, "There should be a top-level panel containing the topics")
+        .assert.visible(__(                     'toggle'), "There should be a toggler for panel")
+        .click(__(                              'toggle'))
 
-        // .waitForElementVisible(__(        'toggle creator'), 5000, "Toggle creator is present")
-
-        // // Click toggle creator
-        
-        // .click(__(                        'toggle creator'))
-
-        // // Wait for panel creator to show up
-
-        // .waitForElementVisible(__(        'creator'), 2000)
-
-        .pause(60000)
+        .pause(2500)
         
         .end();
     },
 
     "after": function (browser, done) {
       testUser.remove(done);
+      require('mongoose').disconnect();
     }
   };
 
