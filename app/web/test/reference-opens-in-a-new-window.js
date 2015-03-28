@@ -65,7 +65,7 @@
         
       browser.waitForElementVisible(            'body', 1000)
 
-        .waitForElementVisible(__(              'item'), 2500, "The first item should be the test item")
+        .waitForElementVisible(__(              'item'), 3000, "The first item should be the test item")
         .assert.visible(__(                     'reference'), "Test item should have a reference")
         .click(__(                              'reference'))
 
