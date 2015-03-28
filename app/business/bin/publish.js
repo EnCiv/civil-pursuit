@@ -11,40 +11,40 @@
   var test = 'app/business/bin/test.js';
 
   var tests = [
-    'gulp build-prod',
+    { name: 'gulp build-prod' },
 
-    'git commit -am "deploy"',
+    { name: 'git commit -am "deploy"', ok: [0, 8792] },
 
-    [test, 'models/User'].join(' '),
-    [test, 'models/User'].join(' '),
+    { name: [test, 'models/User'].join(' ') },
+    { name: [test, 'models/User'].join(' ') },
     
-    [test, 'io/add-view'].join(' '),
-    [test, 'io/promote'].join(' '),
-    [test, 'io/add-race'].join(' '),
-    [test, 'io/remove-race'].join(' '),
-    [test, 'io/set-marital-status'].join(' '),
-    [test, 'io/change-user-name'].join(' '),
-    [test, 'io/change-user-name'].join(' '),
-    [test, 'io/set-citizenship'].join(' '),
-    [test, 'io/set-birthdate'].join(' '),
-    [test, 'io/set-gender'].join(' '),
-    [test, 'io/set-registered-voter'].join(' '),
-    [test, 'io/set-party'].join(' '),
+    { name: [test, 'io/add-view'].join(' ') },
+    { name: [test, 'io/promote'].join(' ') },
+    { name: [test, 'io/add-race'].join(' ') },
+    { name: [test, 'io/remove-race'].join(' ') },
+    { name: [test, 'io/set-marital-status'].join(' ') },
+    { name: [test, 'io/change-user-name'].join(' ') },
+    { name: [test, 'io/change-user-name'].join(' ') },
+    { name: [test, 'io/set-citizenship'].join(' ') },
+    { name: [test, 'io/set-birthdate'].join(' ') },
+    { name: [test, 'io/set-gender'].join(' ') },
+    { name: [test, 'io/set-registered-voter'].join(' ') },
+    { name: [test, 'io/set-party'].join(' ') },
     
-    [test, 'web/login'].join(' '),
-    [test, 'web/create-topic'].join(' '),
-    [test, 'web/reference-opens-in-a-new-window'].join(' '),
+    { name: [test, 'web/login'].join(' ') },
+    { name: [test, 'web/create-topic'].join(' ') },
+    { name: [test, 'web/reference-opens-in-a-new-window'].join(' ') },
 
-    'git push heroku master'
+    { name: 'git push heroku master' }
   ];
 
   require('async').eachSeries(tests,
     function (test, cb) {
       var action = test;
 
-      console.log("\n", ('⌛ ' + action).bgCyan, "\n");
+      console.log("\n", ('⌛ ' + action.name).bgCyan, "\n");
 
-      var chunks = test.split(/\s/);
+      var chunks = test.name.split(/\s/);
 
       var cmd = chunks.shift();
 
@@ -54,7 +54,9 @@
 
         .on('exit', function (status) {
 
-          if ( status === 0 ) {
+          var ok = test.ok || [0];
+
+          if ( ok.indexOf(status) > -1 ) {
 
             console.log("\n", ('✔ ' + action).bgGreen, "\n");
 
