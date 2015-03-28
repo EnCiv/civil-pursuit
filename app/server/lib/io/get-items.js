@@ -30,6 +30,7 @@
       if ( item ) {
         limit --;
         items.push(item);
+        panel.type = item.type;
       }
 
       else if ( panel.item ) {

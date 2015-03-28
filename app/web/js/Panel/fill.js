@@ -14,7 +14,7 @@
 
     if ( item ) {
       panel.item = item;
-      panel.type = item.type;
+      panel.type = undefined;
     }
 
     console.log(panel)

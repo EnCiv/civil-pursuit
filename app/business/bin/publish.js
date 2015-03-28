@@ -58,14 +58,14 @@
 
           if ( ok.indexOf(status) > -1 ) {
 
-            console.log("\n", ('✔ ' + action).bgGreen, "\n");
+            console.log("\n", ('✔ ' + action.name).bgGreen, "\n");
 
             cb();
 
           }
 
           else {
-            throw new Error(action);
+            throw new Error(action.name);
           }
 
         });
