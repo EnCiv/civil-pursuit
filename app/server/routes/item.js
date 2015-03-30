@@ -10,24 +10,26 @@
       delete res.locals.youtube;
     }
 
-    src.domain(next, function (domain) {
+    src.domain(next, function getItemPageDomain (domain) {
 
       src('models/Item')
 
-        .findById(req.params.item_id)
+        .getLineage(req.params.item_id, domain.intercept(function onGetLineage (lineage) {
 
-        .lean()
+          res.locals.item = lineage.unshift();
 
-        .exec(domain.intercept(function (item) {
-
-          res.locals.item = item;
+          res.locals.item.lineage = lineage;
 
           res.locals.title = item.subject + ' | Synaccord';
 
-          res.locals.meta_description = item.description.split(/\n/)[0]
+          res.locals.meta_description = item.description
+            // Get first line
+            .split(/\n/)[0]
+            // Line max length
             .substr(0, 255);
 
-          next(); 
+          next();
+
         }));
 
       }

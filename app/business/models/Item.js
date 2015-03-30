@@ -69,14 +69,14 @@ Nina Butorac
   // PRE INIT
   // ========
 
-  ItemSchema.post( 'init', function() {
+  ItemSchema.post( 'init', function postInit () {
     this._original = this.toObject();
   });
 
   // PRE VALIDATE
   // ============
 
-  ItemSchema.pre('validate', function (next) {
+  ItemSchema.pre('validate', function preValidate (next) {
   /*  if ( this.isNew && this.parent ) {
       this.parent = Schema.Types.ObjectId(this.parent);
     }*/
@@ -87,30 +87,6 @@ Nina Butorac
   // ========
 
   ItemSchema.pre('save', require('./Item/pre.save'));
-
-  /** Update Item by ID...
-   *
-   *  @function ItemSchema.updateById
-   *  @param {String} id - The Item to update Object Id
-   *  @param {Object} item - The patch
-   *  @param {updateById~cb} cb - The callback
-   *  @return {Object}
-   */
-  ItemSchema.statics.updateById = function (id, item, cb) {
-    var self = this;
-
-    self.findById(id, function (error, found) {
-      if ( error ) {
-        return cb(error);
-      }
-
-      for ( var field in item ) {
-        found[field] = item[field];
-      }
-
-      found.save(cb);
-    });
-  };
 
   /** Evaluate item against 5 others...
    *
@@ -130,59 +106,21 @@ Nina Butorac
    *  @return {Object}
    */
 
-  ItemSchema.statics.details = function (id, cb) {
-    var self = this;
+  ItemSchema.statics.details = require('./Item/details');
 
-    require('async').parallel({
-        votes: function (then) {
-          require('./Vote').getAccumulation(id, then);
-        },
-
-        feedbacks: function (then) {
-          require('./Feedback').find({ item: id }, then);
-        }
-      },
-
-      function (error, results) {
-        if ( error ) {
-          return cb(error);
-        }
-
-        self.findById(id, function (error, item) {
-          if ( error ) {
-            return cb(error);
-          }
-
-          /** Get type criterias */
-
-          require('./Criteria')
-            .find({ type: item.type }, function (error, criterias) {
-              if ( error ) {
-                return cb(error);
-              }
-
-              /** Return details */
-
-              cb(null, {
-                item: item,
-                votes: results.votes,
-                feedbacks: results.feedbacks,
-                criterias: criterias
-              });
-            });
-        });
-      });
-  };
-
-  // Add view
+  // Increment view
 
   ItemSchema.statics.incrementView = require('./Item/incrementView');
 
-  // Add promotion
+  // Increment promotion
 
   ItemSchema.statics.incrementPromotion = require('./Item/incrementPromotion');
 
+  // Get item's lineage
 
+  ItemSchema.statics.getLineage = require('./Item/get-lineage')
+
+  // 
 
   // EXPORT
   // ======

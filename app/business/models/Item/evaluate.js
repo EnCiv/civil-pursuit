@@ -28,6 +28,7 @@
     this.domain.on('error', function (error) {
       cb(error);
     });
+
   }
 
   /**
@@ -129,26 +130,44 @@
     
     var self = this;
 
+    var query = {
+      type:     type || self.item.type,
+      parent:   self.item.parent
+    };
+
     self
-      
+
       .model
 
-      .find({
-        type:     type || self.item.type,
-        parent:   self.item.parent
-      })
+      .count(query, self.domain.intercept(function (number) {
 
-      .populate('user')
+        var start = Math.max(0, Math.floor((number-limit)*Math.random()));
 
-      .where('_id').ne(self.item._id)
+        self
+          
+          .model
 
-      .limit(limit)
+          .find({
+            type:     type || self.item.type,
+            parent:   self.item.parent
+          })
 
-      .sort({ views: 1, created: 1 })
+          .populate('user')
 
-      .lean()
+          .where('_id').ne(self.item._id)
 
-      .exec(done);
+          .skip(start)
+
+          .limit(limit)
+
+          .sort({ views: 1, created: 1 })
+
+          .lean()
+
+          .exec(done);
+
+      }));
+
   }
 
   /**

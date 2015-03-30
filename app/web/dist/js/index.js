@@ -4106,24 +4106,34 @@
 
   app.ready(function onceAppConnects_HomePage () {
 
+    /** Render user-related components */
     new Sign().render();
+
+    /** Render intro */
     new Intro().render();
 
-    var panel = new Panel('Topic');
+    /** If page is about an item */
+    if ( app.location.item ) {
+      console.log()
+    }
 
-    panel
-      
-      .load(app.domain.intercept(function onGotPanels (template) {
+    else {
+      var panel = new Panel('Topic');
 
-        $('.panels').append(template);
+      panel
+        
+        .load(app.domain.intercept(function onGotPanels (template) {
 
-        setTimeout(function renderPanel_Pause () {
-          panel.render(app.domain.intercept(function () {
-            panel.fill(app.location.item);
-          }));
-        }, 700);
+          $('.panels').append(template);
 
-      }));
+          setTimeout(function renderPanel_Pause () {
+            panel.render(app.domain.intercept(function () {
+              panel.fill();
+            }));
+          }, 700);
+
+        }));
+    }
   
   });
 
