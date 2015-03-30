@@ -16,13 +16,17 @@
 
         .getLineage(req.params.item_id, domain.intercept(function onGetLineage (lineage) {
 
-          res.locals.item = lineage.unshift();
+          console.log('got lineage', lineage);
+
+          res.locals.item = lineage.pop();
+
+          console.log('!item!', res.locals.item)
 
           res.locals.item.lineage = lineage;
 
-          res.locals.title = item.subject + ' | Synaccord';
+          res.locals.title = res.locals.item.subject + ' | Synaccord';
 
-          res.locals.meta_description = item.description
+          res.locals.meta_description = res.locals.item.description
             // Get first line
             .split(/\n/)[0]
             // Line max length

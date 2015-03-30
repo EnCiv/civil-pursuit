@@ -18,7 +18,14 @@
 
       ! function getItem (item_id) {
 
-        self.findById(item_id, domain.intercept(function onItemFound (item) {
+        self
+          .findById(item_id)
+          .lean()
+          .exec(domain.intercept(function onItemFound (item) {
+
+          if ( ! item ) {
+            return cb(null, lineage);
+          }
 
           lineage.push(item);
           
@@ -34,7 +41,7 @@
 
         }));
 
-      } ();
+      } (item_id);
 
     });
 
