@@ -1270,7 +1270,7 @@
   
     var item = this;
 
-    // Create reference to promote
+    // Create reference to promote if promotion enabled
 
     this.promote = new Promote(this);
 
@@ -4098,6 +4098,7 @@
   'use strict';
 
   var Synapp    =   require('../Synapp');
+  var Item    =   require('../Item');
   var Sign      =   require('../Sign');
   var Intro     =   require('../Intro');
   var Panel     =   require('../Panel');
@@ -4112,13 +4113,46 @@
     /** Render intro */
     new Intro().render();
 
+    var panel = new Panel('Topic');
+
     /** If page is about an item */
     if ( app.location.item ) {
-      console.log()
+      panel.template = $('#panel-Topic');
+
+      panel.render(app.domain.intercept(function () {
+        $('#panel-Topic .item[id]').each(function () {
+          var id = $(this).attr('id').split('-')[1];
+
+          var _item = {
+            _id           :     id,
+            subject       :     $(this).find('.item-subject').text(),
+            description   :     $(this).find('.item-description').text(),
+            image         :     $(this).find('.item-media img').attr('src'),
+            references    :     [],
+            views         :     +$(this).data('views'),
+            promotions    :     +$(this).find('.promoted').text()
+          };
+
+          if ( $(this).find('.item-reference a').attr('url') !== '#' ) {
+            _item.references[0] = { url: $(this).find('.item-reference a').attr('url') };
+            _item.references[0].title = $(this).find('.item-reference a').data('title');
+          }
+
+          console.log('item', _item)
+
+          var item = new Item(_item);
+
+          item.template = $(this);
+
+          item.render(app.domain.intercept(function (args) {
+            // ...code  
+          }));
+
+        });
+      }));
     }
 
     else {
-      var panel = new Panel('Topic');
 
       panel
         
@@ -4139,7 +4173,7 @@
 
 } ();
 
-},{"../Intro":11,"../Panel":21,"../Sign":35,"../Synapp":37}],42:[function(require,module,exports){
+},{"../Intro":11,"../Item":12,"../Panel":21,"../Sign":35,"../Synapp":37}],42:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events

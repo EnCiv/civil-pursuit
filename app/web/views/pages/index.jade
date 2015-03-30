@@ -1,4 +1,6 @@
 extends ../layout
+include ../mixins/panel
+include ../mixins/item-box
 
 
 block page
@@ -7,3 +9,6 @@ block page
     include ../partials/intro
 
   .panels
+    - if ( item )
+      - if ( ! item.lineage.length )
+        +panel({ type: 'Topic', items: [item] })

@@ -30,16 +30,7 @@
 
         app.arte = new (require('events').EventEmitter)();
 
-        app.arte.on('error', function (error) {
-          console.log(error.stack.split(/\n/));
-        });
-
-        app.arte.on('message', function (message) {
-          console.log(JSON.stringify(message, null, 2));
-        });
-
-        app.arte.on('request', function (req) {
-
+        function printIt (req, res) {
           var d = new Date();
 
           var hours = d.getHours();
@@ -54,7 +45,7 @@
             minutes = '0' + minutes;
           }
 
-          var seconds = d.getMinutes();
+          var seconds = d.getSeconds();
 
           if ( seconds < 10 ) {
             seconds = '0' + seconds;
@@ -72,54 +63,48 @@
             user = isIn.email.blue;
           }
 
-          console.log([hours, minutes, seconds].join(':').cyan, user, '...'.grey, req.method.grey, req.url.grey);
-        });
-
-        app.arte.on('response', function (res) {
-
-          var d = new Date();
-
-          var hours = d.getHours();
-
-          if ( hours < 10 ) {
-            hours = '0' + hours;
-          }
-
-          var minutes = d.getMinutes();
-
-          if ( minutes < 10 ) {
-            minutes = '0' + minutes;
-          }
-
-          var seconds = d.getMinutes();
-
-          if ( seconds < 10 ) {
-            seconds = '0' + seconds;
-          }
-
-          var user = 'visitor'.magenta;
-
-          if ( res.req.cookies && res.req.cookies.synuser ) {
-            var isIn = res.req.cookies.synuser;
-
-            if ( typeof isIn === 'string' ) {
-              isIn = JSON.parse(isIn);
-            }
-
-            user = isIn.email.blue;
-          }
+          var status = '...';
 
           var color = 'grey';
 
-          if ( res.statusCode.toString().substr(0, 1) === '3' ) {
-            color = 'cyan';
+          if ( res ) {
+
+            status = res.statusCode.toString();
+
+            if ( status.substr(0, 1) === '2' ) {
+              color = 'green';
+            }
+
+            else if ( status.substr(0, 1) === '3' ) {
+              color = 'cyan';
+            }
+
+            else if ( status.substr(0, 1) === '4' ) {
+              color = 'yellow';
+            }
+
+            else if ( status.substr(0, 1) === '5' ) {
+              color = 'red';
+            }
           }
 
-          else if ( res.statusCode.toString().substr(0, 1) === '4' ) {
-            color = 'yellow';
-          }
+          console.log([hours, minutes, seconds].join(':').cyan, user, status[color], req.method[color], req.url[color]);
+        }
 
-          console.log([hours, minutes, seconds].join(':').cyan, user, res.statusCode.toString()[color], res.req.method[color], res.req.url[color]);
+        app.arte.on('error', function (error) {
+          console.log(error.stack.split(/\n/));
+        });
+
+        app.arte.on('message', function (message) {
+          console.log(JSON.stringify(message, null, 2));
+        });
+
+        app.arte.on('request', printIt);
+
+        app.arte.on('response', function (res) {
+
+          printIt(res.req, res);
+          
         });
 
       } ();
@@ -191,11 +176,18 @@
               res.locals.package  =   src('package.json');
 
               res.superRender     =   function superRender (tpl, options) {
-                res.render(tpl, options);
+                // res.send('hola')
+                res.render(tpl , options);
                 app.arte.emit('response', res);
               };
 
               app.arte.emit('request', req);
+
+              // req.send = res.send.bind(res);
+              // res.send = function (body) {
+              //   app.arte.emit('response', res);
+              //   req.send(body);
+              // };
 
               next();
             });
@@ -261,7 +253,8 @@
 
           .all('/sign/out', require('../routes/sign-out'))
 
-          .use(express.static('app/web/dist'))
+          .use(
+            express.static('app/web/dist'))
 
           .use(function onRouteError (err, req, res, next) {
             console.log('error', err.stack.split(/\n/));

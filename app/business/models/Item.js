@@ -118,9 +118,11 @@ Nina Butorac
 
   // Get item's lineage
 
-  ItemSchema.statics.getLineage = require('./Item/get-lineage')
+  ItemSchema.statics.getLineage = require('./Item/get-lineage');
 
-  // 
+  // Get item's promotion percentage
+
+  ItemSchema.methods.getPromotionPercentage = require('./Item/get-promotion-percentage');
 
   // EXPORT
   // ======

@@ -27,8 +27,10 @@
           res.locals.title = res.locals.item.subject + ' | Synaccord';
 
           res.locals.meta_description = res.locals.item.description
+            
             // Get first line
             .split(/\n/)[0]
+            
             // Line max length
             .substr(0, 255);
 

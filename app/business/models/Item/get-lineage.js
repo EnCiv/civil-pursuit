@@ -20,7 +20,7 @@
 
         self
           .findById(item_id)
-          .lean()
+          // .lean()
           .exec(domain.intercept(function onItemFound (item) {
 
           if ( ! item ) {

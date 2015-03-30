@@ -1,0 +1,46 @@
+include creator
+include item-box
+
+mixin panel (panel)
+  - var id = 'panel-' + panel.type;
+
+  // Panel
+
+  .panel.panel-default(id=id)
+
+    .panel-heading
+      block toggle-creator
+        h4.fa.fa-plus.cursor-pointer.toggle-creator
+
+      h4.panel-title=panel.title || panel.type
+
+    .panel-body
+
+      block panel-body
+
+        +creator
+        
+        // Items
+        
+        .items
+          - if ( panel.items && panel.items.length )
+            each item in panel.items
+              +item-box(item)
+
+        block loading-items
+          .loading-items.hide
+            i.fa.fa-circle-o-notch.fa-spin
+            span  Loading items...
+
+        .padding.hide.pre
+
+          // Load more
+
+          .load-more.hide
+            a(href='') View more
+
+          // Create new
+
+          .create-new
+            a(href='') Click the + to be the first to add something here
+

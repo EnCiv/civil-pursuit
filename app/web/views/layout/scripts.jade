@@ -9,11 +9,17 @@
 //- # pass config public
 block script-backend
   script.
-    var synapp = !{JSON.stringify(synapp.public)};
-    synapp.env = "!{settings.env}";
-    synapp.user = "!{(req.user && req.user.id)}";
-    synapp.protocol = "!{protocol}";
-    console.log('user', synapp)
+    ! function () {
+      
+      'use strict';
+    
+      window.synapp     =   !{JSON.stringify(synapp.public)};
+      synapp.env        =   "!{settings.env}";
+      synapp.user       =   "!{(req.user && req.user.id)}";
+      synapp.protocol   =   "!{protocol}";
+    
+    } ();
+    
 
 //- socketio
 block script-socketio
@@ -71,9 +77,3 @@ block script-vex
 
 block script-goal-progress
   script(src='/bower_components/goalProgress/goalProgress.js')
-
-//- script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
-
-//- script(src='/js/Bootstrap.b.js')
-
-//- # synapp

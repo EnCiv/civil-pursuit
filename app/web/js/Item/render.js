@@ -21,7 +21,7 @@
   
     var item = this;
 
-    // Create reference to promote
+    // Create reference to promote if promotion enabled
 
     this.promote = new Promote(this);
 
