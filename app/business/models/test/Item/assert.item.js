@@ -80,6 +80,12 @@
         criteria.type.should.be.exactly(self.obj.type);
       });
 
+    // Item should have a method called getPromotionPercentage
+
+    this.obj
+      .should.have.property('getPromotionPercentage')
+        .which.is.a.Function;
+
   }
 
   module.exports = assertEvaluation;

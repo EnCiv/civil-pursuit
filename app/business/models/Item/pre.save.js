@@ -7,6 +7,8 @@
   var Item;
   var src           =     require(require('path').join(process.cwd(), 'src'));
 
+  var config        =     src('config');
+
   try {
     Item = mongoose.model('Item');
   }
