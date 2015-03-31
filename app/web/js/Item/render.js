@@ -9,6 +9,8 @@
   var readMore    =   require('../ReadMore');
   var Sign        =   require('../Sign');
 
+  var getPromotionPercentage = require('../../../business/models/Item/get-promotion-percentage');
+
   var S           =   require('string');
 
   /**
@@ -84,7 +86,9 @@
 
     // Percent of promotions
 
-    item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
+    // item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
+    item.find('promotions %').text(getPromotionPercentage.apply(item.item));
+
     
     // Toggle promote
 

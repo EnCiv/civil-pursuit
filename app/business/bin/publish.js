@@ -4,6 +4,8 @@
   
   'use strict';
 
+  console.time('publish');
+
   require('colors');
 
   var cp = require('child_process');
@@ -73,6 +75,7 @@
 
     function (error) {
       console.log(arguments);
+      console.timeEnd('publish');
     });
 
 } ();

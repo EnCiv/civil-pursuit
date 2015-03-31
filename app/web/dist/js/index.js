@@ -1,4 +1,27 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  // Math.ceil(item.item.promotions * 100 / item.item.views) + '%'
+
+  function getPromotionPercentage () {
+    var multiplyBy100 = this.promotions * 100;
+
+    if ( multiplyBy100 === 0 ) {
+      return '0%';
+    }
+
+    var divideByViews = Math.ceil(multiplyBy100 / this.views);
+
+    return divideByViews + '%';
+  }
+
+  module.exports = getPromotionPercentage;
+
+} ();
+
+},{}],2:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -75,7 +98,7 @@
 
 } ();
 
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":21}],2:[function(require,module,exports){
+},{"./Creator/create":3,"./Creator/created":4,"./Creator/pack-item":5,"./Creator/render":6,"./Panel":22}],3:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -161,7 +184,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":12,"../Nav":20,"../Stream":36,"_process":45}],3:[function(require,module,exports){
+},{"../Item":13,"../Nav":21,"../Stream":37,"_process":46}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -195,7 +218,7 @@
 
 } ();
 
-},{"../Item":12}],4:[function(require,module,exports){
+},{"../Item":13}],5:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -256,7 +279,7 @@
 
 } ();
           synapp.user
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -333,7 +356,7 @@
 
 } ();
 
-},{"../Form":10,"../Upload":39,"../YouTube":40}],6:[function(require,module,exports){
+},{"../Form":11,"../Upload":40,"../YouTube":41}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -595,7 +618,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":12,"./Nav":20}],7:[function(require,module,exports){
+},{"./Edit":8,"./Item":13,"./Nav":21}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -746,7 +769,7 @@
 
 } ();
 
-},{"./Creator":1,"./Edit/save":8,"./Form":10,"./Item":12,"./Nav":20}],8:[function(require,module,exports){
+},{"./Creator":2,"./Edit/save":9,"./Form":11,"./Item":13,"./Nav":21}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -804,7 +827,7 @@
 
 } ();
 
-},{"../Item":12,"../Nav":20}],9:[function(require,module,exports){
+},{"../Item":13,"../Nav":21}],10:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -870,7 +893,7 @@
 
 } ();
 
-},{"./Form":10,"domain":42}],10:[function(require,module,exports){
+},{"./Form":11,"domain":43}],11:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -959,7 +982,7 @@
 
 } ();
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1020,7 +1043,7 @@
 
 } ();
 
-},{"./Item":12,"./ReadMore":34,"./Truncate":38}],12:[function(require,module,exports){
+},{"./Item":13,"./ReadMore":35,"./Truncate":39}],13:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1079,7 +1102,7 @@
 
 } ();
 
-},{"./Item/find":13,"./Item/load":14,"./Item/media":15,"./Item/render":16}],13:[function(require,module,exports){
+},{"./Item/find":14,"./Item/load":15,"./Item/media":16,"./Item/render":17}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1132,7 +1155,7 @@
 
 } ();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1171,7 +1194,7 @@
 
 } ();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1246,7 +1269,7 @@
 
 } ();
 
-},{"../YouTube":40}],16:[function(require,module,exports){
+},{"../YouTube":41}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1257,6 +1280,8 @@
   var Nav         =   require('../Nav');
   var readMore    =   require('../ReadMore');
   var Sign        =   require('../Sign');
+
+  var getPromotionPercentage = require('../../../business/models/Item/get-promotion-percentage');
 
   var S           =   require('string');
 
@@ -1333,7 +1358,9 @@
 
     // Percent of promotions
 
-    item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
+    // item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
+    item.find('promotions %').text(getPromotionPercentage.apply(item.item));
+
     
     // Toggle promote
 
@@ -1540,7 +1567,7 @@
 
 } ();
 
-},{"../Details":6,"../Nav":20,"../Panel":21,"../Promote":27,"../ReadMore":34,"../Sign":35,"../Truncate":38,"./view/toggle-promote":17,"string":48}],17:[function(require,module,exports){
+},{"../../../business/models/Item/get-promotion-percentage":1,"../Details":7,"../Nav":21,"../Panel":22,"../Promote":28,"../ReadMore":35,"../Sign":36,"../Truncate":39,"./view/toggle-promote":18,"string":49}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1632,7 +1659,7 @@
 
 } ();
 
-},{"../../Nav":20,"../../Sign":35}],18:[function(require,module,exports){
+},{"../../Nav":21,"../../Sign":36}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1715,7 +1742,7 @@
 
 } ();
 
-},{"./Form":10}],19:[function(require,module,exports){
+},{"./Form":11}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1797,7 +1824,7 @@
 
 } ();
 
-},{"./Form":10,"./Nav":20}],20:[function(require,module,exports){
+},{"./Form":11,"./Nav":21}],21:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2150,7 +2177,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":45,"domain":42,"events":43}],21:[function(require,module,exports){
+},{"_process":46,"domain":43,"events":44}],22:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2289,7 +2316,7 @@
 
 } ();
 
-},{"./Creator":1,"./Item":12,"./Nav":20,"./Panel/fill":22,"./Panel/load":23,"./Panel/pre-insert-item":24,"./Panel/render":25,"./Panel/to-json":26,"./Sign":35}],22:[function(require,module,exports){
+},{"./Creator":2,"./Item":13,"./Nav":21,"./Panel/fill":23,"./Panel/load":24,"./Panel/pre-insert-item":25,"./Panel/render":26,"./Panel/to-json":27,"./Sign":36}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2350,7 +2377,7 @@
 
 } ();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2389,7 +2416,7 @@
 
 } ();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2450,7 +2477,7 @@
 
 } ();
 
-},{"../Item":12}],25:[function(require,module,exports){
+},{"../Item":13}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2497,7 +2524,7 @@
 
 } ();
 
-},{"../Creator":1}],26:[function(require,module,exports){
+},{"../Creator":2}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2527,7 +2554,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2680,7 +2707,7 @@
 
 } ();
 
-},{"./Edit":7,"./Item":12,"./Nav":20,"./Promote/find":28,"./Promote/finish":29,"./Promote/get":30,"./Promote/render":32,"./Promote/render-item":31,"./Promote/save":33,"events":43}],28:[function(require,module,exports){
+},{"./Edit":8,"./Item":13,"./Nav":21,"./Promote/find":29,"./Promote/finish":30,"./Promote/get":31,"./Promote/render":33,"./Promote/render-item":32,"./Promote/save":34,"events":44}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2731,7 +2758,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2776,7 +2803,7 @@
 
 } ();
 
-},{"../Nav":20}],30:[function(require,module,exports){
+},{"../Nav":21}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2833,7 +2860,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3009,7 +3036,7 @@
 
 } ();
 
-},{"../Item":12,"../Nav":20}],32:[function(require,module,exports){
+},{"../Item":13,"../Nav":21}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3081,7 +3108,7 @@
 
 } ();
 
-},{"../Nav":20}],33:[function(require,module,exports){
+},{"../Nav":21}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3139,7 +3166,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3306,7 +3333,7 @@
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3489,7 +3516,7 @@
 
 } ();
 
-},{"./Forgot-Password":9,"./Join":18,"./Login":19,"./Nav":20}],36:[function(require,module,exports){
+},{"./Forgot-Password":10,"./Join":19,"./Login":20,"./Nav":21}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3528,7 +3555,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3664,7 +3691,7 @@
 
 } ();
 
-},{"domain":42,"events":43,"util":47}],38:[function(require,module,exports){
+},{"domain":43,"events":44,"util":48}],39:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -3887,7 +3914,7 @@
 
 }();
 
-},{"./Nav":20}],39:[function(require,module,exports){
+},{"./Nav":21}],40:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -3973,7 +4000,7 @@
 
 } ();
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4092,7 +4119,7 @@
 
 } ();
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4130,7 +4157,8 @@
             image         :     $(this).find('.item-media img').attr('src'),
             references    :     [],
             views         :     +$(this).data('views'),
-            promotions    :     +$(this).find('.promoted').text()
+            promotions    :     +$(this).find('.promoted').text(),
+            type          :     'Topic'
           };
 
           if ( $(this).find('.item-reference a').attr('url') !== '#' ) {
@@ -4173,7 +4201,7 @@
 
 } ();
 
-},{"../Intro":11,"../Item":12,"../Panel":21,"../Sign":35,"../Synapp":37}],42:[function(require,module,exports){
+},{"../Intro":12,"../Item":13,"../Panel":22,"../Sign":36,"../Synapp":38}],43:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4241,7 +4269,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":43}],43:[function(require,module,exports){
+},{"events":44}],44:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4544,7 +4572,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4569,7 +4597,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4657,14 +4685,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5254,7 +5282,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":46,"_process":45,"inherits":44}],48:[function(require,module,exports){
+},{"./support/isBuffer":47,"_process":46,"inherits":45}],49:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6288,4 +6316,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[41]);
+},{}]},{},[42]);

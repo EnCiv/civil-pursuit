@@ -36,7 +36,7 @@
       else if ( panel.item ) {
         return src('models/Item')
           .findById(panel.item)
-          .lean()
+          // .lean()
           .exec(domain.intercept(function (item) {
             getItems.apply(socket, [panel, item]);
           }));
@@ -62,7 +62,7 @@
         .skip   (panel.skip)
         .limit  (limit)
         .sort   ({ "promotions": -1, "views": -1, "created": 1 })
-        .lean   ()
+        // .lean   ()
         .exec   (domain.intercept(function (_items) {
           socket.emit('got items ' + id, panel, items.concat(_items));
           socket.app.arte.emit('message', {

@@ -35,7 +35,8 @@
             image         :     $(this).find('.item-media img').attr('src'),
             references    :     [],
             views         :     +$(this).data('views'),
-            promotions    :     +$(this).find('.promoted').text()
+            promotions    :     +$(this).find('.promoted').text(),
+            type          :     'Topic'
           };
 
           if ( $(this).find('.item-reference a').attr('url') !== '#' ) {
