@@ -1,0 +1,11 @@
+mixin media (item)
+  - var regexYouTube = /youtu\.?be.+v=([^&]+)/
+
+  - if ( item )
+    - if ( item.references.length && settings.env !== 'development2' )
+      - if ( regexYouTube.test(item.references[0].url) )
+        -  var youtube;
+        - item.references[0].url.replace(regexYouTube, function (m, v) { youtube = v; });
+
+        .video-container
+          iframe(frameborder="0" width="300" height="175" allowfullscreen src='http://www.youtube.com/embed/' + youtube)

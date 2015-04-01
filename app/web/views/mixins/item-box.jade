@@ -36,8 +36,7 @@ mixin item-box (item, dontColllapse)
   .item(id=id data-views=views)
     .item-media-wrapper
       .item-media
-        - if ( item )
-          img.img-responsive(src=item.image)
+        img.img-responsive(src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale/v1411591207/283492_s_US_Flag_and_Constitution_swpubq.jpg')
 
     .item-buttons
       button.item-toggle-promote.shy
@@ -58,22 +57,16 @@ mixin item-box (item, dontColllapse)
         span  
         span.hide.caret
 
-      div
-        button.shy
-          i.fa.fa-fire
-          span 
-          - if ( item )
-            - if ( item.type === 'Topic' )
+      div 
+        - if ( item )
+          - if ( item.type === 'Topic' )
+            button.shy
+              i.fa.fa-fire
+              span 
               span.related-count=related
               span.related-name  problem
-            - else if ( item.type === 'Problem' )
-              span.related-count=related
-              span.related-name  solution
-          
-          - else
-            span.related-count=related
-            span.related-name  item
-          span.related-count-plural=(related > 1 ? "s" : "")
+        - else
+          span.related
 
       //- problems
 

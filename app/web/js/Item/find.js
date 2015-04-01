@@ -38,13 +38,15 @@
 
       case "children":            return this.template.find('.children:first');
 
-      case "collapsers":          return this.template.find('.item-collapsers:first');
+      case "collapsers"             :   return this.template.find('.item-collapsers:first');
 
       case "collapsers hidden"      :   return this.template.find('.item-collapsers:first:hidden');
 
       case "collapsers visible"     :   return this.template.find('.item-collapsers:first:visible');
 
       case "related count"          :   return this.template.find('.related-count');
+
+      case "related"                :   return this.template.find('.related');
 
       case "related count plural"   :   return this.template.find('.related-count-plural');
 

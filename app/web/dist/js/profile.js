@@ -1571,13 +1571,15 @@
 
       case "children":            return this.template.find('.children:first');
 
-      case "collapsers":          return this.template.find('.item-collapsers:first');
+      case "collapsers"             :   return this.template.find('.item-collapsers:first');
 
       case "collapsers hidden"      :   return this.template.find('.item-collapsers:first:hidden');
 
       case "collapsers visible"     :   return this.template.find('.item-collapsers:first:visible');
 
       case "related count"          :   return this.template.find('.related-count');
+
+      case "related"                :   return this.template.find('.related');
 
       case "related count plural"   :   return this.template.find('.related-count-plural');
 
@@ -1719,11 +1721,9 @@
 
   var S           =   require('string');
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  function makeRelated () {
+    return $('<button class="shy"><i class="fa"></i> <span class="related-number"></span> <span class="related-name"></span><span class="related-plural"></span></button>')
+  }
 
   function render (cb) {
   
@@ -1797,19 +1797,37 @@
 
     // Related
 
-    item.find('related count').text(item.item.related);
-
-    if ( item.item.related > 1 ) {
-      item.find('related count plural').text('s');
-    }
-
     switch ( item.item.type ) {
       case 'Topic':
-        item.find('related name').text(' problem');
+        var button = makeRelated();
+        button.find('i').addClass('fa-fire');
+        button.find('.related-number').text(item.item.related.Problem);
+        button.find('.related-name').text('problem');
+        button.find('.related-plural').text(item.item.related.Problem > 1 ? 's' : '');
+        item.find('related').append(button);
         break;
 
       case 'Problem':
-        item.find('related name').text(' problem');
+        var button = makeRelated();
+        button.find('i').addClass('fa-music');
+        button.find('.related-number').text(item.item.related.Agree);
+        button.find('.related-name').text('agree');
+        button.find('.related-plural').text(item.item.related.Agree > 1 ? 's' : '');
+        item.find('related').append(button);
+
+        button = makeRelated();
+        button.find('i').remove();
+        button.find('.related-number').text(item.item.related.Disagree);
+        button.find('.related-name').text('disagree');
+        button.find('.related-plural').text(item.item.related.Disagree > 1 ? 's' : '');
+        item.find('related').append(button, $('<div></div>'));
+
+        button = makeRelated();
+        button.find('i').addClass('fa-tint');
+        button.find('.related-number').text(item.item.related.Solution);
+        button.find('.related-name').text('solution');
+        button.find('.related-plural').text(item.item.related.Solution > 1 ? 's' : '');
+        item.find('related').append(button);
         break;
     }
     
