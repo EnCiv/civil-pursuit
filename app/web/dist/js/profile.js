@@ -1576,6 +1576,10 @@
       case "collapsers hidden":   return this.template.find('.item-collapsers:first:hidden');
 
       case "collapsers visible":  return this.template.find('.item-collapsers:first:visible');
+
+      case "related count"          :   return this.template.find('.related-count');
+
+      case "related count plural"   :   return this.template.find('.related-count-plural');
     }
   }
 
@@ -1789,6 +1793,13 @@
     // item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
     item.find('promotions %').text(getPromotionPercentage.apply(item.item));
 
+    // Related
+
+    item.find('related count').text(item.item.related);
+
+    if ( item.item.related > 1 ) {
+      item.find('related count plural').text('s');
+    }
     
     // Toggle promote
 

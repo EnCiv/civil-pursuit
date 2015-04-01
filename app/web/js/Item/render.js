@@ -89,6 +89,13 @@
     // item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
     item.find('promotions %').text(getPromotionPercentage.apply(item.item));
 
+    // Related
+
+    item.find('related count').text(item.item.related);
+
+    if ( item.item.related > 1 ) {
+      item.find('related count plural').text('s');
+    }
     
     // Toggle promote
 

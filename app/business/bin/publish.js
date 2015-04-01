@@ -12,10 +12,12 @@
 
   var test = 'app/business/bin/test.js';
 
+  var deployMessage = process.argv[2];
+
   var tests = [
     { name: 'gulp build-prod' },
 
-    { name: 'git commit -am "deploy"', ok: [0, 8792] },
+    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 8792] },
 
     { name: [test, 'models/User'].join(' ') },
     { name: [test, 'models/User'].join(' ') },

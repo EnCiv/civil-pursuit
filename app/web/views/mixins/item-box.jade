@@ -62,8 +62,9 @@ mixin item-box (item, dontColllapse)
         button.shy
           i.fa.fa-fire
           span 
-          span=related
-          span="  problem" + (related > 1 ? "s" : "")
+          span.related-count=related
+          span  problem
+          span.related-count-plural=(related > 1 ? "s" : "")
 
       //- problems
 
