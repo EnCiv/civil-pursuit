@@ -56,14 +56,26 @@
 
     // Sliders
 
-    promote.find('sliders', hand).find('h4').each(function (i) {
+    promote.find('sliders', hand).find('.criteria-name').each(function (i) {
       var cid = i;
 
       if ( cid > 3 ) {
         cid -= 4;
       }
 
-      promote.find('sliders', hand).find('h4').eq(i).text(promote.evaluation.criterias[cid].name);
+      promote.find('sliders', hand).find('.criteria-name').eq(i)
+        .on('click', function () {
+          var self = $(this);
+          var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
+
+          Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
+            Nav.toggle(descriptionSection);
+          }));
+
+          
+        })
+        .text(promote.evaluation.criterias[cid].name);
+      promote.find('sliders', hand).find('.criteria-description').eq(i).text(promote.evaluation.criterias[cid].description);
       promote.find('sliders', hand).find('input').eq(i)
         .val(0)
         .data('criteria', promote.evaluation.criterias[cid]._id);

@@ -370,6 +370,10 @@
   function reveal (elem, poa, cb) {
     var emitter = new (require('events').EventEmitter)();
 
+    if ( typeof cb !== 'function' ) {
+      cb = console.log.bind(console);
+    }
+
     emitter.revealed = function (fn) {
       emitter.on('success', fn);
       return this;
@@ -617,6 +621,10 @@
       });
 
       domain.run(function () {
+
+        if ( ! elem.length ) {
+          return cb();
+        }
 
         // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
 

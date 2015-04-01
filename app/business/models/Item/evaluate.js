@@ -45,7 +45,6 @@
         .model
         .findById(self.itemId)
         .populate('user')
-        .lean()
         .exec(self.domain.intercept(function (item) {
           
           if ( ! item ) {
@@ -162,8 +161,6 @@
 
           .sort({ views: 1, created: 1 })
 
-          .lean()
-
           .exec(done);
 
       }));
@@ -217,9 +214,12 @@
 
   Evaluate.prototype.map = function (item) {
 
-    delete item.user.password;
+    return item.toObject({ transform: function (doc, ret, options) {
+      if ( ret.user ) {
+        delete ret.user.password;
+      }
+    }});
 
-    return item;
   };
 
   /**
