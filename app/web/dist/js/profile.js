@@ -1573,13 +1573,15 @@
 
       case "collapsers":          return this.template.find('.item-collapsers:first');
 
-      case "collapsers hidden":   return this.template.find('.item-collapsers:first:hidden');
+      case "collapsers hidden"      :   return this.template.find('.item-collapsers:first:hidden');
 
-      case "collapsers visible":  return this.template.find('.item-collapsers:first:visible');
+      case "collapsers visible"     :   return this.template.find('.item-collapsers:first:visible');
 
       case "related count"          :   return this.template.find('.related-count');
 
       case "related count plural"   :   return this.template.find('.related-count-plural');
+
+      case "related name"           :   return this.template.find('.related-name');
     }
   }
 
@@ -1799,6 +1801,16 @@
 
     if ( item.item.related > 1 ) {
       item.find('related count plural').text('s');
+    }
+
+    switch ( item.item.type ) {
+      case 'Topic':
+        item.find('related name').text(' problem');
+        break;
+
+      case 'Problem':
+        item.find('related name').text(' problem');
+        break;
     }
     
     // Toggle promote
@@ -3556,6 +3568,17 @@
         .on('click', function () {
           var self = $(this);
           var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
+
+          self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
+
+
+          if ( $(this).hasClass('shy') ) {
+            $(this).removeClass('shy').addClass('info');
+          }
+
+          else if ( $(this).hasClass('info') ) {
+            $(this).removeClass('info').addClass('shy');
+          }
 
           Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
             Nav.toggle(descriptionSection);

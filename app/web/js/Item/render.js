@@ -96,6 +96,16 @@
     if ( item.item.related > 1 ) {
       item.find('related count plural').text('s');
     }
+
+    switch ( item.item.type ) {
+      case 'Topic':
+        item.find('related name').text(' problem');
+        break;
+
+      case 'Problem':
+        item.find('related name').text(' problem');
+        break;
+    }
     
     // Toggle promote
 

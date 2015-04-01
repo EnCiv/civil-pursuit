@@ -40,13 +40,15 @@
 
       case "collapsers":          return this.template.find('.item-collapsers:first');
 
-      case "collapsers hidden":   return this.template.find('.item-collapsers:first:hidden');
+      case "collapsers hidden"      :   return this.template.find('.item-collapsers:first:hidden');
 
-      case "collapsers visible":  return this.template.find('.item-collapsers:first:visible');
+      case "collapsers visible"     :   return this.template.find('.item-collapsers:first:visible');
 
       case "related count"          :   return this.template.find('.related-count');
 
       case "related count plural"   :   return this.template.find('.related-count-plural');
+
+      case "related name"           :   return this.template.find('.related-name');
     }
   }
 

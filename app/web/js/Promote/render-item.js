@@ -68,6 +68,17 @@
           var self = $(this);
           var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
 
+          self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
+
+
+          if ( $(this).hasClass('shy') ) {
+            $(this).removeClass('shy').addClass('info');
+          }
+
+          else if ( $(this).hasClass('info') ) {
+            $(this).removeClass('info').addClass('shy');
+          }
+
           Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
             Nav.toggle(descriptionSection);
           }));
