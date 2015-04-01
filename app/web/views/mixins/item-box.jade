@@ -1,5 +1,6 @@
 include promote
 include details
+//- include panel
 
 mixin item-box (item, dontColllapse)
 
@@ -69,7 +70,7 @@ mixin item-box (item, dontColllapse)
         i.fa.fa-arrow-down.cursor-pointer
 
     - if ( ! dontColllapse )
-      .item-collapsers
+      .item-collapsers.show
         .editor.is-container
           .is-section
 
@@ -81,7 +82,10 @@ mixin item-box (item, dontColllapse)
           .is-section
             +details()
 
-        .children.is-container
-          .is-section
+        .children.is-container.show
+          .is-section.show
+            block nested-items
+              - if ( item.nested )
+                +panel({ type: item.type, parent: item._id, items: item.nested })
 
     .clear

@@ -4157,6 +4157,8 @@
 
     /** If page is about an item */
     if ( app.location.item ) {
+      console.warn(synapp)
+
       panel.template = $('#panel-Topic');
 
       panel.render(app.domain.intercept(function () {

@@ -10,5 +10,9 @@ block page
 
   .panels
     - if ( batch )
-      - if ( ! batch.lineage.length )
+      - if ( item.type === 'Topic' )
         +panel({ type: 'Topic', items: [item].concat(batch.entourage.items) })
+      - else if ( item.type === 'Problem' )
+        - var topic = batch.lineage[0];
+        - topic.nested = [item];
+        +panel({ type: 'Topic', items: [topic] })

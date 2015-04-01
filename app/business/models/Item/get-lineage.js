@@ -40,14 +40,30 @@
           }
 
           else {
-            // lineage.shift();
+
             lineage.reverse();
-            cb(null, lineage);
+
+            countRelated(lineage);
+
           }
 
         }));
 
       } (self.parent);
+
+      function countRelated (lineage) {
+        require('async').map(lineage,
+          function onEachItem (item, cb) {
+            item.countRelated(domain.intercept(function (count) {
+              cb(null, item.toObject({ transform: function (doc, ret, options) {
+                ret.related = count;
+                ret.getPromotionPercentage = doc.getPromotionPercentage;
+                  // ret.countRelated = doc.countRelated;
+              }}));
+            }))
+          },
+          cb);
+      }
 
     });
 
