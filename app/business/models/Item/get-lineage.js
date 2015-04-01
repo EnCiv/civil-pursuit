@@ -36,7 +36,7 @@
           lineage.push(item);
           
           if ( item.parent ) {
-            getItem(parent);
+            getItem(item.parent);
           }
 
           else {

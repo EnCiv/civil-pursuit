@@ -16,3 +16,9 @@ block page
         - var topic = batch.lineage[0];
         - topic.nested = [item];
         +panel({ type: 'Topic', items: [topic] })
+      - else if ( item.type === 'Agree' || item.type === 'Disagree')
+        - var topic = batch.lineage[0];
+        - var problem = batch.lineage[1];
+        - topic.nested = [problem];
+        - problem.nested = [item];
+        +panel({ type: 'Topic', items: [topic] })

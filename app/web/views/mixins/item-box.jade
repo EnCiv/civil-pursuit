@@ -4,29 +4,46 @@ include details
 
 mixin item-box (item, dontColllapse)
 
-  - var id = 'item-' + item._id;
-  - var hasReference = item.references.length;
+  - var id;
+  - var views = 0;
+  - var promotions = 0;
+  - var percent = '0%';
+  - var related = 0;
+  - var subject = '';
+  - var description = '';
   - var referenceUrl = '#';
+  - var hasReference = false;
   - var referenceTitle;
-  - var related = item.related;
 
-  - if ( item._id.toString() === batch.item._id.toString() )
-    - related = batch.related;
+  - if ( item )
+    - id = 'item-' + item._id;
+    - views = item.views
+    - promotions = item.promotions
+    - percent = item.getPromotionPercentage()
+    - subject = item.subject
+    - description = item.description
 
-  - if ( hasReference )
-    - referenceUrl = item.references[0].url;
-    - referenceTitle = item.references[0].title;
+    - hasReference = item.references.length;
+    - related = item.related;
 
-  .item(id=id data-views=item.views)
+    - if ( item._id.toString() === batch.item._id.toString() )
+      - related = batch.related;
+
+    - if ( hasReference )
+      - referenceUrl = item.references[0].url;
+      - referenceTitle = item.references[0].title;
+
+  .item(id=id data-views=views)
     .item-media-wrapper
       .item-media
-        img.img-responsive(src=item.image)
+        - if ( item )
+          img.img-responsive(src=item.image)
 
     .item-buttons
       button.item-toggle-promote.shy
         i.fa.fa-bullhorn
         span  
-        span.promoted=item.promotions
+        span.promoted=promotions
         span  
         span.hide.caret
         span  
@@ -37,7 +54,7 @@ mixin item-box (item, dontColllapse)
       button.item-toggle-details.shy
         i.fa.fa-signal
         span  
-        span.promoted-percent=item.getPromotionPercentage()
+        span.promoted-percent=percent
         span  
         span.hide.caret
 
@@ -56,9 +73,9 @@ mixin item-box (item, dontColllapse)
     .item-text
       .item-truncatable
         h4.item-subject.header
-          a(href='#')=item.subject
+          a(href='#')=subject
 
-        .item-description.pre-text=item.description
+        .item-description.pre-text=description
 
       h5.item-reference
         a(href=referenceUrl target='_blank' rel='nofollow' data-title=referenceTitle)=(referenceTitle || (hasReference && referenceUrl) || '')
@@ -85,7 +102,7 @@ mixin item-box (item, dontColllapse)
         .children.is-container.show
           .is-section.show
             block nested-items
-              - if ( item.nested )
+              - if ( item && item.nested )
                 +panel({ type: item.type, parent: item._id, items: item.nested })
 
     .clear
