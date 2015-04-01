@@ -4,9 +4,11 @@
 
   var src = require(require('path').join(process.cwd(), 'src'));
 
-  function getLineage (item_id, cb) {
+  function getLineage (cb) {
 
     var self = this;
+
+    var Item = require('mongoose').model('Item');
     
     src.domain.nextTick(cb, function getLineageDomain (domain) {
 
@@ -14,11 +16,15 @@
 
       var lineage = [];
 
+      if ( ! self.parent ) {
+        return cb(null, lineage);
+      }
+
       /** Get ancestors one by one */
 
       ! function getItem (item_id) {
 
-        self
+        Item
           .findById(item_id)
           // .lean()
           .exec(domain.intercept(function onItemFound (item) {
@@ -41,7 +47,7 @@
 
         }));
 
-      } (item_id);
+      } (self.parent);
 
     });
 

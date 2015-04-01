@@ -7,6 +7,10 @@ mixin item-box (item, dontColllapse)
   - var hasReference = item.references.length;
   - var referenceUrl = '#';
   - var referenceTitle;
+  - var related = item.related;
+
+  - if ( item._id.toString() === batch.item._id.toString() )
+    - related = batch.related;
 
   - if ( hasReference )
     - referenceUrl = item.references[0].url;
@@ -35,6 +39,16 @@ mixin item-box (item, dontColllapse)
         span.promoted-percent=item.getPromotionPercentage()
         span  
         span.hide.caret
+
+      div
+        button.shy
+          i.fa.fa-fire
+          span 
+          span=related
+          span="  problem" + (related > 1 ? "s" : "")
+
+      //- problems
+
 
       .clear
 

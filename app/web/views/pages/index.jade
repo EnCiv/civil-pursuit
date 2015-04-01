@@ -9,6 +9,6 @@ block page
     include ../partials/intro
 
   .panels
-    - if ( item )
-      - if ( ! item.lineage.length )
-        +panel({ type: 'Topic', items: [item] })
+    - if ( batch )
+      - if ( ! batch.lineage.length )
+        +panel({ type: 'Topic', items: [item].concat(batch.entourage.items) })

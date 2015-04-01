@@ -88,41 +88,25 @@ Nina Butorac
 
   ItemSchema.pre('save', require('./Item/pre.save'));
 
-  /** Evaluate item against 5 others...
-   *
-   *  @method ItemSchema.evaluate
-   *  @param {String} id - The Item to update Object Id
-   *  @param {updateById~cb} cb - The callback
-   *  @return {Object}
-   */
+  ItemSchema.statics.evaluate                 =     require('./Item/evaluate');
 
-  ItemSchema.statics.evaluate = require('./Item/evaluate');
+  ItemSchema.statics.details                  =     require('./Item/details');
 
-  /** Fetch item's related data, namely votes and feedbacks ...
-   *
-   *  @method ItemSchema.details
-   *  @param {String} id - The Item to update Object Id
-   *  @param {updateById~cb} cb - The callback
-   *  @return {Object}
-   */
+  ItemSchema.statics.incrementView            =     require('./Item/incrementView');
 
-  ItemSchema.statics.details = require('./Item/details');
+  ItemSchema.statics.incrementPromotion       =     require('./Item/incrementPromotion');
 
-  // Increment view
+  ItemSchema.statics.getBatch                 =     require('./Item/get-batch');
 
-  ItemSchema.statics.incrementView = require('./Item/incrementView');
+  ItemSchema.methods.getPromotionPercentage   =     require('./Item/get-promotion-percentage');
 
-  // Increment promotion
+  ItemSchema.methods.getLineage               =     require('./Item/get-lineage');
 
-  ItemSchema.statics.incrementPromotion = require('./Item/incrementPromotion');
+  ItemSchema.methods.getEntourage             =     require('./Item/get-entourage');
 
-  // Get item's lineage
+  ItemSchema.methods.countRelated             =     require('./Item/count-related');
 
-  ItemSchema.statics.getLineage = require('./Item/get-lineage');
-
-  // Get item's promotion percentage
-
-  ItemSchema.methods.getPromotionPercentage = require('./Item/get-promotion-percentage');
+  ItemSchema.methods.getRelated               =     require('./Item/get-related');
 
   // EXPORT
   // ======

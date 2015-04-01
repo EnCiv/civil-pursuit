@@ -5,7 +5,7 @@
   function Percentage (number) {
     this.number = number;
 
-    this.ok = typeof number === 'number' && isFinite(number) && number <= 100;
+    this.ok = typeof number === 'number' && isFinite(number) && number <= 100 && number >= 0;
   }
 
   Percentage.prototype.toString = function() {
@@ -13,7 +13,7 @@
       return this.number.toString() + '%';
     }
 
-    return '100%';
+    return '~80%';
   };
 
   function getPromotionPercentage () {

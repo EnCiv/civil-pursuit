@@ -14,15 +14,19 @@
 
       src('models/Item')
 
-        .getLineage(req.params.item_id, domain.intercept(function onGetLineage (lineage) {
+        .getBatch(req.params.item_id, domain.intercept(function onGetBatch (batch) {
 
-          console.log('got lineage', lineage);
+          // console.log('*batch*', batch);
 
-          res.locals.item = lineage.pop();
+          batch.entourage.items = batch.entourage.items.map(function (item, index) {
+            return item.toObject({ transform: batch.entourage.toObjects[index] });
+          });
 
-          console.log('!item!', res.locals.item)
+          // return res.json(batch);
 
-          res.locals.item.lineage = lineage;
+          res.locals.batch = batch;
+
+          res.locals.item = batch.item;
 
           res.locals.title = res.locals.item.subject + ' | Synaccord';
 
