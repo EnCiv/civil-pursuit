@@ -14,6 +14,7 @@ mixin item-box (item, dontColllapse)
   - var referenceUrl = '#';
   - var hasReference = false;
   - var referenceTitle;
+  - var dataImage = '';
 
   - if ( item )
     - id = 'item-' + item._id;
@@ -22,6 +23,7 @@ mixin item-box (item, dontColllapse)
     - percent = item.getPromotionPercentage()
     - subject = item.subject
     - description = item.description
+    - dataImage = item.image
 
     - hasReference = item.references.length;
     - related = item.related;
@@ -36,7 +38,8 @@ mixin item-box (item, dontColllapse)
   .item(id=id data-views=views)
     .item-media-wrapper
       .item-media
-        img.img-responsive(src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale/v1411591207/283492_s_US_Flag_and_Constitution_swpubq.jpg')
+        img.img-responsive(src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale/v1411591207/283492_s_US_Flag_and_Constitution_swpubq.jpg'
+          data-image=dataImage)
 
     .item-buttons
       button.item-toggle-promote.shy
@@ -63,7 +66,7 @@ mixin item-box (item, dontColllapse)
             button.shy
               i.fa.fa-fire
               span 
-              span.related-count=related
+              span.related-count=related.Problem
               span.related-name  problem
         - else
           span.related

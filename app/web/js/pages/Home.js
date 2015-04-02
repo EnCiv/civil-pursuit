@@ -34,11 +34,14 @@
             _id           :     id,
             subject       :     $(this).find('.item-subject').text(),
             description   :     $(this).find('.item-description').text(),
-            image         :     $(this).find('.item-media img').attr('src'),
+            image         :     $(this).find('.item-media img').data('image'),
             references    :     [],
             views         :     +$(this).data('views'),
             promotions    :     +$(this).find('.promoted').text(),
-            type          :     'Topic'
+            type          :     'Topic',
+            related       :     {
+              Problem     :     +$(this).find('.related-count').text()
+            }
           };
 
           if ( $(this).find('.item-reference a').attr('url') !== '#' ) {
@@ -52,7 +55,7 @@
 
           item.template = $(this);
 
-          item.render(app.domain.intercept(function (args) {
+          item.render(app.domain.intercept(function onItemRendered (args) {
             // ...code  
           }));
 

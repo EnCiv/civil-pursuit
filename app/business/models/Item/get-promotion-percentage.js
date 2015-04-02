@@ -13,7 +13,7 @@
       return this.number.toString() + '%';
     }
 
-    return '~80%';
+    return '50%';
   };
 
   function getPromotionPercentage () {

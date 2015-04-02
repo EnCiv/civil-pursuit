@@ -22,7 +22,9 @@
             return item.toObject({ transform: batch.entourage.toObjects[index] });
           });
 
-          // return res.json(batch);
+          // res.type('text/javascript');
+
+          // return res.send(JSON.stringify(batch, null, 2));
 
           res.locals.batch = batch;
 
