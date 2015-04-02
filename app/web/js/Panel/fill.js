@@ -17,7 +17,7 @@
       panel.type = undefined;
     }
 
-    console.log(panel)
+    console.log('panel', panel)
 
     app.socket
 

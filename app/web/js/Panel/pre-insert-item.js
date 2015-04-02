@@ -18,7 +18,6 @@
     /** Items to object */
 
     items = items.map(function (item) {
-      console.log(item.subject)
       item = new (require('../Item'))(item);
 
       item.load(app.domain.intercept(function (template) {

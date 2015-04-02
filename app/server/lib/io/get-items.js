@@ -22,12 +22,18 @@
         query.parent = panel.parent;
       }
 
+      console.log('<<"get items"', panel, item);
+
       src('models/Item')
         .find   (query)
         .skip   (panel.skip)
         .limit  (panel.size)
         .sort   ({ "promotions": -1, "views": -1, "created": 1 })
         .exec   (domain.intercept(function (items) {
+
+          console.log()
+          console.log('- got items -', panel.type, items.length);
+          console.log()
 
           require('async').map(items,
 
@@ -44,6 +50,10 @@
               });
 
               socket.emit('got items ' + id, panel, _items);
+
+              console.log('>>"got items ' + id + '"', panel, _items.map(function (item) {
+                return item;
+              }));
             }));
 
         }));

@@ -42,6 +42,35 @@
             }));
 
           break;
+
+        case 'Solution':
+          require('async').map(['Pro', 'Con'],
+
+            function (type, cb) {
+              Item
+                .count({
+                  parent: self._id,
+                  type: type
+                }, cb);
+            },
+
+            domain.intercept(function (types) {
+              cb(null, {
+                Pro: types[0],
+                Con: types[1]
+              })
+            }));
+
+          break;
+
+        case 'Agree':
+        case 'Disagree':
+        case 'Pro':
+        case 'Con':
+
+          cb(null, {});
+
+          break;
       }
 
     });

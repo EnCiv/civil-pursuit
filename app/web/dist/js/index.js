@@ -1400,6 +1400,12 @@
 
       case 'Problem':
         var button = makeRelated();
+        button.on('click', function () {
+          var $trigger    =   $(this);
+          var $item       =   $trigger.closest('.item');
+          var item        =   $item.data('item');
+          item.find('toggle arrow').click();
+        });
         button.find('i').addClass('fa-music');
         button.find('.related-number').text(item.item.related.Agree);
         button.find('.related-name').text('agree');
@@ -1407,6 +1413,12 @@
         item.find('related').append(button);
 
         button = makeRelated();
+        button.on('click', function () {
+          var $trigger    =   $(this);
+          var $item       =   $trigger.closest('.item');
+          var item        =   $item.data('item');
+          item.find('toggle arrow').click();
+        });
         button.find('i').remove();
         button.find('.related-number').text(item.item.related.Disagree);
         button.find('.related-name').text('disagree');
@@ -1414,6 +1426,12 @@
         item.find('related').append(button, $('<div></div>'));
 
         button = makeRelated();
+        button.on('click', function () {
+          var $trigger    =   $(this);
+          var $item       =   $trigger.closest('.item');
+          var item        =   $item.data('item');
+          item.find('toggle arrow').click();
+        });
         button.find('i').addClass('fa-tint');
         button.find('.related-number').text(item.item.related.Solution);
         button.find('.related-name').text('solution');
@@ -2404,7 +2422,7 @@
       panel.type = undefined;
     }
 
-    console.log(panel)
+    console.log('panel', panel)
 
     app.socket
 
@@ -2505,7 +2523,6 @@
     /** Items to object */
 
     items = items.map(function (item) {
-      console.log(item.subject)
       item = new (require('../Item'))(item);
 
       item.load(app.domain.intercept(function (template) {
