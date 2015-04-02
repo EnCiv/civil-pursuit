@@ -220,6 +220,7 @@
     var items = this.panel.find('items');
 
     item.load(app.domain.intercept(function () {
+      item.template.addClass('new');
       items.prepend(item.template);
       item.render(app.domain.intercept(function () {
         item.find('toggle promote').click();

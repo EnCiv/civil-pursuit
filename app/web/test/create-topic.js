@@ -11,7 +11,7 @@
   _['submit']                 =       _['creator'] + ' .button-create';
   _['subject']                =       _['creator'] + ' input[name="subject"][required]';
   _['description']            =       _['creator'] + ' textarea[name="description"][required]';
-  _['new item']               =       _['topics panel'] + ' .items .item:first-child';
+  _['new item']               =       _['topics panel'] + ' .item.new';
   _['new item subject']       =       _['new item'] + ' .item-subject';
   _['new item description']   =       _['new item'] + ' .item-description';
 
@@ -75,7 +75,7 @@
         .assert.cssClassPresent(__(       'description'), 'error',  'After trying to create an empty topic, description should show error')
         .setValue(__(                     'description'),           description)
         .click(__(                        'submit'))
-        .waitForElementVisible(__(        'new item'), 2500,        "Newly created item should appear")
+        .waitForElementVisible(__(        'new item'), 3500,        "Newly created item should appear")
         .assert.containsText(__(          'new item subject'), subject, "Subject must be the same than the one created")
         .assert.containsText(__(          'new item description'), description, "Description must be the same than the one created")
 
