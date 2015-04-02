@@ -1723,7 +1723,16 @@
   var S           =   require('string');
 
   function makeRelated () {
-    return $('<button class="shy"><i class="fa"></i> <span class="related-number"></span> <span class="related-name"></span><span class="related-plural"></span></button>')
+    var button = $('<button class="shy"><i class="fa"></i> <span class="related-number"></span> <span class="related-name"></span><span class="related-plural"></span></button>');
+
+    button.on('click', function () {
+      var $trigger    =   $(this);
+      var $item       =   $trigger.closest('.item');
+      var item        =   $item.data('item');
+      item.find('toggle arrow').click();
+    });
+
+    return button;
   }
 
   function render (cb) {
@@ -1800,86 +1809,56 @@
 
     switch ( item.item.type ) {
       case 'Topic':
+        var problems = (item.item.related && item.item.related.Problem) || 0;
         var button = makeRelated();
-        button.on('click', function () {
-          var $trigger    =   $(this);
-          var $item       =   $trigger.closest('.item');
-          var item        =   $item.data('item');
-          item.find('toggle arrow').click();
-        });
         button.find('i').addClass('fa-fire');
-        button.find('.related-number').text(item.item.related.Problem);
+        button.find('.related-number').text(problems);
         button.find('.related-name').text('problem');
-        button.find('.related-plural').text(item.item.related.Problem > 1 ? 's' : '');
+        button.find('.related-plural').text(problems > 1 ? 's' : '');
         item.find('related').append(button);
         break;
 
       case 'Problem':
+        var agrees = (item.item.related && item.item.related.Agree) || 0;
         var button = makeRelated();
-        button.on('click', function () {
-          var $trigger    =   $(this);
-          var $item       =   $trigger.closest('.item');
-          var item        =   $item.data('item');
-          item.find('toggle arrow').click();
-        });
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(item.item.related.Agree);
+        button.find('.related-number').text(agrees);
         button.find('.related-name').text('agree');
-        button.find('.related-plural').text(item.item.related.Agree > 1 ? 's' : '');
+        button.find('.related-plural').text(agrees > 1 ? 's' : '');
         item.find('related').append(button);
 
+        var disagrees = (item.item.related && item.item.related.disagrees) || 0;
         button = makeRelated();
-        button.on('click', function () {
-          var $trigger    =   $(this);
-          var $item       =   $trigger.closest('.item');
-          var item        =   $item.data('item');
-          item.find('toggle arrow').click();
-        });
         button.find('i').remove();
-        button.find('.related-number').text(item.item.related.Disagree);
+        button.find('.related-number').text(disagrees);
         button.find('.related-name').text('disagree');
-        button.find('.related-plural').text(item.item.related.Disagree > 1 ? 's' : '');
+        button.find('.related-plural').text(disagrees > 1 ? 's' : '');
         item.find('related').append(button, $('<div></div>'));
 
+        var solutions = (item.item.related && item.item.related.Solution) || 0;
         button = makeRelated();
-        button.on('click', function () {
-          var $trigger    =   $(this);
-          var $item       =   $trigger.closest('.item');
-          var item        =   $item.data('item');
-          item.find('toggle arrow').click();
-        });
         button.find('i').addClass('fa-tint');
-        button.find('.related-number').text(item.item.related.Solution);
+        button.find('.related-number').text(solutions);
         button.find('.related-name').text('solution');
-        button.find('.related-plural').text(item.item.related.Solution > 1 ? 's' : '');
+        button.find('.related-plural').text(solutions > 1 ? 's' : '');
         item.find('related').append(button);
         break;
     
       case 'Solution':
+        var pros = (item.item.related && item.item.related.Pro) || 0;
         var button = makeRelated();
-        button.on('click', function () {
-          var $trigger    =   $(this);
-          var $item       =   $trigger.closest('.item');
-          var item        =   $item.data('item');
-          item.find('toggle arrow').click();
-        });
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(item.item.related.Pro);
+        button.find('.related-number').text(pros);
         button.find('.related-name').text('pro');
-        button.find('.related-plural').text(item.item.related.Pro > 1 ? 's' : '');
+        button.find('.related-plural').text(pros > 1 ? 's' : '');
         item.find('related').append(button);
 
+        var cons = (item.item.related && item.item.related.Con) || 0;
         button = makeRelated();
-        button.on('click', function () {
-          var $trigger    =   $(this);
-          var $item       =   $trigger.closest('.item');
-          var item        =   $item.data('item');
-          item.find('toggle arrow').click();
-        });
         button.find('i').remove();
-        button.find('.related-number').text(item.item.related.Con);
+        button.find('.related-number').text(cons);
         button.find('.related-name').text('con');
-        button.find('.related-plural').text(item.item.related.Con > 1 ? 's' : '');
+        button.find('.related-plural').text(cons > 1 ? 's' : '');
         item.find('related').append(button, $('<div></div>'));
 
         break;

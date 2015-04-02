@@ -14,7 +14,8 @@
   _['new item']               =       _['topics panel'] + ' .item.new';
   _['new item subject']       =       _['new item'] + ' .item-subject';
   _['new item description']   =       _['new item'] + ' .item-description';
-
+  _['new item promotion']     =       _['new item'] + '>.item-collapsers>.promote';
+  _['new item promoted subject']=       _['new item promotion'] + ' .items-side-by-side .subject.left-item'
 
   function __ (n) {
     return _[n];
@@ -76,8 +77,10 @@
         .setValue(__(                     'description'),           description)
         .click(__(                        'submit'))
         .waitForElementVisible(__(        'new item'), 3500,        "Newly created item should appear")
-        .assert.containsText(__(          'new item subject'), subject, "Subject must be the same than the one created")
-        .assert.containsText(__(          'new item description'), description, "Description must be the same than the one created")
+        .assert.containsText(__(          'new item subject'), subject,             "Subject must be the same than the one created")
+        .assert.containsText(__(          'new item description'), description,     "Description must be the same than the one created")
+        .assert.visible(__(               'new item promotion'),    "There should be an evaluation cycle for the new item")
+        .assert.containsText(__(          'new item promoted subject'), subject,     "Promoted subject must be the same than the one created")
 
         .pause(2500)
         
