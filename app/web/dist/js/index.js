@@ -1385,6 +1385,12 @@
     switch ( item.item.type ) {
       case 'Topic':
         var button = makeRelated();
+        button.on('click', function () {
+          var $trigger    =   $(this);
+          var $item       =   $trigger.closest('.item');
+          var item        =   $item.data('item');
+          item.find('toggle arrow').click();
+        });
         button.find('i').addClass('fa-fire');
         button.find('.related-number').text(item.item.related.Problem);
         button.find('.related-name').text('problem');
