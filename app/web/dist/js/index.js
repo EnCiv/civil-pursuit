@@ -1438,6 +1438,35 @@
         button.find('.related-plural').text(item.item.related.Solution > 1 ? 's' : '');
         item.find('related').append(button);
         break;
+    
+      case 'Solution':
+        var button = makeRelated();
+        button.on('click', function () {
+          var $trigger    =   $(this);
+          var $item       =   $trigger.closest('.item');
+          var item        =   $item.data('item');
+          item.find('toggle arrow').click();
+        });
+        button.find('i').addClass('fa-music');
+        button.find('.related-number').text(item.item.related.Pro);
+        button.find('.related-name').text('pro');
+        button.find('.related-plural').text(item.item.related.Pro > 1 ? 's' : '');
+        item.find('related').append(button);
+
+        button = makeRelated();
+        button.on('click', function () {
+          var $trigger    =   $(this);
+          var $item       =   $trigger.closest('.item');
+          var item        =   $item.data('item');
+          item.find('toggle arrow').click();
+        });
+        button.find('i').remove();
+        button.find('.related-number').text(item.item.related.Con);
+        button.find('.related-name').text('con');
+        button.find('.related-plural').text(item.item.related.Con > 1 ? 's' : '');
+        item.find('related').append(button, $('<div></div>'));
+
+        break;
     }
     
     // Toggle promote
