@@ -14,7 +14,7 @@
   var S           =   require('string');
 
   function makeRelated () {
-    var button = $('<button class="shy"><span class="related-number"></span> <span class="related-name"></span><span class="related-plural"></span> <i class="fa"></i></button>');
+    var button = $('<button class="shy"><span class="related-number"></span> <i class="fa"></i></button>');
 
     button.on('click', function () {
       var $trigger    =   $(this);
@@ -104,53 +104,44 @@
         var button = makeRelated();
         button.find('i').addClass('fa-fire');
         button.find('.related-number').text(problems);
-        button.find('.related-name').text('problem');
-        button.find('.related-plural').text(problems > 1 ? 's' : '');
         item.find('related').append(button);
         break;
 
       case 'Problem':
         var agrees = (item.item.related && item.item.related.Agree) || 0;
+        var disagrees = (item.item.related && item.item.related.disagrees) || 0;
+        var mean = agrees / (agrees + disagrees);
+
+        if ( isNaN(mean) ) {
+          mean = 0;
+        }
+
         var button = makeRelated();
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(agrees);
-        button.find('.related-name').text('agree');
-        button.find('.related-plural').text(agrees > 1 ? 's' : '');
+        button.find('.related-number').text(mean);
         item.find('related').append(button);
-
-        var disagrees = (item.item.related && item.item.related.disagrees) || 0;
-        button = makeRelated();
-        button.find('i').remove();
-        button.find('.related-number').text(disagrees);
-        button.find('.related-name').text('disagree');
-        button.find('.related-plural').text(disagrees > 1 ? 's' : '');
-        item.find('related').append(button, $('<div></div>'));
 
         var solutions = (item.item.related && item.item.related.Solution) || 0;
         button = makeRelated();
         button.find('i').addClass('fa-tint');
         button.find('.related-number').text(solutions);
-        button.find('.related-name').text('solution');
-        button.find('.related-plural').text(solutions > 1 ? 's' : '');
         item.find('related').append(button);
         break;
     
       case 'Solution':
         var pros = (item.item.related && item.item.related.Pro) || 0;
+        var cons = (item.item.related && item.item.related.Con) || 0;
+
+        var mean = pros / (pros + cons);
+
+        if ( isNaN(mean) ) {
+          mean = 0;
+        }
+
         var button = makeRelated();
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(pros);
-        button.find('.related-name').text('pro');
-        button.find('.related-plural').text(pros > 1 ? 's' : '');
+        button.find('.related-number').text(mean);
         item.find('related').append(button);
-
-        var cons = (item.item.related && item.item.related.Con) || 0;
-        button = makeRelated();
-        button.find('i').remove();
-        button.find('.related-number').text(cons);
-        button.find('.related-name').text('con');
-        button.find('.related-plural').text(cons > 1 ? 's' : '');
-        item.find('related').append(button, $('<div></div>'));
 
         break;
     }
@@ -219,139 +210,7 @@
 
     item.find('toggle arrow')
       .removeClass('hide')
-      .on('click', function () {
-
-      var $item   =   $(this).closest('.item');
-      var item    =   $item.data('item');
-      var arrow   =   $(this).find('i');
-
-      if ( item.find('collapsers hidden').length ) {
-        item.find('collapsers').show();
-      }
-
-      // item.find('collapsers visible').hide();
-
-      // item.find('collapsers hidden').show();
-
-      Nav.toggle(item.find('children'), item.template, app.domain.intercept(function () {
-
-        if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
-          item.find('collapsers').hide();
-        }
-
-        if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
-
-          switch ( item.item.type ) {
-            case 'Topic':
-
-              item.find('children').addClass('is-loaded');
-
-              var panelProblem = new (require('../Panel'))('Problem', item.item._id);
-
-              panelProblem.load(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelProblem.render(app.domain.intercept(function () {
-                    panelProblem.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-              break;
-
-            case 'Problem':
-
-              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelAgree = new (require('../Panel'))('Agree', item.item._id);
-
-              panelAgree.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelAgree.render(app.domain.intercept(function () {
-                    panelAgree.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelDisagree = new (require('../Panel'))('Disagree', item.item._id);
-
-              panelDisagree.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-                
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelDisagree.render(app.domain.intercept(function () {
-                    panelDisagree.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelSolution = new (require('../Panel'))('Solution', item.item._id);
-
-              panelSolution.load(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelSolution.render(app.domain.intercept(function () {
-                    panelSolution.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              break;
-
-            case 'Solution':
-
-              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelPro = new (require('../Panel'))('Pro', item.item._id);
-
-              panelPro.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelPro.render(app.domain.intercept(function () {
-                    panelPro.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelCon = new (require('../Panel'))('Con', item.item._id);
-
-              panelCon.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelCon.render(app.domain.intercept(function () {
-                    panelCon.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-              break;
-          }
-        }
-
-        if ( arrow.hasClass('fa-arrow-down') ) {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-        else {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-      }));
-    });
+      .on('click', require('./view/toggle-arrow'));
 
     cb();
   }

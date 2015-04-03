@@ -111,7 +111,7 @@
 
 } ();
 
-},{"./Creator/create":3,"./Creator/created":4,"./Creator/pack-item":5,"./Creator/render":6,"./Panel":24}],3:[function(require,module,exports){
+},{"./Creator/create":3,"./Creator/created":4,"./Creator/pack-item":5,"./Creator/render":6,"./Panel":25}],3:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -197,7 +197,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":15,"../Nav":23,"../Stream":42,"_process":52}],4:[function(require,module,exports){
+},{"../Item":15,"../Nav":24,"../Stream":43,"_process":53}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -370,7 +370,7 @@
 
 } ();
 
-},{"../Form":12,"../Upload":45,"../YouTube":47}],7:[function(require,module,exports){
+},{"../Form":12,"../Upload":46,"../YouTube":48}],7:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -522,7 +522,7 @@
 
 } ();
 
-},{"./Nav":23}],8:[function(require,module,exports){
+},{"./Nav":24}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -784,7 +784,7 @@
 
 } ();
 
-},{"./Edit":9,"./Item":15,"./Nav":23}],9:[function(require,module,exports){
+},{"./Edit":9,"./Item":15,"./Nav":24}],9:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -935,7 +935,7 @@
 
 } ();
 
-},{"./Creator":2,"./Edit/save":10,"./Form":12,"./Item":15,"./Nav":23}],10:[function(require,module,exports){
+},{"./Creator":2,"./Edit/save":10,"./Form":12,"./Item":15,"./Nav":24}],10:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -993,7 +993,7 @@
 
 } ();
 
-},{"../Item":15,"../Nav":23}],11:[function(require,module,exports){
+},{"../Item":15,"../Nav":24}],11:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1059,7 +1059,7 @@
 
 } ();
 
-},{"./Form":12,"domain":49}],12:[function(require,module,exports){
+},{"./Form":12,"domain":50}],12:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -1318,7 +1318,7 @@
 
 } ();
 
-},{"./Identity/render":14,"./Nav":23,"./Upload":45}],14:[function(require,module,exports){
+},{"./Identity/render":14,"./Nav":24,"./Upload":46}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1472,7 +1472,7 @@
 
 } ();
 
-},{"../Nav":23,"../Upload":45}],15:[function(require,module,exports){
+},{"../Nav":24,"../Upload":46}],15:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1706,7 +1706,7 @@
 
 } ();
 
-},{"../YouTube":47}],19:[function(require,module,exports){
+},{"../YouTube":48}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1723,7 +1723,7 @@
   var S           =   require('string');
 
   function makeRelated () {
-    var button = $('<button class="shy"><span class="related-number"></span> <span class="related-name"></span><span class="related-plural"></span> <i class="fa"></i></button>');
+    var button = $('<button class="shy"><span class="related-number"></span> <i class="fa"></i></button>');
 
     button.on('click', function () {
       var $trigger    =   $(this);
@@ -1813,53 +1813,44 @@
         var button = makeRelated();
         button.find('i').addClass('fa-fire');
         button.find('.related-number').text(problems);
-        button.find('.related-name').text('problem');
-        button.find('.related-plural').text(problems > 1 ? 's' : '');
         item.find('related').append(button);
         break;
 
       case 'Problem':
         var agrees = (item.item.related && item.item.related.Agree) || 0;
+        var disagrees = (item.item.related && item.item.related.disagrees) || 0;
+        var mean = agrees / (agrees + disagrees);
+
+        if ( isNaN(mean) ) {
+          mean = 0;
+        }
+
         var button = makeRelated();
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(agrees);
-        button.find('.related-name').text('agree');
-        button.find('.related-plural').text(agrees > 1 ? 's' : '');
+        button.find('.related-number').text(mean);
         item.find('related').append(button);
-
-        var disagrees = (item.item.related && item.item.related.disagrees) || 0;
-        button = makeRelated();
-        button.find('i').remove();
-        button.find('.related-number').text(disagrees);
-        button.find('.related-name').text('disagree');
-        button.find('.related-plural').text(disagrees > 1 ? 's' : '');
-        item.find('related').append(button, $('<div></div>'));
 
         var solutions = (item.item.related && item.item.related.Solution) || 0;
         button = makeRelated();
         button.find('i').addClass('fa-tint');
         button.find('.related-number').text(solutions);
-        button.find('.related-name').text('solution');
-        button.find('.related-plural').text(solutions > 1 ? 's' : '');
         item.find('related').append(button);
         break;
     
       case 'Solution':
         var pros = (item.item.related && item.item.related.Pro) || 0;
+        var cons = (item.item.related && item.item.related.Con) || 0;
+
+        var mean = pros / (pros + cons);
+
+        if ( isNaN(mean) ) {
+          mean = 0;
+        }
+
         var button = makeRelated();
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(pros);
-        button.find('.related-name').text('pro');
-        button.find('.related-plural').text(pros > 1 ? 's' : '');
+        button.find('.related-number').text(mean);
         item.find('related').append(button);
-
-        var cons = (item.item.related && item.item.related.Con) || 0;
-        button = makeRelated();
-        button.find('i').remove();
-        button.find('.related-number').text(cons);
-        button.find('.related-name').text('con');
-        button.find('.related-plural').text(cons > 1 ? 's' : '');
-        item.find('related').append(button, $('<div></div>'));
 
         break;
     }
@@ -1928,21 +1919,36 @@
 
     item.find('toggle arrow')
       .removeClass('hide')
-      .on('click', function () {
+      .on('click', require('./view/toggle-arrow'));
 
-      var $item   =   $(this).closest('.item');
-      var item    =   $item.data('item');
-      var arrow   =   $(this).find('i');
+    cb();
+  }
 
-      if ( item.find('collapsers hidden').length ) {
-        item.find('collapsers').show();
-      }
+  module.exports = render;
 
-      // item.find('collapsers visible').hide();
+} ();
 
-      // item.find('collapsers hidden').show();
+},{"../../../business/models/Item/get-promotion-percentage":1,"../Details":8,"../Nav":24,"../Promote":32,"../ReadMore":40,"../Sign":42,"../Truncate":45,"./view/toggle-arrow":20,"./view/toggle-promote":21,"string":56}],20:[function(require,module,exports){
+! function () {
+  
+  'use strict';
 
-      Nav.toggle(item.find('children'), item.template, app.domain.intercept(function () {
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toggleArrow () {
+    var $item   =   $(this).closest('.item');
+    var item    =   $item.data('item');
+    var arrow   =   $(this).find('i');
+
+    if ( item.find('collapsers hidden').length ) {
+      item.find('collapsers').show();
+    }
+
+    require('../../Nav').toggle(item.find('children'), item.template, app.domain.intercept(function () {
 
         if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
           item.find('collapsers').hide();
@@ -1950,12 +1956,12 @@
 
         if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
 
+          item.find('children').addClass('is-loaded');
+
           switch ( item.item.type ) {
             case 'Topic':
 
-              item.find('children').addClass('is-loaded');
-
-              var panelProblem = new (require('../Panel'))('Problem', item.item._id);
+              var panelProblem = new (require('../../Panel'))('Problem', item.item._id);
 
               panelProblem.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
@@ -1974,7 +1980,7 @@
 
               item.find('children').append(split);
 
-              var panelAgree = new (require('../Panel'))('Agree', item.item._id);
+              var panelAgree = new (require('../../Panel'))('Agree', item.item._id);
 
               panelAgree.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
@@ -1988,7 +1994,7 @@
                 });
               }));
 
-              var panelDisagree = new (require('../Panel'))('Disagree', item.item._id);
+              var panelDisagree = new (require('../../Panel'))('Disagree', item.item._id);
 
               panelDisagree.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
@@ -2002,7 +2008,7 @@
                 });
               }));
 
-              var panelSolution = new (require('../Panel'))('Solution', item.item._id);
+              var panelSolution = new (require('../../Panel'))('Solution', item.item._id);
 
               panelSolution.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
@@ -2022,7 +2028,7 @@
 
               item.find('children').append(split);
 
-              var panelPro = new (require('../Panel'))('Pro', item.item._id);
+              var panelPro = new (require('../../Panel'))('Pro', item.item._id);
 
               panelPro.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
@@ -2036,7 +2042,7 @@
                 });
               }));
 
-              var panelCon = new (require('../Panel'))('Con', item.item._id);
+              var panelCon = new (require('../../Panel'))('Con', item.item._id);
 
               panelCon.load(app.domain.intercept(function (template) {
                 template.addClass('split-view');
@@ -2060,16 +2066,13 @@
           arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
         }
       }));
-    });
-
-    cb();
   }
 
-  module.exports = render;
+  module.exports = toggleArrow;
 
 } ();
 
-},{"../../../business/models/Item/get-promotion-percentage":1,"../Details":8,"../Nav":23,"../Panel":24,"../Promote":31,"../ReadMore":39,"../Sign":41,"../Truncate":44,"./view/toggle-promote":20,"string":55}],20:[function(require,module,exports){
+},{"../../Nav":24,"../../Panel":25}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2161,7 +2164,7 @@
 
 } ();
 
-},{"../../Nav":23,"../../Sign":41}],21:[function(require,module,exports){
+},{"../../Nav":24,"../../Sign":42}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2244,7 +2247,7 @@
 
 } ();
 
-},{"./Form":12}],22:[function(require,module,exports){
+},{"./Form":12}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2326,7 +2329,7 @@
 
 } ();
 
-},{"./Form":12,"./Nav":23}],23:[function(require,module,exports){
+},{"./Form":12,"./Nav":24}],24:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2687,7 +2690,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":52,"domain":49,"events":50}],24:[function(require,module,exports){
+},{"_process":53,"domain":50,"events":51}],25:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2826,7 +2829,7 @@
 
 } ();
 
-},{"./Creator":2,"./Item":15,"./Nav":23,"./Panel/fill":25,"./Panel/load":26,"./Panel/pre-insert-item":27,"./Panel/render":28,"./Panel/to-json":29,"./Sign":41}],25:[function(require,module,exports){
+},{"./Creator":2,"./Item":15,"./Nav":24,"./Panel/fill":26,"./Panel/load":27,"./Panel/pre-insert-item":28,"./Panel/render":29,"./Panel/to-json":30,"./Sign":42}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2887,7 +2890,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2926,7 +2929,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2986,7 +2989,7 @@
 
 } ();
 
-},{"../Item":15}],28:[function(require,module,exports){
+},{"../Item":15}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3033,7 +3036,7 @@
 
 } ();
 
-},{"../Creator":2}],29:[function(require,module,exports){
+},{"../Creator":2}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3063,7 +3066,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3242,7 +3245,7 @@
 
 } ();
 
-},{"./Demographics":7,"./Identity":13,"./Nav":23,"./Public_Persona":38,"./Residence":40,"./Voter":46}],31:[function(require,module,exports){
+},{"./Demographics":7,"./Identity":13,"./Nav":24,"./Public_Persona":39,"./Residence":41,"./Voter":47}],32:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3395,7 +3398,7 @@
 
 } ();
 
-},{"./Edit":9,"./Item":15,"./Nav":23,"./Promote/find":32,"./Promote/finish":33,"./Promote/get":34,"./Promote/render":36,"./Promote/render-item":35,"./Promote/save":37,"events":50}],32:[function(require,module,exports){
+},{"./Edit":9,"./Item":15,"./Nav":24,"./Promote/find":33,"./Promote/finish":34,"./Promote/get":35,"./Promote/render":37,"./Promote/render-item":36,"./Promote/save":38,"events":51}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3446,7 +3449,7 @@
 
 } ();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3491,7 +3494,7 @@
 
 } ();
 
-},{"../Nav":23}],34:[function(require,module,exports){
+},{"../Nav":24}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3548,7 +3551,7 @@
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3747,7 +3750,7 @@
 
 } ();
 
-},{"../Item":15,"../Nav":23}],36:[function(require,module,exports){
+},{"../Item":15,"../Nav":24}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3819,7 +3822,7 @@
 
 } ();
 
-},{"../Nav":23}],37:[function(require,module,exports){
+},{"../Nav":24}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3877,7 +3880,7 @@
 
 } ();
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3941,7 +3944,7 @@
 
 } ();
 
-},{"./Nav":23}],39:[function(require,module,exports){
+},{"./Nav":24}],40:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4108,7 +4111,7 @@
 
 } ();
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4214,7 +4217,7 @@
 
 } ();
 
-},{"./Nav":23}],41:[function(require,module,exports){
+},{"./Nav":24}],42:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4397,7 +4400,7 @@
 
 } ();
 
-},{"./Forgot-Password":11,"./Join":21,"./Login":22,"./Nav":23}],42:[function(require,module,exports){
+},{"./Forgot-Password":11,"./Join":22,"./Login":23,"./Nav":24}],43:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4436,7 +4439,7 @@
 
 } ();
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4572,7 +4575,7 @@
 
 } ();
 
-},{"domain":49,"events":50,"util":54}],44:[function(require,module,exports){
+},{"domain":50,"events":51,"util":55}],45:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4795,7 +4798,7 @@
 
 }();
 
-},{"./Nav":23}],45:[function(require,module,exports){
+},{"./Nav":24}],46:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4881,7 +4884,7 @@
 
 } ();
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4981,7 +4984,7 @@
 
 } ();
 
-},{"./Nav":23}],47:[function(require,module,exports){
+},{"./Nav":24}],48:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -5100,7 +5103,7 @@
 
 } ();
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5120,7 +5123,7 @@
 
 } ();
 
-},{"../Panel":24,"../Profile":30,"../Sign":41,"../Synapp":43}],49:[function(require,module,exports){
+},{"../Panel":25,"../Profile":31,"../Sign":42,"../Synapp":44}],50:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -5188,7 +5191,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":50}],50:[function(require,module,exports){
+},{"events":51}],51:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5491,7 +5494,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5516,7 +5519,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5604,14 +5607,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6201,7 +6204,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":53,"_process":52,"inherits":51}],55:[function(require,module,exports){
+},{"./support/isBuffer":54,"_process":53,"inherits":52}],56:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -7235,4 +7238,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[48]);
+},{}]},{},[49]);
