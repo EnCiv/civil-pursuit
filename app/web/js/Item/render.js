@@ -14,7 +14,7 @@
   var S           =   require('string');
 
   function makeRelated () {
-    var button = $('<button class="shy"><i class="fa"></i> <span class="related-number"></span> <span class="related-name"></span><span class="related-plural"></span></button>');
+    var button = $('<button class="shy"><span class="related-number"></span> <span class="related-name"></span><span class="related-plural"></span> <i class="fa"></i></button>');
 
     button.on('click', function () {
       var $trigger    =   $(this);
