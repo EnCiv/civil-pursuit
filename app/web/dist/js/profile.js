@@ -1725,14 +1725,7 @@
   var S           =   require('string');
 
   function makeRelated () {
-    var button = $('<button class="shy"><span class="related-number"></span> <i class="fa"></i></button>');
-
-    button.on('click', function () {
-      var $trigger    =   $(this);
-      var $item       =   $trigger.closest('.item');
-      var item        =   $item.data('item');
-      item.find('toggle arrow').click();
-    });
+    var button = $('<button class="shy counter"><span class="related-number"></span> <i class="fa"></i></button>');
 
     return button;
   }
@@ -1808,7 +1801,6 @@
     item.find('promotions %').text(getPromotionPercentage.apply(item.item));
 
     // Related
-
     switch ( item.item.type ) {
       case 'Topic':
         var problems = (item.item.related && item.item.related.Problem) || 0;
@@ -1856,6 +1848,13 @@
 
         break;
     }
+
+    item.template.find('.counter').on('click', function () {
+      var $trigger    =   $(this);
+      var $item       =   $trigger.closest('.item');
+      var item        =   $item.data('item');
+      item.find('toggle arrow').click();
+    });
     
     // Toggle promote
 
