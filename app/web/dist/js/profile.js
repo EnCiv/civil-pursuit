@@ -111,7 +111,7 @@
 
 } ();
 
-},{"./Creator/create":3,"./Creator/created":4,"./Creator/pack-item":5,"./Creator/render":6,"./Panel":25}],3:[function(require,module,exports){
+},{"./Creator/create":3,"./Creator/created":4,"./Creator/pack-item":5,"./Creator/render":6,"./Panel":26}],3:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -197,7 +197,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":15,"../Nav":24,"../Stream":43,"_process":53}],4:[function(require,module,exports){
+},{"../Item":15,"../Nav":25,"../Stream":44,"_process":54}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -370,7 +370,7 @@
 
 } ();
 
-},{"../Form":12,"../Upload":46,"../YouTube":48}],7:[function(require,module,exports){
+},{"../Form":12,"../Upload":47,"../YouTube":49}],7:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -522,7 +522,7 @@
 
 } ();
 
-},{"./Nav":24}],8:[function(require,module,exports){
+},{"./Nav":25}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -666,6 +666,8 @@
 
     setTimeout(function () {
 
+      console.warn(123);
+
       var vote = self.details.votes[criteria._id];
 
       svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
@@ -784,7 +786,7 @@
 
 } ();
 
-},{"./Edit":9,"./Item":15,"./Nav":24}],9:[function(require,module,exports){
+},{"./Edit":9,"./Item":15,"./Nav":25}],9:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -935,7 +937,7 @@
 
 } ();
 
-},{"./Creator":2,"./Edit/save":10,"./Form":12,"./Item":15,"./Nav":24}],10:[function(require,module,exports){
+},{"./Creator":2,"./Edit/save":10,"./Form":12,"./Item":15,"./Nav":25}],10:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -993,7 +995,7 @@
 
 } ();
 
-},{"../Item":15,"../Nav":24}],11:[function(require,module,exports){
+},{"../Item":15,"../Nav":25}],11:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1059,7 +1061,7 @@
 
 } ();
 
-},{"./Form":12,"domain":50}],12:[function(require,module,exports){
+},{"./Form":12,"domain":51}],12:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -1318,7 +1320,7 @@
 
 } ();
 
-},{"./Identity/render":14,"./Nav":24,"./Upload":46}],14:[function(require,module,exports){
+},{"./Identity/render":14,"./Nav":25,"./Upload":47}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1472,7 +1474,7 @@
 
 } ();
 
-},{"../Nav":24,"../Upload":46}],15:[function(require,module,exports){
+},{"../Nav":25,"../Upload":47}],15:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1706,7 +1708,7 @@
 
 } ();
 
-},{"../YouTube":48}],19:[function(require,module,exports){
+},{"../YouTube":49}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1861,59 +1863,7 @@
 
     // Toggle details
 
-    item.find('toggle details').on('click', function () {
-      
-      var $trigger    =   $(this);
-      var $item       =   $trigger.closest('.item');
-      var item        =   $item.data('item');
-
-      function showHideCaret () {
-        if ( item.find('details').hasClass('is-shown') ) {
-          $trigger.find('.caret').removeClass('hide');
-        }
-        else {
-          $trigger.find('.caret').addClass('hide');
-        }
-      }
-
-      if ( item.find('promote').hasClass('is-showing') ) {
-        return false;
-      }
-
-      if ( item.find('promote').hasClass('is-shown') ) {
-        item.find('toggle promote').find('.caret').addClass('hide');
-        Nav.hide(item.find('promote'));
-      }
-
-      var hiders = $('.details.is-shown');
-
-      if ( item.find('collapsers hidden').length ) {
-        item.find('collapsers').show();
-      }
-
-      Nav.toggle(item.find('details'), item.template, app.domain.intercept(function () {
-
-        showHideCaret();
-
-        if ( item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length ) {
-          item.find('collapsers').hide();
-        }
-
-        if ( item.find('details').hasClass('is-shown') ) {
-
-          if ( ! item.find('details').hasClass('is-loaded') ) {
-            item.find('details').addClass('is-loaded');
-
-            item.details.render(app.domain.intercept());
-          }
-
-          if ( hiders.length ) {
-            Nav.hide(hiders);
-          }
-        }
-      }));
-
-    });
+    item.find('toggle details').on('click', require('./view/toggle-details'));
 
     // Toggle arrow
 
@@ -1928,7 +1878,7 @@
 
 } ();
 
-},{"../../../business/models/Item/get-promotion-percentage":1,"../Details":8,"../Nav":24,"../Promote":32,"../ReadMore":40,"../Sign":42,"../Truncate":45,"./view/toggle-arrow":20,"./view/toggle-promote":21,"string":56}],20:[function(require,module,exports){
+},{"../../../business/models/Item/get-promotion-percentage":1,"../Details":8,"../Nav":25,"../Promote":33,"../ReadMore":41,"../Sign":43,"../Truncate":46,"./view/toggle-arrow":20,"./view/toggle-details":21,"./view/toggle-promote":22,"string":57}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2072,7 +2022,74 @@
 
 } ();
 
-},{"../../Nav":24,"../../Panel":25}],21:[function(require,module,exports){
+},{"../../Nav":25,"../../Panel":26}],21:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toggleDetails () {
+    var $trigger    =   $(this);
+    var $item       =   $trigger.closest('.item');
+    var item        =   $item.data('item');
+
+    function showHideCaret () {
+      if ( item.find('details').hasClass('is-shown') ) {
+        $trigger.find('.caret').removeClass('hide');
+      }
+      else {
+        $trigger.find('.caret').addClass('hide');
+      }
+    }
+
+    if ( item.find('promote').hasClass('is-showing') ) {
+      return false;
+    }
+
+    if ( item.find('promote').hasClass('is-shown') ) {
+      item.find('toggle promote').find('.caret').addClass('hide');
+      require('../../Nav').hide(item.find('promote'));
+    }
+
+    var hiders = $('.details.is-shown');
+
+    if ( item.find('collapsers hidden').length ) {
+      item.find('collapsers').show();
+    }
+
+    require('../../Nav').toggle(item.find('details'), item.template, app.domain.intercept(function () {
+
+      showHideCaret();
+
+      if ( item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+        item.find('collapsers').hide();
+      }
+
+      if ( item.find('details').hasClass('is-shown') ) {
+
+        if ( ! item.find('details').hasClass('is-loaded') ) {
+          item.find('details').addClass('is-loaded');
+
+          item.details.render(app.domain.intercept());
+        }
+
+        if ( hiders.length ) {
+          require('../../Nav').hide(hiders);
+        }
+      }
+    }));
+  }
+
+  module.exports = toggleDetails;
+
+} ();
+
+},{"../../Nav":25}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2164,7 +2181,7 @@
 
 } ();
 
-},{"../../Nav":24,"../../Sign":42}],22:[function(require,module,exports){
+},{"../../Nav":25,"../../Sign":43}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2247,7 +2264,7 @@
 
 } ();
 
-},{"./Form":12}],23:[function(require,module,exports){
+},{"./Form":12}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2329,7 +2346,7 @@
 
 } ();
 
-},{"./Form":12,"./Nav":24}],24:[function(require,module,exports){
+},{"./Form":12,"./Nav":25}],25:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2690,7 +2707,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":53,"domain":50,"events":51}],25:[function(require,module,exports){
+},{"_process":54,"domain":51,"events":52}],26:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2829,7 +2846,7 @@
 
 } ();
 
-},{"./Creator":2,"./Item":15,"./Nav":24,"./Panel/fill":26,"./Panel/load":27,"./Panel/pre-insert-item":28,"./Panel/render":29,"./Panel/to-json":30,"./Sign":42}],26:[function(require,module,exports){
+},{"./Creator":2,"./Item":15,"./Nav":25,"./Panel/fill":27,"./Panel/load":28,"./Panel/pre-insert-item":29,"./Panel/render":30,"./Panel/to-json":31,"./Sign":43}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2890,7 +2907,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2929,7 +2946,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2989,7 +3006,7 @@
 
 } ();
 
-},{"../Item":15}],29:[function(require,module,exports){
+},{"../Item":15}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3036,7 +3053,7 @@
 
 } ();
 
-},{"../Creator":2}],30:[function(require,module,exports){
+},{"../Creator":2}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3066,7 +3083,7 @@
 
 } ();
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3245,7 +3262,7 @@
 
 } ();
 
-},{"./Demographics":7,"./Identity":13,"./Nav":24,"./Public_Persona":39,"./Residence":41,"./Voter":47}],32:[function(require,module,exports){
+},{"./Demographics":7,"./Identity":13,"./Nav":25,"./Public_Persona":40,"./Residence":42,"./Voter":48}],33:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3398,7 +3415,7 @@
 
 } ();
 
-},{"./Edit":9,"./Item":15,"./Nav":24,"./Promote/find":33,"./Promote/finish":34,"./Promote/get":35,"./Promote/render":37,"./Promote/render-item":36,"./Promote/save":38,"events":51}],33:[function(require,module,exports){
+},{"./Edit":9,"./Item":15,"./Nav":25,"./Promote/find":34,"./Promote/finish":35,"./Promote/get":36,"./Promote/render":38,"./Promote/render-item":37,"./Promote/save":39,"events":52}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3449,7 +3466,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3494,7 +3511,7 @@
 
 } ();
 
-},{"../Nav":24}],35:[function(require,module,exports){
+},{"../Nav":25}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3551,7 +3568,7 @@
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3750,7 +3767,7 @@
 
 } ();
 
-},{"../Item":15,"../Nav":24}],37:[function(require,module,exports){
+},{"../Item":15,"../Nav":25}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3822,7 +3839,7 @@
 
 } ();
 
-},{"../Nav":24}],38:[function(require,module,exports){
+},{"../Nav":25}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3880,7 +3897,7 @@
 
 } ();
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3944,7 +3961,7 @@
 
 } ();
 
-},{"./Nav":24}],40:[function(require,module,exports){
+},{"./Nav":25}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4111,7 +4128,7 @@
 
 } ();
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4217,7 +4234,7 @@
 
 } ();
 
-},{"./Nav":24}],42:[function(require,module,exports){
+},{"./Nav":25}],43:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4400,7 +4417,7 @@
 
 } ();
 
-},{"./Forgot-Password":11,"./Join":22,"./Login":23,"./Nav":24}],43:[function(require,module,exports){
+},{"./Forgot-Password":11,"./Join":23,"./Login":24,"./Nav":25}],44:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4439,7 +4456,7 @@
 
 } ();
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4575,7 +4592,7 @@
 
 } ();
 
-},{"domain":50,"events":51,"util":55}],45:[function(require,module,exports){
+},{"domain":51,"events":52,"util":56}],46:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4798,7 +4815,7 @@
 
 }();
 
-},{"./Nav":24}],46:[function(require,module,exports){
+},{"./Nav":25}],47:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4884,7 +4901,7 @@
 
 } ();
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4984,7 +5001,7 @@
 
 } ();
 
-},{"./Nav":24}],48:[function(require,module,exports){
+},{"./Nav":25}],49:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -5103,7 +5120,7 @@
 
 } ();
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5123,7 +5140,7 @@
 
 } ();
 
-},{"../Panel":25,"../Profile":31,"../Sign":42,"../Synapp":44}],50:[function(require,module,exports){
+},{"../Panel":26,"../Profile":32,"../Sign":43,"../Synapp":45}],51:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -5191,7 +5208,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":51}],51:[function(require,module,exports){
+},{"events":52}],52:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5494,7 +5511,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5519,7 +5536,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5607,14 +5624,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6204,7 +6221,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":54,"_process":53,"inherits":52}],56:[function(require,module,exports){
+},{"./support/isBuffer":55,"_process":54,"inherits":53}],57:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -7238,4 +7255,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[49]);
+},{}]},{},[50]);

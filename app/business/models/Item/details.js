@@ -11,11 +11,11 @@
 
       require('async').parallel({
           votes: function getVotes (then) {
-            require('./Vote').getAccumulation(id, then);
+            require('../Vote').getAccumulation(id, then);
           },
 
           feedback: function getFeedback (then) {
-            require('./Feedback').find({ item: id }, then);
+            require('../Feedback').find({ item: id }, then);
           }
         },
 
@@ -25,7 +25,7 @@
 
             /** Get type criterias */
 
-            require('./Criteria')
+            require('../Criteria')
               
               .find({ type: item.type }, domain.intercept(function onCriterias (criterias) {
 

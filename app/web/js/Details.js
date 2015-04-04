@@ -141,6 +141,8 @@
 
     setTimeout(function () {
 
+      console.warn(123);
+
       var vote = self.details.votes[criteria._id];
 
       svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
