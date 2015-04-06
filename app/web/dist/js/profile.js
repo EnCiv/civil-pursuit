@@ -1826,7 +1826,7 @@
 
         var button = makeRelated();
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(mean);
+        button.find('.related-number').text(mean + '%');
         item.find('related').append(button);
 
         var solutions = (item.item.related && item.item.related.Solution) || 0;
@@ -1848,7 +1848,7 @@
 
         var button = makeRelated();
         button.find('i').addClass('fa-music');
-        button.find('.related-number').text(mean);
+        button.find('.related-number').text(mean + '%');
         item.find('related').append(button);
 
         break;

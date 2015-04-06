@@ -65,7 +65,7 @@ mixin item-box (item, dontColllapse)
 
           - else if ( item.type === 'Problem' )
             button.shy.counter
-              span.related-count=((related.Agree / related.Agree + related.Disagree) || 0)
+              span.related-count=((related.Agree / related.Agree + related.Disagree) || 0) + '%'
               span 
               i.fa.fa-music
             button.shy.counter
