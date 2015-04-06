@@ -65,8 +65,13 @@
 
     item.find('media').empty().append(this.media());
 
+    // Truncate text once image has loaded
+
     item.find('media').find('img').on('load', function () {
-      readMore(this.item, this.template);
+      if ( ! this.template.find('.more').length ) {
+        console.log('reading more', this.item.subject)
+        readMore(this.item, this.template);
+      }
     }.bind(item));
 
     // References

@@ -62,6 +62,17 @@ mixin item-box (item, dontColllapse)
               span.related-count=related.Problem
               span 
               i.fa.fa-fire
+
+          - else if ( item.type === 'Problem' )
+            button.shy.counter
+              span.related-count=((related.Agree / related.Agree + related.Disagree) || 0)
+              span 
+              i.fa.fa-music
+            button.shy.counter
+              span.related-count=related.Solution
+              span 
+              i.fa.fa-tint
+        
         - else
           span.related
 
@@ -99,7 +110,7 @@ mixin item-box (item, dontColllapse)
           .is-section
             +details()
 
-        .children.is-container(class=(item && item.nested ? 'show is-shown' : '') + ' ' + (item ? 'is-loaded' : ''))
+        .children.is-container(class=(item && item.nested ? 'show is-shown' : '') + ' ' + (item && item.nested ? 'is-loaded' : ''))
           .is-section(class=item && item.nested ? 'show' : '')
             block nested-items
               - if ( item && item.nested )

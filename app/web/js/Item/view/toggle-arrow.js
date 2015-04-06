@@ -19,6 +19,8 @@
 
     require('../../Nav').toggle(item.find('children'), item.template, app.domain.intercept(function () {
 
+        console.log('item type', item.item.type);
+
         if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
           item.find('collapsers').hide();
         }

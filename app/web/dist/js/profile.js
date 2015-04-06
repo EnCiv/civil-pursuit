@@ -1776,8 +1776,13 @@
 
     item.find('media').empty().append(this.media());
 
+    // Truncate text once image has loaded
+
     item.find('media').find('img').on('load', function () {
-      readMore(this.item, this.template);
+      if ( ! this.template.find('.more').length ) {
+        console.log('reading more', this.item.subject)
+        readMore(this.item, this.template);
+      }
     }.bind(item));
 
     // References
@@ -1898,6 +1903,8 @@
     }
 
     require('../../Nav').toggle(item.find('children'), item.template, app.domain.intercept(function () {
+
+        console.log('item type', item.item.type);
 
         if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
           item.find('collapsers').hide();

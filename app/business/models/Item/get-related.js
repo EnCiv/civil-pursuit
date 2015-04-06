@@ -4,7 +4,7 @@
 
   var src = require(require('path').join(process.cwd(), 'src'));
 
-  function countRelated (cb) {
+  function getRelated (cb) {
 
     var self = this;
 
@@ -21,6 +21,6 @@
 
   }
 
-  module.exports = countRelated;
+  module.exports = getRelated;
 
 } ();

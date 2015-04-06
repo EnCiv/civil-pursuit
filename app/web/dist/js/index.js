@@ -1361,8 +1361,13 @@
 
     item.find('media').empty().append(this.media());
 
+    // Truncate text once image has loaded
+
     item.find('media').find('img').on('load', function () {
-      readMore(this.item, this.template);
+      if ( ! this.template.find('.more').length ) {
+        console.log('reading more', this.item.subject)
+        readMore(this.item, this.template);
+      }
     }.bind(item));
 
     // References
@@ -1483,6 +1488,8 @@
     }
 
     require('../../Nav').toggle(item.find('children'), item.template, app.domain.intercept(function () {
+
+        console.log('item type', item.item.type);
 
         if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
           item.find('collapsers').hide();
@@ -4276,38 +4283,40 @@
     /** Render intro */
     new Intro().render();
 
-    var panel = new Panel('Topic');
-
     /** If page is about an item */
     if ( app.location.item ) {
-      console.warn(synapp)
 
-      panel.template = $('#panel-Topic');
+      var $panel = $('.panel[id]:last');
+      var type = $panel.attr('id').split('-')[1];
+
+      var panel = new Panel(type);
+
+      panel.template = $('.panel[id]:last');
 
       panel.render(app.domain.intercept(function () {
-        $('#panel-Topic .item[id]').each(function () {
+        panel.template.find('.item[id]').each(function () {
           var id = $(this).attr('id').split('-')[1];
 
           var _item = {
             _id           :     id,
+            type          :     type,
             subject       :     $(this).find('.item-subject').text(),
             description   :     $(this).find('.item-description').text(),
             image         :     $(this).find('.item-media img').data('image'),
             references    :     [],
             views         :     +$(this).data('views'),
             promotions    :     +$(this).find('.promoted').text(),
-            type          :     'Topic',
             related       :     {
               Problem     :     +$(this).find('.related-count').text()
             }
           };
 
+          console.log('tYPE', panel.template.attr('id').split('-')[1])
+
           if ( $(this).find('.item-reference a').attr('url') !== '#' ) {
             _item.references[0] = { url: $(this).find('.item-reference a').attr('url') };
             _item.references[0].title = $(this).find('.item-reference a').data('title');
           }
-
-          console.log('item', _item)
 
           var item = new Item(_item);
 
@@ -4322,6 +4331,8 @@
     }
 
     else {
+
+      var panel = new Panel('Topic');
 
       panel
         

@@ -108,6 +108,8 @@ Nina Butorac
 
   ItemSchema.methods.getRelated               =     require('./Item/get-related');
 
+  ItemSchema.methods.getHarmony               =     require('./Item/get-harmony');
+
   // EXPORT
   // ======
 
