@@ -40,7 +40,7 @@
       self.template = item.find('promote');
 
       if ( ! self.template.length ) {
-        throw new Error('Template not found');
+        throw new Error('Promote template not found');
       }
 
       self.watch = new (require('events').EventEmitter)();

@@ -97,7 +97,7 @@ mixin item-box (item, dontColllapse, type)
       div
         i.fa.fa-arrow-down.cursor-pointer
 
-    - if ( ! dontColllapse, type )
+    - if ( ! dontColllapse )
       .item-collapsers(class=item && item.nested ? 'show' : '')
         .editor.is-container
           .is-section

@@ -45,7 +45,7 @@
       self.template = item.find('details');
 
       if ( ! self.template.length ) {
-        throw new Error('Template not found');
+        throw new Error('Details template not found');
       }
     });
   }
