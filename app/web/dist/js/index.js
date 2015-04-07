@@ -4289,6 +4289,8 @@
       var $panel = $('.panel[id]:last');
       var type = $panel.attr('id').split('-')[1];
 
+      console.log('static type', type)
+
       var panel = new Panel(type);
 
       panel.template = $('.panel[id]:last');

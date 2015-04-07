@@ -25,7 +25,7 @@ mixin panel (panel)
         .items
           - if ( panel.items && panel.items.length )
             each item in panel.items
-              +item-box(item)
+              +item-box(item, null, panel.type)
 
         block loading-items
           .loading-items.hide

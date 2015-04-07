@@ -2,7 +2,7 @@ include promote
 include details
 //- include panel
 
-mixin item-box (item, dontColllapse)
+mixin item-box (item, dontColllapse, type)
 
   - var id;
   - var views = 0;
@@ -16,7 +16,7 @@ mixin item-box (item, dontColllapse)
   - var referenceTitle;
   - var dataImage = '';
 
-  - if ( item )
+  - if ( item && item.type === type )
     - id = 'item-' + item._id;
     - views = item.views
     - promotions = item.promotions
@@ -97,7 +97,7 @@ mixin item-box (item, dontColllapse)
       div
         i.fa.fa-arrow-down.cursor-pointer
 
-    - if ( ! dontColllapse )
+    - if ( ! dontColllapse, type )
       .item-collapsers(class=item && item.nested ? 'show' : '')
         .editor.is-container
           .is-section
@@ -112,24 +112,38 @@ mixin item-box (item, dontColllapse)
 
         .children.is-container(class=(item && item.nested ? 'show is-shown' : '') + ' ' + (item && item.nested ? 'is-loaded' : ''))
           .is-section(class=item && item.nested ? 'show' : '')
+            
             block nested-items
+
+              //- Show nested items for static pages
+
               - if ( item && item.nested )
                 - var type;
 
                 - if ( item.type === 'Topic' )
                   - type = 'Problem'
 
-                - if ( item.type === 'Problem' )
+                - else if ( item.type === 'Problem' )
                   - type = [['Agree', 'Disagree'], 'Solution']
 
-                - if ( Array.isArray(type) )
-                  each t in type
-                    - if ( Array.isArray(t) )
-                      - var v = 1
-                    - else
-                      +panel({ type: t, parent: item._id, items: item.nested })
+                - if ( type )
 
-                - else
-                  +panel({ type: type, parent: item._id, items: item.nested })
+                  - if ( Array.isArray(type) )
+                    
+                    each t in type
+                      
+                      - if ( Array.isArray(t) )
+                        .row
+                          .tablet-50.left-split
+                            +panel({ type: t[0], parent: item._id, items: item.nested })
+                          .tablet-50.right-split
+                            +panel({ type: t[1], parent: item._id, items: item.nested })
+                      
+                      - else
+                        +panel({ type: t, parent: item._id, items: item.nested })
+
+                  - else
+
+                    +panel({ type: type, parent: item._id, items: item.nested })
 
     .clear
