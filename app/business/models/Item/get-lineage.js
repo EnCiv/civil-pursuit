@@ -58,6 +58,7 @@
               cb(null, item.toObject({ transform: function (doc, ret, options) {
                 ret.related = count;
                 ret.getPromotionPercentage = doc.getPromotionPercentage;
+                ret.adjustImage = doc.adjustImage;
                   // ret.countRelated = doc.countRelated;
               }}));
             }))

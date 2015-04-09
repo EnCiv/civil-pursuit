@@ -12,6 +12,8 @@
 
   function itemMedia () {
 
+    console.info(this.item.getPromotionPercentage)
+
     // youtube video from references
 
     if ( this.item.references && this.item.references.length ) {
@@ -20,6 +22,16 @@
       if ( media ) {
         return media;
       }
+    }
+
+    // adjustImage
+
+    if ( this.item.adjustImage ) {
+
+      console.info('adjustImage')
+
+      return $(this.item.adjustImage
+              .replace(/\>$/, ' class="img-responsive" />'));
     }
 
     // image

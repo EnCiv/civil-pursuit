@@ -39,6 +39,7 @@ mixin item-box (item, dontColllapse, type)
   //- @type           String=''
   //- @description    A class whether or not to show children
   - var showChildren = '';
+  - var imageUrl = 'http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale/v1411591207/283492_s_US_Flag_and_Constitution_swpubq.jpg';
 
   //- If item is declared (static page), then update variables
   - if ( item && item.type === type )
@@ -70,8 +71,11 @@ mixin item-box (item, dontColllapse, type)
 
     .item-media-wrapper
       .item-media
-        img.img-responsive(src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale/v1411591207/283492_s_US_Flag_and_Constitution_swpubq.jpg'
-          data-image=dataImage)
+
+        - if ( item )
+          div!=item.adjustImage().replace(/\/>$/, ' class="img-responsive" data-image="' + dataImage + '" data-rendered="true" />')
+        - else
+          div!=mongoose.model('Item').schema.methods.adjustImage.apply({}).replace(/\/>$/, ' class="img-responsive" data-image="' + dataImage + '" />')
 
     //- Item buttons
 

@@ -110,6 +110,8 @@ Nina Butorac
 
   ItemSchema.methods.getHarmony               =     require('./Item/get-harmony');
 
+  ItemSchema.methods.adjustImage              =     require('./Item/adjust-image');
+
   // EXPORT
   // ======
 

@@ -45,7 +45,9 @@
               var _items = items.map(function (item, index) {
                 return item.toObject({ transform: function (doc, ret, options) {
                   ret.related = related[index];
-                  ret.getPromotionPercentage = doc.getPromotionPercentage;
+                  ret.getPromotionPercentage = item.getPromotionPercentage();
+                  ret.adjustImage = item.adjustImage();
+                  ret.foo = true;
                 }});
               });
 

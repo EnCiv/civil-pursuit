@@ -43,6 +43,7 @@
                 toObjects.push(function (doc, ret, options) {
                   ret.related = related[index];
                   ret.getPromotionPercentage = doc.getPromotionPercentage;
+                  ret.adjustImage = doc.adjustImage;
                   ret.countRelated = doc.countRelated;
                 });
 

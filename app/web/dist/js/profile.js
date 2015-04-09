@@ -1648,6 +1648,8 @@
 
   function itemMedia () {
 
+    console.info(this.item.getPromotionPercentage)
+
     // youtube video from references
 
     if ( this.item.references && this.item.references.length ) {
@@ -1656,6 +1658,16 @@
       if ( media ) {
         return media;
       }
+    }
+
+    // adjustImage
+
+    if ( this.item.adjustImage ) {
+
+      console.info('adjustImage')
+
+      return $(this.item.adjustImage
+              .replace(/\>$/, ' class="img-responsive" />'));
     }
 
     // image
@@ -1774,7 +1786,9 @@
 
     // Media
 
-    item.find('media').empty().append(this.media());
+    if ( !  item.find('media').find('img[data-rendered]').length ) {
+      item.find('media').empty().append(this.media());
+    }
 
     // Truncate text once image has loaded
 

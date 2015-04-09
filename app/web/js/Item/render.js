@@ -63,7 +63,9 @@
 
     // Media
 
-    item.find('media').empty().append(this.media());
+    if ( !  item.find('media').find('img[data-rendered]').length ) {
+      item.find('media').empty().append(this.media());
+    }
 
     // Truncate text once image has loaded
 

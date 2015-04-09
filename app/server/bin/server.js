@@ -174,6 +174,7 @@
               res.locals.config   =   config;
               res.locals.protocol =   process.env.SYNAPP_PROTOCOL || 'http';
               res.locals.package  =   src('package.json');
+              res.locals.mongoose =   require('mongoose');
 
               res.superRender     =   function superRender (tpl, options) {
                 // res.send('hola')
