@@ -1,29 +1,54 @@
+//- # Item Box Mixin
+
+//- Dependencies
+
 include promote
 include details
 //- include panel
 
+//-
+  @mixin    item-box
+  @arg      {Object?}   item
+  @arg      {Boolean?}  dontCollapse
+  @arg      {String?}   type
+
 mixin item-box (item, dontColllapse, type)
 
+  //- @type   String?
   - var id;
+  //- @type   Number=0
   - var views = 0;
+  //- @type   Number=0
   - var promotions = 0;
+  //- @type   String="0%"
   - var percent = '0%';
+  //- @type   Number=0
   - var related = 0;
+  //- @type   String=""
   - var subject = '';
+  //- @type   String=""
   - var description = '';
+  //- @type   String="#"
   - var referenceUrl = '#';
+  //- @type   Boolean=false
   - var hasReference = false;
+  //- @type   String?
   - var referenceTitle;
+  //- @type   String=''
   - var dataImage = '';
+  //- @type           String=''
+  //- @description    A class whether or not to show children
+  - var showChildren = '';
 
+  //- If item is declared (static page), then update variables
   - if ( item && item.type === type )
-    - id = 'item-' + item._id;
-    - views = item.views
-    - promotions = item.promotions
-    - percent = item.getPromotionPercentage()
-    - subject = item.subject
-    - description = item.description
-    - dataImage = item.image
+    - id            =   'item-' + item._id;
+    - views         =   item.views
+    - promotions    =   item.promotions
+    - percent       =   item.getPromotionPercentage()
+    - subject       =   item.subject
+    - description   =   item.description
+    - dataImage     =   item.image
 
     - hasReference = item.references.length;
     - related = item.related;
@@ -35,13 +60,25 @@ mixin item-box (item, dontColllapse, type)
       - referenceUrl = item.references[0].url;
       - referenceTitle = item.references[0].title;
 
+    - showChildren = item.nested ? 'show is-shown is-loaded' : '';
+
+  //- BEGIN HTML
+
   .item(id=id data-views=views)
+
+    //- Item Media
+
     .item-media-wrapper
       .item-media
         img.img-responsive(src='http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale/v1411591207/283492_s_US_Flag_and_Constitution_swpubq.jpg'
           data-image=dataImage)
 
+    //- Item buttons
+
     .item-buttons
+
+      //- Number of times an item has been promoted
+
       button.item-toggle-promote.shy
         span.promoted=promotions
         span  
@@ -49,11 +86,14 @@ mixin item-box (item, dontColllapse, type)
 
       div
       
-      //- div.promoted-percent 0%
+      //- Item percentage of promotions
+
       button.item-toggle-details.shy
         span.promoted-percent=percent
         span  
         i.fa.fa-signal
+
+      //- Counters
 
       div 
         - if ( item )
@@ -81,6 +121,8 @@ mixin item-box (item, dontColllapse, type)
 
       .clear
 
+    //- Item text
+
     .item-text
       .item-truncatable
         h4.item-subject.header
@@ -93,24 +135,37 @@ mixin item-box (item, dontColllapse, type)
 
       .clear.clear-text
 
+    //- Item toggle arrow
+
     .item-arrow
       div
         i.fa.fa-arrow-down.cursor-pointer
 
+    //- Item ollapsers
+
     - if ( ! dontColllapse )
       .item-collapsers(class=item && item.nested ? 'show' : '')
+
+        //- Item Edit and go again
+        
         .editor.is-container
           .is-section
+
+        //- Promote item
 
         .promote.is-container
           .is-section
             +promote()
 
+        //- Item details
+
         .details.is-container
           .is-section
             +details()
 
-        .children.is-container(class=(item && item.nested ? 'show is-shown' : '') + ' ' + (item && item.nested ? 'is-loaded' : ''))
+        //- Item children
+
+        .children.is-container(class=showChildren)
           .is-section(class=item && item.nested ? 'show' : '')
             
             block nested-items
@@ -125,6 +180,9 @@ mixin item-box (item, dontColllapse, type)
 
                 - else if ( item.type === 'Problem' )
                   - type = [['Agree', 'Disagree'], 'Solution']
+
+                - else if ( item.type === 'Solution' )
+                  - type = [['Pro', 'Con']]
 
                 - if ( type )
 
