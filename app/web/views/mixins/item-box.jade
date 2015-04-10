@@ -74,6 +74,7 @@ mixin item-box (item, dontColllapse, type)
 
         - if ( item )
           div!=item.adjustImage().replace(/\/>$/, ' class="img-responsive" data-image="' + dataImage + '" data-rendered="true" />')
+          
         - else
           div!=mongoose.model('Item').schema.methods.adjustImage.apply({}).replace(/\/>$/, ' class="img-responsive" data-image="' + dataImage + '" />')
 

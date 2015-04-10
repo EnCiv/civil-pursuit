@@ -184,11 +184,8 @@
 
               app.arte.emit('request', req);
 
-              // req.send = res.send.bind(res);
-              // res.send = function (body) {
-              //   app.arte.emit('response', res);
-              //   req.send(body);
-              // };
+              // Forcing item
+              src('models/Item');
 
               next();
             });
