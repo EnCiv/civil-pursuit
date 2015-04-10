@@ -3,6 +3,7 @@
   'use strict';
 
   var Nav = require('../Nav');
+  var Edit = require('../Edit');
 
   /**
    *  @function
@@ -94,9 +95,9 @@
 
     // Persona
 
-    promote.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
+    // promote.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
 
-    promote.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
+    // promote.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
 
     // Feedback
 
@@ -164,20 +165,19 @@
 
     promote.find('edit and go again button', hand).on('click', function () {
       Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
-        return;
 
-        if ( self.item.find('editor').find('form').length ) {
+        if ( promote.item.find('editor').find('form').length ) {
           console.warn('already loaded')
         }
 
         else {
-          var edit = new Edit(self.item);
+          var edit = new Edit(promote.item);
             
           edit.get(app.domain.intercept(function (template) {
 
-            self.item.find('editor').find('.is-section').append(template);
+            promote.item.find('editor').find('.is-section').append(template);
 
-            Nav.reveal(self.item.find('editor'), self.item.template,
+            Nav.reveal(promote.item.find('editor'), promote.item.template,
               app.domain.intercept(function () {
                 Nav.show(template, app.domain.intercept(function () {
                   edit.render();

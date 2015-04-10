@@ -18,7 +18,7 @@
 
       case 'finish button':           return this.template.find('.finish');
 
-      case 'item subject':            return this.find('side by side').find('.subject.' + more + '-item h3');
+      case 'item subject':            return this.find('side by side').find('.subject.' + more + '-item h4');
 
       case 'item description':        return this.find('side by side').find('.description.' + more + '-item');
 
