@@ -17,7 +17,7 @@
   var tests = [
     { name: 'gulp build-prod' },
 
-    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 8792] },
+    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 8792, 7182] },
 
     { name: [test, 'models/User'].join(' ') },
     { name: [test, 'models/User'].join(' ') },
