@@ -117,6 +117,10 @@
 
           .on('get items',              src('io/get-items').bind(socket))
 
+          /** Get models */
+
+          .on('get models',             src('io/get-models').bind(socket))
+
           /** Get URL title*/
 
           .on('get url title',          src('io/get-url-title').bind(socket))

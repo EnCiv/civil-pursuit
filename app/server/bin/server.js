@@ -213,6 +213,11 @@
             res.superRender('partials/' + req.params.partial);
           })
 
+          .get('/page/test', function getPage (req, res, next) {
+            res.locals.page = 'test';
+            res.superRender('pages/test.jade');
+          })
+
           .get('/page/:page', function getPage (req, res, next) {
             res.locals.page = req.params.page || 'index';
             res.superRender('pages/' + req.params.page + '.jade');

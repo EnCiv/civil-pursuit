@@ -3094,3 +3094,24 @@ footer {
 #profile {
   margin-top: 10px;
 }
+table {
+  width: 100%;
+}
+table thead,
+table .css-thead {
+  background: #ccc;
+}
+table tbody tr:nth-child(even) {
+  background: #eeeeee;
+}
+table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+table tbody tr thead th,
+table tbody tr thead td {
+  background: #ccc;
+}
+table td,
+table th {
+  padding: 1em;
+}

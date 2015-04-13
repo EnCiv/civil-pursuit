@@ -11,7 +11,7 @@
       return 0;
     }
 
-    return Math.ceil(a / sum);
+    return Math.ceil((a / sum) * 100);
   }
 
   function getHarmony () {

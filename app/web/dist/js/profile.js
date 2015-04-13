@@ -1831,8 +1831,8 @@
 
       case 'Problem':
         var agrees = (item.item.related && item.item.related.Agree) || 0;
-        var disagrees = (item.item.related && item.item.related.disagrees) || 0;
-        var mean = agrees / (agrees + disagrees);
+        var disagrees = (item.item.related && item.item.related.Disagree) || 0;
+        var mean = (agrees / (agrees + disagrees) * 100);
 
         if ( isNaN(mean) ) {
           mean = 0;

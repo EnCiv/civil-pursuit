@@ -13,7 +13,7 @@
   exports.task      =   function watchifyApp () {
     var bundler = watchify(
       browserify(
-        path.join(process.cwd(), 'app/web/js/pages/Home.js'),
+        path.join(process.cwd(), 'app/web/js/pages/Test.js'),
         watchify.args));
 
     bundler.on('update', rebundle);
@@ -22,7 +22,7 @@
       return bundler.bundle()
         // log errors if they happen
         .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-        .pipe(source('index.js'))
+        .pipe(source('test.js'))
         .pipe(gulp.dest(config.dirs['dist js']));
     }
 

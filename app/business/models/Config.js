@@ -2,27 +2,13 @@
   
   'use strict';
 
+  var src = require(require('path').join(process.cwd(), 'src'));
+
   var mongoose        =   require('mongoose');
 
   var Schema          =   mongoose.Schema;
 
-  var ConfigSchema    =   new Schema({
-    "race": [{
-      "name": String
-    }],
-    "married": [{
-      "name": String
-    }],
-    "employment": [{
-      "name": String
-    }],
-    "education": [{
-      "name": String
-    }],
-    "party": [{
-      "name": String
-    }]
-  });
+  var ConfigSchema    =   new Schema(src('models/Config/schema'));
 
   var Config          =   mongoose.model('Config', ConfigSchema);
 

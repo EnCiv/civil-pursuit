@@ -1,0 +1,27 @@
+table {
+  width: 100%;
+
+  thead, .css-thead {
+    background: #ccc;
+  }
+
+  tbody {
+    tr:nth-child(even) {
+      background: #eee
+    }
+    tr:nth-child(odd) {
+      background: #fff
+    }
+
+    tr {
+      thead th, thead td {
+        background: #ccc;
+      }
+    }
+  }
+
+  td, th {
+    padding: 1em
+  }
+
+}

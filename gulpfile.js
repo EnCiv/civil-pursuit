@@ -7,6 +7,7 @@
 
   var tasks         =   [
     'browserify-home',
+    'browserify-test',
     'browserify-terms-of-service',
     'browserify-profile',
     'browserify-reset-password',
@@ -17,12 +18,14 @@
     'minify-css',
     'minify-css-dashboard',
     'uglify-home',
+    'uglify-test',
     'uglify-terms-of-service',
     'uglify-reset-password',
     'uglify-profile',
     'watchify-profile',
     'watchify-reset-password',
     'watchify-home',
+    'watchify-test',
     'watch-less',
     // 'generate-site-map',
     'semver-minor'];

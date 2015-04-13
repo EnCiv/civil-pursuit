@@ -45,11 +45,14 @@ block script-app
   - if ( req.path === '/profile' )
     - js = 'profile'
 
-  - if ( req.path === '/terms-of-service' )
+  - else if ( req.path === '/terms-of-service' )
     - js = 'terms-of-service'
 
-  - if ( req.path === '/reset-password' )
+  - else if ( req.path === '/reset-password' )
     - js = 'reset-password'
+
+  - else if ( page === 'test' )
+    - js = 'test'
 
   script(src='/js/' + js + ( settings.env === 'production' ? '.min.js' : '.js' ))
 
