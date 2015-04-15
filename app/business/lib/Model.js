@@ -33,7 +33,12 @@
               var structure = {};
 
               for ( var i in Model.schema.paths ) {
-                structure[i] = Model.schema.paths[i];
+
+                structure[i] = {};
+
+                for ( var k in Model.schema.paths[i] ) {
+                  structure[i][k] = Model.schema.paths[i][k];
+                }
 
                 if ( typeof structure[i].defaultValue === 'function' ) {
                   structure[i].defaultValue = structure[i].defaultValue.name;

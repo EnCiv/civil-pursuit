@@ -93,6 +93,28 @@ body {
   }
 
   /*
+   * Hide
+   */
+
+  .@{screen}-hide {
+    @media (min-width: @min-width) and (max-width: @max-width) {
+      display: none
+    }
+  }
+
+  .@{screen}-hide-down {
+    @media (max-width: @min-width) {
+      display: none
+    }
+  }
+
+  .@{screen}-hide-up {
+    @media (min-width: @min-width) {
+      display: none
+    }
+  }
+
+  /*
    * Column gutters
    */
 
@@ -125,6 +147,7 @@ body {
 
 .scaffolding(watch, 0px, @screenPhone);
 .scaffolding(phone, @screenPhone, @screenTablet);
+.scaffolding(split, @screenSplit, @screenTablet);
 .scaffolding(tablet, @screenTablet, @screenDesktop);
 
 .gutter {

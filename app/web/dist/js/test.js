@@ -150,20 +150,56 @@
   };
 
   function $Model (model) {
-    var $model = $('<section class="model"></section>');
+    var $model = $('<section class="model"><header class="primary-bg radius" style=" padding: 0.5em"></header><main></main></section>');
     
-    $model.append($('<h3><i class="fa fa-chevron-down"></i><span class="model-name"></span></h3>'));
+    $model.find('header').append($('<h3 class="model-header"><i class="fa fa-chevron-up cursor-pointer toggle-model"></i> <span class="model-name"></span></h3>'));
 
-    $model.append($('<h4><i class="fa fa-chevron-down"></i>Schema</h4>'));
+    $model.find('main').append($('<h4><i class="fa fa-chevron-up cursor-pointer toggle-schema"></i>Schema</h4><section class="model-schema"></section>'));
 
-    $model.append($(template.schemaTable));
+    $model.find('main .model-schema').append($(template.schemaTable));
 
-    $model.append($('<h4><i class="fa fa-chevron-down"></i>Statics</h4>'),
+    $model.find('main').append($('<h4><i class="fa fa-chevron-up"></i>Statics</h4>'),
       $('<div class="statics-list"></div>'));
 
     /***/
 
+    $model.attr('id', 'model-' + model.name);
+
+    $model.find('main').hide();
+
+    $model.find('main .model-schema').hide();
+
     $model.find('.model-name').text(model.name);
+
+    $model.find('.toggle-model').on('click', function toggleModel () {
+      var main = $('#model-' + model.name + ' main');
+
+      if ( main.css('display') === 'none' ) {
+        main.show();
+        $(this).removeClass('fa-chevron-up');
+        $(this).addClass('fa-chevron-down');
+      }
+      else {
+        main.hide();
+        $(this).removeClass('fa-chevron-down');
+        $(this).addClass('fa-chevron-up');
+      }
+    });
+
+    $model.find('.toggle-schema').on('click', function toggleModel () {
+      var main = $('#model-' + model.name + ' .model-schema');
+
+      if ( main.css('display') === 'none' ) {
+        main.show();
+        $(this).removeClass('fa-chevron-up');
+        $(this).addClass('fa-chevron-down');
+      }
+      else {
+        main.hide();
+        $(this).removeClass('fa-chevron-down');
+        $(this).addClass('fa-chevron-up');
+      }
+    });
 
     $Schema(model.schema).forEach(function (row) {
       $model.find('.schema-table tbody:first').append(row);

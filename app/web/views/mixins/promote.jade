@@ -1,3 +1,47 @@
+mixin image (hand)
+  .image.gutter(style='float: left; width: 40%' class=hand + '-item')
+
+mixin subject (hand)
+  .subject.gutter(class=hand + '-item')
+    h4
+
+mixin description (hand)
+  .description.gutter.pre-text(class=hand + '-item')
+
+mixin references (hand)
+  .references.gutter(class=hand + '-item')
+    a(rel='nofollow' target='_blank')
+
+mixin sliders (hand)
+  .sliders(class=hand + '-item')
+    - for ( var i = 0; i < 4; i ++ )
+      .criteria-wrapper
+        .row
+          
+          .tablet-40
+            h4
+              button.criteria-name.shy.block Criteria
+          
+          .tablet-60(style='margin-top: 2.5em')
+            input.block(type="range" min="-1" value="0" max="1" step="1")
+        
+        .row.is-container.criteria-description-section
+          .is-section
+            .gutter.watch-100.criteria-description
+
+mixin feedback (hand)
+  .feedback(class=hand + '-item')
+    textarea.feedback-entry.block(
+      placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+
+mixin promote-button (hand)
+  .gutter(class=hand + '-item')
+    button.block.promote Promote
+
+mixin edit-and-go-again-button (hand)
+  .gutter(class=hand + '-item')
+    button.block.edit-and-go-again-toggle Edit and go again
+
 mixin promote ()
   section
     header.promote-steps
@@ -10,90 +54,87 @@ mixin promote ()
 
     .items-side-by-side
 
-      //- Image
+      // 1 column
 
-      .row
-        .tablet-50
-          .side.image.left-item(style='float: left; width: 40%')
-          .side.subject.left-item
-            h4
-        .tablet-50
-          .side.image.right-item(style='float: left; width: 40%')
-          .side.subject.right-item
-            h4
+      .split-hide-up
+        +image('left')
+        +subject('left')
+        +description('left')
+        +references('left')
+        +sliders('left')
+        +feedback('left')
+        +promote-button('left')
+        +edit-and-go-again-button('left')
 
-      //- Description
+        +image('right')
+        +subject('right')
+        +description('right')
+        +references('right')
+        +sliders('right')
+        +feedback('right')
+        +promote-button('right')
+        +edit-and-go-again-button('right')
 
-      .row
-        .side.description.pre-text.left-item
-        .side.description.pre-text.right-item
+      .split-hide-down
 
-      //- References
+        .row
+          .split-50.watch-100
 
-      .row
-        .side.references.left-item
-          a(rel='nofollow' target='_blank')
-        .side.references.right-item
-          a(rel='nofollow' target='_blank')
+            +image('left')
+            
+            +subject('left')
+            
+            +description('left')
 
-      //- Sliders
+          .split-50.watch-100
 
-      .row.row-sliders
-        .side.sliders.left-item
-          - for ( var i = 0; i < 4; i ++ )
-            .criteria-wrapper
-              .row
-                .tablet-40
-                  h4
-                    button.criteria-name.shy.block Criteria
-                .tablet-60(style='margin-top: 2.5em')
-                  input.block(type="range" min="-1" value="0" max="1" step="1")
-              .row.is-container.criteria-description-section
-                .is-section
-                  .gutter.watch-100.criteria-description
+            +image('right')
+            
+            +subject('right')
+            
+            +description('right')
 
-                
+        .row
+          .split-50.watch-100
 
-        .side.sliders.right-item
-          - for ( var i = 0; i < 4; i ++ )
-            .criteria-wrapper
-              .row
-                .tablet-40
-                  h4
-                    button.criteria-name.shy.block Criteria
-                .tablet-60(style='margin-top: 2.5em')
-                  input.block(type="range" min="-1" value="0" max="1" step="1")
-              .row.is-container.criteria-description-section
-                .is-section
-                  .gutter.watch-100.criteria-description
+            +references('left')
 
-      //- Feedback
+          .split-50.watch-100
 
-      .row
-        .side.feedback.left-item
-          textarea.feedback-entry.block(
-            placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
-        .side.feedback.right-item
-          textarea.feedback-entry.block(
-            placeholder = 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?')
+            +references('right')
 
-      //- Promote
+        .row
+          .split-50.watch-100
 
-      h4.text-center Which of these is most important for the community to consider?
+            +sliders('left')
 
-      .row
-        .side.left-item
-          button.block.promote Promote
-        .side.right-item
-          button.block.promote Promote
+            +feedback('left')
+          
+          .split-50.watch-100
+            
+            +sliders('right')
 
-      //- Edit and go again
+            +feedback('right')
 
-      .row
-        .side.left-item
-          button.block.edit-and-go-again-toggle Edit and go again
-        .side.right-item
-          button.block.edit-and-go-again-toggle Edit and go again
+        h4.text-center Which of these is most important for the community to consider?
+
+        .row
+          .split-50.watch-100
+            
+            +promote-button('left')
+          
+          .split-50.watch-100
+
+            +promote-button('right')
+
+        .row
+          .split-50.watch-100    
+            
+            +edit-and-go-again-button('left')
+          
+          .split-50.watch-100
+            
+            +edit-and-go-again-button('right')
 
       button.finish.block Neither
 
