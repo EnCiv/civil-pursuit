@@ -71,6 +71,7 @@
           }
 
           else {
+            console.log('exit: ' + status);
             throw new Error(action.name);
           }
 
