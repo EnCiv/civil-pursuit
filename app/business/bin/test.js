@@ -38,6 +38,10 @@
         b = arg.replace(/^io\//, 'app/server/lib/io/test/');
       }
 
+      else if ( /^selenium\//.test(arg) ) {
+        b = arg.replace(/^selenium\//, 'app/web/stories/');
+      }
+
       else if ( /^web\//.test(arg) ) {
         suite[arg] = nightwatch.bind({ file: arg.replace(/^web\//, 'app/web/test/') });
 
