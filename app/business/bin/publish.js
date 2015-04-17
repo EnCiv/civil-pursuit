@@ -36,10 +36,11 @@
     { name: [test, 'io/set-party'].join(' ') },
     
     { name: [test, 'web/login'].join(' ') },
-    { name: [test, 'web/create-topic'].join(' ') },
     { name: [test, 'web/reference-opens-in-a-new-window'].join(' ') },
     { name: [test, 'web/item-image-display'].join(' ') },
     { name: [test, 'web/promote'].join(' ') },
+
+    { name: [test, 'selenium/create-topic'].join(' ') },
 
     { name: 'git push heroku master' }
   ];

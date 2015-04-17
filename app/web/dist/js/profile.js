@@ -3626,7 +3626,6 @@
     app.socket.emit('add view', this.evaluation[hand]._id);
 
     // Subject
-
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
     // Description
