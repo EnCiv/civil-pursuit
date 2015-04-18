@@ -39,7 +39,7 @@
     // { name: [test, 'web/reference-opens-in-a-new-window'].join(' ') },
     // { name: [test, 'web/item-image-display'].join(' ') },
 
-    // { name: [test, 'selenium/create-topic'].join(' ') },
+    { name: [test, 'web/driver/create-topic'].join(' ') },
     // { name: [test, 'selenium/promote'].join(' ') },
 
     // { name: 'git push heroku master' }
