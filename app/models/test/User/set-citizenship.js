@@ -6,20 +6,20 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var User        =   src('models/User');
+    var User        =   require('syn/models/User');
 
-    var Country     =   src('models/Country');
+    var Country     =   require('syn/models/Country');
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user_id, country_id;
 
     try {
-      should.Assertion.add('user', src('models/test/User/assert.user'), true);
+      should.Assertion.add('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -31,7 +31,7 @@
 
       'should create a disposable user': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           User
 
@@ -48,7 +48,7 @@
 
       'should fetch country': function (done) {
         
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           Country.findOne(domain.intercept(function (country) {
 
@@ -68,7 +68,7 @@
 
       'should add citizenship': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           User.setCitizenship(user_id, country_id, position, domain.intercept(function (user) {
             
             user.should.be.a.user;

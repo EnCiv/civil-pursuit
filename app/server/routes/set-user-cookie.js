@@ -2,9 +2,9 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
-  var config = src('config');
+  var config = require('syn/config');
 
   function setCookieUser (req, res, next) {
     res.cookie('synuser',

@@ -7,8 +7,8 @@
   var should  =   require('should');
 
   // try {
-  //   should.Assertion.add('item', src('models/test/Item/assert'), true);
-  //   should.Assertion.add('criteria', src('models/test/Criteria/assert'), true);
+  //   should.Assertion.add('item', require('syn/models/test/Item/assert'), true);
+  //   should.Assertion.add('criteria', require('syn/models/test/Criteria/assert'), true);
   // }
   // catch ( error ) {
   //   // Assertion item already loaded

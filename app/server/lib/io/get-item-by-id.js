@@ -2,20 +2,20 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function getItemById (id) {
 
     var socket = this;
 
-    src.domain(
+    require('syn/lib/domain')(
 
       function (error) {
         socket.app.arte.emit('error', error);
       },
 
       function (domain) {
-        src('models/Item')
+        require('syn/models/Item')
           .findById(id)
           .lean()
           .exec(domain.intercept(function (item) {

@@ -8,18 +8,18 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user;
 
     try {
-      should.Assertion.add('user', src('models/test/User/assert.user'), true);
+      should.Assertion.add('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -28,14 +28,14 @@
     Test.suite('Socket "change user name"', {
 
       'add a listener': function (done) {
-        client.on('change user name', src('io/change-user-name').bind(client));
+        client.on('change user name',require('syn/io/change-user-name').bind(client));
 
         done();
       },
 
       'should send "user name changed"': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('user name changed', function (number) {
 
             number.should.be.exactly(1);
@@ -45,7 +45,7 @@
             done();
           });
 
-          src('models/User')
+          require('syn/models/User')
             .disposable(domain.intercept(function (_user) {
 
               user =  _user;

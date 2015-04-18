@@ -2,13 +2,13 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function getCountries () {
 
     var socket = this;
 
-    src.domain.nextTick(
+    require('syn/lib/domain/next-tick')(
 
       function (error) {
 
@@ -18,7 +18,7 @@
 
       function (domain) {
 
-        src('models/Country')
+        require('syn/models/Country')
           .find()
           .lean()
           .exec(domain.intercept(function (countries) {

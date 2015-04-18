@@ -5,15 +5,14 @@
   var path          =     require('path');
   var mongoose      =     require('mongoose');
   var Item;
-  var src           =     require(require('path').join(process.cwd(), 'src'));
 
-  var config        =     src('config');
+  var config        =     require('syn/config');
 
   try {
     Item = mongoose.model('Item');
   }
   catch ( error ) {
-    Item = src('models/Item');
+    Item = require('syn/models/Item');
   }
 
   function preSaveItem (next, done) {
@@ -36,7 +35,7 @@
 
       saveImage: function (done) {
 
-        src.domain.nextTick(done, function (domain) {
+        require('syn/lib/domain/next-tick')(done, function (domain) {
 
           // If image declared (and in case of editing - if image changed)
 
@@ -97,7 +96,7 @@
       
       fetchUrlTitle: function (done) {
         
-        src.domain.nextTick(done, function (domain) {
+        require('syn/lib/domain/next-tick')(done, function (domain) {
           if ( self.references[0] && self.references[0].url && ! self.references[0].title ) {
             require('../lib/get-url-title')(self.references[0].url, domain.intercept(function (title) {
 

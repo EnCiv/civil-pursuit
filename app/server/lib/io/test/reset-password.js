@@ -11,17 +11,17 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
-    var User        =   src('models/User');
+    var User        =   require('syn/models/User');
 
     var key;
 
@@ -80,7 +80,7 @@
       },
 
       'add a listener': function (done) {
-        client.on('reset password', src('io/reset-password').bind(client));
+        client.on('reset password',require('syn/io/reset-password').bind(client));
 
         done();
       },

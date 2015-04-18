@@ -6,14 +6,14 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var User        =   src('models/User');
-    var Config      =   src('models/Config');
+    var User        =   require('syn/models/User');
+    var Config      =   require('syn/models/Config');
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user_id, education_id;
 
@@ -21,7 +21,7 @@
 
       'should create a disposable user': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           User
 
@@ -38,7 +38,7 @@
 
       'should fetch status': function (done) {
         
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           Config.findOne(domain.intercept(function (config) {
 
@@ -58,7 +58,7 @@
 
       'should set education': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           User.setEducation(user_id, education_id, domain.intercept(function (user) {
 
             user.should.be.a.user;

@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   var root = process.cwd();
 
@@ -14,7 +14,7 @@
   Models.ls = function (cb) {
     var ls = [];
 
-    src.domain.nextTick(cb, function (domain) {
+    require('syn/lib/domain/next-tick')(cb, function (domain) {
       require('fs').readdir(path.join(root, 'app/business/models'),
         domain.intercept(function (files) {
           ls = files
@@ -26,7 +26,7 @@
             })
             .map(function (model) {
 
-              var Model = src('models/' + model);
+              var Model = require('syn/models/' + model);
 
               console.log('mOOOOOOdel', Model.schema);
               

@@ -6,20 +6,20 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var User        =   src('models/User');
+    var User        =   require('syn/models/User');
 
-    var Country     =   src('models/Country');
+    var Country     =   require('syn/models/Country');
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user;
 
     try {
-      should.Assertion.add('user', src('models/test/User/assert.user'), true);
+      should.Assertion.add('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -31,7 +31,7 @@
 
       'should create a disposable user': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           User
 
@@ -53,7 +53,7 @@
 
       'should set registered voter': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           User.setRegisteredVoter(user._id, is_registered, domain.intercept(function (num) {
             
             num.should.be.a.Number.and.eql(1);

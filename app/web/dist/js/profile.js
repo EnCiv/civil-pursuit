@@ -1,40 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function Percentage (number) {
-    this.number = number;
-
-    this.ok = typeof number === 'number' && isFinite(number) && number <= 100 && number >= 0;
-  }
-
-  Percentage.prototype.toString = function() {
-    if ( this.ok ) {
-      return this.number.toString() + '%';
-    }
-
-    return '50%';
-  };
-
-  function getPromotionPercentage () {
-
-    var multiplyBy100 = this.promotions * 100;
-
-    if ( multiplyBy100 === 0 ) {
-      return new Percentage(0);
-    }
-
-    var divideByViews = Math.ceil(multiplyBy100 / this.views);
-
-    return new Percentage(divideByViews);
-  }
-
-  module.exports = getPromotionPercentage;
-
-} ();
-
-},{}],2:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -111,7 +75,7 @@
 
 } ();
 
-},{"./Creator/create":3,"./Creator/created":4,"./Creator/pack-item":5,"./Creator/render":6,"./Panel":26}],3:[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":25}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -197,7 +161,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":15,"../Nav":25,"../Stream":44,"_process":54}],4:[function(require,module,exports){
+},{"../Item":14,"../Nav":24,"../Stream":43,"_process":53}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -232,7 +196,7 @@
 
 } ();
 
-},{"../Item":15}],5:[function(require,module,exports){
+},{"../Item":14}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -293,7 +257,7 @@
 
 } ();
           synapp.user
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -370,7 +334,7 @@
 
 } ();
 
-},{"../Form":12,"../Upload":47,"../YouTube":49}],7:[function(require,module,exports){
+},{"../Form":11,"../Upload":46,"../YouTube":48}],6:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -522,7 +486,7 @@
 
 } ();
 
-},{"./Nav":25}],8:[function(require,module,exports){
+},{"./Nav":24}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -786,7 +750,7 @@
 
 } ();
 
-},{"./Edit":9,"./Item":15,"./Nav":25}],9:[function(require,module,exports){
+},{"./Edit":8,"./Item":14,"./Nav":24}],8:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -937,7 +901,7 @@
 
 } ();
 
-},{"./Creator":2,"./Edit/save":10,"./Form":12,"./Item":15,"./Nav":25}],10:[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":9,"./Form":11,"./Item":14,"./Nav":24}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -995,7 +959,7 @@
 
 } ();
 
-},{"../Item":15,"../Nav":25}],11:[function(require,module,exports){
+},{"../Item":14,"../Nav":24}],10:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1061,7 +1025,7 @@
 
 } ();
 
-},{"./Form":12,"domain":51}],12:[function(require,module,exports){
+},{"./Form":11,"domain":50}],11:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -1150,7 +1114,7 @@
 
 } ();
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1320,7 +1284,7 @@
 
 } ();
 
-},{"./Identity/render":14,"./Nav":25,"./Upload":47}],14:[function(require,module,exports){
+},{"./Identity/render":13,"./Nav":24,"./Upload":46}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1474,7 +1438,7 @@
 
 } ();
 
-},{"../Nav":25,"../Upload":47}],15:[function(require,module,exports){
+},{"../Nav":24,"../Upload":46}],14:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1533,7 +1497,7 @@
 
 } ();
 
-},{"./Item/find":16,"./Item/load":17,"./Item/media":18,"./Item/render":19}],16:[function(require,module,exports){
+},{"./Item/find":15,"./Item/load":16,"./Item/media":17,"./Item/render":18}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1592,7 +1556,7 @@
 
 } ();
 
-},{"syn/components/selectors.json":58}],17:[function(require,module,exports){
+},{"syn/components/selectors.json":57}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1631,7 +1595,7 @@
 
 } ();
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1718,7 +1682,7 @@
 
 } ();
 
-},{"../YouTube":49}],19:[function(require,module,exports){
+},{"../YouTube":48}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1730,7 +1694,7 @@
   var readMore    =   require('../ReadMore');
   var Sign        =   require('../Sign');
 
-  var getPromotionPercentage = require('../../../business/models/Item/get-promotion-percentage');
+  var getPromotionPercentage = require('syn/models/Item/get-promotion-percentage');
 
   var S           =   require('string');
 
@@ -1894,7 +1858,7 @@
 
 } ();
 
-},{"../../../business/models/Item/get-promotion-percentage":1,"../Details":8,"../Nav":25,"../Promote":33,"../ReadMore":41,"../Sign":43,"../Truncate":46,"./view/toggle-arrow":20,"./view/toggle-details":21,"./view/toggle-promote":22,"string":57}],20:[function(require,module,exports){
+},{"../Details":7,"../Nav":24,"../Promote":32,"../ReadMore":40,"../Sign":42,"../Truncate":45,"./view/toggle-arrow":19,"./view/toggle-details":20,"./view/toggle-promote":21,"string":56,"syn/models/Item/get-promotion-percentage":58}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2040,7 +2004,7 @@
 
 } ();
 
-},{"../../Nav":25,"../../Panel":26}],21:[function(require,module,exports){
+},{"../../Nav":24,"../../Panel":25}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2107,7 +2071,7 @@
 
 } ();
 
-},{"../../Nav":25}],22:[function(require,module,exports){
+},{"../../Nav":24}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2199,7 +2163,7 @@
 
 } ();
 
-},{"../../Nav":25,"../../Sign":43}],23:[function(require,module,exports){
+},{"../../Nav":24,"../../Sign":42}],22:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2282,7 +2246,7 @@
 
 } ();
 
-},{"./Form":12}],24:[function(require,module,exports){
+},{"./Form":11}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2364,7 +2328,7 @@
 
 } ();
 
-},{"./Form":12,"./Nav":25}],25:[function(require,module,exports){
+},{"./Form":11,"./Nav":24}],24:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2725,7 +2689,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":54,"domain":51,"events":52}],26:[function(require,module,exports){
+},{"_process":53,"domain":50,"events":51}],25:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2864,7 +2828,7 @@
 
 } ();
 
-},{"./Creator":2,"./Item":15,"./Nav":25,"./Panel/fill":27,"./Panel/load":28,"./Panel/pre-insert-item":29,"./Panel/render":30,"./Panel/to-json":31,"./Sign":43}],27:[function(require,module,exports){
+},{"./Creator":1,"./Item":14,"./Nav":24,"./Panel/fill":26,"./Panel/load":27,"./Panel/pre-insert-item":28,"./Panel/render":29,"./Panel/to-json":30,"./Sign":42}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2925,7 +2889,7 @@
 
 } ();
 
-},{}],28:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2964,7 +2928,7 @@
 
 } ();
 
-},{}],29:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3024,7 +2988,7 @@
 
 } ();
 
-},{"../Item":15}],30:[function(require,module,exports){
+},{"../Item":14}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3071,7 +3035,7 @@
 
 } ();
 
-},{"../Creator":2}],31:[function(require,module,exports){
+},{"../Creator":1}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3101,7 +3065,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3280,7 +3244,7 @@
 
 } ();
 
-},{"./Demographics":7,"./Identity":13,"./Nav":25,"./Public_Persona":40,"./Residence":42,"./Voter":48}],33:[function(require,module,exports){
+},{"./Demographics":6,"./Identity":12,"./Nav":24,"./Public_Persona":39,"./Residence":41,"./Voter":47}],32:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3433,7 +3397,7 @@
 
 } ();
 
-},{"./Edit":9,"./Item":15,"./Nav":25,"./Promote/find":34,"./Promote/finish":35,"./Promote/get":36,"./Promote/render":38,"./Promote/render-item":37,"./Promote/save":39,"events":52}],34:[function(require,module,exports){
+},{"./Edit":8,"./Item":14,"./Nav":24,"./Promote/find":33,"./Promote/finish":34,"./Promote/get":35,"./Promote/render":37,"./Promote/render-item":36,"./Promote/save":38,"events":51}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3484,7 +3448,7 @@
 
 } ();
 
-},{}],35:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3529,7 +3493,7 @@
 
 } ();
 
-},{"../Nav":25}],36:[function(require,module,exports){
+},{"../Nav":24}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3586,7 +3550,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3784,7 +3748,7 @@
 
 } ();
 
-},{"../Edit":9,"../Item":15,"../Nav":25}],38:[function(require,module,exports){
+},{"../Edit":8,"../Item":14,"../Nav":24}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3856,7 +3820,7 @@
 
 } ();
 
-},{"../Nav":25}],39:[function(require,module,exports){
+},{"../Nav":24}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3914,7 +3878,7 @@
 
 } ();
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3978,7 +3942,7 @@
 
 } ();
 
-},{"./Nav":25}],41:[function(require,module,exports){
+},{"./Nav":24}],40:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4145,7 +4109,7 @@
 
 } ();
 
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4251,7 +4215,7 @@
 
 } ();
 
-},{"./Nav":25}],43:[function(require,module,exports){
+},{"./Nav":24}],42:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4434,7 +4398,7 @@
 
 } ();
 
-},{"./Forgot-Password":11,"./Join":23,"./Login":24,"./Nav":25}],44:[function(require,module,exports){
+},{"./Forgot-Password":10,"./Join":22,"./Login":23,"./Nav":24}],43:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4473,7 +4437,7 @@
 
 } ();
 
-},{}],45:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4609,7 +4573,7 @@
 
 } ();
 
-},{"domain":51,"events":52,"util":56}],46:[function(require,module,exports){
+},{"domain":50,"events":51,"util":55}],45:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4832,7 +4796,7 @@
 
 }();
 
-},{"./Nav":25}],47:[function(require,module,exports){
+},{"./Nav":24}],46:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4918,7 +4882,7 @@
 
 } ();
 
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5018,7 +4982,7 @@
 
 } ();
 
-},{"./Nav":25}],49:[function(require,module,exports){
+},{"./Nav":24}],48:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -5137,7 +5101,7 @@
 
 } ();
 
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5157,7 +5121,7 @@
 
 } ();
 
-},{"../Panel":26,"../Profile":32,"../Sign":43,"../Synapp":45}],51:[function(require,module,exports){
+},{"../Panel":25,"../Profile":31,"../Sign":42,"../Synapp":44}],50:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -5225,7 +5189,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":52}],52:[function(require,module,exports){
+},{"events":51}],51:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5528,7 +5492,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],53:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5553,7 +5517,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],54:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5641,14 +5605,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],55:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],56:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6238,7 +6202,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":55,"_process":54,"inherits":53}],57:[function(require,module,exports){
+},{"./support/isBuffer":54,"_process":53,"inherits":52}],56:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -7272,7 +7236,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],58:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports={
   "Panel Container": ".panels",
   
@@ -7304,4 +7268,40 @@ module.exports={
 
   "Promote Left Item Description" :   ".left-item.description"
 }
-},{}]},{},[50]);
+},{}],58:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function Percentage (number) {
+    this.number = number;
+
+    this.ok = typeof number === 'number' && isFinite(number) && number <= 100 && number >= 0;
+  }
+
+  Percentage.prototype.toString = function() {
+    if ( this.ok ) {
+      return this.number.toString() + '%';
+    }
+
+    return '50%';
+  };
+
+  function getPromotionPercentage () {
+
+    var multiplyBy100 = this.promotions * 100;
+
+    if ( multiplyBy100 === 0 ) {
+      return new Percentage(0);
+    }
+
+    var divideByViews = Math.ceil(multiplyBy100 / this.views);
+
+    return new Percentage(divideByViews);
+  }
+
+  module.exports = getPromotionPercentage;
+
+} ();
+
+},{}]},{},[49]);

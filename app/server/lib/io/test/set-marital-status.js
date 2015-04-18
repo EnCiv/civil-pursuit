@@ -8,18 +8,16 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
-
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user;
 
     try {
-      should.Assertion.add('user', src('models/test/User/assert.user'), true);
+      should.Assertion.add('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -28,14 +26,14 @@
     Test.suite('Socket "set marital status"', {
 
       'add a listener': function (done) {
-        client.on('set marital status', src('io/set-marital-status').bind(client));
+        client.on('set marital status',require('syn/io/set-marital-status').bind(client));
 
         done();
       },
 
       'should send "marital status set"': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('marital status set', function (user) {
 
             user.should.be.an.user;
@@ -45,14 +43,14 @@
             done();
           });
 
-          src('models/User')
+          require('syn/models/User')
             .disposable(domain.intercept(function (_user) {
 
               user =  _user;
 
               user.should.be.a.user;
 
-              src('models/Config')
+              require('syn/models/Config')
 
                 .findOne(domain.intercept(function (config) {
                   client.emit('set marital status', user._id, config.married[0]._id);

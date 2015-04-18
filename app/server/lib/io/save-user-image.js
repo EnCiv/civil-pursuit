@@ -2,20 +2,20 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function saveUserImage (user_id, image) {
 
     var socket = this;
 
-    src.domain(
+    require('syn/lib/domain')(
 
       function (error) {
         socket.app.arte.emit('error', error);
       },
 
       function (domain) {
-        src('models/User')
+        require('syn/models/User')
           .saveImage(user_id, image, domain.intercept(function (user) {
             socket.emit('saved user image', user);
           }));

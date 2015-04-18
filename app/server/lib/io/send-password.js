@@ -2,13 +2,13 @@
 
   'use strict';
 
-  var src         =   require(require('path').join(process.cwd(), 'src'));
+  
 
   var config      =   src('config');
 
-  var User        =   src('models/User');
+  var User        =   require('syn/models/User');
 
-  var sendEmail   =   src('lib/send-email');
+  var sendEmail   =   require('syn/lib/send-email');
 
   /**
    *  @function sendPassword

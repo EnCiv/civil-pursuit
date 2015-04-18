@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function getLineage (cb) {
 
@@ -10,7 +10,7 @@
 
     var Item = require('mongoose').model('Item');
     
-    src.domain.nextTick(cb, function getLineageDomain (domain) {
+    require('syn/lib/domain/next-tick')(cb, function getLineageDomain (domain) {
 
       /** @type   [ObjectID] */
 

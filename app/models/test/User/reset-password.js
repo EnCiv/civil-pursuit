@@ -6,13 +6,13 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var User        =   src('models/User');
+    var User        =   require('syn/models/User');
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var key;
 

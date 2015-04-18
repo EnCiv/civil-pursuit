@@ -11,13 +11,13 @@
   function ItemSchema (done) {
     var src       =     require(require('path').join(process.cwd(), 'src'));
 
-    var Test      =     src('lib/Test');
+    var Test      =     require('syn/lib/Test');
 
-    var Item      =     src('models/Item');
+    var Item      =     require('syn/models/Item');
 
     var should    =     require('should');
 
-    var schema    =     src('models/Item/schema');
+    var schema    =     require('syn/models/Item/schema');
 
     Test.suite('Item Model Schema', {
 

@@ -2,18 +2,18 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   require('mongoose').connect(process.env.MONGOHQ_URL);
 
-  src.domain(
+  require('syn/lib/domain')(
     function (error) {
       throw error;
     },
 
     function (domain) {
 
-      src('models/Item').count(domain.intercept(function (limit) {
+      require('syn/models/Item').count(domain.intercept(function (limit) {
 
         var i = 0;
 
@@ -26,7 +26,7 @@
 
         require('async').each(ranges,
           function (skip, cb) {
-            src('models/Item')
+            require('syn/models/Item')
               .find()
               .skip(skip)
               .limit(100)
@@ -59,7 +59,7 @@
                         item.save(domain.intercept(function (item) {
                           error.repair.push('Equalized item');
 
-                          src('models/Error').throwError(error);
+                          require('syn/models/Error').throwError(error);
                         }));
                       }
 

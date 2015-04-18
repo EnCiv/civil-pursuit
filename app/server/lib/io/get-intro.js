@@ -2,9 +2,9 @@
 
   'use strict';
 
-  var src         =   require(require('path').join(process.cwd(), 'src'));
+  
 
-  var Item        =   src('models/Item');
+  var Item        =   require('syn/models/Item');
 
   function getIntro () {
     

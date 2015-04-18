@@ -8,15 +8,15 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     Test.suite('Socket "send password" no such email', {
 
@@ -31,7 +31,7 @@
       },
 
       'add a listener': function (done) {
-        client.on('send password', src('io/send-password').bind(client));
+        client.on('send password',require('syn/io/send-password').bind(client));
 
         done();
       },

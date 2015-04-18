@@ -6,19 +6,19 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var User        =   src('models/User');
-    var Config      =   src('models/Config');
+    var User        =   require('syn/models/User');
+    var Config      =   require('syn/models/Config');
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user_id, race_id;
 
     try {
-      should.Assertion.add('item', src('models/test/User/assert.user'), true);
+      should.Assertion.add('item', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -28,7 +28,7 @@
 
       'should create a disposable user': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           User
 
@@ -45,7 +45,7 @@
 
       'should fetch race': function (done) {
         
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           Config.findOne(domain.intercept(function (config) {
 
@@ -65,7 +65,7 @@
 
       'should add race': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           User.addRace(user_id, race_id, domain.intercept(function (user) {
             
             user.should.be.a.user;
@@ -84,7 +84,7 @@
 
       'should remove race': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           User.removeRace(user_id, race_id, domain.intercept(function (user) {
             
             user.should.be.a.user;

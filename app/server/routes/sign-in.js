@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function signIn (req, res, next) {
 
@@ -14,7 +14,7 @@
     
     domain.run(function () {
 
-      var User = src('models/User');
+      var User = require('syn/models/User');
 
       User.identify(req.body.email, req.body.password, domain.bind(function (error, user) {
         if ( error ) {

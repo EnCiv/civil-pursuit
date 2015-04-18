@@ -6,9 +6,7 @@
 
   var Schema      =   mongoose.Schema;
 
-  var src         =   require(require('path').join(process.cwd(), 'src'));
-
-  var config      =   src('config');
+  var config      =   require('syn/config');
 
   module.exports = {
 

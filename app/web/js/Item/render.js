@@ -9,7 +9,7 @@
   var readMore    =   require('../ReadMore');
   var Sign        =   require('../Sign');
 
-  var getPromotionPercentage = require('../../../business/models/Item/get-promotion-percentage');
+  var getPromotionPercentage = require('syn/models/Item/get-promotion-percentage');
 
   var S           =   require('string');
 

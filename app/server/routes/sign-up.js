@@ -2,13 +2,13 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function signUp (req, res, next) {
 
-    src.domain(next, function (domain) {
+    require('syn/lib/domain')(next, function (domain) {
 
-      src('models/User')
+      require('syn/models/User')
 
         .create({
           email       :   req.body.email,

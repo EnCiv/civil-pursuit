@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function getItems (panel, item) {
 
@@ -24,7 +24,7 @@
 
       console.log('<<"get items"', panel, item);
 
-      src('models/Item')
+      require('syn/models/Item')
         .find   (query)
         .skip   (panel.skip)
         .limit  (panel.size)
@@ -61,7 +61,7 @@
         }));
     }
 
-    src.domain(onDomainError, run);
+    require('syn/lib/domain')(onDomainError, run);
 
   }
 

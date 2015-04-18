@@ -2,13 +2,13 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function changeUserName (user_id, name) {
 
     var socket = this;
 
-    src.domain.nextTick(
+    require('syn/lib/domain/next-tick')(
 
       function (error) {
 
@@ -18,7 +18,7 @@
 
       function (domain) {
 
-        src('models/User').update({ _id: user_id }, name,
+        require('syn/models/User').update({ _id: user_id }, name,
           domain.intercept(function (user) {
             socket.emit('user name changed', user);  
           }));

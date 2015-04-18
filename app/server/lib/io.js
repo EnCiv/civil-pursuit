@@ -4,7 +4,7 @@
 
   var online_users = 0;
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   var config = src('config');
 
@@ -75,127 +75,127 @@
 
           /** happens when User identifies herself to a new race */
 
-          .on('add race',               src('io/add-race').bind(socket))
+          .on('add race',              require('syn/io/add-race').bind(socket))
 
           /** increment item views by 1 */
 
-          .on('add view',               src('io/add-view').bind(socket))
+          .on('add view',              require('syn/io/add-view').bind(socket))
 
           /** create item */
 
-          .on('create item',            src('io/create-item').bind(socket))
+          .on('create item',           require('syn/io/create-item').bind(socket))
 
           /** change user name */
 
-          .on('change user name',       src('io/change-user-name').bind(socket))
+          .on('change user name',      require('syn/io/change-user-name').bind(socket))
 
           /** Edit and go again */
 
-          .on('edit and go again',      src('io/edit-and-go-again').bind(socket))
+          .on('edit and go again',     require('syn/io/edit-and-go-again').bind(socket))
 
           /** get countries */
 
-          .on('get countries',          src('io/get-countries').bind(socket))
+          .on('get countries',         require('syn/io/get-countries').bind(socket))
 
           /** Get evaluation */
 
-          .on('get evaluation',         src('io/get-evaluation').bind(socket))
+          .on('get evaluation',        require('syn/io/get-evaluation').bind(socket))
 
           /** get intro */
 
-          .on('get intro',              src('io/get-intro').bind(socket))
+          .on('get intro',             require('syn/io/get-intro').bind(socket))
 
           /** Get Item by id */
 
-          .on('get item by id',         src('io/get-item-by-id').bind(socket))
+          .on('get item by id',        require('syn/io/get-item-by-id').bind(socket))
 
           /** Get item's details */
 
-          .on('get item details',       src('io/get-item-details').bind(socket))
+          .on('get item details',      require('syn/io/get-item-details').bind(socket))
 
           /** Get items */
 
-          .on('get items',              src('io/get-items').bind(socket))
+          .on('get items',             require('syn/io/get-items').bind(socket))
 
           /** Get models */
 
-          .on('get models',             src('io/get-models').bind(socket))
+          .on('get models',            require('syn/io/get-models').bind(socket))
 
           /** Get URL title*/
 
-          .on('get url title',          src('io/get-url-title').bind(socket))
+          .on('get url title',         require('syn/io/get-url-title').bind(socket))
 
           /** get user info */
 
-          .on('get user info',          src('io/get-user-info').bind(socket))
+          .on('get user info',         require('syn/io/get-user-info').bind(socket))
 
           /** INSERT FEEDback */
 
-          .on('insert feedback',        src('io/insert-feedback').bind(socket))
+          .on('insert feedback',       require('syn/io/insert-feedback').bind(socket))
 
           /** insert votes*/
 
-          .on('insert votes',           src('io/insert-votes').bind(socket))
+          .on('insert votes',          require('syn/io/insert-votes').bind(socket))
 
           /** increment item promotions by 1 */
 
-          .on('promote',                src('io/promote').bind(socket))
+          .on('promote',               require('syn/io/promote').bind(socket))
 
           /** happens when User unselect a race */
 
-          .on('remove race',            src('io/remove-race').bind(socket))
+          .on('remove race',           require('syn/io/remove-race').bind(socket))
 
           /** reset password */
 
-          .on('reset password',         src('io/reset-password').bind(socket))
+          .on('reset password',        require('syn/io/reset-password').bind(socket))
 
           /** create and send a password reset email */
 
-          .on('send password',          src('io/send-password').bind(socket))
+          .on('send password',         require('syn/io/send-password').bind(socket))
 
           /** set birthdate */
 
-          .on('set birthdate',          src('io/set-birthdate').bind(socket))
+          .on('set birthdate',         require('syn/io/set-birthdate').bind(socket))
 
           /** set citizenship */
 
-          .on('set citizenship',        src('io/set-citizenship').bind(socket))
+          .on('set citizenship',       require('syn/io/set-citizenship').bind(socket))
 
           /** set education */
 
-          .on('set education',          src('io/set-education').bind(socket))
+          .on('set education',         require('syn/io/set-education').bind(socket))
 
           /** set employment */
 
-          .on('set employment',         src('io/set-employment').bind(socket))
+          .on('set employment',        require('syn/io/set-employment').bind(socket))
 
           /** set gender */
 
-          .on('set gender',             src('io/set-gender').bind(socket))
+          .on('set gender',            require('syn/io/set-gender').bind(socket))
 
           /** set party */
 
-          .on('set party',              src('io/set-party').bind(socket))
+          .on('set party',             require('syn/io/set-party').bind(socket))
 
           /** set registered voter */
 
-          .on('set registered voter',   src('io/set-registered-voter').bind(socket))
+          .on('set registered voter',  require('syn/io/set-registered-voter').bind(socket))
 
           /** set marital status */
 
-          .on('set marital status',     src('io/set-marital-status').bind(socket))
+          .on('set marital status',    require('syn/io/set-marital-status').bind(socket))
 
           /** Save user image */
 
-          .on('save user image',        src('io/save-user-image').bind(socket))
+          .on('save user image',       require('syn/io/save-user-image').bind(socket))
 
           /** Sign in */
 
-          .on('sign in',                src('io/sign-in').bind(socket))
+          .on('sign in',               require('syn/io/sign-in').bind(socket))
 
           /** Validate GPS */
 
-          .on('validate gps',           src('io/validate-gps').bind(socket))
+          .on('validate gps',          require('syn/io/validate-gps').bind(socket))
 
         ;
 

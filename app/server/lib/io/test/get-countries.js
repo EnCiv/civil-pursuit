@@ -8,16 +8,16 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     try {
-      should.Assertion.add('country', src('models/test/Country/assert'), true);
+      should.Assertion.add('country', require('syn/models/test/Country/assert'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -26,14 +26,14 @@
     Test.suite('Socket "get countries"', {
 
       'add a listener': function (done) {
-        client.on('get countries', src('io/get-countries').bind(client));
+        client.on('get countries',require('syn/io/get-countries').bind(client));
 
         done();
       },
 
       'should send "got countries"': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('got countries', function (countries) {
 
             countries.should.be.an.Array;

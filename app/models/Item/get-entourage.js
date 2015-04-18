@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function getEntourage (cb) {
 
@@ -12,7 +12,7 @@
 
     var toObjects = [];
     
-    src.domain.nextTick(cb, function (domain) {
+    require('syn/lib/domain/next-tick')(cb, function (domain) {
 
       Item
 

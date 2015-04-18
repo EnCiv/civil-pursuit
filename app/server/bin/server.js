@@ -7,9 +7,9 @@
 
   require('mongoose').connect(process.env.MONGOHQ_URL);
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
-  src('models/Config')
+  require('syn/models/Config')
     .findOne()
     .lean()
     .exec(function (error, config) {
@@ -128,7 +128,7 @@
         });
 
         passport.deserializeUser(function(id, done) {
-          src('models/User').findById(id, done);
+          require('syn/models/User').findById(id, done);
         });
 
       } ();
@@ -162,7 +162,7 @@
 
           .use(function initPipeLine (req, res, next) {
 
-            src.domain(next, function (domain) {
+            require('syn/lib/domain')(next, function (domain) {
               req.user            =   req.cookies.synuser;
 
               if ( typeof req.user === 'string' ) {
@@ -185,7 +185,7 @@
               app.arte.emit('request', req);
 
               // Forcing item
-              src('models/Item');
+              require('syn/models/Item');
 
               
 
@@ -300,7 +300,7 @@
 
         server.listen(app.get('port'), function () {
           console.log("Server is listening on port: " + app.get('port'));
-          src('io')(app, server);
+         require('syn/io')(app, server);
         });
 
       } ();

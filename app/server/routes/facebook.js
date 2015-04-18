@@ -2,8 +2,6 @@ module.exports = (function () {
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
-
   /**  Facebook
    *
    *  @function
@@ -20,7 +18,7 @@ module.exports = (function () {
 
     var callback_url = synapp.facebook['callback url'];
 
-    var User = src('models/User');
+    var User = require('syn/models/User');
 
     var synappUser;
     

@@ -8,20 +8,20 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var country_id;
 
     var user;
 
     try {
-      should.Assertion.add('user', src('models/test/User/assert.user'), true);
+      should.Assertion.add('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -30,15 +30,15 @@
     Test.suite('Socket "remove citizenship"', {
 
       'add a listener': function (done) {
-        client.on('remove citizenship', src('io/remove-citizenship').bind(client));
-        client.on('add citizenship', src('io/add-citizenship').bind(client));
+        client.on('remove citizenship',require('syn/io/remove-citizenship').bind(client));
+        client.on('add citizenship',require('syn/io/add-citizenship').bind(client));
 
         done();
       },
 
       'adding a citizenship': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('citizenship added', function (user) {
 
             user.should.be.a.user;
@@ -46,14 +46,14 @@
             done();
           });
 
-          src('models/User')
+          require('syn/models/User')
             .disposable(domain.intercept(function (_user) {
 
               user = _user;
 
               user.should.be.a.user;
 
-              src('models/Country')
+              require('syn/models/Country')
 
                 .findOne(domain.intercept(function (country) {
                   country_id = country._id;
@@ -68,7 +68,7 @@
 
       'remove that citizenship': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('citizenship removed', function (user) {
 
             user.should.be.a.user;

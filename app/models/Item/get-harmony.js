@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function mean (a, b) {
     var sum = a + b;

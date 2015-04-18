@@ -2,16 +2,16 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function getBatch (item_id, cb) {
     var self = this;
 
     var Item = require('mongoose').model('Item');
 
-    src.domain.nextTick(cb, function (domain) {
+    require('syn/lib/domain/next-tick')(cb, function (domain) {
 
-      src('models/Item')
+      require('syn/models/Item')
 
         .findById(item_id)
 

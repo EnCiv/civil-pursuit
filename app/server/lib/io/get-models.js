@@ -2,9 +2,9 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
-  var Model = src('lib/Model');
+  var Model = require('syn/lib/Model');
 
   function getModels () {
 
@@ -20,7 +20,7 @@
       }));
     }
 
-    src.domain(onDomainError, run);
+    require('syn/lib/domain')(onDomainError, run);
 
   }
 

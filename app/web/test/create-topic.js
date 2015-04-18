@@ -2,8 +2,6 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
-
   var domain = require('domain').create();
   
   domain.on('error', function (error) {
@@ -70,7 +68,7 @@
       console.log('  ✔ Is visible: '.green + selector);
     }
 
-    src('models/User').disposable(domain.intercept(function (user) {
+    require('syn/models/User').disposable(domain.intercept(function (user) {
 
       console.log();
       console.log(('  #1 - When I, as a ' + 'signed-in user'.bold + ', click on ' + 'Toggle Creator'.bold + ', ' + 'Creator Panel'.bold + ' should appear').bgBlue);

@@ -8,18 +8,16 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
-
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user;
 
     try {
-      should.Assertion.add('user', src('models/test/User/assert.user'), true);
+      should.Assertion.add('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -32,14 +30,14 @@
     Test.suite('Socket "set party"', {
 
       'add a listener': function (done) {
-        client.on('set party', src('io/set-party').bind(client));
+        client.on('set party',require('syn/io/set-party').bind(client));
 
         done();
       },
 
       'should send "party set"': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('party set', function (user_id) {
 
             user_id.toString().should.be.exactly(user._id.toString());
@@ -49,14 +47,14 @@
             done();
           });
 
-          src('models/User')
+          require('syn/models/User')
             .disposable(domain.intercept(function (_user) {
 
               user =  _user;
 
               user.should.be.a.user;
 
-              src('models/Config')
+              require('syn/models/Config')
 
                 .findOne(domain.intercept(function (config) {
                   client.emit('set party', user._id, config.party[Math.round(getRandom(0, config.party.length - 1))]._id);

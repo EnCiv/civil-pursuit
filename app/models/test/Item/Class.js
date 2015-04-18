@@ -5,11 +5,11 @@
   var should = require('should');
 
   module.exports = function testModelUser (done) {
-    var src = require(require('path').join(process.cwd(), 'src'));
+    
 
-    var Test = src('lib/Test');
+    var Test = require('syn/lib/Test');
 
-    var Item = src('models/Item');
+    var Item = require('syn/models/Item');
 
     Test.suite('Model Item Class', {
 

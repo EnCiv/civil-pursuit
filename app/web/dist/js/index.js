@@ -1,40 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function Percentage (number) {
-    this.number = number;
-
-    this.ok = typeof number === 'number' && isFinite(number) && number <= 100 && number >= 0;
-  }
-
-  Percentage.prototype.toString = function() {
-    if ( this.ok ) {
-      return this.number.toString() + '%';
-    }
-
-    return '50%';
-  };
-
-  function getPromotionPercentage () {
-
-    var multiplyBy100 = this.promotions * 100;
-
-    if ( multiplyBy100 === 0 ) {
-      return new Percentage(0);
-    }
-
-    var divideByViews = Math.ceil(multiplyBy100 / this.views);
-
-    return new Percentage(divideByViews);
-  }
-
-  module.exports = getPromotionPercentage;
-
-} ();
-
-},{}],2:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -111,7 +75,7 @@
 
 } ();
 
-},{"./Creator/create":3,"./Creator/created":4,"./Creator/pack-item":5,"./Creator/render":6,"./Panel":24}],3:[function(require,module,exports){
+},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":23}],2:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -197,7 +161,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":13,"../Nav":23,"../Stream":39,"_process":48}],4:[function(require,module,exports){
+},{"../Item":12,"../Nav":22,"../Stream":38,"_process":47}],3:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -232,7 +196,7 @@
 
 } ();
 
-},{"../Item":13}],5:[function(require,module,exports){
+},{"../Item":12}],4:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -293,7 +257,7 @@
 
 } ();
           synapp.user
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -370,7 +334,7 @@
 
 } ();
 
-},{"../Form":11,"../Upload":42,"../YouTube":43}],7:[function(require,module,exports){
+},{"../Form":10,"../Upload":41,"../YouTube":42}],6:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -634,7 +598,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":13,"./Nav":23}],8:[function(require,module,exports){
+},{"./Edit":7,"./Item":12,"./Nav":22}],7:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -785,7 +749,7 @@
 
 } ();
 
-},{"./Creator":2,"./Edit/save":9,"./Form":11,"./Item":13,"./Nav":23}],9:[function(require,module,exports){
+},{"./Creator":1,"./Edit/save":8,"./Form":10,"./Item":12,"./Nav":22}],8:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -843,7 +807,7 @@
 
 } ();
 
-},{"../Item":13,"../Nav":23}],10:[function(require,module,exports){
+},{"../Item":12,"../Nav":22}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -909,7 +873,7 @@
 
 } ();
 
-},{"./Form":11,"domain":45}],11:[function(require,module,exports){
+},{"./Form":10,"domain":44}],10:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -998,7 +962,7 @@
 
 } ();
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1059,7 +1023,7 @@
 
 } ();
 
-},{"./Item":13,"./ReadMore":37,"./Truncate":41}],13:[function(require,module,exports){
+},{"./Item":12,"./ReadMore":36,"./Truncate":40}],12:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1118,7 +1082,7 @@
 
 } ();
 
-},{"./Item/find":14,"./Item/load":15,"./Item/media":16,"./Item/render":17}],14:[function(require,module,exports){
+},{"./Item/find":13,"./Item/load":14,"./Item/media":15,"./Item/render":16}],13:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1177,7 +1141,7 @@
 
 } ();
 
-},{"syn/components/selectors.json":52}],15:[function(require,module,exports){
+},{"syn/components/selectors.json":51}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1216,7 +1180,7 @@
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1303,7 +1267,7 @@
 
 } ();
 
-},{"../YouTube":43}],17:[function(require,module,exports){
+},{"../YouTube":42}],16:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1315,7 +1279,7 @@
   var readMore    =   require('../ReadMore');
   var Sign        =   require('../Sign');
 
-  var getPromotionPercentage = require('../../../business/models/Item/get-promotion-percentage');
+  var getPromotionPercentage = require('syn/models/Item/get-promotion-percentage');
 
   var S           =   require('string');
 
@@ -1479,7 +1443,7 @@
 
 } ();
 
-},{"../../../business/models/Item/get-promotion-percentage":1,"../Details":7,"../Nav":23,"../Promote":30,"../ReadMore":37,"../Sign":38,"../Truncate":41,"./view/toggle-arrow":18,"./view/toggle-details":19,"./view/toggle-promote":20,"string":51}],18:[function(require,module,exports){
+},{"../Details":6,"../Nav":22,"../Promote":29,"../ReadMore":36,"../Sign":37,"../Truncate":40,"./view/toggle-arrow":17,"./view/toggle-details":18,"./view/toggle-promote":19,"string":50,"syn/models/Item/get-promotion-percentage":52}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1625,7 +1589,7 @@
 
 } ();
 
-},{"../../Nav":23,"../../Panel":24}],19:[function(require,module,exports){
+},{"../../Nav":22,"../../Panel":23}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1692,7 +1656,7 @@
 
 } ();
 
-},{"../../Nav":23}],20:[function(require,module,exports){
+},{"../../Nav":22}],19:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1784,7 +1748,7 @@
 
 } ();
 
-},{"../../Nav":23,"../../Sign":38}],21:[function(require,module,exports){
+},{"../../Nav":22,"../../Sign":37}],20:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1867,7 +1831,7 @@
 
 } ();
 
-},{"./Form":11}],22:[function(require,module,exports){
+},{"./Form":10}],21:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1949,7 +1913,7 @@
 
 } ();
 
-},{"./Form":11,"./Nav":23}],23:[function(require,module,exports){
+},{"./Form":10,"./Nav":22}],22:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2310,7 +2274,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":48,"domain":45,"events":46}],24:[function(require,module,exports){
+},{"_process":47,"domain":44,"events":45}],23:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2449,7 +2413,7 @@
 
 } ();
 
-},{"./Creator":2,"./Item":13,"./Nav":23,"./Panel/fill":25,"./Panel/load":26,"./Panel/pre-insert-item":27,"./Panel/render":28,"./Panel/to-json":29,"./Sign":38}],25:[function(require,module,exports){
+},{"./Creator":1,"./Item":12,"./Nav":22,"./Panel/fill":24,"./Panel/load":25,"./Panel/pre-insert-item":26,"./Panel/render":27,"./Panel/to-json":28,"./Sign":37}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2510,7 +2474,7 @@
 
 } ();
 
-},{}],26:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2549,7 +2513,7 @@
 
 } ();
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2609,7 +2573,7 @@
 
 } ();
 
-},{"../Item":13}],28:[function(require,module,exports){
+},{"../Item":12}],27:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2656,7 +2620,7 @@
 
 } ();
 
-},{"../Creator":2}],29:[function(require,module,exports){
+},{"../Creator":1}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2686,7 +2650,7 @@
 
 } ();
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2839,7 +2803,7 @@
 
 } ();
 
-},{"./Edit":8,"./Item":13,"./Nav":23,"./Promote/find":31,"./Promote/finish":32,"./Promote/get":33,"./Promote/render":35,"./Promote/render-item":34,"./Promote/save":36,"events":46}],31:[function(require,module,exports){
+},{"./Edit":7,"./Item":12,"./Nav":22,"./Promote/find":30,"./Promote/finish":31,"./Promote/get":32,"./Promote/render":34,"./Promote/render-item":33,"./Promote/save":35,"events":45}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2890,7 +2854,7 @@
 
 } ();
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2935,7 +2899,7 @@
 
 } ();
 
-},{"../Nav":23}],33:[function(require,module,exports){
+},{"../Nav":22}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2992,7 +2956,7 @@
 
 } ();
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3190,7 +3154,7 @@
 
 } ();
 
-},{"../Edit":8,"../Item":13,"../Nav":23}],35:[function(require,module,exports){
+},{"../Edit":7,"../Item":12,"../Nav":22}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3262,7 +3226,7 @@
 
 } ();
 
-},{"../Nav":23}],36:[function(require,module,exports){
+},{"../Nav":22}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3320,7 +3284,7 @@
 
 } ();
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3487,7 +3451,7 @@
 
 } ();
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3670,7 +3634,7 @@
 
 } ();
 
-},{"./Forgot-Password":10,"./Join":21,"./Login":22,"./Nav":23}],39:[function(require,module,exports){
+},{"./Forgot-Password":9,"./Join":20,"./Login":21,"./Nav":22}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3709,7 +3673,7 @@
 
 } ();
 
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3845,7 +3809,7 @@
 
 } ();
 
-},{"domain":45,"events":46,"util":50}],41:[function(require,module,exports){
+},{"domain":44,"events":45,"util":49}],40:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4068,7 +4032,7 @@
 
 }();
 
-},{"./Nav":23}],42:[function(require,module,exports){
+},{"./Nav":22}],41:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4154,7 +4118,7 @@
 
 } ();
 
-},{}],43:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4273,7 +4237,7 @@
 
 } ();
 
-},{}],44:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4366,7 +4330,7 @@
 
 } ();
 
-},{"../Intro":12,"../Item":13,"../Panel":24,"../Sign":38,"../Synapp":40}],45:[function(require,module,exports){
+},{"../Intro":11,"../Item":12,"../Panel":23,"../Sign":37,"../Synapp":39}],44:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -4434,7 +4398,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":46}],46:[function(require,module,exports){
+},{"events":45}],45:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4737,7 +4701,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4762,7 +4726,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],48:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4850,14 +4814,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],50:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5447,7 +5411,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":49,"_process":48,"inherits":47}],51:[function(require,module,exports){
+},{"./support/isBuffer":48,"_process":47,"inherits":46}],50:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6481,7 +6445,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],52:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports={
   "Panel Container": ".panels",
   
@@ -6513,4 +6477,40 @@ module.exports={
 
   "Promote Left Item Description" :   ".left-item.description"
 }
-},{}]},{},[44]);
+},{}],52:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function Percentage (number) {
+    this.number = number;
+
+    this.ok = typeof number === 'number' && isFinite(number) && number <= 100 && number >= 0;
+  }
+
+  Percentage.prototype.toString = function() {
+    if ( this.ok ) {
+      return this.number.toString() + '%';
+    }
+
+    return '50%';
+  };
+
+  function getPromotionPercentage () {
+
+    var multiplyBy100 = this.promotions * 100;
+
+    if ( multiplyBy100 === 0 ) {
+      return new Percentage(0);
+    }
+
+    var divideByViews = Math.ceil(multiplyBy100 / this.views);
+
+    return new Percentage(divideByViews);
+  }
+
+  module.exports = getPromotionPercentage;
+
+} ();
+
+},{}]},{},[43]);

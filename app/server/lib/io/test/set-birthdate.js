@@ -8,13 +8,13 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user;
 
@@ -25,7 +25,7 @@
     var birthdate = randomDate(new Date(1950, 0, 9), new Date());
 
     try {
-      should.Assertion.set('user', src('models/test/User/assert.user'), true);
+      should.Assertion.set('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -34,14 +34,14 @@
     Test.suite('Socket "set birthdate"', {
 
       'add a listener': function (done) {
-        client.on('set birthdate', src('io/set-birthdate').bind(client));
+        client.on('set birthdate',require('syn/io/set-birthdate').bind(client));
 
         done();
       },
 
       'should send "birthdate set"': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('birthdate set', function (user_id) {
 
             user_id.should.be.an.Object;
@@ -51,7 +51,7 @@
             done();
           });
 
-          src('models/User')
+          require('syn/models/User')
             .disposable(domain.intercept(function (_user) {
 
               user =  _user;

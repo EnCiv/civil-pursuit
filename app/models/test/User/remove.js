@@ -3,11 +3,11 @@
   'use strict';
 
   module.exports = function (done) {
-    var src = require(require('path').join(process.cwd(), 'src'));
+    
 
-    var Test = src('lib/Test');
+    var Test = require('syn/lib/Test');
 
-    var User = src('models/User');
+    var User = require('syn/models/User');
 
     var user;
 

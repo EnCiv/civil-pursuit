@@ -4,13 +4,13 @@
 
   var src     =   require(require('path').join(process.cwd(), 'src'));
 
-  var Test    =   src('lib/Test');
+  var Test    =   require('syn/lib/Test');
 
-  var Item    =   src('models/Item');
+  var Item    =   require('syn/models/Item');
 
   var should  =   require('should');
 
-  should.Assertion.add('evaluation', src('models/test/Item/assert.evaluation'), true);
+  should.Assertion.add('evaluation', require('syn/models/test/Item/assert.evaluation'), true);
 
   function testEvaluation (item, done) {
 

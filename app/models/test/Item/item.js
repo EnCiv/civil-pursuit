@@ -4,9 +4,9 @@
 
   var src     =   require(require('path').join(process.cwd(), 'src'));
 
-  var Test    =   src('lib/Test');
+  var Test    =   require('syn/lib/Test');
 
-  var Item    =   src('models/Item');
+  var Item    =   require('syn/models/Item');
 
   var should  =   require('should');
 

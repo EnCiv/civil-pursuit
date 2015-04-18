@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   var config = src('config');
 

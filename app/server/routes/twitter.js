@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   function twitterMiddlewares (synapp, passport) {
 
@@ -14,7 +14,7 @@
 
     var synappUser;
 
-    var User = src('models/User');
+    var User = require('syn/models/User');
 
     /**  Define strategy
      *

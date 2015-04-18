@@ -8,18 +8,18 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var client      =   src('io/test/socket').client;
+    var client      =  require('syn/io/test/socket').client;
 
     client.on('error', done);
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user;
 
     try {
-      should.Assertion.add('user', src('models/test/User/assert.user'), true);
+      should.Assertion.add('user', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -28,14 +28,14 @@
     Test.suite('Socket "add race"', {
 
       'add a listener': function (done) {
-        client.on('add race', src('io/add-race').bind(client));
+        client.on('add race',require('syn/io/add-race').bind(client));
 
         done();
       },
 
       'should send "race added"': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           client.on('race added', function (item) {
 
             item.should.be.an.item;
@@ -45,14 +45,14 @@
             done();
           });
 
-          src('models/User')
+          require('syn/models/User')
             .disposable(domain.intercept(function (_user) {
 
               user =  _user;
 
               user.should.be.a.user;
 
-              src('models/Config')
+              require('syn/models/Config')
 
                 .findOne(domain.intercept(function (config) {
                   client.emit('add race', user._id, config.race[0]._id);

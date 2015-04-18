@@ -6,7 +6,7 @@
 
     var socket = this;
 
-    var src = require(require('path').join(process.cwd(), 'src'));
+    
 
     var domain = require('domain').create();
     
@@ -15,7 +15,7 @@
     });
     
     domain.run(function () {
-      src('models/Item')
+      require('syn/models/Item')
         .incrementPromotion(item_id, domain.intercept(function (item) {
           socket.emit('promoted', item);  
         }));

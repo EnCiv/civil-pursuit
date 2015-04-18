@@ -4,9 +4,7 @@
 
   var should = require('should');
 
-  var src = require(require('path').join(process.cwd(), 'src'));
-
-  var Test = src('lib/Test');
+  var Test = require('syn/lib/Test');
 
   module.exports = function mockSocket (done) {
 

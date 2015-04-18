@@ -6,20 +6,20 @@
 
     var should      =   require('should');
 
-    var src         =   require(require('path').join(process.cwd(), 'src'));
+    
 
-    var User        =   src('models/User');
+    var User        =   require('syn/models/User');
 
-    var Config      =   src('models/Config');
+    var Config      =   require('syn/models/Config');
 
     var test        =   this;
 
-    var Test        =   src('lib/Test');
+    var Test        =   require('syn/lib/Test');
 
     var user_id, race_id;
 
     try {
-      should.Assertion.add('item', src('models/test/User/assert.user'), true);
+      should.Assertion.add('item', require('syn/models/test/User/assert.user'), true);
     }
     catch ( error ) {
       // Assertion item already loaded
@@ -33,7 +33,7 @@
 
       'should fetch user': function (done) {
 
-        src.domain(done, fetchUser);
+        require('syn/lib/domain')(done, fetchUser);
 
         function fetchUser (domain) {
           User.disposable(domain.intercept(function (user, dispose) {
@@ -46,7 +46,7 @@
 
       'should fetch race': function (done) {
         
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
 
           Config.findOne(domain.intercept(function (config) {
 
@@ -66,7 +66,7 @@
 
       'should add race': function (done) {
 
-        src.domain(done, function (domain) {
+        require('syn/lib/domain')(done, function (domain) {
           User.addRace(user_id, race_id, domain.intercept(function (user) {
             
             user.should.be.a.user;
@@ -85,7 +85,7 @@
 
       'should throw on adding same race again': function (done) {
 
-        src.domain.nextTick(done, function (domain) {
+        require('syn/lib/domain/next-tick')(done, function (domain) {
           User.addRace(user_id, race_id, domain.bind(function (error, user) {
             error.should.be.an.Error;
 

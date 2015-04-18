@@ -2,9 +2,9 @@
 
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
-  var User = src('models/User');
+  var User = require('syn/models/User');
 
   /**
    *  @arg {ObjectID} user_id - User ID
@@ -13,7 +13,7 @@
   function getUserInfo (user_id) {
     var socket = this;
 
-    src.domain(
+    require('syn/lib/domain')(
       function (error) {
         socket.emit('error', error);
       },

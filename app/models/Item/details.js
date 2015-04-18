@@ -2,12 +2,10 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
-
   function getItemDetails (id, cb) {
     var self = this;
 
-    src.domain.nextTick(cb, function getItemDetailsDomain (domain) {
+    require('syn/lib/domain/next-tick')(cb, function getItemDetailsDomain (domain) {
 
       require('async').parallel({
           votes: function getVotes (then) {

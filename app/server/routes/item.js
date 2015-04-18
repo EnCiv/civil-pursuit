@@ -2,17 +2,15 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
-
   function getItemPage (req, res, next) {
 
     if ( 'youtube' in res.locals ) {
       delete res.locals.youtube;
     }
 
-    src.domain(next, function getItemPageDomain (domain) {
+    require('syn/lib/domain')(next, function getItemPageDomain (domain) {
 
-      src('models/Item')
+      require('syn/models/Item')
 
         .getBatch(req.params.item_id, domain.intercept(function onGetBatch (batch) {
 

@@ -4,7 +4,7 @@
   
   'use strict';
 
-  var src = require(require('path').join(process.cwd(), 'src'));
+  
 
   require('mongoose').connect(process.env.MONGOHQ_URL);
 
@@ -25,7 +25,7 @@
 
                 var _id = process.argv[5];
 
-                src('models/Item').findById(_id, function (error, item) {
+                require('syn/models/Item').findById(_id, function (error, item) {
                   if ( error ) {
                     throw error;
                   }
@@ -39,7 +39,7 @@
 
                 var item = process.argv[5];
 
-                src('models/Item').evaluate(item, function (error, evaluation) {
+                require('syn/models/Item').evaluate(item, function (error, evaluation) {
                   if ( error ) {
                     throw error;
                   }
