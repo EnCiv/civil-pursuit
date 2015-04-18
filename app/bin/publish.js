@@ -40,7 +40,7 @@
     // { name: [test, 'web/item-image-display'].join(' ') },
 
     { name: [test, 'web/driver/create-topic'].join(' ') },
-    // { name: [test, 'selenium/promote'].join(' ') },
+    { name: [test, 'web/driver/promote'].join(' ') },
 
     // { name: 'git push heroku master' }
   ];
