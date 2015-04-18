@@ -41,6 +41,15 @@
 
         self.client = webdriverio.remote(options).init();
 
+        /** View port */
+
+        if ( self.view.width || self.view.height ) {
+          self.client.setViewportSize({
+            width   :   self.view.width,
+            height  :   self.view.height
+          })
+        }
+
         self.client.url(self.address, domain.intercept(function () {
           console.log('  ✔ Url:'.green, self.address);
         }));
@@ -154,8 +163,9 @@
     });
   };
 
-  I.prototype.visit = function(address) {
+  I.prototype.visit = function(address, view) {
     this.address = address;
+    this.view = view || {};
     return this;
   };
 

@@ -7294,6 +7294,14 @@ module.exports={
   
   "Item Subject"      :     " > .item-text .item-subject a",
 
-  "Item Description"  :     " > .item-text .item-description"
+  "Item Description"  :     " > .item-text .item-description",
+
+  "Promote"           :     ".promote",
+
+  "Item Promote"      :     " > .item-collapsers > .promote",
+
+  "Promote Left Item Subject" :   ".left-item.subject h4",
+
+  "Promote Left Item Description" :   ".left-item.description"
 }
 },{}]},{},[50]);

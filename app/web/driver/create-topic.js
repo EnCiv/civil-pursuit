@@ -56,7 +56,18 @@
 
         var NewItemDescription      =   NewItem + ' ' + require('syn/components/item-description')();
 
-        When.I(user).visit(page).then(function (I, done) {
+        var NewEvaluation       =   NewItem + ' ' + require('syn/components/promote')();
+
+        var LeftItemSubject     =   NewItem + ' ' + require('syn/components/promote-left-item-subject')({ split: false });
+
+        var LeftItemDescription =   NewItem + ' ' + require('syn/components/promote-left-item-description')({ split: false });
+
+        var view = {
+          width: 601,
+          height: 900
+        };
+
+        When.I(user).visit(page, view).then(function (I, done) {
 
           /** Toggle Creator */
 
@@ -118,11 +129,11 @@
 
           I.see     (NewEvaluation);
 
-          I.see     (LeftItem);
-
           I.read    (subject, LeftItemSubject);
 
           I.read    (description, LeftItemDescription);
+
+          I.wait    (5, 'seconds');
 
           done(function () {
             console.log('TEST DONE!');
