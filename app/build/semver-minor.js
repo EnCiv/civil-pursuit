@@ -3,7 +3,7 @@
   'use strict';
 
   var path              =   require('path');
-  var packageJSON       =   require('../../../package.json');
+  var packageJSON       =   require('syn/package.json');
   
   exports.task          =   function semverMinor (cb) {
 

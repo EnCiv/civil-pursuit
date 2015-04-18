@@ -3,7 +3,7 @@
   'use strict';
 
   var gulp          =   require('gulp');
-  var buildersDir   =   './app/business/build';
+  var buildersDir   =   './app/build';
 
   var tasks         =   [
     'browserify-home',

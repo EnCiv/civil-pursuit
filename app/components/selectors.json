@@ -1,0 +1,23 @@
+{
+  "Panel Container": ".panels",
+  
+  "Panel": ".panel",
+  
+  "Panel Creator Toggle": ".toggle-creator",
+  
+  "Creator": ".creator",
+  
+  "Creator Submit": ".button-create",
+  
+  "Creator Subject": "[name=\"subject\"]",
+  
+  "Creator Description": "[name=\"description\"]",
+  
+  "Input Error": ".error",
+  
+  "New Item": ".new.item",
+  
+  "Item Subject"      :     " > .item-text .item-subject a",
+
+  "Item Description"  :     " > .item-text .item-description"
+}

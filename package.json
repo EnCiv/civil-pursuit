@@ -7,7 +7,7 @@
     "test": "node test/",
     "start": "app/server/bin/server.js",
     "postinstall": "cd app/web/dist && ../../../node_modules/.bin/bower install",
-    "postinstall-x": "browserify ../../node_modules/socket.io-stream/index.js -s ss > dist/js/socket.io-stream.js"
+    "postinstall-x": "ln -s $PWD/app $PWD/node_modules/syn; ln -s $PWD/package.json $PWD/node_modules/syn/package.json; browserify ../../node_modules/socket.io-stream/index.js -s ss > dist/js/socket.io-stream.js"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
   "license": "BSD-2-Clause",

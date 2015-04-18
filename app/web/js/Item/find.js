@@ -2,15 +2,13 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  var selectors = require('syn/components/selectors.json');
+
+  console.info('test', selectors['Item Subject'])
 
   function find (name) {
     switch ( name ) {
-      case "subject":             return this.template.find('.item-subject:first a');
+      case "subject":             return this.template.find(selectors['Item Subject']);
 
       case "description":         return this.template.find('.item-description:first');
 

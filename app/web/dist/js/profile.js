@@ -1538,15 +1538,13 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  var selectors = require('syn/components/selectors.json');
+
+  console.info('test', selectors['Item Subject'])
 
   function find (name) {
     switch ( name ) {
-      case "subject":             return this.template.find('.item-subject:first a');
+      case "subject":             return this.template.find(selectors['Item Subject']);
 
       case "description":         return this.template.find('.item-description:first');
 
@@ -1594,7 +1592,7 @@
 
 } ();
 
-},{}],17:[function(require,module,exports){
+},{"syn/components/selectors.json":58}],17:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7274,4 +7272,28 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
+},{}],58:[function(require,module,exports){
+module.exports={
+  "Panel Container": ".panels",
+  
+  "Panel": ".panel",
+  
+  "Panel Creator Toggle": ".toggle-creator",
+  
+  "Creator": ".creator",
+  
+  "Creator Submit": ".button-create",
+  
+  "Creator Subject": "[name=\"subject\"]",
+  
+  "Creator Description": "[name=\"description\"]",
+  
+  "Input Error": ".error",
+  
+  "New Item": ".new.item",
+  
+  "Item Subject"      :     " > .item-text .item-subject a",
+
+  "Item Description"  :     " > .item-text .item-description"
+}
 },{}]},{},[50]);

@@ -2,8 +2,11 @@
   
   'use strict';
 
+  var When = require('synapp/business/lib/When');
+
+  require('colors');
+
   module.exports = function (cb) {
-    var src = require(require('path').join(process.cwd(), 'src'));
 
     var domain = require('domain').create();
     
@@ -13,24 +16,121 @@
     
     domain.run(function () {
 
+      console.log(' [ Create Topic ] '.bgBlue);
+
+      var subject = 'This is a test topic';
+
+      var description = ' This is a test topic\'s description';
+
+      function tellStory (user) {
+
+        var page = require('synapp/business/lib/Page')('Home');
+
+        var PanelsContainer = require('synapp/business/components/panels-container')();
+        
+        var Panel  = require('synapp/business/components/panel')({ type: 'Topic' });
+        
+        var ToggleCreator       =   require('synapp/business/components/panel-creator-toggle')(Panel);
+        
+        var Creator             =   require('synapp/business/components/creator')(Panel);
+        
+        var CreateSubject       =   function CreateSubject (message) {
+          return require('synapp/business/components/creator-subject')({
+            creator   :   Creator,
+            error     :   message === 'with error'
+          });
+        };
+        
+        var CreateDescription   =   function CreateDescription (message) {
+          return require('synapp/business/components/creator-description')({
+            creator   :   Creator,
+            error     :   message === 'with error'
+          });
+        };
+        
+        var CreatorSubmitButton =   require('synapp/business/components/creator-submit')(Creator);
+
+        var NewItem             =   require('synapp/business/components/new-item')();
+
+        var NewItemSubject      =   NewItem + ' ' + require('synapp/business/components/item-subject')();
+
+        When.I(user).visit(page).then(function (I, done) {
+
+          /** Toggle Creator */
+
+          I.see     (PanelsContainer);
+          
+          I.wait    (1.5, 'second');
+          
+          I.see     (Panel);
+          
+          I.see     (ToggleCreator);
+          
+          I.click   (ToggleCreator);
+
+          I.wait    (1, 'second');
+
+          I.see     (Creator);
+
+          /** Creator Form Validations */
+
+          I.see     (CreateSubject('without error'));
+
+          I.see     (CreateDescription('without error'));
+
+          I.see     (CreatorSubmitButton);
+
+          I.click   (CreatorSubmitButton);
+
+          I.see     (CreateSubject('with error'));
+
+          I.type    (subject, CreateSubject());
+
+          I.click   (CreatorSubmitButton);
+
+          I.see     (CreateSubject('without error'));
+
+          I.see     (CreateDescription('with error'));
+
+          I.type    (description, CreateDescription());
+
+          I.click   (CreatorSubmitButton);
+
+          I.wait    (2, 'seconds');
+
+          I.see     (NewItemSubject);
+
+          /** New item box */
+
+          I.see     (NewItem);
+
+          I.see     (NewItemSubject);
+
+          I.read    (subject, NewItemSubject);
+
+          I.see     (NewItemDescription);
+
+          I.read    (description, NewItemDescription);
+
+
+
+          done(function () {
+            console.log('TEST DONE!');
+            user.remove(domain.intercept(function () {
+              console.log('  ✔ Test user removed'.green);
+              console.log('  ⌛ Disconnecting from MongoDB'.magenta);
+              require('mongoose').disconnect(domain.intercept(function () {
+                cb();  
+              }));
+            }));
+          });
+
+          });
+
+      }
+
       require('colors');
 
-      console.log('[ Create Topic ]'.yellow);
-
-      console.log();
-
-      console.log(('  #1 - When I, as a ' + 'signed-in user'.bold + ', click on ' + 'Toggle Creator'.bold + ', ' + 'Creator Panel'.bold + ' should appear').grey);
-
-      console.log(('  #2 - When I submit the ' + 'Creator Panel Form'.bold + '  without entering a subject, ' + 'Creator Panel Form'.bold + ' should complain about an error').grey);
-
-      console.log(('  #3 - When I submit the ' + 'Creator Panel Form'.bold + ' having entered a subject without entering a description, ' + 'Creator Panel Form'.bold + ' should complain about an error').grey);
-
-      console.log(('  #4 - When I submit the ' + 'Creator Panel Form'.bold + ' having entered both a subject and a description, ' + 'New Item Box'.bold + ' should appear').grey);
-
-      console.log();
-
-      console.log('  ⌛ Connecting to MongoDB'.magenta);
-      
       require('mongoose').connect(process.env.MONGOHQ_URL, function () {
         console.log('  ✔ Connected to MongoDB'.green);
       });
@@ -43,35 +143,11 @@
         }
       };
 
-      var url = 'http://localhost:3012';
-
-      var subject = 'Hey! I am a test topic!';
-
-      var description = 'Hey! This is a cool description';
-
-      var $             =   {
-        'panels'        :   '.panels',
-        'panel topic'   :   '#panel-Topic'
-      };
-
-      $.toggle          =   $['panel topic'] + ' .toggle-creator';
-      $.creator         =   $['panel topic'] + ' form.creator[name="create"][novalidate][role="form"][method="POST"]';
-      $.submit          =   $.creator + ' .button-create';
-      $.subject         =   $.creator + ' input[name="subject"][required]';
-      $.description     =   $.creator + ' textarea[name="description"][required]';
-      $['new item']     =   $['panel topic'] + ' .item.new';
-      $['new item subject'] = $['new item'] + ' .item-subject';
-      $['new item description'] = $['new item'] + ' .item-description';
-
-      function isVisible (selector, visible) {
-        if ( ! visible ) {
-          throw new Error('Not visible: ' + selector);
-        }
-
-        console.log('  ✔ Is visible: '.green + selector);
-      }
-
       src('models/User').disposable(domain.intercept(function (user) {
+
+        tellStory(user);
+
+        return;
 
         console.log();
         console.log(('  #1 - When I, as a ' + 'signed-in user'.bold + ', click on ' + 'Toggle Creator'.bold + ', ' + 'Creator Panel'.bold + ' should appear').bgBlue);
@@ -103,7 +179,9 @@
             console.log('  ↻ Page was refreshed'.cyan);
           }))
 
-          .isVisible($.panels, domain.intercept(isVisible.bind(null, $.panels)))
+          .isVisible(
+            require('synapp/business/components/panels-container')(),
+            domain.intercept(isVisible.bind(null, $.panels)))
 
           .waitForExist($['panel topic'], 2500, domain.intercept(function () {
             console.log('  ✔ Found: '.green + $['panel topic']); 

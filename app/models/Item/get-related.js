@@ -1,0 +1,26 @@
+! function () {
+  
+  'use strict';
+
+  var src = require(require('path').join(process.cwd(), 'src'));
+
+  function getRelated (cb) {
+
+    var self = this;
+
+    var Item = require('mongoose').model('Item');
+    
+    src.domain.nextTick(cb, function (domain) {
+
+      Item
+        .find({
+          parent: self._id
+        }, cb);
+
+    });
+
+  }
+
+  module.exports = getRelated;
+
+} ();

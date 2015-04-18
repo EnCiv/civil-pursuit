@@ -3,7 +3,7 @@
   'use strict';
 
   var runSequence       =   require('run-sequence');
-  var spawn             =   require('../utils/spawn');
+  var spawn             =   require('syn/lib/spawn');
 
   exports.dependencies  =   ['build-dev'];
 

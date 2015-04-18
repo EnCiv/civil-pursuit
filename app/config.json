@@ -1,0 +1,195 @@
+{
+  "tmp":"/tmp",
+  
+  "title": "Synaccord | Bring Synergy To Democracy",
+  
+  "secret":"hYGhdj729k2kdmsñw9hsy6GGW",
+  
+  "entry image maximum width": 160,
+  
+  "cloudinary": {
+    
+    "cloud": {
+      "name": "hscbexf6a"
+    },
+
+    "API": {
+      "key": "717143894825222",
+      "secret": "Yy4AfBBff-PxjrizX1bsLPnkCLw"
+    },
+
+    "url": "cloudinary://717143894825222:Yy4AfBBff-PxjrizX1bsLPnkCLw@hscbexf6a"
+  },
+
+  "cookie":{
+    
+    "path":"/",
+    "signed": false,
+    "maxAge": 604800000,
+    "httpOnly": true
+  },
+
+  "facebook": {
+    
+    "app id": "295589523959214",
+    "app secret": "1faefb08184d71117f62eb63eb0e22c7",
+    "callback url": "/sign/facebook/oauth"
+  },
+
+  "twitter": {
+    
+    "alpha-heroku": {
+      "key": "6RtcRvzZTyJf0mLh7vdzRszdD",
+      "secret": "8pS3cts1YDZIv8uhAg5ZlupIkAXC9mw00UfHMMP60Ps1Gu78kY",
+      "callback url": "/sign/twitter/oauth"
+    },
+    
+    "alpha": {
+      "key": "ID4HLrtkRwRenjNyAkPKf1g89",
+      "secret": "g3pyCCCLfEuuAzzzEPHnaH8jycwgkD2wvL2jlXhU91r9jEo2cQ",
+      "callback url": "/sign/twitter/oauth"
+    },
+    
+    "beta": {
+      "key": "ATRK8LP4rIboQjXx9YS3soSZ5",
+      "secret": "HGFmYxchXHyjQgB0DSRRXcgnClyIgMKbrwokp7l5hmz8PSxqzr",
+      "callback url": "/sign/twitter/oauth"
+    }
+  },
+
+  "public":{
+    
+    "navigator batch size": 6,
+    
+    "item media": {
+
+      "max-width": 180,
+      
+      "max-height": 120
+    },
+
+    "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
+
+    "user image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg",
+    
+    "routes": {
+
+      "terms of service": "/page/terms-of-service",
+      
+      "sign in with Twitter": "/sign/twitter",
+
+      "sign in with Twitter OK": "/sign/twitter/ok",
+
+      "sign in with Facebook": "/sign/facebook",
+
+      "sign in with Facebook OK": "/sign/facebook/ok"
+
+    },
+
+    "items structure": {
+      "Intro": {},
+      "Topic": {
+        "many": "Topics"
+      },
+      "Problem": {
+        "many": "Problems"
+      }
+    }
+  },
+
+  "profile": {
+    "identity": {
+      "description": "This information is used to identify you and make sure that you are unique"
+    },
+    "residence": {
+      "description": "This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png"
+    },
+    "demographics": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
+    },
+    "voter": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
+    },
+    "public persona": {
+      "description": "This is the information shown about you that others can wee when they are evaluating your postings.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
+    }
+  },
+
+  "files": {
+    
+    "app js": "app/web/js/Synapp.js",
+
+    "app js compiled": "app/web/dist/js/index.js",
+
+    "app less": "app/web/less/synapp.less",
+
+    "app css": "app/web/dist/css/index.css",
+
+    "dashboard js": "app/web/js/dashboard.js",
+
+    "dashboard js compiled": "app/web/dist/js/dashboard.js",
+
+    "dashboard less": "app/web/less/dashboard.less",
+
+    "dashboard css": "app/web/dist/css/dashboard.css"
+  
+  },
+
+  "dirs": {
+
+    "dist js": "app/web/dist/js",
+
+    "dist css": "app/web/dist/css"
+  
+  },
+
+  "google analytics": {
+    
+    "key": "UA-55807209-1"
+  },
+
+  "font awesome": {
+
+    "cdn": "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+  },
+
+  "jquery":{
+
+    "cdn": "//code.jquery.com/jquery-2.1.1.min.js"
+  },
+
+  "angular": {
+
+    "cdn": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular.min.js",
+    
+    "animate": {
+      
+      "cdn": "//ajax.googleapis.com/ajax/libs/angularjs/1.3.1/angular-animate.js"
+    }
+  },
+
+  "user agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36",
+
+  "email": {
+    "user": "noreply@synaccord.com",
+    "password": "1ew55acpns0b"
+  },
+
+  "evaluation context item position": "first",
+
+  "forgot password email": "Hey,\r\n\r\nYou are receiving this email because you requested a password reset.\r\n\r\nYour reset key is:\r\n\r\n\t{key}\r\n\r\nTo reset your password, copy the reset key above and go to {url}\r\n\n\nThank you,\nThe Synaccord Team",
+
+  "items": {
+    "Topic": {},
+    "Problem": {},
+    "Agree": {},
+    "Disagree": {},
+    "Solution": {},
+    "Pro": {},
+    "Con": {}
+  }
+}
