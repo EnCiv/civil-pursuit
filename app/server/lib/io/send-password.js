@@ -2,9 +2,7 @@
 
   'use strict';
 
-  
-
-  var config      =   src('config');
+  var config      =   require('syn/config');
 
   var User        =   require('syn/models/User');
 

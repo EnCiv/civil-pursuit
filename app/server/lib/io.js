@@ -4,9 +4,7 @@
 
   var online_users = 0;
 
-  
-
-  var config = src('config');
+  var config = require('syn/config');
 
   var ss = require('socket.io-stream');
 

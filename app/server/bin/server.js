@@ -7,8 +7,6 @@
 
   require('mongoose').connect(process.env.MONGOHQ_URL);
 
-  
-
   require('syn/models/Config')
     .findOne()
     .lean()
@@ -170,7 +168,7 @@
               }
 
               res.locals.req      =   req;
-              res.locals.synapp   =   src('config');
+              res.locals.synapp   =   require('syn/config');
               res.locals.config   =   config;
               res.locals.protocol =   process.env.SYNAPP_PROTOCOL || 'http';
               res.locals.package  =   src('package.json');

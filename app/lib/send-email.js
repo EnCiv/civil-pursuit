@@ -4,7 +4,7 @@
 
   
 
-  var config = src('config');
+  var config = require('syn/config');
 
   /**
    *
