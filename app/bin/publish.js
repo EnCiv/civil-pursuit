@@ -10,7 +10,7 @@
 
   var cp = require('child_process');
 
-  var test = 'app/business/bin/test.js';
+  var test = 'app/bin/test.js';
 
   var deployMessage = process.argv[2];
 
