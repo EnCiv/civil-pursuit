@@ -5,11 +5,9 @@
   var should = require('should');
 
   module.exports = function testModelUser (done) {
-    var src = require(require('path').join(process.cwd(), 'src'));
+    var Test = require('syn/lib/Test');
 
-    var Test = src('lib/Test');
-
-    var User = src('models/User');
+    var User = require('syn/models/User');
 
     Test.suite('Model User Class', {
 

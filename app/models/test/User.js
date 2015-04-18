@@ -2,54 +2,47 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
   function UserTest (done) {
-    var src = require(require('path').join(process.cwd(), 'src'));
 
-    var Test  = src('lib/Test');
+    var Test  = require('syn/lib/Test');
 
     Test.suite('Model User Full Test', {
 
-      'Class':                      src('models/test/User/Class'),
+      'Class':                      require('syn/models/test/User/Class'),
 
-      'create':                     src('models/test/User/create'),
+      // 'create':                     require('syn/models/test/User/create'),
 
-      'encrypt-password':           src('models/test/User/encrypt-password'),
+      // 'encrypt-password':           require('syn/models/test/User/encrypt-password'),
 
-      'identify':                   src('models/test/User/identify'),
+      // 'identify':                   require('syn/models/test/User/identify'),
 
-      'make-password-resettable':   src('models/test/User/make-password-resettable'),
+      // 'make-password-resettable':   require('syn/models/test/User/make-password-resettable'),
 
-      'reset-password':             src('models/test/User/reset-password'),
+      // 'reset-password':             require('syn/models/test/User/reset-password'),
 
-      'add-race':                   src('models/test/User/add-race'),
+      // 'add-race':                   require('syn/models/test/User/add-race'),
 
-      'add-existing-race':          src('models/test/User/add-race/add-existing-race'),
+      // 'add-existing-race':          require('syn/models/test/User/add-race/add-existing-race'),
 
-      'remove-race':                src('models/test/User/remove-race'),
+      // 'remove-race':                require('syn/models/test/User/remove-race'),
 
-      'set-marital-status':         src('models/test/User/set-marital-status'),
+      // 'set-marital-status':         require('syn/models/test/User/set-marital-status'),
 
-      'set-employment':             src('models/test/User/set-employment'),
+      // 'set-employment':             require('syn/models/test/User/set-employment'),
 
-      'set-education':              src('models/test/User/set-education'),
+      // 'set-education':              require('syn/models/test/User/set-education'),
 
-      'set-citizenship':            src('models/test/User/set-citizenship'),
+      // 'set-citizenship':            require('syn/models/test/User/set-citizenship'),
 
-      'set-birthdate':              src('models/test/User/set-birthdate'),
+      // 'set-birthdate':              require('syn/models/test/User/set-birthdate'),
 
-      'set-gender':                 src('models/test/User/set-gender'),
+      // 'set-gender':                 require('syn/models/test/User/set-gender'),
 
-      'set-registered-voter':       src('models/test/User/set-registered-voter'),
+      // 'set-registered-voter':       require('syn/models/test/User/set-registered-voter'),
 
-      'set-party':                  src('models/test/User/set-party'),
+      // 'set-party':                  require('syn/models/test/User/set-party'),
 
-      'remove':                     src('models/test/User/remove')
+      // 'remove':                     require('syn/models/test/User/remove')
 
     }, done);
   }
