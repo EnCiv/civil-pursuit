@@ -2,73 +2,99 @@
   
   'use strict';
 
-  module.exports = function testModelUserCreate (done) {
+  var di = require('syn/lib/util/di/domain');
 
-    var Test = require('syn/lib/Test');
+  var deps = [
+    'async',
+    'syn/lib/Test',
+    'syn/models/User',
+    'syn/lib/util/connect-to-mongoose',
+    'syn/lib/util/random-string',
+    'should'
+  ];
 
-    var User = require('syn/models/User');
+  function test__models__User__create (done) {
+    
+    di(done, deps, function (domain, async, Test, User, mongoUp, randomString) {
 
-    var user;
+      var mongo = mongoUp();
 
-    var should = require('should');
+      var user, email, password;
 
-    Test.suite('Model User Create', {
+      function test__models__User__create____Create (done) {
+        User
 
-      'there should be an enviornment variable called "SYNAPP_TEST_EMAIL"': function (done) {
-        process.env.SYNAPP_TEST_EMAIL.should.be.a.String;
-        done();
-      },
+          .create({
+            email     :     email,
+            password  :     password
+          },
 
-      'there should be an enviornment variable called "SYNAPP_TEST_PASSWORD"': function (done) {
-        process.env.SYNAPP_TEST_PASSWORD.should.be.a.String;
-        done();
-      },
+          function (error, newUser) {
+            if ( error ) {
+              return done(error);
+            }
 
-      'should create a new User': function (done) {
-        User.create({ email: process.env.SYNAPP_TEST_EMAIL, password: process.env.SYNAPP_TEST_PASSWORD }, function (error, created) {
+            user = newUser;
 
-          if ( error ) {
-            return done(error);
-          }
+            done();
+          });
+      }
 
-          user = created;
-
-          done();
-        });
-      },
-
-      'new user should be an object': function (done) {
-        should(user).be.an.Object;
-        done();
-      },
-
-      'should be an instance of model': function (done) {
-        should(user.constructor.name).eql('model');
-        done();
-      },
-
-      'should have properties': function (done) {
-        (Object.keys(user)).length.should.not.eql(0);
-        done();
-      },
-
-      'should have email': function (done) {
-        should(user).have.property('email')
-          .which.is.a.String
-          .and.eql(process.env.SYNAPP_TEST_EMAIL);
-        done();
-      },
-
-      'should have a password that is different from password': function (done) {
-        should(user).have.property('password')
-          .which.is.a.String
-          .and.not.eql(process.env.SYNAPP_TEST_PASSWORD);
-
+      function test__models__User__create____emailIsLowerCase (done) {
+        user.email.should.be.exactly(email.toLowerCase());
         done();
       }
 
-    }, done);
+      function test__models__User__create____passwordIsEncrypted (done) {
+        user.password.should.not.be.exactly(password);
+        done();
+      }
 
-  };
+      function disconnect (done) {
+        user.remove(domain.intercept(function () {
+          mongo.disconnect(done);  
+        }));
+      }
+
+      var parallels = [
+
+        function generateRandomEmail (done) {
+          randomString(10, domain.intercept(function (rand) {
+            
+            email = 'TEST' + rand + '@GMAIL.COM';
+
+            done();
+
+          }));
+        },
+
+        function generateRandomPassword (done) {
+          randomString(25, domain.intercept(function (rand) {
+            
+            password = rand;
+
+            done();
+
+          }));
+        }
+
+      ];
+
+      async.parallel(parallels, domain.intercept(function () {
+        Test([
+
+            test__models__User__create____Create,
+            test__models__User__create____emailIsLowerCase,
+            test__models__User__create____passwordIsEncrypted,
+            disconnect
+
+          ], done);  
+      }));
+
+    });
+
+  }
+
+  module.exports = test__models__User__create;
 
 } ();

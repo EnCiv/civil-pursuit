@@ -13,9 +13,9 @@
   var deps = [
     'mongoose',
     'syn/config.json',
-    'syn/validations/is/cloudinary-url',
-    'syn/validations/is/url',
-    'syn/validations/is/lesser-than'
+    'syn/lib/util/is/cloudinary-url',
+    'syn/lib/util/is/url',
+    'syn/lib/util/is/lesser-than'
   ];
 
   deps = deps.map(function (dep) {

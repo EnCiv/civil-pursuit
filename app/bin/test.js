@@ -61,6 +61,9 @@
               console.log(line.yellow);
             });
           }
+          else {
+            console.log(' ✔ Test OK!'.bgGreen.bold);
+          }
         });
       }
 
@@ -73,6 +76,9 @@
             error.stack.split(/\n/).forEach(function (line) {
               console.log(line.yellow);
             });
+          }
+          else {
+            console.log(' ✔ Test OK!'.bgGreen.bold);
           }
         });
       }

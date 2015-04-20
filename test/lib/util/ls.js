@@ -9,23 +9,23 @@
     'should'
   ];
 
- function TestModule_Lib__Util__Ls (done) {
+ function test__lib__util__ls (done) {
 
     di(done, deps, function (domain, Test) {
 
       var ls;
 
-      function Module_Lib__Util__Ls_Exists (done) {
+      function test__lib__util__ls____Exists (done) {
         ls = require('syn/lib/util/ls');
         done();
       }
 
-      function Module_Lib__Util__Ls_IsA_Function (done) {
+      function test__lib__util__ls____IsA_Function (done) {
         ls.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__Util__Ls_ReturnsAnObject (done) {
+      function test__lib__util__ls____ReturnsAnObject (done) {
         di(done, ['async'], function (domain) {
           ls(__dirname, domain.intercept(function (ls) {
             ls.should.be.an.Object;
@@ -35,9 +35,9 @@
       }
 
       Test([
-          Module_Lib__Util__Ls_Exists,
-          Module_Lib__Util__Ls_IsA_Function,
-          Module_Lib__Util__Ls_ReturnsAnObject
+          test__lib__util__ls____Exists,
+          test__lib__util__ls____IsA_Function,
+          test__lib__util__ls____ReturnsAnObject
         ],
         done);
 
@@ -45,6 +45,6 @@
 
   }
 
-   module.exports = TestModule_Lib__Util__Ls;
+   module.exports = test__lib__util__ls;
 
 } ();

@@ -4,9 +4,11 @@
 
   var di = require('syn/lib/util/di/domain');
 
-  var deps = [];
+  var deps = [
+    'syn/lib/encrypt'
+  ];
 
-  function Models__User__Pre__Save (next) {
+  function models__User__pre__save (next) {
 
     if ( ! this.isNew ) {
       return next();
@@ -16,9 +18,9 @@
 
     var self = this;
 
-    di(next, deps, function (domain) {
+    di(next, deps, function (domain, encrypt) {
 
-      self.constructor.encryptPassword(self.password, domain.intercept(function (hash) {
+      encrypt(self.password, domain.intercept(function (hash) {
         self.password  = hash;
         next();
       }));
@@ -27,6 +29,6 @@
 
   }
 
-  module.exports = Models__User__Pre__Save;
+  module.exports = models__User__pre__save;
 
 } ();

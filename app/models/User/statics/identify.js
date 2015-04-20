@@ -24,7 +24,7 @@
           throw new Error('User not found ' + email);
         }
         
-        self.isValidPassword(password, user.password, domain.intercept(function (isValid) {
+        self.isPasswordValid(password, user.password, domain.intercept(function (isValid) {
           if ( ! isValid ) {
             throw new Error('Wrong password');
           }

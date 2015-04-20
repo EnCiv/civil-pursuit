@@ -6,7 +6,6 @@
 
   var deps = [
     'async',
-    'syn/lib/util/arguments-to-array',
     'syn/lib/util/to-human',
     'colors'
   ];
@@ -19,7 +18,7 @@
 
   function App_Lib_Test (serie, done) {
     
-    di(done, deps, function Test (domain, async, argsToArray, toHuman) {
+    di(done, deps, function Test (domain, async, toHuman) {
 
       var series = [];
 
@@ -28,7 +27,7 @@
         return function (done) {
           var name = toHuman(test.name
             .replace(/____/g, ' | ')
-            .replace(/__/g, '/'));
+            .replace(/__/g, ' > '));
 
           console.log(('  ? '.bold.white + name.grey));
 
@@ -44,7 +43,7 @@
             }
 
             else {
-              console.log(('  ✔ '.bold + name).green, argsToArray(arguments));
+              console.log(('  ✔ '.bold + name).green);
               done();
             }
 

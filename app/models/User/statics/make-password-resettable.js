@@ -2,15 +2,17 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  var di = require('syn/lib/util/di/domain');
+
+  var deps = ['syn/lib/util/random-string'];
 
   function makePasswordResettable (email, cb) {
 
     var self = this;
+
+    di(cb, deps, function (domain, randomString) {
+
+    });
 
     var domain = require('domain').create();
     

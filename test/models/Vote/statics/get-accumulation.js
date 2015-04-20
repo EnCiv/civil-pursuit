@@ -44,7 +44,6 @@
 
         Vote.getAccumulation(vote.item, domain.intercept(function (cumul) {
           accumulation = cumul;
-          console.log(accumulation)
           done();
         }));
 
@@ -64,6 +63,52 @@
         done();
       }
 
+      function models__Vote__statics__getAccumulation____eachCriteriaHasTotal (done) {
+        
+        for ( var criteria in accumulation ) {
+          accumulation[criteria].should.have.property('total');
+        }
+
+        done();
+      }
+
+      function models__Vote__statics__getAccumulation____eachTotalIs_A_Number (done) {
+        
+        for ( var criteria in accumulation ) {
+          accumulation[criteria].total.should.be.a.Number;
+        }
+
+        done();
+      }
+
+      function models__Vote__statics__getAccumulation____eachTotalIsTheSumOfValues (done) {
+        
+        for ( var criteria in accumulation ) {
+          var total = accumulation[criteria].values['-1'] +
+            accumulation[criteria].values['+0'] +
+            accumulation[criteria].values['+1'];
+
+          accumulation[criteria].total.should.be.exactly(total);
+        }
+
+        done();
+      }
+
+      function models__Vote__statics__getAccumulation____valuesAreNumbers (done) {
+        
+        for ( var criteria in accumulation ) {
+          accumulation[criteria].values['-1'].should.be.a.Number;
+          accumulation[criteria].values['+0'].should.be.a.Number;
+          accumulation[criteria].values['+1'].should.be.a.Number;
+        }
+
+        done();
+      }
+
+      function disconnect (cb) {
+        mongo.disconnect(cb);
+      }
+
       Test([
 
           models__Vote__statics__getAccumulation____Exists,
@@ -71,7 +116,12 @@
           models__Vote__statics__getAccumulation____findRandomVote,
           models__Vote__statics__getAccumulation____getAccumulation,
           models__Vote__statics__getAccumulation____isAnObject,
-          models__Vote__statics__getAccumulation____eachCriteriaIsAnObject
+          models__Vote__statics__getAccumulation____eachCriteriaIsAnObject,
+          models__Vote__statics__getAccumulation____eachCriteriaHasTotal,
+          models__Vote__statics__getAccumulation____eachTotalIs_A_Number,
+          models__Vote__statics__getAccumulation____eachTotalIsTheSumOfValues,
+          models__Vote__statics__getAccumulation____valuesAreNumbers,
+          disconnect
 
         ], done);
 

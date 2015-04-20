@@ -26,7 +26,6 @@
     UserSchema.pre('save', preSave);
 
     var statics = [
-      'Encrypt password',
       'Identify',
       'Reset password',
       'Make password resettable',

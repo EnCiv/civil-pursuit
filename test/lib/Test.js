@@ -13,22 +13,22 @@
 
   var Test = require('syn/lib/Test');
 
-  function TestModule_Lib__Test (cb) {
+  function test__lib__Test (cb) {
 
     di(cb, deps, function (domain, async) {
       var moduleLibTest;
 
-      function Module_Lib__Test_Exists (done) {
+      function test__lib__Test___Exists (done) {
         moduleLibTest = require('syn/lib/Test');
         done();
       }
 
-      function Module_Lib__Test_IsA_Function (done) {
+      function test__lib__Test___IsA_Function (done) {
         moduleLibTest.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__Test_Plays_Functions (done) {
+      function test__lib__Test___Plays_Functions (done) {
         var i = 0;
 
         moduleLibTest([
@@ -48,15 +48,15 @@
       }
 
       async.series([
-          Module_Lib__Test_Exists,
-          Module_Lib__Test_IsA_Function,
-          Module_Lib__Test_Plays_Functions
+          test__lib__Test___Exists,
+          test__lib__Test___IsA_Function,
+          test__lib__Test___Plays_Functions
         ],
         cb);
 
     });
   }
 
-  module.exports = TestModule_Lib__Test;
+  module.exports = test__lib__Test;
 
 } ();

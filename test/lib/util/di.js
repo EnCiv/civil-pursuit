@@ -6,7 +6,7 @@
 
   var Test = require('syn/lib/Test');
 
-  function TestModule_Lib__Util__Di (cb) {
+  function test__lib__util__di (cb) {
     var domain = require('domain').create();
     
     domain.on('error', function (error) {
@@ -17,17 +17,17 @@
 
       var di;
 
-      function Module_Lib__Util__DI_Exists (done) {
+      function test__lib__util__di____exists (done) {
         di = require('syn/lib/util/di');
         done();
       }
 
-      function Module_Lib__Util__DI_IsA_Function (done) {
+      function test__lib__util__di____is_A_Function (done) {
         di.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__Util__DI_PassesDependencies (done) {
+      function test__lib__util__di____passesDependencies (done) {
 
         var here = require.resolve('syn/package.json')
           .replace(/package\.json$/, '')
@@ -35,20 +35,24 @@
 
         di([here], function (di) {
           di.should.be.a.Function;
-          di.name.should.be.exactly(TestModule_Lib__Util__Di.name);
-          di.proof.should.be.exactly(TestModule_Lib__Util__Di.proof);
+          di.name.should.be.exactly(test__lib__util__di.name);
+          di.proof.should.be.exactly(test__lib__util__di.proof);
           done();
         });
 
       }
 
-      Test([Module_Lib__Util__DI_Exists, Module_Lib__Util__DI_IsA_Function, Module_Lib__Util__DI_PassesDependencies], cb);
+      Test([
+          test__lib__util__di____exists,
+          test__lib__util__di____is_A_Function,
+          test__lib__util__di____passesDependencies
+        ], cb);
 
     });
   }
 
-  TestModule_Lib__Util__Di.proof = true;
+  test__lib__util__di.proof = true;
 
-  module.exports = TestModule_Lib__Util__Di;
+  module.exports = test__lib__util__di;
 
 } ();

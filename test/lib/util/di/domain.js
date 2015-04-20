@@ -10,7 +10,7 @@
     throw error;
   }
 
-  function TestModule_Lib__Util__Di__Domain (cb) {
+  function test__lib__util__di__domain (cb) {
     var domain = require('domain').create();
     
     domain.on('error', function (error) {
@@ -21,17 +21,17 @@
 
       var di;
 
-      function Module_Lib__Util__Di__Domain_Exists (done) {
+      function test__lib__util__di__domain___Exists (done) {
         di = require('syn/lib/util/di/domain');
         done();
       }
 
-      function Module_Lib__Util__Di__Domain_IsAFunction (done) {
+      function test__lib__util__di__domain___IsAFunction (done) {
         di.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__Util__Di__Domain_PassesDependenciesAndDomain (done) {
+      function test__lib__util__di__domain___PassesDependenciesAndDomain (done) {
         var here = require.resolve('syn/package.json')
           .replace(/package\.json$/, '')
           + 'test/lib/util/di/domain';
@@ -39,13 +39,13 @@
         di(onError, [here], function (domain, di) {
           domain.should.be.an.instanceof(require('domain').Domain);
           di.should.be.a.Function;
-          di.name.should.be.exactly(TestModule_Lib__Util__Di__Domain.name);
-          di.proof.should.be.exactly(TestModule_Lib__Util__Di__Domain.proof);
+          di.name.should.be.exactly(test__lib__util__di__domain.name);
+          di.proof.should.be.exactly(test__lib__util__di__domain.proof);
           done();
         });
       }
 
-      function Module_Lib__Util__Di__Domain_CatchesErrors (done) {
+      function test__lib__util__di__domain___CatchesErrors (done) {
         di(function (error) {
           done();
         }, [], function () {
@@ -55,10 +55,10 @@
 
       Test([
 
-          Module_Lib__Util__Di__Domain_Exists,
-          Module_Lib__Util__Di__Domain_IsAFunction,
-          Module_Lib__Util__Di__Domain_PassesDependenciesAndDomain,
-          Module_Lib__Util__Di__Domain_CatchesErrors
+          test__lib__util__di__domain___Exists,
+          test__lib__util__di__domain___IsAFunction,
+          test__lib__util__di__domain___PassesDependenciesAndDomain,
+          test__lib__util__di__domain___CatchesErrors
 
         ], cb);
 
@@ -66,8 +66,8 @@
 
   }
 
-  TestModule_Lib__Util__Di__Domain.proof = true;
+  test__lib__util__di__domain.proof = true;
 
-  module.exports = TestModule_Lib__Util__Di__Domain;
+  module.exports = test__lib__util__di__domain;
 
 } ();

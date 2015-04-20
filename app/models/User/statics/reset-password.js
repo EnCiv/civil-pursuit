@@ -4,29 +4,15 @@
 
   var encrypt = require('./encrypt-password');
 
-  /** Reset password
-   *
-   *  @method User.statics.resetPassword
-   *  @return null
-   *  @arg {string} key
-   *  @arg {string} token
-   *  @arg {string} password - in clear
-   *  @arg {function} cb
-   *  @example User.resetPassword(String, String, String, Function);
-   */
+  var di = require('syn/lib/util/di/domain');
+
+  var deps = ['syn/lib/encrypt'];
 
   function resetPassword (key, token, password, cb) {
 
     var self = this;
 
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      cb(error);
-    });
-    
-    domain.run(function () {
-
+    di(cb, deps, function (domain, encrypt) {
       encrypt(password, domain.intercept(function (hash) {
         self
           
@@ -46,7 +32,6 @@
             cb();
           }));
       }));
-        
     });
   }
 

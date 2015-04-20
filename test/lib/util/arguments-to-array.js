@@ -9,7 +9,7 @@
     'should'
   ];
 
- function TestModule_Lib__Util__ArgumentsToArray (done) {
+ function test__lib__util__argumentsToArray (done) {
 
     var humanized = 'Hey i am an example';
 
@@ -23,17 +23,17 @@
 
       var argumentsToArray;
 
-      function Module_Lib__Util__ArgumentsToArray_Exists (done) {
+      function test__lib__util__argumentsToArray____Exists (done) {
         argumentsToArray = require('syn/lib/util/arguments-to-array');
         done();
       }
 
-      function Module_Lib__Util__ArgumentsToArray_IsA_Function (done) {
+      function test__lib__util__argumentsToArray____IsA_Function (done) {
         argumentsToArray.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__Util__ArgumentsToArray_ReturnsArrayOfArguments (done) {
+      function test__lib__util__argumentsToArray____ReturnsArrayOfArguments (done) {
 
         function foo () {
           var array = argumentsToArray(arguments);
@@ -51,9 +51,9 @@
       }
 
       Test([
-          Module_Lib__Util__ArgumentsToArray_Exists,
-          Module_Lib__Util__ArgumentsToArray_IsA_Function,
-          Module_Lib__Util__ArgumentsToArray_ReturnsArrayOfArguments
+          test__lib__util__argumentsToArray____Exists,
+          test__lib__util__argumentsToArray____IsA_Function,
+          test__lib__util__argumentsToArray____ReturnsArrayOfArguments
         ],
         done);
 
@@ -61,6 +61,6 @@
 
   }
 
-   module.exports = TestModule_Lib__Util__ArgumentsToArray;
+   module.exports = test__lib__util__argumentsToArray;
 
 } ();

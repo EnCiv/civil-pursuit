@@ -9,7 +9,7 @@
     'should'
   ];
 
- function TestModule_Lib__ToHuman (done) {
+ function test__lib__util__toHuman (done) {
 
     var humanized = 'Hey i am an example';
 
@@ -23,37 +23,37 @@
 
       var toHuman;
 
-      function Module_Lib__toHuman_Exists (done) {
+      function test__lib__util__toHuman___Exists (done) {
         toHuman = require('syn/lib/util/to-human');
         done();
       }
 
-      function Module_Lib__toHuman_IsA_Function (done) {
+      function test__lib__util__toHuman___IsA_Function (done) {
         toHuman.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__toHuman_HumanizesCamelCase (done) {
+      function test__lib__util__toHuman___HumanizesCamelCase (done) {
         toHuman(camel).should.be.exactly(humanized);
         done();
       }
 
-      function Module_Lib__toHuman_HumanizesSnakeCase (done) {
+      function test__lib__util__toHuman___HumanizesSnakeCase (done) {
         toHuman(snake).should.be.exactly(humanized);
         done();
       }
 
-      function Module_Lib__toHuman_HumanizesSlug (done) {
+      function test__lib__util__toHuman___HumanizesSlug (done) {
         toHuman(slug).should.be.exactly(humanized);
         done();
       }
 
       Test([
-          Module_Lib__toHuman_Exists,
-          Module_Lib__toHuman_IsA_Function,
-          Module_Lib__toHuman_HumanizesCamelCase,
-          Module_Lib__toHuman_HumanizesSnakeCase,
-          Module_Lib__toHuman_HumanizesSlug
+          test__lib__util__toHuman___Exists,
+          test__lib__util__toHuman___IsA_Function,
+          test__lib__util__toHuman___HumanizesCamelCase,
+          test__lib__util__toHuman___HumanizesSnakeCase,
+          test__lib__util__toHuman___HumanizesSlug
         ],
         done);
 
@@ -61,6 +61,6 @@
 
   }
 
-   module.exports = TestModule_Lib__ToHuman;
+   module.exports = test__lib__util__toHuman;
 
 } ();

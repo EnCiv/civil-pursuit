@@ -9,7 +9,7 @@
     'should'
   ];
 
- function TestModule_Lib__ToSlug (done) {
+ function test__lib__util__toSlug (done) {
 
     var human = 'Hey i am an example';
 
@@ -19,25 +19,25 @@
 
       var toSlug;
 
-      function Module_Lib__toSlug_Exists (done) {
+      function test__lib__util__toSlug____Exists (done) {
         toSlug = require('syn/lib/util/to-slug');
         done();
       }
 
-      function Module_Lib__toSlug_IsA_Function (done) {
+      function test__lib__util__toSlug____IsA_Function (done) {
         toSlug.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__toSlug_Slugifies (done) {
+      function test__lib__util__toSlug____Slugifies (done) {
         toSlug(human).should.be.exactly(slug);
         done();
       }
 
       Test([
-          Module_Lib__toSlug_Exists,
-          Module_Lib__toSlug_IsA_Function,
-          Module_Lib__toSlug_Slugifies
+          test__lib__util__toSlug____Exists,
+          test__lib__util__toSlug____IsA_Function,
+          test__lib__util__toSlug____Slugifies
         ],
         done);
 
@@ -45,6 +45,6 @@
 
   }
 
-   module.exports = TestModule_Lib__ToSlug;
+   module.exports = test__lib__util__toSlug;
 
 } ();

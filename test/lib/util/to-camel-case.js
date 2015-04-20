@@ -9,7 +9,7 @@
     'should'
   ];
 
- function TestModule_Lib__ToCamelCase (done) {
+ function test__lib__util__toCamelCase (done) {
 
     var human = 'Hey i am an example';
 
@@ -19,25 +19,25 @@
 
       var toCamelCase;
 
-      function Module_Lib__toCamelCase_Exists (done) {
+      function test__lib__util__toCamelCase____Exists (done) {
         toCamelCase = require('syn/lib/util/to-camel-case');
         done();
       }
 
-      function Module_Lib__toCamelCase_IsA_Function (done) {
+      function test__lib__util__toCamelCase____IsA_Function (done) {
         toCamelCase.should.be.a.Function;
         done();
       }
 
-      function Module_Lib__toCamelCase_Slugifies (done) {
+      function test__lib__util__toCamelCase____Slugifies (done) {
         toCamelCase(human).should.be.exactly(camel);
         done();
       }
 
       Test([
-          Module_Lib__toCamelCase_Exists,
-          Module_Lib__toCamelCase_IsA_Function,
-          Module_Lib__toCamelCase_Slugifies
+          test__lib__util__toCamelCase____Exists,
+          test__lib__util__toCamelCase____IsA_Function,
+          test__lib__util__toCamelCase____Slugifies
         ],
         done);
 
@@ -45,6 +45,6 @@
 
   }
 
-   module.exports = TestModule_Lib__ToCamelCase;
+   module.exports = test__lib__util__toCamelCase;
 
 } ();

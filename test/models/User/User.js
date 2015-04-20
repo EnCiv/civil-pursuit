@@ -4,39 +4,54 @@
 
   var should = require('should');
 
-  module.exports = function testModelUser (done) {
-    var Test = require('syn/lib/Test');
+  var di = require('syn/lib/util/di/domain');
 
-    var User = require('syn/models/User');
+  var deps = [
+    'syn/lib/Test',
+    'syn/models/User',
+    'should'
+  ];
 
-    Test.suite('Model User Class', {
+  module.exports = function test__models__User (done) {
 
-      'should be a function': function (done) {
+    di(done, deps, function (domain, Test, User) {
+
+      function test__models__User____is_A_Function (done) {
         User.should.be.a.Function;
         done();
-      },
+      }
 
-      'should be an instanceof model': function (done) {
+      function test__models__User____is_A_Model (done) {
         User.prototype.constructor.name.should.eql('model');
         done();
-      },
+      }
 
-      'should extend EventEmitter': function (done) {
+      function test__models__User____extendsEventEmitter (done) {
         User.prototype.should.be.an.instanceof(require('events').EventEmitter);
         done();
-      },
+      }
 
-      'should have a schema property': function (done) {
+      function test__models__User____hasSchema (done) {
         User.schema.should.be.an.Object;
         done();
-      },
+      }
 
-      'should have static methods': function (done) {
+      function test__models__User____hasStaticMethods (done) {
         User.schema.statics.should.be.an.Object;
         done();
       }
 
-    }, done);
+      Test([
+
+          test__models__User____is_A_Function,
+          test__models__User____is_A_Model,
+          test__models__User____extendsEventEmitter,
+          test__models__User____hasSchema,
+          test__models__User____hasStaticMethods
+
+        ], done);
+
+    });
     
   };
 
