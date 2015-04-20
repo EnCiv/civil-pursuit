@@ -8,16 +8,35 @@
 
 var mongoose = require('mongoose');
 
+var findRandom = require('mongoose-simple-random');
+
 var Schema = mongoose.Schema;
 
-require('./Item');
-require('./Criteria');
-var User = require('./User');
+try {
+  mongoose.model('User');
+}
+catch ( error ) {
+  require('syn/models/User');
+}
+
+try {
+  mongoose.model('Item');
+}
+catch ( error ) {
+  require('syn/models/Item');
+}
+
+try {
+  mongoose.model('Criteria');
+}
+catch ( error ) {
+  require('syn/models/Criteria');
+}
 
 var should = require('should');
 
 var VoteSchema = new Schema({
-  "item": {
+  "item"        :     {
   	"type": Schema.Types.ObjectId,
   	"ref": "Item",
   	"required": true
@@ -42,6 +61,8 @@ var VoteSchema = new Schema({
   }
 });
 
+VoteSchema.plugin(findRandom);
+
 /** Get Accumulation...
  *
  *  @method model::Vote::get-accumulation
@@ -50,53 +71,6 @@ var VoteSchema = new Schema({
  *  @return {Object}
  */
 
-VoteSchema.statics.getAccumulation = function (item, cb) {
-  item.should.be.a.String;
-
-  cb.should.be.a.Function;
-
-  var accumulation = {};
-
-  this.find({ item: item })
-    .exec(function (error, votes) {
-      if ( error ) {
-        return cb(error);
-      }
-
-      function initValues () {
-        var values = {};
-
-        values['-1'] = 0;
-        values['+0'] = 0;
-        values['+1'] = 0;
-
-        return values;
-      }
-
-      votes.forEach(function (vote) {
-
-        if ( vote.value > -2 && vote.value < 2 ) {
-          if ( ! accumulation[vote.criteria] ) {
-            accumulation[vote.criteria] = {
-              total: 0,
-              values: initValues()
-            };
-          }
-          
-          accumulation[vote.criteria].total ++;
-
-          if ( vote.value === -1 ) {
-            accumulation[vote.criteria].values['-1'] ++;
-          }
-          else {
-            accumulation[vote.criteria].values['+' + vote.value] ++;
-          }
-        }
-
-      });
-
-      cb(null, accumulation);
-    });
-};
+VoteSchema.statics.getAccumulation = require('syn/models/Vote/statics/get-accumulation');
 
 module.exports = mongoose.model('Vote', VoteSchema);

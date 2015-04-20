@@ -2,114 +2,63 @@
   
   'use strict';
 
-  require('colors');
+  var di = require('syn/lib/util/di/domain');
 
-  function toArray (describe, serie) {
+  var deps = [
+    'async',
+    'syn/lib/util/arguments-to-array',
+    'syn/lib/util/to-human',
+    'colors'
+  ];
 
-    var tests = [];
+  /**
+   *  @arg        [Function] serie
+   *  @arg        Function done
+   *  @return     null
+  */
 
-    for ( var key in serie ) {
+  function App_Lib_Test (serie, done) {
+    
+    di(done, deps, function Test (domain, async, argsToArray, toHuman) {
 
-      if ( typeof serie[key] === 'function' ) {
-        tests.push({
-          describe: describe.concat([key]),
-          fn: serie[key]
-        });
-      }
+      var series = [];
 
-      else if ( typeof serie[key] === 'object' ) {
-        tests = tests.concat(toArray(describe.concat([key]), serie[key]));
-      }
+      series = serie.map(function (test) {
 
-    }
+        return function (done) {
+          var name = toHuman(test.name
+            .replace(/____/g, ' | ')
+            .replace(/__/g, '/'));
 
-    return tests;
+          console.log(('  ? '.bold.white + name.grey));
 
-  }
-
-  module.exports = {
-    suite: function (describe, serie, cb) {
-
-      var counter = 0;
-
-      var tests = toArray([describe], serie);
-
-      var total = tests.length;
-
-      function iterate () {
-        if ( tests[counter] ) {
-
-          var chrono = Date.now();
-
-          tests[counter].fn(function (error) {
-
-            var section = this.describe.shift().cyan;
-
-            var step = ((counter + 1) + '/' + total).grey;
-
-            var cell = '';
-
-            for ( var i = 0; i < 55; i ++ ) {
-              cell += ' ';
-            }
-
-            var padding = '';
-
-            for ( i = (section + step).length; i < cell.length; i ++ ) {
-              padding += " ";
-            }
-
-            var time = Date.now () - chrono;
-
-            var timeColor = 'grey';
-
-            if ( time > 50 ) {
-              timeColor = 'magenta';
-            }
-
-            if ( time > 250 ) {
-              timeColor = 'yellow';
-            }
-
-            if ( time > 500 ) {
-              timeColor = 'red';
-            }
+          test(domain.bind(function (error) {
 
             if ( error ) {
-              console.log(section, step, padding, ('✖ ' + this.describe.pop()).bgRed.bold);
-
-              console.log(cell.substr(18), error.message.red.bold);
-
-              error.stack.split(/\r\n/).forEach(function (line) {
-                console.log(cell.substr(18), line.yellow);
+              console.log(('  × '.bold + name).red);
+              error.stack.split(/\n/).forEach(function (line) {
+                console.log(line.yellow);
               });
 
-              if ( typeof cb === 'function' ) {
-                cb(error);
-              }
+              done(error);
             }
 
             else {
-
-              console.log(section + ' ' + step, padding, ('✔ ' + this.describe.pop()).green, (time.toString() + ' ms')[timeColor]);
-
-              counter ++;
-
-              iterate();
+              console.log(('  ✔ '.bold + name).green, argsToArray(arguments));
+              done();
             }
 
-          }.bind({ describe: tests[counter].describe }));
-        }
+          }));
+        };
 
-        else {
-          if ( typeof cb === 'function' ) {
-            cb();
-          }
-        }
-      }
+      });
 
-      iterate();
-    }
-  };
+      async.series(series, done);
+
+    });
+
+  }
+
+  module.exports = App_Lib_Test;
 
 } ();

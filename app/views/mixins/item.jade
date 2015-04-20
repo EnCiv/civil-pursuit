@@ -1,0 +1,20 @@
+mixin item (item)
+  .item(id='item-' + item.id data-views=item.views)
+
+    //- Item Media
+
+    .item-media-wrapper
+      .item-media
+        block item-media
+
+    //- Item buttons
+
+    .item-buttons
+      block item-buttons
+
+    //- Item text
+
+    .item-text
+      block item-text
+
+    block item-footer

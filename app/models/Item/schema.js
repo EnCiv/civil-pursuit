@@ -2,108 +2,123 @@
   
   'use strict';
 
-  var mongoose    =   require('mongoose');
+  var schema;
 
-  var Schema      =   mongoose.Schema;
+  try {
+    require('syn/models/Type');
+    require('syn/models/User');
+  }
+  catch ( error ) { /** Already imported **/ }
 
-  var config      =   require('syn/config');
+  var deps = [
+    'mongoose',
+    'syn/config.json',
+    'syn/validations/is/cloudinary-url',
+    'syn/validations/is/url',
+    'syn/validations/is/lesser-than'
+  ];
 
-  module.exports = {
+  deps = deps.map(function (dep) {
+    return require(dep);
+  });
 
-    /** Image URL */
+  function run (mongoose, config, isCloudinaryUrl, isUrl, isLesserThan) {
 
-    "image": {
-      "type":       String
-    },
+    schema = {
 
-    /** References */
+      "id"                :   {
 
-    "references": [
-      new Schema({
-        "url":      String,
-        "title":    String
-      })
-    ],
+        "type"            :   String,
+        "len"             :   5,
+        "required"        :   true,
+        "index"           :   {
+          "unique"        :   true
+        }
+      },
 
-    /** Subject */
+      "image"             :   {
 
-    "subject": {
-      "type":       String,
-      "required":   true
-    },
+        "type"            :   String,
+        "validate"        :   isCloudinaryUrl
+      },
 
-    /** Description */
-    
-    "description": {
-      "type":       String,
-      "required":   true
-    },
+      "references"        :   [{
 
-    /* Item type */
+          "url"           :   {
 
-    "type": {
-      "type":       String,
-      "required":   true,
-      "validate":   function (type) {
-        return Object.keys(config.items).indexOf(type) > -1;
+            "type"        :   String,
+            "validate"    :   isUrl
+          },
+          
+          "title"         :   String
+        }
+      ],
+
+      "subject"           :   {
+
+        "type"            :   String,
+        "required"        :   true,
+        "validate"        :   isLesserThan(255)
+      },
+
+      "description"       :   {
+
+        "type"            :   String,
+        "required"        :   true,
+        "validate"        :   isLesserThan(5000)
+      },
+
+      "type"              :   {
+
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "required"        :   true,
+        "ref"             :   "Type"
+      },
+
+      "parent"            :   {
+
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "Item",
+        "index"           :   true
+      },
+
+      // When created from another item
+
+      "from"              :   {
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "Item",
+        "index"           :   true
+      },
+
+      "user"              :   {
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "User",
+        "required"        :   true,
+        "index"           :   true
+      },
+
+      // The number of times Item has been promoted
+
+      "promotions"        :   {
+
+        "type"            :   Number,
+        "index"           :   true,
+        "default"         :   0
+      },
+
+      // The number of times Item has been viewed
+
+      "views"             :   {
+        
+        "type"            :   Number,
+        "index"           :   true,
+        "default"         :   0
       }
-    },
 
-    // Parent item
-    
-    "parent": {
-      "type":       Schema.Types.ObjectId,
-      "ref":        "Item",
-      "index":      true
-    },
+    };
+  }
 
-    // When created from another item
+  run.apply(null, deps);
 
-    "from": {
-      "type":       Schema.Types.ObjectId,
-      "ref":        "Item",
-      "index":      true
-    },
-
-    // the user id (reference to User, required)
-    
-    "user": {
-      "type":       Schema.Types.ObjectId,
-      "ref":        "User",
-      "required":   true,
-      "index":      true
-    },
-
-    // The number of times Item has been promoted
-
-    "promotions": {
-      "type":       Number,
-      "index":      true,
-      "default"     :   0
-    },
-
-    // The number of times Item has been viewed
-
-    "views":  {
-      "type":       Number,
-      "index":      true,
-      "default"     :   0
-    },
-
-    // When Item was created
-
-    "created": {
-      "type":       Date,
-      "default":    Date.now
-    },
-
-    // When Item was last edited
-
-    "edited": {
-      "type":       Date,
-      "default":    Date.now
-    }
-
-  };
-
+  module.exports = schema;
 } ();

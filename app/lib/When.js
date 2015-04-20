@@ -26,6 +26,11 @@
       var domain = require('domain').create();
       
       domain.on('error', function (error) {
+
+        if ( self.client ) {
+          self.client.end();
+        }
+
         if ( typeof cbError === 'function' ) {
           cbError(error);
         }
@@ -85,16 +90,16 @@
           switch ( instruction.action ) {
             case 'see':
 
-              self.client.pause(0, domain.intercept(function () {
-                console.log('  ⌛ Is visible?'.magenta, instruction.element);  
-              }));
+              // self.client.pause(0, domain.intercept(function () {
+              //   console.log('  ⌛ Is visible?'.magenta, instruction.element);  
+              // }));
 
               self.client.isVisible(instruction.element, domain.intercept(function (isVisible) {
                 if ( isVisible ) {
-                  console.log('  ✔ Is visible:'.green, instruction.element);
+                  console.log('  ✔ I see:'.green, instruction.element);
                 }
                 else {
-                  console.log('  × Is not visible:'.red, instruction.element);
+                  console.log('  × I do not see:'.red, instruction.element);
                   throw new Error('Element is not visible');
                 }
               }));
@@ -112,12 +117,12 @@
 
             case 'click':
 
-              self.client.pause(0, domain.intercept(function () {
-                console.log('  ⌛ Clicking'.magenta, instruction.element);  
-              }));
+              // self.client.pause(0, domain.intercept(function () {
+              //   console.log('  ⌛ Clicking'.magenta, instruction.element);  
+              // }));
 
               self.client.click(instruction.element, domain.intercept(function () {
-                console.log('  ✔ Clicked:'.cyan, instruction.element);
+                console.log('  ✔ I click:'.cyan, instruction.element);
               }));
               break;
 

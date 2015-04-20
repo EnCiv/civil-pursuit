@@ -2,81 +2,68 @@
   
   'use strict';
 
-  var mongoose    =   require('mongoose');
+  var Model;
 
-  var Schema      =   mongoose.Schema;
+  var deps = [
+    'path',
+    'mongoose',
+    'bcrypt',
+    'cloudinary',
+    'syn/config.json',
+    'syn/models/User/schema',
+    'syn/models/User/pre/save',
+    'syn/lib/util/to-slug',
+    'syn/lib/util/to-camel-case'
+  ];
 
-  var bcrypt      =   require('bcrypt');
+  deps = deps.map(function (dep) {
+    return require(dep);
+  });
 
-  var config      =   require('syn/config');
+  function run (path, mongoose, bcrypt, cloudinary, config, schema, preSave, toSlug, toCamelCase) {
+    var UserSchema = new mongoose.Schema(schema);
 
-  var path        =   require('path');
+    UserSchema.pre('save', preSave);
 
-  var schema      =   require('./User/schema');
+    var statics = [
+      'Encrypt password',
+      'Identify',
+      'Reset password',
+      'Make password resettable',
+      'Is password valid',
+      'Save image',
+      'Add Race',
+      'Remove Race',
+      'Set marital status',
+      'Set employment',
+      'Set education',
+      'Set citizenship',
+      'Set birthdate',
+      'Set gender',
+      'Set registered voter',
+      'Set party',
+      'Disposable'
+    ];
 
-  var UserSchema  =   new Schema(schema);
-
-  
-
-  UserSchema.pre('save', require('./User/pre.save'));
-
-  [
-    'encrypt-password',
-    'identify',
-    'reset-password',
-    'make-password-resettable'
-  ]
-
-    .forEach(function (method) {
-
-      UserSchema.statics[method
-        .replace(/-([a-z])/ig, function (m, letter) { return letter.toUpperCase(); })] = require('syn/models/User/' + method);
-
+    statics.forEach(function (_static) {
+      UserSchema.statics[toCamelCase(_static)] =
+        require('syn/models/User/statics/' + toSlug(_static));
     });
 
-  /**
-    * @method User.statics.isValidPassword
-    */
+    var virtuals = [
+      'Full name'
+    ];
 
-  UserSchema.statics.isValidPassword = function (requestPassword, realPassword, cb) {
-    bcrypt.compare(requestPassword, realPassword, cb);
-  };
-
-  /**
-    * @method User.statics.saveImage
-    */
-
-  UserSchema.statics.saveImage = function (id, image, cb) {
-
-    var self = this;
-
-    require('syn/lib/domain/next-tick')(cb, function (domain) {
-      var cloudinary = require('cloudinary');
-            
-      cloudinary.config({ 
-        cloud_name      :   config.cloudinary.cloud.name, 
-        api_key         :   config.cloudinary.API.key, 
-        api_secret      :   config.cloudinary.API.secret 
-      });
-
-      cloudinary.uploader.upload(path.join(config.tmp, image), function (result) {
-        self.update({ _id: id }, { image: result.url }, cb);
-      });
+    virtuals.forEach(function (virtual) {
+      UserSchema.virtual(toCamelCase(virtual)).get(
+        require('syn/models/User/virtuals/' + toSlug(virtual)));
     });
-  };
 
-  UserSchema.statics.addRace              =   require('./User/add-race');
-  UserSchema.statics.removeRace           =   require('./User/remove-race');
-  UserSchema.statics.setMaritalStatus     =   require('./User/set-marital-status');
-  UserSchema.statics.setEmployment        =   require('./User/set-employment');
-  UserSchema.statics.setEducation         =   require('./User/set-education');
-  UserSchema.statics.setCitizenship       =   require('./User/set-citizenship');
-  UserSchema.statics.setBirthdate         =   require('./User/set-birthdate');
-  UserSchema.statics.setGender            =   require('./User/set-gender');
-  UserSchema.statics.setRegisteredVoter   =   require('./User/set-registered-voter');
-  UserSchema.statics.setParty             =   require('./User/set-party');
-  UserSchema.statics.disposable           =   require('./User/disposable');
+    Model = mongoose.model('User', UserSchema);
+  }
 
-  module.exports = mongoose.model('User', UserSchema);
+  run.apply(null, deps);
+
+  module.exports = Model;
 
 } ();

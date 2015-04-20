@@ -21,11 +21,17 @@
 
   "Item Description"  :     " > .item-text .item-description",
 
-  "Promote"           :     ".promote",
+  "Promote"           :     " > .item-collapsers > .promote",
 
   "Item Promote"      :     " > .item-collapsers > .promote",
 
   "Promote Left Item Subject" :   ".left-item.subject h4",
 
-  "Promote Left Item Description" :   ".left-item.description"
+  "Promote Left Item Description" :   ".left-item.description",
+
+  "Item"              :     ".item",
+
+  "Item ID Prefix"    :     "item-",
+
+  "Item Toggle Promote" :   " > .item-buttons .item-toggle-promote"
 }

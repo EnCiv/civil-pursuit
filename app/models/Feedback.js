@@ -12,27 +12,38 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var User = require('./User');
-var Item = require('./Item');
+try {
+  mongoose.model('User');
+}
+catch ( error ) {
+  require('syn/models/User');
+}
+
+try {
+  mongoose.model('Item');
+}
+catch ( error ) {
+  require('syn/models/Item');
+}
 
 var FeedbackSchema = new Schema({
-  "item": {
-    type: Schema.Types.ObjectId,
-    ref: 'Item',
-    required: true
+  "item"          : {
+    type          : Schema.Types.ObjectId,
+    ref           : 'Item',
+    required      : true
   },
-  "user": {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  "user"          : {
+    type          : Schema.Types.ObjectId,
+    ref           : 'User',
+    required      : true
   },
-  "feedback": {
-    type: String,
-    required: true
+  "feedback"      : {
+    type          : String,
+    required      : true
   },
-  "created": {
-    "type": Date,
-    "default": Date.now
+  "created"       : {
+    "type"        : Date,
+    "default"     : Date.now
   }
 });
 

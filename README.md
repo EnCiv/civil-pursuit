@@ -63,6 +63,6 @@ There are 4 levels of testing:
 ## Test commands
 
 ```bash
-node app/business/bin/test ls # View all test
+node app/bin/test test # Run all test
 ``` 
 

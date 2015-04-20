@@ -1,120 +1,71 @@
-/***
-
-
-         @\_______/@
-        @|XXXXXXXX |
-       @ |X||    X |
-      @  |X||    X |
-     @   |XXXXXXXX |
-    @    |X||    X |             V
-   @     |X||   .X |
-  @      |X||.  .X |                      V
- @      |%XXXXXXXX%||
-@       |X||  . . X||
-        |X||   .. X||                               @     @
-        |X||  .   X||.                              ||====%
-        |X|| .    X|| .                             ||    %
-        |X||.     X||   .                           ||====%
-       |XXXXXXXXXXXX||     .                        ||    %
-       |XXXXXXXXXXXX||         .                 .  ||====% .
-       |XX|        X||                .        .    ||    %  .
-       |XX|        X||                   .          ||====%   .
-       |XX|        X||              .          .    ||    %     .
-       |XX|======= X||============================+ || .. %  ........
-===== /            X||                              ||    %
-                   X||           /)                 ||    %
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Nina Butorac
-
-                                                                             
-                                                                       
-
-         $$$$$$$  $$    $$  $$$$$$$    $$$$$$    $$$$$$    $$$$$$ 
-        $$        $$    $$  $$    $$        $$  $$    $$  $$    $$
-         $$$$$$   $$    $$  $$    $$   $$$$$$$  $$    $$  $$    $$
-              $$  $$    $$  $$    $$  $$    $$  $$    $$  $$    $$
-        $$$$$$$    $$$$$$$  $$    $$   $$$$$$$  $$$$$$$   $$$$$$$ 
-                        $$                      $$        $$      
-                        $$                      $$        $$     
-                   $$$$$$                       $$        $$                     
-
-
-**/
-
 ! function () {
   
   'use strict';
 
-  /**
-   * The Item Model
-   * 
-   * @class ItemSchema
-   * @author francoisrvespa@gmail.com
-  */
+  var Model;
 
-  var config        =     require('../config.json');
+  var di = require('syn/lib/util/di/domain');
 
-  var path          =     require('path');
+  var deps = [
+    'mongoose',
+    'mongoose-simple-random',
+    'syn/models/Item/schema',
+    'syn/models/Item/pre/validate',
+    'syn/models/Item/pre/save',
+    'syn/models/Item/post/init',
+    'syn/lib/util/to-slug',
+    'syn/lib/util/to-camel-case'
+  ]
+    .map(function (dep) {
+      return require(dep);
+    });
 
-  var mongoose      =     require('mongoose');
+  function run (mongoose, findRandom, schema, preValidate, preSave, postInit, toSlug, toCamelCase) {
+    
+    var ItemSchema = new mongoose.Schema(schema);
 
-  var Schema        =     mongoose.Schema;
+    ItemSchema
 
-  var User          =     require('./User');
+      .plugin(findRandom)
 
-  var ItemSchema    =     new Schema(require('./Item/schema'));
+      .pre('validate', preValidate)
 
-  ItemSchema.plugin(require('mongoose-simple-random'));
+      .pre('save', preSave)
 
-  // PRE INIT
-  // ========
+      .post('init', postInit);
 
-  ItemSchema.post( 'init', function postInit () {
-    this._original = this.toObject();
-  });
+    // STATIC METHODS
+    // ==============
 
-  // PRE VALIDATE
-  // ============
+    var statics = [
+      'Get Panel Items',
+      'Generate Short ID'
+    ];
 
-  ItemSchema.pre('validate', function preValidate (next) {
-  /*  if ( this.isNew && this.parent ) {
-      this.parent = Schema.Types.ObjectId(this.parent);
-    }*/
-    return next();
-  });
+    statics.forEach(function (_static) {
+      ItemSchema.statics[toCamelCase(_static)] =
+        require('syn/models/Item/statics/' + toSlug(_static));
+    });
 
-  // PRE SAVE
-  // ========
+    // METHODS
+    // =======
 
-  ItemSchema.pre('save', require('./Item/pre.save'));
+    var methods = [
+      'To Panel Item',
+      'Get Popularity'
+    ];
 
-  ItemSchema.statics.evaluate                 =     require('./Item/evaluate');
+    methods.forEach(function (_method) {
+      ItemSchema.methods[toCamelCase(_method)] =
+        require('syn/models/Item/methods/' + toSlug(_method));
+    });
 
-  ItemSchema.statics.details                  =     require('./Item/details');
+    Model = mongoose.model('Item', ItemSchema);
+  
+  }
 
-  ItemSchema.statics.incrementView            =     require('./Item/incrementView');
+  run.apply(null, deps);
 
-  ItemSchema.statics.incrementPromotion       =     require('./Item/incrementPromotion');
-
-  ItemSchema.statics.getBatch                 =     require('./Item/get-batch');
-
-  ItemSchema.methods.getPromotionPercentage   =     require('./Item/get-promotion-percentage');
-
-  ItemSchema.methods.getLineage               =     require('./Item/get-lineage');
-
-  ItemSchema.methods.getEntourage             =     require('./Item/get-entourage');
-
-  ItemSchema.methods.countRelated             =     require('./Item/count-related');
-
-  ItemSchema.methods.getRelated               =     require('./Item/get-related');
-
-  ItemSchema.methods.getHarmony               =     require('./Item/get-harmony');
-
-  ItemSchema.methods.adjustImage              =     require('./Item/adjust-image');
-
-  // EXPORT
-  // ======
-
-  var Item = module.exports = mongoose.model('Item', ItemSchema);
+  module.exports = Model;
 
 } ();

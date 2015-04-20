@@ -2,145 +2,148 @@
   
   'use strict';
 
-  var mongoose    =   require('mongoose');
+  var schema;
 
-  var Schema      =   mongoose.Schema;
+  try {
+    require('syn/models/Config');
+    require('syn/models/Country');
+  }
+  catch ( error ) { /** Already imported **/ }
 
-  require('syn/models/Config');
-  require('syn/models/Country');
+  var deps = [
+    'mongoose',
+    'syn/lib/util/is/cloudinary-url'
+  ];
 
-  module.exports = {
+  deps = deps.map(function (dep) {
+    return require(dep);
+  });
 
-    /** email */
+  function run (mongoose, isCloudinaryUrl) {
+    schema = {
 
-    "email": {        
-      "type":             String,
-      "required":         true,
-      "index": {
-        "unique":         true
+      "email"             :     {
+
+        "type"            :     String,
+        "required"        :     true,
+        "index"           :     {
+          "unique"        :     true
+        }
+      },
+      
+      "password"          :     {
+
+        "type"            :     String,
+        "required"        :     true
+      },
+
+      "image"             :     {
+        
+        "type"            :     String,
+        "validate"        :     isCloudinaryUrl
+      },
+
+      /** twitter ID if any **/
+
+      "twitter"           :     String,
+
+      /** Facebook ID if any **/
+
+      "facebook"          :     String,
+
+      "first_name"        :     String,
+
+      "middle_name"       :     String,
+
+      "last_name"         :     String,
+
+      /** gps location **/
+
+      "gps"               :     {
+
+        "type"            :     [Number], // [<longitude>, <latitude>]
+        "index"           :     '2d'
+      },
+
+      /** Date when GPS was validate **/
+
+      "gps validated"     :    Date,
+
+      // preferences
+
+      "preferences"       :   [
+        new mongoose.Schema({
+          "name"          :   String,
+          "value"         :   mongoose.Schema.Types.Mixed
+        })
+      ],
+
+      /** Activation key */
+
+      "activation_key"    :   String,
+
+      /** Activation URL */
+
+      "activation_token"  :   String,
+
+      /** Race **/
+
+      "race"              :   [{
+
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "Config.race"
+      }],
+
+      /** Marital status **/
+
+      "married"           :   {
+
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "Config.married"
+      },
+
+      /** Employment **/
+
+      "employment"        :   {
+
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "Config.employment"
+      },
+
+      /** Education **/
+
+      "education"         :   {
+
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "Config.education"
+      },
+
+      /** Citizenship **/
+
+      "citizenship"       :   [{
+
+        "type"            :   mongoose.Schema.Types.ObjectId,
+        "ref"             :   "Country"
+      }],
+
+      "dob"               :   Date,
+
+      "gender"            :   String, /** M for male, F for female */
+
+      "registered_voter"  :   Boolean,
+
+      /** Political party **/
+
+      "party"             :   {
+        
+        "type"            :    mongoose.Schema.Types.ObjectId,
+        "ref"             :    "Config.party"
       }
-    },
+    };
+  }
 
-    /** password **/
-    
-    "password": {
-      "type":             String,
-      "required":         true
-    },
+  run.apply(null, deps);
 
-    /** created **/
-
-    "created": {
-      "type":             Date,
-      "default":          Date.now
-    },
-
-    /** image url **/
-
-    "image":            String,
-
-    /** twitter ID if any **/
-
-    "twitter":          String,
-
-    /** Facebook ID if any **/
-
-    "facebook":         String,
-
-    /** first name **/
-
-     "first_name":      String,
-
-    /** middle name **/
-
-     "middle_name":     String,
-
-    /** last name **/
-
-     "last_name":       String,
-
-    /** gps location **/
-
-    "gps": {
-      "type":             [Number], // [<longitude>, <latitude>]
-      "index":            '2d'
-    },
-
-    /** Date when GPS was validate **/
-
-    "gps validated":    Date,
-
-    // preferences
-
-    "preferences": [
-      new Schema({
-        "name":         String,
-        "value":        Schema.Types.Mixed
-      })
-    ],
-
-    /** Activation key */
-
-    "activation_key":   String,
-
-    /** Activation URL */
-
-    "activation_token":   String,
-
-    /** Race **/
-
-    "race": [{
-      "type":         Schema.Types.ObjectId,
-      "ref":          "Config.race"
-    }],
-
-    /** Marital status **/
-
-    "married": {
-      "type":         Schema.Types.ObjectId,
-      "ref":          "Config.married"
-    },
-
-    /** Employment **/
-
-    "employment": {
-      "type":         Schema.Types.ObjectId,
-      "ref":          "Config.employment"
-    },
-
-    /** Education **/
-
-    "education": {
-      "type":         Schema.Types.ObjectId,
-      "ref":          "Config.education"
-    },
-
-    /** Citizenship **/
-
-    "citizenship": [{
-      "type":         Schema.Types.ObjectId,
-      "ref":          "Country"
-    }],
-
-    /** DOB **/
-
-    "dob": Date,
-
-
-    /** Gender */
-
-    "gender": String, /** M for male, F for female */
-
-    /** Registered voter */
-
-    "registered_voter": Boolean,
-
-    /** Political party **/
-
-    "party": {
-      "type":         Schema.Types.ObjectId,
-      "ref":          "Config.party"
-    }
-  };
+  module.exports = schema;
 
 } ();

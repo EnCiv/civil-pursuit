@@ -8,23 +8,12 @@
     name        :   String,
     message     :   String,
     code        :   String,
-    stack       :   String,
+    stack       :   [String],
     debug       :   Object,
     repair      :   [mongoose.Schema.Types.Mixed]
   });
 
-  schema.statics.throwError = function (error) {
-    if ( error instanceof Error ) {
-      this.create({
-        name      : error.name,
-        message   : error.message,
-        code      : error.code,
-        stack     : error.stack,
-        debug     : error.debug,
-        repair    : error.repair
-      }, function () {});
-    }
-  };
+  schema.statics.throwError = require('syn/models/Error/statics/throw-error');
 
   module.exports = mongoose.model('Error', schema);
 

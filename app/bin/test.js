@@ -4,51 +4,84 @@
   
   'use strict';
 
-  if ( process.argv[2] === 'ls' ) {
-    console.log('Models');
-    console.log('IO');
-    console.log('Web');
+  var di = require('syn/lib/util/di/domain');
 
-    return;
+  var deps = [
+    'path',
+    'fs',
+    'async',
+    'mongoose',
+    'syn/lib/util/ls',
+    'syn/lib/Test',
+    'syn/lib/util/to-human',
+    'colors'
+  ];
+
+  function onError(error) {
+    throw error;
   }
 
-  var Test  = require('syn/lib/Test');
+  function run (test, domain, path, fs, async, mongoose, ls, Test, toHuman) {
 
-  var suite = {};
+    var tests = [];
 
-  var nightwatch = require('syn/lib/nightwatch');
+    test = test.trim().replace(/\/?/, '');
 
-  var args = process.argv
+    var TEST_BASE = path.resolve(__dirname, '../../');
+    var TEST_DIR = path.join(TEST_BASE, 'test');
+    var TEST_PATH = path.join(TEST_BASE, test);
 
-    .filter(function (arg, i) {
-      return i > 1;
-    })
+    if ( ! test ) {
+      throw new Error('Missing test');
+    }
 
-    .map(function (arg) {
+    function recursive (dir) {
 
-      suite[arg] = require('syn/' + arg);
+      var files = fs.readdirSync(dir);
 
-      return arg;
+      files.forEach(function (file) {
 
-    });
+        if ( /\.js$/.test(file) ) {
+          tests.push(require(path.join(dir, file)));
+        }
 
-  require('mongoose').connect(process.env.MONGOHQ_URL);
+        else {
+          recursive(path.join(dir, file));
+        }
 
-  // console.log(suite);
+      });
+    }
 
-  require('mongoose').connection.on('connected', function () {
-    new Test.suite('Running test from command line', suite, function (error) {
-      
-      if ( error ) {
-        console.log('FAIL');
+    fs.stat(TEST_PATH, domain.intercept(function (stat) {
+        
+      if ( stat.isFile() ) {
+        Test([require(TEST_PATH)], function (error) {
+          if ( error ) {
+            error.stack.split(/\n/).forEach(function (line) {
+              console.log(line.yellow);
+            });
+          }
+        });
       }
-      else {
-        console.log('WIN');
 
-        process.exit(0);
+      else if ( stat.isDirectory() ) {
+
+        recursive(TEST_PATH);
+
+        Test(tests, function (error) {
+          if ( error ) {
+            error.stack.split(/\n/).forEach(function (line) {
+              console.log(line.yellow);
+            });
+          }
+        });
       }
 
-    });
-  });
+    }));
+
+  }
+
+  di(onError, deps, run.bind(null, process.argv[2]));
+    
 
 } ();
