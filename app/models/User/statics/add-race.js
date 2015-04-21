@@ -2,13 +2,16 @@
   
   'use strict';
 
-  var User = require('syn/models/User');
+  var di = require('syn/lib/util/di/domain');
+
+  var deps = [];
 
   function addRace (user_id, race_id, cb) {
     
     var self = this;
 
-    require('syn/lib/domain/next-tick')(cb, function (domain) {
+    di(cb, deps, function (domain) {
+
       self
         
         .findById(user_id)
@@ -30,7 +33,6 @@
           var hasRace = user.race.reduce(reduce, false);
 
           if ( hasRace ) {
-            // return cb(new Error('Already has race'));
             throw new Error('Already has race');
           }
 
@@ -39,6 +41,7 @@
           user.save(cb);
 
         }));
+    
     });
 
   }

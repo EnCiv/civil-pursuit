@@ -4,51 +4,49 @@
 
   var di = require('syn/lib/util/di/domain');
 
-  var deps = ['syn/lib/util/random-string'];
+  var deps = ['async', 'syn/lib/util/random-string'];
 
   function makePasswordResettable (email, cb) {
 
     var self = this;
 
-    di(cb, deps, function (domain, randomString) {
+    di(cb, deps, function (domain, async, randomString) {
 
-    });
+      async.parallel({
+        key   :   function (done) {
+          randomString(8, done);
+        },
 
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      cb(error);
-    });
-    
-    domain.run(function () {
+        token :   function (done) {
+          randomString(8, done);
+        }
+      },
 
-      var key = require('crypto').randomBytes(5).toString('hex');
-      var token = require('crypto').randomBytes(5).toString('hex');
-
-      self
+        domain.intercept(function (results) {
         
-        .update(
+          self.update(
+            
+            { email: email },
 
-          { email: email },
-          
-          {
-            activation_key: key, 
-            activation_token: token
-          }
+            {
+              activation_key    :   results.key,
+              activation_token  :   results.token
+            })
+
+            .exec(domain.intercept(function (number) {
+              if ( ! number ) {
+                var error = new Error('No such email');
+
+                error.code = 'DOCUMENT_NOT_FOUND';
+
+                throw error;
+              }
+
+              cb(null, { key: key, token: token });
+            }));
         
-        )
-
-        .exec(domain.intercept(function (number) {
-          if ( ! number ) {
-            var error = new Error('No such email');
-
-            error.code = 'DOCUMENT_NOT_FOUND';
-
-            throw error;
-          }
-
-          cb(null, { key: key, token: token });
         }));
+
     });
   }
 

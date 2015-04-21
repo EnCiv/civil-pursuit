@@ -20,6 +20,7 @@
     { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 1, 8792, 7182] },
 
     { name: [test, 'test/lib'].join(' ') },
+    { name: [test, 'test/models/Config'].join(' ') },
     // { name: [test, 'models/test/Item'].join(' ') },
     
     // { name: [test, 'io/add-view'].join(' ') },
