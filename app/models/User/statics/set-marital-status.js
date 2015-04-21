@@ -12,8 +12,7 @@
       
       .on('error', cb)
     
-      .run(function () {
-        
+      .run(process.nextTick.bind(process, function () {
         self
           .findById(user_id)
           .exec(domain.intercept(function (user) {
@@ -25,8 +24,7 @@
 
             user.save(cb);
           }));
-
-      });
+      }));
 
   }
 
