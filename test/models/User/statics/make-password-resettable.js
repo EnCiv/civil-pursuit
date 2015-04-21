@@ -23,7 +23,7 @@
       var mongo = mongoUp();
 
       function test__models__User__statics__makePasswordResettable____createsDisposableUser (done) {
-        
+
         User.disposable(domain.intercept(function (randomUser) {
           user = randomUser;
           done();

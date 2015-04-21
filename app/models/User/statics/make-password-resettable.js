@@ -42,7 +42,7 @@
                 throw error;
               }
 
-              cb(null, { key: key, token: token });
+              cb(null, { key: results.key, token: results.token });
             }));
         
         }));
