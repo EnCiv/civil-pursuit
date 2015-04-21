@@ -54,7 +54,7 @@
     function (test, cb) {
       var action = test;
 
-      console.log("\n", ('⌛ ' + action.name).bgCyan.bold, "\n");
+      console.log("\n", ('⌛ ' + action.name).bgBlue.bold, "\n");
 
       var chunks = test.name.split(/\s/);
 
