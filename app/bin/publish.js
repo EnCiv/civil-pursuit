@@ -70,7 +70,7 @@
 
           if ( ok.indexOf(status) > -1 ) {
 
-            console.log("\n", ('✔ ' + action.name).bgGreen, "\n");
+            console.log("\n", ('✔ ' + action.name).bgGreen.bold, "\n");
 
             cb();
 
