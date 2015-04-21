@@ -4,18 +4,22 @@
 
   function removeRace (user_id, race_id, cb) {
     
-    var self = this;
+    this
+      .findById(user_id)
+      .exec()
+      .then(removeUserRace, cb);
 
-    require('syn/lib/domain/next-tick')(cb, function (domain) {
+    function removeUserRace (user) {
+
+      var domain = require('domain').create();
       
-      self
+      domain
         
-        .findById(user_id)
-
-        .exec(domain.intercept(function (user) {
-          
+        .on('error', cb)
+      
+        .run(function () {
           if ( ! user ) {
-            return cb(new Error('No such user ' + user_id));
+            return reject(new Error('No such user ' + user_id));
           }
 
           user.race = user.race.filter(function (race) {
@@ -23,10 +27,9 @@
           });
 
           user.save(cb);
-
-        }));
-    
-    });
+        });
+      
+    }
 
   }
 
