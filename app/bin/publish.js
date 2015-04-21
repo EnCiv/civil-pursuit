@@ -21,6 +21,7 @@
 
     { name: [test, 'test/lib'].join(' ') },
     { name: [test, 'test/models/Config'].join(' ') },
+    { name: [test, 'test/models/Country'].join(' ') },
     // { name: [test, 'models/test/Item'].join(' ') },
     
     // { name: [test, 'io/add-view'].join(' ') },
