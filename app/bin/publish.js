@@ -15,11 +15,11 @@
   var deployMessage = process.argv[2];
 
   var tests = [
-    { name: 'gulp build-prod' },
+    // { name: 'gulp build-prod' },
 
     { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 8792, 7182] },
 
-    { name: [test, 'models/test/User'].join(' ') },
+    { name: [test, 'test/lib'].join(' ') },
     // { name: [test, 'models/test/Item'].join(' ') },
     
     // { name: [test, 'io/add-view'].join(' ') },
@@ -39,8 +39,8 @@
     // { name: [test, 'web/reference-opens-in-a-new-window'].join(' ') },
     // { name: [test, 'web/item-image-display'].join(' ') },
 
-    { name: [test, 'web/driver/create-topic'].join(' ') },
-    { name: [test, 'web/driver/promote'].join(' ') },
+    // { name: [test, 'web/driver/create-topic'].join(' ') },
+    // { name: [test, 'web/driver/promote'].join(' ') },
 
     // { name: 'git push heroku master' }
   ];

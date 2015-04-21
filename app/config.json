@@ -6,6 +6,8 @@
   "secret":"hYGhdj729k2kdmsñw9hsy6GGW",
   
   "entry image maximum width": 160,
+
+  "example image for test upload": "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
   
   "cloudinary": {
     

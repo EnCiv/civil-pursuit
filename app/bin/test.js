@@ -35,6 +35,16 @@
       throw new Error('Missing test');
     }
 
+    var testsToRun = 0;
+    var testsPassed = 0;
+    var testsDone = false;
+
+    process.on('exit', function () {
+      if ( ! testsDone ) {
+        console.log(' × Tests failed'.bgRed.bold, 'Callback missing somewhere'.red);
+      }
+    });
+
     function recursive (dir) {
 
       var files = fs.readdirSync(dir);
@@ -55,33 +65,27 @@
     fs.stat(TEST_PATH, domain.intercept(function (stat) {
         
       if ( stat.isFile() ) {
-        Test([require(TEST_PATH)], function (error) {
-          if ( error ) {
-            error.stack.split(/\n/).forEach(function (line) {
-              console.log(line.yellow);
-            });
-          }
-          else {
-            console.log(' ✔ Test OK!'.bgGreen.bold);
-          }
-        });
+        tests.push(require(TEST_PATH));
       }
 
       else if ( stat.isDirectory() ) {
-
         recursive(TEST_PATH);
-
-        Test(tests, function (error) {
-          if ( error ) {
-            error.stack.split(/\n/).forEach(function (line) {
-              console.log(line.yellow);
-            });
-          }
-          else {
-            console.log(' ✔ Test OK!'.bgGreen.bold);
-          }
-        });
       }
+
+      testsToRun = tests.length;
+
+      Test(tests, function (error) {
+        testsDone = true;
+
+        if ( error ) {
+          error.stack.split(/\n/).forEach(function (line) {
+            console.log(line.yellow);
+          });
+        }
+        else {
+          console.log(' ✔ Test OK!'.bgGreen.bold);
+        }
+      });
 
     }));
 

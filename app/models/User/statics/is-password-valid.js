@@ -4,10 +4,10 @@
 
   var bcrypt = require('bcrypt');
 
-  function Models__User__Statics__isPasswordValid (requestPassword, realPassword, cb) {
+  function models__User__statics__isPasswordValid (requestPassword, realPassword, cb) {
     bcrypt.compare(requestPassword, realPassword, cb);
   }
 
-  module.exports = Models__User__Statics__isPasswordValid;
+  module.exports = models__User__statics__isPasswordValid;
 
 } ();

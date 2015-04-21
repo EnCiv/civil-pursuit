@@ -22,6 +22,10 @@
 
       var series = [];
 
+      var total = serie.length;
+
+      var passed = 0;
+
       series = serie.map(function (test) {
 
         return function (done) {
@@ -43,6 +47,7 @@
             }
 
             else {
+              passed ++;
               console.log(('  ✔ '.bold + name).green);
               done();
             }
@@ -52,7 +57,10 @@
 
       });
 
-      async.series(series, done);
+      async.series(series, domain.intercept(function (results) {
+        // console.log(total, passed);
+        done(null, results);
+      }));
 
     });
 

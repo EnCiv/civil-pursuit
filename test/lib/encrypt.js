@@ -26,7 +26,8 @@
       function test__lib__encrypt____encrypts (done) {
         encrypt(str, domain.intercept(function (encrypted) {
           encrypted.should.be.a.String;
-          encrypted.should.not.be.exactly(str);  
+          encrypted.should.not.be.exactly(str);
+          done();
         }));
       }
 
