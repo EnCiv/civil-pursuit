@@ -33,7 +33,7 @@
 
       function test__models__User__statics__addRace____getRandomRace (done) {
 
-        Config.findOneRandom(domain.intercept(function (randomRace) {
+        Config.findOne(domain.intercept(function (randomRace) {
           race = randomRace;
 
           done();

@@ -2,31 +2,31 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
   function setMaritalStatus (user_id, status_id, cb) {
 
     var self = this;
+
+    var domain = require('domain').create();
     
-    require('syn/lib/domain/next-tick')(cb, function (domain) {
+    domain
+      
+      .on('error', cb)
+    
+      .run(function () {
+        
+        self
+          .findById(user_id)
+          .exec(domain.intercept(function (user) {
+            if ( ! user ) {
+              throw new Error('No such user: ' + user_id);
+            }
 
-      self
-        .findById(user_id)
-        .exec(domain.intercept(function (user) {
-          if ( ! user ) {
-            throw new Error('No such user: ' + user_id);
-          }
+            user.married = status_id;
 
-          user.married = status_id;
+            user.save(cb);
+          }));
 
-          user.save(cb);
-        }));
-
-    });
+      });
 
   }
 
