@@ -23,7 +23,10 @@
     { name: [test, 'test/models/Config'].join(' ') },
     { name: [test, 'test/models/Country'].join(' ') },
     { name: [test, 'test/models/Error'].join(' ') },
+    { name: [test, 'test/models/Feedback'].join(' ') },
+    { name: [test, 'test/models/Criteria'].join(' ') },
     { name: [test, 'test/models/Vote'].join(' ') },
+    { name: [test, 'test/models/Type'].join(' ') },
     { name: [test, 'test/models/User'].join(' ') },
     // { name: [test, 'models/test/Item'].join(' ') },
     
