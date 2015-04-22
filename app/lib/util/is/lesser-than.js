@@ -6,7 +6,6 @@
     return function (value) {
 
       if ( typeof value === 'string' ) {
-        console.log('is', value.length, 'lesser than', max,'?', value.length < max)
         return value.length < max;
       }
 

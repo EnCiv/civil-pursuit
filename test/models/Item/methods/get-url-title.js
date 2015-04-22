@@ -9,13 +9,14 @@
     'string',
     'syn/lib/Test',
     'syn/models/Item',
+    'syn/models/User',
     'syn/lib/util/connect-to-mongoose',
     'should'
   ];
 
   function test__models__Item__methods__getUrlTitle (done) {
 
-    di(done, deps, function (domain, httpGet, S, Test, Item, mongoUp) {
+    di(done, deps, function (domain, httpGet, S, Test, Item, User, mongoUp) {
 
       try {
         should.Assertion.add('Item', require('../.Item'), true);
@@ -68,10 +69,11 @@
           done();
       }
 
-      function test__models__Item__methods__getUrlTitle____getRandomItem (done) {
+      function test__models__Item__methods__getUrlTitle____createItem (done) {
 
-        Item.findOneRandom(domain.intercept(function (randomItem) {
-          item = randomItem;
+        Item.disposable(domain.intercept(function (testItem) {
+          item = testItem;
+          item.references.push({ url: url });
           done(); 
         }))
       }
@@ -95,14 +97,19 @@
 
       function test__models__Item__methods__getUrlTitle____cleaningOut (done) {
 
-        mongo.disconnect(done);
+        User.remove({ _id: item.user }, domain.intercept(function () {
+          item.remove(domain.intercept(function () {
+            mongo.disconnect(done);
+          }));
+        }));
+        
       }
 
       Test([
 
           test__models__Item__methods__getUrlTitle____is_A_Function,
           test__models__Item__methods__getUrlTitle____getUrlTitleUsingRequest,
-          test__models__Item__methods__getUrlTitle____getRandomItem,
+          test__models__Item__methods__getUrlTitle____createItem,
           test__models__Item__methods__getUrlTitle____isAnItem,
           test__models__Item__methods__getUrlTitle____getUrlTitleShouldMatch,
           test__models__Item__methods__getUrlTitle____cleaningOut

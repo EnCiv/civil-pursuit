@@ -41,61 +41,16 @@
           done();
       }
 
-      function test__models__Item__methods__getPopularity____getRandomType (done) {
-
-        Type.findOneRandom(domain.intercept(function (randomType) {
-          type = randomType;
-
-          if ( ! type.parent ) {
-            return done();
-          }
-
-          test__models__Item__methods__getPopularity____getRandomParent(done);
-          
-        }))
-      }
-
-      function test__models__Item__methods__getPopularity____getRandomParent (done) {
-
-        Item
-          .findOne({ type: type.parent })
-          .exec(domain.intercept(function (parentItem) {
-            parent = parentItem;
-            done();
-          }));
-      }
-
-      function test__models__Item__methods__getPopularity____createTestUser (done) {
-
-        User.disposable(domain.intercept(function (randomUser) {
-          user = randomUser;
-
-          done();  
-        }))
-      }
-
       function test__models__Item__methods__getPopularity____createTestItem (done) {
 
-        var _item = {
-          type          :   type._id,
-          subject       :   'Test subject',
-          description   :   'Test description',
-          user          :   user._id
-        };
-
-        if ( parent ) {
-          _item.parent  =   parent._id;
-        }
-
         Item
-          .create(_item)
-          .then(function (newItem) {
+          .disposable(domain.intercept(function (newItem) {
 
             item = newItem;
 
             done();
 
-          }, done);
+          }));
       }
 
       function test__models__Item__methods__getPopularity____isAnItem (done) {
@@ -127,14 +82,16 @@
 
       function test__models__Item__methods__getPopularity____cleaningOut (done) {
 
-        mongo.disconnect(done);
+        User.remove({ _id: item.user }, domain.intercept(function () {
+          item.remove(domain.intercept(function () {
+            mongo.disconnect(done);
+          }));
+        }));
       }
 
       Test([
 
           test__models__Item__methods__getPopularity____is_A_Function,
-          test__models__Item__methods__getPopularity____getRandomType,
-          test__models__Item__methods__getPopularity____createTestUser,
           test__models__Item__methods__getPopularity____createTestItem,
           test__models__Item__methods__getPopularity____isAnItem,
           test__models__Item__methods__getPopularity____getPopularity,
