@@ -51,7 +51,11 @@
 
       files.forEach(function (file) {
 
-        if ( /\.js$/.test(file) ) {
+        if ( /^\./.test(file) ) {
+          // ...
+        }
+
+        else if ( /\.js$/.test(file) ) {
           tests.push(require(path.join(dir, file)));
         }
 
