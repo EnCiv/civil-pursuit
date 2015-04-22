@@ -2,11 +2,28 @@
   
   'use strict';
 
-  var di = require('syn/lib/di');
+  var di = require('syn/lib/util/di/domain');
 
-  function Item_GetPanelItems (done) {
+  var deps = [
+    'syn/lib/Test',
+    'syn/models/Item',
+    'syn/models/Type',
+    'syn/lib/util/connect-to-mongoose',
+    'should'
+  ];
 
-    di([ 'should', 'syn/lib/Test', 'syn/models/Item', 'syn/models/Type', 'syn/lib/domain' ], function (should, Test, Item, Type, runSafe) {
+  function test__models__Item__statics__getPanelItems (done) {
+
+    di(done, deps, function (domain, Test, Item, Type, mongoUp) {
+
+      try {
+        should.Assertion.add('Item', require('../.Item'), true);
+      }
+      catch ( error ) {
+        // Assertion item already loaded
+      }
+
+      var mongo = mongoUp();
 
       var items;
 
@@ -14,73 +31,80 @@
 
       var type;
 
-      Test.suite('Model / Item / Get Panel Items', {
+      function test__models__Item__statics__getPanelItems____is_A_Function (done) {
 
-        'Get Panel Items should be a static function': function (done) {
-          Item.schema.statics.should.have.property('getPanelItems')
+        Item.schema.statics.should.have.property('getPanelItems')
             .which.is.a.Function;
           done();
-        },
+      }
 
-        'Should fetch a random type': function (done) {
-          runSafe(done, function (domain) {
+      function test__models__Item__statics__getPanelItems____getRandomType (done) {
 
-            Type.findOneRandom(domain.intercept(function (randomType) {
-              type = randomType;
+        Type.findOneRandom(domain.intercept(function (randomType) {
+          type = randomType;
 
-              // panel.type = type._id;
-              panel.type = '55335bf22ee06eff1744dcfd';
+          // panel.type = type._id;
+          panel.type = '55335bf22ee06eff1744dcfd';
 
-              done();
-            }));
-
-          });
-        },
-
-        'Should not throw': function (done) {
-          runSafe(done, function (domain) {
-
-            Item.getPanelItems(panel, domain.intercept(function (panelItems) {
-              items = panelItems;
-
-              done();
-            }))
-
-          });
-        },
-
-        'Items should be an array': function (done) {
-          runSafe(done, function (domain) {
-
-            items.should.be.an.Array;
-
-            done();
-
-          });
-        },
-
-        'All items type should be the same as panel type': function (done) {
-          runSafe(done, function (domain) {
-
-            items.every(function (item) {
-              return item.type._id.toString() === panel.type.toString();
-            }).should.be.true;
-
-            done();
-
-          });
-        },
-
-        'Items should be ordered by promotions descending': function (done) {
           done();
-        }
+        }));
+      }
 
-      }, done);
+      function test__models__Item__statics__getPanelItems____getPanelItems (done) {
+
+        Item.getPanelItems(panel, domain.intercept(function (panelItems) {
+          items = panelItems;
+
+          done();
+        }))
+      }
+
+      function test__models__Item__statics__getPanelItems____itemsIsAnArray (done) {
+
+        items.should.be.an.Array;
+
+        done();
+      }
+
+      function test__models__Item__statics__getPanelItems____allItemsAreOfTheSameType (done) {
+
+        items.every(function (item) {
+          return item.type._id.toString() === panel.type.toString();
+        }).should.be.true;
+
+        done();
+      }
+
+      function test__models__Item__statics__getPanelItems____allItemsAreItems (done) {
+
+        items.forEach(function (item) {
+          item.should.be.an.Item;
+        });
+
+        done();
+      }
+
+      function test__models__Item__statics__getPanelItems____cleaningOut (done) {
+
+        mongo.disconnect(done);
+      }
+
+      Test([
+
+          test__models__Item__statics__getPanelItems____is_A_Function,
+          test__models__Item__statics__getPanelItems____getRandomType,
+          test__models__Item__statics__getPanelItems____getPanelItems,
+          test__models__Item__statics__getPanelItems____itemsIsAnArray,
+          test__models__Item__statics__getPanelItems____allItemsAreItems,
+          test__models__Item__statics__getPanelItems____allItemsAreOfTheSameType,
+          test__models__Item__statics__getPanelItems____cleaningOut
+
+        ], done);
 
     });
 
   }
 
-  module.exports = Item_GetPanelItems;
+  module.exports = test__models__Item__statics__getPanelItems;
 
 } ();

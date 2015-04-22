@@ -20,6 +20,7 @@
     { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 1, 8792, 7182] },
 
     { name: [test, 'test/lib'].join(' ') },
+    
     { name: [test, 'test/models/User'].join(' ') },
     { name: [test, 'test/models/Config'].join(' ') },
     { name: [test, 'test/models/Country'].join(' ') },
@@ -28,6 +29,8 @@
     { name: [test, 'test/models/Criteria'].join(' ') },
     { name: [test, 'test/models/Vote'].join(' ') },
     { name: [test, 'test/models/Type'].join(' ') },
+    { name: [test, 'test/models/Item/Item.js'].join(' ') },
+    { name: [test, 'test/models/Item/statics'].join(' ') },
     
     // { name: [test, 'models/test/Item'].join(' ') },
     
