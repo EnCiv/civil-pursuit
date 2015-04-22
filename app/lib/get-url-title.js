@@ -4,6 +4,8 @@
 
   var config = require('../config.json');
 
+  var request = require('request');
+
   function getUrlTitle (url, then) {
 
     var domain = require('domain').create();
@@ -18,11 +20,11 @@
     });
 
     domain.run(function () {
-      require('request')({
-          url: url,
-          timeout:  1000 * 5,
-          headers:  {
-            'User-Agent': config['user agent']
+      request({
+          url             :   url,
+          timeout         :   1000 * 5,
+          headers         :   {
+            'User-Agent'  :   config['user agent']
           }
         },
         domain.intercept(function (response, body) {
