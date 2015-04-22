@@ -8,23 +8,31 @@
     
     var self = this;
 
-    require('syn/lib/domain/next-tick')(cb, function (domain) {
-      self
+    var domain = require('domain').create();
+    
+    domain
+      
+      .on('error', cb)
+    
+      .run(process.nextTick.bind(process, function () {
         
-        .findById(user_id)
-
-        .exec(domain.intercept(function (user) {
+        self
           
-          if ( ! user ) {
-            return cb(new Error('No such user ' + user_id));
-          }
+          .findById(user_id)
 
-          user.citizenship[position] = country_id;
+          .exec(domain.intercept(function (user) {
+            
+            if ( ! user ) {
+              return cb(new Error('No such user ' + user_id));
+            }
 
-          user.save(cb);
+            user.citizenship[position] = country_id;
 
-        }));
-    });
+            user.save(cb);
+
+          }));
+
+      }));
 
   }
 
