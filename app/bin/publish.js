@@ -24,8 +24,7 @@
     { name: [test, 'test/models/Country'].join(' ') },
     { name: [test, 'test/models/Error'].join(' ') },
     { name: [test, 'test/models/Vote'].join(' ') },
-    { name: [test, 'test/models/User/statics'].join(' ') },
-    { name: [test, 'test/models/User/virtuals'].join(' ') },
+    { name: [test, 'test/models/User'].join(' ') },
     // { name: [test, 'models/test/Item'].join(' ') },
     
     // { name: [test, 'io/add-view'].join(' ') },
