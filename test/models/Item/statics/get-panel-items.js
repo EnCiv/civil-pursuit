@@ -43,8 +43,8 @@
         Type.findOneRandom(domain.intercept(function (randomType) {
           type = randomType;
 
-          // panel.type = type._id;
-          panel.type = '55335bf22ee06eff1744dcfd';
+          panel.type = type._id;
+          // panel.type = '55335bf22ee06eff1744dcfd';
 
           done();
         }));

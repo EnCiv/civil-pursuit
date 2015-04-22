@@ -14,8 +14,6 @@
     di(cb, deps, function (domain, randomString, Item) {
 
       randomString(5, domain.intercept(function (id) {
-
-        console.log('id', id);
         
         Item
           .findOne({ id: id })
