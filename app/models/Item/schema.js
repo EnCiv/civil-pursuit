@@ -30,7 +30,7 @@
 
         "type"            :   String,
         "len"             :   5,
-        "required"        :   true,
+        // "required"        :   true,
         "index"           :   {
           "unique"        :   true
         }
@@ -57,7 +57,7 @@
       "subject"           :   {
 
         "type"            :   String,
-        "required"        :   true,
+        // "required"        :   true,
         "validate"        :   isLesserThan(255)
       },
 
@@ -93,7 +93,7 @@
       "user"              :   {
         "type"            :   mongoose.Schema.Types.ObjectId,
         "ref"             :   "User",
-        "required"        :   true,
+        // "required"        :   true,
         "index"           :   true
       },
 

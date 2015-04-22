@@ -9,7 +9,7 @@
     'syn/models/Item'
   ];
 
-  function Models__Item__Methods__GetUrlTitle (done) {
+  function models__Item__methods__getUrlTitle (done) {
 
     var self = this;
     
@@ -38,6 +38,6 @@
 
   }
 
-  module.exports = Models__Item__Methods__GetUrlTitle;
+  module.exports = models__Item__methods__getUrlTitle;
 
 } ();

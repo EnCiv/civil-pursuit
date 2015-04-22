@@ -18,14 +18,25 @@
 
     var isNew = this.isNew;
 
-    next();
-
     di(done, deps, function (domain, path, mongoose, async, config, Item) {
 
-      async.parallel({
-        'upload image'    :   self.uploadImage.bind(self, isNew),
-        'get url title'   :   self.getUrlTitle.bind(self)
-      }, done);
+      var parallels = {
+        'upload image'        :   self.uploadImage.bind(self, isNew),
+        'get url title'       :   self.getUrlTitle.bind(self)
+      };
+
+      if ( isNew ) {
+        Item.generateShortId(domain.intercept(function (id) {
+          self.id = id;
+          next();  
+        }));
+      }
+
+      else {
+        next();
+      }
+
+      async.parallel(parallels, done);
 
     });
 
