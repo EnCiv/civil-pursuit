@@ -54,8 +54,12 @@
     ];
 
     virtuals.forEach(function (virtual) {
-      UserSchema.virtual(toCamelCase(virtual)).get(
-        require('syn/models/User/virtuals/' + toSlug(virtual)));
+
+      var _virtual = 'syn/models/User/virtuals/' + toSlug(virtual) + '/get';
+
+      UserSchema
+        .virtual(toCamelCase(virtual))
+        .get(require(_virtual));
     });
 
     Model = mongoose.model('User', UserSchema);
