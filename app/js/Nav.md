@@ -19,7 +19,7 @@ This class contains a set of utilities used to create the navigation experience.
 # Usage
 
 ```js
-var Nav = require('./Nav');
+var Nav = require('syn/js/providers/Nav');
 ```
 
 # Animations

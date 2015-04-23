@@ -2,8 +2,8 @@
   
   'use strict';
 
-  var Synapp = require('../Synapp');
-  var Sign = require('../Sign');
+  var Synapp = require('syn/js/Synapp');
+  var Sign = require('syn/js/components/Sign');
 
   window.app = new Synapp();
 

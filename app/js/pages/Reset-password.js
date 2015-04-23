@@ -2,9 +2,9 @@
   
   'use strict';
 
-  var Synapp = require('../Synapp');
-  var Sign = require('../Sign');
-  var ResetPassword = require('../Reset-password');
+  var Synapp = require('syn/js/Synapp');
+  var Sign = require('syn/js/components/Sign');
+  var ResetPassword = require('syn/js/components/Reset-Password');
 
   window.app = new Synapp();
 

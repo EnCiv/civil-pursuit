@@ -2,13 +2,13 @@
   
   'use strict';
 
-  var Synapp    =   require('../Synapp');
-  var Item    =   require('../Item');
-  var Sign      =   require('../Sign');
-  var Intro     =   require('../Intro');
-  var Panel     =   require('../Panel');
+  var Synapp    =   require('syn/js/Synapp');
+  var Item      =   require('syn/js/components/Item');
+  var Sign      =   require('syn/js/components/Sign');
+  var Intro     =   require('syn/js/components/Intro');
+  var Panel     =   require('syn/js/components/Panel');
 
-  window.app = new Synapp();
+  window.app    =   new Synapp();
 
   app.ready(function onceAppConnects_HomePage () {
 
@@ -69,27 +69,36 @@
 
     else {
 
-      window.app.socket
+      var panel;
 
-        .publish('get top-level type', function (type) {
-          console.log(type);
-        });
+      window.app.socket.publish('get top-level type', function (type) {
 
-      // var panel = new Panel('Topic');
-
-      // panel
+        console.info('Page Home', 'OK get top-level type', type);
         
-      //   .load(app.domain.intercept(function onGotPanels (template) {
+        if ( ! panel ) {
+          panel = new Panel(type);
 
-      //     $('.panels').append(template);
+          panel
 
-      //     setTimeout(function renderPanel_Pause () {
-      //       panel.render(app.domain.intercept(function () {
-      //         panel.fill();
-      //       }));
-      //     }, 700);
+            .load()
 
-      //   }));
+            .then(function (template) {
+
+              $('.panels').append(template);
+
+              panel.render()
+
+                .then(function () {
+              
+                  panel.fill();
+              
+                });
+
+            });
+        }  
+
+      });
+
     }
   
   });

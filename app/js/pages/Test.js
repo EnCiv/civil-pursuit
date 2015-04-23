@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var Synapp    =   require('../Synapp');
+  var Synapp    =   require('syn/js/Synapp');
 
   window.app = new Synapp();
 
