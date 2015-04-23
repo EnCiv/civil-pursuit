@@ -2,15 +2,34 @@
   
   'use strict';
 
-  function models__User__statics__disposable (cb) {
-    var disposableUser = {
-      "email":        Math.random().toString() + process.pid.toString() + Date.now().toString() + '@synaccord.com',
-      "password":     "1234"
-    };
+  var Promise = require('promise');
 
-    this.create(disposableUser, cb);
+  function createDisposableUser (cb) {
+
+    var User = this;
+
+    var q = new Promise(function (fulfill, reject) {
+
+      var disposableUser  =   {
+        "email"           :   Math.random().toString() + process.pid.toString() + Date.now().toString() + '@synaccord.com',
+        "password"        :   "1234"
+      };
+
+      User
+
+        .create(disposableUser)
+
+        .then(fulfill, reject);
+
+    });
+
+    if ( typeof cb === 'function' ) {
+      q.then(cb.bind(null, null), cb);
+    }
+
+    return q;
   }
 
-  module.exports = models__User__statics__disposable;
+  module.exports = createDisposableUser;
 
 } ();
