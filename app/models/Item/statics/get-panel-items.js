@@ -50,7 +50,7 @@
       });
     });
 
-    promise.then(cb, cb);
+    promise.then(cb.bind(null, null), cb);
 
     return promise;
 
