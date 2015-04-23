@@ -56,7 +56,7 @@
 
       /////////////////////////////////////////////////////////////////////////
 
-      describe( ' > create test item' , function ( ) {
+      describe( 'Create test item' , function ( ) {
 
         ///////////////////////////////////////////////////////////////////////
 
@@ -93,7 +93,7 @@
 
       /////////////////////////////////////////////////////////////////////////
 
-      describe ( ' > apply to-panel-item method to test item', function () {
+      describe ( 'Apply to-panel-item method to test item', function () {
 
         ///////////////////////////////////////////////////////////////////////
 
@@ -103,8 +103,6 @@
 
             item.toPanelItem(domain.intercept(function (panelized) {
               panelItem = panelized;
-
-              console.log(panelItem);
 
               done();
             }));
@@ -122,7 +120,11 @@
 
           panelItem.should.be.a.PanelItem;
 
-          console.log('Rodriguoooooooo')
+        } );
+
+        it ( 'should have a subtype matching its type' , function () {
+
+          
 
         } );
 

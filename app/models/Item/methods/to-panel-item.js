@@ -27,6 +27,12 @@
     
     di(cb, deps, function (domain, async, Type, User, Item, toSlug, calcHarmony) {
 
+      function PanelItem (attrs) {
+        for ( var attr in attrs ) {
+          this[attr] = attrs[attr];
+        }
+      }
+
       var item      =   {
         _id         :   original._id,
         id          :   original.id,
