@@ -2,84 +2,93 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  var Item      =   require('syn/models/Item');
+  var mongoUp   =   require('syn/lib/util/connect-to-mongoose');
+  var isA       =   require('syn/lib/util/should/add');
+  var fulfill   =   require('syn/lib/util/di/domain');
 
-  var deps = [
-    'syn/lib/Test',
-    'syn/models/Item',
-    'syn/lib/util/connect-to-mongoose',
-    'should'
-  ];
+  var id;
+  var mongo;
 
-  function test__models__Item__statics__generateShortId (done) {
+  /////////////////////////////////////////////////////////////////////////////
 
-    di(done, deps, function (domain, Test, Item, mongoUp) {
+  describe ( 'Models / Item / Statics / Generate Short Id', function () {
 
-      try {
-        should.Assertion.add('Item', require('../.Item'), true);
-      }
-      catch ( error ) {
-        // Assertion item already loaded
-      }
+    ///////////////////////////////////////////////////////////////////////////
 
-      var mongo = mongoUp();
+    before ( function () {
 
-      var id;
+      mongo = mongoUp();
 
-      function test__models__Item__statics__generateShortId____is_A_Function (done) {
+      isA ( 'Item' , require('../.Item'));
 
-        Item.schema.statics.should.have.property('generateShortId')
-            .which.is.a.Function;
-          done();
-      }
+    } );
 
-      function test__models__Item__statics__generateShortId____generatesShortId (done) {
+    ///////////////////////////////////////////////////////////////////////////
 
-        Item.generateShortId(domain.intercept(function (shortId) {
-          id = shortId;
+    it ( 'should be a static method' , function () {
 
-          done();
-        }));
-      }
+      Item.schema.statics.should.have.property('generateShortId')
+        .which.is.a.Function;
 
-      function test__models__Item__statics__generateShortId____shortIdIs_A_String (done) {
+    } );
 
-        id.should.be.a.String;
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should generate a short id' , function (done) {
+
+      Item.generateShortId(function (error, shortId) {
+        if ( error ) return done(error);
+
+        id = shortId;
 
         done();
-      }
-
-      function test__models__Item__statics__generateShortId____shortIdDoesNotExistsInDB (done) {
-
-        Item.find({ id: id })
-          .exec(domain.intercept(function (items) {
-
-            items.length.should.be.exactly(0);
-
-            done();
-          }));
-
-      }
-
-      function test__models__Item__statics__generateShortId____cleaningOut (done) {
-
-        mongo.disconnect(done);
-      }
-
-      Test([
-
-          test__models__Item__statics__generateShortId____is_A_Function,
-          test__models__Item__statics__generateShortId____generatesShortId,
-          test__models__Item__statics__generateShortId____shortIdIs_A_String,
-          test__models__Item__statics__generateShortId____shortIdDoesNotExistsInDB,
-          test__models__Item__statics__generateShortId____cleaningOut
-
-        ], done);
+      });
 
     });
 
-  }
+    ///////////////////////////////////////////////////////////////////////////
 
-  module.exports = test__models__Item__statics__generateShortId;
+    describe ( 'Generated Short Id' , function () {
+
+      /////////////////////////////////////////////////////////////////////////
+
+      it ( 'should be a string' , function () {
+
+        id.should.be.a.String;
+
+      });
+
+      /////////////////////////////////////////////////////////////////////////
+
+      it ( 'should not exist in DB' , function (done) {
+
+        Item.find({ id: id })
+          
+          .exec()
+          
+          .then(function (items) {
+            items.length.should.be.exactly(0);
+
+            done();
+          });
+
+      });
+
+      /////////////////////////////////////////////////////////////////////////
+
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    after ( function () {
+
+      mongo.disconnect();
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+  } );
 
 } ();

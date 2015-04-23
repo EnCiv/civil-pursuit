@@ -21,6 +21,7 @@
 
     { name: 'mocha test/lib/util/arguments-to-array' },
     { name: 'mocha test/models/Item/methods/' },
+    { name: 'mocha test/models/Item/statics/generate-short-id' },
 
     // { name: [test, 'test/lib'].join(' ') },
 
