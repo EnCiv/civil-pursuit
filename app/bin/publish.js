@@ -22,8 +22,10 @@
     { name: 'mocha test/lib/util/arguments-to-array' },
     { name: 'mocha test/lib/util/cloudinary' },
     { name: 'mocha test/lib/util/di' },
+    { name: 'mocha test/lib/util/encrypt' },
     { name: 'mocha test/models/Item/methods/' },
     { name: 'mocha test/models/Item/statics/' },
+    { name: 'mocha test/models/Item/pre/validate' },
 
     // { name: [test, 'test/lib'].join(' ') },
 

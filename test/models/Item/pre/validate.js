@@ -2,39 +2,30 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  require('should');
 
-  var deps = [
-    'syn/lib/Test',
-    'syn/models/Item/pre/validate',
-    'should'
-  ];
+  var preValidate;
 
-  module.exports = function test__models__Item__pre__validate (done) {
-    var disposable;
+  describe ( 'Models / Item / Pre / validate' , function () {
 
-    di(done, deps, function (domain, Test, preValidate) {
+    before ( function () {
 
-      function test__models__Item__pre__validate____is_A_Function (done) {
+      preValidate = require('syn/models/Item/pre/validate');
 
-        preValidate.should.be.a.Function;
-        done();
+    } );
 
-      }
+    it ( 'should be a function' , function () {
 
-      function test__models__Item__pre__validate____callsNext (done) {
-        preValidate(done);
-      }
+      preValidate.should.be.a.Function;
 
-      Test([
+    } );
 
-          test__models__Item__pre__validate____is_A_Function,
-          test__models__Item__pre__validate____callsNext
+    it ( 'should call next' , function (done) {
 
-        ], done);
+      preValidate(done);
 
-    });
-    
-  };
+    } );
+
+  } );
 
 } ();
