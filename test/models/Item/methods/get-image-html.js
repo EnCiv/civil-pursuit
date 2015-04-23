@@ -37,7 +37,7 @@
       it ( 'should be a function' , function () {
 
         Item.schema.methods
-          .should.have.property           ('getImage')
+          .should.have.property           ('getImageHtml')
             .which.                       is.a.Function;
 
       } );
