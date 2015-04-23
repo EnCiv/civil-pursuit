@@ -69,21 +69,27 @@
 
     else {
 
-      var panel = new Panel('Topic');
+      window.app.socket
 
-      panel
+        .publish('get top-level type', function (type) {
+          console.log(type);
+        });
+
+      // var panel = new Panel('Topic');
+
+      // panel
         
-        .load(app.domain.intercept(function onGotPanels (template) {
+      //   .load(app.domain.intercept(function onGotPanels (template) {
 
-          $('.panels').append(template);
+      //     $('.panels').append(template);
 
-          setTimeout(function renderPanel_Pause () {
-            panel.render(app.domain.intercept(function () {
-              panel.fill();
-            }));
-          }, 700);
+      //     setTimeout(function renderPanel_Pause () {
+      //       panel.render(app.domain.intercept(function () {
+      //         panel.fill();
+      //       }));
+      //     }, 700);
 
-        }));
+      //   }));
     }
   
   });

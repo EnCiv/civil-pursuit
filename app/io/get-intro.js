@@ -7,7 +7,7 @@
   var Item        =   require('syn/models/Item');
   var Type        =   require('syn/models/Type');
 
-  function getIntro () {
+  function getIntro (event) {
     
     var socket = this;
 
@@ -19,15 +19,15 @@
     
     domain.run(function () {
 
-      socket.app.arte.emit('message', { socket: 'get intro' });
-
       Type
         
-        .find({ name: 'Intro' })
+        .findOne({ name: 'Intro' })
 
         .exec()
         
         .then(function (Intro) {
+
+          console.log('Intro', Intro)
 
           Item
 
@@ -37,8 +37,10 @@
 
             .then(function (intro) {
 
+              console.log('intro', intro)
+
               intro.toPanelItem(domain.intercept(function (intro) {
-                socket.emit('got intro', intro);
+                socket.ok(event, intro);
               }));
 
               

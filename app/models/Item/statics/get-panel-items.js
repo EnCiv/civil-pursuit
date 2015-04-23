@@ -20,11 +20,7 @@
     var promise = new Promise(function (fulfill, reject) {
       di(fulfill, deps, function (domain, mongoose, async, config, Item) {
 
-        var query = { type: panel.type };
-
-        if ( panel.parent ) {
-          query.parent = panel.parent;
-        }
+        console.log('GET PANEL ITEMS', panel)
 
         if ( ! panel.item ) {
           Item
@@ -41,7 +37,7 @@
                 },
 
                 domain.intercept(function (items) {
-                  fulfill(items)
+                  fulfill(items);
                 }));
 
             }));
@@ -50,7 +46,9 @@
       });
     });
 
-    promise.then(cb.bind(null, null), cb);
+    if ( typeof cb === 'function' ) {
+      promise.then(cb.bind(null, null), cb);
+    }
 
     return promise;
 

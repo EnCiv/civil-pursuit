@@ -3765,6 +3765,28 @@
         self.emit('ready');
       });
 
+      self.socket.publish = function (event) {
+
+        var args = [];
+        var done;
+
+        for ( var i in arguments ) {
+          if ( +i ) {
+            if ( typeof arguments[i] === 'function' ) {
+              done = arguments[i];
+            }
+            else {
+              args.push(arguments[i]);
+            }
+          }
+        }
+
+        self.socket.emit.apply(self.socket, [event].concat(args));
+
+        self.socket.on('OK ' + event, done);
+
+      }
+
       self.socket.on('error', function (error) {
         console.log('socket error', error);
       });
@@ -4322,21 +4344,27 @@
 
     else {
 
-      var panel = new Panel('Topic');
+      window.app.socket
 
-      panel
+        .publish('get top-level type', function (type) {
+          console.log(type);
+        });
+
+      // var panel = new Panel('Topic');
+
+      // panel
         
-        .load(app.domain.intercept(function onGotPanels (template) {
+      //   .load(app.domain.intercept(function onGotPanels (template) {
 
-          $('.panels').append(template);
+      //     $('.panels').append(template);
 
-          setTimeout(function renderPanel_Pause () {
-            panel.render(app.domain.intercept(function () {
-              panel.fill();
-            }));
-          }, 700);
+      //     setTimeout(function renderPanel_Pause () {
+      //       panel.render(app.domain.intercept(function () {
+      //         panel.fill();
+      //       }));
+      //     }, 700);
 
-        }));
+      //   }));
     }
   
   });
@@ -6459,7 +6487,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",

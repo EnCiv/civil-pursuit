@@ -4,7 +4,7 @@
 
   var Item = require('syn/models/Item');  
 
-  function getItems (panel, item) {
+  function getItems (event, panel, item) {
 
     var socket = this;
 
@@ -28,15 +28,7 @@
 
         .getPanelItems(panel)
 
-        .then(function (items) {
-
-          socket.emit('got items ' + id, panel, _items);
-
-          console.log('>>"got items ' + id + '"', panel, _items.map(function (item) {
-            return item;
-          }));
-          
-        });
+        .then(socket.ok.bind(socket, event));
     }
 
     require('syn/lib/domain')(onDomainError, run);

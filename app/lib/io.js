@@ -2,11 +2,27 @@
 
   'use strict';
 
-  var online_users = 0;
+  var online_users  =   0;
 
-  var config = require('syn/config');
+  var config        =   require('syn/config');
 
-  var ss = require('socket.io-stream');
+  var S             =   require('string');
+
+  var Promise       =   require('promise');
+
+  var ss            =   require('socket.io-stream');
+
+  var cookieParser  =   require("cookie-parser");
+
+  var Type          =   require('syn/models/Type');
+
+  function getType () {
+
+    return new Promise(function (fulfill, reject) {
+
+    });
+
+  }
 
   function WebSocketServer (app, server) {
 
@@ -20,6 +36,37 @@
       });
 
       app.arte.emit('message', 'socketIO listening');
+
+      io.use(function (socket, done) {
+
+        var domain = require('domain').create();
+
+        domain.on('error', done);
+
+        domain.run(function () {
+          process.nextTick(function () {
+            /** Retrieve user cookie 
+             *  @see      https://facundoolano.wordpress.com/2014/10/11/better-authentication-for-socket-io-no-query-strings/
+            */
+
+            // create the fake req that cookieParser will expect                          
+            var req = {
+              "headers"     :   {
+                "cookie"    :   socket.request.headers.cookie
+              }
+            };
+           
+            // run the parser and store the sessionID
+            cookieParser()(req, null, function() {});
+
+            var cookie = req.cookies.synuser;
+
+            socket.synuser = cookie;
+
+            done();
+          });
+        });
+      });
 
       io.on('connection', function (socket) {
 
@@ -69,133 +116,157 @@
           .on('disconnect', function (why) {
             online_users --;
             socket.broadcast.emit('online users', online_users);
-          })
+          });
 
-          /** happens when User identifies herself to a new race */
+        socket.ok = function (event) {
 
-          .on('add race',              require('syn/io/add-race').bind(socket))
+          var args = [];
+
+          for ( var i in arguments ) {
+            args.push(arguments[i]);
+          }
+
+          console.log.apply(console, ['>>'].concat(args));
+
+          args.shift();
+
+          socket.emit.apply(socket, ['OK ' + event].concat(args));
+        };
+
+        var listeners = [
+          'add race',
 
           /** increment item views by 1 */
 
-          .on('add view',              require('syn/io/add-view').bind(socket))
+          'add view',      
 
           /** create item */
 
-          .on('create item',           require('syn/io/create-item').bind(socket))
+          'create item',   
 
           /** change user name */
 
-          .on('change user name',      require('syn/io/change-user-name').bind(socket))
+          'change user name',
 
           /** Edit and go again */
 
-          .on('edit and go again',     require('syn/io/edit-and-go-again').bind(socket))
+          'edit and go again',
 
           /** get countries */
 
-          .on('get countries',         require('syn/io/get-countries').bind(socket))
+          'get countries', 
 
           /** Get evaluation */
 
-          .on('get evaluation',        require('syn/io/get-evaluation').bind(socket))
+          'get evaluation',
 
           /** get intro */
 
-          .on('get intro',             require('syn/io/get-intro').bind(socket))
+          'get intro',
 
           /** Get Item by id */
 
-          .on('get item by id',        require('syn/io/get-item-by-id').bind(socket))
+          'get item by id',
 
           /** Get item's details */
 
-          .on('get item details',      require('syn/io/get-item-details').bind(socket))
+          'get item details',
 
           /** Get items */
 
-          .on('get items',             require('syn/io/get-items').bind(socket))
+          'get items',     
 
           /** Get models */
 
-          .on('get models',            require('syn/io/get-models').bind(socket))
+          'get models',
+
+          'get top-level type',
 
           /** Get URL title*/
 
-          .on('get url title',         require('syn/io/get-url-title').bind(socket))
+          'get url title', 
 
           /** get user info */
 
-          .on('get user info',         require('syn/io/get-user-info').bind(socket))
+          'get user info', 
 
           /** INSERT FEEDback */
 
-          .on('insert feedback',       require('syn/io/insert-feedback').bind(socket))
+          'insert feedback',
 
           /** insert votes*/
 
-          .on('insert votes',          require('syn/io/insert-votes').bind(socket))
+          'insert votes',  
 
           /** increment item promotions by 1 */
 
-          .on('promote',               require('syn/io/promote').bind(socket))
+          'promote',       
 
           /** happens when User unselect a race */
 
-          .on('remove race',           require('syn/io/remove-race').bind(socket))
+          'remove race',   
 
           /** reset password */
 
-          .on('reset password',        require('syn/io/reset-password').bind(socket))
+          'reset password',
 
           /** create and send a password reset email */
 
-          .on('send password',         require('syn/io/send-password').bind(socket))
+          'send password', 
 
           /** set birthdate */
 
-          .on('set birthdate',         require('syn/io/set-birthdate').bind(socket))
+          'set birthdate', 
 
           /** set citizenship */
 
-          .on('set citizenship',       require('syn/io/set-citizenship').bind(socket))
+          'set citizenship',
 
           /** set education */
 
-          .on('set education',         require('syn/io/set-education').bind(socket))
+          'set education', 
 
           /** set employment */
 
-          .on('set employment',        require('syn/io/set-employment').bind(socket))
+          'set employment',
 
           /** set gender */
 
-          .on('set gender',            require('syn/io/set-gender').bind(socket))
+          'set gender',    
 
           /** set party */
 
-          .on('set party',             require('syn/io/set-party').bind(socket))
+          'set party',     
 
           /** set registered voter */
 
-          .on('set registered voter',  require('syn/io/set-registered-voter').bind(socket))
+          'set registered voter',
 
           /** set marital status */
 
-          .on('set marital status',    require('syn/io/set-marital-status').bind(socket))
+          'set marital status',
 
           /** Save user image */
 
-          .on('save user image',       require('syn/io/save-user-image').bind(socket))
+          'save user image',
 
           /** Sign in */
 
-          .on('sign in',               require('syn/io/sign-in').bind(socket))
+          'sign in',       
 
           /** Validate GPS */
 
-          .on('validate gps',          require('syn/io/validate-gps').bind(socket))
+          'validate gps',  
+        ];
 
-        ;
+        listeners.forEach(function (listener) {
+
+          socket.on(listener, console.log.bind(console, '<< ' + listener));
+
+          socket.on(listener,
+            require('syn/io/' + S(listener).slugify().s).bind(socket, listener));
+
+        });
 
         ss(socket).on('upload image', function (stream, data) {
           var filename = '/tmp/' + data.name;
