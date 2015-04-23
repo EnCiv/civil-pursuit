@@ -19,6 +19,7 @@
 
     { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 1, 8792, 7182] },
 
+    { name: 'mocha test/lib/util/arguments-to-array' },
     { name: 'mocha test/models/Item/methods/' },
 
     // { name: [test, 'test/lib'].join(' ') },

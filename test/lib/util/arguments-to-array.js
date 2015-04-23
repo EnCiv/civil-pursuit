@@ -2,65 +2,39 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  var should = require('should');
 
-  var deps = [
-    'syn/lib/Test',
-    'should'
-  ];
+  describe ( 'Lib / Util / Arguments To Array' , function () {
 
- function test__lib__util__argumentsToArray (done) {
+    var argumentsToArray;
 
-    var humanized = 'Hey i am an example';
+    before ( function () {
 
-    var camel = 'HeyI_AmAnExample';
+      argumentsToArray = require('syn/lib/util/arguments-to-array');
 
-    var snake = 'Hey_I_Am_An_Example';
+    } );
 
-    var slug = 'hey-i-am-an-example';
+    it ( 'should be a function' , function () {
 
-    di(done, deps, function (domain, Test) {
+      argumentsToArray.should.be.a.Function;
 
-      var argumentsToArray;
+    } );
 
-      function test__lib__util__argumentsToArray____Exists (done) {
-        argumentsToArray = require('syn/lib/util/arguments-to-array');
+    it ( 'should return an array of arguments' , function (done) {
+      function foo () {
+        var array = argumentsToArray(arguments);
+        
+        array.should.be.an.Array;
+
+        array[0].should.be.exactly(1);
+
+        array[1].should.be.exactly('abc');
+
         done();
       }
 
-      function test__lib__util__argumentsToArray____IsA_Function (done) {
-        argumentsToArray.should.be.a.Function;
-        done();
-      }
+      foo(1, 'abc');
+    } );
 
-      function test__lib__util__argumentsToArray____ReturnsArrayOfArguments (done) {
-
-        function foo () {
-          var array = argumentsToArray(arguments);
-          
-          array.should.be.an.Array;
-
-          array[0].should.be.exactly(1);
-
-          array[1].should.be.exactly('abc');
-
-          done();
-        }
-
-        foo(1, 'abc');
-      }
-
-      Test([
-          test__lib__util__argumentsToArray____Exists,
-          test__lib__util__argumentsToArray____IsA_Function,
-          test__lib__util__argumentsToArray____ReturnsArrayOfArguments
-        ],
-        done);
-
-    });
-
-  }
-
-   module.exports = test__lib__util__argumentsToArray;
-
+  } );
 } ();
