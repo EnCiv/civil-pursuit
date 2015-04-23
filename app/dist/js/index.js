@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/web/js/Creator.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/js/Creator.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -75,7 +75,7 @@
 
 } ();
 
-},{"./Creator/create":"/home/francois/Dev/syn/app/web/js/Creator/create.js","./Creator/created":"/home/francois/Dev/syn/app/web/js/Creator/created.js","./Creator/pack-item":"/home/francois/Dev/syn/app/web/js/Creator/pack-item.js","./Creator/render":"/home/francois/Dev/syn/app/web/js/Creator/render.js","./Panel":"/home/francois/Dev/syn/app/web/js/Panel.js"}],"/home/francois/Dev/syn/app/web/js/Creator/create.js":[function(require,module,exports){
+},{"./Creator/create":"/home/francois/Dev/syn/app/js/Creator/create.js","./Creator/created":"/home/francois/Dev/syn/app/js/Creator/created.js","./Creator/pack-item":"/home/francois/Dev/syn/app/js/Creator/pack-item.js","./Creator/render":"/home/francois/Dev/syn/app/js/Creator/render.js","./Panel":"/home/francois/Dev/syn/app/js/Panel.js"}],"/home/francois/Dev/syn/app/js/Creator/create.js":[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -161,7 +161,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../Stream":"/home/francois/Dev/syn/app/web/js/Stream.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/app/web/js/Creator/created.js":[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/js/Item.js","../Nav":"/home/francois/Dev/syn/app/js/Nav.js","../Stream":"/home/francois/Dev/syn/app/js/Stream.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/app/js/Creator/created.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -196,7 +196,7 @@
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Creator/pack-item.js":[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/js/Item.js"}],"/home/francois/Dev/syn/app/js/Creator/pack-item.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -257,7 +257,7 @@
 
 } ();
           synapp.user
-},{}],"/home/francois/Dev/syn/app/web/js/Creator/render.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Creator/render.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -334,7 +334,7 @@
 
 } ();
 
-},{"../Form":"/home/francois/Dev/syn/app/web/js/Form.js","../Upload":"/home/francois/Dev/syn/app/web/js/Upload.js","../YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Details.js":[function(require,module,exports){
+},{"../Form":"/home/francois/Dev/syn/app/js/Form.js","../Upload":"/home/francois/Dev/syn/app/js/Upload.js","../YouTube":"/home/francois/Dev/syn/app/js/YouTube.js"}],"/home/francois/Dev/syn/app/js/Details.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -598,7 +598,7 @@
 
 } ();
 
-},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit.js":[function(require,module,exports){
+},{"./Edit":"/home/francois/Dev/syn/app/js/Edit.js","./Item":"/home/francois/Dev/syn/app/js/Item.js","./Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Edit.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -749,7 +749,7 @@
 
 } ();
 
-},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Edit/save":"/home/francois/Dev/syn/app/web/js/Edit/save.js","./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Edit/save.js":[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/js/Creator.js","./Edit/save":"/home/francois/Dev/syn/app/js/Edit/save.js","./Form":"/home/francois/Dev/syn/app/js/Form.js","./Item":"/home/francois/Dev/syn/app/js/Item.js","./Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Edit/save.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -807,7 +807,7 @@
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Forgot-Password.js":[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/js/Item.js","../Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Forgot-Password.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -873,7 +873,7 @@
 
 } ();
 
-},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/web/js/Form.js":[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/js/Form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/app/js/Form.js":[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -962,7 +962,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Intro.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Intro.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1023,7 +1023,7 @@
 
 } ();
 
-},{"./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./ReadMore":"/home/francois/Dev/syn/app/web/js/ReadMore.js","./Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js"}],"/home/francois/Dev/syn/app/web/js/Item.js":[function(require,module,exports){
+},{"./Item":"/home/francois/Dev/syn/app/js/Item.js","./ReadMore":"/home/francois/Dev/syn/app/js/ReadMore.js","./Truncate":"/home/francois/Dev/syn/app/js/Truncate.js"}],"/home/francois/Dev/syn/app/js/Item.js":[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -1082,7 +1082,7 @@
 
 } ();
 
-},{"./Item/find":"/home/francois/Dev/syn/app/web/js/Item/find.js","./Item/load":"/home/francois/Dev/syn/app/web/js/Item/load.js","./Item/media":"/home/francois/Dev/syn/app/web/js/Item/media.js","./Item/render":"/home/francois/Dev/syn/app/web/js/Item/render.js"}],"/home/francois/Dev/syn/app/web/js/Item/find.js":[function(require,module,exports){
+},{"./Item/find":"/home/francois/Dev/syn/app/js/Item/find.js","./Item/load":"/home/francois/Dev/syn/app/js/Item/load.js","./Item/media":"/home/francois/Dev/syn/app/js/Item/media.js","./Item/render":"/home/francois/Dev/syn/app/js/Item/render.js"}],"/home/francois/Dev/syn/app/js/Item/find.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1148,7 +1148,7 @@
 
 } ();
 
-},{"syn/components/selectors.json":"/home/francois/Dev/syn/node_modules/syn/components/selectors.json"}],"/home/francois/Dev/syn/app/web/js/Item/load.js":[function(require,module,exports){
+},{"syn/components/selectors.json":"/home/francois/Dev/syn/node_modules/syn/components/selectors.json"}],"/home/francois/Dev/syn/app/js/Item/load.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1187,7 +1187,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Item/media.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Item/media.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1274,7 +1274,7 @@
 
 } ();
 
-},{"../YouTube":"/home/francois/Dev/syn/app/web/js/YouTube.js"}],"/home/francois/Dev/syn/app/web/js/Item/render.js":[function(require,module,exports){
+},{"../YouTube":"/home/francois/Dev/syn/app/js/YouTube.js"}],"/home/francois/Dev/syn/app/js/Item/render.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1450,7 +1450,7 @@
 
 } ();
 
-},{"../Details":"/home/francois/Dev/syn/app/web/js/Details.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../Promote":"/home/francois/Dev/syn/app/web/js/Promote.js","../ReadMore":"/home/francois/Dev/syn/app/web/js/ReadMore.js","../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","../Truncate":"/home/francois/Dev/syn/app/web/js/Truncate.js","./view/toggle-arrow":"/home/francois/Dev/syn/app/web/js/Item/view/toggle-arrow.js","./view/toggle-details":"/home/francois/Dev/syn/app/web/js/Item/view/toggle-details.js","./view/toggle-promote":"/home/francois/Dev/syn/app/web/js/Item/view/toggle-promote.js","string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/models/Item/get-promotion-percentage":"/home/francois/Dev/syn/node_modules/syn/models/Item/get-promotion-percentage.js"}],"/home/francois/Dev/syn/app/web/js/Item/view/toggle-arrow.js":[function(require,module,exports){
+},{"../Details":"/home/francois/Dev/syn/app/js/Details.js","../Nav":"/home/francois/Dev/syn/app/js/Nav.js","../Promote":"/home/francois/Dev/syn/app/js/Promote.js","../ReadMore":"/home/francois/Dev/syn/app/js/ReadMore.js","../Sign":"/home/francois/Dev/syn/app/js/Sign.js","../Truncate":"/home/francois/Dev/syn/app/js/Truncate.js","./view/toggle-arrow":"/home/francois/Dev/syn/app/js/Item/view/toggle-arrow.js","./view/toggle-details":"/home/francois/Dev/syn/app/js/Item/view/toggle-details.js","./view/toggle-promote":"/home/francois/Dev/syn/app/js/Item/view/toggle-promote.js","string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/models/Item/get-promotion-percentage":"/home/francois/Dev/syn/node_modules/syn/models/Item/get-promotion-percentage.js"}],"/home/francois/Dev/syn/app/js/Item/view/toggle-arrow.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1596,7 +1596,7 @@
 
 } ();
 
-},{"../../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../../Panel":"/home/francois/Dev/syn/app/web/js/Panel.js"}],"/home/francois/Dev/syn/app/web/js/Item/view/toggle-details.js":[function(require,module,exports){
+},{"../../Nav":"/home/francois/Dev/syn/app/js/Nav.js","../../Panel":"/home/francois/Dev/syn/app/js/Panel.js"}],"/home/francois/Dev/syn/app/js/Item/view/toggle-details.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1663,7 +1663,7 @@
 
 } ();
 
-},{"../../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Item/view/toggle-promote.js":[function(require,module,exports){
+},{"../../Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Item/view/toggle-promote.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1755,7 +1755,7 @@
 
 } ();
 
-},{"../../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","../../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Join.js":[function(require,module,exports){
+},{"../../Nav":"/home/francois/Dev/syn/app/js/Nav.js","../../Sign":"/home/francois/Dev/syn/app/js/Sign.js"}],"/home/francois/Dev/syn/app/js/Join.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1838,7 +1838,7 @@
 
 } ();
 
-},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js"}],"/home/francois/Dev/syn/app/web/js/Login.js":[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/js/Form.js"}],"/home/francois/Dev/syn/app/js/Login.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1920,7 +1920,7 @@
 
 } ();
 
-},{"./Form":"/home/francois/Dev/syn/app/web/js/Form.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Nav.js":[function(require,module,exports){
+},{"./Form":"/home/francois/Dev/syn/app/js/Form.js","./Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Nav.js":[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2281,7 +2281,7 @@
 } ();
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Panel.js":[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/js/Panel.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2420,7 +2420,7 @@
 
 } ();
 
-},{"./Creator":"/home/francois/Dev/syn/app/web/js/Creator.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Panel/fill":"/home/francois/Dev/syn/app/web/js/Panel/fill.js","./Panel/load":"/home/francois/Dev/syn/app/web/js/Panel/load.js","./Panel/pre-insert-item":"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js","./Panel/render":"/home/francois/Dev/syn/app/web/js/Panel/render.js","./Panel/to-json":"/home/francois/Dev/syn/app/web/js/Panel/to-json.js","./Sign":"/home/francois/Dev/syn/app/web/js/Sign.js"}],"/home/francois/Dev/syn/app/web/js/Panel/fill.js":[function(require,module,exports){
+},{"./Creator":"/home/francois/Dev/syn/app/js/Creator.js","./Item":"/home/francois/Dev/syn/app/js/Item.js","./Nav":"/home/francois/Dev/syn/app/js/Nav.js","./Panel/fill":"/home/francois/Dev/syn/app/js/Panel/fill.js","./Panel/load":"/home/francois/Dev/syn/app/js/Panel/load.js","./Panel/pre-insert-item":"/home/francois/Dev/syn/app/js/Panel/pre-insert-item.js","./Panel/render":"/home/francois/Dev/syn/app/js/Panel/render.js","./Panel/to-json":"/home/francois/Dev/syn/app/js/Panel/to-json.js","./Sign":"/home/francois/Dev/syn/app/js/Sign.js"}],"/home/francois/Dev/syn/app/js/Panel/fill.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2481,7 +2481,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Panel/load.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Panel/load.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2520,7 +2520,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Panel/pre-insert-item.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Panel/pre-insert-item.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2580,7 +2580,7 @@
 
 } ();
 
-},{"../Item":"/home/francois/Dev/syn/app/web/js/Item.js"}],"/home/francois/Dev/syn/app/web/js/Panel/render.js":[function(require,module,exports){
+},{"../Item":"/home/francois/Dev/syn/app/js/Item.js"}],"/home/francois/Dev/syn/app/js/Panel/render.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2627,7 +2627,7 @@
 
 } ();
 
-},{"../Creator":"/home/francois/Dev/syn/app/web/js/Creator.js"}],"/home/francois/Dev/syn/app/web/js/Panel/to-json.js":[function(require,module,exports){
+},{"../Creator":"/home/francois/Dev/syn/app/js/Creator.js"}],"/home/francois/Dev/syn/app/js/Panel/to-json.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2657,7 +2657,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Promote.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Promote.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -2810,7 +2810,7 @@
 
 } ();
 
-},{"./Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","./Item":"/home/francois/Dev/syn/app/web/js/Item.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js","./Promote/find":"/home/francois/Dev/syn/app/web/js/Promote/find.js","./Promote/finish":"/home/francois/Dev/syn/app/web/js/Promote/finish.js","./Promote/get":"/home/francois/Dev/syn/app/web/js/Promote/get.js","./Promote/render":"/home/francois/Dev/syn/app/web/js/Promote/render.js","./Promote/render-item":"/home/francois/Dev/syn/app/web/js/Promote/render-item.js","./Promote/save":"/home/francois/Dev/syn/app/web/js/Promote/save.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/web/js/Promote/find.js":[function(require,module,exports){
+},{"./Edit":"/home/francois/Dev/syn/app/js/Edit.js","./Item":"/home/francois/Dev/syn/app/js/Item.js","./Nav":"/home/francois/Dev/syn/app/js/Nav.js","./Promote/find":"/home/francois/Dev/syn/app/js/Promote/find.js","./Promote/finish":"/home/francois/Dev/syn/app/js/Promote/finish.js","./Promote/get":"/home/francois/Dev/syn/app/js/Promote/get.js","./Promote/render":"/home/francois/Dev/syn/app/js/Promote/render.js","./Promote/render-item":"/home/francois/Dev/syn/app/js/Promote/render-item.js","./Promote/save":"/home/francois/Dev/syn/app/js/Promote/save.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/app/js/Promote/find.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2867,7 +2867,7 @@
 
 } ();
 
-},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/selectors.json":"/home/francois/Dev/syn/node_modules/syn/components/selectors.json"}],"/home/francois/Dev/syn/app/web/js/Promote/finish.js":[function(require,module,exports){
+},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/selectors.json":"/home/francois/Dev/syn/node_modules/syn/components/selectors.json"}],"/home/francois/Dev/syn/app/js/Promote/finish.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2912,7 +2912,7 @@
 
 } ();
 
-},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/get.js":[function(require,module,exports){
+},{"../Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Promote/get.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2969,7 +2969,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Promote/render-item.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Promote/render-item.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3167,7 +3167,7 @@
 
 } ();
 
-},{"../Edit":"/home/francois/Dev/syn/app/web/js/Edit.js","../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/render.js":[function(require,module,exports){
+},{"../Edit":"/home/francois/Dev/syn/app/js/Edit.js","../Item":"/home/francois/Dev/syn/app/js/Item.js","../Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Promote/render.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3239,7 +3239,7 @@
 
 } ();
 
-},{"../Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Promote/save.js":[function(require,module,exports){
+},{"../Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Promote/save.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3297,7 +3297,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/ReadMore.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/ReadMore.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3464,7 +3464,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Sign.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Sign.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3647,7 +3647,7 @@
 
 } ();
 
-},{"./Forgot-Password":"/home/francois/Dev/syn/app/web/js/Forgot-Password.js","./Join":"/home/francois/Dev/syn/app/web/js/Join.js","./Login":"/home/francois/Dev/syn/app/web/js/Login.js","./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Stream.js":[function(require,module,exports){
+},{"./Forgot-Password":"/home/francois/Dev/syn/app/js/Forgot-Password.js","./Join":"/home/francois/Dev/syn/app/js/Join.js","./Login":"/home/francois/Dev/syn/app/js/Login.js","./Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Stream.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3686,7 +3686,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/Synapp.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/Synapp.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3822,7 +3822,7 @@
 
 } ();
 
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/web/js/Truncate.js":[function(require,module,exports){
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/app/js/Truncate.js":[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -4045,7 +4045,7 @@
 
 }();
 
-},{"./Nav":"/home/francois/Dev/syn/app/web/js/Nav.js"}],"/home/francois/Dev/syn/app/web/js/Upload.js":[function(require,module,exports){
+},{"./Nav":"/home/francois/Dev/syn/app/js/Nav.js"}],"/home/francois/Dev/syn/app/js/Upload.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4131,7 +4131,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/YouTube.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/YouTube.js":[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -4250,7 +4250,7 @@
 
 } ();
 
-},{}],"/home/francois/Dev/syn/app/web/js/pages/Home.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/app/js/pages/Home.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4343,7 +4343,7 @@
 
 } ();
 
-},{"../Intro":"/home/francois/Dev/syn/app/web/js/Intro.js","../Item":"/home/francois/Dev/syn/app/web/js/Item.js","../Panel":"/home/francois/Dev/syn/app/web/js/Panel.js","../Sign":"/home/francois/Dev/syn/app/web/js/Sign.js","../Synapp":"/home/francois/Dev/syn/app/web/js/Synapp.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"../Intro":"/home/francois/Dev/syn/app/js/Intro.js","../Item":"/home/francois/Dev/syn/app/js/Item.js","../Panel":"/home/francois/Dev/syn/app/js/Panel.js","../Sign":"/home/francois/Dev/syn/app/js/Sign.js","../Synapp":"/home/francois/Dev/syn/app/js/Synapp.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -6459,7 +6459,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports={
+module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -6532,4 +6532,4 @@ module.exports=module.exports={
 
 } ();
 
-},{}]},{},["/home/francois/Dev/syn/app/web/js/pages/Home.js"]);
+},{}]},{},["/home/francois/Dev/syn/app/js/pages/Home.js"]);

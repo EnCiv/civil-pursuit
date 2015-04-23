@@ -123,29 +123,29 @@
 
   "files": {
     
-    "app js": "app/web/js/Synapp.js",
+    "app js": "app/js/Synapp.js",
 
-    "app js compiled": "app/web/dist/js/index.js",
+    "app js compiled": "app/dist/js/index.js",
 
-    "app less": "app/web/less/synapp.less",
+    "app less": "app/less/synapp.less",
 
-    "app css": "app/web/dist/css/index.css",
+    "app css": "app/dist/css/index.css",
 
-    "dashboard js": "app/web/js/dashboard.js",
+    "dashboard js": "app/js/dashboard.js",
 
-    "dashboard js compiled": "app/web/dist/js/dashboard.js",
+    "dashboard js compiled": "app/dist/js/dashboard.js",
 
-    "dashboard less": "app/web/less/dashboard.less",
+    "dashboard less": "app/less/dashboard.less",
 
-    "dashboard css": "app/web/dist/css/dashboard.css"
+    "dashboard css": "app/dist/css/dashboard.css"
   
   },
 
   "dirs": {
 
-    "dist js": "app/web/dist/js",
+    "dist js": "app/dist/js",
 
-    "dist css": "app/web/dist/css"
+    "dist css": "app/dist/css"
   
   },
 

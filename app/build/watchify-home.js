@@ -13,7 +13,7 @@
   exports.task      =   function watchifyApp () {
     var bundler = watchify(
       browserify(
-        path.join(process.cwd(), 'app/web/js/pages/Home.js'),
+        path.join(process.cwd(), 'app/js/pages/Home.js'),
         watchify.args));
 
     bundler.on('update', rebundle);
