@@ -2,6 +2,14 @@
   
   'use strict';
 
+  /** Transform Item Document into an object for panels
+   *  *************************************************
+   *
+   *  Models / Item / Methods / Get Popularity [JS]
+   *
+   *  *************************************************
+  */
+
   var di            =   require('syn/lib/util/di/domain');
 
   var deps          =   [

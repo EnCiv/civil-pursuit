@@ -5,7 +5,7 @@
   var di = require('syn/lib/util/di/domain');
 
   var deps = [
-    'syn/lib/encrypt'
+    'syn/lib/util/encrypt'
   ];
 
   function models__User__pre__save (next) {

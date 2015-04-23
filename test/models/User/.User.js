@@ -4,37 +4,43 @@
 
   var should  =   require('should');
 
-  function assertEvaluation () {
+  var assert  =   require('syn/lib/util/should/add');
 
-    var self = this;
+  function assertUser () {
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    assert( 'ObjectID',         require('../.ObjectID'));
     
     this.params = { operator: 'to be a User'};
+
+    ///////////////////////////////////////////////////////////////////////////
 
     this.obj
       .should.be.an.Object;
 
-    this.obj
-      .should.have.property('_id')
-      .which.is.an.Object;
+    ///////////////////////////////////////////////////////////////////////////
 
     this.obj
-      ._id.constructor.name
-      .should.be.exactly('ObjectID');
+      .should.have.property               ('_id')
+      .which.                             is.an.ObjectID;
+
+    ///////////////////////////////////////////////////////////////////////////
 
     this.obj
-      .should.have.property('email')
-      .which.is.a.String;
+      .should.have.property               ('email')
+      .which.                             is.a.String;
+
+    ///////////////////////////////////////////////////////////////////////////
 
     this.obj
-      .should.have.property('password')
-      .which.is.a.String;
+      .should.have.property               ('password')
+      .which.                             is.a.String;
 
-    // this.obj
-    //   .should.have.property('fullName')
-    //   .which.is.a.String;
+    ///////////////////////////////////////////////////////////////////////////
 
   }
 
-  module.exports = assertEvaluation;
+  module.exports = assertUser;
 
 } ();

@@ -53,9 +53,7 @@
 
     var methods = [
       'Get Popularity',
-      'Get URL Title',
-      'To Panel Item',
-      'Upload Image'
+      'To Panel Item'
     ];
 
     methods.forEach(function (_method) {

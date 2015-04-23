@@ -10,7 +10,7 @@
     'request',
     'string',
     'syn/lib/Test',
-    'syn/lib/get-url-title',
+    'syn/lib/util/get-url-title',
     'should'
   ];
 

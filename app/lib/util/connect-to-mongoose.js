@@ -4,7 +4,7 @@
 
   var mongoose = require('mongoose');
 
-  function Lib__Util__ConnectToMongoose () {
+  function Lib__Util__ConnectToMongoose (cb) {
     mongoose.connect(process.env.MONGOHQ_URL);
 
     return mongoose;

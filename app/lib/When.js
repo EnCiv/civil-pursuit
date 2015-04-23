@@ -52,7 +52,7 @@
           self.client.setViewportSize({
             width   :   self.view.width,
             height  :   self.view.height
-          })
+          });
         }
 
         self.client.url(self.address, domain.intercept(function () {

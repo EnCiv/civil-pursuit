@@ -15,7 +15,7 @@
       },
 
       function (domain) {
-        require('syn/lib/get-url-title')(url, domain.intercept(function (title) {
+        require('syn/lib/util/get-url-title')(url, domain.intercept(function (title) {
           socket.emit('got url title', url);
         }));
       }

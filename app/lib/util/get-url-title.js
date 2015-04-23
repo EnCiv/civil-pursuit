@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var config = require('../config.json');
+  var config = require('syn/config.json');
 
   var request = require('request');
 

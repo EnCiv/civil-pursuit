@@ -8,7 +8,7 @@
 
   var deps = [
     'syn/lib/Test',
-    'syn/lib/encrypt',
+    'syn/lib/util/encrypt',
     'should'
   ];
 

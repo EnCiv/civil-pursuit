@@ -6,7 +6,7 @@
 
   var di = require('syn/lib/util/di/domain');
 
-  var deps = ['syn/lib/encrypt'];
+  var deps = ['syn/lib/util/encrypt'];
 
   function resetPassword (key, token, password, cb) {
 
