@@ -103,7 +103,7 @@
 
             item.toPanelItem(domain.intercept(function (panelized) {
               panelItem = panelized;
-
+              console.log(panelItem)
               done();
             }));
 
