@@ -26,10 +26,6 @@
 
     var original    =   this;
 
-    console.log()
-    console.log('original', original)
-    console.log()
-    
     di(cb, deps, function (domain, async, config, Type, User, Item, toSlug, calcHarmony) {
 
       function PanelItem (attrs) {
