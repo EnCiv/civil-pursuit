@@ -4,56 +4,29 @@
 
   var should = require('should');
 
-  var di = require('syn/lib/util/di/domain');
+  describe ( 'Lib / Util / Cloudinary', function () {
 
-  var deps = [
-    'cloudinary',
-    'syn/lib/Test',
-    'should'
-  ];
+    var cloudinary;
 
-  module.exports = function test__lib__util__cloudinary (done) {
+    before ( function () {
 
+      cloudinary = require('syn/lib/util/cloudinary');
 
-    di(done, deps, function (domain, cloudinary, Test) {
+    } );
 
-      var fn, cloudi;
+    it ( 'should be an object' , function () {
 
-      function test__lib__util__cloudinary____exists (done) {
-
-        cloudi = require('syn/lib/util/cloudinary');
-
-        done();
-
-      }
-
-      function test__lib__util__cloudinary____returnsObject (done) {
-
-        cloudi.should.be.an.Object;
-
-        done();
-
-      }
-
-      function test__lib__util__cloudinary____hasAnUploader (done) {
-
-        cloudi.should.have.property('uploader')
-          .which.is.an.Object;
-
-        done();
-
-      }
-
-      Test([
-
-          test__lib__util__cloudinary____exists,
-          test__lib__util__cloudinary____returnsObject,
-          test__lib__util__cloudinary____hasAnUploader
-
-        ], done);
+      cloudinary.should.be.an.Object;
 
     });
-    
-  };
+
+    it ( 'should have an uploader' , function () {
+
+      cloudinary.should.have.property('uploader')
+        .which.is.an.Object;
+
+    });
+
+  } );
 
 } ();

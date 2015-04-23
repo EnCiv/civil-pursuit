@@ -10,7 +10,10 @@
 
   var TypeSchema      =     new Schema({
 
-    "name"        :     String,
+    "name"        :     {
+      type        :     String,
+      unique      :     true
+    },
     "harmony"     :     [{
       "name"      :     Schema.Types.ObjectId
     }],

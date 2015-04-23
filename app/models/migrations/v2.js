@@ -16,11 +16,34 @@
   // Connection URL
   var url = process.env.MONGOHQ_URL;
 
+  var _Types = [
+
+    { name: 'Intro' },
+    { name: 'Topic' },
+    { name: 'Problem', parent: 'Topic', harmony: ['Agree', 'Disagree'] },
+    { name: 'Solution', parent: 'Problem', harmony: ['Pro', 'Con'] },
+    { name: 'Pro', parent: 'Solution' },
+    { name: 'Con', parent: 'Solution' },
+    { name: 'Agree', parent: 'Problem' },
+    { name: 'Disagree', parent: 'Problem' },
+
+  ];
+
   function findTypes (cb) {
     Type.find(function (error, types) {
       if ( error ) throw error;
 
-      if ( types.length ) {
+      _Types = _Types.map(function (_type) {
+
+        _type.exists = types.some(function (type) {
+          return _type.name === type.name;
+        });
+
+        return _type;
+
+      });
+
+      if ( _Types.every(function (_type) { return _type.exists; } ) ) {
         return cb();
       }
 
@@ -29,112 +52,86 @@
   }
 
   function insertTypes (cb) {
-    async.parallel({
-      Topic:      function (cb) { Type.create({ name: 'Topic' }, cb); },
-      Problem:    function (cb) { Type.create({ name: 'Problem' }, cb); },
-      Agree:      function (cb) { Type.create({ name: 'Agree' }, cb); },
-      Disagree:   function (cb) { Type.create({ name: 'Disagree' }, cb); },
-      Solution:   function (cb) { Type.create({ name: 'Solution' }, cb); },
-      Pro:        function (cb) { Type.create({ name: 'Pro' }, cb); },
-      Con:        function (cb) { Type.create({ name: 'Con' }, cb); },
-    }, function (error, types) {
-      if ( error ) throw error;
+    async.parallel(
+      
+      _Types
 
-      console.log('types', types)
+        .filter(function (_type) {
+          return ! _type.exists;
+        })
 
-      async.parallel({
-        Problem: function (cb) {
-          Type.update({ name: 'Problem' }, {
-            $set: {
-              parent: types.Topic._id
-            },
-            $push: {
-              harmony: {
-                $each: [
-                  {
-                    name: types.Agree._id
-                  },
-                  {
-                    name: types.Disagree._id
-                  }
-                ]
-              }
-            }
-          }, {
-            upsert  : true,
-            safe    : true
-          }, cb);
-        },
+        .reduce(function (parallels, type) {
+      
+          parallels[type] = function (cb) {
+            Type.create({ name: type.name }, cb);
+          };
+          
+          return parallels;
+        }, {}),
 
-        Solution: function (cb) {
-          Type.update({ name: 'Solution' }, {
-            $set: {
-              parent: types.Problem._id
-            },
-            $push: {
-              harmony: {
-                $each: [
-                  {
-                    name: types.Pro._id
-                  },
-                  {
-                    name: types.Con._id
-                  }
-                ]
-              }
-            }
-          }, {
-            upsert  : true,
-            safe    : true
-          }, cb);
-        },
+      function (error, types) {
+        if ( error ) return cb(error);
 
-        Agree: function (cb) {
-          Type.update({ name: 'Agree' }, {
-            $set: {
-              parent: types.Problem._id
-            }
-          }, {
-            upsert  : true,
-            safe    : true
-          }, cb);
-        },
+        console.log('types', types);
 
-        Disagree: function (cb) {
-          Type.update({ name: 'Disagree' }, {
-            $set: {
-              parent: types.Problem._id
-            }
-          }, {
-            upsert  : true,
-            safe    : true
-          }, cb);
-        },
+        async.parallel(
+          _Types
+            
+            .filter(function (type) {
+              return type.parent;
+            })
 
-        Pro: function (cb) {
-          Type.update({ name: 'Pro' }, {
-            $set: {
-              parent: types.Solution._id
-            }
-          }, {
-            upsert  : true,
-            safe    : true
-          }, cb);
-        },
+            .map(function (type) {
+              return function (cb) {
 
-        Con: function (cb) {
-          Type.update({ name: 'Con' }, {
-            $set: {
-              parent: types.Solution._id
-            }
-          }, {
-            upsert  : true,
-            safe    : true
-          }, cb);
-        }
+                console.log()
+                console.log()
+                console.log()
+                console.log({
+                  name: this.name,
+                  parent: this.parent,
+                  parentId: types[this.parent]
+                })
+                console.log()
+                console.log()
+                console.log()
 
-      }, cb);
-    });
+                Type.update({ name: this.name },
+                  { $set: { parent: types[this.parent]._id } },
+                  cb);
+              }.bind(type);
+            })
+
+            .concat(
+              _Types
+            
+                .filter(function (type) {
+                  return type.harmony;
+                })
+
+                .map(function (type) {
+                  return function (cb) {
+                    Type.update({ name: type.name },
+                      {
+                        $push: {
+                          harmony: _Types
+                            
+                            .filter(function (_type) {
+                              return type.harmony.indexOf(_type.name) > -1;
+                            })
+
+                            .map(function (_type) {
+                              return { name: types[_type.name]._id };
+                            })
+                        }
+                      },
+                      cb);
+                  };
+                })
+            ),
+
+          cb);
+        });
   }
 
   function updateItemTypes (cb) {

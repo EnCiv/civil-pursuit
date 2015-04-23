@@ -52,6 +52,7 @@
     // =======
 
     var methods = [
+      'Get Image Html',
       'Get Popularity',
       'To Panel Item'
     ];

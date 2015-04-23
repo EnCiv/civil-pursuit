@@ -6,7 +6,7 @@
 
   var User        =   require('syn/models/User');
 
-  var sendEmail   =   require('syn/lib/send-email');
+  var sendEmail   =   require('syn/lib/util/send-email');
 
   /**
    *  @function sendPassword

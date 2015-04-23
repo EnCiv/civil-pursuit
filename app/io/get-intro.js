@@ -5,6 +5,7 @@
   
 
   var Item        =   require('syn/models/Item');
+  var Type        =   require('syn/models/Type');
 
   function getIntro () {
     
@@ -13,22 +14,37 @@
     var domain = require('domain').create();
     
     domain.on('error', function (error) {
-      cb(error);
+      socket.emit('error', error);
     });
     
     domain.run(function () {
 
       socket.app.arte.emit('message', { socket: 'get intro' });
 
-      Item
+      Type
+        
+        .find({ name: 'Intro' })
 
-        .findOne({ type: 'Intro' })
+        .exec()
+        
+        .then(function (Intro) {
 
-        .lean()
+          Item
 
-        .exec(domain.intercept(function (intro) {
-          socket.emit('got intro', intro);
-        }));
+            .findOne({ type: Intro._id })
+
+            .exec()
+
+            .then(function (intro) {
+
+              intro.toPanelItem(domain.intercept(function (intro) {
+                socket.emit('got intro', intro);
+              }));
+
+              
+            });
+
+        });
     });
 
   }

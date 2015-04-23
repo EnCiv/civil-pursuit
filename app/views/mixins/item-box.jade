@@ -80,10 +80,10 @@ mixin item-box (item, dontColllapse, type)
 
   block item-media
     - if ( item.id )
-      div!=item.adjustImage().replace(/\/>$/, ' class="img-responsive" data-image="' + item.image + '" data-rendered="true" />')
+      div!=item.imageHTML.replace(/\/>$/, ' class="img-responsive" data-image="' + item.image + '" data-rendered="true" />')
       
     - else
-      div!=mongoose.model('Item').schema.methods.adjustImage.apply({}).replace(/\/>$/, ' class="img-responsive" data-image />')
+      div!=mongoose.model('Item').schema.methods.getImageHtml.apply({}).replace(/\/>$/, ' class="img-responsive" data-image />')
 
   block item-buttons
     +item-buttons(item)

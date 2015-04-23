@@ -14,7 +14,7 @@
 
     this.params = { operator: 'to be a Panel Item' };
 
-    assert ( 'Type', require('../Type/.Type'))
+    assert ( 'Type', require('../Type/.Type'));
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -77,17 +77,27 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    if ( this.obj.image ) {
-      should.$describe("Panel Item has an image",
+    should.$describe("Panel Item has an image",
 
-        this.obj,
+      this.obj,
 
-        function (it) {
-          it.should.have.property             ('image')
-            .which.                           is.a.String
-            .and.                             match(/^https?:\/\//);
-        });
-    }
+      function (it) {
+        it.should.have.property             ('image')
+          .which.                           is.a.String
+          .and.                             match(/^https?:\/\//);
+      });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    should.$describe("Panel Item has an HTML image",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('imageHTML')
+          .which.                           is.a.String
+          .and.                             match(/^<img/);
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 

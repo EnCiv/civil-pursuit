@@ -2,7 +2,7 @@
 
   'use strict';
 
-  
+  var Item = require('syn/models/Item');  
 
   function getItems (panel, item) {
 
@@ -24,41 +24,19 @@
 
       console.log('<<"get items"', panel, item);
 
-      require('syn/models/Item')
-        .find   (query)
-        .skip   (panel.skip)
-        .limit  (panel.size)
-        .sort   ({ "promotions": -1, "views": -1, "created": 1 })
-        .exec   (domain.intercept(function (items) {
+      Item
 
-          console.log()
-          console.log('- got items -', panel.type, items.length);
-          console.log()
+        .getPanelItems(panel)
 
-          require('async').map(items,
+        .then(function (items) {
 
-            function onEachItem (item, cb) {
-              item.countRelated(cb);
-            },
+          socket.emit('got items ' + id, panel, _items);
 
-            domain.intercept(function (related) {
-              var _items = items.map(function (item, index) {
-                return item.toObject({ transform: function (doc, ret, options) {
-                  ret.related = related[index];
-                  ret.getPromotionPercentage = item.getPromotionPercentage();
-                  ret.adjustImage = item.adjustImage();
-                  ret.foo = true;
-                }});
-              });
-
-              socket.emit('got items ' + id, panel, _items);
-
-              console.log('>>"got items ' + id + '"', panel, _items.map(function (item) {
-                return item;
-              }));
-            }));
-
-        }));
+          console.log('>>"got items ' + id + '"', panel, _items.map(function (item) {
+            return item;
+          }));
+          
+        });
     }
 
     require('syn/lib/domain')(onDomainError, run);

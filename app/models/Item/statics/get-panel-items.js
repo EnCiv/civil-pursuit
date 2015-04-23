@@ -4,6 +4,8 @@
 
   var di = require('syn/lib/util/di/domain');
 
+  var Promise = require('promise');
+
   var deps = [
     'mongoose',
     'async',
@@ -15,38 +17,42 @@
     
     var self = this;
 
-    di(cb, deps, function (domain, mongoose, async, config, Item) {
+    var promise = new Promise(function (fulfill, reject) {
+      di(fulfill, deps, function (domain, mongoose, async, config, Item) {
 
-      var query = { type: panel.type };
+        var query = { type: panel.type };
 
-      if ( panel.parent ) {
-        query.parent = panel.parent;
-      }
+        if ( panel.parent ) {
+          query.parent = panel.parent;
+        }
 
-      if ( ! panel.item ) {
-        Item
-          .find(panel)
-          .limit(panel.size || config.public['navigator batch size'])
-          .skip(panel.skip || 0)
-          .sort({ promotions: -1 })
-          .exec(domain.intercept(function (items) {
+        if ( ! panel.item ) {
+          Item
+            .find(panel)
+            .limit(panel.size || config.public['navigator batch size'])
+            .skip(panel.skip || 0)
+            .sort({ promotions: -1 })
+            .exec(domain.intercept(function (items) {
 
-            async.map(items,
+              async.map(items,
 
-              function (item, cb) {
-                item.toPanelItem(cb);
-              },
+                function (item, cb) {
+                  item.toPanelItem(cb);
+                },
 
-              domain.intercept(function (items) {
-                cb(null, items)
-              }));
+                domain.intercept(function (items) {
+                  fulfill(items)
+                }));
 
-          }));
-      }
+            }));
+        }
 
+      });
     });
 
-      
+    promise.then(cb, cb);
+
+    return promise;
 
   }
 

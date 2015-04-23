@@ -14,6 +14,7 @@
 
   var deps          =   [
     'async',
+    'syn/config.json',
     'syn/models/Type',
     'syn/models/User',
     'syn/models/Item',
@@ -25,7 +26,7 @@
 
     var original    =   this;
     
-    di(cb, deps, function (domain, async, Type, User, Item, toSlug, calcHarmony) {
+    di(cb, deps, function (domain, async, config, Type, User, Item, toSlug, calcHarmony) {
 
       function PanelItem (attrs) {
         for ( var attr in attrs ) {
@@ -38,7 +39,8 @@
         id          :   original.id,
         subject     :   original.subject,
         description :   original.description,
-        image       :   original.image,
+        image       :   original.image || config.public['default item image'],
+        imageHTML   :   original.getImageHtml(),
         references  :   original.references,
         views       :   original.views,
         promotions  :   original.promotions,
