@@ -6,6 +6,8 @@
 
   var assert  =   require('syn/lib/util/should/add');
 
+  require('syn/lib/util/should/describe');
+
   function assertType () {
 
     var self = this;
@@ -23,42 +25,53 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('_id')
-        .which.                       is.an.ObjectID;
+    should.$describe('Type has an ObjectID', this.obj, function (it) {
+      it
+        .should.have.property           ('_id')
+          .which.                       is.an.ObjectID;
+    });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('name')
-        .which.                       is.a.String;
+    should.$describe('Type has a name', this.obj, function (it) {
+      it
+        .should.have.property           ('name')
+          .which.                       is.a.String;
+    });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('harmony')
-        .which.                       is.an.Array;
+    should.$describe('Type has harmony', this.obj, function (it) {
+      it
+        .should.have.property           ('harmony')
+          .which.                       is.an.Array;
+    } );
 
     ///////////////////////////////////////////////////////////////////////////
 
     if ( this.obj.parent ) {
-      this.obj
-        .should.have.property         ('parent')
-          .which.                     is.an.ObjectID;
+      should.$describe('Type has a parent', this.obj, function (it) {
+        it
+          .should.have.property         ('parent')
+            .which.                     is.an.ObjectID;
+          });
     }
 
     ///////////////////////////////////////////////////////////////////////////
 
     if ( this.obj.harmony.length ) {
 
-      this.obj                        ['harmony']
-        .should.have.property         ('length')
-          .which.                     is.exactly(2);
+      should.$describe('Type has two harmony types', this.obj, function (it) {
+        it                              ['harmony']
+          .should.have.property         ('length')
+            .which.                     is.exactly(2);
 
-      this.obj['harmony']
-        .forEach(function             (eachHarmonyItem) {
-          eachHarmonyItem
-            .should.be.ok.and.        is.an.ObjectID;
+        it['harmony']
+          .forEach(function             (eachHarmonyItem) {
+            eachHarmonyItem.should
+              .have.property('_id')
+                .which.                 is.an.ObjectID;
+          });
         });
 
     }
