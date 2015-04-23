@@ -4,55 +4,37 @@
 
   var should = require('should');
 
-  var Test = require('syn/lib/Test');
+  describe ( 'Lib / Util / Di' , function () {
 
-  function test__lib__util__di (cb) {
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      cb(error);
-    });
-    
-    domain.run(function () {
+    var di;
 
-      var di;
+    before ( function () {
 
-      function test__lib__util__di____exists (done) {
-        di = require('syn/lib/util/di');
-        done();
-      }
+      di = require('syn/lib/util/di');
 
-      function test__lib__util__di____is_A_Function (done) {
-        di.should.be.a.Function;
-        done();
-      }
+    } );
 
-      function test__lib__util__di____passesDependencies (done) {
+    it ( 'should be a function' , function () {
 
-        var here = require.resolve('syn/package.json')
+      di.should.be.a.Function;
+
+    } );
+
+    it ( 'should pass dependencies', function (done) {
+      var here = require.resolve('syn/package.json')
           .replace(/package\.json$/, '')
           + 'test/lib/util/di';
 
         di([here], function (di) {
-          di.should.be.a.Function;
-          di.name.should.be.exactly(test__lib__util__di.name);
-          di.proof.should.be.exactly(test__lib__util__di.proof);
+          di.should.be.an.Object;
+          di.should.have.property('foo')
+            .which.is.exactly(1);
           done();
         });
+    } );
 
-      }
+  } );
 
-      Test([
-          test__lib__util__di____exists,
-          test__lib__util__di____is_A_Function,
-          test__lib__util__di____passesDependencies
-        ], cb);
-
-    });
-  }
-
-  test__lib__util__di.proof = true;
-
-  module.exports = test__lib__util__di;
+  module.exports = { foo: 1 };
 
 } ();
