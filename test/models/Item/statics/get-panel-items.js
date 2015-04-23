@@ -2,109 +2,103 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  var Item      =   require('syn/models/Item');
+  var Type      =   require('syn/models/Type');
+  var mongoUp   =   require('syn/lib/util/connect-to-mongoose');
+  var isA       =   require('syn/lib/util/should/add');
+  var fulfill   =   require('syn/lib/util/di/domain');
 
-  var deps = [
-    'syn/lib/Test',
-    'syn/models/Item',
-    'syn/models/Type',
-    'syn/lib/util/connect-to-mongoose',
-    'should'
-  ];
+  var mongo;
+  var type;
+  var items;
+  var panel = {};
 
-  function test__models__Item__statics__getPanelItems (done) {
+  describe ( 'Models / Item / Statics / Get Panel Items' , function (done) {
 
-    di(done, deps, function (domain, Test, Item, Type, mongoUp) {
+    ///////////////////////////////////////////////////////////////////////////
 
-      try {
-        should.Assertion.add('Item', require('../.Item'), true);
-      }
-      catch ( error ) {
-        // Assertion item already loaded
-      }
+    before ( function () {
 
-      var mongo = mongoUp();
+      isA ( 'PanelItem' , require('../.Panel-Item'));
 
-      var items;
+      mongo = mongoUp();
 
-      var panel = {};
+    });
 
-      var type;
+    ///////////////////////////////////////////////////////////////////////////
 
-      function test__models__Item__statics__getPanelItems____is_A_Function (done) {
+    it ( 'should be a static method' , function () {
 
-        Item.schema.statics.should.have.property('getPanelItems')
-            .which.is.a.Function;
-          done();
-      }
+      Item.schema.statics.should.have.property('getPanelItems')
+        .which.is.a.Function;
 
-      function test__models__Item__statics__getPanelItems____getRandomType (done) {
+    });
 
-        Type.findOneRandom(domain.intercept(function (randomType) {
-          type = randomType;
+    ///////////////////////////////////////////////////////////////////////////
 
-          panel.type = type._id;
-          // panel.type = '55335bf22ee06eff1744dcfd';
+    it ( 'should get random type' , function (done) {
 
-          done();
-        }));
-      }
+      Type.findOneRandom(function (error, randomType) {
 
-      function test__models__Item__statics__getPanelItems____getPanelItems (done) {
+        if ( error ) return done(error);
 
-        Item.getPanelItems(panel, domain.intercept(function (panelItems) {
-          items = panelItems;
+        type = randomType;
 
-          done();
-        }))
-      }
+        panel.type = type._id;
 
-      function test__models__Item__statics__getPanelItems____itemsIsAnArray (done) {
+        done();
+      });
+
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should get panel items' , function (done) {
+
+      Item.getPanelItems(panel, function (error, panelItems) {
+        if ( error ) return done(error);
+
+        items = panelItems;
+
+        done();
+      });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    describe ( 'Panel items' , function () {
+
+      it ( 'should be an array of items' , function () {
 
         items.should.be.an.Array;
 
-        done();
-      }
+        items.forEach(function (item) {
+          item.should.be.a.PanelItem;
+        });
 
-      function test__models__Item__statics__getPanelItems____allItemsAreOfTheSameType (done) {
+      } );
+
+      /////////////////////////////////////////////////////////////////////////
+
+      it ( 'should all have the same type as panel' , function () {
 
         items.every(function (item) {
           return item.type._id.toString() === panel.type.toString();
         }).should.be.true;
 
-        done();
-      }
+      } );
 
-      function test__models__Item__statics__getPanelItems____allItemsAreItems (done) {
+    } );
 
-        items.forEach(function (item) {
-          item.should.be.an.Item;
-        });
+    ///////////////////////////////////////////////////////////////////////////
 
-        done();
-      }
+    after ( function () {
 
-      function test__models__Item__statics__getPanelItems____cleaningOut (done) {
+      mongo.disconnect();
 
-        mongo.disconnect(done);
-      }
+    } );
 
-      Test([
-
-          test__models__Item__statics__getPanelItems____is_A_Function,
-          test__models__Item__statics__getPanelItems____getRandomType,
-          test__models__Item__statics__getPanelItems____getPanelItems,
-          test__models__Item__statics__getPanelItems____itemsIsAnArray,
-          test__models__Item__statics__getPanelItems____allItemsAreItems,
-          test__models__Item__statics__getPanelItems____allItemsAreOfTheSameType,
-          test__models__Item__statics__getPanelItems____cleaningOut
-
-        ], done);
-
-    });
-
-  }
-
-  module.exports = test__models__Item__statics__getPanelItems;
+  } ); 
 
 } ();

@@ -14,7 +14,8 @@
 
     this.params = { operator: 'to be a Panel Item' };
 
-    ///////////////////////////////////////////////////////////////////////////
+    assert ( 'Type', require('../Type/.Type'))
+
     ///////////////////////////////////////////////////////////////////////////
 
     this.obj
@@ -23,83 +24,140 @@
     ///////////////////////////////////////////////////////////////////////////
 
     this.obj
-      .should.have.property           ('_id')
-        .which.                       is.an.ObjectID;
+      .should.have.property                 ('_id')
+        .which.                             is.an.ObjectID;
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('id')
-        .which.                       is.a.String;
+    should.$describe(
+      "Panel Item has a short ID",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('id')
+          .which.                           is.a.String;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('subject')
-        .which.                       is.a.String;
+    should.$describe(
+      "Panel Item has a subject",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('subject')
+          .which.                           is.a.String;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('description')
-        .which.                       is.a.String;
+    should.$describe(
+      "Panel Item has a description",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('description')
+          .which.                           is.a.String;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('link')
-        .which.                       is.a.String;
+    should.$describe(
+      "Panel Item has a link",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('link')
+          .which.                           is.a.String;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
     if ( this.obj.image ) {
+      should.$describe("Panel Item has an image",
 
-      this.obj
-      .should.have.property           ('image')
-        .which.                       is.a.CloudinaryUrl;
+        this.obj,
 
+        function (it) {
+          it.should.have.property             ('image')
+            .which.                           is.a.String
+            .and.                             match(/^https?:\/\//);
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('references')
-        .which.                       is.an.Array;
+    should.$describe(
+      "Panel Item has references",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('references')
+          .which.                           is.an.Array;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('views')
-        .which.                       is.a.Number;
+    should.$describe(
+      "Panel Item has views",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('views')
+          .which.                           is.a.Number;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('promotions')
-        .which.                       is.a.Number;
+    should.$describe(
+      "Panel Item has promotions",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('promotions')
+          .which.                           is.a.Number;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('type')
-        .which.                       is.a.Type;
+    should.$describe(
+      "Panel Item has a type",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property             ('type')
+          .which.                           is.a.Type;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('user')
-        .which.                       is.an.Object;
+    should.$describe(
+      "Panel Item has a user",
 
-    this.obj                          ['user']
-      .should.have.                   property('_id')
-          .which.                     is.an.ObjectID;
+      this.obj,
 
-    if ( this.obj['user']['full name'] ) {
+      function (it) {
+        it.should.have.property             ('user')
+            .which.                         is.an.Object;
 
-      this.obj                        ['user']
-        .should.have.                 property('full name')
-          .which.                     is.a.String;
-    }
+        it.should.have.                     property('_id')
+              .which.                       is.an.ObjectID;
+
+        if ( it['user']['full name'] ) {
+
+          it                                ['user']
+            .should.have.                   property('full name')
+              .which.                       is.a.String;
+        }
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
