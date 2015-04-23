@@ -109,7 +109,7 @@
       this.obj                        ['popularity'],
 
       function (it) {
-        it.should.be.ok.and.          is.an.ObjectID;
+        it.should.be.ok.and.          is.an.Object;
       });
 
     ///////////////////////////////////////////////////////////////////////////
