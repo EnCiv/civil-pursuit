@@ -2,107 +2,132 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  var di = require('syn/lib/util/di');
+  var fulfill = require('syn/lib/util/di/domain');
 
   var deps = [
-    'syn/lib/Test',
     'syn/models/Item',
-    'syn/models/Type',
     'syn/models/User',
     'syn/lib/util/connect-to-mongoose',
-    'should'
+    'syn/lib/util/should/add'
   ];
 
-  function test__models__Item__methods__getPopularity (done) {
+  di(deps, function (Item, User, mongoUp, assert) {
 
-    di(done, deps, function (domain, Test, Item, Type, User, mongoUp) {
+    var mongo;
 
-      try {
-        should.Assertion.add('Item', require('../.Item'), true);
-      }
-      catch ( error ) {
-        // Assertion item already loaded
-      }
+    var item;
 
-      var mongo = mongoUp();
+    var popularity;
 
-      var item;
+    /////////////////////////////////////////////////////////////////////////
 
-      var type;
+    describe ( 'Models / Item / Methods / Get Popularity' , function () {
 
-      var user;
+      /////////////////////////////////////////////////////////////////////////
 
-      var parent;
+      before ( function ( done ) {
 
-      function test__models__Item__methods__getPopularity____is_A_Function (done) {
+        assert ( 'Item' , require('../.Item'));
 
-        Item.schema.methods.should.have.property('getPopularity')
-            .which.is.a.Function;
-          done();
-      }
+        mongo = mongoUp();
 
-      function test__models__Item__methods__getPopularity____createTestItem (done) {
-
-        Item
-          .disposable(domain.intercept(function (newItem) {
-
-            item = newItem;
-
-            done();
-
-          }));
-      }
-
-      function test__models__Item__methods__getPopularity____isAnItem (done) {
-
-        item.should.be.an.Item;
         done();
 
-      }
+      } ) ;
 
-      function test__models__Item__methods__getPopularity____getPopularity (done) {
+      /////////////////////////////////////////////////////////////////////////
 
-        var popularity = item.getPopularity();
+      it ( 'should be a function' , function () {
 
-        popularity.should.be.an.Object;
+        Item.schema.methods
+          .should.have.property           ('getPopularity')
+            .which.                       is.a.Function;
+
+      } );
+
+      /////////////////////////////////////////////////////////////////////////
+
+      describe ( 'Create a new test item' , function () {
+
+        ///////////////////////////////////////////////////////////////////////
+
+        before ( function ( done ) {
+
+          fulfill(done, [], function (domain) {
+
+            Item
+              .disposable(domain.intercept(function (newItem) {
+
+                item = newItem;
+                // console.log(item)
+
+                done();
+            }));
+
+          });
+
+        } );
+
+        ///////////////////////////////////////////////////////////////////////
+
+        it ( 'should be an Item' , function () {
+
+          item.should.be.an.Item;
+
+        });
+
+      });
+
+      /////////////////////////////////////////////////////////////////////////
+
+      describe ( 'Get Item Popularity' , function () {
+
+        ///////////////////////////////////////////////////////////////////////
+
+        before ( function ( ) {
+
+          popularity = item.getPopularity();
+
+        });
+
+        ///////////////////////////////////////////////////////////////////////
+
+        it ( 'should be a Popularity' , function () {
+
+          popularity.should.be.an.Object;
         
-        popularity.should.have.property('number').which.is.a.Number;
-        popularity.number.should.be.above(-1);
-        popularity.number.should.be.below(101);
-        
-        popularity.should.have.property('ok').which.is.a.Boolean;
-        popularity.ok.should.be.true;
+          popularity.should.have.property('number').which.is.a.Number;
+          popularity.number.should.be.above(-1);
+          popularity.number.should.be.below(101);
+          
+          popularity.should.have.property('ok').which.is.a.Boolean;
+          popularity.ok.should.be.true;
 
-        popularity.should.have.property('views').which.is.a.Number;
-        popularity.should.have.property('promotions').which.is.a.Number;
+          popularity.should.have.property('views').which.is.a.Number;
+          popularity.should.have.property('promotions').which.is.a.Number;
 
-        done()
-        
-      }
+        } );
 
-      function test__models__Item__methods__getPopularity____cleaningOut (done) {
+      });
 
-        User.remove({ _id: item.user }, domain.intercept(function () {
-          item.remove(domain.intercept(function () {
-            mongo.disconnect(done);
+      /////////////////////////////////////////////////////////////////////////
+
+      after ( function ( done ) {
+
+        fulfill ( done , [], function ( domain ) {
+
+          User.remove({ _id: item.user }, domain.intercept(function () {
+            item.remove(domain.intercept(function () {
+              mongo.disconnect(done);
+            }));
           }));
-        }));
-      }
 
-      Test([
-
-          test__models__Item__methods__getPopularity____is_A_Function,
-          test__models__Item__methods__getPopularity____createTestItem,
-          test__models__Item__methods__getPopularity____isAnItem,
-          test__models__Item__methods__getPopularity____getPopularity,
-          test__models__Item__methods__getPopularity____cleaningOut
-
-        ], done);
+        } );
+      } );
 
     });
 
-  }
-
-  module.exports = test__models__Item__methods__getPopularity;
+  });
 
 } ();

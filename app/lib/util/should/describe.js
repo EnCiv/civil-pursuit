@@ -12,7 +12,6 @@
         then(it);
       }
       catch ( error ) {
-        console.log(Object.keys(error), error.operator, typeof error.expected, error.actual)
 
         var rethrow = new TypeError(' x ' + describe + ' > Expected ' + error.operator);
 

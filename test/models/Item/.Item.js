@@ -6,11 +6,11 @@
 
   var assert  =   require('syn/lib/util/should/add');
 
+  require('syn/lib/util/should/describe');
+
   function assertItem () {
 
     var self = this;
-
-    console.log(':)')
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -35,9 +35,15 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('id')
-        .which.                       is.a.String;
+    should.$describe(
+      "Item has a short id",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.property       ('id')
+            .which.                   is.a.String;
+      });
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -81,29 +87,15 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    try {
-      this.obj
-        .should.have.property         ('type')
-          .which.                     is.an.ObjectID;
-    }
-    catch ( error ) {
-      this.obj
-        .should.have.property         ('type')
-          .which.                     is.a.Type;
-    }
+    this.obj
+      .should.have.property           ('type')
+        .which.                       is.an.ObjectID;
 
     ///////////////////////////////////////////////////////////////////////////
 
-    try {
-      this.obj
-        .should.have.property         ('user')
-          .which.                     is.an.ObjectID;
-    }
-    catch ( error ) {
-      this.obj
-        .should.have.property         ('user')
-          .which.                     is.a.User;
-    }
+    this.obj
+      .should.have.property           ('user')
+        .which.                       is.an.ObjectID;
 
     ///////////////////////////////////////////////////////////////////////////
 

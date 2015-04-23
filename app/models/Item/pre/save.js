@@ -25,15 +25,17 @@
       if ( isNew ) {
         Item.generateShortId(domain.intercept(function (id) {
           self.id = id;
-          next();  
+          packageItem ();
         }));
       }
 
       else {
-        next();
+        packageItem ();
       }
 
-      async.parallel([uploadImage, getUrlTitle], done);
+      function packageItem () {
+        async.parallel([uploadImage, getUrlTitle], done);
+      }
 
       function uploadImage (done) {
         // If image declared (and in case of editing - if image changed)
