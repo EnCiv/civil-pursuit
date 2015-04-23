@@ -4,31 +4,46 @@
 
   var should = require('should');
 
-  var di = require('syn/lib/util/di/domain');
+  var httpGet = require('request');
 
-  var deps = [
-    'request',
-    'string',
-    'syn/lib/Test',
-    'syn/lib/util/get-url-title',
-    'should'
-  ];
+  var S = require('string');
 
-  module.exports = function test__lib__getUrlTitle (done) {
+  var url = 'http://www.example.com';
+  
+  var title;
 
-    var url = 'http://www.example.com';
-    var title;
+  var getUrlTitle;
 
-    di(done, deps, function (domain, httpGet, S, Test, getUrlTitle) {
+  describe ( 'Lib / Util / Get URL Title' , function () {
 
-      function test__lib__getUrlTitle____is_A_Function (done) {
-        getUrlTitle.should.be.a.Function;
-        done();
-      }
+    ///////////////////////////////////////////////////////////////////////////
 
-      function test__lib__getUrlTitle____getUrlTitle (done) {
-        httpGet(url, domain.intercept(function (response, body) {
-          
+    before ( function () {
+
+      getUrlTitle = require('syn/lib/util/get-url-title');
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should be a function' , function () {
+
+      getUrlTitle.should.be.a.Function;
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    describe ( 'Get URL Title' , function () {
+
+      /////////////////////////////////////////////////////////////////////////
+
+      before ( function (done) {
+
+        httpGet(url, function (error, response, body) {
+
+          if ( error ) return done(error);
+
           response.should.be.an.Object;
           response.should.have.property('statusCode')
             .which.is.a.Number
@@ -50,28 +65,47 @@
 
             });
 
-          done()
-
-        }));
-      }
-
-      function test__lib__getUrlTitle____shouldMatch (done) {
-        getUrlTitle(url, domain.intercept(function (_title) {
-          _title.should.be.exactly(title);
           done();
-        }));
-      }
+        });
 
-      Test([
+      } );
 
-          test__lib__getUrlTitle____is_A_Function,
-          test__lib__getUrlTitle____getUrlTitle,
-          test__lib__getUrlTitle____shouldMatch
+      /////////////////////////////////////////////////////////////////////////
 
-        ], done);
+      describe ( 'should be the right title' , function () {
 
-    });
-    
-  };
+        it ( 'As a promise' , function (done) {
+
+          getUrlTitle(url).then(function (_title) {
+
+            _title.should.be.exactly(title);
+            
+            done();
+
+          });
+
+        });
+
+        it ( 'As a callback' , function (done) {
+
+          getUrlTitle(url, function (error, _title) {
+
+            if ( error ) return done(error);
+
+            _title.should.be.exactly(title);
+            
+            done();
+
+          });
+
+        });
+      
+      } );
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+  } );
 
 } ();

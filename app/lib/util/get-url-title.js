@@ -6,56 +6,61 @@
 
   var request = require('request');
 
-  function getUrlTitle (url, then) {
+  var Promise = require('promise');
 
-    var domain = require('domain').create();
+  function getUrlTitle (url, cb) {
 
-    domain.on('error', function (error) {
-      if ( typeof then === 'function' ) {
-        then(error);
-      }
-      else {
-        throw new Error('getUrlTitle: missing function level callback - domain error catcher could not catch error!')
-      }
-    });
+    var q = new Promise(function (fulfill, reject) {
 
-    domain.run(function () {
-      request({
-          url             :   url,
-          timeout         :   1000 * 5,
-          headers         :   {
-            'User-Agent'  :   config['user agent']
-          }
-        },
-        domain.intercept(function (response, body) {
-          var title;
+      var domain = require('domain').create();
 
-          var S = require('string');
-          
-          if ( response.statusCode === 200 ) {
+      domain.on('error', reject);
+
+      domain.run(function () {
+        request({
+            url             :   url,
+            timeout         :   1000 * 5,
+            headers         :   {
+              'User-Agent'  :   config['user agent']
+            }
+          },
+          domain.intercept(function (response, body) {
+            var title;
+
+            var S = require('string');
             
-            body
+            if ( response.statusCode === 200 ) {
+              
+              body
 
-              .replace(/\r/g, '')
+                .replace(/\r/g, '')
 
-              .replace(/\n/g, '')
+                .replace(/\n/g, '')
 
-              .replace(/\t/g, '')
+                .replace(/\t/g, '')
 
-              .replace(/<title>(.+)<\/title>/, function (matched, _title) {
+                .replace(/<title>(.+)<\/title>/, function (matched, _title) {
 
-                title = S(_title).decodeHTMLEntities().s;
+                  title = S(_title).decodeHTMLEntities().s;
 
-              });
+                });
 
-            then(null, title);
-          }
+              fulfill(title);
+            }
 
-          else {
-            throw new Error('Got status code ' + response.statusCode);
-          }
-        }));
+            else {
+              throw new Error('Got status code ' + response.statusCode);
+            }
+          }));
+      });
+
     });
+
+    if ( typeof cb === 'function' ) {
+      q.then(cb.bind(null, null), cb);
+    }
+
+    return q;
 
   }
 
