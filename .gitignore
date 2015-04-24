@@ -1,7 +1,8 @@
 /node_modules/*
-/app/web/bower_components/*
+/app/dist/bower_components/*
 /*.csv
 /.env.sh
 /.start.sh
 /app/web/sitemap.xml
 /app/web/sitemap-*.xml
+/app/package.json
