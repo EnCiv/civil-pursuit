@@ -12,6 +12,8 @@ if [ ! -f "$symbolic_link/package.json" ]; then
   ln -s $PWD/package.json $symbolic_link/package.json;
 fi
 
+ls $symbolic_link
+
 node app/models/migrations/v2.js;
 
 node app/models/migrations/v3.js;
