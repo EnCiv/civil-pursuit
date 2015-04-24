@@ -90,7 +90,8 @@
                 console.log({
                   name: this.name,
                   parent: this.parent,
-                  parentId: types[this.parent]
+                  parentId: types[this.parent],
+                  types: types
                 })
                 console.log()
                 console.log()
