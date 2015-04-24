@@ -27,6 +27,14 @@ ls $symbolic_link
 
 echo
 echo '###'
+echo '    REMOVE SYMBOLIC LINK'
+echo '###'
+echo
+
+unlink $symbolic_link
+
+echo
+echo '###'
 echo '    LIST SYMBOLIC LINK'
 echo '###'
 echo
@@ -39,7 +47,8 @@ echo '    CREATE SYMBOLIC LINK'
 echo '###'
 echo
 
-ln -s $PWD/app/ $symbolic_link
+echo ln -s $PWD/app/ $symbolic_link  || exit 1;
+ln -s $PWD/app/ $symbolic_link  || exit 1;
 
 echo
 echo '###'
@@ -47,7 +56,7 @@ echo '    CREATE SYMBOLIC PACKAGE.JSON'
 echo '###'
 echo
 
-ln -s $PWD/package.json $symbolic_link/package.json
+ln -s $PWD/package.json $symbolic_link/package.json  || exit 1;
 
 echo
 echo '###'
@@ -90,7 +99,7 @@ echo '    REMOVE SYMBOLIC LINK'
 echo '###'
 echo
 
-unlink $symbolic_link || exit 1;
+unlink $symbolic_link
 
 echo
 echo '###'
