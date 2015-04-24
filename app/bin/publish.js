@@ -24,7 +24,7 @@
     { name: 'mocha test/lib/util/di' },
     { name: 'mocha test/lib/util/encrypt' },
     { name: 'mocha test/lib/util/get-url-title' },
-    { name: 'mocha test/models/Item/*' },
+    { name: 'mocha test/models/Item/Item test/models/Item/methods test/models/Item/statics test/models/Item/pre' },
 
     // { name: [test, 'test/lib'].join(' ') },
 
