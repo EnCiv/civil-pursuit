@@ -7,7 +7,7 @@
     var self = this;
 
     /** Socket */
-    self.socket = io.connect('http://' + location.hostname + ':' + location.port);
+    self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
     self.socket.once('connect', function () {
       emit('ready');
