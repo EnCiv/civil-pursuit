@@ -57,7 +57,7 @@ echo '###'
 echo
 
 ls $symbolic_link
-ls $symbolic_link/models
+ls /app
 
 echo
 echo '###'

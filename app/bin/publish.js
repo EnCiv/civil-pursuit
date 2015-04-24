@@ -62,6 +62,7 @@
 
     { name: [test, 'web/landing-page'].join(' ') },
     { name: [test, 'web/sign-in'].join(' ') },
+    { name: [test, 'web/sign-up'].join(' ') },
 
     { name: 'git push heroku master' }
   ];
