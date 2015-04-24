@@ -9,22 +9,23 @@
 
     var q = new Promise(function (fulfill, reject) {
 
-      if ( app.cache.template.panel ) {
-        panel.template = $(app.cache.template.panel[0].outerHTML);
+      if ( app.cache.get('/views/Panel') ) {
+        panel.template = $(app.cache.get('/views/Panel')[0].outerHTML);
         
         return fulfill(panel.template);
       }
 
       $.ajax({
-        url: '/partial/panel'
+        url: '/views/Panel'
       })
 
-        .error(reject)
+        .error(console.log.bind(console, 'error'))
 
         .success(function (data) {
+          console.log('well yes', data);
           panel.template = $(data);
 
-          app.cache.template.panel = $(data);
+          app.cache.set('/views/Panel', $(data));
 
           fulfill(panel.template);
         });

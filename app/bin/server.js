@@ -214,6 +214,16 @@
 
                 app.arte.emit('request', req);
 
+                res.locals.pack     =   function () {
+                  var locals = app.locals;
+
+                  for ( var i in res.locals ) {
+                    locals[i] = res.locals[i];
+                  }
+
+                  return locals;
+                };
+
                 // Forcing item
                 require('syn/models/Item');
 
@@ -239,17 +249,15 @@
                 // res.superRender('pages/index.jade')
                 var html = require('syn/views/layout');
 
-                var locals = app.locals;
-
-                for ( var i in res.locals ) {
-                  locals[i] = res.locals[i];
-                }
-
-                res.send(html.toHTML(locals));
+                res.send(html.toHTML(res.locals.pack()));
               })
 
-            .get('/partial/:partial', function getPartial (req, res, next) {
-              res.superRender('partials/' + req.params.partial);
+            .get('/views/:view', function getPartial (req, res, next) {
+              var Html5 = require('syn/lib/html5');
+
+              var view = require('syn/views/' + req.params.view)(res.locals.pack());
+
+              res.send(view.map(Html5.elem.toHTML).join("\n"));
             })
 
             .get('/page/test', function getPage (req, res, next) {

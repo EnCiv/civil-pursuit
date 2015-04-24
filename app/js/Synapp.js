@@ -16,6 +16,7 @@
 
   var domain    =   require('domain');
   var Socket    =   require('syn/js/providers/Socket');
+  var Cache     =   require('syn/js/providers/Cache');
 
   function Domain (onError) {
     return domain.create().on('error', onError);
@@ -55,6 +56,8 @@
     };
 
     this.location = {};
+
+    this.cache = new Cache();
 
     this.domain.run(function () {
 

@@ -7,7 +7,7 @@
   // var Item      =   require('syn/js/components/Item');
   // var Sign      =   require('syn/js/components/Sign');
   var Intro     =   require('syn/js/components/Intro');
-  // var Panel     =   require('syn/js/components/Panel');
+  var Panel     =   require('syn/js/components/Panel');
 
   window.app    =   new Synapp();
 
@@ -16,13 +16,11 @@
     /** Render intro */
     new Intro().render();
 
-    console.log('hello!'); return;
+    console.log('hello!');
 
     /** Render user-related components */
-    new Sign().render();
+    // new Sign().render();
 
-    /** Render intro */
-    new Intro().render();
 
     /** If page is about an item */
     if ( app.location.item ) {
@@ -111,7 +109,7 @@
 
 } ();
 
-},{"syn/js/Synapp":"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js","syn/js/components/Intro":"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"syn/js/Synapp":"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js","syn/js/components/Intro":"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js","syn/js/components/Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3015,7 +3013,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -3071,6 +3069,7 @@ module.exports=module.exports={
 
   var domain    =   require('domain');
   var Socket    =   require('syn/js/providers/Socket');
+  var Cache     =   require('syn/js/providers/Cache');
 
   function Domain (onError) {
     return domain.create().on('error', onError);
@@ -3110,6 +3109,8 @@ module.exports=module.exports={
     };
 
     this.location = {};
+
+    this.cache = new Cache();
 
     this.domain.run(function () {
 
@@ -3178,7 +3179,7 @@ module.exports=module.exports={
 
 } ();
 
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","syn/js/providers/Socket":"/home/francois/Dev/syn/node_modules/syn/js/providers/Socket.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js":[function(require,module,exports){
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","syn/js/providers/Cache":"/home/francois/Dev/syn/node_modules/syn/js/providers/Cache.js","syn/js/providers/Socket":"/home/francois/Dev/syn/node_modules/syn/js/providers/Socket.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -5070,12 +5071,12 @@ module.exports=module.exports={
 
     var panel = this;
 
-    this.type     =   type._id ? type._id : type;
+    this.type     =   type;
     this.parent   =   parent;
     this.skip     =   skip || 0;
     this.size     =   size || synapp['navigator batch size'];
 
-    this.id       =   'panel-' + this.type;
+    this.id       =   'panel-' + this.type._id;
 
     if ( this.parent ) {
       this.id += '-' + this.parent;
@@ -5234,22 +5235,23 @@ module.exports=module.exports={
 
     var q = new Promise(function (fulfill, reject) {
 
-      if ( app.cache.template.panel ) {
-        panel.template = $(app.cache.template.panel[0].outerHTML);
+      if ( app.cache.get('/views/Panel') ) {
+        panel.template = $(app.cache.get('/views/Panel')[0].outerHTML);
         
         return fulfill(panel.template);
       }
 
       $.ajax({
-        url: '/partial/panel'
+        url: '/views/Panel'
       })
 
-        .error(reject)
+        .error(console.log.bind(console, 'error'))
 
         .success(function (data) {
+          console.log('well yes', data);
           panel.template = $(data);
 
-          app.cache.template.panel = $(data);
+          app.cache.set('/views/Panel', $(data));
 
           fulfill(panel.template);
         });
@@ -5341,7 +5343,7 @@ module.exports=module.exports={
 
     var q = new Promise(function (fulfill, reject) {
 
-      panel.find('title').text(panel.type);
+      panel.find('title').text(panel.type.name);
 
       panel.find('toggle creator').on('click', function () {
         panel.toggleCreator($(panel));
@@ -6231,7 +6233,28 @@ module.exports=module.exports={
 
 } ();
 
-},{"syn/js/components/Forgot-Password":"/home/francois/Dev/syn/node_modules/syn/js/components/Forgot-Password.js","syn/js/components/Join":"/home/francois/Dev/syn/node_modules/syn/js/components/Join.js","syn/js/components/Login":"/home/francois/Dev/syn/node_modules/syn/js/components/Login.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js":[function(require,module,exports){
+},{"syn/js/components/Forgot-Password":"/home/francois/Dev/syn/node_modules/syn/js/components/Forgot-Password.js","syn/js/components/Join":"/home/francois/Dev/syn/node_modules/syn/js/components/Join.js","syn/js/components/Login":"/home/francois/Dev/syn/node_modules/syn/js/components/Login.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Cache.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function Cache () {
+    this.entries = {};
+  }
+
+  Cache.prototype.get = function (key) {
+    return this.entries[key];
+  };
+
+  Cache.prototype.set = function (key, value) {
+    return this.entries[key] = value;
+  };
+
+  module.exports = Cache;
+
+} ();
+
+},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js":[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************

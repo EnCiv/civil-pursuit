@@ -4,11 +4,13 @@
 
   require('should');
 
-  var webDriver        =   require('syn/lib/webdriver');
-  var Page        =   require('syn/lib/Page');
-  var Domain = require('domain').Domain;
-  var config = require('syn/config.json');
-  var mongoUp = require('syn/lib/util/connect-to-mongoose');
+  var webDriver         =   require('syn/lib/webdriver');
+  var Page              =   require('syn/lib/Page');
+  var Domain            =   require('domain').Domain;
+  var config            =   require('syn/config.json');
+  var mongoUp           =   require('syn/lib/util/connect-to-mongoose');
+
+  var Type              =   require('syn/models/Type');  
 
   var webdriver,
     url,
@@ -20,7 +22,7 @@
 
     before ( function ( done ) {
 
-      this.timeout(7500);
+      this.timeout(10000);
 
       var domain = new Domain().on('error', done);
 
@@ -105,6 +107,34 @@
     it ( 'should have intro' , function ( done ) {
 
       require('./.utils/intro')(webdriver.client, done);
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should have a top-level panel' , function ( done ) {
+
+      var domain = new Domain().on('error', done);
+
+      domain.run(function () {
+
+        Type
+          .findOne({ name: 'Topic' })
+          .exec().then(function (Topic) {
+
+            webdriver.client.isVisible('.panels');
+
+            webdriver.client.isVisible('#panel-' + Topic._id);
+
+            webdriver.client.getText('#panel-' + Topic._id + ' .panel-title',
+              domain.intercept(function (text) {
+                text.should.be.a.String.and.is.exactly(Topic.name);
+                done();
+              }));
+
+          });
+
+      });
 
     } );
 

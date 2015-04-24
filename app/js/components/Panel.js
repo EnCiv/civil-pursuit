@@ -41,12 +41,12 @@
 
     var panel = this;
 
-    this.type     =   type._id ? type._id : type;
+    this.type     =   type;
     this.parent   =   parent;
     this.skip     =   skip || 0;
     this.size     =   size || synapp['navigator batch size'];
 
-    this.id       =   'panel-' + this.type;
+    this.id       =   'panel-' + this.type._id;
 
     if ( this.parent ) {
       this.id += '-' + this.parent;

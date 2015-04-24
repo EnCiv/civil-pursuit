@@ -6,7 +6,7 @@
   // var Item      =   require('syn/js/components/Item');
   // var Sign      =   require('syn/js/components/Sign');
   var Intro     =   require('syn/js/components/Intro');
-  // var Panel     =   require('syn/js/components/Panel');
+  var Panel     =   require('syn/js/components/Panel');
 
   window.app    =   new Synapp();
 
@@ -15,13 +15,11 @@
     /** Render intro */
     new Intro().render();
 
-    console.log('hello!'); return;
+    console.log('hello!');
 
     /** Render user-related components */
-    new Sign().render();
+    // new Sign().render();
 
-    /** Render intro */
-    new Intro().render();
 
     /** If page is about an item */
     if ( app.location.item ) {

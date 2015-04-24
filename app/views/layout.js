@@ -6,6 +6,10 @@
 
   var config = require('syn/config.json');
 
+  var Intro = require('syn/views/Intro');
+
+  var TopLevelPanel = require('syn/views/TopLevelPanel');
+
   var elem = Html5.elem;
 
   module.exports = new Html5(
@@ -98,7 +102,15 @@
 
     elem('section#main', { role: 'main' }, function (locals) {
 
-      return require('syn/views/Intro')(locals);
+      var children = [].concat(
+
+        Intro(locals),
+
+        TopLevelPanel(locals)
+
+      );
+
+      return children;
 
     }),
 

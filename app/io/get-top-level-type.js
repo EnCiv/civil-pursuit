@@ -19,7 +19,7 @@
     domain.run(function () {
       Type
         
-        .find({ name: 'Topic' })
+        .findOne({ name: 'Topic' })
         
         .exec().then(socket.ok.bind(socket, event));
     });

@@ -11,7 +11,7 @@
 
     var q = new Promise(function (fulfill, reject) {
 
-      panel.find('title').text(panel.type);
+      panel.find('title').text(panel.type.name);
 
       panel.find('toggle creator').on('click', function () {
         panel.toggleCreator($(panel));
