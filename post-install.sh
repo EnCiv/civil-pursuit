@@ -50,13 +50,7 @@ echo
 echo ln -s $PWD/app/ $symbolic_link  || exit 1;
 ln -s $PWD/app/ $symbolic_link  || exit 1;
 
-echo
-echo '###'
-echo '    CREATE SYMBOLIC PACKAGE.JSON'
-echo '###'
-echo
 
-ln -s $PWD/package.json $symbolic_link/package.json  || exit 1;
 
 echo
 echo '###'
