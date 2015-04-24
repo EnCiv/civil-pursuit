@@ -1,6 +1,11 @@
 #!/bin/bash
 
-symbolic_link="/node_modules/syn";
+if [ -d "/app" ]; then
+  # Heroku
+  symbolic_link="/app/node_modules/syn";
+else
+  symbolic_link="$PWD/node_modules/syn";
+fi
 
 echo
 echo '###'
