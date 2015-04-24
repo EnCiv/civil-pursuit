@@ -62,9 +62,11 @@
 
         .reduce(function (parallels, type) {
       
-          parallels[type] = function (cb) {
+          parallels[type.name] = function (cb) {
             Type.create({ name: type.name }, cb);
           };
+
+          console.log('parallels', parallels)
           
           return parallels;
         }, {}),
