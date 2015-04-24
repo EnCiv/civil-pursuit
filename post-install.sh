@@ -47,6 +47,7 @@ echo '    CREATE SYMBOLIC LINK'
 echo '###'
 echo
 
+echo ln -s $PWD/app/ $symbolic_link  || exit 1;
 ln -s $PWD/app/ $symbolic_link  || exit 1;
 
 echo
