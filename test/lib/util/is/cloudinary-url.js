@@ -2,61 +2,58 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  require('should');
 
-  var deps = [
-    'syn/lib/Test',
-    'should'
-  ];
+  var failsIfNotString = 123;
+  var failsIfNotCloudinaryUrl = 'some random string';
+  var ok = 'http://cloudinary.com/test.jpg';
+  var isCloudinaryUrl;
 
- function test__lib__util__is__cloudinaryUrl (done) {
+  describe ( 'Lib / Util / Is / Cloudinary URL' , function () {
 
-    var failsIfNotString = 123;
-    var failsIfNotCloudinaryUrl = 'some random string';
-    var ok = 'http://cloudinary.com/test.jpg';
+    ///////////////////////////////////////////////////////////////////////////
 
-    di(done, deps, function (domain, Test) {
+    before ( function () {
 
-      var isCloudinaryUrl;
+      isCloudinaryUrl = require('syn/lib/util/is/cloudinary-url');
 
-      function test__lib__util__is__cloudinaryUrl____exists (done) {
-        isCloudinaryUrl = require('syn/lib/util/is/cloudinary-url');
-        done();
-      }
+    } );
 
-      function test__lib__util__is__cloudinaryUrl____isA_Function (done) {
-        isCloudinaryUrl.should.be.a.Function;
-        done();
-      }
 
-      function test__lib__util__is__cloudinaryUrl____failsIfNotString (done) {
-        isCloudinaryUrl(failsIfNotString).should.be.false;
-        done();
-      }
+    ///////////////////////////////////////////////////////////////////////////
 
-      function test__lib__util__is__cloudinaryUrl____failsIfNotCloudinaryUrl (done) {
-        isCloudinaryUrl(failsIfNotCloudinaryUrl).should.be.false;
-        done();
-      }
+    it ( 'should be a function' , function () {
 
-      function test__lib__util__is__cloudinaryUrl____okIfCloudinaryUrl (done) {
-        isCloudinaryUrl(ok).should.be.true;
-        done();
-      }
+      isCloudinaryUrl.should.be.a.Function;
 
-      Test([
-          test__lib__util__is__cloudinaryUrl____exists,
-          test__lib__util__is__cloudinaryUrl____isA_Function,
-          test__lib__util__is__cloudinaryUrl____failsIfNotString,
-          test__lib__util__is__cloudinaryUrl____failsIfNotCloudinaryUrl,
-          test__lib__util__is__cloudinaryUrl____okIfCloudinaryUrl
-        ],
-        done);
+    } );
 
-    });
+    ///////////////////////////////////////////////////////////////////////////
 
-  }
+    it ( 'should fail if missing string' , function () {
 
-   module.exports = test__lib__util__is__cloudinaryUrl;
+      isCloudinaryUrl(failsIfNotString).should.be.false;
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should fail if string not a cloudinary url' , function () {
+
+      isCloudinaryUrl(failsIfNotCloudinaryUrl).should.be.false;
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should work if string is a cloudinary url' , function () {
+
+      isCloudinaryUrl(ok).should.be.true;
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+  } );
 
 } ();

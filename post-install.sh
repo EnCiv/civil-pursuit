@@ -2,15 +2,39 @@
 
 symbolic_link="$PWD/node_modules/syn";
 
-rm -rf $symbolic_link
+echo '###'
+echo '    CREATE SYMBOLIC LINK'
+echo '###'
 
-if [ ! -d "$symbolic_link" ]; then
-  ln -s $PWD/app/ $symbolic_link;
-fi
+echo $symbolic_link
 
-if [ ! -f "$symbolic_link/package.json" ]; then
-  ln -s $PWD/package.json $symbolic_link/package.json;
-fi
+echo '###'
+echo '    SYMBOLIC LINK EXISTS?'
+echo '###'
+
+ls $symbolic_link
+
+echo '###'
+echo '    REMOVE SYMBOLIC LINK'
+echo '###'
+
+unlink $symbolic_link
+
+echo '###'
+echo '    CREATE SYMBOLIC LINK'
+echo '###'
+
+ln -s $PWD/app/ $symbolic_link;
+
+echo '###'
+echo '    CREATE SYMBOLIC PACKAGE.JSON'
+echo '###'
+
+ln -s $PWD/package.json $symbolic_link/package.json;
+
+echo '###'
+echo '    LIST SYMBOLIC LINK'
+echo '###'
 
 ls $symbolic_link
 
