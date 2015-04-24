@@ -40,7 +40,7 @@ echo '    CREATE SYMBOLIC LINK'
 echo '###'
 echo
 
-ln -s $PWD/app/ $symbolic_link;
+ln -s $PWD/app/ $symbolic_link
 
 echo
 echo '###'
@@ -64,7 +64,7 @@ echo '    MIGRATE TO v2'
 echo '###'
 echo
 
-node app/models/migrations/v2.js;
+node app/models/migrations/v2.js  || exit 1;
 
 echo
 echo '###'
