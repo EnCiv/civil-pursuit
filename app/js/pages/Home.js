@@ -3,14 +3,19 @@
   'use strict';
 
   var Synapp    =   require('syn/js/Synapp');
-  var Item      =   require('syn/js/components/Item');
-  var Sign      =   require('syn/js/components/Sign');
+  // var Item      =   require('syn/js/components/Item');
+  // var Sign      =   require('syn/js/components/Sign');
   var Intro     =   require('syn/js/components/Intro');
-  var Panel     =   require('syn/js/components/Panel');
+  // var Panel     =   require('syn/js/components/Panel');
 
   window.app    =   new Synapp();
 
   app.ready(function onceAppConnects_HomePage () {
+
+    /** Render intro */
+    new Intro().render();
+
+    console.log('hello!'); return;
 
     /** Render user-related components */
     new Sign().render();

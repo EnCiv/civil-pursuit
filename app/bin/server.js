@@ -239,7 +239,13 @@
                 // res.superRender('pages/index.jade')
                 var html = require('syn/views/layout');
 
-                res.send(html.toHTML());
+                var locals = app.locals;
+
+                for ( var i in res.locals ) {
+                  locals[i] = res.locals[i];
+                }
+
+                res.send(html.toHTML(locals));
               })
 
             .get('/partial/:partial', function getPartial (req, res, next) {

@@ -64,9 +64,45 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    it ( 'should have an intro' , function ( done ) {
+    it ( 'should be in UTF-8' , function ( done ) {
 
-      this.timeout(5000);
+      var domain = new Domain().on('error', done);
+
+      domain.run(function () {
+
+        webdriver.client.getAttribute('meta[charset]', 'charset',
+          domain.intercept(function (charset) {
+            charset.should.be.exactly('utf-8');
+            done();  
+          }));
+
+      });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should have Google Analytics in Production' , function ( done ) {
+
+      // var domain = new Domain().on('error', done);
+
+      // domain.run(function () {
+
+      //   webdriver.client.getText('#ga',
+      //     domain.intercept(function (text) {
+      //       charset.should.match('google-analytics');
+      //       done();  
+      //     }));
+
+      // });
+
+      done();
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should have intro' , function ( done ) {
 
       require('./.utils/intro')(webdriver.client, done);
 

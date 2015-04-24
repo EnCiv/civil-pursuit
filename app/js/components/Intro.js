@@ -40,7 +40,7 @@
       $('#intro').find('.item-subject').text(intro.subject);
       // $('#intro').find('.item-title').hide();
 
-      readMore(intro, $('#intro'));
+      // readMore(intro, $('#intro'));
 
       $('#intro').find('.item-reference').remove();
       $('#intro').find('.item-buttons').remove();

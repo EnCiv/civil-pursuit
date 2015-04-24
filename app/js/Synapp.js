@@ -15,6 +15,11 @@
   'use strict';
 
   var domain    =   require('domain');
+  var Socket    =   require('syn/js/providers/Socket');
+
+  function Domain (onError) {
+    return domain.create().on('error', onError);
+  }
 
   /**
    *  @class Synapp
@@ -24,7 +29,9 @@
   function Synapp () {
     var self = this;
 
-    this.domain = domain.create();
+    this.domain = new Domain(function (error) {
+      console.error('Synapp error', error.stack);
+    });
 
     this.domain.intercept = function (fn, _self) {
 
@@ -45,12 +52,7 @@
           fn.apply(_self, args);
         }
       };
-
     };
-
-    this.domain.on('error', function (error) {
-      console.error('Synapp error', error.stack.split(/\n/));
-    });
 
     this.location = {};
 
@@ -66,53 +68,19 @@
 
       }
 
-      /** Socket */
-      self.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
+      self.socket = new Socket(self.emit.bind(self)).socket;
 
-      self.socket.once('connect', function () {
-        /** @deprecated */
-        self.emit('connect');
+      // self.evaluations = [];
 
-        self.emit('ready');
-      });
+      // self.cache = {
+      //   template: {
+      //     item: null
+      //   }
+      // };
 
-      self.socket.publish = function (event) {
-
-        var args = [];
-        var done;
-
-        for ( var i in arguments ) {
-          if ( +i ) {
-            if ( typeof arguments[i] === 'function' ) {
-              done = arguments[i];
-            }
-            else {
-              args.push(arguments[i]);
-            }
-          }
-        }
-
-        self.socket.emit.apply(self.socket, [event].concat(args));
-
-        self.socket.on('OK ' + event, done);
-
-      }
-
-      self.socket.on('error', function (error) {
-        console.log('socket error', error);
-      });
-
-      self.evaluations = [];
-
-      self.cache = {
-        template: {
-          item: null
-        }
-      };
-
-      if ( synapp.user ) {
-        $('.is-in').removeClass('is-in');
-      }
+      // if ( synapp.user ) {
+      //   $('.is-in').removeClass('is-in');
+      // }
     });
   }
 

@@ -34,6 +34,11 @@
           .getText('#intro .panel-title', domain.intercept(function (text) {
             text.should.be.a.String
               .and.is.exactly(intro.subject);
+          }))
+
+          .getText('#intro .item-subject', domain.intercept(function (text) {
+            text.should.be.a.String
+              .and.is.exactly(intro.subject);
 
             done();
           }));

@@ -4,14 +4,19 @@
   'use strict';
 
   var Synapp    =   require('syn/js/Synapp');
-  var Item      =   require('syn/js/components/Item');
-  var Sign      =   require('syn/js/components/Sign');
+  // var Item      =   require('syn/js/components/Item');
+  // var Sign      =   require('syn/js/components/Sign');
   var Intro     =   require('syn/js/components/Intro');
-  var Panel     =   require('syn/js/components/Panel');
+  // var Panel     =   require('syn/js/components/Panel');
 
   window.app    =   new Synapp();
 
   app.ready(function onceAppConnects_HomePage () {
+
+    /** Render intro */
+    new Intro().render();
+
+    console.log('hello!'); return;
 
     /** Render user-related components */
     new Sign().render();
@@ -106,7 +111,7 @@
 
 } ();
 
-},{"syn/js/Synapp":"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js","syn/js/components/Intro":"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js","syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/components/Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js","syn/js/components/Sign":"/home/francois/Dev/syn/node_modules/syn/js/components/Sign.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"syn/js/Synapp":"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js","syn/js/components/Intro":"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3010,7 +3015,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports={
+module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -3065,6 +3070,11 @@ module.exports={
   'use strict';
 
   var domain    =   require('domain');
+  var Socket    =   require('syn/js/providers/Socket');
+
+  function Domain (onError) {
+    return domain.create().on('error', onError);
+  }
 
   /**
    *  @class Synapp
@@ -3074,7 +3084,9 @@ module.exports={
   function Synapp () {
     var self = this;
 
-    this.domain = domain.create();
+    this.domain = new Domain(function (error) {
+      console.error('Synapp error', error.stack);
+    });
 
     this.domain.intercept = function (fn, _self) {
 
@@ -3095,12 +3107,7 @@ module.exports={
           fn.apply(_self, args);
         }
       };
-
     };
-
-    this.domain.on('error', function (error) {
-      console.error('Synapp error', error.stack.split(/\n/));
-    });
 
     this.location = {};
 
@@ -3116,53 +3123,19 @@ module.exports={
 
       }
 
-      /** Socket */
-      self.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
+      self.socket = new Socket(self.emit.bind(self)).socket;
 
-      self.socket.once('connect', function () {
-        /** @deprecated */
-        self.emit('connect');
+      // self.evaluations = [];
 
-        self.emit('ready');
-      });
+      // self.cache = {
+      //   template: {
+      //     item: null
+      //   }
+      // };
 
-      self.socket.publish = function (event) {
-
-        var args = [];
-        var done;
-
-        for ( var i in arguments ) {
-          if ( +i ) {
-            if ( typeof arguments[i] === 'function' ) {
-              done = arguments[i];
-            }
-            else {
-              args.push(arguments[i]);
-            }
-          }
-        }
-
-        self.socket.emit.apply(self.socket, [event].concat(args));
-
-        self.socket.on('OK ' + event, done);
-
-      }
-
-      self.socket.on('error', function (error) {
-        console.log('socket error', error);
-      });
-
-      self.evaluations = [];
-
-      self.cache = {
-        template: {
-          item: null
-        }
-      };
-
-      if ( synapp.user ) {
-        $('.is-in').removeClass('is-in');
-      }
+      // if ( synapp.user ) {
+      //   $('.is-in').removeClass('is-in');
+      // }
     });
   }
 
@@ -3205,7 +3178,7 @@ module.exports={
 
 } ();
 
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js":[function(require,module,exports){
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","syn/js/providers/Socket":"/home/francois/Dev/syn/node_modules/syn/js/providers/Socket.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4135,7 +4108,7 @@ module.exports={
       $('#intro').find('.item-subject').text(intro.subject);
       // $('#intro').find('.item-title').hide();
 
-      readMore(intro, $('#intro'));
+      // readMore(intro, $('#intro'));
 
       $('#intro').find('.item-reference').remove();
       $('#intro').find('.item-buttons').remove();
@@ -6872,6 +6845,53 @@ module.exports={
   }
 
   module.exports = readMore;
+
+} ();
+
+},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Socket.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+
+  function Socket (emit) {
+    var self = this;
+
+    /** Socket */
+    self.socket = io.connect('http://' + location.hostname + ':' + location.port);
+
+    self.socket.once('connect', function () {
+      emit('ready');
+    });
+
+    self.socket.publish = function (event) {
+
+      var args = [];
+      var done;
+
+      for ( var i in arguments ) {
+        if ( +i ) {
+          if ( typeof arguments[i] === 'function' ) {
+            done = arguments[i];
+          }
+          else {
+            args.push(arguments[i]);
+          }
+        }
+      }
+
+      self.socket.emit.apply(self.socket, [event].concat(args));
+
+      self.socket.on('OK ' + event, done);
+
+    }
+
+    self.socket.on('error', function (error) {
+      console.log('socket error', error);
+    });
+  }
+
+  module.exports = Socket;
 
 } ();
 
