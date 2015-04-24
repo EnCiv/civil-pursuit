@@ -2,6 +2,8 @@
 
 symbolic_link="$PWD/node_modules/syn";
 
+rm -rf $symbolic_link
+
 if [ ! -d "$symbolic_link" ]; then
   ln -s $PWD/app/ $symbolic_link;
 fi
