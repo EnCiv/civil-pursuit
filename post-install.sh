@@ -21,7 +21,7 @@ echo '    SYMBOLIC LINK EXISTS?'
 echo '###'
 echo
 
-ls $symbolic_link
+ls /app
 
 echo
 echo '###'
