@@ -60,9 +60,7 @@
     // { name: [test, 'web/reference-opens-in-a-new-window'].join(' ') },
     // { name: [test, 'web/item-image-display'].join(' ') },
 
-    { name: [test, 'web/landing-page'].join(' ') },
-    { name: [test, 'web/sign-in'].join(' ') },
-    { name: [test, 'web/sign-up'].join(' ') },
+    { name: 'mocha web/landing-page' },
 
     { name: 'git push heroku master' }
   ];
