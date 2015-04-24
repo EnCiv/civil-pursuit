@@ -7,6 +7,8 @@ else
   symbolic_link="$PWD/node_modules/syn";
 fi
 
+symbolic_link="$PWD/node_modules/syn";
+
 echo
 echo '###'
 echo '    CREATE SYMBOLIC LINK'
@@ -21,7 +23,7 @@ echo '    SYMBOLIC LINK EXISTS?'
 echo '###'
 echo
 
-ls /app
+ls $symbolic_link
 
 echo
 echo '###'
