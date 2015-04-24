@@ -35,16 +35,16 @@
 
     it ( 'should create item' , function (done) {
 
-      Item.disposable(function (error, disposableItem) {
+      Item
+        
+        .disposable().then(function (disposableItem) {
 
-        if ( error ) return done(error);
+          item = disposableItem;
 
-        item = disposableItem;
+          item.should.be.an.Item;
 
-        item.should.be.an.Item;
-
-        done();
-      });
+          done();
+        });
 
     });
 

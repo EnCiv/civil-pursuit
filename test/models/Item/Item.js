@@ -4,61 +4,70 @@
 
   var should = require('should');
 
-  var Test = require('syn/lib/Test');
-
   var Item;
 
-  module.exports = function TestModule_Models__Item (done) {
+  describe ( 'Models / Item' , function () {
 
-    function Module_Models__Item_Exists (done) {
+    ///////////////////////////////////////////////////////////////////////////
+
+    before ( function () {
+
       Item = require('syn/models/Item');
-      done();
-    }
 
-    function Module_Models__Item_Is_A_Function (done) {
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should be a function' , function () {
+
       Item.should.be.a.Function;
-      done();
-    }
 
-    function Module_Models__Item_IsAnInstanceOfModel (done) {
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should be an instance of model' , function () {
+
       Item.prototype.constructor.name.should.eql('model');
-      done();
-    }
 
-    function Module_Models__Item_ExtendsEventEmitter (done) {
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should extend event emitter' , function () {
+
       Item.prototype.should.be.an.instanceof(require('events').EventEmitter);
-      done();
-    }
 
-    function Module_Models__Item_Has_A_Schema (done) {
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should have a schema' , function () {
+
       Item.schema.should.be.an.Object;
-      done();
-    }
 
-    function Module_Models__Item_HasStaticMethods (done) {
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should have static methods' , function () {
+
       Item.schema.statics.should.be.an.Object;
       Object.keys(Item.schema.statics).length.should.be.above(0);
-      done();
-    }
 
-    function Module_Models__Item_HasMethods (done) {
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should have methods' , function () {
+
       Item.schema.methods.should.be.an.Object;
       Object.keys(Item.schema.methods).length.should.be.above(0);
-      done();
-    }
 
-    Test([
+    } );
 
-        Module_Models__Item_Exists,
-        Module_Models__Item_Is_A_Function,
-        Module_Models__Item_IsAnInstanceOfModel,
-        Module_Models__Item_ExtendsEventEmitter,
-        Module_Models__Item_Has_A_Schema,
-        Module_Models__Item_HasMethods,
-        Module_Models__Item_HasStaticMethods
+    ///////////////////////////////////////////////////////////////////////////
 
-      ], done);
-    
-  };
+  }) ;
 
 } ();

@@ -2,39 +2,70 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  require('should');
 
-  var deps = [
-    'syn/lib/Test',
-    'syn/models/Item/pre/save',
-    'should'
-  ];
+  var Item = require('syn/models/Item');
 
-  module.exports = function test__models__Item__pre__save (done) {
-    var disposable;
+  var assert = require('syn/lib/util/should/add');
 
-    di(done, deps, function (domain, Test, preSave) {
+  var mongoUp = require('syn/lib/util/connect-to-mongoose');
 
-      function test__models__Item__pre__save____is_A_Function (done) {
+  var User = require('syn/models/User');
 
-        preSave.should.be.a.Function;
+  var preSave;
+
+  var mongo;
+
+  var item;
+
+  describe ( 'Models / Item / Pre / Save' , function () {
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    before ( function () {
+
+      preSave = require('syn/models/Item/pre/save');
+
+      assert ( 'Item' , require('../.Item'));
+
+      mongo = mongoUp();
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should be a function' , function () {
+
+      preSave.should.be.a.Function;
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'Create test item' , function (done) {
+
+      Item.disposable().then(function (_item) {
+        item = _item;
+        item.should.be.an.Item;
         done();
+      }, done);
 
-      }
+    } );
 
-      function test__models__Item__pre__save____callsNext (done) {
-        done();
-      }
+    ///////////////////////////////////////////////////////////////////////////
 
-      Test([
+    after ( function ( done ) {
 
-          test__models__Item__pre__save____is_A_Function,
-          test__models__Item__pre__save____callsNext
+      User.remove(item.user, function () {
+        item.remove(function () {
+          mongo.disconnect(done);
+        });
+      });
 
-        ], done);
+    } );
 
-    });
-    
-  };
+    ///////////////////////////////////////////////////////////////////////////
+
+  } );
 
 } ();
