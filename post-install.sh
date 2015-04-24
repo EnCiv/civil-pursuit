@@ -21,6 +21,12 @@ echo '###'
 unlink $symbolic_link
 
 echo '###'
+echo '    LIST SYMBOLIC LINK'
+echo '###'
+
+ls $symbolic_link
+
+echo '###'
 echo '    CREATE SYMBOLIC LINK'
 echo '###'
 
