@@ -1,6 +1,6 @@
 #!/bin/bash
 
-symbolic_link="$PWD/node_modules/syn";
+symbolic_link="/node_modules/syn";
 
 echo
 echo '###'
