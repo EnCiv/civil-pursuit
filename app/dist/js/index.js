@@ -3010,7 +3010,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -4119,13 +4119,16 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
   var readMore    =   require('syn/js/providers/ReadMore');
 
   function Intro () {
-
+    console.log('new Intro')
   }
 
   Intro.prototype.render = function () {
-    app.socket.emit('get intro');
 
-    app.socket.on('got intro', function (intro) {
+    console.log('rendering intro')
+
+    app.socket.publish('get intro', function (intro) {
+
+      console.log('Got intro', intro)
 
       $('#intro').find('.panel-title').text(intro.subject);
 

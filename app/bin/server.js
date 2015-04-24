@@ -236,7 +236,10 @@
             .get('/',
               // cache.route('synapp:homepage', (1000 * 60 * 60)),
               function landingPage (req, res, next) {
-                res.superRender('pages/index.jade')
+                // res.superRender('pages/index.jade')
+                var html = require('syn/views/layout');
+
+                res.send(html.toHTML());
               })
 
             .get('/partial/:partial', function getPartial (req, res, next) {

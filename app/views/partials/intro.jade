@@ -1,3 +1,6 @@
+include ../mixins/item
+include ../mixins/item-text
+
 block item-collapsers
   span
 
@@ -14,4 +17,15 @@ block item-collapsers
     block panel-body
 
       .items
-        include item
+        +item({ id: 'Intro' })
+
+        block item-text
+          +item-text({})
+
+f1.div('.panel')(
+  f1.div('.panel-body')(
+    f1.h4('.panel-title')
+  ),
+
+  
+);

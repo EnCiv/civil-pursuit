@@ -24,13 +24,16 @@
   var readMore    =   require('syn/js/providers/ReadMore');
 
   function Intro () {
-
+    console.log('new Intro')
   }
 
   Intro.prototype.render = function () {
-    app.socket.emit('get intro');
 
-    app.socket.on('got intro', function (intro) {
+    console.log('rendering intro')
+
+    app.socket.publish('get intro', function (intro) {
+
+      console.log('Got intro', intro)
 
       $('#intro').find('.panel-title').text(intro.subject);
 

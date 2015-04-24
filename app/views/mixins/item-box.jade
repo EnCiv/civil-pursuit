@@ -16,61 +16,7 @@ include item-buttons
 
 mixin item-box (item, dontColllapse, type)
 
-  //- - var item = {};
-
-  //- //- @type   String?
-  //- - var id;
-  //- //- @type   Number=0
-  //- - var views = 0;
-  //- //- @type   Number=0
-  //- - var promotions = 0;
-  //- //- @type   String="0%"
-  //- - var percent = '0%';
-  //- //- @type   Number=0
-  //- - var related = 0;
-  //- //- @type   String=""
-  //- - var subject = '';
-  //- //- @type   String=""
-  //- - var description = '';
-  //- //- @type   String="#"
-  //- - var referenceUrl = '#';
-  //- //- @type   Boolean=false
-  //- - var hasReference = false;
-  //- //- @type   String?
-  //- - var referenceTitle;
-  //- //- @type   String=''
-  //- - var dataImage = '';
-  //- //- @type           String=''
-  //- //- @description    A class whether or not to show children
-  //- - var showChildren = '';
-  //- - var imageUrl = 'http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale/v1411591207/283492_s_US_Flag_and_Constitution_swpubq.jpg';
-
-  //- //- If item is declared (static page), then update variables
-  //- - if ( item && item.type === type )
-
-  //-   - item.id     =   item._id;
-
-  //-   - id            =   'item-' + item._id;
-  //-   - views         =   item.views
-  //-   - promotions    =   item.promotions
-  //-   - percent       =   item.getPromotionPercentage()
-  //-   - subject       =   item.subject
-  //-   - description   =   item.description
-  //-   - dataImage     =   item.image
-
-  //-   - hasReference = item.references.length;
-  //-   - related = item.related;
-
-  //-   - if ( item._id.toString() === batch.item._id.toString() )
-  //-     - related = batch.related;
-
-  //-   - if ( hasReference )
-  //-     - referenceUrl = item.references[0].url;
-  //-     - referenceTitle = item.references[0].title;
-
-  //-   - showChildren = item.nested ? 'show is-shown is-loaded' : '';
-
-  - var item = item || {};
+  - item = item || {};
 
   - if ( item && item.type === type )
 

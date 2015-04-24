@@ -8,9 +8,11 @@
   var Page        =   require('syn/lib/Page');
   var Domain = require('domain').Domain;
   var config = require('syn/config.json');
+  var mongoUp = require('syn/lib/util/connect-to-mongoose');
 
   var webdriver,
-    url;
+    url,
+    mongo;
 
   describe( 'Web / Landing Page' , function () {
 
@@ -23,6 +25,9 @@
       var domain = new Domain().on('error', done);
 
       domain.run(function () {
+
+        mongo = mongoUp();
+
         url = Page('Home');
 
         webdriver = new webDriver({ url: url });
@@ -59,13 +64,25 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
+    it ( 'should have an intro' , function ( done ) {
+
+      this.timeout(5000);
+
+      require('./.utils/intro')(webdriver.client, done);
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
     after ( function ( done ) {
 
       this.timeout(7500);
 
       webdriver.client.pause(5000);
 
-      webdriver.client.end(done);
+      webdriver.client.end(function () {
+        mongo.disconnect(done);
+      });
     
     } );
 

@@ -14,7 +14,8 @@ mixin item (item)
 
     //- Item text
 
-    .item-text
-      block item-text
+    .item-text!=item.text
 
     block item-footer
+
+    .clear

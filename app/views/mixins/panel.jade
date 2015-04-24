@@ -18,7 +18,8 @@ mixin panel (panel)
 
       block panel-body
 
-        +creator
+        - if ( panel.creator !== false )
+          +creator()
         
         // Items
         
