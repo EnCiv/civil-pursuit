@@ -7,6 +7,8 @@
 
   var config = require('syn/config.json');
 
+  var Page = require('syn/lib/Page');
+
   module.exports = function (locals) {
 
     var TopBar                =   elem('.topbar');
@@ -19,11 +21,11 @@
     var ButtonJoinButton     =   elem('button.is-out.join-button', {}, [
       elem('b', { $text: 'Join' }) ]);
     var LinkToProfile         =   elem('a.button.is-in', {
-      href                    :   '/page/profile',
+      href                    :   Page('Profile'),
       title                   :   'Profile'
     }, [elem('i.fa.fa-user')]);
     var LinkToSignOut         =   elem('a.button.is-in', {
-      href                    :   '/sign/out',
+      href                    :   Page('Sign Out'),
       title                   :   'Sign out'
     }, [elem('i.fa.fa-user')]);
 

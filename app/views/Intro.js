@@ -27,7 +27,9 @@
 
             el.children = el.children.concat(
 
-              Item()
+              Item({
+                buttons   :   false
+              })
 
             );
           }

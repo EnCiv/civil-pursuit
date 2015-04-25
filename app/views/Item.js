@@ -13,43 +13,65 @@
       id    :   locals.id
     };
 
+    var ItemWrapper = elem('.item-media-wrapper', {}, [
+
+      elem('.item-media')
+
+    ]);
+
+    var ItemButtons = elem('.item-buttons', {
+
+        $condition    :   function () {
+          return locals.buttons !== false;
+        }
+
+      }, [
+
+      elem('button.item-toggle-promote.shy', {}, [
+
+        elem('span.promoted', { $text: '0' }),
+
+        elem('i.fa.fa-bullhorn')
+
+      ]),
+
+      elem('div'),
+
+      elem('button.item-toggle-details.shy', {}, [
+
+        elem('span.promoted-percent', { $text: '0%' }),
+
+        elem('i.fa.fa-signal')
+
+      ])
+
+    ]);
+
+    var ItemText = elem('.item-text', {}, [
+
+      elem('.item-truncatable', {}, [
+
+        elem('h4.item-subject.header', {}, [
+
+          elem('a', { href: '#' })
+
+        ]),
+
+        elem('.item-description.pre-text')
+
+      ])
+
+    ]);
+
     return [
       
       elem('.item', itemOptions, [
 
-        elem('.item-media-wrapper', {}, [
+        ItemWrapper,
 
-          elem('.item-media')
+        ItemButtons,
 
-        ]),
-
-        elem('.item-buttons', {}, [
-
-          elem('button.item-toggle-promote.shy', {}, [
-
-            elem('span.promoted', { $text: '0' }),
-
-            elem('i.fa.fa-bullhorn')
-
-          ])
-
-        ]),
-
-        elem('.item-text', {}, [
-
-          elem('.item-truncatable', {}, [
-
-            elem('h4.item-subject.header', {}, [
-
-              elem('a', { href: '#' })
-
-            ]),
-
-            elem('.item-description.pre-text')
-
-          ])
-
-        ]),
+        ItemText,
 
         elem('.clear')
 
