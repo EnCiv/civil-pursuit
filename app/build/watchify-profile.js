@@ -63,7 +63,7 @@ Nina Butorac
   exports.task      =   function watchifyApp () {
     var bundler = watchify(
       browserify(
-        path.join(process.cwd(), 'app/web/js/pages/Profile.js'),
+        path.join(process.cwd(), 'app/js/pages/Profile.js'),
         watchify.args));
 
     bundler.on('update', rebundle);

@@ -15,7 +15,7 @@
   var deployMessage = process.argv[2];
 
   var tests = [
-    // { name: 'gulp build-prod' },
+    { name: 'gulp build-prod' },
 
     { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 1, 8792, 7182] },
 

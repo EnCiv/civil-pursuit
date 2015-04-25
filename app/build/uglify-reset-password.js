@@ -10,7 +10,7 @@
 
   exports.task      =   function uglifyApp () {
 
-    return gulp.src(path.join(process.cwd(), 'app/web/dist/js/reset-password.js'))
+    return gulp.src(path.join(process.cwd(), 'app/dist/js/reset-password.js'))
 
       .pipe(uglify())
 

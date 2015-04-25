@@ -10,7 +10,7 @@
 
   exports.task      =   function uglifyApp () {
 
-    return gulp.src(path.join(process.cwd(), 'app/web/dist/js/persona.js'))
+    return gulp.src(path.join(process.cwd(), 'app/dist/js/persona.js'))
 
       .pipe(uglify())
 

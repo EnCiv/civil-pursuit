@@ -15,7 +15,7 @@
   exports.task      =   function watchifyApp () {
     var bundler = watchify(
       browserify(
-        path.join(process.cwd(), 'app/web/js/pages/Reset-password.js'),
+        path.join(process.cwd(), 'app/js/pages/Reset-password.js'),
         watchify.args));
 
     bundler.on('update', rebundle);

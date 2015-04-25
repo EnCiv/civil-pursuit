@@ -9,7 +9,7 @@
   var config        =   require('../config.json');
 
   exports.task      =   function browserifyApp () {
-    return browserify(path.join(process.cwd(), 'app/web/js/pages/Reset-password.js'))
+    return browserify(path.join(process.cwd(), 'app/js/pages/Reset-password.js'))
       .bundle()
       .pipe(source('reset-password.js'))
       .pipe(gulp.dest(config.dirs['dist js']));

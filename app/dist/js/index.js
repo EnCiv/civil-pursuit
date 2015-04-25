@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/app/js/pages/Home.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -111,7 +111,7 @@
 
 } ();
 
-},{"syn/js/Synapp":"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js","syn/js/components/Intro":"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js","syn/js/components/Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"syn/js/Synapp":20,"syn/js/components/Intro":30,"syn/js/components/Panel":41}],2:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -179,7 +179,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{"events":3}],3:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -482,7 +482,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js":[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -507,7 +507,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -595,14 +595,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js":[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1192,12 +1192,12 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/support/isBufferBrowser.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","inherits":"/home/francois/Dev/syn/node_modules/browserify/node_modules/inherits/inherits_browser.js"}],"/home/francois/Dev/syn/node_modules/promise/index.js":[function(require,module,exports){
+},{"./support/isBuffer":6,"_process":5,"inherits":4}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib')
 
-},{"./lib":"/home/francois/Dev/syn/node_modules/promise/lib/index.js"}],"/home/francois/Dev/syn/node_modules/promise/lib/core.js":[function(require,module,exports){
+},{"./lib":13}],9:[function(require,module,exports){
 'use strict';
 
 var asap = require('asap/raw')
@@ -1369,7 +1369,7 @@ function doResolve(fn, promise) {
     promise._67(LAST_ERROR)
   }
 }
-},{"asap/raw":"/home/francois/Dev/syn/node_modules/promise/node_modules/asap/raw.js"}],"/home/francois/Dev/syn/node_modules/promise/lib/done.js":[function(require,module,exports){
+},{"asap/raw":17}],10:[function(require,module,exports){
 'use strict';
 
 var Promise = require('./core.js')
@@ -1383,7 +1383,7 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
     }, 0)
   })
 }
-},{"./core.js":"/home/francois/Dev/syn/node_modules/promise/lib/core.js"}],"/home/francois/Dev/syn/node_modules/promise/lib/es6-extensions.js":[function(require,module,exports){
+},{"./core.js":9}],11:[function(require,module,exports){
 'use strict';
 
 //This file contains the ES6 extensions to the core Promises/A+ API
@@ -1489,7 +1489,7 @@ Promise.prototype['catch'] = function (onRejected) {
   return this.then(null, onRejected);
 }
 
-},{"./core.js":"/home/francois/Dev/syn/node_modules/promise/lib/core.js","asap/raw":"/home/francois/Dev/syn/node_modules/promise/node_modules/asap/raw.js"}],"/home/francois/Dev/syn/node_modules/promise/lib/finally.js":[function(require,module,exports){
+},{"./core.js":9,"asap/raw":17}],12:[function(require,module,exports){
 'use strict';
 
 var Promise = require('./core.js')
@@ -1507,7 +1507,7 @@ Promise.prototype['finally'] = function (f) {
   })
 }
 
-},{"./core.js":"/home/francois/Dev/syn/node_modules/promise/lib/core.js"}],"/home/francois/Dev/syn/node_modules/promise/lib/index.js":[function(require,module,exports){
+},{"./core.js":9}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./core.js')
@@ -1516,7 +1516,7 @@ require('./finally.js')
 require('./es6-extensions.js')
 require('./node-extensions.js')
 
-},{"./core.js":"/home/francois/Dev/syn/node_modules/promise/lib/core.js","./done.js":"/home/francois/Dev/syn/node_modules/promise/lib/done.js","./es6-extensions.js":"/home/francois/Dev/syn/node_modules/promise/lib/es6-extensions.js","./finally.js":"/home/francois/Dev/syn/node_modules/promise/lib/finally.js","./node-extensions.js":"/home/francois/Dev/syn/node_modules/promise/lib/node-extensions.js"}],"/home/francois/Dev/syn/node_modules/promise/lib/node-extensions.js":[function(require,module,exports){
+},{"./core.js":9,"./done.js":10,"./es6-extensions.js":11,"./finally.js":12,"./node-extensions.js":14}],14:[function(require,module,exports){
 'use strict';
 
 //This file contains then/promise specific extensions that are only useful for node.js interop
@@ -1581,7 +1581,7 @@ Promise.prototype.nodeify = function (callback, ctx) {
   })
 }
 
-},{"./core.js":"/home/francois/Dev/syn/node_modules/promise/lib/core.js","asap":"/home/francois/Dev/syn/node_modules/promise/node_modules/asap/browser-asap.js"}],"/home/francois/Dev/syn/node_modules/promise/node_modules/asap/browser-asap.js":[function(require,module,exports){
+},{"./core.js":9,"asap":15}],15:[function(require,module,exports){
 "use strict";
 
 // rawAsap provides everything we need except exception management.
@@ -1649,7 +1649,7 @@ RawTask.prototype.call = function () {
     }
 };
 
-},{"./raw":"/home/francois/Dev/syn/node_modules/promise/node_modules/asap/browser-raw.js"}],"/home/francois/Dev/syn/node_modules/promise/node_modules/asap/browser-raw.js":[function(require,module,exports){
+},{"./raw":16}],16:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -1874,7 +1874,7 @@ rawAsap.makeRequestCallFromTimer = makeRequestCallFromTimer;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/home/francois/Dev/syn/node_modules/promise/node_modules/asap/raw.js":[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 (function (process){
 "use strict";
 
@@ -1980,7 +1980,7 @@ function requestFlush() {
 
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
+},{"_process":5,"domain":2}],18:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -3014,8 +3014,8 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+},{}],19:[function(require,module,exports){
+module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -3052,7 +3052,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
   "Item Toggle Promote" :   " > .item-buttons .item-toggle-promote"
 }
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js":[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3181,7 +3181,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","syn/js/providers/Cache":"/home/francois/Dev/syn/node_modules/syn/js/providers/Cache.js","syn/js/providers/Socket":"/home/francois/Dev/syn/node_modules/syn/js/providers/Socket.js","util":"/home/francois/Dev/syn/node_modules/browserify/node_modules/util/util.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js":[function(require,module,exports){
+},{"domain":2,"events":3,"syn/js/providers/Cache":55,"syn/js/providers/Socket":59,"util":7}],21:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3258,7 +3258,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Creator/create":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/create.js","syn/js/components/Creator/created":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/created.js","syn/js/components/Creator/pack-item":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/pack-item.js","syn/js/components/Creator/render":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/render.js","syn/js/components/Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/create.js":[function(require,module,exports){
+},{"syn/js/components/Creator/create":22,"syn/js/components/Creator/created":23,"syn/js/components/Creator/pack-item":24,"syn/js/components/Creator/render":25,"syn/js/components/Panel":41}],22:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -3344,7 +3344,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 } ();
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js","syn/js/providers/Stream":"/home/francois/Dev/syn/node_modules/syn/js/providers/Stream.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/created.js":[function(require,module,exports){
+},{"_process":5,"syn/js/components/Item":31,"syn/js/providers/Nav":57,"syn/js/providers/Stream":60}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3379,7 +3379,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/pack-item.js":[function(require,module,exports){
+},{"syn/js/components/Item":31}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3440,7 +3440,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
           synapp.user
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/components/Creator/render.js":[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3531,7 +3531,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"promise":"/home/francois/Dev/syn/node_modules/promise/index.js","syn/js/providers/Form":"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js","syn/js/providers/Upload":"/home/francois/Dev/syn/node_modules/syn/js/providers/Upload.js","syn/js/providers/YouTube":"/home/francois/Dev/syn/node_modules/syn/js/providers/YouTube.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Details.js":[function(require,module,exports){
+},{"promise":8,"syn/js/providers/Form":56,"syn/js/providers/Upload":62,"syn/js/providers/YouTube":63}],26:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3795,7 +3795,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Edit":"/home/francois/Dev/syn/node_modules/syn/js/components/Edit.js","syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Edit.js":[function(require,module,exports){
+},{"syn/js/components/Edit":27,"syn/js/components/Item":31,"syn/js/providers/Nav":57}],27:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3946,7 +3946,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Creator":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js","syn/js/components/Edit/save":"/home/francois/Dev/syn/node_modules/syn/js/components/Edit/save.js","syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/providers/Form":"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Edit/save.js":[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Edit/save":28,"syn/js/components/Item":31,"syn/js/providers/Form":56,"syn/js/providers/Nav":57}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4004,7 +4004,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Forgot-Password.js":[function(require,module,exports){
+},{"syn/js/components/Item":31,"syn/js/providers/Nav":57}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4070,7 +4070,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","syn/js/providers/Form":"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js":[function(require,module,exports){
+},{"domain":2,"syn/js/providers/Form":56}],30:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4134,7 +4134,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/providers/ReadMore":"/home/francois/Dev/syn/node_modules/syn/js/providers/ReadMore.js","syn/js/providers/Truncate":"/home/francois/Dev/syn/node_modules/syn/js/providers/Truncate.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js":[function(require,module,exports){
+},{"syn/js/components/Item":31,"syn/js/providers/ReadMore":58,"syn/js/providers/Truncate":61}],31:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -4193,7 +4193,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Item/find":"/home/francois/Dev/syn/node_modules/syn/js/components/Item/find.js","syn/js/components/Item/load":"/home/francois/Dev/syn/node_modules/syn/js/components/Item/load.js","syn/js/components/Item/media":"/home/francois/Dev/syn/node_modules/syn/js/components/Item/media.js","syn/js/components/Item/render":"/home/francois/Dev/syn/node_modules/syn/js/components/Item/render.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/find.js":[function(require,module,exports){
+},{"syn/js/components/Item/find":32,"syn/js/components/Item/load":33,"syn/js/components/Item/media":34,"syn/js/components/Item/render":35}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4259,7 +4259,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/components/selectors.json":"/home/francois/Dev/syn/node_modules/syn/components/selectors.json"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/load.js":[function(require,module,exports){
+},{"syn/components/selectors.json":19}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4298,7 +4298,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/media.js":[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4385,7 +4385,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/providers/YouTube":"/home/francois/Dev/syn/node_modules/syn/js/providers/YouTube.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/render.js":[function(require,module,exports){
+},{"syn/js/providers/YouTube":63}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4561,7 +4561,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/js/components/Details":"/home/francois/Dev/syn/node_modules/syn/js/components/Details.js","syn/js/components/Item/view/toggle-arrow":"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-arrow.js","syn/js/components/Item/view/toggle-details":"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-details.js","syn/js/components/Item/view/toggle-promote":"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-promote.js","syn/js/components/Promote":"/home/francois/Dev/syn/node_modules/syn/js/components/Promote.js","syn/js/components/Sign":"/home/francois/Dev/syn/node_modules/syn/js/components/Sign.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js","syn/js/providers/ReadMore":"/home/francois/Dev/syn/node_modules/syn/js/providers/ReadMore.js","syn/js/providers/Truncate":"/home/francois/Dev/syn/node_modules/syn/js/providers/Truncate.js","syn/models/Item/get-promotion-percentage":"/home/francois/Dev/syn/node_modules/syn/models/Item/get-promotion-percentage.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-arrow.js":[function(require,module,exports){
+},{"string":18,"syn/js/components/Details":26,"syn/js/components/Item/view/toggle-arrow":36,"syn/js/components/Item/view/toggle-details":37,"syn/js/components/Item/view/toggle-promote":38,"syn/js/components/Promote":47,"syn/js/components/Sign":54,"syn/js/providers/Nav":57,"syn/js/providers/ReadMore":58,"syn/js/providers/Truncate":61,"syn/models/Item/get-promotion-percentage":64}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4707,7 +4707,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"../../Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-details.js":[function(require,module,exports){
+},{"../../Panel":41,"syn/js/providers/Nav":57}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4774,7 +4774,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-promote.js":[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4866,7 +4866,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Sign":"/home/francois/Dev/syn/node_modules/syn/js/components/Sign.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Join.js":[function(require,module,exports){
+},{"syn/js/components/Sign":54,"syn/js/providers/Nav":57}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4949,7 +4949,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/providers/Form":"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Login.js":[function(require,module,exports){
+},{"syn/js/providers/Form":56}],40:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5031,7 +5031,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/providers/Form":"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js":[function(require,module,exports){
+},{"syn/js/providers/Form":56,"syn/js/providers/Nav":57}],41:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -5166,7 +5166,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Creator":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js","syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/components/Panel/fill":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/fill.js","syn/js/components/Panel/load":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/load.js","syn/js/components/Panel/pre-insert-item":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/pre-insert-item.js","syn/js/components/Panel/render":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/render.js","syn/js/components/Panel/to-json":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/to-json.js","syn/js/components/Sign":"/home/francois/Dev/syn/node_modules/syn/js/components/Sign.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/fill.js":[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Item":31,"syn/js/components/Panel/fill":42,"syn/js/components/Panel/load":43,"syn/js/components/Panel/pre-insert-item":44,"syn/js/components/Panel/render":45,"syn/js/components/Panel/to-json":46,"syn/js/components/Sign":54,"syn/js/providers/Nav":57}],42:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5224,7 +5224,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/load.js":[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5269,7 +5269,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"promise":"/home/francois/Dev/syn/node_modules/promise/index.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/pre-insert-item.js":[function(require,module,exports){
+},{"promise":8}],44:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5329,7 +5329,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/render.js":[function(require,module,exports){
+},{"syn/js/components/Item":31}],45:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5380,7 +5380,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"../Creator":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js","promise":"/home/francois/Dev/syn/node_modules/promise/index.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/to-json.js":[function(require,module,exports){
+},{"../Creator":21,"promise":8}],46:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5410,7 +5410,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/components/Promote.js":[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -5563,7 +5563,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","syn/js/components/Edit":"/home/francois/Dev/syn/node_modules/syn/js/components/Edit.js","syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/components/Promote/find":"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/find.js","syn/js/components/Promote/finish":"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/finish.js","syn/js/components/Promote/get":"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/get.js","syn/js/components/Promote/render":"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/render.js","syn/js/components/Promote/render-item":"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/render-item.js","syn/js/components/Promote/save":"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/save.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/find.js":[function(require,module,exports){
+},{"events":3,"syn/js/components/Edit":27,"syn/js/components/Item":31,"syn/js/components/Promote/find":48,"syn/js/components/Promote/finish":49,"syn/js/components/Promote/get":50,"syn/js/components/Promote/render":52,"syn/js/components/Promote/render-item":51,"syn/js/components/Promote/save":53,"syn/js/providers/Nav":57}],48:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5620,7 +5620,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/selectors.json":"/home/francois/Dev/syn/node_modules/syn/components/selectors.json"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/finish.js":[function(require,module,exports){
+},{"string":18,"syn/components/selectors.json":19}],49:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5665,7 +5665,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/get.js":[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],50:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5722,7 +5722,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/render-item.js":[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5920,7 +5920,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Edit":"/home/francois/Dev/syn/node_modules/syn/js/components/Edit.js","syn/js/components/Item":"/home/francois/Dev/syn/node_modules/syn/js/components/Item.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/render.js":[function(require,module,exports){
+},{"syn/js/components/Edit":27,"syn/js/components/Item":31,"syn/js/providers/Nav":57}],52:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5992,7 +5992,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Promote/save.js":[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],53:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6050,7 +6050,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/components/Sign.js":[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -6233,7 +6233,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{"syn/js/components/Forgot-Password":"/home/francois/Dev/syn/node_modules/syn/js/components/Forgot-Password.js","syn/js/components/Join":"/home/francois/Dev/syn/node_modules/syn/js/components/Join.js","syn/js/components/Login":"/home/francois/Dev/syn/node_modules/syn/js/components/Login.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Cache.js":[function(require,module,exports){
+},{"syn/js/components/Forgot-Password":29,"syn/js/components/Join":39,"syn/js/components/Login":40,"syn/js/providers/Nav":57}],55:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6254,7 +6254,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js":[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -6343,7 +6343,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js":[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -6704,7 +6704,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 } ();
 
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/syn/js/providers/ReadMore.js":[function(require,module,exports){
+},{"_process":5,"domain":2,"events":3}],58:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6871,7 +6871,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Socket.js":[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6919,7 +6919,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Stream.js":[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6958,7 +6958,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Truncate.js":[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -7181,7 +7181,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 }();
 
-},{"syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Upload.js":[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],62:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -7267,7 +7267,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/YouTube.js":[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -7386,7 +7386,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/models/Item/get-promotion-percentage.js":[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7422,4 +7422,4 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
 } ();
 
-},{}]},{},["/home/francois/Dev/syn/app/js/pages/Home.js"]);
+},{}]},{},[1]);

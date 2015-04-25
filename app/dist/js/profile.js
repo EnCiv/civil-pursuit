@@ -1,5115 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  C   R   E   A   T   O   R
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var Panel     =   require('./Panel');
-
-  var text      =   {
-    'looking up title': 'Looking up'
-  };
-
-  /**
-   *  @class
-   *  @arg {Panel} - panel
-   */
-
-  function Creator (panel) {
-
-    if ( ! app ) {
-      throw new Error('Missing app');
-    }
-
-    if ( ! ( panel instanceof require('./Panel') ) ) {
-      throw new Error('Creator: Panel must be a Panel object');
-    }
-
-    this.panel = panel;
-
-    this.template = $('#' + this.panel.getId()).find('.creator:first');
-  }
-
-  Creator.prototype.find = function (name) {
-    switch ( name ) {
-      case 'create button':           return this.template.find('.button-create:first');
-
-      case 'form':                    return this.template.find('form');
-
-      case 'dropbox':                 return this.template.find('.drop-box');
-
-      case 'subject':                 return this.template.find('[name="subject"]');
-
-      case 'description':             return this.template.find('[name="description"]');
-
-      case 'item media':              return this.template.find('.item-media');
-
-      case 'reference':               return this.template.find('.reference');
-
-      case 'reference board':         return this.template.find('.reference-board');
-
-      case 'upload image button':     return this.template.find('.upload-image-button');
-    }
-  };
-
-  Creator.prototype.render      =   require('./Creator/render');
-
-  Creator.prototype.create      =   require('./Creator/create');
-
-  Creator.prototype.created     =   require('./Creator/created');
-
-  Creator.prototype.packItem    =   require('./Creator/pack-item');
-
-  module.exports = Creator;
-
-} ();
-
-},{"./Creator/create":2,"./Creator/created":3,"./Creator/pack-item":4,"./Creator/render":5,"./Panel":25}],2:[function(require,module,exports){
-(function (process){
 ! function () {
   
   'use strict';
 
-  var Nav       =   require('../Nav');
-  var Item      =   require('../Item');
-  var Stream    =   require('../Stream');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function save () {
-
-    // Self reference
-
-    var creator = this;
-
-    process.nextTick(function () {
-
-      app.domain.run(function () {
-
-        // Hide the Creator           // Catch errors
-
-        Nav.hide(creator.template)    .error(app.domain.intercept())
-
-          // Hiding complete
-
-          .hidden(function () {
-            
-            // Build the JSON object to save to MongoDB
-
-            creator.packItem();
-
-            // In case a file was uploaded
-
-            if ( creator.packaged.upload ) {
-
-              // Get file from template's data
-
-              var file = creator.template.find('.preview-image').data('file');
-
-              // New stream         //  Catch stream errors
-
-              new Stream(file)      .on('error', app.domain.intercept(function () {}))
-
-                .on('end', function () {
-                  creator.packaged.image = file.name;
-
-                  console.log('create item', creator.packaged);
-
-                  app.socket.emit('create item', creator.packaged);
-                })
-            }
-
-            // If nof ile was uploaded
-
-            else {
-              console.log('create item', creator.packaged);
-
-              app.socket.emit('create item', creator.packaged);
-            }
-
-            // Listen to answers
-
-            app.socket.once('could not create item', app.domain.intercept());
-
-            app.socket.once('created item', creator.created.bind(creator));
-          })
-
-      });
-
-    });
-
-    return false;
-  }
-
-  module.exports = save;
-
-} ();
-
-}).call(this,require('_process'))
-},{"../Item":14,"../Nav":24,"../Stream":43,"_process":53}],3:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function created (item) {
-    console.log('created item', item);
-
-    this.panel.template.find('.create-new').hide();
-
-    if ( this.packaged.upload ) {
-      item.upload = this.packaged.upload;
-    }
-
-    if ( this.packaged.youtube ) {
-      item.youtube = this.packaged.youtube;
-    }
-
-    var item  = new (require('../Item'))(item);
-
-    var items = this.panel.find('items');
-
-    item.load(app.domain.intercept(function () {
-      item.template.addClass('new');
-      items.prepend(item.template);
-      item.render(app.domain.intercept(function () {
-        item.find('toggle promote').click();
-      }));
-    }));
-  }
-
-  module.exports = created;
-
-} ();
-
-},{"../Item":14}],4:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function packItem () {
-    
-    var item = {
-      type:           this.panel.type,
-      subject:        this.find('subject').val(),
-      description:    this.find('description').val(),
-      user:           synapp.user
-    };
-
-    // Parent
-
-    if ( this.panel.parent ) {
-      item.parent = this.panel.parent;
-    }
-
-    // References
-
-    if ( this.find('reference').val() ) {
-      item.references = [{ url: this.find('reference').val() }];
-
-      if ( this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title' ) {
-        item.references[0].title = this.find('reference board').text();
-      }
-    }
-
-    // Image
-
-    if ( this.find('item media').find('img').length ) {
-
-      // YouTube
-
-      if ( this.find('item media').find('.youtube-preview').length ) {
-        item.youtube = this.find('item media').find('.youtube-preview').data('video');
-      }
-
-      // Upload
-
-      else {
-        item.upload = this.find('item media').find('img').attr('src');
-        item.image = item.upload;
-      }
-    }
- 
-    this.packaged = item;
-  }
-
-  module.exports = packItem;
-
-} ();
-          synapp.user
-},{}],5:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Upload    =   require('../Upload');
-  var Form      =   require('../Form');
-  var YouTube      =   require('../YouTube');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function render (cb) {
-    
-    if ( ! this.template.length ) {
-      return cb(new Error('Creator not found in panel ' + this.panel.getId()));  
-    }
-
-    var creator = this;
-
-    creator.template.data('creator', this);
-
-    this.find('upload image button').on('click', function () {
-      creator.find('dropbox').find('[type="file"]').click();
-    });
-
-    new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
-
-    creator.template.find('textarea').autogrow();
-
-    creator.find('reference').on('change', function () {
-
-      var creator     =   $(this).closest('.creator').data('creator');
-
-      var board       =   creator.find('reference board');
-      var reference   =   $(this);
-
-      board.removeClass('hide').text('Looking up title');
-
-      app.socket.emit('get url title', $(this).val(),
-        function (error, ref) {
-          if ( ref.title ) {
-            
-            board.text(ref.title);
-            reference.data('title', ref.title);
-
-            var yt = YouTube(ref.url);
-
-            if ( yt ) {
-              creator.find('dropbox').hide();
-
-              creator.find('item media')
-                .empty()
-                .append(yt);
-            }
-          }
-          else {
-            board.text('Looking up')
-              .addClass('hide');
-          }
-        });
-    });
-
-    var form = new Form(creator.template);
-    
-    form.send(creator.create.bind(creator));
-
-    cb();
-  }
-
-  module.exports = render;
-
-} ();
-
-},{"../Form":11,"../Upload":46,"../YouTube":48}],6:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Demographics (profile) {
-    this.template = $('#demographics');
-
-    this.template.data('demographics', this);
-
-    this.profile = profile;
-  }
-
-  Demographics.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.demographics-collapse');
-
-      case 'race':          return this.template.find('input.race');
-      case 'married':       return this.template.find('select.married');
-      case 'employment':    return this.template.find('select.employment');
-      case 'education':     return this.template.find('select.education');
-    }
-  };
-
-  Demographics.prototype.render = function () {
-
-    var demographics = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(demographics.find('expand'), demographics.template, function () {
-        if ( demographics.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Save race **/
-
-    this.find('race').on('change', function () {
-      var is_checked = $(this).is(':checked');
-
-      if ( is_checked ) {
-        app.socket.once('race added', function () {
-          console.log('race added', arguments);
-        });
-
-        app.socket.emit('add race', synapp.user, $(this).val());
-      }
-
-      else {
-        app.socket.once('race removed', function () {
-          console.log('race removed', arguments);
-        });
-
-        app.socket.emit('remove race', synapp.user, $(this).val());
-      }
-    });
-
-    /** Set marital status **/
-
-    this.find('married').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('marital status set', function () {
-          console.log('marital status set', arguments);
-        });
-
-        app.socket.emit('set marital status', synapp.user, $(this).val());
-      }
-    });
-
-    /** Set employment **/
-
-    this.find('employment').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('employment set', function () {
-          console.log('employment set', arguments);
-        });
-
-        app.socket.emit('set employment', synapp.user, $(this).val());
-      }
-    });
-
-    /** Set education **/
-
-    this.find('education').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('education set', function () {
-          console.log('education set', arguments);
-        });
-
-        app.socket.emit('set education', synapp.user, $(this).val());
-      }
-    });
-  };
-
-  Demographics.prototype.renderUser = function () {
-
-    var demographics = this;
-
-    if ( this.profile.user ) {
-
-      if ( this.profile.user.race && this.profile.user.race.length ) {
-        this.profile.user.race.forEach(function (race) {
-
-          demographics.find('race').each(function () {
-
-            if ( $(this).val() === race ) {
-              $(this).attr('checked', true);
-            }
-
-          });
-
-
-        });
-      }
-
-      if ( this.profile.user.married ) {
-        this.find('married').val(this.profile.user.married);
-      }
-
-      if ( this.profile.user.employment ) {
-        this.find('employment').val(this.profile.user.employment);
-      }
-
-      if ( this.profile.user.education ) {
-        this.find('education').val(this.profile.user.education);
-      }
-    }
-  };
-
-  module.exports = Demographics;
-
-} ();
-
-},{"./Nav":24}],7:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  DETAILS
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var Nav = require('./Nav');
-  var Edit = require('./Edit');
-
-  /**
-   *  @class Details
-   *  @arg {Item} item
-   */
-
-  function Details(item) {
-
-    if ( ! app ) {
-      throw new Error('Missing app');
-    }
-
-    var self = this;
-
-    app.domain.run(function () {
-      if ( ! item || ( ! item instanceof require('./Item') ) ) {
-        throw new Error('Item must be an Item');
-      }
-
-      self.item = item;
-
-      self.template = item.find('details');
-
-      if ( ! self.template.length ) {
-        throw new Error('Details template not found');
-      }
-    });
-  }
-
-  /**
-   *  @method find
-   *  @description DOM selectors abstractions
-   *  @return null
-   *  @arg {string} name
-   */
-
-  Details.prototype.find = function (name) {
-    switch ( name ) {
-      case 'promoted bar':
-        return this.template.find('.progress');
-
-      case 'feedback list':
-        return this.template.find('.feedback-list');
-
-      case 'votes':
-        return this.template.find('.details-votes');
-
-      case 'toggle edit and go again':
-        return this.template.find('.edit-and-go-again-toggler');
-    }
-  };
-
-  /**
-   *  @method render
-   *  @description DOM manipulation
-   *  @arg {function} cb
-   */
-
-  Details.prototype.render = function (cb) {
-    var self = this;
-
-    var item = self.item.item;
-
-    self.find('promoted bar')
-      // .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
-      // .text(Math.floor(item.promotions * 100 / item.views) + '%')
-      .goalProgress({
-        goalAmount: 100,
-        currentAmount: Math.floor(item.promotions * 100 / item.views),
-        textBefore: '',
-        textAfter: '%'
-      });
-
-    self.find('toggle edit and go again').on('click', function () {
-      Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
-        if ( self.item.find('editor').find('form').length ) {
-          console.warn('already loaded')
-        }
-
-        else {
-          var edit = new Edit(self.item);
-            
-          edit.get(app.domain.intercept(function (template) {
-
-            self.item.find('editor').find('.is-section').append(template);
-
-            Nav.reveal(self.item.find('editor'), self.item.template,
-              app.domain.intercept(function () {
-                Nav.show(template, app.domain.intercept(function () {
-                  edit.render();
-                }));
-              }));
-          }));
-
-        }
-
-      }));
-    });
-
-    if ( synapp.user ) {
-      $('.is-in').removeClass('is-in');
-    }
-
-    if ( ! self.details ) {
-      this.get();
-    }
-  };
-
-  /**
-   *  @method votes
-   *  @description Display votes using c3.js
-   *  @arg {object} criteria
-   *  @arg {HTMLElement} svg
-   */
-
-  Details.prototype.votes = function (criteria, svg) {
-    var self = this;
-
-    setTimeout(function () {
-
-      console.warn(123);
-
-      var vote = self.details.votes[criteria._id];
-
-      svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
-
-      var data = [];
-
-      // If no votes, show nothing
-
-      if ( ! vote ) {
-        vote = {
-          values: {
-            '-1': 0,
-            '0': 0,
-            '1': 0
-          },
-          total: 0
-        }
-      }
-
-      for ( var number in vote.values ) {
-        data.push({
-          label: 'number',
-          value: vote.values[number] * 100 / vote.total
-        });
-      }
-
-      var columns = ['votes'];
-
-      data.forEach(function (d) {
-        columns.push(d.value);
-      });
-
-      var chart = c3.generate({
-        bindto: '#' + svg.attr('id'),
-
-        data: {
-          x: 'x',
-          columns: [['x', -1, 0, 1], columns],
-          type: 'bar'
-        },
-
-        grid: {
-          x: {
-            lines: 3
-          }
-        },
-        
-        axis: {
-          x: {},
-          
-          y: {
-            max: 90,
-
-            show: false,
-
-            tick: {
-              count: 5,
-
-              format: function (y) {
-                return y;
-              }
-            }
-          }
-        },
-
-        size: {
-          height: 80
-        },
-
-        bar: {
-          width: $(window).width() / 5
-        }
-      });
-      }, 250);
-  };
-
-  /**
-   *
-   */
-
-  Details.prototype.get = function () {
-
-    var self = this;
-
-    app.socket.emit('get item details', self.item.item._id);
-
-    app.socket.once('got item details', function (details) {
-
-      console.log('got item details', details);
-
-      self.details = details;
-
-      // Feedback
-
-      details.feedbacks.forEach(function (feedback) {
-        var tpl = $('<div class="pretext feedback"></div>');
-        tpl.text(feedback.feedback);
-        self.find('feedback list')
-          .append(tpl)
-          .append('<hr/>');
-
-      });
-
-      // Votes
-
-      details.criterias.forEach(function (criteria, i) {
-        self.find('votes').eq(i).find('h4').text(criteria.name);
-
-        self.votes(criteria, self.find('votes').eq(i).find('svg'));
-      });
-
-    });
-  };
-
-  module.exports = Details;
-
-} ();
-
-},{"./Edit":8,"./Item":14,"./Nav":24}],8:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  EDIT
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var Nav       =   require('./Nav');
-  var Creator   =   require('./Creator');
-  var Item      =   require('./Item');
-  var Form      =   require('./Form');
-
-  /**
-   *  @class
-   *
-   *  @arg {String} type
-   *  @arg {String?} parent
-   */
-
-  function Edit (item) {
-
-    console.log('EDIT', item)
-
-    if ( ! app ) {
-      throw new Error('Missing app');
-    }
-
-    var self = this;
-
-    app.domain.run(function () {
-      if ( ! item || ( ! item instanceof require('./Item') ) ) {
-        throw new Error('Item must be an Item');
-      }
-
-      self.item = item;
-    });
-  }
-
-  Edit.prototype.get = function (cb) {
-    var edit = this;
-
-    $.ajax({
-      url: '/partial/creator'
-    })
-
-      .error(cb)
-
-      .success(function (data) {
-        edit.template = $(data);
-
-        cb(null, edit.template);
-      });
-
-    return this;
-  };
-
-  Edit.prototype.find = function (name) {
-    switch ( name ) {
-      case 'create button':
-        return this.template.find('.button-create:first');
-
-      case 'dropbox':
-        return this.template.find('.drop-box');
-
-      case 'subject':
-        return this.template.find('[name="subject"]');
-
-      case 'description':
-        return this.template.find('[name="description"]');
-
-      case 'item media':
-        return this.template.find('.item-media');
-
-      case 'reference':
-        return this.template.find('.reference');
-
-      case 'reference board':
-        return this.template.find('.reference-board');
-    }
-  };
-
-  Edit.prototype.render = function (cb) {
-
-    var edit = this;
-
-    // this.template.find('textarea').autogrow();
-
-    this.template.find('[name="subject"]').val(edit.item.item.subject);
-    this.template.find('[name="description"]')
-      .val(edit.item.item.description)
-      .autogrow();
-
-    if ( edit.item.item.references.length ) {
-      this.template.find('[name="reference"]').val(edit.item.item.references[0].url);
-    }
-
-    this.template.find('.item-media')
-      .empty()
-      .append(edit.item.media());
-
-    var form = new Form(this.template);
-
-    form.send(edit.save);
-
-    return this;
-  };
-
-  Edit.prototype.save = require('./Edit/save');
-
-  Edit.prototype.toItem = function () {
-    var item = {
-      from:         this.item.item._id,
-      subject:      this.find('subject').val(),
-      description:  this.find('description').val(),
-      user:         synapp.user,
-      type:         this.item.item.type
-    };
-
-    if ( this.find('item media').find('img').length ) {
-
-      if ( this.find('item media').find('.youtube-preview').length ) {
-        item.youtube = this.find('item media').find('.youtube-preview').data('video');
-      }
-
-      else {
-        item.upload = this.find('item media').find('img').attr('src');
-      }
-    }
- 
-    return item;
-  };
-
-  module.exports = Edit;
-
-} ();
-
-},{"./Creator":1,"./Edit/save":9,"./Form":11,"./Item":14,"./Nav":24}],9:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('../Nav');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function save () {
-    var edit = this;
-
-    console.log(edit.toItem());
-
-    Nav.hide(edit.template, app.domain.intercept(function () {
-      Nav.hide(edit.template.closest('.editor'), app.domain.intercept(function () {
-        
-        var new_item = edit.toItem();
-
-        app.socket.emit('create item', new_item);
-
-        app.socket.once('could not create item', function (error) {
-          console.error(error)
-        });
-        
-        app.socket.once('created item', function (item) {
-          console.log('created item', item);
-
-            if ( new_item.upload ) {
-              item.upload = new_item.upload;
-            }
-
-            if ( new_item.youtube ) {
-              item.youtube = new_item.youtube;
-            }
-
-            var item  = new (require('../Item'))(item);
-
-            item.load(app.domain.intercept(function () {
-              item.template.insertBefore(edit.item.template);
-              
-              item.render(app.domain.intercept(function () {
-                item.find('toggle promote').click();
-              }));
-            }));
-        });
-      }));
-    }));
-  }
-
-  module.exports = save;
-
-} ();
-
-},{"../Item":14,"../Nav":24}],10:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Form = require('./Form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function forgotPassword ($vexContent) {
-    var signForm = $('form[name="forgot-password"]');
-
-    var form = new Form(signForm)
-
-    form.send(function () {
-      var domain = require('domain').create();
-      
-      domain.on('error', function (error) {
-        //
-      });
-      
-      domain.run(function () {
-
-        $('.forgot-password-pending.hide').removeClass('hide');
-        $('.forgot-password-email-not-found').not('.hide').addClass('hide');
-        $('.forgot-password-ok').not('.hide').addClass('hide');
-        
-        app.socket.once('no such email', function (_email) {
-          if ( _email === form.labels.email.val() ) {
-
-            $('.forgot-password-pending').addClass('hide');
-
-            setTimeout(function () {
-              // $('.forgot-password-pending').css('display', 'block');
-            });
-
-            $('.forgot-password-email-not-found').removeClass('hide');
-          }
-        });
-
-        app.socket.on('password is resettable', function (_email) {
-          if ( _email === form.labels.email.val() ) {
-            $('.forgot-password-pending').addClass('hide');
-
-            $('.forgot-password-ok').removeClass('hide');
-
-            setTimeout(function () {
-              vex.close($vexContent.data().vex.id);
-            }, 2500);
-          }
-        });
-
-        app.socket.emit('send password', form.labels.email.val());
-
-      });
-    });
-  }
-
-  module.exports = forgotPassword;
-
-} ();
-
-},{"./Form":11,"domain":50}],11:[function(require,module,exports){
-/*
- *  F   O   R   M
- *  *****************
-*/
-
-! function () {
-
-  'use strict';
-
-  /**
-   *  @class    Form
-   *  @arg      {HTMLElement} form
-   */
-
-  function Form (form) {
-
-    var self = this;
-
-    this.form = form;
-
-    this.labels = {};
-
-    this.form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
-
-    // #193 Disable <Enter> keys
-
-    this.form.find('input').on('keydown', function (e) {
-      if ( e.keyCode === 13 ) {
-        return false;
-      }
-    });
-
-    this.form.on('submit', function (e) {
-      setTimeout(function () {
-        self.submit(e);
-      });
-
-      return false;
-    });
-  }
-
-  Form.prototype.submit = function (e) {
-
-    console.warn('form submitting', this.form.attr('name'), e);
-
-    var self = this;
-
-    var errors = [];
-
-    self.form.find('[required]').each(function () {
-      var val = $(this).val();
-
-      if ( ! val ) {
-
-        if ( ! errors.length ) {
-          $(this)
-            .addClass('error')
-            .focus();
-        }
-
-        errors.push({ required: $(this).attr('name') });
-      }
-
-      else {
-        $(this)
-          .removeClass('error');
-      }
-    });
-
-    if ( ! errors.length ) {
-      this.ok();
-    }
-
-    return false;
-  };
-
-  Form.prototype.send = function (fn) {
-    this.ok = fn;
-
-    return this;
-  };
-
-  module.exports = Form;
-
-} ();
-
-},{}],12:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-  var Upload = require('./Upload');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Identity (profile) {
-    this.template = $('#identity');
-
-    this.profile = profile;
-
-    this.template.data('identity', this);
-  }
-
-  Identity.prototype.find = function (name) {
-    switch ( name ) {
-      case 'expand':
-        return this.template.find('.identity-collapse');
-
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'title':
-        return this.template.find('.item-title');
-
-      case 'description':
-        return this.template.find('.description');
-
-      case 'upload button':
-        return this.template.find('.upload-identity-picture');
-
-      case 'upload button pretty':
-        return this.template.find('.upload-image');
-
-      case 'first name':
-        return this.template.find('[name="first-name"]');
-
-      case 'middle name':
-        return this.template.find('[name="middle-name"]');
-
-      case 'last name':
-        return this.template.find('[name="last-name"]');
-
-      case 'image':
-        return this.template.find('img.user-image');
-
-      case 'citizenship':   return this.template.find('.citizenship');
-
-      case 'dob':           return this.template.find('.dob');
-
-      case 'gender':        return this.template.find('.gender');
-    }
-  };
-
-  Identity.prototype.render = require('./Identity/render');
-
-  /**
-   *  @method saveName
-   */
-
-  Identity.prototype.saveName = function () {
-    var name = {
-      first_name:   this.find('first name').val(),
-      middle_name:  this.find('middle name').val(),
-      last_name:    this.find('last name').val()
-    };
-
-    app.socket.emit('change user name', synapp.user, name);
-  };
-
-  /**
-   *  @method
-  */
-
-  Identity.prototype.renderUser = function () {
-
-    // User image
-
-    if ( this.user.image ) {
-      this.find('image').attr('src', this.user.image);
-    }
-
-    // First name
-
-    this.find('first name').val(this.user.first_name);
-
-    // Middle name
-
-    this.find('middle name').val(this.user.middle_name);
-
-    // Last name
-
-    this.find('last name').val(this.user.last_name);
-
-    // Date of birth
-
-    var dob = new Date(this.user.dob);
-
-    var dob_year = dob.getFullYear();
-    var dob_month = dob.getMonth() + 1;
-    var dob_day = dob.getDate() + 1;
-
-    if ( dob_month < 10 ) {
-      dob_month = "0" + dob_month;
-    }
-
-    if ( dob_day < 10 ) {
-      dob_day = "0" + dob_day;
-    }
-
-    this.find('dob').val([dob_year, dob_month, dob_day].join('-'));
-
-    // Gender
-
-    this.find('gender').val(this.user.gender);
-  };
-
-  /**
-   *  @method
-  */
-
-  Identity.prototype.renderCountries = function () {
-    var identity = this;
-
-    function addOption (country, index) {
-      var option = $('<option></option>');
-
-      option.val(country._id);
-
-      option.text(country.name);
-
-      if ( identity.profile.user && identity.profile.user.citizenship
-        && identity.profile.user.citizenship[index] === country._id ) {
-        option.attr('selected', true);
-      } 
-
-      return option;
-    }
-
-    this.find('citizenship').each(function (index) {
-
-      var select = $(this);
-
-      identity.profile.countries.forEach(function (country) {
-        if ( country.name === 'USA' ) {
-          select.append(addOption(country, index));
-        }
-      });
-
-      identity.profile.countries.forEach(function (country) {
-        if ( country.name !== 'USA' ) {
-          select.append(addOption(country, index));
-        }
-      });
-
-    });
-  };
-
-  module.exports = Identity;
-
-} ();
-
-},{"./Identity/render":13,"./Nav":24,"./Upload":46}],13:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Upload = require('../Upload');
-  var Nav = require('../Nav');
-
-  /**
-   *  @method     Identity.render
-   *  @return     null
-   */
-
-  function render () {
-    
-    var identity = this;
-
-    /** input[type=file] is hidden for cosmetic reasons
-          and is substituted visually by a button.
-        This snippet binds clicking button with clicking the input[type=file]
-    */
-
-    this.find('upload button pretty').on('click', function () {
-      identity.find('upload button').click();
-    });
-
-    /** Toggle arrow: expand/collapse identity */
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(identity.find('expand'), identity.template, function () {
-        if ( identity.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Write title */
-
-    this.find('title').text('Identity');
-
-    /** Write description */
-
-    this.find('description').text('This information is used to identify you and make sure that you are unique');
-
-    /** Remove references */
-
-    this.template.find('.item-references').remove();
-
-    /** Remove item buttons */
-
-    this.template.find('.box-buttons').remove();
-
-    /** Default user image */
-
-    this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
-
-    new Upload(null, this.find('upload button'), this.template.find('.user-image-container'),
-      function (error, file) {
-        var stream = ss.createStream();
-
-        ss(app.socket).emit('upload image', stream,
-          { size: file.size, name: file.name });
-        
-        ss.createBlobReadStream(file).pipe(stream);
-
-        stream.on('end', function () {
-          // new_item.image = file.name;
-          app.socket.emit('save user image', synapp.user, file.name);
-
-          app.socket.once('saved user image', function (user) {
-            console.log('image saved', user);
-          });
-        });
-      });
-
-    // First name - save on change
-
-    this.find('first name').on('change', this.saveName.bind(this));
-
-    // Last name - save on change
-
-    this.find('last name').on('change', this.saveName.bind(this));
-
-    // Middle name - save on change
-
-    this.find('middle name').on('change', this.saveName.bind(this));
-
-    // Set citizenships (2 selects)
-
-    var citizenships = [
-      $(this.find('citizenship')[0]).val(),
-      $(this.find('citizenship')[1]).val()
-    ];
-
-    this.find('citizenship').each(function (index) {
-
-      var select = $(this);
-
-      select.on('change', function () {
-        if ( select.val() ) {
-          app.socket
-
-            .on('citizenship set', function () {
-              console.log('citizenship set', select.val(), index);
-            })
-
-            .emit('set citizenship', synapp.user, select.val(), index);
-        }
-      });
-
-    });
-
-    // Set birthdate
-
-    this.find('dob').on('change', function () {
-
-      app.socket
-
-        .on('birthdate set', function () {
-          console.log('birthdate set');
-        })
-
-        .emit('set birthdate', synapp.user, $(this).val());
-
-    });
-
-    // Set gender
-
-    this.find('gender').on('change', function () {
-
-      if ( $(this).val() ) {
-        app.socket
-
-          .on('gender set', function () {
-            console.log('gender set');
-          })
-
-          .emit('set gender', synapp.user, $(this).val());
-      }
-
-    });
-
-  }
-
-  module.exports = render;
-
-} ();
-
-},{"../Nav":24,"../Upload":46}],14:[function(require,module,exports){
-/*
- *   ::    I   t   e   m     ::
- *
- *
-*/
-
-! function _Item_ () {
-  
-  'use strict';
-
-  /**
-    * @class  Item
-    * @arg    {Item} item
-    */
-
-  function Item (item) {
-
-    if ( typeof app === 'undefined' || ! ( app instanceof Synapp ) ) {
-      throw new Error('Missing app');
-    }
-
-    var self = this;
-
-    app.domain.run(function () {
-      if ( typeof item !== 'object' ) {
-        throw new Error('Item must be an object');
-      }
-
-      self.item = item;
-    });
-  }
-
-  /** Load template */
-
-  Item.prototype.load       =   require('./Item/load');
-
-  /** DOM finder */
-
-  Item.prototype.find       =   require('./Item/find');
-
-  /** Render method */
-
-  Item.prototype.render     =   require('./Item/render');
-
-  /** Resolve item's media */
-
-  Item.prototype.media      =   require('./Item/media');
-
-  /** Template cache */
-
-  Item.cache = {
-    template: undefined
-  };
-
-  module.exports = Item;
-
-} ();
-
-},{"./Item/find":15,"./Item/load":16,"./Item/media":17,"./Item/render":18}],15:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var selectors = require('syn/components/selectors.json');
-
-  console.info('test', selectors['Item Subject'])
-
-  function find (name) {
-    switch ( name ) {
-      case "subject":             return this.template.find(selectors['Item Subject']);
-
-      case "description":         return this.template.find('.item-description:first');
-
-      case "reference":           return this.template.find('.item-reference:first a');
-
-      case "media":               return this.template.find('.item-media:first');
-
-      case "youtube preview":     return this.template.find('.youtube-preview:first');
-
-      case "toggle promote":      return this.template.find('.item-toggle-promote:first');
-
-      case "promote":             return this.template.find('.promote:first');
-
-      case "toggle details":      return this.template.find('.item-toggle-details:first');
-
-      case "details":             return this.template.find('.details:first');
-
-      case "editor":              return this.template.find('.editor:first');
-
-      case "toggle arrow":        return this.template.find('.item-arrow:first');
-
-      case "promotions":          return this.template.find('.promoted:first');
-
-      case "promotions %":        return this.template.find('.promoted-percent:first');
-
-      case "children":            return this.template.find('.children:first');
-
-      case "collapsers"             :   return this.template.find('.item-collapsers:first');
-
-      case "collapsers hidden"      :   return this.template.find('.item-collapsers:first:hidden');
-
-      case "collapsers visible"     :   return this.template.find('.item-collapsers:first:visible');
-
-      case "related count"          :   return this.template.find('.related-count');
-
-      case "related"                :   return this.template.find('.related');
-
-      case "related count plural"   :   return this.template.find('.related-count-plural');
-
-      case "related name"           :   return this.template.find('.related-name');
-    }
-  }
-
-  module.exports = find;
-
-} ();
-
-},{"syn/components/selectors.json":57}],16:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function load (cb) {
-    var item = this;
-
-    if ( app.cache.template.item ) {
-      item.template = $(app.cache.template.item[0].outerHTML);
-      
-      if ( cb ) {
-        cb(null, item.template);
-      }
-
-      return;
-    }
-
-    $.ajax({
-      url: '/partial/item'
-    })
-
-      .error(cb)
-
-      .success(function (data) {
-        item.template = $(data);
-
-        app.cache.template.item = item.template;
-
-        cb(null, item.template);
-      });
-
-    return this;
-  }
-
-  module.exports = load;
-
-} ();
-
-},{}],17:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var YouTube     =   require('../YouTube');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function itemMedia () {
-
-    console.info(this.item.getPromotionPercentage)
-
-    // youtube video from references
-
-    if ( this.item.references && this.item.references.length ) {
-      var media = YouTube(this.item.references[0].url);
-
-      if ( media ) {
-        return media;
-      }
-    }
-
-    // adjustImage
-
-    if ( this.item.adjustImage ) {
-
-      console.info('adjustImage')
-
-      return $(this.item.adjustImage
-              .replace(/\>$/, ' class="img-responsive" />'));
-    }
-
-    // image
-
-    if ( this.item.image && /^http/.test(this.item.image) ) {
-
-      var src = this.item.image;
-
-      var image = $('<img/>');
-
-      image.addClass('img-responsive');
-
-      image.attr('src', src);
-
-      return image;
-    }
-
-    // YouTube Cover Image
-
-    if ( this.item.youtube ) {
-      return YouTube('http://youtube.com/watch?v=' + this.item.youtube);
-    }
-
-    // Uploaded image
-
-    if ( this.item.upload ) {
-      var src = this.item.image;
-
-      var image = $('<img/>');
-
-      image.addClass('img-responsive');
-
-      image.attr('src', this.item.upload);
-
-      return image;
-    }
-
-    // default image
-
-    var image = $('<img/>');
-
-    image.addClass('img-responsive');
-
-    image.attr('src', synapp['default item image']);
-
-    return image;
-  }
-
-  module.exports = itemMedia;
-
-} ();
-
-},{"../YouTube":48}],18:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Truncate    =   require('../Truncate');
-  var Promote     =   require('../Promote');
-  var Details     =   require('../Details');
-  var Nav         =   require('../Nav');
-  var readMore    =   require('../ReadMore');
-  var Sign        =   require('../Sign');
-
-  var getPromotionPercentage = require('syn/models/Item/get-promotion-percentage');
-
-  var S           =   require('string');
-
-  function makeRelated () {
-    var button = $('<button class="shy counter"><span class="related-number"></span> <i class="fa"></i></button>');
-
-    return button;
-  }
-
-  function render (cb) {
-  
-    var item = this;
-
-    // Create reference to promote if promotion enabled
-
-    this.promote = new Promote(this);
-
-    // Create reference to details
-
-    this.details = new Details(this);
-
-    // Set ID
-
-    item.template.attr('id', 'item-' + item.item._id);
-
-    // Set Data
-
-    item.template.data('item', this);
-
-    // Subject
-
-    item.find('subject')
-      .attr('href', '/item/' + item.item._id + '/' + S(item.item.subject).slugify().s)
-      .text(item.item.subject)
-      .on('click', function (e) {
-        var link = $(this);
-
-        var item = link.closest('.item');
-
-        Nav.scroll(item, function () {
-          history.pushState(null, null, link.attr('href'));
-          item.find('.item-text .more').click();
-        });
-
-        return false;
-      });
-
-    // Description
-
-    item.find('description').text(item.item.description);
-
-    // Media
-
-    if ( !  item.find('media').find('img[data-rendered]').length ) {
-      item.find('media').empty().append(this.media());
-    }
-
-    // Truncate text once image has loaded
-
-    item.find('media').find('img').on('load', function () {
-      if ( ! this.template.find('.more').length ) {
-        console.log('reading more', this.item.subject)
-        readMore(this.item, this.template);
-      }
-    }.bind(item));
-
-    // References
-
-    if ( (item.item.references) && item.item.references.length ) {
-      item.find('reference')
-        .attr('href', item.item.references[0].url)
-        .text(item.item.references[0].title || item.item.references[0].url);
-    }
-    else {
-      item.find('reference').empty();
-    }
-
-    // Number of promotions
-
-    item.find('promotions').text(item.item.promotions);
-
-    // Percent of promotions
-
-    // item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
-    item.find('promotions %').text(getPromotionPercentage.apply(item.item));
-
-    // Related
-    switch ( item.item.type ) {
-      case 'Topic':
-        var problems = (item.item.related && item.item.related.Problem) || 0;
-        var button = makeRelated();
-        button.find('i').addClass('fa-fire');
-        button.find('.related-number').text(problems);
-        item.find('related').append(button);
-        break;
-
-      case 'Problem':
-        var agrees = (item.item.related && item.item.related.Agree) || 0;
-        var disagrees = (item.item.related && item.item.related.Disagree) || 0;
-        var mean = (agrees / (agrees + disagrees) * 100);
-
-        if ( isNaN(mean) ) {
-          mean = 0;
-        }
-
-        var button = makeRelated();
-        button.find('i').addClass('fa-music');
-        button.find('.related-number').text(mean + '%');
-        item.find('related').append(button);
-
-        var solutions = (item.item.related && item.item.related.Solution) || 0;
-        button = makeRelated();
-        button.find('i').addClass('fa-tint');
-        button.find('.related-number').text(solutions);
-        item.find('related').append(button);
-        break;
-    
-      case 'Solution':
-        var pros = (item.item.related && item.item.related.Pro) || 0;
-        var cons = (item.item.related && item.item.related.Con) || 0;
-
-        var mean = pros / (pros + cons);
-
-        if ( isNaN(mean) ) {
-          mean = 0;
-        }
-
-        var button = makeRelated();
-        button.find('i').addClass('fa-music');
-        button.find('.related-number').text(mean + '%');
-        item.find('related').append(button);
-
-        break;
-    }
-
-    item.template.find('.counter').on('click', function () {
-      var $trigger    =   $(this);
-      var $item       =   $trigger.closest('.item');
-      var item        =   $item.data('item');
-      item.find('toggle arrow').click();
-    });
-    
-    // Toggle promote
-
-    item.find('toggle promote').on('click', require('./view/toggle-promote'));
-
-    // Toggle details
-
-    item.find('toggle details').on('click', require('./view/toggle-details'));
-
-    // Toggle arrow
-
-    item.find('toggle arrow')
-      .removeClass('hide')
-      .on('click', require('./view/toggle-arrow'));
-
-    cb();
-  }
-
-  module.exports = render;
-
-} ();
-
-},{"../Details":7,"../Nav":24,"../Promote":32,"../ReadMore":40,"../Sign":42,"../Truncate":45,"./view/toggle-arrow":19,"./view/toggle-details":20,"./view/toggle-promote":21,"string":56,"syn/models/Item/get-promotion-percentage":58}],19:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function toggleArrow () {
-    var $item   =   $(this).closest('.item');
-    var item    =   $item.data('item');
-    var arrow   =   $(this).find('i');
-
-    if ( item.find('collapsers hidden').length ) {
-      item.find('collapsers').show();
-    }
-
-    require('../../Nav').toggle(item.find('children'), item.template, app.domain.intercept(function () {
-
-        console.log('item type', item.item.type);
-
-        if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
-          item.find('collapsers').hide();
-        }
-
-        if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
-
-          item.find('children').addClass('is-loaded');
-
-          switch ( item.item.type ) {
-            case 'Topic':
-
-              var panelProblem = new (require('../../Panel'))('Problem', item.item._id);
-
-              panelProblem.load(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelProblem.render(app.domain.intercept(function () {
-                    panelProblem.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-              break;
-
-            case 'Problem':
-
-              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelAgree = new (require('../../Panel'))('Agree', item.item._id);
-
-              panelAgree.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelAgree.render(app.domain.intercept(function () {
-                    panelAgree.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelDisagree = new (require('../../Panel'))('Disagree', item.item._id);
-
-              panelDisagree.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-                
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelDisagree.render(app.domain.intercept(function () {
-                    panelDisagree.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelSolution = new (require('../../Panel'))('Solution', item.item._id);
-
-              panelSolution.load(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelSolution.render(app.domain.intercept(function () {
-                    panelSolution.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              break;
-
-            case 'Solution':
-
-              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelPro = new (require('../../Panel'))('Pro', item.item._id);
-
-              panelPro.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelPro.render(app.domain.intercept(function () {
-                    panelPro.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelCon = new (require('../../Panel'))('Con', item.item._id);
-
-              panelCon.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelCon.render(app.domain.intercept(function () {
-                    panelCon.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-              break;
-          }
-        }
-
-        if ( arrow.hasClass('fa-arrow-down') ) {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-        else {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-      }));
-  }
-
-  module.exports = toggleArrow;
-
-} ();
-
-},{"../../Nav":24,"../../Panel":25}],20:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function toggleDetails () {
-    var $trigger    =   $(this);
-    var $item       =   $trigger.closest('.item');
-    var item        =   $item.data('item');
-
-    function showHideCaret () {
-      if ( item.find('details').hasClass('is-shown') ) {
-        $trigger.find('.caret').removeClass('hide');
-      }
-      else {
-        $trigger.find('.caret').addClass('hide');
-      }
-    }
-
-    if ( item.find('promote').hasClass('is-showing') ) {
-      return false;
-    }
-
-    if ( item.find('promote').hasClass('is-shown') ) {
-      item.find('toggle promote').find('.caret').addClass('hide');
-      require('../../Nav').hide(item.find('promote'));
-    }
-
-    var hiders = $('.details.is-shown');
-
-    if ( item.find('collapsers hidden').length ) {
-      item.find('collapsers').show();
-    }
-
-    require('../../Nav').toggle(item.find('details'), item.template, app.domain.intercept(function () {
-
-      showHideCaret();
-
-      if ( item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length ) {
-        item.find('collapsers').hide();
-      }
-
-      if ( item.find('details').hasClass('is-shown') ) {
-
-        if ( ! item.find('details').hasClass('is-loaded') ) {
-          item.find('details').addClass('is-loaded');
-
-          item.details.render(app.domain.intercept());
-        }
-
-        if ( hiders.length ) {
-          require('../../Nav').hide(hiders);
-        }
-      }
-    }));
-  }
-
-  module.exports = toggleDetails;
-
-} ();
-
-},{"../../Nav":24}],21:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('../../Nav');
-  var Sign = require('../../Sign');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function togglePromote () {
-
-    if ( ! synapp.user ) {
-      Sign.dialog.join();
-      return;
-    }
-
-    var $trigger    =   $(this);
-    var $item       =   $trigger.closest('.item');
-    var item        =   $item.data('item');
-
-    function hideOthers () {
-      if ( $('.is-showing').length || $('.is-hidding').length ) {
-        return false;
-      }
-
-      if ( $('.creator.is-shown').length ) {
-        Nav
-          .hide($('.creator.is-shown'))
-          .hidden(function () {
-            $trigger.click();
-          });
-
-        return false;
-      }
-
-      if ( item.find('details').hasClass('is-shown') ) {
-        Nav
-          .hide(item.find('details'))
-          .hidden(function () {
-            $trigger.click();
-          });
-
-        item.find('toggle details').find('.caret').addClass('hide');
-
-        return false;
-      }
-    }
-
-    function promote () {
-      item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
-    }
-
-    function showHideCaret () {
-      if ( item.find('promote').hasClass('is-shown') ) {
-        $trigger.find('.caret').removeClass('hide');
-      }
-      else {
-        $trigger.find('.caret').addClass('hide');
-      }
-    }
-
-    if ( hideOthers() === false ) {
-      return false;
-    }
-
-    if ( item.find('collapsers hidden').length ) {
-      item.find('collapsers').show();
-    }
-
-    Nav.toggle(item.find('promote'), item.template, function (error) {
-
-      if ( item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length ) {
-        item.find('collapsers').hide();
-      }
-
-      promote();
-
-      showHideCaret();
-
-    });
-
-  }
-
-  module.exports = togglePromote;
-
-} ();
-
-},{"../../Nav":24,"../../Sign":42}],22:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Form = require('./Form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function join ($vexContent) {
-    var $form = $('form[name="join"]');
-
-    $form.find('.i-agree').on('click', function () {
-
-      var agreed = $(this).find('.agreed');
-
-      if ( agreed.hasClass('fa-square-o') ) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      }
-      else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-
-    var form = new Form($form);
-
-    function join () {
-      app.domain.run(function () {
-
-        $form.find('.please-agree').hide();
-        $form.find('.already-taken').hide();
-        
-        if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
-          $form.find('.please-agree').show();
-
-          return;
-        }
-
-        if ( form.labels.password.val() !== form.labels.confirm.val() ) {
-          form.labels.confirm.focus().addClass('error');
-
-          return;
-        }
-
-        $.ajax({
-          url: '/sign/up',
-          type: 'POST',
-          data: {
-            email: form.labels.email.val(),
-            password: form.labels.password.val()
-          }
-        })
-          
-          .error(function (response, state, code) {
-            if ( response.status === 401 ) {
-              $form.find('.already-taken').show();
-            }
-          })
-          
-          .success(function (response) {
-            synapp.user = response.user;
-            
-            $('a.is-in').css('display', 'inline');
-
-            $('.topbar .is-out').remove();
-
-            vex.close($vexContent.data().vex.id);
-          });
-
-      });
-    }
-
-    form.send(join);
-  }
-
-  module.exports = join;
-
-} ();
-
-},{"./Form":11}],23:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Form = require('./Form');
-  var Nav = require('./Nav');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function login ($vexContent) {
-    var signForm = $('form[name="login"]');
-
-    var form = new Form(signForm);
-
-    function login () {
-      app.domain.run(function () {
-
-        if ( $('.login-error-404').hasClass('is-shown') ) {
-          return Nav.hide($('.login-error-404'), app.domain.intercept(function () {
-            form.send(login);
-            form.form.submit();
-          }))
-        }
-
-        if ( $('.login-error-401').hasClass('is-shown') ) {
-          return Nav.hide($('.login-error-401'), app.domain.intercept(function () {
-            form.send(login);
-            form.form.submit();
-          }))
-        }
-        
-        $.ajax({
-            url         :   '/sign/in',
-            type        :   'POST',
-            data        :   {
-              email     :   form.labels.email.val(),
-              password  :   form.labels.password.val()
-            }})
-
-          .error(function (response) {
-            switch ( response.status ) {
-              case 404:
-                Nav.show($('.login-error-404'));
-                break;
-
-              case 401:
-                Nav.show($('.login-error-401'));
-                break;
-            }
-          })
-
-          .success(function (response) {
-
-            synapp.user = response.user;
-
-            $('a.is-in').css('display', 'inline');
-
-            $('.topbar .is-out').remove();
-
-            vex.close($vexContent.data().vex.id);
-
-            // $('.login-modal').modal('hide');
-
-            // signForm.find('section').hide(2000);
-
-          });
-
-      });
-    }
-
-    form.send(login);
-  }
-
-  module.exports = login;
-
-} ();
-
-},{"./Form":11,"./Nav":24}],24:[function(require,module,exports){
-(function (process){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  N   A   V
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function toggle (elem, poa, cb) {
-    if ( ! elem.hasClass('is-toggable') ) {
-      elem.addClass('is-toggable');
-    }
-
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    if ( elem.hasClass('is-shown') ) {
-      unreveal(elem, poa, cb);
-    }
-    else {
-      reveal(elem, poa, cb);
-    }
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function reveal (elem, poa, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    if ( typeof cb !== 'function' ) {
-      cb = console.log.bind(console);
-    }
-
-    emitter.revealed = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-      if ( ! elem.hasClass('is-toggable') ) {
-        elem.addClass('is-toggable');
-      }
-
-      console.log('%c reveal', 'font-weight: bold',
-        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
-
-      if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-        var error = new Error('Animation already in progress');
-        error.code = 'ANIMATION_IN_PROGRESS';
-        return cb(error);
-      }
-
-      elem.removeClass('is-hidden').addClass('is-showing');
-
-      if ( poa ) {
-        scroll(poa, function () {
-          show(elem, function () {
-            emitter.emit('success');
-            cb();
-          });
-        });
-      }
-
-      else {
-        show(elem, function () {
-          emitter.emit('success');
-          cb();
-        });
-      }
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function unreveal (elem, poa, cb) {
-    if ( ! elem.hasClass('is-toggable') ) {
-      elem.addClass('is-toggable');
-    }
-
-    console.log('%c unreveal', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
-
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    elem.removeClass('is-shown').addClass('is-hiding');
-
-    if ( poa ) {
-      scroll(poa, function () {
-        hide(elem, cb);
-      });
-    }
-
-    else {
-      hide(elem, cb);
-    }
-  }
-
-  /**
-   *  @function scroll
-   *  @description Scroll the page till the point of attention is at the top of the screen
-   *  @return null
-   *  @arg {function} pointOfAttention - jQuery List
-   *  @arg {function} cb - Function to call once scroll is complete
-   *  @arg {number} speed - A number of milliseconds to set animation duration
-   */
-
-  function scroll (pointOfAttention, cb, speed) {
-    // console.log('%c scroll', 'font-weight: bold',
-    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.scrolled = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    emitter.then = function (fn, fn2) {
-      emitter.on('success', fn);
-      if ( fn2 ) emitter.on('error', fn2);
-      return this;
-    };
-
-    var poa = (pointOfAttention.offset().top - 60);
-
-    var current = $('body,html').scrollTop();
-
-    if ( typeof cb !== 'function' ) {
-      cb = function () {};
-    }
-
-    if ( 
-      (current === poa) || 
-      (current > poa && (current - poa < 50)) ||
-      (poa > current && (poa - current < 50)) ) {
-
-      emitter.emit('success');
-
-      return typeof cb === 'function' ? cb() : true;
-    }
-
-    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing'))
-      
-      .then(function () {
-
-        emitter.emit('success');
-
-        if ( typeof cb === 'function' ) {
-          cb();
-        }
-
-      });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function show (elem, cb) {
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.shown = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-
-      console.log('%c show', 'font-weight: bold',
-        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
-
-      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-      
-      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-
-        emitter.emit('error', new Error('Already in progress'));
-        
-        if ( typeof cb === 'function' ) {
-          cb(new Error('Show failed'));
-        }
-
-        return false;
-      }
-
-      // make sure margin-top is equal to height for smooth scrolling
-
-      elem.css('margin-top', '-' + elem.height() + 'px');
-
-      // animate is-section
-
-      $.when(elem.find('.is-section:first')
-        .animate({
-          marginTop: 0
-        }, 500))
-      .then(function () {
-        elem.removeClass('is-showing').addClass('is-shown');
-          
-        if ( elem.css('margin-top') !== 0 ) {
-          elem.animate({'margin-top': 0}, 250);
-        }
-
-        emitter.emit('success');
-        
-        if ( cb ) {
-          cb();
-        }      
-      });
-
-      elem.animate({
-         opacity: 1
-        }, 500);
-
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function hide (elem, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.hiding = function (cb) {
-      this.on('hiding', cb);
-      return this;
-    };
-
-    emitter.hidden = function (cb) {
-      this.on('hidden', cb);
-      return this;
-    };
-
-    emitter.error = function (cb) {
-      this.on('error', cb);
-      return this;
-    };
-
-    process.nextTick(function () {
-
-      var domain = require('domain').create();
-
-      domain.on('error', function (error) {
-        emitter.emit('error', error);
-      });
-
-      domain.run(function () {
-
-        if ( ! elem.length ) {
-          return cb();
-        }
-
-        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-        if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-          emitter.emit('bounced');
-          return false;
-        }
-
-        emitter.emit('hiding');
-
-        console.log('%c hide', 'font-weight: bold',
-          (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
-
-        elem.removeClass('is-shown').addClass('is-hiding');;
-
-        elem.find('.is-section:first').animate(
-          {
-            'margin-top': '-' + elem.height() + 'px',
-            // 'padding-top': elem.height() + 'px'
-          },
-
-          1000,
-
-          function () {
-            elem.removeClass('is-hiding').addClass('is-hidden');
-
-            emitter.emit('hidden');
-
-            if ( cb ) cb();
-          });
-
-        elem.animate({
-           opacity: 0
-          }, 1000);
-
-      });
-
-    })
-
-    return emitter;
-  }
-
-  module.exports = {
-    toggle:       toggle,
-    reveal:       reveal,
-    unreveal:     unreveal,
-    show:         show,
-    hide:         hide,
-    scroll:       scroll
-  };
-
-} ();
-
-}).call(this,require('_process'))
-},{"_process":53,"domain":50,"events":51}],25:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  PANEL
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var Nav       =   require('./Nav');
-  var Creator   =   require('./Creator');
-  var Item      =   require('./Item');
-  var Sign      =   require('./Sign');
-
-  /**
-   *  @class
-   *
-   *  @arg {String} type
-   *  @arg {ObjectID?} parent
-   *  @arg {Number} size
-   *  @arg {Number} skip
-   */
-
-  function Panel (type, parent, size, skip) {
-
-    if ( ! app ) {
-      throw new Error('Missing app');
-    }
-
-    var panel = this;
-
-    if ( typeof type !== 'string' ) {
-      throw new TypeError('Missing Panel Type string');
-    }
-
-    this.type     =   type;
-    this.parent   =   parent;
-    this.skip     =   skip || 0;
-    this.size     =   size || synapp['navigator batch size'];
-
-    this.id       =   'panel-' + this.type;
-
-    if ( this.parent ) {
-      this.id += '-' + this.parent;
-    }
-  }
-
-  /**
-   *  @method       Panel.getId
-   *  @return       {String} panelId
-  */
-
-  Panel.prototype.getId = function () {
-    return this.id;
-  };
-
-  Panel.prototype.load = require('./Panel/load');
-
-  Panel.prototype.find = function (name) {
-    switch ( name ) {
-      case 'title':
-        return this.template.find('.panel-title:first');
-
-      case 'toggle creator':
-        return this.template.find('.toggle-creator:first');
-
-      case 'creator':
-        return this.template.find('.creator:first');
-
-      case 'items':
-        return this.template.find('.items:first');
-
-      case 'load more':
-        return this.template.find('.load-more:first');
-
-      case 'create new':
-        return this.template.find('.create-new:first');
-    }
-  };
-
-  Panel.prototype.toggleCreator = function (target) {
-    if ( synapp.user ) {
-      Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
-    }
-    else {
-      Sign.dialog.join();
-    }
-  };
-
-  Panel.prototype.render          =   require('./Panel/render');
-
-  Panel.prototype.toJSON          =   require('./Panel/to-json');
-
-  Panel.prototype.fill            =   require('./Panel/fill');
-
-  Panel.prototype.preInsertItem   =   require('./Panel/pre-insert-item');
-
-  Panel.prototype.insertItem      =   function (items, i, cb) {
-
-    var self = this;
-
-    if ( items[i] ) {
-
-      var item  = new Item(items[i]);
-
-      console.log('inserting item ', i, item)
-
-      item.load(app.domain.intercept(function (template) {
-        self.find('items').append(template);
-
-        item.render(app.domain.intercept(function () {
-          self.insertItem(items, ++ i, cb);
-        }));
-
-      }));
-    }
-    else {
-      cb && cb();
-    }
-    
-  };
-
-  module.exports = Panel;
-
-} ();
-
-},{"./Creator":1,"./Item":14,"./Nav":24,"./Panel/fill":26,"./Panel/load":27,"./Panel/pre-insert-item":28,"./Panel/render":29,"./Panel/to-json":30,"./Sign":42}],26:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function fill (item, cb) {
-    var self = this;
-
-    if ( typeof item === 'function' && ! cb ) {
-      cb = item;
-      item = undefined;
-    }
-
-    var panel = self.toJSON();
-
-    if ( item ) {
-      panel.item = item;
-      panel.type = undefined;
-    }
-
-    console.log('panel', panel)
-
-    app.socket
-
-      .once('got items ' + this.id, function (panel, items) {
-
-        console.log('got items', panel, items)
-
-        self.template.find('.hide.pre').removeClass('hide');
-        self.template.find('.show.pre').removeClass('show').hide();
-
-        self.template.find('.loading-items').hide();
-
-        if ( items.length ) {
-
-          self.find('create new').hide();
-          self.find('load more').show();
-
-          if ( items.length < synapp['navigator batch size'] ) {
-            self.find('load more').hide();
-          }
-
-          self.skip += items.length;
-
-          self.preInsertItem(items, cb);
-        }
-
-        else {
-          self.find('create new').show();
-          self.find('load more').hide();
-        }
-
-      })
-
-      .emit('get items', panel);
-  }
-
-  module.exports = fill;
-
-} ();
-
-},{}],27:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function load (cb) {
-    var panel = this;
-
-    if ( app.cache.template.panel ) {
-      panel.template = $(app.cache.template.panel[0].outerHTML);
-      
-      if ( cb ) {
-        cb(null, panel.template);
-      }
-
-      return;
-    }
-
-    $.ajax({
-      url: '/partial/panel'
-    })
-
-      .error(cb)
-
-      .success(function (data) {
-        panel.template = $(data);
-
-        app.cache.template.panel = $(data);
-
-        cb(null, panel.template);
-      });
-
-    return this;
-  }
-
-  module.exports = load;
-
-} ();
-
-},{}],28:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Item =require('../Item');
-
-  function preInsertItem (items, cb) {
-    var self = this;
-
-    /** Load template */
-
-    if ( ! app.cache.template.item ) {
-      return new (require('../Item'))({}).load(app.domain.intercept(function (template) {
-        self.preInsertItem(items, cb); 
-      }));
-    }
-
-    /** Items to object */
-
-    items = items.map(function (item) {
-      item = new (require('../Item'))(item);
-
-      item.load(app.domain.intercept(function (template) {
-
-        // var img = template.find('.item-media img');
-        // var loading = $('<i class="fa fa-refresh fa-5x fa-spin center block-center muted"></i>');
-
-        // loading.insertAfter(img);
-
-        // img.remove();
-
-        self.find('items').append(template); 
-      }));
-
-      return item;
-    });
-
-    var i = 0;
-    var len = items.length;
-
-    function next () {
-      i ++;
-
-      if ( i === len && cb ) {
-        cb();
-      }
-    }
-
-    items.forEach(function (item) {
-      item.render(app.domain.intercept(function (args) {
-        next();  
-      }));
-    });
-  }
-
-  module.exports = preInsertItem;
-
-} ();
-
-},{"../Item":14}],29:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  // var Creator = require('../Creator');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function render (cb) {
-    var panel = this;
-
-    this.find('title').text(this.type);
-
-    this.find('toggle creator').on('click', function () {
-      panel.toggleCreator($(this));
-    });
-
-    panel.template.attr('id', panel.getId());
-
-    var creator = new (require('../Creator'))(panel);
-
-    creator.render(app.domain.intercept(function () {
-      cb();     
-    }));
-
-    this.find('load more').on('click', function () {
-      panel.fill();
-      return false;
-    });
-
-    this.find('create new').on('click', function () {
-      panel.find('toggle creator').click();
-      return false;
-    });
-
-    return this;
-  }
-
-  module.exports = render;
-
-} ();
-
-},{"../Creator":1}],30:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function toJSON () {
-    var json = {
-      type: this.type,
-      size: this.size,
-      skip: this.skip,
-      // item: app.location.item
-    };
-
-    if ( this.parent ) {
-      json.parent = this.parent;
-    }
-
-    return json;
-  }
-
-  module.exports = toJSON;
-
-} ();
-
-},{}],31:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav               =   require('./Nav');
-  var Identity          =   require('./Identity');
-  var Residence         =   require('./Residence');
-  var Demographics      =   require('./Demographics');
-  var Voter             =   require('./Voter');
-  var Public_Persona    =   require('./Public_Persona');
-
-  /**
-   *  @class      Profile
-   */
-
-  function Profile () {
-
-    /** Persistent this
-     *
-     *  @type           Profile
-    */
-
-    var profile         =   this;
-
-    /** DOM Container
-     *
-     *  @type           HTMLElement
-    */
-
-    this.template       =   $('.panel');
-
-    /** Local instance of Identity
-     *
-     *  @type           Identity
-    */
-
-    this.identity       =   new Identity(this);
-
-    /** Local instance of Residence
-     *
-     *  @type           Residence
-    */
-
-    this.residence      =   new Residence(this);
-
-    /** Local instance of Demographics
-     *
-     *  @type           Demographics
-    */
-
-    this.demographics   =   new Demographics(this);
-
-    /** Local instance of Voter
-     *
-     *  @type           Voter
-    */
-
-    this.voter          =   new Voter(this);
-
-    /** Local instance of Public_Persona
-     *
-     *  @type           Public_Persona
-    */
-
-    this.public_persona =   new Public_Persona(this);
-
-    /** Get User Info from socket
-     *
-     *  @type           Socket
-    */
-
-    app.socket
-      .once('got user info', function (user) {
-        console.log('got user info', user);
-        profile.user = user;
-
-        profile.renderUser();
-      })
-      .emit('get user info', synapp.user);
-
-    /** Get list of countries from socket
-     *
-     *  @type           Socket
-    */
-
-    app.socket
-      .once('got countries', function (countries) {
-        console.log('got countries', countries);
-        profile.countries = countries;
-
-        profile.identity.renderCountries();
-      })
-      .emit('get countries');
-  }
-
-  Profile.prototype.find = function (name) {
-    switch ( name ) {
-      case 'panel title':
-        return this.template.find('.panel-title');
-
-      case 'items section':
-        return this.template.find('.items .is-container.is-profile-section');
-
-      case 'panel load more':
-        return this.template.find('.loading-items');
-
-      case 'Identity':
-        return this.template.find('#identity');
-
-      case 'toggle creator':
-        return this.template.find('.toggle-creator');
-    }
-  };
-
-  Profile.prototype.render = function () {
-
-    var profile = this;
-
-    this.find('panel title').text('Profile');
-
-    this.find('toggle creator').remove();
-
-    this.find('panel load more').find('i,span').hide();
-
-    var togglePanel = $('<i class="fa cursor-pointer fa-arrow-up"></i>');
-
-    togglePanel.on('click', function () {
-
-      var arrow = $(this);
-
-      Nav.toggle(profile.find('items section'), null, function () {
-        if ( profile.find('items section').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    Nav.show(this.find('items section'));
-
-    this.find('panel load more').append(togglePanel);
-
-    this.find('Identity').attr('id', 'identity');
-
-    this.identity.render();
-
-    this.residence.render();
-
-    this.demographics.render();
-
-    this.voter.render();
-
-    this.public_persona.render();
-
-  };
-
-  Profile.prototype.renderUser = function () {
-    var profile = this;
-
-    this.find('Identity').data('identity').user = this.user;
-
-    this.find('Identity').data('identity').renderUser();
-
-    this.residence.renderUser();
-
-    this.demographics.renderUser();
-
-    this.voter.renderUser();
-
-    this.public_persona.renderUser();
-  };
-
-  module.exports = Profile;
-
-} ();
-
-},{"./Demographics":6,"./Identity":12,"./Nav":24,"./Public_Persona":39,"./Residence":41,"./Voter":47}],32:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  P   R   O   M   O   T   E
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var Item      =   require('./Item');
-  var Nav       =   require('./Nav');
-  var Edit      =   require('./Edit');
-
-  /**
-   *  @class Promote
-   *  @arg {Item} item
-   */
-
-  function Promote (item) {
-    if ( ! app ) {
-      throw new Error('Missing app');
-    }
-
-    var self = this;
-
-    app.domain.run(function () {
-      if ( ! item || ( ! item instanceof require('./Item') ) ) {
-        throw new Error('Item must be an Item');
-      }
-
-      self.item = item;
-
-      self.template = item.find('promote');
-
-      if ( ! self.template.length ) {
-        throw new Error('Promote template not found');
-      }
-
-      self.watch = new (require('events').EventEmitter)();
-
-      self.$bind('limit', self.renderLimit.bind(self));
-
-      self.$bind('cursor', self.renderCursor.bind(self));
-
-      self.$bind('left', self.renderLeft.bind(self));
-
-      self.$bind('right', self.renderRight.bind(self));
-    });
-      
-  }
-
-  /**
-   *  @method renderLimit
-   */
-
-  Promote.prototype.renderLimit = function () {
-    this.find('limit').text(this.evaluation.limit);
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.renderCursor = function () {
-    this.find('cursor').text(this.evaluation.cursor);
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.renderLeft = function () {
-    this.renderItem('left');
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.edit = function (key, value) {
-    this.evaluation[key] = value;
-
-    this.watch.emit(key);
-  };
-
-  /**
-   *
-   */
-
-  Promote.prototype.$bind = function (key, binder) {
-    this.watch.on(key, binder);
-  };
-
-  /**
-   *
-   */
-
-  /**
-   *
-   */
-
-  Promote.prototype.renderRight = function () {
-    this.renderItem('right');
-  };
-
-  /**
-   *  @description Selector aliases getter
-   */
-
-  Promote.prototype.find            =     require('./Promote/find');
-
-  /**
-   *  @description render one of the sides in a side by side
-   */
-
-  Promote.prototype.renderItem      =     require('./Promote/render-item');
-
-  /**
-   *  @description
-   */
-
-  Promote.prototype.render          =     require('./Promote/render');
-
-  /**
-   *  @description
-   */
-
-  Promote.prototype.get             =     require('./Promote/get');
-
-  /**
-   *  @description
-   */
-
-  Promote.prototype.finish          =     require('./Promote/finish');
-
-  /**
-   *  @description
-   */
-
-  Promote.prototype.save            =     require('./Promote/save');
-
-  module.exports = Promote;
-
-} ();
-
-},{"./Edit":8,"./Item":14,"./Nav":24,"./Promote/find":33,"./Promote/finish":34,"./Promote/get":35,"./Promote/render":37,"./Promote/render-item":36,"./Promote/save":38,"events":51}],33:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function find (name, more) {
-    switch ( name ) {
-      case 'cursor':                  return this.template.find('.cursor');
-
-      case 'limit':                   return this.template.find('.limit');
-
-      case 'side by side':            return this.template.find('.items-side-by-side');
-
-      case 'finish button':           return this.template.find('.finish');
-
-      case 'item subject':            return this.find('side by side').find('.subject.' + more + '-item h4');
-
-      case 'item description':        return this.find('side by side').find('.description.' + more + '-item');
-
-      case 'sliders':                 return this.find('side by side').find('.sliders.' + more + '-item');
-
-      case 'item image':              return this.find('side by side').find('.image.' + more + '-item');
-
-      case 'item persona':            return this.find('side by side').find('.persona.' + more + '-item');
-
-      case 'item references':         return this.find('side by side').find('.references.' + more + '-item a');
-
-      case 'item persona image':      return this.find('item persona', more).find('img');
-
-      case 'item persona name':       return this.find('item persona', more).find('.user-full-name');
-
-      case 'item feedback':           return this.find('side by side').find('.' + more + '-item.feedback .feedback-entry');
-
-      case 'promote button':          return this.find('side by side').find('.' + more + '-item .promote');
-
-      case 'promote label':           return this.find('side by side').find('.promote-label');
-
-      case 'edit and go again button':  return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
-    }
-  }
-
-  module.exports = find;
-
-} ();
-
-},{}],34:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('../Nav');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function finish () {
-    var promote = this;
-
-    promote.find('promote button').off('click');
-    promote.find('finish button').off('click');
-
-    if ( promote.evaluation.left ) {
-      this.save('left');
-    }
-
-    if ( promote.evaluation.right ) {
-      this.save('right');
-    }
-
-    Nav.unreveal(promote.template, promote.item.template,
-      app.domain.intercept(function () {
-
-        promote.item.details.get();
-
-        promote.item.find('toggle details').click();
-
-        promote.item.find('details').find('.feedback-pending')
-          .removeClass('hide');
-
-        promote.evaluation = null;
-      }));
-  }
-
-  module.exports = finish;
-
-} ();
-
-},{"../Nav":24}],35:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function get (cb) {
-    var promote = this;
-
-    if ( ! this.evaluation ) {
-
-      // Get evaluation via sockets
-
-      app.socket.emit('get evaluation', this.item.item._id);
-
-      app.socket.once('got evaluation', function (evaluation) {
-        console.info('got evaluation', evaluation);
-
-        promote.evaluation = evaluation;
-
-        var limit = 5;
-
-        if ( evaluation.items.length < 6 ) {
-          limit = evaluation.items.length - 1;
-
-          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
-            limit = 1;
-          }
-        }
-
-        promote.edit('limit', limit);
-
-        promote.edit('cursor', 1);
-
-        promote.edit('left', evaluation.items[0]);
-
-        promote.edit('right', evaluation.items[1]);
-
-        cb();
-
-      });
-    }
-
-    else {
-      cb();
-    }
-  }
-
-  module.exports = get;
-
-} ();
-
-},{}],36:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('../Nav');
-  var Edit = require('../Edit');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function renderItem (hand) {
-    var promote = this;
-
-    var reverse = hand === 'left' ? 'right' : 'left';
-
-    if ( ! this.evaluation[hand] ) {
-      this.find('item subject', hand).hide();
-      this.find('item description', hand).hide();
-      this.find('item feedback', hand).hide();
-      this.find('sliders', hand).hide();
-      this.find('promote button', hand).hide();
-      this.find('promote label').hide();
-      this.find('edit and go again button', hand).hide();
-      this.find('promote button', reverse).hide();
-      this.find('edit and go again button', reverse).hide();
-      // this.find('finish button').hide();
-      return;
-    }
-
-    // Increment views counter
-
-    app.socket.emit('add view', this.evaluation[hand]._id);
-
-    // Subject
-    this.find('item subject', hand).text(this.evaluation[hand].subject);
-
-    // Description
-
-    this.find('item description', hand).text(this.evaluation[hand].description);
-
-    // Image
-
-    this.find('item image', hand).empty().append(
-      new (require('../Item'))(this.evaluation[hand]).media());
-
-    // References
-
-    if ( this.evaluation[hand].references && this.evaluation[hand].references.length ) {
-      this.find('item references', hand)
-        .attr('href', this.evaluation[hand].references[0].url)
-        .text(this.evaluation[hand].references[0].title || this.evaluation[hand].references[0].url);
-    }
-
-    // Sliders
-
-    promote.find('sliders', hand).find('.criteria-name').each(function (i) {
-      var cid = i;
-
-      if ( cid > 3 ) {
-        cid -= 4;
-      }
-
-      promote.find('sliders', hand).find('.criteria-name').eq(i)
-        .on('click', function () {
-          var self = $(this);
-          var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
-
-          self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
-
-
-          if ( $(this).hasClass('shy') ) {
-            $(this).removeClass('shy').addClass('info');
-          }
-
-          else if ( $(this).hasClass('info') ) {
-            $(this).removeClass('info').addClass('shy');
-          }
-
-          Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
-            Nav.toggle(descriptionSection);
-          }));
-
-          
-        })
-        .text(promote.evaluation.criterias[cid].name);
-      promote.find('sliders', hand).find('.criteria-description').eq(i).text(promote.evaluation.criterias[cid].description);
-      promote.find('sliders', hand).find('input').eq(i)
-        .val(0)
-        .data('criteria', promote.evaluation.criterias[cid]._id);
-    });
-
-    // Persona
-
-    // promote.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
-
-    // promote.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
-
-    // Feedback
-
-    promote.find('item feedback', hand).val('');
-
-    // Feedback - remove any marker from previous post / see #164
-
-    promote.find('item feedback', hand).removeClass('do-not-save-again');
-
-    // Promote button
-
-    promote.find('promote button', hand)
-      .text(this.evaluation[hand].subject)
-      .off('click')
-      .on('click', function () {
-
-        var left = $(this).closest('.left-item').length;
-
-        var opposite = left ? 'right' : 'left';
-
-        Nav.scroll(promote.template, app.domain.intercept(function () {
-
-          // If cursor is smaller than limit, then keep on going
-        
-          if ( promote.evaluation.cursor < promote.evaluation.limit ) {
-
-            promote.edit('cursor', promote.evaluation.cursor + 1);
-
-            app.socket.emit('promote', promote.evaluation[left ? 'left' : 'right']._id);
-
-            promote.save(left ? 'left' : 'right');
-
-            $.when(
-              promote
-                .find('side by side')
-                .find('.' + opposite + '-item')
-                .animate({
-                  opacity: 0
-                })
-            )
-              .then(function () {
-                promote.edit(opposite, promote.evaluation.items[promote.evaluation.cursor]);
-
-                promote
-                  .find('side by side')
-                  .find('.' + opposite + '-item')
-                  .animate({
-                    opacity: 1
-                  });
-              });
-          }
-
-          // If cursor equals limit, means end of evaluation cycle
-
-          else {
-
-            promote.finish();
-
-          }
-
-        }));
-      });
-  
-    // Edit and go again
-
-    promote.find('edit and go again button', hand).on('click', function () {
-      Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
-
-        if ( promote.item.find('editor').find('form').length ) {
-          console.warn('already loaded')
-        }
-
-        else {
-          var edit = new Edit(promote.item);
-            
-          edit.get(app.domain.intercept(function (template) {
-
-            promote.item.find('editor').find('.is-section').append(template);
-
-            Nav.reveal(promote.item.find('editor'), promote.item.template,
-              app.domain.intercept(function () {
-                Nav.show(template, app.domain.intercept(function () {
-                  edit.render();
-                }));
-              }));
-          }));
-
-        }
-
-      }));
-    });
-
-  }
-
-  module.exports = renderItem;
-
-} ();
-
-},{"../Edit":8,"../Item":14,"../Nav":24}],37:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('../Nav');
-
-  /**
-   *  @method Promote.render
-   *  @return
-   *  @arg
-   */
-
-  function render (cb) {
-    var promote = this;
-
-    promote.find('finish button').on('click', function () {
-      Nav.scroll(promote.template, app.domain.intercept(function () {
-
-        if ( promote.evaluation.cursor < promote.evaluation.limit ) {
-
-          promote.save('left');
-
-          promote.save('right');
-
-          $.when(
-            promote
-              .find('side by side')
-              .find('.left-item, .right-item')
-              .animate({
-                opacity: 0
-              }, 1000)
-          )
-            .then(function () {
-              promote.edit('cursor', promote.evaluation.cursor + 1);
-
-              promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
-
-              promote.edit('cursor', promote.evaluation.cursor + 1);
-
-              promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
-
-              promote
-                .find('side by side')
-                .find('.left-item')
-                .animate({
-                  opacity: 1
-                }, 1000);
-
-              promote
-                .find('side by side')
-                .find('.right-item')
-                .animate({
-                  opacity: 1
-                }, 1000);
-            });
-        }
-
-        else {
-
-          promote.finish();
-
-        }
-
-      }));
-    });
-  }
-
-  module.exports = render;
-
-} ();
-
-},{"../Nav":24}],38:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function save (hand) {
-
-    var promote = this;
-   
-    // feedback
-
-    var feedback = promote.find('item feedback', hand);
-
-    if ( feedback.val() ) {
-
-      if ( ! feedback.hasClass('do-not-save-again') ) {
-        app.socket.emit('insert feedback', {
-          item: promote.evaluation[hand]._id,
-          user: synapp.user,
-          feedback: feedback.val()
-        });
-
-        feedback.addClass('do-not-save-again');
-      }
-
-      // feedback.val('');
-    }
-
-    // votes
-
-    var votes = [];
-
-    promote.template
-      .find('.items-side-by-side:visible .' +  hand + '-item input[type="range"]:visible')
-      .each(function () {
-        var vote = {
-          item: promote.evaluation[hand]._id,
-          user: synapp.user,
-          value: +$(this).val(),
-          criteria: $(this).data('criteria')
-        };
-
-        votes.push(vote);
-      });
-
-    app.socket.emit('insert votes', votes);
-  }
-
-  module.exports = save;
-
-} ();
-
-},{}],39:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Public_Persona (profile) {
-    this.template = $('#public_persona');
-
-    this.template.data('public_persona', this);
-
-    this.profile = profile;
-  }
-
-  Public_Persona.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.public_persona-collapse');
-    }
-  };
-
-  Public_Persona.prototype.render = function () {
-
-    var public_persona = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(public_persona.find('expand'), public_persona.template, function () {
-        if ( public_persona.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-  };
-
-  Public_Persona.prototype.renderUser = function () {
-
-    var public_persona = this;
-
-    if ( this.profile.user ) {
-
-     
-    }
-  };
-
-  module.exports = Public_Persona;
-
-} ();
-
-},{"./Nav":24}],40:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function spanify (des) {
-
-    return des.replace(/\n/g, "\n ").split(' ')
-
-      .map(function (word) {
-        var span = $('<span class="word"></span>');
-        span.text(word + ' ');
-        return span;
-      });
-  }
-
-  function readMore (item, $item) {
-
-    /** {HTMLElement} Description wrapper in DOM */
-
-    var $description    =     $item.find('.item-description');
-
-    /** {HTMLElement} Image container in DOM */
-
-    var $image          =     $item.find('.item-media img');
-
-    /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
-
-    var $text           =     $item.find('.item-text');
-
-    /** {HTMLElement} Subject container in DOM */
-
-    var $subject        =     $item.find('.item-subject');
-
-    /** {HTMLElement} Reference container in DOM */
-
-    var $reference      =     $item.find('.item-reference');
-
-    /** {HTMLElement} Arrow container in DOM */
-
-    var $arrow          =     $item.find('.item-arrow')
-
-    /** {Number} Image height */
-
-    var imgHeight       =     $image.height();
-
-    // If screen >= phone, then divide imgHeight by 2
-
-    if ( $('body').width() <= $('#screen-tablet').width() ) {
-      imgHeight *= 2;
-    }
-
-    /** {Number} Top position of text wrapper */
-
-    var top             =     $text.offset().top;
-
-    // If **not** #intro, then subtract subject's height
-
-    if ( $item.attr('id') !== 'intro' ) {
-
-      // Subtract height of subject from top
-      
-      top -= $subject.height();
-    }
-
-    // If screen >= tablet
-
-    if ( $('body').width() >= $('#screen-tablet').width() ) {
-      // Subtract 40 pixels from top
-
-      top -= 40;
-    }
-
-    // If screen >= phone
-
-    else if ( $('body').width() >= $('#screen-phone').width() ) {
-      top -= 80;
-    }
-
-    // console.info( item.subject.substr(0, 30) + '...', 'top', Math.ceil(top), ',', Math.ceil(imgHeight) );
-
-    // Clear description
-
-    $description.text('');
-
-    // Spanify each word
-
-    spanify(item.description).forEach(function (word) {
-      $description.append(word);
-    });
-
-    // Hide words that are below limit
-
-    for ( var i = $description.find('.word').length - 1; i >= 0; i -- ) {
-      var word = $description.find('.word').eq(i);
-      // console.log(Math.ceil(word.offset().top), Math.ceil(top),
-      //   { word: Math.ceil(word.offset().top - top), limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
-      if ( (word.offset().top - top) > imgHeight ) {
-        word.addClass('hidden-word').hide();
-      }
-    }
-
-    if ( $description.find('.hidden-word').length ) {
-      var more = $('<a href="#" class="more">more</a>');
-
-      more.on('click', function () {
-
-        if ( $(this).hasClass('more') ) {
-          $(this).removeClass('more').addClass('less').text('less');
-          $(this).closest('.item-description').find('.hidden-word').show();
-        }
-
-        else {
-          $(this).removeClass('less').addClass('more').text('more');
-          $(this).closest('.item-description').find('.hidden-word').hide();
-        }
-
-        return false;
-
-      });
-
-      $description.append(more);
-    }
-
-    // Hide reference if too low and breaks design
-
-    if ( $reference.text() && (($arrow.offset().top - $reference.offset().top) < 15 ) ) {
-
-      var more;
-
-      if ( $description.find('.more').length ) {
-        more = $description.find('.more');
-      }
-
-      else {
-        more = $('<a href="#" class="more">more</a>');
-
-        more.on('click', function () {
-
-          if ( $(this).hasClass('more') ) {
-            $(this).removeClass('more').addClass('less').text('less');
-            $reference.show();
-          }
-
-          else {
-            $(this).removeClass('less').addClass('more').text('more');
-            $reference.hide();
-          }
-
-          return false;
-
-        });
-      }
-
-      $description.append(more);
-
-      $reference
-        .css('padding-bottom', '10px')
-        .data('is-hidden-reference', true)
-        .hide();
-    }
-  }
-
-  module.exports = readMore;
-
-} ();
-
-},{}],41:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Residence (profile) {
-    this.template = $('#residence');
-
-    this.template.data('residence', this);
-
-    this.profile = profile;
-  }
-
-  Residence.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.residence-collapse');
-
-      case 'validate gps button':
-        return this.template.find('.validate-gps');
-
-      case 'not yet validated':
-        return this.template.find('.not-yet-validated');
-
-      case 'is validated':
-        return this.template.find('.is-validated');
-
-      case 'validated moment':
-        return this.template.find('.validated-moment');
-    }
-  };
-
-  Residence.prototype.render = function () {
-
-    var residence = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(residence.find('expand'), residence.template, function () {
-        if ( residence.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    // Validate GPS button
-
-    this.find('validate gps button').on('click', function () {
-      navigator.geolocation.watchPosition(function(position) {
-
-        console.log('location');
-
-        app.socket.emit('validate gps', synapp.user, position.coords.longitude, position.coords.latitude);
-
-        app.socket.once('validated gps', function () {
-          console.log('validated');
-        });
-      });
-    });
-  };
-
-  Residence.prototype.renderUser = function () {
-
-    var residence = this;
-
-    if ( this.profile.user ) {
-
-      // GPS
-
-      if ( this.profile.user.gps ) {
-        this.find('not yet validated').hide();
-        this.find('is validated').removeClass('hide').show();
-        this.find('validated moment').text(function () {
-          var date = new Date(residence.profile.user['gps validated']);
-          return [(date.getMonth() + 1 ), (date.getDay() + 1), date.getFullYear()].join('/');
-        });
-      }
-
-      // NO GPS
-
-      else {
-        this.find('validate gps button').attr('disabled', false);
-      }
-    }
-  };
-
-  module.exports = Residence;
-
-} ();
-
-},{"./Nav":24}],42:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  S   I   G   N
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var Nav = require('./Nav');
-  var login = require('./Login');
-  var join = require('./Join');
-  var forgotPassword = require('./Forgot-Password');
-
-  function Sign () {
-    
-  }
-
-  Sign.dialog = {
-
-    login: function () {
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      vex.dialog.confirm({
-
-        afterOpen: function ($vexContent) {
-          $('.login-button')
-            .off('click')
-            .on('click', function () {
-              vex.close();
-            });
-
-          login($vexContent);
-
-          $vexContent.find('.forgot-password-link').on('click', function () {
-            Sign.dialog.forgotPassword();
-            vex.close($vexContent.data().vex.id);
-            return false;
-          });
-        },
-
-        afterClose: function () {
-          $('.login-button').on('click', Sign.dialog.login);
-        },
-
-        message: $('#login').text(),
-
-        buttons: [
-           //- $.extend({}, vex.dialog.buttons.YES, {
-           //-    text: 'Login'
-           //-  }),
-
-           $.extend({}, vex.dialog.buttons.NO, {
-              text: 'x Close'
-            })
-        ]
-      });
-    },
-
-    join: function () {
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      vex.dialog.confirm({
-
-        afterOpen: function ($vexContent) {
-          $('.join-button')
-            .off('click')
-            .on('click', function () {
-              vex.close();
-            });
-
-          join($vexContent);
-        },
-
-        afterClose: function () {
-          $('.join-button').on('click', Sign.dialog.join);
-        },
-
-        message: $('#join').text(),
-        buttons: [
-           //- $.extend({}, vex.dialog.buttons.YES, {
-           //-    text: 'Login'
-           //-  }),
-
-           $.extend({}, vex.dialog.buttons.NO, {
-              text: 'x Close'
-            })
-        ],
-        callback: function(value) {
-          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-        },
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
-        }
-      });
-    },
-
-    forgotPassword: function () {
-
-      console.log('helllo')
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      vex.dialog.confirm({
-
-        afterOpen: function ($vexContent) {
-          $('.forgot-password-link')
-            .off('click')
-            .on('click', function () {
-              vex.close();
-              return false;
-            });
-
-          forgotPassword($vexContent);
-        },
-
-        afterClose: function () {
-          $('.forgot-password-link').on('click', Sign.dialog.forgotPassword);
-        },
-
-        message: $('#forgot-password').text(),
-        buttons: [
-           //- $.extend({}, vex.dialog.buttons.YES, {
-           //-    text: 'Login'
-           //-  }),
-
-           $.extend({}, vex.dialog.buttons.NO, {
-              text: 'x Close'
-            })
-        ],
-        callback: function(value) {
-          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-        },
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
-        }
-      });
-
-      return false;
-    }
-
-  };
-
-  Sign.prototype.render = function () {
-    // this.signIn();
-    // this.signUp();
-    // this.forgotPassword();
-
-    app.socket.on('online users', function (online) {
-      $('.online-users').text(online);
-    });
-
-    $('.topbar-right').removeClass('hide');
-
-    if ( ! synapp.user ) {
-      $('.login-button').on('click', Sign.dialog.login);
-      $('.join-button').on('click', Sign.dialog.join);
-      $('.topbar .is-in').hide();
-    }
-
-    else {
-      $('.topbar .is-out').remove();
-    }
-  };
-
-  module.exports = Sign;
-
-} ();
-
-},{"./Forgot-Password":10,"./Join":22,"./Login":23,"./Nav":24}],43:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Stream (file) {
-
-    var stream = ss.createStream();
-
-    // stream.end = function (cb) {
-    //   this.on('end', cb);
-
-    //   return this;
-    // };
-
-    // stream.error = function (cb) {
-    //   this.on('error', cb);
-
-    //   return this;
-    // };
-
-    ss(app.socket).emit('upload image', stream,
-      { size: file.size, name: file.name });
-    
-    ss.createBlobReadStream(file).pipe(stream);
-
-    return stream;
-  }
-
-  module.exports = Stream;
-
-} ();
-
-},{}],44:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  S   Y   N   A   P   P
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var domain    =   require('domain');
-
-  /**
-   *  @class Synapp
-   *  @extends EventEmitter
-   */
-
-  function Synapp () {
-    var self = this;
-
-    this.domain = domain.create();
-
-    this.domain.intercept = function (fn, _self) {
-
-      if ( typeof fn !== 'function' ) {
-        fn = function () {};
-      }
-
-      return function (error) {
-        if ( error && error instanceof Error ) {
-          self.domain.emit('error', error);
-        }
-
-        else {
-          var args = Array.prototype.slice.call(arguments);
-
-          args.shift();
-
-          fn.apply(_self, args);
-        }
-      };
-
-    };
-
-    this.domain.on('error', function (error) {
-      console.error('Synapp error', error.stack.split(/\n/));
-    });
-
-    this.location = {};
-
-    this.domain.run(function () {
-
-      /** Location */
-
-      if ( window.location.pathname ) {
-
-        if ( /^\/item\//.test(window.location.pathname) ) {
-          self.location.item = window.location.pathname.split(/\//)[2];
-        }
-
-      }
-
-      /** Socket */
-      self.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
-
-      self.socket.once('connect', function () {
-        /** @deprecated */
-        self.emit('connect');
-
-        self.emit('ready');
-      });
-
-      self.socket.on('error', function (error) {
-        console.log('socket error', error);
-      });
-
-      self.evaluations = [];
-
-      self.cache = {
-        template: {
-          item: null
-        }
-      };
-
-      if ( synapp.user ) {
-        $('.is-in').removeClass('is-in');
-      }
-    });
-  }
-
-  require('util').inherits(Synapp, require('events').EventEmitter);
-
-  /**
-   *  @method connect
-   *  @description Sugar to register a listener to the "connect" event
-   *  @arg {function} fn
-   *  @deprecated Use ready instead
-   */
-
-  Synapp.prototype.connect = function (fn) {
-    this.on('connect', fn);
-
-    return this;
-  };
-
-  /**
-   *  @method ready
-   *  @description Sugar to register a listener to the "ready" event
-   *  @arg {function} fn
-   */
-
-  Synapp.prototype.ready = function (fn) {
-    this.on('ready', fn);
-
-    return this;
-  };
-
-  // Export
-
-  if ( module && module.exports ) {
-    module.exports = Synapp;
-  }
-
-  if ( typeof window === 'object' ) {
-    window.Synapp = Synapp;
-  }
-
-} ();
-
-},{"domain":50,"events":51,"util":55}],45:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  function Truncate (item) {
-
-    // ============
-
-    this.item = item;
-
-    this.description = this.item.find('.description:first');
-
-    this.textWrapper = this.item.find('.item-text:first');
-
-    this.reference = this.item.find('.reference:first');
-
-    this.text = this.description.text();
-
-    this.words = this.text.split(' ');
-
-    this.height = parseInt(this.textWrapper.css('paddingBottom'));
-
-    this.truncated = false;
-
-    this.moreLabel = 'more';
-
-    this.lessLabel = 'less';
-
-    this.isIntro = ( this.item.attr('id') === 'intro' );
-
-    if ( ! this.isIntro ) {
-      this._id = this.item.attr('id').split('-')[1];
-    }
-
-    // ============
-
-    this.tagify();
-
-    if ( this.truncated ) {
-      item.addClass('is-truncated');
-      this.appendMoreButton();
-    }
-  }
-
-  Truncate.prototype.tagify = function () {
-
-    var self = this;
-
-    this.description.empty();
-
-    this.reference.hide();
-
-    var i = 0;
-
-    this.words.forEach(function (word, index) {
-
-      var span = $('<span class="word"></span>');
-
-      if ( self.truncated ) {
-        span.addClass('truncated');
-        span.hide();
-      }
-
-      span.text(word + ' ');
-
-      self.description.append(span);
-
-      if ( i === 5 ) {
-
-        var diff = self.textWrapper.height() > self.height;
-
-        if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
-
-          self.truncated = true;
-        }
-
-        i = -1;
-      }
-
-      i ++;
-    });
-  };
-
-  Truncate.prototype.appendMoreButton = function () {
-
-    var self = this;
-
-    // create more button
-
-    this.more = $('<span class="truncator"><i>... </i>[<a href=""></a>]</span>');
-
-    // more button's text
-
-    this.more.find('a').text(self.moreLabel);
-
-    // more button's on click behavior
-
-    this.more.find('a').on('click', function () {
-
-      var moreLink = $(this);
-
-      // Exit if already an animation in progress
-
-      if ( self.item.find('.is-showing').length ) {
-        return false;
-      }
-
-      Nav.scroll(self.item, function () {
-
-        // Show more
-
-        if ( moreLink.text() === self.moreLabel ) {
-          
-          // If is intro
-
-          if ( self.isIntro ) {
-            self.unTruncate();
-            moreLink.closest('span').find('.reference').show();
-            moreLink.text(self.lessLabel);
-            moreLink.closest('span').find('i').hide();
-          }
-          
-          else {
-            // If there is already stuff shown, hide it first
-
-            if ( self.item.find('.is-shown').length ) {
-              
-              // Trigger the toggle view to hide current shown items
-
-              $rootScope.publish("toggle view",
-                { view: "text", item: self._id });
-
-              // Listen on hiding done
-
-              $rootScope.subscribe('did hide view', function (options) {
-
-                // Make sure it concerns our item
-
-                if ( options.item === self._id )  {
-
-                  // untruncate
-
-                  setTimeout(function () {
-                    self.unTruncate();
-                  });
-                }
-              });
-            }
-
-            else {
-              self.unTruncate();
-              moreLink.closest('span').find('.reference').show();
-              moreLink.text(self.lessLabel);
-              moreLink.closest('span').find('i').hide();
-            }
-          }
-        }
-
-        // hide
-
-        else {
-          self.reTruncate();
-          moreLink.closest('span').find('.reference').hide();
-          moreLink.text(self.moreLabel);
-          moreLink.closest('span').find('i').show();
-        }
-      });
-
-      return false;
-    });
-
-    this.description.append(this.more);
-  };
-
-  Truncate.prototype.unTruncate = function () {
-      
-    var self = this;
-
-    var interval = 0;
-
-    var inc = 50;
-
-    // var inc = Math.ceil(self.height / self.words.length);
-
-    // show words 50 by 50
-
-    for ( var i = 0; i < this.words.length ; i += inc ) {
-      setTimeout(function () {
-        var k = this.i + inc;
-        for ( var j = this.i; j < k ; j ++ ) {
-          self.item.find('.truncated:eq(' + j + ')').show();
-        }
-      }.bind({ i: i }), interval += (inc * 1.5));
-    }
-
-    // on done showing words, wrap up
-  };
-
-  Truncate.prototype.reTruncate = function () {
-    
-    var self = this;
-
-    var interval = 0;
-
-    var inc = Math.ceil(self.height / self.words.length);
-
-    for ( var i = 0; i < this.words.length ; i += inc ) {
-      setTimeout(function () {
-        var k = this.i + inc;
-        for ( var j = this.i; j < k ; j ++ ) {
-          self.item.find('.truncated:eq(' + j + ')').hide();
-        }
-      }.bind({ i: i }), interval += (inc * 2));
-    }
-  };
-
-  module.exports = Truncate;  
-
-}();
-
-},{"./Nav":24}],46:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  /**
-   *  @class    Upload
-   *  @arg      {HTMLElement} dropzone
-   *  @arg      {Input} file_input
-   *  @arg      {HTMLElement} thumbnail - Preview container
-   *  @arg      {Function} cb
-   */
-
-  function Upload (dropzone, file_input, thumbnail, cb) {
-    this.dropzone     =   dropzone;
-    this.file_input   =   file_input;
-    this.thumbnail    =   thumbnail;
-    this.cb           =   cb;
-
-    this.init();
-  }
-
-  Upload.prototype.init = function () {
-
-    if ( window.File ) {
-      if ( this.dropzone ) {
-        this.dropzone
-          .on('dragover',   this.hover.bind(this))
-          .on('dragleave',  this.hover.bind(this))
-          .on('drop',       this.handler.bind(this));
-      }
-
-      if ( this.file_input ) {
-        this.file_input.on('change', this.handler.bind(this));
-      }
-    }
-
-    else {
-      if ( dropzone ) {
-        dropzone.find('.modern').hide();
-      }
-    }
-  };
-
-  Upload.prototype.hover = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  Upload.prototype.handler = function (e) {
-    this.hover(e);
-
-    var files = e.target.files || e.originalEvent.dataTransfer.files;
-
-    for (var i = 0, f; f = files[i]; i++) {
-      this.preview(f, e.target);
-    }
-  };
-
-  Upload.prototype.preview = function(file, target) {
-    var upload = this;
-
-    var img = new Image();
-
-    img.classList.add("img-responsive");
-    img.classList.add("preview-image");
-    
-    img.addEventListener('load', function () {
-
-      $(img).data('file', file);
-
-      upload.thumbnail.empty().append(img);
-
-    }, false);
-    
-    img.src = (window.URL || window.webkitURL).createObjectURL(file);
-
-    if ( this.cb ) {
-      this.cb(null, file);
-    }
-  };
-
-  module.exports = Upload;
-
-} ();
-
-},{}],47:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('./Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Voter (profile) {
-    this.template = $('#voter');
-
-    this.template.data('voter', this);
-
-    this.profile = profile;
-  }
-
-  Voter.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':    return this.template.find('.toggle-arrow');
-
-      case 'expand':          return this.template.find('.voter-collapse');
-
-      case 'registered':      return this.template.find('.is-registered-voter');
-
-      case 'party':           return this.template.find('.party');
-    }
-  };
-
-  Voter.prototype.render = function () {
-
-    var voter = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(voter.find('expand'), voter.template, function () {
-        if ( voter.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Save registered voter */
-
-    this.find('registered').on('change', function () {
-
-      app.socket
-
-        .on('registered voter set', function () {
-          console.log('registered voter set');
-        })
-
-        .emit('set registered voter', synapp.user, $(this).is(':checked'));
-
-    });
-
-    /** Save political party */
-
-    this.find('party').on('change', function () {
-
-      if ( $(this).val() ) {
-        app.socket
-
-          .on('party set', function () {
-            console.log('party set');
-          })
-
-          .emit('set party', synapp.user, $(this).val());
-      }
-
-    });
-
-  };
-
-  Voter.prototype.renderUser = function () {
-
-    var voter = this;
-
-    if ( this.profile.user ) {
-
-      this.find('registered').attr('checked', this.profile.user.registered_voter);
-
-      this.find('party').val(this.profile.user.party);
-     
-    }
-  };
-
-  module.exports = Voter;
-
-} ();
-
-},{"./Nav":24}],48:[function(require,module,exports){
-! function () {
-
-  'use strict';
-
-  function YouTube (url) {
-    var self = this;
-
-    var youtube;
-
-    var regexYouTube = /youtu\.?be.+v=([^&]+)/;
-
-    if ( regexYouTube.test(url) ) {
-      url.replace(regexYouTube, function (m, v) {
-        youtube = v;
-      });
-
-      if ( synapp.env === 'development' ) {
-        return;
-      }
-
-      var video_container = $('<div class="video-container"></div>');
-
-      video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
-
-      video_container.find('iframe')
-        .attr('src', 'http://www.youtube.com/embed/'
-          + youtube + '?autoplay=0');
-
-      return video_container;
-
-      var div = $('<div></div>');
-
-      div.addClass('youtube-preview');
-
-      div.data('video', youtube);
-
-      var img = $('<img>');
-
-      img.attr({
-        alt: 'YouTube',
-        src: 'http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg'
-      });
-
-      img.addClass('img-responsive youtube-thumbnail');
-
-      var button = $('<button></button>');
-
-      button.addClass('icon-play shy');
-
-      var i = $('<i></i>');
-
-      i.addClass('fa fa-youtube-play fa-3x');
-
-      // var raw = '<div class="youtube-preview" data-video="' + youtube + '"><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /><button class="icon-play hide"><i class="fa fa-youtube-play fa-3x"></i></button></div>';
-
-      // var elem = $(raw);
-
-      button.append(i);
-
-      div.append(img, button);
-
-      Play(div);
-
-      return div;
-    }
-  }
-
-  function resize (elem) {
-    var img   =   elem.find('img');
-
-    var icon  =   elem.find('.icon-play');
-
-    var h = icon.height();
-
-    icon.css({
-      'top': (img.offset().top + (img.height() / 2) - (h / 2)) + 'px'
-    });
-
-    icon.width(width);
-  }
-
-  function Play (elem) {
-
-    var img   =   elem.find('img');
-
-    var icon  =   elem.find('.icon-play');
-
-    $(window).on('resize', function () {
-      resize(elem);
-    });
-
-    img.on('load', function () {
-
-      resize(elem);
-
-      icon.find('.fa').on('click', function () {
-
-        var video_container = $('<div class="video-container"></div>');
-
-        var preview = $(this).closest('.youtube-preview');
-
-        preview
-          .empty()
-          .append(video_container);
-
-        video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
-
-        video_container.find('iframe')
-          .attr('src', 'http://www.youtube.com/embed/'
-            + preview.data('video') + '?autoplay=1'); 
-      });
-    });
-  }
-
-  module.exports = YouTube;
-
-} ();
-
-},{}],49:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Synapp = require('../Synapp');
-  var Sign = require('../Sign');
-  var Panel = require('../Panel');
-  var Profile = require('../Profile');
+  var Synapp = require('syn/js/Synapp');
+  var Sign = require('syn/js/components/Sign');
+  var Panel = require('syn/js/components/Panel');
+  var Profile = require('syn/js/components/Profile');
 
   window.app = new Synapp();
 
@@ -5121,7 +18,7 @@
 
 } ();
 
-},{"../Panel":25,"../Profile":31,"../Sign":42,"../Synapp":44}],50:[function(require,module,exports){
+},{"syn/js/Synapp":20,"syn/js/components/Panel":43,"syn/js/components/Profile":49,"syn/js/components/Sign":59}],2:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -5189,7 +86,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":51}],51:[function(require,module,exports){
+},{"events":3}],3:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5492,7 +389,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],52:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -5517,7 +414,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],53:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5605,14 +502,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],54:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],55:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6202,7 +1099,795 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":54,"_process":53,"inherits":52}],56:[function(require,module,exports){
+},{"./support/isBuffer":6,"_process":5,"inherits":4}],8:[function(require,module,exports){
+'use strict';
+
+module.exports = require('./lib')
+
+},{"./lib":13}],9:[function(require,module,exports){
+'use strict';
+
+var asap = require('asap/raw')
+
+function noop() {};
+
+// States:
+//
+// 0 - pending
+// 1 - fulfilled with _value
+// 2 - rejected with _value
+// 3 - adopted the state of another promise, _value
+//
+// once the state is no longer pending (0) it is immutable
+
+// All `_` prefixed properties will be reduced to `_{random number}`
+// at build time to obfuscate them and discourage their use.
+// We don't use symbols or Object.defineProperty to fully hide them
+// because the performance isn't good enough.
+
+
+// to avoid using try/catch inside critical functions, we
+// extract them to here.
+var LAST_ERROR = null;
+var IS_ERROR = {};
+function getThen(obj) {
+  try {
+    return obj.then;
+  } catch (ex) {
+    LAST_ERROR = ex;
+    return IS_ERROR;
+  }
+}
+
+function tryCallOne(fn, a) {
+  try {
+    return fn(a);
+  } catch (ex) {
+    LAST_ERROR = ex;
+    return IS_ERROR;
+  }
+}
+function tryCallTwo(fn, a, b) {
+  try {
+    fn(a, b);
+  } catch (ex) {
+    LAST_ERROR = ex;
+    return IS_ERROR;
+  }
+}
+
+module.exports = Promise;
+function Promise(fn) {
+  if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new')
+  if (typeof fn !== 'function') throw new TypeError('not a function')
+  this._71 = 0;
+  this._18 = null;
+  this._61 = [];
+  if (fn === noop) return;
+  doResolve(fn, this);
+}
+Promise.prototype._10 = function (onFulfilled, onRejected) {
+  var self = this;
+  return new this.constructor(function (resolve, reject) {
+    var res = new Promise(noop);
+    res.then(resolve, reject);
+    self._24(new Handler(onFulfilled, onRejected, res));
+  });
+};
+Promise.prototype.then = function(onFulfilled, onRejected) {
+  if (this.constructor !== Promise) return this._10(onFulfilled, onRejected);
+  var res = new Promise(noop);
+  this._24(new Handler(onFulfilled, onRejected, res));
+  return res;
+};
+Promise.prototype._24 = function(deferred) {
+  if (this._71 === 3) {
+    this._18._24(deferred);
+    return;
+  }
+  if (this._71 === 0) {
+    this._61.push(deferred);
+    return;
+  }
+  var state = this._71;
+  var value = this._18;
+  asap(function() {
+    var cb = state === 1 ? deferred.onFulfilled : deferred.onRejected
+    if (cb === null) {
+      (state === 1 ? deferred.promise._82(value) : deferred.promise._67(value))
+      return
+    }
+    var ret = tryCallOne(cb, value);
+    if (ret === IS_ERROR) {
+      deferred.promise._67(LAST_ERROR)
+    } else {
+      deferred.promise._82(ret)
+    }
+  });
+};
+Promise.prototype._82 = function(newValue) {
+  //Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+  if (newValue === this) {
+    return this._67(new TypeError('A promise cannot be resolved with itself.'))
+  }
+  if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+    var then = getThen(newValue);
+    if (then === IS_ERROR) {
+      return this._67(LAST_ERROR);
+    }
+    if (
+      then === this.then &&
+      newValue instanceof Promise &&
+      newValue._24 === this._24
+    ) {
+      this._71 = 3;
+      this._18 = newValue;
+      for (var i = 0; i < this._61.length; i++) {
+        newValue._24(this._61[i]);
+      }
+      return;
+    } else if (typeof then === 'function') {
+      doResolve(then.bind(newValue), this)
+      return
+    }
+  }
+  this._71 = 1
+  this._18 = newValue
+  this._94()
+}
+
+Promise.prototype._67 = function (newValue) {
+  this._71 = 2
+  this._18 = newValue
+  this._94()
+}
+Promise.prototype._94 = function () {
+  for (var i = 0; i < this._61.length; i++)
+    this._24(this._61[i])
+  this._61 = null
+}
+
+
+function Handler(onFulfilled, onRejected, promise){
+  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null
+  this.onRejected = typeof onRejected === 'function' ? onRejected : null
+  this.promise = promise;
+}
+
+/**
+ * Take a potentially misbehaving resolver function and make sure
+ * onFulfilled and onRejected are only called once.
+ *
+ * Makes no guarantees about asynchrony.
+ */
+function doResolve(fn, promise) {
+  var done = false;
+  var res = tryCallTwo(fn, function (value) {
+    if (done) return
+    done = true
+    promise._82(value)
+  }, function (reason) {
+    if (done) return
+    done = true
+    promise._67(reason)
+  })
+  if (!done && res === IS_ERROR) {
+    done = true
+    promise._67(LAST_ERROR)
+  }
+}
+},{"asap/raw":17}],10:[function(require,module,exports){
+'use strict';
+
+var Promise = require('./core.js')
+
+module.exports = Promise
+Promise.prototype.done = function (onFulfilled, onRejected) {
+  var self = arguments.length ? this.then.apply(this, arguments) : this
+  self.then(null, function (err) {
+    setTimeout(function () {
+      throw err
+    }, 0)
+  })
+}
+},{"./core.js":9}],11:[function(require,module,exports){
+'use strict';
+
+//This file contains the ES6 extensions to the core Promises/A+ API
+
+var Promise = require('./core.js')
+var asap = require('asap/raw')
+
+module.exports = Promise
+
+/* Static Functions */
+
+function ValuePromise(value) {
+  this.then = function (onFulfilled) {
+    if (typeof onFulfilled !== 'function') return this
+    return new Promise(function (resolve, reject) {
+      asap(function () {
+        try {
+          resolve(onFulfilled(value))
+        } catch (ex) {
+          reject(ex);
+        }
+      })
+    })
+  }
+}
+ValuePromise.prototype = Promise.prototype
+
+var TRUE = new ValuePromise(true)
+var FALSE = new ValuePromise(false)
+var NULL = new ValuePromise(null)
+var UNDEFINED = new ValuePromise(undefined)
+var ZERO = new ValuePromise(0)
+var EMPTYSTRING = new ValuePromise('')
+
+Promise.resolve = function (value) {
+  if (value instanceof Promise) return value
+
+  if (value === null) return NULL
+  if (value === undefined) return UNDEFINED
+  if (value === true) return TRUE
+  if (value === false) return FALSE
+  if (value === 0) return ZERO
+  if (value === '') return EMPTYSTRING
+
+  if (typeof value === 'object' || typeof value === 'function') {
+    try {
+      var then = value.then
+      if (typeof then === 'function') {
+        return new Promise(then.bind(value))
+      }
+    } catch (ex) {
+      return new Promise(function (resolve, reject) {
+        reject(ex)
+      })
+    }
+  }
+
+  return new ValuePromise(value)
+}
+
+Promise.all = function (arr) {
+  var args = Array.prototype.slice.call(arr)
+
+  return new Promise(function (resolve, reject) {
+    if (args.length === 0) return resolve([])
+    var remaining = args.length
+    function res(i, val) {
+      if (val && (typeof val === 'object' || typeof val === 'function')) {
+        var then = val.then
+        if (typeof then === 'function') {
+          then.call(val, function (val) { res(i, val) }, reject)
+          return
+        }
+      }
+      args[i] = val
+      if (--remaining === 0) {
+        resolve(args);
+      }
+    }
+    for (var i = 0; i < args.length; i++) {
+      res(i, args[i])
+    }
+  })
+}
+
+Promise.reject = function (value) {
+  return new Promise(function (resolve, reject) { 
+    reject(value);
+  });
+}
+
+Promise.race = function (values) {
+  return new Promise(function (resolve, reject) { 
+    values.forEach(function(value){
+      Promise.resolve(value).then(resolve, reject);
+    })
+  });
+}
+
+/* Prototype Methods */
+
+Promise.prototype['catch'] = function (onRejected) {
+  return this.then(null, onRejected);
+}
+
+},{"./core.js":9,"asap/raw":17}],12:[function(require,module,exports){
+'use strict';
+
+var Promise = require('./core.js')
+
+module.exports = Promise
+Promise.prototype['finally'] = function (f) {
+  return this.then(function (value) {
+    return Promise.resolve(f()).then(function () {
+      return value
+    })
+  }, function (err) {
+    return Promise.resolve(f()).then(function () {
+      throw err
+    })
+  })
+}
+
+},{"./core.js":9}],13:[function(require,module,exports){
+'use strict';
+
+module.exports = require('./core.js')
+require('./done.js')
+require('./finally.js')
+require('./es6-extensions.js')
+require('./node-extensions.js')
+
+},{"./core.js":9,"./done.js":10,"./es6-extensions.js":11,"./finally.js":12,"./node-extensions.js":14}],14:[function(require,module,exports){
+'use strict';
+
+//This file contains then/promise specific extensions that are only useful for node.js interop
+
+var Promise = require('./core.js')
+var asap = require('asap')
+
+module.exports = Promise
+
+/* Static Functions */
+
+Promise.denodeify = function (fn, argumentCount) {
+  argumentCount = argumentCount || Infinity
+  return function () {
+    var self = this
+    var args = Array.prototype.slice.call(arguments)
+    return new Promise(function (resolve, reject) {
+      while (args.length && args.length > argumentCount) {
+        args.pop()
+      }
+      args.push(function (err, res) {
+        if (err) reject(err)
+        else resolve(res)
+      })
+      var res = fn.apply(self, args)
+      if (res && (typeof res === 'object' || typeof res === 'function') && typeof res.then === 'function') {
+        resolve(res)
+      }
+    })
+  }
+}
+Promise.nodeify = function (fn) {
+  return function () {
+    var args = Array.prototype.slice.call(arguments)
+    var callback = typeof args[args.length - 1] === 'function' ? args.pop() : null
+    var ctx = this
+    try {
+      return fn.apply(this, arguments).nodeify(callback, ctx)
+    } catch (ex) {
+      if (callback === null || typeof callback == 'undefined') {
+        return new Promise(function (resolve, reject) { reject(ex) })
+      } else {
+        asap(function () {
+          callback.call(ctx, ex)
+        })
+      }
+    }
+  }
+}
+
+Promise.prototype.nodeify = function (callback, ctx) {
+  if (typeof callback != 'function') return this
+
+  this.then(function (value) {
+    asap(function () {
+      callback.call(ctx, null, value)
+    })
+  }, function (err) {
+    asap(function () {
+      callback.call(ctx, err)
+    })
+  })
+}
+
+},{"./core.js":9,"asap":15}],15:[function(require,module,exports){
+"use strict";
+
+// rawAsap provides everything we need except exception management.
+var rawAsap = require("./raw");
+// RawTasks are recycled to reduce GC churn.
+var freeTasks = [];
+// We queue errors to ensure they are thrown in right order (FIFO).
+// Array-as-queue is good enough here, since we are just dealing with exceptions.
+var pendingErrors = [];
+var requestErrorThrow = rawAsap.makeRequestCallFromTimer(throwFirstError);
+
+function throwFirstError() {
+    if (pendingErrors.length) {
+        throw pendingErrors.shift();
+    }
+}
+
+/**
+ * Calls a task as soon as possible after returning, in its own event, with priority
+ * over other events like animation, reflow, and repaint. An error thrown from an
+ * event will not interrupt, nor even substantially slow down the processing of
+ * other events, but will be rather postponed to a lower priority event.
+ * @param {{call}} task A callable object, typically a function that takes no
+ * arguments.
+ */
+module.exports = asap;
+function asap(task) {
+    var rawTask;
+    if (freeTasks.length) {
+        rawTask = freeTasks.pop();
+    } else {
+        rawTask = new RawTask();
+    }
+    rawTask.task = task;
+    rawAsap(rawTask);
+}
+
+// We wrap tasks with recyclable task objects.  A task object implements
+// `call`, just like a function.
+function RawTask() {
+    this.task = null;
+}
+
+// The sole purpose of wrapping the task is to catch the exception and recycle
+// the task object after its single use.
+RawTask.prototype.call = function () {
+    try {
+        this.task.call();
+    } catch (error) {
+        if (asap.onerror) {
+            // This hook exists purely for testing purposes.
+            // Its name will be periodically randomized to break any code that
+            // depends on its existence.
+            asap.onerror(error);
+        } else {
+            // In a web browser, exceptions are not fatal. However, to avoid
+            // slowing down the queue of pending tasks, we rethrow the error in a
+            // lower priority turn.
+            pendingErrors.push(error);
+            requestErrorThrow();
+        }
+    } finally {
+        this.task = null;
+        freeTasks[freeTasks.length] = this;
+    }
+};
+
+},{"./raw":16}],16:[function(require,module,exports){
+(function (global){
+"use strict";
+
+// Use the fastest means possible to execute a task in its own turn, with
+// priority over other events including IO, animation, reflow, and redraw
+// events in browsers.
+//
+// An exception thrown by a task will permanently interrupt the processing of
+// subsequent tasks. The higher level `asap` function ensures that if an
+// exception is thrown by a task, that the task queue will continue flushing as
+// soon as possible, but if you use `rawAsap` directly, you are responsible to
+// either ensure that no exceptions are thrown from your task, or to manually
+// call `rawAsap.requestFlush` if an exception is thrown.
+module.exports = rawAsap;
+function rawAsap(task) {
+    if (!queue.length) {
+        requestFlush();
+        flushing = true;
+    }
+    // Equivalent to push, but avoids a function call.
+    queue[queue.length] = task;
+}
+
+var queue = [];
+// Once a flush has been requested, no further calls to `requestFlush` are
+// necessary until the next `flush` completes.
+var flushing = false;
+// `requestFlush` is an implementation-specific method that attempts to kick
+// off a `flush` event as quickly as possible. `flush` will attempt to exhaust
+// the event queue before yielding to the browser's own event loop.
+var requestFlush;
+// The position of the next task to execute in the task queue. This is
+// preserved between calls to `flush` so that it can be resumed if
+// a task throws an exception.
+var index = 0;
+// If a task schedules additional tasks recursively, the task queue can grow
+// unbounded. To prevent memory exhaustion, the task queue will periodically
+// truncate already-completed tasks.
+var capacity = 1024;
+
+// The flush function processes all tasks that have been scheduled with
+// `rawAsap` unless and until one of those tasks throws an exception.
+// If a task throws an exception, `flush` ensures that its state will remain
+// consistent and will resume where it left off when called again.
+// However, `flush` does not make any arrangements to be called again if an
+// exception is thrown.
+function flush() {
+    while (index < queue.length) {
+        var currentIndex = index;
+        // Advance the index before calling the task. This ensures that we will
+        // begin flushing on the next task the task throws an error.
+        index = index + 1;
+        queue[currentIndex].call();
+        // Prevent leaking memory for long chains of recursive calls to `asap`.
+        // If we call `asap` within tasks scheduled by `asap`, the queue will
+        // grow, but to avoid an O(n) walk for every task we execute, we don't
+        // shift tasks off the queue after they have been executed.
+        // Instead, we periodically shift 1024 tasks off the queue.
+        if (index > capacity) {
+            // Manually shift all values starting at the index back to the
+            // beginning of the queue.
+            for (var scan = 0; scan < index; scan++) {
+                queue[scan] = queue[scan + index];
+            }
+            queue.length -= index;
+            index = 0;
+        }
+    }
+    queue.length = 0;
+    index = 0;
+    flushing = false;
+}
+
+// `requestFlush` is implemented using a strategy based on data collected from
+// every available SauceLabs Selenium web driver worker at time of writing.
+// https://docs.google.com/spreadsheets/d/1mG-5UYGup5qxGdEMWkhP6BWCz053NUb2E1QoUTU16uA/edit#gid=783724593
+
+// Safari 6 and 6.1 for desktop, iPad, and iPhone are the only browsers that
+// have WebKitMutationObserver but not un-prefixed MutationObserver.
+// Must use `global` instead of `window` to work in both frames and web
+// workers. `global` is a provision of Browserify, Mr, Mrs, or Mop.
+var BrowserMutationObserver = global.MutationObserver || global.WebKitMutationObserver;
+
+// MutationObservers are desirable because they have high priority and work
+// reliably everywhere they are implemented.
+// They are implemented in all modern browsers.
+//
+// - Android 4-4.3
+// - Chrome 26-34
+// - Firefox 14-29
+// - Internet Explorer 11
+// - iPad Safari 6-7.1
+// - iPhone Safari 7-7.1
+// - Safari 6-7
+if (typeof BrowserMutationObserver === "function") {
+    requestFlush = makeRequestCallFromMutationObserver(flush);
+
+// MessageChannels are desirable because they give direct access to the HTML
+// task queue, are implemented in Internet Explorer 10, Safari 5.0-1, and Opera
+// 11-12, and in web workers in many engines.
+// Although message channels yield to any queued rendering and IO tasks, they
+// would be better than imposing the 4ms delay of timers.
+// However, they do not work reliably in Internet Explorer or Safari.
+
+// Internet Explorer 10 is the only browser that has setImmediate but does
+// not have MutationObservers.
+// Although setImmediate yields to the browser's renderer, it would be
+// preferrable to falling back to setTimeout since it does not have
+// the minimum 4ms penalty.
+// Unfortunately there appears to be a bug in Internet Explorer 10 Mobile (and
+// Desktop to a lesser extent) that renders both setImmediate and
+// MessageChannel useless for the purposes of ASAP.
+// https://github.com/kriskowal/q/issues/396
+
+// Timers are implemented universally.
+// We fall back to timers in workers in most engines, and in foreground
+// contexts in the following browsers.
+// However, note that even this simple case requires nuances to operate in a
+// broad spectrum of browsers.
+//
+// - Firefox 3-13
+// - Internet Explorer 6-9
+// - iPad Safari 4.3
+// - Lynx 2.8.7
+} else {
+    requestFlush = makeRequestCallFromTimer(flush);
+}
+
+// `requestFlush` requests that the high priority event queue be flushed as
+// soon as possible.
+// This is useful to prevent an error thrown in a task from stalling the event
+// queue if the exception handled by Node.js’s
+// `process.on("uncaughtException")` or by a domain.
+rawAsap.requestFlush = requestFlush;
+
+// To request a high priority event, we induce a mutation observer by toggling
+// the text of a text node between "1" and "-1".
+function makeRequestCallFromMutationObserver(callback) {
+    var toggle = 1;
+    var observer = new BrowserMutationObserver(callback);
+    var node = document.createTextNode("");
+    observer.observe(node, {characterData: true});
+    return function requestCall() {
+        toggle = -toggle;
+        node.data = toggle;
+    };
+}
+
+// The message channel technique was discovered by Malte Ubl and was the
+// original foundation for this library.
+// http://www.nonblocking.io/2011/06/windownexttick.html
+
+// Safari 6.0.5 (at least) intermittently fails to create message ports on a
+// page's first load. Thankfully, this version of Safari supports
+// MutationObservers, so we don't need to fall back in that case.
+
+// function makeRequestCallFromMessageChannel(callback) {
+//     var channel = new MessageChannel();
+//     channel.port1.onmessage = callback;
+//     return function requestCall() {
+//         channel.port2.postMessage(0);
+//     };
+// }
+
+// For reasons explained above, we are also unable to use `setImmediate`
+// under any circumstances.
+// Even if we were, there is another bug in Internet Explorer 10.
+// It is not sufficient to assign `setImmediate` to `requestFlush` because
+// `setImmediate` must be called *by name* and therefore must be wrapped in a
+// closure.
+// Never forget.
+
+// function makeRequestCallFromSetImmediate(callback) {
+//     return function requestCall() {
+//         setImmediate(callback);
+//     };
+// }
+
+// Safari 6.0 has a problem where timers will get lost while the user is
+// scrolling. This problem does not impact ASAP because Safari 6.0 supports
+// mutation observers, so that implementation is used instead.
+// However, if we ever elect to use timers in Safari, the prevalent work-around
+// is to add a scroll event listener that calls for a flush.
+
+// `setTimeout` does not call the passed callback if the delay is less than
+// approximately 7 in web workers in Firefox 8 through 18, and sometimes not
+// even then.
+
+function makeRequestCallFromTimer(callback) {
+    return function requestCall() {
+        // We dispatch a timeout with a specified delay of 0 for engines that
+        // can reliably accommodate that request. This will usually be snapped
+        // to a 4 milisecond delay, but once we're flushing, there's no delay
+        // between events.
+        var timeoutHandle = setTimeout(handleTimer, 0);
+        // However, since this timer gets frequently dropped in Firefox
+        // workers, we enlist an interval handle that will try to fire
+        // an event 20 times per second until it succeeds.
+        var intervalHandle = setInterval(handleTimer, 50);
+
+        function handleTimer() {
+            // Whichever timer succeeds will cancel both timers and
+            // execute the callback.
+            clearTimeout(timeoutHandle);
+            clearInterval(intervalHandle);
+            callback();
+        }
+    };
+}
+
+// This is for `asap.js` only.
+// Its name will be periodically randomized to break any code that depends on
+// its existence.
+rawAsap.makeRequestCallFromTimer = makeRequestCallFromTimer;
+
+// ASAP was originally a nextTick shim included in Q. This was factored out
+// into this ASAP package. It was later adapted to RSVP which made further
+// amendments. These decisions, particularly to marginalize MessageChannel and
+// to capture the MutationObserver implementation in a closure, were integrated
+// back into ASAP proper.
+// https://github.com/tildeio/rsvp.js/blob/cddf7232546a9cf858524b75cde6f9edf72620a7/lib/rsvp/asap.js
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],17:[function(require,module,exports){
+(function (process){
+"use strict";
+
+var domain; // The domain module is executed on demand
+var hasSetImmediate = typeof setImmediate === "function";
+
+// Use the fastest means possible to execute a task in its own turn, with
+// priority over other events including network IO events in Node.js.
+//
+// An exception thrown by a task will permanently interrupt the processing of
+// subsequent tasks. The higher level `asap` function ensures that if an
+// exception is thrown by a task, that the task queue will continue flushing as
+// soon as possible, but if you use `rawAsap` directly, you are responsible to
+// either ensure that no exceptions are thrown from your task, or to manually
+// call `rawAsap.requestFlush` if an exception is thrown.
+module.exports = rawAsap;
+function rawAsap(task) {
+    if (!queue.length) {
+        requestFlush();
+        flushing = true;
+    }
+    // Avoids a function call
+    queue[queue.length] = task;
+}
+
+var queue = [];
+// Once a flush has been requested, no further calls to `requestFlush` are
+// necessary until the next `flush` completes.
+var flushing = false;
+// The position of the next task to execute in the task queue. This is
+// preserved between calls to `flush` so that it can be resumed if
+// a task throws an exception.
+var index = 0;
+// If a task schedules additional tasks recursively, the task queue can grown
+// unbounded. To prevent memory excaustion, the task queue will periodically
+// truncate already-completed tasks.
+var capacity = 1024;
+
+// The flush function processes all tasks that have been scheduled with
+// `rawAsap` unless and until one of those tasks throws an exception.
+// If a task throws an exception, `flush` ensures that its state will remain
+// consistent and will resume where it left off when called again.
+// However, `flush` does not make any arrangements to be called again if an
+// exception is thrown.
+function flush() {
+    while (index < queue.length) {
+        var currentIndex = index;
+        // Advance the index before calling the task. This ensures that we will
+        // begin flushing on the next task the task throws an error.
+        index = index + 1;
+        queue[currentIndex].call();
+        // Prevent leaking memory for long chains of recursive calls to `asap`.
+        // If we call `asap` within tasks scheduled by `asap`, the queue will
+        // grow, but to avoid an O(n) walk for every task we execute, we don't
+        // shift tasks off the queue after they have been executed.
+        // Instead, we periodically shift 1024 tasks off the queue.
+        if (index > capacity) {
+            // Manually shift all values starting at the index back to the
+            // beginning of the queue.
+            for (var scan = 0; scan < index; scan++) {
+                queue[scan] = queue[scan + index];
+            }
+            queue.length -= index;
+            index = 0;
+        }
+    }
+    queue.length = 0;
+    index = 0;
+    flushing = false;
+}
+
+rawAsap.requestFlush = requestFlush;
+function requestFlush() {
+    // Ensure flushing is not bound to any domain.
+    // It is not sufficient to exit the domain, because domains exist on a stack.
+    // To execute code outside of any domain, the following dance is necessary.
+    var parentDomain = process.domain;
+    if (parentDomain) {
+        if (!domain) {
+            // Lazy execute the domain module.
+            // Only employed if the user elects to use domains.
+            domain = require("domain");
+        }
+        domain.active = process.domain = null;
+    }
+
+    // `setImmediate` is slower that `process.nextTick`, but `process.nextTick`
+    // cannot handle recursion.
+    // `requestFlush` will only be called recursively from `asap.js`, to resume
+    // flushing after an error is thrown into a domain.
+    // Conveniently, `setImmediate` was introduced in the same version
+    // `process.nextTick` started throwing recursion errors.
+    if (flushing && hasSetImmediate) {
+        setImmediate(flush);
+    } else {
+        process.nextTick(flush);
+    }
+
+    if (parentDomain) {
+        domain.active = process.domain = parentDomain;
+    }
+}
+
+
+}).call(this,require('_process'))
+},{"_process":5,"domain":2}],18:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -7236,7 +2921,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}],57:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports={
   "Panel Container": ".panels",
   
@@ -7260,15 +2945,5216 @@ module.exports={
 
   "Item Description"  :     " > .item-text .item-description",
 
-  "Promote"           :     ".promote",
+  "Promote"           :     " > .item-collapsers > .promote",
 
   "Item Promote"      :     " > .item-collapsers > .promote",
 
   "Promote Left Item Subject" :   ".left-item.subject h4",
 
-  "Promote Left Item Description" :   ".left-item.description"
+  "Promote Left Item Description" :   ".left-item.description",
+
+  "Item"              :     ".item",
+
+  "Item ID Prefix"    :     "item-",
+
+  "Item Toggle Promote" :   " > .item-buttons .item-toggle-promote"
 }
-},{}],58:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  S   Y   N   A   P   P
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var domain    =   require('domain');
+  var Socket    =   require('syn/js/providers/Socket');
+  var Cache     =   require('syn/js/providers/Cache');
+
+  function Domain (onError) {
+    return domain.create().on('error', onError);
+  }
+
+  /**
+   *  @class Synapp
+   *  @extends EventEmitter
+   */
+
+  function Synapp () {
+    var self = this;
+
+    this.domain = new Domain(function (error) {
+      console.error('Synapp error', error.stack);
+    });
+
+    this.domain.intercept = function (fn, _self) {
+
+      if ( typeof fn !== 'function' ) {
+        fn = function () {};
+      }
+
+      return function (error) {
+        if ( error && error instanceof Error ) {
+          self.domain.emit('error', error);
+        }
+
+        else {
+          var args = Array.prototype.slice.call(arguments);
+
+          args.shift();
+
+          fn.apply(_self, args);
+        }
+      };
+    };
+
+    this.location = {};
+
+    this.cache = new Cache();
+
+    this.domain.run(function () {
+
+      /** Location */
+
+      if ( window.location.pathname ) {
+
+        if ( /^\/item\//.test(window.location.pathname) ) {
+          self.location.item = window.location.pathname.split(/\//)[2];
+        }
+
+      }
+
+      self.socket = new Socket(self.emit.bind(self)).socket;
+
+      // self.evaluations = [];
+
+      // self.cache = {
+      //   template: {
+      //     item: null
+      //   }
+      // };
+
+      // if ( synapp.user ) {
+      //   $('.is-in').removeClass('is-in');
+      // }
+    });
+  }
+
+  require('util').inherits(Synapp, require('events').EventEmitter);
+
+  /**
+   *  @method connect
+   *  @description Sugar to register a listener to the "connect" event
+   *  @arg {function} fn
+   *  @deprecated Use ready instead
+   */
+
+  Synapp.prototype.connect = function (fn) {
+    this.on('connect', fn);
+
+    return this;
+  };
+
+  /**
+   *  @method ready
+   *  @description Sugar to register a listener to the "ready" event
+   *  @arg {function} fn
+   */
+
+  Synapp.prototype.ready = function (fn) {
+    this.on('ready', fn);
+
+    return this;
+  };
+
+  // Export
+
+  if ( module && module.exports ) {
+    module.exports = Synapp;
+  }
+
+  if ( typeof window === 'object' ) {
+    window.Synapp = Synapp;
+  }
+
+} ();
+
+},{"domain":2,"events":3,"syn/js/providers/Cache":61,"syn/js/providers/Socket":65,"util":7}],21:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  C   R   E   A   T   O   R
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Panel     =   require('syn/js/components/Panel');
+
+  var text      =   {
+    'looking up title': 'Looking up'
+  };
+
+  /**
+   *  @class
+   *  @arg {Panel} - panel
+   */
+
+  function Creator (panel) {
+
+    if ( ! app ) {
+      throw new Error('Missing app');
+    }
+
+    if ( ! ( panel instanceof require('syn/js/components/Panel') ) ) {
+      throw new Error('Creator: Panel must be a Panel object');
+    }
+
+    this.panel = panel;
+
+    this.template = $('#' + this.panel.getId()).find('.creator:first');
+  }
+
+  Creator.prototype.find = function (name) {
+    switch ( name ) {
+      case 'create button':           return this.template.find('.button-create:first');
+
+      case 'form':                    return this.template.find('form');
+
+      case 'dropbox':                 return this.template.find('.drop-box');
+
+      case 'subject':                 return this.template.find('[name="subject"]');
+
+      case 'description':             return this.template.find('[name="description"]');
+
+      case 'item media':              return this.template.find('.item-media');
+
+      case 'reference':               return this.template.find('.reference');
+
+      case 'reference board':         return this.template.find('.reference-board');
+
+      case 'upload image button':     return this.template.find('.upload-image-button');
+    }
+  };
+
+  Creator.prototype.render      =   require('syn/js/components/Creator/render');
+
+  Creator.prototype.create      =   require('syn/js/components/Creator/create');
+
+  Creator.prototype.created     =   require('syn/js/components/Creator/created');
+
+  Creator.prototype.packItem    =   require('syn/js/components/Creator/pack-item');
+
+  module.exports = Creator;
+
+} ();
+
+},{"syn/js/components/Creator/create":22,"syn/js/components/Creator/created":23,"syn/js/components/Creator/pack-item":24,"syn/js/components/Creator/render":25,"syn/js/components/Panel":43}],22:[function(require,module,exports){
+(function (process){
+! function () {
+  
+  'use strict';
+
+  var Nav       =   require('syn/js/providers/Nav');
+  var Item      =   require('syn/js/components/Item');
+  var Stream    =   require('syn/js/providers/Stream');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function save () {
+
+    // Self reference
+
+    var creator = this;
+
+    process.nextTick(function () {
+
+      app.domain.run(function () {
+
+        // Hide the Creator           // Catch errors
+
+        Nav.hide(creator.template)    .error(app.domain.intercept())
+
+          // Hiding complete
+
+          .hidden(function () {
+            
+            // Build the JSON object to save to MongoDB
+
+            creator.packItem();
+
+            // In case a file was uploaded
+
+            if ( creator.packaged.upload ) {
+
+              // Get file from template's data
+
+              var file = creator.template.find('.preview-image').data('file');
+
+              // New stream         //  Catch stream errors
+
+              new Stream(file)      .on('error', app.domain.intercept(function () {}))
+
+                .on('end', function () {
+                  creator.packaged.image = file.name;
+
+                  console.log('create item', creator.packaged);
+
+                  app.socket.emit('create item', creator.packaged);
+                })
+            }
+
+            // If nof ile was uploaded
+
+            else {
+              console.log('create item', creator.packaged);
+
+              app.socket.emit('create item', creator.packaged);
+            }
+
+            // Listen to answers
+
+            app.socket.once('could not create item', app.domain.intercept());
+
+            app.socket.once('created item', creator.created.bind(creator));
+          })
+
+      });
+
+    });
+
+    return false;
+  }
+
+  module.exports = save;
+
+} ();
+
+}).call(this,require('_process'))
+},{"_process":5,"syn/js/components/Item":33,"syn/js/providers/Nav":63,"syn/js/providers/Stream":66}],23:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function created (item) {
+    console.log('created item', item);
+
+    this.panel.template.find('.create-new').hide();
+
+    if ( this.packaged.upload ) {
+      item.upload = this.packaged.upload;
+    }
+
+    if ( this.packaged.youtube ) {
+      item.youtube = this.packaged.youtube;
+    }
+
+    var item  = new (require('syn/js/components/Item'))(item);
+
+    var items = this.panel.find('items');
+
+    item.load(app.domain.intercept(function () {
+      item.template.addClass('new');
+      items.prepend(item.template);
+      item.render(app.domain.intercept(function () {
+        item.find('toggle promote').click();
+      }));
+    }));
+  }
+
+  module.exports = created;
+
+} ();
+
+},{"syn/js/components/Item":33}],24:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function packItem () {
+    
+    var item = {
+      type:           this.panel.type,
+      subject:        this.find('subject').val(),
+      description:    this.find('description').val(),
+      user:           synapp.user
+    };
+
+    // Parent
+
+    if ( this.panel.parent ) {
+      item.parent = this.panel.parent;
+    }
+
+    // References
+
+    if ( this.find('reference').val() ) {
+      item.references = [{ url: this.find('reference').val() }];
+
+      if ( this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title' ) {
+        item.references[0].title = this.find('reference board').text();
+      }
+    }
+
+    // Image
+
+    if ( this.find('item media').find('img').length ) {
+
+      // YouTube
+
+      if ( this.find('item media').find('.youtube-preview').length ) {
+        item.youtube = this.find('item media').find('.youtube-preview').data('video');
+      }
+
+      // Upload
+
+      else {
+        item.upload = this.find('item media').find('img').attr('src');
+        item.image = item.upload;
+      }
+    }
+ 
+    this.packaged = item;
+  }
+
+  module.exports = packItem;
+
+} ();
+          synapp.user
+},{}],25:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Upload    =   require('syn/js/providers/Upload');
+  var Form      =   require('syn/js/providers/Form');
+  var YouTube   =   require('syn/js/providers/YouTube');
+  var Promise   =   require('promise');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function render (cb) {
+
+    var creator = this;
+
+    var q = new Promise(function (fulfill, reject) {
+
+      return fulfill();
+
+      if ( ! creator.template.length ) {
+        throw new Error('Creator not found in panel ' + creator.panel.getId());
+      }
+
+      creator.template.data('creator', this);
+
+      this.find('upload image button').on('click', function () {
+        creator.find('dropbox').find('[type="file"]').click();
+      });
+
+      new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
+
+      creator.template.find('textarea').autogrow();
+
+      creator.find('reference').on('change', function () {
+
+        var creator     =   $(this).closest('.creator').data('creator');
+
+        var board       =   creator.find('reference board');
+        var reference   =   $(this);
+
+        board.removeClass('hide').text('Looking up title');
+
+        app.socket.emit('get url title', $(this).val(),
+          function (error, ref) {
+            if ( ref.title ) {
+              
+              board.text(ref.title);
+              reference.data('title', ref.title);
+
+              var yt = YouTube(ref.url);
+
+              if ( yt ) {
+                creator.find('dropbox').hide();
+
+                creator.find('item media')
+                  .empty()
+                  .append(yt);
+              }
+            }
+            else {
+              board.text('Looking up')
+                .addClass('hide');
+            }
+          });
+      });
+
+      var form = new Form(creator.template);
+      
+      form.send(creator.create.bind(creator));
+
+      fulfill();
+
+    });
+    
+    if ( typeof cb === 'function' ) {
+      q.then(cb.bind(null, null), cb);
+    }
+
+    return q;
+    
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"promise":8,"syn/js/providers/Form":62,"syn/js/providers/Upload":68,"syn/js/providers/YouTube":69}],26:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Demographics (profile) {
+    this.template = $('#demographics');
+
+    this.template.data('demographics', this);
+
+    this.profile = profile;
+  }
+
+  Demographics.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'expand':
+        return this.template.find('.demographics-collapse');
+
+      case 'race':          return this.template.find('input.race');
+      case 'married':       return this.template.find('select.married');
+      case 'employment':    return this.template.find('select.employment');
+      case 'education':     return this.template.find('select.education');
+    }
+  };
+
+  Demographics.prototype.render = function () {
+
+    var demographics = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(demographics.find('expand'), demographics.template, function () {
+        if ( demographics.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    /** Save race **/
+
+    this.find('race').on('change', function () {
+      var is_checked = $(this).is(':checked');
+
+      if ( is_checked ) {
+        app.socket.once('race added', function () {
+          console.log('race added', arguments);
+        });
+
+        app.socket.emit('add race', synapp.user, $(this).val());
+      }
+
+      else {
+        app.socket.once('race removed', function () {
+          console.log('race removed', arguments);
+        });
+
+        app.socket.emit('remove race', synapp.user, $(this).val());
+      }
+    });
+
+    /** Set marital status **/
+
+    this.find('married').on('change', function () {
+      if ( $(this).val() ) {
+        app.socket.once('marital status set', function () {
+          console.log('marital status set', arguments);
+        });
+
+        app.socket.emit('set marital status', synapp.user, $(this).val());
+      }
+    });
+
+    /** Set employment **/
+
+    this.find('employment').on('change', function () {
+      if ( $(this).val() ) {
+        app.socket.once('employment set', function () {
+          console.log('employment set', arguments);
+        });
+
+        app.socket.emit('set employment', synapp.user, $(this).val());
+      }
+    });
+
+    /** Set education **/
+
+    this.find('education').on('change', function () {
+      if ( $(this).val() ) {
+        app.socket.once('education set', function () {
+          console.log('education set', arguments);
+        });
+
+        app.socket.emit('set education', synapp.user, $(this).val());
+      }
+    });
+  };
+
+  Demographics.prototype.renderUser = function () {
+
+    var demographics = this;
+
+    if ( this.profile.user ) {
+
+      if ( this.profile.user.race && this.profile.user.race.length ) {
+        this.profile.user.race.forEach(function (race) {
+
+          demographics.find('race').each(function () {
+
+            if ( $(this).val() === race ) {
+              $(this).attr('checked', true);
+            }
+
+          });
+
+
+        });
+      }
+
+      if ( this.profile.user.married ) {
+        this.find('married').val(this.profile.user.married);
+      }
+
+      if ( this.profile.user.employment ) {
+        this.find('employment').val(this.profile.user.employment);
+      }
+
+      if ( this.profile.user.education ) {
+        this.find('education').val(this.profile.user.education);
+      }
+    }
+  };
+
+  module.exports = Demographics;
+
+} ();
+
+},{"syn/js/providers/Nav":63}],27:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  DETAILS
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+  var Edit = require('syn/js/components/Edit');
+
+  /**
+   *  @class Details
+   *  @arg {Item} item
+   */
+
+  function Details(item) {
+
+    if ( ! app ) {
+      throw new Error('Missing app');
+    }
+
+    var self = this;
+
+    app.domain.run(function () {
+      if ( ! item || ( ! item instanceof require('syn/js/components/Item') ) ) {
+        throw new Error('Item must be an Item');
+      }
+
+      self.item = item;
+
+      self.template = item.find('details');
+
+      if ( ! self.template.length ) {
+        throw new Error('Details template not found');
+      }
+    });
+  }
+
+  /**
+   *  @method find
+   *  @description DOM selectors abstractions
+   *  @return null
+   *  @arg {string} name
+   */
+
+  Details.prototype.find = function (name) {
+    switch ( name ) {
+      case 'promoted bar':
+        return this.template.find('.progress');
+
+      case 'feedback list':
+        return this.template.find('.feedback-list');
+
+      case 'votes':
+        return this.template.find('.details-votes');
+
+      case 'toggle edit and go again':
+        return this.template.find('.edit-and-go-again-toggler');
+    }
+  };
+
+  /**
+   *  @method render
+   *  @description DOM manipulation
+   *  @arg {function} cb
+   */
+
+  Details.prototype.render = function (cb) {
+    var self = this;
+
+    var item = self.item.item;
+
+    self.find('promoted bar')
+      // .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
+      // .text(Math.floor(item.promotions * 100 / item.views) + '%')
+      .goalProgress({
+        goalAmount: 100,
+        currentAmount: Math.floor(item.promotions * 100 / item.views),
+        textBefore: '',
+        textAfter: '%'
+      });
+
+    self.find('toggle edit and go again').on('click', function () {
+      Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
+        if ( self.item.find('editor').find('form').length ) {
+          console.warn('already loaded')
+        }
+
+        else {
+          var edit = new Edit(self.item);
+            
+          edit.get(app.domain.intercept(function (template) {
+
+            self.item.find('editor').find('.is-section').append(template);
+
+            Nav.reveal(self.item.find('editor'), self.item.template,
+              app.domain.intercept(function () {
+                Nav.show(template, app.domain.intercept(function () {
+                  edit.render();
+                }));
+              }));
+          }));
+
+        }
+
+      }));
+    });
+
+    if ( synapp.user ) {
+      $('.is-in').removeClass('is-in');
+    }
+
+    if ( ! self.details ) {
+      this.get();
+    }
+  };
+
+  /**
+   *  @method votes
+   *  @description Display votes using c3.js
+   *  @arg {object} criteria
+   *  @arg {HTMLElement} svg
+   */
+
+  Details.prototype.votes = function (criteria, svg) {
+    var self = this;
+
+    setTimeout(function () {
+
+      console.warn(123);
+
+      var vote = self.details.votes[criteria._id];
+
+      svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
+
+      var data = [];
+
+      // If no votes, show nothing
+
+      if ( ! vote ) {
+        vote = {
+          values: {
+            '-1': 0,
+            '0': 0,
+            '1': 0
+          },
+          total: 0
+        }
+      }
+
+      for ( var number in vote.values ) {
+        data.push({
+          label: 'number',
+          value: vote.values[number] * 100 / vote.total
+        });
+      }
+
+      var columns = ['votes'];
+
+      data.forEach(function (d) {
+        columns.push(d.value);
+      });
+
+      var chart = c3.generate({
+        bindto: '#' + svg.attr('id'),
+
+        data: {
+          x: 'x',
+          columns: [['x', -1, 0, 1], columns],
+          type: 'bar'
+        },
+
+        grid: {
+          x: {
+            lines: 3
+          }
+        },
+        
+        axis: {
+          x: {},
+          
+          y: {
+            max: 90,
+
+            show: false,
+
+            tick: {
+              count: 5,
+
+              format: function (y) {
+                return y;
+              }
+            }
+          }
+        },
+
+        size: {
+          height: 80
+        },
+
+        bar: {
+          width: $(window).width() / 5
+        }
+      });
+      }, 250);
+  };
+
+  /**
+   *
+   */
+
+  Details.prototype.get = function () {
+
+    var self = this;
+
+    app.socket.emit('get item details', self.item.item._id);
+
+    app.socket.once('got item details', function (details) {
+
+      console.log('got item details', details);
+
+      self.details = details;
+
+      // Feedback
+
+      details.feedbacks.forEach(function (feedback) {
+        var tpl = $('<div class="pretext feedback"></div>');
+        tpl.text(feedback.feedback);
+        self.find('feedback list')
+          .append(tpl)
+          .append('<hr/>');
+
+      });
+
+      // Votes
+
+      details.criterias.forEach(function (criteria, i) {
+        self.find('votes').eq(i).find('h4').text(criteria.name);
+
+        self.votes(criteria, self.find('votes').eq(i).find('svg'));
+      });
+
+    });
+  };
+
+  module.exports = Details;
+
+} ();
+
+},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":63}],28:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  EDIT
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Nav       =   require('syn/js/providers/Nav');
+  var Creator   =   require('syn/js/components/Creator');
+  var Item      =   require('syn/js/components/Item');
+  var Form      =   require('syn/js/providers/Form');
+
+  /**
+   *  @class
+   *
+   *  @arg {String} type
+   *  @arg {String?} parent
+   */
+
+  function Edit (item) {
+
+    console.log('EDIT', item)
+
+    if ( ! app ) {
+      throw new Error('Missing app');
+    }
+
+    var self = this;
+
+    app.domain.run(function () {
+      if ( ! item || ( ! item instanceof require('syn/js/components/Item') ) ) {
+        throw new Error('Item must be an Item');
+      }
+
+      self.item = item;
+    });
+  }
+
+  Edit.prototype.get = function (cb) {
+    var edit = this;
+
+    $.ajax({
+      url: '/partial/creator'
+    })
+
+      .error(cb)
+
+      .success(function (data) {
+        edit.template = $(data);
+
+        cb(null, edit.template);
+      });
+
+    return this;
+  };
+
+  Edit.prototype.find = function (name) {
+    switch ( name ) {
+      case 'create button':
+        return this.template.find('.button-create:first');
+
+      case 'dropbox':
+        return this.template.find('.drop-box');
+
+      case 'subject':
+        return this.template.find('[name="subject"]');
+
+      case 'description':
+        return this.template.find('[name="description"]');
+
+      case 'item media':
+        return this.template.find('.item-media');
+
+      case 'reference':
+        return this.template.find('.reference');
+
+      case 'reference board':
+        return this.template.find('.reference-board');
+    }
+  };
+
+  Edit.prototype.render = function (cb) {
+
+    var edit = this;
+
+    // this.template.find('textarea').autogrow();
+
+    this.template.find('[name="subject"]').val(edit.item.item.subject);
+    this.template.find('[name="description"]')
+      .val(edit.item.item.description)
+      .autogrow();
+
+    if ( edit.item.item.references.length ) {
+      this.template.find('[name="reference"]').val(edit.item.item.references[0].url);
+    }
+
+    this.template.find('.item-media')
+      .empty()
+      .append(edit.item.media());
+
+    var form = new Form(this.template);
+
+    form.send(edit.save);
+
+    return this;
+  };
+
+  Edit.prototype.save = require('syn/js/components/Edit/save');
+
+  Edit.prototype.toItem = function () {
+    var item = {
+      from:         this.item.item._id,
+      subject:      this.find('subject').val(),
+      description:  this.find('description').val(),
+      user:         synapp.user,
+      type:         this.item.item.type
+    };
+
+    if ( this.find('item media').find('img').length ) {
+
+      if ( this.find('item media').find('.youtube-preview').length ) {
+        item.youtube = this.find('item media').find('.youtube-preview').data('video');
+      }
+
+      else {
+        item.upload = this.find('item media').find('img').attr('src');
+      }
+    }
+ 
+    return item;
+  };
+
+  module.exports = Edit;
+
+} ();
+
+},{"syn/js/components/Creator":21,"syn/js/components/Edit/save":29,"syn/js/components/Item":33,"syn/js/providers/Form":62,"syn/js/providers/Nav":63}],29:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function save () {
+    var edit = this;
+
+    console.log(edit.toItem());
+
+    Nav.hide(edit.template, app.domain.intercept(function () {
+      Nav.hide(edit.template.closest('.editor'), app.domain.intercept(function () {
+        
+        var new_item = edit.toItem();
+
+        app.socket.emit('create item', new_item);
+
+        app.socket.once('could not create item', function (error) {
+          console.error(error)
+        });
+        
+        app.socket.once('created item', function (item) {
+          console.log('created item', item);
+
+            if ( new_item.upload ) {
+              item.upload = new_item.upload;
+            }
+
+            if ( new_item.youtube ) {
+              item.youtube = new_item.youtube;
+            }
+
+            var item  = new (require('syn/js/components/Item'))(item);
+
+            item.load(app.domain.intercept(function () {
+              item.template.insertBefore(edit.item.template);
+              
+              item.render(app.domain.intercept(function () {
+                item.find('toggle promote').click();
+              }));
+            }));
+        });
+      }));
+    }));
+  }
+
+  module.exports = save;
+
+} ();
+
+},{"syn/js/components/Item":33,"syn/js/providers/Nav":63}],30:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('syn/js/providers/Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function forgotPassword ($vexContent) {
+    var signForm = $('form[name="forgot-password"]');
+
+    var form = new Form(signForm)
+
+    form.send(function () {
+      var domain = require('domain').create();
+      
+      domain.on('error', function (error) {
+        //
+      });
+      
+      domain.run(function () {
+
+        $('.forgot-password-pending.hide').removeClass('hide');
+        $('.forgot-password-email-not-found').not('.hide').addClass('hide');
+        $('.forgot-password-ok').not('.hide').addClass('hide');
+        
+        app.socket.once('no such email', function (_email) {
+          if ( _email === form.labels.email.val() ) {
+
+            $('.forgot-password-pending').addClass('hide');
+
+            setTimeout(function () {
+              // $('.forgot-password-pending').css('display', 'block');
+            });
+
+            $('.forgot-password-email-not-found').removeClass('hide');
+          }
+        });
+
+        app.socket.on('password is resettable', function (_email) {
+          if ( _email === form.labels.email.val() ) {
+            $('.forgot-password-pending').addClass('hide');
+
+            $('.forgot-password-ok').removeClass('hide');
+
+            setTimeout(function () {
+              vex.close($vexContent.data().vex.id);
+            }, 2500);
+          }
+        });
+
+        app.socket.emit('send password', form.labels.email.val());
+
+      });
+    });
+  }
+
+  module.exports = forgotPassword;
+
+} ();
+
+},{"domain":2,"syn/js/providers/Form":62}],31:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+  var Upload = require('syn/js/providers/Upload');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Identity (profile) {
+    this.template = $('#identity');
+
+    this.profile = profile;
+
+    this.template.data('identity', this);
+  }
+
+  Identity.prototype.find = function (name) {
+    switch ( name ) {
+      case 'expand':
+        return this.template.find('.identity-collapse');
+
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'title':
+        return this.template.find('.item-title');
+
+      case 'description':
+        return this.template.find('.description');
+
+      case 'upload button':
+        return this.template.find('.upload-identity-picture');
+
+      case 'upload button pretty':
+        return this.template.find('.upload-image');
+
+      case 'first name':
+        return this.template.find('[name="first-name"]');
+
+      case 'middle name':
+        return this.template.find('[name="middle-name"]');
+
+      case 'last name':
+        return this.template.find('[name="last-name"]');
+
+      case 'image':
+        return this.template.find('img.user-image');
+
+      case 'citizenship':   return this.template.find('.citizenship');
+
+      case 'dob':           return this.template.find('.dob');
+
+      case 'gender':        return this.template.find('.gender');
+    }
+  };
+
+  Identity.prototype.render = require('syn/js/components/Identity/render');
+
+  /**
+   *  @method saveName
+   */
+
+  Identity.prototype.saveName = function () {
+    var name = {
+      first_name:   this.find('first name').val(),
+      middle_name:  this.find('middle name').val(),
+      last_name:    this.find('last name').val()
+    };
+
+    app.socket.emit('change user name', synapp.user, name);
+  };
+
+  /**
+   *  @method
+  */
+
+  Identity.prototype.renderUser = function () {
+
+    // User image
+
+    if ( this.user.image ) {
+      this.find('image').attr('src', this.user.image);
+    }
+
+    // First name
+
+    this.find('first name').val(this.user.first_name);
+
+    // Middle name
+
+    this.find('middle name').val(this.user.middle_name);
+
+    // Last name
+
+    this.find('last name').val(this.user.last_name);
+
+    // Date of birth
+
+    var dob = new Date(this.user.dob);
+
+    var dob_year = dob.getFullYear();
+    var dob_month = dob.getMonth() + 1;
+    var dob_day = dob.getDate() + 1;
+
+    if ( dob_month < 10 ) {
+      dob_month = "0" + dob_month;
+    }
+
+    if ( dob_day < 10 ) {
+      dob_day = "0" + dob_day;
+    }
+
+    this.find('dob').val([dob_year, dob_month, dob_day].join('-'));
+
+    // Gender
+
+    this.find('gender').val(this.user.gender);
+  };
+
+  /**
+   *  @method
+  */
+
+  Identity.prototype.renderCountries = function () {
+    var identity = this;
+
+    function addOption (country, index) {
+      var option = $('<option></option>');
+
+      option.val(country._id);
+
+      option.text(country.name);
+
+      if ( identity.profile.user && identity.profile.user.citizenship
+        && identity.profile.user.citizenship[index] === country._id ) {
+        option.attr('selected', true);
+      } 
+
+      return option;
+    }
+
+    this.find('citizenship').each(function (index) {
+
+      var select = $(this);
+
+      identity.profile.countries.forEach(function (country) {
+        if ( country.name === 'USA' ) {
+          select.append(addOption(country, index));
+        }
+      });
+
+      identity.profile.countries.forEach(function (country) {
+        if ( country.name !== 'USA' ) {
+          select.append(addOption(country, index));
+        }
+      });
+
+    });
+  };
+
+  module.exports = Identity;
+
+} ();
+
+},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],32:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Upload = require('syn/js/providers/Upload');
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @method     Identity.render
+   *  @return     null
+   */
+
+  function render () {
+    
+    var identity = this;
+
+    /** input[type=file] is hidden for cosmetic reasons
+          and is substituted visually by a button.
+        This snippet binds clicking button with clicking the input[type=file]
+    */
+
+    this.find('upload button pretty').on('click', function () {
+      identity.find('upload button').click();
+    });
+
+    /** Toggle arrow: expand/collapse identity */
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(identity.find('expand'), identity.template, function () {
+        if ( identity.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    /** Write title */
+
+    this.find('title').text('Identity');
+
+    /** Write description */
+
+    this.find('description').text('This information is used to identify you and make sure that you are unique');
+
+    /** Remove references */
+
+    this.template.find('.item-references').remove();
+
+    /** Remove item buttons */
+
+    this.template.find('.box-buttons').remove();
+
+    /** Default user image */
+
+    this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
+
+    new Upload(null, this.find('upload button'), this.template.find('.user-image-container'),
+      function (error, file) {
+        var stream = ss.createStream();
+
+        ss(app.socket).emit('upload image', stream,
+          { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          // new_item.image = file.name;
+          app.socket.emit('save user image', synapp.user, file.name);
+
+          app.socket.once('saved user image', function (user) {
+            console.log('image saved', user);
+          });
+        });
+      });
+
+    // First name - save on change
+
+    this.find('first name').on('change', this.saveName.bind(this));
+
+    // Last name - save on change
+
+    this.find('last name').on('change', this.saveName.bind(this));
+
+    // Middle name - save on change
+
+    this.find('middle name').on('change', this.saveName.bind(this));
+
+    // Set citizenships (2 selects)
+
+    var citizenships = [
+      $(this.find('citizenship')[0]).val(),
+      $(this.find('citizenship')[1]).val()
+    ];
+
+    this.find('citizenship').each(function (index) {
+
+      var select = $(this);
+
+      select.on('change', function () {
+        if ( select.val() ) {
+          app.socket
+
+            .on('citizenship set', function () {
+              console.log('citizenship set', select.val(), index);
+            })
+
+            .emit('set citizenship', synapp.user, select.val(), index);
+        }
+      });
+
+    });
+
+    // Set birthdate
+
+    this.find('dob').on('change', function () {
+
+      app.socket
+
+        .on('birthdate set', function () {
+          console.log('birthdate set');
+        })
+
+        .emit('set birthdate', synapp.user, $(this).val());
+
+    });
+
+    // Set gender
+
+    this.find('gender').on('change', function () {
+
+      if ( $(this).val() ) {
+        app.socket
+
+          .on('gender set', function () {
+            console.log('gender set');
+          })
+
+          .emit('set gender', synapp.user, $(this).val());
+      }
+
+    });
+
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],33:[function(require,module,exports){
+/*
+ *   ::    I   t   e   m     ::
+ *
+ *
+*/
+
+! function _Item_ () {
+  
+  'use strict';
+
+  /**
+    * @class  Item
+    * @arg    {Item} item
+    */
+
+  function Item (item) {
+
+    if ( typeof app === 'undefined' || ! ( app instanceof Synapp ) ) {
+      throw new Error('Missing app');
+    }
+
+    var self = this;
+
+    app.domain.run(function () {
+      if ( typeof item !== 'object' ) {
+        throw new Error('Item must be an object');
+      }
+
+      self.item = item;
+    });
+  }
+
+  /** Load template */
+
+  Item.prototype.load       =   require('syn/js/components/Item/load');
+
+  /** DOM finder */
+
+  Item.prototype.find       =   require('syn/js/components/Item/find');
+
+  /** Render method */
+
+  Item.prototype.render     =   require('syn/js/components/Item/render');
+
+  /** Resolve item's media */
+
+  Item.prototype.media      =   require('syn/js/components/Item/media');
+
+  /** Template cache */
+
+  Item.cache = {
+    template: undefined
+  };
+
+  module.exports = Item;
+
+} ();
+
+},{"syn/js/components/Item/find":34,"syn/js/components/Item/load":35,"syn/js/components/Item/media":36,"syn/js/components/Item/render":37}],34:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var selectors = require('syn/components/selectors.json');
+
+  function find (name) {
+
+    var comp = this;
+
+    function _find (selector) {
+      return comp.template.find(selectors[selector]);
+    }
+
+    switch ( name ) {
+      case "subject":             return _find('Item Subject');
+
+      case "description":         return _find('Item Description');
+
+      case "toggle promote":      return _find('Item Toggle Promote');
+
+      case "promote":             return _find('Promote');
+
+
+
+      case "reference":           return this.template.find('.item-reference:first a');
+
+      case "media":               return this.template.find('.item-media:first');
+
+      case "youtube preview":     return this.template.find('.youtube-preview:first');
+
+      case "toggle details":      return this.template.find('.item-toggle-details:first');
+
+      case "details":             return this.template.find('.details:first');
+
+      case "editor":              return this.template.find('.editor:first');
+
+      case "toggle arrow":        return this.template.find('.item-arrow:first');
+
+      case "promotions":          return this.template.find('.promoted:first');
+
+      case "promotions %":        return this.template.find('.promoted-percent:first');
+
+      case "children":            return this.template.find('.children:first');
+
+      case "collapsers"             :   return this.template.find('.item-collapsers:first');
+
+      case "collapsers hidden"      :   return this.template.find('.item-collapsers:first:hidden');
+
+      case "collapsers visible"     :   return this.template.find('.item-collapsers:first:visible');
+
+      case "related count"          :   return this.template.find('.related-count');
+
+      case "related"                :   return this.template.find('.related');
+
+      case "related count plural"   :   return this.template.find('.related-count-plural');
+
+      case "related name"           :   return this.template.find('.related-name');
+    }
+  }
+
+  module.exports = find;
+
+} ();
+
+},{"syn/components/selectors.json":19}],35:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function load (cb) {
+    var item = this;
+
+    if ( app.cache.get('/views/Item') ) {
+      item.template = $(app.cache.get('/views/Item')[0].outerHTML);
+      
+      if ( cb ) {
+        cb(null, item.template);
+      }
+
+      return;
+    }
+
+    $.ajax({
+      url: '/views/Item'
+    })
+
+      .error(cb)
+
+      .success(function (data) {
+        item.template = $(data);
+
+        app.cache.set('/views/Item', item.template);
+
+        cb(null, item.template);
+      });
+
+    return this;
+  }
+
+  module.exports = load;
+
+} ();
+
+},{}],36:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var YouTube     =   require('syn/js/providers/YouTube');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function itemMedia () {
+
+    console.info(this.item.getPromotionPercentage)
+
+    // youtube video from references
+
+    if ( this.item.references && this.item.references.length ) {
+      var media = YouTube(this.item.references[0].url);
+
+      if ( media ) {
+        return media;
+      }
+    }
+
+    // adjustImage
+
+    if ( this.item.adjustImage ) {
+
+      console.info('adjustImage')
+
+      return $(this.item.adjustImage
+              .replace(/\>$/, ' class="img-responsive" />'));
+    }
+
+    // image
+
+    if ( this.item.image && /^http/.test(this.item.image) ) {
+
+      var src = this.item.image;
+
+      var image = $('<img/>');
+
+      image.addClass('img-responsive');
+
+      image.attr('src', src);
+
+      return image;
+    }
+
+    // YouTube Cover Image
+
+    if ( this.item.youtube ) {
+      return YouTube('http://youtube.com/watch?v=' + this.item.youtube);
+    }
+
+    // Uploaded image
+
+    if ( this.item.upload ) {
+      var src = this.item.image;
+
+      var image = $('<img/>');
+
+      image.addClass('img-responsive');
+
+      image.attr('src', this.item.upload);
+
+      return image;
+    }
+
+    // default image
+
+    var image = $('<img/>');
+
+    image.addClass('img-responsive');
+
+    image.attr('src', synapp['default item image']);
+
+    return image;
+  }
+
+  module.exports = itemMedia;
+
+} ();
+
+},{"syn/js/providers/YouTube":69}],37:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Truncate    =   require('syn/js/providers/Truncate');
+  var Promote     =   require('syn/js/components/Promote');
+  var Details     =   require('syn/js/components/Details');
+  var Nav         =   require('syn/js/providers/Nav');
+  var readMore    =   require('syn/js/providers/ReadMore');
+  var Sign        =   require('syn/js/components/Sign');
+
+  var getPromotionPercentage = require('syn/models/Item/get-promotion-percentage');
+
+  var S           =   require('string');
+
+  function makeRelated () {
+    var button = $('<button class="shy counter"><span class="related-number"></span> <i class="fa"></i></button>');
+
+    return button;
+  }
+
+  function render (cb) {
+  
+    var item = this;
+
+    // Create reference to promote if promotion enabled
+
+    this.promote = new Promote(this);
+
+    // Create reference to details
+
+    this.details = new Details(this);
+
+    // Set ID
+
+    item.template.attr('id', 'item-' + item.item._id);
+
+    // Set Data
+
+    item.template.data('item', this);
+
+    // Subject
+
+    item.find('subject')
+      .attr('href', '/item/' + item.item._id + '/' + S(item.item.subject).slugify().s)
+      .text(item.item.subject)
+      .on('click', function (e) {
+        var link = $(this);
+
+        var item = link.closest('.item');
+
+        Nav.scroll(item, function () {
+          history.pushState(null, null, link.attr('href'));
+          item.find('.item-text .more').click();
+        });
+
+        return false;
+      });
+
+    // Description
+
+    item.find('description').text(item.item.description);
+
+    // Media
+
+    if ( !  item.find('media').find('img[data-rendered]').length ) {
+      item.find('media').empty().append(this.media());
+    }
+
+    // Truncate text once image has loaded
+
+    item.find('media').find('img').on('load', function () {
+      if ( ! this.template.find('.more').length ) {
+        console.log('reading more', this.item.subject)
+        readMore(this.item, this.template);
+      }
+    }.bind(item));
+
+    // References
+
+    if ( (item.item.references) && item.item.references.length ) {
+      item.find('reference')
+        .attr('href', item.item.references[0].url)
+        .text(item.item.references[0].title || item.item.references[0].url);
+    }
+    else {
+      item.find('reference').empty();
+    }
+
+    // Number of promotions
+
+    item.find('promotions').text(item.item.promotions);
+
+    // Percent of promotions
+
+    // item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
+    item.find('promotions %').text(getPromotionPercentage.apply(item.item));
+
+    // Related
+    switch ( item.item.type ) {
+      case 'Topic':
+        var problems = (item.item.related && item.item.related.Problem) || 0;
+        var button = makeRelated();
+        button.find('i').addClass('fa-fire');
+        button.find('.related-number').text(problems);
+        item.find('related').append(button);
+        break;
+
+      case 'Problem':
+        var agrees = (item.item.related && item.item.related.Agree) || 0;
+        var disagrees = (item.item.related && item.item.related.Disagree) || 0;
+        var mean = (agrees / (agrees + disagrees) * 100);
+
+        if ( isNaN(mean) ) {
+          mean = 0;
+        }
+
+        var button = makeRelated();
+        button.find('i').addClass('fa-music');
+        button.find('.related-number').text(mean + '%');
+        item.find('related').append(button);
+
+        var solutions = (item.item.related && item.item.related.Solution) || 0;
+        button = makeRelated();
+        button.find('i').addClass('fa-tint');
+        button.find('.related-number').text(solutions);
+        item.find('related').append(button);
+        break;
+    
+      case 'Solution':
+        var pros = (item.item.related && item.item.related.Pro) || 0;
+        var cons = (item.item.related && item.item.related.Con) || 0;
+
+        var mean = pros / (pros + cons);
+
+        if ( isNaN(mean) ) {
+          mean = 0;
+        }
+
+        var button = makeRelated();
+        button.find('i').addClass('fa-music');
+        button.find('.related-number').text(mean + '%');
+        item.find('related').append(button);
+
+        break;
+    }
+
+    item.template.find('.counter').on('click', function () {
+      var $trigger    =   $(this);
+      var $item       =   $trigger.closest('.item');
+      var item        =   $item.data('item');
+      item.find('toggle arrow').click();
+    });
+    
+    // Toggle promote
+
+    item.find('toggle promote').on('click', require('syn/js/components/Item/view/toggle-promote'));
+
+    // Toggle details
+
+    item.find('toggle details').on('click', require('syn/js/components/Item/view/toggle-details'));
+
+    // Toggle arrow
+
+    item.find('toggle arrow')
+      .removeClass('hide')
+      .on('click', require('syn/js/components/Item/view/toggle-arrow'));
+
+    cb();
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"string":18,"syn/js/components/Details":27,"syn/js/components/Item/view/toggle-arrow":38,"syn/js/components/Item/view/toggle-details":39,"syn/js/components/Item/view/toggle-promote":40,"syn/js/components/Promote":50,"syn/js/components/Sign":59,"syn/js/providers/Nav":63,"syn/js/providers/ReadMore":64,"syn/js/providers/Truncate":67,"syn/models/Item/get-promotion-percentage":70}],38:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toggleArrow () {
+    var $item   =   $(this).closest('.item');
+    var item    =   $item.data('item');
+    var arrow   =   $(this).find('i');
+
+    if ( item.find('collapsers hidden').length ) {
+      item.find('collapsers').show();
+    }
+
+    require('syn/js/providers/Nav').toggle(item.find('children'), item.template, app.domain.intercept(function () {
+
+        console.log('item type', item.item.type);
+
+        if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+          item.find('collapsers').hide();
+        }
+
+        if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
+
+          item.find('children').addClass('is-loaded');
+
+          switch ( item.item.type ) {
+            case 'Topic':
+
+              var panelProblem = new (require('../../Panel'))('Problem', item.item._id);
+
+              panelProblem.load(app.domain.intercept(function (template) {
+                item.find('children').append(template);
+
+                setTimeout(function () {
+                  panelProblem.render(app.domain.intercept(function () {
+                    panelProblem.fill(app.domain.intercept());
+                  }));
+                });
+              }));
+              break;
+
+            case 'Problem':
+
+              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+              item.find('children').append(split);
+
+              var panelAgree = new (require('../../Panel'))('Agree', item.item._id);
+
+              panelAgree.load(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+
+                split.find('.left-split').append(template);
+
+                setTimeout(function () {
+                  panelAgree.render(app.domain.intercept(function () {
+                    panelAgree.fill(app.domain.intercept());
+                  }));
+                });
+              }));
+
+              var panelDisagree = new (require('../../Panel'))('Disagree', item.item._id);
+
+              panelDisagree.load(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+                
+                split.find('.right-split').append(template);
+
+                setTimeout(function () {
+                  panelDisagree.render(app.domain.intercept(function () {
+                    panelDisagree.fill(app.domain.intercept());
+                  }));
+                });
+              }));
+
+              var panelSolution = new (require('../../Panel'))('Solution', item.item._id);
+
+              panelSolution.load(app.domain.intercept(function (template) {
+                item.find('children').append(template);
+
+                setTimeout(function () {
+                  panelSolution.render(app.domain.intercept(function () {
+                    panelSolution.fill(app.domain.intercept());
+                  }));
+                });
+              }));
+
+              break;
+
+            case 'Solution':
+
+              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+              item.find('children').append(split);
+
+              var panelPro = new (require('../../Panel'))('Pro', item.item._id);
+
+              panelPro.load(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+
+                split.find('.left-split').append(template);
+
+                setTimeout(function () {
+                  panelPro.render(app.domain.intercept(function () {
+                    panelPro.fill(app.domain.intercept());
+                  }));
+                });
+              }));
+
+              var panelCon = new (require('../../Panel'))('Con', item.item._id);
+
+              panelCon.load(app.domain.intercept(function (template) {
+                template.addClass('split-view');
+
+                split.find('.right-split').append(template);
+
+                setTimeout(function () {
+                  panelCon.render(app.domain.intercept(function () {
+                    panelCon.fill(app.domain.intercept());
+                  }));
+                });
+              }));
+              break;
+          }
+        }
+
+        if ( arrow.hasClass('fa-arrow-down') ) {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+        else {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+      }));
+  }
+
+  module.exports = toggleArrow;
+
+} ();
+
+},{"../../Panel":43,"syn/js/providers/Nav":63}],39:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toggleDetails () {
+    var $trigger    =   $(this);
+    var $item       =   $trigger.closest('.item');
+    var item        =   $item.data('item');
+
+    function showHideCaret () {
+      if ( item.find('details').hasClass('is-shown') ) {
+        $trigger.find('.caret').removeClass('hide');
+      }
+      else {
+        $trigger.find('.caret').addClass('hide');
+      }
+    }
+
+    if ( item.find('promote').hasClass('is-showing') ) {
+      return false;
+    }
+
+    if ( item.find('promote').hasClass('is-shown') ) {
+      item.find('toggle promote').find('.caret').addClass('hide');
+      require('syn/js/providers/Nav').hide(item.find('promote'));
+    }
+
+    var hiders = $('.details.is-shown');
+
+    if ( item.find('collapsers hidden').length ) {
+      item.find('collapsers').show();
+    }
+
+    require('syn/js/providers/Nav').toggle(item.find('details'), item.template, app.domain.intercept(function () {
+
+      showHideCaret();
+
+      if ( item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+        item.find('collapsers').hide();
+      }
+
+      if ( item.find('details').hasClass('is-shown') ) {
+
+        if ( ! item.find('details').hasClass('is-loaded') ) {
+          item.find('details').addClass('is-loaded');
+
+          item.details.render(app.domain.intercept());
+        }
+
+        if ( hiders.length ) {
+          require('syn/js/providers/Nav').hide(hiders);
+        }
+      }
+    }));
+  }
+
+  module.exports = toggleDetails;
+
+} ();
+
+},{"syn/js/providers/Nav":63}],40:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav     =   require('syn/js/providers/Nav');
+  var Sign    =   require('syn/js/components/Sign');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function togglePromote () {
+
+    if ( ! synapp.user ) {
+      Sign.dialog.join();
+      return;
+    }
+
+    var $trigger    =   $(this);
+    var $item       =   $trigger.closest('.item');
+    var item        =   $item.data('item');
+
+    function hideOthers () {
+      if ( $('.is-showing').length || $('.is-hidding').length ) {
+        return false;
+      }
+
+      if ( $('.creator.is-shown').length ) {
+        Nav
+          .hide($('.creator.is-shown'))
+          .hidden(function () {
+            $trigger.click();
+          });
+
+        return false;
+      }
+
+      if ( item.find('details').hasClass('is-shown') ) {
+        Nav
+          .hide(item.find('details'))
+          .hidden(function () {
+            $trigger.click();
+          });
+
+        item.find('toggle details').find('.caret').addClass('hide');
+
+        return false;
+      }
+    }
+
+    function promote () {
+      item.promote.get(app.domain.intercept(item.promote.render.bind(item.promote)));
+    }
+
+    function showHideCaret () {
+      if ( item.find('promote').hasClass('is-shown') ) {
+        $trigger.find('.caret').removeClass('hide');
+      }
+      else {
+        $trigger.find('.caret').addClass('hide');
+      }
+    }
+
+    if ( hideOthers() === false ) {
+      return false;
+    }
+
+    if ( item.find('collapsers hidden').length ) {
+      item.find('collapsers').show();
+    }
+
+    Nav.toggle(item.find('promote'), item.template, function (error) {
+
+      if ( item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length ) {
+        item.find('collapsers').hide();
+      }
+
+      promote();
+
+      showHideCaret();
+
+    });
+
+  }
+
+  module.exports = togglePromote;
+
+} ();
+
+},{"syn/js/components/Sign":59,"syn/js/providers/Nav":63}],41:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('syn/js/providers/Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function join ($vexContent) {
+    var $form = $('form[name="join"]');
+
+    $form.find('.i-agree').on('click', function () {
+
+      var agreed = $(this).find('.agreed');
+
+      if ( agreed.hasClass('fa-square-o') ) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      }
+      else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    var form = new Form($form);
+
+    function join () {
+      app.domain.run(function () {
+
+        $form.find('.please-agree').hide();
+        $form.find('.already-taken').hide();
+        
+        if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
+          $form.find('.please-agree').show();
+
+          return;
+        }
+
+        if ( form.labels.password.val() !== form.labels.confirm.val() ) {
+          form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: form.labels.email.val(),
+            password: form.labels.password.val()
+          }
+        })
+          
+          .error(function (response, state, code) {
+            if ( response.status === 401 ) {
+              $form.find('.already-taken').show();
+            }
+          })
+          
+          .success(function (response) {
+            synapp.user = response.user;
+            
+            $('a.is-in').css('display', 'inline');
+
+            $('.topbar .is-out').remove();
+
+            vex.close($vexContent.data().vex.id);
+          });
+
+      });
+    }
+
+    form.send(join);
+  }
+
+  module.exports = join;
+
+} ();
+
+},{"syn/js/providers/Form":62}],42:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('syn/js/providers/Form');
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function login ($vexContent) {
+    var signForm = $('form[name="login"]');
+
+    var form = new Form(signForm);
+
+    function login () {
+      app.domain.run(function () {
+
+        if ( $('.login-error-404').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-404'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
+
+        if ( $('.login-error-401').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-401'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
+        
+        $.ajax({
+            url         :   '/sign/in',
+            type        :   'POST',
+            data        :   {
+              email     :   form.labels.email.val(),
+              password  :   form.labels.password.val()
+            }})
+
+          .error(function (response) {
+            switch ( response.status ) {
+              case 404:
+                Nav.show($('.login-error-404'));
+                break;
+
+              case 401:
+                Nav.show($('.login-error-401'));
+                break;
+            }
+          })
+
+          .success(function (response) {
+
+            synapp.user = response.user;
+
+            $('a.is-in').css('display', 'inline');
+
+            $('.topbar .is-out').remove();
+
+            vex.close($vexContent.data().vex.id);
+
+            // $('.login-modal').modal('hide');
+
+            // signForm.find('section').hide(2000);
+
+          });
+
+      });
+    }
+
+    form.send(login);
+  }
+
+  module.exports = login;
+
+} ();
+
+},{"syn/js/providers/Form":62,"syn/js/providers/Nav":63}],43:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  PANEL
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Nav       =   require('syn/js/providers/Nav');
+  var Creator   =   require('syn/js/components/Creator');
+  var Item      =   require('syn/js/components/Item');
+  var Sign      =   require('syn/js/components/Sign');
+
+  /**
+   *  @class
+   *
+   *  @arg {String} type
+   *  @arg {ObjectID?} parent
+   *  @arg {Number} size
+   *  @arg {Number} skip
+   */
+
+  function Panel (type, parent, size, skip) {
+
+    if ( ! app ) {
+      throw new Error('Missing app');
+    }
+
+    var panel = this;
+
+    this.type     =   type;
+    this.parent   =   parent;
+    this.skip     =   skip || 0;
+    this.size     =   size || synapp['navigator batch size'];
+
+    this.id       =   'panel-' + this.type._id;
+
+    if ( this.parent ) {
+      this.id += '-' + this.parent;
+    }
+  }
+
+  /**
+   *  @method       Panel.getId
+   *  @return       {String} panelId
+  */
+
+  Panel.prototype.getId = function () {
+    return this.id;
+  };
+
+  Panel.prototype.load = require('syn/js/components/Panel/load');
+
+  Panel.prototype.find = function (name) {
+    switch ( name ) {
+      case 'title':
+        return this.template.find('.panel-title:first');
+
+      case 'toggle creator':
+        return this.template.find('.toggle-creator:first');
+
+      case 'creator':
+        return this.template.find('.creator:first');
+
+      case 'items':
+        return this.template.find('.items:first');
+
+      case 'load more':
+        return this.template.find('.load-more:first');
+
+      case 'create new':
+        return this.template.find('.create-new:first');
+    }
+  };
+
+  Panel.prototype.toggleCreator = function (target) {
+    if ( synapp.user ) {
+      Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
+    }
+    else {
+      Sign.dialog.join();
+    }
+  };
+
+  Panel.prototype.render          =   require('syn/js/components/Panel/render');
+
+  Panel.prototype.toJSON          =   require('syn/js/components/Panel/to-json');
+
+  Panel.prototype.fill            =   require('syn/js/components/Panel/fill');
+
+  Panel.prototype.preInsertItem   =   require('syn/js/components/Panel/pre-insert-item');
+
+  Panel.prototype.insertItem      =   function (items, i, cb) {
+
+    var self = this;
+
+    if ( items[i] ) {
+
+      var item  = new Item(items[i]);
+
+      console.log('inserting item ', i, item)
+
+      item.load(app.domain.intercept(function (template) {
+        self.find('items').append(template);
+
+        item.render(app.domain.intercept(function () {
+          self.insertItem(items, ++ i, cb);
+        }));
+
+      }));
+    }
+    else {
+      cb && cb();
+    }
+    
+  };
+
+  module.exports = Panel;
+
+} ();
+
+},{"syn/js/components/Creator":21,"syn/js/components/Item":33,"syn/js/components/Panel/fill":44,"syn/js/components/Panel/load":45,"syn/js/components/Panel/pre-insert-item":46,"syn/js/components/Panel/render":47,"syn/js/components/Panel/to-json":48,"syn/js/components/Sign":59,"syn/js/providers/Nav":63}],44:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function fill (item, cb) {
+    var self = this;
+
+    if ( typeof item === 'function' && ! cb ) {
+      cb = item;
+      item = undefined;
+    }
+
+    var panel = self.toJSON();
+
+    if ( item ) {
+      panel.item = item;
+      panel.type = undefined;
+    }
+
+    console.log('panel', panel)
+
+    app.socket.publish('get items', panel, function (panel, items) {
+    
+      console.log('got items', panel, items)
+
+      self.template.find('.hide.pre').removeClass('hide');
+      self.template.find('.show.pre').removeClass('show').hide();
+
+      self.template.find('.loading-items').hide();
+
+      if ( items.length ) {
+
+        self.find('create new').hide();
+        self.find('load more').show();
+
+        if ( items.length < synapp['navigator batch size'] ) {
+          self.find('load more').hide();
+        }
+
+        self.skip += items.length;
+
+        self.preInsertItem(items, cb);
+      }
+
+      else {
+        self.find('create new').show();
+        self.find('load more').hide();
+      }
+
+    });
+
+  }
+
+  module.exports = fill;
+
+} ();
+
+},{}],45:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Promise = require('promise');
+
+  function load (cb) {
+    var panel = this;
+
+    var q = new Promise(function (fulfill, reject) {
+
+      if ( app.cache.get('/views/Panel') ) {
+        panel.template = $(app.cache.get('/views/Panel')[0].outerHTML);
+        
+        return fulfill(panel.template);
+      }
+
+      $.ajax({
+        url: '/views/Panel'
+      })
+
+        .error(console.log.bind(console, 'error'))
+
+        .success(function (data) {
+          panel.template = $(data);
+
+          app.cache.set('/views/Panel', $(data));
+
+          fulfill(panel.template);
+        });
+
+    });
+
+    if ( typeof cb === 'function' ) {
+      q.then(cb.bind(null, null), cb);
+    }
+
+    return q;
+  }
+
+  module.exports = load;
+
+} ();
+
+},{"promise":8}],46:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Item =require('syn/js/components/Item');
+
+  function preInsertItem (items, cb) {
+    var self = this;
+
+    /** Load template */
+
+    if ( ! app.cache.get('/views/Item') ) {
+      return new (require('syn/js/components/Item'))({}).load(app.domain.intercept(function (template) {
+        self.preInsertItem(items, cb); 
+      }));
+    }
+
+    /** Items to object */
+
+    items = items.map(function (item) {
+      item = new (require('syn/js/components/Item'))(item);
+
+      item.load(app.domain.intercept(function (template) {
+
+        // var img = template.find('.item-media img');
+        // var loading = $('<i class="fa fa-refresh fa-5x fa-spin center block-center muted"></i>');
+
+        // loading.insertAfter(img);
+
+        // img.remove();
+
+        self.find('items').append(template); 
+      }));
+
+      return item;
+    });
+
+    var i = 0;
+    var len = items.length;
+
+    function next () {
+      i ++;
+
+      if ( i === len && cb ) {
+        cb();
+      }
+    }
+
+    items.forEach(function (item) {
+      item.render(app.domain.intercept(function (args) {
+        next();  
+      }));
+    });
+  }
+
+  module.exports = preInsertItem;
+
+} ();
+
+},{"syn/js/components/Item":33}],47:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  // var Creator = require('../Creator');
+
+  var Promise = require('promise');
+
+  function render (cb) {
+    var panel = this;
+
+    var q = new Promise(function (fulfill, reject) {
+
+      panel.find('title').text(panel.type.name);
+
+      panel.find('toggle creator').on('click', function () {
+        panel.toggleCreator($(panel));
+      });
+
+      panel.template.attr('id', panel.getId());
+
+      var creator = new (require('../Creator'))(panel);
+
+      creator
+        .render()
+        .then(fulfill);
+
+      panel.find('load more').on('click', function () {
+        panel.fill();
+        return false;
+      });
+
+      panel.find('create new').on('click', function () {
+        panel.find('toggle creator').click();
+        return false;
+      });
+
+    });
+
+    if ( typeof cb === 'function' ) {
+      q.then(cb.bind(null, null), cb);
+    }
+
+    return q;
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"../Creator":21,"promise":8}],48:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toJSON () {
+    var json = {
+      type: this.type,
+      size: this.size,
+      skip: this.skip,
+      // item: app.location.item
+    };
+
+    if ( this.parent ) {
+      json.parent = this.parent;
+    }
+
+    return json;
+  }
+
+  module.exports = toJSON;
+
+} ();
+
+},{}],49:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav               =   require('syn/js/providers/Nav');
+  var Identity          =   require('syn/js/components/Identity');
+  var Residence         =   require('syn/js/components/Residence');
+  var Demographics      =   require('syn/js/components/Demographics');
+  var Voter             =   require('syn/js/components/Voter');
+  var Public_Persona    =   require('syn/js/components/Public_Persona');
+
+  /**
+   *  @class      Profile
+   */
+
+  function Profile () {
+
+    /** Persistent this
+     *
+     *  @type           Profile
+    */
+
+    var profile         =   this;
+
+    /** DOM Container
+     *
+     *  @type           HTMLElement
+    */
+
+    this.template       =   $('.panel');
+
+    /** Local instance of Identity
+     *
+     *  @type           Identity
+    */
+
+    this.identity       =   new Identity(this);
+
+    /** Local instance of Residence
+     *
+     *  @type           Residence
+    */
+
+    this.residence      =   new Residence(this);
+
+    /** Local instance of Demographics
+     *
+     *  @type           Demographics
+    */
+
+    this.demographics   =   new Demographics(this);
+
+    /** Local instance of Voter
+     *
+     *  @type           Voter
+    */
+
+    this.voter          =   new Voter(this);
+
+    /** Local instance of Public_Persona
+     *
+     *  @type           Public_Persona
+    */
+
+    this.public_persona =   new Public_Persona(this);
+
+    /** Get User Info from socket
+     *
+     *  @type           Socket
+    */
+
+    app.socket
+      .once('got user info', function (user) {
+        console.log('got user info', user);
+        profile.user = user;
+
+        profile.renderUser();
+      })
+      .emit('get user info', synapp.user);
+
+    /** Get list of countries from socket
+     *
+     *  @type           Socket
+    */
+
+    app.socket
+      .once('got countries', function (countries) {
+        console.log('got countries', countries);
+        profile.countries = countries;
+
+        profile.identity.renderCountries();
+      })
+      .emit('get countries');
+  }
+
+  Profile.prototype.find = function (name) {
+    switch ( name ) {
+      case 'panel title':
+        return this.template.find('.panel-title');
+
+      case 'items section':
+        return this.template.find('.items .is-container.is-profile-section');
+
+      case 'panel load more':
+        return this.template.find('.loading-items');
+
+      case 'Identity':
+        return this.template.find('#identity');
+
+      case 'toggle creator':
+        return this.template.find('.toggle-creator');
+    }
+  };
+
+  Profile.prototype.render = function () {
+
+    var profile = this;
+
+    this.find('panel title').text('Profile');
+
+    this.find('toggle creator').remove();
+
+    this.find('panel load more').find('i,span').hide();
+
+    var togglePanel = $('<i class="fa cursor-pointer fa-arrow-up"></i>');
+
+    togglePanel.on('click', function () {
+
+      var arrow = $(this);
+
+      Nav.toggle(profile.find('items section'), null, function () {
+        if ( profile.find('items section').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    Nav.show(this.find('items section'));
+
+    this.find('panel load more').append(togglePanel);
+
+    this.find('Identity').attr('id', 'identity');
+
+    this.identity.render();
+
+    this.residence.render();
+
+    this.demographics.render();
+
+    this.voter.render();
+
+    this.public_persona.render();
+
+  };
+
+  Profile.prototype.renderUser = function () {
+    var profile = this;
+
+    this.find('Identity').data('identity').user = this.user;
+
+    this.find('Identity').data('identity').renderUser();
+
+    this.residence.renderUser();
+
+    this.demographics.renderUser();
+
+    this.voter.renderUser();
+
+    this.public_persona.renderUser();
+  };
+
+  module.exports = Profile;
+
+} ();
+
+},{"syn/js/components/Demographics":26,"syn/js/components/Identity":31,"syn/js/components/Public_Persona":57,"syn/js/components/Residence":58,"syn/js/components/Voter":60,"syn/js/providers/Nav":63}],50:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  P   R   O   M   O   T   E
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Item      =   require('syn/js/components/Item');
+  var Nav       =   require('syn/js/providers/Nav');
+  var Edit      =   require('syn/js/components/Edit');
+
+  /**
+   *  @class Promote
+   *  @arg {Item} item
+   */
+
+  function Promote (item) {
+    if ( ! app ) {
+      throw new Error('Missing app');
+    }
+
+    var self = this;
+
+    app.domain.run(function () {
+      if ( ! item || ( ! item instanceof require('syn/js/components/Item') ) ) {
+        throw new Error('Item must be an Item');
+      }
+
+      self.item = item;
+
+      self.template = item.find('promote');
+
+      if ( ! self.template.length ) {
+        throw new Error('Promote template not found');
+      }
+
+      self.watch = new (require('events').EventEmitter)();
+
+      self.$bind('limit', self.renderLimit.bind(self));
+
+      self.$bind('cursor', self.renderCursor.bind(self));
+
+      self.$bind('left', self.renderLeft.bind(self));
+
+      self.$bind('right', self.renderRight.bind(self));
+    });
+      
+  }
+
+  /**
+   *  @method renderLimit
+   */
+
+  Promote.prototype.renderLimit = function () {
+    this.find('limit').text(this.evaluation.limit);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderCursor = function () {
+    this.find('cursor').text(this.evaluation.cursor);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderLeft = function () {
+    this.renderItem('left');
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.edit = function (key, value) {
+    this.evaluation[key] = value;
+
+    this.watch.emit(key);
+  };
+
+  /**
+   *
+   */
+
+  Promote.prototype.$bind = function (key, binder) {
+    this.watch.on(key, binder);
+  };
+
+  /**
+   *
+   */
+
+  /**
+   *
+   */
+
+  Promote.prototype.renderRight = function () {
+    this.renderItem('right');
+  };
+
+  /**
+   *  @description Selector aliases getter
+   */
+
+  Promote.prototype.find            =     require('syn/js/components/Promote/find');
+
+  /**
+   *  @description render one of the sides in a side by side
+   */
+
+  Promote.prototype.renderItem      =     require('syn/js/components/Promote/render-item');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.render          =     require('syn/js/components/Promote/render');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.get             =     require('syn/js/components/Promote/get');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.finish          =     require('syn/js/components/Promote/finish');
+
+  /**
+   *  @description
+   */
+
+  Promote.prototype.save            =     require('syn/js/components/Promote/save');
+
+  module.exports = Promote;
+
+} ();
+
+},{"events":3,"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/components/Promote/find":51,"syn/js/components/Promote/finish":52,"syn/js/components/Promote/get":53,"syn/js/components/Promote/render":55,"syn/js/components/Promote/render-item":54,"syn/js/components/Promote/save":56,"syn/js/providers/Nav":63}],51:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var selectors = require('syn/components/selectors.json');
+
+  var string = require('string');
+
+  function find (name, more) {
+
+    var comp = this;
+
+    function _find (selector) {
+      return comp.template.find(selectors[selector]);
+    }
+
+    switch ( name ) {
+
+      case 'item subject':        return _find('Promote ' + string(more).capitalize().s + ' Item Subject');
+
+      case 'item description':    return _find('Promote ' + string(more).capitalize().s + ' Item Description');
+
+      case 'cursor':                  return this.template.find('.cursor');
+
+      case 'limit':                   return this.template.find('.limit');
+
+      case 'side by side':            return this.template.find('.items-side-by-side');
+
+      case 'finish button':           return this.template.find('.finish');
+
+      case 'sliders':                 return this.find('side by side').find('.sliders.' + more + '-item');
+
+      case 'item image':              return this.find('side by side').find('.image.' + more + '-item');
+
+      case 'item persona':            return this.find('side by side').find('.persona.' + more + '-item');
+
+      case 'item references':         return this.find('side by side').find('.references.' + more + '-item a');
+
+      case 'item persona image':      return this.find('item persona', more).find('img');
+
+      case 'item persona name':       return this.find('item persona', more).find('.user-full-name');
+
+      case 'item feedback':           return this.find('side by side').find('.' + more + '-item.feedback .feedback-entry');
+
+      case 'promote button':          return this.find('side by side').find('.' + more + '-item .promote');
+
+      case 'promote label':           return this.find('side by side').find('.promote-label');
+
+      case 'edit and go again button':  return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
+    }
+  }
+
+  module.exports = find;
+
+} ();
+
+},{"string":18,"syn/components/selectors.json":19}],52:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function finish () {
+    var promote = this;
+
+    promote.find('promote button').off('click');
+    promote.find('finish button').off('click');
+
+    if ( promote.evaluation.left ) {
+      this.save('left');
+    }
+
+    if ( promote.evaluation.right ) {
+      this.save('right');
+    }
+
+    Nav.unreveal(promote.template, promote.item.template,
+      app.domain.intercept(function () {
+
+        promote.item.details.get();
+
+        promote.item.find('toggle details').click();
+
+        promote.item.find('details').find('.feedback-pending')
+          .removeClass('hide');
+
+        promote.evaluation = null;
+      }));
+  }
+
+  module.exports = finish;
+
+} ();
+
+},{"syn/js/providers/Nav":63}],53:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function get (cb) {
+    var promote = this;
+
+    if ( ! this.evaluation ) {
+
+      // Get evaluation via sockets
+
+      app.socket.emit('get evaluation', this.item.item._id);
+
+      app.socket.once('got evaluation', function (evaluation) {
+        console.info('got evaluation', evaluation);
+
+        promote.evaluation = evaluation;
+
+        var limit = 5;
+
+        if ( evaluation.items.length < 6 ) {
+          limit = evaluation.items.length - 1;
+
+          if ( ! evaluation.limit && evaluation.items.length === 1 ) {
+            limit = 1;
+          }
+        }
+
+        promote.edit('limit', limit);
+
+        promote.edit('cursor', 1);
+
+        promote.edit('left', evaluation.items[0]);
+
+        promote.edit('right', evaluation.items[1]);
+
+        cb();
+
+      });
+    }
+
+    else {
+      cb();
+    }
+  }
+
+  module.exports = get;
+
+} ();
+
+},{}],54:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+  var Edit = require('syn/js/components/Edit');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function renderItem (hand) {
+    var promote = this;
+
+    var reverse = hand === 'left' ? 'right' : 'left';
+
+    if ( ! this.evaluation[hand] ) {
+      this.find('item subject', hand).hide();
+      this.find('item description', hand).hide();
+      this.find('item feedback', hand).hide();
+      this.find('sliders', hand).hide();
+      this.find('promote button', hand).hide();
+      this.find('promote label').hide();
+      this.find('edit and go again button', hand).hide();
+      this.find('promote button', reverse).hide();
+      this.find('edit and go again button', reverse).hide();
+      // this.find('finish button').hide();
+      return;
+    }
+
+    // Increment views counter
+
+    app.socket.emit('add view', this.evaluation[hand]._id);
+
+    // Subject
+    this.find('item subject', hand).text(this.evaluation[hand].subject);
+
+    // Description
+
+    this.find('item description', hand).text(this.evaluation[hand].description);
+
+    // Image
+
+    this.find('item image', hand).empty().append(
+      new (require('syn/js/components/Item'))(this.evaluation[hand]).media());
+
+    // References
+
+    if ( this.evaluation[hand].references && this.evaluation[hand].references.length ) {
+      this.find('item references', hand)
+        .attr('href', this.evaluation[hand].references[0].url)
+        .text(this.evaluation[hand].references[0].title || this.evaluation[hand].references[0].url);
+    }
+
+    // Sliders
+
+    promote.find('sliders', hand).find('.criteria-name').each(function (i) {
+      var cid = i;
+
+      if ( cid > 3 ) {
+        cid -= 4;
+      }
+
+      promote.find('sliders', hand).find('.criteria-name').eq(i)
+        .on('click', function () {
+          var self = $(this);
+          var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
+
+          self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
+
+
+          if ( $(this).hasClass('shy') ) {
+            $(this).removeClass('shy').addClass('info');
+          }
+
+          else if ( $(this).hasClass('info') ) {
+            $(this).removeClass('info').addClass('shy');
+          }
+
+          Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
+            Nav.toggle(descriptionSection);
+          }));
+
+          
+        })
+        .text(promote.evaluation.criterias[cid].name);
+      promote.find('sliders', hand).find('.criteria-description').eq(i).text(promote.evaluation.criterias[cid].description);
+      promote.find('sliders', hand).find('input').eq(i)
+        .val(0)
+        .data('criteria', promote.evaluation.criterias[cid]._id);
+    });
+
+    // Persona
+
+    // promote.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
+
+    // promote.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
+
+    // Feedback
+
+    promote.find('item feedback', hand).val('');
+
+    // Feedback - remove any marker from previous post / see #164
+
+    promote.find('item feedback', hand).removeClass('do-not-save-again');
+
+    // Promote button
+
+    promote.find('promote button', hand)
+      .text(this.evaluation[hand].subject)
+      .off('click')
+      .on('click', function () {
+
+        var left = $(this).closest('.left-item').length;
+
+        var opposite = left ? 'right' : 'left';
+
+        Nav.scroll(promote.template, app.domain.intercept(function () {
+
+          // If cursor is smaller than limit, then keep on going
+        
+          if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+
+            promote.edit('cursor', promote.evaluation.cursor + 1);
+
+            app.socket.emit('promote', promote.evaluation[left ? 'left' : 'right']._id);
+
+            promote.save(left ? 'left' : 'right');
+
+            $.when(
+              promote
+                .find('side by side')
+                .find('.' + opposite + '-item')
+                .animate({
+                  opacity: 0
+                })
+            )
+              .then(function () {
+                promote.edit(opposite, promote.evaluation.items[promote.evaluation.cursor]);
+
+                promote
+                  .find('side by side')
+                  .find('.' + opposite + '-item')
+                  .animate({
+                    opacity: 1
+                  });
+              });
+          }
+
+          // If cursor equals limit, means end of evaluation cycle
+
+          else {
+
+            promote.finish();
+
+          }
+
+        }));
+      });
+  
+    // Edit and go again
+
+    promote.find('edit and go again button', hand).on('click', function () {
+      Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
+
+        if ( promote.item.find('editor').find('form').length ) {
+          console.warn('already loaded')
+        }
+
+        else {
+          var edit = new Edit(promote.item);
+            
+          edit.get(app.domain.intercept(function (template) {
+
+            promote.item.find('editor').find('.is-section').append(template);
+
+            Nav.reveal(promote.item.find('editor'), promote.item.template,
+              app.domain.intercept(function () {
+                Nav.show(template, app.domain.intercept(function () {
+                  edit.render();
+                }));
+              }));
+          }));
+
+        }
+
+      }));
+    });
+
+  }
+
+  module.exports = renderItem;
+
+} ();
+
+},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":63}],55:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @method Promote.render
+   *  @return
+   *  @arg
+   */
+
+  function render (cb) {
+    var promote = this;
+
+    promote.find('finish button').on('click', function () {
+      Nav.scroll(promote.template, app.domain.intercept(function () {
+
+        if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+
+          promote.save('left');
+
+          promote.save('right');
+
+          $.when(
+            promote
+              .find('side by side')
+              .find('.left-item, .right-item')
+              .animate({
+                opacity: 0
+              }, 1000)
+          )
+            .then(function () {
+              promote.edit('cursor', promote.evaluation.cursor + 1);
+
+              promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+
+              promote.edit('cursor', promote.evaluation.cursor + 1);
+
+              promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+
+              promote
+                .find('side by side')
+                .find('.left-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+
+              promote
+                .find('side by side')
+                .find('.right-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+            });
+        }
+
+        else {
+
+          promote.finish();
+
+        }
+
+      }));
+    });
+  }
+
+  module.exports = render;
+
+} ();
+
+},{"syn/js/providers/Nav":63}],56:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function save (hand) {
+
+    var promote = this;
+   
+    // feedback
+
+    var feedback = promote.find('item feedback', hand);
+
+    if ( feedback.val() ) {
+
+      if ( ! feedback.hasClass('do-not-save-again') ) {
+        app.socket.emit('insert feedback', {
+          item: promote.evaluation[hand]._id,
+          user: synapp.user,
+          feedback: feedback.val()
+        });
+
+        feedback.addClass('do-not-save-again');
+      }
+
+      // feedback.val('');
+    }
+
+    // votes
+
+    var votes = [];
+
+    promote.template
+      .find('.items-side-by-side:visible .' +  hand + '-item input[type="range"]:visible')
+      .each(function () {
+        var vote = {
+          item: promote.evaluation[hand]._id,
+          user: synapp.user,
+          value: +$(this).val(),
+          criteria: $(this).data('criteria')
+        };
+
+        votes.push(vote);
+      });
+
+    app.socket.emit('insert votes', votes);
+  }
+
+  module.exports = save;
+
+} ();
+
+},{}],57:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Public_Persona (profile) {
+    this.template = $('#public_persona');
+
+    this.template.data('public_persona', this);
+
+    this.profile = profile;
+  }
+
+  Public_Persona.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'expand':
+        return this.template.find('.public_persona-collapse');
+    }
+  };
+
+  Public_Persona.prototype.render = function () {
+
+    var public_persona = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(public_persona.find('expand'), public_persona.template, function () {
+        if ( public_persona.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+  };
+
+  Public_Persona.prototype.renderUser = function () {
+
+    var public_persona = this;
+
+    if ( this.profile.user ) {
+
+     
+    }
+  };
+
+  module.exports = Public_Persona;
+
+} ();
+
+},{"syn/js/providers/Nav":63}],58:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Residence (profile) {
+    this.template = $('#residence');
+
+    this.template.data('residence', this);
+
+    this.profile = profile;
+  }
+
+  Residence.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow');
+
+      case 'expand':
+        return this.template.find('.residence-collapse');
+
+      case 'validate gps button':
+        return this.template.find('.validate-gps');
+
+      case 'not yet validated':
+        return this.template.find('.not-yet-validated');
+
+      case 'is validated':
+        return this.template.find('.is-validated');
+
+      case 'validated moment':
+        return this.template.find('.validated-moment');
+    }
+  };
+
+  Residence.prototype.render = function () {
+
+    var residence = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(residence.find('expand'), residence.template, function () {
+        if ( residence.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    // Validate GPS button
+
+    this.find('validate gps button').on('click', function () {
+      navigator.geolocation.watchPosition(function(position) {
+
+        console.log('location');
+
+        app.socket.emit('validate gps', synapp.user, position.coords.longitude, position.coords.latitude);
+
+        app.socket.once('validated gps', function () {
+          console.log('validated');
+        });
+      });
+    });
+  };
+
+  Residence.prototype.renderUser = function () {
+
+    var residence = this;
+
+    if ( this.profile.user ) {
+
+      // GPS
+
+      if ( this.profile.user.gps ) {
+        this.find('not yet validated').hide();
+        this.find('is validated').removeClass('hide').show();
+        this.find('validated moment').text(function () {
+          var date = new Date(residence.profile.user['gps validated']);
+          return [(date.getMonth() + 1 ), (date.getDay() + 1), date.getFullYear()].join('/');
+        });
+      }
+
+      // NO GPS
+
+      else {
+        this.find('validate gps button').attr('disabled', false);
+      }
+    }
+  };
+
+  module.exports = Residence;
+
+} ();
+
+},{"syn/js/providers/Nav":63}],59:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  S   I   G   N
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Nav             =   require('syn/js/providers/Nav');
+  var login           =   require('syn/js/components/Login');
+  var join            =   require('syn/js/components/Join');
+  var forgotPassword  =   require('syn/js/components/Forgot-Password');
+
+  function Sign () {
+    
+  }
+
+  Sign.dialog = {
+
+    login: function () {
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function ($vexContent) {
+          $('.login-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+
+          login($vexContent);
+
+          $vexContent.find('.forgot-password-link').on('click', function () {
+            Sign.dialog.forgotPassword();
+            vex.close($vexContent.data().vex.id);
+            return false;
+          });
+        },
+
+        afterClose: function () {
+          $('.login-button').on('click', Sign.dialog.login);
+        },
+
+        message: $('#login').text(),
+
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ]
+      });
+    },
+
+    join: function () {
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function ($vexContent) {
+          $('.join-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+
+          join($vexContent);
+        },
+
+        afterClose: function () {
+          $('.join-button').on('click', Sign.dialog.join);
+        },
+
+        message: $('#join').text(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    },
+
+    forgotPassword: function () {
+
+      console.log('helllo')
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function ($vexContent) {
+          $('.forgot-password-link')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+              return false;
+            });
+
+          forgotPassword($vexContent);
+        },
+
+        afterClose: function () {
+          $('.forgot-password-link').on('click', Sign.dialog.forgotPassword);
+        },
+
+        message: $('#forgot-password').text(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+
+      return false;
+    }
+
+  };
+
+  Sign.prototype.render = function () {
+    // this.signIn();
+    // this.signUp();
+    // this.forgotPassword();
+
+    app.socket.on('online users', function (online) {
+      $('.online-users').text(online);
+    });
+
+    $('.topbar-right').removeClass('hide');
+
+    if ( ! synapp.user ) {
+      $('.login-button').on('click', Sign.dialog.login);
+      $('.join-button').on('click', Sign.dialog.join);
+      $('.topbar .is-in').hide();
+    }
+
+    else {
+      $('.topbar .is-out').remove();
+    }
+  };
+
+  module.exports = Sign;
+
+} ();
+
+},{"syn/js/components/Forgot-Password":30,"syn/js/components/Join":41,"syn/js/components/Login":42,"syn/js/providers/Nav":63}],60:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Voter (profile) {
+    this.template = $('#voter');
+
+    this.template.data('voter', this);
+
+    this.profile = profile;
+  }
+
+  Voter.prototype.find = function (name) {
+    switch ( name ) {
+      case 'toggle arrow':    return this.template.find('.toggle-arrow');
+
+      case 'expand':          return this.template.find('.voter-collapse');
+
+      case 'registered':      return this.template.find('.is-registered-voter');
+
+      case 'party':           return this.template.find('.party');
+    }
+  };
+
+  Voter.prototype.render = function () {
+
+    var voter = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+      
+      var arrow = $(this);
+
+      Nav.toggle(voter.find('expand'), voter.template, function () {
+        if ( voter.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    /** Save registered voter */
+
+    this.find('registered').on('change', function () {
+
+      app.socket
+
+        .on('registered voter set', function () {
+          console.log('registered voter set');
+        })
+
+        .emit('set registered voter', synapp.user, $(this).is(':checked'));
+
+    });
+
+    /** Save political party */
+
+    this.find('party').on('change', function () {
+
+      if ( $(this).val() ) {
+        app.socket
+
+          .on('party set', function () {
+            console.log('party set');
+          })
+
+          .emit('set party', synapp.user, $(this).val());
+      }
+
+    });
+
+  };
+
+  Voter.prototype.renderUser = function () {
+
+    var voter = this;
+
+    if ( this.profile.user ) {
+
+      this.find('registered').attr('checked', this.profile.user.registered_voter);
+
+      this.find('party').val(this.profile.user.party);
+     
+    }
+  };
+
+  module.exports = Voter;
+
+} ();
+
+},{"syn/js/providers/Nav":63}],61:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function Cache () {
+    this.entries = {};
+  }
+
+  Cache.prototype.get = function (key) {
+    return this.entries[key];
+  };
+
+  Cache.prototype.set = function (key, value) {
+    return this.entries[key] = value;
+  };
+
+  module.exports = Cache;
+
+} ();
+
+},{}],62:[function(require,module,exports){
+/*
+ *  F   O   R   M
+ *  *****************
+*/
+
+! function () {
+
+  'use strict';
+
+  /**
+   *  @class    Form
+   *  @arg      {HTMLElement} form
+   */
+
+  function Form (form) {
+
+    var self = this;
+
+    this.form = form;
+
+    this.labels = {};
+
+    this.form.find('[name]').each(function () {
+      self.labels[$(this).attr('name')] = $(this);
+    });
+
+    // #193 Disable <Enter> keys
+
+    this.form.find('input').on('keydown', function (e) {
+      if ( e.keyCode === 13 ) {
+        return false;
+      }
+    });
+
+    this.form.on('submit', function (e) {
+      setTimeout(function () {
+        self.submit(e);
+      });
+
+      return false;
+    });
+  }
+
+  Form.prototype.submit = function (e) {
+
+    console.warn('form submitting', this.form.attr('name'), e);
+
+    var self = this;
+
+    var errors = [];
+
+    self.form.find('[required]').each(function () {
+      var val = $(this).val();
+
+      if ( ! val ) {
+
+        if ( ! errors.length ) {
+          $(this)
+            .addClass('error')
+            .focus();
+        }
+
+        errors.push({ required: $(this).attr('name') });
+      }
+
+      else {
+        $(this)
+          .removeClass('error');
+      }
+    });
+
+    if ( ! errors.length ) {
+      this.ok();
+    }
+
+    return false;
+  };
+
+  Form.prototype.send = function (fn) {
+    this.ok = fn;
+
+    return this;
+  };
+
+  module.exports = Form;
+
+} ();
+
+},{}],63:[function(require,module,exports){
+(function (process){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  N   A   V
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toggle (elem, poa, cb) {
+    if ( ! elem.hasClass('is-toggable') ) {
+      elem.addClass('is-toggable');
+    }
+
+    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+      var error = new Error('Animation already in progress');
+      error.code = 'ANIMATION_IN_PROGRESS';
+      return cb(error);
+    }
+
+    if ( elem.hasClass('is-shown') ) {
+      unreveal(elem, poa, cb);
+    }
+    else {
+      reveal(elem, poa, cb);
+    }
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function reveal (elem, poa, cb) {
+    var emitter = new (require('events').EventEmitter)();
+
+    if ( typeof cb !== 'function' ) {
+      cb = console.log.bind(console);
+    }
+
+    emitter.revealed = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    setTimeout(function () {
+      if ( ! elem.hasClass('is-toggable') ) {
+        elem.addClass('is-toggable');
+      }
+
+      console.log('%c reveal', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
+
+      if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+        var error = new Error('Animation already in progress');
+        error.code = 'ANIMATION_IN_PROGRESS';
+        return cb(error);
+      }
+
+      elem.removeClass('is-hidden').addClass('is-showing');
+
+      if ( poa ) {
+        scroll(poa, function () {
+          show(elem, function () {
+            emitter.emit('success');
+            cb();
+          });
+        });
+      }
+
+      else {
+        show(elem, function () {
+          emitter.emit('success');
+          cb();
+        });
+      }
+    });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function unreveal (elem, poa, cb) {
+    if ( ! elem.hasClass('is-toggable') ) {
+      elem.addClass('is-toggable');
+    }
+
+    console.log('%c unreveal', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+      var error = new Error('Animation already in progress');
+      error.code = 'ANIMATION_IN_PROGRESS';
+      return cb(error);
+    }
+
+    elem.removeClass('is-shown').addClass('is-hiding');
+
+    if ( poa ) {
+      scroll(poa, function () {
+        hide(elem, cb);
+      });
+    }
+
+    else {
+      hide(elem, cb);
+    }
+  }
+
+  /**
+   *  @function scroll
+   *  @description Scroll the page till the point of attention is at the top of the screen
+   *  @return null
+   *  @arg {function} pointOfAttention - jQuery List
+   *  @arg {function} cb - Function to call once scroll is complete
+   *  @arg {number} speed - A number of milliseconds to set animation duration
+   */
+
+  function scroll (pointOfAttention, cb, speed) {
+    // console.log('%c scroll', 'font-weight: bold',
+    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
+
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.scrolled = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    emitter.then = function (fn, fn2) {
+      emitter.on('success', fn);
+      if ( fn2 ) emitter.on('error', fn2);
+      return this;
+    };
+
+    var poa = (pointOfAttention.offset().top - 60);
+
+    var current = $('body,html').scrollTop();
+
+    if ( typeof cb !== 'function' ) {
+      cb = function () {};
+    }
+
+    if ( 
+      (current === poa) || 
+      (current > poa && (current - poa < 50)) ||
+      (poa > current && (poa - current < 50)) ) {
+
+      emitter.emit('success');
+
+      return typeof cb === 'function' ? cb() : true;
+    }
+
+    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing'))
+      
+      .then(function () {
+
+        emitter.emit('success');
+
+        if ( typeof cb === 'function' ) {
+          cb();
+        }
+
+      });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function show (elem, cb) {
+
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.shown = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    setTimeout(function () {
+
+      console.log('%c show', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+      
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+
+        emitter.emit('error', new Error('Already in progress'));
+        
+        if ( typeof cb === 'function' ) {
+          cb(new Error('Show failed'));
+        }
+
+        return false;
+      }
+
+      // make sure margin-top is equal to height for smooth scrolling
+
+      elem.css('margin-top', '-' + elem.height() + 'px');
+
+      // animate is-section
+
+      $.when(elem.find('.is-section:first')
+        .animate({
+          marginTop: 0
+        }, 500))
+      .then(function () {
+        elem.removeClass('is-showing').addClass('is-shown');
+          
+        if ( elem.css('margin-top') !== 0 ) {
+          elem.animate({'margin-top': 0}, 250);
+        }
+
+        emitter.emit('success');
+        
+        if ( cb ) {
+          cb();
+        }      
+      });
+
+      elem.animate({
+         opacity: 1
+        }, 500);
+
+    });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function hide (elem, cb) {
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.hiding = function (cb) {
+      this.on('hiding', cb);
+      return this;
+    };
+
+    emitter.hidden = function (cb) {
+      this.on('hidden', cb);
+      return this;
+    };
+
+    emitter.error = function (cb) {
+      this.on('error', cb);
+      return this;
+    };
+
+    process.nextTick(function () {
+
+      var domain = require('domain').create();
+
+      domain.on('error', function (error) {
+        emitter.emit('error', error);
+      });
+
+      domain.run(function () {
+
+        if ( ! elem.length ) {
+          return cb();
+        }
+
+        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+        if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+          emitter.emit('bounced');
+          return false;
+        }
+
+        emitter.emit('hiding');
+
+        console.log('%c hide', 'font-weight: bold',
+          (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+        elem.removeClass('is-shown').addClass('is-hiding');;
+
+        elem.find('.is-section:first').animate(
+          {
+            'margin-top': '-' + elem.height() + 'px',
+            // 'padding-top': elem.height() + 'px'
+          },
+
+          1000,
+
+          function () {
+            elem.removeClass('is-hiding').addClass('is-hidden');
+
+            emitter.emit('hidden');
+
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 0
+          }, 1000);
+
+      });
+
+    })
+
+    return emitter;
+  }
+
+  module.exports = {
+    toggle:       toggle,
+    reveal:       reveal,
+    unreveal:     unreveal,
+    show:         show,
+    hide:         hide,
+    scroll:       scroll
+  };
+
+} ();
+
+}).call(this,require('_process'))
+},{"_process":5,"domain":2,"events":3}],64:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function spanify (des) {
+
+    return des.replace(/\n/g, "\n ").split(' ')
+
+      .map(function (word) {
+        var span = $('<span class="word"></span>');
+        span.text(word + ' ');
+        return span;
+      });
+  }
+
+  function readMore (item, $item) {
+
+    /** {HTMLElement} Description wrapper in DOM */
+
+    var $description    =     $item.find('.item-description');
+
+    /** {HTMLElement} Image container in DOM */
+
+    var $image          =     $item.find('.item-media img');
+
+    /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
+
+    var $text           =     $item.find('.item-text');
+
+    /** {HTMLElement} Subject container in DOM */
+
+    var $subject        =     $item.find('.item-subject');
+
+    /** {HTMLElement} Reference container in DOM */
+
+    var $reference      =     $item.find('.item-reference');
+
+    /** {HTMLElement} Arrow container in DOM */
+
+    var $arrow          =     $item.find('.item-arrow')
+
+    /** {Number} Image height */
+
+    var imgHeight       =     $image.height();
+
+    // If screen >= phone, then divide imgHeight by 2
+
+    if ( $('body').width() <= $('#screen-tablet').width() ) {
+      imgHeight *= 2;
+    }
+
+    /** {Number} Top position of text wrapper */
+
+    var top             =     $text.offset().top;
+
+    // If **not** #intro, then subtract subject's height
+
+    if ( $item.attr('id') !== 'intro' ) {
+
+      // Subtract height of subject from top
+      
+      top -= $subject.height();
+    }
+
+    // If screen >= tablet
+
+    if ( $('body').width() >= $('#screen-tablet').width() ) {
+      // Subtract 40 pixels from top
+
+      top -= 40;
+    }
+
+    // If screen >= phone
+
+    else if ( $('body').width() >= $('#screen-phone').width() ) {
+      top -= 80;
+    }
+
+    // console.info( item.subject.substr(0, 30) + '...', 'top', Math.ceil(top), ',', Math.ceil(imgHeight) );
+
+    // Clear description
+
+    $description.text('');
+
+    // Spanify each word
+
+    spanify(item.description).forEach(function (word) {
+      $description.append(word);
+    });
+
+    // Hide words that are below limit
+
+    for ( var i = $description.find('.word').length - 1; i >= 0; i -- ) {
+      var word = $description.find('.word').eq(i);
+      // console.log(Math.ceil(word.offset().top), Math.ceil(top),
+      //   { word: Math.ceil(word.offset().top - top), limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
+      if ( (word.offset().top - top) > imgHeight ) {
+        word.addClass('hidden-word').hide();
+      }
+    }
+
+    if ( $description.find('.hidden-word').length ) {
+      var more = $('<a href="#" class="more">more</a>');
+
+      more.on('click', function () {
+
+        if ( $(this).hasClass('more') ) {
+          $(this).removeClass('more').addClass('less').text('less');
+          $(this).closest('.item-description').find('.hidden-word').show();
+        }
+
+        else {
+          $(this).removeClass('less').addClass('more').text('more');
+          $(this).closest('.item-description').find('.hidden-word').hide();
+        }
+
+        return false;
+
+      });
+
+      $description.append(more);
+    }
+
+    // Hide reference if too low and breaks design
+
+    if ( $reference.text() && (($arrow.offset().top - $reference.offset().top) < 15 ) ) {
+
+      var more;
+
+      if ( $description.find('.more').length ) {
+        more = $description.find('.more');
+      }
+
+      else {
+        more = $('<a href="#" class="more">more</a>');
+
+        more.on('click', function () {
+
+          if ( $(this).hasClass('more') ) {
+            $(this).removeClass('more').addClass('less').text('less');
+            $reference.show();
+          }
+
+          else {
+            $(this).removeClass('less').addClass('more').text('more');
+            $reference.hide();
+          }
+
+          return false;
+
+        });
+      }
+
+      $description.append(more);
+
+      $reference
+        .css('padding-bottom', '10px')
+        .data('is-hidden-reference', true)
+        .hide();
+    }
+  }
+
+  module.exports = readMore;
+
+} ();
+
+},{}],65:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+
+  function Socket (emit) {
+    var self = this;
+
+    /** Socket */
+    console.log('http://' + window.location.hostname + ':' + window.location.port)
+    self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
+
+    self.socket.once('connect', function () {
+      emit('ready');
+    });
+
+    self.socket.publish = function (event) {
+
+      var args = [];
+      var done;
+
+      for ( var i in arguments ) {
+        if ( +i ) {
+          if ( typeof arguments[i] === 'function' ) {
+            done = arguments[i];
+          }
+          else {
+            args.push(arguments[i]);
+          }
+        }
+      }
+
+      self.socket.emit.apply(self.socket, [event].concat(args));
+
+      self.socket.on('OK ' + event, done);
+
+    }
+
+    self.socket.on('error', function (error) {
+      console.error('socket error', error);
+    });
+  }
+
+  module.exports = Socket;
+
+} ();
+
+},{}],66:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Stream (file) {
+
+    var stream = ss.createStream();
+
+    // stream.end = function (cb) {
+    //   this.on('end', cb);
+
+    //   return this;
+    // };
+
+    // stream.error = function (cb) {
+    //   this.on('error', cb);
+
+    //   return this;
+    // };
+
+    ss(app.socket).emit('upload image', stream,
+      { size: file.size, name: file.name });
+    
+    ss.createBlobReadStream(file).pipe(stream);
+
+    return stream;
+  }
+
+  module.exports = Stream;
+
+} ();
+
+},{}],67:[function(require,module,exports){
+; ! function () {
+
+  'use strict';
+
+  var Nav = require('syn/js/providers/Nav');
+
+  function Truncate (item) {
+
+    // ============
+
+    this.item = item;
+
+    this.description = this.item.find('.description:first');
+
+    this.textWrapper = this.item.find('.item-text:first');
+
+    this.reference = this.item.find('.reference:first');
+
+    this.text = this.description.text();
+
+    this.words = this.text.split(' ');
+
+    this.height = parseInt(this.textWrapper.css('paddingBottom'));
+
+    this.truncated = false;
+
+    this.moreLabel = 'more';
+
+    this.lessLabel = 'less';
+
+    this.isIntro = ( this.item.attr('id') === 'intro' );
+
+    if ( ! this.isIntro ) {
+      this._id = this.item.attr('id').split('-')[1];
+    }
+
+    // ============
+
+    this.tagify();
+
+    if ( this.truncated ) {
+      item.addClass('is-truncated');
+      this.appendMoreButton();
+    }
+  }
+
+  Truncate.prototype.tagify = function () {
+
+    var self = this;
+
+    this.description.empty();
+
+    this.reference.hide();
+
+    var i = 0;
+
+    this.words.forEach(function (word, index) {
+
+      var span = $('<span class="word"></span>');
+
+      if ( self.truncated ) {
+        span.addClass('truncated');
+        span.hide();
+      }
+
+      span.text(word + ' ');
+
+      self.description.append(span);
+
+      if ( i === 5 ) {
+
+        var diff = self.textWrapper.height() > self.height;
+
+        if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
+
+          self.truncated = true;
+        }
+
+        i = -1;
+      }
+
+      i ++;
+    });
+  };
+
+  Truncate.prototype.appendMoreButton = function () {
+
+    var self = this;
+
+    // create more button
+
+    this.more = $('<span class="truncator"><i>... </i>[<a href=""></a>]</span>');
+
+    // more button's text
+
+    this.more.find('a').text(self.moreLabel);
+
+    // more button's on click behavior
+
+    this.more.find('a').on('click', function () {
+
+      var moreLink = $(this);
+
+      // Exit if already an animation in progress
+
+      if ( self.item.find('.is-showing').length ) {
+        return false;
+      }
+
+      Nav.scroll(self.item, function () {
+
+        // Show more
+
+        if ( moreLink.text() === self.moreLabel ) {
+          
+          // If is intro
+
+          if ( self.isIntro ) {
+            self.unTruncate();
+            moreLink.closest('span').find('.reference').show();
+            moreLink.text(self.lessLabel);
+            moreLink.closest('span').find('i').hide();
+          }
+          
+          else {
+            // If there is already stuff shown, hide it first
+
+            if ( self.item.find('.is-shown').length ) {
+              
+              // Trigger the toggle view to hide current shown items
+
+              $rootScope.publish("toggle view",
+                { view: "text", item: self._id });
+
+              // Listen on hiding done
+
+              $rootScope.subscribe('did hide view', function (options) {
+
+                // Make sure it concerns our item
+
+                if ( options.item === self._id )  {
+
+                  // untruncate
+
+                  setTimeout(function () {
+                    self.unTruncate();
+                  });
+                }
+              });
+            }
+
+            else {
+              self.unTruncate();
+              moreLink.closest('span').find('.reference').show();
+              moreLink.text(self.lessLabel);
+              moreLink.closest('span').find('i').hide();
+            }
+          }
+        }
+
+        // hide
+
+        else {
+          self.reTruncate();
+          moreLink.closest('span').find('.reference').hide();
+          moreLink.text(self.moreLabel);
+          moreLink.closest('span').find('i').show();
+        }
+      });
+
+      return false;
+    });
+
+    this.description.append(this.more);
+  };
+
+  Truncate.prototype.unTruncate = function () {
+      
+    var self = this;
+
+    var interval = 0;
+
+    var inc = 50;
+
+    // var inc = Math.ceil(self.height / self.words.length);
+
+    // show words 50 by 50
+
+    for ( var i = 0; i < this.words.length ; i += inc ) {
+      setTimeout(function () {
+        var k = this.i + inc;
+        for ( var j = this.i; j < k ; j ++ ) {
+          self.item.find('.truncated:eq(' + j + ')').show();
+        }
+      }.bind({ i: i }), interval += (inc * 1.5));
+    }
+
+    // on done showing words, wrap up
+  };
+
+  Truncate.prototype.reTruncate = function () {
+    
+    var self = this;
+
+    var interval = 0;
+
+    var inc = Math.ceil(self.height / self.words.length);
+
+    for ( var i = 0; i < this.words.length ; i += inc ) {
+      setTimeout(function () {
+        var k = this.i + inc;
+        for ( var j = this.i; j < k ; j ++ ) {
+          self.item.find('.truncated:eq(' + j + ')').hide();
+        }
+      }.bind({ i: i }), interval += (inc * 2));
+    }
+  };
+
+  module.exports = Truncate;  
+
+}();
+
+},{"syn/js/providers/Nav":63}],68:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  /**
+   *  @class    Upload
+   *  @arg      {HTMLElement} dropzone
+   *  @arg      {Input} file_input
+   *  @arg      {HTMLElement} thumbnail - Preview container
+   *  @arg      {Function} cb
+   */
+
+  function Upload (dropzone, file_input, thumbnail, cb) {
+    this.dropzone     =   dropzone;
+    this.file_input   =   file_input;
+    this.thumbnail    =   thumbnail;
+    this.cb           =   cb;
+
+    this.init();
+  }
+
+  Upload.prototype.init = function () {
+
+    if ( window.File ) {
+      if ( this.dropzone ) {
+        this.dropzone
+          .on('dragover',   this.hover.bind(this))
+          .on('dragleave',  this.hover.bind(this))
+          .on('drop',       this.handler.bind(this));
+      }
+
+      if ( this.file_input ) {
+        this.file_input.on('change', this.handler.bind(this));
+      }
+    }
+
+    else {
+      if ( dropzone ) {
+        dropzone.find('.modern').hide();
+      }
+    }
+  };
+
+  Upload.prototype.hover = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  Upload.prototype.handler = function (e) {
+    this.hover(e);
+
+    var files = e.target.files || e.originalEvent.dataTransfer.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+      this.preview(f, e.target);
+    }
+  };
+
+  Upload.prototype.preview = function(file, target) {
+    var upload = this;
+
+    var img = new Image();
+
+    img.classList.add("img-responsive");
+    img.classList.add("preview-image");
+    
+    img.addEventListener('load', function () {
+
+      $(img).data('file', file);
+
+      upload.thumbnail.empty().append(img);
+
+    }, false);
+    
+    img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+    if ( this.cb ) {
+      this.cb(null, file);
+    }
+  };
+
+  module.exports = Upload;
+
+} ();
+
+},{}],69:[function(require,module,exports){
+! function () {
+
+  'use strict';
+
+  function YouTube (url) {
+    var self = this;
+
+    var youtube;
+
+    var regexYouTube = /youtu\.?be.+v=([^&]+)/;
+
+    if ( regexYouTube.test(url) ) {
+      url.replace(regexYouTube, function (m, v) {
+        youtube = v;
+      });
+
+      if ( synapp.env === 'development' ) {
+        return;
+      }
+
+      var video_container = $('<div class="video-container"></div>');
+
+      video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
+
+      video_container.find('iframe')
+        .attr('src', 'http://www.youtube.com/embed/'
+          + youtube + '?autoplay=0');
+
+      return video_container;
+
+      var div = $('<div></div>');
+
+      div.addClass('youtube-preview');
+
+      div.data('video', youtube);
+
+      var img = $('<img>');
+
+      img.attr({
+        alt: 'YouTube',
+        src: 'http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg'
+      });
+
+      img.addClass('img-responsive youtube-thumbnail');
+
+      var button = $('<button></button>');
+
+      button.addClass('icon-play shy');
+
+      var i = $('<i></i>');
+
+      i.addClass('fa fa-youtube-play fa-3x');
+
+      // var raw = '<div class="youtube-preview" data-video="' + youtube + '"><img alt="YouTube" src="http://img.youtube.com/vi/' + youtube + '/hqdefault.jpg" class="img-responsive youtube-thumbnail" /><button class="icon-play hide"><i class="fa fa-youtube-play fa-3x"></i></button></div>';
+
+      // var elem = $(raw);
+
+      button.append(i);
+
+      div.append(img, button);
+
+      Play(div);
+
+      return div;
+    }
+  }
+
+  function resize (elem) {
+    var img   =   elem.find('img');
+
+    var icon  =   elem.find('.icon-play');
+
+    var h = icon.height();
+
+    icon.css({
+      'top': (img.offset().top + (img.height() / 2) - (h / 2)) + 'px'
+    });
+
+    icon.width(width);
+  }
+
+  function Play (elem) {
+
+    var img   =   elem.find('img');
+
+    var icon  =   elem.find('.icon-play');
+
+    $(window).on('resize', function () {
+      resize(elem);
+    });
+
+    img.on('load', function () {
+
+      resize(elem);
+
+      icon.find('.fa').on('click', function () {
+
+        var video_container = $('<div class="video-container"></div>');
+
+        var preview = $(this).closest('.youtube-preview');
+
+        preview
+          .empty()
+          .append(video_container);
+
+        video_container.append($('<iframe frameborder="0" width="300" height="175" allowfullscreen></iframe>'));
+
+        video_container.find('iframe')
+          .attr('src', 'http://www.youtube.com/embed/'
+            + preview.data('video') + '?autoplay=1'); 
+      });
+    });
+  }
+
+  module.exports = YouTube;
+
+} ();
+
+},{}],70:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7304,4 +8190,4 @@ module.exports={
 
 } ();
 
-},{}]},{},[49]);
+},{}]},{},[1]);

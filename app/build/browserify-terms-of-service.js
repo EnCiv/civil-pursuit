@@ -9,7 +9,7 @@
   var config        =   require('../config.json');
 
   exports.task      =   function browserifyApp () {
-    return browserify(path.join(process.cwd(), 'app/web/js/pages/Terms-of-service.js'))
+    return browserify(path.join(process.cwd(), 'app/js/pages/Terms-of-service.js'))
       .bundle()
       .pipe(source('terms-of-service.js'))
       .pipe(gulp.dest(config.dirs['dist js']));

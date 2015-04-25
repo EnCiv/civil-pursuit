@@ -3,1173 +3,9 @@
   
   'use strict';
 
-  var Form = require('./Form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function forgotPassword ($vexContent) {
-    var signForm = $('form[name="forgot-password"]');
-
-    var form = new Form(signForm)
-
-    form.send(function () {
-      var domain = require('domain').create();
-      
-      domain.on('error', function (error) {
-        //
-      });
-      
-      domain.run(function () {
-
-        $('.forgot-password-pending.hide').removeClass('hide');
-        $('.forgot-password-email-not-found').not('.hide').addClass('hide');
-        $('.forgot-password-ok').not('.hide').addClass('hide');
-        
-        app.socket.once('no such email', function (_email) {
-          if ( _email === form.labels.email.val() ) {
-
-            $('.forgot-password-pending').addClass('hide');
-
-            setTimeout(function () {
-              // $('.forgot-password-pending').css('display', 'block');
-            });
-
-            $('.forgot-password-email-not-found').removeClass('hide');
-          }
-        });
-
-        app.socket.on('password is resettable', function (_email) {
-          if ( _email === form.labels.email.val() ) {
-            $('.forgot-password-pending').addClass('hide');
-
-            $('.forgot-password-ok').removeClass('hide');
-
-            setTimeout(function () {
-              vex.close($vexContent.data().vex.id);
-            }, 2500);
-          }
-        });
-
-        app.socket.emit('send password', form.labels.email.val());
-
-      });
-    });
-  }
-
-  module.exports = forgotPassword;
-
-} ();
-
-},{"./Form":2,"domain":10}],2:[function(require,module,exports){
-/*
- *  F   O   R   M
- *  *****************
-*/
-
-! function () {
-
-  'use strict';
-
-  /**
-   *  @class    Form
-   *  @arg      {HTMLElement} form
-   */
-
-  function Form (form) {
-
-    var self = this;
-
-    this.form = form;
-
-    this.labels = {};
-
-    this.form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
-
-    // #193 Disable <Enter> keys
-
-    this.form.find('input').on('keydown', function (e) {
-      if ( e.keyCode === 13 ) {
-        return false;
-      }
-    });
-
-    this.form.on('submit', function (e) {
-      setTimeout(function () {
-        self.submit(e);
-      });
-
-      return false;
-    });
-  }
-
-  Form.prototype.submit = function (e) {
-
-    console.warn('form submitting', this.form.attr('name'), e);
-
-    var self = this;
-
-    var errors = [];
-
-    self.form.find('[required]').each(function () {
-      var val = $(this).val();
-
-      if ( ! val ) {
-
-        if ( ! errors.length ) {
-          $(this)
-            .addClass('error')
-            .focus();
-        }
-
-        errors.push({ required: $(this).attr('name') });
-      }
-
-      else {
-        $(this)
-          .removeClass('error');
-      }
-    });
-
-    if ( ! errors.length ) {
-      this.ok();
-    }
-
-    return false;
-  };
-
-  Form.prototype.send = function (fn) {
-    this.ok = fn;
-
-    return this;
-  };
-
-  module.exports = Form;
-
-} ();
-
-},{}],3:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Form = require('./Form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function join ($vexContent) {
-    var $form = $('form[name="join"]');
-
-    $form.find('.i-agree').on('click', function () {
-
-      var agreed = $(this).find('.agreed');
-
-      if ( agreed.hasClass('fa-square-o') ) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      }
-      else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-
-    var form = new Form($form);
-
-    function join () {
-      app.domain.run(function () {
-
-        $form.find('.please-agree').hide();
-        $form.find('.already-taken').hide();
-        
-        if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
-          $form.find('.please-agree').show();
-
-          return;
-        }
-
-        if ( form.labels.password.val() !== form.labels.confirm.val() ) {
-          form.labels.confirm.focus().addClass('error');
-
-          return;
-        }
-
-        $.ajax({
-          url: '/sign/up',
-          type: 'POST',
-          data: {
-            email: form.labels.email.val(),
-            password: form.labels.password.val()
-          }
-        })
-          
-          .error(function (response, state, code) {
-            if ( response.status === 401 ) {
-              $form.find('.already-taken').show();
-            }
-          })
-          
-          .success(function (response) {
-            synapp.user = response.user;
-            
-            $('a.is-in').css('display', 'inline');
-
-            $('.topbar .is-out').remove();
-
-            vex.close($vexContent.data().vex.id);
-          });
-
-      });
-    }
-
-    form.send(join);
-  }
-
-  module.exports = join;
-
-} ();
-
-},{"./Form":2}],4:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Form = require('./Form');
-  var Nav = require('./Nav');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function login ($vexContent) {
-    var signForm = $('form[name="login"]');
-
-    var form = new Form(signForm);
-
-    function login () {
-      app.domain.run(function () {
-
-        if ( $('.login-error-404').hasClass('is-shown') ) {
-          return Nav.hide($('.login-error-404'), app.domain.intercept(function () {
-            form.send(login);
-            form.form.submit();
-          }))
-        }
-
-        if ( $('.login-error-401').hasClass('is-shown') ) {
-          return Nav.hide($('.login-error-401'), app.domain.intercept(function () {
-            form.send(login);
-            form.form.submit();
-          }))
-        }
-        
-        $.ajax({
-            url         :   '/sign/in',
-            type        :   'POST',
-            data        :   {
-              email     :   form.labels.email.val(),
-              password  :   form.labels.password.val()
-            }})
-
-          .error(function (response) {
-            switch ( response.status ) {
-              case 404:
-                Nav.show($('.login-error-404'));
-                break;
-
-              case 401:
-                Nav.show($('.login-error-401'));
-                break;
-            }
-          })
-
-          .success(function (response) {
-
-            synapp.user = response.user;
-
-            $('a.is-in').css('display', 'inline');
-
-            $('.topbar .is-out').remove();
-
-            vex.close($vexContent.data().vex.id);
-
-            // $('.login-modal').modal('hide');
-
-            // signForm.find('section').hide(2000);
-
-          });
-
-      });
-    }
-
-    form.send(login);
-  }
-
-  module.exports = login;
-
-} ();
-
-},{"./Form":2,"./Nav":5}],5:[function(require,module,exports){
-(function (process){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  N   A   V
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function toggle (elem, poa, cb) {
-    if ( ! elem.hasClass('is-toggable') ) {
-      elem.addClass('is-toggable');
-    }
-
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    if ( elem.hasClass('is-shown') ) {
-      unreveal(elem, poa, cb);
-    }
-    else {
-      reveal(elem, poa, cb);
-    }
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function reveal (elem, poa, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    if ( typeof cb !== 'function' ) {
-      cb = console.log.bind(console);
-    }
-
-    emitter.revealed = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-      if ( ! elem.hasClass('is-toggable') ) {
-        elem.addClass('is-toggable');
-      }
-
-      console.log('%c reveal', 'font-weight: bold',
-        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
-
-      if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-        var error = new Error('Animation already in progress');
-        error.code = 'ANIMATION_IN_PROGRESS';
-        return cb(error);
-      }
-
-      elem.removeClass('is-hidden').addClass('is-showing');
-
-      if ( poa ) {
-        scroll(poa, function () {
-          show(elem, function () {
-            emitter.emit('success');
-            cb();
-          });
-        });
-      }
-
-      else {
-        show(elem, function () {
-          emitter.emit('success');
-          cb();
-        });
-      }
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function unreveal (elem, poa, cb) {
-    if ( ! elem.hasClass('is-toggable') ) {
-      elem.addClass('is-toggable');
-    }
-
-    console.log('%c unreveal', 'font-weight: bold',
-      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
-
-    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    elem.removeClass('is-shown').addClass('is-hiding');
-
-    if ( poa ) {
-      scroll(poa, function () {
-        hide(elem, cb);
-      });
-    }
-
-    else {
-      hide(elem, cb);
-    }
-  }
-
-  /**
-   *  @function scroll
-   *  @description Scroll the page till the point of attention is at the top of the screen
-   *  @return null
-   *  @arg {function} pointOfAttention - jQuery List
-   *  @arg {function} cb - Function to call once scroll is complete
-   *  @arg {number} speed - A number of milliseconds to set animation duration
-   */
-
-  function scroll (pointOfAttention, cb, speed) {
-    // console.log('%c scroll', 'font-weight: bold',
-    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.scrolled = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    emitter.then = function (fn, fn2) {
-      emitter.on('success', fn);
-      if ( fn2 ) emitter.on('error', fn2);
-      return this;
-    };
-
-    var poa = (pointOfAttention.offset().top - 60);
-
-    var current = $('body,html').scrollTop();
-
-    if ( typeof cb !== 'function' ) {
-      cb = function () {};
-    }
-
-    if ( 
-      (current === poa) || 
-      (current > poa && (current - poa < 50)) ||
-      (poa > current && (poa - current < 50)) ) {
-
-      emitter.emit('success');
-
-      return typeof cb === 'function' ? cb() : true;
-    }
-
-    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing'))
-      
-      .then(function () {
-
-        emitter.emit('success');
-
-        if ( typeof cb === 'function' ) {
-          cb();
-        }
-
-      });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function show (elem, cb) {
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.shown = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-
-      console.log('%c show', 'font-weight: bold',
-        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
-
-      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-      
-      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-
-        emitter.emit('error', new Error('Already in progress'));
-        
-        if ( typeof cb === 'function' ) {
-          cb(new Error('Show failed'));
-        }
-
-        return false;
-      }
-
-      // make sure margin-top is equal to height for smooth scrolling
-
-      elem.css('margin-top', '-' + elem.height() + 'px');
-
-      // animate is-section
-
-      $.when(elem.find('.is-section:first')
-        .animate({
-          marginTop: 0
-        }, 500))
-      .then(function () {
-        elem.removeClass('is-showing').addClass('is-shown');
-          
-        if ( elem.css('margin-top') !== 0 ) {
-          elem.animate({'margin-top': 0}, 250);
-        }
-
-        emitter.emit('success');
-        
-        if ( cb ) {
-          cb();
-        }      
-      });
-
-      elem.animate({
-         opacity: 1
-        }, 500);
-
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function hide (elem, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.hiding = function (cb) {
-      this.on('hiding', cb);
-      return this;
-    };
-
-    emitter.hidden = function (cb) {
-      this.on('hidden', cb);
-      return this;
-    };
-
-    emitter.error = function (cb) {
-      this.on('error', cb);
-      return this;
-    };
-
-    process.nextTick(function () {
-
-      var domain = require('domain').create();
-
-      domain.on('error', function (error) {
-        emitter.emit('error', error);
-      });
-
-      domain.run(function () {
-
-        if ( ! elem.length ) {
-          return cb();
-        }
-
-        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-        if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
-          emitter.emit('bounced');
-          return false;
-        }
-
-        emitter.emit('hiding');
-
-        console.log('%c hide', 'font-weight: bold',
-          (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
-
-        elem.removeClass('is-shown').addClass('is-hiding');;
-
-        elem.find('.is-section:first').animate(
-          {
-            'margin-top': '-' + elem.height() + 'px',
-            // 'padding-top': elem.height() + 'px'
-          },
-
-          1000,
-
-          function () {
-            elem.removeClass('is-hiding').addClass('is-hidden');
-
-            emitter.emit('hidden');
-
-            if ( cb ) cb();
-          });
-
-        elem.animate({
-           opacity: 0
-          }, 1000);
-
-      });
-
-    })
-
-    return emitter;
-  }
-
-  module.exports = {
-    toggle:       toggle,
-    reveal:       reveal,
-    unreveal:     unreveal,
-    show:         show,
-    hide:         hide,
-    scroll:       scroll
-  };
-
-} ();
-
-}).call(this,require('_process'))
-},{"_process":13,"domain":10,"events":11}],6:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Form = require('./Form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function ResetPassword () {
-    
-  }
-
-  ResetPassword.prototype.render = function () {
-    this.form = $('#reset-password');
-
-    var form = new Form(this.form);
-
-    form.send(function () {
-
-      if ( form.labels.password.val() !== form.labels.confirm.val() ) {
-        return form.labels.confirm.addClass('error').focus();
-      }
-
-      $('.reset-password-loading.hide').removeClass('.hide');
-      $('.reset-password-not-found').not('.hide').addClass('hide');
-
-      var token;
-
-      location.search.replace(/(\?|&)token=((.){10})/,
-        function getToken (match, tokenBefore, tokenChain) {
-          token = tokenChain;
-        });
-
-      var ko = function (error) {
-        console.log(error);
-
-        if ( error.message === 'No such key/token' ) {
-          setTimeout(function () {
-            $('.reset-password-loading').addClass('hide');
-
-            $('.reset-password-not-found').removeClass('hide');
-          }, 1000);
-        }
-      };
-
-      app.socket.on('reset password ok', function (user) {
-        setTimeout(function () {
-          $('#reset-password .reset-password-loading').addClass('hide');
-
-          $('#reset-password .reset-password-ok').removeClass('hide');
-
-          $('#reset-password .form-section.collapse').addClass('hide');
-
-          setTimeout(function () {
-            $('.login-button').click();
-          }, 2500);
-
-          setTimeout(function () {
-            $('.login-modal [name="email"]').focus();
-          }, 3000);
-
-        }, 1000);
-      });
-
-      app.socket.on('reset password ko', ko);
-
-      app.socket.emit('reset password', form.labels.key.val(), token, form.labels.password.val());
-    });
-
-    // this.form.on('submit', function () {
-
-    //   var key       =   $(this).find('[name="key"]');
-    //   var password  =   $(this).find('[name="password"]');
-    //   var confirm   =   $(this).find('[name="confirm"]');
-
-    //   key.removeClass('error');
-
-    //   password.removeClass('error');
-      
-    //   confirm.removeClass('error');
-
-    //   if ( $('.reset-password-loading.in').length || $('.reset-password-ok.in').length ) {
-    //     return false;
-    //   }
-
-    //   if ( $('.reset-password-not-found.in').length ) {
-    //      $('.reset-password-not-found').collapse('hide');
-    //   }
-
-    //   if ( ! key.val() ) {
-    //     key.addClass('error').focus();
-    //   }
-
-    //   else if ( ! password.val() ) {
-    //     password.addClass('error').focus();
-    //   }
-
-    //   else if ( ! confirm.val() || confirm.val() !== password.val() ) {
-    //     confirm.addClass('error').focus();
-    //   }
-
-    //   else {
-
-    //     console.log('ping');
-
-    //     $('.reset-password-loading').collapse('show');
-
-    //     var token;
-
-    //     location.search.replace(/(\?|&)token=((.){10})/,
-    //       function getToken (match, tokenBefore, tokenChain) {
-    //         token = tokenChain;
-    //       });
-
-    //     var ko = function (error) {
-    //       console.log(error);
-
-    //       if ( error.message === 'No such key/token' ) {
-    //         setTimeout(function () {
-    //           $('.reset-password-loading').collapse('hide');
-
-    //           $('.reset-password-not-found').collapse('show');
-    //         }, 1000);
-    //       }
-    //     };
-
-    //     app.socket.on('reset password ok', function (user) {
-    //       setTimeout(function () {
-    //         $('#reset-password .reset-password-loading').collapse('hide');
-
-    //         $('#reset-password .reset-password-ok').collapse('show');
-
-    //         $('#reset-password .form-section.collapse').collapse('hide');
-
-    //         setTimeout(function () {
-    //           $('#login-modal').modal('show');
-    //         }, 2500);
-
-    //         setTimeout(function () {
-    //           $('#login-modal [name="email"]').focus();
-    //         }, 3500);
-
-    //       }, 1000);
-    //     });
-
-    //     app.socket.on('reset password ko', ko);
-
-    //     app.socket.emit('reset password', key.val(), token, password.val());
-
-    //   }
-
-    //   return false;
-    // });
-  };
-
-  module.exports = ResetPassword;
-
-} ();
-
-},{"./Form":2}],7:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  S   I   G   N
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var Nav = require('./Nav');
-  var login = require('./Login');
-  var join = require('./Join');
-  var forgotPassword = require('./Forgot-Password');
-
-  function Sign () {
-    
-  }
-
-  Sign.dialog = {
-
-    login: function () {
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      vex.dialog.confirm({
-
-        afterOpen: function ($vexContent) {
-          $('.login-button')
-            .off('click')
-            .on('click', function () {
-              vex.close();
-            });
-
-          login($vexContent);
-
-          $vexContent.find('.forgot-password-link').on('click', function () {
-            Sign.dialog.forgotPassword();
-            vex.close($vexContent.data().vex.id);
-            return false;
-          });
-        },
-
-        afterClose: function () {
-          $('.login-button').on('click', Sign.dialog.login);
-        },
-
-        message: $('#login').text(),
-
-        buttons: [
-           //- $.extend({}, vex.dialog.buttons.YES, {
-           //-    text: 'Login'
-           //-  }),
-
-           $.extend({}, vex.dialog.buttons.NO, {
-              text: 'x Close'
-            })
-        ]
-      });
-    },
-
-    join: function () {
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      vex.dialog.confirm({
-
-        afterOpen: function ($vexContent) {
-          $('.join-button')
-            .off('click')
-            .on('click', function () {
-              vex.close();
-            });
-
-          join($vexContent);
-        },
-
-        afterClose: function () {
-          $('.join-button').on('click', Sign.dialog.join);
-        },
-
-        message: $('#join').text(),
-        buttons: [
-           //- $.extend({}, vex.dialog.buttons.YES, {
-           //-    text: 'Login'
-           //-  }),
-
-           $.extend({}, vex.dialog.buttons.NO, {
-              text: 'x Close'
-            })
-        ],
-        callback: function(value) {
-          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-        },
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
-        }
-      });
-    },
-
-    forgotPassword: function () {
-
-      console.log('helllo')
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      vex.dialog.confirm({
-
-        afterOpen: function ($vexContent) {
-          $('.forgot-password-link')
-            .off('click')
-            .on('click', function () {
-              vex.close();
-              return false;
-            });
-
-          forgotPassword($vexContent);
-        },
-
-        afterClose: function () {
-          $('.forgot-password-link').on('click', Sign.dialog.forgotPassword);
-        },
-
-        message: $('#forgot-password').text(),
-        buttons: [
-           //- $.extend({}, vex.dialog.buttons.YES, {
-           //-    text: 'Login'
-           //-  }),
-
-           $.extend({}, vex.dialog.buttons.NO, {
-              text: 'x Close'
-            })
-        ],
-        callback: function(value) {
-          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-        },
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
-        }
-      });
-
-      return false;
-    }
-
-  };
-
-  Sign.prototype.render = function () {
-    // this.signIn();
-    // this.signUp();
-    // this.forgotPassword();
-
-    app.socket.on('online users', function (online) {
-      $('.online-users').text(online);
-    });
-
-    $('.topbar-right').removeClass('hide');
-
-    if ( ! synapp.user ) {
-      $('.login-button').on('click', Sign.dialog.login);
-      $('.join-button').on('click', Sign.dialog.join);
-      $('.topbar .is-in').hide();
-    }
-
-    else {
-      $('.topbar .is-out').remove();
-    }
-  };
-
-  module.exports = Sign;
-
-} ();
-
-},{"./Forgot-Password":1,"./Join":3,"./Login":4,"./Nav":5}],8:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  S   Y   N   A   P   P
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
-
-  'use strict';
-
-  var domain    =   require('domain');
-
-  /**
-   *  @class Synapp
-   *  @extends EventEmitter
-   */
-
-  function Synapp () {
-    var self = this;
-
-    this.domain = domain.create();
-
-    this.domain.intercept = function (fn, _self) {
-
-      if ( typeof fn !== 'function' ) {
-        fn = function () {};
-      }
-
-      return function (error) {
-        if ( error && error instanceof Error ) {
-          self.domain.emit('error', error);
-        }
-
-        else {
-          var args = Array.prototype.slice.call(arguments);
-
-          args.shift();
-
-          fn.apply(_self, args);
-        }
-      };
-
-    };
-
-    this.domain.on('error', function (error) {
-      console.error('Synapp error', error.stack.split(/\n/));
-    });
-
-    this.location = {};
-
-    this.domain.run(function () {
-
-      /** Location */
-
-      if ( window.location.pathname ) {
-
-        if ( /^\/item\//.test(window.location.pathname) ) {
-          self.location.item = window.location.pathname.split(/\//)[2];
-        }
-
-      }
-
-      /** Socket */
-      self.socket = io.connect(synapp.protocol + '://' + location.hostname + ':' + location.port);
-
-      self.socket.once('connect', function () {
-        /** @deprecated */
-        self.emit('connect');
-
-        self.emit('ready');
-      });
-
-      self.socket.on('error', function (error) {
-        console.log('socket error', error);
-      });
-
-      self.evaluations = [];
-
-      self.cache = {
-        template: {
-          item: null
-        }
-      };
-
-      if ( synapp.user ) {
-        $('.is-in').removeClass('is-in');
-      }
-    });
-  }
-
-  require('util').inherits(Synapp, require('events').EventEmitter);
-
-  /**
-   *  @method connect
-   *  @description Sugar to register a listener to the "connect" event
-   *  @arg {function} fn
-   *  @deprecated Use ready instead
-   */
-
-  Synapp.prototype.connect = function (fn) {
-    this.on('connect', fn);
-
-    return this;
-  };
-
-  /**
-   *  @method ready
-   *  @description Sugar to register a listener to the "ready" event
-   *  @arg {function} fn
-   */
-
-  Synapp.prototype.ready = function (fn) {
-    this.on('ready', fn);
-
-    return this;
-  };
-
-  // Export
-
-  if ( module && module.exports ) {
-    module.exports = Synapp;
-  }
-
-  if ( typeof window === 'object' ) {
-    window.Synapp = Synapp;
-  }
-
-} ();
-
-},{"domain":10,"events":11,"util":15}],9:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Synapp = require('../Synapp');
-  var Sign = require('../Sign');
-  var ResetPassword = require('../Reset-password');
+  var Synapp = require('syn/js/Synapp');
+  var Sign = require('syn/js/components/Sign');
+  var ResetPassword = require('syn/js/components/Reset-password');
 
   window.app = new Synapp();
 
@@ -1181,7 +17,7 @@
 
 } ();
 
-},{"../Reset-password":6,"../Sign":7,"../Synapp":8}],10:[function(require,module,exports){
+},{"syn/js/Synapp":8,"syn/js/components/Reset-password":12,"syn/js/components/Sign":13}],2:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1249,7 +85,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":11}],11:[function(require,module,exports){
+},{"events":3}],3:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1552,7 +388,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],12:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1577,7 +413,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],13:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1665,14 +501,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],14:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],15:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2262,4 +1098,1230 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":14,"_process":13,"inherits":12}]},{},[9]);
+},{"./support/isBuffer":6,"_process":5,"inherits":4}],8:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  S   Y   N   A   P   P
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var domain    =   require('domain');
+  var Socket    =   require('syn/js/providers/Socket');
+  var Cache     =   require('syn/js/providers/Cache');
+
+  function Domain (onError) {
+    return domain.create().on('error', onError);
+  }
+
+  /**
+   *  @class Synapp
+   *  @extends EventEmitter
+   */
+
+  function Synapp () {
+    var self = this;
+
+    this.domain = new Domain(function (error) {
+      console.error('Synapp error', error.stack);
+    });
+
+    this.domain.intercept = function (fn, _self) {
+
+      if ( typeof fn !== 'function' ) {
+        fn = function () {};
+      }
+
+      return function (error) {
+        if ( error && error instanceof Error ) {
+          self.domain.emit('error', error);
+        }
+
+        else {
+          var args = Array.prototype.slice.call(arguments);
+
+          args.shift();
+
+          fn.apply(_self, args);
+        }
+      };
+    };
+
+    this.location = {};
+
+    this.cache = new Cache();
+
+    this.domain.run(function () {
+
+      /** Location */
+
+      if ( window.location.pathname ) {
+
+        if ( /^\/item\//.test(window.location.pathname) ) {
+          self.location.item = window.location.pathname.split(/\//)[2];
+        }
+
+      }
+
+      self.socket = new Socket(self.emit.bind(self)).socket;
+
+      // self.evaluations = [];
+
+      // self.cache = {
+      //   template: {
+      //     item: null
+      //   }
+      // };
+
+      // if ( synapp.user ) {
+      //   $('.is-in').removeClass('is-in');
+      // }
+    });
+  }
+
+  require('util').inherits(Synapp, require('events').EventEmitter);
+
+  /**
+   *  @method connect
+   *  @description Sugar to register a listener to the "connect" event
+   *  @arg {function} fn
+   *  @deprecated Use ready instead
+   */
+
+  Synapp.prototype.connect = function (fn) {
+    this.on('connect', fn);
+
+    return this;
+  };
+
+  /**
+   *  @method ready
+   *  @description Sugar to register a listener to the "ready" event
+   *  @arg {function} fn
+   */
+
+  Synapp.prototype.ready = function (fn) {
+    this.on('ready', fn);
+
+    return this;
+  };
+
+  // Export
+
+  if ( module && module.exports ) {
+    module.exports = Synapp;
+  }
+
+  if ( typeof window === 'object' ) {
+    window.Synapp = Synapp;
+  }
+
+} ();
+
+},{"domain":2,"events":3,"syn/js/providers/Cache":14,"syn/js/providers/Socket":17,"util":7}],9:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('syn/js/providers/Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function forgotPassword ($vexContent) {
+    var signForm = $('form[name="forgot-password"]');
+
+    var form = new Form(signForm)
+
+    form.send(function () {
+      var domain = require('domain').create();
+      
+      domain.on('error', function (error) {
+        //
+      });
+      
+      domain.run(function () {
+
+        $('.forgot-password-pending.hide').removeClass('hide');
+        $('.forgot-password-email-not-found').not('.hide').addClass('hide');
+        $('.forgot-password-ok').not('.hide').addClass('hide');
+        
+        app.socket.once('no such email', function (_email) {
+          if ( _email === form.labels.email.val() ) {
+
+            $('.forgot-password-pending').addClass('hide');
+
+            setTimeout(function () {
+              // $('.forgot-password-pending').css('display', 'block');
+            });
+
+            $('.forgot-password-email-not-found').removeClass('hide');
+          }
+        });
+
+        app.socket.on('password is resettable', function (_email) {
+          if ( _email === form.labels.email.val() ) {
+            $('.forgot-password-pending').addClass('hide');
+
+            $('.forgot-password-ok').removeClass('hide');
+
+            setTimeout(function () {
+              vex.close($vexContent.data().vex.id);
+            }, 2500);
+          }
+        });
+
+        app.socket.emit('send password', form.labels.email.val());
+
+      });
+    });
+  }
+
+  module.exports = forgotPassword;
+
+} ();
+
+},{"domain":2,"syn/js/providers/Form":15}],10:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('syn/js/providers/Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function join ($vexContent) {
+    var $form = $('form[name="join"]');
+
+    $form.find('.i-agree').on('click', function () {
+
+      var agreed = $(this).find('.agreed');
+
+      if ( agreed.hasClass('fa-square-o') ) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      }
+      else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    var form = new Form($form);
+
+    function join () {
+      app.domain.run(function () {
+
+        $form.find('.please-agree').hide();
+        $form.find('.already-taken').hide();
+        
+        if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
+          $form.find('.please-agree').show();
+
+          return;
+        }
+
+        if ( form.labels.password.val() !== form.labels.confirm.val() ) {
+          form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: form.labels.email.val(),
+            password: form.labels.password.val()
+          }
+        })
+          
+          .error(function (response, state, code) {
+            if ( response.status === 401 ) {
+              $form.find('.already-taken').show();
+            }
+          })
+          
+          .success(function (response) {
+            synapp.user = response.user;
+            
+            $('a.is-in').css('display', 'inline');
+
+            $('.topbar .is-out').remove();
+
+            vex.close($vexContent.data().vex.id);
+          });
+
+      });
+    }
+
+    form.send(join);
+  }
+
+  module.exports = join;
+
+} ();
+
+},{"syn/js/providers/Form":15}],11:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('syn/js/providers/Form');
+  var Nav = require('syn/js/providers/Nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function login ($vexContent) {
+    var signForm = $('form[name="login"]');
+
+    var form = new Form(signForm);
+
+    function login () {
+      app.domain.run(function () {
+
+        if ( $('.login-error-404').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-404'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
+
+        if ( $('.login-error-401').hasClass('is-shown') ) {
+          return Nav.hide($('.login-error-401'), app.domain.intercept(function () {
+            form.send(login);
+            form.form.submit();
+          }))
+        }
+        
+        $.ajax({
+            url         :   '/sign/in',
+            type        :   'POST',
+            data        :   {
+              email     :   form.labels.email.val(),
+              password  :   form.labels.password.val()
+            }})
+
+          .error(function (response) {
+            switch ( response.status ) {
+              case 404:
+                Nav.show($('.login-error-404'));
+                break;
+
+              case 401:
+                Nav.show($('.login-error-401'));
+                break;
+            }
+          })
+
+          .success(function (response) {
+
+            synapp.user = response.user;
+
+            $('a.is-in').css('display', 'inline');
+
+            $('.topbar .is-out').remove();
+
+            vex.close($vexContent.data().vex.id);
+
+            // $('.login-modal').modal('hide');
+
+            // signForm.find('section').hide(2000);
+
+          });
+
+      });
+    }
+
+    form.send(login);
+  }
+
+  module.exports = login;
+
+} ();
+
+},{"syn/js/providers/Form":15,"syn/js/providers/Nav":16}],12:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var Form = require('syn/js/providers/Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function ResetPassword () {
+    
+  }
+
+  ResetPassword.prototype.render = function () {
+    this.form = $('#reset-password');
+
+    var form = new Form(this.form);
+
+    form.send(function () {
+
+      if ( form.labels.password.val() !== form.labels.confirm.val() ) {
+        return form.labels.confirm.addClass('error').focus();
+      }
+
+      $('.reset-password-loading.hide').removeClass('.hide');
+      $('.reset-password-not-found').not('.hide').addClass('hide');
+
+      var token;
+
+      location.search.replace(/(\?|&)token=((.){10})/,
+        function getToken (match, tokenBefore, tokenChain) {
+          token = tokenChain;
+        });
+
+      var ko = function (error) {
+        console.log(error);
+
+        if ( error.message === 'No such key/token' ) {
+          setTimeout(function () {
+            $('.reset-password-loading').addClass('hide');
+
+            $('.reset-password-not-found').removeClass('hide');
+          }, 1000);
+        }
+      };
+
+      app.socket.on('reset password ok', function (user) {
+        setTimeout(function () {
+          $('#reset-password .reset-password-loading').addClass('hide');
+
+          $('#reset-password .reset-password-ok').removeClass('hide');
+
+          $('#reset-password .form-section.collapse').addClass('hide');
+
+          setTimeout(function () {
+            $('.login-button').click();
+          }, 2500);
+
+          setTimeout(function () {
+            $('.login-modal [name="email"]').focus();
+          }, 3000);
+
+        }, 1000);
+      });
+
+      app.socket.on('reset password ko', ko);
+
+      app.socket.emit('reset password', form.labels.key.val(), token, form.labels.password.val());
+    });
+
+    // this.form.on('submit', function () {
+
+    //   var key       =   $(this).find('[name="key"]');
+    //   var password  =   $(this).find('[name="password"]');
+    //   var confirm   =   $(this).find('[name="confirm"]');
+
+    //   key.removeClass('error');
+
+    //   password.removeClass('error');
+      
+    //   confirm.removeClass('error');
+
+    //   if ( $('.reset-password-loading.in').length || $('.reset-password-ok.in').length ) {
+    //     return false;
+    //   }
+
+    //   if ( $('.reset-password-not-found.in').length ) {
+    //      $('.reset-password-not-found').collapse('hide');
+    //   }
+
+    //   if ( ! key.val() ) {
+    //     key.addClass('error').focus();
+    //   }
+
+    //   else if ( ! password.val() ) {
+    //     password.addClass('error').focus();
+    //   }
+
+    //   else if ( ! confirm.val() || confirm.val() !== password.val() ) {
+    //     confirm.addClass('error').focus();
+    //   }
+
+    //   else {
+
+    //     console.log('ping');
+
+    //     $('.reset-password-loading').collapse('show');
+
+    //     var token;
+
+    //     location.search.replace(/(\?|&)token=((.){10})/,
+    //       function getToken (match, tokenBefore, tokenChain) {
+    //         token = tokenChain;
+    //       });
+
+    //     var ko = function (error) {
+    //       console.log(error);
+
+    //       if ( error.message === 'No such key/token' ) {
+    //         setTimeout(function () {
+    //           $('.reset-password-loading').collapse('hide');
+
+    //           $('.reset-password-not-found').collapse('show');
+    //         }, 1000);
+    //       }
+    //     };
+
+    //     app.socket.on('reset password ok', function (user) {
+    //       setTimeout(function () {
+    //         $('#reset-password .reset-password-loading').collapse('hide');
+
+    //         $('#reset-password .reset-password-ok').collapse('show');
+
+    //         $('#reset-password .form-section.collapse').collapse('hide');
+
+    //         setTimeout(function () {
+    //           $('#login-modal').modal('show');
+    //         }, 2500);
+
+    //         setTimeout(function () {
+    //           $('#login-modal [name="email"]').focus();
+    //         }, 3500);
+
+    //       }, 1000);
+    //     });
+
+    //     app.socket.on('reset password ko', ko);
+
+    //     app.socket.emit('reset password', key.val(), token, password.val());
+
+    //   }
+
+    //   return false;
+    // });
+  };
+
+  module.exports = ResetPassword;
+
+} ();
+
+},{"syn/js/providers/Form":15}],13:[function(require,module,exports){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  S   I   G   N
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  var Nav             =   require('syn/js/providers/Nav');
+  var login           =   require('syn/js/components/Login');
+  var join            =   require('syn/js/components/Join');
+  var forgotPassword  =   require('syn/js/components/Forgot-Password');
+
+  function Sign () {
+    
+  }
+
+  Sign.dialog = {
+
+    login: function () {
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function ($vexContent) {
+          $('.login-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+
+          login($vexContent);
+
+          $vexContent.find('.forgot-password-link').on('click', function () {
+            Sign.dialog.forgotPassword();
+            vex.close($vexContent.data().vex.id);
+            return false;
+          });
+        },
+
+        afterClose: function () {
+          $('.login-button').on('click', Sign.dialog.login);
+        },
+
+        message: $('#login').text(),
+
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ]
+      });
+    },
+
+    join: function () {
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function ($vexContent) {
+          $('.join-button')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+            });
+
+          join($vexContent);
+        },
+
+        afterClose: function () {
+          $('.join-button').on('click', Sign.dialog.join);
+        },
+
+        message: $('#join').text(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    },
+
+    forgotPassword: function () {
+
+      console.log('helllo')
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function ($vexContent) {
+          $('.forgot-password-link')
+            .off('click')
+            .on('click', function () {
+              vex.close();
+              return false;
+            });
+
+          forgotPassword($vexContent);
+        },
+
+        afterClose: function () {
+          $('.forgot-password-link').on('click', Sign.dialog.forgotPassword);
+        },
+
+        message: $('#forgot-password').text(),
+        buttons: [
+           //- $.extend({}, vex.dialog.buttons.YES, {
+           //-    text: 'Login'
+           //-  }),
+
+           $.extend({}, vex.dialog.buttons.NO, {
+              text: 'x Close'
+            })
+        ],
+        callback: function(value) {
+          return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+        },
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+
+      return false;
+    }
+
+  };
+
+  Sign.prototype.render = function () {
+    // this.signIn();
+    // this.signUp();
+    // this.forgotPassword();
+
+    app.socket.on('online users', function (online) {
+      $('.online-users').text(online);
+    });
+
+    $('.topbar-right').removeClass('hide');
+
+    if ( ! synapp.user ) {
+      $('.login-button').on('click', Sign.dialog.login);
+      $('.join-button').on('click', Sign.dialog.join);
+      $('.topbar .is-in').hide();
+    }
+
+    else {
+      $('.topbar .is-out').remove();
+    }
+  };
+
+  module.exports = Sign;
+
+} ();
+
+},{"syn/js/components/Forgot-Password":9,"syn/js/components/Join":10,"syn/js/components/Login":11,"syn/js/providers/Nav":16}],14:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  function Cache () {
+    this.entries = {};
+  }
+
+  Cache.prototype.get = function (key) {
+    return this.entries[key];
+  };
+
+  Cache.prototype.set = function (key, value) {
+    return this.entries[key] = value;
+  };
+
+  module.exports = Cache;
+
+} ();
+
+},{}],15:[function(require,module,exports){
+/*
+ *  F   O   R   M
+ *  *****************
+*/
+
+! function () {
+
+  'use strict';
+
+  /**
+   *  @class    Form
+   *  @arg      {HTMLElement} form
+   */
+
+  function Form (form) {
+
+    var self = this;
+
+    this.form = form;
+
+    this.labels = {};
+
+    this.form.find('[name]').each(function () {
+      self.labels[$(this).attr('name')] = $(this);
+    });
+
+    // #193 Disable <Enter> keys
+
+    this.form.find('input').on('keydown', function (e) {
+      if ( e.keyCode === 13 ) {
+        return false;
+      }
+    });
+
+    this.form.on('submit', function (e) {
+      setTimeout(function () {
+        self.submit(e);
+      });
+
+      return false;
+    });
+  }
+
+  Form.prototype.submit = function (e) {
+
+    console.warn('form submitting', this.form.attr('name'), e);
+
+    var self = this;
+
+    var errors = [];
+
+    self.form.find('[required]').each(function () {
+      var val = $(this).val();
+
+      if ( ! val ) {
+
+        if ( ! errors.length ) {
+          $(this)
+            .addClass('error')
+            .focus();
+        }
+
+        errors.push({ required: $(this).attr('name') });
+      }
+
+      else {
+        $(this)
+          .removeClass('error');
+      }
+    });
+
+    if ( ! errors.length ) {
+      this.ok();
+    }
+
+    return false;
+  };
+
+  Form.prototype.send = function (fn) {
+    this.ok = fn;
+
+    return this;
+  };
+
+  module.exports = Form;
+
+} ();
+
+},{}],16:[function(require,module,exports){
+(function (process){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  N   A   V
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+! function () {
+
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toggle (elem, poa, cb) {
+    if ( ! elem.hasClass('is-toggable') ) {
+      elem.addClass('is-toggable');
+    }
+
+    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+      var error = new Error('Animation already in progress');
+      error.code = 'ANIMATION_IN_PROGRESS';
+      return cb(error);
+    }
+
+    if ( elem.hasClass('is-shown') ) {
+      unreveal(elem, poa, cb);
+    }
+    else {
+      reveal(elem, poa, cb);
+    }
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function reveal (elem, poa, cb) {
+    var emitter = new (require('events').EventEmitter)();
+
+    if ( typeof cb !== 'function' ) {
+      cb = console.log.bind(console);
+    }
+
+    emitter.revealed = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    setTimeout(function () {
+      if ( ! elem.hasClass('is-toggable') ) {
+        elem.addClass('is-toggable');
+      }
+
+      console.log('%c reveal', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>'), elem.attr('class'));
+
+      if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+        var error = new Error('Animation already in progress');
+        error.code = 'ANIMATION_IN_PROGRESS';
+        return cb(error);
+      }
+
+      elem.removeClass('is-hidden').addClass('is-showing');
+
+      if ( poa ) {
+        scroll(poa, function () {
+          show(elem, function () {
+            emitter.emit('success');
+            cb();
+          });
+        });
+      }
+
+      else {
+        show(elem, function () {
+          emitter.emit('success');
+          cb();
+        });
+      }
+    });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function unreveal (elem, poa, cb) {
+    if ( ! elem.hasClass('is-toggable') ) {
+      elem.addClass('is-toggable');
+    }
+
+    console.log('%c unreveal', 'font-weight: bold',
+      (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+    if ( elem.hasClass('is-showing') || elem.hasClass('is-hiding') ) {
+      var error = new Error('Animation already in progress');
+      error.code = 'ANIMATION_IN_PROGRESS';
+      return cb(error);
+    }
+
+    elem.removeClass('is-shown').addClass('is-hiding');
+
+    if ( poa ) {
+      scroll(poa, function () {
+        hide(elem, cb);
+      });
+    }
+
+    else {
+      hide(elem, cb);
+    }
+  }
+
+  /**
+   *  @function scroll
+   *  @description Scroll the page till the point of attention is at the top of the screen
+   *  @return null
+   *  @arg {function} pointOfAttention - jQuery List
+   *  @arg {function} cb - Function to call once scroll is complete
+   *  @arg {number} speed - A number of milliseconds to set animation duration
+   */
+
+  function scroll (pointOfAttention, cb, speed) {
+    // console.log('%c scroll', 'font-weight: bold',
+    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
+
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.scrolled = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    emitter.then = function (fn, fn2) {
+      emitter.on('success', fn);
+      if ( fn2 ) emitter.on('error', fn2);
+      return this;
+    };
+
+    var poa = (pointOfAttention.offset().top - 60);
+
+    var current = $('body,html').scrollTop();
+
+    if ( typeof cb !== 'function' ) {
+      cb = function () {};
+    }
+
+    if ( 
+      (current === poa) || 
+      (current > poa && (current - poa < 50)) ||
+      (poa > current && (poa - current < 50)) ) {
+
+      emitter.emit('success');
+
+      return typeof cb === 'function' ? cb() : true;
+    }
+
+    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing'))
+      
+      .then(function () {
+
+        emitter.emit('success');
+
+        if ( typeof cb === 'function' ) {
+          cb();
+        }
+
+      });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function show (elem, cb) {
+
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.shown = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    setTimeout(function () {
+
+      console.log('%c show', 'font-weight: bold',
+        (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+      
+      if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+
+        emitter.emit('error', new Error('Already in progress'));
+        
+        if ( typeof cb === 'function' ) {
+          cb(new Error('Show failed'));
+        }
+
+        return false;
+      }
+
+      // make sure margin-top is equal to height for smooth scrolling
+
+      elem.css('margin-top', '-' + elem.height() + 'px');
+
+      // animate is-section
+
+      $.when(elem.find('.is-section:first')
+        .animate({
+          marginTop: 0
+        }, 500))
+      .then(function () {
+        elem.removeClass('is-showing').addClass('is-shown');
+          
+        if ( elem.css('margin-top') !== 0 ) {
+          elem.animate({'margin-top': 0}, 250);
+        }
+
+        emitter.emit('success');
+        
+        if ( cb ) {
+          cb();
+        }      
+      });
+
+      elem.animate({
+         opacity: 1
+        }, 500);
+
+    });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function hide (elem, cb) {
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.hiding = function (cb) {
+      this.on('hiding', cb);
+      return this;
+    };
+
+    emitter.hidden = function (cb) {
+      this.on('hidden', cb);
+      return this;
+    };
+
+    emitter.error = function (cb) {
+      this.on('error', cb);
+      return this;
+    };
+
+    process.nextTick(function () {
+
+      var domain = require('domain').create();
+
+      domain.on('error', function (error) {
+        emitter.emit('error', error);
+      });
+
+      domain.run(function () {
+
+        if ( ! elem.length ) {
+          return cb();
+        }
+
+        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+        if ( elem.hasClass('.is-showing') || elem.hasClass('.is-hiding') ) {
+          emitter.emit('bounced');
+          return false;
+        }
+
+        emitter.emit('hiding');
+
+        console.log('%c hide', 'font-weight: bold',
+          (elem.attr('id') ? '#' + elem.attr('id') + ' ' : ''), elem.attr('class'));
+
+        elem.removeClass('is-shown').addClass('is-hiding');;
+
+        elem.find('.is-section:first').animate(
+          {
+            'margin-top': '-' + elem.height() + 'px',
+            // 'padding-top': elem.height() + 'px'
+          },
+
+          1000,
+
+          function () {
+            elem.removeClass('is-hiding').addClass('is-hidden');
+
+            emitter.emit('hidden');
+
+            if ( cb ) cb();
+          });
+
+        elem.animate({
+           opacity: 0
+          }, 1000);
+
+      });
+
+    })
+
+    return emitter;
+  }
+
+  module.exports = {
+    toggle:       toggle,
+    reveal:       reveal,
+    unreveal:     unreveal,
+    show:         show,
+    hide:         hide,
+    scroll:       scroll
+  };
+
+} ();
+
+}).call(this,require('_process'))
+},{"_process":5,"domain":2,"events":3}],17:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+
+  function Socket (emit) {
+    var self = this;
+
+    /** Socket */
+    console.log('http://' + window.location.hostname + ':' + window.location.port)
+    self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
+
+    self.socket.once('connect', function () {
+      emit('ready');
+    });
+
+    self.socket.publish = function (event) {
+
+      var args = [];
+      var done;
+
+      for ( var i in arguments ) {
+        if ( +i ) {
+          if ( typeof arguments[i] === 'function' ) {
+            done = arguments[i];
+          }
+          else {
+            args.push(arguments[i]);
+          }
+        }
+      }
+
+      self.socket.emit.apply(self.socket, [event].concat(args));
+
+      self.socket.on('OK ' + event, done);
+
+    }
+
+    self.socket.on('error', function (error) {
+      console.error('socket error', error);
+    });
+  }
+
+  module.exports = Socket;
+
+} ();
+
+},{}]},{},[1]);

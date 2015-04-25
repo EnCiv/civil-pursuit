@@ -4,7 +4,7 @@
 
   var Synapp = require('syn/js/Synapp');
   var Sign = require('syn/js/components/Sign');
-  var ResetPassword = require('syn/js/components/Reset-Password');
+  var ResetPassword = require('syn/js/components/Reset-password');
 
   window.app = new Synapp();
 

@@ -9,7 +9,7 @@
   var config        =   require('../config.json');
 
   exports.task      =   function browserifyApp () {
-    return browserify(path.join(process.cwd(), 'app/web/js/pages/Profile.js'))
+    return browserify(path.join(process.cwd(), 'app/js/pages/Profile.js'))
       .bundle()
       .pipe(source('profile.js'))
       .pipe(gulp.dest(config.dirs['dist js']));
