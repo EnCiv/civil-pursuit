@@ -247,7 +247,7 @@
               // cache.route('synapp:homepage', (1000 * 60 * 60)),
               function landingPage (req, res, next) {
                 // res.superRender('pages/index.jade')
-                var html = require('syn/views/layout');
+                var html = require('syn/views/Layout');
 
                 res.send(html.toHTML(res.locals.pack()));
               })
