@@ -23,10 +23,13 @@
 
     this.client = webdriverio.remote(options).init(function () {
       
-      driver.client.url(options.url, function (error, url) {
-        if ( error ) {
-          return driver.emit('error', error);
-        }
+      driver.client.url(options.url);
+
+      if ( options.width && options.height ) {
+        driver.client.setViewportSize({ width: options.width, height: options.height });
+      }
+
+      driver.client.pause(0, function () {
         driver.emit('ready');
       });
 
