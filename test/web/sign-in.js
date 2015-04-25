@@ -23,7 +23,7 @@
       var domain = new Domain().on('error', done);
 
       domain.run(function () {
-        url = Page('Home');
+        url = process.env.SYNAPP_SELENIUM_TARGET + Page('Home');
 
         webdriver = new webDriver({ url: url });
 

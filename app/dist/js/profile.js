@@ -3438,7 +3438,7 @@ module.exports={
 
 } ();
 
-},{"promise":8,"syn/js/providers/Form":62,"syn/js/providers/Upload":68,"syn/js/providers/YouTube":69}],26:[function(require,module,exports){
+},{"promise":8,"syn/js/providers/Form":62,"syn/js/providers/Upload":67,"syn/js/providers/YouTube":68}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4299,7 +4299,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],32:[function(require,module,exports){
+},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":63,"syn/js/providers/Upload":67}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4453,7 +4453,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],33:[function(require,module,exports){
+},{"syn/js/providers/Nav":63,"syn/js/providers/Upload":67}],33:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -4704,19 +4704,16 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/YouTube":69}],37:[function(require,module,exports){
+},{"syn/js/providers/YouTube":68}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
 
-  var Truncate    =   require('syn/js/providers/Truncate');
   var Promote     =   require('syn/js/components/Promote');
   var Details     =   require('syn/js/components/Details');
   var Nav         =   require('syn/js/providers/Nav');
   var readMore    =   require('syn/js/providers/ReadMore');
   var Sign        =   require('syn/js/components/Sign');
-
-  var getPromotionPercentage = require('syn/models/Item/get-promotion-percentage');
 
   var S           =   require('string');
 
@@ -4732,11 +4729,11 @@ module.exports={
 
     // Create reference to promote if promotion enabled
 
-    this.promote = new Promote(this);
+    // this.promote = new Promote(this);
 
     // Create reference to details
 
-    this.details = new Details(this);
+    // this.details = new Details(this);
 
     // Set ID
 
@@ -4746,7 +4743,11 @@ module.exports={
 
     item.template.data('item', this);
 
-    // Subject
+    ///////////////////////////////////////////////////////////////////////////
+
+    'SUBJECT'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     item.find('subject')
       .attr('href', '/item/' + item.item._id + '/' + S(item.item.subject).slugify().s)
@@ -4764,17 +4765,29 @@ module.exports={
         return false;
       });
 
-    // Description
+    ///////////////////////////////////////////////////////////////////////////
+
+    'DESCRIPTION'
+
+    ///////////////////////////////////////////////////////////////////////////    
 
     item.find('description').text(item.item.description);
 
-    // Media
+    ///////////////////////////////////////////////////////////////////////////
+
+    'MEDIA'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     if ( !  item.find('media').find('img[data-rendered]').length ) {
       item.find('media').empty().append(this.media());
     }
 
-    // Truncate text once image has loaded
+    ///////////////////////////////////////////////////////////////////////////
+
+    'READ MORE'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     item.find('media').find('img').on('load', function () {
       if ( ! this.template.find('.more').length ) {
@@ -4783,7 +4796,11 @@ module.exports={
       }
     }.bind(item));
 
-    // References
+    ///////////////////////////////////////////////////////////////////////////
+
+    'REFERENCES'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     if ( (item.item.references) && item.item.references.length ) {
       item.find('reference')
@@ -4794,63 +4811,99 @@ module.exports={
       item.find('reference').empty();
     }
 
-    // Number of promotions
+    ///////////////////////////////////////////////////////////////////////////
+
+    'PROMOTIONS'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     item.find('promotions').text(item.item.promotions);
 
-    // Percent of promotions
+    ///////////////////////////////////////////////////////////////////////////
 
-    // item.find('promotions %').text(Math.ceil(item.item.promotions * 100 / item.item.views) + '%');
-    item.find('promotions %').text(getPromotionPercentage.apply(item.item));
+    'POPULARITY'
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    item.find('promotions %').text((item.item.popularity.number || 0) + '%');
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    'CHILDREN'
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    var buttonChildren = makeRelated();
+    buttonChildren.addClass('children-count');
+    buttonChildren.find('i').addClass('fa-fire');
+    buttonChildren.find('.related-number').text(item.item.children);
+    item.find('related').append(buttonChildren);
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    'HARMONY'
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    if ( 'harmony' in item.item ) {
+      var buttonHarmony = makeRelated();
+      buttonHarmony.find('i').addClass('fa-music');
+      buttonHarmony.find('.related-number').text(item.item.harmony);
+      item.find('related').append(buttonHarmony);
+    }
+
+    console.warn('buttonChildren', buttonChildren.html());
 
     // Related
-    switch ( item.item.type ) {
-      case 'Topic':
-        var problems = (item.item.related && item.item.related.Problem) || 0;
-        var button = makeRelated();
-        button.find('i').addClass('fa-fire');
-        button.find('.related-number').text(problems);
-        item.find('related').append(button);
-        break;
+    // switch ( item.item.type ) {
+    //   case 'Topic':
+    //     var problems = (item.item.related && item.item.related.Problem) || 0;
+    //     var button = makeRelated();
+    //     button.find('i').addClass('fa-fire');
+    //     button.find('.related-number').text(problems);
+    //     item.find('related').append(button);
+    //     break;
 
-      case 'Problem':
-        var agrees = (item.item.related && item.item.related.Agree) || 0;
-        var disagrees = (item.item.related && item.item.related.Disagree) || 0;
-        var mean = (agrees / (agrees + disagrees) * 100);
+    //   case 'Problem':
+    //     var agrees = (item.item.related && item.item.related.Agree) || 0;
+    //     var disagrees = (item.item.related && item.item.related.Disagree) || 0;
+    //     var mean = (agrees / (agrees + disagrees) * 100);
 
-        if ( isNaN(mean) ) {
-          mean = 0;
-        }
+    //     if ( isNaN(mean) ) {
+    //       mean = 0;
+    //     }
 
-        var button = makeRelated();
-        button.find('i').addClass('fa-music');
-        button.find('.related-number').text(mean + '%');
-        item.find('related').append(button);
+    //     var button = makeRelated();
+    //     button.find('i').addClass('fa-music');
+    //     button.find('.related-number').text(mean + '%');
+    //     item.find('related').append(button);
 
-        var solutions = (item.item.related && item.item.related.Solution) || 0;
-        button = makeRelated();
-        button.find('i').addClass('fa-tint');
-        button.find('.related-number').text(solutions);
-        item.find('related').append(button);
-        break;
+    //     var solutions = (item.item.related && item.item.related.Solution) || 0;
+    //     button = makeRelated();
+    //     button.find('i').addClass('fa-tint');
+    //     button.find('.related-number').text(solutions);
+    //     item.find('related').append(button);
+    //     break;
     
-      case 'Solution':
-        var pros = (item.item.related && item.item.related.Pro) || 0;
-        var cons = (item.item.related && item.item.related.Con) || 0;
+    //   case 'Solution':
+    //     var pros = (item.item.related && item.item.related.Pro) || 0;
+    //     var cons = (item.item.related && item.item.related.Con) || 0;
 
-        var mean = pros / (pros + cons);
+    //     var mean = pros / (pros + cons);
 
-        if ( isNaN(mean) ) {
-          mean = 0;
-        }
+    //     if ( isNaN(mean) ) {
+    //       mean = 0;
+    //     }
 
-        var button = makeRelated();
-        button.find('i').addClass('fa-music');
-        button.find('.related-number').text(mean + '%');
-        item.find('related').append(button);
+    //     var button = makeRelated();
+    //     button.find('i').addClass('fa-music');
+    //     button.find('.related-number').text(mean + '%');
+    //     item.find('related').append(button);
 
-        break;
-    }
+    //     break;
+    // }
+
+
 
     item.template.find('.counter').on('click', function () {
       var $trigger    =   $(this);
@@ -4859,15 +4912,27 @@ module.exports={
       item.find('toggle arrow').click();
     });
     
-    // Toggle promote
+    ///////////////////////////////////////////////////////////////////////////
+
+    'TOGGLE PROMOTE'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     item.find('toggle promote').on('click', require('syn/js/components/Item/view/toggle-promote'));
 
-    // Toggle details
+    ///////////////////////////////////////////////////////////////////////////
+
+    'TOGGLE DETAILS'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     item.find('toggle details').on('click', require('syn/js/components/Item/view/toggle-details'));
 
-    // Toggle arrow
+    ///////////////////////////////////////////////////////////////////////////
+
+    'TOGGLE ARROW'
+
+    ///////////////////////////////////////////////////////////////////////////
 
     item.find('toggle arrow')
       .removeClass('hide')
@@ -4880,7 +4945,7 @@ module.exports={
 
 } ();
 
-},{"string":18,"syn/js/components/Details":27,"syn/js/components/Item/view/toggle-arrow":38,"syn/js/components/Item/view/toggle-details":39,"syn/js/components/Item/view/toggle-promote":40,"syn/js/components/Promote":50,"syn/js/components/Sign":59,"syn/js/providers/Nav":63,"syn/js/providers/ReadMore":64,"syn/js/providers/Truncate":67,"syn/models/Item/get-promotion-percentage":70}],38:[function(require,module,exports){
+},{"string":18,"syn/js/components/Details":27,"syn/js/components/Item/view/toggle-arrow":38,"syn/js/components/Item/view/toggle-details":39,"syn/js/components/Item/view/toggle-promote":40,"syn/js/components/Promote":50,"syn/js/components/Sign":59,"syn/js/providers/Nav":63,"syn/js/providers/ReadMore":64}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7727,229 +7792,6 @@ module.exports={
 } ();
 
 },{}],67:[function(require,module,exports){
-; ! function () {
-
-  'use strict';
-
-  var Nav = require('syn/js/providers/Nav');
-
-  function Truncate (item) {
-
-    // ============
-
-    this.item = item;
-
-    this.description = this.item.find('.description:first');
-
-    this.textWrapper = this.item.find('.item-text:first');
-
-    this.reference = this.item.find('.reference:first');
-
-    this.text = this.description.text();
-
-    this.words = this.text.split(' ');
-
-    this.height = parseInt(this.textWrapper.css('paddingBottom'));
-
-    this.truncated = false;
-
-    this.moreLabel = 'more';
-
-    this.lessLabel = 'less';
-
-    this.isIntro = ( this.item.attr('id') === 'intro' );
-
-    if ( ! this.isIntro ) {
-      this._id = this.item.attr('id').split('-')[1];
-    }
-
-    // ============
-
-    this.tagify();
-
-    if ( this.truncated ) {
-      item.addClass('is-truncated');
-      this.appendMoreButton();
-    }
-  }
-
-  Truncate.prototype.tagify = function () {
-
-    var self = this;
-
-    this.description.empty();
-
-    this.reference.hide();
-
-    var i = 0;
-
-    this.words.forEach(function (word, index) {
-
-      var span = $('<span class="word"></span>');
-
-      if ( self.truncated ) {
-        span.addClass('truncated');
-        span.hide();
-      }
-
-      span.text(word + ' ');
-
-      self.description.append(span);
-
-      if ( i === 5 ) {
-
-        var diff = self.textWrapper.height() > self.height;
-
-        if ( diff && ! self.truncated && (index !== (self.words.length - 1)) ) {
-
-          self.truncated = true;
-        }
-
-        i = -1;
-      }
-
-      i ++;
-    });
-  };
-
-  Truncate.prototype.appendMoreButton = function () {
-
-    var self = this;
-
-    // create more button
-
-    this.more = $('<span class="truncator"><i>... </i>[<a href=""></a>]</span>');
-
-    // more button's text
-
-    this.more.find('a').text(self.moreLabel);
-
-    // more button's on click behavior
-
-    this.more.find('a').on('click', function () {
-
-      var moreLink = $(this);
-
-      // Exit if already an animation in progress
-
-      if ( self.item.find('.is-showing').length ) {
-        return false;
-      }
-
-      Nav.scroll(self.item, function () {
-
-        // Show more
-
-        if ( moreLink.text() === self.moreLabel ) {
-          
-          // If is intro
-
-          if ( self.isIntro ) {
-            self.unTruncate();
-            moreLink.closest('span').find('.reference').show();
-            moreLink.text(self.lessLabel);
-            moreLink.closest('span').find('i').hide();
-          }
-          
-          else {
-            // If there is already stuff shown, hide it first
-
-            if ( self.item.find('.is-shown').length ) {
-              
-              // Trigger the toggle view to hide current shown items
-
-              $rootScope.publish("toggle view",
-                { view: "text", item: self._id });
-
-              // Listen on hiding done
-
-              $rootScope.subscribe('did hide view', function (options) {
-
-                // Make sure it concerns our item
-
-                if ( options.item === self._id )  {
-
-                  // untruncate
-
-                  setTimeout(function () {
-                    self.unTruncate();
-                  });
-                }
-              });
-            }
-
-            else {
-              self.unTruncate();
-              moreLink.closest('span').find('.reference').show();
-              moreLink.text(self.lessLabel);
-              moreLink.closest('span').find('i').hide();
-            }
-          }
-        }
-
-        // hide
-
-        else {
-          self.reTruncate();
-          moreLink.closest('span').find('.reference').hide();
-          moreLink.text(self.moreLabel);
-          moreLink.closest('span').find('i').show();
-        }
-      });
-
-      return false;
-    });
-
-    this.description.append(this.more);
-  };
-
-  Truncate.prototype.unTruncate = function () {
-      
-    var self = this;
-
-    var interval = 0;
-
-    var inc = 50;
-
-    // var inc = Math.ceil(self.height / self.words.length);
-
-    // show words 50 by 50
-
-    for ( var i = 0; i < this.words.length ; i += inc ) {
-      setTimeout(function () {
-        var k = this.i + inc;
-        for ( var j = this.i; j < k ; j ++ ) {
-          self.item.find('.truncated:eq(' + j + ')').show();
-        }
-      }.bind({ i: i }), interval += (inc * 1.5));
-    }
-
-    // on done showing words, wrap up
-  };
-
-  Truncate.prototype.reTruncate = function () {
-    
-    var self = this;
-
-    var interval = 0;
-
-    var inc = Math.ceil(self.height / self.words.length);
-
-    for ( var i = 0; i < this.words.length ; i += inc ) {
-      setTimeout(function () {
-        var k = this.i + inc;
-        for ( var j = this.i; j < k ; j ++ ) {
-          self.item.find('.truncated:eq(' + j + ')').hide();
-        }
-      }.bind({ i: i }), interval += (inc * 2));
-    }
-  };
-
-  module.exports = Truncate;  
-
-}();
-
-},{"syn/js/providers/Nav":63}],68:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -8035,7 +7877,7 @@ module.exports={
 
 } ();
 
-},{}],69:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -8151,42 +7993,6 @@ module.exports={
   }
 
   module.exports = YouTube;
-
-} ();
-
-},{}],70:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  function Percentage (number) {
-    this.number = number;
-
-    this.ok = typeof number === 'number' && isFinite(number) && number <= 100 && number >= 0;
-  }
-
-  Percentage.prototype.toString = function() {
-    if ( this.ok ) {
-      return this.number.toString() + '%';
-    }
-
-    return '50%';
-  };
-
-  function getPromotionPercentage () {
-
-    var multiplyBy100 = this.promotions * 100;
-
-    if ( multiplyBy100 === 0 ) {
-      return new Percentage(0);
-    }
-
-    var divideByViews = Math.ceil(multiplyBy100 / this.views);
-
-    return new Percentage(divideByViews);
-  }
-
-  module.exports = getPromotionPercentage;
 
 } ();
 

@@ -3,6 +3,7 @@
   'use strict';
 
   require('should');
+  require('colors');
 
   var webDriver         =   require('syn/lib/webdriver');
   var Page              =   require('syn/lib/Page');
@@ -258,7 +259,7 @@
 
     it ( 'should have a top-level panel' , function ( done ) {
 
-      this.timeout(15000);
+      this.timeout(250000);
 
       var domain = new Domain().on('error', done);
 

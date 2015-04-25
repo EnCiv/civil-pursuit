@@ -16,6 +16,8 @@
 
     assert ( 'Type', require('../Type/.Type'));
 
+    // console.log('panel item', this.obj);
+
     ///////////////////////////////////////////////////////////////////////////
 
     this.obj
@@ -174,10 +176,10 @@
     should.$describe(
       "Popularity is a thing",
 
-      this.obj                        ['popularity'],
+      this.obj                              ['popularity'],
 
       function (it) {
-        it.should.be.ok.and.          is.an.Object;
+        it.should.be.ok.and.                is.an.Object;
       });
 
     ///////////////////////////////////////////////////////////////////////////
@@ -247,6 +249,37 @@
           .which.                       is.true;
       
       }.bind(this));
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    should.$describe(
+      "Children should be a number",
+
+      this.obj,
+
+      function (it) {
+        it.should.have.               property('children')
+          .which.                       is.a.Number;
+      
+      }.bind(this));
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    if ( this.obj.type.harmony.length ) {
+
+      should.$describe(
+        "Harmony should be a number",
+
+        this.obj,
+
+        function (it) {
+          it.should.have.               property('harmony')
+            .which.                       is.a.Number;
+        
+        }.bind(this));
+
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
 

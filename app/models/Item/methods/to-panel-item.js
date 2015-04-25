@@ -122,11 +122,11 @@
       }
 
       async.parallel({
-        lineage     :   getLineage,
+        // lineage     :   getLineage,
         type        :   getType,
         user        :   getUser,
         subtype     :   getSubtype,
-        children    :   countChildren
+        children    :   countChildren,
       }, domain.intercept(function (results) {
         
         item.type       =   results.type;

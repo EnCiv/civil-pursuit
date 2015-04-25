@@ -43,7 +43,10 @@
 
         elem('i.fa.fa-signal')
 
-      ])
+      ]),
+
+      elem('div', {}, [elem('span.related')]),
+
 
     ]);
 
