@@ -165,7 +165,9 @@
           av = child.options[attr];
         }
 
-        open += ' ' + attr + '="' + av + '"';
+        if ( av !== null && typeof av !== 'undefined' ) {
+          open += ' ' + attr + '="' + av + '"';
+        }
       }
       
     }

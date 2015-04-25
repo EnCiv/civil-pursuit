@@ -106,6 +106,8 @@
 
     it ( 'should have intro' , function ( done ) {
 
+      this.timeout(3500);
+
       require('./.utils/intro')(webdriver.client, done);
 
     } );
@@ -129,12 +131,27 @@
             webdriver.client.getText('#panel-' + Topic._id + ' .panel-title',
               domain.intercept(function (text) {
                 text.should.be.a.String.and.is.exactly(Topic.name);
+                // done();
+              }));
+
+            webdriver.client.getHTML('#panel-' + Topic._id + ' .items',
+              domain.intercept(function (html) {
+                (html.match(/id="item-/g) || []).length
+                  .should.be.exactly(6);
                 done();
               }));
 
           });
 
       });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should have a footer' , function ( done ) {
+
+      webdriver.client.isVisible('#footer', done);
 
     } );
 

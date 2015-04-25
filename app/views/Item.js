@@ -7,9 +7,15 @@
 
   module.exports = function (locals) {
 
+    locals = locals || {};
+
+    var itemOptions = {
+      id    :   locals.id
+    };
+
     return [
       
-      elem('.item', {}, [
+      elem('.item', itemOptions, [
 
         elem('.item-media-wrapper', {}, [
 

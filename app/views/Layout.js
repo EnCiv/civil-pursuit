@@ -114,7 +114,7 @@
 
     }),
 
-    elem('section', { role: 'footer' }),
+    elem('section#footer', { role: 'footer' }, require('syn/views/Footer')),
 
     elem('script', {
       $text   :   function (locals) {
