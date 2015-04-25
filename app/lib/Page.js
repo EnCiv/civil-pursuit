@@ -20,7 +20,7 @@
         return '/page/profile';
 
       case 'Sign Out':
-        return '/page/sign-out';
+        return '/sign/out';
     }
   }
 

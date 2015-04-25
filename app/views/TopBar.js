@@ -3,7 +3,7 @@
   'use strict';
 
   var Html5 = require('syn/lib/html5');
-  var elem = Html5.elem;
+  var e = Html5.elem;
 
   var config = require('syn/config.json');
 
@@ -11,39 +11,58 @@
 
   module.exports = function (locals) {
 
-    var TopBar                =   elem('.topbar');
-    var TopBarRight           =   elem('.topbar-right.hide');
-    var ButtonOnlineNow       =   elem('button.shy.online-now');
-    var spanOnlineUsers       =   elem('span.online-users');
-    var spanOnlineUsersLabel  =   elem('span', { $text: 'Online now: ' });
-    var ButtonLoginButton     =   elem('button.is-out.login-button', {}, [
-      elem('b', { $text: 'Login' }) ]);
-    var ButtonJoinButton     =   elem('button.is-out.join-button', {}, [
-      elem('b', { $text: 'Join' }) ]);
-    var LinkToProfile         =   elem('a.button.is-in', {
-      href                    :   Page('Profile'),
-      title                   :   'Profile'
-    }, [elem('i.fa.fa-user')]);
-    var LinkToSignOut         =   elem('a.button.is-in', {
-      href                    :   Page('Sign Out'),
-      title                   :   'Sign out'
-    }, [elem('i.fa.fa-user')]);
+    var TopBar = e('.topbar', {}, [
+      e('.topbar-right.hide', {}, [
+        
+        e('button.shy.online-now', {}, [
+          e('span', { $text: 'Online now: ' }),
+          e('span.online-users')
+        ]),
 
-    TopBar.children.push(TopBarRight);
+        e('button.is-out.login-button', {
+            $condition    :   function (locals) {
+              return ! locals.user;
+            }
+          },
+          [
+            e('b', { $text: 'Login' })
+          ]
+        ),
 
-    TopBarRight.children.push(
-      ButtonOnlineNow,
-      ButtonLoginButton,
-      LinkToProfile,
-      LinkToSignOut,
-      ButtonJoinButton
-    );
+        e('a.button.is-in', {
+            href   :   Page('Profile'),
+            title  :   'Profile'
+          },
+          [
+            e('i.fa.fa-user')
+          ]
+        ),
 
-    ButtonOnlineNow.children.push(spanOnlineUsersLabel, spanOnlineUsers);
+        e('a.button.is-in', {
+            href    :   Page('Sign Out'),
+            title   :   'Sign out'
+          },
+          [
+            e('i.fa.fa-sign-out')
+          ]
+        ),
 
-    var Logo = elem('#logo', {}, [
+        e('button.is-out.join-button', {
+            $condition    :   function (locals) {
+              return ! locals.user;
+            }
+          },
+          [
+            e('b', { $text: 'Join' })
+          ]
+        )
 
-      elem('a.pull-left', 
+      ])
+    ]);
+
+    var Logo = e('#logo', {}, [
+
+      e('a.pull-left', 
         {
           href: '/',
           'date-toggle':'tooltip',
@@ -53,12 +72,12 @@
 
         [
 
-          elem('img.img-responsive.logo-full', {
+          e('img.img-responsive.logo-full', {
             alt   :   'Synapp',
             src   :   'http://res.cloudinary.com/hscbexf6a/image/upload/e_make_transparent/v1415218424/Synaccord_logo_name_300x61_xyohja.png'
           }),
 
-          elem('img.img-responsive.logo-image.hide', {
+          e('img.img-responsive.logo-image.hide', {
             alt   :   'Synapp',
             src   :   'http://res.cloudinary.com/hscbexf6a/image/upload/e_make_transparent/v1415218424/Synaccord_logo_64x61_znpxlc.png'
           })
@@ -66,7 +85,7 @@
         ]
       ),
 
-      elem('a.button.beta', { href: '/' , $text: 'Beta' })
+      e('a.button.beta', { href: '/' , $text: 'Beta' })
 
     ]);
 

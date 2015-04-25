@@ -112,6 +112,10 @@
         
         socket.broadcast.emit('online users', Object.keys(users).length);
 
+        // EMIT IDENTITY
+
+        socket.emit('welcome', socket.synuser);
+
         socket
 
           /** On disconnect */

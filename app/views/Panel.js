@@ -8,8 +8,6 @@
 
   module.exports = function (locals) {
 
-    console.log('Panel', locals)
-
     return [
 
       elem('.panel.panel-default', {}, [

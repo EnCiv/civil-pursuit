@@ -75,8 +75,6 @@
       attempts.push('id',_resolved.id === resolved.id);
     }
 
-    console.log('attempts', attempts)
-
     return attempts.every(function (attempt) {
       return attempt;
     });
@@ -116,8 +114,6 @@
     var l = [];
 
     var cont = true;
-
-    console.log('child', child);
 
     if ( Array.isArray(child) ) {
       return

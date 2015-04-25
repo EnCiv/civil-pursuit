@@ -6949,8 +6949,11 @@ module.exports={
     console.log('http://' + window.location.hostname + ':' + window.location.port)
     self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
-    self.socket.once('connect', function () {
-      emit('ready');
+    self.socket.once('welcome', function (user) {
+      emit('ready', user);
+      if ( user ) {
+        $('a.is-in').css('display', 'inline');
+      }
     });
 
     self.socket.publish = function (event) {

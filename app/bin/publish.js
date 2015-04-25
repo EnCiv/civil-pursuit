@@ -62,6 +62,7 @@
 
     { name: 'mocha test/web/landing-page' },
     { name: 'mocha test/web/terms-of-service' },
+    { name: 'mocha test/web/sign-in' },
 
     { name: 'git push heroku master' }
   ];
