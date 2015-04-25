@@ -61,6 +61,7 @@
     // { name: [test, 'web/item-image-display'].join(' ') },
 
     { name: 'mocha test/web/landing-page' },
+    { name: 'mocha test/web/terms-of-service' },
 
     { name: 'git push heroku master' }
   ];
