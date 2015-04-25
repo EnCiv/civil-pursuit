@@ -9,26 +9,29 @@
 
   module.exports = function (locals) {
 
-    return [
-      
-      elem('.topbar', {}, [
+    var $ = {
+      '.topbar'             :   elem('.topbar'),
+      '.topbar-right'       :   elem('.topbar-right.hide'),
+      'button.online-now'   :   elem('button.shy.online-now'),
+      'span.online-users'   :   elem('span.online-users'),
+      'onlineNowLabel'      :   elem('span', { $text: 'Online now: ' }),
+      'button.login-button' :   elem('button.is-out.login-button'),
+      'link to profile'     :   elem('a.button.is-in', {
+        href                :   '/page/profile',
+        title               :   'Profile'
+      })
+    }
 
-        elem('.topbar-right.hide', {}, [
+    $('.topbar').children.push($('.topbar-right'));
 
-          elem('button.shy.online-now', {}, [
+    $('.topbar-right').children.push($('button.online-now'),
+      $('button.login-button'));
 
-            elem('span', { $text: 'Online now: ' }),
+    $('button.login-button').children.push(
+      elem('b', { $text: 'Login' })
+    );
 
-            elem('span.online-users')
-
-          ])
-
-        ])
-
-      ])
-      
-    ];
-
+    return [topbar];
   };
 
 } ();
