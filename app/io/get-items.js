@@ -22,13 +22,11 @@
         query.parent = panel.parent;
       }
 
-      console.log('<<"get items"', panel, item);
-
       Item
 
-        .getPanelItems(panel)
+        .getPanelItems(query)
 
-        .then(socket.ok.bind(socket, event));
+        .then(socket.ok.bind(socket, event, panel));
     }
 
     require('syn/lib/domain')(onDomainError, run);

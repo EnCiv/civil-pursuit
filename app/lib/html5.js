@@ -190,7 +190,7 @@
         }
       }
 
-      else if ( child.children.length ) {
+      else if ( child.children.length || typeof child.children === 'function' ) {
 
         var children = child.children;
 

@@ -3015,7 +3015,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -5189,42 +5189,35 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
     console.log('panel', panel)
 
     app.socket.publish('get items', panel, function (panel, items) {
-      console.warn(panel, items)
+    
+      console.log('got items', panel, items)
+
+      self.template.find('.hide.pre').removeClass('hide');
+      self.template.find('.show.pre').removeClass('show').hide();
+
+      self.template.find('.loading-items').hide();
+
+      if ( items.length ) {
+
+        self.find('create new').hide();
+        self.find('load more').show();
+
+        if ( items.length < synapp['navigator batch size'] ) {
+          self.find('load more').hide();
+        }
+
+        self.skip += items.length;
+
+        self.preInsertItem(items, cb);
+      }
+
+      else {
+        self.find('create new').show();
+        self.find('load more').hide();
+      }
+
     });
 
-    // app.socket
-
-    //   .once('got items ' + this.id, function (panel, items) {
-
-    //     console.log('got items', panel, items)
-
-    //     self.template.find('.hide.pre').removeClass('hide');
-    //     self.template.find('.show.pre').removeClass('show').hide();
-
-    //     self.template.find('.loading-items').hide();
-
-    //     if ( items.length ) {
-
-    //       self.find('create new').hide();
-    //       self.find('load more').show();
-
-    //       if ( items.length < synapp['navigator batch size'] ) {
-    //         self.find('load more').hide();
-    //       }
-
-    //       self.skip += items.length;
-
-    //       self.preInsertItem(items, cb);
-    //     }
-
-    //     else {
-    //       self.find('create new').show();
-    //       self.find('load more').hide();
-    //     }
-
-    //   })
-
-    //   .emit('get itemsss', panel);
   }
 
   module.exports = fill;
@@ -5288,7 +5281,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
     /** Load template */
 
-    if ( ! app.cache.template.item ) {
+    if ( ! app.cache.get('/views/Item') ) {
       return new (require('syn/js/components/Item'))({}).load(app.domain.intercept(function (template) {
         self.preInsertItem(items, cb); 
       }));

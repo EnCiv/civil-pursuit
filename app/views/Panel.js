@@ -24,13 +24,17 @@
 
         ]),
 
-        elem('.panel-body', function () {
-
+        elem('.panel-body', {}, function () {
+          
           var children = [];
 
           if ( locals.creator !== false ) {
             children = Creator();
           }
+
+          children.push(elem('.items'));
+
+          return children;
 
         })
 

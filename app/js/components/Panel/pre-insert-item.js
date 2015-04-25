@@ -9,7 +9,7 @@
 
     /** Load template */
 
-    if ( ! app.cache.template.item ) {
+    if ( ! app.cache.get('/views/Item') ) {
       return new (require('syn/js/components/Item'))({}).load(app.domain.intercept(function (template) {
         self.preInsertItem(items, cb); 
       }));
