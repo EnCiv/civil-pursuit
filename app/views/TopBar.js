@@ -14,25 +14,61 @@
     var ButtonOnlineNow       =   elem('button.shy.online-now');
     var spanOnlineUsers       =   elem('span.online-users');
     var spanOnlineUsersLabel  =   elem('span', { $text: 'Online now: ' });
-    var ButtonLoginButton     =   elem('button.is-out.login-button');
+    var ButtonLoginButton     =   elem('button.is-out.login-button', {}, [
+      elem('b', { $text: 'Login' }) ]);
+    var ButtonJoinButton     =   elem('button.is-out.join-button', {}, [
+      elem('b', { $text: 'Join' }) ]);
     var LinkToProfile         =   elem('a.button.is-in', {
       href                    :   '/page/profile',
       title                   :   'Profile'
-    });
+    }, [elem('i.fa.fa-user')]);
+    var LinkToSignOut         =   elem('a.button.is-in', {
+      href                    :   '/sign/out',
+      title                   :   'Sign out'
+    }, [elem('i.fa.fa-user')]);
 
     TopBar.children.push(TopBarRight);
 
     TopBarRight.children.push(
       ButtonOnlineNow,
       ButtonLoginButton,
-      LinkToProfile
+      LinkToProfile,
+      LinkToSignOut,
+      ButtonJoinButton
     );
 
     ButtonOnlineNow.children.push(spanOnlineUsersLabel, spanOnlineUsers);
 
-    ButtonLoginButton.children.push(elem('b', { $text: 'Login' }));
+    var Logo = elem('#logo', {}, [
 
-    return [TopBar];
+      elem('a.pull-left', 
+        {
+          href: '/',
+          'date-toggle':'tooltip',
+          'data-placement': 'bottom',
+          'title': 'Synaccord'
+        },
+
+        [
+
+          elem('img.img-responsive.logo-full', {
+            alt   :   'Synapp',
+            src   :   'http://res.cloudinary.com/hscbexf6a/image/upload/e_make_transparent/v1415218424/Synaccord_logo_name_300x61_xyohja.png'
+          }),
+
+          elem('img.img-responsive.logo-image.hide', {
+            alt   :   'Synapp',
+            src   :   'http://res.cloudinary.com/hscbexf6a/image/upload/e_make_transparent/v1415218424/Synaccord_logo_64x61_znpxlc.png'
+          })
+
+        ]
+      ),
+
+      elem('a.button.beta', { href: '/' , $text: 'Beta' })
+
+    ]);
+
+    return [TopBar, Logo];
   };
 
 } ();

@@ -116,6 +116,14 @@
 
       /////////////////////////////////////////////////////////////////////////
 
+      it ( 'should have a logo' , function (done) {
+
+        webdriver.client.isVisible('#logo img', done);
+
+      });
+
+      /////////////////////////////////////////////////////////////////////////
+
       it ( 'should have a right section' , function (done) {
 
         webdriver.client.isVisible('.topbar-right', done);
@@ -177,6 +185,50 @@
           it ( 'should have a login button' , function (done) {
 
             webdriver.client.isVisible('button.login-button', done);
+
+          } );
+
+          /////////////////////////////////////////////////////////////////////
+
+          it ( 'should have a join button' , function (done) {
+
+            webdriver.client.isVisible('button.join-button', done);
+
+          } );
+
+          /////////////////////////////////////////////////////////////////////
+
+          it ( 'should hide link to Profile' , function (done) {
+
+            var domain = new Domain().on('error', done);
+
+            domain.run(function () {
+
+              webdriver.client.isVisible('a[title="Profile"]',
+                domain.intercept(function (isVisible) {
+                  isVisible.should.be.false;
+                  done();
+                }));
+
+            });
+
+          } );
+
+          /////////////////////////////////////////////////////////////////////
+
+          it ( 'should hide link to Sign out' , function (done) {
+
+            var domain = new Domain().on('error', done);
+
+            domain.run(function () {
+
+              webdriver.client.isVisible('a[title="Sign out"]',
+                domain.intercept(function (isVisible) {
+                  isVisible.should.be.false;
+                  done();
+                }));
+
+            });
 
           } );
 
