@@ -5,7 +5,7 @@
 
   var Synapp    =   require('syn/js/Synapp');
   // var Item      =   require('syn/js/components/Item');
-  // var Sign      =   require('syn/js/components/Sign');
+  var Sign      =   require('syn/js/components/Sign');
   var Intro     =   require('syn/js/components/Intro');
   var Panel     =   require('syn/js/components/Panel');
 
@@ -19,7 +19,7 @@
     console.log('hello!');
 
     /** Render user-related components */
-    // new Sign().render();
+    new Sign().render();
 
 
     /** If page is about an item */
@@ -111,7 +111,7 @@
 
 } ();
 
-},{"syn/js/Synapp":20,"syn/js/components/Intro":30,"syn/js/components/Panel":41}],2:[function(require,module,exports){
+},{"syn/js/Synapp":20,"syn/js/components/Intro":30,"syn/js/components/Panel":41,"syn/js/components/Sign":54}],2:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events

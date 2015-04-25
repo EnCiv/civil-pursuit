@@ -4,7 +4,7 @@
 
   var Synapp    =   require('syn/js/Synapp');
   // var Item      =   require('syn/js/components/Item');
-  // var Sign      =   require('syn/js/components/Sign');
+  var Sign      =   require('syn/js/components/Sign');
   var Intro     =   require('syn/js/components/Intro');
   var Panel     =   require('syn/js/components/Panel');
 
@@ -18,7 +18,7 @@
     console.log('hello!');
 
     /** Render user-related components */
-    // new Sign().render();
+    new Sign().render();
 
 
     /** If page is about an item */

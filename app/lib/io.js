@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var online_users  =   0;
+  var users = {};
 
   var config        =   require('syn/config');
 
@@ -61,7 +61,15 @@
 
             var cookie = req.cookies.synuser;
 
-            socket.synuser = cookie;
+            if ( cookie ) {
+
+              if ( ! ( cookie.id in users ) ) {
+                users[cookie.id] = cookie;
+              }
+
+              socket.synuser = users[cookie.id];
+
+            }
 
             done();
           });
@@ -98,24 +106,19 @@
         app.arte.emit('message', {
           'web socket server': 'new incoming client'
         });
-
-        /** Increment number of online  users */
-
-        online_users ++;
-
         /** Let clients know about new user count */
 
-        io.emit('online users', online_users);
+        io.emit('online users', Object.keys(users).length);
         
-        socket.broadcast.emit('online users', online_users);
+        socket.broadcast.emit('online users', Object.keys(users).length);
 
         socket
 
           /** On disconnect */
 
           .on('disconnect', function (why) {
-            online_users --;
-            socket.broadcast.emit('online users', online_users);
+            // online_users --;
+            // socket.broadcast.emit('online users', online_users);
           });
 
         socket.ok = function (event) {

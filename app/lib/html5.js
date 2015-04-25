@@ -10,6 +10,12 @@
     }
   }
 
+  Html5.prototype.add = function () {
+    for ( var i in arguments ) {
+      this.children.push(arguments[i]);
+    }
+  };
+
   Html5.resolve = function (selector) {
     var element;
     var id;
@@ -85,6 +91,12 @@
     }
   };
 
+  Html5.elem.title = function (text) {
+    return Html5.elem('title', {
+      $text          :   text
+    });
+  };
+
   Html5.elem.styleSheet = function (href) {
     return Html5.elem('link', {
       rel           :   'stylesheet',
@@ -104,6 +116,8 @@
     var l = [];
 
     var cont = true;
+
+    console.log('child', child)
 
     if ( typeof child.options.$condition === 'function' ) {
       cont = child.options.$condition(locals);

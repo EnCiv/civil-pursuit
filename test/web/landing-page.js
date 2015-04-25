@@ -104,6 +104,78 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
+    it ( 'should have a top bar' , function ( done ) {
+
+      webdriver.client.isVisible('.topbar', done);
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    describe ( 'Top bar' , function () {
+
+      /////////////////////////////////////////////////////////////////////////
+
+      it ( 'should have a right section' , function (done) {
+
+        webdriver.client.isVisible('.topbar-right', done);
+
+      });
+
+      /////////////////////////////////////////////////////////////////////////
+
+      describe ( 'Right Section' , function () {
+
+        ///////////////////////////////////////////////////////////////////////
+
+        it ( 'should have an online now section' , function (done) {
+
+          webdriver.client.isVisible('button.shy.online-now', done);
+
+        });
+
+        ///////////////////////////////////////////////////////////////////////
+
+        describe ( 'Online now' , function () {
+
+          /////////////////////////////////////////////////////////////////////
+
+          it ( 'should have at least 1 user online now' , function (done) {
+
+            var domain = new Domain().on('error', done);
+
+            domain.run(function () {
+
+              webdriver.client.getText('span.online-users',
+                domain.intercept(function (text) {
+                  
+                  text.should.be.a.String;
+
+                  var online = +text;
+
+                  online.should.be.a.Number
+                    .and.is.above(0);
+
+                  done();
+
+                }));
+
+            });
+
+          } );
+
+          /////////////////////////////////////////////////////////////////////
+
+        } );
+
+      });
+
+      /////////////////////////////////////////////////////////////////////////
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
     it ( 'should have intro' , function ( done ) {
 
       this.timeout(3500);
