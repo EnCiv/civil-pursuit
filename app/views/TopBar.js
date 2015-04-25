@@ -15,14 +15,18 @@
     var spanOnlineUsers       =   elem('span.online-users');
     var spanOnlineUsersLabel  =   elem('span', { $text: 'Online now: ' });
     var ButtonLoginButton     =   elem('button.is-out.login-button');
-    var linkToProfile         =   elem('a.button.is-in', {
+    var LinkToProfile         =   elem('a.button.is-in', {
       href                    :   '/page/profile',
       title                   :   'Profile'
     });
 
     TopBar.children.push(TopBarRight);
 
-    TopBarRight.children.push(ButtonOnlineNow, ButtonLoginButton);
+    TopBarRight.children.push(
+      ButtonOnlineNow,
+      ButtonLoginButton,
+      LinkToProfile
+    );
 
     ButtonOnlineNow.children.push(spanOnlineUsersLabel, spanOnlineUsers);
 
