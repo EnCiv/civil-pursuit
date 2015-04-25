@@ -40,7 +40,7 @@
 
       before ( function (done) {
 
-        this.timeout(10000);
+        this.timeout(20000);
 
         httpGet(url, function (error, response, body) {
 
@@ -78,7 +78,7 @@
 
         it ( 'As a promise' , function (done) {
 
-          this.timeout(10000);
+          this.timeout(20000);
 
           getUrlTitle(url).then(function (_title) {
 
@@ -92,7 +92,7 @@
 
         it ( 'As a callback' , function (done) {
 
-          this.timeout(10000);
+          this.timeout(20000);
 
           getUrlTitle(url, function (error, _title) {
 
