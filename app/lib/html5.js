@@ -112,12 +112,21 @@
     });
   };
 
-  Html5.elem.toHTML = function (child, locals) {
+  Html5.toHTML = function (child, locals) {
     var l = [];
 
     var cont = true;
 
-    console.log('child', child)
+    console.log('child', child);
+
+    if ( Array.isArray(child) ) {
+      return
+        child
+          .map(function (elem) {
+            return Html5.toHTML(elem, locals);
+          })
+          .join("\n");
+    }
 
     if ( typeof child.options.$condition === 'function' ) {
       cont = child.options.$condition(locals);
@@ -153,6 +162,10 @@
     var av;
 
     var classes;
+
+    if ( typeof child.options === 'text' ) {
+      child.options = { $text: child.options };
+    }
 
     for ( var attr in child.options ) {
 
@@ -215,7 +228,7 @@
         }
 
         l = l.concat(children.map(function (child) {
-          return Html5.elem.toHTML(child, locals);
+          return Html5.toHTML(child, locals);
         }));
       }
 
@@ -232,7 +245,7 @@
     l.push('<meta charset="utf-8" />');
 
     l = l.concat(this.children.map(function (child) {
-      return Html5.elem.toHTML(child, locals);
+      return Html5.toHTML(child, locals);
     }));
 
     return l.join("\n");

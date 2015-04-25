@@ -9,6 +9,8 @@
   var Domain = require('domain').Domain;
   var config = require('syn/config.json');
 
+  var $signInForm     =   'form[novalidate][method="POST"][name="login"]';
+
   var webdriver,
     url;
 
@@ -41,6 +43,52 @@
     it ( 'should have a sign-in button' , function ( done ) {
 
       webdriver.client.isVisible('.login-button', done);
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    describe ( 'Clicking the sign-in button' , function () {
+
+      before ( function (done) {
+
+        webdriver.client.click('.login-button', done);
+
+      } );
+
+      it ( 'should invoke vex pop-up' , function (done) {
+
+        webdriver.client.isVisible('.vex .vex-content', done);
+
+      });
+
+      it ( 'should show sign-in form' , function (done) {
+
+        webdriver.client.isVisible($signInForm, done);
+
+      });
+
+      describe ( 'Sign-in Form' , function () {
+
+        it ( 'should have an email input field' , function (done) {
+
+          webdriver.client.isVisible($signInForm + ' input[type="email"][name="email"][required]', done);
+
+        } );
+
+        it ( 'should have an password input field' , function (done) {
+
+          webdriver.client.isVisible($signInForm + ' input[type="password"][name="password"][required]', done);
+
+        } );
+
+        it ( 'should have a submit button' , function (done) {
+
+          webdriver.client.isVisible($signInForm + ' .login-submit', done);
+
+        } );
+
+      } );
 
     } );
 

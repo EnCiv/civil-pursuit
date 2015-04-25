@@ -205,6 +205,7 @@
                 res.locals.protocol =   process.env.SYNAPP_PROTOCOL || 'http';
                 res.locals.package  =   require('syn/package.json');
                 res.locals.mongoose =   require('mongoose');
+                res.locals.user     =   req.cookies.synuser;
 
                 res.superRender     =   function superRender (tpl, options) {
                   // res.send('hola')
@@ -257,7 +258,7 @@
 
               var view = require('syn/views/' + req.params.view)(res.locals.pack());
 
-              res.send(view.map(Html5.elem.toHTML).join("\n"));
+              res.send(view.map(Html5.toHTML).join("\n"));
             })
 
             .get('/page/test', function getPage (req, res, next) {

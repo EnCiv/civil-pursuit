@@ -11,6 +11,9 @@
   var TopLevelPanel   =   require('syn/views/TopLevelPanel');
   var TopBar          =   require('syn/views/TopBar');
   var Stylesheet      =   require('syn/views/Stylesheet');
+  var Script          =   require('syn/views/Script');
+  var Footer          =   require('syn/views/Footer');
+  var Login           =   require('syn/views/Login');
 
   var html5           =   new Html5(elem.title(config.title));
 
@@ -47,71 +50,69 @@
 
   html5.add(
 
-    elem('#screens', {}, [
-
+    elem(
+      '#screens',
+      
+      {},
+      
+      [
         elem('#screen-phone'),
 
         elem('#screen-tablet')
       ]
     ),
 
-    elem('section', { role: 'header' }, TopBar),
+    elem(
+      'section',
+      
+      { role: 'header' },
+      
+      TopBar
+    ),
 
-    elem('section#main', { role: 'main' }, function (locals) {
+    elem(
+      'section#main',
 
-      var children = [].concat(
+      { role: 'main' },
 
-        Intro(locals),
+      function (locals) {
 
-        TopLevelPanel(locals)
+        return [].concat(
 
-      );
+          Intro(locals),
 
-      return children;
+          TopLevelPanel(locals)
 
+        );
     }),
 
-    elem('section#footer', { role: 'footer' }, require('syn/views/Footer')),
+    elem(
+      'section#footer',
 
-    elem('script', {
-      $text   :   function (locals) {
-        var synapp = {
-          env     :   locals.settings.env
-        };
+      { role: 'footer' },
 
-        return 'window.synapp = ' + JSON.stringify(synapp);
+      Footer),
+
+    elem(
+      'script#login',
+
+      {
+        type        :   'text/html',
+        
+        $condition  :   function (locals) {
+          return ! locals.user;
+        },
+
+        $text         :   Login().reduce(function (text, elem) {
+          text += Html5.toHTML(elem);
+          return text;
+        }, '')
       }
-    }),
-
-    elem.importScript('/socket.io/socket.io.js'),
-
-    elem.importScript(function (locals) {
-      if ( locals.settings.env === 'development' ) {
-        return '/bower_components/jquery/dist/jquery.js';
-      }
-
-      else {
-        return config.jquery.cdn;
-      }
-    }),
-
-    elem.importScript(function (locals) {
-
-      var ext = '.js';
-
-      var production = locals.settings.env === 'production';
-
-      if ( production ) {
-        ext = '.min.js';
-      }
-
-      var page = 'index';
-
-      return '/js/' + page + ext;
-
-    })
+    )
 
   );
+
+  html5.add.apply(html5, Script());
 
   module.exports = html5;
 
