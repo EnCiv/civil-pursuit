@@ -9,29 +9,26 @@
 
   module.exports = function (locals) {
 
-    var $ = {
-      '.topbar'             :   elem('.topbar'),
-      '.topbar-right'       :   elem('.topbar-right.hide'),
-      'button.online-now'   :   elem('button.shy.online-now'),
-      'span.online-users'   :   elem('span.online-users'),
-      'onlineNowLabel'      :   elem('span', { $text: 'Online now: ' }),
-      'button.login-button' :   elem('button.is-out.login-button'),
-      'link to profile'     :   elem('a.button.is-in', {
-        href                :   '/page/profile',
-        title               :   'Profile'
-      })
-    }
+    var TopBar                =   elem('.topbar');
+    var TopBarRight           =   elem('.topbar-right.hide');
+    var ButtonOnlineNow       =   elem('button.shy.online-now');
+    var spanOnlineUsers       =   elem('span.online-users');
+    var spanOnlineUsersLabel  =   elem('span', { $text: 'Online now: ' });
+    var ButtonLoginButton     =   elem('button.is-out.login-button');
+    var linkToProfile         =   elem('a.button.is-in', {
+      href                    :   '/page/profile',
+      title                   :   'Profile'
+    });
 
-    $('.topbar').children.push($('.topbar-right'));
+    TopBar.children.push(TopBarRight);
 
-    $('.topbar-right').children.push($('button.online-now'),
-      $('button.login-button'));
+    TopBarRight.children.push(ButtonOnlineNow, ButtonLoginButton);
 
-    $('button.login-button').children.push(
-      elem('b', { $text: 'Login' })
-    );
+    ButtonOnlineNow.children.push(spanOnlineUsersLabel, spanOnlineUsers);
 
-    return [topbar];
+    ButtonLoginButton.children.push(elem('b', { $text: 'Login' }));
+
+    return [TopBar];
   };
 
 } ();
