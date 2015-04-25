@@ -149,7 +149,7 @@
 
           /////////////////////////////////////////////////////////////////////
 
-          it ( 'should have at least 1 user online now' , function (done) {
+          it ( 'should have at least 0 user online now' , function (done) {
 
             var domain = new Domain().on('error', done);
 
@@ -163,7 +163,7 @@
                   var online = +text;
 
                   online.should.be.a.Number
-                    .and.is.above(0);
+                    .and.is.above(-1);
 
                   done();
 
