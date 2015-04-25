@@ -14,8 +14,8 @@
 
     function run (domain) {
 
-      var id = 'panel-' + panel.type;
-      var query = { type: panel.type };
+      var id = 'panel-' + panel.type._id;
+      var query = { type: panel.type._id };
 
       if ( panel.parent ) {
         id += '-' + panel.parent;

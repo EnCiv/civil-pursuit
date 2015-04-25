@@ -92,6 +92,8 @@
               panel.render()
 
                 .then(function () {
+
+                  console.info('filling')
               
                   panel.fill();
               

@@ -36,7 +36,7 @@
     }
 
     self.socket.on('error', function (error) {
-      console.log('socket error', error);
+      console.error('socket error', error);
     });
   }
 

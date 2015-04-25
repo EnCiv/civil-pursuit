@@ -19,39 +19,43 @@
 
     console.log('panel', panel)
 
-    app.socket
+    app.socket.publish('get items', panel, function (panel, items) {
+      console.warn(panel, items)
+    });
 
-      .once('got items ' + this.id, function (panel, items) {
+    // app.socket
 
-        console.log('got items', panel, items)
+    //   .once('got items ' + this.id, function (panel, items) {
 
-        self.template.find('.hide.pre').removeClass('hide');
-        self.template.find('.show.pre').removeClass('show').hide();
+    //     console.log('got items', panel, items)
 
-        self.template.find('.loading-items').hide();
+    //     self.template.find('.hide.pre').removeClass('hide');
+    //     self.template.find('.show.pre').removeClass('show').hide();
 
-        if ( items.length ) {
+    //     self.template.find('.loading-items').hide();
 
-          self.find('create new').hide();
-          self.find('load more').show();
+    //     if ( items.length ) {
 
-          if ( items.length < synapp['navigator batch size'] ) {
-            self.find('load more').hide();
-          }
+    //       self.find('create new').hide();
+    //       self.find('load more').show();
 
-          self.skip += items.length;
+    //       if ( items.length < synapp['navigator batch size'] ) {
+    //         self.find('load more').hide();
+    //       }
 
-          self.preInsertItem(items, cb);
-        }
+    //       self.skip += items.length;
 
-        else {
-          self.find('create new').show();
-          self.find('load more').hide();
-        }
+    //       self.preInsertItem(items, cb);
+    //     }
 
-      })
+    //     else {
+    //       self.find('create new').show();
+    //       self.find('load more').hide();
+    //     }
 
-      .emit('get items', panel);
+    //   })
+
+    //   .emit('get itemsss', panel);
   }
 
   module.exports = fill;

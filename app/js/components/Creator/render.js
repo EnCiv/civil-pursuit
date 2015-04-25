@@ -19,6 +19,8 @@
 
     var q = new Promise(function (fulfill, reject) {
 
+      return fulfill();
+
       if ( ! creator.template.length ) {
         throw new Error('Creator not found in panel ' + creator.panel.getId());
       }

@@ -5,8 +5,8 @@
   function load (cb) {
     var item = this;
 
-    if ( app.cache.template.item ) {
-      item.template = $(app.cache.template.item[0].outerHTML);
+    if ( app.cache.get('/views/Item') ) {
+      item.template = $(app.cache.get('/views/Item')[0].outerHTML);
       
       if ( cb ) {
         cb(null, item.template);
@@ -16,7 +16,7 @@
     }
 
     $.ajax({
-      url: '/partial/item'
+      url: '/views/Item'
     })
 
       .error(cb)
@@ -24,7 +24,7 @@
       .success(function (data) {
         item.template = $(data);
 
-        app.cache.template.item = item.template;
+        app.cache.set('/views/Item', item.template);
 
         cb(null, item.template);
       });

@@ -22,7 +22,6 @@
         .error(console.log.bind(console, 'error'))
 
         .success(function (data) {
-          console.log('well yes', data);
           panel.template = $(data);
 
           app.cache.set('/views/Panel', $(data));

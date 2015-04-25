@@ -93,6 +93,8 @@
               panel.render()
 
                 .then(function () {
+
+                  console.info('filling')
               
                   panel.fill();
               
@@ -3013,7 +3015,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -3459,6 +3461,8 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
     var creator = this;
 
     var q = new Promise(function (fulfill, reject) {
+
+      return fulfill();
 
       if ( ! creator.template.length ) {
         throw new Error('Creator not found in panel ' + creator.panel.getId());
@@ -4263,8 +4267,8 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
   function load (cb) {
     var item = this;
 
-    if ( app.cache.template.item ) {
-      item.template = $(app.cache.template.item[0].outerHTML);
+    if ( app.cache.get('/views/Item') ) {
+      item.template = $(app.cache.get('/views/Item')[0].outerHTML);
       
       if ( cb ) {
         cb(null, item.template);
@@ -4274,7 +4278,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
     }
 
     $.ajax({
-      url: '/partial/item'
+      url: '/views/Item'
     })
 
       .error(cb)
@@ -4282,7 +4286,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
       .success(function (data) {
         item.template = $(data);
 
-        app.cache.template.item = item.template;
+        app.cache.set('/views/Item', item.template);
 
         cb(null, item.template);
       });
@@ -5184,39 +5188,43 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
     console.log('panel', panel)
 
-    app.socket
+    app.socket.publish('get items', panel, function (panel, items) {
+      console.warn(panel, items)
+    });
 
-      .once('got items ' + this.id, function (panel, items) {
+    // app.socket
 
-        console.log('got items', panel, items)
+    //   .once('got items ' + this.id, function (panel, items) {
 
-        self.template.find('.hide.pre').removeClass('hide');
-        self.template.find('.show.pre').removeClass('show').hide();
+    //     console.log('got items', panel, items)
 
-        self.template.find('.loading-items').hide();
+    //     self.template.find('.hide.pre').removeClass('hide');
+    //     self.template.find('.show.pre').removeClass('show').hide();
 
-        if ( items.length ) {
+    //     self.template.find('.loading-items').hide();
 
-          self.find('create new').hide();
-          self.find('load more').show();
+    //     if ( items.length ) {
 
-          if ( items.length < synapp['navigator batch size'] ) {
-            self.find('load more').hide();
-          }
+    //       self.find('create new').hide();
+    //       self.find('load more').show();
 
-          self.skip += items.length;
+    //       if ( items.length < synapp['navigator batch size'] ) {
+    //         self.find('load more').hide();
+    //       }
 
-          self.preInsertItem(items, cb);
-        }
+    //       self.skip += items.length;
 
-        else {
-          self.find('create new').show();
-          self.find('load more').hide();
-        }
+    //       self.preInsertItem(items, cb);
+    //     }
 
-      })
+    //     else {
+    //       self.find('create new').show();
+    //       self.find('load more').hide();
+    //     }
 
-      .emit('get items', panel);
+    //   })
+
+    //   .emit('get itemsss', panel);
   }
 
   module.exports = fill;
@@ -5248,7 +5256,6 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
         .error(console.log.bind(console, 'error'))
 
         .success(function (data) {
-          console.log('well yes', data);
           panel.template = $(data);
 
           app.cache.set('/views/Panel', $(data));
@@ -6910,7 +6917,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
     }
 
     self.socket.on('error', function (error) {
-      console.log('socket error', error);
+      console.error('socket error', error);
     });
   }
 
