@@ -2,22 +2,19 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  var S = require('string');
 
   function Page (page, more) {
 
-    var host = process.env.SYNAPP_SELENIUM_TARGET;
-
     switch (page) {
       case 'Home':
-        return host;
+        return '/';
 
       case 'Item Page':
-        return host + '/item/' + more._id + '/test';
+        return '/item/' + more._id + '/' + S(more.subject).slugify().s;
+
+      case 'Terms Of Service':
+        return '/page/terms-of-service';
     }
   }
 

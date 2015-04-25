@@ -7,6 +7,8 @@
 
   var config = require('syn/config.json');
 
+  var Page = require('syn/lib/Page');
+
   module.exports = function (locals) {
 
     return [
@@ -27,7 +29,7 @@
         elem('p', {}, [
 
           elem('a', {
-            href: config.public.routes['terms of service'],
+            href: Page('Terms Of Service'),
             $text: 'Terms of Service and Privacy Policy'
           })
 

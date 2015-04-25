@@ -23,7 +23,17 @@
 
         ]),
 
-        elem('.item-buttons'),
+        elem('.item-buttons', {}, [
+
+          elem('button.item-toggle-promote.shy', {}, [
+
+            elem('span.promoted', { $text: '0' }),
+
+            elem('i.fa.fa-bullhorn')
+
+          ])
+
+        ]),
 
         elem('.item-text', {}, [
 

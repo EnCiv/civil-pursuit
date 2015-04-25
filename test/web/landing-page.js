@@ -9,8 +9,8 @@
   var Domain            =   require('domain').Domain;
   var config            =   require('syn/config.json');
   var mongoUp           =   require('syn/lib/util/connect-to-mongoose');
-
-  var Type              =   require('syn/models/Type');  
+  var Type              =   require('syn/models/Type');
+  var async             =   require('async');
 
   var webdriver,
     url,
@@ -30,7 +30,7 @@
 
         mongo = mongoUp();
 
-        url = Page('Home');
+        url = process.env.SYNAPP_SELENIUM_TARGET + Page('Home');
 
         webdriver = new webDriver({ url: url });
 
@@ -258,6 +258,8 @@
 
     it ( 'should have a top-level panel' , function ( done ) {
 
+      this.timeout(15000);
+
       var domain = new Domain().on('error', done);
 
       domain.run(function () {
@@ -276,11 +278,22 @@
                 // done();
               }));
 
-            webdriver.client.getHTML('#panel-' + Topic._id + ' .items',
-              domain.intercept(function (html) {
-                (html.match(/id="item-/g) || []).length
-                  .should.be.exactly(6);
-                done();
+            webdriver.client.getAttribute(
+              '#panel-' + Topic._id + ' .items > .item[id]', 'id',
+              domain.intercept(function (ids) {
+                ids.should.be.an.Array;
+                ids.length.should.be.exactly(6);
+                
+                var isItem = require('./.utils/item');
+
+                async.each(ids,
+
+                  function (id, done) {
+                    isItem(id.replace(/^item-/, ''), webdriver.client, done);
+                  },
+
+                  done);
+
               }));
 
           });
@@ -294,6 +307,21 @@
     it ( 'should have a footer' , function ( done ) {
 
       webdriver.client.isVisible('#footer', done);
+
+    } );
+
+    describe ( 'Footer' , function () {
+
+      describe ( 'Link to Terms Of Service' , function () {
+
+        it ( 'should be the correct link' , function (done) {
+
+          webdriver.client.isVisible('a[href="' + Page('Terms Of Service') +
+            '"]', done);
+
+        });
+
+      } );
 
     } );
 

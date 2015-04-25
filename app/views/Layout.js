@@ -12,7 +12,7 @@
   var TopBar          =   require('syn/views/TopBar');
   var Stylesheet      =   require('syn/views/Stylesheet');
 
-  var html5         =   new Html5(elem.title(config.title));
+  var html5           =   new Html5(elem.title(config.title));
 
   html5.add(
 
