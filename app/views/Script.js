@@ -2,19 +2,18 @@
   
   'use strict';
 
-  var Html5 = require('syn/lib/html5');
-  var elem = Html5.elem;
-  var config = require('syn/config.json');
+  var html5       = require('syn/lib/html5');
+  var config      = require('syn/config.json');
 
   module.exports = function (locals) {
 
-    return [
+    return html5.Elements(
 
       /////////////////////////////////////////////////////////////////////////
       //  INJECT SCRIPT
       /////////////////////////////////////////////////////////////////////////
       
-      elem('script', {
+      html5.Element('script', {
         $text   :   function (locals) {
           var synapp = {
             env     :   locals.settings.env
@@ -28,13 +27,13 @@
       //  SOCKET.IO
       /////////////////////////////////////////////////////////////////////////
 
-      elem.importScript('/socket.io/socket.io.js'),
+      html5.Element.importScript('/socket.io/socket.io.js'),
 
       /////////////////////////////////////////////////////////////////////////
       //  JQUERY.JS
       /////////////////////////////////////////////////////////////////////////
 
-      elem.importScript(function (locals) {
+      html5.Element.importScript(function (locals) {
         if ( locals.settings.env === 'development' ) {
           return '/bower_components/jquery/dist/jquery.js';
         }
@@ -48,7 +47,7 @@
       //  APP.JS
       /////////////////////////////////////////////////////////////////////////
 
-      elem.importScript(function (locals) {
+      html5.Element.importScript(function (locals) {
 
         var ext = '.js';
 
@@ -68,9 +67,9 @@
       //  VEX.JS
       /////////////////////////////////////////////////////////////////////////
 
-      elem.importScript('/assets/vex-2.2.1/js/vex.combined.min.js')
+      html5.Element.importScript('/assets/vex-2.2.1/js/vex.combined.min.js')
       
-    ];
+    );
 
   };
 

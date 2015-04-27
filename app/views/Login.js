@@ -2,117 +2,112 @@
   
   'use strict';
 
-  var Html5 = require('syn/lib/html5');
-  var e = Html5.elem;
+  var html5 = require('syn/lib/html5');
 
   module.exports = function (locals) {
 
-    return [
-      
-      e('.login-modal', {},
-        [
-          e('h4', { $text: 'Login with email' }),
+    return html5.Element('.login-modal', {},
+      [
+        html5.Element('h4', { $text: 'Login with email' }),
 
-          e('form',
-            {
-              role        :   'form',
-              method      :   'POST',
-              novalidate  :   'novalidate',
-              name        :   'login'
-            },
+        html5.Element('form',
+          {
+            role        :   'form',
+            method      :   'POST',
+            novalidate  :   'novalidate',
+            name        :   'login'
+          },
 
-            [
-              e('.login-error-404.is-container', {},
-                [
-                  e('.is-section', {},
-                    [
-                      e('.danger', {},
-                        [
-                          e('p', {},
-                            [
-                              e('strong', { $text: 'Wrong email' })
-                            ]
-                          )
-                        ]
-                      )
-                    ]
-                  )
-                ]
-              ),
+          [
+            html5.Element('.login-error-404.is-container', {},
+              [
+                html5.Element('.is-section', {},
+                  [
+                    html5.Element('.danger', {},
+                      [
+                        html5.Element('p', {},
+                          [
+                            html5.Element('strong', { $text: 'Wrong email' })
+                          ]
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]
+            ),
 
-              e('.login-error-401.is-container', {},
-                [
-                  e('.is-section', {},
-                    [
-                      e('.danger', {},
-                        [
-                          e('p', {},
-                            [
-                              e('strong', { $text: 'Wrong password' })
-                            ]
-                          )
-                        ]
-                      )
-                    ]
-                  )
-                ]
-              ),
+            html5.Element('.login-error-401.is-container', {},
+              [
+                html5.Element('.is-section', {},
+                  [
+                    html5.Element('.danger', {},
+                      [
+                        html5.Element('p', {},
+                          [
+                            html5.Element('strong', { $text: 'Wrong password' })
+                          ]
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]
+            ),
 
-              e('.sign-success.success'),
+            html5.Element('.sign-success.success'),
 
-              e('.form-group', {},
-                [
-                  e('label', { $text: 'Email' }),
+            html5.Element('.form-group', {},
+              [
+                html5.Element('label', { $text: 'Email' }),
 
-                  e('input',
-                    {
-                      type          :   'email',
-                      placeholder   :   'Email',
-                      name          :   'email',
-                      required      :   'required'
-                    }
-                  )
-                ]
-              ),
+                html5.Element('input',
+                  {
+                    type          :   'email',
+                    placeholder   :   'Email',
+                    name          :   'email',
+                    required      :   'required'
+                  }
+                )
+              ]
+            ),
 
-              e('.form-group', {},
-                [
-                  e('label', { $text: 'Password' }),
+            html5.Element('.form-group', {},
+              [
+                html5.Element('label', { $text: 'Password' }),
 
-                  e('input',
-                    {
-                      type          :   'password',
-                      placeholder   :   'Password',
-                      name          :   'password',
-                      required      :   'required'
-                    }
-                  )
-                ]
-              ),
+                html5.Element('input',
+                  {
+                    type          :   'password',
+                    placeholder   :   'Password',
+                    name          :   'password',
+                    required      :   'required'
+                  }
+                )
+              ]
+            ),
 
 
-              e('p', {},
-                [
-                  e('button.primary.login-submit.block', {}, [
-                    e('i.fa.fa-sign-in'),
-                    e('span', { $text : 'Login' })
-                  ])
-                ]
-              )
+            html5.Element('p', {},
+              [
+                html5.Element('button.primary.login-submit.block', {}, [
+                  html5.Element('i.fa.fa-sign-in'),
+                  html5.Element('span', { $text : 'Login' })
+                ])
+              ]
+            )
 
-            ]
-          ),
+          ]
+        ),
 
-          e('h5', {}, [
-            e('a.forgot-password-link', {
-              href      :   '#',
-              $text     :   'Forgot password?'
-            })
-          ])
-
+        html5.Element('h5', {}, [
+          html5.Element('a.forgot-password-link', {
+            href      :   '#',
+            $text     :   'Forgot password?'
+          })
         ])
-      
-    ];
+
+      ]);
 
   };
 

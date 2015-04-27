@@ -19,7 +19,13 @@
 
   'use strict';
 
+  /** Providers */
+
   var Nav       =   require('syn/js/providers/Nav');
+  var Session   =   require('syn/js/providers/Session');
+
+  /** Components */
+
   var Creator   =   require('syn/js/components/Creator');
   var Item      =   require('syn/js/components/Item');
   var Sign      =   require('syn/js/components/Sign');
@@ -27,7 +33,7 @@
   /**
    *  @class
    *
-   *  @arg {String} type
+   *  @arg {Object} type
    *  @arg {ObjectID?} parent
    *  @arg {Number} size
    *  @arg {Number} skip
@@ -87,7 +93,10 @@
   };
 
   Panel.prototype.toggleCreator = function (target) {
-    if ( synapp.user ) {
+
+    console.info('is in', Session.isIn());
+    
+    if ( Session.isIn() ) {
       Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
     }
     else {

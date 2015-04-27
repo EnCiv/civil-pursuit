@@ -199,14 +199,6 @@
                   req.user = JSON.parse(req.user);
                 }
 
-                res.locals.req      =   req;
-                res.locals.synapp   =   require('syn/config');
-                res.locals.config   =   config;
-                res.locals.protocol =   process.env.SYNAPP_PROTOCOL || 'http';
-                res.locals.package  =   require('syn/package.json');
-                res.locals.mongoose =   require('mongoose');
-                res.locals.user     =   req.cookies.synuser;
-
                 res.superRender     =   function superRender (tpl, options) {
                   // res.send('hola')
                   res.render(tpl , options);
@@ -216,11 +208,14 @@
                 app.arte.emit('request', req);
 
                 res.locals.pack     =   function () {
-                  var locals = app.locals;
-
-                  for ( var i in res.locals ) {
-                    locals[i] = res.locals[i];
-                  }
+                  var locals = {
+                    settings  :   app.locals.settings,
+                    req       :   {
+                      path    :   req.path,
+                      url     :   req.url
+                    },
+                    user      :   req.cookies.synuser
+                  };
 
                   return locals;
                 };
@@ -258,7 +253,9 @@
 
               var view = require('syn/views/' + req.params.view)(res.locals.pack());
 
-              res.send(view.map(Html5.toHTML).join("\n"));
+              if ( view instanceof Html5.Elements ) {
+                res.send(Html5.toHTML(view));
+              }
             })
 
             .get('/page/test', function getPage (req, res, next) {

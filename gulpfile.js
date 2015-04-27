@@ -16,6 +16,7 @@
     'less',
     'less-dashboard',
     'minify-css',
+    'minify-css-reset',
     'minify-css-dashboard',
     'uglify-home',
     'uglify-test',

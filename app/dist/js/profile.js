@@ -3088,7 +3088,7 @@ module.exports={
 
 } ();
 
-},{"domain":2,"events":3,"syn/js/providers/Cache":61,"syn/js/providers/Socket":65,"util":7}],21:[function(require,module,exports){
+},{"domain":2,"events":3,"syn/js/providers/Cache":61,"syn/js/providers/Socket":66,"util":7}],21:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3251,7 +3251,7 @@ module.exports={
 } ();
 
 }).call(this,require('_process'))
-},{"_process":5,"syn/js/components/Item":33,"syn/js/providers/Nav":63,"syn/js/providers/Stream":66}],23:[function(require,module,exports){
+},{"_process":5,"syn/js/components/Item":33,"syn/js/providers/Nav":63,"syn/js/providers/Stream":67}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3438,7 +3438,7 @@ module.exports={
 
 } ();
 
-},{"promise":8,"syn/js/providers/Form":62,"syn/js/providers/Upload":67,"syn/js/providers/YouTube":68}],26:[function(require,module,exports){
+},{"promise":8,"syn/js/providers/Form":62,"syn/js/providers/Upload":68,"syn/js/providers/YouTube":69}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4299,7 +4299,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":63,"syn/js/providers/Upload":67}],32:[function(require,module,exports){
+},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4453,7 +4453,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63,"syn/js/providers/Upload":67}],33:[function(require,module,exports){
+},{"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],33:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -4704,7 +4704,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/YouTube":68}],37:[function(require,module,exports){
+},{"syn/js/providers/YouTube":69}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5437,7 +5437,13 @@ module.exports={
 
   'use strict';
 
+  /** Providers */
+
   var Nav       =   require('syn/js/providers/Nav');
+  var Session   =   require('syn/js/providers/Session');
+
+  /** Components */
+
   var Creator   =   require('syn/js/components/Creator');
   var Item      =   require('syn/js/components/Item');
   var Sign      =   require('syn/js/components/Sign');
@@ -5445,7 +5451,7 @@ module.exports={
   /**
    *  @class
    *
-   *  @arg {String} type
+   *  @arg {Object} type
    *  @arg {ObjectID?} parent
    *  @arg {Number} size
    *  @arg {Number} skip
@@ -5505,7 +5511,10 @@ module.exports={
   };
 
   Panel.prototype.toggleCreator = function (target) {
-    if ( synapp.user ) {
+
+    console.info('is in', Session.isIn());
+    
+    if ( Session.isIn() ) {
       Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
     }
     else {
@@ -5550,7 +5559,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Creator":21,"syn/js/components/Item":33,"syn/js/components/Panel/fill":44,"syn/js/components/Panel/load":45,"syn/js/components/Panel/pre-insert-item":46,"syn/js/components/Panel/render":47,"syn/js/components/Panel/to-json":48,"syn/js/components/Sign":59,"syn/js/providers/Nav":63}],44:[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Item":33,"syn/js/components/Panel/fill":44,"syn/js/components/Panel/load":45,"syn/js/components/Panel/pre-insert-item":46,"syn/js/components/Panel/render":47,"syn/js/components/Panel/to-json":48,"syn/js/components/Sign":59,"syn/js/providers/Nav":63,"syn/js/providers/Session":65}],44:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7709,6 +7718,21 @@ module.exports={
   
   'use strict';
 
+  function Session () {}
+
+  Session.isIn = function () {
+    return app.socket.synuser;
+  }
+
+  module.exports = Session;
+
+} ();
+
+},{}],66:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
 
   function Socket (emit) {
     var self = this;
@@ -7720,7 +7744,9 @@ module.exports={
     self.socket.once('welcome', function (user) {
       emit('ready', user);
       if ( user ) {
+        console.info('Welcome', user);
         $('a.is-in').css('display', 'inline');
+        self.socket.synuser = user;
       }
     });
 
@@ -7755,7 +7781,7 @@ module.exports={
 
 } ();
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7794,7 +7820,7 @@ module.exports={
 
 } ();
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -7880,7 +7906,7 @@ module.exports={
 
 } ();
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 ! function () {
 
   'use strict';

@@ -13,7 +13,9 @@
     self.socket.once('welcome', function (user) {
       emit('ready', user);
       if ( user ) {
+        console.info('Welcome', user);
         $('a.is-in').css('display', 'inline');
+        self.socket.synuser = user;
       }
     });
 

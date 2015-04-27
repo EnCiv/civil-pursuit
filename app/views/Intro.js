@@ -2,49 +2,32 @@
   
   'use strict';
 
-  var Html5 = require('syn/lib/html5');
-  var elem = Html5.elem;
-  var Panel = require('syn/views/Panel');
-  var Item = require('syn/views/Item');
+  /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   *  INTRO VIEW
+   *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   *  @module       views/Intro
+  */
 
-  module.exports = function (locals) {
+  var html5       =   require('syn/lib/html5');
+  var PanelView   =   require('syn/views/Panel');
+  var ItemView    =   require('syn/views/Item');
 
-    return [
-      
-      elem('#intro', {}, function (locals) {
+  module.exports  =   function IntroView (locals) {
 
-        var panelOptions = { creator: false };
+    return html5.Element('#intro')
 
-        var panel = Panel(panelOptions);
+      .add(function IntroBox (locals) {
 
-        function findPanelBody (el) {
+        var panel = PanelView({ creator: false });
 
-          if ( Html5.is(el, '.panel-body') ) {
+        panel.find('.items')
 
-            if ( typeof el.children === 'function' ) {
-              el.children = el.children();
-            }
-
-            el.children = el.children.concat(
-
-              Item({
-                buttons   :   false
-              })
-
-            );
-          }
-
-          if ( Array.isArray(el.children) ) {
-            el.children.forEach(findPanelBody);
-          }
-        }
-
-        panel.forEach(findPanelBody);
+          .each(function (itemsWrapper) {
+            itemsWrapper.add(ItemView({ buttons: false }));
+          });
 
         return panel;
-      })
-
-    ];
+      });
 
   };
 

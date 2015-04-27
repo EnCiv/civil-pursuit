@@ -3181,7 +3181,7 @@ module.exports={
 
 } ();
 
-},{"domain":2,"events":3,"syn/js/providers/Cache":55,"syn/js/providers/Socket":59,"util":7}],21:[function(require,module,exports){
+},{"domain":2,"events":3,"syn/js/providers/Cache":55,"syn/js/providers/Socket":60,"util":7}],21:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3344,7 +3344,7 @@ module.exports={
 } ();
 
 }).call(this,require('_process'))
-},{"_process":5,"syn/js/components/Item":31,"syn/js/providers/Nav":57,"syn/js/providers/Stream":60}],23:[function(require,module,exports){
+},{"_process":5,"syn/js/components/Item":31,"syn/js/providers/Nav":57,"syn/js/providers/Stream":61}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3531,7 +3531,7 @@ module.exports={
 
 } ();
 
-},{"promise":8,"syn/js/providers/Form":56,"syn/js/providers/Upload":62,"syn/js/providers/YouTube":63}],26:[function(require,module,exports){
+},{"promise":8,"syn/js/providers/Form":56,"syn/js/providers/Upload":63,"syn/js/providers/YouTube":64}],26:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4134,7 +4134,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Item":31,"syn/js/providers/ReadMore":58,"syn/js/providers/Truncate":61}],31:[function(require,module,exports){
+},{"syn/js/components/Item":31,"syn/js/providers/ReadMore":58,"syn/js/providers/Truncate":62}],31:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -4385,7 +4385,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/YouTube":63}],35:[function(require,module,exports){
+},{"syn/js/providers/YouTube":64}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5118,7 +5118,13 @@ module.exports={
 
   'use strict';
 
+  /** Providers */
+
   var Nav       =   require('syn/js/providers/Nav');
+  var Session   =   require('syn/js/providers/Session');
+
+  /** Components */
+
   var Creator   =   require('syn/js/components/Creator');
   var Item      =   require('syn/js/components/Item');
   var Sign      =   require('syn/js/components/Sign');
@@ -5126,7 +5132,7 @@ module.exports={
   /**
    *  @class
    *
-   *  @arg {String} type
+   *  @arg {Object} type
    *  @arg {ObjectID?} parent
    *  @arg {Number} size
    *  @arg {Number} skip
@@ -5186,7 +5192,10 @@ module.exports={
   };
 
   Panel.prototype.toggleCreator = function (target) {
-    if ( synapp.user ) {
+
+    console.info('is in', Session.isIn());
+    
+    if ( Session.isIn() ) {
       Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
     }
     else {
@@ -5231,7 +5240,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Creator":21,"syn/js/components/Item":31,"syn/js/components/Panel/fill":42,"syn/js/components/Panel/load":43,"syn/js/components/Panel/pre-insert-item":44,"syn/js/components/Panel/render":45,"syn/js/components/Panel/to-json":46,"syn/js/components/Sign":54,"syn/js/providers/Nav":57}],42:[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Item":31,"syn/js/components/Panel/fill":42,"syn/js/components/Panel/load":43,"syn/js/components/Panel/pre-insert-item":44,"syn/js/components/Panel/render":45,"syn/js/components/Panel/to-json":46,"syn/js/components/Sign":54,"syn/js/providers/Nav":57,"syn/js/providers/Session":59}],42:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6941,6 +6950,21 @@ module.exports={
   
   'use strict';
 
+  function Session () {}
+
+  Session.isIn = function () {
+    return app.socket.synuser;
+  }
+
+  module.exports = Session;
+
+} ();
+
+},{}],60:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
 
   function Socket (emit) {
     var self = this;
@@ -6952,7 +6976,9 @@ module.exports={
     self.socket.once('welcome', function (user) {
       emit('ready', user);
       if ( user ) {
+        console.info('Welcome', user);
         $('a.is-in').css('display', 'inline');
+        self.socket.synuser = user;
       }
     });
 
@@ -6987,7 +7013,7 @@ module.exports={
 
 } ();
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7026,7 +7052,7 @@ module.exports={
 
 } ();
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 ; ! function () {
 
   'use strict';
@@ -7249,7 +7275,7 @@ module.exports={
 
 }();
 
-},{"syn/js/providers/Nav":57}],62:[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],63:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -7335,7 +7361,7 @@ module.exports={
 
 } ();
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 ! function () {
 
   'use strict';

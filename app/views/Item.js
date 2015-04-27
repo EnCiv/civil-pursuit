@@ -2,85 +2,81 @@
   
   'use strict';
 
-  var Html5 = require('syn/lib/html5');
-  var elem = Html5.elem;
+  var html5               =   require('syn/lib/html5');
+  var ItemDefaultButtons  =   require('syn/views/ItemDefaultButtons');
 
-  module.exports = function (locals) {
+  module.exports          =   function ItemView (viewOptions) {
+    viewOptions           =   viewOptions || {};
 
-    locals = locals || {};
-
-    var itemOptions = {
-      id    :   locals.id
+    var itemAttribute     =   {
+      id                  :   viewOptions.id
     };
 
-    var ItemWrapper = elem('.item-media-wrapper', {}, [
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Item media
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      elem('.item-media')
+    var ItemWrapper       =     html5.Element('.item-media-wrapper')
 
-    ]);
+      .add(
+        html5.Element('.item-media', {}, function itemMediaImage () {
 
-    var ItemButtons = elem('.item-buttons', {
+          if ( viewOptions.item && viewOptions.item.image ) {
+            return html5.Element('img.img-responsive', { src: viewOptions.item.image });
+          }
 
-        $condition    :   function () {
-          return locals.buttons !== false;
+          else if ( viewOptions.media ) {
+            return viewOptions.media;
+          }
+
+          return [];
+
+        })
+      );
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Item buttons
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var ItemButtons = html5.Element('.item-buttons', {
+        $condition : function () {
+          return viewOptions.buttons !== false;
         }
+      }
+    );
 
-      }, [
+    if ( viewOptions.buttons ) {
 
-      elem('button.item-toggle-promote.shy', {}, [
+    }
 
-        elem('span.promoted', { $text: '0' }),
+    else {
+      ItemButtons.add(ItemDefaultButtons());
+    }
 
-        elem('i.fa.fa-bullhorn')
+    var ItemText = html5.Element('.item-text', {}, [
 
-      ]),
+      html5.Element('.item-truncatable', {}, [
 
-      elem('div'),
+        html5.Element('h4.item-subject.header', {}, [
 
-      elem('button.item-toggle-details.shy', {}, [
-
-        elem('span.promoted-percent', { $text: '0%' }),
-
-        elem('i.fa.fa-signal')
-
-      ]),
-
-      elem('div', {}, [elem('span.related')]),
-
-
-    ]);
-
-    var ItemText = elem('.item-text', {}, [
-
-      elem('.item-truncatable', {}, [
-
-        elem('h4.item-subject.header', {}, [
-
-          elem('a', { href: '#' })
+          html5.Element('a', { href: '#' })
 
         ]),
 
-        elem('.item-description.pre-text')
+        html5.Element('.item-description.pre-text')
 
       ])
 
     ]);
 
-    return [
-      
-      elem('.item', itemOptions, [
+    return html5.Element('.item', itemAttribute)
 
+      .add(
         ItemWrapper,
-
         ItemButtons,
-
         ItemText,
-
-        elem('.clear')
-
-      ])
-      
-    ];
+        html5.Element('.clear')
+      );
 
   };
 

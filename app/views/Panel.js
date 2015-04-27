@@ -2,43 +2,34 @@
   
   'use strict';
 
-  var Html5 = require('syn/lib/html5');
-  var elem = Html5.elem;
-  var Creator = require('syn/views/Creator');
+  var html5     =   require('syn/lib/html5');
+  var Creator   =   require('syn/views/Creator');
 
-  module.exports = function (locals) {
+  module.exports = function PanelView (options) {
 
-    return [
+    var panelBody = html5.Element('.panel-body');
 
-      elem('.panel.panel-default', {}, [
+    if ( options.creator !== false ) {
+      panelBody.add(Creator(options));
+    }
 
-        elem('.panel-heading', {}, [
+    panelBody.add(html5.Element('.items'));
 
-          elem('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
-            $condition    :   locals.creator !== false
-          }),
+    return html5.Element('.panel.panel-default')
 
-          elem('h4.panel-title')
+      .add(
+        html5.Element('.panel-heading')
+          .add(
+            html5.Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
+              $condition    :   options.creator !== false
+            }),
 
-        ]),
+            html5.Element('h4.panel-title')
+          )
+      )
 
-        elem('.panel-body', {}, function () {
-          
-          var children = [];
+      .add(panelBody);
 
-          if ( locals.creator !== false ) {
-            children = Creator();
-          }
-
-          children.push(elem('.items'));
-
-          return children;
-
-        })
-
-      ])
-
-    ];
   };
 
 } ();

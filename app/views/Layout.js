@@ -2,8 +2,7 @@
   
   'use strict';
 
-  var Html5           =   require('syn/lib/html5');
-  var elem            =   Html5.elem;
+  var html5           =   require('syn/lib/html5');
 
   var config          =   require('syn/config.json');
 
@@ -15,29 +14,31 @@
   var Footer          =   require('syn/views/Footer');
   var Login           =   require('syn/views/Login');
 
-  var html5           =   new Html5(elem.title(config.title));
+  var document        =   new html5.Document(
+    html5.Element.title(config.title)
+  );
 
-  html5.add(
+  document.add(
 
-    elem('meta',      {
+    html5.Element('meta',      {
       $selfClosing    :     true,
       'http-equiv'    :     'X-UA-Compatible',
       content         :     'IE=edge'
     }),
 
-    elem('meta',      {
+    html5.Element('meta',      {
       $selfClosing    :     true,
       name            :     'viewport',
       content         :     'width=device-width, initial-scale=1.0'
     }),
 
-    elem('meta',      {
+    html5.Element('meta',      {
       $selfClosing    :     true,
       name            :     'description',
       content         :     'description'
     }),
 
-    elem('script',    {
+    html5.Element('script',    {
       $condition      :     function (locals) {
         return locals.settings.env === 'production';
       },
@@ -46,74 +47,67 @@
 
   );
 
-  html5.add.apply(html5, Stylesheet());
+  document.add(Stylesheet());
 
-  html5.add(
+  // document.add(
 
-    elem(
-      '#screens',
+  //   html5.Element(
+  //     '#screens', {},
+  //     [
+  //       html5.Element('#screen-phone'),
+  //       html5.Element('#screen-tablet')
+  //     ]
+  //   ),
+
+  //   html5.Element(
+  //     'section',
       
-      {},
+  //     { role: 'header' },
       
-      [
-        elem('#screen-phone'),
+  //     TopBar
+  //   ),
 
-        elem('#screen-tablet')
-      ]
-    ),
+  //   html5.Element(
+  //     'section#main',
 
-    elem(
-      'section',
-      
-      { role: 'header' },
-      
-      TopBar
-    ),
+  //     { role: 'main' },
 
-    elem(
-      'section#main',
+  //     function (locals) {
 
-      { role: 'main' },
+  //       return [].concat(
 
-      function (locals) {
+  //         Intro(locals),
 
-        return [].concat(
+  //         TopLevelPanel(locals)
 
-          Intro(locals),
+  //       );
+  //   }),
 
-          TopLevelPanel(locals)
+  //   html5.Element(
+  //     'section#footer',
 
-        );
-    }),
+  //     { role: 'footer' },
 
-    elem(
-      'section#footer',
+  //     Footer),
 
-      { role: 'footer' },
+  //   html5.Element(
+  //     'script#login',
 
-      Footer),
-
-    elem(
-      'script#login',
-
-      {
-        type        :   'text/html',
+  //     {
+  //       type        :   'text/html',
         
-        $condition  :   function (locals) {
-          return ! locals.user;
-        },
+  //       $condition  :   function (locals) {
+  //         return ! locals.user;
+  //       },
 
-        $text         :   Login().reduce(function (text, elem) {
-          text += Html5.toHTML(elem);
-          return text;
-        }, '')
-      }
-    )
+  //       $text         :   Login().toHTML()
+  //     }
+  //   )
 
-  );
+  // );
 
-  html5.add.apply(html5, Script());
+  // document.add(Script());
 
-  module.exports = html5;
+  module.exports = document;
 
 } ();
