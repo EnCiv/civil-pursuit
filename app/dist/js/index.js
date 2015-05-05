@@ -21,91 +21,37 @@
     /** Render user-related components */
     new Sign().render();
 
+    var panel;
 
-    /** If page is about an item */
-    if ( app.location.item ) {
+    window.app.socket.publish('get top-level type', function (type) {
 
-      var $panel = $('.panel[id]:last');
-      var type = $panel.attr('id').split('-')[1];
+      console.info('Page Home', 'OK get top-level type', type);
+      
+      if ( ! panel ) {
+        panel = new Panel(type);
 
-      console.log('static type', type)
+        panel
 
-      var panel = new Panel(type);
+          .load()
 
-      panel.template = $('.panel[id]:last');
+          .then(function (template) {
 
-      panel.render(app.domain.intercept(function () {
-        panel.template.find('.item[id]').each(function () {
-          var id = $(this).attr('id').split('-')[1];
+            $('.panels').append(template);
 
-          var _item = {
-            _id           :     id,
-            type          :     type,
-            subject       :     $(this).find('.item-subject').text(),
-            description   :     $(this).find('.item-description').text(),
-            image         :     $(this).find('.item-media img').data('image'),
-            references    :     [],
-            views         :     +$(this).data('views'),
-            promotions    :     +$(this).find('.promoted').text(),
-            related       :     {
-              Problem     :     +$(this).find('.related-count').text()
-            }
-          };
+            panel.render()
 
-          console.log('tYPE', panel.template.attr('id').split('-')[1])
+              .then(function () {
 
-          if ( $(this).find('.item-reference a').attr('url') !== '#' ) {
-            _item.references[0] = { url: $(this).find('.item-reference a').attr('url') };
-            _item.references[0].title = $(this).find('.item-reference a').data('title');
-          }
+                console.info('filling')
+            
+                panel.fill();
+            
+              });
 
-          var item = new Item(_item);
+          });
+      }  
 
-          item.template = $(this);
-
-          item.render(app.domain.intercept(function onItemRendered (args) {
-            // ...code  
-          }));
-
-        });
-      }));
-    }
-
-    else {
-
-      var panel;
-
-      window.app.socket.publish('get top-level type', function (type) {
-
-        console.info('Page Home', 'OK get top-level type', type);
-        
-        if ( ! panel ) {
-          panel = new Panel(type);
-
-          panel
-
-            .load()
-
-            .then(function (template) {
-
-              $('.panels').append(template);
-
-              panel.render()
-
-                .then(function () {
-
-                  console.info('filling')
-              
-                  panel.fill();
-              
-                });
-
-            });
-        }  
-
-      });
-
-    }
+    });
   
   });
 
@@ -4431,7 +4377,7 @@ module.exports={
     ///////////////////////////////////////////////////////////////////////////
 
     item.find('subject')
-      .attr('href', '/item/' + item.item._id + '/' + S(item.item.subject).slugify().s)
+      .attr('href', '/item/' + item.item.id + '/' + S(item.item.subject).slugify().s)
       .text(item.item.subject)
       .on('click', function (e) {
         var link = $(this);

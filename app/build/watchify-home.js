@@ -22,7 +22,7 @@
       return bundler.bundle()
         // log errors if they happen
         .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-        .pipe(source('index.js'))
+        .pipe(source('home.js'))
         .pipe(gulp.dest(config.dirs['dist js']));
     }
 

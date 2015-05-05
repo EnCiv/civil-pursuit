@@ -17,6 +17,8 @@
     'less-dashboard',
     'minify-css',
     'minify-css-reset',
+    'minify-css-toolkit',
+    'minify-css-goal-progress',
     'minify-css-dashboard',
     'uglify-home',
     'uglify-test',

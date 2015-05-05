@@ -4,10 +4,9 @@
 
   require('should');
 
-  var webDriver        =   require('syn/lib/webdriver');
-  var Page        =   require('syn/lib/Page');
-  var Domain = require('domain').Domain;
-  var config = require('syn/config.json');
+  var webDriver = require('./.utils/webdriver');
+  var Domain    = require('domain').Domain;
+  var config    = require('syn/config.json');
 
   var webdriver,
     url;
@@ -18,20 +17,14 @@
 
     before ( function ( done ) {
 
-      this.timeout(7500);
+      this.timeout(15000);
 
-      var domain = new Domain().on('error', done);
+      webDriver('Home', {}, function (error, driver) {
+        if ( error ) throw error;
 
-      domain.run(function () {
-        url = Page('Home');
+        webdriver = driver;
 
-        webdriver = new webDriver({ url: url });
-
-        webdriver.on('error', function (error) {
-          throw error;
-        });
-
-        webdriver.on('ready', domain.intercept(done));
+        done();
       });
 
     });
@@ -41,6 +34,14 @@
     it ( 'should have a sign-up button' , function ( done ) {
 
       webdriver.client.isVisible('.join-button', done);
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'sign-up button should be clickable' , function ( done ) {
+
+      webdriver.client.click('.join-button', done);
 
     } );
 

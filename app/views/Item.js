@@ -3,6 +3,7 @@
   'use strict';
 
   var html5               =   require('syn/lib/html5');
+  var Page                =   require('syn/lib/Page');
   var ItemDefaultButtons  =   require('syn/views/ItemDefaultButtons');
 
   module.exports          =   function ItemView (viewOptions) {
@@ -53,17 +54,42 @@
       ItemButtons.add(ItemDefaultButtons());
     }
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Item text
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     var ItemText = html5.Element('.item-text', {}, [
 
       html5.Element('.item-truncatable', {}, [
 
         html5.Element('h4.item-subject.header', {}, [
 
-          html5.Element('a', { href: '#' })
+          html5.Element('a', {
+            href    :   function (locals) {
+              if ( locals && locals.item ) {
+                return Page('Item Page', locals.item);
+              }
+
+              return '#';
+            },
+            $text   :   function (locals) {
+              if ( locals && locals.item ) {
+                return locals.item.subject;
+              }
+              return '';
+            }
+          })
 
         ]),
 
-        html5.Element('.item-description.pre-text')
+        html5.Element('.item-description.pre-text', {
+          $text: function (locals) {
+            if ( locals && locals.item ) {
+              return locals.item.description;
+            }
+            return '';
+          }
+        })
 
       ])
 

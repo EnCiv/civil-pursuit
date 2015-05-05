@@ -2,172 +2,93 @@
   
   'use strict';
 
-  describe ( 'Web / Promote' , function () {
+  require('should');
 
-    var mongoose    =   require('mongoose');
+  var webDriver     =   require('./.utils/webdriver');
+  var Page          =   require('syn/lib/Page');
+  var Domain        =   require('domain').Domain;
+  var config        =   require('syn/config.json');
+  var mongoUp       =   require('syn/lib/util/connect-to-mongoose');
+  var User          =   require('syn/models/User');
+  var Item          =   require('syn/models/Item');
 
-    var When        =   require('syn/lib/When');
-    var User        =   require('syn/models/User');
-    var Item        =   require('syn/models/Item');
-    var Type        =   require('syn/models/Type');
+  var webdriver,
+    url,
+    mongo,
+    user,
+    item;
 
-    var subject     =   'Test topic for test web/promote';
-    var description =   'Description Description Description Description Description';
+  describe( 'Web / Promote' , function () {
 
-    var user;
-    var item;
+    ///////////////////////////////////////////////////////////////////////////
 
     before ( function ( done ) {
 
       this.timeout(15000);
 
-      mongoose.connect(process.env.MONGOHQ_URL);
+      var domain = new Domain().on('error', done);
 
-      Type
+      domain.run(function () {
 
-        .findOne({ name: 'Topic' })
+        mongo = mongoUp();
 
-        .exec().then(function (Topic) {
+        User
+          .disposable()
+          .then(function (_user) {
+            user = _user;
 
-          User
+            Item
+              .disposable()
+              .then(function (_item) {
 
-            .disposable().then(function (_user) {
+                item = _item;
 
-              Item
+                webDriver(['Item Page', item], { user: user },
+                  function (error, driver) {
+                    if ( error ) throw error;
 
-                .create({
-                  type          :   Topic._id,
-                  subject       :   subject,
-                  description   :   description,
-                  user          :   _user._id,
-                })
+                    webdriver = driver;
 
-                .then(function (_item) {
+                    done();
+                  });
 
-                  user = _user;
-                  item = _item;
+              });
+          });
 
-                  done();
-
-                });
-
-            });
-
-        });
-    });
-          
-
-    it ( 'rocks' , function () {
-
-    });
-
-  });
-
-  require('colors');
-
-  function promote (cb) {
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      cb(error);
-    });
-    
-    domain.run(function () {
-
-      var mongoose    =   require('mongoose');
-
-      var When        =   require('syn/lib/When');
-      var User        =   require('syn/models/User');
-      var Item        =   require('syn/models/Item');
-
-      var subject     =   'Test topic for test web/promote';
-      var description =   'Description Description Description Description Description';
-
-      console.log(' [ Promote Topic ] '.bgBlue);
-
-      mongoose.connect(process.env.MONGOHQ_URL, function () {
-        console.log('  ✔ Connected to MongoDB'.green);
       });
 
-      User.disposable(domain.intercept(function (user) {
+    });
 
-        Item.create({
-            type          :   'Topic',
-            subject       :   subject,
-            description   :   description,
-            user          :   user._id,
-          },
+    ///////////////////////////////////////////////////////////////////////////
 
-          domain.intercept(function (item) {
-            tellStory(user, item);
-          }));
+    it ( 'should have a button to toggle Promote' , function ( done ) {
 
-      }));
+      webdriver.client.isVisible('.toggle-creator', done);
 
-      function tellStory (user, item) {
+    } );
 
-        var ItemBox = require('syn/components/item')(item._id);
+    ///////////////////////////////////////////////////////////////////////////
 
-        var ItemTogglePromote = ItemBox + ' ' + require('syn/components/item-toggle-promote')();
+    after ( function ( done ) {
 
-        var Promote =  ItemBox + ' ' + require('syn/components/promote')();
+      this.timeout(7500);
 
-        var LeftItemSubject     =   Promote + ' ' + require('syn/components/promote-left-item-subject')({ split: false });
+      webdriver.client.pause(5000);
 
-        var LeftItemDescription =   Promote + ' ' + require('syn/components/promote-left-item-description')({ split: false });
+      item.remove(function (error) {
+        if ( error ) return done(error);
 
-        var page = require('syn/lib/Page')('Item Page', item);
+        user.remove(function (error) {
+          if ( error ) return done(error);
 
-        console.log(LeftItemSubject)
-
-        var view = {
-          width: 770,
-          height: 900
-        };
-        
-        When.I(user).visit(page, view).then(function (I, done) {
-
-          I.see       (ItemBox);
-
-          I.see       (ItemTogglePromote);
-
-          I.click     (ItemTogglePromote);
-
-          I.wait      (.5, 'seconds');
-
-          I.see       (Promote);
-
-          // I.wait      (1, 'second');
-
-          I.read      (subject, '.split-hide-down .left-item.subject h4');
-
-          I.wait      (5, 'seconds');
-
-          done(function () {
-            user.remove(domain.intercept(function () {
-              console.log('  ✔ Test user removed'.green);
-
-              console.log('  ⌛ Deleting test item'.magenta);
-
-              item.remove(domain.intercept(function () {
-                console.log('  ✔ Test user removed'.green);
-
-                console.log('  ⌛ Disconnecting from MongoDB'.magenta);
-
-                require('mongoose').disconnect(domain.intercept(function () {
-                  cb();  
-                }));
-              }));
-
-            }));
+          webdriver.client.end(function () {
+            mongo.disconnect(done);
           });
         });
+      });
+    
+    } );
 
-      }
-
-    });
-  }
-
-  module.exports = promote;
+  });
 
 } ();

@@ -37,18 +37,32 @@
    *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   */
 
-  Element.prototype.add = function () {
+  function add () {
     for ( var i in arguments ) {
       this.children.push(arguments[i]);
     }
 
     return this;
-  };
+  }
+
+  Element.prototype.add = add;
+
+  Element.prototype.has = add;
 
   Element.prototype.text = function(text) {
     this.options.$text = text;
     return this;
   };
+
+  /**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   *  Find children
+   *  -------------
+   *
+   *  @method
+   *  @arg          {String} selector
+   *  @return       Elements
+   *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  */
 
   Element.prototype.find = function (selector) {
     var elements = [];
@@ -60,9 +74,11 @@
           elements.push(element);
         }
 
-        element.children.forEach(function (child) {
-          findElements(selector, child);
-        });
+        if ( Array.isArray(element.children) ) {
+          element.children.forEach(function (child) {
+            findElements(selector, child);
+          });
+        }
       }
 
       else if ( element instanceof Elements ) {
@@ -73,9 +89,11 @@
 
     }
 
-    this.children.forEach(function (child) {
-      findElements(selector, child);
-    });
+    if ( Array.isArray(this.children) ) {
+      this.children.forEach(function (child) {
+        findElements(selector, child);
+      });
+    }
 
     return new Elements(elements);
   };

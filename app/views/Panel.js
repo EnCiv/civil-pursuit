@@ -7,6 +7,8 @@
 
   module.exports = function PanelView (options) {
 
+    options = options || {};
+
     var panelBody = html5.Element('.panel-body');
 
     if ( options.creator !== false ) {
@@ -15,20 +17,17 @@
 
     panelBody.add(html5.Element('.items'));
 
-    return html5.Element('.panel.panel-default')
+    return html5.Element('.panel.panel-default').add(
+      html5.Element('.panel-heading').add(
+          html5.Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
+            $condition    :   options.creator !== false
+          }),
 
-      .add(
-        html5.Element('.panel-heading')
-          .add(
-            html5.Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
-              $condition    :   options.creator !== false
-            }),
+          html5.Element('h4.panel-title')
+        ),
 
-            html5.Element('h4.panel-title')
-          )
-      )
-
-      .add(panelBody);
+      panelBody
+    );
 
   };
 

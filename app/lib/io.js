@@ -103,9 +103,7 @@
 
         });
 
-        app.arte.emit('message', {
-          'web socket server': 'new incoming client'
-        });
+        app.arte.emit('message', 'new socket connexion');
         /** Let clients know about new user count */
 
         io.emit('online users', Object.keys(users).length);
@@ -268,7 +266,8 @@
 
         listeners.forEach(function (listener) {
 
-          socket.on(listener, console.log.bind(console, '<< ' + listener));
+          socket.on(listener, app.arte.emit.bind(app.arte, 'message',
+            '<<<<< ' + listener));
 
           socket.on(listener,
             require('syn/io/' + S(listener).slugify().s).bind(socket, listener));

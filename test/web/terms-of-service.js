@@ -4,7 +4,7 @@
 
   require('should');
 
-  var webDriver     =   require('syn/lib/webdriver');
+  var webDriver     =   require('./.utils/webdriver');
   var Page          =   require('syn/lib/Page');
   var Domain        =   require('domain').Domain;
   var config        =   require('syn/config.json');
@@ -18,20 +18,14 @@
 
     before ( function ( done ) {
 
-      this.timeout(7500);
+      this.timeout(15000);
 
-      var domain = new Domain().on('error', done);
+      webDriver('Terms Of Service', {}, function (error, driver) {
+        if ( error ) throw error;
 
-      domain.run(function () {
-        url = process.env.SYNAPP_SELENIUM_TARGET + Page('Terms Of Service');
+        webdriver = driver;
 
-        webdriver = new webDriver({ url: url });
-
-        webdriver.on('error', function (error) {
-          throw error;
-        });
-
-        webdriver.on('ready', domain.intercept(done));
+        done();
       });
 
     });

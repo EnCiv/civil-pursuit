@@ -2,112 +2,102 @@
   
   'use strict';
 
-  var html5           =   require('syn/lib/html5');
+  module.exports = function (locals) {
+    var html5           =   require('syn/lib/html5');
 
-  var config          =   require('syn/config.json');
+    var config          =   require('syn/config.json');
 
-  var Intro           =   require('syn/views/Intro');
-  var TopLevelPanel   =   require('syn/views/TopLevelPanel');
-  var TopBar          =   require('syn/views/TopBar');
-  var Stylesheet      =   require('syn/views/Stylesheet');
-  var Script          =   require('syn/views/Script');
-  var Footer          =   require('syn/views/Footer');
-  var Login           =   require('syn/views/Login');
+    var TopBar          =   require('syn/views/TopBar');
+    var Stylesheet      =   require('syn/views/Stylesheet');
+    var Script          =   require('syn/views/Script');
+    var Footer          =   require('syn/views/Footer');
+    var Login           =   require('syn/views/Login');
+    var Join            =   require('syn/views/Join');
 
-  var document        =   new html5.Document(
-    html5.Element.title(config.title)
-  );
+    var document        =   new html5.Document(
+      html5.Element.title(config.title)
+    );
 
-  document.add(
+    document.add(
 
-    html5.Element('meta',      {
-      $selfClosing    :     true,
-      'http-equiv'    :     'X-UA-Compatible',
-      content         :     'IE=edge'
-    }),
+      html5.Element('meta',      {
+        $selfClosing    :     true,
+        'http-equiv'    :     'X-UA-Compatible',
+        content         :     'IE=edge'
+      }),
 
-    html5.Element('meta',      {
-      $selfClosing    :     true,
-      name            :     'viewport',
-      content         :     'width=device-width, initial-scale=1.0'
-    }),
+      html5.Element('meta',      {
+        $selfClosing    :     true,
+        name            :     'viewport',
+        content         :     'width=device-width, initial-scale=1.0'
+      }),
 
-    html5.Element('meta',      {
-      $selfClosing    :     true,
-      name            :     'description',
-      content         :     'description'
-    }),
+      html5.Element('meta',      {
+        $selfClosing    :     true,
+        name            :     'description',
+        content         :     'description'
+      }),
 
-    html5.Element('script',    {
-      $condition      :     function (locals) {
-        return locals.settings.env === 'production';
-      },
-      $text           :     "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', '" + config['google analytics'].key + "', 'auto'); ga('send', 'pageview');"
-    })
+      html5.Element('script',    {
+        $condition      :     function (locals) {
+          return locals.settings.env === 'production';
+        },
+        $text           :     "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', '" + config['google analytics'].key + "', 'auto'); ga('send', 'pageview');"
+      })
 
-  );
+    );
 
-  document.add(Stylesheet());
+    document.add(Stylesheet());
 
-  // document.add(
+    document.add(
 
-  //   html5.Element(
-  //     '#screens', {},
-  //     [
-  //       html5.Element('#screen-phone'),
-  //       html5.Element('#screen-tablet')
-  //     ]
-  //   ),
+      html5.Element(
+        '#screens', {},
+        [
+          html5.Element('#screen-phone'),
+          html5.Element('#screen-tablet')
+        ]
+      ),
 
-  //   html5.Element(
-  //     'section',
-      
-  //     { role: 'header' },
-      
-  //     TopBar
-  //   ),
+      html5.Element('section', { role: 'header' }, TopBar),
 
-  //   html5.Element(
-  //     'section#main',
+      html5.Element('section#main', { role: 'main' }),
 
-  //     { role: 'main' },
+      html5.Element('section#footer', { role: 'footer' }, Footer),
 
-  //     function (locals) {
+      html5.Element(
+        'script#login',
 
-  //       return [].concat(
+        {
+          type        :   'text/html',
+          
+          $condition  :   function (locals) {
+            return ! locals.user;
+          },
 
-  //         Intro(locals),
+          $text         :   Login().toHTML()
+        }
+      ),
 
-  //         TopLevelPanel(locals)
+      html5.Element(
+        'script#join',
 
-  //       );
-  //   }),
+        {
+          type        :   'text/html',
+          
+          $condition  :   function (locals) {
+            return ! locals.user;
+          },
 
-  //   html5.Element(
-  //     'section#footer',
+          $text         :   Join(locals).toHTML()
+        }
+      )
 
-  //     { role: 'footer' },
+    );
 
-  //     Footer),
+    document.add(Script(locals));
 
-  //   html5.Element(
-  //     'script#login',
-
-  //     {
-  //       type        :   'text/html',
-        
-  //       $condition  :   function (locals) {
-  //         return ! locals.user;
-  //       },
-
-  //       $text         :   Login().toHTML()
-  //     }
-  //   )
-
-  // );
-
-  // document.add(Script());
-
-  module.exports = document;
+    return document;
+  };
 
 } ();

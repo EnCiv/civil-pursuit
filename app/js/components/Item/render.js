@@ -43,7 +43,7 @@
     ///////////////////////////////////////////////////////////////////////////
 
     item.find('subject')
-      .attr('href', '/item/' + item.item._id + '/' + S(item.item.subject).slugify().s)
+      .attr('href', '/item/' + item.item.id + '/' + S(item.item.subject).slugify().s)
       .text(item.item.subject)
       .on('click', function (e) {
         var link = $(this);

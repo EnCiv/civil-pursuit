@@ -10,7 +10,7 @@
 
   exports.task      =   function uglifyApp () {
 
-    return gulp.src(path.join(process.cwd(), 'app/dist/js/index.js'))
+    return gulp.src(path.join(process.cwd(), 'app/dist/js/home.js'))
 
       .pipe(uglify())
 

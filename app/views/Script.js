@@ -47,17 +47,17 @@
       //  APP.JS
       /////////////////////////////////////////////////////////////////////////
 
-      html5.Element.importScript(function (locals) {
+      html5.Element.importScript(function (exports) {
 
         var ext = '.js';
 
-        var production = locals.settings.env === 'production';
+        var production = exports.settings.env === 'production';
 
         if ( production ) {
           ext = '.min.js';
         }
 
-        var page = 'index';
+        var page = exports.page || 'index';
 
         return '/js/' + page + ext;
 

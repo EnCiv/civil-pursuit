@@ -4,46 +4,58 @@
 
   function getItemPage (req, res, next) {
 
-    if ( 'youtube' in res.locals ) {
-      delete res.locals.youtube;
-    }
+    require('syn/models/Item')
+      .getItem(req.params.item_short_id)
+      .then(function (item) {
+        res.locals.item = item;
 
-    require('syn/lib/domain')(next, function getItemPageDomain (domain) {
+        req.params.page = 'item';
 
-      require('syn/models/Item')
+        next();
 
-        .getBatch(req.params.item_id, domain.intercept(function onGetBatch (batch) {
+      }, next);
 
-          // console.log('*batch*', batch);
 
-          batch.entourage.items = batch.entourage.items.map(function (item, index) {
-            return item.toObject({ transform: batch.entourage.toObjects[index] });
-          });
+    // if ( 'youtube' in res.locals ) {
+    //   delete res.locals.youtube;
+    // }
 
-          // res.type('text/javascript');
+    // require('syn/lib/domain')(next, function getItemPageDomain (domain) {
 
-          // return res.send(JSON.stringify(batch, null, 2));
+    //   require('syn/models/Item')
 
-          res.locals.batch = batch;
+    //     .getBatch(req.params.item_id, domain.intercept(function onGetBatch (batch) {
 
-          res.locals.item = batch.item;
+    //       // console.log('*batch*', batch);
 
-          res.locals.title = res.locals.item.subject + ' | Synaccord';
+    //       batch.entourage.items = batch.entourage.items.map(function (item, index) {
+    //         return item.toObject({ transform: batch.entourage.toObjects[index] });
+    //       });
 
-          res.locals.meta_description = res.locals.item.description
+    //       // res.type('text/javascript');
+
+    //       // return res.send(JSON.stringify(batch, null, 2));
+
+    //       res.locals.batch = batch;
+
+    //       res.locals.item = batch.item;
+
+    //       res.locals.title = res.locals.item.subject + ' | Synaccord';
+
+    //       res.locals.meta_description = res.locals.item.description
             
-            // Get first line
-            .split(/\n/)[0]
+    //         // Get first line
+    //         .split(/\n/)[0]
             
-            // Line max length
-            .substr(0, 255);
+    //         // Line max length
+    //         .substr(0, 255);
 
-          next();
+    //       next();
 
-        }));
+    //     }));
 
-      }
-    );
+    //   }
+    // );
   }
 
   module.exports = getItemPage;

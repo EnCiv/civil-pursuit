@@ -41,7 +41,7 @@
     }
 
     if ( child instanceof Element === false ) {
-      throw new Error('Not an element', child);
+      throw new Error('Not an element: ' + child.constructor.name);
     }
 
     // Can we transform this Element?

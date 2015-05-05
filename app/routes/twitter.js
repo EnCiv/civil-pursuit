@@ -2,8 +2,6 @@
 
   'use strict';
 
-  
-
   function twitterMiddlewares (synapp, passport) {
 
     var app = this;

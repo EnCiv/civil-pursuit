@@ -4,7 +4,7 @@
 
   require('should');
 
-  var webDriver     =   require('syn/lib/webdriver');
+  var webDriver     =   require('./.utils/webdriver');
   var Page          =   require('syn/lib/Page');
   var Domain        =   require('domain').Domain;
   var config        =   require('syn/config.json');
@@ -35,29 +35,13 @@
           .then(function (_user) {
             user = _user;
 
-            url = process.env.SYNAPP_SELENIUM_TARGET + Page('Home');
+            webDriver('Home', { user: user }, function (error, driver) {
+              if ( error ) throw error;
 
-            var webdriverOptions = {
-              url           :     url,
-              width         :     800,
-              height        :     900,
-              cookie        :     {
-                synuser     :     {
-                  value     :     {
-                    id      :     user._id,
-                    email   :     user.email
-                  } 
-                }
-              }
-            };
+              webdriver = driver;
 
-            webdriver = new webDriver(webdriverOptions);
-
-            webdriver.on('error', function (error) {
-              throw error;
+              done();
             });
-
-            webdriver.on('ready', domain.intercept(done));
           });
 
       });

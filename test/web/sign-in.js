@@ -6,8 +6,7 @@
 
   var async               =   require('async');
 
-  var webDriver           =   require('syn/lib/webdriver');
-  var Page                =   require('syn/lib/Page');
+  var webDriver           =   require('./.utils/webdriver');
   var Domain              =   require('domain').Domain;
   var config              =   require('syn/config.json');
   var User                =   require('syn/models/User');
@@ -37,18 +36,16 @@
       var domain = new Domain().on('error', done);
 
       domain.run(function () {
-        url = process.env.SYNAPP_SELENIUM_TARGET + Page('Home');
-
-        webdriver = new webDriver({ url: url, width: 800, height: 900 });
-
-        webdriver.on('error', function (error) {
-          throw error;
-        });
 
         async.parallel([
           
           function (done) {
-            webdriver.on('ready', domain.intercept(done));
+            webDriver('Home', {}, domain.intercept(function (driver) {
+
+              webdriver = driver;
+
+              done();
+            }));
           },
 
           function (done) {

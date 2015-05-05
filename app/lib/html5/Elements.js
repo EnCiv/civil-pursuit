@@ -55,6 +55,23 @@
     return this;
   };
 
+  Elements.prototype.forEach = function (closure) {
+    this.elements.forEach(closure);
+    return this;
+  };
+
+  Elements.prototype.find = function (selector) {
+    var found = [];
+
+    this.elements.forEach(function (child) {
+      child.find(selector).each(function (result) {
+        found.push(result);
+      });
+    });
+
+    return new Elements(found);
+  };
+
   Elements.prototype.toHTML = function (locals, tab) {
     return this.elements
       .map(function (element) {
@@ -68,7 +85,6 @@
         
         if ( typeof element === 'function' ) {
 
-          console.log('IS A FUNCTION', element, element(locals))
           var elem = element(locals);
 
           if ( elem instanceof Element || elem instanceof Elements ) {

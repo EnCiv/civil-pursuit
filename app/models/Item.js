@@ -40,7 +40,8 @@
     var statics = [
       'Disposable',
       'Generate Short ID',
-      'Get Panel Items'
+      'Get Panel Items',
+      'Get Item'
     ];
 
     statics.forEach(function (_static) {
