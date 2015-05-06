@@ -36,22 +36,22 @@
         User
           .disposable()
           .then(function (_user) {
+            console.log()
+            console.log()
+            console.log('got user', _user)
+            console.log()
+            console.log()
             user = _user;
 
             Item
               .disposable()
               .then(function (_item) {
                 item = _item;
-                console.log(_item)
-
-                Item.findById(item._id)
-                  .exec(console.log.bind(console))
-                
-                setTimeout(function () {
-                  console.log('done');
-                }, 50000)
-
-                return;
+                console.log()
+                console.log()
+                console.log('got item', _item)
+                console.log()
+                console.log()
 
                 webDriver(['Item Page', item], { user: user },
                   function (error, driver) {

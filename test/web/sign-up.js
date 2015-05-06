@@ -45,11 +45,48 @@
 
     } );
 
+    /////////////////////////////////////////////////////////////////////////
+
+    it ( 'should invoke vex pop-up' , function (done) {
+
+      webdriver.client.isVisible('.vex .vex-content', done);
+
+    });
+
+    /////////////////////////////////////////////////////////////////////////
+
+    it ( 'should show sign-up form' , function (done) {
+
+      webdriver.client.isVisible('form[name="join"]', done);
+
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should show email input field as having error' ,
+      function (done) {
+
+        var domain = new Domain().on('error', done);
+
+        domain.run(function () {
+
+          webdriver.client.click('.join-submit');
+
+          webdriver.client.getAttribute('form[name="join"] input[name="email"]', 'class',
+            domain.intercept(function (classes) {console.log(classes)
+              classes.split(/\s+/).indexOf('error')
+                .should.be.a.Number.and.is.above(-1);
+              done();
+            }));
+        });
+
+    } );
+
     ///////////////////////////////////////////////////////////////////////////
 
     after ( function ( done ) {
 
-      this.timeout(7500);
+      this.timeout(75000);
 
       webdriver.client.pause(5000);
 
