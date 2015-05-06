@@ -47,7 +47,7 @@
     );
 
     if ( viewOptions.buttons ) {
-
+      ItemButtons.add(viewOptions.buttons);
     }
 
     else {

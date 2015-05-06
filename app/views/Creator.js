@@ -38,19 +38,46 @@
 
     var itemBox   =   ItemView({
       media       :   dropBox,
-      buttons     :   []
+      buttons     :   html5.Elements(
+        Element('button.button-create.shy.medium').add(
+          Element('i.fa.fa-bullhorn')
+        )
+      )
     });
+
+    itemBox
+      .find('h4.item-subject.header')
+      .each(function (subject) {
+        subject.add(
+          Element('input', {
+            type          :   'text',
+            placeholder   :   'Item subject',
+            required      :   'required',
+            name          :   'subject',
+            $selfClosing  :   true
+          })
+        );
+      });
+
+    itemBox
+      .find('.item-description')
+      .each(function (description) {
+        delete description.options.$text;
+
+        description.add(
+          Element('textarea', {
+            placeholder   :   'Item description',
+            required      :   'required',
+            name          :   'description'
+          })
+        );
+      });
 
     var form = Element('form.creator.is-container', {
       name    :   'create'
     });
 
-    return form.add(Element('.is-section').add(
-      ItemView({
-        buttons     :     [],
-        media       :     dropBox
-      })
-    ));
+    return form.add(Element('.is-section').add(itemBox));
 
   };
 
