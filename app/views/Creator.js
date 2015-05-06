@@ -13,27 +13,20 @@
 
     // DROP BOX FOR IMAGE UPLOAD
 
-    var dropBox = html5.Elements(
+    var dropBox = Element('.drop-box').has(
+      Element('.modern').has(
+        Element('h4').text('Drop image here'),
+        Element('p').text('or')
+      ),
 
-      Element('article.item-media.phasing').has(
+      Element('.phasing').has(
+        Element('button.upload-image-button', {
+          type  : 'button',
+          $text : 'Choose a file'
+        })
+      ),
 
-        Element('.drop-box').has(
-          Element('.modern').has(
-            Element('h4').text('Drop image here'),
-            Element('p').text('or')
-          ),
-
-          Element('.phasing').has(
-            Element('button.upload-image-button', {
-              type  : 'button',
-              $text : 'Choose a file'
-            })
-          ),
-
-          Element('input.hide', { type: 'file', value: 'Upload image' })
-        )
-      )
-
+      Element('input.hide', { type: 'file', value: 'Upload image' })
     );
 
     var itemBox   =   ItemView({
@@ -74,7 +67,10 @@
       });
 
     var form = Element('form.creator.is-container', {
-      name    :   'create'
+      name          :   'create',
+      novalidate    :   'novalidate',
+      role          :   'form',
+      method        :   'POST'
     });
 
     return form.add(Element('.is-section').add(itemBox));
