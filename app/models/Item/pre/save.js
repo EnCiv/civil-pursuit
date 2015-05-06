@@ -14,13 +14,13 @@
     'syn/models/Item'
   ];
 
-  function Module_Models__Item__Pre__Save (next, done) {
+  function preSaveItem (next, done) {
 
     var self = this;
 
     var isNew = this.isNew;
 
-    di(done, deps, function (domain, path, mongoose, async, cloudinary, getUrlTitle, config, Item) {
+    di(done, deps, function (domain,  path,   mongoose,   async,  cloudinary,   getUrlTitle,  config,   Item) {
 
       if ( isNew ) {
         Item.generateShortId(domain.intercept(function (id) {
@@ -34,6 +34,7 @@
       }
 
       function packageItem () {
+        next();
         async.parallel([uploadImage, getUrlTitle], done);
       }
 
@@ -93,6 +94,6 @@
 
   }
   
-  module.exports = Module_Models__Item__Pre__Save;
+  module.exports = preSaveItem;
 
 } ();

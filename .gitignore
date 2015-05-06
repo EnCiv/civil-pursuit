@@ -6,3 +6,4 @@
 /app/web/sitemap.xml
 /app/web/sitemap-*.xml
 /app/package.json
+/data/*

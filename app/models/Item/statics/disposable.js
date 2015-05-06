@@ -1,74 +1,123 @@
-! function () {
+ ! function () {
   
   'use strict';
-  'have fun!';
 
-  var di = require('syn/lib/util/di/domain');
+  var Domain      =   require('domain').Domain;
+  var async       =   require('async');
+  var Promise     =   require('promise');
+  var Type        =   require('syn/models/Type');
+  var User        =   require('syn/models/User');
 
-  var async   =   require('async');
-  var Promise =   require('promise');
-  var Type    =   require('syn/models/Type');
-  var User    =   require('syn/models/User');
+  /**   Create disposable item
+   *    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   *    @function
+   *    @arg            {Object?} options
+   *    @arg            {Function} cb
+   *    @signature      (options, cb), (cb)
+  */
 
-  require('syn/lib/util/promisify');
+  function disposableItem (options, cb) {
 
-  function disposable (cb) {
+    if ( typeof options === 'function' && ! ( '1' in arguments ) ) {
+      cb = options;
+      options = {};
+    }
+
+    options = options || {};
 
     var Item = this;
 
+    // Returning a promise
+
     var q = new Promise(function (fulfill, reject) {
 
-      Function
-        
-        .promisify(async.parallel, async)
-        
-        .when({
-          type    :   Type.findOneRandom.bind(Type),
-          user    :   User.disposable.bind(User)
-        })
+      // Create domain
 
-        .then(function createItem (results) {
+      var d = new Domain().on('error', reject);
 
-          if ( results.type.parent && ! results.parent ) {
-            
-            // FIND PARENT
+      /**   Function to find item's type
+       *    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       *    @function
+       *    @arg          {Function} done
+      */
 
-            Function
-              
-              .promisify(Item.findOneRandom, Item)
-              
-              .when({ type: results.type.parent })
-              
-              .then(function (item) {
-                results.parent = item;
-                createItem(results);
-              })
+      function findType (done) {
 
-              .catch(reject);
+        if ( options.type ) {
 
-            return;
+          // Object ID
+          if ( typeof options.type === 'object' ) {
+            Type
+              .findById(options.type)
+              .exec(done);
           }
+        }
+        // Find any type
+        else {
+          Type
+            .findOneRandom(done);
+        }
+      }
 
-          // CREATE ITEM
+      // We need a type and a user for the item
 
-          var newItem = {
-            subject       :   'Disposable Item ' + new Date(),
-            description   :   'Disposable Item',
-            user          :   results.user._id,
-            type          :   results.type._id
-          };
+      async.parallel({
+        type    :   findType,
+        user    :   User.disposable.bind(User)
+      }, createItem);
 
-          if ( results.parent ) {
-            newItem.parent = results.parent._id;
-          }
+      /**
+       *    @arg          {Error?} error
+       *    @arg          {Object} results
+       *    @return       null
+      */
 
-          Item
+      function createItem (error, results) {
 
-            .create(newItem)
-            .then(fulfill, reject);
-        })
+        // If type has a parent, then create a parent
 
-        .catch(reject);
+        if ( results.type.parent && ! results.parent ) {
+
+          // Create parent
+          
+          disposableItem.apply(Item, [{ type: results.type.parent }])
+
+            .then(function (item) {
+
+              // attach parent to results
+
+              results.parent = item;
+
+              // Then call create item agains
+              
+              createItem(null, results);
+            });
+
+          // Stop here since we are calling back the function above
+
+          return;
+        }
+
+        // CREATE ITEM
+
+        var newItem     =   {
+          subject       :   'Disposable Item Of Type ' + results.type.name +
+            ' Created on ' + new Date(),
+          description   :   'Disposable Item',
+          user          :   results.user._id,
+          type          :   results.type._id
+        };
+
+        if ( results.parent ) {
+          newItem.parent = results.parent._id;
+        }
+
+        // Create item in DB and done
+
+        Item.create(newItem, d.intercept(function (item) {
+          fulfill(item)
+        }));
+      }
 
     });
 
@@ -80,6 +129,6 @@
 
   }
 
-  module.exports = disposable;
+  module.exports = disposableItem;
 
 } ();

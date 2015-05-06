@@ -32,9 +32,21 @@ Nina Butorac
 # Install
 
 ```bash
-git clone ...
-cd democracysings
+git clone https://bitbucket.org/synaccord/democratysings
+cd democratysings
+npm install
 ```
+
+# Start
+
+```bash
+. export.sh
+npm start
+```
+
+# Database
+
+We use MongoDB for the storage. The address of the MongoDB server is provided to the application via the `MONGOHQ_URL` environment.
 
 - App hosted on heroku (synaccord.heroku.com)
 - MongoDB hosted by MongoHQ as an heroku plugin (free plan)

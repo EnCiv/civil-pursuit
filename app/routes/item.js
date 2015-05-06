@@ -29,6 +29,13 @@
 
         req.params.page = 'item';
 
+        app.arte.emit('message', 'Item Page', {
+          'item found': {
+            'id': req.params.item_short_id,
+            '_id': item._id
+          }
+        });
+
         next();
 
       }, next);

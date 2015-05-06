@@ -15,11 +15,13 @@
         "password"        :   "1234"
       };
 
-      User
+      process.nextTick(function () {
+        User
 
-        .create(disposableUser)
+          .create(disposableUser)
 
-        .then(fulfill, reject);
+          .then(fulfill, reject);
+      })
 
     });
 

@@ -40,8 +40,8 @@
     var statics = [
       'Disposable',
       'Generate Short ID',
-      'Get Panel Items',
-      'Get Item'
+      'Get Item',
+      'Get Panel Items'
     ];
 
     statics.forEach(function (_static) {
@@ -54,6 +54,7 @@
 
     var methods = [
       'Get Image Html',
+      'Get Lineage',
       'Get Popularity',
       'To Panel Item'
     ];
