@@ -17,6 +17,16 @@
         html5.Element('p', { $text: 'While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.' }),
         html5.Element('a.btn.invite-people', { target: '_blank',
           $text: 'Send' })
+      ),
+
+      html5.Element('.row').add(
+        html5.Element('.tablet-30.middle').add(
+          html5.Element('h4', { $text: 'Promoted' })
+        ),
+
+        html5.Element('.tablet-70.middle').add(
+          html5.Element('.progress')
+        )
       )
     );
   }
