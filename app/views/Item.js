@@ -5,6 +5,7 @@
   var html5               =   require('syn/lib/html5');
   var Page                =   require('syn/lib/Page');
   var ItemDefaultButtons  =   require('syn/views/ItemDefaultButtons');
+  var Promote             =   require('syn/views/Promote');
 
   module.exports          =   function ItemView (viewOptions) {
     viewOptions           =   viewOptions || {};
@@ -95,12 +96,29 @@
 
     ]);
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Item collapsers
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var ItemCollapsers = html5.Element('.item-collapsers');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // PROMOTE
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    ItemCollapsers.add(
+      html5.Element('.promote.is-container').add(
+        html5.Element('.is-section').add(Promote(viewOptions))
+      )
+    );
+
     return html5.Element('.item', itemAttribute)
 
       .add(
         ItemWrapper,
         ItemButtons,
         ItemText,
+        ItemCollapsers,
         html5.Element('.clear')
       );
 

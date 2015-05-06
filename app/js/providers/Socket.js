@@ -2,7 +2,6 @@
   
   'use strict';
 
-
   function Socket (emit) {
     var self = this;
 

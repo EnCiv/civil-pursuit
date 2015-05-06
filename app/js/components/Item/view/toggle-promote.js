@@ -13,7 +13,7 @@
 
   function togglePromote () {
 
-    if ( ! synapp.user ) {
+    if ( ! app.socket.synuser ) {
       Sign.dialog.join();
       return;
     }

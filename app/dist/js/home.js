@@ -4481,57 +4481,6 @@ module.exports={
 
     console.warn('buttonChildren', buttonChildren.html());
 
-    // Related
-    // switch ( item.item.type ) {
-    //   case 'Topic':
-    //     var problems = (item.item.related && item.item.related.Problem) || 0;
-    //     var button = makeRelated();
-    //     button.find('i').addClass('fa-fire');
-    //     button.find('.related-number').text(problems);
-    //     item.find('related').append(button);
-    //     break;
-
-    //   case 'Problem':
-    //     var agrees = (item.item.related && item.item.related.Agree) || 0;
-    //     var disagrees = (item.item.related && item.item.related.Disagree) || 0;
-    //     var mean = (agrees / (agrees + disagrees) * 100);
-
-    //     if ( isNaN(mean) ) {
-    //       mean = 0;
-    //     }
-
-    //     var button = makeRelated();
-    //     button.find('i').addClass('fa-music');
-    //     button.find('.related-number').text(mean + '%');
-    //     item.find('related').append(button);
-
-    //     var solutions = (item.item.related && item.item.related.Solution) || 0;
-    //     button = makeRelated();
-    //     button.find('i').addClass('fa-tint');
-    //     button.find('.related-number').text(solutions);
-    //     item.find('related').append(button);
-    //     break;
-    
-    //   case 'Solution':
-    //     var pros = (item.item.related && item.item.related.Pro) || 0;
-    //     var cons = (item.item.related && item.item.related.Con) || 0;
-
-    //     var mean = pros / (pros + cons);
-
-    //     if ( isNaN(mean) ) {
-    //       mean = 0;
-    //     }
-
-    //     var button = makeRelated();
-    //     button.find('i').addClass('fa-music');
-    //     button.find('.related-number').text(mean + '%');
-    //     item.find('related').append(button);
-
-    //     break;
-    // }
-
-
-
     item.template.find('.counter').on('click', function () {
       var $trigger    =   $(this);
       var $item       =   $trigger.closest('.item');
@@ -4801,7 +4750,7 @@ module.exports={
 
   function togglePromote () {
 
-    if ( ! synapp.user ) {
+    if ( ! app.socket.synuser ) {
       Sign.dialog.join();
       return;
     }
@@ -6910,7 +6859,6 @@ module.exports={
 ! function () {
   
   'use strict';
-
 
   function Socket (emit) {
     var self = this;
