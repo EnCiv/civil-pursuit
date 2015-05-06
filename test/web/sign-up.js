@@ -84,6 +84,75 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
+    it ( 'should show password input field as having error' ,
+      function (done) {
+
+        var domain = new Domain().on('error', done);
+
+        domain.run(function () {
+
+          webdriver.client.setValue('form[name="join"] input[name="email"]', 'test-user@synapp.com');
+
+          webdriver.client.click('.join-submit');
+
+          webdriver.client.getAttribute('form[name="join"] input[name="password"]', 'class',
+            domain.intercept(function (classes) {console.log(classes)
+              classes.split(/\s+/).indexOf('error')
+                .should.be.a.Number.and.is.above(-1);
+              done();
+            }));
+        });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should show confirm password input field as having error' ,
+      function (done) {
+
+        var domain = new Domain().on('error', done);
+
+        domain.run(function () {
+
+          webdriver.client.setValue('form[name="join"] input[name="password"]', '1234');
+
+          webdriver.client.click('.join-submit');
+
+          webdriver.client.getAttribute('form[name="join"] input[name="confirm"]', 'class',
+            domain.intercept(function (classes) {console.log(classes)
+              classes.split(/\s+/).indexOf('error')
+                .should.be.a.Number.and.is.above(-1);
+              done();
+            }));
+        });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should show confirm password input field as having error when passwords do not match' ,
+      function (done) {
+
+        var domain = new Domain().on('error', done);
+
+        domain.run(function () {
+
+          webdriver.client.setValue('form[name="join"] input[name="confirm"]', '12345');
+
+          webdriver.client.click('.join-submit');
+
+          webdriver.client.getAttribute('form[name="join"] input[name="confirm"]', 'class',
+            domain.intercept(function (classes) {console.log(classes)
+              classes.split(/\s+/).indexOf('error')
+                .should.be.a.Number.and.is.above(-1);
+              done();
+            }));
+        });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
     after ( function ( done ) {
 
       this.timeout(75000);

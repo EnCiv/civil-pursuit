@@ -4912,15 +4912,15 @@ module.exports={
 
         $form.find('.please-agree').hide();
         $form.find('.already-taken').hide();
-        
-        if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
-          $form.find('.please-agree').show();
-
-          return;
-        }
 
         if ( form.labels.password.val() !== form.labels.confirm.val() ) {
           form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+        
+        if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
+          $form.find('.please-agree').show();
 
           return;
         }

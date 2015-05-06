@@ -63,7 +63,7 @@
 
     it ( 'should have a button to toggle Promote' , function ( done ) {
 
-      webdriver.client.isVisible('.toggle-creator', done);
+      webdriver.client.isVisible('.item-toggle-promote', done);
 
     } );
 
@@ -71,7 +71,7 @@
 
     after ( function ( done ) {
 
-      this.timeout(7500);
+      this.timeout(17500);
 
       webdriver.client.pause(5000);
 
