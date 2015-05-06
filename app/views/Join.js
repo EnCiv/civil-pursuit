@@ -80,6 +80,23 @@
             __('button.primary.join-submit.block.small', { $text: 'Join' })
           )
 
+        ),
+
+        __('.i-agree').add(
+          __('button.shy', { type: 'button' }).add(
+            __('i.fa.fa-2x.fa-square-o.agreed')
+          ),
+
+          __('span').add(
+            __('span', { $text: ' I agree to' }),
+
+            __('a', {
+              href: Page('Terms Of Service'),
+              $text: 'the terms of service'
+            }),
+
+            __('span', { $text: '.' })
+          )
         )
 
       )

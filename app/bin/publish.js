@@ -68,6 +68,7 @@
     { name: 'mocha test/web/not-found' },
     { name: 'mocha test/web/item-not-found' },
     { name: 'mocha test/web/item-page' },
+    { name: 'mocha test/web/create-topic' },
     { name: 'mocha test/web/sign-in' },
     { name: 'mocha test/web/sign-up' },
 

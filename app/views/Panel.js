@@ -18,6 +18,7 @@
     panelBody.add(html5.Element('.items'));
 
     return html5.Element('.panel.panel-default').add(
+      
       html5.Element('.panel-heading').add(
           html5.Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
             $condition    :   options.creator !== false

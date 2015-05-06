@@ -58,14 +58,26 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    it ( 'Toggle Creator On' , function ( done ) {
+    describe ( 'Toggle Creator On' , function () {
+
+      /////////////////////////////////////////////////////////////////////////
 
       before ( function (done) {
+
+        this.timeout(3000);
 
         webdriver.client.click('.toggle-creator');
         webdriver.client.pause(1000, done);
 
       } );
+
+      /////////////////////////////////////////////////////////////////////////
+
+      it ( 'should show creator' , function (done) {
+        webdriver.client.isVisible('.creator', done);
+      } );
+
+      /////////////////////////////////////////////////////////////////////////
 
     } );
 

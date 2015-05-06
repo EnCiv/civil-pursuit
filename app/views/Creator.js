@@ -41,11 +41,16 @@
       buttons     :   []
     });
 
-    return Element('form.creator.is-container')
+    var form = Element('form.creator.is-container', {
+      name    :   'create'
+    });
 
-      .has(
-        Element('.is-section', {}, itemBox)
-      );
+    return form.add(Element('.is-section').add(
+      ItemView({
+        buttons     :     [],
+        media       :     dropBox
+      })
+    ));
 
   };
 
