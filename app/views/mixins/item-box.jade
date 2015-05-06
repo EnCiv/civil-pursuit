@@ -118,73 +118,73 @@ mixin item-box (item, dontColllapse, type)
 
         .clear.clear-text
 
-      //- Item toggle arrow
+  //- Item toggle arrow
 
-      .item-arrow
-        div
-          i.fa.fa-arrow-down.cursor-pointer
+  .item-arrow
+    div
+      i.fa.fa-arrow-down.cursor-pointer
 
       //- Item ollapsers
 
-      - if ( ! dontColllapse )
-        .item-collapsers(class=item && item.nested ? 'show' : '')
+- if ( ! dontColllapse )
+  .item-collapsers(class=item && item.nested ? 'show' : '')
 
-          //- Item Edit and go again
-          
-          .editor.is-container
-            .is-section
+    //- Item Edit and go again
+    
+    .editor.is-container
+      .is-section
 
-          //- Promote item
+    //- Promote item
 
-          .promote.is-container
-            .is-section
-              +promote()
+    .promote.is-container
+      .is-section
+        +promote()
 
-          //- Item details
+    //- Item details
 
-          .details.is-container
-            .is-section
-              +details()
+    .details.is-container
+      .is-section
+        +details()
 
-          //- Item children
+    //- Item children
 
-          .children.is-container(class=showChildren)
-            .is-section(class=item && item.nested ? 'show' : '')
-              
-              block nested-items
+    .children.is-container(class=showChildren)
+      .is-section(class=item && item.nested ? 'show' : '')
+        
+        block nested-items
 
-                //- Show nested items for static pages
+          //- Show nested items for static pages
 
-                - if ( item && item.nested )
-                  - var type;
+          - if ( item && item.nested )
+            - var type;
 
-                  - if ( item.type === 'Topic' )
-                    - type = 'Problem'
+            - if ( item.type === 'Topic' )
+              - type = 'Problem'
 
-                  - else if ( item.type === 'Problem' )
-                    - type = [['Agree', 'Disagree'], 'Solution']
+            - else if ( item.type === 'Problem' )
+              - type = [['Agree', 'Disagree'], 'Solution']
 
-                  - else if ( item.type === 'Solution' )
-                    - type = [['Pro', 'Con']]
+            - else if ( item.type === 'Solution' )
+              - type = [['Pro', 'Con']]
 
-                  - if ( type )
+            - if ( type )
 
-                    - if ( Array.isArray(type) )
-                      
-                      each t in type
-                        
-                        - if ( Array.isArray(t) )
-                          .row
-                            .tablet-50.left-split
-                              +panel({ type: t[0], parent: item._id, items: item.nested })
-                            .tablet-50.right-split
-                              +panel({ type: t[1], parent: item._id, items: item.nested })
-                        
-                        - else
-                          +panel({ type: t, parent: item._id, items: item.nested })
+              - if ( Array.isArray(type) )
+                
+                each t in type
+                  
+                  - if ( Array.isArray(t) )
+                    .row
+                      .tablet-50.left-split
+                        +panel({ type: t[0], parent: item._id, items: item.nested })
+                      .tablet-50.right-split
+                        +panel({ type: t[1], parent: item._id, items: item.nested })
+                  
+                  - else
+                    +panel({ type: t, parent: item._id, items: item.nested })
 
-                    - else
+              - else
 
-                      +panel({ type: type, parent: item._id, items: item.nested })
+                +panel({ type: type, parent: item._id, items: item.nested })
 
       .clear

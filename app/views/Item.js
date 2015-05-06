@@ -6,6 +6,7 @@
   var Page                =   require('syn/lib/Page');
   var ItemDefaultButtons  =   require('syn/views/ItemDefaultButtons');
   var Promote             =   require('syn/views/Promote');
+  var Details             =   require('syn/views/Details');
 
   module.exports          =   function ItemView (viewOptions) {
     viewOptions           =   viewOptions || {};
@@ -90,7 +91,9 @@
             }
             return '';
           }
-        })
+        }),
+
+        html5.Element('.clear.clear-text')
 
       ])
 
@@ -112,12 +115,43 @@
       )
     );
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // DETAILS
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    ItemCollapsers.add(
+      html5.Element('.details.is-container').add(
+        html5.Element('.is-section').add(Details(viewOptions))
+      )
+    );
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Arrow
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var ItemArrow = html5.Element('.item-arrow').add(
+      html5.Element('div').add(
+        html5.Element('i.fa.fa-arrow-down.cursor-pointer')
+      )
+    );
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Children
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    ItemCollapsers.add(
+      html5.Element('.children.is-container').add(
+        html5.Element('.is-section')
+      )
+    );
+
     return html5.Element('.item', itemAttribute)
 
       .add(
         ItemWrapper,
         ItemButtons,
         ItemText,
+        ItemArrow,
         ItemCollapsers,
         html5.Element('.clear')
       );
