@@ -17,7 +17,9 @@
           html5.Element('span.cursor', { $text: '1' }),
           html5.Element('span', { $text: ' of ' }),
           html5.Element('span.limit', { $text: '5' })
-        )
+        ),
+
+        html5.Element('h4', { $text: 'Evaluate each item below' })
       )
     );
   }
