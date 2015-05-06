@@ -54,11 +54,13 @@
 
         before ( function ( done ) {
 
-          fulfill(done, [], function (domain) {
+          this.timeout(5000);
 
+          fulfill(done, [], function (domain) {
+            
             Item
               .disposable(domain.intercept(function (newItem) {
-
+                
                 item = newItem;
                 // console.log(item)
 

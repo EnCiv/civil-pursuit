@@ -6,9 +6,9 @@
 
   function Lib__Util__ConnectToMongoose (cb) {
 
-    if ( mongoose.connection && mongoose.connection._listening ) {
-      return mongoose;
-    }
+    // if ( mongoose.connection && mongoose.connection._listening ) {
+    //   return mongoose;
+    // }
 
     mongoose.connect(process.env.MONGOHQ_URL);
 
