@@ -4,7 +4,9 @@
 
   
 
-  function getEvaluation (item_id) {
+  function getEvaluation (event, item_id) {
+    console.log(event, item_id);
+    console.log('++++++++++++++++++++++++++++')
     var socket = this;
 
     require('syn/lib/domain')(

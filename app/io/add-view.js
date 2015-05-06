@@ -10,7 +10,7 @@
    *  @arg {string} itemId - The Item Object ID
    */
 
-  function addView (itemId) {
+  function addView (event, itemId) {
 
     var socket = this;
 
@@ -21,7 +21,7 @@
     });
     
     domain.run(function () {
-      Item.incrementView(itemId, socket.domain.intercept(function (item) {
+      Item.incrementView(itemId, domain.intercept(function (item) {
         socket.emit('view added', item);
       }));
     });

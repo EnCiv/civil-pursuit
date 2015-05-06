@@ -4356,11 +4356,11 @@ module.exports={
 
     // Create reference to promote if promotion enabled
 
-    // this.promote = new Promote(this);
+    this.promote = new Promote(this);
 
     // Create reference to details
 
-    // this.details = new Details(this);
+    this.details = new Details(this);
 
     // Set ID
 

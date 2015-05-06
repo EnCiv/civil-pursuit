@@ -11,6 +11,12 @@
     });
   }
 
+  function PromoteSubject (hand) {
+    return html5.Element('.subject.gutter', {
+      $className    :   hand + '-item'
+    }).add(html5.Element('h4'));
+  }
+
   function Promote (locals) {
     return html5.Element('section').add(
       
@@ -34,7 +40,8 @@
         html5.Element('.split-hide-down').add(
           html5.Element('.row').add(
             html5.Element('.split-50.watch-100').add(
-              PromoteImage('left')
+              PromoteImage('left'),
+              PromoteSubject('left')
             )
           )
         )

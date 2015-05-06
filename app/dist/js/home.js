@@ -2961,7 +2961,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports={
+module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -4356,11 +4356,11 @@ module.exports=module.exports={
 
     // Create reference to promote if promotion enabled
 
-    // this.promote = new Promote(this);
+    this.promote = new Promote(this);
 
     // Create reference to details
 
-    // this.details = new Details(this);
+    this.details = new Details(this);
 
     // Set ID
 

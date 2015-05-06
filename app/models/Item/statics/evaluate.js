@@ -6,16 +6,18 @@
 
   var async = require('async');
 
-  var config = require('../../config.json');
+  var config = require('syn/config.json');
 
   /**
    *  @class
-   *  @arg {MongooseModel} model
    *  @arg {String} itemId - Item Object ID
    *  @arg {Function} cb 
    */
 
   function Evaluate (model, itemId, cb) {
+
+    console.log('new evaluation', model, itemId);
+    console.log('--------------------------------------------------------')
 
     var self = this;
 
@@ -109,7 +111,7 @@
       },
 
       criterias: function (done) {
-        require('../Criteria').find({ type: self.item.type}, done);
+        require('syn/models/Criteria').find({ type: self.item.type}, done);
       }
 
     };
@@ -237,7 +239,7 @@
       },
       
       criterias: function (done) {
-        require('../Criteria').find({ type: self.item.type}, done);
+        require('syn/models/Criteria').find({ type: self.item.type}, done);
       }
 
     };
@@ -246,6 +248,8 @@
   };
 
   module.exports = function (itemId, cb) {
+    console.log('arguments wey', itemId)
+    console.log('-------------------------------------------------------')
     return new Evaluate(this, itemId, cb).go();
   };
 

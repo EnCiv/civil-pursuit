@@ -39,9 +39,11 @@
 
     var statics = [
       'Disposable',
+      'Evaluate',
       'Generate Short ID',
       'Get Item',
-      'Get Panel Items'
+      'Get Panel Items',
+      'Increment View'
     ];
 
     statics.forEach(function (_static) {
