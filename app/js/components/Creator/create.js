@@ -60,14 +60,15 @@
             else {
               console.log('create item', creator.packaged);
 
-              app.socket.emit('create item', creator.packaged);
+              app.socket.publish('create item', creator.packaged,
+                creator.created.bind(creator));
             }
 
             // Listen to answers
 
             app.socket.once('could not create item', app.domain.intercept());
 
-            app.socket.on('create item ok', creator.created.bind(creator));
+            // app.socket.on('create item ok', creator.created.bind(creator));
           })
 
       });

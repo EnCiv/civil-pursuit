@@ -14,10 +14,13 @@
 
       function (domain) {
         item.type = item.type._id;
+        item.user = socket.synuser.id;
 
         require('syn/models/Item')
           .create(item, domain.intercept(function (item) {
-            socket.ok(event, item);  
+            item.toPanelItem(domain.intercept(function (item) {
+              socket.ok(event, item);
+            }));
           }));
       }
 

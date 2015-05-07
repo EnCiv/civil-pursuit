@@ -60,6 +60,7 @@
       }
 
       function getUser (cb) {
+
         User
           .findById(original.user)
           .exec(domain.intercept(function (user) {
