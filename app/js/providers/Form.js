@@ -27,8 +27,10 @@
       self.labels = {};
 
       self.form.find('[name]').each(function () {
-        self.labels[$(self).attr('name')] = $(self);
+        self.labels[$(this).attr('name')] = $(this);
       });
+
+      console.info('form[' + form.attr('name') + ']', 'labels', self.labels);
 
       // #193 Disable <Enter> keys
 

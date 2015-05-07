@@ -53,14 +53,10 @@
 
               $('.panels').append(template);
 
-              console.log('OKKKK')
-
               panel.render()
 
                 .then(function () {
 
-                  console.info('filling')
-              
                   panel.fill();
               
                 }, d.intercept);

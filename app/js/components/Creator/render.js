@@ -30,8 +30,6 @@
 
     var comp = this;
 
-    console.info('_Creator.render');
-
     var q = new Promise(function (fulfill, reject) {
 
       new __Domain(function (d) {
@@ -96,8 +94,6 @@
         });
 
         // Build form using Form provider
-
-        console.log('Creator calls __Form')
 
         var form = new __Form(comp.template);
         

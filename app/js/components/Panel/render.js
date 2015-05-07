@@ -47,17 +47,11 @@
 
         panel.template.attr('id', panel.getId());
 
-        console.info('Calling creator');
-
         var creator = new (require('syn/js/components/Creator'))(panel);
-
-        console.info('Rendering creator');
 
         creator
           .render()
           .then(fulfill, d.intercept.bind(d));
-
-        console.log('Creator rendered')
 
         panel.find('load more').on('click', function () {
           panel.fill();

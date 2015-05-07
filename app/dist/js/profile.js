@@ -3380,8 +3380,6 @@ module.exports={
 
     var comp = this;
 
-    console.info('_Creator.render');
-
     var q = new Promise(function (fulfill, reject) {
 
       new __Domain(function (d) {
@@ -3446,8 +3444,6 @@ module.exports={
         });
 
         // Build form using Form provider
-
-        console.log('Creator calls __Form')
 
         var form = new __Form(comp.template);
         
@@ -5756,17 +5752,11 @@ module.exports={
 
         panel.template.attr('id', panel.getId());
 
-        console.info('Calling creator');
-
         var creator = new (require('syn/js/components/Creator'))(panel);
-
-        console.info('Rendering creator');
 
         creator
           .render()
           .then(fulfill, d.intercept.bind(d));
-
-        console.log('Creator rendered')
 
         panel.find('load more').on('click', function () {
           panel.fill();
@@ -7208,8 +7198,10 @@ module.exports={
       self.labels = {};
 
       self.form.find('[name]').each(function () {
-        self.labels[$(self).attr('name')] = $(self);
+        self.labels[$(this).attr('name')] = $(this);
       });
+
+      console.info('form[' + form.attr('name') + ']', 'labels', self.labels);
 
       // #193 Disable <Enter> keys
 
