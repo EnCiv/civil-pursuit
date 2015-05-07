@@ -16,7 +16,7 @@
 
     switch ( name ) {
 
-      case 'item subject':        return _find('Promote ' + string(more).capitalize().s + ' Item Subject');
+      case 'item subject':        return this.template.find('.subject.' + more +'-item h4');
 
       case 'item description':    return _find('Promote ' + string(more).capitalize().s + ' Item Description');
 

@@ -6167,7 +6167,7 @@ module.exports={
 
     switch ( name ) {
 
-      case 'item subject':        return _find('Promote ' + string(more).capitalize().s + ' Item Subject');
+      case 'item subject':        return this.template.find('.subject.' + more +'-item h4');
 
       case 'item description':    return _find('Promote ' + string(more).capitalize().s + ' Item Description');
 
@@ -6326,6 +6326,8 @@ module.exports={
 
     var reverse = hand === 'left' ? 'right' : 'left';
 
+    console.info('evaluation', this.evaluation)
+
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
       this.find('item description', hand).hide();
@@ -6345,6 +6347,7 @@ module.exports={
     app.socket.emit('add view', this.evaluation[hand]._id);
 
     // Subject
+    console.log('item subject', hand, this.find('item subject', hand))
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
     // Description

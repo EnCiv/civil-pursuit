@@ -16,6 +16,8 @@
 
     var reverse = hand === 'left' ? 'right' : 'left';
 
+    console.info('evaluation', this.evaluation)
+
     if ( ! this.evaluation[hand] ) {
       this.find('item subject', hand).hide();
       this.find('item description', hand).hide();
@@ -35,6 +37,7 @@
     app.socket.emit('add view', this.evaluation[hand]._id);
 
     // Subject
+    console.log('item subject', hand, this.find('item subject', hand))
     this.find('item subject', hand).text(this.evaluation[hand].subject);
 
     // Description

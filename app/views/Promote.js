@@ -7,14 +7,29 @@
   function PromoteImage (hand) {
     return html5.Element('.image.gutter', {
       style         :   'float: left; width: 40%',
-      $className    :   hand + '-item'
+      className     :   [hand + '-item']
     });
   }
 
   function PromoteSubject (hand) {
     return html5.Element('.subject.gutter', {
-      $className    :   hand + '-item'
+      className    :   [hand + '-item']
     }).add(html5.Element('h4'));
+  }
+
+  function PromoteDescription (hand) {
+    return html5.Element('.description.gutter.pre-text', {
+      className    :   [hand + '-item']
+    });
+  }
+
+  function PromoteReference (hand) {
+    return html5.Element('.references.gutter', {
+      className    :   [hand + '-item']
+    }).add(html5.Element('a', {
+      rel       :   'nofollow',
+      target    :   '_blank'
+    }));
   }
 
   function Promote (locals) {
@@ -33,7 +48,15 @@
       html5.Element('.items-side-by-side').add(
         // 1 column
         html5.Element('.split-hide-up').add(
-          PromoteImage('left')
+          PromoteImage('left'),
+          PromoteSubject('left'),
+          PromoteDescription('left'),
+          PromoteReference('left'),
+
+          PromoteImage('right'),
+          PromoteSubject('right'),
+          PromoteDescription('right'),
+          PromoteReference('right')
         ),
 
         // 2 columns
@@ -41,7 +64,24 @@
           html5.Element('.row').add(
             html5.Element('.split-50.watch-100').add(
               PromoteImage('left'),
-              PromoteSubject('left')
+              PromoteSubject('left'),
+              PromoteDescription('left')
+            ),
+
+            html5.Element('.split-50.watch-100').add(
+              PromoteImage('right'),
+              PromoteSubject('right'),
+              PromoteDescription('right')
+            )
+          ),
+
+          html5.Element('.row').add(
+            html5.Element('.split-50.watch-100').add(
+              PromoteReference('left')
+            ),
+
+            html5.Element('.split-50.watch-100').add(
+              PromoteReference('right')
             )
           )
         )
