@@ -7,6 +7,8 @@
 
   'use strict';
 
+  var __Domain = require('syn/js/providers/Domain');
+
   /**
    *  @class    Form
    *  @arg      {HTMLElement} form
@@ -16,28 +18,33 @@
 
     var self = this;
 
-    this.form = form;
+    new __Domain(function (d) {
 
-    this.labels = {};
+      console.log('new form', form)
 
-    this.form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
+      self.form = form;
 
-    // #193 Disable <Enter> keys
+      self.labels = {};
 
-    this.form.find('input').on('keydown', function (e) {
-      if ( e.keyCode === 13 ) {
-        return false;
-      }
-    });
-
-    this.form.on('submit', function (e) {
-      setTimeout(function () {
-        self.submit(e);
+      self.form.find('[name]').each(function () {
+        self.labels[$(self).attr('name')] = $(self);
       });
 
-      return false;
+      // #193 Disable <Enter> keys
+
+      self.form.find('input').on('keydown', function (e) {
+        if ( e.keyCode === 13 ) {
+          return false;
+        }
+      });
+
+      self.form.on('submit', function (e) {
+        setTimeout(function () {
+          self.submit(e);
+        });
+
+        return false;
+      });
     });
   }
 

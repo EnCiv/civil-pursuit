@@ -67,7 +67,7 @@
 
             app.socket.once('could not create item', app.domain.intercept());
 
-            app.socket.once('created item', creator.created.bind(creator));
+            app.socket.on('create item ok', creator.created.bind(creator));
           })
 
       });

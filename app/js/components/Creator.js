@@ -14,6 +14,8 @@
 
   'use strict';
 
+  module.exports = Creator;
+
   var Panel     =   require('syn/js/components/Panel');
 
   var text      =   {
@@ -69,7 +71,5 @@
   Creator.prototype.created     =   require('syn/js/components/Creator/created');
 
   Creator.prototype.packItem    =   require('syn/js/components/Creator/pack-item');
-
-  module.exports = Creator;
 
 } ();

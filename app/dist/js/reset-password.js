@@ -1227,7 +1227,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"domain":2,"events":3,"syn/js/providers/Cache":14,"syn/js/providers/Socket":17,"util":7}],9:[function(require,module,exports){
+},{"domain":2,"events":3,"syn/js/providers/Cache":14,"syn/js/providers/Socket":18,"util":7}],9:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1293,7 +1293,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"domain":2,"syn/js/providers/Form":15}],10:[function(require,module,exports){
+},{"domain":2,"syn/js/providers/Form":16}],10:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1376,7 +1376,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"syn/js/providers/Form":15}],11:[function(require,module,exports){
+},{"syn/js/providers/Form":16}],11:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1458,7 +1458,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"syn/js/providers/Form":15,"syn/js/providers/Nav":16}],12:[function(require,module,exports){
+},{"syn/js/providers/Form":16,"syn/js/providers/Nav":17}],12:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1622,7 +1622,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"syn/js/providers/Form":15}],13:[function(require,module,exports){
+},{"syn/js/providers/Form":16}],13:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -1805,7 +1805,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{"syn/js/components/Forgot-Password":9,"syn/js/components/Join":10,"syn/js/components/Login":11,"syn/js/providers/Nav":16}],14:[function(require,module,exports){
+},{"syn/js/components/Forgot-Password":9,"syn/js/components/Join":10,"syn/js/components/Login":11,"syn/js/providers/Nav":17}],14:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -1827,6 +1827,66 @@ function hasOwnProperty(obj, prop) {
 } ();
 
 },{}],15:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var domain          =   require('domain');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Domain (fn, reject) {
+    var d = domain.create();
+
+    d.intercept = function (fn, _self) {
+
+      if ( typeof fn !== 'function' ) {
+        fn = function () {};
+      }
+
+      return function (error) {
+        if ( error && error instanceof Error ) {
+          self.domain.emit('error', error);
+        }
+
+        else {
+          var args = Array.prototype.slice.call(arguments);
+
+          args.shift();
+
+          fn.apply(_self, args);
+        }
+      };
+    };
+
+    d.on('error', function onDomainError (error) {
+      console.error(error);
+
+      if ( error.stack ) {
+        error.stack.split(/\n/).forEach(function (line) {
+          line.split(/\n/).forEach(console.warn.bind(console));
+        });
+      }
+
+      if ( typeof reject === 'function' ) {
+        reject(error);
+      }
+    });
+
+    d.run(function () {
+      fn(d);
+    });
+  }
+
+  module.exports = Domain;
+
+} ();
+
+},{"domain":2}],16:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -1835,6 +1895,8 @@ function hasOwnProperty(obj, prop) {
 ! function () {
 
   'use strict';
+
+  var __Domain = require('syn/js/providers/Domain');
 
   /**
    *  @class    Form
@@ -1845,28 +1907,33 @@ function hasOwnProperty(obj, prop) {
 
     var self = this;
 
-    this.form = form;
+    new __Domain(function (d) {
 
-    this.labels = {};
+      console.log('new form', form)
 
-    this.form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
+      self.form = form;
 
-    // #193 Disable <Enter> keys
+      self.labels = {};
 
-    this.form.find('input').on('keydown', function (e) {
-      if ( e.keyCode === 13 ) {
-        return false;
-      }
-    });
-
-    this.form.on('submit', function (e) {
-      setTimeout(function () {
-        self.submit(e);
+      self.form.find('[name]').each(function () {
+        self.labels[$(self).attr('name')] = $(self);
       });
 
-      return false;
+      // #193 Disable <Enter> keys
+
+      self.form.find('input').on('keydown', function (e) {
+        if ( e.keyCode === 13 ) {
+          return false;
+        }
+      });
+
+      self.form.on('submit', function (e) {
+        setTimeout(function () {
+          self.submit(e);
+        });
+
+        return false;
+      });
     });
   }
 
@@ -1915,7 +1982,7 @@ function hasOwnProperty(obj, prop) {
 
 } ();
 
-},{}],16:[function(require,module,exports){
+},{"syn/js/providers/Domain":15}],17:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2276,7 +2343,7 @@ function hasOwnProperty(obj, prop) {
 } ();
 
 }).call(this,require('_process'))
-},{"_process":5,"domain":2,"events":3}],17:[function(require,module,exports){
+},{"_process":5,"domain":2,"events":3}],18:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -2285,7 +2352,7 @@ function hasOwnProperty(obj, prop) {
     var self = this;
 
     /** Socket */
-    console.log('http://' + window.location.hostname + ':' + window.location.port)
+    
     self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
     self.socket.once('welcome', function (user) {
@@ -2319,7 +2386,7 @@ function hasOwnProperty(obj, prop) {
 
     }
 
-    self.socket.on('error', function (error) {
+    self.socket.on('error', function onSocketError (error) {
       console.error('socket error', error);
     });
   }

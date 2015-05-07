@@ -3088,7 +3088,7 @@ module.exports={
 
 } ();
 
-},{"domain":2,"events":3,"syn/js/providers/Cache":61,"syn/js/providers/Socket":66,"util":7}],21:[function(require,module,exports){
+},{"domain":2,"events":3,"syn/js/providers/Cache":61,"syn/js/providers/Socket":67,"util":7}],21:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3104,6 +3104,8 @@ module.exports={
 ! function () {
 
   'use strict';
+
+  module.exports = Creator;
 
   var Panel     =   require('syn/js/components/Panel');
 
@@ -3160,8 +3162,6 @@ module.exports={
   Creator.prototype.created     =   require('syn/js/components/Creator/created');
 
   Creator.prototype.packItem    =   require('syn/js/components/Creator/pack-item');
-
-  module.exports = Creator;
 
 } ();
 
@@ -3236,7 +3236,7 @@ module.exports={
 
             app.socket.once('could not create item', app.domain.intercept());
 
-            app.socket.once('created item', creator.created.bind(creator));
+            app.socket.on('create item ok', creator.created.bind(creator));
           })
 
       });
@@ -3251,7 +3251,7 @@ module.exports={
 } ();
 
 }).call(this,require('_process'))
-},{"_process":5,"syn/js/components/Item":33,"syn/js/providers/Nav":63,"syn/js/providers/Stream":67}],23:[function(require,module,exports){
+},{"_process":5,"syn/js/components/Item":33,"syn/js/providers/Nav":64,"syn/js/providers/Stream":68}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3352,77 +3352,112 @@ module.exports={
   
   'use strict';
 
-  var Upload    =   require('syn/js/providers/Upload');
-  var Form      =   require('syn/js/providers/Form');
-  var YouTube   =   require('syn/js/providers/YouTube');
-  var Promise   =   require('promise');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /**
+  var Promise             =   require('promise');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Providers
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Upload            =   require('syn/js/providers/Upload');
+  var __Form              =   require('syn/js/providers/Form');
+  var __YouTube           =   require('syn/js/providers/YouTube');
+  var __Domain            =   require('syn/js/providers/Domain');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /** Render Creator
+   *
    *  @function
    *  @return
-   *  @arg
-   */
+   *  @arg            {Function} cb
+  */
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   function render (cb) {
 
-    var creator = this;
+    var comp = this;
+
+    console.info('_Creator.render');
 
     var q = new Promise(function (fulfill, reject) {
 
-      return fulfill();
+      new __Domain(function (d) {
 
-      if ( ! creator.template.length ) {
-        throw new Error('Creator not found in panel ' + creator.panel.getId());
-      }
+        // Make sure template exists in DOM
 
-      creator.template.data('creator', this);
+        if ( ! comp.template.length ) {
+          throw new Error('Creator not found in panel ' + comp.panel.getId());
+        }
 
-      this.find('upload image button').on('click', function () {
-        creator.find('dropbox').find('[type="file"]').click();
-      });
+        // Attach component to template's data
 
-      new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
+        comp.template.data('creator', comp);
 
-      creator.template.find('textarea').autogrow();
+        // Emulate input type file's behavior with button
 
-      creator.find('reference').on('change', function () {
+        comp.find('upload image button').on('click', function () {
+          comp.find('dropbox').find('[type="file"]').click();
+        });
 
-        var creator     =   $(this).closest('.creator').data('creator');
+        // Use upload service
 
-        var board       =   creator.find('reference board');
-        var reference   =   $(this);
+        new __Upload(comp.find('dropbox'), comp.find('dropbox').find('input'), comp.find('dropbox'));
 
-        board.removeClass('hide').text('Looking up title');
+        // Autogrow
 
-        app.socket.emit('get url title', $(this).val(),
-          function (error, ref) {
-            if ( ref.title ) {
-              
-              board.text(ref.title);
-              reference.data('title', ref.title);
+        comp.template.find('textarea').autogrow();
 
-              var yt = YouTube(ref.url);
+        // Get reference's title
 
-              if ( yt ) {
-                creator.find('dropbox').hide();
+        comp.find('reference').on('change', function () {
 
-                creator.find('item media')
-                  .empty()
-                  .append(yt);
+          var creator     =   $(this).closest('.creator').data('creator');
+
+          var board       =   creator.find('reference board');
+          var reference   =   $(this);
+
+          board.removeClass('hide').text('Looking up title');
+
+          app.socket.emit('get url title', $(this).val(),
+            function (error, ref) {
+              if ( ref.title ) {
+                
+                board.text(ref.title);
+                reference.data('title', ref.title);
+
+                var yt = __YouTube(ref.url);
+
+                if ( yt ) {
+                  creator.find('dropbox').hide();
+
+                  creator.find('item media')
+                    .empty()
+                    .append(yt);
+                }
               }
-            }
-            else {
-              board.text('Looking up')
-                .addClass('hide');
-            }
-          });
-      });
+              else {
+                board.text('Looking up')
+                  .addClass('hide');
+              }
+            });
+        });
 
-      var form = new Form(creator.template);
-      
-      form.send(creator.create.bind(creator));
+        // Build form using Form provider
 
-      fulfill();
+        console.log('Creator calls __Form')
+
+        var form = new __Form(comp.template);
+        
+        form.send(comp.create.bind(comp));
+
+        // Done
+
+        fulfill();
+
+      }, reject);
 
     });
     
@@ -3438,7 +3473,7 @@ module.exports={
 
 } ();
 
-},{"promise":8,"syn/js/providers/Form":62,"syn/js/providers/Upload":68,"syn/js/providers/YouTube":69}],26:[function(require,module,exports){
+},{"promise":8,"syn/js/providers/Domain":62,"syn/js/providers/Form":63,"syn/js/providers/Upload":69,"syn/js/providers/YouTube":70}],26:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3590,7 +3625,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63}],27:[function(require,module,exports){
+},{"syn/js/providers/Nav":64}],27:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3854,7 +3889,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":63}],28:[function(require,module,exports){
+},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":64}],28:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4005,7 +4040,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Creator":21,"syn/js/components/Edit/save":29,"syn/js/components/Item":33,"syn/js/providers/Form":62,"syn/js/providers/Nav":63}],29:[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Edit/save":29,"syn/js/components/Item":33,"syn/js/providers/Form":63,"syn/js/providers/Nav":64}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4063,7 +4098,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Item":33,"syn/js/providers/Nav":63}],30:[function(require,module,exports){
+},{"syn/js/components/Item":33,"syn/js/providers/Nav":64}],30:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4129,7 +4164,7 @@ module.exports={
 
 } ();
 
-},{"domain":2,"syn/js/providers/Form":62}],31:[function(require,module,exports){
+},{"domain":2,"syn/js/providers/Form":63}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4299,7 +4334,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],32:[function(require,module,exports){
+},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":64,"syn/js/providers/Upload":69}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4453,7 +4488,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63,"syn/js/providers/Upload":68}],33:[function(require,module,exports){
+},{"syn/js/providers/Nav":64,"syn/js/providers/Upload":69}],33:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -4632,8 +4667,6 @@ module.exports={
 
   function itemMedia () {
 
-    console.info(this.item.getPromotionPercentage)
-
     // youtube video from references
 
     if ( this.item.references && this.item.references.length ) {
@@ -4704,7 +4737,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/YouTube":69}],37:[function(require,module,exports){
+},{"syn/js/providers/YouTube":70}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4894,7 +4927,7 @@ module.exports={
 
 } ();
 
-},{"string":18,"syn/js/components/Details":27,"syn/js/components/Item/view/toggle-arrow":38,"syn/js/components/Item/view/toggle-details":39,"syn/js/components/Item/view/toggle-promote":40,"syn/js/components/Promote":50,"syn/js/components/Sign":59,"syn/js/providers/Nav":63,"syn/js/providers/ReadMore":64}],38:[function(require,module,exports){
+},{"string":18,"syn/js/components/Details":27,"syn/js/components/Item/view/toggle-arrow":38,"syn/js/components/Item/view/toggle-details":39,"syn/js/components/Item/view/toggle-promote":40,"syn/js/components/Promote":50,"syn/js/components/Sign":59,"syn/js/providers/Nav":64,"syn/js/providers/ReadMore":65}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5042,7 +5075,7 @@ module.exports={
 
 } ();
 
-},{"../../Panel":43,"syn/js/components/Panel":43,"syn/js/providers/Nav":63}],39:[function(require,module,exports){
+},{"../../Panel":43,"syn/js/components/Panel":43,"syn/js/providers/Nav":64}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5109,7 +5142,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63}],40:[function(require,module,exports){
+},{"syn/js/providers/Nav":64}],40:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5201,7 +5234,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Sign":59,"syn/js/providers/Nav":63}],41:[function(require,module,exports){
+},{"syn/js/components/Sign":59,"syn/js/providers/Nav":64}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5284,7 +5317,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Form":62}],42:[function(require,module,exports){
+},{"syn/js/providers/Form":63}],42:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5366,7 +5399,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Form":62,"syn/js/providers/Nav":63}],43:[function(require,module,exports){
+},{"syn/js/providers/Form":63,"syn/js/providers/Nav":64}],43:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -5510,7 +5543,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Creator":21,"syn/js/components/Item":33,"syn/js/components/Panel/fill":44,"syn/js/components/Panel/load":45,"syn/js/components/Panel/pre-insert-item":46,"syn/js/components/Panel/render":47,"syn/js/components/Panel/to-json":48,"syn/js/components/Sign":59,"syn/js/providers/Nav":63,"syn/js/providers/Session":65}],44:[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Item":33,"syn/js/components/Panel/fill":44,"syn/js/components/Panel/load":45,"syn/js/components/Panel/pre-insert-item":46,"syn/js/components/Panel/render":47,"syn/js/components/Panel/to-json":48,"syn/js/components/Sign":59,"syn/js/providers/Nav":64,"syn/js/providers/Session":66}],44:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5678,38 +5711,78 @@ module.exports={
   
   'use strict';
 
-  // var Creator = require('../Creator');
+  module.exports = render;
 
-  var Promise = require('promise');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var Promise             =   require('promise');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Providers
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Domain            =   require('syn/js/providers/Domain');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Components
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var _Creator            =   require('syn/js/components/Creator');
+  
+  /**
+   *
+  */
 
   function render (cb) {
     var panel = this;
 
     var q = new Promise(function (fulfill, reject) {
 
-      panel.find('title').text(panel.type.name);
+      new __Domain(function (d) {
 
-      panel.find('toggle creator').on('click', function () {
-        panel.toggleCreator($(panel));
-      });
+        // Fill title
 
-      panel.template.attr('id', panel.getId());
+        panel.find('title').text(panel.type.name);
 
-      var creator = new (require('../Creator'))(panel);
+        // Toggle Creator
 
-      creator
-        .render()
-        .then(fulfill);
+        panel.find('toggle creator').on('click', function () {
+          panel.toggleCreator($(panel));
+        });
 
-      panel.find('load more').on('click', function () {
-        panel.fill();
-        return false;
-      });
+        // Panel ID
 
-      panel.find('create new').on('click', function () {
-        panel.find('toggle creator').click();
-        return false;
-      });
+        panel.template.attr('id', panel.getId());
+
+        console.info('Calling creator');
+
+        var creator = new (require('syn/js/components/Creator'))(panel);
+
+        console.info('Rendering creator');
+
+        creator
+          .render()
+          .then(fulfill, d.intercept.bind(d));
+
+        console.log('Creator rendered')
+
+        panel.find('load more').on('click', function () {
+          panel.fill();
+          return false;
+        });
+
+        panel.find('create new').on('click', function () {
+          panel.find('toggle creator').click();
+          return false;
+        });
+
+        // Done
+
+        fulfill();
+
+      }, reject);
 
     });
 
@@ -5720,11 +5793,9 @@ module.exports={
     return q;
   }
 
-  module.exports = render;
-
 } ();
 
-},{"../Creator":21,"promise":8}],48:[function(require,module,exports){
+},{"promise":8,"syn/js/components/Creator":21,"syn/js/providers/Domain":62}],48:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5933,7 +6004,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Demographics":26,"syn/js/components/Identity":31,"syn/js/components/Public_Persona":57,"syn/js/components/Residence":58,"syn/js/components/Voter":60,"syn/js/providers/Nav":63}],50:[function(require,module,exports){
+},{"syn/js/components/Demographics":26,"syn/js/components/Identity":31,"syn/js/components/Public_Persona":57,"syn/js/components/Residence":58,"syn/js/components/Voter":60,"syn/js/providers/Nav":64}],50:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -6086,7 +6157,7 @@ module.exports={
 
 } ();
 
-},{"events":3,"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/components/Promote/find":51,"syn/js/components/Promote/finish":52,"syn/js/components/Promote/get":53,"syn/js/components/Promote/render":55,"syn/js/components/Promote/render-item":54,"syn/js/components/Promote/save":56,"syn/js/providers/Nav":63}],51:[function(require,module,exports){
+},{"events":3,"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/components/Promote/find":51,"syn/js/components/Promote/finish":52,"syn/js/components/Promote/get":53,"syn/js/components/Promote/render":55,"syn/js/components/Promote/render-item":54,"syn/js/components/Promote/save":56,"syn/js/providers/Nav":64}],51:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6188,7 +6259,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63}],53:[function(require,module,exports){
+},{"syn/js/providers/Nav":64}],53:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6443,7 +6514,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":63}],55:[function(require,module,exports){
+},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":64}],55:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6515,7 +6586,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63}],56:[function(require,module,exports){
+},{"syn/js/providers/Nav":64}],56:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6637,7 +6708,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63}],58:[function(require,module,exports){
+},{"syn/js/providers/Nav":64}],58:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6743,7 +6814,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63}],59:[function(require,module,exports){
+},{"syn/js/providers/Nav":64}],59:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -6926,7 +6997,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Forgot-Password":30,"syn/js/components/Join":41,"syn/js/components/Login":42,"syn/js/providers/Nav":63}],60:[function(require,module,exports){
+},{"syn/js/components/Forgot-Password":30,"syn/js/components/Join":41,"syn/js/components/Login":42,"syn/js/providers/Nav":64}],60:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7026,7 +7097,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":63}],61:[function(require,module,exports){
+},{"syn/js/providers/Nav":64}],61:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7048,6 +7119,66 @@ module.exports={
 } ();
 
 },{}],62:[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var domain          =   require('domain');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Domain (fn, reject) {
+    var d = domain.create();
+
+    d.intercept = function (fn, _self) {
+
+      if ( typeof fn !== 'function' ) {
+        fn = function () {};
+      }
+
+      return function (error) {
+        if ( error && error instanceof Error ) {
+          self.domain.emit('error', error);
+        }
+
+        else {
+          var args = Array.prototype.slice.call(arguments);
+
+          args.shift();
+
+          fn.apply(_self, args);
+        }
+      };
+    };
+
+    d.on('error', function onDomainError (error) {
+      console.error(error);
+
+      if ( error.stack ) {
+        error.stack.split(/\n/).forEach(function (line) {
+          line.split(/\n/).forEach(console.warn.bind(console));
+        });
+      }
+
+      if ( typeof reject === 'function' ) {
+        reject(error);
+      }
+    });
+
+    d.run(function () {
+      fn(d);
+    });
+  }
+
+  module.exports = Domain;
+
+} ();
+
+},{"domain":2}],63:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -7056,6 +7187,8 @@ module.exports={
 ! function () {
 
   'use strict';
+
+  var __Domain = require('syn/js/providers/Domain');
 
   /**
    *  @class    Form
@@ -7066,28 +7199,33 @@ module.exports={
 
     var self = this;
 
-    this.form = form;
+    new __Domain(function (d) {
 
-    this.labels = {};
+      console.log('new form', form)
 
-    this.form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
+      self.form = form;
 
-    // #193 Disable <Enter> keys
+      self.labels = {};
 
-    this.form.find('input').on('keydown', function (e) {
-      if ( e.keyCode === 13 ) {
-        return false;
-      }
-    });
-
-    this.form.on('submit', function (e) {
-      setTimeout(function () {
-        self.submit(e);
+      self.form.find('[name]').each(function () {
+        self.labels[$(self).attr('name')] = $(self);
       });
 
-      return false;
+      // #193 Disable <Enter> keys
+
+      self.form.find('input').on('keydown', function (e) {
+        if ( e.keyCode === 13 ) {
+          return false;
+        }
+      });
+
+      self.form.on('submit', function (e) {
+        setTimeout(function () {
+          self.submit(e);
+        });
+
+        return false;
+      });
     });
   }
 
@@ -7136,7 +7274,7 @@ module.exports={
 
 } ();
 
-},{}],63:[function(require,module,exports){
+},{"syn/js/providers/Domain":62}],64:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -7497,7 +7635,7 @@ module.exports={
 } ();
 
 }).call(this,require('_process'))
-},{"_process":5,"domain":2,"events":3}],64:[function(require,module,exports){
+},{"_process":5,"domain":2,"events":3}],65:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7664,7 +7802,7 @@ module.exports={
 
 } ();
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7679,7 +7817,7 @@ module.exports={
 
 } ();
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7688,7 +7826,7 @@ module.exports={
     var self = this;
 
     /** Socket */
-    console.log('http://' + window.location.hostname + ':' + window.location.port)
+    
     self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
     self.socket.once('welcome', function (user) {
@@ -7722,7 +7860,7 @@ module.exports={
 
     }
 
-    self.socket.on('error', function (error) {
+    self.socket.on('error', function onSocketError (error) {
       console.error('socket error', error);
     });
   }
@@ -7731,7 +7869,7 @@ module.exports={
 
 } ();
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7770,7 +7908,7 @@ module.exports={
 
 } ();
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -7856,7 +7994,7 @@ module.exports={
 
 } ();
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 ! function () {
 
   'use strict';

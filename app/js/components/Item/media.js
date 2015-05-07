@@ -12,8 +12,6 @@
 
   function itemMedia () {
 
-    console.info(this.item.getPromotionPercentage)
-
     // youtube video from references
 
     if ( this.item.references && this.item.references.length ) {

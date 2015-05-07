@@ -2,38 +2,78 @@
   
   'use strict';
 
-  // var Creator = require('../Creator');
+  module.exports = render;
 
-  var Promise = require('promise');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var Promise             =   require('promise');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Providers
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Domain            =   require('syn/js/providers/Domain');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Components
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var _Creator            =   require('syn/js/components/Creator');
+  
+  /**
+   *
+  */
 
   function render (cb) {
     var panel = this;
 
     var q = new Promise(function (fulfill, reject) {
 
-      panel.find('title').text(panel.type.name);
+      new __Domain(function (d) {
 
-      panel.find('toggle creator').on('click', function () {
-        panel.toggleCreator($(panel));
-      });
+        // Fill title
 
-      panel.template.attr('id', panel.getId());
+        panel.find('title').text(panel.type.name);
 
-      var creator = new (require('../Creator'))(panel);
+        // Toggle Creator
 
-      creator
-        .render()
-        .then(fulfill);
+        panel.find('toggle creator').on('click', function () {
+          panel.toggleCreator($(panel));
+        });
 
-      panel.find('load more').on('click', function () {
-        panel.fill();
-        return false;
-      });
+        // Panel ID
 
-      panel.find('create new').on('click', function () {
-        panel.find('toggle creator').click();
-        return false;
-      });
+        panel.template.attr('id', panel.getId());
+
+        console.info('Calling creator');
+
+        var creator = new (require('syn/js/components/Creator'))(panel);
+
+        console.info('Rendering creator');
+
+        creator
+          .render()
+          .then(fulfill, d.intercept.bind(d));
+
+        console.log('Creator rendered')
+
+        panel.find('load more').on('click', function () {
+          panel.fill();
+          return false;
+        });
+
+        panel.find('create new').on('click', function () {
+          panel.find('toggle creator').click();
+          return false;
+        });
+
+        // Done
+
+        fulfill();
+
+      }, reject);
 
     });
 
@@ -43,7 +83,5 @@
 
     return q;
   }
-
-  module.exports = render;
 
 } ();

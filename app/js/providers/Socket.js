@@ -6,7 +6,7 @@
     var self = this;
 
     /** Socket */
-    console.log('http://' + window.location.hostname + ':' + window.location.port)
+    
     self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
     self.socket.once('welcome', function (user) {
@@ -40,7 +40,7 @@
 
     }
 
-    self.socket.on('error', function (error) {
+    self.socket.on('error', function onSocketError (error) {
       console.error('socket error', error);
     });
   }

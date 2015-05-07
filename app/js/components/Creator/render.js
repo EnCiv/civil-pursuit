@@ -2,77 +2,112 @@
   
   'use strict';
 
-  var Upload    =   require('syn/js/providers/Upload');
-  var Form      =   require('syn/js/providers/Form');
-  var YouTube   =   require('syn/js/providers/YouTube');
-  var Promise   =   require('promise');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /**
+  var Promise             =   require('promise');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Providers
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Upload            =   require('syn/js/providers/Upload');
+  var __Form              =   require('syn/js/providers/Form');
+  var __YouTube           =   require('syn/js/providers/YouTube');
+  var __Domain            =   require('syn/js/providers/Domain');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /** Render Creator
+   *
    *  @function
    *  @return
-   *  @arg
-   */
+   *  @arg            {Function} cb
+  */
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   function render (cb) {
 
-    var creator = this;
+    var comp = this;
+
+    console.info('_Creator.render');
 
     var q = new Promise(function (fulfill, reject) {
 
-      return fulfill();
+      new __Domain(function (d) {
 
-      if ( ! creator.template.length ) {
-        throw new Error('Creator not found in panel ' + creator.panel.getId());
-      }
+        // Make sure template exists in DOM
 
-      creator.template.data('creator', this);
+        if ( ! comp.template.length ) {
+          throw new Error('Creator not found in panel ' + comp.panel.getId());
+        }
 
-      this.find('upload image button').on('click', function () {
-        creator.find('dropbox').find('[type="file"]').click();
-      });
+        // Attach component to template's data
 
-      new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
+        comp.template.data('creator', comp);
 
-      creator.template.find('textarea').autogrow();
+        // Emulate input type file's behavior with button
 
-      creator.find('reference').on('change', function () {
+        comp.find('upload image button').on('click', function () {
+          comp.find('dropbox').find('[type="file"]').click();
+        });
 
-        var creator     =   $(this).closest('.creator').data('creator');
+        // Use upload service
 
-        var board       =   creator.find('reference board');
-        var reference   =   $(this);
+        new __Upload(comp.find('dropbox'), comp.find('dropbox').find('input'), comp.find('dropbox'));
 
-        board.removeClass('hide').text('Looking up title');
+        // Autogrow
 
-        app.socket.emit('get url title', $(this).val(),
-          function (error, ref) {
-            if ( ref.title ) {
-              
-              board.text(ref.title);
-              reference.data('title', ref.title);
+        comp.template.find('textarea').autogrow();
 
-              var yt = YouTube(ref.url);
+        // Get reference's title
 
-              if ( yt ) {
-                creator.find('dropbox').hide();
+        comp.find('reference').on('change', function () {
 
-                creator.find('item media')
-                  .empty()
-                  .append(yt);
+          var creator     =   $(this).closest('.creator').data('creator');
+
+          var board       =   creator.find('reference board');
+          var reference   =   $(this);
+
+          board.removeClass('hide').text('Looking up title');
+
+          app.socket.emit('get url title', $(this).val(),
+            function (error, ref) {
+              if ( ref.title ) {
+                
+                board.text(ref.title);
+                reference.data('title', ref.title);
+
+                var yt = __YouTube(ref.url);
+
+                if ( yt ) {
+                  creator.find('dropbox').hide();
+
+                  creator.find('item media')
+                    .empty()
+                    .append(yt);
+                }
               }
-            }
-            else {
-              board.text('Looking up')
-                .addClass('hide');
-            }
-          });
-      });
+              else {
+                board.text('Looking up')
+                  .addClass('hide');
+              }
+            });
+        });
 
-      var form = new Form(creator.template);
-      
-      form.send(creator.create.bind(creator));
+        // Build form using Form provider
 
-      fulfill();
+        console.log('Creator calls __Form')
+
+        var form = new __Form(comp.template);
+        
+        form.send(comp.create.bind(comp));
+
+        // Done
+
+        fulfill();
+
+      }, reject);
 
     });
     

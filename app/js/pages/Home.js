@@ -2,56 +2,75 @@
   
   'use strict';
 
-  var Synapp    =   require('syn/js/Synapp');
-  // var Item      =   require('syn/js/components/Item');
-  var Sign      =   require('syn/js/components/Sign');
-  var Intro     =   require('syn/js/components/Intro');
-  var Panel     =   require('syn/js/components/Panel');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Synapp
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  window.app    =   new Synapp();
+  var _Synapp_          =   require('syn/js/Synapp');
+
+  window.app            =   new _Synapp_();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Components
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var _Sign             =   require('syn/js/components/Sign');
+  var _Intro            =   require('syn/js/components/Intro');
+  var _Panel            =   require('syn/js/components/Panel');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Provider
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Domain          =   require('syn/js/providers/Domain')
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  On app ready
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   app.ready(function onceAppConnects_HomePage () {
 
-    /** Render intro */
-    new Intro().render();
+    new __Domain(function (d) {
 
-    console.log('hello!');
+      /** Render intro */
+      new _Intro().render();
 
-    /** Render user-related components */
-    new Sign().render();
+      /** Render user-related components */
+      new _Sign().render();
 
-    var panel;
+      var panel;
 
-    window.app.socket.publish('get top-level type', function (type) {
+      window.app.socket.publish('get top-level type', function (type) {
 
-      console.info('Page Home', 'OK get top-level type', type);
-      
-      if ( ! panel ) {
-        panel = new Panel(type);
+        if ( ! panel ) {
+          panel = new _Panel(type);
 
-        panel
+          panel
 
-          .load()
+            .load()
 
-          .then(function (template) {
+            .then(function (template) {
 
-            $('.panels').append(template);
+              $('.panels').append(template);
 
-            panel.render()
+              console.log('OKKKK')
 
-              .then(function () {
+              panel.render()
 
-                console.info('filling')
-            
-                panel.fill();
-            
-              });
+                .then(function () {
 
-          });
-      }  
+                  console.info('filling')
+              
+                  panel.fill();
+              
+                }, d.intercept);
 
+            }, d.intercept);
+        }  
+
+      });
     });
-  
+
   });
 
 } ();

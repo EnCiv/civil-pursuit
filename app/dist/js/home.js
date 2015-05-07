@@ -3,61 +3,80 @@
   
   'use strict';
 
-  var Synapp    =   require('syn/js/Synapp');
-  // var Item      =   require('syn/js/components/Item');
-  var Sign      =   require('syn/js/components/Sign');
-  var Intro     =   require('syn/js/components/Intro');
-  var Panel     =   require('syn/js/components/Panel');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Synapp
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  window.app    =   new Synapp();
+  var _Synapp_          =   require('syn/js/Synapp');
+
+  window.app            =   new _Synapp_();
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Components
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var _Sign             =   require('syn/js/components/Sign');
+  var _Intro            =   require('syn/js/components/Intro');
+  var _Panel            =   require('syn/js/components/Panel');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Provider
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Domain          =   require('syn/js/providers/Domain')
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  On app ready
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   app.ready(function onceAppConnects_HomePage () {
 
-    /** Render intro */
-    new Intro().render();
+    new __Domain(function (d) {
 
-    console.log('hello!');
+      /** Render intro */
+      new _Intro().render();
 
-    /** Render user-related components */
-    new Sign().render();
+      /** Render user-related components */
+      new _Sign().render();
 
-    var panel;
+      var panel;
 
-    window.app.socket.publish('get top-level type', function (type) {
+      window.app.socket.publish('get top-level type', function (type) {
 
-      console.info('Page Home', 'OK get top-level type', type);
-      
-      if ( ! panel ) {
-        panel = new Panel(type);
+        if ( ! panel ) {
+          panel = new _Panel(type);
 
-        panel
+          panel
 
-          .load()
+            .load()
 
-          .then(function (template) {
+            .then(function (template) {
 
-            $('.panels').append(template);
+              $('.panels').append(template);
 
-            panel.render()
+              console.log('OKKKK')
 
-              .then(function () {
+              panel.render()
 
-                console.info('filling')
-            
-                panel.fill();
-            
-              });
+                .then(function () {
 
-          });
-      }  
+                  console.info('filling')
+              
+                  panel.fill();
+              
+                }, d.intercept);
 
+            }, d.intercept);
+        }  
+
+      });
     });
-  
+
   });
 
 } ();
 
-},{"syn/js/Synapp":"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js","syn/js/components/Intro":"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js","syn/js/components/Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js","syn/js/components/Sign":"/home/francois/Dev/syn/node_modules/syn/js/components/Sign.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"syn/js/Synapp":"/home/francois/Dev/syn/node_modules/syn/js/Synapp.js","syn/js/components/Intro":"/home/francois/Dev/syn/node_modules/syn/js/components/Intro.js","syn/js/components/Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js","syn/js/components/Sign":"/home/francois/Dev/syn/node_modules/syn/js/components/Sign.js","syn/js/providers/Domain":"/home/francois/Dev/syn/node_modules/syn/js/providers/Domain.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2961,7 +2980,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -3144,6 +3163,8 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 
   'use strict';
 
+  module.exports = Creator;
+
   var Panel     =   require('syn/js/components/Panel');
 
   var text      =   {
@@ -3199,8 +3220,6 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
   Creator.prototype.created     =   require('syn/js/components/Creator/created');
 
   Creator.prototype.packItem    =   require('syn/js/components/Creator/pack-item');
-
-  module.exports = Creator;
 
 } ();
 
@@ -3275,7 +3294,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 
             app.socket.once('could not create item', app.domain.intercept());
 
-            app.socket.once('created item', creator.created.bind(creator));
+            app.socket.on('create item ok', creator.created.bind(creator));
           })
 
       });
@@ -3391,77 +3410,112 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
   
   'use strict';
 
-  var Upload    =   require('syn/js/providers/Upload');
-  var Form      =   require('syn/js/providers/Form');
-  var YouTube   =   require('syn/js/providers/YouTube');
-  var Promise   =   require('promise');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /**
+  var Promise             =   require('promise');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Providers
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Upload            =   require('syn/js/providers/Upload');
+  var __Form              =   require('syn/js/providers/Form');
+  var __YouTube           =   require('syn/js/providers/YouTube');
+  var __Domain            =   require('syn/js/providers/Domain');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /** Render Creator
+   *
    *  @function
    *  @return
-   *  @arg
-   */
+   *  @arg            {Function} cb
+  */
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   function render (cb) {
 
-    var creator = this;
+    var comp = this;
+
+    console.info('_Creator.render');
 
     var q = new Promise(function (fulfill, reject) {
 
-      return fulfill();
+      new __Domain(function (d) {
 
-      if ( ! creator.template.length ) {
-        throw new Error('Creator not found in panel ' + creator.panel.getId());
-      }
+        // Make sure template exists in DOM
 
-      creator.template.data('creator', this);
+        if ( ! comp.template.length ) {
+          throw new Error('Creator not found in panel ' + comp.panel.getId());
+        }
 
-      this.find('upload image button').on('click', function () {
-        creator.find('dropbox').find('[type="file"]').click();
-      });
+        // Attach component to template's data
 
-      new Upload(creator.find('dropbox'), creator.find('dropbox').find('input'), creator.find('dropbox'));
+        comp.template.data('creator', comp);
 
-      creator.template.find('textarea').autogrow();
+        // Emulate input type file's behavior with button
 
-      creator.find('reference').on('change', function () {
+        comp.find('upload image button').on('click', function () {
+          comp.find('dropbox').find('[type="file"]').click();
+        });
 
-        var creator     =   $(this).closest('.creator').data('creator');
+        // Use upload service
 
-        var board       =   creator.find('reference board');
-        var reference   =   $(this);
+        new __Upload(comp.find('dropbox'), comp.find('dropbox').find('input'), comp.find('dropbox'));
 
-        board.removeClass('hide').text('Looking up title');
+        // Autogrow
 
-        app.socket.emit('get url title', $(this).val(),
-          function (error, ref) {
-            if ( ref.title ) {
-              
-              board.text(ref.title);
-              reference.data('title', ref.title);
+        comp.template.find('textarea').autogrow();
 
-              var yt = YouTube(ref.url);
+        // Get reference's title
 
-              if ( yt ) {
-                creator.find('dropbox').hide();
+        comp.find('reference').on('change', function () {
 
-                creator.find('item media')
-                  .empty()
-                  .append(yt);
+          var creator     =   $(this).closest('.creator').data('creator');
+
+          var board       =   creator.find('reference board');
+          var reference   =   $(this);
+
+          board.removeClass('hide').text('Looking up title');
+
+          app.socket.emit('get url title', $(this).val(),
+            function (error, ref) {
+              if ( ref.title ) {
+                
+                board.text(ref.title);
+                reference.data('title', ref.title);
+
+                var yt = __YouTube(ref.url);
+
+                if ( yt ) {
+                  creator.find('dropbox').hide();
+
+                  creator.find('item media')
+                    .empty()
+                    .append(yt);
+                }
               }
-            }
-            else {
-              board.text('Looking up')
-                .addClass('hide');
-            }
-          });
-      });
+              else {
+                board.text('Looking up')
+                  .addClass('hide');
+              }
+            });
+        });
 
-      var form = new Form(creator.template);
-      
-      form.send(creator.create.bind(creator));
+        // Build form using Form provider
 
-      fulfill();
+        console.log('Creator calls __Form')
+
+        var form = new __Form(comp.template);
+        
+        form.send(comp.create.bind(comp));
+
+        // Done
+
+        fulfill();
+
+      }, reject);
 
     });
     
@@ -3477,7 +3531,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 
 } ();
 
-},{"promise":"/home/francois/Dev/syn/node_modules/promise/index.js","syn/js/providers/Form":"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js","syn/js/providers/Upload":"/home/francois/Dev/syn/node_modules/syn/js/providers/Upload.js","syn/js/providers/YouTube":"/home/francois/Dev/syn/node_modules/syn/js/providers/YouTube.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Details.js":[function(require,module,exports){
+},{"promise":"/home/francois/Dev/syn/node_modules/promise/index.js","syn/js/providers/Domain":"/home/francois/Dev/syn/node_modules/syn/js/providers/Domain.js","syn/js/providers/Form":"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js","syn/js/providers/Upload":"/home/francois/Dev/syn/node_modules/syn/js/providers/Upload.js","syn/js/providers/YouTube":"/home/francois/Dev/syn/node_modules/syn/js/providers/YouTube.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Details.js":[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4042,17 +4096,11 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
   var Item        =   require('syn/js/components/Item');
   var readMore    =   require('syn/js/providers/ReadMore');
 
-  function Intro () {
-    console.log('new Intro')
-  }
+  function Intro () {}
 
   Intro.prototype.render = function () {
 
-    console.log('rendering intro')
-
     app.socket.publish('get intro', function (intro) {
-
-      console.log('Got intro', intro)
 
       $('#intro').find('.panel-title').text(intro.subject);
 
@@ -4258,8 +4306,6 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
    */
 
   function itemMedia () {
-
-    console.info(this.item.getPromotionPercentage)
 
     // youtube video from references
 
@@ -5305,38 +5351,78 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
   
   'use strict';
 
-  // var Creator = require('../Creator');
+  module.exports = render;
 
-  var Promise = require('promise');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var Promise             =   require('promise');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Providers
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var __Domain            =   require('syn/js/providers/Domain');
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Components
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  var _Creator            =   require('syn/js/components/Creator');
+  
+  /**
+   *
+  */
 
   function render (cb) {
     var panel = this;
 
     var q = new Promise(function (fulfill, reject) {
 
-      panel.find('title').text(panel.type.name);
+      new __Domain(function (d) {
 
-      panel.find('toggle creator').on('click', function () {
-        panel.toggleCreator($(panel));
-      });
+        // Fill title
 
-      panel.template.attr('id', panel.getId());
+        panel.find('title').text(panel.type.name);
 
-      var creator = new (require('../Creator'))(panel);
+        // Toggle Creator
 
-      creator
-        .render()
-        .then(fulfill);
+        panel.find('toggle creator').on('click', function () {
+          panel.toggleCreator($(panel));
+        });
 
-      panel.find('load more').on('click', function () {
-        panel.fill();
-        return false;
-      });
+        // Panel ID
 
-      panel.find('create new').on('click', function () {
-        panel.find('toggle creator').click();
-        return false;
-      });
+        panel.template.attr('id', panel.getId());
+
+        console.info('Calling creator');
+
+        var creator = new (require('syn/js/components/Creator'))(panel);
+
+        console.info('Rendering creator');
+
+        creator
+          .render()
+          .then(fulfill, d.intercept.bind(d));
+
+        console.log('Creator rendered')
+
+        panel.find('load more').on('click', function () {
+          panel.fill();
+          return false;
+        });
+
+        panel.find('create new').on('click', function () {
+          panel.find('toggle creator').click();
+          return false;
+        });
+
+        // Done
+
+        fulfill();
+
+      }, reject);
 
     });
 
@@ -5347,11 +5433,9 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
     return q;
   }
 
-  module.exports = render;
-
 } ();
 
-},{"../Creator":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js","promise":"/home/francois/Dev/syn/node_modules/promise/index.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/to-json.js":[function(require,module,exports){
+},{"promise":"/home/francois/Dev/syn/node_modules/promise/index.js","syn/js/components/Creator":"/home/francois/Dev/syn/node_modules/syn/js/components/Creator.js","syn/js/providers/Domain":"/home/francois/Dev/syn/node_modules/syn/js/providers/Domain.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Panel/to-json.js":[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6225,7 +6309,67 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js":[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Domain.js":[function(require,module,exports){
+! function () {
+  
+  'use strict';
+
+  var domain          =   require('domain');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Domain (fn, reject) {
+    var d = domain.create();
+
+    d.intercept = function (fn, _self) {
+
+      if ( typeof fn !== 'function' ) {
+        fn = function () {};
+      }
+
+      return function (error) {
+        if ( error && error instanceof Error ) {
+          self.domain.emit('error', error);
+        }
+
+        else {
+          var args = Array.prototype.slice.call(arguments);
+
+          args.shift();
+
+          fn.apply(_self, args);
+        }
+      };
+    };
+
+    d.on('error', function onDomainError (error) {
+      console.error(error);
+
+      if ( error.stack ) {
+        error.stack.split(/\n/).forEach(function (line) {
+          line.split(/\n/).forEach(console.warn.bind(console));
+        });
+      }
+
+      if ( typeof reject === 'function' ) {
+        reject(error);
+      }
+    });
+
+    d.run(function () {
+      fn(d);
+    });
+  }
+
+  module.exports = Domain;
+
+} ();
+
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Form.js":[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -6234,6 +6378,8 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 ! function () {
 
   'use strict';
+
+  var __Domain = require('syn/js/providers/Domain');
 
   /**
    *  @class    Form
@@ -6244,28 +6390,33 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 
     var self = this;
 
-    this.form = form;
+    new __Domain(function (d) {
 
-    this.labels = {};
+      console.log('new form', form)
 
-    this.form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
+      self.form = form;
 
-    // #193 Disable <Enter> keys
+      self.labels = {};
 
-    this.form.find('input').on('keydown', function (e) {
-      if ( e.keyCode === 13 ) {
-        return false;
-      }
-    });
-
-    this.form.on('submit', function (e) {
-      setTimeout(function () {
-        self.submit(e);
+      self.form.find('[name]').each(function () {
+        self.labels[$(self).attr('name')] = $(self);
       });
 
-      return false;
+      // #193 Disable <Enter> keys
+
+      self.form.find('input').on('keydown', function (e) {
+        if ( e.keyCode === 13 ) {
+          return false;
+        }
+      });
+
+      self.form.on('submit', function (e) {
+        setTimeout(function () {
+          self.submit(e);
+        });
+
+        return false;
+      });
     });
   }
 
@@ -6314,7 +6465,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 
 } ();
 
-},{}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js":[function(require,module,exports){
+},{"syn/js/providers/Domain":"/home/francois/Dev/syn/node_modules/syn/js/providers/Domain.js"}],"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js":[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -6866,7 +7017,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
     var self = this;
 
     /** Socket */
-    console.log('http://' + window.location.hostname + ':' + window.location.port)
+    
     self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
     self.socket.once('welcome', function (user) {
@@ -6900,7 +7051,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports={
 
     }
 
-    self.socket.on('error', function (error) {
+    self.socket.on('error', function onSocketError (error) {
       console.error('socket error', error);
     });
   }

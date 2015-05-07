@@ -23,17 +23,11 @@
   var Item        =   require('syn/js/components/Item');
   var readMore    =   require('syn/js/providers/ReadMore');
 
-  function Intro () {
-    console.log('new Intro')
-  }
+  function Intro () {}
 
   Intro.prototype.render = function () {
 
-    console.log('rendering intro')
-
     app.socket.publish('get intro', function (intro) {
-
-      console.log('Got intro', intro)
 
       $('#intro').find('.panel-title').text(intro.subject);
 

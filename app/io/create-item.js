@@ -2,9 +2,7 @@
 
   'use strict';
 
-  
-
-  function createItem (item) {
+  function createItem (event, item) {
 
     var socket = this;
 
@@ -15,9 +13,11 @@
       },
 
       function (domain) {
+        item.type = item.type._id;
+
         require('syn/models/Item')
           .create(item, domain.intercept(function (item) {
-            socket.emit('created item', item);  
+            socket.ok(event, item);  
           }));
       }
 
