@@ -2,160 +2,221 @@
   
   'use strict';
 
-  var html5               =   require('syn/lib/html5');
-  var Page                =   require('syn/lib/Page');
-  var ItemDefaultButtons  =   require('syn/views/ItemDefaultButtons');
-  var Promote             =   require('syn/views/Promote');
-  var Details             =   require('syn/views/Details');
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Library dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  module.exports          =   function ItemView (viewOptions) {
-    viewOptions           =   viewOptions || {};
+  var html5                   =   require('syn/lib/html5');
+  var Element                 =   html5.Element;
+  var Page                    =   require('syn/lib/Page');
 
-    var itemAttribute     =   {
-      id                  :   viewOptions.id
-    };
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Components dependencies
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Item media
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  var _ItemDefaultButtons     =   require('syn/views/ItemDefaultButtons');
+  var _Promote                =   require('syn/views/Promote');
+  var _Details                =   require('syn/views/Details');
 
-    var ItemWrapper       =     html5.Element('.item-media-wrapper')
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Export Item Box
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      .add(
-        html5.Element('.item-media', {}, function itemMediaImage () {
-
-          if ( viewOptions.item && viewOptions.item.image ) {
-            return html5.Element('img.img-responsive', { src: viewOptions.item.image });
-          }
-
-          else if ( viewOptions.media ) {
-            return viewOptions.media;
-          }
-
-          return [];
-
-        })
-      );
+  module.exports              =   function renderItemComponent(itemOptions) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Item buttons
+    //  Media
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var ItemButtons = html5.Element('.item-buttons', {
-        $condition : function () {
-          return viewOptions.buttons !== false;
+    var $MediaWrapper         =   Element('.item-media-wrapper');
+
+    var $Media                =   Element('.item-media');
+
+    function getItemMedia (opt)   {
+
+      if ( opt.media )            {
+
+        return                    opt.media;
+      }
+
+      else if ( opt.item      &&  opt.item.image ) {
+
+        return                    Element('img.img-responsive', {
+          src                 :   opt.item.image });
+      }
+
+      return                      [];
+    }
+
+    $Media.add(                   getItemMedia(itemOptions));
+    $MediaWrapper.add(            $Media);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Buttons
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var $Buttons              =   Element('.item-buttons', {
+        $condition            :   function () {
+          return                  itemOptions
+            .buttons          !== false;
         }
       }
     );
 
-    if ( viewOptions.buttons ) {
-      ItemButtons.add(viewOptions.buttons);
+    if ( itemOptions.buttons ){
+      $Buttons.add(               itemOptions.buttons);
     }
 
-    else {
-      ItemButtons.add(ItemDefaultButtons());
+    else                      {
+      $Buttons.add(               _ItemDefaultButtons());
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Item text
+    //  Subject
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var ItemText = html5.Element('.item-text', {}, [
+    var $SubjectHeader        =   Element('h4.item-subject.header');
 
-      html5.Element('.item-truncatable', {}, [
+    var $SubjectLink          =   Element('a', {
+      
+      href                      :     function (opt) {
+        if ( opt && opt.item )  {
+          return                      Page('Item Page', opt.item);
+        }
 
-        html5.Element('h4.item-subject.header', {}, [
+        return                        '#';
+      },
 
-          html5.Element('a', {
-            href    :   function (locals) {
-              if ( locals && locals.item ) {
-                return Page('Item Page', locals.item);
-              }
+      $text                     :     function (opt) {
+        if ( opt && opt.item )  {
+          return                      opt.item.subject;
+        }
 
-              return '#';
-            },
-            $text   :   function (locals) {
-              if ( locals && locals.item ) {
-                return locals.item.subject;
-              }
-              return '';
-            }
-          })
+        return                        '';
+      }
+    });
 
-        ]),
+    $SubjectHeader.add(               $SubjectLink);
 
-        html5.Element('.item-description.pre-text', {
-          $text: function (locals) {
-            if ( locals && locals.item ) {
-              return locals.item.description;
-            }
-            return '';
-          }
-        }),
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Description
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        html5.Element('.clear.clear-text')
+    var $Description            =     Element('.item-description.pre-text', {
+      $text                     :     function (opt) {
+        if ( opt && opt.item )  {
+          return                      opt.item.description;
+        }
 
-      ])
+        return                        '';
+      }
+    });
 
-    ]);
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Reference
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  TEXT
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var $Text                   =     Element('.item-text');
+
+    var $Truncatable            =     Element('.item-truncatable');
+    
+    var $ClearText              =     Element('.clear.clear-text');
+
+    $Text.add(                        $Truncatable);
+
+    $Truncatable.add(                 $SubjectHeader,
+                                      $Description,
+                                      $ClearText);
+    
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Promote
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var $Promote                =     Element('.promote.is-container');
+
+    var $PromoteSection         =     Element('.is-section')
+
+    $Promote.add(                     $PromoteSection);
+
+    $PromoteSection.add(              _Promote(itemOptions));
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Details
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var $Details                =     Element('.details.is-container');
+
+    var $DetailsSection         =     Element('.is-section')
+
+    $Details.add(                     $DetailsSection);
+
+    $DetailsSection.add(              _Details(itemOptions));
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Arrow
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var $ArrowWrapper           =     Element('.item-arrow', {
+      $condition                :     function () {
+        return itemOptions
+          .collapsers           !==   false;
+      }
+    });
+
+    var $Arrow                  =     Element('i.fa.fa-arrow-down');
+
+    var $ArrowDiv               =     Element('div');
+
+    $ArrowWrapper.add(                $ArrowDiv);
+
+    $ArrowDiv.add(                    $Arrow);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Children
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var $Children               =     Element('.children.is-container');
+    var $ChildrenSection        =     Element('.is-section');
+
+    $Children.add(                    $ChildrenSection);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Item collapsers
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var ItemCollapsers = html5.Element('.item-collapsers');
+    var $Collapsers           =   Element('.item-collapsers', {
+      $condition              :   function () {
+        return itemOptions
+          .collapsers         !== false;
+      }
+    });
+
+    $Collapsers.add(                  $Promote,
+                                      $Details,
+                                      $Children);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // PROMOTE
+    //  Item Box
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    ItemCollapsers.add(
-      html5.Element('.promote.is-container').add(
-        html5.Element('.is-section').add(Promote(viewOptions))
-      )
-    );
+    var itemAttributes        =   {
+      id                      :   itemOptions.id
+    };
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // DETAILS
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    var $Item                 =   Element('.item', itemAttributes);
 
-    ItemCollapsers.add(
-      html5.Element('.details.is-container').add(
-        html5.Element('.is-section').add(Details(viewOptions))
-      )
-    );
+    $Item.add(                    $MediaWrapper,
+                                  $Buttons,
+                                  $Text,
+                                  $ArrowWrapper,
+                                  $Collapsers,
+                                  Element('.clear'));
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Arrow
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var ItemArrow = html5.Element('.item-arrow').add(
-      html5.Element('div').add(
-        html5.Element('i.fa.fa-arrow-down.cursor-pointer')
-      )
-    );
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Children
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    ItemCollapsers.add(
-      html5.Element('.children.is-container').add(
-        html5.Element('.is-section')
-      )
-    );
-
-    return html5.Element('.item', itemAttribute)
-
-      .add(
-        ItemWrapper,
-        ItemButtons,
-        ItemText,
-        ItemArrow,
-        ItemCollapsers,
-        html5.Element('.clear')
-      );
-
+    return                        $Item;
   };
 
 } ();

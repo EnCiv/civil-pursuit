@@ -23,7 +23,8 @@
         panel.find('.items')
 
           .each(function (itemsWrapper) {
-            itemsWrapper.add(ItemView({ buttons: false }));
+            itemsWrapper.add(ItemView({
+              buttons: false, collapsers: false }));
           });
 
         return panel;

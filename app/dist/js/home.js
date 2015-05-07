@@ -2961,7 +2961,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
@@ -4553,10 +4553,12 @@ module.exports=module.exports=module.exports={
 
           item.find('children').addClass('is-loaded');
 
+          console.warn(item.item)
+
           switch ( item.item.type ) {
             case 'Topic':
 
-              var panelProblem = new (require('../../Panel'))('Problem', item.item._id);
+              var panelProblem = new (require('syn/js/components/Panel'))('Problem', item.item._id);
 
               panelProblem.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
@@ -4667,7 +4669,7 @@ module.exports=module.exports=module.exports={
 
 } ();
 
-},{"../../Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-details.js":[function(require,module,exports){
+},{"../../Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js","syn/js/components/Panel":"/home/francois/Dev/syn/node_modules/syn/js/components/Panel.js","syn/js/providers/Nav":"/home/francois/Dev/syn/node_modules/syn/js/providers/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/js/components/Item/view/toggle-details.js":[function(require,module,exports){
 ! function () {
   
   'use strict';

@@ -163,9 +163,7 @@
       }
 
       else {
-        lines.push(open);
-
-        lines.push(tab + '</' + element + '>');
+        lines.push(open + '</' + element + '>');
       }
     }
 

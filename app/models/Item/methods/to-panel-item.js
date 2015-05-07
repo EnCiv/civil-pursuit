@@ -49,9 +49,7 @@
       };
 
       function getLineage (cb, ancestors) {
-
-        cb();
-
+        original.getLineage(cb);
       }
 
       function getType (cb) {
@@ -74,9 +72,12 @@
       }
 
       function getSubtype (cb) {
+        // Type
+        //   .findOne({ parent: original.type, harmony: { $gt: [] } })
+        //   .populate('harmony.name')
+        //   .exec(cb);
         Type
-          .findOne({ parent: original.type, harmony: { $gt: [] } })
-          .populate('harmony.name')
+          .findOne({ parent: original.type._id })
           .exec(cb);
       }
 
@@ -122,7 +123,7 @@
       }
 
       async.parallel({
-        // lineage     :   getLineage,
+        lineage     :   getLineage,
         type        :   getType,
         user        :   getUser,
         subtype     :   getSubtype,

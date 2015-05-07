@@ -4926,10 +4926,12 @@ module.exports={
 
           item.find('children').addClass('is-loaded');
 
+          console.warn(item.item)
+
           switch ( item.item.type ) {
             case 'Topic':
 
-              var panelProblem = new (require('../../Panel'))('Problem', item.item._id);
+              var panelProblem = new (require('syn/js/components/Panel'))('Problem', item.item._id);
 
               panelProblem.load(app.domain.intercept(function (template) {
                 item.find('children').append(template);
@@ -5040,7 +5042,7 @@ module.exports={
 
 } ();
 
-},{"../../Panel":43,"syn/js/providers/Nav":63}],39:[function(require,module,exports){
+},{"../../Panel":43,"syn/js/components/Panel":43,"syn/js/providers/Nav":63}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';

@@ -4,71 +4,51 @@
 |   ====
 \******************************************************************************
 \*****************************************************************************/
-
 /******************************************************************************
 |   IMAGE UPLOADER
 \*****************************************************************************/
-
-.drop-box               {
-  background            :     #F8F8F8;
-  border                :     5px dashed #DDD;
-  min-height            :     65px !important;
-  text-align            :     center !important;
-  padding-bottom        :     1.5em;
-
-  input                 {
-    margin              :     auto;
-  }
-
-  &.dragover            {
-    border              :     5px dashed blue;
-  }
-
-  &.dragover-err        {
-    border              :     5px dashed red;
-  }
+.drop-box {
+  background: #F8F8F8;
+  border: 5px dashed #DDD;
+  min-height: 65px !important;
+  text-align: center !important;
+  padding-bottom: 1.5em;
 }
-
+.drop-box input {
+  margin: auto;
+}
+.drop-box.dragover {
+  border: 5px dashed blue;
+}
+.drop-box.dragover-err {
+  border: 5px dashed red;
+}
 /******************************************************************************
 |   CREATOR FORM
 \*****************************************************************************/
-
-.creator                {
-
-  &                     {
-    clear               :     both;
-  }
-
-
+.creator {
+  clear: both;
   /**************************************************************************
   |   SUBMIT BUTTON
   \*************************************************************************/
-
-  .item-buttons         {
-      button, .button   {
-        display         :     block;
-        width           :     40px;
-      }
-    }
-
   /**************************************************************************
   |   TEXT FIELDS
   \*************************************************************************/
-
-  .item-inputs          {
-
-    left                :     0;
-    position            :     relative;
-    overflow            :     hidden;
-
-    input[type="text"],
-    input[type="url"],
-    textarea            {
-      width             :     100%;
-      overflow          :     hidden;
-      box-sizing        :     border-box;
-    }
-
-  }
-
+}
+.creator .item-buttons button,
+.creator .item-buttons .button {
+  display: block;
+  width: 40px;
+}
+.creator .item-inputs {
+  left: 0;
+  position: relative;
+  overflow: hidden;
+}
+.creator .item-inputs input[type="text"],
+.creator .item-inputs input[type="url"],
+.creator .item-inputs textarea {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
