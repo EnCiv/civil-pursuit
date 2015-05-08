@@ -3546,8 +3546,8 @@ module.exports={
 
   'use strict';
 
-  var Nav = require('syn/js/providers/Nav');
-  var Edit = require('syn/js/components/Edit');
+  var __Nav     =   require('syn/js/providers/Nav');
+  var Edit    =   require('syn/js/components/Edit');
 
   /**
    *  @class Details
@@ -3622,7 +3622,7 @@ module.exports={
       });
 
     self.find('toggle edit and go again').on('click', function () {
-      Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
+      __Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
         if ( self.item.find('editor').find('form').length ) {
           console.warn('already loaded')
         }
@@ -3634,9 +3634,9 @@ module.exports={
 
             self.item.find('editor').find('.is-section').append(template);
 
-            Nav.reveal(self.item.find('editor'), self.item.template,
+            __Nav.reveal(self.item.find('editor'), self.item.template,
               app.domain.intercept(function () {
-                Nav.show(template, app.domain.intercept(function () {
+                __Nav.show(template, app.domain.intercept(function () {
                   edit.render();
                 }));
               }));
@@ -3668,7 +3668,6 @@ module.exports={
 
     setTimeout(function () {
 
-      console.warn(123);
 
       var vote = self.details.votes[criteria._id];
 
