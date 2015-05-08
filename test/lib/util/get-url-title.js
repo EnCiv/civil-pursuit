@@ -78,7 +78,7 @@
 
         it ( 'As a promise' , function (done) {
 
-          this.timeout(20000);
+          this.timeout(200000);
 
           getUrlTitle(url).then(function (_title) {
 
