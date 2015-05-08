@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node test/",
-    "start": "app/bin/server.js",
+    "start": "app/bin/start.js",
     "postinstall": "./post-install.sh"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",

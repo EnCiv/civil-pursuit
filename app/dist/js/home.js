@@ -2976,7 +2976,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 }).call(this);
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/components/selectors.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "Panel Container": ".panels",
   
   "Panel": ".panel",
