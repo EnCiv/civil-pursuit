@@ -32,6 +32,47 @@
     }));
   }
 
+  function PromoteSliders (hand) {
+
+    var sliders = html5.Element('.sliders', {
+      className:  [hand + '-item']
+    });
+
+    for ( var i = 0; i < 4; i ++ ) {
+      var slider = html5.Element('.criteria-wrapper');
+
+      slider.add(html5.Element('row').add(
+        html5.Element('.tablet-40').add(
+          html5.Element('h4').add(
+            html5.Element('button.criteria-name.shy.block', {
+              $text: 'Criteria'
+            })
+          )
+        ),
+
+        html5.Element('.tablet-60', {
+          style: 'margin-top: 2.5em'
+        }).add(
+          html5.Element('input.block', {
+            type: 'range',
+            min: '-1',
+            max: '1',
+            value: '0',
+            step: '1'
+          })
+        )
+      ));
+
+      slider.add(html5.Element('.row.is-container.criteria-description-section').add(
+          html5.Element('.is-section').add(
+            html5.Element('.gutter.watch-100.criteria-description')
+          )
+        ));
+
+      sliders.add(slider);
+    }
+  }
+
   function Promote (locals) {
     return html5.Element('section').add(
       
@@ -52,11 +93,13 @@
           PromoteSubject('left'),
           PromoteDescription('left'),
           PromoteReference('left'),
+          PromoteSliders('left'),
 
           PromoteImage('right'),
           PromoteSubject('right'),
           PromoteDescription('right'),
-          PromoteReference('right')
+          PromoteReference('right'),
+          PromoteSliders('right')
         ),
 
         // 2 columns
@@ -82,6 +125,16 @@
 
             html5.Element('.split-50.watch-100').add(
               PromoteReference('right')
+            )
+          ),
+
+          html5.Element('.row').add(
+            html5.Element('.split-50.watch-100').add(
+              PromoteSliders('left')
+            ),
+
+            html5.Element('.split-50.watch-100').add(
+              PromoteSliders('right')
             )
           )
         )

@@ -83,14 +83,9 @@
 
   module.exports = saveDB;
 
-  saveDB(function (error, orElse) {
-    if ( error ) {
-      console.log(error.stack.split(/\n/))
-    }
-    else {
-      console.log(orElse)
-    }
-  })
+  if ( /save\.js$/.test(process.argv[1]) ) {
+    saveDB(process.argv[2], console.log.bind(console));
+  }
 
   
 

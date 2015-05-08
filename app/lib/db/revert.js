@@ -9,6 +9,8 @@
    */
 
   function revertDB (model, cb) {
+
+    console.log('revert db', model);
     
     var stream = require('fs').createReadStream('data/' + model + '.js');
 
@@ -18,9 +20,12 @@
 
     var Model = require('syn/models/' + model);
 
+    console.log('Model found', Model)
+
     Model.remove(function (error) {
       if ( error ) throw error;
 
+      console.log('Model emptied')
 
       stream
 
@@ -31,9 +36,13 @@
 
         .on('end', function () {
           var backup = JSON.parse(this.data);
+
+          console.log('Got backup data', backup)
+
           require('async').each(backup.documents,
             function (document, done) {
               Model.create(document, function (error, doc) {
+                console.log(error && error.stack)
                 done(null, doc);
               });
             },
@@ -47,6 +56,8 @@
 
   module.exports = revertDB;
 
-  revertDB('User', console.log.bind(console));
+  if ( /revert\.js$/.test(process.argv[1]) ) {
+    revertDB(process.argv[2], console.log.bind(console));
+  }
 
 } ();

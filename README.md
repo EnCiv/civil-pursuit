@@ -37,16 +37,39 @@ cd democratysings
 npm install
 ```
 
+# Environment
+
+Before you start the app, you need to set the environment variables. Follow the instructions disclosed in file [export.example.sh](export.example.sh). Below is a list of the required variables:
+
+- **MONGOHQ_URL** The URL of the MongoDB server (*if this is not set, it will connect to localhost at MongoDB's default industry port*)
+- **PORT** The HTTP server port (*3000 if not set*)
+- **SYNAPP_ENV** *experimental* The name of the instance (ie, `synappalpha`)
+- **SYNAPP_SELENIUM_TARGET** The URL to run tests to (ie, `http://democracysin.gs`)
+
 # Start
 
 ```bash
-. export.sh
+. export.sh # the file with the environment variables
 npm start
 ```
+
+# Server instances
+
+Technical constraints (like the Facebook app) lead us to put names to our various environments:
+
+- **alpha**
+- **beta**
+- **prod**
 
 # Database
 
 We use MongoDB for the storage. The address of the MongoDB server is provided to the application via the `MONGOHQ_URL` environment.
+
+## Database server
+
+We use Compose (ex MongoHQ) for storage. We use it as a Heroku plugin.
+
+## Database
 
 - App hosted on heroku (synaccord.heroku.com)
 - MongoDB hosted by MongoHQ as an heroku plugin (free plan)
