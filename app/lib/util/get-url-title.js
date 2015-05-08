@@ -16,6 +16,8 @@
 
       domain.on('error', reject);
 
+      console.log('fetching url', url)
+
       domain.run(function () {
         request({
             url             :   url,

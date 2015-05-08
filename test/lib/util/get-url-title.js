@@ -82,6 +82,8 @@
 
           getUrlTitle(url).then(function (_title) {
 
+            console.log('haaaaaaaaaa')
+
             _title.should.be.exactly(title);
             
             done();
