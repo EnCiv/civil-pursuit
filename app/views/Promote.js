@@ -76,6 +76,16 @@
     return sliders;
   }
 
+  function PromoteFeedback (hand) {
+    return Element('.feedback', {
+      className    :   [hand + '-item']
+    }).add(
+      Element('textarea.feedback-entry.block', {
+        placeholder : 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?'
+      })
+    );
+  }
+
   function Promote (locals) {
     return Element('section').add(
       
@@ -97,12 +107,14 @@
           PromoteDescription('left'),
           PromoteReference('left'),
           PromoteSliders('left'),
+          PromoteFeedback('left'),
 
           PromoteImage('right'),
           PromoteSubject('right'),
           PromoteDescription('right'),
           PromoteReference('right'),
-          PromoteSliders('right')
+          PromoteSliders('right'),
+          PromoteFeedback('right')
         ),
 
         // 2 columns
@@ -133,11 +145,13 @@
 
           Element('.row').add(
             Element('.split-50.watch-100').add(
-              PromoteSliders('left')
+              PromoteSliders('left'),
+              PromoteFeedback('left')
             ),
 
             Element('.split-50.watch-100').add(
-              PromoteSliders('right')
+              PromoteSliders('right'),
+              PromoteFeedback('right')
             )
           )
         )
