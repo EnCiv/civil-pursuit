@@ -86,6 +86,23 @@
     );
   }
 
+  function PromoteButton (hand) {
+    return Element('.gutter', {
+      className    :   [hand + '-item']
+    }).add(
+      Element('button.block.promote').text('Promote')
+    );
+  }
+
+  function EditAndGoAgain (hand) {
+    return Element('.gutter', {
+      className    :   [hand + '-item']
+    }).add(
+      Element('button.block.edit-and-go-again-toggle')
+        .text('Edit and go again')
+    );
+  }
+
   function Promote (locals) {
     return Element('section').add(
       
@@ -108,13 +125,17 @@
           PromoteReference('left'),
           PromoteSliders('left'),
           PromoteFeedback('left'),
+          PromoteButton('left'),
+          EditAndGoAgain('left'),
 
           PromoteImage('right'),
           PromoteSubject('right'),
           PromoteDescription('right'),
           PromoteReference('right'),
           PromoteSliders('right'),
-          PromoteFeedback('right')
+          PromoteFeedback('right'),
+          PromoteButton('right'),
+          EditAndGoAgain('right')
         ),
 
         // 2 columns
@@ -153,8 +174,32 @@
               PromoteSliders('right'),
               PromoteFeedback('right')
             )
+          ),
+
+          Element('h4.text-center').text('Which of these is most important for the community to consider?'),
+
+          Element('.row').add(
+            Element('.split-50.watch-100').add(
+              PromoteButton('left')
+            ),
+
+            Element('.split-50.watch-100').add(
+              PromoteButton('right')
+            )
+          ),
+
+          Element('.row').add(
+            Element('.split-50.watch-100').add(
+              EditAndGoAgain('left')
+            ),
+
+            Element('.split-50.watch-100').add(
+              EditAndGoAgain('right')
+            )
           )
-        )
+        ),
+
+        Element('button.finish.block').text('Neither')
       )
 
     );
