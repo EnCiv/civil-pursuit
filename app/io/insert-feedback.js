@@ -4,7 +4,7 @@
 
   
 
-  function insertFeedback (feedback) {
+  function insertFeedback (event, feedback) {
 
     var socket = this;
 
@@ -17,7 +17,7 @@
       function (domain) {
         require('syn/models/Feedback')
           .create(feedback, domain.intercept(function (inserted) {
-            socket.emit('inserted feedback', inserted);  
+            socket.ok(event, inserted);  
           }));
       }
 

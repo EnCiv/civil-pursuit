@@ -4,7 +4,7 @@
 
   
 
-  function insertVotes (votes) {
+  function insertVotes (event, votes) {
 
     var socket = this;
 
@@ -17,7 +17,7 @@
       function (domain) {
         require('syn/models/Vote')
           .create(votes, domain.intercept(function (votes) {
-            socket.emit('inserted votes', votes);  
+            socket.ok(event, votes);  
           }));
       }
 

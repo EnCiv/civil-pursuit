@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function promote (item_id) {
+  function promote (event, item_id) {
 
     var socket = this;
 
@@ -17,7 +17,7 @@
     domain.run(function () {
       require('syn/models/Item')
         .incrementPromotion(item_id, domain.intercept(function (item) {
-          socket.emit('promoted', item);  
+          socket.ok(event, item);  
         }));
     });
 
