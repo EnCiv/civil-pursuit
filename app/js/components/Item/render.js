@@ -84,7 +84,6 @@
 
     item.find('media').find('img').on('load', function () {
       if ( ! this.template.find('.more').length ) {
-        console.log('reading more', this.item.subject)
         readMore(this.item, this.template);
       }
     }.bind(item));
@@ -144,8 +143,6 @@
       buttonHarmony.find('.related-number').text(item.item.harmony);
       item.find('related').append(buttonHarmony);
     }
-
-    console.warn('buttonChildren', buttonChildren.html());
 
     item.template.find('.counter').on('click', function () {
       var $trigger    =   $(this);

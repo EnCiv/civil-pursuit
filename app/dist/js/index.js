@@ -3754,9 +3754,7 @@ module.exports={
 
     var self = this;
 
-    app.socket.emit('get item details', self.item.item._id);
-
-    app.socket.once('got item details', function (details) {
+    app.socket.publish('get item details', self.item.item._id, function (details) {
 
       console.log('got item details', details);
 
@@ -4457,7 +4455,6 @@ module.exports={
 
     item.find('media').find('img').on('load', function () {
       if ( ! this.template.find('.more').length ) {
-        console.log('reading more', this.item.subject)
         readMore(this.item, this.template);
       }
     }.bind(item));
@@ -4517,8 +4514,6 @@ module.exports={
       buttonHarmony.find('.related-number').text(item.item.harmony);
       item.find('related').append(buttonHarmony);
     }
-
-    console.warn('buttonChildren', buttonChildren.html());
 
     item.template.find('.counter').on('click', function () {
       var $trigger    =   $(this);

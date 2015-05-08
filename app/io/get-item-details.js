@@ -4,7 +4,7 @@
 
   
 
-  function getItemDetails (id) {
+  function getItemDetails (event, id) {
 
     var socket = this;
 
@@ -16,8 +16,8 @@
 
       function (domain) {
         require('syn/models/Item')
-          .details(id, domain.intercept(function (details) {
-            socket.emit('got item details', details);  
+          .getDetails(id, domain.intercept(function (details) {
+            socket.ok(event, details);  
           }));
       }
 

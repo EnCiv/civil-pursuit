@@ -131,7 +131,7 @@
             args.push(arguments[i]);
           }
 
-          console.log.apply(console, ['>>'].concat(args));
+          console.log.apply(console, ['>>>'.yellow.bold, event.yellow.bold].concat(args));
 
           args.shift();
 

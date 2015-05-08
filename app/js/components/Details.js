@@ -227,9 +227,7 @@
 
     var self = this;
 
-    app.socket.emit('get item details', self.item.item._id);
-
-    app.socket.once('got item details', function (details) {
+    app.socket.publish('get item details', self.item.item._id, function (details) {
 
       console.log('got item details', details);
 

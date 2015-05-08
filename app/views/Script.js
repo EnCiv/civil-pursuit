@@ -75,7 +75,35 @@
       //  GOAL PROGRESS
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      html5.Element.importScript('/bower_components/goalProgress/goalProgress.js')
+      html5.Element.importScript('/bower_components/goalProgress/goalProgress.js'),
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      //  D3
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      html5.Element.importScript(function (locals) {
+        if ( locals.settings.env === 'development' ) {
+          return '/bower_components/d3/d3.js';
+        }
+
+        else {
+          return '/bower_components/d3/d3.min.js';
+        }
+      }),
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      //  C3
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      html5.Element.importScript(function (locals) {
+        if ( locals.settings.env === 'development' ) {
+          return '/bower_components/c3/c3.js';
+        }
+
+        else {
+          return '/bower_components/c3/c3.min.js';
+        }
+      })
       
     );
 
