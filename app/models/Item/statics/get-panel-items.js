@@ -18,7 +18,7 @@
     var self = this;
 
     var promise = new Promise(function (fulfill, reject) {
-      di(fulfill, deps, function (domain, mongoose, async, config, Item) {
+      di(reject, deps, function (domain, mongoose, async, config, Item) {
 
         console.log('GET PANEL ITEMS', panel)
 
@@ -29,7 +29,6 @@
             .skip(panel.skip || 0)
             .sort({ promotions: -1 })
             .exec(domain.intercept(function (items) {
-
               async.map(items,
 
                 function (item, cb) {

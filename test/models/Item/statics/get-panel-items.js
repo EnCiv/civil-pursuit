@@ -70,6 +70,7 @@
     describe ( 'Panel items' , function () {
 
       it ( 'should be an array of items' , function () {
+        console.log('items', items)
 
         items.should.be.an.Array;
 

@@ -64,6 +64,12 @@
         User
           .findById(original.user)
           .exec(domain.intercept(function (user) {
+            if ( ! user ) {
+              // cleaning database
+              console.log(original._id);
+              throw new Error('User not found: ' + original.user + ', Item: ' +
+                original._id);
+            }
             cb(null, {
               'full name' :   user.fullName,
               gps         :   user.gps,
