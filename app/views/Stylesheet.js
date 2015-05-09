@@ -78,7 +78,7 @@
 
       html5.Element.styleSheet(function (locals) {
         if ( locals.settings.env === 'production' ) {
-          return '/css/goalProgress.min.css';
+          return '/bower_components/goalProgress/goalProgress.css';
         }
         else {
           return '/bower_components/goalProgress/goalProgress.css';

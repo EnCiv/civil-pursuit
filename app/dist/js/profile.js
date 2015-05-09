@@ -3645,7 +3645,7 @@ module.exports={
   'use strict';
 
   var __Nav     =   require('syn/js/providers/Nav');
-  var Edit    =   require('syn/js/components/Edit');
+  var Edit      =   require('syn/js/components/Edit');
 
   /**
    *  @class Details
