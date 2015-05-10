@@ -11,13 +11,13 @@
 
     var panel     =   PanelView(locals);
 
+    var item      =   ItemView(locals);
+
     panel
       .find('h4.panel-title')
       .each(function (title) {
         title.options.$text = locals.item.subject;
       });
-
-    var item      =   ItemView(locals);
 
     panel
       .find('.items')

@@ -23,11 +23,13 @@
         panel.find('.items')
 
           .each(function (itemsWrapper) {
-            itemsWrapper.add(ItemView({
-              buttons: false, collapsers: false }));
+            itemsWrapper.add(ItemView({ item: {
+              buttons: false, collapsers: false
+            } }));
           });
 
         return panel;
+        
       });
 
   };

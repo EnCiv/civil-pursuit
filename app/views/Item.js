@@ -2,6 +2,8 @@
   
   'use strict';
 
+  module.exports = ItemView;
+
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Library dependencies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,15 +16,25 @@
   //  Components dependencies
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  var _ItemDefaultButtons     =   require('syn/views/ItemDefaultButtons');
-  var _Promote                =   require('syn/views/Promote');
-  var _Details                =   require('syn/views/Details');
+  var DefaultButtonsView      =   require('syn/views/ItemDefaultButtons');
+  var PromoteView             =   require('syn/views/Promote');
+  var DetailsView             =   require('syn/views/Details');
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Export Item Box
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  module.exports              =   function renderItemComponent(itemOptions) {
+  /**
+   *  @arg                        {Object} locals
+  */
+
+  function ItemView (locals) {
+
+    console.log()
+    console.log()
+    console.log('got locals', arguments)
+    console.log()
+    console.log()
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Media
@@ -32,23 +44,23 @@
 
     var $Media                =   Element('.item-media');
 
-    function getItemMedia (opt)   {
+    function getItemMedia (item)  {
 
-      if ( opt.media )            {
+      if ( item )             {
+        if ( item.media )     {
+          return                  item.media;
+        }
 
-        return                    opt.media;
-      }
-
-      else if ( opt.item      &&  opt.item.image ) {
-
-        return                    Element('img.img-responsive', {
-          src                 :   opt.item.image });
+        else if ( item.image ){
+          return                  Element('img.img-responsive', {
+            src               :   item.image });
+        }
       }
 
       return                      [];
     }
 
-    $Media.add(                   getItemMedia(itemOptions));
+    $Media.add(                   getItemMedia(locals.item));
     $MediaWrapper.add(            $Media);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,18 +69,20 @@
 
     var $Buttons              =   Element('.item-buttons', {
         $condition            :   function () {
-          return                  itemOptions
-            .buttons          !== false;
+          if ( locals.item )  {
+            return locals.item.buttons  !== false;
+          }
+          return true;
         }
       }
     );
 
-    if ( itemOptions.buttons ){
-      $Buttons.add(               itemOptions.buttons);
+    if ( locals.item && locals.item.buttons ) {
+      $Buttons.add(               locals.item.buttons);
     }
 
-    else                      {
-      $Buttons.add(               _ItemDefaultButtons());
+    else {
+      $Buttons.add(               DefaultButtonsView());
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,17 +93,17 @@
 
     var $SubjectLink          =   Element('a', {
       
-      href                      :     function (opt) {
-        if ( opt && opt.item )  {
-          return                      Page('Item Page', opt.item);
+      href                    :     function (locals) {
+        if ( locals && locals.item )    {
+          return                      Page('Item Page', locals && locals.item);
         }
 
         return                        '#';
       },
 
-      $text                     :     function (opt) {
-        if ( opt && opt.item )  {
-          return                      opt.item.subject;
+      $text                     :     function (locals) {
+        if ( locals && locals.item )      {
+          return                      locals.item.subject;
         }
 
         return                        '';
@@ -98,27 +112,27 @@
 
     $SubjectHeader.add(               $SubjectLink);
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Description
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var $Description            =     Element('.item-description.pre-text', {
-      $text                     :     function (opt) {
-        if ( opt && opt.item )  {
-          return                      opt.item.description;
+      $text                     :     function (locals) {
+        if ( locals && locals.item )      {
+          return                      locals.item.description;
         }
 
         return                        '';
       }
     });
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Reference
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  TEXT
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var $Text                   =     Element('.item-text');
 
@@ -132,21 +146,21 @@
                                       $Description,
                                       $ClearText);
     
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Promote
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var $Promote                =     Element('.promote.is-container');
 
-    var $PromoteSection         =     Element('.is-section')
+    var $PromoteSection         =     Element('.is-section');
 
     $Promote.add(                     $PromoteSection);
 
-    $PromoteSection.add(              _Promote(itemOptions));
+    $PromoteSection.add(              PromoteView(locals));
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Details
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var $Details                =     Element('.details.is-container');
 
@@ -154,16 +168,18 @@
 
     $Details.add(                     $DetailsSection);
 
-    $DetailsSection.add(              _Details(itemOptions));
+    $DetailsSection.add(              DetailsView(locals));
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Arrow
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var $ArrowWrapper           =     Element('.item-arrow', {
       $condition                :     function () {
-        return itemOptions
-          .collapsers           !==   false;
+        if ( locals.item ) {
+          return locals.item.collapsers !==   false;
+        }
+        return true;
       }
     });
 
@@ -171,40 +187,44 @@
 
     var $ArrowDiv               =     Element('div');
 
-    $ArrowWrapper.add(                $ArrowDiv);
+    $ArrowWrapper.add($ArrowDiv);
 
-    $ArrowDiv.add(                    $Arrow);
+    $ArrowDiv.add($Arrow);
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Children
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var $Children               =     Element('.children.is-container');
     var $ChildrenSection        =     Element('.is-section');
 
-    $Children.add(                    $ChildrenSection);
+    $Children.add(
+      $ChildrenSection);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Item collapsers
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var $Collapsers           =   Element('.item-collapsers', {
-      $condition              :   function () {
-        return itemOptions
-          .collapsers         !== false;
+    var $Collapsers             =   Element('.item-collapsers', {
+      $condition                :   function () {
+        if ( locals.item ) {
+          return locals.item.collapsers !==   false;
+        }
+        return true;
       }
     });
 
-    $Collapsers.add(                  $Promote,
-                                      $Details,
-                                      $Children);
+    $Collapsers.add(
+      $Promote,
+      $Details,
+      $Children);
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  Item Box
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     var itemAttributes        =   {
-      id                      :   itemOptions.id
+      id                      :   locals.item ? 'item-' + locals.item.id  : ''
     };
 
     var $Item                 =   Element('.item', itemAttributes);

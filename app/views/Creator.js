@@ -5,7 +5,7 @@
   var html5               =     require('syn/lib/html5');
   var Element             =     html5.Element;
   var Elements            =     html5.Elements.bind(html5);
-  var _ItemView           =     require('syn/views/Item');
+  var ItemView            =     require('syn/views/Item');
 
   module.exports          =     function CreatorView (options) {
 
@@ -74,10 +74,12 @@
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    var $ItemBox          =     _ItemView({
-      media               :     $DropBox,
-      buttons             :     Elements($SubmitButton),
-      collapsers          :     false
+    var $ItemBox          =     ItemView({
+      item                :     {
+        media             :     $DropBox,
+        buttons           :     Elements($SubmitButton),
+        collapsers        :     false
+      }
     });
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

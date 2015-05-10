@@ -6,21 +6,21 @@
   var Element           =   html5.Element;
   var CreatorView       =   require('syn/views/Creator');
 
-  module.exports        =   function PanelView (options) {
+  module.exports        =   function PanelView (locals) {
 
-    options = options   ||  {};
+    locals = locals     ||  {};
 
     var panel           =   Element('.panel.panel-default');
 
-    if ( options.panel )    {
-      var id            =   'panel-' + options.panel.type.toString();
+    if ( locals.panel )    {
+      var id            =   'panel-' + locals.panel.type.toString();
 
-      panel.options.id  =   id;
+      panel.options.id   =   id;
     }
 
     var panelHeading    =   Element('.panel-heading').add(
       Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
-        $condition      :   options.creator !== false
+        $condition      :   locals.creator !== false
       }),
 
       Element('h4.panel-title')
@@ -28,8 +28,8 @@
 
     var panelBody       =   Element('.panel-body');
 
-    if ( options.creator !== false ) {
-      panelBody.add(CreatorView(options));
+    if ( locals.creator !== false ) {
+      panelBody.add(CreatorView(locals));
     }
 
     panelBody.add(Element('.items'));
