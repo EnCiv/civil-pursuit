@@ -5,13 +5,16 @@
   function renderPage (req, res, next) {
 
     var app           =   this;
+    /** @type             Function */
     var exportsLocal  =   require('syn/lib/util/export-locals');
+    /** @type             Object */
     var locals        =   exportsLocal(app, req, res);
     var Html5         =   require('syn/lib/html5');
-    /** @type Function */
+    /** @type             Function */
     var page          =   require('syn/views/pages/' + locals.page);
-    /** @type html5.Document */
+    /** @type             html5.Document */
     var view          =   page(locals);
+    /** @type             Boolean */
     var isAView       =   view instanceof Html5.Elements ||
       view instanceof Html5.Element ||
       view instanceof Html5.Document;

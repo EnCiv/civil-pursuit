@@ -4,8 +4,9 @@
 
   /**
    *  @function
-   *  @return
-   *  @arg
+   *  @return         null
+   *  @arg            {ObjectId} item_id
+   *  @arg            {Function} cb
    */
 
   function getAccumulation (item_id, cb) {

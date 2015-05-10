@@ -5,7 +5,9 @@
   function getItemDetails (id, cb) {
     var self = this;
 
-    require('syn/lib/domain/next-tick')(cb, function getItemDetailsDomain (domain) {
+    var nextTick = require('syn/lib/domain/next-tick');
+
+    nextTick(cb, function getItemDetailsDomain (domain) {
 
       require('async').parallel({
           votes: function getVotes (then) {

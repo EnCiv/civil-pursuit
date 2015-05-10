@@ -54,10 +54,6 @@ var VoteSchema = new Schema({
   "value": {
   	"type": Number,
   	"required": true
-  },
-  "created": {
-    "type": Date,
-    "default": Date.now
   }
 });
 

@@ -17,7 +17,7 @@
     assert( 'ObjectID',           require('../.ObjectID'));
     assert( 'Type',               require('../Type/.Type'));
     assert( 'User',               require('../User/.User'));
-    assert( 'CloudinaryUrl',      require('../User/.User'));
+    assert( 'CloudinaryUrl',      require('../../lib/util/is/.CloudinaryUrl'));
     
     this.params = { operator: 'to be an Item'};
 

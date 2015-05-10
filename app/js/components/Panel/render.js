@@ -2,7 +2,7 @@
   
   'use strict';
 
-  module.exports = render;
+  module.exports          =   render;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Dependencies
@@ -14,16 +14,12 @@
   //  Providers
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  var __Domain            =   require('syn/js/providers/Domain');
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Components
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  var _Creator            =   require('syn/js/components/Creator');
+  var DomainProvider     =   require('syn/js/providers/Domain');
   
-  /**
+  /** PanelComponent.Render
    *
+   *  @method             PanelComponent.render
+   *  @arg                {Function}
   */
 
   function render (cb) {
@@ -31,9 +27,9 @@
 
     var q = new Promise(function (fulfill, reject) {
 
-      new __Domain(function (d) {
+      new DomainProvider(function (d) {
 
-        // Fill title
+        // Fill title                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         panel.find('title').text(panel.type.name);
 
@@ -45,7 +41,9 @@
 
         // Panel ID
 
-        panel.template.attr('id', panel.getId());
+        if ( ! panel.template.attr('id') ) {
+          panel.template.attr('id', panel.getId());
+        }
 
         var creator = new (require('syn/js/components/Creator'))(panel);
 

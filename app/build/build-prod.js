@@ -14,6 +14,7 @@
       'minify-css-goal-progress',
       'minify-css',
       'uglify-home',
+      'uglify-item',
       'uglify-terms-of-service',
       'uglify-profile',
       'uglify-reset-password',

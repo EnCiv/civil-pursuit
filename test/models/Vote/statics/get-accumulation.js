@@ -2,14 +2,135 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+  var async         =   require('async');
+  var Item          =   require('syn/models/Item');
+  var User          =   require('syn/models/User');
+  var Vote          =   require('syn/models/Vote');
+  var Criteria      =   require('syn/models/Criteria');
+  var mongoUp       =   require('syn/lib/util/connect-to-mongoose');
+  var isA           =   require('syn/lib/util/should/add');
+  var fulfill       =   require('syn/lib/util/di/domain');
 
-  var deps = [
-    'syn/lib/Test',
-    'syn/models/Vote',
-    'syn/lib/util/connect-to-mongoose',
-    'should'
-  ];
+  var mongo, item, accumulation, user, criteria;
+
+  function getUser () {
+    User
+      .disposable()
+      .then(getItem);
+  }
+
+  function getItem (user) {
+    Item
+      .disposable({ user: user._id })
+      .then(done.bind(null, user));
+  }
+
+  function getCriteria (user, item) {
+    Criteria
+      .find({ type: item.type })
+      .exec()
+      .then(function (criterias) {
+
+      });
+  }
+
+  function vote (user, item, criteria) {
+    Vote
+      .create({
+        item        :   item._id,
+        user        :   user._id,
+        criteria    :   criteria._id,
+        value       :   '+1'
+      })
+  }
+
+  describe ( 'Models / Votes / Statics / Get Accumulation' , function () {
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    before ( function (done) {
+
+      this.timeout(5000);
+
+      isA ( 'Vote' ,          require('../.Vote') );
+
+      isA ( 'Accumulation' ,  require('../.Accumulation') );
+
+      mongo = mongoUp();
+
+      User
+        .disposable()
+        .then(function (_user) {
+          user = _user;
+
+          Item
+            .disposable({ user: user._id })
+            .then(function (_item) {
+
+              item = _item;
+
+              Criteria
+                .findOneRandom()
+                .then(function (_criteria) {
+
+                  criteria = _criteria;
+
+                  Vote
+                    .
+
+                }, done);
+
+            }, done)
+
+        }, done);
+
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should be a function' , function () {
+
+      Vote.schema.statics.getAccumulation.should.be.a.Function;
+
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should be not throw error' , function (done) {
+
+      Vote.getAccumulation(item._id, function (error, _accumulation) {
+        
+        if ( error ) {
+          return done(error);
+        }
+
+        console.log('accumulation', _accumulation)
+
+        accumulation = _accumulation;
+
+        done();
+
+      });
+
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should be an accumulation' , function () {
+
+      accumulation.should.be.an.Accumulation;
+
+    });
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    after ( function (done) {
+
+      mongo.disconnect(done);
+
+    } );
+
+  } );
 
   module.exports = function Test__models__Vote (done) {
 
@@ -19,17 +140,17 @@
 
       var vote, accumulation;
 
-      function models__Vote__statics__getAccumulation____Exists (done) {
+      function Exists (done) {
         Vote.schema.statics.should.have.property('getAccumulation');
         done();
       }
 
-      function models__Vote__statics__getAccumulation____Is_A_Function (done) {
+      function Is_A_Function (done) {
         Vote.schema.statics.getAccumulation.should.be.a.Function;
         done();
       }
 
-      function models__Vote__statics__getAccumulation____findRandomVote (done) {
+      function findRandomVote (done) {
         
         Vote.findOneRandom(domain.intercept(function (randomVote) {
           randomVote.should.be.an.Object;
@@ -40,7 +161,7 @@
 
       }
 
-      function models__Vote__statics__getAccumulation____getAccumulation (done) {
+      function getAccumulation (done) {
 
         Vote.getAccumulation(vote.item, domain.intercept(function (cumul) {
           accumulation = cumul;
@@ -49,12 +170,12 @@
 
       }
 
-      function models__Vote__statics__getAccumulation____isAnObject (done) {
+      function isAnObject (done) {
         accumulation.should.be.an.Object;
         done();
       }
 
-      function models__Vote__statics__getAccumulation____eachCriteriaIsAnObject (done) {
+      function eachCriteriaIsAnObject (done) {
         
         for ( var criteria in accumulation ) {
           accumulation[criteria].should.be.an.Object;
@@ -63,7 +184,7 @@
         done();
       }
 
-      function models__Vote__statics__getAccumulation____eachCriteriaHasTotal (done) {
+      function eachCriteriaHasTotal (done) {
         
         for ( var criteria in accumulation ) {
           accumulation[criteria].should.have.property('total');
@@ -72,7 +193,7 @@
         done();
       }
 
-      function models__Vote__statics__getAccumulation____eachTotalIs_A_Number (done) {
+      function eachTotalIs_A_Number (done) {
         
         for ( var criteria in accumulation ) {
           accumulation[criteria].total.should.be.a.Number;
@@ -81,7 +202,7 @@
         done();
       }
 
-      function models__Vote__statics__getAccumulation____eachTotalIsTheSumOfValues (done) {
+      function eachTotalIsTheSumOfValues (done) {
         
         for ( var criteria in accumulation ) {
           var total = accumulation[criteria].values['-1'] +
@@ -94,7 +215,7 @@
         done();
       }
 
-      function models__Vote__statics__getAccumulation____valuesAreNumbers (done) {
+      function valuesAreNumbers (done) {
         
         for ( var criteria in accumulation ) {
           accumulation[criteria].values['-1'].should.be.a.Number;
@@ -111,16 +232,16 @@
 
       Test([
 
-          models__Vote__statics__getAccumulation____Exists,
-          models__Vote__statics__getAccumulation____Is_A_Function,
-          models__Vote__statics__getAccumulation____findRandomVote,
-          models__Vote__statics__getAccumulation____getAccumulation,
-          models__Vote__statics__getAccumulation____isAnObject,
-          models__Vote__statics__getAccumulation____eachCriteriaIsAnObject,
-          models__Vote__statics__getAccumulation____eachCriteriaHasTotal,
-          models__Vote__statics__getAccumulation____eachTotalIs_A_Number,
-          models__Vote__statics__getAccumulation____eachTotalIsTheSumOfValues,
-          models__Vote__statics__getAccumulation____valuesAreNumbers,
+          Exists,
+          Is_A_Function,
+          findRandomVote,
+          getAccumulation,
+          isAnObject,
+          eachCriteriaIsAnObject,
+          eachCriteriaHasTotal,
+          eachTotalIs_A_Number,
+          eachTotalIsTheSumOfValues,
+          valuesAreNumbers,
           disconnect
 
         ], done);

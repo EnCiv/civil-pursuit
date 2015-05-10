@@ -3525,36 +3525,20 @@ module.exports={
 } ();
 
 },{"promise":8,"syn/js/providers/Domain":56,"syn/js/providers/Form":57,"syn/js/providers/Upload":64,"syn/js/providers/YouTube":65}],26:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  DETAILS
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
+! function _DetailsComponent_ () {
 
   'use strict';
 
-  var __Nav     =   require('syn/js/providers/Nav');
-  var Edit      =   require('syn/js/components/Edit');
+  var EditComponent     =   require('syn/js/components/Edit');
+
+  var NavProvider       =   require('syn/js/providers/Nav');
 
   /**
-   *  @class Details
-   *  @arg {Item} item
+   *  @class            DetailsComponent
+   *  @arg              {ItemComponent} item
    */
 
-  function Details(item) {
+  function DetailsComponent(item) {
 
     if ( ! app ) {
       throw new Error('Missing app');
@@ -3578,13 +3562,13 @@ module.exports={
   }
 
   /**
-   *  @method find
-   *  @description DOM selectors abstractions
-   *  @return null
-   *  @arg {string} name
+   *  @method           
+   *  @description      DOM selectors abstractions
+   *  @return           null
+   *  @arg              {string} name
    */
 
-  Details.prototype.find = function (name) {
+  DetailsComponent.prototype.find = function (name) {
     switch ( name ) {
       case 'promoted bar':
         return this.template.find('.progress');
@@ -3601,42 +3585,40 @@ module.exports={
   };
 
   /**
-   *  @method render
-   *  @description DOM manipulation
-   *  @arg {function} cb
+   *  @method
+   *  @description          DOM manipulation
+   *  @arg                  {function} cb
    */
 
-  Details.prototype.render = function (cb) {
+  DetailsComponent.prototype.render = function (cb) {
     var self = this;
 
     var item = self.item.item;
 
     self.find('promoted bar')
-      // .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
-      // .text(Math.floor(item.promotions * 100 / item.views) + '%')
       .goalProgress({
-        goalAmount: 100,
-        currentAmount: Math.floor(item.promotions * 100 / item.views),
-        textBefore: '',
-        textAfter: '%'
+        goalAmount        :   100,
+        currentAmount     :   Math.floor(item.promotions * 100 / item.views),
+        textBefore        :   '',
+        textAfter         :   '%'
       });
 
     self.find('toggle edit and go again').on('click', function () {
-      __Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
+      NavProvider.unreveal(self.template, self.item.template, app.domain.intercept(function () {
         if ( self.item.find('editor').find('form').length ) {
           console.warn('already loaded')
         }
 
         else {
-          var edit = new Edit(self.item);
+          var edit = new EditComponent(self.item);
             
           edit.get(app.domain.intercept(function (template) {
 
             self.item.find('editor').find('.is-section').append(template);
 
-            __Nav.reveal(self.item.find('editor'), self.item.template,
+            NavProvider.reveal(self.item.find('editor'), self.item.template,
               app.domain.intercept(function () {
-                __Nav.show(template, app.domain.intercept(function () {
+                NavProvider.show(template, app.domain.intercept(function () {
                   edit.render();
                 }));
               }));
@@ -3647,7 +3629,7 @@ module.exports={
       }));
     });
 
-    if ( synapp.user ) {
+    if ( app.socket.synuser ) {
       $('.is-in').removeClass('is-in');
     }
 
@@ -3657,18 +3639,16 @@ module.exports={
   };
 
   /**
-   *  @method votes
-   *  @description Display votes using c3.js
-   *  @arg {object} criteria
-   *  @arg {HTMLElement} svg
+   *  @method
+   *  @description    Display votes using c3.js
+   *  @arg            {object} criteria
+   *  @arg            {HTMLElement} svg
    */
 
-  Details.prototype.votes = function (criteria, svg) {
+  DetailsComponent.prototype.votes = function (criteria, svg) {
     var self = this;
 
     setTimeout(function () {
-
-
       var vote = self.details.votes[criteria._id];
 
       svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
@@ -3677,12 +3657,12 @@ module.exports={
 
       // If no votes, show nothing
 
-      if ( ! vote ) {
-        vote = {
-          values: {
-            '-1': 0,
-            '0': 0,
-            '1': 0
+      if ( ! vote )   {
+        vote        = {
+          values    : {
+            '-1'    : 0,
+            '0'     : 0,
+            '1'     : 0
           },
           total: 0
         }
@@ -3702,54 +3682,46 @@ module.exports={
       });
 
       var chart = c3.generate({
-        bindto: '#' + svg.attr('id'),
-
-        data: {
-          x: 'x',
-          columns: [['x', -1, 0, 1], columns],
-          type: 'bar'
+        bindto        :   '#' + svg.attr('id'),
+        data          :   {
+          x           :   'x',
+          columns     :   [['x', -1, 0, 1], columns],
+          type        :   'bar'
         },
-
-        grid: {
-          x: {
-            lines: 3
+        grid          :   {
+          x           :   {
+            lines     :   3
           }
         },
-        
-        axis: {
-          x: {},
-          
-          y: {
-            max: 90,
-
-            show: false,
-
-            tick: {
-              count: 5,
-
-              format: function (y) {
+        axis          :   {
+          x           :   {},
+          y           :   {
+            max       :   90,
+            show      :   false,
+            tick      :   {
+              count   :   5,
+              format  :   function (y) {
                 return y;
               }
             }
           }
         },
-
-        size: {
-          height: 80
+        size          :   {
+          height      :   80
         },
-
-        bar: {
-          width: $(window).width() / 5
+        bar           :   {
+          width       :   $(window).width() / 5
         }
       });
-      }, 250);
+    
+    }, 250);
   };
 
   /**
    *
    */
 
-  Details.prototype.get = function () {
+  DetailsComponent.prototype.get = function () {
 
     var self = this;
 
@@ -3781,7 +3753,7 @@ module.exports={
     });
   };
 
-  module.exports = Details;
+  module.exports = DetailsComponent;
 
 } ();
 
@@ -5027,24 +4999,7 @@ module.exports={
 } ();
 
 },{"syn/js/providers/Form":57,"syn/js/providers/Nav":58}],41:[function(require,module,exports){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  PANEL
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
+! function _PanelComponent_ () {
 
   'use strict';
 
@@ -5081,7 +5036,7 @@ module.exports={
     this.skip     =   skip || 0;
     this.size     =   size || synapp['navigator batch size'];
 
-    this.id       =   'panel-' + this.type._id;
+    this.id       =   'panel-' + (this.type._id || this.type);
 
     if ( this.parent ) {
       this.id += '-' + this.parent;
@@ -5133,15 +5088,15 @@ module.exports={
     }
   };
 
-  Panel.prototype.render          =   require('syn/js/components/Panel/render');
+  Panel.prototype.render        =   require('syn/js/components/Panel/render');
 
-  Panel.prototype.toJSON          =   require('syn/js/components/Panel/to-json');
+  Panel.prototype.toJSON        =   require('syn/js/components/Panel/to-json');
 
-  Panel.prototype.fill            =   require('syn/js/components/Panel/fill');
+  Panel.prototype.fill          =   require('syn/js/components/Panel/fill');
 
-  Panel.prototype.preInsertItem   =   require('syn/js/components/Panel/pre-insert-item');
+  Panel.prototype.preInsertItem =   require('syn/js/components/Panel/pre-insert-item');
 
-  Panel.prototype.insertItem      =   function (items, i, cb) {
+  Panel.prototype.insertItem    =   function (items, i, cb) {
 
     var self = this;
 
@@ -5338,7 +5293,7 @@ module.exports={
   
   'use strict';
 
-  module.exports = render;
+  module.exports          =   render;
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Dependencies
@@ -5350,16 +5305,12 @@ module.exports={
   //  Providers
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  var __Domain            =   require('syn/js/providers/Domain');
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Components
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  var _Creator            =   require('syn/js/components/Creator');
+  var DomainProvider     =   require('syn/js/providers/Domain');
   
-  /**
+  /** PanelComponent.Render
    *
+   *  @method             PanelComponent.render
+   *  @arg                {Function}
   */
 
   function render (cb) {
@@ -5367,9 +5318,9 @@ module.exports={
 
     var q = new Promise(function (fulfill, reject) {
 
-      new __Domain(function (d) {
+      new DomainProvider(function (d) {
 
-        // Fill title
+        // Fill title                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         panel.find('title').text(panel.type.name);
 
@@ -5381,7 +5332,9 @@ module.exports={
 
         // Panel ID
 
-        panel.template.attr('id', panel.getId());
+        if ( ! panel.template.attr('id') ) {
+          panel.template.attr('id', panel.getId());
+        }
 
         var creator = new (require('syn/js/components/Creator'))(panel);
 

@@ -22,6 +22,9 @@
 
     if ( res.locals.item ) {
       locals.item   =   res.locals.item;
+      locals.panel  =   {
+        type        :   res.locals.item.type
+      };
     }
 
     return locals;

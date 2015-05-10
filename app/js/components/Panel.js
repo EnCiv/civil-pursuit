@@ -1,21 +1,4 @@
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  PANEL
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
+! function _PanelComponent_ () {
 
   'use strict';
 
@@ -52,7 +35,7 @@
     this.skip     =   skip || 0;
     this.size     =   size || synapp['navigator batch size'];
 
-    this.id       =   'panel-' + this.type._id;
+    this.id       =   'panel-' + (this.type._id || this.type);
 
     if ( this.parent ) {
       this.id += '-' + this.parent;
@@ -104,15 +87,15 @@
     }
   };
 
-  Panel.prototype.render          =   require('syn/js/components/Panel/render');
+  Panel.prototype.render        =   require('syn/js/components/Panel/render');
 
-  Panel.prototype.toJSON          =   require('syn/js/components/Panel/to-json');
+  Panel.prototype.toJSON        =   require('syn/js/components/Panel/to-json');
 
-  Panel.prototype.fill            =   require('syn/js/components/Panel/fill');
+  Panel.prototype.fill          =   require('syn/js/components/Panel/fill');
 
-  Panel.prototype.preInsertItem   =   require('syn/js/components/Panel/pre-insert-item');
+  Panel.prototype.preInsertItem =   require('syn/js/components/Panel/pre-insert-item');
 
-  Panel.prototype.insertItem      =   function (items, i, cb) {
+  Panel.prototype.insertItem    =   function (items, i, cb) {
 
     var self = this;
 

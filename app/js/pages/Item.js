@@ -2,36 +2,31 @@
   
   'use strict';
 
-  var Synapp    =   require('syn/js/Synapp');
-  var Sign      =   require('syn/js/components/Sign');
-  var Intro     =   require('syn/js/components/Intro');
-  var Panel     =   require('syn/js/components/Panel');
+  var Synapp            =     require('syn/js/Synapp');
+  var SignComponent     =     require('syn/js/components/Sign');
+  var PanelComponent    =     require('syn/js/components/Panel');
 
-  window.app    =   new Synapp();
+  window.app            =     new Synapp();
 
   app.ready(function () {
-    /** Render intro */
-    new Intro().render();
-
-    console.log('hello!');
 
     /** Render user-related components */
-    new Sign().render();
+    new SignComponent().render();
 
-    var $panel = $('.panel[id]:last');
-    var type = $panel.attr('id').split('-')[1];
+    var $panel          =     $('.panel[id]:last');
+    var type            =     $panel.attr('id').split('-')[1];
 
-    console.log('static type', type)
+    console.log('static type', type, $panel.attr('id'))
 
-    var panel = new Panel(type);
+    var panel           =     new PanelComponent(type);
 
-    panel.template = $('.panel[id]:last');
+    panel.template      =     $('.panel[id]:last');
 
     panel.render(app.domain.intercept(function () {
       panel.template.find('.item[id]').each(function () {
-        var id = $(this).attr('id').split('-')[1];
+        var id          =     $(this).attr('id').split('-')[1];
 
-        var _item = {
+        var _item       =     {
           _id           :     id,
           type          :     type,
           subject       :     $(this).find('.item-subject').text(),
@@ -52,9 +47,9 @@
           _item.references[0].title = $(this).find('.item-reference a').data('title');
         }
 
-        var item = new Item(_item);
+        var item        =     new Item(_item);
 
-        item.template = $(this);
+        item.template   =     $(this);
 
         item.render(app.domain.intercept(function onItemRendered (args) {
           // ...code  

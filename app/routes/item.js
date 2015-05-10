@@ -2,7 +2,7 @@
   
   'use strict';
 
-  function getItemPage (req, res, next) {
+  function ItemRoute (req, res, next) {
 
     var app = this;
 
@@ -45,7 +45,7 @@
     //   delete res.locals.youtube;
     // }
 
-    // require('syn/lib/domain')(next, function getItemPageDomain (domain) {
+    // require('syn/lib/domain')(next, function ItemRouteDomain (domain) {
 
     //   require('syn/models/Item')
 
@@ -83,6 +83,6 @@
     // );
   }
 
-  module.exports = getItemPage;
+  module.exports = ItemRoute;
 
 } ();

@@ -2,14 +2,14 @@
   
   'use strict';
 
-  var Panel   =   require('syn/views/Panel');
-  var Item    =   require('syn/views/Item');
+  var PanelView   =   require('syn/views/Panel');
+  var ItemView    =   require('syn/views/Item');
 
-  function ItemPage (locals) {
+  function ItemViewPage (locals) {
 
-    var Layout = require('syn/views/Layout')(locals);
+    var Layout    =   require('syn/views/Layout')(locals);
 
-    var panel = Panel();
+    var panel     =   PanelView(locals);
 
     panel
       .find('h4.panel-title')
@@ -17,7 +17,7 @@
         title.options.$text = locals.item.subject;
       });
 
-    var item = Item(locals);
+    var item      =   ItemView(locals);
 
     panel
       .find('.items')
@@ -26,9 +26,7 @@
       });
 
     Layout.find('#main')
-
       .each(function (main) {
-
         main.add(
           panel
         );
@@ -38,6 +36,6 @@
     return Layout;
   }
 
-  module.exports = ItemPage;
+  module.exports = ItemViewPage;
 
 } ();

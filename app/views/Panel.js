@@ -2,31 +2,40 @@
   
   'use strict';
 
-  var html5     =   require('syn/lib/html5');
-  var Creator   =   require('syn/views/Creator');
+  var html5             =   require('syn/lib/html5');
+  var Element           =   html5.Element;
+  var CreatorView       =   require('syn/views/Creator');
 
-  module.exports = function PanelView (options) {
+  module.exports        =   function PanelView (options) {
 
-    options = options || {};
+    options = options   ||  {};
 
-    var panelBody = html5.Element('.panel-body');
+    var panel           =   Element('.panel.panel-default');
 
-    if ( options.creator !== false ) {
-      panelBody.add(Creator(options));
+    if ( options.panel )    {
+      var id            =   'panel-' + options.panel.type.toString();
+
+      panel.options.id  =   id;
     }
 
-    panelBody.add(html5.Element('.items'));
+    var panelHeading    =   Element('.panel-heading').add(
+      Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
+        $condition      :   options.creator !== false
+      }),
 
-    return html5.Element('.panel.panel-default').add(
-      
-      html5.Element('.panel-heading').add(
-          html5.Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
-            $condition    :   options.creator !== false
-          }),
+      Element('h4.panel-title')
+    );
 
-          html5.Element('h4.panel-title')
-        ),
+    var panelBody       =   Element('.panel-body');
 
+    if ( options.creator !== false ) {
+      panelBody.add(CreatorView(options));
+    }
+
+    panelBody.add(Element('.items'));
+
+    return panel.add(
+      panelHeading,
       panelBody
     );
 

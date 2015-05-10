@@ -3,22 +3,67 @@
   
   'use strict';
 
-  var Synapp = require('syn/js/Synapp');
-  var Sign = require('syn/js/components/Sign');
-  var Panel = require('syn/js/components/Panel');
-  var Profile = require('syn/js/components/Profile');
+  var Synapp            =     require('syn/js/Synapp');
+  var SignComponent     =     require('syn/js/components/Sign');
+  var PanelComponent    =     require('syn/js/components/Panel');
 
-  window.app = new Synapp();
+  window.app            =     new Synapp();
 
-  app.connect(function () {
-    new Sign().render();
+  app.ready(function () {
 
-    new Profile().render();
+    /** Render user-related components */
+    new SignComponent().render();
+
+    var $panel          =     $('.panel[id]:last');
+    var type            =     $panel.attr('id').split('-')[1];
+
+    console.log('static type', type, $panel.attr('id'))
+
+    var panel           =     new PanelComponent(type);
+
+    panel.template      =     $('.panel[id]:last');
+
+    panel.render(app.domain.intercept(function () {
+      panel.template.find('.item[id]').each(function () {
+        var id          =     $(this).attr('id').split('-')[1];
+
+        var _item       =     {
+          _id           :     id,
+          type          :     type,
+          subject       :     $(this).find('.item-subject').text(),
+          description   :     $(this).find('.item-description').text(),
+          image         :     $(this).find('.item-media img').data('image'),
+          references    :     [],
+          views         :     +$(this).data('views'),
+          promotions    :     +$(this).find('.promoted').text(),
+          related       :     {
+            Problem     :     +$(this).find('.related-count').text()
+          }
+        };
+
+        console.log('tYPE', panel.template.attr('id').split('-')[1])
+
+        if ( $(this).find('.item-reference a').attr('url') !== '#' ) {
+          _item.references[0] = { url: $(this).find('.item-reference a').attr('url') };
+          _item.references[0].title = $(this).find('.item-reference a').data('title');
+        }
+
+        var item        =     new Item(_item);
+
+        item.template   =     $(this);
+
+        item.render(app.domain.intercept(function onItemRendered (args) {
+          // ...code  
+        }));
+
+      });
+    }));
+
   });
 
 } ();
 
-},{"syn/js/Synapp":20,"syn/js/components/Panel":43,"syn/js/components/Profile":49,"syn/js/components/Sign":59}],2:[function(require,module,exports){
+},{"syn/js/Synapp":20,"syn/js/components/Panel":40,"syn/js/components/Sign":53}],2:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3088,7 +3133,7 @@ module.exports={
 
 } ();
 
-},{"domain":2,"events":3,"syn/js/providers/Cache":61,"syn/js/providers/Socket":67,"util":7}],21:[function(require,module,exports){
+},{"domain":2,"events":3,"syn/js/providers/Cache":54,"syn/js/providers/Socket":60,"util":7}],21:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -3165,7 +3210,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Creator/create":22,"syn/js/components/Creator/created":23,"syn/js/components/Creator/pack-item":24,"syn/js/components/Creator/render":25,"syn/js/components/Panel":43}],22:[function(require,module,exports){
+},{"syn/js/components/Creator/create":22,"syn/js/components/Creator/created":23,"syn/js/components/Creator/pack-item":24,"syn/js/components/Creator/render":25,"syn/js/components/Panel":40}],22:[function(require,module,exports){
 (function (process){
 ! function () {
   
@@ -3252,7 +3297,7 @@ module.exports={
 } ();
 
 }).call(this,require('_process'))
-},{"_process":5,"syn/js/components/Item":33,"syn/js/providers/Nav":64,"syn/js/providers/Stream":68}],23:[function(require,module,exports){
+},{"_process":5,"syn/js/components/Item":30,"syn/js/providers/Nav":57,"syn/js/providers/Stream":61}],23:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3287,7 +3332,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Item":33}],24:[function(require,module,exports){
+},{"syn/js/components/Item":30}],24:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -3470,159 +3515,7 @@ module.exports={
 
 } ();
 
-},{"promise":8,"syn/js/providers/Domain":62,"syn/js/providers/Form":63,"syn/js/providers/Upload":69,"syn/js/providers/YouTube":70}],26:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('syn/js/providers/Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Demographics (profile) {
-    this.template = $('#demographics');
-
-    this.template.data('demographics', this);
-
-    this.profile = profile;
-  }
-
-  Demographics.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.demographics-collapse');
-
-      case 'race':          return this.template.find('input.race');
-      case 'married':       return this.template.find('select.married');
-      case 'employment':    return this.template.find('select.employment');
-      case 'education':     return this.template.find('select.education');
-    }
-  };
-
-  Demographics.prototype.render = function () {
-
-    var demographics = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(demographics.find('expand'), demographics.template, function () {
-        if ( demographics.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Save race **/
-
-    this.find('race').on('change', function () {
-      var is_checked = $(this).is(':checked');
-
-      if ( is_checked ) {
-        app.socket.once('race added', function () {
-          console.log('race added', arguments);
-        });
-
-        app.socket.emit('add race', synapp.user, $(this).val());
-      }
-
-      else {
-        app.socket.once('race removed', function () {
-          console.log('race removed', arguments);
-        });
-
-        app.socket.emit('remove race', synapp.user, $(this).val());
-      }
-    });
-
-    /** Set marital status **/
-
-    this.find('married').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('marital status set', function () {
-          console.log('marital status set', arguments);
-        });
-
-        app.socket.emit('set marital status', synapp.user, $(this).val());
-      }
-    });
-
-    /** Set employment **/
-
-    this.find('employment').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('employment set', function () {
-          console.log('employment set', arguments);
-        });
-
-        app.socket.emit('set employment', synapp.user, $(this).val());
-      }
-    });
-
-    /** Set education **/
-
-    this.find('education').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('education set', function () {
-          console.log('education set', arguments);
-        });
-
-        app.socket.emit('set education', synapp.user, $(this).val());
-      }
-    });
-  };
-
-  Demographics.prototype.renderUser = function () {
-
-    var demographics = this;
-
-    if ( this.profile.user ) {
-
-      if ( this.profile.user.race && this.profile.user.race.length ) {
-        this.profile.user.race.forEach(function (race) {
-
-          demographics.find('race').each(function () {
-
-            if ( $(this).val() === race ) {
-              $(this).attr('checked', true);
-            }
-
-          });
-
-
-        });
-      }
-
-      if ( this.profile.user.married ) {
-        this.find('married').val(this.profile.user.married);
-      }
-
-      if ( this.profile.user.employment ) {
-        this.find('employment').val(this.profile.user.employment);
-      }
-
-      if ( this.profile.user.education ) {
-        this.find('education').val(this.profile.user.education);
-      }
-    }
-  };
-
-  module.exports = Demographics;
-
-} ();
-
-},{"syn/js/providers/Nav":64}],27:[function(require,module,exports){
+},{"promise":8,"syn/js/providers/Domain":55,"syn/js/providers/Form":56,"syn/js/providers/Upload":62,"syn/js/providers/YouTube":63}],26:[function(require,module,exports){
 ! function _DetailsComponent_ () {
 
   'use strict';
@@ -3855,7 +3748,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":64}],28:[function(require,module,exports){
+},{"syn/js/components/Edit":27,"syn/js/components/Item":30,"syn/js/providers/Nav":57}],27:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -4006,7 +3899,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Creator":21,"syn/js/components/Edit/save":29,"syn/js/components/Item":33,"syn/js/providers/Form":63,"syn/js/providers/Nav":64}],29:[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Edit/save":28,"syn/js/components/Item":30,"syn/js/providers/Form":56,"syn/js/providers/Nav":57}],28:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4064,7 +3957,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Item":33,"syn/js/providers/Nav":64}],30:[function(require,module,exports){
+},{"syn/js/components/Item":30,"syn/js/providers/Nav":57}],29:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4130,331 +4023,7 @@ module.exports={
 
 } ();
 
-},{"domain":2,"syn/js/providers/Form":63}],31:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('syn/js/providers/Nav');
-  var Upload = require('syn/js/providers/Upload');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Identity (profile) {
-    this.template = $('#identity');
-
-    this.profile = profile;
-
-    this.template.data('identity', this);
-  }
-
-  Identity.prototype.find = function (name) {
-    switch ( name ) {
-      case 'expand':
-        return this.template.find('.identity-collapse');
-
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'title':
-        return this.template.find('.item-title');
-
-      case 'description':
-        return this.template.find('.description');
-
-      case 'upload button':
-        return this.template.find('.upload-identity-picture');
-
-      case 'upload button pretty':
-        return this.template.find('.upload-image');
-
-      case 'first name':
-        return this.template.find('[name="first-name"]');
-
-      case 'middle name':
-        return this.template.find('[name="middle-name"]');
-
-      case 'last name':
-        return this.template.find('[name="last-name"]');
-
-      case 'image':
-        return this.template.find('img.user-image');
-
-      case 'citizenship':   return this.template.find('.citizenship');
-
-      case 'dob':           return this.template.find('.dob');
-
-      case 'gender':        return this.template.find('.gender');
-    }
-  };
-
-  Identity.prototype.render = require('syn/js/components/Identity/render');
-
-  /**
-   *  @method saveName
-   */
-
-  Identity.prototype.saveName = function () {
-    var name = {
-      first_name:   this.find('first name').val(),
-      middle_name:  this.find('middle name').val(),
-      last_name:    this.find('last name').val()
-    };
-
-    app.socket.emit('change user name', synapp.user, name);
-  };
-
-  /**
-   *  @method
-  */
-
-  Identity.prototype.renderUser = function () {
-
-    // User image
-
-    if ( this.user.image ) {
-      this.find('image').attr('src', this.user.image);
-    }
-
-    // First name
-
-    this.find('first name').val(this.user.first_name);
-
-    // Middle name
-
-    this.find('middle name').val(this.user.middle_name);
-
-    // Last name
-
-    this.find('last name').val(this.user.last_name);
-
-    // Date of birth
-
-    var dob = new Date(this.user.dob);
-
-    var dob_year = dob.getFullYear();
-    var dob_month = dob.getMonth() + 1;
-    var dob_day = dob.getDate() + 1;
-
-    if ( dob_month < 10 ) {
-      dob_month = "0" + dob_month;
-    }
-
-    if ( dob_day < 10 ) {
-      dob_day = "0" + dob_day;
-    }
-
-    this.find('dob').val([dob_year, dob_month, dob_day].join('-'));
-
-    // Gender
-
-    this.find('gender').val(this.user.gender);
-  };
-
-  /**
-   *  @method
-  */
-
-  Identity.prototype.renderCountries = function () {
-    var identity = this;
-
-    function addOption (country, index) {
-      var option = $('<option></option>');
-
-      option.val(country._id);
-
-      option.text(country.name);
-
-      if ( identity.profile.user && identity.profile.user.citizenship
-        && identity.profile.user.citizenship[index] === country._id ) {
-        option.attr('selected', true);
-      } 
-
-      return option;
-    }
-
-    this.find('citizenship').each(function (index) {
-
-      var select = $(this);
-
-      identity.profile.countries.forEach(function (country) {
-        if ( country.name === 'USA' ) {
-          select.append(addOption(country, index));
-        }
-      });
-
-      identity.profile.countries.forEach(function (country) {
-        if ( country.name !== 'USA' ) {
-          select.append(addOption(country, index));
-        }
-      });
-
-    });
-  };
-
-  module.exports = Identity;
-
-} ();
-
-},{"syn/js/components/Identity/render":32,"syn/js/providers/Nav":64,"syn/js/providers/Upload":69}],32:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Upload = require('syn/js/providers/Upload');
-  var Nav = require('syn/js/providers/Nav');
-
-  /**
-   *  @method     Identity.render
-   *  @return     null
-   */
-
-  function render () {
-    
-    var identity = this;
-
-    /** input[type=file] is hidden for cosmetic reasons
-          and is substituted visually by a button.
-        This snippet binds clicking button with clicking the input[type=file]
-    */
-
-    this.find('upload button pretty').on('click', function () {
-      identity.find('upload button').click();
-    });
-
-    /** Toggle arrow: expand/collapse identity */
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(identity.find('expand'), identity.template, function () {
-        if ( identity.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Write title */
-
-    this.find('title').text('Identity');
-
-    /** Write description */
-
-    this.find('description').text('This information is used to identify you and make sure that you are unique');
-
-    /** Remove references */
-
-    this.template.find('.item-references').remove();
-
-    /** Remove item buttons */
-
-    this.template.find('.box-buttons').remove();
-
-    /** Default user image */
-
-    this.find('image').attr('src', 'http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg');
-
-    new Upload(null, this.find('upload button'), this.template.find('.user-image-container'),
-      function (error, file) {
-        var stream = ss.createStream();
-
-        ss(app.socket).emit('upload image', stream,
-          { size: file.size, name: file.name });
-        
-        ss.createBlobReadStream(file).pipe(stream);
-
-        stream.on('end', function () {
-          // new_item.image = file.name;
-          app.socket.emit('save user image', synapp.user, file.name);
-
-          app.socket.once('saved user image', function (user) {
-            console.log('image saved', user);
-          });
-        });
-      });
-
-    // First name - save on change
-
-    this.find('first name').on('change', this.saveName.bind(this));
-
-    // Last name - save on change
-
-    this.find('last name').on('change', this.saveName.bind(this));
-
-    // Middle name - save on change
-
-    this.find('middle name').on('change', this.saveName.bind(this));
-
-    // Set citizenships (2 selects)
-
-    var citizenships = [
-      $(this.find('citizenship')[0]).val(),
-      $(this.find('citizenship')[1]).val()
-    ];
-
-    this.find('citizenship').each(function (index) {
-
-      var select = $(this);
-
-      select.on('change', function () {
-        if ( select.val() ) {
-          app.socket
-
-            .on('citizenship set', function () {
-              console.log('citizenship set', select.val(), index);
-            })
-
-            .emit('set citizenship', synapp.user, select.val(), index);
-        }
-      });
-
-    });
-
-    // Set birthdate
-
-    this.find('dob').on('change', function () {
-
-      app.socket
-
-        .on('birthdate set', function () {
-          console.log('birthdate set');
-        })
-
-        .emit('set birthdate', synapp.user, $(this).val());
-
-    });
-
-    // Set gender
-
-    this.find('gender').on('change', function () {
-
-      if ( $(this).val() ) {
-        app.socket
-
-          .on('gender set', function () {
-            console.log('gender set');
-          })
-
-          .emit('set gender', synapp.user, $(this).val());
-      }
-
-    });
-
-  }
-
-  module.exports = render;
-
-} ();
-
-},{"syn/js/providers/Nav":64,"syn/js/providers/Upload":69}],33:[function(require,module,exports){
+},{"domain":2,"syn/js/providers/Form":56}],30:[function(require,module,exports){
 /*
  *   ::    I   t   e   m     ::
  *
@@ -4513,7 +4082,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Item/find":34,"syn/js/components/Item/load":35,"syn/js/components/Item/media":36,"syn/js/components/Item/render":37}],34:[function(require,module,exports){
+},{"syn/js/components/Item/find":31,"syn/js/components/Item/load":32,"syn/js/components/Item/media":33,"syn/js/components/Item/render":34}],31:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4579,7 +4148,7 @@ module.exports={
 
 } ();
 
-},{"syn/components/selectors.json":19}],35:[function(require,module,exports){
+},{"syn/components/selectors.json":19}],32:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4618,7 +4187,7 @@ module.exports={
 
 } ();
 
-},{}],36:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4703,7 +4272,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/YouTube":70}],37:[function(require,module,exports){
+},{"syn/js/providers/YouTube":63}],34:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -4890,7 +4459,7 @@ module.exports={
 
 } ();
 
-},{"string":18,"syn/js/components/Details":27,"syn/js/components/Item/view/toggle-arrow":38,"syn/js/components/Item/view/toggle-details":39,"syn/js/components/Item/view/toggle-promote":40,"syn/js/components/Promote":50,"syn/js/components/Sign":59,"syn/js/providers/Nav":64,"syn/js/providers/ReadMore":65}],38:[function(require,module,exports){
+},{"string":18,"syn/js/components/Details":26,"syn/js/components/Item/view/toggle-arrow":35,"syn/js/components/Item/view/toggle-details":36,"syn/js/components/Item/view/toggle-promote":37,"syn/js/components/Promote":46,"syn/js/components/Sign":53,"syn/js/providers/Nav":57,"syn/js/providers/ReadMore":58}],35:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5038,7 +4607,7 @@ module.exports={
 
 } ();
 
-},{"../../Panel":43,"syn/js/components/Panel":43,"syn/js/providers/Nav":64}],39:[function(require,module,exports){
+},{"../../Panel":40,"syn/js/components/Panel":40,"syn/js/providers/Nav":57}],36:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5105,7 +4674,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":64}],40:[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],37:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5197,7 +4766,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Sign":59,"syn/js/providers/Nav":64}],41:[function(require,module,exports){
+},{"syn/js/components/Sign":53,"syn/js/providers/Nav":57}],38:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5280,7 +4849,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Form":63}],42:[function(require,module,exports){
+},{"syn/js/providers/Form":56}],39:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5362,7 +4931,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Form":63,"syn/js/providers/Nav":64}],43:[function(require,module,exports){
+},{"syn/js/providers/Form":56,"syn/js/providers/Nav":57}],40:[function(require,module,exports){
 ! function _PanelComponent_ () {
 
   'use strict';
@@ -5489,7 +5058,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Creator":21,"syn/js/components/Item":33,"syn/js/components/Panel/fill":44,"syn/js/components/Panel/load":45,"syn/js/components/Panel/pre-insert-item":46,"syn/js/components/Panel/render":47,"syn/js/components/Panel/to-json":48,"syn/js/components/Sign":59,"syn/js/providers/Nav":64,"syn/js/providers/Session":66}],44:[function(require,module,exports){
+},{"syn/js/components/Creator":21,"syn/js/components/Item":30,"syn/js/components/Panel/fill":41,"syn/js/components/Panel/load":42,"syn/js/components/Panel/pre-insert-item":43,"syn/js/components/Panel/render":44,"syn/js/components/Panel/to-json":45,"syn/js/components/Sign":53,"syn/js/providers/Nav":57,"syn/js/providers/Session":59}],41:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5547,7 +5116,7 @@ module.exports={
 
 } ();
 
-},{}],45:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5592,7 +5161,7 @@ module.exports={
 
 } ();
 
-},{"promise":8}],46:[function(require,module,exports){
+},{"promise":8}],43:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5652,7 +5221,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Item":33}],47:[function(require,module,exports){
+},{"syn/js/components/Item":30}],44:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5733,7 +5302,7 @@ module.exports={
 
 } ();
 
-},{"promise":8,"syn/js/components/Creator":21,"syn/js/providers/Domain":62}],48:[function(require,module,exports){
+},{"promise":8,"syn/js/components/Creator":21,"syn/js/providers/Domain":55}],45:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -5763,186 +5332,7 @@ module.exports={
 
 } ();
 
-},{}],49:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav               =   require('syn/js/providers/Nav');
-  var Identity          =   require('syn/js/components/Identity');
-  var Residence         =   require('syn/js/components/Residence');
-  var Demographics      =   require('syn/js/components/Demographics');
-  var Voter             =   require('syn/js/components/Voter');
-  var Public_Persona    =   require('syn/js/components/Public_Persona');
-
-  /**
-   *  @class      Profile
-   */
-
-  function Profile () {
-
-    /** Persistent this
-     *
-     *  @type           Profile
-    */
-
-    var profile         =   this;
-
-    /** DOM Container
-     *
-     *  @type           HTMLElement
-    */
-
-    this.template       =   $('.panel');
-
-    /** Local instance of Identity
-     *
-     *  @type           Identity
-    */
-
-    this.identity       =   new Identity(this);
-
-    /** Local instance of Residence
-     *
-     *  @type           Residence
-    */
-
-    this.residence      =   new Residence(this);
-
-    /** Local instance of Demographics
-     *
-     *  @type           Demographics
-    */
-
-    this.demographics   =   new Demographics(this);
-
-    /** Local instance of Voter
-     *
-     *  @type           Voter
-    */
-
-    this.voter          =   new Voter(this);
-
-    /** Local instance of Public_Persona
-     *
-     *  @type           Public_Persona
-    */
-
-    this.public_persona =   new Public_Persona(this);
-
-    /** Get User Info from socket
-     *
-     *  @type           Socket
-    */
-
-    app.socket
-      .once('got user info', function (user) {
-        console.log('got user info', user);
-        profile.user = user;
-
-        profile.renderUser();
-      })
-      .emit('get user info', synapp.user);
-
-    /** Get list of countries from socket
-     *
-     *  @type           Socket
-    */
-
-    app.socket
-      .once('got countries', function (countries) {
-        console.log('got countries', countries);
-        profile.countries = countries;
-
-        profile.identity.renderCountries();
-      })
-      .emit('get countries');
-  }
-
-  Profile.prototype.find = function (name) {
-    switch ( name ) {
-      case 'panel title':
-        return this.template.find('.panel-title');
-
-      case 'items section':
-        return this.template.find('.items .is-container.is-profile-section');
-
-      case 'panel load more':
-        return this.template.find('.loading-items');
-
-      case 'Identity':
-        return this.template.find('#identity');
-
-      case 'toggle creator':
-        return this.template.find('.toggle-creator');
-    }
-  };
-
-  Profile.prototype.render = function () {
-
-    var profile = this;
-
-    this.find('panel title').text('Profile');
-
-    this.find('toggle creator').remove();
-
-    this.find('panel load more').find('i,span').hide();
-
-    var togglePanel = $('<i class="fa cursor-pointer fa-arrow-up"></i>');
-
-    togglePanel.on('click', function () {
-
-      var arrow = $(this);
-
-      Nav.toggle(profile.find('items section'), null, function () {
-        if ( profile.find('items section').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    Nav.show(this.find('items section'));
-
-    this.find('panel load more').append(togglePanel);
-
-    this.find('Identity').attr('id', 'identity');
-
-    this.identity.render();
-
-    this.residence.render();
-
-    this.demographics.render();
-
-    this.voter.render();
-
-    this.public_persona.render();
-
-  };
-
-  Profile.prototype.renderUser = function () {
-    var profile = this;
-
-    this.find('Identity').data('identity').user = this.user;
-
-    this.find('Identity').data('identity').renderUser();
-
-    this.residence.renderUser();
-
-    this.demographics.renderUser();
-
-    this.voter.renderUser();
-
-    this.public_persona.renderUser();
-  };
-
-  module.exports = Profile;
-
-} ();
-
-},{"syn/js/components/Demographics":26,"syn/js/components/Identity":31,"syn/js/components/Public_Persona":57,"syn/js/components/Residence":58,"syn/js/components/Voter":60,"syn/js/providers/Nav":64}],50:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -6095,7 +5485,7 @@ module.exports={
 
 } ();
 
-},{"events":3,"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/components/Promote/find":51,"syn/js/components/Promote/finish":52,"syn/js/components/Promote/get":53,"syn/js/components/Promote/render":55,"syn/js/components/Promote/render-item":54,"syn/js/components/Promote/save":56,"syn/js/providers/Nav":64}],51:[function(require,module,exports){
+},{"events":3,"syn/js/components/Edit":27,"syn/js/components/Item":30,"syn/js/components/Promote/find":47,"syn/js/components/Promote/finish":48,"syn/js/components/Promote/get":49,"syn/js/components/Promote/render":51,"syn/js/components/Promote/render-item":50,"syn/js/components/Promote/save":52,"syn/js/providers/Nav":57}],47:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6152,7 +5542,7 @@ module.exports={
 
 } ();
 
-},{"string":18,"syn/components/selectors.json":19}],52:[function(require,module,exports){
+},{"string":18,"syn/components/selectors.json":19}],48:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6197,7 +5587,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":64}],53:[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],49:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6254,7 +5644,7 @@ module.exports={
 
 } ();
 
-},{}],54:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6455,7 +5845,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Edit":28,"syn/js/components/Item":33,"syn/js/providers/Nav":64}],55:[function(require,module,exports){
+},{"syn/js/components/Edit":27,"syn/js/components/Item":30,"syn/js/providers/Nav":57}],51:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6527,7 +5917,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Nav":64}],56:[function(require,module,exports){
+},{"syn/js/providers/Nav":57}],52:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -6585,177 +5975,7 @@ module.exports={
 
 } ();
 
-},{}],57:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('syn/js/providers/Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Public_Persona (profile) {
-    this.template = $('#public_persona');
-
-    this.template.data('public_persona', this);
-
-    this.profile = profile;
-  }
-
-  Public_Persona.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.public_persona-collapse');
-    }
-  };
-
-  Public_Persona.prototype.render = function () {
-
-    var public_persona = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(public_persona.find('expand'), public_persona.template, function () {
-        if ( public_persona.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-  };
-
-  Public_Persona.prototype.renderUser = function () {
-
-    var public_persona = this;
-
-    if ( this.profile.user ) {
-
-     
-    }
-  };
-
-  module.exports = Public_Persona;
-
-} ();
-
-},{"syn/js/providers/Nav":64}],58:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('syn/js/providers/Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Residence (profile) {
-    this.template = $('#residence');
-
-    this.template.data('residence', this);
-
-    this.profile = profile;
-  }
-
-  Residence.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
-
-      case 'expand':
-        return this.template.find('.residence-collapse');
-
-      case 'validate gps button':
-        return this.template.find('.validate-gps');
-
-      case 'not yet validated':
-        return this.template.find('.not-yet-validated');
-
-      case 'is validated':
-        return this.template.find('.is-validated');
-
-      case 'validated moment':
-        return this.template.find('.validated-moment');
-    }
-  };
-
-  Residence.prototype.render = function () {
-
-    var residence = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(residence.find('expand'), residence.template, function () {
-        if ( residence.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    // Validate GPS button
-
-    this.find('validate gps button').on('click', function () {
-      navigator.geolocation.watchPosition(function(position) {
-
-        console.log('location');
-
-        app.socket.emit('validate gps', synapp.user, position.coords.longitude, position.coords.latitude);
-
-        app.socket.once('validated gps', function () {
-          console.log('validated');
-        });
-      });
-    });
-  };
-
-  Residence.prototype.renderUser = function () {
-
-    var residence = this;
-
-    if ( this.profile.user ) {
-
-      // GPS
-
-      if ( this.profile.user.gps ) {
-        this.find('not yet validated').hide();
-        this.find('is validated').removeClass('hide').show();
-        this.find('validated moment').text(function () {
-          var date = new Date(residence.profile.user['gps validated']);
-          return [(date.getMonth() + 1 ), (date.getDay() + 1), date.getFullYear()].join('/');
-        });
-      }
-
-      // NO GPS
-
-      else {
-        this.find('validate gps button').attr('disabled', false);
-      }
-    }
-  };
-
-  module.exports = Residence;
-
-} ();
-
-},{"syn/js/providers/Nav":64}],59:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 /*
  *  ******************************************************
  *  ******************************************************
@@ -6938,107 +6158,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/components/Forgot-Password":30,"syn/js/components/Join":41,"syn/js/components/Login":42,"syn/js/providers/Nav":64}],60:[function(require,module,exports){
-! function () {
-  
-  'use strict';
-
-  var Nav = require('syn/js/providers/Nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Voter (profile) {
-    this.template = $('#voter');
-
-    this.template.data('voter', this);
-
-    this.profile = profile;
-  }
-
-  Voter.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':    return this.template.find('.toggle-arrow');
-
-      case 'expand':          return this.template.find('.voter-collapse');
-
-      case 'registered':      return this.template.find('.is-registered-voter');
-
-      case 'party':           return this.template.find('.party');
-    }
-  };
-
-  Voter.prototype.render = function () {
-
-    var voter = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(voter.find('expand'), voter.template, function () {
-        if ( voter.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Save registered voter */
-
-    this.find('registered').on('change', function () {
-
-      app.socket
-
-        .on('registered voter set', function () {
-          console.log('registered voter set');
-        })
-
-        .emit('set registered voter', synapp.user, $(this).is(':checked'));
-
-    });
-
-    /** Save political party */
-
-    this.find('party').on('change', function () {
-
-      if ( $(this).val() ) {
-        app.socket
-
-          .on('party set', function () {
-            console.log('party set');
-          })
-
-          .emit('set party', synapp.user, $(this).val());
-      }
-
-    });
-
-  };
-
-  Voter.prototype.renderUser = function () {
-
-    var voter = this;
-
-    if ( this.profile.user ) {
-
-      this.find('registered').attr('checked', this.profile.user.registered_voter);
-
-      this.find('party').val(this.profile.user.party);
-     
-    }
-  };
-
-  module.exports = Voter;
-
-} ();
-
-},{"syn/js/providers/Nav":64}],61:[function(require,module,exports){
+},{"syn/js/components/Forgot-Password":29,"syn/js/components/Join":38,"syn/js/components/Login":39,"syn/js/providers/Nav":57}],54:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7059,7 +6179,7 @@ module.exports={
 
 } ();
 
-},{}],62:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7119,7 +6239,7 @@ module.exports={
 
 } ();
 
-},{"domain":2}],63:[function(require,module,exports){
+},{"domain":2}],56:[function(require,module,exports){
 /*
  *  F   O   R   M
  *  *****************
@@ -7217,7 +6337,7 @@ module.exports={
 
 } ();
 
-},{"syn/js/providers/Domain":62}],64:[function(require,module,exports){
+},{"syn/js/providers/Domain":55}],57:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -7578,7 +6698,7 @@ module.exports={
 } ();
 
 }).call(this,require('_process'))
-},{"_process":5,"domain":2,"events":3}],65:[function(require,module,exports){
+},{"_process":5,"domain":2,"events":3}],58:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7745,7 +6865,7 @@ module.exports={
 
 } ();
 
-},{}],66:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7760,7 +6880,7 @@ module.exports={
 
 } ();
 
-},{}],67:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7812,7 +6932,7 @@ module.exports={
 
 } ();
 
-},{}],68:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 ! function () {
   
   'use strict';
@@ -7851,7 +6971,7 @@ module.exports={
 
 } ();
 
-},{}],69:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 ! function () {
 
   'use strict';
@@ -7937,7 +7057,7 @@ module.exports={
 
 } ();
 
-},{}],70:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 ! function () {
 
   'use strict';

@@ -1,33 +1,17 @@
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  DETAILS
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-! function () {
+! function _DetailsComponent_ () {
 
   'use strict';
 
-  var __Nav     =   require('syn/js/providers/Nav');
-  var Edit      =   require('syn/js/components/Edit');
+  var EditComponent     =   require('syn/js/components/Edit');
+
+  var NavProvider       =   require('syn/js/providers/Nav');
 
   /**
-   *  @class Details
-   *  @arg {Item} item
+   *  @class            DetailsComponent
+   *  @arg              {ItemComponent} item
    */
 
-  function Details(item) {
+  function DetailsComponent(item) {
 
     if ( ! app ) {
       throw new Error('Missing app');
@@ -51,13 +35,13 @@
   }
 
   /**
-   *  @method find
-   *  @description DOM selectors abstractions
-   *  @return null
-   *  @arg {string} name
+   *  @method           
+   *  @description      DOM selectors abstractions
+   *  @return           null
+   *  @arg              {string} name
    */
 
-  Details.prototype.find = function (name) {
+  DetailsComponent.prototype.find = function (name) {
     switch ( name ) {
       case 'promoted bar':
         return this.template.find('.progress');
@@ -74,42 +58,40 @@
   };
 
   /**
-   *  @method render
-   *  @description DOM manipulation
-   *  @arg {function} cb
+   *  @method
+   *  @description          DOM manipulation
+   *  @arg                  {function} cb
    */
 
-  Details.prototype.render = function (cb) {
+  DetailsComponent.prototype.render = function (cb) {
     var self = this;
 
     var item = self.item.item;
 
     self.find('promoted bar')
-      // .css('width', Math.floor(item.promotions * 100 / item.views) + '%')
-      // .text(Math.floor(item.promotions * 100 / item.views) + '%')
       .goalProgress({
-        goalAmount: 100,
-        currentAmount: Math.floor(item.promotions * 100 / item.views),
-        textBefore: '',
-        textAfter: '%'
+        goalAmount        :   100,
+        currentAmount     :   Math.floor(item.promotions * 100 / item.views),
+        textBefore        :   '',
+        textAfter         :   '%'
       });
 
     self.find('toggle edit and go again').on('click', function () {
-      __Nav.unreveal(self.template, self.item.template, app.domain.intercept(function () {
+      NavProvider.unreveal(self.template, self.item.template, app.domain.intercept(function () {
         if ( self.item.find('editor').find('form').length ) {
           console.warn('already loaded')
         }
 
         else {
-          var edit = new Edit(self.item);
+          var edit = new EditComponent(self.item);
             
           edit.get(app.domain.intercept(function (template) {
 
             self.item.find('editor').find('.is-section').append(template);
 
-            __Nav.reveal(self.item.find('editor'), self.item.template,
+            NavProvider.reveal(self.item.find('editor'), self.item.template,
               app.domain.intercept(function () {
-                __Nav.show(template, app.domain.intercept(function () {
+                NavProvider.show(template, app.domain.intercept(function () {
                   edit.render();
                 }));
               }));
@@ -120,7 +102,7 @@
       }));
     });
 
-    if ( synapp.user ) {
+    if ( app.socket.synuser ) {
       $('.is-in').removeClass('is-in');
     }
 
@@ -130,18 +112,16 @@
   };
 
   /**
-   *  @method votes
-   *  @description Display votes using c3.js
-   *  @arg {object} criteria
-   *  @arg {HTMLElement} svg
+   *  @method
+   *  @description    Display votes using c3.js
+   *  @arg            {object} criteria
+   *  @arg            {HTMLElement} svg
    */
 
-  Details.prototype.votes = function (criteria, svg) {
+  DetailsComponent.prototype.votes = function (criteria, svg) {
     var self = this;
 
     setTimeout(function () {
-
-
       var vote = self.details.votes[criteria._id];
 
       svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
@@ -150,12 +130,12 @@
 
       // If no votes, show nothing
 
-      if ( ! vote ) {
-        vote = {
-          values: {
-            '-1': 0,
-            '0': 0,
-            '1': 0
+      if ( ! vote )   {
+        vote        = {
+          values    : {
+            '-1'    : 0,
+            '0'     : 0,
+            '1'     : 0
           },
           total: 0
         }
@@ -175,54 +155,46 @@
       });
 
       var chart = c3.generate({
-        bindto: '#' + svg.attr('id'),
-
-        data: {
-          x: 'x',
-          columns: [['x', -1, 0, 1], columns],
-          type: 'bar'
+        bindto        :   '#' + svg.attr('id'),
+        data          :   {
+          x           :   'x',
+          columns     :   [['x', -1, 0, 1], columns],
+          type        :   'bar'
         },
-
-        grid: {
-          x: {
-            lines: 3
+        grid          :   {
+          x           :   {
+            lines     :   3
           }
         },
-        
-        axis: {
-          x: {},
-          
-          y: {
-            max: 90,
-
-            show: false,
-
-            tick: {
-              count: 5,
-
-              format: function (y) {
+        axis          :   {
+          x           :   {},
+          y           :   {
+            max       :   90,
+            show      :   false,
+            tick      :   {
+              count   :   5,
+              format  :   function (y) {
                 return y;
               }
             }
           }
         },
-
-        size: {
-          height: 80
+        size          :   {
+          height      :   80
         },
-
-        bar: {
-          width: $(window).width() / 5
+        bar           :   {
+          width       :   $(window).width() / 5
         }
       });
-      }, 250);
+    
+    }, 250);
   };
 
   /**
    *
    */
 
-  Details.prototype.get = function () {
+  DetailsComponent.prototype.get = function () {
 
     var self = this;
 
@@ -254,6 +226,6 @@
     });
   };
 
-  module.exports = Details;
+  module.exports = DetailsComponent;
 
 } ();
