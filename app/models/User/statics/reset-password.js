@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var encrypt = require('./encrypt-password');
+  var encrypt = require('syn/models/User/statics/encrypt-password');
 
   var di = require('syn/lib/util/di/domain');
 

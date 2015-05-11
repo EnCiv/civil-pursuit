@@ -10,7 +10,7 @@
 
     before ( function () {
 
-      di = require('syn/lib/util/di');
+      di = require('syn/lib/util/DI');
 
     } );
 

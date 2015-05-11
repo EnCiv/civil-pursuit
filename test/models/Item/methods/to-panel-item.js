@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var di = require('syn/lib/util/di');
+  var di = require('syn/lib/util/DI');
   var fulfill = require('syn/lib/util/di/domain');
 
   var deps = [
