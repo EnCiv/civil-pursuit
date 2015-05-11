@@ -15,7 +15,7 @@
   var deployMessage = process.argv[2];
 
   var tests = [
-    { name: 'gulp build-prod' },
+    { name: 'app/bin/build.js' },
 
     { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 1, 8792, 7182] },
 
@@ -29,39 +29,6 @@
     { name: 'mocha test/models/Item/Item test/models/Item/methods test/models/Item/statics test/models/Item/pre' },
     
     { name: 'mocha test/models/User/statics/disposable'},
-
-    // { name: [test, 'test/lib'].join(' ') },
-
-    // { name: [test, 'test/models/User'].join(' ') },
-    // { name: [test, 'test/models/Config'].join(' ') },
-    // { name: [test, 'test/models/Country'].join(' ') },
-    // { name: [test, 'test/models/Error'].join(' ') },
-    // { name: [test, 'test/models/Feedback'].join(' ') },
-    // { name: [test, 'test/models/Criteria'].join(' ') },
-    // { name: [test, 'test/models/Vote'].join(' ') },
-    // { name: [test, 'test/models/Type'].join(' ') },
-    // { name: [test, 'test/models/Item/Item.js'].join(' ') },
-    // { name: [test, 'test/models/Item/statics'].join(' ') },
-    // { name: [test, 'test/models/Item/methods'].join(' ') },
-    
-    // { name: [test, 'models/test/Item'].join(' ') },
-    
-    // { name: [test, 'io/add-view'].join(' ') },
-    // { name: [test, 'io/promote'].join(' ') },
-    // { name: [test, 'io/add-race'].join(' ') },
-    // { name: [test, 'io/remove-race'].join(' ') },
-    // { name: [test, 'io/set-marital-status'].join(' ') },
-    // { name: [test, 'io/change-user-name'].join(' ') },
-    // { name: [test, 'io/change-user-name'].join(' ') },
-    // { name: [test, 'io/set-citizenship'].join(' ') },
-    // { name: [test, 'io/set-birthdate'].join(' ') },
-    // { name: [test, 'io/set-gender'].join(' ') },
-    // { name: [test, 'io/set-registered-voter'].join(' ') },
-    // { name: [test, 'io/set-party'].join(' ') },
-    
-    // { name: [test, 'web/login'].join(' ') },
-    // { name: [test, 'web/reference-opens-in-a-new-window'].join(' ') },
-    // { name: [test, 'web/item-image-display'].join(' ') },
 
     { name: 'mocha test/web/landing-page' },
     { name: 'mocha test/web/terms-of-service' },

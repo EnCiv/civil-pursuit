@@ -5,8 +5,8 @@
 
   require('colors');
 
-  var symlink       =   require('../lib/symlink');
-  var httpServer    =   require('../lib/http-server');
+  var symlink       =   require('../lib/app/symlink');
+  var httpServer    =   require('../server');
   var migrations    =   require('../lib/db/migrate.js');
   var async         =   require('async');
 

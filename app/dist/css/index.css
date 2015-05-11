@@ -4484,6 +4484,163 @@ a:hover {
   display: block;
   margin: auto;
 }
+textarea {
+  width: calc(99%);
+  min-height: 120px;
+  overflow: hidden !important;
+  resize: none;
+  transition: 0.05s;
+  -moz-transition: 0.05s;
+  -webkit-transition: 0.05s;
+  -o-transition: 0.05s;
+}
+input.danger,
+textarea.danger {
+  color: red !important;
+  border: 1px solid red !important;
+}
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+  border: 1px solid #999;
+  border-radius: 1px;
+  padding: .5em;
+}
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="date"]:hover,
+input[type="datetime"]:hover,
+input[type="datetime-local"]:hover,
+input[type="month"]:hover,
+input[type="week"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+input[type="search"]:hover,
+input[type="tel"]:hover,
+input[type="time"]:hover,
+input[type="url"]:hover,
+textarea:hover {
+  background: #eee;
+}
+input[type="text"].block,
+input[type="password"].block,
+input[type="date"].block,
+input[type="datetime"].block,
+input[type="datetime-local"].block,
+input[type="month"].block,
+input[type="week"].block,
+input[type="email"].block,
+input[type="number"].block,
+input[type="search"].block,
+input[type="tel"].block,
+input[type="time"].block,
+input[type="url"].block,
+textarea.block {
+  width: calc(98%);
+}
+input[type="text"].error,
+input[type="password"].error,
+input[type="date"].error,
+input[type="datetime"].error,
+input[type="datetime-local"].error,
+input[type="month"].error,
+input[type="week"].error,
+input[type="email"].error,
+input[type="number"].error,
+input[type="search"].error,
+input[type="tel"].error,
+input[type="time"].error,
+input[type="url"].error,
+textarea.error {
+  border-color: red;
+  background: yellow;
+}
+input[type="text"].medium,
+input[type="password"].medium,
+input[type="date"].medium,
+input[type="datetime"].medium,
+input[type="datetime-local"].medium,
+input[type="month"].medium,
+input[type="week"].medium,
+input[type="email"].medium,
+input[type="number"].medium,
+input[type="search"].medium,
+input[type="tel"].medium,
+input[type="time"].medium,
+input[type="url"].medium,
+textarea.medium {
+  font-size: 125%;
+  border-width: 2px;
+  padding: 1em;
+}
+input[type="text"].medium.block,
+input[type="password"].medium.block,
+input[type="date"].medium.block,
+input[type="datetime"].medium.block,
+input[type="datetime-local"].medium.block,
+input[type="month"].medium.block,
+input[type="week"].medium.block,
+input[type="email"].medium.block,
+input[type="number"].medium.block,
+input[type="search"].medium.block,
+input[type="tel"].medium.block,
+input[type="time"].medium.block,
+input[type="url"].medium.block,
+textarea.medium.block {
+  width: calc(97.5%);
+  padding: 1em 0.5em;
+}
+select.medium {
+  font-size: 125%;
+  border-width: 2px;
+  padding: 1em;
+}
+select.medium.block {
+  width: calc(97.5%);
+  padding: 1em 0.5em;
+}
+select.block {
+  width: calc(98%);
+}
+.form-group label {
+  font-weight: bold;
+}
+.form-group input {
+  width: calc(99%);
+}
+.input-group {
+  clear: both;
+  height: 100%;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  width: 100%;
+  display: inline-block;
+  vertical-align: bottom;
+}
+.input-group.column-gutter .column {
+  border: 2px solid red;
+}
+.input-group input:not(:first-child) {
+  border-left: none;
+}
+@media (min-width: 768px) {
+  .input-group-tablet input:not(:first-child) {
+    border-left: none;
+  }
+}
 button,
 .button {
   display: inline-block;
@@ -4604,163 +4761,6 @@ a.button {
 .button-group-2 > button,
 .button-group-2 > .button {
   width: 50%;
-}
-textarea {
-  width: calc(99%);
-  min-height: 120px;
-  overflow: hidden !important;
-  resize: none;
-  transition: 0.05s;
-  -moz-transition: 0.05s;
-  -webkit-transition: 0.05s;
-  -o-transition: 0.05s;
-}
-input.danger,
-textarea.danger {
-  color: red !important;
-  border: 1px solid #ff0000 !important;
-}
-input[type="text"],
-input[type="password"],
-input[type="date"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="month"],
-input[type="week"],
-input[type="email"],
-input[type="number"],
-input[type="search"],
-input[type="tel"],
-input[type="time"],
-input[type="url"],
-textarea {
-  border: 1px solid #999;
-  border-radius: 1px;
-  padding: .5em;
-}
-input[type="text"]:hover,
-input[type="password"]:hover,
-input[type="date"]:hover,
-input[type="datetime"]:hover,
-input[type="datetime-local"]:hover,
-input[type="month"]:hover,
-input[type="week"]:hover,
-input[type="email"]:hover,
-input[type="number"]:hover,
-input[type="search"]:hover,
-input[type="tel"]:hover,
-input[type="time"]:hover,
-input[type="url"]:hover,
-textarea:hover {
-  background: #eee;
-}
-input[type="text"].block,
-input[type="password"].block,
-input[type="date"].block,
-input[type="datetime"].block,
-input[type="datetime-local"].block,
-input[type="month"].block,
-input[type="week"].block,
-input[type="email"].block,
-input[type="number"].block,
-input[type="search"].block,
-input[type="tel"].block,
-input[type="time"].block,
-input[type="url"].block,
-textarea.block {
-  width: calc(98%);
-}
-input[type="text"].error,
-input[type="password"].error,
-input[type="date"].error,
-input[type="datetime"].error,
-input[type="datetime-local"].error,
-input[type="month"].error,
-input[type="week"].error,
-input[type="email"].error,
-input[type="number"].error,
-input[type="search"].error,
-input[type="tel"].error,
-input[type="time"].error,
-input[type="url"].error,
-textarea.error {
-  border-color: red;
-  background: #ffff00;
-}
-input[type="text"].medium,
-input[type="password"].medium,
-input[type="date"].medium,
-input[type="datetime"].medium,
-input[type="datetime-local"].medium,
-input[type="month"].medium,
-input[type="week"].medium,
-input[type="email"].medium,
-input[type="number"].medium,
-input[type="search"].medium,
-input[type="tel"].medium,
-input[type="time"].medium,
-input[type="url"].medium,
-textarea.medium {
-  font-size: 125%;
-  border-width: 2px;
-  padding: 1em;
-}
-input[type="text"].medium.block,
-input[type="password"].medium.block,
-input[type="date"].medium.block,
-input[type="datetime"].medium.block,
-input[type="datetime-local"].medium.block,
-input[type="month"].medium.block,
-input[type="week"].medium.block,
-input[type="email"].medium.block,
-input[type="number"].medium.block,
-input[type="search"].medium.block,
-input[type="tel"].medium.block,
-input[type="time"].medium.block,
-input[type="url"].medium.block,
-textarea.medium.block {
-  width: calc(97.5%);
-  padding: 1em 0.5em;
-}
-select.medium {
-  font-size: 125%;
-  border-width: 2px;
-  padding: 1em;
-}
-select.medium.block {
-  width: calc(97.5%);
-  padding: 1em 0.5em;
-}
-select.block {
-  width: calc(98%);
-}
-.form-group label {
-  font-weight: bold;
-}
-.form-group input {
-  width: calc(99%);
-}
-.input-group {
-  clear: both;
-  height: 100%;
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  overflow: hidden;
-  width: 100%;
-  display: inline-block;
-  vertical-align: bottom;
-}
-.input-group.column-gutter .column {
-  border: 2px solid red;
-}
-.input-group input:not(:first-child) {
-  border-left: none;
-}
-@media (min-width: 768px) {
-  .input-group-tablet input:not(:first-child) {
-    border-left: none;
-  }
 }
 .topbar {
   /** Position */
@@ -5131,13 +5131,9 @@ select.block {
   padding: 18px;
   border-radius: 4px;
 }
-/** ____________________________________________________________________________
-
-          FOOTER
-    ============================================================================
-**/
 footer {
   text-align: center;
+  color: #337ab7;
 }
 .login-modal {
   font-size: 1.5rem;

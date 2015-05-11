@@ -6,12 +6,13 @@
 
     var app           =   this;
     /** @type             Function */
-    var exportsLocal  =   require('syn/lib/util/export-locals');
+    var exportsLocal  =   require('syn/lib/app/export-locals');
     /** @type             Object */
     var locals        =   exportsLocal(app, req, res);
+    /** @type             Html5 */
     var Html5         =   require('syn/lib/html5');
     /** @type             Function */
-    var page          =   require('syn/views/pages/' + locals.page);
+    var page          =   require('syn/pages/' + locals.page + '/View');
     /** @type             html5.Document */
     var view          =   page(locals);
     /** @type             Boolean */

@@ -5,8 +5,8 @@
 
   require('colors');
 
-  var symlink       =   require('../lib/symlink');
-  var httpServer    =   require('../lib/http-server');
+  var symlink       =   require('../lib/app/symlink');
+  var httpServer    =   require('../server');
 
   require('mongoose').connect(process.env.MONGOHQ_URL);
 

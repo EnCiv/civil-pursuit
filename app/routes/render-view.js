@@ -3,9 +3,16 @@
   'use strict';
 
   function getView (req, res, next) {
-    var Html5 = require('syn/lib/html5');
+    var app = this;
 
-    var view = require('syn/views/' + req.params.view)(res.locals.pack());
+    var Html5 = require('syn/lib/html5');
+    /** @type             Function */
+    var exportsLocal  =   require('syn/lib/app/export-locals');
+    /** @type             Object */
+    var locals        =   exportsLocal(app, req, res);
+
+    var view = require('syn/components/' + req.params.component + '/View')(
+      locals);
 
     if ( view instanceof Html5.Elements || view instanceof Html5.Element ) {
       res.send(Html5.toHTML(view));

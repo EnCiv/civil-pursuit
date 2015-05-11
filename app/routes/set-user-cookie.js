@@ -4,7 +4,7 @@
 
   
 
-  var config = require('syn/config');
+  var config = require('syn/config.json');
 
   function setCookieUser (req, res, next) {
     res.cookie('synuser',
