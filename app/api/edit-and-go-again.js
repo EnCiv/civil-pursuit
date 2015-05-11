@@ -8,11 +8,9 @@
 
     var socket = this;
 
-    require('syn/lib/domain')(
+    var domainRun = require('syn/lib/util/domain-run');
 
-      function (error) {
-        socket.app.arte.emit('error', error);
-      },
+    domainRun(
 
       function (domain) {
 
@@ -21,6 +19,10 @@
             socket.emit('edited item', item);
           }));
 
+      },
+
+      function (error) {
+        socket.app.arte.emit('error', error);
       }
 
     );

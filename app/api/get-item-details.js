@@ -2,23 +2,23 @@
 
   'use strict';
 
-  
-
   function getItemDetails (event, id) {
 
     var socket = this;
 
-    require('syn/lib/domain')(
+    var domainRun = require('syn/lib/util/domain-run');
 
-      function (error) {
-        socket.app.arte.emit('error', error);
-      },
+    domainRun('syn/lib/domain')(
 
       function (domain) {
         require('syn/models/Item')
           .getDetails(id, domain.intercept(function (details) {
             socket.ok(event, details);  
           }));
+      },
+
+      function (error) {
+        socket.app.arte.emit('error', error);
       }
 
     );

@@ -5446,15 +5446,11 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
     var comp = this;
 
-    function _find (selector) {
-      return selector;
-    }
-
     switch ( name ) {
 
       case 'item subject':        return this.template.find('.subject.' + more +'-item h4');
 
-      case 'item description':    return _find('Promote ' + string(more).capitalize().s + ' Item Description');
+      case 'item description':    return this.template.find('.description.' + more +'-item');;
 
       case 'cursor':                  return this.template.find('.cursor');
 
@@ -5553,9 +5549,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
       // Get evaluation via sockets
 
-      app.socket.emit('get evaluation', this.item.item._id);
-
-      app.socket.once('got evaluation', function (evaluation) {
+      app.socket.publish('get evaluation', this.item.item._id, function (evaluation) {
         console.info('got evaluation', evaluation);
 
         promote.evaluation = evaluation;

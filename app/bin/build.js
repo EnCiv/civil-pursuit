@@ -85,7 +85,7 @@
   }
 
   async.parallel([
-    // indexCss,
+    indexCss,
     browserifyPageControllers,
     uglifyPageControllers
   ], function () {

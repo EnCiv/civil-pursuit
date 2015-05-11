@@ -9,17 +9,19 @@
     console.log('++++++++++++++++++++++++++++')
     var socket = this;
 
-    require('syn/lib/domain')(
+    var domainRun = require('syn/lib/util/domain-run');
 
-      function (error) {
-        socket.app.arte.emit('error', error);
-      },
+    domainRun(
 
       function (domain) {
         require('syn/models/Item')
           .evaluate(item_id, domain.intercept(function (evaluation) {
-            socket.emit('got evaluation', evaluation);
+            socket.ok(event, evaluation);
           }));
+      },
+
+      function (error) {
+        socket.app.arte.emit('error', error);
       }
 
     );

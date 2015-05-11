@@ -6,11 +6,9 @@
 
     var socket = this;
 
-    require('syn/lib/domain')(
+    var domainRun = require('syn/lib/util/domain-run');
 
-      function (error) {
-        socket.app.arte.emit('error', error);
-      },
+    domainRun(
 
       function (domain) {
         item.type = item.type._id;
@@ -22,6 +20,10 @@
               socket.ok(event, item);
             }));
           }));
+      },
+
+      function (error) {
+        socket.app.arte.emit('error', error);
       }
 
     );

@@ -5,11 +5,9 @@
   function validateGPS (user_id, lng, lat) {
     var socket = this;
 
-    require('syn/lib/domain')(
+    var domainRun = require('syn/lib/util/domain-run');
 
-      function (error) {
-        socket.app.arte.emit('error', error);
-      },
+    domainRun(
 
       function (domain) {
         require('syn/models/User').update({ _id: user_id },
@@ -21,6 +19,10 @@
           domain.intercept(function () {
             socket.emit('validated gps');
           }));
+      },
+
+      function (error) {
+        socket.app.arte.emit('error', error);
       }
     );
   }

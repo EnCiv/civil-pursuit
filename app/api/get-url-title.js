@@ -8,16 +8,18 @@
 
     var socket = this;
 
-    require('syn/lib/domain')(
+    var domainRun = require('syn/lib/util/domain-run');
 
-      function (error) {
-        socket.app.arte.emit('error', error);
-      },
+    domainRun(
 
       function (domain) {
         require('syn/lib/util/get-url-title')(url, domain.intercept(function (title) {
           socket.emit('got url title', url);
         }));
+      },
+
+      function (error) {
+        socket.app.arte.emit('error', error);
       }
 
     );

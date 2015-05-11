@@ -13,7 +13,7 @@
 
       case 'item subject':        return this.template.find('.subject.' + more +'-item h4');
 
-      case 'item description':    return _find('Promote ' + string(more).capitalize().s + ' Item Description');
+      case 'item description':    return this.template.find('.description.' + more +'-item');;
 
       case 'cursor':                  return this.template.find('.cursor');
 
