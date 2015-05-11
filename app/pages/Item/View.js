@@ -2,8 +2,8 @@
   
   'use strict';
 
-  var PanelView   =   require('syn/views/Panel');
-  var ItemView    =   require('syn/views/Item');
+  var PanelView   =   require('syn/components/Panel/View');
+  var ItemView    =   require('syn/components/Item/View');
 
   function ItemViewPage (locals) {
 
