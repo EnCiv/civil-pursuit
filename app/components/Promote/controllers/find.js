@@ -9,10 +9,6 @@
 
     var comp = this;
 
-    function _find (selector) {
-      return selector;
-    }
-
     switch ( name ) {
 
       case 'item subject':        return this.template.find('.subject.' + more +'-item h4');
