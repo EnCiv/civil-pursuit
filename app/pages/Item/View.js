@@ -7,7 +7,7 @@
 
   function ItemViewPage (locals) {
 
-    var Layout    =   require('syn/views/Layout')(locals);
+    var Layout    =   require('syn/components/Layout/View')(locals);
 
     var panel     =   PanelView(locals);
 

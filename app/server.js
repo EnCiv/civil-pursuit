@@ -209,7 +209,7 @@
         
         function notFound (req, res, next) {
           res.status(404);
-          req.page = 'NotFound';
+          req.page = 'not-found';
           next();
         },
 

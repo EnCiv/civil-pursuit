@@ -26,7 +26,7 @@
       return emitter;
     }
 
-    var Layout = require('syn/views/Layout')(locals);
+    var Layout = require('syn/components/Layout/View')(locals);
 
     Layout.find('#main')
 
