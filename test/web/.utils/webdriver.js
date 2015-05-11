@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var WebDriver = require('syn/lib/webdriver');
+  var WebDriver = require('syn/lib/test/webdriver');
   var Page      = require('syn/lib/app/Page');
   var Domain    = require('domain').Domain;
 

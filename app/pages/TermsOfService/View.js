@@ -12,7 +12,7 @@
 
     var html5 = require('syn/lib/html5');
 
-    var Layout = require('syn/views/Layout')(locals);
+    var Layout = require('syn/components/Layout/View')(locals);
 
     var emitter = new EventEmitter();
 

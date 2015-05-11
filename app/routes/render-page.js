@@ -11,8 +11,10 @@
     var locals        =   exportsLocal(app, req, res);
     /** @type             Html5 */
     var Html5         =   require('syn/lib/html5');
+    var S             =   require('string');
+    var pageName      =   S(locals.page).capitalize().camelize().s;
     /** @type             Function */
-    var page          =   require('syn/pages/' + locals.page + '/View');
+    var page          =   require('syn/pages/' + pageName + '/View');
     /** @type             html5.Document */
     var view          =   page(locals);
     /** @type             Boolean */

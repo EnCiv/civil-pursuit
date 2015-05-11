@@ -4,14 +4,14 @@
 
   function getView (req, res, next) {
     var app = this;
-
+    var S = require('string');
     var Html5 = require('syn/lib/html5');
     /** @type             Function */
     var exportsLocal  =   require('syn/lib/app/export-locals');
     /** @type             Object */
     var locals        =   exportsLocal(app, req, res);
 
-    var view = require('syn/components/' + req.params.component + '/View')(
+    var view = require('syn/components/' + S(req.params.component).camelize().s + '/View')(
       locals);
 
     if ( view instanceof Html5.Elements || view instanceof Html5.Element ) {

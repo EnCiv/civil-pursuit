@@ -5,7 +5,7 @@
   require('should');
   require('colors');
 
-  var webDriver         =   require('syn/lib/webdriver');
+  var webDriver         =   require('syn/lib/test/webdriver');
   var Page              =   require('syn/lib/app/Page');
   var Domain            =   require('domain').Domain;
   var config            =   require('syn/config.json');
