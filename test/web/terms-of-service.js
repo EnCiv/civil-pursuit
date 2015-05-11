@@ -5,7 +5,7 @@
   require('should');
 
   var webDriver     =   require('./.utils/webdriver');
-  var Page          =   require('syn/lib/Page');
+  var Page          =   require('syn/lib/app/Page');
   var Domain        =   require('domain').Domain;
   var config        =   require('syn/config.json');
 

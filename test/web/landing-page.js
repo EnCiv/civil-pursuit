@@ -6,7 +6,7 @@
   require('colors');
 
   var webDriver         =   require('syn/lib/webdriver');
-  var Page              =   require('syn/lib/Page');
+  var Page              =   require('syn/lib/app/Page');
   var Domain            =   require('domain').Domain;
   var config            =   require('syn/config.json');
   var mongoUp           =   require('syn/lib/util/connect-to-mongoose');

@@ -55,7 +55,7 @@
 
         var LeftItemDescription =   Promote + ' ' + require('syn/components/promote-left-item-description')({ split: false });
 
-        var page = require('syn/lib/Page')('Item Page', item);
+        var page = require('syn/lib/app/Page')('Item Page', item);
 
         console.log(LeftItemSubject)
 
