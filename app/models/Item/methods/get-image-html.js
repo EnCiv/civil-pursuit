@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var config = require('syn/config');
+  var config = require('syn/config.json');
 
   var cloudinary = require('syn/lib/util/cloudinary');
 
