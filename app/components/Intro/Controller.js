@@ -14,9 +14,6 @@
       $('#intro').find('.panel-title').text(intro.subject);
 
       $('#intro').find('.item-subject').text(intro.subject);
-      // $('#intro').find('.item-title').hide();
-
-      // readMore(intro, $('#intro'));
 
       $('#intro').find('.item-reference').remove();
       $('#intro').find('.item-buttons').remove();
@@ -26,6 +23,10 @@
 
       $('#intro').find('.item-media')
         .empty().append(new Item(intro).media());
+
+      $('#intro').find('.item-media img').load(function () {
+        readMore(intro, $('#intro'));
+      });
 
       setTimeout(function () {
         //new Truncate($('#intro'));

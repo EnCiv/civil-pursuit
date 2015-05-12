@@ -39,6 +39,12 @@
           .getText('#intro .item-subject', domain.intercept(function (text) {
             text.should.be.a.String
               .and.is.exactly(intro.subject);
+          }))
+
+          .getText('#intro .item-description', domain.intercept(function (text) {
+            text.should.be.a.String;
+            text.split(/\n/)[0]
+              .should.be.exactly(intro.description.split(/\n/)[0]);
 
             done();
           }));

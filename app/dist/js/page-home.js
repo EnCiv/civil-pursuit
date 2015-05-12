@@ -4021,9 +4021,6 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
       $('#intro').find('.panel-title').text(intro.subject);
 
       $('#intro').find('.item-subject').text(intro.subject);
-      // $('#intro').find('.item-title').hide();
-
-      // readMore(intro, $('#intro'));
 
       $('#intro').find('.item-reference').remove();
       $('#intro').find('.item-buttons').remove();
@@ -4033,6 +4030,10 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
       $('#intro').find('.item-media')
         .empty().append(new Item(intro).media());
+
+      $('#intro').find('.item-media img').load(function () {
+        readMore(intro, $('#intro'));
+      });
 
       setTimeout(function () {
         //new Truncate($('#intro'));
@@ -6833,6 +6834,8 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
   function readMore (item, $item) {
 
+    console.log('READING MORE', item, $item)
+
     /** {HTMLElement} Description wrapper in DOM */
 
     var $description    =     $item.find('.item-description');
@@ -6911,7 +6914,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
     for ( var i = $description.find('.word').length - 1; i >= 0; i -- ) {
       var word = $description.find('.word').eq(i);
       // console.log(Math.ceil(word.offset().top), Math.ceil(top),
-      //   { word: Math.ceil(word.offset().top - top), limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
+      //   { word: Math.ceil(word.offset().top - top), top: top, imgHeight: imgHeight, limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
       if ( (word.offset().top - top) > imgHeight ) {
         word.addClass('hidden-word').hide();
       }
