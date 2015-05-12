@@ -139,7 +139,7 @@
 
         it ( 'should have an online now section' , function (done) {
 
-          webdriver.client.isVisible('button.shy.online-now', done);
+          webdriver.client.isVisible('button.online-now', done);
 
         });
 
