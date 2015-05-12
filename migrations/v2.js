@@ -29,113 +29,49 @@
 
   ];
 
-  function findTypes (cb) {
-    Type.find(function (error, types) {
-      if ( error ) throw error;
+  async.each(_Types, function forEachType (_type, done) {
+    Type.findOne({ name: _type.name }, function (error, type) {
+      if ( error ) return done(error);
 
-      _Types = _Types.map(function (_type) {
+      var parallels = [];
 
-        _type.exists = types.some(function (type) {
-          return _type.name === type.name;
-        });
-
-        return _type;
-
-      });
-
-      if ( _Types.every(function (_type) { return _type.exists; } ) ) {
-        return cb();
+      if ( _type.parent ) {
+        parallels.push(Type.findOne.bind(Type, { name: _type.parent }));
       }
 
-      insertTypes(cb);
-    });
-  }
+      if ( _type.harmony && _type.harmony.length ) {
+        parallels.push(Type.findOne.bind(Type, { name: _type.harmony[0] }),
+          Type.findOne.bind(Type, { name: _type.harmony[1] }));
+      }
 
-  function insertTypes (cb) {
-    async.parallel(
-      
-      _Types
-
-        .filter(function (_type) {
-          return ! _type.exists;
-        })
-
-        .reduce(function (parallels, type) {
-      
-          parallels[type.name] = function (cb) {
-            Type.create({ name: type.name }, cb);
-          };
-
-          console.log('parallels', parallels)
-          
-          return parallels;
-        }, {}),
-
-      function (error, types) {
-        if ( error ) return cb(error);
-
-        console.log('types', types);
-
-        async.parallel(
-          _Types
-            
-            .filter(function (type) {
-              return type.parent;
-            })
-
-            .map(function (type) {
-              return function (cb) {
-
-                console.log()
-                console.log()
-                console.log()
-                console.log({
-                  name: this.name,
-                  parent: this.parent,
-                  parentId: types[this.parent],
-                  types: types
-                })
-                console.log()
-                console.log()
-                console.log()
-
-                Type.update({ name: this.name },
-                  { $set: { parent: types[this.parent]._id } },
-                  cb);
-              }.bind(type);
-            })
-
-            .concat(
-              _Types
-            
-                .filter(function (type) {
-                  return type.harmony;
-                })
-
-                .map(function (type) {
-                  return function (cb) {
-                    Type.update({ name: type.name },
-                      {
-                        $push: {
-                          harmony: _Types
-                            
-                            .filter(function (_type) {
-                              return type.harmony.indexOf(_type.name) > -1;
-                            })
-
-                            .map(function (_type) {
-                              return { name: types[_type.name]._id };
-                            })
-                        }
-                      },
-                      cb);
-                  };
-                })
-            ),
-
-          cb);
+      if ( ! type ) {
+        async.parallel(parallels, function (error) {
+          if ( error ) return done(error);
+          forEachType(_type, done);
         });
-  }
+
+        return;
+      }
+
+      async.parallel(parallels, function (error, results) {
+        if ( error ) return done(error);
+
+        if ( _type.parent ) {
+          var parent = results[0];
+
+          if ( ! type.parent || parent._id.toString() !== type.parent.toString() ) {
+            type.parent = parent._id;
+          }
+        }
+
+        type.save(updateItemTypes.bind(null, function () {
+          console.log('Migration v2 OK');
+          process.exit(0);
+        }));
+
+      });
+    });
+  });
 
   function updateItemTypes (cb) {
 
@@ -177,21 +113,19 @@
       });
 
     });
-
-
   }
 
-  async.series([ findTypes ],
+  // async.series([ seeIfWeAlreadyMigrated ],
 
-    function (error, results) {
-      if ( error ) throw error;
+  //   function (error, results) {
+  //     if ( error ) throw error;
 
-      updateItemTypes(function (error, results) {
-        if ( error ) throw error;
+  //     updateItemTypes(function (error, results) {
+  //       if ( error ) throw error;
 
-        console.log('Migratin OK');
-        process.exit(0);
-      });
-    });
+  //       console.log('Migratin OK');
+  //       process.exit(0);
+  //     });
+  //   });
 
 } ();

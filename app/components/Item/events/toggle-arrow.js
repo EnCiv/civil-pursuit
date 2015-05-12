@@ -29,7 +29,7 @@
 
           item.find('children').addClass('is-loaded');
 
-          console.warn(item.item)
+          console.log('we have an item', item)
 
           switch ( item.item.type ) {
             case 'Topic':

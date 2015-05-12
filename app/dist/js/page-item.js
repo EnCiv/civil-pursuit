@@ -4452,7 +4452,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
           item.find('children').addClass('is-loaded');
 
-          console.warn(item.item)
+          console.log('we have an item', item)
 
           switch ( item.item.type ) {
             case 'Topic':
