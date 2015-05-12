@@ -2,14 +2,14 @@
 
   'use strict';
 
-  
-
   function signUp (req, res, next) {
 
-    require('syn/lib/domain')(next, function (domain) {
+    var domainRun = require('syn/lib/util/domain-run');
+    var User = require('syn/models/User');
 
-      require('syn/models/User')
+    domainRun(function (domain) {
 
+      User
         .create({
           email       :   req.body.email,
           password    :   req.body.password
@@ -33,7 +33,7 @@
 
         }));
 
-    });
+    }, next);
   }
 
   module.exports = signUp;

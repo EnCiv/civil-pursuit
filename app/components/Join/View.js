@@ -6,45 +6,45 @@
 
     var html5 = require('syn/lib/html5');
 
-    var __ = html5.Element;
+    var Element = html5.Element;
 
     var Page = require('syn/lib/app/Page');
     
-    return __('.join-modal').add(
-      __('h4', { $text: 'Join with' }),
+    return Element('.join-modal').add(
+      Element('h4', { $text: 'Join with' }),
 
-      __('.button-group').add(
-        __('a.button', { href: Page('Sign With Facebook') }).add(
-          __('i.fa.fa-facebook'),
-          __('span', { $text: ' Facebook' })
+      Element('.button-group').add(
+        Element('a.button', { href: Page('Sign With Facebook') }).add(
+          Element('i.fa.fa-facebook'),
+          Element('span', { $text: ' Facebook' })
         ),
 
-        __('a.button', { href: Page('Sign With Twitter') }).add(
-          __('i.fa.fa-facebook'),
-          __('span', { $text: ' Twitter' })
+        Element('a.button', { href: Page('Sign With Twitter') }).add(
+          Element('i.fa.fa-facebook'),
+          Element('span', { $text: ' Twitter' })
         )
       ),
 
-      __('h4', { $text: 'Join with email' }),
+      Element('h4', { $text: 'Join with email' }),
 
-      __('form', {
+      Element('form', {
           novalidate  :   'novalidate',
           role        :   'form',
           method      :   'POST',
           name        :   'join'
         }).add(
 
-        __('.block.warning.hide.please-agree', {
+        Element('.block.warning.hide.please-agree', {
           $text: 'Please agree to our Terms of service' }),
 
-        __('.block.warning.hide.already-taken', {
+        Element('.block.warning.hide.already-taken', {
           $text: 'Email already taken' }),
 
-        __('.row').add(
-          __('.form-group.tablet-50.middle').add(
-            __('label', { $text: 'Email' }),
+        Element('.row').add(
+          Element('.form-group.tablet-50.middle').add(
+            Element('label', { $text: 'Email' }),
 
-            __('input.block', {
+            Element('input.block', {
                 type        :   'email',
                 name        :   'email',
                 required    :   true,
@@ -52,10 +52,10 @@
               })
           ),
 
-          __('.form-group.tablet-50.middle').add(
-            __('label', { $text: 'Password' }),
+          Element('.form-group.tablet-50.middle').add(
+            Element('label', { $text: 'Password' }),
 
-            __('input.block', {
+            Element('input.block', {
                 type        :   'password',
                 name        :   'password',
                 required    :   true,
@@ -63,10 +63,10 @@
               })
           ),
 
-          __('.form-group.tablet-50.middle').add(
-            __('label', { $text: 'Confirm password' }),
+          Element('.form-group.tablet-50.middle').add(
+            Element('label', { $text: 'Confirm password' }),
 
-            __('input.block', {
+            Element('input.block', {
                 type        :   'password',
                 name        :   'confirm',
                 required    :   true,
@@ -74,28 +74,28 @@
               })
           ),
 
-          __('.form-group.tablet-50.middle').add(
-            __('label', { $text: 'Join' }),
+          Element('.form-group.tablet-50.middle').add(
+            Element('label', { $text: 'Join' }),
 
-            __('button.primary.join-submit.block.small', { $text: 'Join' })
+            Element('button.primary.join-submit.block.small', { $text: 'Join' })
           )
 
         ),
 
-        __('.i-agree').add(
-          __('button.shy', { type: 'button' }).add(
-            __('i.fa.fa-2x.fa-square-o.agreed')
+        Element('.i-agree').add(
+          Element('button.shy', { type: 'button' }).add(
+            Element('i.fa.fa-2x.fa-square-o.agreed')
           ),
 
-          __('span').add(
-            __('span', { $text: ' I agree to' }),
+          Element('span').add(
+            Element('span', { $text: ' I agree to' }),
 
-            __('a', {
+            Element('a', {
               href: Page('Terms Of Service'),
               $text: 'the terms of service'
             }),
 
-            __('span', { $text: '.' })
+            Element('span', { $text: '.' })
           )
         )
 

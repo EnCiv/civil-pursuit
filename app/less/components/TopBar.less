@@ -1,13 +1,14 @@
-@import "var";
+@import "../var";
+@import "../button";
 
 .topbar {
 
   /** Position */
 
-  position:                   fixed;
-  top:                        0;
-  left:                       0;
-  z-index:                    9999;
+  position                    :       fixed;
+  top                         :       0;
+  left                        :       0;
+  z-index                     :       9999;
 
   /** Boxing */
 
@@ -69,6 +70,8 @@
 
 .online-now {
 
+  .button.shy;
+
   @media (max-width: 640px) {
     display:    none
   }
@@ -102,6 +105,7 @@
   }
 
   .beta {
+    .button;
     background: #333;
     color: #fff;
     padding: 10px;

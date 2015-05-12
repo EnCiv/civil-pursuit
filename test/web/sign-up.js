@@ -63,6 +63,25 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
+    it ( 'should hide alert message to accept TOS' ,
+      function (done) {
+
+        var domain = new Domain().on('error', done);
+
+        domain.run(function () {
+
+          webdriver.client.getAttribute('form[name="join"] .please-agree', 'class',
+            domain.intercept(function (classes) {console.log(classes)
+              classes.split(/\s+/).indexOf('hide')
+                .should.be.a.Number.and.is.above(-1);
+              done();
+            }));
+        });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
     it ( 'should show email input field as having error' ,
       function (done) {
 
@@ -147,6 +166,46 @@
                 .should.be.a.Number.and.is.above(-1);
               done();
             }));
+        });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should show message saying to agree to TOS' ,
+      function (done) {
+
+        var domain = new Domain().on('error', done);
+
+        domain.run(function () {
+
+          webdriver.client.setValue('form[name="join"] input[name="confirm"]', '1234');
+
+          webdriver.client.click('.join-submit');
+
+          webdriver.client.getAttribute('form[name="join"] .please-agree', 'class',
+            domain.intercept(function (classes) {console.log(classes)
+              classes.split(/\s+/).indexOf('hide')
+                .should.be.a.Number.and.is.exactly(-1);
+              done();
+            }));
+        });
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    it ( 'should send form' ,
+      function (done) {
+
+        var domain = new Domain().on('error', done);
+
+        domain.run(function () {
+
+          webdriver.client.click('form[name="join"] .i-agree');
+
+          webdriver.client.click('.join-submit', done);
+
         });
 
     } );

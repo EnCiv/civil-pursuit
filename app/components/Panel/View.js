@@ -10,7 +10,7 @@
 
     locals = locals     ||  {};
 
-    var panel           =   Element('.panel.panel-default');
+    var panel           =   Element('.panel');
 
     if ( locals.panel )    {
       var id            =   'panel-' + locals.panel.type.toString();
@@ -19,7 +19,7 @@
     }
 
     var panelHeading    =   Element('.panel-heading').add(
-      Element('h4.fa.fa-plus.cursor-pointer.toggle-creator', {
+      Element('h4.fa.fa-plus.toggle-creator', {
         $condition      :   locals.creator !== false
       }),
 

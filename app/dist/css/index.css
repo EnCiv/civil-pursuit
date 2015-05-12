@@ -4805,6 +4805,16 @@ a.button {
   padding: 1em 0.8em;
 }
 /** Online now */
+.online-now {
+  background: transparent;
+  border-color: transparent;
+}
+.online-now:hover:not(.very) {
+  background: #dddddd !important;
+}
+.online-now.very {
+  cursor: default;
+}
 @media (max-width: 640px) {
   .online-now {
     display: none;
@@ -4835,12 +4845,102 @@ a.button {
   }
 }
 #logo .beta {
+  display: inline-block;
+  padding: 0.9em 0.7em;
+  border: 1px solid #ccc;
+  background: #ccc;
+  vertical-align: middle;
+  touch-action: manipulation;
+  text-align: center;
+  border-radius: 1px;
   background: #333;
   color: #fff;
   padding: 10px;
   margin-top: 10px;
   margin-left: 10px;
   border-radius: 6px;
+}
+#logo .beta:hover {
+  background: #999;
+  border-color: #999;
+}
+#logo .beta[disabled] {
+  background-color: #eee !important;
+  color: #ccc;
+  text-decoration: line-through;
+}
+#logo .beta.shy {
+  background: transparent;
+  border-color: transparent;
+}
+#logo .beta.shy:hover:not(.very) {
+  background: #dddddd !important;
+}
+#logo .beta.shy.very {
+  cursor: default;
+}
+#logo .beta.error {
+  background: #cd3232;
+  border-color: #cd3232;
+  color: #ffffff;
+}
+#logo .beta.error:hover {
+  background: #7b1e1e;
+}
+#logo .beta.warning {
+  background: #f0ad4e;
+  border-color: #f0ad4e;
+  color: #ffffff;
+}
+#logo .beta.warning:hover {
+  background: #c77c11;
+}
+#logo .beta.info {
+  background: #5bc0de;
+  border-color: #5bc0de;
+  color: #ffffff;
+}
+#logo .beta.info:hover {
+  background: #2390b0;
+}
+#logo .beta.success {
+  background: #5cb85c;
+  border-color: #5cb85c;
+  color: #ffffff;
+}
+#logo .beta.success:hover {
+  background: #357935;
+}
+#logo .beta.primary {
+  background: #337ab7;
+  border-color: #337ab7;
+  color: #ffffff;
+}
+#logo .beta.primary:hover {
+  background: #1d4567;
+}
+#logo .beta.small {
+  font-size: 80% !important;
+  border-width: 2px;
+  padding: 0.8em;
+}
+#logo .beta.medium {
+  font-size: 125%;
+  border-width: 2px;
+  padding: 1em;
+}
+#logo .beta.large {
+  font-size: 175%;
+  border-width: 2px;
+  line-height: 1.3em;
+}
+#logo .beta.huge {
+  font-size: 250%;
+  border-width: 4px;
+  line-height: 1.3em;
+}
+#logo .beta.block {
+  width: calc(100%);
 }
 /**
  *    __________________________________________________________________________
@@ -4903,6 +5003,7 @@ a.button {
   margin: 0.25em;
 }
 .panel .panel-heading .toggle-creator {
+  cursor: pointer;
   float: right;
   padding: 0.4em 0.7em;
 }
@@ -5133,7 +5234,6 @@ a.button {
 }
 footer {
   text-align: center;
-  color: #337ab7;
 }
 .login-modal {
   font-size: 1.5rem;

@@ -197,6 +197,11 @@
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       .use(function onRouteError (err, req, res, next) {
+
+        if ( ! err.stack ) {
+          console.log('bug', err);
+        }
+
         console.log('error', err.stack.split(/\n/));
         app.arte.emit('error', err);
       })

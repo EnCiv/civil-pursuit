@@ -30,7 +30,7 @@
     function join () {
       app.domain.run(function () {
 
-        $form.find('.please-agree').hide();
+        $form.find('.please-agree').addClass('hide');
         $form.find('.already-taken').hide();
 
         if ( form.labels.password.val() !== form.labels.confirm.val() ) {
@@ -40,7 +40,7 @@
         }
         
         if ( ! $form.find('.agreed').hasClass('fa-check-square-o') ) {
-          $form.find('.please-agree').show();
+          $form.find('.please-agree').removeClass('hide');
 
           return;
         }

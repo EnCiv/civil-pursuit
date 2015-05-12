@@ -4,6 +4,7 @@
 
   module.exports = function (locals) {
     var html5           =   require('syn/lib/html5');
+    var Element         =   html5.Element;
 
     var config          =   require('syn/config.json');
 
@@ -15,30 +16,30 @@
     var Join            =   require('syn/components/Join/View');
 
     var document        =   new html5.Document(
-      html5.Element.title(config.title)
+      Element.title(config.title)
     );
 
     document.add(
 
-      html5.Element('meta',      {
+      Element('meta',      {
         $selfClosing    :     true,
         'http-equiv'    :     'X-UA-Compatible',
         content         :     'IE=edge'
       }),
 
-      html5.Element('meta',      {
+      Element('meta',      {
         $selfClosing    :     true,
         name            :     'viewport',
         content         :     'width=device-width, initial-scale=1.0'
       }),
 
-      html5.Element('meta',      {
+      Element('meta',      {
         $selfClosing    :     true,
         name            :     'description',
         content         :     'description'
       }),
 
-      html5.Element('script',    {
+      Element('script',    {
         $condition      :     function (locals) {
           return locals.settings.env === 'production';
         },
@@ -51,24 +52,21 @@
 
     document.add(
 
-      html5.Element(
+      Element(
         '#screens', {},
         [
-          html5.Element('#screen-phone'),
-          html5.Element('#screen-tablet')
+          Element('#screen-phone'),
+          Element('#screen-tablet')
         ]
       ),
 
-      html5.Element('section', { role: 'header' }, TopBar),
+      Element('section', { role: 'header' }, TopBar),
 
-      html5.Element('section#main', { role: 'main' }),
+      Element('section#main', { role: 'main' }),
 
-      html5.Element('section#footer', { role: 'footer' }, Footer),
+      Element('section#footer', { role: 'footer' }, Footer),
 
-      html5.Element(
-        'script#login',
-
-        {
+      Element('script#login', {
           type        :   'text/html',
           
           $condition  :   function (locals) {
@@ -79,10 +77,7 @@
         }
       ),
 
-      html5.Element(
-        'script#join',
-
-        {
+      Element('script#join', {
           type        :   'text/html',
           
           $condition  :   function (locals) {
