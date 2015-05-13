@@ -1734,8 +1734,6 @@ function hasOwnProperty(obj, prop) {
 
     domainRun(function (d) {
 
-      console.log('new form', form)
-
       self.form = form;
 
       self.labels = {};
@@ -1743,8 +1741,6 @@ function hasOwnProperty(obj, prop) {
       self.form.find('[name]').each(function () {
         self.labels[$(this).attr('name')] = $(this);
       });
-
-      console.info('form[' + form.attr('name') + ']', 'labels', self.labels);
 
       // #193 Disable <Enter> keys
 

@@ -4938,12 +4938,18 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
     this.skip     =   skip || 0;
     this.size     =   size || synapp['navigator batch size'];
 
-    this.id       =   'panel-' + (this.type._id || this.type);
-
-    if ( this.parent ) {
-      this.id += '-' + this.parent;
-    }
+    this.id       =   Panel.getId(this);
   }
+
+  Panel.getId = function (panel) {
+    var id = 'panel-' + (panel.type._id || panel.type);
+
+    if ( panel.parent ) {
+      id += '-' + panel.parent;
+    }
+
+    return id;
+  };
 
   /**
    *  @method       Panel.getId
@@ -5047,12 +5053,12 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
       panel.type = undefined;
     }
 
-    console.log('panel', panel)
+    app.socket.publish('get items', panel, function (_panel, items) {
 
-    app.socket.publish('get items', panel, function (panel, items) {
+      if ( self.constructor.getId(panel) !== self.constructor.getId(_panel) ) {
+        return /** This is about another panel */;
+      }
     
-      console.log('got items', panel, items)
-
       self.template.find('.hide.pre').removeClass('hide');
       self.template.find('.show.pre').removeClass('show').hide();
 
@@ -6338,8 +6344,6 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
     domainRun(function (d) {
 
-      console.log('new form', form)
-
       self.form = form;
 
       self.labels = {};
@@ -6347,8 +6351,6 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
       self.form.find('[name]').each(function () {
         self.labels[$(this).attr('name')] = $(this);
       });
-
-      console.info('form[' + form.attr('name') + ']', 'labels', self.labels);
 
       // #193 Disable <Enter> keys
 
@@ -6791,8 +6793,6 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
   }
 
   function readMore (item, $item) {
-
-    console.log('READING MORE', item, $item)
 
     /** {HTMLElement} Description wrapper in DOM */
 

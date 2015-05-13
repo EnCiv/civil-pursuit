@@ -35,12 +35,18 @@
     this.skip     =   skip || 0;
     this.size     =   size || synapp['navigator batch size'];
 
-    this.id       =   'panel-' + (this.type._id || this.type);
-
-    if ( this.parent ) {
-      this.id += '-' + this.parent;
-    }
+    this.id       =   Panel.getId(this);
   }
+
+  Panel.getId = function (panel) {
+    var id = 'panel-' + (panel.type._id || panel.type);
+
+    if ( panel.parent ) {
+      id += '-' + panel.parent;
+    }
+
+    return id;
+  };
 
   /**
    *  @method       Panel.getId

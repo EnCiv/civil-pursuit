@@ -15,8 +15,6 @@
 
   function readMore (item, $item) {
 
-    console.log('READING MORE', item, $item)
-
     /** {HTMLElement} Description wrapper in DOM */
 
     var $description    =     $item.find('.item-description');

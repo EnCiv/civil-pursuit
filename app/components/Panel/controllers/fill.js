@@ -17,12 +17,12 @@
       panel.type = undefined;
     }
 
-    console.log('panel', panel)
+    app.socket.publish('get items', panel, function (_panel, items) {
 
-    app.socket.publish('get items', panel, function (panel, items) {
+      if ( self.constructor.getId(panel) !== self.constructor.getId(_panel) ) {
+        return /** This is about another panel */;
+      }
     
-      console.log('got items', panel, items)
-
       self.template.find('.hide.pre').removeClass('hide');
       self.template.find('.show.pre').removeClass('show').hide();
 
