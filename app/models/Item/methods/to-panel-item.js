@@ -74,17 +74,13 @@
               'full name' :   user.fullName,
               gps         :   user.gps,
               _id         :   user._id
-            });  
+            });
           }));
       }
 
       function getSubtype (cb) {
-        // Type
-        //   .findOne({ parent: original.type, harmony: { $gt: [] } })
-        //   .populate('harmony.name')
-        //   .exec(cb);
         Type
-          .findOne({ parent: original.type._id })
+          .findOne({ parent: original.type })
           .exec(cb);
       }
 
@@ -94,9 +90,6 @@
       }
 
       function getHarmony (item, cb) {
-        // console.log('here', JSON.stringify(item.type, null, 2));
-        // return;
-
         var pro, con;
 
         async.each(item.type.harmony,
@@ -130,11 +123,11 @@
       }
 
       async.parallel({
-        lineage     :   getLineage,
-        type        :   getType,
-        user        :   getUser,
-        subtype     :   getSubtype,
-        children    :   countChildren,
+        lineage         :   getLineage,
+        type            :   getType,
+        user            :   getUser,
+        subtype         :   getSubtype,
+        children        :   countChildren,
       }, domain.intercept(function (results) {
         
         item.type       =   results.type;

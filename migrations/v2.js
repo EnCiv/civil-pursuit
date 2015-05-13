@@ -20,11 +20,11 @@
 
     { name: 'Intro' },
     { name: 'Topic' },
-    { name: 'Problem', parent: 'Topic', harmony: ['Agree', 'Disagree'] },
-    { name: 'Solution', parent: 'Problem', harmony: ['Pro', 'Con'] },
-    { name: 'Pro', parent: 'Solution' },
-    { name: 'Con', parent: 'Solution' },
-    { name: 'Agree', parent: 'Problem' },
+    { name: 'Problem',  parent: 'Topic',    harmony: ['Agree', 'Disagree'] },
+    { name: 'Solution', parent: 'Problem',  harmony: ['Pro', 'Con'] },
+    { name: 'Pro',      parent: 'Solution' },
+    { name: 'Con',      parent: 'Solution' },
+    { name: 'Agree',    parent: 'Problem' },
     { name: 'Disagree', parent: 'Problem' },
 
   ];

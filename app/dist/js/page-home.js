@@ -4502,107 +4502,115 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
           item.find('children').addClass('is-loaded');
 
-          console.log('we have an item', item)
+          console.log('we have an item', item.item.subtype);
 
-          switch ( item.item.type ) {
-            case 'Topic':
+          var subtype = item.item.subtype;
 
-              var panelProblem = new (require('syn/components/Panel/Controller'))('Problem', item.item._id);
+          if ( subtype ) {
+            var subPanel = new (require('syn/components/Panel/Controller'))(subtype, item.item._id);
 
-              panelProblem.load(app.domain.intercept(function (template) {
-                item.find('children').append(template);
+            subPanel.load(app.domain.intercept(function (template) {
+              item.find('children').append(template);
 
-                setTimeout(function () {
-                  panelProblem.render(app.domain.intercept(function () {
-                    panelProblem.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-              break;
-
-            case 'Problem':
-
-              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelAgree = new (require('syn/components/Panel/Controller'))('Agree', item.item._id);
-
-              panelAgree.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelAgree.render(app.domain.intercept(function () {
-                    panelAgree.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelDisagree = new (require('syn/components/Panel/Controller'))('Disagree', item.item._id);
-
-              panelDisagree.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-                
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelDisagree.render(app.domain.intercept(function () {
-                    panelDisagree.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelSolution = new (require('syn/components/Panel/Controller'))('Solution', item.item._id);
-
-              panelSolution.load(app.domain.intercept(function (template) {
-                item.find('children').append(template);
-
-                setTimeout(function () {
-                  panelSolution.render(app.domain.intercept(function () {
-                    panelSolution.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              break;
-
-            case 'Solution':
-
-              var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-              item.find('children').append(split);
-
-              var panelPro = new (require('syn/components/Panel/Controller'))('Pro', item.item._id);
-
-              panelPro.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.left-split').append(template);
-
-                setTimeout(function () {
-                  panelPro.render(app.domain.intercept(function () {
-                    panelPro.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-
-              var panelCon = new (require('syn/components/Panel/Controller'))('Con', item.item._id);
-
-              panelCon.load(app.domain.intercept(function (template) {
-                template.addClass('split-view');
-
-                split.find('.right-split').append(template);
-
-                setTimeout(function () {
-                  panelCon.render(app.domain.intercept(function () {
-                    panelCon.fill(app.domain.intercept());
-                  }));
-                });
-              }));
-              break;
+              setTimeout(function () {
+                subPanel.render(app.domain.intercept(function () {
+                  subPanel.fill(app.domain.intercept());
+                }));
+              });
+            }));
           }
+
+          // switch ( item.item.type ) {
+          //   case 'Topic':
+
+          //     var panelProblem = new (require('syn/components/Panel/Controller'))('Problem', item.item._id);
+
+              
+          //     break;
+
+          //   case 'Problem':
+
+          //     var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+          //     item.find('children').append(split);
+
+          //     var panelAgree = new (require('syn/components/Panel/Controller'))('Agree', item.item._id);
+
+          //     panelAgree.load(app.domain.intercept(function (template) {
+          //       template.addClass('split-view');
+
+          //       split.find('.left-split').append(template);
+
+          //       setTimeout(function () {
+          //         panelAgree.render(app.domain.intercept(function () {
+          //           panelAgree.fill(app.domain.intercept());
+          //         }));
+          //       });
+          //     }));
+
+          //     var panelDisagree = new (require('syn/components/Panel/Controller'))('Disagree', item.item._id);
+
+          //     panelDisagree.load(app.domain.intercept(function (template) {
+          //       template.addClass('split-view');
+                
+          //       split.find('.right-split').append(template);
+
+          //       setTimeout(function () {
+          //         panelDisagree.render(app.domain.intercept(function () {
+          //           panelDisagree.fill(app.domain.intercept());
+          //         }));
+          //       });
+          //     }));
+
+          //     var panelSolution = new (require('syn/components/Panel/Controller'))('Solution', item.item._id);
+
+          //     panelSolution.load(app.domain.intercept(function (template) {
+          //       item.find('children').append(template);
+
+          //       setTimeout(function () {
+          //         panelSolution.render(app.domain.intercept(function () {
+          //           panelSolution.fill(app.domain.intercept());
+          //         }));
+          //       });
+          //     }));
+
+          //     break;
+
+          //   case 'Solution':
+
+          //     var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+          //     item.find('children').append(split);
+
+          //     var panelPro = new (require('syn/components/Panel/Controller'))('Pro', item.item._id);
+
+          //     panelPro.load(app.domain.intercept(function (template) {
+          //       template.addClass('split-view');
+
+          //       split.find('.left-split').append(template);
+
+          //       setTimeout(function () {
+          //         panelPro.render(app.domain.intercept(function () {
+          //           panelPro.fill(app.domain.intercept());
+          //         }));
+          //       });
+          //     }));
+
+          //     var panelCon = new (require('syn/components/Panel/Controller'))('Con', item.item._id);
+
+          //     panelCon.load(app.domain.intercept(function (template) {
+          //       template.addClass('split-view');
+
+          //       split.find('.right-split').append(template);
+
+          //       setTimeout(function () {
+          //         panelCon.render(app.domain.intercept(function () {
+          //           panelCon.fill(app.domain.intercept());
+          //         }));
+          //       });
+          //     }));
+          //     break;
+          // }
         }
 
         if ( arrow.hasClass('fa-arrow-down') ) {
