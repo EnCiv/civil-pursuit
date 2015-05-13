@@ -26,6 +26,10 @@
         spawn.stdout.on('data', function (data) {
           console.log(data.toString());
         });
+
+        spawn.stderr.on('data', function (data) {
+          console.log(data.toString());
+        });
       },
       cb);
   }
