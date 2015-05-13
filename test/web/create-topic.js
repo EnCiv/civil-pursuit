@@ -14,7 +14,8 @@
   var webdriver,
     url,
     mongo,
-    user;
+    user,
+    subject = 'This is a test subject';
 
   describe( 'Web / Create Topic' , function () {
 
@@ -78,6 +79,45 @@
       } );
 
       /////////////////////////////////////////////////////////////////////////
+
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
+    describe ( 'Validations' , function () {
+
+      /////////////////////////////////////////////////////////////////////////
+
+      it ( 'should complain if there is no subject' , function (done) {
+        webdriver.client.click('.button-create');
+
+        webdriver.client.getAttribute('.creator input[name="subject"]', 'class',
+          function (error, attr) {
+            if ( error ) {
+              return done(error);
+            }
+            attr.should.be.exactly('error');
+            done();
+          });
+      } );
+
+      /////////////////////////////////////////////////////////////////////////
+
+      it ( 'should complain if there is no description' , function (done) {
+
+        webdriver.client.setValue('.creator input[name="subject"]', subject);
+
+        webdriver.client.click('.button-create');
+
+        webdriver.client.getAttribute('.creator textarea[name="description"]', 'class',
+          function (error, attr) {
+            if ( error ) {
+              return done(error);
+            }
+            attr.should.be.exactly('error');
+            done();
+          });
+      } );
 
     } );
 

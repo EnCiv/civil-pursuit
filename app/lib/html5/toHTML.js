@@ -87,6 +87,14 @@
       child.options = { $text: child.options };
     }
 
+    if ( Object.keys(resolved.attr).lnegth ) {
+      for ( var key in resolved.attr ) {
+        if ( ! (key in child.options) ) {
+          child.options[key] = resolved.attr[key];
+        }
+      }
+    }
+
     for ( var attr in child.options ) {
 
       if ( attr === 'className' ) {

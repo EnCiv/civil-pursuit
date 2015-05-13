@@ -176,7 +176,7 @@
   */
 
   Element.resolve = function (selector) {
-    var resolved = { classes: [] };
+    var resolved = { classes: [], attr: {} };
 
     var trans = selector
       .replace(/\./g, '|.')
@@ -192,6 +192,11 @@
 
       else if ( /^#/.test(bit) ) {
         resolved.id = bit.replace(/^#/, '');
+      }
+
+      else if ( /^\[.+\]$/.test(bit) ) {
+        var attrBits = bit.split('=');
+        resolved.attr[attrBits[0]] = attrBits[1];
       }
 
       else if ( /^[A-Za-z-_\$]/.test(bit) ) {

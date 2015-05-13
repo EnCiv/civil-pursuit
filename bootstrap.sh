@@ -9,7 +9,10 @@ sudo apt-get update || exit 1;
 
 # Install dependencies
 sudo apt-get install -y \
-  # mongodb-server \
+  mongodb-server \
   nodejs \
-  # git-core \
   build-essential || exit 2;
+
+# Repo
+cd /synaccord
+npm install
