@@ -130,6 +130,8 @@
         children        :   countChildren,
       }, domain.intercept(function (results) {
         
+        console.log('got results', results)
+
         item.type       =   results.type;
         item.user       =   results.user;
         item.subtype    =   results.subtype;
@@ -141,6 +143,8 @@
 
         getHarmony(item, domain.intercept(function (harmony) {
           item.harmony = harmony;
+
+          console.log('got harmony', harmony)
 
           return cb(null, item);
         }));

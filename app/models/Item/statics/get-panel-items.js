@@ -45,6 +45,7 @@
                 },
 
                 domain.intercept(function (items) {
+                  console.log('panelified items', items)
                   fulfill(items);
                 }));
 
