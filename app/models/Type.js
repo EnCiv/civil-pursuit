@@ -14,10 +14,18 @@
       type        :     String,
       unique      :     true
     },
+    // "harmony"     :     [{
+    //   "name"      :     Schema.Types.ObjectId
+    // }],
+    // "parent"      :     Schema.Types.ObjectId
     "harmony"     :     [{
-      "name"      :     Schema.Types.ObjectId
+      "type"    :     Schema.Types.ObjectId,
+      "ref"     :     "Type"
     }],
-    "parent"      :     Schema.Types.ObjectId
+    "parent"      :     {
+      "type"      :     Schema.Types.ObjectId,
+      "ref"       :     "Type"
+    }
 
   });
 

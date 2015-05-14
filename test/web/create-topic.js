@@ -151,7 +151,7 @@
 
       this.timeout(99000);
 
-      webdriver.client.pause(90000);
+      webdriver.client.pause(5000);
 
       webdriver.client.end(function () {
         mongo.disconnect(done);

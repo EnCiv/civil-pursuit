@@ -55,7 +55,7 @@
       function getType (cb) {
         Type
           .findById(original.type)
-          .populate('harmony.name')
+          .populate('harmony')
           .exec(cb);
       }
 

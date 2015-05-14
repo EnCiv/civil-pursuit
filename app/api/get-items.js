@@ -14,8 +14,8 @@
 
     function run (domain) {
 
-      var id = 'panel-' + panel.type._id;
-      var query = { type: panel.type._id };
+      var id = 'panel-' + panel.type._id || panel.type;
+      var query = { type: panel.type._id || panel.type};
 
       if ( panel.parent ) {
         id += '-' + panel.parent;
@@ -30,7 +30,7 @@
 
         .getPanelItems(query)
 
-        .then(socket.ok.bind(socket, event, panel));
+        .then(socket.ok.bind(socket, event, panel), onDomainError);
     }
 
     require('syn/lib/util/domain-run')(run, onDomainError);

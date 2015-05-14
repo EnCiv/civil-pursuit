@@ -4883,7 +4883,43 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
           item.find('children').addClass('is-loaded');
 
-          console.log('we have an item', item.item.subtype);
+          console.log('we have an item!!!', item);
+
+          var harmony = item.item.type.harmony;
+
+          if ( harmony.length ) {
+            var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+            item.find('children').append(split);
+
+            var panelLeft = new (require('syn/components/Panel/Controller'))(harmony[0], item.item._id);
+
+            panelLeft.load(app.domain.intercept(function (template) {
+              template.addClass('split-view');
+
+              split.find('.left-split').append(template);
+
+              setTimeout(function () {
+                panelLeft.render(app.domain.intercept(function () {
+                  panelLeft.fill(app.domain.intercept());
+                }));
+              });
+            }));
+
+            var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], item.item._id);
+
+            panelRight.load(app.domain.intercept(function (template) {
+              template.addClass('split-view');
+
+              split.find('.right-split').append(template);
+
+              setTimeout(function () {
+                panelRight.render(app.domain.intercept(function () {
+                  panelRight.fill(app.domain.intercept());
+                }));
+              });
+            }));
+          }
 
           var subtype = item.item.subtype;
 
@@ -4917,17 +4953,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
           //     var panelAgree = new (require('syn/components/Panel/Controller'))('Agree', item.item._id);
 
-          //     panelAgree.load(app.domain.intercept(function (template) {
-          //       template.addClass('split-view');
-
-          //       split.find('.left-split').append(template);
-
-          //       setTimeout(function () {
-          //         panelAgree.render(app.domain.intercept(function () {
-          //           panelAgree.fill(app.domain.intercept());
-          //         }));
-          //       });
-          //     }));
+          
 
           //     var panelDisagree = new (require('syn/components/Panel/Controller'))('Disagree', item.item._id);
 
