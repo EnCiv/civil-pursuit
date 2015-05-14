@@ -33,15 +33,15 @@
     Type.findOne({ name: _type.name }, function (error, type) {
       if ( error ) return done(error);
 
-      var parallels = [];
+      var parallels = {};
 
       if ( _type.parent ) {
-        parallels.push(Type.findOne.bind(Type, { name: _type.parent }));
+        parallels.parent = Type.findOne.bind(Type, { name: _type.parent });
       }
 
       if ( _type.harmony && _type.harmony.length ) {
-        parallels.push(Type.findOne.bind(Type, { name: _type.harmony[0] }),
-          Type.findOne.bind(Type, { name: _type.harmony[1] }));
+        parallels.harmonyLeft = Type.findOne.bind(Type, { name: _type.harmony[0] });
+        parallels.harmonyRight = Type.findOne.bind(Type, { name: _type.harmony[1] });
       }
 
       if ( ! type ) {
@@ -57,11 +57,15 @@
         if ( error ) return done(error);
 
         if ( _type.parent ) {
-          var parent = results[0];
+          var parent = results.parent;
 
           if ( ! type.parent || parent._id.toString() !== type.parent.toString() ) {
             type.parent = parent._id;
           }
+        }
+
+        if ( _type.harmony && _type.harmony.length ) {
+          type.harmony.push(results.harmonyLeft._id, results.harmonyRight._id);
         }
 
         type.save(updateItemTypes.bind(null, done));
