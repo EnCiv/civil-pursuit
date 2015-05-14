@@ -64,13 +64,16 @@
           }
         }
 
-        type.save(updateItemTypes.bind(null, function () {
-          console.log('Migration v2 OK');
-          process.exit(0);
-        }));
+        type.save(updateItemTypes.bind(null, done));
 
       });
     });
+  }, function (error) {
+    if ( error ) {
+      throw error;
+    }
+    console.log('Migration v2 OK');
+    process.exit(0);
   });
 
   function updateItemTypes (cb) {
