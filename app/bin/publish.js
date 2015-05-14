@@ -40,7 +40,7 @@
     { name: 'mocha test/web/sign-in' },
     { name: 'mocha test/web/sign-up' },
 
-    { name: 'git push heroku dev' }
+    { name: 'git push heroku master' }
   ];
 
   require('async').eachSeries(tests,
