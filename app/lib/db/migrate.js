@@ -12,7 +12,7 @@
     var async =  require('async');
     var cp = require('child_process');
 
-    async.eachSeries(['v2', 'v3', 'v4'],
+    async.eachSeries(['v3', 'v4'],
       function (v, next) {
         var spawn = cp.spawn('node', ['migrations/' + v])
           .on('error', next)
