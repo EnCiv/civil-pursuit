@@ -90,19 +90,24 @@
       }
 
       function getHarmony (item, cb) {
+        console.log('getting harmony')
         var pro, con;
 
         async.each(item.type.harmony,
 
           function (side, cb) {
+
+            console.log('side', side)
             Item.count({
 
                 parent    :   item._id,
-                type      :   side.name._id
+                type      :   side._id
 
               },
 
               domain.intercept(function (count) {
+
+                console.log('count', count, pro, con)
               
                 if ( typeof pro === 'undefined' ) {
                   pro = count;
@@ -118,6 +123,7 @@
           },
 
           domain.intercept(function () {
+            console.log('harmony', pro, con)
             cb(null, calcHarmony(pro, con));
           }));
       }
@@ -130,8 +136,6 @@
         children        :   countChildren,
       }, domain.intercept(function (results) {
         
-        console.log('got results', results)
-
         item.type       =   results.type;
         item.user       =   results.user;
         item.subtype    =   results.subtype;
@@ -140,6 +144,8 @@
         if ( ! item.type.harmony.length ) {
           return cb(null, item);
         }
+
+        console.log('getting harmony')
 
         getHarmony(item, domain.intercept(function (harmony) {
           item.harmony = harmony;
