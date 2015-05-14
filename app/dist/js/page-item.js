@@ -5053,11 +5053,15 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
       panel.type = undefined;
     }
 
-    app.socket.publish('get items', panel, function (_panel, items) {
+    console.log('getting panel items', panel);
+
+    function gotPanelItems (_panel, items) {
 
       if ( self.constructor.getId(panel) !== self.constructor.getId(_panel) ) {
         return /** This is about another panel */;
       }
+
+      console.log('got panel items', items)
     
       self.template.find('.hide.pre').removeClass('hide');
       self.template.find('.show.pre').removeClass('show').hide();
@@ -5083,7 +5087,11 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
         self.find('load more').hide();
       }
 
-    });
+      app.socket.removeListener('OK get items', gotPanelItems);
+
+    }
+
+    app.socket.publish('get items', panel, gotPanelItems);
 
   }
 

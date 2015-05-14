@@ -15,7 +15,8 @@
     url,
     mongo,
     user,
-    subject = 'This is a test subject';
+    subject = 'This is a test subject',
+    description = "Hey! I am a description.\nNice to meet you!";
 
   describe( 'Web / Create Topic' , function () {
 
@@ -89,7 +90,7 @@
       /////////////////////////////////////////////////////////////////////////
 
       it ( 'should complain if there is no subject' , function (done) {
-        webdriver.client.click('.button-create');
+        webdriver.client.click('.creator .button-create');
 
         webdriver.client.getAttribute('.creator input[name="subject"]', 'class',
           function (error, attr) {
@@ -107,7 +108,7 @@
 
         webdriver.client.setValue('.creator input[name="subject"]', subject);
 
-        webdriver.client.click('.button-create');
+        webdriver.client.click('.creator .button-create');
 
         webdriver.client.getAttribute('.creator textarea[name="description"]', 'class',
           function (error, attr) {
@@ -123,11 +124,34 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
+    describe ( 'UI changes', function () {
+      it ( 'Creator should disappear' , function (done) {
+
+        this.timeout(3500);
+        
+        webdriver.client.setValue('.creator textarea[name="description"]', description);
+        
+        webdriver.client.click('.creator .button-create');
+        
+        webdriver.client.pause(1000);
+        
+        webdriver.client.getAttribute('.creator', 'class', function (error, classString) {
+          var classes = classString.split(/\s+/);
+
+          classes.indexOf('is-hidden').should.be.above(-1);
+
+          done();
+        });
+      }) ;
+    } );
+
+    ///////////////////////////////////////////////////////////////////////////
+
     after ( function ( done ) {
 
-      this.timeout(7500);
+      this.timeout(99000);
 
-      webdriver.client.pause(5000);
+      webdriver.client.pause(90000);
 
       webdriver.client.end(function () {
         mongo.disconnect(done);

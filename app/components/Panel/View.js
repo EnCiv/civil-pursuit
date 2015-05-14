@@ -32,7 +32,28 @@
       panelBody.add(CreatorView(locals));
     }
 
-    panelBody.add(Element('.items'));
+    var items = Element('.items');
+
+    panelBody.add(items);
+
+    var LoadingItems = Element('.loading-items.hide').add(
+      Element('i.fa.fa-circle-o-notch.fa-spin'),
+      Element('span').text('Loading items...')
+    );
+
+    panelBody.add(LoadingItems);
+
+    panelBody.add(
+      Element('.padding.hide.pre').add(
+        Element('.load-more.hide').add(
+          Element('a', { href: '#' }).text('View more')
+        ),
+
+        Element('.create-new').add(
+          Element('a', { href: '#' }).text('Click the + to be the first to add something here')
+        )
+      )
+    );
 
     return panel.add(
       panelHeading,

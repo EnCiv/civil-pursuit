@@ -22,6 +22,10 @@
         query.parent = panel.parent;
       }
 
+      if ( panel.skip ) {
+        query.skip = panel.skip;
+      }
+
       Item
 
         .getPanelItems(query)

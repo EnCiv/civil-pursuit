@@ -22,13 +22,22 @@
 
         console.log('GET PANEL ITEMS', panel)
 
+        var query = {};
+
+        for ( var i in panel ) {
+          if ( i !== 'skip' ) {
+            query[i] = panel[i];
+          }
+        }
+
         if ( ! panel.item ) {
           Item
-            .find(panel)
-            .limit(panel.size || config.public['navigator batch size'])
+            .find(query)
             .skip(panel.skip || 0)
+            .limit(panel.size || config.public['navigator batch size'])
             .sort({ promotions: -1 })
             .exec(domain.intercept(function (items) {
+              console.log('got items', items.length)
               async.map(items,
 
                 function (item, cb) {

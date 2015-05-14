@@ -20,6 +20,8 @@
 
     var isNew = this.isNew;
 
+    console.log('saving item', self, isNew)
+
     di(done, deps, function (domain,  path,   mongoose,   async,  cloudinary,   getUrlTitle,  config,   Item) {
 
       if ( isNew ) {
