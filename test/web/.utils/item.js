@@ -150,7 +150,7 @@
           .getText('#item-' + id +
             '>.item-buttons>button.item-toggle-details>.promoted-percent',
             domain.intercept(function (text) {
-              text.should.be.a.String.and.match(/^\d\d?%$/);
+              text.should.be.a.String.and.match(/^\d\d?\d?%$/);
               console.log("\t  ✓".green, ('item#' + item.id + ' > Popularity is a percentage').grey);
             }))
 
