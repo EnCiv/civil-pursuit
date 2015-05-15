@@ -6568,7 +6568,9 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
         votes.push(vote);
       });
 
-    app.socket.emit('insert votes', votes);
+    app.socket.publish('insert votes', votes, function votesInserted () {
+      app.socket.removeListener('OK insert votes', votesInserted);
+    });
   }
 
   module.exports = save;
@@ -8006,7 +8008,7 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
       return function (error) {
         if ( error && error instanceof Error ) {
-          self.domain.emit('error', error);
+          d.emit('error', error);
         }
 
         else {

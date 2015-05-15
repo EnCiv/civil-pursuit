@@ -2,8 +2,6 @@
 
   'use strict';
 
-  
-
   function getEvaluation (event, item_id) {
     console.log(event, item_id);
     console.log('++++++++++++++++++++++++++++')
@@ -15,7 +13,7 @@
 
       function (domain) {
         require('syn/models/Item')
-          .evaluate(item_id, domain.intercept(function (evaluation) {
+          .evaluate(socket.synuser.id, item_id, domain.intercept(function (evaluation) {
             socket.ok(event, evaluation);
           }));
       },

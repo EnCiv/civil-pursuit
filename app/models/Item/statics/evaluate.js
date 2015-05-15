@@ -8,21 +8,25 @@
 
   var config = require('syn/config.json');
 
+  function Evaluation (props) {
+    for ( var i in props ) {
+      this[i] = props[i];
+    }
+  }
+
   /**
    *  @class
    *  @arg {String} itemId - Item Object ID
    *  @arg {Function} cb 
    */
 
-  function Evaluate (model, itemId, cb) {
-
-    console.log('new evaluation', model, itemId);
-    console.log('--------------------------------------------------------')
+  function Evaluate (model, userId, itemId, cb) {
 
     var self = this;
 
     this.model    =   model;
     this.itemId   =   itemId;
+    this.userId   =   userId;
     this.cb       =   cb;
 
     this.domain   =   require('domain').create();
@@ -111,7 +115,10 @@
       },
 
       criterias: function (done) {
-        require('syn/models/Criteria').find({ type: self.item.type}, done);
+        require('syn/models/Criteria')
+          .find({ type: self.item.type})
+          .populate('type')
+          .exec(done);
       }
 
     };
@@ -132,15 +139,21 @@
     var self = this;
 
     var query = {
-      type:     type || self.item.type,
-      parent:   self.item.parent
+      type      :     type || self.item.type,
+      parent    :     self.item.parent
     };
 
     self
 
       .model
 
-      .count(query, self.domain.intercept(function (number) {
+      .count(query)
+
+      .where('_id').ne(self.item._id)
+
+      // .where('user').ne(self.userId)
+
+      .exec(self.domain.intercept(function (number) {
 
         var start = Math.max(0, Math.floor((number-limit)*Math.random()));
 
@@ -148,14 +161,13 @@
           
           .model
 
-          .find({
-            type:     type || self.item.type,
-            parent:   self.item.parent
-          })
+          .find(query)
 
           .populate('user')
 
           .where('_id').ne(self.item._id)
+
+          // .where('user').ne(self.userId)
 
           .skip(start)
 
@@ -201,12 +213,12 @@
       results.items.unshift(self.item);
     }
 
-    self.cb(null, {
+    self.cb(null, new Evaluation({
       type:         self.item.type,
       item:         self.itemId,
       items:        results.items.map(self.map, self),
       criterias:    results.criterias
-    });
+    }));
   }
 
   /**
@@ -239,7 +251,10 @@
       },
       
       criterias: function (done) {
-        require('syn/models/Criteria').find({ type: self.item.type}, done);
+        require('syn/models/Criteria')
+          .find({ type: self.item.type})
+          .populate('type')
+          .exec(done);
       }
 
     };
@@ -247,10 +262,8 @@
     async.parallel(parallels, self.domain.intercept(self.packAndGo.bind(self)));
   };
 
-  module.exports = function (itemId, cb) {
-    console.log('arguments wey', itemId)
-    console.log('-------------------------------------------------------')
-    return new Evaluate(this, itemId, cb).go();
+  module.exports = function (userId, itemId, cb) { 
+    return new Evaluate(this, userId, itemId, cb).go();
   };
 
 } ();

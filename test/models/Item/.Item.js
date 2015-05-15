@@ -16,7 +16,7 @@
 
     assert( 'ObjectID',           require('../.ObjectID'));
     assert( 'Type',               require('../Type/.Type'));
-    assert( 'User',               require('../User/.User'));
+    assert( 'ItemUser',               require('../Item/.ItemUser'));
     assert( 'CloudinaryUrl',      require('../../lib/util/is/.CloudinaryUrl'));
     
     this.params = { operator: 'to be an Item'};
@@ -93,9 +93,16 @@
 
     ///////////////////////////////////////////////////////////////////////////
 
-    this.obj
-      .should.have.property           ('user')
-        .which.                       is.an.ObjectID;
+    should.$describe('User', this.obj, function (it) {
+      try {
+        it.should.have.property           ('user')
+          .which.                       is.an.ObjectID;
+      }
+      catch ( error ) {
+        it.should.have.property           ('user')
+          .which.                       is.an.ItemUser;
+      }
+    });
 
     ///////////////////////////////////////////////////////////////////////////
 

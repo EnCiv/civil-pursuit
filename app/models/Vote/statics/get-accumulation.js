@@ -31,23 +31,30 @@
 
         votes.forEach(function (vote) {
 
-          if ( vote.value > -2 && vote.value < 2 ) {
-            if ( ! accumulation[vote.criteria] ) {
-              accumulation[vote.criteria] = {
-                total: 0,
-                values: initValues()
-              };
-            }
-            
-            accumulation[vote.criteria].total ++;
+          var value;
 
-            if ( vote.value === -1 ) {
-              accumulation[vote.criteria].values['-1'] ++;
-            }
-            else {
-              accumulation[vote.criteria].values['+' + vote.value] ++;
-            }
+          if ( vote.value === 0 ) {
+            value = '-1';
           }
+
+          else if ( vote.value === 1 ) {
+            value = '+0';
+          }
+
+          else if ( vote.value === 2 ) {
+            value = '+1';
+          }
+
+          if ( ! accumulation[vote.criteria] ) {
+            accumulation[vote.criteria] = {
+              total: 0,
+              values: initValues()
+            };
+          }
+          
+          accumulation[vote.criteria].total ++;
+
+          accumulation[vote.criteria].values[value] ++;
 
         });
 

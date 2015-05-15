@@ -44,6 +44,7 @@
       'Get Details',
       'Get Item',
       'Get Panel Items',
+      'Increment Promotion',
       'Increment View'
     ];
 

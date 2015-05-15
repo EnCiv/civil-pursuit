@@ -2357,7 +2357,7 @@ function hasOwnProperty(obj, prop) {
 
       return function (error) {
         if ( error && error instanceof Error ) {
-          self.domain.emit('error', error);
+          d.emit('error', error);
         }
 
         else {

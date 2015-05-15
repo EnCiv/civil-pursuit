@@ -48,7 +48,9 @@
         votes.push(vote);
       });
 
-    app.socket.emit('insert votes', votes);
+    app.socket.publish('insert votes', votes, function votesInserted () {
+      app.socket.removeListener('OK insert votes', votesInserted);
+    });
   }
 
   module.exports = save;

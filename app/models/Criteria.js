@@ -17,7 +17,7 @@ var CriteriaSchema = new Schema({
   "description"   : 	String,
   "type"          :   {
     "type"        :   Schema.Types.ObjectId,
-    "ref"         :   "Criteria"
+    "ref"         :   "Type"
   }
   // "type":String
 });

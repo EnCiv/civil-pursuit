@@ -68,9 +68,7 @@
 
         it['harmony']
           .forEach(function             (eachHarmonyItem) {
-            eachHarmonyItem.should
-              .have.property('_id')
-                .which.                 is.an.ObjectID;
+            eachHarmonyItem.should.be.an.ObjectID;
           });
         });
 

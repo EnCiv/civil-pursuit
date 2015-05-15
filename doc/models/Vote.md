@@ -25,3 +25,8 @@ The vote is the answer to the question formulated in the Criteria (ie, 'Is this 
 # Statics
 
 - [Get Accumulation](app/models/Vote/statics/get-accumulation.md)
+
+# Business logics
+
+- User cannot vote for an item he/she owns
+- User cannot vote more than once

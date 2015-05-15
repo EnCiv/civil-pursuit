@@ -21,6 +21,16 @@ Accumulation is a hash table of votes of one item indexed by criterias:
 
     VoteResult = { "-1": Number, "+0": Number, "+1": Number }
 
+# Conversion
+
+Vote values are saved as numbers, but are returned labelled in accumulation, such as:
+
+```
+ 0 => "-1"
+ 1 => "+0"
+ 2 => "+1"
+```
+
 # Example
 
 ```js

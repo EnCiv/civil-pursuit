@@ -6,8 +6,6 @@
 
     var socket = this;
 
-    
-
     var domain = require('domain').create();
     
     domain.on('error', function (error) {

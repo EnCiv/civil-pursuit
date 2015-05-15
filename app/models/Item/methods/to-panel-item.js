@@ -2,12 +2,12 @@
   
   'use strict';
 
-  /** Transform Item Document into an object for panels
-   *  *************************************************
+  /** Transform Item Document into an object displaybale by panels
+   *  ************************************************************
    *
-   *  Models / Item / Methods / Get Popularity [JS]
+   *  Models / Item / Methods / To Panel Item [JS]
    *
-   *  *************************************************
+   *  ************************************************************
   */
 
   var di            =   require('syn/lib/util/di/domain');
