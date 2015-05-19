@@ -9894,6 +9894,49 @@ var Promote = (function (_Controller) {
       return _synComponentsPromoteControllersRender2['default'].apply(this, [cb]);
     }
   }, {
+    key: 'save',
+    value: function save(hand) {
+      var self = this;
+
+      // feedback
+
+      var feedback = this.find('item feedback', hand);
+
+      if (feedback.val()) {
+
+        if (!feedback.hasClass('do-not-save-again')) {
+          this.publish('insert feedback', {
+            item: this.get(hand)._id,
+            feedback: feedback.val()
+          }).subscribe(function (pubsub) {
+            return pubsub.unsubscribe();
+          });
+
+          feedback.addClass('do-not-save-again');
+        }
+
+        // feedback.val('');
+      }
+
+      // votes
+
+      var votes = [];
+
+      this.template.find('.items-side-by-side:visible .' + hand + '-item input[type="range"]:visible').each(function () {
+        var vote = {
+          item: self.get(hand)._id,
+          value: +$(this).val(),
+          criteria: $(this).data('criteria')
+        };
+
+        votes.push(vote);
+      });
+
+      this.publish('insert votes', votes).subscribe(function (pubsub) {
+        return pubsub.unsubscribe();
+      });
+    }
+  }, {
     key: 'getEvaluation',
     value: function getEvaluation(cb) {
       var _this2 = this;
@@ -10286,39 +10329,44 @@ var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
  */
 
 function renderPromote(cb) {
-  var promote = this;
+  var self = this;
 
-  promote.find('finish button').on('click', function () {
-    _synLibUtilNav2['default'].scroll(promote.template, app.domain.intercept(function () {
+  var d = this.domain;
 
-      if (promote.evaluation.cursor < promote.evaluation.limit) {
+  self.find('finish button').on('click', function () {
+    _synLibUtilNav2['default'].scroll(self.template, d.intercept(function () {
 
-        promote.save('left');
+      var cursor = self.get('cursor');
+      var limit = self.get('limit');
 
-        promote.save('right');
+      if (cursor < limit) {
 
-        $.when(promote.find('side by side').find('.left-item, .right-item').animate({
+        self.save('left');
+
+        self.save('right');
+
+        $.when(self.find('side by side').find('.left-item, .right-item').animate({
           opacity: 0
         }, 1000)).then(function () {
-          promote.edit('cursor', promote.evaluation.cursor + 1);
+          self.set('cursor', cursor + 1);
 
-          promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+          self.set('left', self.get('items')[cursor]);
 
-          promote.edit('cursor', promote.evaluation.cursor + 1);
+          self.set('cursor', cursor + 1);
 
-          promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+          self.set('right', self.get('items')[cursor]);
 
-          promote.find('side by side').find('.left-item').animate({
+          self.find('side by side').find('.left-item').animate({
             opacity: 1
           }, 1000);
 
-          promote.find('side by side').find('.right-item').animate({
+          self.find('side by side').find('.right-item').animate({
             opacity: 1
           }, 1000);
         });
       } else {
 
-        promote.finish();
+        self.finish();
       }
     }));
   });

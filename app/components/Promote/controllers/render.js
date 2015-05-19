@@ -9,19 +9,24 @@ import Nav from 'syn/lib/util/Nav';
  */
 
 function renderPromote (cb) {
-  var promote = this;
+  var self = this;
 
-  promote.find('finish button').on('click', function () {
-    Nav.scroll(promote.template, app.domain.intercept(function () {
+  let d = this.domain;
 
-      if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+  self.find('finish button').on('click', function () {
+    Nav.scroll(self.template, d.intercept(function () {
 
-        promote.save('left');
+      let cursor = self.get('cursor');
+      let limit = self.get('limit');
 
-        promote.save('right');
+      if ( cursor < limit ) {
+
+        self.save('left');
+
+        self.save('right');
 
         $.when(
-          promote
+          self
             .find('side by side')
             .find('.left-item, .right-item')
             .animate({
@@ -29,22 +34,22 @@ function renderPromote (cb) {
             }, 1000)
         )
           .then(function () {
-            promote.edit('cursor', promote.evaluation.cursor + 1);
+            self.set('cursor', cursor + 1);
 
-            promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+            self.set('left', self.get('items')[cursor]);
 
-            promote.edit('cursor', promote.evaluation.cursor + 1);
+            self.set('cursor', cursor + 1);
 
-            promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+            self.set('right', self.get('items')[cursor]);
 
-            promote
+            self
               .find('side by side')
               .find('.left-item')
               .animate({
                 opacity: 1
               }, 1000);
 
-            promote
+            self
               .find('side by side')
               .find('.right-item')
               .animate({
@@ -55,7 +60,7 @@ function renderPromote (cb) {
 
       else {
 
-        promote.finish();
+        self.finish();
 
       }
 

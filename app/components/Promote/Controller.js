@@ -114,6 +114,51 @@ class Promote extends Controller {
     return render.apply(this, [cb]);
   }
 
+  save (hand) {
+    let self = this;
+
+    // feedback
+
+    let feedback = this.find('item feedback', hand);
+
+    if ( feedback.val() ) {
+
+      if ( ! feedback.hasClass('do-not-save-again') ) {
+        this
+          .publish('insert feedback', {
+            item: this.get(hand)._id,
+            feedback: feedback.val()
+          })
+          
+          .subscribe(pubsub => pubsub.unsubscribe());
+
+        feedback.addClass('do-not-save-again');
+      }
+
+      // feedback.val('');
+    }
+
+    // votes
+
+    let votes = [];
+
+    this.template
+      .find('.items-side-by-side:visible .' +  hand + '-item input[type="range"]:visible')
+      .each(function () {
+        var vote = {
+          item: self.get(hand)._id,
+          value: +$(this).val(),
+          criteria: $(this).data('criteria')
+        };
+
+        votes.push(vote);
+      });
+
+    this
+      .publish('insert votes', votes)
+      .subscribe(pubsub => pubsub.unsubscribe());
+  }
+
   getEvaluation (cb) {
     if ( ! this.get('evaluation') ) {
 
