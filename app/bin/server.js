@@ -26,7 +26,7 @@
     .run(function () {
       symlink(domain.intercept(function () {
         httpServer(null, domain.intercept(function () {
-          console.log('server started');  
+          console.log('server started' );  
         }));
       }));
     });
