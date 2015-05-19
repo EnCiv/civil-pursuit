@@ -1,242 +1,163 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  module.exports = ItemView;
+import {Element} from 'cinco';
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Library dependencies
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class Item extends Element {
 
-  var html5                   =   require('syn/lib/html5');
-  var Element                 =   html5.Element;
-  var Page                    =   require('syn/lib/app/Page');
+  constructor (props) {
+    super('.item');
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Components dependencies
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    this.attr('id', props.item ? 'item-' + props.item.id  : '');
 
-  var DefaultButtonsView =   require('syn/components/ItemDefaultButtons/View');
-  var PromoteView             =   require('syn/components/Promote/View');
-  var DetailsView             =   require('syn/components/Details/View');
+    this.props = props || {};
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Export Item Box
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  /**
-   *  @arg                        {Object} locals
-  */
-
-  function ItemView (locals) {
-
-    console.log()
-    console.log()
-    console.log('got locals', arguments)
-    console.log()
-    console.log()
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Media
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $MediaWrapper         =   Element('.item-media-wrapper');
-
-    var $Media                =   Element('.item-media');
-
-    function getItemMedia (item)  {
-
-      if ( item )             {
-        if ( item.media )     {
-          return                  item.media;
-        }
-
-        else if ( item.image ){
-          return                  Element('img.img-responsive', {
-            src               :   item.image });
-        }
-      }
-
-      return                      [];
-    }
-
-    $Media.add(                   getItemMedia(locals.item));
-    $MediaWrapper.add(            $Media);
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Buttons
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $Buttons              =   Element('.item-buttons', {
-        $condition            :   function () {
-          if ( locals.item )  {
-            return locals.item.buttons  !== false;
-          }
-          return true;
-        }
-      }
+    this.add(
+      this.media(),
+      this.buttons(),
+      this.text(),
+      this.arrow(),
+      this.collapsers(),
+      new Element('.clear')
     );
+  }
 
-    if ( locals.item && locals.item.buttons ) {
-      $Buttons.add(               locals.item.buttons);
+  media () {
+    return new Element('.item-media-wrapper').add(
+      new Element('.item-media').add(
+        () => {
+          if ( this.props.item )             {
+            if ( this.props.item.media )     {
+              return this.props.item.media;
+            }
+
+            else if ( this.props.item.image ){
+              return new Element('img.img-responsive', {
+                src               :   this.props.item.image });
+            }
+          }
+
+          return [];
+        }
+      )
+    );
+  }
+
+  buttons () {
+    let itemButtons = new Element('.item-buttons')
+      .condition(() => {
+        if ( this.props.item ) {
+          return this.props.item.buttons  !== false
+        }
+        return false;
+      });
+
+    if ( this.props.item && this.props.item.buttons ) {
+      itemButtons.add(this.props.item.buttons);
     }
 
     else {
-      $Buttons.add(               DefaultButtonsView());
+      itemButtons.add(new DefaultButtonsView(this.props));
     }
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Subject
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    return itemButtons;
+  }
 
-    var $SubjectHeader        =   Element('h4.item-subject.header');
+  subject () {
+    return new Element('h4.item-subject.header').add(
+      new Element('a', {    
+        href: locals => {
+          if ( locals && locals.item )    {
+            return Page('Item Page', locals && locals.item);
+          }
+          return '#';
+        }
+      })
+        .text(() => {
+          if ( this.props.item )  {
+            return this.props.item.subject;
+          }
+          return '';
+        })
+    );
+  }
 
-    var $SubjectLink          =   Element('a', {
+  description () {
+    return new Element('.item-description.pre-text')
+      .text( () => {
+        if ( this.props.item )      {
+          return this.props.item.description;
+        }
+        return  '';
+      })
+  }
+
+  text () {
+    return new Element('.item-text').add(
+      new Element('.item-truncatable').add(
+        this.subject(),
+        this.description(),
+        new Element('.clear.clear-text')
+      )
+    );
+  }
+
+  collapsers () {
+
+    return new Element('.item-collapsers')
+      .condition(() => {
+        // console.log(this.selector)
+        // if ( this.props.item ) {
+        //   return this.props.item.collapsers !==   false;
+        // }
+        return true;
+      })
+      .add(
+        this.promote(),
+        this.details(),
+        this.below()
+      );
+  }
+
+  promote () {
+    return new Element('.promote.is-container').add(
+      new Element('.is-section')
+    )
+  }
+
+  below () {
+    return new Element('.children.is-container').add(
+      new Element('.is-section')
+    )
+  }
+
+  details () {
+    return new Element('.details.is-container').add(
+      new Element('.is-section')
+    )
+  }
+
+  arrow () {
+    return new Element('.item-arrow')
       
-      href                    :     function (locals) {
-        if ( locals && locals.item )    {
-          return                      Page('Item Page', locals && locals.item);
-        }
-
-        return                        '#';
-      },
-
-      $text                     :     function (locals) {
-        if ( locals && locals.item )      {
-          return                      locals.item.subject;
-        }
-
-        return                        '';
-      }
-    });
-
-    $SubjectHeader.add(               $SubjectLink);
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Description
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $Description            =     Element('.item-description.pre-text', {
-      $text                     :     function (locals) {
-        if ( locals && locals.item )      {
-          return                      locals.item.description;
-        }
-
-        return                        '';
-      }
-    });
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Reference
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  TEXT
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $Text                   =     Element('.item-text');
-
-    var $Truncatable            =     Element('.item-truncatable');
-    
-    var $ClearText              =     Element('.clear.clear-text');
-
-    $Text.add(                        $Truncatable);
-
-    $Truncatable.add(                 $SubjectHeader,
-                                      $Description,
-                                      $ClearText);
-    
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Promote
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $Promote                =     Element('.promote.is-container');
-
-    var $PromoteSection         =     Element('.is-section');
-
-    $Promote.add(                     $PromoteSection);
-
-    $PromoteSection.add(              PromoteView(locals));
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Details
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $Details                =     Element('.details.is-container');
-
-    var $DetailsSection         =     Element('.is-section')
-
-    $Details.add(                     $DetailsSection);
-
-    $DetailsSection.add(              DetailsView(locals));
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Arrow
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $ArrowWrapper           =     Element('.item-arrow', {
-      $condition                :     function () {
-        if ( locals.item ) {
-          return locals.item.collapsers !==   false;
+      .condition( () => {
+        if ( this.props.item ) {
+          return this.props.item.collapsers !==   false;
         }
         return true;
-      }
-    });
+      })
 
-    var $Arrow                  =     Element('i.fa.fa-arrow-down');
+      .add(
+        new Element('div').add(
+          new Element('i.fa.fa-arrow-down')
+        )
+      );
+  }
 
-    var $ArrowDiv               =     Element('div');
+}
 
-    $ArrowWrapper.add($ArrowDiv);
+export default Item;
 
-    $ArrowDiv.add($Arrow);
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Children
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $Children               =     Element('.children.is-container');
-    var $ChildrenSection        =     Element('.is-section');
-
-    $Children.add(
-      $ChildrenSection);
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // Item collapsers
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var $Collapsers             =   Element('.item-collapsers', {
-      $condition                :   function () {
-        if ( locals.item ) {
-          return locals.item.collapsers !==   false;
-        }
-        return true;
-      }
-    });
-
-    $Collapsers.add(
-      $Promote,
-      $Details,
-      $Children);
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Item Box
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    var itemAttributes        =   {
-      id                      :   locals.item ? 'item-' + locals.item.id  : ''
-    };
-
-    var $Item                 =   Element('.item', itemAttributes);
-
-    $Item.add(                    $MediaWrapper,
-                                  $Buttons,
-                                  $Text,
-                                  $ArrowWrapper,
-                                  $Collapsers,
-                                  Element('.clear'));
-
-    return                        $Item;
-  };
-
-} ();
+import Page from 'syn/lib/app/Page';
+import DefaultButtonsView from 'syn/components/ItemDefaultButtons/View';
+import PromoteView from 'syn/components/Promote/View';
+import DetailsView from 'syn/components/Details/View';

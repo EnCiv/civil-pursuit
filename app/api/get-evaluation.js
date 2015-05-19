@@ -3,8 +3,6 @@
   'use strict';
 
   function getEvaluation (event, item_id) {
-    console.log(event, item_id);
-    console.log('++++++++++++++++++++++++++++')
     var socket = this;
 
     var domainRun = require('syn/lib/util/domain-run');

@@ -1,65 +1,36 @@
-! function _PanelComponent_ () {
+'use strict';
 
-  'use strict';
+import Controller   from 'syn/lib/app/Controller';
+import Nav          from 'syn/lib/util/Nav';
+import Creator      from 'syn/components/Creator/Controller';
+import Item         from 'syn/components/Item/Controller';
+import View         from 'syn/components/Panel/View';
+import cache        from 'syn/lib/app/Cache';
 
-  /** Providers */
+class Panel extends Controller {
 
-  var Nav       =   require('syn/lib/util/Nav');
-  var Session   =   require('syn/lib/app/Session');
+  constructor (props) {
+    super();
 
-  /** Components */
+    this.props = props;
 
-  var Creator   =   require('syn/components/Creator/Controller');
-  var Item      =   require('syn/components/Item/Controller');
-  var Sign      =   require('syn/components/Sign/Controller');
+    this.componentName = 'Panel';
+    this.view = View;
 
-  /**
-   *  @class
-   *
-   *  @arg {Object} type
-   *  @arg {ObjectID?} parent
-   *  @arg {Number} size
-   *  @arg {Number} skip
-   */
-
-  function Panel (type, parent, size, skip) {
-
-    if ( ! app ) {
-      throw new Error('Missing app');
+    if ( this.props.panel ) {
+      this.set('panel', this.props.panel);
     }
 
-    var panel = this;
-
-    this.type     =   type;
-    this.parent   =   parent;
-    this.skip     =   skip || 0;
-    this.size     =   size || synapp['navigator batch size'];
-
-    this.id       =   Panel.getId(this);
+    if ( this.props.panel ) {
+      this.type     =   this.props.panel.type;
+      this.parent   =   this.props.panel.parent;
+      this.skip     =   this.props.panel.skip || 0;
+      this.size     =   this.props.panel.size || synapp.config['navigator batch size'];
+      this.id       =   Panel.getId(this);
+    }
   }
 
-  Panel.getId = function (panel) {
-    var id = 'panel-' + (panel.type._id || panel.type);
-
-    if ( panel.parent ) {
-      id += '-' + panel.parent;
-    }
-
-    return id;
-  };
-
-  /**
-   *  @method       Panel.getId
-   *  @return       {String} panelId
-  */
-
-  Panel.prototype.getId = function () {
-    return this.id;
-  };
-
-  Panel.prototype.load = require('syn/components/Panel/controllers/load');
-
-  Panel.prototype.find = function (name) {
+  find (name) {
     switch ( name ) {
       case 'title':
         return this.template.find('.panel-title:first');
@@ -79,53 +50,191 @@
       case 'create new':
         return this.template.find('.create-new:first');
     }
-  };
+  }
 
-  Panel.prototype.toggleCreator = function (target) {
+  render (cb) {
+    var q = new Promise((fulfill, reject) => {
 
-    console.info('is in', Session.isIn());
-    
-    if ( Session.isIn() ) {
-      Nav.toggle(this.find('creator'), this.template, app.domain.intercept());
+      let d = this.domain;
+
+      d.run(() => {
+
+        let panel = this.get('panel');
+
+        // Fill title                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        this.find('title').text(panel.type.name);
+
+        // Toggle Creator
+
+        this.find('toggle creator').on('click', () => {
+          if ( this.socket.synuser ) {
+            Nav.toggle(this.find('creator'), this.template, d.intercept());
+          }
+          else {
+            Sign.dialog.join();
+          }
+        });
+
+        // Panel ID
+
+        if ( ! this.template.attr('id') ) {
+          this.template.attr('id', this.getId());
+        }
+
+        var creator = new Creator(this.props);
+
+        creator
+          .render()
+          .then(fulfill, d.intercept.bind(d));
+
+        this.find('load more').on('click', () => {
+          this.fill();
+          return false;
+        });
+
+        this.find('create new').on('click', () => {
+          this.find('toggle creator').click();
+          return false;
+        });
+
+        // Done
+
+        fulfill();
+
+      }, reject);
+
+    });
+
+    if ( typeof cb === 'function' ) {
+      q.then(cb.bind(null, null), cb);
     }
-    else {
-      Sign.dialog.join();
+
+    return q;
+  }
+
+  fill (item, cb) {
+    if ( typeof item === 'function' && ! cb ) {
+      cb = item;
+      item = undefined;
     }
-  };
 
-  Panel.prototype.render        =   require('syn/components/Panel/controllers/render');
+    let panel = this.toJSON();
 
-  Panel.prototype.toJSON        =   require('syn/components/Panel/controllers/to-json');
-
-  Panel.prototype.fill          =   require('syn/components/Panel/controllers/fill');
-
-  Panel.prototype.preInsertItem =   require('syn/components/Panel/controllers/pre-insert-item');
-
-  Panel.prototype.insertItem    =   function (items, i, cb) {
-
-    var self = this;
-
-    if ( items[i] ) {
-
-      var item  = new Item(items[i]);
-
-      console.log('inserting item ', i, item)
-
-      item.load(app.domain.intercept(function (template) {
-        self.find('items').append(template);
-
-        item.render(app.domain.intercept(function () {
-          self.insertItem(items, ++ i, cb);
-        }));
-
-      }));
+    if ( item ) {
+      panel.item = item;
+      panel.type = undefined;
     }
-    else {
-      cb && cb();
+
+    this
+      .publish('get items', panel)
+      .subscribe((pubsub, _panel, items) => {
+        if ( Panel.getId(panel) !== Panel.getId(_panel) ) {
+          return /** This is about another panel */;
+        }
+
+        pubsub.unsubscribe();
+
+        console.log('got panel items', items);
+
+        this.template.find('.hide.pre').removeClass('hide');
+        this.template.find('.show.pre').removeClass('show').hide();
+
+        this.template.find('.loading-items').hide();
+
+        if ( items.length ) {
+
+          this.find('create new').hide();
+          this.find('load more').show();
+
+          if ( items.length < synapp.config['navigator batch size'] ) {
+            this.find('load more').hide();
+          }
+
+          this.skip += items.length;
+
+          this.preInsertItem(items, cb);
+        }
+
+        else {
+          this.find('create new').show();
+          this.find('load more').hide();
+        }
+      });
+  }
+
+  toJSON () {
+    var json = {
+      type: this.type,
+      size: this.size,
+      skip: this.skip,
+      // item: app.location.item
+    };
+
+    if ( this.parent ) {
+      json.parent = this.parent;
     }
-    
-  };
 
-  module.exports = Panel;
+    return json;
+  }
 
-} ();
+  preInsertItem (items, cb) {
+
+    let d = this.domain;
+
+    /** Load template */
+
+    if ( ! cache.getTemplate('Item') ) {
+      new Item().load();
+      return this.preInsertItem(items, cb);
+    }
+
+    /** Items to object */
+
+    items = items.map(item => {
+      let props = {};
+
+      for ( let i in this.props ) {
+        props[i] = this.props;
+      }
+
+      props.item = item;
+
+      let itemComponent = new Item(props);
+
+      itemComponent.load();
+
+      this.find('items').append(itemComponent.template);
+
+      return itemComponent;
+    });
+
+    var i = 0;
+    var len = items.length;
+
+    function next () {
+      i ++;
+
+      if ( i === len && cb ) {
+        cb();
+      }
+    }
+
+    console.log('rendering', items)
+
+    items.forEach(item => item.render(d.intercept(next)));
+  }
+
+}
+
+Panel.getId = function (panel) {
+  let id = 'panel-' + (panel.type._id || panel.type);
+
+  if ( panel.parent ) {
+    id += '-' + panel.parent;
+  }
+
+  return id;
+};
+
+export default Panel;

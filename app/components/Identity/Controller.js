@@ -72,7 +72,11 @@
       last_name:    this.find('last name').val()
     };
 
-    app.socket.emit('change user name', synapp.user, name);
+    app.socket.emit('change user name',       
+      
+      
+      
+app.socket.synuser, name);
   };
 
   /**

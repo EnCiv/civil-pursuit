@@ -49,7 +49,7 @@
             return done();
           }
 
-          cp.exec(util.format('%s %s -o %s',
+          cp.exec(util.format('%s [ -t babelify --modules common --stage 1] %s -o %s',
             path.join(node_bin, 'browserify'), ctrl,
               path.join(js, 'page-' + S(page).humanize().slugify().s + '.js')),
             done);

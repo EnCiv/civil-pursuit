@@ -1,27 +1,22 @@
-! function () {
-  
-  'use strict';
+'use strict'
 
-  var IntroView           =   require('syn/components/Intro/View');
-  var TopLevelPanelView   =   require('syn/components/TopLevelPanel/View');
+import Layout from 'syn/components/Layout/View';
+import IntroView           from 'syn/components/Intro/View';
+import TopLevelPanelView   from 'syn/components/TopLevelPanel/View';
 
-  function HomePage (locals) {
-    var Layout = require('syn/components/Layout/View')(locals);
+class HomePage extends Layout {
+  constructor(props) {
+    super(props);
+    this.props = props;
 
-    Layout.find('#main')
+    var main = this.find('#main').get(0);
 
-      .each(function (main) {
-
-        main.add(
-          IntroView(locals),
-          TopLevelPanelView(locals)
-        );
-
-      });
-
-    return Layout;
+    main.add(
+      new IntroView(props),
+      new TopLevelPanelView(props)
+    );
   }
+}
 
-  module.exports = HomePage;
+export default HomePage;
 
-} ();

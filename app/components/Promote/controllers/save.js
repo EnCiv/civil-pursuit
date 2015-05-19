@@ -21,7 +21,11 @@
       if ( ! feedback.hasClass('do-not-save-again') ) {
         app.socket.emit('insert feedback', {
           item: promote.evaluation[hand]._id,
-          user: synapp.user,
+          user:       
+      
+      
+      
+app.socket.synuser,
           feedback: feedback.val()
         });
 
@@ -40,7 +44,11 @@
       .each(function () {
         var vote = {
           item: promote.evaluation[hand]._id,
-          user: synapp.user,
+          user:       
+      
+      
+      
+app.socket.synuser,
           value: +$(this).val(),
           criteria: $(this).data('criteria')
         };

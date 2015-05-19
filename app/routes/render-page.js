@@ -1,51 +1,28 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function renderPage (req, res, next) {
+import S from 'string';
+import getProps from 'syn/lib/app/props';
 
-    var app           =   this;
-    /** @type             Function */
-    var exportsLocal  =   require('syn/lib/app/export-locals');
-    /** @type             Object */
-    var locals        =   exportsLocal(app, req, res);
-    /** @type             Html5 */
-    var Html5         =   require('syn/lib/html5');
-    var S             =   require('string');
-    var pageName      =   S(locals.page).capitalize().camelize().s;
-    /** @type             Function */
-    var page          =   require('syn/pages/' + pageName + '/View');
-    /** @type             html5.Document */
-    var view          =   page(locals);
-    /** @type             Boolean */
-    var isAView       =   view instanceof Html5.Elements ||
-      view instanceof Html5.Element ||
-      view instanceof Html5.Document;
+var cache = {}
 
-    app.arte.emit('message', 'Rendering page', locals.page,
-      view.constructor.name);
+function renderPage (req, res, next) {
+  let props       =   getProps(this, req, res);
+  let pageName    =   S(props.page).capitalize().camelize().s;
 
-    if ( isAView ) {
-      res.send(view.toHTML(locals));
-      app.arte.emit('response', res);
-    }
-
-    else if ( view instanceof require('events').EventEmitter ) {
-      view.once('type', function (type) {
-        res.type(type);
-      });
-
-      view.on('status', function (status) {
-        res.status(404);
-      });
-
-      view.once('done', function (html) {
-        res.send(html);
-        app.arte.emit('response', res);
-      });
-    }
+  if ( pageName in cache ) {
+    return res.send(cache[pageName]);
   }
 
-  module.exports = renderPage;
+  let Page        =   require('syn/pages/' + pageName + '/View');
+  let page        =   new Page(props);
 
-} ();
+  cache[pageName] = page.render();
+
+  res.send(cache[pageName]);
+
+  if ( pageName === 'Component' ) {
+    delete cache[pageName];
+  }
+}
+
+export default renderPage;

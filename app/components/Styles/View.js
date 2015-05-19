@@ -1,92 +1,73 @@
-! function () {
+'use strict';
+
+import {Element, Elements} from 'cinco';
+import config from 'syn/config.json';
+
+class Stylesheet extends Element {
+  constructor (href) {
+    super('link', { rel: 'stylesheet', type: 'text/css', href: href });
+  }
+}
+
+class Stylesheets extends Element {
   
-  'use strict';
-
-  var html5     =   require('syn/lib/html5');
-  var config    =   require('syn/config.json');
-
-  module.exports = function StyleSheets (locals) {
-
-    return html5.Elements(
-      
-      // RESET
-
-      html5.Element.styleSheet(function (locals) {
-        if ( locals.settings.env === 'production' ) {
-          return '/css/normalize.min.css';
-        }
-        else {
-          return '/css/normalize.css';
-        }
-      }),
-
-      // APP
-
-      html5.Element.styleSheet(function (locals) {
-        if ( locals.settings.env === 'production' ) {
-          return '/css/index.min.css';
-        }
-        else {
-          return '/css/index.css';
-        }
-      }),
-
-      // FONT
-
-      // html5.Element.styleSheet('//fonts.googleapis.com/css?family=Oswald'),
-
-      // FONT AWESOME
-
-      html5.Element.styleSheet(function (locals) {
-        if ( locals.settings.env === 'production' ) {
-          return config['font awesome'].cdn;
-        }
-        else {
-          return '/bower_components/font-awesome/css/font-awesome.css';
-        }
-      }),
-
-      // VEX MODALS
-
-      html5.Element.styleSheet('/assets/vex-2.2.1/css/vex.css'),
-
-      html5.Element.styleSheet('/assets/vex-2.2.1/css/vex-theme-flat-attack.css'),
-
-      // C3
-
-      html5.Element.styleSheet(function (locals) {
-        if ( locals.settings.env === 'production' ) {
-          return '/css/c3.min.css';
-        }
-        else {
-          return '/bower_components/c3/c3.css';
-        }
-      }),
-
-      // TOOLKIT
-
-      html5.Element.styleSheet(function (locals) {
-        if ( locals.settings.env === 'production' ) {
-          return '/css/tooltip.min.css';
-        }
-        else {
-          return '/assets/toolkit/tooltip.css';
-        }
-      }),
-
-      // GOAL PROGRESS
-
-      html5.Element.styleSheet(function (locals) {
-        if ( locals.settings.env === 'production' ) {
-          return '/bower_components/goalProgress/goalProgress.css';
-        }
-        else {
-          return '/bower_components/goalProgress/goalProgress.css';
-        }
-      })
-      
+  constructor (props) {
+    super('styles');
+    this.props = props;
+    this.add(
+      this.reset(),
+      this.app(),
+      this.fontAwesome(),
+      this.vex(),
+      this.vexTheme(),
+      this.c3(),
+      this.tooltip(),
+      this.goalProgress()
     );
+  }
 
-  };
+  reset () {
+    return new Stylesheet(() => this.props.settings.env === 'production'
+      ? '/css/normalize.min.css'
+      : '/css/normalize.css');
+  }
 
-} ();
+  app () {
+    return new Stylesheet(() => this.props.settings.env === 'production'
+      ? '/css/index.min.css'
+      : '/css/index.css');
+  }
+
+  fontAwesome () {
+    return new Stylesheet(() => this.props.settings.env === 'production'
+      ? config['font awesome'].cdn
+      : '/bower_components/font-awesome/css/font-awesome.css');
+  }
+
+  vex () {
+    return new Stylesheet('/assets/vex-2.2.1/css/vex.css');
+  }
+
+  vexTheme () {
+    return new Stylesheet('/assets/vex-2.2.1/css/vex-theme-flat-attack.css');
+  }
+
+  c3 () {
+    return new Stylesheet(() => this.props.settings.env === 'production'
+      ? '/css/c3.min.css'
+      : '/bower_components/c3/c3.css');
+  }
+
+  tooltip () {
+    return new Stylesheet(() => this.props.settings.env === 'production'
+      ? '/css/tooltip.min.css'
+      : '/assets/toolkit/tooltip.css');
+  }
+
+  goalProgress () {
+    return new Stylesheet('/bower_components/goalProgress/goalProgress.css');
+  }
+
+}
+
+export default Stylesheets

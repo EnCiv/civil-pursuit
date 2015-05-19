@@ -1,39 +1,94 @@
-! function Component_Intro_Controller () {
+'use strict';
 
-  'use strict';
+import View from 'syn/components/Intro/View';
+import Controller from 'syn/lib/app/Controller';
+import Item from 'syn/components/Item/Controller';
+import readMore from 'syn/lib/util/ReadMore';
 
-  var Item        =   require('syn/components/Item/Controller');
-  var readMore    =   require('syn/lib/util/ReadMore');
+class Intro extends Controller {
 
-  function Intro () {}
+  get template () {
+    return $(View.selector);
+  }
+  
+  constructor (props) {
+    super();
 
-  Intro.prototype.render = function () {
+    this.props = props;
 
-    app.socket.publish('get intro', function (intro) {
+    this.getIntro();
+  }
 
-      $('#intro').find('.panel-title').text(intro.subject);
-
-      $('#intro').find('.item-subject').text(intro.subject);
-
-      $('#intro').find('.item-reference').remove();
-      $('#intro').find('.item-buttons').remove();
-      $('#intro').find('.item-arrow').remove();
-
-      // adjustBox($('#intro .item'));
-
-      $('#intro').find('.item-media')
-        .empty().append(new Item(intro).media());
-
-      $('#intro').find('.item-media img').load(function () {
-        readMore(intro, $('#intro'));
+  getIntro () {
+    this
+      .publish('get intro')
+      .subscribe((pubsub, intro) => {
+        this.set('intro', intro);
+        pubsub.unsubscribe();
       });
+  }
 
-      setTimeout(function () {
-        //new Truncate($('#intro'));
-      });
-    });
-  };
+  find (name) {
+    switch ( name ) {
+      case 'panel title':
+        return this.template.find('.panel-title');
 
-  module.exports = Intro;
+      case 'item subject':
+        return this.template.find('.item-subject a');
 
-} ();
+      case 'item references':
+        return this.template.find('.item-reference');
+
+      case 'item buttons':
+        return this.template.find('.item-buttons');
+
+      case 'item arrow':
+        return this.template.find('.item-arrow');
+
+      case 'item media':
+        return this.template.find('.item-media');
+
+      case 'item image':
+        return this.template.find('.item-media img');
+    }
+  }
+
+  render () {
+
+    let intro = this.get('intro');
+
+    if ( ! intro ) {
+      return this.on('set', key => key === 'intro' && this.render());
+    }
+      
+    this.renderPanel();
+
+    this.renderItem();    
+  }
+
+  renderPanel () {
+    let intro = this.get('intro');
+    this.find('panel title').text(intro.subject);
+  }
+
+  renderItem () {
+    let intro = this.get('intro');
+
+    this.find('item subject').text(intro.subject);
+
+    this.find('item references').remove();
+
+    this.find('item buttons').remove();
+
+    this.find('item arrow').remove();
+
+    this.find('item media')
+      .empty()
+      .append(new Item({ item: intro }).media());
+
+    this.find('item image').load(() => readMore(intro, this.template));
+  }
+
+}
+
+export default Intro;

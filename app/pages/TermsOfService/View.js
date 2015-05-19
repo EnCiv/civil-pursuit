@@ -1,52 +1,22 @@
-! function () {
-  
-  'use strict';
+'use strict'
 
-  var EventEmitter = require('events').EventEmitter;
+import Layout               from 'syn/components/Layout/View';
+import IntroView            from 'syn/components/Intro/View';
+import TopLevelPanelView    from 'syn/components/TopLevelPanel/View';
+import marked               from 'marked';
+import {Element}            from 'cinco';
 
-  function TOS (locals) {
+class TOS extends Layout {
+  constructor(props) {
+    super(props);
+    this.props = props;
 
-    var marked = require('marked');
+    var main = this.find('#main').get(0);
 
-    var fs = require('fs');
-
-    var html5 = require('syn/lib/html5');
-
-    var Layout = require('syn/components/Layout/View')(locals);
-
-    var emitter = new EventEmitter();
-
-    fs
-      
-      .createReadStream('TOS.md')
-      
-      .on('data', function (data) {
-        if ( ! this.md ) {
-          this.md = '';
-        }
-        this.md += data.toString();
-      })
-      
-      .on('end', function () {
-
-        var md = this.md;
-
-        Layout.find('#main')
-
-          .each(function (main) {
-
-            main.add(
-              html5.Element('div', { $text: marked(md) })
-            );
-
-          });
-
-        emitter.emit('done', Layout.toHTML(locals));
-      });
-
-    return emitter;
+    main.add(
+      new Element('div').text(marked(props.TOS))
+    );
   }
+}
 
-  module.exports = TOS;
-
-} ();
+export default TOS;

@@ -61,7 +61,11 @@
           console.log('race added', arguments);
         });
 
-        app.socket.emit('add race', synapp.user, $(this).val());
+        app.socket.emit('add race',       
+      
+      
+      
+app.socket.synuser, $(this).val());
       }
 
       else {
@@ -69,7 +73,11 @@
           console.log('race removed', arguments);
         });
 
-        app.socket.emit('remove race', synapp.user, $(this).val());
+        app.socket.emit('remove race',       
+      
+      
+      
+app.socket.synuser, $(this).val());
       }
     });
 
@@ -81,7 +89,11 @@
           console.log('marital status set', arguments);
         });
 
-        app.socket.emit('set marital status', synapp.user, $(this).val());
+        app.socket.emit('set marital status',       
+      
+      
+      
+app.socket.synuser, $(this).val());
       }
     });
 
@@ -93,7 +105,11 @@
           console.log('employment set', arguments);
         });
 
-        app.socket.emit('set employment', synapp.user, $(this).val());
+        app.socket.emit('set employment',       
+      
+      
+      
+app.socket.synuser, $(this).val());
       }
     });
 
@@ -105,7 +121,11 @@
           console.log('education set', arguments);
         });
 
-        app.socket.emit('set education', synapp.user, $(this).val());
+        app.socket.emit('set education',       
+      
+      
+      
+app.socket.synuser, $(this).val());
       }
     });
   };

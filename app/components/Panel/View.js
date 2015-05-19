@@ -1,65 +1,80 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var html5             =   require('syn/lib/html5');
-  var Element           =   html5.Element;
-  var CreatorView       =   require('syn/components/Creator/View');
+import {Element} from 'cinco';
+import CreatorView  from 'syn/components/Creator/View';
 
-  module.exports        =   function PanelView (locals) {
+class Panel extends Element {
 
-    locals = locals     ||  {};
+  constructor (props) {
+    super('.panel');
 
-    var panel           =   Element('.panel');
+    this.props = props || {};
 
-    if ( locals.panel )    {
-      var id            =   'panel-' + locals.panel.type.toString();
+    this.attr('id', () => {
+      if ( props.panel ) {
+        let id =  'panel-' + props.panel.type.toString();
+        return id;
+      }
+    });
 
-      panel.options.id   =   id;
+    this.add(
+      this.panelHeading(),
+      this.panelBody()
+    );
+  }
+
+  panelHeading () {
+    return new Element('.panel-heading').add(
+      new Element('h4.fa.fa-plus.toggle-creator')
+        .condition(this.props.creator !== false),
+
+      new Element('h4.panel-title')
+    );
+  }
+
+  panelBody () {
+    var body = new Element('.panel-body');
+
+    if ( this.props.creator !== false ) {
+      body.add(new CreatorView(this.props));
     }
 
-    var panelHeading    =   Element('.panel-heading').add(
-      Element('h4.fa.fa-plus.toggle-creator', {
-        $condition      :   locals.creator !== false
-      }),
+    let items = new Element('.items');
 
-      Element('h4.panel-title')
-    );
+    body.add(items);
 
-    var panelBody       =   Element('.panel-body');
+    body.add(this.loadingItems());
 
-    if ( locals.creator !== false ) {
-      panelBody.add(CreatorView(locals));
-    }
-
-    var items = Element('.items');
-
-    panelBody.add(items);
-
-    var LoadingItems = Element('.loading-items.hide').add(
-      Element('i.fa.fa-circle-o-notch.fa-spin'),
-      Element('span').text('Loading items...')
-    );
-
-    panelBody.add(LoadingItems);
-
-    panelBody.add(
-      Element('.padding.hide.pre').add(
-        Element('.load-more.hide').add(
-          Element('a', { href: '#' }).text('View more')
-        ),
-
-        Element('.create-new').add(
-          Element('a', { href: '#' }).text('Click the + to be the first to add something here')
-        )
+    body.add(
+      new Element('.padding.hide.pre').add(
+        this.viewMore(),
+        this.addSomething()
       )
     );
 
-    return panel.add(
-      panelHeading,
-      panelBody
+    return body;
+  }
+
+  loadingItems () {
+    return new Element('.loading-items.hide').add(
+      new Element('i.fa.fa-circle-o-notch.fa-spin'),
+      new Element('span').text('Loading items...')
     );
+  }
 
-  };
+  viewMore () {
+    return new Element('.load-more.hide').add(
+      new Element('a', { href: '#' }).text('View more')
+    );
+  }
 
-} ();
+  addSomething () {
+    return new Element('.create-new').add(
+      new Element('a', { href: '#' })
+        .text('Click the + to be the first to add something here')
+    );
+  }
+
+}
+
+export default Panel;

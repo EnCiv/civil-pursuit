@@ -109,7 +109,11 @@
       from:         this.item.item._id,
       subject:      this.find('subject').val(),
       description:  this.find('description').val(),
-      user:         synapp.user,
+      user:               
+      
+      
+      
+app.socket.synuser,
       type:         this.item.item.type
     };
 

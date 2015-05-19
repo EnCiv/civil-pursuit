@@ -1,60 +1,68 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var html5               =   require('syn/lib/html5');
-  var Element       =     html5.Element;
+import {Element} from 'cinco';
 
-  function PromoteImage (hand) {
-    return Element('.image.gutter', {
+class Promote extends Element {
+
+  constructor (props) {
+    super('section');
+
+    this.props = props || {};
+
+    this.add(
+      this.compose()
+    );
+  }
+
+  promoteImage (hand) {
+    return new Element('.image.gutter', {
       style         :   'float: left; width: 40%',
       className     :   [hand + '-item']
     });
   }
 
-  function PromoteSubject (hand) {
-    return Element('.subject.gutter', {
+  promoteSubject (hand) {
+    return new Element('.subject.gutter', {
       className    :   [hand + '-item']
-    }).add(Element('h4'));
+    }).add(new Element('h4'));
   }
 
-  function PromoteDescription (hand) {
-    return Element('.description.gutter.pre-text', {
+  promoteDescription (hand) {
+    return new Element('.description.gutter.pre-text', {
       className    :   [hand + '-item']
     });
   }
 
-  function PromoteReference (hand) {
-    return Element('.references.gutter', {
+  promoteReference (hand) {
+    return new Element('.references.gutter', {
       className    :   [hand + '-item']
-    }).add(Element('a', {
+    }).add(new Element('a', {
       rel       :   'nofollow',
       target    :   '_blank'
     }));
   }
 
-  function PromoteSliders (hand) {
+  promoteSliders (hand) {
 
-    var sliders = Element('.sliders', {
+    var sliders = new Element('.sliders', {
       className:  [hand + '-item']
     });
 
     for ( var i = 0; i < 4; i ++ ) {
-      var slider = Element('.criteria-wrapper');
+      var slider = new Element('.criteria-wrapper');
 
-      slider.add(Element('row').add(
-        Element('.tablet-40').add(
-          Element('h4').add(
-            Element('button.criteria-name.shy.block', {
-              $text: 'Criteria'
-            })
+      slider.add(new Element('row').add(
+        new Element('.tablet-40').add(
+          new Element('h4').add(
+            new Element('button.criteria-name.shy.block')
+              .text('Criteria')
           )
         ),
 
-        Element('.tablet-60', {
+        new Element('.tablet-60', {
           style: 'margin-top: 2.5em'
         }).add(
-          Element('input.block', {
+          new Element('input.block', {
             type: 'range',
             min: '-1',
             max: '1',
@@ -64,9 +72,9 @@
         )
       ));
 
-      slider.add(Element('.row.is-container.criteria-description-section').add(
-          Element('.is-section').add(
-            Element('.gutter.watch-100.criteria-description')
+      slider.add(new Element('.row.is-container.criteria-description-section').add(
+          new Element('.is-section').add(
+            new Element('.gutter.watch-100.criteria-description')
           )
         ));
 
@@ -76,135 +84,135 @@
     return sliders;
   }
 
-  function PromoteFeedback (hand) {
-    return Element('.feedback', {
+  promoteFeedback (hand) {
+    return new Element('.feedback', {
       className    :   [hand + '-item']
     }).add(
-      Element('textarea.feedback-entry.block', {
+      new Element('textarea.feedback-entry.block', {
         placeholder : 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?'
       })
     );
   }
 
-  function PromoteButton (hand) {
-    return Element('.gutter', {
+  promoteButton (hand) {
+    return new Element('.gutter', {
       className    :   [hand + '-item']
     }).add(
-      Element('button.block.promote').text('Promote')
+      new Element('button.block.promote').text('Promote')
     );
   }
 
-  function EditAndGoAgain (hand) {
-    return Element('.gutter', {
+  editAndGoAgain (hand) {
+    return new Element('.gutter', {
       className    :   [hand + '-item']
     }).add(
-      Element('button.block.edit-and-go-again-toggle')
+      new Element('button.block.edit-and-go-again-toggle')
         .text('Edit and go again')
     );
   }
 
-  function Promote (locals) {
-    return Element('section').add(
+  compose () {
+    return new Elements().add(
       
-      Element('header.promote-steps').add(
-        Element('h2').add(
-          Element('span.cursor', { $text: '1' }),
-          Element('span', { $text: ' of ' }),
-          Element('span.limit', { $text: '5' })
+      new Element('header.promote-steps').add(
+        new Element('h2').add(
+          new Element('span.cursor').text('1'),
+          new Element('span').text(' of '),
+          new Element('span.limit').text('5')
         ),
 
-        Element('h4', { $text: 'Evaluate each item below' })
+        new Element('h4').text('Evaluate each item below')
       ),
 
-      Element('.items-side-by-side').add(
+      new Element('.items-side-by-side').add(
         // 1 column
-        Element('.split-hide-up').add(
-          PromoteImage('left'),
-          PromoteSubject('left'),
-          PromoteDescription('left'),
-          PromoteReference('left'),
-          PromoteSliders('left'),
-          PromoteFeedback('left'),
-          PromoteButton('left'),
-          EditAndGoAgain('left'),
+        new Element('.split-hide-up').add(
+          this.promoteImage('left'),
+          this.promoteSubject('left'),
+          this.promoteDescription('left'),
+          this.promoteReference('left'),
+          this.promoteSliders('left'),
+          this.promoteFeedback('left'),
+          this.promoteButton('left'),
+          this.editAndGoAgain('left'),
 
-          PromoteImage('right'),
-          PromoteSubject('right'),
-          PromoteDescription('right'),
-          PromoteReference('right'),
-          PromoteSliders('right'),
-          PromoteFeedback('right'),
-          PromoteButton('right'),
-          EditAndGoAgain('right')
+          this.promoteImage('right'),
+          this.promoteSubject('right'),
+          this.promoteDescription('right'),
+          this.promoteReference('right'),
+          this.promoteSliders('right'),
+          this.promoteFeedback('right'),
+          this.promoteButton('right'),
+          this.editAndGoAgain('right')
         ),
 
         // 2 columns
-        Element('.split-hide-down').add(
-          Element('.row').add(
-            Element('.split-50.watch-100').add(
-              PromoteImage('left'),
-              PromoteSubject('left'),
-              PromoteDescription('left')
+        new Element('.split-hide-down').add(
+          new Element('.row').add(
+            new Element('.split-50.watch-100').add(
+              this.promoteImage('left'),
+              this.promoteSubject('left'),
+              this.promoteDescription('left')
             ),
 
-            Element('.split-50.watch-100').add(
-              PromoteImage('right'),
-              PromoteSubject('right'),
-              PromoteDescription('right')
+            new Element('.split-50.watch-100').add(
+              this.promoteImage('right'),
+              this.promoteSubject('right'),
+              this.promoteDescription('right')
             )
           ),
 
-          Element('.row').add(
-            Element('.split-50.watch-100').add(
-              PromoteReference('left')
+          new Element('.row').add(
+            new Element('.split-50.watch-100').add(
+              this.promoteReference('left')
             ),
 
-            Element('.split-50.watch-100').add(
-              PromoteReference('right')
+            new Element('.split-50.watch-100').add(
+              this.promoteReference('right')
             )
           ),
 
-          Element('.row').add(
-            Element('.split-50.watch-100').add(
-              PromoteSliders('left'),
-              PromoteFeedback('left')
+          new Element('.row').add(
+            new Element('.split-50.watch-100').add(
+              this.promoteSliders('left'),
+              this.promoteFeedback('left')
             ),
 
-            Element('.split-50.watch-100').add(
-              PromoteSliders('right'),
-              PromoteFeedback('right')
+            new Element('.split-50.watch-100').add(
+              this.promoteSliders('right'),
+              this.promoteFeedback('right')
             )
           ),
 
-          Element('h4.text-center').text('Which of these is most important for the community to consider?'),
+          new Element('h4.text-center').text('Which of these is most important for the community to consider?'),
 
-          Element('.row').add(
-            Element('.split-50.watch-100').add(
-              PromoteButton('left')
+          new Element('.row').add(
+            new Element('.split-50.watch-100').add(
+              this.promoteButton('left')
             ),
 
-            Element('.split-50.watch-100').add(
-              PromoteButton('right')
+            new Element('.split-50.watch-100').add(
+              this.promoteButton('right')
             )
           ),
 
-          Element('.row').add(
-            Element('.split-50.watch-100').add(
-              EditAndGoAgain('left')
+          new Element('.row').add(
+            new Element('.split-50.watch-100').add(
+              this.editAndGoAgain('left')
             ),
 
-            Element('.split-50.watch-100').add(
-              EditAndGoAgain('right')
+            new Element('.split-50.watch-100').add(
+              this.editAndGoAgain('right')
             )
           )
         ),
 
-        Element('button.finish.block').text('Neither')
+        new Element('button.finish.block').text('Neither')
       )
 
     );
   }
 
-  module.exports = Promote;
+}
 
-} ();
+export default Promote;

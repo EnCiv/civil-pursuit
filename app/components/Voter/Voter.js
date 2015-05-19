@@ -58,7 +58,11 @@
           console.log('registered voter set');
         })
 
-        .emit('set registered voter', synapp.user, $(this).is(':checked'));
+        .emit('set registered voter',       
+      
+      
+      
+app.socket.synuser, $(this).is(':checked'));
 
     });
 
@@ -73,7 +77,11 @@
             console.log('party set');
           })
 
-          .emit('set party', synapp.user, $(this).val());
+          .emit('set party',       
+      
+      
+      
+app.socket.synuser, $(this).val());
       }
 
     });

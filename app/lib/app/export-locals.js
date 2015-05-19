@@ -17,7 +17,9 @@
         params      :   req.params
       },
       user          :   req.user,
-      page          :   req.page || req.params.page || 'Home'
+      page          :   req.page || req.params.page || 'Home',
+      component     :   req.component,
+      components    :   req.components
     };
 
     if ( res.locals.item ) {
@@ -26,6 +28,8 @@
         type        :   res.locals.item.type
       };
     }
+
+    locals.config   =   require('syn/config').public;
 
     return locals;
   }

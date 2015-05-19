@@ -1,24 +1,24 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function getView (req, res, next) {
-    var app = this;
-    var S = require('string');
-    var Html5 = require('syn/lib/html5');
-    /** @type             Function */
-    var exportsLocal  =   require('syn/lib/app/export-locals');
-    /** @type             Object */
-    var locals        =   exportsLocal(app, req, res);
+import S from 'string';
+import getProps from 'syn/lib/app/export-locals';
 
-    var view = require('syn/components/' + S(req.params.component).camelize().s + '/View')(
-      locals);
+var cache = {}
 
-    if ( view instanceof Html5.Elements || view instanceof Html5.Element ) {
-      res.send(Html5.toHTML(view));
-    }
+function renderView (req, res, next) {
+  let props       =   getProps(this, req, res);
+  let viewName    =   S(req.params.component).capitalize().camelize().s;
+
+  if ( viewName in cache ) {
+    return res.send(cache[viewName]);
   }
 
-  module.exports = getView;
+  let View        =   require('syn/components/' + viewName + '/View');
+  let view        =   new View(props);
 
-} ();
+  cache[viewName] = view.render();
+
+  res.send(cache[viewName]);
+}
+
+export default renderView;

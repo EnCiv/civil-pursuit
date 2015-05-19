@@ -61,7 +61,11 @@
           })
           
           .success(function (response) {
-            synapp.user = response.user;
+                  
+      
+      
+      
+app.socket.synuser = response.user;
             
             $('a.is-in').css('display', 'inline');
 

@@ -1,83 +1,88 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var YouTube     =   require('syn/components/YouTube/Controller');
+import YouTube from 'syn/components/YouTube/View';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+function MediaController () {
+  let item = this.get('item');
 
-  function itemMedia () {
+  let references = item.references || [];
 
-    // youtube video from references
+  // YouTube
 
-    if ( this.item.references && this.item.references.length ) {
-      var media = YouTube(this.item.references[0].url);
+  if ( references.length ) {
 
-      if ( media ) {
-        return media;
+    let youtube = new YouTube({
+      settings: { env: synapp.props.settings.env },
+      item: item
+    });
+
+    if ( youtube.children.length ) {
+      let {element} = YouTube.resolve(youtube.children[0].selector);
+
+      if ( element === 'iframe' ) {
+        return $(youtube.render());
       }
     }
+  }
 
-    // adjustImage
+  // adjustImage
 
-    if ( this.item.adjustImage ) {
+  if ( item.adjustImage ) {
+    return $(item.adjustImage
+      .replace(/\>$/, ' class="img-responsive" />'));
+  }
 
-      console.info('adjustImage')
+  // Item has image
 
-      return $(this.item.adjustImage
-              .replace(/\>$/, ' class="img-responsive" />'));
-    }
+  if ( item.image && /^http/.test(item.image) ) {
+    let src = item.image;
 
-    // image
+    let image = $('<img/>');
 
-    if ( this.item.image && /^http/.test(this.item.image) ) {
+    image.addClass('img-responsive');
 
-      var src = this.item.image;
+    image.attr('src', src);
 
-      var image = $('<img/>');
+    return image;
+  }
 
-      image.addClass('img-responsive');
+  // YouTube Cover Image
 
-      image.attr('src', src);
+  if ( item.youtube ) {
+    return $(new YouTube({
+      item: {
+        references: [{
+          url : 'http://youtube.com/watch?v=' + item.youtube
+        }]
+      },
+      settings: { env: synapp.props.settings.env }
+    }).render());
+  }
 
-      return image;
-    }
+  // Uploaded image
 
-    // YouTube Cover Image
-
-    if ( this.item.youtube ) {
-      return YouTube('http://youtube.com/watch?v=' + this.item.youtube);
-    }
-
-    // Uploaded image
-
-    if ( this.item.upload ) {
-      var src = this.item.image;
-
-      var image = $('<img/>');
-
-      image.addClass('img-responsive');
-
-      image.attr('src', this.item.upload);
-
-      return image;
-    }
-
-    // default image
+  if ( item.upload ) {
+    var src = item.image;
 
     var image = $('<img/>');
 
     image.addClass('img-responsive');
 
-    image.attr('src', synapp['default item image']);
+    image.attr('src', item.upload);
 
     return image;
   }
 
-  module.exports = itemMedia;
+  // default image
 
-} ();
+  var image = $('<img/>');
+
+  image.addClass('img-responsive');
+
+  image.attr('src', synapp.config['default item image']);
+
+  return image;
+
+}
+
+export default MediaController;

@@ -1,37 +1,39 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  /** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   *  INTRO VIEW
-   *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   *  @module       views/Intro
-  */
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  INTRO VIEW
+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  @module       views/Intro
+*/
 
-  var html5       =   require('syn/lib/html5');
-  var PanelView   =   require('syn/components/Panel/View');
-  var ItemView    =   require('syn/components/Item/View');
+import {Element} from'cinco';
+import Panel from 'syn/components/Panel/View';
+import ItemView from 'syn/components/Item/View';
 
-  module.exports  =   function IntroView (locals) {
+class Intro extends Element {
 
-    return html5.Element('#intro')
+  constructor (props) {
+    super(Intro.selector);
+    
+    this.props = props;
+    
+    this.add(() => {
+      let panel = new Panel({ creator: false });
 
-      .add(function IntroBox (locals) {
+      panel
+        .find('.items')
+        .get(0)
+        .add(
+          new ItemView({
+            item: { buttons: false, collapsers: false }
+          })
+        );
 
-        var panel = PanelView({ creator: false });
+      return panel;
+    });
+  }
+}
 
-        panel.find('.items')
+Intro.selector = '#intro';
 
-          .each(function (itemsWrapper) {
-            itemsWrapper.add(ItemView({ item: {
-              buttons: false, collapsers: false
-            } }));
-          });
-
-        return panel;
-        
-      });
-
-  };
-
-} ();
+export default Intro;

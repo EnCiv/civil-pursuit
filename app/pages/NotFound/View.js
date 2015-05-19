@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var html5 = require('syn/lib/html5');
+  var Element = require('cinco').Element;
 
   function NotFound (locals) {
 
@@ -33,10 +33,10 @@
       .each(function (main) {
 
         main.add(
-          html5.Element('h1.gutter', { $text: 'Page not found' }),
-          html5.Element('p.gutter', {
-            $text: 'We are sorry, this page was not found.' }),
-          html5.Element('hr')
+          new Element('h1.gutter').text('Page not found'),
+          new Element('p.gutter').text(
+            'We are sorry, this page was not found.'),
+          new Element('hr')
         );
 
       });

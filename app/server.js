@@ -1,6 +1,9 @@
+'use strict'
+
+import path from 'path';
+import fs from 'fs';
+
 ! function () {
-  
-  'use strict';
 
   function getConfig (done) {
     require('syn/models/Config')
@@ -128,7 +131,27 @@
       //  PAGE
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      .get('/page/:page', renderPage)
+      .get('/page/:page',
+        function (req, res, next) {
+          if ( req.params.page === 'terms-of-service' ) {
+            fs
+              .createReadStream('TOS.md')
+              .on('data', function (data) {
+                if ( ! this.data ) {
+                  this.data = '';
+                }
+                this.data += data.toString();
+              })
+              .on('end', function () {
+                res.locals.TOS = this.data;
+                next();
+              })
+          }
+          else {
+            next();
+          }
+        },
+        renderPage)
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       //  VIEW
@@ -184,6 +207,63 @@
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       .all('/sign/out', SignOutRoute)
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      //  Preview component
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      .get('/component/:component', function (req, res, next) {
+        req.page = 'Component';
+        req.component = require('syn/components/' + req.params.component +
+          '/View');
+
+        let pathToComponents = path.dirname(
+          path.dirname(require.resolve('syn/components/Panel/View'))
+        );
+        
+        fs.readdir(pathToComponents, (error, files) => {
+            if ( error ) {
+              return next(error);
+            }
+            req.components = files;
+            next();
+          })
+      }, renderPage)
+
+      .post('/component/:component', function (req, res, next) {
+        req.page = 'Component';
+        req.component = require('syn/components/' + req.params.component +
+          '/View');
+
+        let pathToComponents = path.dirname(
+          path.dirname(require.resolve('syn/components/Panel/View'))
+        );
+
+        if ( req.body.item ) {
+          return require('syn/models/Item')
+            .findById(req.body.item)
+            .exec()
+            .then(item => {
+              res.locals.item = item;
+              fs.readdir(pathToComponents, (error, files) => {
+                if ( error ) {
+                  return next(error);
+                }
+                req.components = files;
+                next();
+              });
+            })
+        }
+        
+        fs.readdir(pathToComponents, (error, files) => {
+            if ( error ) {
+              return next(error);
+            }
+            req.components = files;
+            next();
+          });
+
+      }, renderPage)
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       //  DIST

@@ -1,61 +1,46 @@
-/*
- *  F   O   R   M
- *  *****************
-*/
+'use strict';
 
-! function () {
+import domainRun from 'syn/lib/util/domain-run';
 
-  'use strict';
+class Form {
 
-  var domainRun = require('syn/lib/util/domain-run');
+  constructor (form) {
 
-  /**
-   *  @class    Form
-   *  @arg      {HTMLElement} form
-   */
+    let self = this;
 
-  function Form (form) {
+    this.form = form;
 
-    var self = this;
+    this.labels = {};
 
-    domainRun(function (d) {
-
-      self.form = form;
-
-      self.labels = {};
-
-      self.form.find('[name]').each(function () {
-        self.labels[$(this).attr('name')] = $(this);
-      });
-
-      // #193 Disable <Enter> keys
-
-      self.form.find('input').on('keydown', function (e) {
-        if ( e.keyCode === 13 ) {
-          return false;
-        }
-      });
-
-      self.form.on('submit', function (e) {
-        setTimeout(function () {
-          self.submit(e);
-        });
-
-        return false;
-      });
+    form.find('[name]').each(function () {
+      self.labels[$(this).attr('name')] = $(this);
     });
+
+    // #193 Disable <Enter> keys
+
+    form.find('input').on('keydown', function (e) {
+      if ( e.keyCode === 13 ) {
+        return false;
+      }
+    });
+
+    form.on('submit', e => {
+      setTimeout(() => this.submit(e));
+      return false;
+    });
+
   }
 
-  Form.prototype.submit = function (e) {
+  send (fn) {
+    this.ok = fn;
+    return this;
+  }
 
-    console.warn('form submitting', this.form.attr('name'), e);
+  submit (e) {
+    let errors = [];
 
-    var self = this;
-
-    var errors = [];
-
-    self.form.find('[required]').each(function () {
-      var val = $(this).val();
+    this.form.find('[required]').each(function () {
+      let val = $(this).val();
 
       if ( ! val ) {
 
@@ -79,14 +64,8 @@
     }
 
     return false;
-  };
+  }
 
-  Form.prototype.send = function (fn) {
-    this.ok = fn;
+}
 
-    return this;
-  };
-
-  module.exports = Form;
-
-} ();
+export default Form;

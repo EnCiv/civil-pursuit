@@ -1,47 +1,20 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var html5   =   require('syn/lib/html5');
-  var Element =   html5.Element;
+import {Element} from 'cinco';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+class Details extends Element {
 
-  function Promote (locals) {
-
-    var invitePeople = Element('section.feedback-pending.hide').add(
-      Element('h4', { $text: 'Feedback pending' }),
-      Element('p', { $text: 'While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.' }),
-      Element('a.btn.invite-people', { target: '_blank',
-        $text: 'Send' }),
-      Element('hr')
-    );
-
-    var progressBar = Element('.row').add(
-      Element('.tablet-30.middle').add(
-        Element('h4', { $text: 'Promoted' })
-      ),
-
-      Element('.tablet-70.middle').add(
-        Element('.progress')
-      )
-    );
-
-    var section = Element('section').add(
-      invitePeople,
-
-      progressBar
-    );
-
+  constructor (props) {
+    super('section');
+    this.add(
+      this.invitePeople(),
+      this.progressBar()
+    )
     for ( var i = 0; i < 4; i ++ ) {
-      section.add(
-        Element('.row.details-votes').add(
-          Element('.tablet-30.middle').add(
-            Element('h4', {
+      this.add(
+        new Element('.row.details-votes').add(
+          new Element('.tablet-30.middle').add(
+            new Element('h4', {
               'data-toggle'     :   'tooltip',
               'data-placement'  :   'top'
             })
@@ -49,17 +22,41 @@
         )
       );
     }
-
-    var feedback = Element('.details-feedbacks').add(
-      Element('h4', { $text: 'Feedback' }),
-      Element('.feedback-list')
-    );
-
-    section.add(feedback);
-
-    return section;
+    this.add(this.feedback());
   }
 
-  module.exports = Promote;
+  invitePeople () {
+    return new Element('section.feedback-pending.hide').add(
+      new Element('h4').text('Feedback pending'),
+      
+      new Element('p').text(
+        'While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'),
+      
+      new Element('a.btn.invite-people', { target: '_blank' })
+        .text('Send'),
+      
+      new Element('hr')
+    )
+  }
 
-} ();
+  progressBar () {
+    return new Element('.row').add(
+      new Element('.tablet-30.middle').add(
+        new Element('h4').text('Promoted')
+      ),
+
+      new Element('.tablet-70.middle').add(
+        new Element('.progress')
+      )
+    );
+  }
+
+  feedback () {
+    return new Element('.details-feedbacks').add(
+      new Element('h4').text('Feedback'),
+      new Element('.feedback-list')
+    );
+  }
+}
+
+export default Details;

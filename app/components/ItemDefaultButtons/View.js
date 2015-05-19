@@ -1,34 +1,34 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var html5               =   require('syn/lib/html5');
+import {Element, Elements} from 'cinco';
 
-  module.exports = function () {
+class ItemDefaultButtons extends Elements {
+  constructor (props) {
+    super()
 
-    var LoginButton = html5.Element('button.item-toggle-promote.shy');
+    let loginButton = new Element('button.item-toggle-promote.shy');
       
-    LoginButton.add(
-      html5.Element('span.promoted', { $text: '0' }),
-      html5.Element('i.fa.fa-bullhorn')
+    loginButton.add(
+      new Element('span.promoted').text('0'),
+      new Element('i.fa.fa-bullhorn')
     );
 
-    var JoinButton = html5.Element('button.item-toggle-details.shy');
+    let joinButton = new Element('button.item-toggle-details.shy');
 
-    JoinButton.add(
-      html5.Element('span.promoted-percent', { $text: '0%' }),
-      html5.Element('i.fa.fa-signal')
+    joinButton.add(
+      new Element('span.promoted-percent').text('0%'),
+      new Element('i.fa.fa-signal')
     );
 
-    var Related = html5.Element('div', {}, [html5.Element('span.related')]);
+    let related = new Element('div').add(new Element('span.related'));
 
-    return html5.Elements(
-      LoginButton,
-      html5.Element('div'),
-      JoinButton,
-      Related
+    this.add(
+      loginButton,
+      new Element('div'),
+      joinButton,
+      related
     );
+  }
+}
 
-  };
-
-} ();
+export default ItemDefaultButtons;

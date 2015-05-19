@@ -1,16 +1,150 @@
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  S   Y   N   A   P   P
+'use strict'
 
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
+import {EventEmitter} from 'events';
+import domain from 'domain';
+import cache from 'syn/lib/app/Cache';
 
-! function () {
+class App extends EventEmitter {
+
+  constructor (connect) {
+
+    super();
+
+    this.socket();
+
+    if ( connect ) {
+      this.socket.on('welcome', user => {
+        this.socket.synuser = user;
+        this.emit('ready');
+      });
+    }
+
+    this.store = {
+      onlineUsers: 0
+    };
+
+    this.socket.on('online users', online => this.set('onlineUsers', online));
+
+    this.domain = domain.create()
+      .on('error', error => this.emit('error', error));
+
+    this.domain.intercept = handler => (error, ...args) => 
+      this.domain.run(() => {
+        if ( error ) {
+          throw error;
+        }
+        handler(...args);
+      });
+
+  }
+
+  get (key) {
+    return this.store[key];
+  }
+
+  set (key, value) {
+    this.store[key] = value;
+
+    this.emit('set', key, value);
+
+    return this;
+  }
+
+  error (err) {
+    console.log('App error');
+  }
+
+  ready (fn) {
+    this.on('ready', fn);
+  }
+
+  socket () {
+
+    if ( ! io.$$socket ) {
+      io.$$socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
+    }
+
+    this.socket = io.$$socket;
+
+  }
+
+  publish (event, ...messages) {
+
+    let unsubscribe = () => {
+      this.socket.removeListener('OK ' + event, this.handler);
+    };
+
+    return {
+      subscribe: (handler) => {
+        this.socket
+          .on('OK ' + event, (...responses) =>
+            handler({ unsubscribe: unsubscribe.bind(handler)}, ...responses)  
+          )
+          .emit(event, ...messages);
+      }
+    };
+
+  }
+
+  load () {
+
+    if ( this.template ) {
+      return this.template;
+    }
+
+    else if ( cache.getTemplate(this.componentName) ) {
+      this.template = cache.getTemplate(this.componentName);
+    }
+
+    else {
+      let View = this.view;
+      let view = new View(this.props);
+      cache.setTemplate(this.componentName, $(view.render()));
+      this.template = cache.getTemplate(this.componentName);
+    }
+
+    return this.template;
+  }
+
+}
+
+export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function anon () {
 
   'use strict';
 
@@ -124,4 +258,4 @@
     window.Synapp = Synapp;
   }
 
-} ();
+}

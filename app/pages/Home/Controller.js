@@ -1,72 +1,35 @@
-! function Page_Home_Controller () {
-  
-  'use strict';
+'use strict';
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Synapp
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import App from 'syn/app';
+import Intro from 'syn/components/Intro/Controller';
+import TopBar from 'syn/components/TopBar/Controller';
+import Panel from 'syn/components/Panel/Controller';
 
-  var _Synapp_          =   require('syn/app');
+synapp.app = new App(true);
 
-  window.app            =   new _Synapp_();
+synapp.app.ready(() => {
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Components
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  new Intro().render();
 
-  var _Sign             =   require('syn/components/Sign/Controller');
-  var _Intro            =   require('syn/components/Intro/Controller');
-  var _Panel            =   require('syn/components/Panel/Controller');
+  new TopBar().render();
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  Provider
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  synapp.app
+    .publish('get top-level type')
+    .subscribe((pubsub, topLevelPanel) => {
+      
+      pubsub.unsubscribe();
 
-  var domainRun          =   require('syn/lib/util/domain-run')
+      let panel = new Panel({ panel: { type: topLevelPanel } });
 
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  //  On app ready
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      $('.panels').append(panel.load());
 
-  app.ready(function onceAppConnects_HomePage () {
+      panel
+        .render()
+        .then(
+          success => panel.fill(),
+          error => synapp.app.emit('error', error)
+        );
 
-    domainRun(function (d) {
-
-      /** Render intro */
-      new _Intro().render();
-
-      /** Render user-related components */
-      new _Sign().render();
-
-      var panel;
-
-      window.app.socket.publish('get top-level type', function (type) {
-
-        if ( ! panel ) {
-          panel = new _Panel(type);
-
-          panel
-
-            .load()
-
-            .then(function (template) {
-
-              $('.panels').append(template);
-
-              panel.render()
-
-                .then(function () {
-
-                  panel.fill();
-              
-                }, d.intercept);
-
-            }, d.intercept);
-        }  
-
-      });
     });
 
-  });
-
-} ();
+});

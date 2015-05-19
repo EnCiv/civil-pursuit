@@ -1,98 +1,91 @@
-! function () {
+'use strict'
+
+import {Document, Element} from 'cinco';
+
+import config from 'syn/config';
+
+import GoogleAnalytics  from 'syn/components/GoogleAnalytics/View';
+import Styles           from 'syn/components/Styles/View';
+import Scripts          from 'syn/components/Scripts/View';
+import TopBar           from 'syn/components/TopBar/View';
+import Footer           from 'syn/components/Footer/View';
+import Login            from 'syn/components/Login/View';
+import Join             from 'syn/components/Join/View';
+
+class Layout extends Document {
   
-  'use strict';
-
-  module.exports = function (locals) {
-    var html5           =   require('syn/lib/html5');
-    var Element         =   html5.Element;
-
-    var config          =   require('syn/config.json');
-
-    var TopBar          =   require('syn/components/TopBar/View');
-    var Stylesheet      =   require('syn/components/Styles/View');
-    var Script          =   require('syn/components/Scripts/View');
-    var Footer          =   require('syn/components/Footer/View');
-    var Login           =   require('syn/components/Login/View');
-    var Join            =   require('syn/components/Join/View');
-
-    var document        =   new html5.Document(
-      Element.title(config.title)
+  constructor (props) {
+    super();
+    this.props = props || {};
+    this.add(
+      this.title(),
+      this.uACompatible(),
+      this.viewport(),
+      new GoogleAnalytics(props),
+      new Styles(props),
+      this.screens(),
+      this.header(),
+      this.main(),
+      this.footer(),
+      this.login(),
+      this.join(),
+      new Scripts(props)
     );
+  }
 
-    document.add(
+  title () {
+    return new Element('title').text(config.title);
+  }
 
-      Element('meta',      {
-        $selfClosing    :     true,
-        'http-equiv'    :     'X-UA-Compatible',
-        content         :     'IE=edge'
-      }),
+  uACompatible () {
+    return new Element('meta', {
+      'http-equiv'    :     'X-UA-Compatible',
+      content         :     'IE=edge'
+    }).close();
+  }
 
-      Element('meta',      {
-        $selfClosing    :     true,
+  viewport () {
+    return new Element('meta', {
         name            :     'viewport',
         content         :     'width=device-width, initial-scale=1.0'
-      }),
-
-      Element('meta',      {
-        $selfClosing    :     true,
-        name            :     'description',
-        content         :     'description'
-      }),
-
-      Element('script',    {
-        $condition      :     function (locals) {
-          return locals.settings.env === 'production';
-        },
-        $text           :     "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', '" + config['google analytics'].key + "', 'auto'); ga('send', 'pageview');"
       })
+      .close();
+  }
 
+  screens () {
+    return new Element('#screens').add(
+      new Element('#screen-phone'),
+      new Element('#screen-tablet')
     );
+  }
 
-    document.add(Stylesheet());
-
-    document.add(
-
-      Element(
-        '#screens', {},
-        [
-          Element('#screen-phone'),
-          Element('#screen-tablet')
-        ]
-      ),
-
-      Element('section', { role: 'header' }, TopBar),
-
-      Element('section#main', { role: 'main' }),
-
-      Element('section#footer', { role: 'footer' }, Footer),
-
-      Element('script#login', {
-          type        :   'text/html',
-          
-          $condition  :   function (locals) {
-            return ! locals.user;
-          },
-
-          $text         :   Login().toHTML()
-        }
-      ),
-
-      Element('script#join', {
-          type        :   'text/html',
-          
-          $condition  :   function (locals) {
-            return ! locals.user;
-          },
-
-          $text         :   Join(locals).toHTML()
-        }
-      )
-
+  header () {
+    return new Element('section', { role: 'header' }).add(
+      new TopBar(this.props)
     );
+  }
 
-    document.add(Script(locals));
+  main () {
+    return new Element('section#main', { role: 'main' });
+  }
 
-    return document;
-  };
+  footer () {
+    return new Element('section#footer', { role: 'footer' }).add(
+      new Footer(this.props)
+    );
+  }
 
-} ();
+  login () {
+    return new Element('script#login')
+      .condition(! this.props.user)
+      .text(new Login(this.props).render());
+  }
+
+  join () {
+    return new Element('script#join')
+      .condition(! this.props.user)
+      .text(new Join(this.props).render());
+  }
+}
+
+export default Layout

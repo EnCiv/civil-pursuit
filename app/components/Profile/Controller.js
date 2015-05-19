@@ -76,7 +76,11 @@
 
         profile.renderUser();
       })
-      .emit('get user info', synapp.user);
+      .emit('get user info',       
+      
+      
+      
+app.socket.synuser);
 
     /** Get list of countries from socket
      *

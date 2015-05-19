@@ -1,113 +1,87 @@
-! function () {
+'use strict';
+
+import {Element, Elements} from 'cinco';
+import config from 'syn/config.json';
+import S from 'string';
+
+class Scripts extends Elements {
   
-  'use strict';
-
-  var html5       =   require('syn/lib/html5');
-  var config      =   require('syn/config.json');
-  var S           =   require('string');
-
-  module.exports = function (locals) {
-
-    return html5.Elements(
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  INJECT SCRIPT
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      
-      html5.Element('script', {
-        $text   :   function (locals) {
-          var synapp = {
-            env     :   locals.settings.env
-          };
-
-          return 'window.synapp = ' + JSON.stringify(synapp);
-        }
-      }),
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  SOCKET.IO
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      html5.Element.importScript('/socket.io/socket.io.js'),
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  JQUERY.JS
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      html5.Element.importScript(function (locals) {
-        if ( locals.settings.env === 'development' ) {
-          return '/bower_components/jquery/dist/jquery.js';
-        }
-
-        else {
-          return config.jquery.cdn;
-        }
-      }),
-
-      html5.Element.importScript('/js/jQuery.b.js'),
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  APP.JS
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      html5.Element.importScript(function (exports) {
-
-        var ext = '.js';
-
-        var production = exports.settings.env === 'production';
-
-        if ( production ) {
-          ext = '.min.js';
-        }
-
-        var page = exports.page || 'home';
-
-        return '/js/page-' + S(page).humanize().slugify().s + ext;
-
-      }),
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  VEX.JS
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      html5.Element.importScript('/assets/vex-2.2.1/js/vex.combined.min.js'),
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  GOAL PROGRESS
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      html5.Element.importScript('/bower_components/goalProgress/goalProgress.js'),
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  D3
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      html5.Element.importScript(function (locals) {
-        if ( locals.settings.env === 'development' ) {
-          return '/bower_components/d3/d3.js';
-        }
-
-        else {
-          return '/bower_components/d3/d3.min.js';
-        }
-      }),
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  C3
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      html5.Element.importScript(function (locals) {
-        if ( locals.settings.env === 'development' ) {
-          return '/bower_components/c3/c3.js';
-        }
-
-        else {
-          return '/bower_components/c3/c3.min.js';
-        }
-      })
-      
+  constructor (props) {
+    super();
+    this.props = props || {};
+    this.add(
+      this.globals(),
+      this.socketIO(),
+      this.jQuery(),
+      this.jQueryPlugins(),
+      this.app(),
+      this.vex(),
+      this.goalProgress(),
+      this.d3(),
+      this.c3()
     );
+  }
 
-  };
+  globals () {
+    return new Element('script').text(() => {
+      var synapp = { config: this.props.config, props: this.props };
 
-} ();
+      return 'window.synapp = ' + JSON.stringify(synapp);
+    });
+  }
+
+  socketIO () {
+    return new Element('script', { src : '/socket.io/socket.io.js' } );
+  }
+
+  jQuery () {
+    return new Element('script', { src: () =>
+      this.props.settings.env === 'production'
+        ? config.jquery.cdn
+        : '/bower_components/jquery/dist/jquery.js' });
+  }
+
+  jQueryPlugins  () {
+    return new Element('script', { src: '/js/jQuery.b.js' });
+  }
+
+  app () {
+    return new Element('script', { src: () => {
+      var ext = '.js';
+
+      var production = this.props.settings.env === 'production';
+
+      if ( production ) {
+        ext = '.min.js';
+      }
+
+      var page = this.props.page || 'home';
+
+      return '/js/page-' + S(page).humanize().slugify().s + ext;
+    }});
+  }
+
+  vex () {
+    return new Element('script', { src : '/assets/vex-2.2.1/js/vex.combined.min.js' });
+  }
+
+  goalProgress () {
+    return new Element('script', { src : '/bower_components/goalProgress/goalProgress.js' });
+  }
+
+  d3 () {
+    return new Element('script', { src: () =>
+      this.props.settings.env === 'production'
+        ? '/bower_components/d3/d3.min.js'
+        : '/bower_components/d3/d3.js' });
+  }
+
+  c3 () {
+    return new Element('script', { src: () =>
+      this.props.settings.env === 'production'
+        ? '/bower_components/c3/c3.min.js'
+        : '/bower_components/c3/c3.js' });
+    }
+}
+
+export default Scripts;

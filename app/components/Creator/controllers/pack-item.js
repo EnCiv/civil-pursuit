@@ -14,7 +14,11 @@
       type:           this.panel.type,
       subject:        this.find('subject').val(),
       description:    this.find('description').val(),
-      user:           synapp.user
+      user:                 
+      
+      
+      
+app.socket.synuser
     };
 
     // Parent
@@ -57,4 +61,3 @@
   module.exports = packItem;
 
 } ();
-          synapp.user

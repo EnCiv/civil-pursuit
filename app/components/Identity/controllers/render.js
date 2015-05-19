@@ -70,7 +70,11 @@
 
         stream.on('end', function () {
           // new_item.image = file.name;
-          app.socket.emit('save user image', synapp.user, file.name);
+          app.socket.emit('save user image',       
+      
+      
+      
+app.socket.synuser, file.name);
 
           app.socket.once('saved user image', function (user) {
             console.log('image saved', user);
@@ -109,7 +113,11 @@
               console.log('citizenship set', select.val(), index);
             })
 
-            .emit('set citizenship', synapp.user, select.val(), index);
+            .emit('set citizenship',       
+      
+      
+      
+app.socket.synuser, select.val(), index);
         }
       });
 
@@ -125,7 +133,11 @@
           console.log('birthdate set');
         })
 
-        .emit('set birthdate', synapp.user, $(this).val());
+        .emit('set birthdate',       
+      
+      
+      
+app.socket.synuser, $(this).val());
 
     });
 
@@ -140,7 +152,11 @@
             console.log('gender set');
           })
 
-          .emit('set gender', synapp.user, $(this).val());
+          .emit('set gender',       
+      
+      
+      
+app.socket.synuser, $(this).val());
       }
 
     });

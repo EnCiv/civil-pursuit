@@ -1,19 +1,21 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function Cache () {
-    this.entries = {};
+class Cache {
+
+  constructor () {
+    this.cache = {
+      templates: {}
+    };
   }
 
-  Cache.prototype.get = function (key) {
-    return this.entries[key];
-  };
+  getTemplate (tpl) {
+    return this.cache.templates[tpl];
+  }
 
-  Cache.prototype.set = function (key, value) {
-    return this.entries[key] = value;
-  };
+  setTemplate (tpl, val) {
+    this.cache.templates[tpl] = val;
+  }
 
-  module.exports = Cache;
+}
 
-} ();
+export default new Cache()

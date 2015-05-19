@@ -1,13 +1,13 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var html5   =   require('syn/lib/html5');
+import {Element} from 'cinco';
 
-  module.exports = function (locals) {
+class TopLevelPanel extends Element {
 
-    return html5.Element('.panels');
+  constructor (props) {
+    super('.panels')
+  }
 
-  };
+}
 
-} ();
+export default TopLevelPanel;

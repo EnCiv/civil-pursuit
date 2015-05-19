@@ -1,114 +1,89 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var html5 = require('syn/lib/html5');
+import {Element} from 'cinco';
 
-  module.exports = function (locals) {
+class Login extends Element {
 
-    return html5.Element('.login-modal', {},
-      [
-        html5.Element('h4', { $text: 'Login with email' }),
+  constructor (props) {
+    super('.login-modal')
 
-        html5.Element('form',
+    this
+
+      .add(
+        new Element('h4', { $text: 'Login with email' }),
+
+        new Element('form',
           {
             role        :   'form',
             method      :   'POST',
             novalidate  :   'novalidate',
             name        :   'login'
-          },
-
-          [
-            html5.Element('.login-error-404.is-container', {},
-              [
-                html5.Element('.is-section', {},
-                  [
-                    html5.Element('.danger', {},
-                      [
-                        html5.Element('p', {},
-                          [
-                            html5.Element('strong', { $text: 'Wrong email' })
-                          ]
-                        )
-                      ]
-                    )
-                  ]
-                )
-              ]
-            ),
-
-            html5.Element('.login-error-401.is-container', {},
-              [
-                html5.Element('.is-section', {},
-                  [
-                    html5.Element('.danger', {},
-                      [
-                        html5.Element('p', {},
-                          [
-                            html5.Element('strong', { $text: 'Wrong password' })
-                          ]
-                        )
-                      ]
-                    )
-                  ]
-                )
-              ]
-            ),
-
-            html5.Element('.sign-success.success'),
-
-            html5.Element('.form-group', {},
-              [
-                html5.Element('label', { $text: 'Email' }),
-
-                html5.Element('input',
-                  {
-                    type          :   'email',
-                    placeholder   :   'Email',
-                    name          :   'email',
-                    required      :   'required'
-                  }
-                )
-              ]
-            ),
-
-            html5.Element('.form-group', {},
-              [
-                html5.Element('label', { $text: 'Password' }),
-
-                html5.Element('input',
-                  {
-                    type          :   'password',
-                    placeholder   :   'Password',
-                    name          :   'password',
-                    required      :   'required'
-                  }
-                )
-              ]
-            ),
-
-
-            html5.Element('p', {},
-              [
-                html5.Element('button.primary.login-submit.block', {}, [
-                  html5.Element('i.fa.fa-sign-in'),
-                  html5.Element('span', { $text : 'Login' })
-                ])
-              ]
-            )
-
-          ]
-        ),
-
-        html5.Element('h5', {}, [
-          html5.Element('a.forgot-password-link', {
-            href      :   '#',
-            $text     :   'Forgot password?'
           })
-        ])
+          .add(
+            new Element('.login-error-404.is-container').add(
+              new Element('.is-section').add(
+                new Element('.danger').add(
+                  new Element('p').add(
+                    new Element('strong').text('Wrong email')
+                  )
+                )
+              )
+            ),
 
-      ]);
+            new Element('.login-error-401.is-container').add(
+              new Element('.is-section').add(
+                new Element('.danger').add(
+                  new Element('p').add(
+                    new Element('strong').text('Wrong password')
+                  )
+                )
+              )
+            ),
 
-  };
+            new Element('.sign-success.success'),
 
-} ();
+            new Element('.form-group').add(
+              new Element('label').text('Email'),
+
+              new Element('input',
+                {
+                  type          :   'email',
+                  placeholder   :   'Email',
+                  name          :   'email',
+                  required      :   'required'
+                }
+              )
+            ),
+
+            new Element('.form-group').add(
+              new Element('label').text('Password'),
+
+              new Element('input',
+                {
+                  type          :   'password',
+                  placeholder   :   'Password',
+                  name          :   'password',
+                  required      :   'required'
+                }
+              )
+            ),
+
+            new Element('p').add(
+              new Element('button.primary.login-submit.block').add(
+                new Element('i.fa.fa-sign-in'),
+                new Element('span').text('Login')
+              )
+            )
+          ),
+
+        new Element('h5').add(
+          new Element('a.forgot-password-link', {
+            href      :   '#'
+          }).text('Forgot password?')
+        )
+      )
+  }
+
+}
+
+export default Login;

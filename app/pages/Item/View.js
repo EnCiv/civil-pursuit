@@ -16,7 +16,7 @@
     panel
       .find('h4.panel-title')
       .each(function (title) {
-        title.options.$text = locals.item.subject;
+        title.text(locals.item.subject);
       });
 
     panel

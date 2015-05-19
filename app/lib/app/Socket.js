@@ -9,7 +9,7 @@
     
     self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
-    self.socket.once('welcome', function (user) {
+    self.socket.once('welcome', function onSocketWelcome (user) {
       emit('ready', user);
       if ( user ) {
         console.info('Welcome', user);

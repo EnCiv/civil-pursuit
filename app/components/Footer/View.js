@@ -1,37 +1,28 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var html5       =   require('syn/lib/html5');
-  var config      =   require('syn/config.json');
-  var Page        =   require('syn/lib/app/Page');
+import {Element} from 'cinco';
+import config from 'syn/config.json';
+import Page from 'syn/lib/app/Page';
 
-  module.exports = function (locals) {
+class Footer extends Element {
+  constructor (props) {
+    super('footer.padding')
+    this.props = props
+    this.add(
+      new Element('p').text(function () {
+        var y = new Date().getFullYear();
 
-    return html5.Element('footer.padding', {}, [
+        return 'Copyright Ⓒ 2014 ' +
+          (y > 2014 ? " - " + y : "") +
+          ' by Synaccord.'; }),
 
-      html5.Element('p', {
-        $text: function () {
-
-          var y = new Date().getFullYear();
-
-          return 'Copyright Ⓒ 2014 ' +
-            (y > 2014 ? " - " + y : "") +
-            ' by Synaccord.';
-        }
-      }),
-
-      html5.Element('p', {}, [
-
-        html5.Element('a', {
-          href    :   Page('Terms Of Service'),
-          $text   :   'Terms of Service and Privacy Policy'
+      new Element('p').add(
+        new Element('a', {
+          href    :   Page('Terms Of Service')
         })
+          .text('Terms of Service and Privacy Policy'))
+    )
+  }
+}
 
-      ])
-
-    ]);
-
-  };
-
-} ();
+export default Footer

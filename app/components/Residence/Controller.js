@@ -65,7 +65,11 @@
 
         console.log('location');
 
-        app.socket.emit('validate gps', synapp.user, position.coords.longitude, position.coords.latitude);
+        app.socket.emit('validate gps',       
+      
+      
+      
+app.socket.synuser, position.coords.longitude, position.coords.latitude);
 
         app.socket.once('validated gps', function () {
           console.log('validated');
