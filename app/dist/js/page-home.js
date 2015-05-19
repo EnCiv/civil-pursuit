@@ -9605,6 +9605,10 @@ var _synComponentsItemController = require('syn/components/Item/Controller');
 
 var _synComponentsItemController2 = _interopRequireDefault(_synComponentsItemController);
 
+var _synComponentsTopBarController = require('syn/components/TopBar/Controller');
+
+var _synComponentsTopBarController2 = _interopRequireDefault(_synComponentsTopBarController);
+
 var _synComponentsPanelView = require('syn/components/Panel/View');
 
 var _synComponentsPanelView2 = _interopRequireDefault(_synComponentsPanelView);
@@ -9685,7 +9689,8 @@ var Panel = (function (_Controller) {
             if (_this.socket.synuser) {
               _synLibUtilNav2['default'].toggle(_this.find('creator'), _this.template, d.intercept());
             } else {
-              Sign.dialog.join();
+              var topbar = new _synComponentsTopBarController2['default']();
+              topbar.find('join button').click();
             }
           });
 
@@ -9853,7 +9858,7 @@ module.exports = exports['default'];
 /** This is about another panel */
 // item: app.location.item
 
-},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":48,"syn/components/Panel/View":55,"syn/lib/app/Cache":61,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],55:[function(require,module,exports){
+},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":48,"syn/components/Panel/View":55,"syn/components/TopBar/Controller":58,"syn/lib/app/Cache":61,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

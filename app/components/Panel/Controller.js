@@ -4,6 +4,7 @@ import Controller   from 'syn/lib/app/Controller';
 import Nav          from 'syn/lib/util/Nav';
 import Creator      from 'syn/components/Creator/Controller';
 import Item         from 'syn/components/Item/Controller';
+import TopBar       from 'syn/components/TopBar/Controller';
 import View         from 'syn/components/Panel/View';
 import cache        from 'syn/lib/app/Cache';
 
@@ -72,7 +73,8 @@ class Panel extends Controller {
             Nav.toggle(this.find('creator'), this.template, d.intercept());
           }
           else {
-            Sign.dialog.join();
+            let topbar = new TopBar();
+            topbar.find('join button').click();
           }
         });
 
