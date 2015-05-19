@@ -26,7 +26,7 @@ class Panel extends Controller {
       this.parent   =   this.props.panel.parent;
       this.skip     =   this.props.panel.skip || 0;
       this.size     =   this.props.panel.size || synapp.config['navigator batch size'];
-      this.id       =   Panel.getId(this);
+      this.id       =   Panel.getId(this.props.panel);
     }
   }
 
@@ -79,7 +79,7 @@ class Panel extends Controller {
         // Panel ID
 
         if ( ! this.template.attr('id') ) {
-          this.template.attr('id', this.getId());
+          this.template.attr('id', this.id);
         }
 
         var creator = new Creator(this.props);
@@ -219,8 +219,6 @@ class Panel extends Controller {
         cb();
       }
     }
-
-    console.log('rendering', items)
 
     items.forEach(item => item.render(d.intercept(next)));
   }

@@ -1238,15 +1238,15 @@ var App = (function (_EventEmitter) {
     key: 'load',
     value: function load() {
 
-      if (this.template) {
-        return this.template;
-      } else if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
-        this.template = _synLibAppCache2['default'].getTemplate(this.componentName);
-      } else {
-        var View = this.view;
-        var view = new View(this.props);
-        _synLibAppCache2['default'].setTemplate(this.componentName, $(view.render()));
-        this.template = _synLibAppCache2['default'].getTemplate(this.componentName);
+      if (!this.template) {
+        if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
+          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+        } else {
+          var View = this.view;
+          var view = new View(this.props);
+          _synLibAppCache2['default'].setTemplate(this.componentName, view.render());
+          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+        }
       }
 
       return this.template;

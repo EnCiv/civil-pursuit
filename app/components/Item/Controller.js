@@ -14,8 +14,6 @@ class Item extends Controller {
   constructor (props) {
     super();
 
-    console.log('new item', props)
-
     this.props = props || {};
 
     if ( this.props.item ) {
@@ -87,8 +85,6 @@ class Item extends Controller {
   render (cb) {
 
     let item = this.get('item');
-
-    console.log('rendering item', item)
 
     let self = this;
 

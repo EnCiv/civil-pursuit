@@ -13,9 +13,11 @@ class Login extends Controller {
   constructor (props) {
     super();
 
+    this.props = props || {};
+
     this.form = new Form(this.template);
 
-    this.form.send(this.submit);
+    this.form.send(this.submit.bind(this));
   }
 
   submit (e) {
@@ -24,14 +26,14 @@ class Login extends Controller {
     d.run(() => {
       if ( $('.login-error-404').hasClass('is-shown') ) {
         return Nav.hide($('.login-error-404'), d.intercept(() => {
-          this.send(login);
+          // this.send(login);
           this.form.submit();
         }))
       }
 
       if ( $('.login-error-401').hasClass('is-shown') ) {
         return Nav.hide($('.login-error-401'), d.intercept(() => {
-          this.send(login);
+          // this.send(login);
           this.form.submit();
         }))
       }
@@ -40,8 +42,8 @@ class Login extends Controller {
           url         :   '/sign/in',
           type        :   'POST',
           data        :   {
-            email     :   this.labels.email.val(),
-            password  :   this.labels.password.val()
+            email     :   this.form.labels.email.val(),
+            password  :   this.form.labels.password.val()
           }})
 
         .error(response => {
@@ -61,7 +63,7 @@ class Login extends Controller {
 
           $('.topbar .is-out').remove();
 
-          vex.close($this.props.vexContent.data().vex.id);
+          vex.close(this.props.$vexContent.data().vex.id);
 
         });
     });

@@ -12,7 +12,7 @@ class Panel extends Element {
 
     this.attr('id', () => {
       if ( props.panel ) {
-        let id =  'panel-' + props.panel.type.toString();
+        let id =  'panel-' + (props.panel.type._id || props.panel.type);
         return id;
       }
     });

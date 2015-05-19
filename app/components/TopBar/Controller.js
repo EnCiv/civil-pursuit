@@ -48,7 +48,7 @@ class TopBar extends Controller {
     this.find('right section').removeClass('hide');
 
     if ( ! this.socket.synuser ) {
-      this.find('login button').on('click', this.loginDialog);
+      this.find('login button').on('click', this.loginDialog.bind(this));
       // this.find('join button').on('click', TopBar.dialog.join);
       this.find('is in').hide();
     }
@@ -78,8 +78,8 @@ class TopBar extends Controller {
         });
       },
 
-      afterClose: function () {
-        $('.login-button').on('click', () => new Login());
+      afterClose: () => {
+        $('.login-button').on('click', () => this.loginDialog());
       },
 
       message: $('#login').text(),

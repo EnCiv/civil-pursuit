@@ -10,7 +10,7 @@ class Login extends Element {
     this
 
       .add(
-        new Element('h4', { $text: 'Login with email' }),
+        new Element('h4').text('Login with email'),
 
         new Element('form',
           {

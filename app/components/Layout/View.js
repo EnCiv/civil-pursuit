@@ -76,13 +76,13 @@ class Layout extends Document {
   }
 
   login () {
-    return new Element('script#login')
+    return new Element('script#login', { type: 'text/html' })
       .condition(! this.props.user)
       .text(new Login(this.props).render());
   }
 
   join () {
-    return new Element('script#join')
+    return new Element('script#join', { type: 'text/html' })
       .condition(! this.props.user)
       .text(new Join(this.props).render());
   }

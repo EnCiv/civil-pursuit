@@ -45,10 +45,10 @@ class Item extends Element {
   buttons () {
     let itemButtons = new Element('.item-buttons')
       .condition(() => {
-        if ( this.props.item ) {
-          return this.props.item.buttons  !== false
+        if ( 'buttons' in this.props ) {
+          return this.props.buttons  !== false
         }
-        return false;
+        return true;
       });
 
     if ( this.props.item && this.props.item.buttons ) {
@@ -105,10 +105,9 @@ class Item extends Element {
 
     return new Element('.item-collapsers')
       .condition(() => {
-        // console.log(this.selector)
-        // if ( this.props.item ) {
-        //   return this.props.item.collapsers !==   false;
-        // }
+        if ( 'collapsers' in this.props ) {
+          return this.props.collapsers  !== false
+        }
         return true;
       })
       .add(

@@ -88,19 +88,17 @@ class App extends EventEmitter {
 
   load () {
 
-    if ( this.template ) {
-      return this.template;
-    }
+    if ( ! this.template ) {
+      if ( cache.getTemplate(this.componentName) ) {
+        this.template = $(cache.getTemplate(this.componentName));
+      }
 
-    else if ( cache.getTemplate(this.componentName) ) {
-      this.template = cache.getTemplate(this.componentName);
-    }
-
-    else {
-      let View = this.view;
-      let view = new View(this.props);
-      cache.setTemplate(this.componentName, $(view.render()));
-      this.template = cache.getTemplate(this.componentName);
+      else {
+        let View = this.view;
+        let view = new View(this.props);
+        cache.setTemplate(this.componentName, view.render());
+        this.template = $(cache.getTemplate(this.componentName));
+      }
     }
 
     return this.template;

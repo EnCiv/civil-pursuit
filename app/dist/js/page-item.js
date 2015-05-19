@@ -7012,15 +7012,15 @@ var App = (function (_EventEmitter) {
     key: 'load',
     value: function load() {
 
-      if (this.template) {
-        return this.template;
-      } else if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
-        this.template = _synLibAppCache2['default'].getTemplate(this.componentName);
-      } else {
-        var View = this.view;
-        var view = new View(this.props);
-        _synLibAppCache2['default'].setTemplate(this.componentName, $(view.render()));
-        this.template = _synLibAppCache2['default'].getTemplate(this.componentName);
+      if (!this.template) {
+        if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
+          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+        } else {
+          var View = this.view;
+          var view = new View(this.props);
+          _synLibAppCache2['default'].setTemplate(this.componentName, view.render());
+          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+        }
       }
 
       return this.template;
@@ -8341,8 +8341,6 @@ var Item = (function (_Controller) {
 
     _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this);
 
-    console.log('new item', props);
-
     this.props = props || {};
 
     if (this.props.item) {
@@ -8441,8 +8439,6 @@ var Item = (function (_Controller) {
       var _this = this;
 
       var item = this.get('item');
-
-      console.log('rendering item', item);
 
       var self = this;
 
@@ -8845,10 +8841,10 @@ var Item = (function (_Element) {
       var _this2 = this;
 
       var itemButtons = new _cinco.Element('.item-buttons').condition(function () {
-        if (_this2.props.item) {
-          return _this2.props.item.buttons !== false;
+        if ('buttons' in _this2.props) {
+          return _this2.props.buttons !== false;
         }
-        return false;
+        return true;
       });
 
       if (this.props.item && this.props.item.buttons) {
@@ -8898,12 +8894,12 @@ var Item = (function (_Element) {
   }, {
     key: 'collapsers',
     value: function collapsers() {
+      var _this5 = this;
 
       return new _cinco.Element('.item-collapsers').condition(function () {
-        // console.log(this.selector)
-        // if ( this.props.item ) {
-        //   return this.props.item.collapsers !==   false;
-        // }
+        if ('collapsers' in _this5.props) {
+          return _this5.props.collapsers !== false;
+        }
         return true;
       }).add(this.promote(), this.details(), this.below());
     }
@@ -8925,11 +8921,11 @@ var Item = (function (_Element) {
   }, {
     key: 'arrow',
     value: function arrow() {
-      var _this5 = this;
+      var _this6 = this;
 
       return new _cinco.Element('.item-arrow').condition(function () {
-        if (_this5.props.item) {
-          return _this5.props.item.collapsers !== false;
+        if (_this6.props.item) {
+          return _this6.props.item.collapsers !== false;
         }
         return true;
       }).add(new _cinco.Element('div').add(new _cinco.Element('i.fa.fa-arrow-down')));
@@ -9118,9 +9114,11 @@ var Login = (function (_Controller) {
 
     _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
 
+    this.props = props || {};
+
     this.form = new _synLibUtilForm2['default'](this.template);
 
-    this.form.send(this.submit);
+    this.form.send(this.submit.bind(this));
   }
 
   _inherits(Login, _Controller);
@@ -9140,14 +9138,14 @@ var Login = (function (_Controller) {
       d.run(function () {
         if ($('.login-error-404').hasClass('is-shown')) {
           return _synLibUtilNav2['default'].hide($('.login-error-404'), d.intercept(function () {
-            _this.send(login);
+            // this.send(login);
             _this.form.submit();
           }));
         }
 
         if ($('.login-error-401').hasClass('is-shown')) {
           return _synLibUtilNav2['default'].hide($('.login-error-401'), d.intercept(function () {
-            _this.send(login);
+            // this.send(login);
             _this.form.submit();
           }));
         }
@@ -9156,8 +9154,8 @@ var Login = (function (_Controller) {
           url: '/sign/in',
           type: 'POST',
           data: {
-            email: _this.labels.email.val(),
-            password: _this.labels.password.val()
+            email: _this.form.labels.email.val(),
+            password: _this.form.labels.password.val()
           } }).error(function (response) {
           switch (response.status) {
             case 404:
@@ -9173,7 +9171,7 @@ var Login = (function (_Controller) {
 
           $('.topbar .is-out').remove();
 
-          vex.close($this.props.vexContent.data().vex.id);
+          vex.close(_this.props.$vexContent.data().vex.id);
         });
       });
     }
@@ -9246,7 +9244,7 @@ var Panel = (function (_Controller) {
       this.parent = this.props.panel.parent;
       this.skip = this.props.panel.skip || 0;
       this.size = this.props.panel.size || synapp.config['navigator batch size'];
-      this.id = Panel.getId(this);
+      this.id = Panel.getId(this.props.panel);
     }
   }
 
@@ -9305,7 +9303,7 @@ var Panel = (function (_Controller) {
           // Panel ID
 
           if (!_this.template.attr('id')) {
-            _this.template.attr('id', _this.getId());
+            _this.template.attr('id', _this.id);
           }
 
           var creator = new _synComponentsCreatorController2['default'](_this.props);
@@ -9442,8 +9440,6 @@ var Panel = (function (_Controller) {
         }
       }
 
-      console.log('rendering', items);
-
       items.forEach(function (item) {
         return item.render(d.intercept(next));
       });
@@ -9501,7 +9497,7 @@ var Panel = (function (_Element) {
 
     this.attr('id', function () {
       if (props.panel) {
-        var id = 'panel-' + props.panel.type.toString();
+        var id = 'panel-' + (props.panel.type._id || props.panel.type);
         return id;
       }
     });
@@ -9854,7 +9850,7 @@ var TopBar = (function (_Controller) {
       this.find('right section').removeClass('hide');
 
       if (!this.socket.synuser) {
-        this.find('login button').on('click', this.loginDialog);
+        this.find('login button').on('click', this.loginDialog.bind(this));
         // this.find('join button').on('click', TopBar.dialog.join);
         this.find('is in').hide();
       } else {
@@ -9887,7 +9883,7 @@ var TopBar = (function (_Controller) {
 
         afterClose: function afterClose() {
           $('.login-button').on('click', function () {
-            return new _synComponentsLoginController2['default']();
+            return _this2.loginDialog();
           });
         },
 

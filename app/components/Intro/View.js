@@ -25,7 +25,7 @@ class Intro extends Element {
         .get(0)
         .add(
           new ItemView({
-            item: { buttons: false, collapsers: false }
+            buttons: false, collapsers: false
           })
         );
 

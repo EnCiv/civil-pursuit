@@ -1240,15 +1240,15 @@ var App = (function (_EventEmitter) {
     key: 'load',
     value: function load() {
 
-      if (this.template) {
-        return this.template;
-      } else if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
-        this.template = _synLibAppCache2['default'].getTemplate(this.componentName);
-      } else {
-        var View = this.view;
-        var view = new View(this.props);
-        _synLibAppCache2['default'].setTemplate(this.componentName, $(view.render()));
-        this.template = _synLibAppCache2['default'].getTemplate(this.componentName);
+      if (!this.template) {
+        if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
+          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+        } else {
+          var View = this.view;
+          var view = new View(this.props);
+          _synLibAppCache2['default'].setTemplate(this.componentName, view.render());
+          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+        }
       }
 
       return this.template;
@@ -1474,9 +1474,11 @@ var Login = (function (_Controller) {
 
     _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
 
+    this.props = props || {};
+
     this.form = new _synLibUtilForm2['default'](this.template);
 
-    this.form.send(this.submit);
+    this.form.send(this.submit.bind(this));
   }
 
   _inherits(Login, _Controller);
@@ -1496,14 +1498,14 @@ var Login = (function (_Controller) {
       d.run(function () {
         if ($('.login-error-404').hasClass('is-shown')) {
           return _synLibUtilNav2['default'].hide($('.login-error-404'), d.intercept(function () {
-            _this.send(login);
+            // this.send(login);
             _this.form.submit();
           }));
         }
 
         if ($('.login-error-401').hasClass('is-shown')) {
           return _synLibUtilNav2['default'].hide($('.login-error-401'), d.intercept(function () {
-            _this.send(login);
+            // this.send(login);
             _this.form.submit();
           }));
         }
@@ -1512,8 +1514,8 @@ var Login = (function (_Controller) {
           url: '/sign/in',
           type: 'POST',
           data: {
-            email: _this.labels.email.val(),
-            password: _this.labels.password.val()
+            email: _this.form.labels.email.val(),
+            password: _this.form.labels.password.val()
           } }).error(function (response) {
           switch (response.status) {
             case 404:
@@ -1529,7 +1531,7 @@ var Login = (function (_Controller) {
 
           $('.topbar .is-out').remove();
 
-          vex.close($this.props.vexContent.data().vex.id);
+          vex.close(_this.props.$vexContent.data().vex.id);
         });
       });
     }
@@ -1622,7 +1624,7 @@ var TopBar = (function (_Controller) {
       this.find('right section').removeClass('hide');
 
       if (!this.socket.synuser) {
-        this.find('login button').on('click', this.loginDialog);
+        this.find('login button').on('click', this.loginDialog.bind(this));
         // this.find('join button').on('click', TopBar.dialog.join);
         this.find('is in').hide();
       } else {
@@ -1655,7 +1657,7 @@ var TopBar = (function (_Controller) {
 
         afterClose: function afterClose() {
           $('.login-button').on('click', function () {
-            return new _synComponentsLoginController2['default']();
+            return _this2.loginDialog();
           });
         },
 
