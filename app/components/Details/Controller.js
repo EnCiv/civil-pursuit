@@ -9,6 +9,11 @@ class Details extends Controller {
   constructor (props, itemParent) {
     super();
 
+    this.store = {
+      item: null,
+      details: null
+    };
+
     if ( props.item ) {
       this.set('item', props.item);
     }
@@ -82,7 +87,7 @@ class Details extends Controller {
     }
 
     if ( ! self.details ) {
-      this.get();
+      this.fetch();
     }
   }
 
@@ -158,35 +163,42 @@ class Details extends Controller {
     }, 250);
   }
 
+  feedback () {
+    console.log('item has feedback?', this.get('item'));
+  }
+
   fetch () {
     var self = this;
 
-    app.socket.publish('get item details', self.item.item._id, function (details) {
+    let item = this.get('item');
 
-      console.log('got item details', details);
+    this
+      .publish('get item details', item._id)
 
-      self.details = details;
+      .subscribe((pubsub, details) => {
+        console.log('got item details', details);
 
-      // Feedback
+        this.set('details', details);
 
-      details.feedbacks.forEach(function (feedback) {
-        var tpl = $('<div class="pretext feedback"></div>');
-        tpl.text(feedback.feedback);
-        self.find('feedback list')
-          .append(tpl)
-          .append('<hr/>');
+        // // Feedback
 
+        // details.feedbacks.forEach(function (feedback) {
+        //   var tpl = $('<div class="pretext feedback"></div>');
+        //   tpl.text(feedback.feedback);
+        //   self.find('feedback list')
+        //     .append(tpl)
+        //     .append('<hr/>');
+
+        // });
+
+        // // Votes
+
+        // details.criterias.forEach(function (criteria, i) {
+        //   self.find('votes').eq(i).find('h4').text(criteria.name);
+
+        //   self.votes(criteria, self.find('votes').eq(i).find('svg'));
+        // });
       });
-
-      // Votes
-
-      details.criterias.forEach(function (criteria, i) {
-        self.find('votes').eq(i).find('h4').text(criteria.name);
-
-        self.votes(criteria, self.find('votes').eq(i).find('svg'));
-      });
-
-    });
   }
 
 }

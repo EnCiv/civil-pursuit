@@ -3168,6 +3168,11 @@ var Details = (function (_Controller) {
 
     _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this);
 
+    this.store = {
+      item: null,
+      details: null
+    };
+
     if (props.item) {
       this.set('item', props.item);
     }
@@ -3240,7 +3245,7 @@ var Details = (function (_Controller) {
       }
 
       if (!self.details) {
-        this.get();
+        this.fetch();
       }
     }
   }, {
@@ -3316,31 +3321,42 @@ var Details = (function (_Controller) {
       }, 250);
     }
   }, {
+    key: 'feedback',
+    value: function feedback() {
+      console.log('item has feedback?', this.get('item'));
+    }
+  }, {
     key: 'fetch',
     value: function fetch() {
+      var _this = this;
+
       var self = this;
 
-      app.socket.publish('get item details', self.item.item._id, function (details) {
+      var item = this.get('item');
 
+      this.publish('get item details', item._id).subscribe(function (pubsub, details) {
         console.log('got item details', details);
 
-        self.details = details;
+        _this.set('details', details);
 
-        // Feedback
+        // // Feedback
 
-        details.feedbacks.forEach(function (feedback) {
-          var tpl = $('<div class="pretext feedback"></div>');
-          tpl.text(feedback.feedback);
-          self.find('feedback list').append(tpl).append('<hr/>');
-        });
+        // details.feedbacks.forEach(function (feedback) {
+        //   var tpl = $('<div class="pretext feedback"></div>');
+        //   tpl.text(feedback.feedback);
+        //   self.find('feedback list')
+        //     .append(tpl)
+        //     .append('<hr/>');
 
-        // Votes
+        // });
 
-        details.criterias.forEach(function (criteria, i) {
-          self.find('votes').eq(i).find('h4').text(criteria.name);
+        // // Votes
 
-          self.votes(criteria, self.find('votes').eq(i).find('svg'));
-        });
+        // details.criterias.forEach(function (criteria, i) {
+        //   self.find('votes').eq(i).find('h4').text(criteria.name);
+
+        //   self.votes(criteria, self.find('votes').eq(i).find('svg'));
+        // });
       });
     }
   }]);

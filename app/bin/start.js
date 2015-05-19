@@ -3,7 +3,7 @@
   
   'use strict';
 
-  require("babel/register")({ modules: 'common' });
+  require("babel/register")({ modules: 'common', stage: 1 });
 
   require('colors');
 
