@@ -1,14 +1,15 @@
 'use strict';
 
-import Controller from 'syn/lib/app/Controller';
-import MediaController from 'syn/components/Item/controllers/media';
-import View from 'syn/components/Item/View';
-import Promote from 'syn/components/Promote/Controller';
-import Details from 'syn/components/Details/Controller';
-import TopBar from 'syn/components/TopBar/Controller';
-import S from 'string';
-import Nav from 'syn/lib/util/Nav';
-import readMore from 'syn/lib/util/ReadMore';
+import Controller       from 'syn/lib/app/Controller';
+import MediaController  from 'syn/components/Item/controllers/media';
+import View             from 'syn/components/Item/View';
+import Promote          from 'syn/components/Promote/Controller';
+import Details          from 'syn/components/Details/Controller';
+import TopBar           from 'syn/components/TopBar/Controller';
+import S                from 'string';
+import Nav              from 'syn/lib/util/Nav';
+import readMore         from 'syn/lib/util/ReadMore';
+import toggleArrow      from 'syn/components/Item/controllers/toggle-arrow';
 
 class Item extends Controller {
 
@@ -282,6 +283,7 @@ class Item extends Controller {
   }
 
   toggleDetails ($trigger) {
+
     let $item       =   $trigger.closest('.item');
     let item        =   $item.data('item');
 
@@ -335,90 +337,7 @@ class Item extends Controller {
   }
 
   toggleArrow ($trigger)  {
-    let $item   =   $trigger.closest('.item');
-    let item    =   $item.data('item');
-    let arrow   =   $trigger.find('i');
-
-    let d = this.domain;
-
-    if ( item.find('collapsers hidden').length ) {
-      item.find('collapsers').show();
-    }
-
-    Nav.toggle(item.find('children'), item.template, d.intercept(function () {
-
-        console.log('item type', item.item.type);
-
-        if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
-          item.find('collapsers').hide();
-        }
-
-        if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
-
-          item.find('children').addClass('is-loaded');
-
-          console.log('we have an item!!!', item);
-
-          var harmony = item.item.type.harmony;
-
-          if ( harmony.length ) {
-            var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-            item.find('children').append(split);
-
-            var panelLeft = new (require('syn/components/Panel/Controller'))(harmony[0], item.item._id);
-
-            panelLeft.load(d.intercept(function (template) {
-              template.addClass('split-view');
-
-              split.find('.left-split').append(template);
-
-              setTimeout(function () {
-                panelLeft.render(d.intercept(function () {
-                  panelLeft.fill(d.intercept());
-                }));
-              });
-            }));
-
-            var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], item.item._id);
-
-            panelRight.load(d.intercept(function (template) {
-              template.addClass('split-view');
-
-              split.find('.right-split').append(template);
-
-              setTimeout(function () {
-                panelRight.render(d.intercept(function () {
-                  panelRight.fill(d.intercept());
-                }));
-              });
-            }));
-          }
-
-          var subtype = item.item.subtype;
-
-          if ( subtype ) {
-            var subPanel = new (require('syn/components/Panel/Controller'))(subtype, item.item._id);
-
-            subPanel.load(d.intercept(function (template) {
-              item.find('children').append(template);
-
-              setTimeout(function () {
-                subPanel.render(d.intercept(function () {
-                  subPanel.fill(d.intercept());
-                }));
-              });
-            }));
-          }
-        }
-
-        if ( arrow.hasClass('fa-arrow-down') ) {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-        else {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-      }));
+    return toggleArrow.apply(this, [$trigger]);
   }
 
 }

@@ -3926,6 +3926,10 @@ var _synLibUtilReadMore = require('syn/lib/util/ReadMore');
 
 var _synLibUtilReadMore2 = _interopRequireDefault(_synLibUtilReadMore);
 
+var _synComponentsItemControllersToggleArrow = require('syn/components/Item/controllers/toggle-arrow');
+
+var _synComponentsItemControllersToggleArrow2 = _interopRequireDefault(_synComponentsItemControllersToggleArrow);
+
 var Item = (function (_Controller) {
   function Item(props) {
     _classCallCheck(this, Item);
@@ -4214,6 +4218,7 @@ var Item = (function (_Controller) {
   }, {
     key: 'toggleDetails',
     value: function toggleDetails($trigger) {
+
       var $item = $trigger.closest('.item');
       var item = $item.data('item');
 
@@ -4267,89 +4272,7 @@ var Item = (function (_Controller) {
   }, {
     key: 'toggleArrow',
     value: function toggleArrow($trigger) {
-      var $item = $trigger.closest('.item');
-      var item = $item.data('item');
-      var arrow = $trigger.find('i');
-
-      var d = this.domain;
-
-      if (item.find('collapsers hidden').length) {
-        item.find('collapsers').show();
-      }
-
-      _synLibUtilNav2['default'].toggle(item.find('children'), item.template, d.intercept(function () {
-
-        console.log('item type', item.item.type);
-
-        if (item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length) {
-          item.find('collapsers').hide();
-        }
-
-        if (item.find('children').hasClass('is-shown') && !item.find('children').hasClass('is-loaded')) {
-
-          item.find('children').addClass('is-loaded');
-
-          console.log('we have an item!!!', item);
-
-          var harmony = item.item.type.harmony;
-
-          if (harmony.length) {
-            var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-            item.find('children').append(split);
-
-            var panelLeft = new (require('syn/components/Panel/Controller'))(harmony[0], item.item._id);
-
-            panelLeft.load(d.intercept(function (template) {
-              template.addClass('split-view');
-
-              split.find('.left-split').append(template);
-
-              setTimeout(function () {
-                panelLeft.render(d.intercept(function () {
-                  panelLeft.fill(d.intercept());
-                }));
-              });
-            }));
-
-            var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], item.item._id);
-
-            panelRight.load(d.intercept(function (template) {
-              template.addClass('split-view');
-
-              split.find('.right-split').append(template);
-
-              setTimeout(function () {
-                panelRight.render(d.intercept(function () {
-                  panelRight.fill(d.intercept());
-                }));
-              });
-            }));
-          }
-
-          var subtype = item.item.subtype;
-
-          if (subtype) {
-            var subPanel = new (require('syn/components/Panel/Controller'))(subtype, item.item._id);
-
-            subPanel.load(d.intercept(function (template) {
-              item.find('children').append(template);
-
-              setTimeout(function () {
-                subPanel.render(d.intercept(function () {
-                  subPanel.fill(d.intercept());
-                }));
-              });
-            }));
-          }
-        }
-
-        if (arrow.hasClass('fa-arrow-down')) {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        } else {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-      }));
+      return _synComponentsItemControllersToggleArrow2['default'].apply(this, [$trigger]);
     }
   }]);
 
@@ -4359,7 +4282,7 @@ var Item = (function (_Controller) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/Details/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Details/Controller.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js","syn/components/Item/controllers/media":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/media.js","syn/components/Panel/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Panel/Controller.js","syn/components/Promote/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Promote/Controller.js","syn/components/TopBar/Controller":"/home/francois/Dev/syn/node_modules/syn/components/TopBar/Controller.js","syn/lib/app/Controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js","syn/lib/util/ReadMore":"/home/francois/Dev/syn/node_modules/syn/lib/util/ReadMore.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js":[function(require,module,exports){
+},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/Details/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Details/Controller.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js","syn/components/Item/controllers/media":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/media.js","syn/components/Item/controllers/toggle-arrow":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/toggle-arrow.js","syn/components/Promote/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Promote/Controller.js","syn/components/TopBar/Controller":"/home/francois/Dev/syn/node_modules/syn/components/TopBar/Controller.js","syn/lib/app/Controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js","syn/lib/util/ReadMore":"/home/francois/Dev/syn/node_modules/syn/lib/util/ReadMore.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4629,7 +4552,115 @@ function MediaController() {
 exports['default'] = MediaController;
 module.exports = exports['default'];
 
-},{"syn/components/YouTube/View":"/home/francois/Dev/syn/node_modules/syn/components/YouTube/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/ItemDefaultButtons/View.js":[function(require,module,exports){
+},{"syn/components/YouTube/View":"/home/francois/Dev/syn/node_modules/syn/components/YouTube/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/toggle-arrow.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _synLibUtilNav = require('syn/lib/util/Nav');
+
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+
+var _synComponentsPanelController = require('syn/components/Panel/Controller');
+
+var _synComponentsPanelController2 = _interopRequireDefault(_synComponentsPanelController);
+
+function toggleArrow($trigger) {
+  var $item = $trigger.closest('.item');
+  var item = $item.data('item');
+  var arrow = $trigger.find('i');
+  var storeItem = this.get('item');
+
+  var d = this.domain;
+
+  if (item.find('collapsers hidden').length) {
+    item.find('collapsers').show();
+  }
+
+  _synLibUtilNav2['default'].toggle(item.find('children'), this.template, d.intercept(function () {
+
+    if (item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length) {
+      item.find('collapsers').hide();
+    }
+
+    if (item.find('children').hasClass('is-shown') && !item.find('children').hasClass('is-loaded')) {
+
+      item.find('children').addClass('is-loaded');
+
+      var harmony = storeItem.type.harmony;
+
+      if (harmony.length) {
+        var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+        item.find('children').append(split);
+
+        var panelLeft = new _synComponentsPanelController2['default'](harmony[0], storeItem._id);
+
+        panelLeft.load(d.intercept(function (template) {
+          template.addClass('split-view');
+
+          split.find('.left-split').append(template);
+
+          setTimeout(function () {
+            panelLeft.render(d.intercept(function () {
+              panelLeft.fill(d.intercept());
+            }));
+          });
+        }));
+
+        var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], storeItem._id);
+
+        panelRight.load(d.intercept(function (template) {
+          template.addClass('split-view');
+
+          split.find('.right-split').append(template);
+
+          setTimeout(function () {
+            panelRight.render(d.intercept(function () {
+              panelRight.fill(d.intercept());
+            }));
+          });
+        }));
+      }
+
+      var subtype = storeItem.subtype;
+
+      if (subtype) {
+        var subPanel = new _synComponentsPanelController2['default']({
+          panel: {
+            type: subtype,
+            parent: storeItem._id
+          }
+        });
+
+        subPanel.load();
+
+        item.find('children').append(subPanel.template);
+
+        setTimeout(function () {
+          subPanel.render(d.intercept(function () {
+            return subPanel.fill(d.intercept());
+          }));
+        });
+      }
+    }
+
+    if (arrow.hasClass('fa-arrow-down')) {
+      arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+    } else {
+      arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+    }
+  }));
+}
+
+exports['default'] = toggleArrow;
+module.exports = exports['default'];
+
+},{"syn/components/Panel/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Panel/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/ItemDefaultButtons/View.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
