@@ -24,7 +24,7 @@ synapp.app.ready(function () {
   // new Profile().render();
 });
 
-},{"syn/app":8,"syn/components/TopBar/Controller":11}],2:[function(require,module,exports){
+},{"syn/app":8,"syn/components/TopBar/Controller":12}],2:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1377,7 +1377,7 @@ function anon() {
 }
 module.exports = exports['default'];
 
-},{"domain":2,"events":3,"syn/lib/app/Cache":12,"syn/lib/app/Socket":14,"util":7}],9:[function(require,module,exports){
+},{"domain":2,"events":3,"syn/lib/app/Cache":13,"syn/lib/app/Socket":15,"util":7}],9:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -1443,7 +1443,191 @@ module.exports = exports['default'];
 
 // $('.forgot-password-pending').css('display', 'block');
 
-},{"domain":2,"syn/lib/util/Form":15}],10:[function(require,module,exports){
+},{"domain":2,"syn/lib/util/Form":16}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _synLibAppController = require('syn/lib/app/Controller');
+
+var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+
+var _synLibUtilForm = require('syn/lib/util/Form');
+
+var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
+
+var Join = (function (_Controller) {
+  function Join(props) {
+    _classCallCheck(this, Join);
+
+    _get(Object.getPrototypeOf(Join.prototype), 'constructor', this).call(this);
+
+    this.props = props || {};
+
+    this.form = new _synLibUtilForm2['default'](this.template);
+
+    this.form.send(this.submit.bind(this));
+
+    this.template.find('.i-agree').on('click', function () {
+
+      var agreed = $(this).find('.agreed');
+
+      if (agreed.hasClass('fa-square-o')) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      } else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+  }
+
+  _inherits(Join, _Controller);
+
+  _createClass(Join, [{
+    key: 'template',
+    get: function () {
+      return $('form[name="join"]');
+    }
+  }, {
+    key: 'submit',
+    value: function submit(e) {
+      var _this = this;
+
+      var d = this.domain;
+
+      d.run(function () {
+
+        _this.template.find('.please-agree').addClass('hide');
+
+        _this.template.find('.already-taken').hide();
+
+        if (_this.form.labels.password.val() !== _this.form.labels.confirm.val()) {
+          _this.form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        if (!_this.template.find('.agreed').hasClass('fa-check-square-o')) {
+          _this.template.find('.please-agree').removeClass('hide');
+
+          return;
+        }
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: _this.form.labels.email.val(),
+            password: _this.form.labels.password.val()
+          }
+        }).error(function (response, state, code) {
+          if (response.status === 401) {
+            _this.template.find('.already-taken').show();
+          }
+        }).success(function (response) {
+
+          $('a.is-in').css('display', 'inline');
+
+          $('.topbar .is-out').remove();
+
+          vex.close(_this.props.$vexContent.data().vex.id);
+        });
+      });
+    }
+  }]);
+
+  return Join;
+})(_synLibAppController2['default']);
+
+exports['default'] = Join;
+
+!(function () {
+
+  'use strict';
+
+  var Form = require('syn/lib/util/Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function join($vexContent) {
+    var $form = $('form[name="join"]');
+
+    $form.find('.i-agree').on('click', function () {
+
+      var agreed = $(this).find('.agreed');
+
+      if (agreed.hasClass('fa-square-o')) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      } else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    var form = new Form($form);
+
+    function join() {
+      app.domain.run(function () {
+
+        $form.find('.please-agree').addClass('hide');
+        $form.find('.already-taken').hide();
+
+        if (form.labels.password.val() !== form.labels.confirm.val()) {
+          form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        if (!$form.find('.agreed').hasClass('fa-check-square-o')) {
+          $form.find('.please-agree').removeClass('hide');
+
+          return;
+        }
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: form.labels.email.val(),
+            password: form.labels.password.val()
+          }
+        }).error(function (response, state, code) {
+          if (response.status === 401) {
+            $form.find('.already-taken').show();
+          }
+        }).success(function (response) {
+
+          $('a.is-in').css('display', 'inline');
+
+          $('.topbar .is-out').remove();
+
+          vex.close($vexContent.data().vex.id);
+        });
+      });
+    }
+
+    form.send(join);
+  }
+
+  module.exports = join;
+})();
+module.exports = exports['default'];
+
+},{"syn/lib/app/Controller":14,"syn/lib/util/Form":16}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1547,7 +1731,7 @@ var Login = (function (_Controller) {
 exports['default'] = Login;
 module.exports = exports['default'];
 
-},{"syn/lib/app/Controller":13,"syn/lib/util/Form":15,"syn/lib/util/Nav":16}],11:[function(require,module,exports){
+},{"syn/lib/app/Controller":14,"syn/lib/util/Form":16,"syn/lib/util/Nav":17}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1571,6 +1755,10 @@ var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
 var _synComponentsLoginController = require('syn/components/Login/Controller');
 
 var _synComponentsLoginController2 = _interopRequireDefault(_synComponentsLoginController);
+
+var _synComponentsJoinController = require('syn/components/Join/Controller');
+
+var _synComponentsJoinController2 = _interopRequireDefault(_synComponentsJoinController);
 
 var _synComponentsForgotPasswordController = require('syn/components/ForgotPassword/Controller');
 
@@ -1629,7 +1817,7 @@ var TopBar = (function (_Controller) {
 
       if (!this.socket.synuser) {
         this.find('login button').on('click', this.loginDialog.bind(this));
-        // this.find('join button').on('click', TopBar.dialog.join);
+        this.find('join button').on('click', this.joinDialog.bind(this));
         this.find('is in').hide();
       } else {
         this.find('is out').remove();
@@ -1672,6 +1860,43 @@ var TopBar = (function (_Controller) {
         })]
       });
     }
+  }, {
+    key: 'joinDialog',
+    value: function joinDialog() {
+      var _this3 = this;
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function afterOpen($vexContent) {
+          _this3.find('join button').off('click').on('click', function () {
+            vex.close();
+          });
+
+          new _synComponentsJoinController2['default']({ $vexContent: $vexContent });
+        },
+
+        afterClose: function afterClose() {
+          var _this4 = this;
+
+          $('.join-button').on('click', function () {
+            return _this4.joinDialog();
+          });
+        },
+
+        message: $('#join').text(),
+        buttons: [$.extend({}, vex.dialog.buttons.NO, {
+          text: 'x Close'
+        })],
+        callback: function callback(value) {},
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
   }]);
 
   return TopBar;
@@ -1680,7 +1905,7 @@ var TopBar = (function (_Controller) {
 exports['default'] = TopBar;
 module.exports = exports['default'];
 
-},{"syn/components/ForgotPassword/Controller":9,"syn/components/Login/Controller":10,"syn/lib/app/Controller":13}],12:[function(require,module,exports){
+},{"syn/components/ForgotPassword/Controller":9,"syn/components/Join/Controller":10,"syn/components/Login/Controller":11,"syn/lib/app/Controller":14}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1718,7 +1943,7 @@ var Cache = (function () {
 exports['default'] = new Cache();
 module.exports = exports['default'];
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1752,7 +1977,7 @@ var Controller = (function (_App) {
 exports['default'] = Controller;
 module.exports = exports['default'];
 
-},{"syn/app":8}],14:[function(require,module,exports){
+},{"syn/app":8}],15:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -1803,7 +2028,7 @@ module.exports = exports['default'];
   module.exports = Socket;
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1892,7 +2117,7 @@ var Form = (function () {
 exports['default'] = Form;
 module.exports = exports['default'];
 
-},{"syn/lib/util/domain-run":17}],16:[function(require,module,exports){
+},{"syn/lib/util/domain-run":18}],17:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -2229,7 +2454,7 @@ module.exports = exports['default'];
 // 'padding-top': elem.height() + 'px'
 
 }).call(this,require('_process'))
-},{"_process":5,"domain":2,"events":3}],17:[function(require,module,exports){
+},{"_process":5,"domain":2,"events":3}],18:[function(require,module,exports){
 'use strict';
 
 !(function () {

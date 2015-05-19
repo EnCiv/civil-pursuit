@@ -45,7 +45,7 @@ synapp.app.ready(function () {
   });
 });
 
-},{"syn/app":34,"syn/components/Intro/Controller":46,"syn/components/Panel/Controller":53,"syn/components/TopBar/Controller":57}],2:[function(require,module,exports){
+},{"syn/app":34,"syn/components/Intro/Controller":46,"syn/components/Panel/Controller":54,"syn/components/TopBar/Controller":58}],2:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -7151,7 +7151,7 @@ function anon() {
 }
 module.exports = exports['default'];
 
-},{"domain":6,"events":7,"syn/lib/app/Cache":60,"syn/lib/app/Socket":63,"util":25}],35:[function(require,module,exports){
+},{"domain":6,"events":7,"syn/lib/app/Cache":61,"syn/lib/app/Socket":64,"util":25}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7319,7 +7319,7 @@ function foo() {
 }
 module.exports = exports['default'];
 
-},{"syn/components/Creator/controllers/create":37,"syn/components/Creator/controllers/created":38,"syn/components/Creator/controllers/pack-item":39,"syn/components/Creator/controllers/render":40,"syn/components/Panel/Controller":53,"syn/lib/app/Controller":61}],36:[function(require,module,exports){
+},{"syn/components/Creator/controllers/create":37,"syn/components/Creator/controllers/created":38,"syn/components/Creator/controllers/pack-item":39,"syn/components/Creator/controllers/render":40,"syn/components/Panel/Controller":54,"syn/lib/app/Controller":62}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7555,7 +7555,7 @@ module.exports = exports['default'];
 })();
 
 }).call(this,require('_process'))
-},{"_process":10,"syn/components/Item/Controller":48,"syn/lib/util/Nav":65,"syn/lib/util/Stream":67}],38:[function(require,module,exports){
+},{"_process":10,"syn/components/Item/Controller":48,"syn/lib/util/Nav":66,"syn/lib/util/Stream":68}],38:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -7762,7 +7762,7 @@ function renderCreator(cb) {
 exports['default'] = renderCreator;
 module.exports = exports['default'];
 
-},{"domain":6,"syn/components/YouTube/Controller":58,"syn/lib/util/Form":64,"syn/lib/util/Upload":68}],41:[function(require,module,exports){
+},{"domain":6,"syn/components/YouTube/Controller":59,"syn/lib/util/Form":65,"syn/lib/util/Upload":69}],41:[function(require,module,exports){
 'use strict';
 
 !(function _DetailsComponent_() {
@@ -7985,7 +7985,7 @@ module.exports = exports['default'];
   module.exports = DetailsComponent;
 })();
 
-},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/util/Nav":65}],42:[function(require,module,exports){
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/util/Nav":66}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8167,7 +8167,7 @@ module.exports = exports['default'];
   module.exports = Edit;
 })();
 
-},{"syn/components/Creator/Controller":35,"syn/components/EditAndGoAgain/controllers/save":44,"syn/components/Item/Controller":48,"syn/lib/util/Form":64,"syn/lib/util/Nav":65}],44:[function(require,module,exports){
+},{"syn/components/Creator/Controller":35,"syn/components/EditAndGoAgain/controllers/save":44,"syn/components/Item/Controller":48,"syn/lib/util/Form":65,"syn/lib/util/Nav":66}],44:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -8226,7 +8226,7 @@ module.exports = exports['default'];
   module.exports = save;
 })();
 
-},{"syn/components/Item/Controller":48,"syn/lib/util/Nav":65}],45:[function(require,module,exports){
+},{"syn/components/Item/Controller":48,"syn/lib/util/Nav":66}],45:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -8292,7 +8292,7 @@ module.exports = exports['default'];
 
 // $('.forgot-password-pending').css('display', 'block');
 
-},{"domain":6,"syn/lib/util/Form":64}],46:[function(require,module,exports){
+},{"domain":6,"syn/lib/util/Form":65}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8431,7 +8431,7 @@ var Intro = (function (_Controller) {
 exports['default'] = Intro;
 module.exports = exports['default'];
 
-},{"syn/components/Intro/View":47,"syn/components/Item/Controller":48,"syn/lib/app/Controller":61,"syn/lib/util/ReadMore":66}],47:[function(require,module,exports){
+},{"syn/components/Intro/View":47,"syn/components/Item/Controller":48,"syn/lib/app/Controller":62,"syn/lib/util/ReadMore":67}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8491,7 +8491,7 @@ Intro.selector = '#intro';
 exports['default'] = Intro;
 module.exports = exports['default'];
 
-},{"cinco":31,"syn/components/Item/View":49,"syn/components/Panel/View":54}],48:[function(require,module,exports){
+},{"cinco":31,"syn/components/Item/View":49,"syn/components/Panel/View":55}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8972,7 +8972,7 @@ var Item = (function (_Controller) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"string":33,"syn/components/Details/Controller":41,"syn/components/Item/View":49,"syn/components/Item/controllers/media":50,"syn/components/Panel/Controller":53,"syn/components/Promote/Controller":55,"syn/lib/app/Controller":61,"syn/lib/util/Nav":65,"syn/lib/util/ReadMore":66}],49:[function(require,module,exports){
+},{"string":33,"syn/components/Details/Controller":41,"syn/components/Item/View":49,"syn/components/Item/controllers/media":50,"syn/components/Panel/Controller":54,"syn/components/Promote/Controller":56,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66,"syn/lib/util/ReadMore":67}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9143,7 +9143,7 @@ var Item = (function (_Element) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"cinco":31,"syn/components/Details/View":42,"syn/components/ItemDefaultButtons/View":51,"syn/components/Promote/View":56,"syn/lib/app/Page":62}],50:[function(require,module,exports){
+},{"cinco":31,"syn/components/Details/View":42,"syn/components/ItemDefaultButtons/View":51,"syn/components/Promote/View":57,"syn/lib/app/Page":63}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9242,7 +9242,7 @@ function MediaController() {
 exports['default'] = MediaController;
 module.exports = exports['default'];
 
-},{"syn/components/YouTube/View":59}],51:[function(require,module,exports){
+},{"syn/components/YouTube/View":60}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9285,6 +9285,190 @@ exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
 
 },{"cinco":31}],52:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _synLibAppController = require('syn/lib/app/Controller');
+
+var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+
+var _synLibUtilForm = require('syn/lib/util/Form');
+
+var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
+
+var Join = (function (_Controller) {
+  function Join(props) {
+    _classCallCheck(this, Join);
+
+    _get(Object.getPrototypeOf(Join.prototype), 'constructor', this).call(this);
+
+    this.props = props || {};
+
+    this.form = new _synLibUtilForm2['default'](this.template);
+
+    this.form.send(this.submit.bind(this));
+
+    this.template.find('.i-agree').on('click', function () {
+
+      var agreed = $(this).find('.agreed');
+
+      if (agreed.hasClass('fa-square-o')) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      } else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+  }
+
+  _inherits(Join, _Controller);
+
+  _createClass(Join, [{
+    key: 'template',
+    get: function () {
+      return $('form[name="join"]');
+    }
+  }, {
+    key: 'submit',
+    value: function submit(e) {
+      var _this = this;
+
+      var d = this.domain;
+
+      d.run(function () {
+
+        _this.template.find('.please-agree').addClass('hide');
+
+        _this.template.find('.already-taken').hide();
+
+        if (_this.form.labels.password.val() !== _this.form.labels.confirm.val()) {
+          _this.form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        if (!_this.template.find('.agreed').hasClass('fa-check-square-o')) {
+          _this.template.find('.please-agree').removeClass('hide');
+
+          return;
+        }
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: _this.form.labels.email.val(),
+            password: _this.form.labels.password.val()
+          }
+        }).error(function (response, state, code) {
+          if (response.status === 401) {
+            _this.template.find('.already-taken').show();
+          }
+        }).success(function (response) {
+
+          $('a.is-in').css('display', 'inline');
+
+          $('.topbar .is-out').remove();
+
+          vex.close(_this.props.$vexContent.data().vex.id);
+        });
+      });
+    }
+  }]);
+
+  return Join;
+})(_synLibAppController2['default']);
+
+exports['default'] = Join;
+
+!(function () {
+
+  'use strict';
+
+  var Form = require('syn/lib/util/Form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function join($vexContent) {
+    var $form = $('form[name="join"]');
+
+    $form.find('.i-agree').on('click', function () {
+
+      var agreed = $(this).find('.agreed');
+
+      if (agreed.hasClass('fa-square-o')) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      } else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+
+    var form = new Form($form);
+
+    function join() {
+      app.domain.run(function () {
+
+        $form.find('.please-agree').addClass('hide');
+        $form.find('.already-taken').hide();
+
+        if (form.labels.password.val() !== form.labels.confirm.val()) {
+          form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        if (!$form.find('.agreed').hasClass('fa-check-square-o')) {
+          $form.find('.please-agree').removeClass('hide');
+
+          return;
+        }
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: form.labels.email.val(),
+            password: form.labels.password.val()
+          }
+        }).error(function (response, state, code) {
+          if (response.status === 401) {
+            $form.find('.already-taken').show();
+          }
+        }).success(function (response) {
+
+          $('a.is-in').css('display', 'inline');
+
+          $('.topbar .is-out').remove();
+
+          vex.close($vexContent.data().vex.id);
+        });
+      });
+    }
+
+    form.send(join);
+  }
+
+  module.exports = join;
+})();
+module.exports = exports['default'];
+
+},{"syn/lib/app/Controller":62,"syn/lib/util/Form":65}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9388,7 +9572,7 @@ var Login = (function (_Controller) {
 exports['default'] = Login;
 module.exports = exports['default'];
 
-},{"syn/lib/app/Controller":61,"syn/lib/util/Form":64,"syn/lib/util/Nav":65}],53:[function(require,module,exports){
+},{"syn/lib/app/Controller":62,"syn/lib/util/Form":65,"syn/lib/util/Nav":66}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9669,7 +9853,7 @@ module.exports = exports['default'];
 /** This is about another panel */
 // item: app.location.item
 
-},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":48,"syn/components/Panel/View":54,"syn/lib/app/Cache":60,"syn/lib/app/Controller":61,"syn/lib/util/Nav":65}],54:[function(require,module,exports){
+},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":48,"syn/components/Panel/View":55,"syn/lib/app/Cache":61,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9759,7 +9943,7 @@ var Panel = (function (_Element) {
 exports['default'] = Panel;
 module.exports = exports['default'];
 
-},{"cinco":31,"syn/components/Creator/View":36}],55:[function(require,module,exports){
+},{"cinco":31,"syn/components/Creator/View":36}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9843,7 +10027,7 @@ var Promote = (function (_Controller) {
 exports['default'] = Promote;
 module.exports = exports['default'];
 
-},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/app/Controller":61,"syn/lib/util/Nav":65}],56:[function(require,module,exports){
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9974,7 +10158,7 @@ var Promote = (function (_Element) {
 exports['default'] = Promote;
 module.exports = exports['default'];
 
-},{"cinco":31}],57:[function(require,module,exports){
+},{"cinco":31}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9998,6 +10182,10 @@ var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
 var _synComponentsLoginController = require('syn/components/Login/Controller');
 
 var _synComponentsLoginController2 = _interopRequireDefault(_synComponentsLoginController);
+
+var _synComponentsJoinController = require('syn/components/Join/Controller');
+
+var _synComponentsJoinController2 = _interopRequireDefault(_synComponentsJoinController);
 
 var _synComponentsForgotPasswordController = require('syn/components/ForgotPassword/Controller');
 
@@ -10056,7 +10244,7 @@ var TopBar = (function (_Controller) {
 
       if (!this.socket.synuser) {
         this.find('login button').on('click', this.loginDialog.bind(this));
-        // this.find('join button').on('click', TopBar.dialog.join);
+        this.find('join button').on('click', this.joinDialog.bind(this));
         this.find('is in').hide();
       } else {
         this.find('is out').remove();
@@ -10099,6 +10287,43 @@ var TopBar = (function (_Controller) {
         })]
       });
     }
+  }, {
+    key: 'joinDialog',
+    value: function joinDialog() {
+      var _this3 = this;
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function afterOpen($vexContent) {
+          _this3.find('join button').off('click').on('click', function () {
+            vex.close();
+          });
+
+          new _synComponentsJoinController2['default']({ $vexContent: $vexContent });
+        },
+
+        afterClose: function afterClose() {
+          var _this4 = this;
+
+          $('.join-button').on('click', function () {
+            return _this4.joinDialog();
+          });
+        },
+
+        message: $('#join').text(),
+        buttons: [$.extend({}, vex.dialog.buttons.NO, {
+          text: 'x Close'
+        })],
+        callback: function callback(value) {},
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
   }]);
 
   return TopBar;
@@ -10107,7 +10332,7 @@ var TopBar = (function (_Controller) {
 exports['default'] = TopBar;
 module.exports = exports['default'];
 
-},{"syn/components/ForgotPassword/Controller":45,"syn/components/Login/Controller":52,"syn/lib/app/Controller":61}],58:[function(require,module,exports){
+},{"syn/components/ForgotPassword/Controller":45,"syn/components/Join/Controller":52,"syn/components/Login/Controller":53,"syn/lib/app/Controller":62}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10127,7 +10352,7 @@ function YouTube(url) {
 exports['default'] = YouTube;
 module.exports = exports['default'];
 
-},{"syn/components/YouTube/View":59}],59:[function(require,module,exports){
+},{"syn/components/YouTube/View":60}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10191,7 +10416,7 @@ YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 exports['default'] = YouTube;
 module.exports = exports['default'];
 
-},{"cinco":31}],60:[function(require,module,exports){
+},{"cinco":31}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10229,7 +10454,7 @@ var Cache = (function () {
 exports['default'] = new Cache();
 module.exports = exports['default'];
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10263,7 +10488,7 @@ var Controller = (function (_App) {
 exports['default'] = Controller;
 module.exports = exports['default'];
 
-},{"syn/app":34}],62:[function(require,module,exports){
+},{"syn/app":34}],63:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10304,7 +10529,7 @@ module.exports = exports['default'];
   module.exports = Page;
 })();
 
-},{"string":33}],63:[function(require,module,exports){
+},{"string":33}],64:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10355,7 +10580,7 @@ module.exports = exports['default'];
   module.exports = Socket;
 })();
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10444,7 +10669,7 @@ var Form = (function () {
 exports['default'] = Form;
 module.exports = exports['default'];
 
-},{"syn/lib/util/domain-run":69}],65:[function(require,module,exports){
+},{"syn/lib/util/domain-run":70}],66:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -10781,7 +11006,7 @@ module.exports = exports['default'];
 // 'padding-top': elem.height() + 'px'
 
 }).call(this,require('_process'))
-},{"_process":10,"domain":6,"events":7}],66:[function(require,module,exports){
+},{"_process":10,"domain":6,"events":7}],67:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10936,7 +11161,7 @@ module.exports = exports['default'];
   module.exports = readMore;
 })();
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10975,7 +11200,7 @@ module.exports = exports['default'];
   module.exports = Stream;
 })();
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -11056,7 +11281,7 @@ module.exports = exports['default'];
   module.exports = Upload;
 })();
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 'use strict';
 
 !(function () {

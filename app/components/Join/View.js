@@ -62,7 +62,8 @@ class Join extends Element {
     return new Element('.form-group.tablet-50.middle').add(
       new Element('label').text('Join'),
 
-      new Element('button.primary.join-submit.block.small', { $text: 'Join' })
+      new Element('button.primary.join-submit.block.small')
+        .text('Join')
     );
   }
 
@@ -76,9 +77,8 @@ class Join extends Element {
         new Element('span').text(' I agree to'),
 
         new Element('a', {
-          href: Page('Terms Of Service'),
-          $text: 'the terms of service'
-        }),
+          href: Page('Terms Of Service')
+        }).text('the terms of service'),
 
         new Element('span').text('.')
       )

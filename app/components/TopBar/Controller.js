@@ -2,6 +2,7 @@
 
 import Controller from 'syn/lib/app/Controller';
 import Login from 'syn/components/Login/Controller';
+import Join from 'syn/components/Join/Controller';
 import ForgotPassword from 'syn/components/ForgotPassword/Controller';
 
 class TopBar extends Controller {
@@ -49,7 +50,7 @@ class TopBar extends Controller {
 
     if ( ! this.socket.synuser ) {
       this.find('login button').on('click', this.loginDialog.bind(this));
-      // this.find('join button').on('click', TopBar.dialog.join);
+      this.find('join button').on('click', this.joinDialog.bind(this));
       this.find('is in').hide();
     }
 
@@ -89,6 +90,42 @@ class TopBar extends Controller {
             text: 'x Close'
           })
       ]
+    });
+  }
+
+  joinDialog () {
+    vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+    vex.dialog.confirm({
+
+      afterOpen: ($vexContent) => {
+        this.find('join button')
+          .off('click')
+          .on('click', function () {
+            vex.close();
+          });
+
+        new Join({ $vexContent: $vexContent });
+      },
+
+      afterClose: function () {
+        $('.join-button').on('click', () => this.joinDialog());
+      },
+
+      message: $('#join').text(),
+      buttons: [
+         $.extend({}, vex.dialog.buttons.NO, {
+            text: 'x Close'
+          })
+      ],
+      callback: function(value) {
+        
+      },
+      defaultOptions: {
+        closeCSS: {
+          color: 'red'
+        }
+      }
     });
   }
 
