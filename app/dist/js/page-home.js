@@ -2603,7 +2603,7 @@ var text = {
 };
 
 var Creator = (function (_Controller) {
-  function Creator(props) {
+  function Creator(props, panelContainer) {
     _classCallCheck(this, Creator);
 
     _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).call(this);
@@ -2611,6 +2611,8 @@ var Creator = (function (_Controller) {
     this.props = props || {};
 
     this.panel = props.panel;
+
+    this.panelContainer = panelContainer;
   }
 
   _inherits(Creator, _Controller);
@@ -2954,9 +2956,11 @@ function created(item) {
 
   var item = new _synComponentsItemController2['default']({ item: item });
 
-  var items = this.parent.find('items');
+  var items = this.panelContainer.find('items');
 
   item.load();
+
+  console.log('inserting', item.template, items);
 
   item.template.addClass('new');
   items.prepend(item.template);
@@ -5118,7 +5122,7 @@ var Panel = (function (_Controller) {
             _this.template.attr('id', _this.id);
           }
 
-          var creator = new _synComponentsCreatorController2['default'](_this.props);
+          var creator = new _synComponentsCreatorController2['default'](_this.props, _this);
 
           creator.render().then(fulfill, d.intercept.bind(d));
 

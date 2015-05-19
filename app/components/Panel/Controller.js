@@ -84,7 +84,7 @@ class Panel extends Controller {
           this.template.attr('id', this.id);
         }
 
-        var creator = new Creator(this.props);
+        var creator = new Creator(this.props, this);
 
         creator
           .render()

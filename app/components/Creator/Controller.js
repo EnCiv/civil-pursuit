@@ -21,12 +21,14 @@ class Creator extends Controller {
     return this.parent.find('.creator:first');
   }
 
-  constructor (props) {
+  constructor (props, panelContainer) {
     super();
 
     this.props = props || {};
 
     this.panel = props.panel;
+
+    this.panelContainer = panelContainer;
   }
 
   find (name) {

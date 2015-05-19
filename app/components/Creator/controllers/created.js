@@ -19,9 +19,11 @@ function created (item) {
 
   var item  = new Item({ item: item });
 
-  var items = this.parent.find('items');
+  var items = this.panelContainer.find('items');
 
   item.load();
+
+  console.log('inserting', item.template, items);
 
   item.template.addClass('new');
   items.prepend(item.template);
