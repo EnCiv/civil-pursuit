@@ -19,4 +19,3 @@ class HomePage extends Layout {
 }
 
 export default HomePage;
-

@@ -1,18 +1,15 @@
-! function Page_Profile_Controller () {
-  
-  'use strict';
+'use strict';
 
-  var Synapp = require('syn/app');
-  var Sign = require('syn/components/Sign/Controller');
-  var Panel = require('syn/components/Panel/Controller');
-  var Profile = require('syn/components/Profile/Controller');
+import App from 'syn/app';
+import TopBar from 'syn/components/TopBar/Controller';
+// import Profile from 'syn/components/Profile/Controller';
 
-  window.app = new Synapp();
+synapp.app = new App(true);
 
-  app.connect(function () {
-    new Sign().render();
+synapp.app.ready(() => {
 
-    new Profile().render();
-  });
+  new TopBar().render();
 
-} ();
+  // new Profile().render();
+
+});

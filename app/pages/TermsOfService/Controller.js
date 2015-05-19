@@ -1,14 +1,12 @@
-! function Page_TermsOfService_Controller () {
-  
-  'use strict';
+'use strict';
 
-  var Synapp    =   require('syn/app');
-  var Sign      =   require('syn/components/Sign/Controller');
+import App from 'syn/app';
+import TopBar from 'syn/components/TopBar/Controller';
 
-  window.app    =   new Synapp();
+synapp.app = new App(true);
 
-  app.connect(function () {
-    new Sign().render();
-  });
+synapp.app.ready(() => {
 
-} ();
+  new TopBar().render();
+
+});

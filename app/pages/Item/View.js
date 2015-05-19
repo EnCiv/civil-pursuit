@@ -1,22 +1,22 @@
-! function () {
-  
-  'use strict';
+'use strict'
 
-  var PanelView   =   require('syn/components/Panel/View');
-  var ItemView    =   require('syn/components/Item/View');
+import Layout from 'syn/components/Layout/View';
+import Item           from 'syn/components/Item/View';
+import Panel          from 'syn/components/Panel/View';
 
-  function ItemViewPage (locals) {
+class ItemPage extends Layout {
+  constructor(props) {
+    super(props);
+    this.props = props;
 
-    var Layout    =   require('syn/components/Layout/View')(locals);
+    let panel     =   new Panel(props);
 
-    var panel     =   PanelView(locals);
-
-    var item      =   ItemView(locals);
+    let item      =   new Item(props);
 
     panel
       .find('h4.panel-title')
       .each(function (title) {
-        title.text(locals.item.subject);
+        title.text(props.item.subject);
       });
 
     panel
@@ -25,17 +25,12 @@
         body.add(item);
       });
 
-    Layout.find('#main')
-      .each(function (main) {
-        main.add(
-          panel
-        );
+    var main = this.find('#main').get(0);
 
-      });
-
-    return Layout;
+    main.add(
+      panel
+    );
   }
+}
 
-  module.exports = ItemViewPage;
-
-} ();
+export default ItemPage;
