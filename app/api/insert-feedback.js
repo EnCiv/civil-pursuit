@@ -2,8 +2,6 @@
 
   'use strict';
 
-  
-
   function insertFeedback (event, feedback) {
 
     var socket = this;
@@ -13,6 +11,11 @@
     domainRun(
 
       function (domain) {
+
+        if ( ! ('user' in feedback) ) {
+          feedback.user = socket.synuser.id;
+        }
+
         require('syn/models/Feedback')
           .create(feedback, domain.intercept(function (inserted) {
             socket.ok(event, inserted);  

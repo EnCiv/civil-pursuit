@@ -8,7 +8,7 @@
 
     var domainRun = require('syn/lib/util/domain-run');
 
-    domainRun('syn/lib/domain')(
+    domainRun(
 
       function (domain) {
         require('syn/models/Item')

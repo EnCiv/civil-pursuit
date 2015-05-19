@@ -5575,12 +5575,23 @@ var Promote = (function (_Controller) {
     }
   }, {
     key: 'save',
-    value: function save(hand) {
+    value: function save(hand, cb) {
+
+      // For responsiveness reasons, there are a copy of each element in DOM
+      // one for small screen and one for regular screen -
+      // the ones that do not fit are hidden. So we want to make sure each time
+      // that we are working with the visible one
+
       var self = this;
 
       // feedback
 
-      var feedback = this.find('item feedback', hand);
+      var feedback = this.find('item feedback', hand).toArray().reduce(function (visible, item) {
+        if ($(item).is(':visible')) {
+          visible = $(item);
+        }
+        return visible;
+      });
 
       if (feedback.val()) {
 
@@ -5615,6 +5626,8 @@ var Promote = (function (_Controller) {
       this.publish('insert votes', votes).subscribe(function (pubsub) {
         return pubsub.unsubscribe();
       });
+
+      cb();
     }
   }, {
     key: 'getEvaluation',
@@ -5941,15 +5954,15 @@ function renderItem(hand) {
           return pubsub.unsubscribe();
         });
 
-        self.save(left ? 'left' : 'right');
+        self.save(left ? 'left' : 'right', function () {
+          $.when(self.find('side by side').find('.' + opposite + '-item').animate({
+            opacity: 0
+          })).then(function () {
+            self.get(opposite, self.get('items')[self.get('cursor')]);
 
-        $.when(self.find('side by side').find('.' + opposite + '-item').animate({
-          opacity: 0
-        })).then(function () {
-          self.get(opposite, self.get('items')[self.get('cursor')]);
-
-          promote.find('side by side').find('.' + opposite + '-item').animate({
-            opacity: 1
+            promote.find('side by side').find('.' + opposite + '-item').animate({
+              opacity: 1
+            });
           });
         });
       }
@@ -6023,9 +6036,9 @@ function renderPromote(cb) {
 
       if (cursor < limit) {
 
-        self.save('left');
+        self.save('left', function () {});
 
-        self.save('right');
+        self.save('right', function () {});
 
         $.when(self.find('side by side').find('.left-item, .right-item').animate({
           opacity: 0

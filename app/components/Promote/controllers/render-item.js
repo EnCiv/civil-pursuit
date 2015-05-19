@@ -142,27 +142,28 @@ function renderItem (hand) {
           self.publish('promote', promote.get(left ? 'left' : 'right')._id)
             .subscribe(pubsub => pubsub.unsubscribe());
 
-          self.save(left ? 'left' : 'right');
+          self
+            .save(left ? 'left' : 'right', () => {
+              $.when(
+                self
+                  .find('side by side')
+                  .find('.' + opposite + '-item')
+                  .animate({
+                    opacity: 0
+                  })
+              )
+                .then(function () {
+                  self.get(opposite, self.get('items')[self.get('cursor')]);
 
-          $.when(
-            self
-              .find('side by side')
-              .find('.' + opposite + '-item')
-              .animate({
-                opacity: 0
-              })
-          )
-            .then(function () {
-              self.get(opposite, self.get('items')[self.get('cursor')]);
-
-              promote
-                .find('side by side')
-                .find('.' + opposite + '-item')
-                .animate({
-                  opacity: 1
+                  promote
+                    .find('side by side')
+                    .find('.' + opposite + '-item')
+                    .animate({
+                      opacity: 1
+                    });
                 });
             });
-        }
+            }
 
         // If cursor equals limit, means end of evaluation cycle
 

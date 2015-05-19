@@ -21,9 +21,9 @@ function renderPromote (cb) {
 
       if ( cursor < limit ) {
 
-        self.save('left');
+        self.save('left', () => {});
 
-        self.save('right');
+        self.save('right', () => {});
 
         $.when(
           self

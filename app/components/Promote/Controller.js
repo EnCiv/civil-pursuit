@@ -114,13 +114,26 @@ class Promote extends Controller {
     return render.apply(this, [cb]);
   }
 
-  save (hand) {
+  save (hand, cb) {
+
+    // For responsiveness reasons, there are a copy of each element in DOM
+    // one for small screen and one for regular screen - 
+    // the ones that do not fit are hidden. So we want to make sure each time
+    // that we are working with the visible one
+
     let self = this;
 
     // feedback
 
-    let feedback = this.find('item feedback', hand);
-
+    let feedback = this.find('item feedback', hand)
+      .toArray()
+      .reduce((visible, item) => {
+        if ( $(item).is(':visible') ) {
+          visible = $(item);
+        }
+        return visible;
+      });
+  
     if ( feedback.val() ) {
 
       if ( ! feedback.hasClass('do-not-save-again') ) {
@@ -143,12 +156,14 @@ class Promote extends Controller {
     let votes = [];
 
     this.template
+      
       .find('.items-side-by-side:visible .' +  hand + '-item input[type="range"]:visible')
+      
       .each(function () {
         var vote = {
-          item: self.get(hand)._id,
-          value: +$(this).val(),
-          criteria: $(this).data('criteria')
+          item      :   self.get(hand)._id,
+          value     :   +$(this).val(),
+          criteria  :   $(this).data('criteria')
         };
 
         votes.push(vote);
@@ -157,6 +172,8 @@ class Promote extends Controller {
     this
       .publish('insert votes', votes)
       .subscribe(pubsub => pubsub.unsubscribe());
+
+    cb();
   }
 
   getEvaluation (cb) {
