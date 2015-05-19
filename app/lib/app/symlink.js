@@ -25,7 +25,7 @@
 
             fs.symlink(path.join(root, 'app'), path.join(root, 'node_modules/syn'), domain.intercept(function () {
 
-              // fs.symlink(path.join(root, 'package.json'), path.join(root, 'app/package.json'), done);
+              fs.symlink(path.join(root, 'package.json'), path.join(root, 'app/package.json'), done);
 
               done();
 

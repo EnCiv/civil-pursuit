@@ -1,8 +1,8 @@
 'use strict'
 
 import Layout from 'syn/components/Layout/View';
-import Item           from 'syn/components/Item/View';
-import Panel          from 'syn/components/Panel/View';
+import Panel from 'syn/components/Panel/View';
+import {Element} from 'cinco';
 
 class ProfilePage extends Layout {
   constructor(props) {
@@ -11,8 +11,12 @@ class ProfilePage extends Layout {
 
     var main = this.find('#main').get(0);
 
+    var panel = new Panel({});
+
     main.add(
-      new Element('#profile.center')
+      new Element('#profile.center').add(
+        panel
+      )
     );
   }
 }
