@@ -1,199 +1,207 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var Nav = require('syn/lib/util/Nav');
-  var Edit = require('syn/components/EditAndGoAgain/Controller');
+import Nav from 'syn/lib/util/Nav';
+import Edit from 'syn/components/EditAndGoAgain/Controller';
+import Item from 'syn/components/Item/Controller';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+/**
+ *  @function
+ *  @return
+ *  @arg
+ */
 
-  function renderItem (hand) {
-    var promote = this;
+function renderItem (hand) {
+  let self = this;
 
-    var reverse = hand === 'left' ? 'right' : 'left';
+  var reverse = hand === 'left' ? 'right' : 'left';
 
-    console.info('evaluation', this.evaluation)
+  var side = this.get(hand);
 
-    if ( ! this.evaluation[hand] ) {
-      this.find('item subject', hand).hide();
-      this.find('item description', hand).hide();
-      this.find('item feedback', hand).hide();
-      this.find('sliders', hand).hide();
-      this.find('promote button', hand).hide();
-      this.find('promote label').hide();
-      this.find('edit and go again button', hand).hide();
-      this.find('promote button', reverse).hide();
-      this.find('edit and go again button', reverse).hide();
-      // this.find('finish button').hide();
-      return;
+  if ( ! side ) {
+    this.find('item subject', hand).hide();
+    this.find('item description', hand).hide();
+    this.find('item feedback', hand).hide();
+    this.find('sliders', hand).hide();
+    this.find('promote button', hand).hide();
+    this.find('promote label').hide();
+    this.find('edit and go again button', hand).hide();
+    this.find('promote button', reverse).hide();
+    this.find('edit and go again button', reverse).hide();
+    // this.find('finish button').hide();
+    return;
+  }
+
+  // Increment views counter
+
+  this.publish('add view', side._id)
+    .subscribe(pubsub => pubsub.unsubscribe());
+
+  // Subject
+  this.find('item subject', hand).text(side.subject);
+
+  // Description
+
+  this.find('item description', hand).text(side.description);
+
+  // Image
+
+  this.find('item image', hand).empty().append(
+    new Item({ item: side }).media()
+  );
+
+  // References
+
+  if ( side.references && side.references.length ) {
+    this.find('item references', hand)
+      .attr('href', side.references[0].url)
+      .text(side.references[0].title || side.references[0].url);
+  }
+
+  // Sliders
+
+  this.find('sliders', hand).find('.criteria-name').each(function (i) {
+    var cid = i;
+
+    if ( cid > 3 ) {
+      cid -= 4;
     }
 
-    // Increment views counter
-
-    app.socket.emit('add view', this.evaluation[hand]._id);
-
-    // Subject
-    console.log('item subject', hand, this.find('item subject', hand))
-    this.find('item subject', hand).text(this.evaluation[hand].subject);
-
-    // Description
-
-    this.find('item description', hand).text(this.evaluation[hand].description);
-
-    // Image
-
-    this.find('item image', hand).empty().append(
-      new (require('syn/components/Item/Controller'))(this.evaluation[hand]).media());
-
-    // References
-
-    if ( this.evaluation[hand].references && this.evaluation[hand].references.length ) {
-      this.find('item references', hand)
-        .attr('href', this.evaluation[hand].references[0].url)
-        .text(this.evaluation[hand].references[0].title || this.evaluation[hand].references[0].url);
-    }
-
-    // Sliders
-
-    promote.find('sliders', hand).find('.criteria-name').each(function (i) {
-      var cid = i;
-
-      if ( cid > 3 ) {
-        cid -= 4;
-      }
-
-      promote.find('sliders', hand).find('.criteria-name').eq(i)
-        .on('click', function () {
-          var self = $(this);
-          var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
-
-          self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
-
-
-          if ( $(this).hasClass('shy') ) {
-            $(this).removeClass('shy').addClass('info');
-          }
-
-          else if ( $(this).hasClass('info') ) {
-            $(this).removeClass('info').addClass('shy');
-          }
-
-          Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
-            Nav.toggle(descriptionSection);
-          }));
-
-          
-        })
-        .text(promote.evaluation.criterias[cid].name);
-      promote.find('sliders', hand).find('.criteria-description').eq(i).text(promote.evaluation.criterias[cid].description);
-      promote.find('sliders', hand).find('input').eq(i)
-        .val(0)
-        .data('criteria', promote.evaluation.criterias[cid]._id);
-    });
-
-    // Persona
-
-    // promote.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
-
-    // promote.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
-
-    // Feedback
-
-    promote.find('item feedback', hand).val('');
-
-    // Feedback - remove any marker from previous post / see #164
-
-    promote.find('item feedback', hand).removeClass('do-not-save-again');
-
-    // Promote button
-
-    promote.find('promote button', hand)
-      .text(this.evaluation[hand].subject)
-      .off('click')
+    self.find('sliders', hand).find('.criteria-name').eq(i)
+      
       .on('click', function () {
+        var self = $(this);
+        var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
 
-        var left = $(this).closest('.left-item').length;
+        self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
 
-        var opposite = left ? 'right' : 'left';
 
-        Nav.scroll(promote.template, app.domain.intercept(function () {
+        if ( $(this).hasClass('shy') ) {
+          $(this).removeClass('shy').addClass('info');
+        }
 
-          // If cursor is smaller than limit, then keep on going
+        else if ( $(this).hasClass('info') ) {
+          $(this).removeClass('info').addClass('shy');
+        }
+
+        Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
+          Nav.toggle(descriptionSection);
+        }));
+
         
-          if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+      })
 
-            promote.edit('cursor', promote.evaluation.cursor + 1);
+      .text(self.get('criterias')[cid].name);
 
-            app.socket.emit('promote', promote.evaluation[left ? 'left' : 'right']._id);
 
-            promote.save(left ? 'left' : 'right');
+    self.find('sliders', hand)
+      .find('.criteria-description')
+      .eq(i)
+      .text(self.get('criterias')[cid].description);
 
-            $.when(
+    self.find('sliders', hand)
+      .find('input').eq(i)
+      .val(0)
+      .data('criteria', self.get('criterias')[cid]._id);
+  });
+
+  // Persona
+
+  // this.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
+
+  // this.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
+
+  // Feedback
+
+  this.find('item feedback', hand).val('');
+
+  // Feedback - remove any marker from previous post / see #164
+
+  this.find('item feedback', hand).removeClass('do-not-save-again');
+
+  // Promote button
+
+  this.find('promote button', hand)
+    .text(side.subject)
+    .off('click')
+    .on('click', function () {
+
+      var left = $(this).closest('.left-item').length;
+
+      var opposite = left ? 'right' : 'left';
+
+      Nav.scroll(self.template, app.domain.intercept(function () {
+
+        // If cursor is smaller than limit, then keep on going
+      
+        if ( self.get('cursor') < self.get('limit') ) {
+
+          self.set('cursor', self.get('cursor') + 1);
+
+          self.publish('promote', promote.get(left ? 'left' : 'right')._id)
+            .subscribe(pubsub => pubsub.unsubscribe());
+
+          self.save(left ? 'left' : 'right');
+
+          $.when(
+            self
+              .find('side by side')
+              .find('.' + opposite + '-item')
+              .animate({
+                opacity: 0
+              })
+          )
+            .then(function () {
+              self.get(opposite, self.get('items')[self.get('cursor')]);
+
               promote
                 .find('side by side')
                 .find('.' + opposite + '-item')
                 .animate({
-                  opacity: 0
-                })
-            )
-              .then(function () {
-                promote.edit(opposite, promote.evaluation.items[promote.evaluation.cursor]);
-
-                promote
-                  .find('side by side')
-                  .find('.' + opposite + '-item')
-                  .animate({
-                    opacity: 1
-                  });
-              });
-          }
-
-          // If cursor equals limit, means end of evaluation cycle
-
-          else {
-
-            promote.finish();
-
-          }
-
-        }));
-      });
-  
-    // Edit and go again
-
-    promote.find('edit and go again button', hand).on('click', function () {
-      Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
-
-        if ( promote.item.find('editor').find('form').length ) {
-          console.warn('already loaded')
+                  opacity: 1
+                });
+            });
         }
 
+        // If cursor equals limit, means end of evaluation cycle
+
         else {
-          var edit = new Edit(promote.item);
-            
-          edit.get(app.domain.intercept(function (template) {
 
-            promote.item.find('editor').find('.is-section').append(template);
-
-            Nav.reveal(promote.item.find('editor'), promote.item.template,
-              app.domain.intercept(function () {
-                Nav.show(template, app.domain.intercept(function () {
-                  edit.render();
-                }));
-              }));
-          }));
+          promote.finish();
 
         }
 
       }));
     });
 
-  }
+  // Edit and go again
 
-  module.exports = renderItem;
+  this.find('edit and go again button', hand).on('click', function () {
+    Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
 
-} ();
+      if ( promote.item.find('editor').find('form').length ) {
+        console.warn('already loaded')
+      }
+
+      else {
+        var edit = new Edit(promote.item);
+          
+        edit.get(app.domain.intercept(function (template) {
+
+          promote.item.find('editor').find('.is-section').append(template);
+
+          Nav.reveal(promote.item.find('editor'), promote.item.template,
+            app.domain.intercept(function () {
+              Nav.show(template, app.domain.intercept(function () {
+                edit.render();
+              }));
+            }));
+        }));
+
+      }
+
+    }));
+  });
+
+}
+
+export default renderItem;

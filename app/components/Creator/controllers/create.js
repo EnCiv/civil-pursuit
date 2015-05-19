@@ -1,83 +1,74 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var Nav       =   require('syn/lib/util/Nav');
-  var Item      =   require('syn/components/Item/Controller');
-  var Stream    =   require('syn/lib/util/Stream');
+import Nav       from 'syn/lib/util/Nav';
+import Item      from 'syn/components/Item/Controller';
+import Stream    from 'syn/lib/util/Stream';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+function save () {
 
-  function save () {
+  let d = this.domain;
 
-    // Self reference
+  process.nextTick(() => {
 
-    var creator = this;
+    d.run(() => {
 
-    process.nextTick(function () {
+      // Hide the Creator           // Catch errors
 
-      app.domain.run(function () {
+      Nav.hide(this.template).error(d.intercept())
 
-        // Hide the Creator           // Catch errors
+        // Hiding complete
 
-        Nav.hide(creator.template)    .error(app.domain.intercept())
+        .hidden(() => {
+          
+          // Build the JSON object to save to MongoDB
 
-          // Hiding complete
+          this.packItem();
 
-          .hidden(function () {
-            
-            // Build the JSON object to save to MongoDB
+          // In case a file was uploaded
 
-            creator.packItem();
+          if ( this.packaged.upload ) {
 
-            // In case a file was uploaded
+            // Get file from template's data
 
-            if ( creator.packaged.upload ) {
+            var file = this.template.find('.preview-image').data('file');
 
-              // Get file from template's data
+            // New stream         //  Catch stream errors
 
-              var file = creator.template.find('.preview-image').data('file');
+            new Stream(file)
 
-              // New stream         //  Catch stream errors
+              .on('error', d.intercept(() => {}))
 
-              new Stream(file)      .on('error', app.domain.intercept(function () {}))
+              .on('end', () => {
+                this.packaged.image = file.name;
 
-                .on('end', function () {
-                  creator.packaged.image = file.name;
+                console.log('create item', this.packaged);
 
-                  console.log('create item', creator.packaged);
+                this.publish('create item', this.packaged)
+                  .subscribe((pubsub, item) => {
+                    pubsub.unsubscribe();
+                    this.created(item);
+                  });
+              })
+          }
 
-                  app.socket.emit('create item', creator.packaged);
-                })
-            }
+          // If nof ile was uploaded
 
-            // If nof ile was uploaded
+          else {
+            console.log('create item', this.packaged);
 
-            else {
-              console.log('create item', creator.packaged);
-
-              app.socket.publish('create item', creator.packaged,
-                creator.created.bind(creator));
-            }
-
-            // Listen to answers
-
-            app.socket.once('could not create item', app.domain.intercept());
-
-            // app.socket.on('create item ok', creator.created.bind(creator));
-          })
-
-      });
+            this.publish('create item', this.packaged)
+              .subscribe((pubsub, item) => {
+                pubsub.unsubscribe();
+                this.created(item);
+              });
+          }
+        })
 
     });
 
-    return false;
-  }
+  });
 
-  module.exports = save;
+  return false;
+}
 
-} ();
+export default save;

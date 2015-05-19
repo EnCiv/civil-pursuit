@@ -5,6 +5,7 @@ import MediaController from 'syn/components/Item/controllers/media';
 import View from 'syn/components/Item/View';
 import Promote from 'syn/components/Promote/Controller';
 import Details from 'syn/components/Details/Controller';
+import TopBar from 'syn/components/TopBar/Controller';
 import S from 'string';
 import Nav from 'syn/lib/util/Nav';
 import readMore from 'syn/lib/util/ReadMore';
@@ -90,7 +91,7 @@ class Item extends Controller {
 
     // Create reference to promote if promotion enabled
 
-    // this.promote = new Promote(this.props, this.template);
+    this.promote = new Promote(this.props, this);
 
     // Create reference to details
 
@@ -208,7 +209,8 @@ class Item extends Controller {
 
   togglePromote ($trigger) {
     if ( ! this.socket.synuser ) {
-      Sign.dialog.join();
+      let topbar = new TopBar();
+      topbar.find('join button').click();
       return;
     }
 
@@ -246,7 +248,7 @@ class Item extends Controller {
     }
 
     function promote () {
-      item.promote.get(d.intercept(item.promote.render.bind(item.promote)));
+      item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
     }
 
     function showHideCaret () {

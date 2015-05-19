@@ -119,7 +119,9 @@ class Item extends Element {
 
   promote () {
     return new Element('.promote.is-container').add(
-      new Element('.is-section')
+      new Element('.is-section').add(
+        new Promote(this.props)
+      )
     )
   }
 
@@ -158,5 +160,5 @@ export default Item;
 
 import Page from 'syn/lib/app/Page';
 import DefaultButtonsView from 'syn/components/ItemDefaultButtons/View';
-import PromoteView from 'syn/components/Promote/View';
+import Promote from 'syn/components/Promote/View';
 import DetailsView from 'syn/components/Details/View';

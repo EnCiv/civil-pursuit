@@ -1165,7 +1165,9 @@ var App = (function (_EventEmitter) {
           if (error) {
             throw error;
           }
-          handler.apply(undefined, args);
+          if (handler) {
+            handler.apply(undefined, args);
+          }
         });
       };
     };
@@ -1574,136 +1576,157 @@ var Sign = (function (_Controller) {
 
 exports['default'] = Sign;
 
-// Sign.dialog = {
+Sign.dialog = {
 
-//   login: function () {
+  login: (function (_login) {
+    function login() {
+      return _login.apply(this, arguments);
+    }
 
-//     vex.defaultOptions.className = 'vex-theme-flat-attack';
+    login.toString = function () {
+      return _login.toString();
+    };
 
-//     vex.dialog.confirm({
+    return login;
+  })(function () {
 
-//       afterOpen: function ($vexContent) {
-//         $('.login-button')
-//           .off('click')
-//           .on('click', function () {
-//             vex.close();
-//           });
+    vex.defaultOptions.className = 'vex-theme-flat-attack';
 
-//         login($vexContent);
+    vex.dialog.confirm({
 
-//         $vexContent.find('.forgot-password-link').on('click', function () {
-//           Sign.dialog.forgotPassword();
-//           vex.close($vexContent.data().vex.id);
-//           return false;
-//         });
-//       },
+      afterOpen: function afterOpen($vexContent) {
+        $('.login-button').off('click').on('click', function () {
+          vex.close();
+        });
 
-//       afterClose: function () {
-//         $('.login-button').on('click', Sign.dialog.login);
-//       },
+        login($vexContent);
 
-//       message: $('#login').text(),
+        $vexContent.find('.forgot-password-link').on('click', function () {
+          Sign.dialog.forgotPassword();
+          vex.close($vexContent.data().vex.id);
+          return false;
+        });
+      },
 
-//       buttons: [
-//          //- $.extend({}, vex.dialog.buttons.YES, {
-//          //-    text: 'Login'
-//          //-  }),
+      afterClose: function afterClose() {
+        $('.login-button').on('click', Sign.dialog.login);
+      },
 
-//          $.extend({}, vex.dialog.buttons.NO, {
-//             text: 'x Close'
-//           })
-//       ]
-//     });
-//   },
+      message: $('#login').text(),
 
-//   join: function () {
+      buttons: [
+      //- $.extend({}, vex.dialog.buttons.YES, {
+      //-    text: 'Login'
+      //-  }),
 
-//     vex.defaultOptions.className = 'vex-theme-flat-attack';
+      $.extend({}, vex.dialog.buttons.NO, {
+        text: 'x Close'
+      })]
+    });
+  }),
 
-//     vex.dialog.confirm({
+  join: (function (_join) {
+    function join() {
+      return _join.apply(this, arguments);
+    }
 
-//       afterOpen: function ($vexContent) {
-//         $('.join-button')
-//           .off('click')
-//           .on('click', function () {
-//             vex.close();
-//           });
+    join.toString = function () {
+      return _join.toString();
+    };
 
-//         join($vexContent);
-//       },
+    return join;
+  })(function () {
 
-//       afterClose: function () {
-//         $('.join-button').on('click', Sign.dialog.join);
-//       },
+    vex.defaultOptions.className = 'vex-theme-flat-attack';
 
-//       message: $('#join').text(),
-//       buttons: [
-//          //- $.extend({}, vex.dialog.buttons.YES, {
-//          //-    text: 'Login'
-//          //-  }),
+    vex.dialog.confirm({
 
-//          $.extend({}, vex.dialog.buttons.NO, {
-//             text: 'x Close'
-//           })
-//       ],
-//       callback: function(value) {
-//         return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-//       },
-//       defaultOptions: {
-//         closeCSS: {
-//           color: 'red'
-//         }
-//       }
-//     });
-//   },
+      afterOpen: function afterOpen($vexContent) {
+        $('.join-button').off('click').on('click', function () {
+          vex.close();
+        });
 
-//   forgotPassword: function () {
+        join($vexContent);
+      },
 
-//     console.log('helllo')
+      afterClose: function afterClose() {
+        $('.join-button').on('click', Sign.dialog.join);
+      },
 
-//     vex.defaultOptions.className = 'vex-theme-flat-attack';
+      message: $('#join').text(),
+      buttons: [
+      //- $.extend({}, vex.dialog.buttons.YES, {
+      //-    text: 'Login'
+      //-  }),
 
-//     vex.dialog.confirm({
+      $.extend({}, vex.dialog.buttons.NO, {
+        text: 'x Close'
+      })],
+      callback: function callback(value) {
+        return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+      },
+      defaultOptions: {
+        closeCSS: {
+          color: 'red'
+        }
+      }
+    });
+  }),
 
-//       afterOpen: function ($vexContent) {
-//         $('.forgot-password-link')
-//           .off('click')
-//           .on('click', function () {
-//             vex.close();
-//             return false;
-//           });
+  forgotPassword: (function (_forgotPassword) {
+    function forgotPassword() {
+      return _forgotPassword.apply(this, arguments);
+    }
 
-//         forgotPassword($vexContent);
-//       },
+    forgotPassword.toString = function () {
+      return _forgotPassword.toString();
+    };
 
-//       afterClose: function () {
-//         $('.forgot-password-link').on('click', Sign.dialog.forgotPassword);
-//       },
+    return forgotPassword;
+  })(function () {
 
-//       message: $('#forgot-password').text(),
-//       buttons: [
-//          //- $.extend({}, vex.dialog.buttons.YES, {
-//          //-    text: 'Login'
-//          //-  }),
+    console.log('helllo');
 
-//          $.extend({}, vex.dialog.buttons.NO, {
-//             text: 'x Close'
-//           })
-//       ],
-//       callback: function(value) {
-//         return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
-//       },
-//       defaultOptions: {
-//         closeCSS: {
-//           color: 'red'
-//         }
-//       }
-//     });
+    vex.defaultOptions.className = 'vex-theme-flat-attack';
 
-//     return false;
-//   }
+    vex.dialog.confirm({
 
-// };
+      afterOpen: function afterOpen($vexContent) {
+        $('.forgot-password-link').off('click').on('click', function () {
+          vex.close();
+          return false;
+        });
+
+        forgotPassword($vexContent);
+      },
+
+      afterClose: function afterClose() {
+        $('.forgot-password-link').on('click', Sign.dialog.forgotPassword);
+      },
+
+      message: $('#forgot-password').text(),
+      buttons: [
+      //- $.extend({}, vex.dialog.buttons.YES, {
+      //-    text: 'Login'
+      //-  }),
+
+      $.extend({}, vex.dialog.buttons.NO, {
+        text: 'x Close'
+      })],
+      callback: function callback(value) {
+        return console.log(value ? 'Successfully destroyed the planet.' : 'Chicken.');
+      },
+      defaultOptions: {
+        closeCSS: {
+          color: 'red'
+        }
+      }
+    });
+
+    return false;
+  })
+
+};
 
 // export default Sign;
 

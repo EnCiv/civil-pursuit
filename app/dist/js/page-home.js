@@ -45,7 +45,7 @@ synapp.app.ready(function () {
   });
 });
 
-},{"syn/app":34,"syn/components/Intro/Controller":46,"syn/components/Panel/Controller":54,"syn/components/TopBar/Controller":58}],2:[function(require,module,exports){
+},{"syn/app":34,"syn/components/Intro/Controller":46,"syn/components/Panel/Controller":54,"syn/components/TopBar/Controller":60}],2:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -6945,7 +6945,9 @@ var App = (function (_EventEmitter) {
           if (error) {
             throw error;
           }
-          handler.apply(undefined, args);
+          if (handler) {
+            handler.apply(undefined, args);
+          }
         });
       };
     };
@@ -7151,7 +7153,7 @@ function anon() {
 }
 module.exports = exports['default'];
 
-},{"domain":6,"events":7,"syn/lib/app/Cache":61,"syn/lib/app/Socket":64,"util":25}],35:[function(require,module,exports){
+},{"domain":6,"events":7,"syn/lib/app/Cache":63,"syn/lib/app/Socket":66,"util":25}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7180,6 +7182,18 @@ var _synComponentsCreatorControllersRender = require('syn/components/Creator/con
 
 var _synComponentsCreatorControllersRender2 = _interopRequireDefault(_synComponentsCreatorControllersRender);
 
+var _synComponentsCreatorControllersCreate = require('syn/components/Creator/controllers/create');
+
+var _synComponentsCreatorControllersCreate2 = _interopRequireDefault(_synComponentsCreatorControllersCreate);
+
+var _synComponentsCreatorControllersCreated = require('syn/components/Creator/controllers/created');
+
+var _synComponentsCreatorControllersCreated2 = _interopRequireDefault(_synComponentsCreatorControllersCreated);
+
+var _synComponentsCreatorControllersPackItem = require('syn/components/Creator/controllers/pack-item');
+
+var _synComponentsCreatorControllersPackItem2 = _interopRequireDefault(_synComponentsCreatorControllersPackItem);
+
 var text = {
   'looking up title': 'Looking up'
 };
@@ -7198,9 +7212,14 @@ var Creator = (function (_Controller) {
   _inherits(Creator, _Controller);
 
   _createClass(Creator, [{
+    key: 'parent',
+    get: function () {
+      return $('#' + _synComponentsPanelController2['default'].getId(this.props.panel));
+    }
+  }, {
     key: 'template',
     get: function () {
-      return $('#' + this.props.panel.id).find('.creator:first');
+      return this.parent.find('.creator:first');
     }
   }, {
     key: 'find',
@@ -7239,87 +7258,30 @@ var Creator = (function (_Controller) {
     value: function render(cb) {
       return _synComponentsCreatorControllersRender2['default'].apply(this, [cb]);
     }
+  }, {
+    key: 'create',
+    value: function create(cb) {
+      return _synComponentsCreatorControllersCreate2['default'].apply(this, [cb]);
+    }
+  }, {
+    key: 'packItem',
+    value: function packItem(item) {
+      return _synComponentsCreatorControllersPackItem2['default'].apply(this, [item]);
+    }
+  }, {
+    key: 'created',
+    value: function created(item) {
+      return _synComponentsCreatorControllersCreated2['default'].apply(this, [item]);
+    }
   }]);
 
   return Creator;
 })(_synLibAppController2['default']);
 
 exports['default'] = Creator;
-
-function foo() {
-
-  'use strict';
-
-  module.exports = Creator;
-
-  var Panel = require('syn/components/Panel/Controller');
-
-  var text = {
-    'looking up title': 'Looking up'
-  };
-
-  /**
-   *  @class
-   *  @arg {Panel} - panel
-   */
-
-  function Creator(panel) {
-
-    if (!app) {
-      throw new Error('Missing app');
-    }
-
-    if (!(panel instanceof require('syn/components/Panel/Controller'))) {
-      throw new Error('Creator: Panel must be a Panel object');
-    }
-
-    this.panel = panel;
-
-    this.template = $('#' + this.panel.getId()).find('.creator:first');
-  }
-
-  Creator.prototype.find = function (name) {
-    switch (name) {
-      case 'create button':
-        return this.template.find('.button-create:first');
-
-      case 'form':
-        return this.template.find('form');
-
-      case 'dropbox':
-        return this.template.find('.drop-box');
-
-      case 'subject':
-        return this.template.find('[name="subject"]');
-
-      case 'description':
-        return this.template.find('[name="description"]');
-
-      case 'item media':
-        return this.template.find('.item-media');
-
-      case 'reference':
-        return this.template.find('.reference');
-
-      case 'reference board':
-        return this.template.find('.reference-board');
-
-      case 'upload image button':
-        return this.template.find('.upload-image-button');
-    }
-  };
-
-  Creator.prototype.render = require('syn/components/Creator/controllers/render');
-
-  Creator.prototype.create = require('syn/components/Creator/controllers/create');
-
-  Creator.prototype.created = require('syn/components/Creator/controllers/created');
-
-  Creator.prototype.packItem = require('syn/components/Creator/controllers/pack-item');
-}
 module.exports = exports['default'];
 
-},{"syn/components/Creator/controllers/create":37,"syn/components/Creator/controllers/created":38,"syn/components/Creator/controllers/pack-item":39,"syn/components/Creator/controllers/render":40,"syn/components/Panel/Controller":54,"syn/lib/app/Controller":62}],36:[function(require,module,exports){
+},{"syn/components/Creator/controllers/create":37,"syn/components/Creator/controllers/created":38,"syn/components/Creator/controllers/pack-item":39,"syn/components/Creator/controllers/render":40,"syn/components/Panel/Controller":54,"syn/lib/app/Controller":64}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7476,182 +7438,185 @@ module.exports = exports['default'];
 (function (process){
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var Nav = require('syn/lib/util/Nav');
-  var Item = require('syn/components/Item/Controller');
-  var Stream = require('syn/lib/util/Stream');
+var _synLibUtilNav = require('syn/lib/util/Nav');
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
 
-  function save() {
+var _synComponentsItemController = require('syn/components/Item/Controller');
 
-    // Self reference
+var _synComponentsItemController2 = _interopRequireDefault(_synComponentsItemController);
 
-    var creator = this;
+var _synLibUtilStream = require('syn/lib/util/Stream');
 
-    process.nextTick(function () {
+var _synLibUtilStream2 = _interopRequireDefault(_synLibUtilStream);
 
-      app.domain.run(function () {
+function save() {
+  var _this = this;
 
-        // Hide the Creator           // Catch errors
+  var d = this.domain;
 
-        Nav.hide(creator.template).error(app.domain.intercept())
+  process.nextTick(function () {
 
-        // Hiding complete
+    d.run(function () {
 
-        .hidden(function () {
+      // Hide the Creator           // Catch errors
 
-          // Build the JSON object to save to MongoDB
+      _synLibUtilNav2['default'].hide(_this.template).error(d.intercept())
 
-          creator.packItem();
+      // Hiding complete
 
-          // In case a file was uploaded
+      .hidden(function () {
 
-          if (creator.packaged.upload) {
+        // Build the JSON object to save to MongoDB
 
-            // Get file from template's data
+        _this.packItem();
 
-            var file = creator.template.find('.preview-image').data('file');
+        // In case a file was uploaded
 
-            // New stream         //  Catch stream errors
+        if (_this.packaged.upload) {
 
-            new Stream(file).on('error', app.domain.intercept(function () {})).on('end', function () {
-              creator.packaged.image = file.name;
+          // Get file from template's data
 
-              console.log('create item', creator.packaged);
+          var file = _this.template.find('.preview-image').data('file');
 
-              app.socket.emit('create item', creator.packaged);
+          // New stream         //  Catch stream errors
+
+          new _synLibUtilStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
+            _this.packaged.image = file.name;
+
+            console.log('create item', _this.packaged);
+
+            _this.publish('create item', _this.packaged).subscribe(function (pubsub, item) {
+              pubsub.unsubscribe();
+              _this.created(item);
             });
-          }
+          });
+        }
 
-          // If nof ile was uploaded
+        // If nof ile was uploaded
 
-          else {
-            console.log('create item', creator.packaged);
+        else {
+          console.log('create item', _this.packaged);
 
-            app.socket.publish('create item', creator.packaged, creator.created.bind(creator));
-          }
-
-          // Listen to answers
-
-          app.socket.once('could not create item', app.domain.intercept());
-
-          // app.socket.on('create item ok', creator.created.bind(creator));
-        });
+          _this.publish('create item', _this.packaged).subscribe(function (pubsub, item) {
+            pubsub.unsubscribe();
+            _this.created(item);
+          });
+        }
       });
     });
+  });
 
-    return false;
-  }
+  return false;
+}
 
-  module.exports = save;
-})();
+exports['default'] = save;
+module.exports = exports['default'];
 
 }).call(this,require('_process'))
-},{"_process":10,"syn/components/Item/Controller":48,"syn/lib/util/Nav":66,"syn/lib/util/Stream":68}],38:[function(require,module,exports){
+},{"_process":10,"syn/components/Item/Controller":48,"syn/lib/util/Nav":68,"syn/lib/util/Stream":70}],38:[function(require,module,exports){
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  function created(item) {
-    console.log('created item', item);
+var _synComponentsItemController = require('syn/components/Item/Controller');
 
-    this.panel.template.find('.create-new').hide();
+var _synComponentsItemController2 = _interopRequireDefault(_synComponentsItemController);
 
-    if (this.packaged.upload) {
-      item.upload = this.packaged.upload;
-    }
+function created(item) {
+  console.log('created item', item);
 
-    if (this.packaged.youtube) {
-      item.youtube = this.packaged.youtube;
-    }
+  var d = this.domain;
 
-    var item = new (require('syn/components/Item/Controller'))(item);
+  this.parent.find('.create-new').hide();
 
-    var items = this.panel.find('items');
-
-    item.load(app.domain.intercept(function () {
-      item.template.addClass('new');
-      items.prepend(item.template);
-      item.render(app.domain.intercept(function () {
-        item.find('toggle promote').click();
-      }));
-    }));
+  if (this.packaged.upload) {
+    item.upload = this.packaged.upload;
   }
 
-  module.exports = created;
-})();
+  if (this.packaged.youtube) {
+    item.youtube = this.packaged.youtube;
+  }
+
+  var item = new _synComponentsItemController2['default']({ item: item });
+
+  var items = this.parent.find('items');
+
+  item.load();
+
+  item.template.addClass('new');
+  items.prepend(item.template);
+  item.render(d.intercept(function () {
+    item.find('toggle promote').click();
+  }));
+}
+
+exports['default'] = created;
+module.exports = exports['default'];
 
 },{"syn/components/Item/Controller":48}],39:[function(require,module,exports){
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function packItem() {
 
-  'use strict';
+  var item = {
+    type: this.panel.type,
+    subject: this.find('subject').val(),
+    description: this.find('description').val()
+  };
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  // Parent
 
-  function packItem() {
-
-    var item = {
-      type: this.panel.type,
-      subject: this.find('subject').val(),
-      description: this.find('description').val(),
-      user: app.socket.synuser
-    };
-
-    // Parent
-
-    if (this.panel.parent) {
-      item.parent = this.panel.parent;
-    }
-
-    // References
-
-    if (this.find('reference').val()) {
-      item.references = [{ url: this.find('reference').val() }];
-
-      if (this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title') {
-        item.references[0].title = this.find('reference board').text();
-      }
-    }
-
-    // Image
-
-    if (this.find('item media').find('img').length) {
-
-      // YouTube
-
-      if (this.find('item media').find('.youtube-preview').length) {
-        item.youtube = this.find('item media').find('.youtube-preview').data('video');
-      }
-
-      // Upload
-
-      else {
-        item.upload = this.find('item media').find('img').attr('src');
-        item.image = item.upload;
-      }
-    }
-
-    this.packaged = item;
+  if (this.panel.parent) {
+    item.parent = this.panel.parent;
   }
 
-  module.exports = packItem;
-})();
+  // References
+
+  if (this.find('reference').val()) {
+    item.references = [{ url: this.find('reference').val() }];
+
+    if (this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title') {
+      item.references[0].title = this.find('reference board').text();
+    }
+  }
+
+  // Image
+
+  if (this.find('item media').find('img').length) {
+
+    // YouTube
+
+    if (this.find('item media').find('.youtube-preview').length) {
+      item.youtube = this.find('item media').find('.youtube-preview').data('video');
+    }
+
+    // Upload
+
+    else {
+      item.upload = this.find('item media').find('img').attr('src');
+      item.image = item.upload;
+    }
+  }
+
+  this.packaged = item;
+}
+
+exports['default'] = packItem;
+module.exports = exports['default'];
 
 },{}],40:[function(require,module,exports){
 'use strict';
@@ -7742,9 +7707,11 @@ function renderCreator(cb) {
 
       // Build form using Form provider
 
+      console.log('creator', _this.template);
+
       var form = new _synLibUtilForm2['default'](_this.template);
 
-      form.send(_this.create);
+      form.send(_this.create.bind(_this));
 
       // Done
 
@@ -7762,7 +7729,7 @@ function renderCreator(cb) {
 exports['default'] = renderCreator;
 module.exports = exports['default'];
 
-},{"domain":6,"syn/components/YouTube/Controller":59,"syn/lib/util/Form":65,"syn/lib/util/Upload":69}],41:[function(require,module,exports){
+},{"domain":6,"syn/components/YouTube/Controller":61,"syn/lib/util/Form":67,"syn/lib/util/Upload":71}],41:[function(require,module,exports){
 'use strict';
 
 !(function _DetailsComponent_() {
@@ -7985,7 +7952,7 @@ module.exports = exports['default'];
   module.exports = DetailsComponent;
 })();
 
-},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/util/Nav":66}],42:[function(require,module,exports){
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/util/Nav":68}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8167,7 +8134,7 @@ module.exports = exports['default'];
   module.exports = Edit;
 })();
 
-},{"syn/components/Creator/Controller":35,"syn/components/EditAndGoAgain/controllers/save":44,"syn/components/Item/Controller":48,"syn/lib/util/Form":65,"syn/lib/util/Nav":66}],44:[function(require,module,exports){
+},{"syn/components/Creator/Controller":35,"syn/components/EditAndGoAgain/controllers/save":44,"syn/components/Item/Controller":48,"syn/lib/util/Form":67,"syn/lib/util/Nav":68}],44:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -8226,7 +8193,7 @@ module.exports = exports['default'];
   module.exports = save;
 })();
 
-},{"syn/components/Item/Controller":48,"syn/lib/util/Nav":66}],45:[function(require,module,exports){
+},{"syn/components/Item/Controller":48,"syn/lib/util/Nav":68}],45:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -8292,7 +8259,7 @@ module.exports = exports['default'];
 
 // $('.forgot-password-pending').css('display', 'block');
 
-},{"domain":6,"syn/lib/util/Form":65}],46:[function(require,module,exports){
+},{"domain":6,"syn/lib/util/Form":67}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8431,7 +8398,7 @@ var Intro = (function (_Controller) {
 exports['default'] = Intro;
 module.exports = exports['default'];
 
-},{"syn/components/Intro/View":47,"syn/components/Item/Controller":48,"syn/lib/app/Controller":62,"syn/lib/util/ReadMore":67}],47:[function(require,module,exports){
+},{"syn/components/Intro/View":47,"syn/components/Item/Controller":48,"syn/lib/app/Controller":64,"syn/lib/util/ReadMore":69}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8527,6 +8494,10 @@ var _synComponentsPromoteController2 = _interopRequireDefault(_synComponentsProm
 var _synComponentsDetailsController = require('syn/components/Details/Controller');
 
 var _synComponentsDetailsController2 = _interopRequireDefault(_synComponentsDetailsController);
+
+var _synComponentsTopBarController = require('syn/components/TopBar/Controller');
+
+var _synComponentsTopBarController2 = _interopRequireDefault(_synComponentsTopBarController);
 
 var _string = require('string');
 
@@ -8649,7 +8620,7 @@ var Item = (function (_Controller) {
 
       // Create reference to promote if promotion enabled
 
-      // this.promote = new Promote(this.props, this.template);
+      this.promote = new _synComponentsPromoteController2['default'](this.props, this);
 
       // Create reference to details
 
@@ -8760,7 +8731,8 @@ var Item = (function (_Controller) {
     key: 'togglePromote',
     value: function togglePromote($trigger) {
       if (!this.socket.synuser) {
-        Sign.dialog.join();
+        var topbar = new _synComponentsTopBarController2['default']();
+        topbar.find('join button').click();
         return;
       }
 
@@ -8794,7 +8766,7 @@ var Item = (function (_Controller) {
       }
 
       function promote() {
-        item.promote.get(d.intercept(item.promote.render.bind(item.promote)));
+        item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
       }
 
       function showHideCaret() {
@@ -8972,7 +8944,7 @@ var Item = (function (_Controller) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"string":33,"syn/components/Details/Controller":41,"syn/components/Item/View":49,"syn/components/Item/controllers/media":50,"syn/components/Panel/Controller":54,"syn/components/Promote/Controller":56,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66,"syn/lib/util/ReadMore":67}],49:[function(require,module,exports){
+},{"string":33,"syn/components/Details/Controller":41,"syn/components/Item/View":49,"syn/components/Item/controllers/media":50,"syn/components/Panel/Controller":54,"syn/components/Promote/Controller":56,"syn/components/TopBar/Controller":60,"syn/lib/app/Controller":64,"syn/lib/util/Nav":68,"syn/lib/util/ReadMore":69}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9111,7 +9083,7 @@ var Item = (function (_Element) {
   }, {
     key: 'promote',
     value: function promote() {
-      return new _cinco.Element('.promote.is-container').add(new _cinco.Element('.is-section'));
+      return new _cinco.Element('.promote.is-container').add(new _cinco.Element('.is-section').add(new _synComponentsPromoteView2['default'](this.props)));
     }
   }, {
     key: 'below',
@@ -9143,7 +9115,7 @@ var Item = (function (_Element) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"cinco":31,"syn/components/Details/View":42,"syn/components/ItemDefaultButtons/View":51,"syn/components/Promote/View":57,"syn/lib/app/Page":63}],50:[function(require,module,exports){
+},{"cinco":31,"syn/components/Details/View":42,"syn/components/ItemDefaultButtons/View":51,"syn/components/Promote/View":57,"syn/lib/app/Page":65}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9242,7 +9214,7 @@ function MediaController() {
 exports['default'] = MediaController;
 module.exports = exports['default'];
 
-},{"syn/components/YouTube/View":60}],51:[function(require,module,exports){
+},{"syn/components/YouTube/View":62}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9468,7 +9440,7 @@ exports['default'] = Join;
 })();
 module.exports = exports['default'];
 
-},{"syn/lib/app/Controller":62,"syn/lib/util/Form":65}],53:[function(require,module,exports){
+},{"syn/lib/app/Controller":64,"syn/lib/util/Form":67}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9572,7 +9544,7 @@ var Login = (function (_Controller) {
 exports['default'] = Login;
 module.exports = exports['default'];
 
-},{"syn/lib/app/Controller":62,"syn/lib/util/Form":65,"syn/lib/util/Nav":66}],54:[function(require,module,exports){
+},{"syn/lib/app/Controller":64,"syn/lib/util/Form":67,"syn/lib/util/Nav":68}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9858,7 +9830,7 @@ module.exports = exports['default'];
 /** This is about another panel */
 // item: app.location.item
 
-},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":48,"syn/components/Panel/View":55,"syn/components/TopBar/Controller":58,"syn/lib/app/Cache":61,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],55:[function(require,module,exports){
+},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":48,"syn/components/Panel/View":55,"syn/components/TopBar/Controller":60,"syn/lib/app/Cache":63,"syn/lib/app/Controller":64,"syn/lib/util/Nav":68}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9965,10 +9937,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synComponentsItemController = require('syn/components/Item/Controller');
-
-var _synComponentsItemController2 = _interopRequireDefault(_synComponentsItemController);
-
 var _synLibUtilNav = require('syn/lib/util/Nav');
 
 var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
@@ -9981,8 +9949,16 @@ var _synLibAppController = require('syn/lib/app/Controller');
 
 var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
 
+var _synComponentsPromoteControllersRender = require('syn/components/Promote/controllers/render');
+
+var _synComponentsPromoteControllersRender2 = _interopRequireDefault(_synComponentsPromoteControllersRender);
+
+var _synComponentsPromoteControllersRenderItem = require('syn/components/Promote/controllers/render-item');
+
+var _synComponentsPromoteControllersRenderItem2 = _interopRequireDefault(_synComponentsPromoteControllersRenderItem);
+
 var Promote = (function (_Controller) {
-  function Promote(props, item) {
+  function Promote(props, itemController) {
     var _this = this;
 
     _classCallCheck(this, Promote);
@@ -9992,20 +9968,39 @@ var Promote = (function (_Controller) {
     this.props = props || {};
 
     if (this.props.item) {
-      this.set('item', item);
+      this.set('item', this.props.item);
     }
 
-    this.template = item.find('promote');
+    this.template = itemController.find('promote');
+
+    this.itemController = itemController;
 
     this.store = {
       item: null,
-      limit: 5
+      limit: 5,
+      cursor: 1,
+      left: null,
+      right: null,
+      criterias: [],
+      items: []
     };
 
     this.on('set', function (key, value) {
       switch (key) {
         case 'limit':
           _this.renderLimit(value);
+          break;
+
+        case 'cursor':
+          _this.renderCursor(value);
+          break;
+
+        case 'left':
+          _this.renderLeft(value);
+          break;
+
+        case 'right':
+          _this.renderRight(value);
           break;
       }
     });
@@ -10020,9 +10015,136 @@ var Promote = (function (_Controller) {
   _inherits(Promote, _Controller);
 
   _createClass(Promote, [{
+    key: 'find',
+    value: function find(name, more) {
+      switch (name) {
+
+        case 'item subject':
+          return this.template.find('.subject.' + more + '-item h4');
+
+        case 'item description':
+          return this.template.find('.description.' + more + '-item');;
+
+        case 'cursor':
+          return this.template.find('.cursor');
+
+        case 'limit':
+          return this.template.find('.limit');
+
+        case 'side by side':
+          return this.template.find('.items-side-by-side');
+
+        case 'finish button':
+          return this.template.find('.finish');
+
+        case 'sliders':
+          return this.find('side by side').find('.sliders.' + more + '-item');
+
+        case 'item image':
+          return this.find('side by side').find('.image.' + more + '-item');
+
+        case 'item persona':
+          return this.find('side by side').find('.persona.' + more + '-item');
+
+        case 'item references':
+          return this.find('side by side').find('.references.' + more + '-item a');
+
+        case 'item persona image':
+          return this.find('item persona', more).find('img');
+
+        case 'item persona name':
+          return this.find('item persona', more).find('.user-full-name');
+
+        case 'item feedback':
+          return this.find('side by side').find('.' + more + '-item.feedback .feedback-entry');
+
+        case 'promote button':
+          return this.find('side by side').find('.' + more + '-item .promote');
+
+        case 'promote label':
+          return this.find('side by side').find('.promote-label');
+
+        case 'edit and go again button':
+          return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
+      }
+    }
+  }, {
     key: 'renderLimit',
     value: function renderLimit(limit) {
       this.find('limit').text(limit);
+    }
+  }, {
+    key: 'renderCursor',
+    value: function renderCursor(cursor) {
+      this.find('cursor').text(cursor);
+    }
+  }, {
+    key: 'renderLeft',
+    value: function renderLeft(left) {
+      this.renderItem('left');
+    }
+  }, {
+    key: 'renderRight',
+    value: function renderRight(right) {
+      this.renderItem('right');
+    }
+  }, {
+    key: 'renderItem',
+    value: function renderItem(hand) {
+      return _synComponentsPromoteControllersRenderItem2['default'].apply(this, [hand]);
+    }
+  }, {
+    key: 'render',
+    value: function render(cb) {
+      return _synComponentsPromoteControllersRender2['default'].apply(this, [cb]);
+    }
+  }, {
+    key: 'getEvaluation',
+    value: function getEvaluation(cb) {
+      var _this2 = this;
+
+      if (!this.get('evaluation')) {
+        (function () {
+
+          var item = _this2.itemController.get('item');
+
+          // Get evaluation via sockets
+
+          _this2.publish('get evaluation', item._id).subscribe(function (pubsub, evaluation) {
+            if (evaluation.item.toString() === item._id.toString()) {
+              console.info('got evaluation', evaluation);
+
+              pubsub.unsubscribe();
+
+              var limit = 5;
+
+              if (evaluation.items.length < 6) {
+                limit = evaluation.items.length - 1;
+
+                if (!evaluation.limit && evaluation.items.length === 1) {
+                  limit = 1;
+                }
+              }
+
+              _this2.set('criterias', evaluation.criterias);
+
+              _this2.set('items', evaluation.items);
+
+              _this2.set('limit', limit);
+
+              _this2.set('cursor', 1);
+
+              _this2.set('left', evaluation.items[0]);
+
+              _this2.set('right', evaluation.items[1]);
+
+              cb();
+            }
+          });
+        })();
+      } else {
+        cb();
+      }
     }
   }]);
 
@@ -10032,7 +10154,7 @@ var Promote = (function (_Controller) {
 exports['default'] = Promote;
 module.exports = exports['default'];
 
-},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],57:[function(require,module,exports){
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Promote/controllers/render":59,"syn/components/Promote/controllers/render-item":58,"syn/lib/app/Controller":64,"syn/lib/util/Nav":68}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10148,7 +10270,7 @@ var Promote = (function (_Element) {
   }, {
     key: 'compose',
     value: function compose() {
-      return new Elements().add(new _cinco.Element('header.promote-steps').add(new _cinco.Element('h2').add(new _cinco.Element('span.cursor').text('1'), new _cinco.Element('span').text(' of '), new _cinco.Element('span.limit').text('5')), new _cinco.Element('h4').text('Evaluate each item below')), new _cinco.Element('.items-side-by-side').add(
+      return new _cinco.Elements().add(new _cinco.Element('header.promote-steps').add(new _cinco.Element('h2').add(new _cinco.Element('span.cursor').text('1'), new _cinco.Element('span').text(' of '), new _cinco.Element('span.limit').text('5')), new _cinco.Element('h4').text('Evaluate each item below')), new _cinco.Element('.items-side-by-side').add(
       // 1 column
       new _cinco.Element('.split-hide-up').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left'), this.promoteReference('left'), this.promoteSliders('left'), this.promoteFeedback('left'), this.promoteButton('left'), this.editAndGoAgain('left'), this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'), this.promoteReference('right'), this.promoteSliders('right'), this.promoteFeedback('right'), this.promoteButton('right'), this.editAndGoAgain('right')),
 
@@ -10164,6 +10286,253 @@ exports['default'] = Promote;
 module.exports = exports['default'];
 
 },{"cinco":31}],58:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _synLibUtilNav = require('syn/lib/util/Nav');
+
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+
+var _synComponentsEditAndGoAgainController = require('syn/components/EditAndGoAgain/Controller');
+
+var _synComponentsEditAndGoAgainController2 = _interopRequireDefault(_synComponentsEditAndGoAgainController);
+
+var _synComponentsItemController = require('syn/components/Item/Controller');
+
+var _synComponentsItemController2 = _interopRequireDefault(_synComponentsItemController);
+
+/**
+ *  @function
+ *  @return
+ *  @arg
+ */
+
+function renderItem(hand) {
+  var self = this;
+
+  var reverse = hand === 'left' ? 'right' : 'left';
+
+  var side = this.get(hand);
+
+  if (!side) {
+    this.find('item subject', hand).hide();
+    this.find('item description', hand).hide();
+    this.find('item feedback', hand).hide();
+    this.find('sliders', hand).hide();
+    this.find('promote button', hand).hide();
+    this.find('promote label').hide();
+    this.find('edit and go again button', hand).hide();
+    this.find('promote button', reverse).hide();
+    this.find('edit and go again button', reverse).hide();
+    // this.find('finish button').hide();
+    return;
+  }
+
+  // Increment views counter
+
+  this.publish('add view', side._id).subscribe(function (pubsub) {
+    return pubsub.unsubscribe();
+  });
+
+  // Subject
+  this.find('item subject', hand).text(side.subject);
+
+  // Description
+
+  this.find('item description', hand).text(side.description);
+
+  // Image
+
+  this.find('item image', hand).empty().append(new _synComponentsItemController2['default']({ item: side }).media());
+
+  // References
+
+  if (side.references && side.references.length) {
+    this.find('item references', hand).attr('href', side.references[0].url).text(side.references[0].title || side.references[0].url);
+  }
+
+  // Sliders
+
+  this.find('sliders', hand).find('.criteria-name').each(function (i) {
+    var cid = i;
+
+    if (cid > 3) {
+      cid -= 4;
+    }
+
+    self.find('sliders', hand).find('.criteria-name').eq(i).on('click', function () {
+      var self = $(this);
+      var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
+
+      self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
+
+      if ($(this).hasClass('shy')) {
+        $(this).removeClass('shy').addClass('info');
+      } else if ($(this).hasClass('info')) {
+        $(this).removeClass('info').addClass('shy');
+      }
+
+      _synLibUtilNav2['default'].hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
+        _synLibUtilNav2['default'].toggle(descriptionSection);
+      }));
+    }).text(self.get('criterias')[cid].name);
+
+    self.find('sliders', hand).find('.criteria-description').eq(i).text(self.get('criterias')[cid].description);
+
+    self.find('sliders', hand).find('input').eq(i).val(0).data('criteria', self.get('criterias')[cid]._id);
+  });
+
+  // Persona
+
+  // this.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
+
+  // this.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
+
+  // Feedback
+
+  this.find('item feedback', hand).val('');
+
+  // Feedback - remove any marker from previous post / see #164
+
+  this.find('item feedback', hand).removeClass('do-not-save-again');
+
+  // Promote button
+
+  this.find('promote button', hand).text(side.subject).off('click').on('click', function () {
+
+    var left = $(this).closest('.left-item').length;
+
+    var opposite = left ? 'right' : 'left';
+
+    _synLibUtilNav2['default'].scroll(self.template, app.domain.intercept(function () {
+
+      // If cursor is smaller than limit, then keep on going
+
+      if (self.get('cursor') < self.get('limit')) {
+
+        self.set('cursor', self.get('cursor') + 1);
+
+        self.publish('promote', promote.get(left ? 'left' : 'right')._id).subscribe(function (pubsub) {
+          return pubsub.unsubscribe();
+        });
+
+        self.save(left ? 'left' : 'right');
+
+        $.when(self.find('side by side').find('.' + opposite + '-item').animate({
+          opacity: 0
+        })).then(function () {
+          self.get(opposite, self.get('items')[self.get('cursor')]);
+
+          promote.find('side by side').find('.' + opposite + '-item').animate({
+            opacity: 1
+          });
+        });
+      }
+
+      // If cursor equals limit, means end of evaluation cycle
+
+      else {
+
+        promote.finish();
+      }
+    }));
+  });
+
+  // Edit and go again
+
+  this.find('edit and go again button', hand).on('click', function () {
+    _synLibUtilNav2['default'].unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
+
+      if (promote.item.find('editor').find('form').length) {
+        console.warn('already loaded');
+      } else {
+        var edit = new _synComponentsEditAndGoAgainController2['default'](promote.item);
+
+        edit.get(app.domain.intercept(function (template) {
+
+          promote.item.find('editor').find('.is-section').append(template);
+
+          _synLibUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, app.domain.intercept(function () {
+            _synLibUtilNav2['default'].show(template, app.domain.intercept(function () {
+              edit.render();
+            }));
+          }));
+        }));
+      }
+    }));
+  });
+}
+
+exports['default'] = renderItem;
+module.exports = exports['default'];
+
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":48,"syn/lib/util/Nav":68}],59:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _synLibUtilNav = require('syn/lib/util/Nav');
+
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+
+/**
+ *  @method Promote.render
+ *  @return
+ *  @arg
+ */
+
+function renderPromote(cb) {
+  var promote = this;
+
+  promote.find('finish button').on('click', function () {
+    _synLibUtilNav2['default'].scroll(promote.template, app.domain.intercept(function () {
+
+      if (promote.evaluation.cursor < promote.evaluation.limit) {
+
+        promote.save('left');
+
+        promote.save('right');
+
+        $.when(promote.find('side by side').find('.left-item, .right-item').animate({
+          opacity: 0
+        }, 1000)).then(function () {
+          promote.edit('cursor', promote.evaluation.cursor + 1);
+
+          promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+
+          promote.edit('cursor', promote.evaluation.cursor + 1);
+
+          promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+
+          promote.find('side by side').find('.left-item').animate({
+            opacity: 1
+          }, 1000);
+
+          promote.find('side by side').find('.right-item').animate({
+            opacity: 1
+          }, 1000);
+        });
+      } else {
+
+        promote.finish();
+      }
+    }));
+  });
+}
+
+exports['default'] = renderPromote;
+module.exports = exports['default'];
+
+},{"syn/lib/util/Nav":68}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10337,7 +10706,7 @@ var TopBar = (function (_Controller) {
 exports['default'] = TopBar;
 module.exports = exports['default'];
 
-},{"syn/components/ForgotPassword/Controller":45,"syn/components/Join/Controller":52,"syn/components/Login/Controller":53,"syn/lib/app/Controller":62}],59:[function(require,module,exports){
+},{"syn/components/ForgotPassword/Controller":45,"syn/components/Join/Controller":52,"syn/components/Login/Controller":53,"syn/lib/app/Controller":64}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10357,7 +10726,7 @@ function YouTube(url) {
 exports['default'] = YouTube;
 module.exports = exports['default'];
 
-},{"syn/components/YouTube/View":60}],60:[function(require,module,exports){
+},{"syn/components/YouTube/View":62}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10421,7 +10790,7 @@ YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 exports['default'] = YouTube;
 module.exports = exports['default'];
 
-},{"cinco":31}],61:[function(require,module,exports){
+},{"cinco":31}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10459,7 +10828,7 @@ var Cache = (function () {
 exports['default'] = new Cache();
 module.exports = exports['default'];
 
-},{}],62:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10493,7 +10862,7 @@ var Controller = (function (_App) {
 exports['default'] = Controller;
 module.exports = exports['default'];
 
-},{"syn/app":34}],63:[function(require,module,exports){
+},{"syn/app":34}],65:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10534,7 +10903,7 @@ module.exports = exports['default'];
   module.exports = Page;
 })();
 
-},{"string":33}],64:[function(require,module,exports){
+},{"string":33}],66:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10585,7 +10954,7 @@ module.exports = exports['default'];
   module.exports = Socket;
 })();
 
-},{}],65:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10674,7 +11043,7 @@ var Form = (function () {
 exports['default'] = Form;
 module.exports = exports['default'];
 
-},{"syn/lib/util/domain-run":70}],66:[function(require,module,exports){
+},{"syn/lib/util/domain-run":72}],68:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -11011,7 +11380,7 @@ module.exports = exports['default'];
 // 'padding-top': elem.height() + 'px'
 
 }).call(this,require('_process'))
-},{"_process":10,"domain":6,"events":7}],67:[function(require,module,exports){
+},{"_process":10,"domain":6,"events":7}],69:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -11166,7 +11535,7 @@ module.exports = exports['default'];
   module.exports = readMore;
 })();
 
-},{}],68:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -11205,7 +11574,7 @@ module.exports = exports['default'];
   module.exports = Stream;
 })();
 
-},{}],69:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -11286,7 +11655,7 @@ module.exports = exports['default'];
   module.exports = Upload;
 })();
 
-},{}],70:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 !(function () {

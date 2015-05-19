@@ -1171,7 +1171,9 @@ var App = (function (_EventEmitter) {
           if (error) {
             throw error;
           }
-          handler.apply(undefined, args);
+          if (handler) {
+            handler.apply(undefined, args);
+          }
         });
       };
     };

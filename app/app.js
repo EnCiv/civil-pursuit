@@ -33,7 +33,9 @@ class App extends EventEmitter {
         if ( error ) {
           throw error;
         }
-        handler(...args);
+        if ( handler ) {
+          handler(...args);
+        }
       });
 
   }

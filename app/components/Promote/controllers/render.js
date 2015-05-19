@@ -1,70 +1,66 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var Nav = require('syn/lib/util/Nav');
+import Nav from 'syn/lib/util/Nav';
 
-  /**
-   *  @method Promote.render
-   *  @return
-   *  @arg
-   */
+/**
+ *  @method Promote.render
+ *  @return
+ *  @arg
+ */
 
-  function render (cb) {
-    var promote = this;
+function renderPromote (cb) {
+  var promote = this;
 
-    promote.find('finish button').on('click', function () {
-      Nav.scroll(promote.template, app.domain.intercept(function () {
+  promote.find('finish button').on('click', function () {
+    Nav.scroll(promote.template, app.domain.intercept(function () {
 
-        if ( promote.evaluation.cursor < promote.evaluation.limit ) {
+      if ( promote.evaluation.cursor < promote.evaluation.limit ) {
 
-          promote.save('left');
+        promote.save('left');
 
-          promote.save('right');
+        promote.save('right');
 
-          $.when(
+        $.when(
+          promote
+            .find('side by side')
+            .find('.left-item, .right-item')
+            .animate({
+              opacity: 0
+            }, 1000)
+        )
+          .then(function () {
+            promote.edit('cursor', promote.evaluation.cursor + 1);
+
+            promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+
+            promote.edit('cursor', promote.evaluation.cursor + 1);
+
+            promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+
             promote
               .find('side by side')
-              .find('.left-item, .right-item')
+              .find('.left-item')
               .animate({
-                opacity: 0
-              }, 1000)
-          )
-            .then(function () {
-              promote.edit('cursor', promote.evaluation.cursor + 1);
+                opacity: 1
+              }, 1000);
 
-              promote.edit('left', promote.evaluation.items[promote.evaluation.cursor]);
+            promote
+              .find('side by side')
+              .find('.right-item')
+              .animate({
+                opacity: 1
+              }, 1000);
+          });
+      }
 
-              promote.edit('cursor', promote.evaluation.cursor + 1);
+      else {
 
-              promote.edit('right', promote.evaluation.items[promote.evaluation.cursor]);
+        promote.finish();
 
-              promote
-                .find('side by side')
-                .find('.left-item')
-                .animate({
-                  opacity: 1
-                }, 1000);
+      }
 
-              promote
-                .find('side by side')
-                .find('.right-item')
-                .animate({
-                  opacity: 1
-                }, 1000);
-            });
-        }
+    }));
+  });
+}
 
-        else {
-
-          promote.finish();
-
-        }
-
-      }));
-    });
-  }
-
-  module.exports = render;
-
-} ();
+export default renderPromote

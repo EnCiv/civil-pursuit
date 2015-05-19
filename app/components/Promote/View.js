@@ -1,6 +1,6 @@
 'use strict';
 
-import {Element} from 'cinco';
+import {Element, Elements} from 'cinco';
 
 class Promote extends Element {
 

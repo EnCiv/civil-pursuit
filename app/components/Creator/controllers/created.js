@@ -1,33 +1,33 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function created (item) {
-    console.log('created item', item);
+import Item from 'syn/components/Item/Controller';
 
-    this.panel.template.find('.create-new').hide();
+function created (item) {
+  console.log('created item', item);
 
-    if ( this.packaged.upload ) {
-      item.upload = this.packaged.upload;
-    }
+  let d = this.domain;
 
-    if ( this.packaged.youtube ) {
-      item.youtube = this.packaged.youtube;
-    }
+  this.parent.find('.create-new').hide();
 
-    var item  = new (require('syn/components/Item/Controller'))(item);
-
-    var items = this.panel.find('items');
-
-    item.load(app.domain.intercept(function () {
-      item.template.addClass('new');
-      items.prepend(item.template);
-      item.render(app.domain.intercept(function () {
-        item.find('toggle promote').click();
-      }));
-    }));
+  if ( this.packaged.upload ) {
+    item.upload = this.packaged.upload;
   }
 
-  module.exports = created;
+  if ( this.packaged.youtube ) {
+    item.youtube = this.packaged.youtube;
+  }
 
-} ();
+  var item  = new Item({ item: item });
+
+  var items = this.parent.find('items');
+
+  item.load();
+
+  item.template.addClass('new');
+  items.prepend(item.template);
+  item.render(d.intercept(function () {
+    item.find('toggle promote').click();
+  }));
+}
+
+export default created;
