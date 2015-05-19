@@ -33,6 +33,8 @@ function renderItem (hand) {
 
   // Increment views counter
 
+  console.log('Adding view', hand, side.subject, side._id)
+
   this.publish('add view', side._id)
     .subscribe(pubsub => pubsub.unsubscribe());
 

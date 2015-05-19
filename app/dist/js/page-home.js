@@ -3934,6 +3934,10 @@ var _synComponentsItemControllersToggleArrow = require('syn/components/Item/cont
 
 var _synComponentsItemControllersToggleArrow2 = _interopRequireDefault(_synComponentsItemControllersToggleArrow);
 
+var _synComponentsItemControllersTogglePromote = require('syn/components/Item/controllers/toggle-promote');
+
+var _synComponentsItemControllersTogglePromote2 = _interopRequireDefault(_synComponentsItemControllersTogglePromote);
+
 var Item = (function (_Controller) {
   function Item(props) {
     _classCallCheck(this, Item);
@@ -4153,71 +4157,7 @@ var Item = (function (_Controller) {
   }, {
     key: 'togglePromote',
     value: function togglePromote($trigger) {
-      if (!this.socket.synuser) {
-        var topbar = new _synComponentsTopBarController2['default']();
-        topbar.find('join button').click();
-        return;
-      }
-
-      var $item = $trigger.closest('.item');
-      var item = $item.data('item');
-
-      var d = this.domain;
-
-      function hideOthers() {
-        if ($('.is-showing').length || $('.is-hidding').length) {
-          return false;
-        }
-
-        if ($('.creator.is-shown').length) {
-          _synLibUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
-            $trigger.click();
-          });
-
-          return false;
-        }
-
-        if (item.find('details').hasClass('is-shown')) {
-          _synLibUtilNav2['default'].hide(item.find('details')).hidden(function () {
-            $trigger.click();
-          });
-
-          item.find('toggle details').find('.caret').addClass('hide');
-
-          return false;
-        }
-      }
-
-      function promote() {
-        item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
-      }
-
-      function showHideCaret() {
-        if (item.find('promote').hasClass('is-shown')) {
-          $trigger.find('.caret').removeClass('hide');
-        } else {
-          $trigger.find('.caret').addClass('hide');
-        }
-      }
-
-      if (hideOthers() === false) {
-        return false;
-      }
-
-      if (item.find('collapsers hidden').length) {
-        item.find('collapsers').show();
-      }
-
-      _synLibUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
-
-        if (item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length) {
-          item.find('collapsers').hide();
-        }
-
-        promote();
-
-        showHideCaret();
-      });
+      return _synComponentsItemControllersTogglePromote2['default'].apply(this, [$trigger]);
     }
   }, {
     key: 'toggleDetails',
@@ -4286,7 +4226,7 @@ var Item = (function (_Controller) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/Details/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Details/Controller.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js","syn/components/Item/controllers/media":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/media.js","syn/components/Item/controllers/toggle-arrow":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/toggle-arrow.js","syn/components/Promote/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Promote/Controller.js","syn/components/TopBar/Controller":"/home/francois/Dev/syn/node_modules/syn/components/TopBar/Controller.js","syn/lib/app/Controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js","syn/lib/util/ReadMore":"/home/francois/Dev/syn/node_modules/syn/lib/util/ReadMore.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js":[function(require,module,exports){
+},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/Details/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Details/Controller.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js","syn/components/Item/controllers/media":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/media.js","syn/components/Item/controllers/toggle-arrow":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/toggle-arrow.js","syn/components/Item/controllers/toggle-promote":"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/toggle-promote.js","syn/components/Promote/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Promote/Controller.js","syn/components/TopBar/Controller":"/home/francois/Dev/syn/node_modules/syn/components/TopBar/Controller.js","syn/lib/app/Controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js","syn/lib/util/ReadMore":"/home/francois/Dev/syn/node_modules/syn/lib/util/ReadMore.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4664,7 +4604,92 @@ function toggleArrow($trigger) {
 exports['default'] = toggleArrow;
 module.exports = exports['default'];
 
-},{"syn/components/Panel/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Panel/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/ItemDefaultButtons/View.js":[function(require,module,exports){
+},{"syn/components/Panel/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Panel/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/toggle-promote.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _synLibUtilNav = require('syn/lib/util/Nav');
+
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+
+function tooglePromote($trigger) {
+
+  if (!this.socket.synuser) {
+    var topbar = new TopBar();
+    topbar.find('join button').click();
+    return;
+  }
+
+  var $item = $trigger.closest('.item');
+  var item = $item.data('item');
+
+  var d = this.domain;
+
+  function hideOthers() {
+    if ($('.is-showing').length || $('.is-hidding').length) {
+      return false;
+    }
+
+    if ($('.creator.is-shown').length) {
+      _synLibUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
+        $trigger.click();
+      });
+
+      return false;
+    }
+
+    if (item.find('details').hasClass('is-shown')) {
+      _synLibUtilNav2['default'].hide(item.find('details')).hidden(function () {
+        $trigger.click();
+      });
+
+      item.find('toggle details').find('.caret').addClass('hide');
+
+      return false;
+    }
+  }
+
+  function promote() {
+    item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
+  }
+
+  function showHideCaret() {
+    if (item.find('promote').hasClass('is-shown')) {
+      $trigger.find('.caret').removeClass('hide');
+    } else {
+      $trigger.find('.caret').addClass('hide');
+    }
+  }
+
+  if (hideOthers() === false) {
+    return false;
+  }
+
+  if (item.find('collapsers hidden').length) {
+    item.find('collapsers').show();
+  }
+
+  _synLibUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
+
+    if (item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length) {
+      item.find('collapsers').hide();
+    }
+
+    promote();
+
+    showHideCaret();
+  });
+}
+
+exports['default'] = tooglePromote;
+module.exports = exports['default'];
+
+},{"syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/ItemDefaultButtons/View.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5596,7 +5621,7 @@ var Promote = (function (_Controller) {
     value: function getEvaluation(cb) {
       var _this2 = this;
 
-      if (!this.get('evaluation')) {
+      if (!this.get('left')) {
         (function () {
 
           var item = _this2.itemController.get('item');
@@ -5827,6 +5852,8 @@ function renderItem(hand) {
   }
 
   // Increment views counter
+
+  console.log('Adding view', hand, side.subject, side._id);
 
   this.publish('add view', side._id).subscribe(function (pubsub) {
     return pubsub.unsubscribe();

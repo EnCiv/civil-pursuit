@@ -22,7 +22,7 @@
     
     domain.run(function () {
       Item.incrementView(itemId, domain.intercept(function (item) {
-        socket.emit('view added', item);
+        socket.ok(event, item);
       }));
     });
 

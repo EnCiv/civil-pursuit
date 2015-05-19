@@ -160,7 +160,7 @@ class Promote extends Controller {
   }
 
   getEvaluation (cb) {
-    if ( ! this.get('evaluation') ) {
+    if ( ! this.get('left') ) {
 
       let item = this.itemController.get('item');
 
