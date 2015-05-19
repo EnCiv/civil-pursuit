@@ -3,6 +3,8 @@
   
   'use strict';
 
+  require("babel/register")({ modules: 'common' });
+
   require('colors');
 
   var symlink       =   require('../lib/app/symlink');

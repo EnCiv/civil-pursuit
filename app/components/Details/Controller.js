@@ -1,47 +1,24 @@
-! function _DetailsComponent_ () {
+'use strict';
 
-  'use strict';
+import Controller from 'syn/lib/app/Controller';
+import EditAndGoAgain from 'syn/components/EditAndGoAgain/Controller';
+import Nav from 'syn/lib/util/Nav';
 
-  var EditComponent     =   require('syn/components/EditAndGoAgain/Controller');
+class Details extends Controller {
 
-  var NavProvider       =   require('syn/lib/util/Nav');
+  constructor (props, itemParent) {
+    super();
 
-  /**
-   *  @class            DetailsComponent
-   *  @arg              {ItemComponent} item
-   */
-
-  function DetailsComponent(item) {
-
-    if ( ! app ) {
-      throw new Error('Missing app');
+    if ( props.item ) {
+      this.set('item', props.item);
     }
 
-    var self = this;
+    this.props = props || {};
 
-    app.domain.run(function () {
-      if ( ! item || ( ! item instanceof require('syn/components/Item/Controller') ) ) {
-        throw new Error('Item must be an Item');
-      }
-
-      self.item = item;
-
-      self.template = item.find('details');
-
-      if ( ! self.template.length ) {
-        throw new Error('Details template not found');
-      }
-    });
+    this.itemParent = itemParent;
   }
 
-  /**
-   *  @method           
-   *  @description      DOM selectors abstractions
-   *  @return           null
-   *  @arg              {string} name
-   */
-
-  DetailsComponent.prototype.find = function (name) {
+  find (name) {
     switch ( name ) {
       case 'promoted bar':
         return this.template.find('.progress');
@@ -55,20 +32,16 @@
       case 'toggle edit and go again':
         return this.template.find('.edit-and-go-again-toggler');
     }
-  };
+  }
 
-  /**
-   *  @method
-   *  @description          DOM manipulation
-   *  @arg                  {function} cb
-   */
+  render (cb) {
+    let self = this;
 
-  DetailsComponent.prototype.render = function (cb) {
-    var self = this;
+    let d = this.domain;
 
-    var item = self.item.item;
+    let item = this.get('item');
 
-    self.find('promoted bar')
+    this.find('promoted bar')
       .goalProgress({
         goalAmount        :   100,
         currentAmount     :   Math.floor(item.promotions * 100 / item.views),
@@ -76,8 +49,8 @@
         textAfter         :   '%'
       });
 
-    self.find('toggle edit and go again').on('click', function () {
-      NavProvider.unreveal(self.template, self.item.template, app.domain.intercept(function () {
+    this.find('toggle edit and go again').on('click', function () {
+      NavProvider.unreveal(self.template, self.itemParent.template, d.intercept(function () {
         if ( self.item.find('editor').find('form').length ) {
           console.warn('already loaded')
         }
@@ -85,13 +58,13 @@
         else {
           var edit = new EditComponent(self.item);
             
-          edit.get(app.domain.intercept(function (template) {
+          edit.get(d.intercept(function (template) {
 
-            self.item.find('editor').find('.is-section').append(template);
+            self.itemParent.find('editor').find('.is-section').append(template);
 
             NavProvider.reveal(self.item.find('editor'), self.item.template,
-              app.domain.intercept(function () {
-                NavProvider.show(template, app.domain.intercept(function () {
+              d.intercept(function () {
+                NavProvider.show(template, d.intercept(function () {
                   edit.render();
                 }));
               }));
@@ -109,16 +82,9 @@
     if ( ! self.details ) {
       this.get();
     }
-  };
+  }
 
-  /**
-   *  @method
-   *  @description    Display votes using c3.js
-   *  @arg            {object} criteria
-   *  @arg            {HTMLElement} svg
-   */
-
-  DetailsComponent.prototype.votes = function (criteria, svg) {
+  votes () {
     var self = this;
 
     setTimeout(function () {
@@ -188,14 +154,9 @@
       });
     
     }, 250);
-  };
+  }
 
-  /**
-   *
-   */
-
-  DetailsComponent.prototype.get = function () {
-
+  fetch () {
     var self = this;
 
     app.socket.publish('get item details', self.item.item._id, function (details) {
@@ -224,8 +185,8 @@
       });
 
     });
-  };
+  }
 
-  module.exports = DetailsComponent;
+}
 
-} ();
+export default Details;

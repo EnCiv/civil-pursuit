@@ -95,7 +95,7 @@ class Item extends Controller {
 
     // Create reference to details
 
-    // this.details = new Details(this.props);
+    this.details = new Details(this.props, this);
 
     // Set ID
 
