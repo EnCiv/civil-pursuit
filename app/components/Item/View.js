@@ -133,7 +133,9 @@ class Item extends Element {
 
   details () {
     return new Element('.details.is-container').add(
-      new Element('.is-section')
+      new Element('.is-section').add(
+        new Details(this.props)
+      )
     )
   }
 
@@ -161,4 +163,4 @@ export default Item;
 import Page from 'syn/lib/app/Page';
 import DefaultButtonsView from 'syn/components/ItemDefaultButtons/View';
 import Promote from 'syn/components/Promote/View';
-import DetailsView from 'syn/components/Details/View';
+import Details from 'syn/components/Details/View';

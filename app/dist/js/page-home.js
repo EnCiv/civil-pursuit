@@ -3175,6 +3175,8 @@ var Details = (function (_Controller) {
     this.props = props || {};
 
     this.itemParent = itemParent;
+
+    this.template = itemParent.find('details');
   }
 
   _inherits(Details, _Controller);
@@ -3233,7 +3235,7 @@ var Details = (function (_Controller) {
         }));
       });
 
-      if (app.socket.synuser) {
+      if (this.socket.synuser) {
         $('.is-in').removeClass('is-in');
       }
 
@@ -4490,7 +4492,7 @@ var Item = (function (_Element) {
   }, {
     key: 'details',
     value: function details() {
-      return new _cinco.Element('.details.is-container').add(new _cinco.Element('.is-section'));
+      return new _cinco.Element('.details.is-container').add(new _cinco.Element('.is-section').add(new _synComponentsDetailsView2['default'](this.props)));
     }
   }, {
     key: 'arrow',

@@ -16,6 +16,8 @@ class Details extends Controller {
     this.props = props || {};
 
     this.itemParent = itemParent;
+
+    this.template = itemParent.find('details');
   }
 
   find (name) {
@@ -75,7 +77,7 @@ class Details extends Controller {
       }));
     });
 
-    if ( app.socket.synuser ) {
+    if ( this.socket.synuser ) {
       $('.is-in').removeClass('is-in');
     }
 
