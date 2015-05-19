@@ -16,6 +16,7 @@ class Scripts extends Elements {
       this.jQueryPlugins(),
       this.app(),
       this.vex(),
+      this.socketStream(),
       this.goalProgress(),
       this.d3(),
       this.c3()
@@ -32,6 +33,10 @@ class Scripts extends Elements {
 
   socketIO () {
     return new Element('script', { src : '/socket.io/socket.io.js' } );
+  }
+
+  socketStream () {
+    return new Element('script', { src: '/js/socket.io-stream.js' });
   }
 
   jQuery () {

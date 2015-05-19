@@ -2,7 +2,7 @@
 
 import Nav       from 'syn/lib/util/Nav';
 import Item      from 'syn/components/Item/Controller';
-import Stream    from 'syn/lib/util/Stream';
+import Stream    from 'syn/lib/app/Stream';
 
 function save () {
 

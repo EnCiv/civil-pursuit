@@ -2,27 +2,35 @@
 
 import S from 'string';
 import getProps from 'syn/lib/app/props';
+import domainRun from 'syn/lib/util/domain-run';
 
 var cache = {}
 
 function renderPage (req, res, next) {
-  let props       =   getProps(this, req, res);
-  let pageName    =   S(props.page).capitalize().camelize().s;
 
-  if ( pageName in cache ) {
-    return res.send(cache[pageName]);
-  }
+  domainRun(
+    d => {
+      let props       =   getProps(this, req, res);
+      let pageName    =   S(props.page).capitalize().camelize().s;
 
-  let Page        =   require('syn/pages/' + pageName + '/View');
-  let page        =   new Page(props);
+      if ( pageName in cache ) {
+        return res.send(cache[pageName]);
+      }
 
-  cache[pageName] = page.render();
+      let Page        =   require('syn/pages/' + pageName + '/View');
+      let page        =   new Page(props);
 
-  res.send(cache[pageName]);
+      cache[pageName] = page.render();
 
-  if ( pageName === 'Component' ) {
-    delete cache[pageName];
-  }
+      res.send(cache[pageName]);
+
+      if ( pageName === 'Component' ) {
+        delete cache[pageName];
+      }
+    },
+    error => next
+  );
+
 }
 
 export default renderPage;

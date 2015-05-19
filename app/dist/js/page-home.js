@@ -2856,9 +2856,9 @@ var _synComponentsItemController = require('syn/components/Item/Controller');
 
 var _synComponentsItemController2 = _interopRequireDefault(_synComponentsItemController);
 
-var _synLibUtilStream = require('syn/lib/util/Stream');
+var _synLibAppStream = require('syn/lib/app/Stream');
 
-var _synLibUtilStream2 = _interopRequireDefault(_synLibUtilStream);
+var _synLibAppStream2 = _interopRequireDefault(_synLibAppStream);
 
 function save() {
   var _this = this;
@@ -2891,7 +2891,7 @@ function save() {
 
           // New stream         //  Catch stream errors
 
-          new _synLibUtilStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
+          new _synLibAppStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
             _this.packaged.image = file.name;
 
             console.log('create item', _this.packaged);
@@ -2924,7 +2924,7 @@ exports['default'] = save;
 module.exports = exports['default'];
 
 }).call(this,require('_process'))
-},{"_process":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","syn/components/Item/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Item/Controller.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js","syn/lib/util/Stream":"/home/francois/Dev/syn/node_modules/syn/lib/util/Stream.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Creator/controllers/created.js":[function(require,module,exports){
+},{"_process":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/process/browser.js","syn/components/Item/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Item/Controller.js","syn/lib/app/Stream":"/home/francois/Dev/syn/node_modules/syn/lib/app/Stream.js","syn/lib/util/Nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/Nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Creator/controllers/created.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6448,6 +6448,33 @@ module.exports = exports['default'];
   module.exports = Socket;
 })();
 
+},{}],"/home/francois/Dev/syn/node_modules/syn/lib/app/Stream.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Stream(file) {
+
+    var stream = ss.createStream();
+
+    ss(synapp.app.socket).emit('upload image', stream, { size: file.size, name: file.name });
+
+    ss.createBlobReadStream(file).pipe(stream);
+
+    return stream;
+  }
+
+  module.exports = Stream;
+})();
+
 },{}],"/home/francois/Dev/syn/node_modules/syn/lib/util/Form.js":[function(require,module,exports){
 'use strict';
 
@@ -7027,45 +7054,6 @@ module.exports = exports['default'];
   }
 
   module.exports = readMore;
-})();
-
-},{}],"/home/francois/Dev/syn/node_modules/syn/lib/util/Stream.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Stream(file) {
-
-    var stream = ss.createStream();
-
-    // stream.end = function (cb) {
-    //   this.on('end', cb);
-
-    //   return this;
-    // };
-
-    // stream.error = function (cb) {
-    //   this.on('error', cb);
-
-    //   return this;
-    // };
-
-    ss(app.socket).emit('upload image', stream, { size: file.size, name: file.name });
-
-    ss.createBlobReadStream(file).pipe(stream);
-
-    return stream;
-  }
-
-  module.exports = Stream;
 })();
 
 },{}],"/home/francois/Dev/syn/node_modules/syn/lib/util/Upload.js":[function(require,module,exports){

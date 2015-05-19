@@ -6,7 +6,7 @@
  *  @module       views/Intro
 */
 
-import {Element} from'cinco';
+import {Element} from 'cinco';
 import Panel from 'syn/components/Panel/View';
 import ItemView from 'syn/components/Item/View';
 

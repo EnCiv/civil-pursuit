@@ -39,7 +39,7 @@
       "image"             :   {
 
         "type"            :   String,
-        "validate"        :   isCloudinaryUrl
+        // "validate"        :   isCloudinaryUrl
       },
 
       "references"        :   [{
