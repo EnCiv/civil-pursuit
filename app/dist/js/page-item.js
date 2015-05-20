@@ -39,7 +39,7 @@ synapp.app.ready(function () {
   });
 });
 
-},{"syn/app":34,"syn/components/Panel/Controller":52,"syn/components/TopBar/Controller":58}],2:[function(require,module,exports){
+},{"syn/app":34,"syn/components/Panel/Controller":54,"syn/components/TopBar/Controller":60}],2:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -7147,7 +7147,7 @@ function anon() {
 }
 module.exports = exports['default'];
 
-},{"domain":6,"events":7,"syn/lib/app/Cache":61,"syn/lib/app/Socket":64,"util":25}],35:[function(require,module,exports){
+},{"domain":6,"events":7,"syn/lib/app/Cache":63,"syn/lib/app/Socket":66,"util":25}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7193,7 +7193,7 @@ var text = {
 };
 
 var Creator = (function (_Controller) {
-  function Creator(props) {
+  function Creator(props, panelContainer) {
     _classCallCheck(this, Creator);
 
     _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).call(this);
@@ -7201,6 +7201,8 @@ var Creator = (function (_Controller) {
     this.props = props || {};
 
     this.panel = props.panel;
+
+    this.panelContainer = panelContainer;
   }
 
   _inherits(Creator, _Controller);
@@ -7275,7 +7277,7 @@ var Creator = (function (_Controller) {
 exports['default'] = Creator;
 module.exports = exports['default'];
 
-},{"syn/components/Creator/controllers/create":37,"syn/components/Creator/controllers/created":38,"syn/components/Creator/controllers/pack-item":39,"syn/components/Creator/controllers/render":40,"syn/components/Panel/Controller":52,"syn/lib/app/Controller":62}],36:[function(require,module,exports){
+},{"syn/components/Creator/controllers/create":37,"syn/components/Creator/controllers/created":38,"syn/components/Creator/controllers/pack-item":39,"syn/components/Creator/controllers/render":40,"syn/components/Panel/Controller":54,"syn/lib/app/Controller":64}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7446,9 +7448,9 @@ var _synComponentsItemController = require('syn/components/Item/Controller');
 
 var _synComponentsItemController2 = _interopRequireDefault(_synComponentsItemController);
 
-var _synLibUtilStream = require('syn/lib/util/Stream');
+var _synLibAppStream = require('syn/lib/app/Stream');
 
-var _synLibUtilStream2 = _interopRequireDefault(_synLibUtilStream);
+var _synLibAppStream2 = _interopRequireDefault(_synLibAppStream);
 
 function save() {
   var _this = this;
@@ -7481,7 +7483,7 @@ function save() {
 
           // New stream         //  Catch stream errors
 
-          new _synLibUtilStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
+          new _synLibAppStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
             _this.packaged.image = file.name;
 
             console.log('create item', _this.packaged);
@@ -7514,7 +7516,7 @@ exports['default'] = save;
 module.exports = exports['default'];
 
 }).call(this,require('_process'))
-},{"_process":10,"syn/components/Item/Controller":46,"syn/lib/util/Nav":66,"syn/lib/util/Stream":68}],38:[function(require,module,exports){
+},{"_process":10,"syn/components/Item/Controller":46,"syn/lib/app/Stream":67,"syn/lib/util/Nav":69}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -7544,9 +7546,11 @@ function created(item) {
 
   var item = new _synComponentsItemController2['default']({ item: item });
 
-  var items = this.parent.find('items');
+  var items = this.panelContainer.find('items');
 
   item.load();
+
+  console.log('inserting', item.template, items);
 
   item.template.addClass('new');
   items.prepend(item.template);
@@ -7723,230 +7727,241 @@ function renderCreator(cb) {
 exports['default'] = renderCreator;
 module.exports = exports['default'];
 
-},{"domain":6,"syn/components/YouTube/Controller":59,"syn/lib/util/Form":65,"syn/lib/util/Upload":69}],41:[function(require,module,exports){
+},{"domain":6,"syn/components/YouTube/Controller":61,"syn/lib/util/Form":68,"syn/lib/util/Upload":71}],41:[function(require,module,exports){
 'use strict';
 
-!(function _DetailsComponent_() {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-  var EditComponent = require('syn/components/EditAndGoAgain/Controller');
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-  var NavProvider = require('syn/lib/util/Nav');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  /**
-   *  @class            DetailsComponent
-   *  @arg              {ItemComponent} item
-   */
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-  function DetailsComponent(item) {
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-    if (!app) {
-      throw new Error('Missing app');
+var _synLibAppController = require('syn/lib/app/Controller');
+
+var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+
+var _synComponentsEditAndGoAgainController = require('syn/components/EditAndGoAgain/Controller');
+
+var _synComponentsEditAndGoAgainController2 = _interopRequireDefault(_synComponentsEditAndGoAgainController);
+
+var _synLibUtilNav = require('syn/lib/util/Nav');
+
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+
+var Details = (function (_Controller) {
+  function Details(props, itemParent) {
+    _classCallCheck(this, Details);
+
+    _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this);
+
+    this.store = {
+      item: null,
+      details: null
+    };
+
+    if (props.item) {
+      this.set('item', props.item);
     }
 
-    var self = this;
+    this.props = props || {};
 
-    app.domain.run(function () {
-      if (!item || !item instanceof require('syn/components/Item/Controller')) {
-        throw new Error('Item must be an Item');
-      }
+    this.itemParent = itemParent;
 
-      self.item = item;
-
-      self.template = item.find('details');
-
-      if (!self.template.length) {
-        throw new Error('Details template not found');
-      }
-    });
+    this.template = itemParent.find('details');
   }
 
-  /**
-   *  @method           
-   *  @description      DOM selectors abstractions
-   *  @return           null
-   *  @arg              {string} name
-   */
+  _inherits(Details, _Controller);
 
-  DetailsComponent.prototype.find = function (name) {
-    switch (name) {
-      case 'promoted bar':
-        return this.template.find('.progress');
+  _createClass(Details, [{
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'promoted bar':
+          return this.template.find('.progress');
 
-      case 'feedback list':
-        return this.template.find('.feedback-list');
+        case 'feedback list':
+          return this.template.find('.feedback-list');
 
-      case 'votes':
-        return this.template.find('.details-votes');
+        case 'votes':
+          return this.template.find('.details-votes');
 
-      case 'toggle edit and go again':
-        return this.template.find('.edit-and-go-again-toggler');
+        case 'toggle edit and go again':
+          return this.template.find('.edit-and-go-again-toggler');
+      }
     }
-  };
+  }, {
+    key: 'render',
+    value: function render(cb) {
+      var self = this;
 
-  /**
-   *  @method
-   *  @description          DOM manipulation
-   *  @arg                  {function} cb
-   */
+      var d = this.domain;
 
-  DetailsComponent.prototype.render = function (cb) {
-    var self = this;
+      var item = this.get('item');
 
-    var item = self.item.item;
+      this.find('promoted bar').goalProgress({
+        goalAmount: 100,
+        currentAmount: Math.floor(item.promotions * 100 / item.views),
+        textBefore: '',
+        textAfter: '%'
+      });
 
-    self.find('promoted bar').goalProgress({
-      goalAmount: 100,
-      currentAmount: Math.floor(item.promotions * 100 / item.views),
-      textBefore: '',
-      textAfter: '%'
-    });
+      this.find('toggle edit and go again').on('click', function () {
+        NavProvider.unreveal(self.template, self.itemParent.template, d.intercept(function () {
+          if (self.item.find('editor').find('form').length) {
+            console.warn('already loaded');
+          } else {
+            var edit = new EditComponent(self.item);
 
-    self.find('toggle edit and go again').on('click', function () {
-      NavProvider.unreveal(self.template, self.item.template, app.domain.intercept(function () {
-        if (self.item.find('editor').find('form').length) {
-          console.warn('already loaded');
-        } else {
-          var edit = new EditComponent(self.item);
+            edit.get(d.intercept(function (template) {
 
-          edit.get(app.domain.intercept(function (template) {
+              self.itemParent.find('editor').find('.is-section').append(template);
 
-            self.item.find('editor').find('.is-section').append(template);
-
-            NavProvider.reveal(self.item.find('editor'), self.item.template, app.domain.intercept(function () {
-              NavProvider.show(template, app.domain.intercept(function () {
-                edit.render();
+              NavProvider.reveal(self.item.find('editor'), self.item.template, d.intercept(function () {
+                NavProvider.show(template, d.intercept(function () {
+                  edit.render();
+                }));
               }));
             }));
-          }));
-        }
-      }));
-    });
-
-    if (app.socket.synuser) {
-      $('.is-in').removeClass('is-in');
-    }
-
-    if (!self.details) {
-      this.get();
-    }
-  };
-
-  /**
-   *  @method
-   *  @description    Display votes using c3.js
-   *  @arg            {object} criteria
-   *  @arg            {HTMLElement} svg
-   */
-
-  DetailsComponent.prototype.votes = function (criteria, svg) {
-    var self = this;
-
-    setTimeout(function () {
-      var vote = self.details.votes[criteria._id];
-
-      svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
-
-      var data = [];
-
-      // If no votes, show nothing
-
-      if (!vote) {
-        vote = {
-          values: {
-            '-1': 0,
-            '0': 0,
-            '1': 0
-          },
-          total: 0
-        };
-      }
-
-      for (var number in vote.values) {
-        data.push({
-          label: 'number',
-          value: vote.values[number] * 100 / vote.total
-        });
-      }
-
-      var columns = ['votes'];
-
-      data.forEach(function (d) {
-        columns.push(d.value);
+          }
+        }));
       });
 
-      var chart = c3.generate({
-        bindto: '#' + svg.attr('id'),
-        data: {
-          x: 'x',
-          columns: [['x', -1, 0, 1], columns],
-          type: 'bar'
-        },
-        grid: {
-          x: {
-            lines: 3
-          }
-        },
-        axis: {
-          x: {},
-          y: {
-            max: 90,
-            show: false,
-            tick: {
-              count: 5,
-              format: function format(y) {
-                return y;
+      if (this.socket.synuser) {
+        $('.is-in').removeClass('is-in');
+      }
+
+      if (!self.details) {
+        this.fetch();
+      }
+    }
+  }, {
+    key: 'votes',
+    value: function votes() {
+      var self = this;
+
+      setTimeout(function () {
+        var vote = self.details.votes[criteria._id];
+
+        svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
+
+        var data = [];
+
+        // If no votes, show nothing
+
+        if (!vote) {
+          vote = {
+            values: {
+              '-1': 0,
+              '0': 0,
+              '1': 0
+            },
+            total: 0
+          };
+        }
+
+        for (var number in vote.values) {
+          data.push({
+            label: 'number',
+            value: vote.values[number] * 100 / vote.total
+          });
+        }
+
+        var columns = ['votes'];
+
+        data.forEach(function (d) {
+          columns.push(d.value);
+        });
+
+        var chart = c3.generate({
+          bindto: '#' + svg.attr('id'),
+          data: {
+            x: 'x',
+            columns: [['x', -1, 0, 1], columns],
+            type: 'bar'
+          },
+          grid: {
+            x: {
+              lines: 3
+            }
+          },
+          axis: {
+            x: {},
+            y: {
+              max: 90,
+              show: false,
+              tick: {
+                count: 5,
+                format: function format(y) {
+                  return y;
+                }
               }
             }
+          },
+          size: {
+            height: 80
+          },
+          bar: {
+            width: $(window).width() / 5
           }
-        },
-        size: {
-          height: 80
-        },
-        bar: {
-          width: $(window).width() / 5
-        }
+        });
+      }, 250);
+    }
+  }, {
+    key: 'feedback',
+    value: function feedback() {
+      console.log('item has feedback?', this.get('item'));
+    }
+  }, {
+    key: 'fetch',
+    value: function fetch() {
+      var _this = this;
+
+      var self = this;
+
+      var item = this.get('item');
+
+      this.publish('get item details', item._id).subscribe(function (pubsub, details) {
+        console.log('got item details', details);
+
+        _this.set('details', details);
+
+        // // Feedback
+
+        // details.feedbacks.forEach(function (feedback) {
+        //   var tpl = $('<div class="pretext feedback"></div>');
+        //   tpl.text(feedback.feedback);
+        //   self.find('feedback list')
+        //     .append(tpl)
+        //     .append('<hr/>');
+
+        // });
+
+        // // Votes
+
+        // details.criterias.forEach(function (criteria, i) {
+        //   self.find('votes').eq(i).find('h4').text(criteria.name);
+
+        //   self.votes(criteria, self.find('votes').eq(i).find('svg'));
+        // });
       });
-    }, 250);
-  };
+    }
+  }]);
 
-  /**
-   *
-   */
+  return Details;
+})(_synLibAppController2['default']);
 
-  DetailsComponent.prototype.get = function () {
+exports['default'] = Details;
+module.exports = exports['default'];
 
-    var self = this;
-
-    app.socket.publish('get item details', self.item.item._id, function (details) {
-
-      console.log('got item details', details);
-
-      self.details = details;
-
-      // Feedback
-
-      details.feedbacks.forEach(function (feedback) {
-        var tpl = $('<div class="pretext feedback"></div>');
-        tpl.text(feedback.feedback);
-        self.find('feedback list').append(tpl).append('<hr/>');
-      });
-
-      // Votes
-
-      details.criterias.forEach(function (criteria, i) {
-        self.find('votes').eq(i).find('h4').text(criteria.name);
-
-        self.votes(criteria, self.find('votes').eq(i).find('svg'));
-      });
-    });
-  };
-
-  module.exports = DetailsComponent;
-})();
-
-},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":46,"syn/lib/util/Nav":66}],42:[function(require,module,exports){
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/lib/app/Controller":64,"syn/lib/util/Nav":69}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8128,7 +8143,7 @@ module.exports = exports['default'];
   module.exports = Edit;
 })();
 
-},{"syn/components/Creator/Controller":35,"syn/components/EditAndGoAgain/controllers/save":44,"syn/components/Item/Controller":46,"syn/lib/util/Form":65,"syn/lib/util/Nav":66}],44:[function(require,module,exports){
+},{"syn/components/Creator/Controller":35,"syn/components/EditAndGoAgain/controllers/save":44,"syn/components/Item/Controller":46,"syn/lib/util/Form":68,"syn/lib/util/Nav":69}],44:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -8187,7 +8202,7 @@ module.exports = exports['default'];
   module.exports = save;
 })();
 
-},{"syn/components/Item/Controller":46,"syn/lib/util/Nav":66}],45:[function(require,module,exports){
+},{"syn/components/Item/Controller":46,"syn/lib/util/Nav":69}],45:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -8253,7 +8268,7 @@ module.exports = exports['default'];
 
 // $('.forgot-password-pending').css('display', 'block');
 
-},{"domain":6,"syn/lib/util/Form":65}],46:[function(require,module,exports){
+},{"domain":6,"syn/lib/util/Form":68}],46:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8305,6 +8320,14 @@ var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
 var _synLibUtilReadMore = require('syn/lib/util/ReadMore');
 
 var _synLibUtilReadMore2 = _interopRequireDefault(_synLibUtilReadMore);
+
+var _synComponentsItemControllersToggleArrow = require('syn/components/Item/controllers/toggle-arrow');
+
+var _synComponentsItemControllersToggleArrow2 = _interopRequireDefault(_synComponentsItemControllersToggleArrow);
+
+var _synComponentsItemControllersTogglePromote = require('syn/components/Item/controllers/toggle-promote');
+
+var _synComponentsItemControllersTogglePromote2 = _interopRequireDefault(_synComponentsItemControllersTogglePromote);
 
 var Item = (function (_Controller) {
   function Item(props) {
@@ -8419,7 +8442,7 @@ var Item = (function (_Controller) {
 
       // Create reference to details
 
-      // this.details = new Details(this.props);
+      this.details = new _synComponentsDetailsController2['default'](this.props, this);
 
       // Set ID
 
@@ -8525,75 +8548,12 @@ var Item = (function (_Controller) {
   }, {
     key: 'togglePromote',
     value: function togglePromote($trigger) {
-      if (!this.socket.synuser) {
-        var topbar = new _synComponentsTopBarController2['default']();
-        topbar.find('join button').click();
-        return;
-      }
-
-      var $item = $trigger.closest('.item');
-      var item = $item.data('item');
-
-      var d = this.domain;
-
-      function hideOthers() {
-        if ($('.is-showing').length || $('.is-hidding').length) {
-          return false;
-        }
-
-        if ($('.creator.is-shown').length) {
-          _synLibUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
-            $trigger.click();
-          });
-
-          return false;
-        }
-
-        if (item.find('details').hasClass('is-shown')) {
-          _synLibUtilNav2['default'].hide(item.find('details')).hidden(function () {
-            $trigger.click();
-          });
-
-          item.find('toggle details').find('.caret').addClass('hide');
-
-          return false;
-        }
-      }
-
-      function promote() {
-        item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
-      }
-
-      function showHideCaret() {
-        if (item.find('promote').hasClass('is-shown')) {
-          $trigger.find('.caret').removeClass('hide');
-        } else {
-          $trigger.find('.caret').addClass('hide');
-        }
-      }
-
-      if (hideOthers() === false) {
-        return false;
-      }
-
-      if (item.find('collapsers hidden').length) {
-        item.find('collapsers').show();
-      }
-
-      _synLibUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
-
-        if (item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length) {
-          item.find('collapsers').hide();
-        }
-
-        promote();
-
-        showHideCaret();
-      });
+      return _synComponentsItemControllersTogglePromote2['default'].apply(this, [$trigger]);
     }
   }, {
     key: 'toggleDetails',
     value: function toggleDetails($trigger) {
+
       var $item = $trigger.closest('.item');
       var item = $item.data('item');
 
@@ -8647,89 +8607,7 @@ var Item = (function (_Controller) {
   }, {
     key: 'toggleArrow',
     value: function toggleArrow($trigger) {
-      var $item = $trigger.closest('.item');
-      var item = $item.data('item');
-      var arrow = $trigger.find('i');
-
-      var d = this.domain;
-
-      if (item.find('collapsers hidden').length) {
-        item.find('collapsers').show();
-      }
-
-      _synLibUtilNav2['default'].toggle(item.find('children'), item.template, d.intercept(function () {
-
-        console.log('item type', item.item.type);
-
-        if (item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length) {
-          item.find('collapsers').hide();
-        }
-
-        if (item.find('children').hasClass('is-shown') && !item.find('children').hasClass('is-loaded')) {
-
-          item.find('children').addClass('is-loaded');
-
-          console.log('we have an item!!!', item);
-
-          var harmony = item.item.type.harmony;
-
-          if (harmony.length) {
-            var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-            item.find('children').append(split);
-
-            var panelLeft = new (require('syn/components/Panel/Controller'))(harmony[0], item.item._id);
-
-            panelLeft.load(d.intercept(function (template) {
-              template.addClass('split-view');
-
-              split.find('.left-split').append(template);
-
-              setTimeout(function () {
-                panelLeft.render(d.intercept(function () {
-                  panelLeft.fill(d.intercept());
-                }));
-              });
-            }));
-
-            var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], item.item._id);
-
-            panelRight.load(d.intercept(function (template) {
-              template.addClass('split-view');
-
-              split.find('.right-split').append(template);
-
-              setTimeout(function () {
-                panelRight.render(d.intercept(function () {
-                  panelRight.fill(d.intercept());
-                }));
-              });
-            }));
-          }
-
-          var subtype = item.item.subtype;
-
-          if (subtype) {
-            var subPanel = new (require('syn/components/Panel/Controller'))(subtype, item.item._id);
-
-            subPanel.load(d.intercept(function (template) {
-              item.find('children').append(template);
-
-              setTimeout(function () {
-                subPanel.render(d.intercept(function () {
-                  subPanel.fill(d.intercept());
-                }));
-              });
-            }));
-          }
-        }
-
-        if (arrow.hasClass('fa-arrow-down')) {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        } else {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-      }));
+      return _synComponentsItemControllersToggleArrow2['default'].apply(this, [$trigger]);
     }
   }]);
 
@@ -8739,7 +8617,7 @@ var Item = (function (_Controller) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"string":33,"syn/components/Details/Controller":41,"syn/components/Item/View":47,"syn/components/Item/controllers/media":48,"syn/components/Panel/Controller":52,"syn/components/Promote/Controller":54,"syn/components/TopBar/Controller":58,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66,"syn/lib/util/ReadMore":67}],47:[function(require,module,exports){
+},{"string":33,"syn/components/Details/Controller":41,"syn/components/Item/View":47,"syn/components/Item/controllers/media":48,"syn/components/Item/controllers/toggle-arrow":49,"syn/components/Item/controllers/toggle-promote":50,"syn/components/Promote/Controller":56,"syn/components/TopBar/Controller":60,"syn/lib/app/Controller":64,"syn/lib/util/Nav":69,"syn/lib/util/ReadMore":70}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -8888,7 +8766,7 @@ var Item = (function (_Element) {
   }, {
     key: 'details',
     value: function details() {
-      return new _cinco.Element('.details.is-container').add(new _cinco.Element('.is-section'));
+      return new _cinco.Element('.details.is-container').add(new _cinco.Element('.is-section').add(new _synComponentsDetailsView2['default'](this.props)));
     }
   }, {
     key: 'arrow',
@@ -8910,7 +8788,7 @@ var Item = (function (_Element) {
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"cinco":31,"syn/components/Details/View":42,"syn/components/ItemDefaultButtons/View":49,"syn/components/Promote/View":55,"syn/lib/app/Page":63}],48:[function(require,module,exports){
+},{"cinco":31,"syn/components/Details/View":42,"syn/components/ItemDefaultButtons/View":51,"syn/components/Promote/View":57,"syn/lib/app/Page":65}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9009,7 +8887,200 @@ function MediaController() {
 exports['default'] = MediaController;
 module.exports = exports['default'];
 
-},{"syn/components/YouTube/View":60}],49:[function(require,module,exports){
+},{"syn/components/YouTube/View":62}],49:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _synLibUtilNav = require('syn/lib/util/Nav');
+
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+
+var _synComponentsPanelController = require('syn/components/Panel/Controller');
+
+var _synComponentsPanelController2 = _interopRequireDefault(_synComponentsPanelController);
+
+function toggleArrow($trigger) {
+  var $item = $trigger.closest('.item');
+  var item = $item.data('item');
+  var arrow = $trigger.find('i');
+  var storeItem = this.get('item');
+
+  var d = this.domain;
+
+  if (item.find('collapsers hidden').length) {
+    item.find('collapsers').show();
+  }
+
+  _synLibUtilNav2['default'].toggle(item.find('children'), this.template, d.intercept(function () {
+
+    if (item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length) {
+      item.find('collapsers').hide();
+    }
+
+    if (item.find('children').hasClass('is-shown') && !item.find('children').hasClass('is-loaded')) {
+
+      item.find('children').addClass('is-loaded');
+
+      var harmony = storeItem.type.harmony;
+
+      if (harmony.length) {
+        var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+        item.find('children').append(split);
+
+        var panelLeft = new _synComponentsPanelController2['default'](harmony[0], storeItem._id);
+
+        panelLeft.load(d.intercept(function (template) {
+          template.addClass('split-view');
+
+          split.find('.left-split').append(template);
+
+          setTimeout(function () {
+            panelLeft.render(d.intercept(function () {
+              panelLeft.fill(d.intercept());
+            }));
+          });
+        }));
+
+        var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], storeItem._id);
+
+        panelRight.load(d.intercept(function (template) {
+          template.addClass('split-view');
+
+          split.find('.right-split').append(template);
+
+          setTimeout(function () {
+            panelRight.render(d.intercept(function () {
+              panelRight.fill(d.intercept());
+            }));
+          });
+        }));
+      }
+
+      var subtype = storeItem.subtype;
+
+      if (subtype) {
+        var subPanel = new _synComponentsPanelController2['default']({
+          panel: {
+            type: subtype,
+            parent: storeItem._id
+          }
+        });
+
+        subPanel.load();
+
+        item.find('children').append(subPanel.template);
+
+        setTimeout(function () {
+          subPanel.render(d.intercept(function () {
+            return subPanel.fill(d.intercept());
+          }));
+        });
+      }
+    }
+
+    if (arrow.hasClass('fa-arrow-down')) {
+      arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+    } else {
+      arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+    }
+  }));
+}
+
+exports['default'] = toggleArrow;
+module.exports = exports['default'];
+
+},{"syn/components/Panel/Controller":54,"syn/lib/util/Nav":69}],50:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _synLibUtilNav = require('syn/lib/util/Nav');
+
+var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+
+function tooglePromote($trigger) {
+
+  if (!this.socket.synuser) {
+    var topbar = new TopBar();
+    topbar.find('join button').click();
+    return;
+  }
+
+  var $item = $trigger.closest('.item');
+  var item = $item.data('item');
+
+  var d = this.domain;
+
+  function hideOthers() {
+    if ($('.is-showing').length || $('.is-hidding').length) {
+      return false;
+    }
+
+    if ($('.creator.is-shown').length) {
+      _synLibUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
+        $trigger.click();
+      });
+
+      return false;
+    }
+
+    if (item.find('details').hasClass('is-shown')) {
+      _synLibUtilNav2['default'].hide(item.find('details')).hidden(function () {
+        $trigger.click();
+      });
+
+      item.find('toggle details').find('.caret').addClass('hide');
+
+      return false;
+    }
+  }
+
+  function promote() {
+    item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
+  }
+
+  function showHideCaret() {
+    if (item.find('promote').hasClass('is-shown')) {
+      $trigger.find('.caret').removeClass('hide');
+    } else {
+      $trigger.find('.caret').addClass('hide');
+    }
+  }
+
+  if (hideOthers() === false) {
+    return false;
+  }
+
+  if (item.find('collapsers hidden').length) {
+    item.find('collapsers').show();
+  }
+
+  _synLibUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
+
+    if (item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length) {
+      item.find('collapsers').hide();
+    }
+
+    promote();
+
+    showHideCaret();
+  });
+}
+
+exports['default'] = tooglePromote;
+module.exports = exports['default'];
+
+},{"syn/lib/util/Nav":69}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9051,7 +9122,7 @@ var ItemDefaultButtons = (function (_Elements) {
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
 
-},{"cinco":31}],50:[function(require,module,exports){
+},{"cinco":31}],52:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9235,7 +9306,7 @@ exports['default'] = Join;
 })();
 module.exports = exports['default'];
 
-},{"syn/lib/app/Controller":62,"syn/lib/util/Form":65}],51:[function(require,module,exports){
+},{"syn/lib/app/Controller":64,"syn/lib/util/Form":68}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9339,7 +9410,7 @@ var Login = (function (_Controller) {
 exports['default'] = Login;
 module.exports = exports['default'];
 
-},{"syn/lib/app/Controller":62,"syn/lib/util/Form":65,"syn/lib/util/Nav":66}],52:[function(require,module,exports){
+},{"syn/lib/app/Controller":64,"syn/lib/util/Form":68,"syn/lib/util/Nav":69}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9467,7 +9538,7 @@ var Panel = (function (_Controller) {
             _this.template.attr('id', _this.id);
           }
 
-          var creator = new _synComponentsCreatorController2['default'](_this.props);
+          var creator = new _synComponentsCreatorController2['default'](_this.props, _this);
 
           creator.render().then(fulfill, d.intercept.bind(d));
 
@@ -9625,7 +9696,7 @@ module.exports = exports['default'];
 /** This is about another panel */
 // item: app.location.item
 
-},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":46,"syn/components/Panel/View":53,"syn/components/TopBar/Controller":58,"syn/lib/app/Cache":61,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],53:[function(require,module,exports){
+},{"syn/components/Creator/Controller":35,"syn/components/Item/Controller":46,"syn/components/Panel/View":55,"syn/components/TopBar/Controller":60,"syn/lib/app/Cache":63,"syn/lib/app/Controller":64,"syn/lib/util/Nav":69}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9715,7 +9786,7 @@ var Panel = (function (_Element) {
 exports['default'] = Panel;
 module.exports = exports['default'];
 
-},{"cinco":31,"syn/components/Creator/View":36}],54:[function(require,module,exports){
+},{"cinco":31,"syn/components/Creator/View":36}],56:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -9895,12 +9966,23 @@ var Promote = (function (_Controller) {
     }
   }, {
     key: 'save',
-    value: function save(hand) {
+    value: function save(hand, cb) {
+
+      // For responsiveness reasons, there are a copy of each element in DOM
+      // one for small screen and one for regular screen -
+      // the ones that do not fit are hidden. So we want to make sure each time
+      // that we are working with the visible one
+
       var self = this;
 
       // feedback
 
-      var feedback = this.find('item feedback', hand);
+      var feedback = this.find('item feedback', hand).toArray().reduce(function (visible, item) {
+        if ($(item).is(':visible')) {
+          visible = $(item);
+        }
+        return visible;
+      });
 
       if (feedback.val()) {
 
@@ -9935,13 +10017,15 @@ var Promote = (function (_Controller) {
       this.publish('insert votes', votes).subscribe(function (pubsub) {
         return pubsub.unsubscribe();
       });
+
+      cb();
     }
   }, {
     key: 'getEvaluation',
     value: function getEvaluation(cb) {
       var _this2 = this;
 
-      if (!this.get('evaluation')) {
+      if (!this.get('left')) {
         (function () {
 
           var item = _this2.itemController.get('item');
@@ -9992,7 +10076,7 @@ var Promote = (function (_Controller) {
 exports['default'] = Promote;
 module.exports = exports['default'];
 
-},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Promote/controllers/render":57,"syn/components/Promote/controllers/render-item":56,"syn/lib/app/Controller":62,"syn/lib/util/Nav":66}],55:[function(require,module,exports){
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Promote/controllers/render":59,"syn/components/Promote/controllers/render-item":58,"syn/lib/app/Controller":64,"syn/lib/util/Nav":69}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10123,7 +10207,7 @@ var Promote = (function (_Element) {
 exports['default'] = Promote;
 module.exports = exports['default'];
 
-},{"cinco":31}],56:[function(require,module,exports){
+},{"cinco":31}],58:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10172,6 +10256,8 @@ function renderItem(hand) {
   }
 
   // Increment views counter
+
+  console.log('Adding view', hand, side.subject, side._id);
 
   this.publish('add view', side._id).subscribe(function (pubsub) {
     return pubsub.unsubscribe();
@@ -10259,15 +10345,15 @@ function renderItem(hand) {
           return pubsub.unsubscribe();
         });
 
-        self.save(left ? 'left' : 'right');
+        self.save(left ? 'left' : 'right', function () {
+          $.when(self.find('side by side').find('.' + opposite + '-item').animate({
+            opacity: 0
+          })).then(function () {
+            self.get(opposite, self.get('items')[self.get('cursor')]);
 
-        $.when(self.find('side by side').find('.' + opposite + '-item').animate({
-          opacity: 0
-        })).then(function () {
-          self.get(opposite, self.get('items')[self.get('cursor')]);
-
-          promote.find('side by side').find('.' + opposite + '-item').animate({
-            opacity: 1
+            promote.find('side by side').find('.' + opposite + '-item').animate({
+              opacity: 1
+            });
           });
         });
       }
@@ -10309,7 +10395,7 @@ function renderItem(hand) {
 exports['default'] = renderItem;
 module.exports = exports['default'];
 
-},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":46,"syn/lib/util/Nav":66}],57:[function(require,module,exports){
+},{"syn/components/EditAndGoAgain/Controller":43,"syn/components/Item/Controller":46,"syn/lib/util/Nav":69}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10341,9 +10427,9 @@ function renderPromote(cb) {
 
       if (cursor < limit) {
 
-        self.save('left');
+        self.save('left', function () {});
 
-        self.save('right');
+        self.save('right', function () {});
 
         $.when(self.find('side by side').find('.left-item, .right-item').animate({
           opacity: 0
@@ -10375,7 +10461,7 @@ function renderPromote(cb) {
 exports['default'] = renderPromote;
 module.exports = exports['default'];
 
-},{"syn/lib/util/Nav":66}],58:[function(require,module,exports){
+},{"syn/lib/util/Nav":69}],60:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10549,7 +10635,7 @@ var TopBar = (function (_Controller) {
 exports['default'] = TopBar;
 module.exports = exports['default'];
 
-},{"syn/components/ForgotPassword/Controller":45,"syn/components/Join/Controller":50,"syn/components/Login/Controller":51,"syn/lib/app/Controller":62}],59:[function(require,module,exports){
+},{"syn/components/ForgotPassword/Controller":45,"syn/components/Join/Controller":52,"syn/components/Login/Controller":53,"syn/lib/app/Controller":64}],61:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10569,7 +10655,7 @@ function YouTube(url) {
 exports['default'] = YouTube;
 module.exports = exports['default'];
 
-},{"syn/components/YouTube/View":60}],60:[function(require,module,exports){
+},{"syn/components/YouTube/View":62}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10633,7 +10719,7 @@ YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 exports['default'] = YouTube;
 module.exports = exports['default'];
 
-},{"cinco":31}],61:[function(require,module,exports){
+},{"cinco":31}],63:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10671,7 +10757,7 @@ var Cache = (function () {
 exports['default'] = new Cache();
 module.exports = exports['default'];
 
-},{}],62:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10705,7 +10791,7 @@ var Controller = (function (_App) {
 exports['default'] = Controller;
 module.exports = exports['default'];
 
-},{"syn/app":34}],63:[function(require,module,exports){
+},{"syn/app":34}],65:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10746,7 +10832,7 @@ module.exports = exports['default'];
   module.exports = Page;
 })();
 
-},{"string":33}],64:[function(require,module,exports){
+},{"string":33}],66:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -10797,7 +10883,34 @@ module.exports = exports['default'];
   module.exports = Socket;
 })();
 
-},{}],65:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Stream(file) {
+
+    var stream = ss.createStream();
+
+    ss(synapp.app.socket).emit('upload image', stream, { size: file.size, name: file.name });
+
+    ss.createBlobReadStream(file).pipe(stream);
+
+    return stream;
+  }
+
+  module.exports = Stream;
+})();
+
+},{}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -10886,7 +10999,7 @@ var Form = (function () {
 exports['default'] = Form;
 module.exports = exports['default'];
 
-},{"syn/lib/util/domain-run":70}],66:[function(require,module,exports){
+},{"syn/lib/util/domain-run":72}],69:[function(require,module,exports){
 (function (process){
 /*
  *  ******************************************************
@@ -11223,7 +11336,7 @@ module.exports = exports['default'];
 // 'padding-top': elem.height() + 'px'
 
 }).call(this,require('_process'))
-},{"_process":10,"domain":6,"events":7}],67:[function(require,module,exports){
+},{"_process":10,"domain":6,"events":7}],70:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -11378,46 +11491,7 @@ module.exports = exports['default'];
   module.exports = readMore;
 })();
 
-},{}],68:[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Stream(file) {
-
-    var stream = ss.createStream();
-
-    // stream.end = function (cb) {
-    //   this.on('end', cb);
-
-    //   return this;
-    // };
-
-    // stream.error = function (cb) {
-    //   this.on('error', cb);
-
-    //   return this;
-    // };
-
-    ss(app.socket).emit('upload image', stream, { size: file.size, name: file.name });
-
-    ss.createBlobReadStream(file).pipe(stream);
-
-    return stream;
-  }
-
-  module.exports = Stream;
-})();
-
-},{}],69:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -11498,7 +11572,7 @@ module.exports = exports['default'];
   module.exports = Upload;
 })();
 
-},{}],70:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 'use strict';
 
 !(function () {

@@ -2,7 +2,7 @@
 
 ! function () {
   
-  'use strict';
+  // 'use strict';
 
   var path        =   require('path');
   var fs          =   require('fs');
@@ -17,35 +17,47 @@
   var lessToCss   =   require('syn/lib/build/less-to-css');
   var browserify  =   require('browserify');
   var babelify    =   require('babelify');
+
+  var paths       =   { root: path.resolve(require.resolve('syn/server'), '../../') };
   
-  var root        =   path.resolve(require.resolve('syn/server'), '../../');
-  var app         =   path.join(root,   'app');
-  var node_modules=   path.join(root,   'node_modules');
-  var node_bin    =   path.join(node_modules, '.bin');
-  var dist        =   path.join(app,    'dist');
-  var css         =   path.join(dist,   'css');
-  var js          =   path.join(dist,   'js');
-  var less        =   path.join(app,    'less');
-  var pages       =   path.join(app,    'pages');
+  paths.app           =   path.join(paths.root,   'app');
+  paths.node_modules  =   path.join(paths.root,   'node_modules');
+  paths.node_bin      =   path.join(paths.node_modules, '.bin');
+  paths.dist          =   path.join(paths.app,    'dist');
+  paths.css           =   path.join(paths.dist,   'css');
+  paths.js            =   path.join(paths.dist,   'js');
+  paths.less          =   path.join(paths.app,    'less');
+  paths.pages         =   path.join(paths.app,    'pages');
 
   function indexCss (done) {
     async.series([
-      lessToCss.bind(null, less + '/synapp.less', css + '/index.css'),
-      minifyCss.bind(null, css + '/index.css', css + '/index.min.css')
+      lessToCss
+        .bind(null, paths.less + '/synapp.less', paths.css + '/index.css'),
+      minifyCss
+        .bind(null, paths.css + '/index.css', paths.css + '/index.min.css')
       ], done);
   }
 
-  function browserifyPageControllers (done) {
-    fs.readdir(pages, function (error, files) {
+  function browserifyPages (pages, done) {
+    fs.readdir(paths.pages, function (error, files) {
       if ( error ) {
         return done(error);
       }
+
+      if ( pages.length ) {
+        files = files.filter(function (file) {
+          return pages.indexOf(file) > -1;
+        });
+      }
+
+      console.log('browserifying pages', files);
+
       async.each(files, function (page, done) {
         var view;
 
-        var source = path.join(pages, page, 'Controller.js');
+        var source = path.join(paths.pages, page, 'Controller.js');
         var dest = fs.createWriteStream(path.join(
-          js, 'page-' + S(page).humanize().slugify().s + '.js'
+          paths.js, 'page-' + S(page).humanize().slugify().s + '.js'
         ));
 
         fs.stat(source, function (error, stat) {
@@ -53,35 +65,34 @@
             return done();
           }
 
-          browserify({
-            entries: [source],
-            transform: [babelify.configure({ modules: 'common', stage: 1 })],
-            debug: false,
-            fullPaths: false
-          })
-          .bundle()
-          .pipe(dest)
-          .on('end', done)
-
-          // cp.exec(util.format('%s [ -t babelify --modules common --stage 1] %s -o %s',
-          //   path.join(node_bin, 'browserify'), ctrl,
-          //     path.join(js, 'page-' + S(page).humanize().slugify().s + '.js')),
-          //   done);
+          browserifyFile(source, dest, done);
         });
 
       }, done);
     });
   }
 
+  function browserifyFile (source, dest, done) {
+    browserify({
+      entries     :   [source],
+      transform   :   [babelify.configure({ modules: 'common', stage: 1 })],
+      debug       :   false,
+      fullPaths   :   false
+    })
+    .bundle()
+    .pipe(dest)
+    .on('end', done);
+  }
+
   function uglifyPageControllers (done) {
-    fs.readdir(pages, function (error, files) {
+    fs.readdir(paths.pages, function (error, files) {
       if ( error ) {
         return done(error);
       }
       async.each(files, function (page, done) {
         var view;
 
-        var ctrl = path.join(js, 'page-' + S(page).humanize().slugify().s + '.js');
+        var ctrl = path.join(paths.js, 'page-' + S(page).humanize().slugify().s + '.js');
 
         fs.stat(ctrl, function (error, stat) {
           if ( error ) {
@@ -89,8 +100,8 @@
           }
 
           cp.exec(util.format('%s %s -o %s',
-            path.join(node_bin, 'uglifyjs'), ctrl,
-              path.join(js, 'page-' + S(page).humanize().slugify().s + '.min.js')),
+            path.join(paths.node_bin, 'uglifyjs'), ctrl,
+              path.join(paths.js, 'page-' + S(page).humanize().slugify().s + '.min.js')),
             done);
         });
 
@@ -98,12 +109,70 @@
     });
   }
 
-  async.parallel([
-    indexCss,
-    browserifyPageControllers,
-    uglifyPageControllers
-  ], function () {
-    console.log(arguments);
+  var commands = {
+    'css'                 :   indexCss,
+    'browserify-pages'    :   browserifyPages,
+    'uglify-pages'        :   uglifyPageControllers
+  };
+
+  if ( process.argv[2] === '--help' || process.argv.length === 2 ) {
+    var md = require('path').resolve(__dirname, '../../doc/Build.md');
+    return require('fs').createReadStream(md).pipe(process.stdout);
+  }
+
+  var args = process.argv
+    // only take user arguments
+    .filter(function (arg,i) { return i >= 2; })
+
+    // catch single commands
+    .map(function (arg, i, args) {
+      if ( arg === 'browserify' ) {
+        var file = args[(i+1)];
+        var output = args[(i+2)] || process.stdout;
+
+        if ( ! file ) {
+          console.log('browserify needs a file');
+        }
+        else {
+          arg = {
+            'browserify'  : browserifyFile.bind(null, file, output)
+          };
+        }
+      }
+      return arg;
+    })
+    // map strings with command
+    .map(function (arg) {
+      if ( typeof arg === 'string' ) {
+        return commands[arg];
+      }
+      return arg;
+    })
+    .filter(function (arg) {
+      return arg;
+    });
+
+  if ( ! args.length ) {
+    args = commands;
+  }
+
+  args = args.map(function (arg) {
+    if ( arg.name === 'browserifyPages' ) {
+      var pages = process.argv
+        .filter(function (arg, i) { return i > 2 });
+
+      function browserifyPagesWrapper (done) {
+        this.fn(this.pages, done);
+      }
+
+      return browserifyPagesWrapper.bind({ pages: pages, fn: arg });
+    }
+    return arg;
   });
+
+  console.log('Now building', args);
+
+
+  async.parallel(args, function () { console.log(arguments) });
 
 } ();

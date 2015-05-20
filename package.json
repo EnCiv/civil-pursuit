@@ -3,6 +3,9 @@
   "version": "0.11.1",
   "description": "Synapp",
   "main": "index.js",
+  "bin": {
+    "syn-build": "node app/bind/build"
+  },
   "scripts": {
     "test": "node test/",
     "start": "app/bin/start.js",

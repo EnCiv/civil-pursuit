@@ -6,6 +6,8 @@
 
     var socket = this;
 
+    var Feedback = require('syn/models/Feedback');
+
     var domainRun = require('syn/lib/util/domain-run');
 
     domainRun(
@@ -16,14 +18,14 @@
           feedback.user = socket.synuser.id;
         }
 
-        require('syn/models/Feedback')
+        Feedback
           .create(feedback, domain.intercept(function (inserted) {
             socket.ok(event, inserted);  
           }));
       },
 
       function (error) {
-        socket.app.arte.emit('error', error);
+        socket.emit('error', error);
       }
 
     );
