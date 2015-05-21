@@ -180,16 +180,16 @@ class Details extends Controller {
 
         this.set('details', details);
 
-        // // Feedback
+        // Feedback
 
-        // details.feedbacks.forEach(function (feedback) {
-        //   var tpl = $('<div class="pretext feedback"></div>');
-        //   tpl.text(feedback.feedback);
-        //   self.find('feedback list')
-        //     .append(tpl)
-        //     .append('<hr/>');
+        details.feedbacks.forEach(feedback => {
+          let tpl = $('<div class="pretext feedback"></div>');
+          tpl.text(feedback.feedback);
+          this.find('feedback list')
+            .append(tpl)
+            .append('<hr/>');
 
-        // });
+        });
 
         // // Votes
 
