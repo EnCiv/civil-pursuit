@@ -1,276 +1,139 @@
-! function () {
+'use strict';
 
-  'use strict';
+import {EventEmitter} from 'events';
+import fs from 'fs';
+import path from 'path';
+import {Domain} from 'domain';
+import config from 'syn/config.json';
+import SocketIO from 'socket.io';
+import S from 'string';
+import cookieParser from 'cookie-parser';
+import ss from 'socket.io-stream';
 
-  function WebSocketServer (app, server) {
+class API extends EventEmitter {
 
-    var users         =   {};
-    var fs            =   require('fs');
-    var config        =   require('syn/config.json');
-    var S             =   require('string');
-    var Promise       =   require('promise');
-    var ss            =   require('socket.io-stream');
-    var cookieParser  =   require("cookie-parser");
-    var socketIO      =   require('socket.io');
-    var domainRun     =   require('syn/lib/util/domain-run');
+  constructor (server) {
+    super();
 
-    process.nextTick(function () {
+    let d = new Domain().on('error', error => this.emit('error', error));
 
-      var io          =   socketIO.listen(server);
+    d.run(() => {
+      this.server = server;
 
-      io.on('listening', function () {
-        app.arte.emit('message', 'and we are live');
-      });
+      this.on('error', error => this.server.emit('error', error));
+      this.on('message', this.server.emit.bind(this.server, 'message'));
 
-      app.arte.emit('message', 'socketIO listening');
+      this.users = [];
+      this.handlers = {};
 
-      io.use(function (socket, done) {
+      this.fetchHandlers();
+    });
+      
+  }
 
-        domainRun(function () {
-          process.nextTick(function () {
-            /** Retrieve user cookie 
-             *  @see      https://facundoolano.wordpress.com/2014/10/11/better-authentication-for-socket-io-no-query-strings/
-            */
+  fetchHandlers () {
+    let d = new Domain().on('error', error => this.emit('error', error));
 
-            // create the fake req that cookieParser will expect                          
-            var req = {
-              "headers"     :   {
-                "cookie"    :   socket.request.headers.cookie
-              }
-            };
-           
-            // run the parser and store the sessionID
-            cookieParser()(req, null, function() {});
-
-            var cookie = req.cookies.synuser;
-
-            if ( cookie ) {
-
-              if ( ! ( cookie.id in users ) ) {
-                users[cookie.id] = cookie;
-              }
-
-              socket.synuser = users[cookie.id];
-
-            }
-
-            done();
-          });
-        }, done);
-      });
-
-      io.on('connection', function (socket) {
-
-        socket.app      =   app;
-        socket.server   =   server;
-
-        var domain      =   require('domain').create();
-
-        /** @deprecated */
-        socket.domain   =   domain;
-
-        // On domain error
-
-        domain.on('error', function (error) {
-          app.arte.emit('error', error);
-          // socket.emit('error', error);
-        });
-
-        // On socket error
-
-        socket.on('error', function (error) {
-
-          console.log('   SOCKET ERROR    '.bgYellow.cyan.bold)
-          
-          app.arte.emit('error', error);
-
-        });
-
-        app.arte.emit('message', 'new socket connexion');
-        /** Let clients know about new user count */
-
-        io.emit('online users', Object.keys(users).length);
+    d.run(() => {
+      fs.readdir(path.join(__dirname, 'api'), d.intercept(files => {
         
-        socket.broadcast.emit('online users', Object.keys(users).length);
+        files.forEach(file => {
+          let name = S(file.replace(/\.js$/, '')).humanize().s.toLowerCase();
+          let handler = require('syn/api/' + file);
 
-        // EMIT IDENTITY
+          this.emit('message', 'Add handler', name)
 
-        socket.emit('welcome', socket.synuser);
-
-        socket
-
-          /** On disconnect */
-
-          .on('disconnect', function (why) {
-            // online_users --;
-            // socket.broadcast.emit('online users', online_users);
-          });
-
-        socket.ok = function (event) {
-
-          var args = [];
-
-          for ( var i in arguments ) {
-            args.push(arguments[i]);
-          }
-
-          console.log.apply(console, ['>>>'.green.bold, event.green.bold].concat(args));
-
-          args.shift();
-
-          socket.emit.apply(socket, ['OK ' + event].concat(args));
-        };
-
-        var listeners = [
-          'add race',
-
-          /** increment item views by 1 */
-
-          'add view',      
-
-          /** create item */
-
-          'create item',   
-
-          /** change user name */
-
-          'change user name',
-
-          /** Edit and go again */
-
-          'edit and go again',
-
-          /** get countries */
-
-          'get countries', 
-
-          /** Get evaluation */
-
-          'get evaluation',
-
-          /** get intro */
-
-          'get intro',
-
-          /** Get Item by id */
-
-          'get item by id',
-
-          /** Get item's details */
-
-          'get item details',
-
-          /** Get items */
-
-          'get items',     
-
-          /** Get models */
-
-          'get models',
-
-          'get top-level type',
-
-          /** Get URL title*/
-
-          'get url title', 
-
-          /** get user info */
-
-          'get user info', 
-
-          /** INSERT FEEDback */
-
-          'insert feedback',
-
-          /** insert votes*/
-
-          'insert votes',  
-
-          /** increment item promotions by 1 */
-
-          'promote',       
-
-          /** happens when User unselect a race */
-
-          'remove race',   
-
-          /** reset password */
-
-          'reset password',
-
-          /** create and send a password reset email */
-
-          'send password', 
-
-          /** set birthdate */
-
-          'set birthdate', 
-
-          /** set citizenship */
-
-          'set citizenship',
-
-          /** set education */
-
-          'set education', 
-
-          /** set employment */
-
-          'set employment',
-
-          /** set gender */
-
-          'set gender',    
-
-          /** set party */
-
-          'set party',     
-
-          /** set registered voter */
-
-          'set registered voter',
-
-          /** set marital status */
-
-          'set marital status',
-
-          /** Save user image */
-
-          'save user image',
-
-          /** Sign in */
-
-          'sign in',       
-
-          /** Validate GPS */
-
-          'validate gps',  
-        ];
-
-        listeners.forEach(function (listener) {
-
-          socket.on(listener, app.arte.emit.bind(app.arte, 'message',
-            '<<<<< ' + listener));
-
-          socket.on(listener,
-            require('syn/api/' + S(listener).slugify().s).bind(socket, listener));
-
+          this.handlers[name] = handler;
         });
 
-        ss(socket).on('upload image', function (stream, data) {
-          var filename = '/tmp/' + data.name;
-          stream.pipe(fs.createWriteStream(filename));
-        });
+        this.start();
 
-
-      });
-
-      io.on('error', function (error) {
-        app.arte.emit('error', error);
-      });
+      }));
     });
   }
 
-  module.exports = WebSocketServer;
+  start () {
+    let d = new Domain().on('error', error => this.emit('error', error));
 
-}();
+    d.run(() => {
+      this.io = SocketIO.listen(this.server.server);
+      this.emit('message', 'socketIO listening');
+      this.io
+        .use(this.identify.bind(this))
+        .on('connection', this.connected.bind(this));
+      });
+  }
+
+  findUserById (id) {
+    return this.users.reduce((found, user) => {
+      if ( user.id === id ) {
+        found = user;
+      }
+      return found;
+    }, null);
+  }
+
+  identify (socket, next) {
+    let d = new Domain().on('error', error => this.emit('error', error));
+
+    d.run(() => {
+
+      let req = {
+        "headers"     :   {
+          "cookie"    :   socket.request.headers.cookie
+        }
+      };
+     
+      cookieParser()(req, null, () => {});
+
+      let cookie = req.cookies.synuser;
+
+      if ( cookie ) {
+
+        if ( ! this.findUserById(cookie.id) ) {
+          this.users.push(cookie);
+          socket.broadcast.emit('online users', this.users.length);
+          socket.emit('online users', this.users.length);
+        }
+
+        socket.synuser = cookie;
+      }
+
+      next();
+    });
+  }
+
+  connected (socket) {
+    socket.on('error', error => this.emit('error', error));
+
+    this.emit('message', 'new socket connexion');
+
+    socket.emit('welcome', socket.synuser);
+
+    socket.ok = (event, ...responses) => {
+      console.log('>>>'.green.bold, event.green.bold, ...responses);
+      socket.emit('OK ' + event, ...responses);
+    };
+
+    for ( let handler in this.handlers ) {
+      socket.on(handler, (...messages) =>
+        console.log('<<<'.bold.cyan, handler.bold.cyan, ...messages)
+      );
+      socket.on(handler, this.handlers[handler].bind(socket, handler));
+    }
+
+    this.stream(socket);
+  }
+
+  stream (socket) {
+    ss(socket).on('upload image', function (stream, data) {
+      console.log('<<<'.bold.cyan, 'upload image'.bold.cyan, stream, data)
+      var filename = '/tmp/' + data.name;
+      stream.pipe(fs.createWriteStream(filename));
+    });
+  }
+
+}
+
+export default API;
+

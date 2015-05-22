@@ -2,68 +2,34 @@
 
 import path from 'path';
 import fs from 'fs';
+import http from 'http';
+import {EventEmitter} from 'events';
+import express from 'express';
+import session from 'express-session';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import printIt from 'syn/lib/util/express-pretty';
+import TwitterPassport from 'syn/routes/twitter';
+import FacebookPassport from 'syn/routes/facebook';
+import initPipeLine from 'syn/routes/init-pipeline';
+import renderPage from 'syn/routes/render-page';
+import itemRoute from 'syn/routes/item';
+import signInRoute from 'syn/routes/sign-in';
+import signUpRoute from 'syn/routes/sign-up';
+import signOutRoute from 'syn/routes/sign-out';
+import User from 'syn/models/User';
+import config from 'syn/config.json';
+import getTime from 'syn/lib/util/print-time';
+import API from 'syn/api';
 
-! function () {
+class HttpServer extends EventEmitter {
 
-  function getConfig (done) {
-    require('syn/models/Config')
-      .findOne()
-      .lean()
-      .exec(function (error, config) {
-        if ( error ) {
-          return done(error);
-        }
-        httpServer(config, done);
-      });
-  }
+  constructor () {
+    super();
 
-  function httpServer (config, done) {
-
-    if ( ! config ) {
-      return getConfig(done);
-    }
-    
-    var http                =   require('http');
-    var express             =   require('express');
-    var printIt             =   require('syn/lib/util/express-pretty'); 
-    var app                 =   express();
-    var bodyParser          =   require('body-parser');
-    var cookieParser        =   require('cookie-parser');
-    var session             =   require('express-session');
-    var passport            =   require('passport');
-    var EventEmitter        =   require('events').EventEmitter;
-    var time                =   require('syn/lib/util/print-time');
-
-    var config              =   require('syn/config.json');
-    var User                =   require('syn/models/User');
-    var API                 =   require('syn/api');
-
-    /** Routes */
-
-    var renderView          =   require('syn/routes/render-view').bind(app);
-    var renderPage          =   require('syn/routes/render-page').bind(app);
-    var initPipeLine        =   require('syn/routes/init-pipeline').bind(app);
-    var itemRoute           =   require('syn/routes/item').bind(app);
-    var TwitterRoute        =   require('syn/routes/twitter').bind(app);
-    var FacebookRoute       =   require('syn/routes/facebook').bind(app);
-    var DevRoute            =   require('syn/routes/dev').bind(app);
-    var SignInRoute         =   require('syn/routes/sign-in');
-    var SignUpRoute         =   require('syn/routes/sign-up');
-    var SignOutRoute        =   require('syn/routes/sign-out');
-    var SetUserCookieRoute  =   require('syn/routes/set-user-cookie');
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  APP ARTE
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    app.arte                =   new EventEmitter()
-
-      .on('error', function (error) {
-        console.log(error.stack.split(/\n/));
-      })
-
-      .on('message', function (message, info) {
-        console.log(time().join(':').cyan, message.cyan.bold,
+    this.on('message', function (message, info) {
+        console.log(getTime().join(':').cyan, message.cyan.bold,
           JSON.stringify(info || '', null, 2).grey);
       })
 
@@ -71,246 +37,214 @@ import fs from 'fs';
 
       .on('response', function (res) {
         printIt(res.req, res);
-      });
+      })
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  CONFIGURE APPS
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    this.app = express();
 
-    app.set('port',              process.env.PORT || 3012);
+    this.set();
 
-    if (app.get('env') === 'development') {
-      app.locals.pretty = true;
+    this.parsers();
+
+    this.cookies();
+
+    this.session();
+
+    this.passport();
+
+    this.twitterMiddleware();
+
+    this.facebookMiddleware();
+
+    this.initPipeLine();
+
+    this.signers();
+
+    this.router();
+
+    this.static();
+
+    this.notFound();
+
+    this.error();
+
+    this.start();
+  }
+
+  set () {
+    this.app.set('port', process.env.PORT || 3012);
+
+    if (this.app.get('env') === 'development') {
+      this.app.locals.pretty = true;
     }
+  }
 
-    passport.serializeUser(function(user, done) {
+  passport () {
+    passport.serializeUser((user, done) => {
       done(null, user._id);
     });
 
-    passport.deserializeUser(function(id, done) {
+    passport.deserializeUser((id, done) => {
       User.findById(id, done);
     });
 
-    app.use(
+    this.app.use(passport.initialize());
+  }
+
+  parsers () {
+    this.app.use(
       bodyParser.urlencoded({ extended: true }),
-      
       bodyParser.json(),
-      
-      bodyParser.text(),
-      
-      cookieParser(),
-      
+      bodyParser.text()
+    );
+  }
+
+  cookies () {
+    this.app.use(cookieParser());
+  }
+
+  session () {
+    this.app.use(
       session({
         secret:             config.secret,
         resave:             true,
         saveUninitialized:  true
-      }),
-      
-      passport.initialize(),
-      
-      initPipeLine
+      })
+    );
+  }
+
+  signers () {
+    this.app.all('/sign/in',
+      signInRoute,
+      this.setUserCookie,
+      function (req, res) {
+        res.json({
+          in: true,
+          id: req.user._id
+        });
+      });
+
+    this.app.all('/sign/up',
+      signUpRoute,
+      this.setUserCookie,
+      function (req, res) {
+        res.json({
+          up: true,
+          id: req.user._id
+        });
+      });
+
+    this.app.all('/sign/out', signOutRoute);
+  }
+
+  setUserCookie (req, res, next) {
+    res.cookie('synuser',
+      { email: req.user.email, id: req.user._id },
+      config.cookie
     );
 
-    TwitterRoute(config, passport);
+    next();
+  }
 
-    FacebookRoute(config, passport);
+  facebookMiddleware () {
+    new FacebookPassport(this.app);
+  }
 
-    if ( app.get('env') === 'development' ) {
-      app.get(['/dev/', '/dev/View/:view'], DevRoute, renderPage);
-    }
+  twitterMiddleware () {
+    new TwitterPassport(this.app);
+  }
 
-    app
+  initPipeLine () {
+    this.app.use(initPipeLine.bind(this));
+  }
 
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  LANDING PAGE
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  router () {
+    this.getLandingPage();
+    this.getTermsOfServicePage();
+    this.getItemPage();
+    this.getPage();
+  }
 
-      .get('/', renderPage)
+  getPage () {
+    this.app.get('/page/:page', this.renderPage.bind(this));
+  }
 
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  PAGE
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  getLandingPage () {
+    this.app.get('/', this.renderPage.bind(this));
+  }
 
-      .get('/page/:page',
-        function (req, res, next) {
-          if ( req.params.page === 'terms-of-service' ) {
-            fs
-              .createReadStream('TOS.md')
-              .on('data', function (data) {
-                if ( ! this.data ) {
-                  this.data = '';
-                }
-                this.data += data.toString();
-              })
-              .on('end', function () {
-                res.locals.TOS = this.data;
-                next();
-              })
+  getTermsOfServicePage () {
+    this.app.get('/page/terms-of-service', (req, res, next) => {
+      fs
+        .createReadStream('TOS.md')
+        .on('error', next)
+        .on('data', function (data) {
+          if ( ! this.data ) {
+            this.data = '';
           }
-          else {
-            next();
-          }
-        },
-        renderPage)
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  VIEW
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .get('/views/:component', renderView)
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  ITEM PAGE
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .get('/item/:item_short_id/:item_slug', itemRoute, renderPage)
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  PROFILE
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .get('/profile', function getPage (req, res, next) {
-        res.locals.page = 'profile';
-        res.superRender('pages/profile.jade');
-      })
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  SIGN IN
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .all('/sign/in',
-        SignInRoute,
-        SetUserCookieRoute,
-        function (req, res) {
-          res.json({
-            in: true,
-            id: req.user._id
-          });
+          this.data += data.toString();
         })
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  SIGN UP
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .all('/sign/up', 
-        SignUpRoute,
-        SetUserCookieRoute,
-        function (req, res) {
-          res.json({
-            up: true,
-            id: req.user._id
-          });
-        })
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  SIGN OUT
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .all('/sign/out', SignOutRoute)
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  Preview component
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .get('/component/:component', function (req, res, next) {
-        req.page = 'Component';
-        req.component = require('syn/components/' + req.params.component +
-          '/View');
-
-        let pathToComponents = path.dirname(
-          path.dirname(require.resolve('syn/components/Panel/View'))
-        );
-        
-        fs.readdir(pathToComponents, (error, files) => {
-            if ( error ) {
-              return next(error);
-            }
-            req.components = files;
-            next();
-          })
-      }, renderPage)
-
-      .post('/component/:component', function (req, res, next) {
-        req.page = 'Component';
-        req.component = require('syn/components/' + req.params.component +
-          '/View');
-
-        let pathToComponents = path.dirname(
-          path.dirname(require.resolve('syn/components/Panel/View'))
-        );
-
-        if ( req.body.item ) {
-          return require('syn/models/Item')
-            .findById(req.body.item)
-            .exec()
-            .then(item => {
-              res.locals.item = item;
-              fs.readdir(pathToComponents, (error, files) => {
-                if ( error ) {
-                  return next(error);
-                }
-                req.components = files;
-                next();
-              });
-            })
-        }
-        
-        fs.readdir(pathToComponents, (error, files) => {
-            if ( error ) {
-              return next(error);
-            }
-            req.components = files;
-            next();
-          });
-
-      }, renderPage)
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  DIST
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .use(
-        express.static('app/dist'))
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  ROUTE ERROR
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .use(function onRouteError (err, req, res, next) {
-
-        if ( ! err.stack ) {
-          console.log('bug', err);
-        }
-
-        console.log('error', err.stack.split(/\n/));
-        app.arte.emit('error', err);
-      })
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      //  NOT FOUND
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      .use(
-        
-        function notFound (req, res, next) {
-          res.status(404);
-          req.page = 'not-found';
+        .on('end', function () {
+          res.locals.TOS = this.data;
           next();
-        },
+        });
+    }, this.renderPage.bind(this));
+  }
 
-        renderPage)
+  getItemPage () {
+    this.app.get('/item/:item_short_id/:item_slug',
+      this.itemRoute,
+      this.renderPage.bind(this)
+    );
+  }
 
-    var server = http.createServer(app);
+  static () {
+    this.app.use(express.static('app/dist'));
+  }
 
-    server.listen(app.get('port'), function () {
-      app.arte.emit('message', 'Server is listening', {
-        port    :   app.get('port'),
-        env     :   app.get('env')
-      });
-      API(app, server);
+  notFound () {
+    this.app.use(
+      function notFound (req, res, next) {
+        res.status(404);
+        req.page = 'not-found';
+        next();
+      },
+
+      this.renderPage.bind(this));
+  }
+
+  error () {
+    this.app.use((err, req, res, next) => {
+
+      if ( ! err.stack ) {
+        console.log('bug', err);
+      }
+
+      console.log('error', err.stack.split(/\n/));
+      this.emit('error', err);
     });
   }
 
-  module.exports = httpServer;
+  start () {
+    this.server = http.createServer(this.app);
 
-} ();
+    this.server.on('error', error => {
+      this.emit('error', error);
+    });
+
+    this.server.listen(this.app.get('port'),  () => {
+      this.emit('message', 'Server is listening', {
+        port    :   this.app.get('port'),
+        env     :   this.app.get('env')
+      });
+      
+      new API(this)
+        .on('error', error => this.emit('error', error));
+    });
+  }
+
+}
+
+HttpServer.prototype.renderPage = renderPage;
+HttpServer.prototype.itemRoute = itemRoute;
+
+export default HttpServer;

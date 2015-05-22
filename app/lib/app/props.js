@@ -8,9 +8,9 @@
    *  @arg
    */
 
-  function exportsLocals (app, req, res) {
+  function exportsLocals (server, req, res) {
     var locals      =   {
-      settings      :   app.locals.settings,
+      settings      :   server.app.locals.settings,
       req           :   {
         path        :   req.path,
         url         :   req.url,

@@ -6,7 +6,7 @@
 
     var domainRun = require('syn/lib/util/domain-run');
 
-    var app = this;
+    var server = this;
 
     domainRun(initPipeLine_, next);
 
@@ -17,7 +17,7 @@
         req.user = JSON.parse(req.user);
       }
 
-      app.arte.emit('request', req);
+      server.emit('request', req);
 
       // Forcing item
       require('syn/models/Item');

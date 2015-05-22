@@ -2,7 +2,7 @@
 
   'use strict';
 
-  var config = require('../../../business/config.json');
+  var config = require('syn/config.json');
  
   function resendPassword (socket, pronto, monson, domain, smtp) {
     socket.on('resend password', function (email, cb) {

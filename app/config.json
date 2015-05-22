@@ -1,18 +1,18 @@
 {
-  "tmp":"/tmp",
+  "tmp"             :   "/tmp",
   
-  "title": "Synaccord | Bring Synergy To Democracy",
+  "title"           :   "Synaccord | Bring Synergy To Democracy",
   
-  "secret":"hYGhdj729k2kdmsñw9hsy6GGW",
+  "secret"          :   "hYGhdj729k2kdmsñw9hsy6GGW",
   
-  "entry image maximum width": 160,
+  "entry image maximum width"       : 160,
 
-  "example image for test upload": "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
+  "example image for test upload"   : "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
   
-  "cloudinary": {
+  "cloudinary"      :   {
     
-    "cloud": {
-      "name": "hscbexf6a"
+    "cloud"         :   {
+      "name"        :   "hscbexf6a"
     },
 
     "API": {
@@ -32,10 +32,24 @@
   },
 
   "facebook": {
+
+    "alpha-heroku": {
+      "app id"        :   "295589523959214",
+      "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
+      "callback url"  :   "/sign/facebook/oauth"
+    },
     
-    "app id": "295589523959214",
-    "app secret": "1faefb08184d71117f62eb63eb0e22c7",
-    "callback url": "/sign/facebook/oauth"
+    "alpha": {
+      "app id"        :   "295589523959214",
+      "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
+      "callback url"  :   "/sign/facebook/oauth"
+    },
+    
+    "beta": {
+      "app id"        :   "295589523959214",
+      "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
+      "callback url"  :   "/sign/facebook/oauth"
+    }
   },
 
   "twitter": {
@@ -78,13 +92,13 @@
 
       "terms of service": "/page/terms-of-service",
       
-      "sign in with Twitter": "/sign/twitter",
+      "sign in with twitter": "/sign/twitter",
 
-      "sign in with Twitter OK": "/sign/twitter/ok",
+      "sign in with twitter OK": "/sign/twitter/ok",
 
-      "sign in with Facebook": "/sign/facebook",
+      "sign in with facebook": "/sign/facebook",
 
-      "sign in with Facebook OK": "/sign/facebook/ok"
+      "sign in with facebook OK": "/sign/facebook/ok"
 
     },
 

@@ -31,7 +31,8 @@
         console.log('Symlink OK!');
         migrations(domain.intercept(function () {
           console.log('Migrations OK!');
-          httpServer(null, console.log.bind(console));  
+          new httpServer()
+            .on('error', console.log.bind(console));
         }))
       }));
 
