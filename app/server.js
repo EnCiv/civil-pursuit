@@ -22,22 +22,26 @@ import User from 'syn/models/User';
 import config from 'syn/config.json';
 import getTime from 'syn/lib/util/print-time';
 import API from 'syn/api';
+import Log from 'syn/lib/app/Log';
+
+var log = new Log('server');
 
 class HttpServer extends EventEmitter {
 
   constructor () {
     super();
 
-    this.on('message', function (message, info) {
-        console.log(getTime().join(':').cyan, message.cyan.bold,
-          JSON.stringify(info || '', null, 2).grey);
+    this
+
+      .on('message', function (message, info) {
+        log.info(message, info);
       })
 
       .on('request', printIt)
 
       .on('response', function (res) {
         printIt(res.req, res);
-      })
+      });
 
     this.app = express();
 
@@ -236,6 +240,8 @@ class HttpServer extends EventEmitter {
         port    :   this.app.get('port'),
         env     :   this.app.get('env')
       });
+
+      this.emit('listening');
       
       new API(this)
         .on('error', error => this.emit('error', error));

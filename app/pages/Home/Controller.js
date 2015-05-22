@@ -14,7 +14,7 @@ synapp.app.ready(() => {
   new TopBar().render();
 
   synapp.app
-    .publish('get top-level type')
+    .publish('get top level type')
     .subscribe((pubsub, topLevelPanel) => {
       
       pubsub.unsubscribe();

@@ -1,5 +1,5 @@
 Synaccord Web Application
-=========================
+---
 
 ```
          @\_______/@
@@ -28,6 +28,8 @@ Synaccord Web Application
 Nina Butorac   
 
 ```
+
+---
 
 # Install
 

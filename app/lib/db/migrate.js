@@ -2,11 +2,8 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  var Log = require('syn/lib/app/Log');
+  var log = new Log('lib/db/migrate');
 
   function migrate (cb) {
     var async =  require('async');
@@ -24,11 +21,11 @@
           });
 
         spawn.stdout.on('data', function (data) {
-          console.log(data.toString());
+          log.info(data.toString());
         });
 
         spawn.stderr.on('data', function (data) {
-          console.log(data.toString());
+          log.info(data.toString());
         });
       },
       cb);

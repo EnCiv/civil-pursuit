@@ -29,7 +29,7 @@ synapp.app.ready(function () {
 
   new _synComponentsTopBarController2['default']().render();
 
-  synapp.app.publish('get top-level type').subscribe(function (pubsub, topLevelPanel) {
+  synapp.app.publish('get top level type').subscribe(function (pubsub, topLevelPanel) {
 
     pubsub.unsubscribe();
 
