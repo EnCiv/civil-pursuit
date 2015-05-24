@@ -11,7 +11,7 @@ synapp.app.ready(() => {
 
   new Intro().render();
 
-  new TopBar().render();
+  new (TopBar)().render();
 
   synapp.app
     .publish('get top level type')

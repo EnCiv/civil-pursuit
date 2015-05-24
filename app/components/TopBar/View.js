@@ -9,6 +9,7 @@ class TopBar extends Element {
   constructor (props) {
     super('.topbar');
     this.props = props || {};
+
     this.add(
       this.rightButtons(),
       this.logo()

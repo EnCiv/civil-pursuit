@@ -64,6 +64,10 @@ class API extends EventEmitter {
       });
   }
 
+  /** Find user by id in [User]
+   *  @arg      {String} id
+  */
+
   findUserById (id) {
     return this.users.reduce((found, user) => {
       if ( user.id === id ) {
@@ -72,6 +76,11 @@ class API extends EventEmitter {
       return found;
     }, null);
   }
+
+  /** Identify client
+   *  @arg      {Socket} socket
+   *  @arg      {Function} next
+  */
 
   identify (socket, next) {
     let d = new Domain().on('error', error => this.emit('error', error));
@@ -88,12 +97,12 @@ class API extends EventEmitter {
 
       let cookie = req.cookies.synuser;
 
+      console.log('cookie', cookie);
+
       if ( cookie ) {
 
         if ( ! this.findUserById(cookie.id) ) {
-          this.users.push(cookie);
-          socket.broadcast.emit('online users', this.users.length);
-          socket.emit('online users', this.users.length);
+          this.pushUser(cookie);
         }
 
         socket.synuser = cookie;
@@ -103,12 +112,28 @@ class API extends EventEmitter {
     });
   }
 
+  /** New user
+   *  @arg      {User} user
+  */
+
+  pushUser (user) {
+    this.users.push(user);
+  }
+
+  /** On every client's connection
+   *  @arg      {Socket} socket
+  */
+
   connected (socket) {
     socket.on('error', error => this.emit('error', error));
 
     this.emit('message', 'new socket connexion');
 
     socket.emit('welcome', socket.synuser);
+
+    socket.broadcast.emit('online users', this.users.length);
+    socket.emit('online users', this.users.length);
+    console.log('online users', this.users.length);
 
     socket.ok = (event, ...responses) => {
       console.log('>>>'.green.bold, event.green.bold, ...responses);

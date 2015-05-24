@@ -6,24 +6,23 @@ import cache from 'syn/lib/app/Cache';
 
 class App extends EventEmitter {
 
-  constructor (connect) {
+  constructor (isPage) {
 
     super();
 
-    this.socket();
+    this.store = {};
 
-    if ( connect ) {
-      this.socket.on('welcome', user => {
-        this.socket.synuser = user;
-        this.emit('ready');
-      });
+    this.connect();
+
+    if ( isPage ) {
+      this.store.socket = {};
+
+      this.socket
+        .on('welcome', user => {
+          this.socket.synuser = user;
+          this.emit('ready');
+        });
     }
-
-    this.store = {
-      onlineUsers: 0
-    };
-
-    this.socket.on('online users', online => this.set('onlineUsers', online));
 
     this.domain = domain.create()
       .on('error', error => this.emit('error', error));
@@ -40,9 +39,29 @@ class App extends EventEmitter {
 
   }
 
+  /** Get local store by key
+   *  @arg      {String} key
+   *  @return   Any
+  */
+
   get (key) {
     return this.store[key];
   }
+
+  /** Get global store by key
+   *  @arg      {String} key
+   *  @return   Any
+  */
+
+  getGlobal (key) {
+    return synapp.app.store[key];
+  }
+
+  /** Set local store by key
+   *  @arg      {String} key
+   *  @arg      {Any} value
+   *  @return   App
+  */
 
   set (key, value) {
     this.store[key] = value;
@@ -52,15 +71,57 @@ class App extends EventEmitter {
     return this;
   }
 
+  /** Set global store by key
+   *  @arg      {String} key
+   *  @arg      {Any} value
+   *  @return   App
+  */
+
+  setGlobal (key, value) {
+    this.store[key] = value;
+
+    this.emit('set global', key, value);
+
+    return this;
+  }
+
+  /** Copy a global into local and stay in sync with changes
+   *  @arg      {String} key
+  */
+
+  copy (key) {
+    this.store[key] = this.getGlobal(key);
+
+    this.on('set global', (_key, value) => {
+      if ( key === _key ) {
+        this.store.set(key, value);
+      }
+    });
+  }
+
+  /** Throw App error
+   *  @arg      {Error} err
+  */
+
   error (err) {
     console.log('App error');
   }
+
+  /** Execute handler on App ready
+   *  @arg      {Function} fn
+  */
 
   ready (fn) {
     this.on('ready', fn);
   }
 
-  socket () {
+  /** Set store by key
+   *  @arg      {String} key
+   *  @arg      {Any} value
+   *  @return   App
+  */
+
+  connect () {
 
     if ( ! io.$$socket ) {
       io.$$socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);

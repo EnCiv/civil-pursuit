@@ -1,3 +1,7 @@
+/**
+ * @package     App.Component.TopbBar.Controller
+*/
+
 'use strict';
 
 import Controller from 'syn/lib/app/Controller';
@@ -7,12 +11,28 @@ import ForgotPassword from 'syn/components/ForgotPassword/Controller';
 
 class TopBar extends Controller {
 
+  /**
+   *  @arg    {Object} props
+  */
+
   constructor (props) {
     super();
 
     this.props = props;
 
     this.template = $('.topbar');
+
+    this.store['online users'] = 0;
+
+    this.socket.on('online users', (num) =>
+      this.set('online users', num)
+    );
+
+    this.on('set', (key, value) => {
+      if ( key === 'online users' ) {
+        this.renderOnlineUsers();
+      }
+    });
   }
 
   find (name) {
@@ -38,7 +58,7 @@ class TopBar extends Controller {
   }
 
   render () {
-    this.find('online users').text(synapp.app.get('onlineUsers'));
+    this.renderOnlineUsers();
 
     synapp.app.on('set', (key, value) => {
       if ( key === 'onlineUsers' ) {
@@ -58,6 +78,10 @@ class TopBar extends Controller {
       this.find('is out').remove();
       this.find('is in').css('display', 'inline');
     }
+  }
+
+  renderOnlineUsers () {
+    this.find('online users').text(this.get('online users'));
   }
 
   loginDialog () {
