@@ -1,0 +1,28 @@
+'use strict';
+
+import should from 'should';
+import Describe from 'syn/lib/app/Describe';
+import config from 'syn/config.json';
+// import TopBar from '../components/top-bar';
+
+class TopBar extends Describe {
+
+  constructor () {
+    super('Top Bar Component', {
+      // 'connect to mongo'  :   true,
+      // 'web driver'        :   {
+      //   'page'            :   'Home'
+      // }
+    });
+
+    this
+      .assert(
+        'Top bar should be visible',
+        { visible: '.topbar' },
+        visible => visible.should.be.true
+      );
+  }
+
+}
+
+export default TopBar;

@@ -1,3 +1,29 @@
+'use strict';
+
+import should from 'should';
+import colors from 'colors';
+
+import config from 'syn/config.json';
+
+let describe = new Describe('Web / Landing Page')
+  
+  .set({
+    'connect to mongo'  :   true,
+    'web driver'        :   {
+      'page'            ;   'Home'
+    }
+  })
+
+  .assert('document has the right title', { document: 'title' },
+    title => { title.should.be.exactly(config.title) }
+  )
+
+  .assert('document\'s encoding is UTF-8', { attribute: 'meta[charset]' },
+    charset => { charset.should.be.exactly('utf-8') })
+
+  .assert(new TopBar())
+
+
 ! function () {
   
   'use strict';
