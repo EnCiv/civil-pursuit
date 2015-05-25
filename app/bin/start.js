@@ -24,10 +24,8 @@
     });
 
   var symlink       =   require('../lib/app/symlink');
-  var migrations    =   require('../lib/db/migrate.js');
-  var Server        =   require('../server');
+  
   var async         =   require('async');
-  var ErrorModel    =   require('../models/Error');
 
 
   function start () {
@@ -59,6 +57,9 @@
 
         symlink(domain.intercept(function () {
           log.success('Symlink library');
+
+          var migrations    =   require('../lib/db/migrate.js');
+          var Server        =   require('../server');
           
           log.loading('Migrations library');
           
