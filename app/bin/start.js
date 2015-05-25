@@ -3,7 +3,7 @@
   
   'use strict';
 
-  require("babel/register")({ modules: 'common', stage: 1 });
+  require("babel/register")({ modules: 'common', stage: 1, ignore: false });
 
   var Log = require('../lib/app/Log');
 
