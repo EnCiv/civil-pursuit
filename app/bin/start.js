@@ -47,7 +47,7 @@
     function onError(error) {
       console.log('server error caught in start script', parseError(error));
       error.stack.split(/\n/).forEach(console.log.bind(console));
-      logError(error);
+      // logError(error);
     }
 
     var domain = require('domain').create();
