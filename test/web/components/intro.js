@@ -38,10 +38,24 @@ class Intro extends Describe {
       )
 
       .assert(
-        'Intro subject should be the same one than from DB',
+        'Panel title should be intro\'s subject',
         { text: '#intro .panel-title' },
         subject =>
           { subject.should.be.exactly(this._definitions.Item.subject) }
+      )
+
+      .assert(
+        'Item subject should be intro\'s subject',
+        { text: '#intro .item-subject' },
+        subject =>
+          { subject.should.be.exactly(this._definitions.Item.subject) }
+      )
+
+      .assert(
+        'Item description should be intro\'s description',
+        { text: '#intro .item-description' },
+        description =>
+          { description.should.be.exactly(this._definitions.Item.description) }
       );
   }
 
