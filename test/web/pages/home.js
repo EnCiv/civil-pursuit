@@ -5,12 +5,12 @@ import Describe from 'syn/lib/app/Describe';
 import config from 'syn/config.json';
 import {EventEmitter} from 'events';
 import TopBar from '../components/top-bar';
+import Intro from '../components/intro';
 
 class HomePage extends Describe {
 
   constructor () {
-    super('Page / Landing Page', {
-      'connect to mongo'  :   true,
+    super('Landing Page', {
       'web driver'        :   {
         'page'            :   'Home'
       }
@@ -30,8 +30,9 @@ class HomePage extends Describe {
         charset => { charset.should.be.exactly('utf-8') })
 
       .assert(() => new TopBar().driver(this._driver))
+      .assert(() => new TopBar().driver(this._driver))
 
-      // .assert(() => new Intro().driver(this._driver))
+      .assert(() => new Intro().driver(this._driver))
 
       // .assert(() => new TopLevelPanel().driver(this._driver))
 

@@ -7,8 +7,7 @@ import config from 'syn/config.json';
 class TopBar extends Describe {
 
   constructor () {
-    super('Top Bar Component', {
-      'connect to mongo'  :   true,
+    super('Top Bar', {
       'web driver'        :   {
         'page'            :   'Home'
       }
@@ -33,7 +32,7 @@ class TopBar extends Describe {
       .assert(
         'There should be at least 0 user online now',
         { text: 'span.online-users' },
-        text => { (+text).should.be.a.Number.and.is.above(0) }
+        text => { (+text).should.be.a.Number.and.is.above(-1) }
       )
 
       .assert(
@@ -49,6 +48,11 @@ class TopBar extends Describe {
       .assert(
         'Top bar should **not** have a link to profile page',
         { hidden: 'a[title="Profile"]' }
+      )
+
+      .assert(
+        'Top bar should **not** have a link to signout',
+        { hidden: 'a[title="Sign out"]' }
       );
   }
 

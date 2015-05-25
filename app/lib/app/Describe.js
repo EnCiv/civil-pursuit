@@ -113,6 +113,11 @@ class Describe extends EventEmitter {
             contextValue = this._definitions[context[contextKey]];
             break;
 
+          case 'before':
+            assertion.handler()
+              .then(fulfill, reject);
+            return;
+
           case 'document':
             switch ( context.document ) {
               case 'title':
@@ -127,7 +132,7 @@ class Describe extends EventEmitter {
 
                   try {
                     assertion.handler(title);
-                    this.emit('ok', assertion.describe);
+                    //this.emit('ok', assertion.describe);
 
                     fulfill();
                   }
@@ -162,8 +167,6 @@ class Describe extends EventEmitter {
 
                 try {
                   assertion.handler(attr);
-                  this.emit('ok', assertion.describe);
-
                   fulfill();
                 }
                 catch ( error ) {
@@ -220,9 +223,11 @@ class Describe extends EventEmitter {
         // reject(error);
       })
 
-      .on('message', (...messages) => this.emit('message', ...messages))
+      .on('message', (...messages) => this.emit('message from', test._name, ...messages))
 
-      .on('ok', ok => this.emit('ok', test._name + '/' + ok))
+      .on('message from', (test, ...messages) => this.emit('message from', test, ...messages))
+
+      .on('ok', (ok, step, total) => this.emit('ok from', ok, test._name, step, total))
 
       .on('built', promises => test.runAll(promises))
 
@@ -235,10 +240,17 @@ class Describe extends EventEmitter {
   */
 
   getVisibility (visible, assertion, context, fulfill, reject) {
-    let d = new Domain().on('error', reject);
+    let d = new Domain().on('error', error => {
+      console.log('error', error);
+      this.emit('ko', assertion.describe);
+      reject(error);
+    });
 
     d.run(() => {
-      this._driver.client.isVisible(context.visible, d.intercept(
+
+      let contextKey = visible ? 'visible' : 'hidden';
+
+      this._driver.client.isVisible(context[contextKey], d.intercept(
         isVisible => {
           if ( ! this._isClean ) {
             this.emit('ko', assertion.describe);
@@ -253,7 +265,6 @@ class Describe extends EventEmitter {
           }
 
           if ( ok ) {
-            this.emit('ok', assertion.describe);
 
             fulfill();
           }
@@ -271,14 +282,12 @@ class Describe extends EventEmitter {
 
   getText (assertion, context, fulfill, reject) { // 253
 
-    console.log(context)
-
     let d = new Domain().on('error', reject);
 
     d.run(() => {
       let selector = context.text;
 
-      this._driver.client.getText(selector, d.intercept( text => {
+      this._driver.client.getText(selector, d.intercept(text => {
         if ( ! this._isClean ) {
           this.emit('ko', assertion.describe);
           reject(new Error('Is not clean'));
@@ -287,7 +296,6 @@ class Describe extends EventEmitter {
 
         try {
           assertion.handler(text);
-          this.emit('ok', assertion.describe);
 
           fulfill();
         }
@@ -311,22 +319,19 @@ class Describe extends EventEmitter {
     let runOneByOne = () => {
       this.emit(
         'message',
-        'Running test ' + (runned + 1) + '/' + assertions.length,
-        this._name,
-        '>',
+        (runned + 1) + '/' + assertions.length,
         this._assertions[runned].describe
       );
 
       new Promise(assertions[runned]).then(
         ok => {
 
+          this.emit('ok', (this._assertions[runned].describe), runned, assertions.length);
+
           runned ++;
 
           if ( runned === assertions.length ) {
             this.emit('done');
-            if ( this._driver ) {
-              this._driver.client.end();
-            }
           }
 
           else {
@@ -359,6 +364,18 @@ class Describe extends EventEmitter {
         handler   : handler || (() => {})
       });
     }
+
+    return this;
+  }
+
+  /** Scripts to run before */
+
+  before (describe, handler) {
+    this._assertions.push({
+      describe  : describe,
+      context   : { before: true },
+      handler   : handler
+    });
 
     return this;
   }
