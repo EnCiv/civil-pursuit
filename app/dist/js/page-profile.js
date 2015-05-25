@@ -1133,29 +1133,25 @@ var _synLibAppCache = require('syn/lib/app/Cache');
 var _synLibAppCache2 = _interopRequireDefault(_synLibAppCache);
 
 var App = (function (_EventEmitter) {
-  function App(connect) {
+  function App(isPage) {
     var _this = this;
 
     _classCallCheck(this, App);
 
     _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this);
 
-    this.socket();
+    this.store = {};
 
-    if (connect) {
+    this.connect();
+
+    if (isPage) {
+      this.store.socket = {};
+
       this.socket.on('welcome', function (user) {
         _this.socket.synuser = user;
         _this.emit('ready');
       });
     }
-
-    this.store = {
-      onlineUsers: 0
-    };
-
-    this.socket.on('online users', function (online) {
-      return _this.set('onlineUsers', online);
-    });
 
     this.domain = _domain2['default'].create().on('error', function (error) {
       return _this.emit('error', error);
@@ -1163,8 +1159,8 @@ var App = (function (_EventEmitter) {
 
     this.domain.intercept = function (handler) {
       return function (error) {
-        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+          args[_key2 - 1] = arguments[_key2];
         }
 
         return _this.domain.run(function () {
@@ -1183,11 +1179,35 @@ var App = (function (_EventEmitter) {
 
   _createClass(App, [{
     key: 'get',
+
+    /** Get local store by key
+     *  @arg      {String} key
+     *  @return   Any
+    */
+
     value: function get(key) {
       return this.store[key];
     }
   }, {
+    key: 'getGlobal',
+
+    /** Get global store by key
+     *  @arg      {String} key
+     *  @return   Any
+    */
+
+    value: function getGlobal(key) {
+      return synapp.app.store[key];
+    }
+  }, {
     key: 'set',
+
+    /** Set local store by key
+     *  @arg      {String} key
+     *  @arg      {Any} value
+     *  @return   App
+    */
+
     value: function set(key, value) {
       this.store[key] = value;
 
@@ -1196,18 +1216,69 @@ var App = (function (_EventEmitter) {
       return this;
     }
   }, {
+    key: 'setGlobal',
+
+    /** Set global store by key
+     *  @arg      {String} key
+     *  @arg      {Any} value
+     *  @return   App
+    */
+
+    value: function setGlobal(key, value) {
+      this.store[key] = value;
+
+      this.emit('set global', key, value);
+
+      return this;
+    }
+  }, {
+    key: 'copy',
+
+    /** Copy a global into local and stay in sync with changes
+     *  @arg      {String} key
+    */
+
+    value: function copy(key) {
+      var _this2 = this;
+
+      this.store[key] = this.getGlobal(key);
+
+      this.on('set global', function (_key, value) {
+        if (key === _key) {
+          _this2.store.set(key, value);
+        }
+      });
+    }
+  }, {
     key: 'error',
+
+    /** Throw App error
+     *  @arg      {Error} err
+    */
+
     value: function error(err) {
       console.log('App error');
     }
   }, {
     key: 'ready',
+
+    /** Execute handler on App ready
+     *  @arg      {Function} fn
+    */
+
     value: function ready(fn) {
       this.on('ready', fn);
     }
   }, {
-    key: 'socket',
-    value: function socket() {
+    key: 'connect',
+
+    /** Set store by key
+     *  @arg      {String} key
+     *  @arg      {Any} value
+     *  @return   App
+    */
+
+    value: function connect() {
 
       if (!io.$$socket) {
         io.$$socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
@@ -1218,23 +1289,23 @@ var App = (function (_EventEmitter) {
   }, {
     key: 'publish',
     value: function publish(event) {
-      var _this2 = this;
+      var _this3 = this;
 
-      for (var _len2 = arguments.length, messages = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        messages[_key2 - 1] = arguments[_key2];
+      for (var _len2 = arguments.length, messages = Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
+        messages[_key3 - 1] = arguments[_key3];
       }
 
       var unsubscribe = function unsubscribe() {
-        _this2.socket.removeListener('OK ' + event, _this2.handler);
+        _this3.socket.removeListener('OK ' + event, _this3.handler);
       };
 
       return {
         subscribe: function subscribe(handler) {
           var _socket$on;
 
-          (_socket$on = _this2.socket.on('OK ' + event, function () {
-            for (var _len3 = arguments.length, responses = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-              responses[_key3] = arguments[_key3];
+          (_socket$on = _this3.socket.on('OK ' + event, function () {
+            for (var _len3 = arguments.length, responses = Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
+              responses[_key4] = arguments[_key4];
             }
 
             return handler.apply(undefined, [{ unsubscribe: unsubscribe.bind(handler) }].concat(responses));
@@ -1734,6 +1805,10 @@ exports['default'] = Login;
 module.exports = exports['default'];
 
 },{"syn/lib/app/Controller":14,"syn/lib/util/Form":16,"syn/lib/util/Nav":17}],12:[function(require,module,exports){
+/**
+ * @package     App.Component.TopbBar.Controller
+*/
+
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1767,7 +1842,14 @@ var _synComponentsForgotPasswordController = require('syn/components/ForgotPassw
 var _synComponentsForgotPasswordController2 = _interopRequireDefault(_synComponentsForgotPasswordController);
 
 var TopBar = (function (_Controller) {
+
+  /**
+   *  @arg    {Object} props
+  */
+
   function TopBar(props) {
+    var _this = this;
+
     _classCallCheck(this, TopBar);
 
     _get(Object.getPrototypeOf(TopBar.prototype), 'constructor', this).call(this);
@@ -1775,6 +1857,18 @@ var TopBar = (function (_Controller) {
     this.props = props;
 
     this.template = $('.topbar');
+
+    this.store['online users'] = 0;
+
+    this.socket.on('online users', function (num) {
+      return _this.set('online users', num);
+    });
+
+    this.on('set', function (key, value) {
+      if (key === 'online users') {
+        _this.renderOnlineUsers();
+      }
+    });
   }
 
   _inherits(TopBar, _Controller);
@@ -1805,13 +1899,13 @@ var TopBar = (function (_Controller) {
   }, {
     key: 'render',
     value: function render() {
-      var _this = this;
+      var _this2 = this;
 
-      this.find('online users').text(synapp.app.get('onlineUsers'));
+      this.renderOnlineUsers();
 
       synapp.app.on('set', function (key, value) {
         if (key === 'onlineUsers') {
-          _this.find('online users').text(value);
+          _this2.find('online users').text(value);
         }
       });
 
@@ -1827,16 +1921,21 @@ var TopBar = (function (_Controller) {
       }
     }
   }, {
+    key: 'renderOnlineUsers',
+    value: function renderOnlineUsers() {
+      this.find('online users').text(this.get('online users'));
+    }
+  }, {
     key: 'loginDialog',
     value: function loginDialog() {
-      var _this2 = this;
+      var _this3 = this;
 
       vex.defaultOptions.className = 'vex-theme-flat-attack';
 
       vex.dialog.confirm({
 
         afterOpen: function afterOpen($vexContent) {
-          _this2.find('login button').off('click').on('click', function () {
+          _this3.find('login button').off('click').on('click', function () {
             return vex.close();
           });
 
@@ -1851,7 +1950,7 @@ var TopBar = (function (_Controller) {
 
         afterClose: function afterClose() {
           $('.login-button').on('click', function () {
-            return _this2.loginDialog();
+            return _this3.loginDialog();
           });
         },
 
@@ -1865,14 +1964,14 @@ var TopBar = (function (_Controller) {
   }, {
     key: 'joinDialog',
     value: function joinDialog() {
-      var _this3 = this;
+      var _this4 = this;
 
       vex.defaultOptions.className = 'vex-theme-flat-attack';
 
       vex.dialog.confirm({
 
         afterOpen: function afterOpen($vexContent) {
-          _this3.find('join button').off('click').on('click', function () {
+          _this4.find('join button').off('click').on('click', function () {
             vex.close();
           });
 
@@ -1880,10 +1979,10 @@ var TopBar = (function (_Controller) {
         },
 
         afterClose: function afterClose() {
-          var _this4 = this;
+          var _this5 = this;
 
           $('.join-button').on('click', function () {
-            return _this4.joinDialog();
+            return _this5.joinDialog();
           });
         },
 
