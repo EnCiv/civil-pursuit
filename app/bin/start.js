@@ -70,22 +70,34 @@
           var Server        =   require('../server');
           
           log.loading('Migrations library');
+
+          log.loading('Starting HTTP server');
           
-          migrations(domain.intercept(function () {
-            log.success('Migrations OK');
+          new Server()
+            .on('listening', function () {
+              log.success('Starting HTTP server')
+            });
 
-            log.loading('Starting HTTP server');
+          // fork.on('message', function (message) {
+          //   console.log('oh message', message)
+          // })
+          
+          // migrations(domain.intercept(function () {
+          //   log.success('Migrations OK');
+
+          //   log.loading('Starting HTTP server');
             
-            new Server()
-              .on('listening', function () {
-                log.success('Starting HTTP server')
-              });
+          //   new Server()
+          //     .on('listening', function () {
+          //       log.success('Starting HTTP server')
+          //     });
 
-            // fork.on('message', function (message) {
-            //   console.log('oh message', message)
-            // })
+          //   // fork.on('message', function (message) {
+          //   //   console.log('oh message', message)
+          //   // })
 
-          }))
+          // }))
+
         }));
 
       });
