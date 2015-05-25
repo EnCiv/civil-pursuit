@@ -13,6 +13,10 @@
 
   var hello;
 
+  function parseError(error) {
+    return error.stack.split(/\n/);
+  }
+
   require('fs').createReadStream(require('path').resolve(__dirname, '../..', 'README.md'))
     .on('data', function (data) {
       if ( ! hello ) {
