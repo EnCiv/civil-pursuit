@@ -3,9 +3,10 @@
 import should from 'should';
 import Describe from 'syn/lib/app/Describe';
 import config from 'syn/config.json';
-import {EventEmitter} from 'events';
+
 import TopBar from '../components/top-bar';
 import Intro from '../components/intro';
+import Footer from '../components/footer';
 
 class HomePage extends Describe {
 
@@ -30,13 +31,12 @@ class HomePage extends Describe {
         charset => { charset.should.be.exactly('utf-8') })
 
       .assert(() => new TopBar().driver(this._driver))
-      .assert(() => new TopBar().driver(this._driver))
 
       .assert(() => new Intro().driver(this._driver))
 
       // .assert(() => new TopLevelPanel().driver(this._driver))
 
-      // .assert(() => new Footer().driver(this._driver));
+      .assert(() => new Footer().driver(this._driver));
   }
 
 }
