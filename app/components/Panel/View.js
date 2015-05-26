@@ -1,6 +1,6 @@
 'use strict';
 
-import {Element} from 'cinco';
+import {Element} from 'cinco/es5';
 import CreatorView  from 'syn/components/Creator/View';
 
 class Panel extends Element {

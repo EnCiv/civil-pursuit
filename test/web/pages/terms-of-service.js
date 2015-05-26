@@ -67,12 +67,6 @@ class TOSPage extends Describe {
           html.should.be.exactly(this._definitions.source);
         }
       )
-
-      // .assert(() => new Intro().driver(this._driver))
-
-      // .assert(() => new TopLevelPanel().driver(this._driver))
-
-      // .assert(() => new Footer().driver(this._driver));
   }
 
 }

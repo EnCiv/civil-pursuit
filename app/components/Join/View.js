@@ -1,6 +1,6 @@
 'use strict';
 
-import {Element, Elements} from 'cinco';
+import {Element, Elements} from 'cinco/es5';
 import Page from 'syn/lib/app/Page';
 
 class Join extends Element {

@@ -4,7 +4,7 @@ import Layout               from 'syn/components/Layout/View';
 import IntroView            from 'syn/components/Intro/View';
 import TopLevelPanelView    from 'syn/components/TopLevelPanel/View';
 import marked               from 'marked';
-import {Element}            from 'cinco';
+import {Element}            from 'cinco/es5';
 
 class TOS extends Layout {
   constructor(props) {

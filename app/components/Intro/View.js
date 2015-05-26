@@ -6,7 +6,7 @@
  *  @module       views/Intro
 */
 
-import {Element} from 'cinco';
+import {Element} from 'cinco/es5';
 import Panel from 'syn/components/Panel/View';
 import ItemView from 'syn/components/Item/View';
 

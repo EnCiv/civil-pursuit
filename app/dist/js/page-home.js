@@ -45,7 +45,36 @@ synapp.app.ready(function () {
   });
 });
 
-},{"syn/app":"/home/francois/Dev/syn/node_modules/syn/app.js","syn/components/Intro/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Intro/Controller.js","syn/components/Panel/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Panel/Controller.js","syn/components/TopBar/Controller":"/home/francois/Dev/syn/node_modules/syn/components/TopBar/Controller.js"}],"/home/francois/Dev/syn/node_modules/cinco/Compiler.js":[function(require,module,exports){
+},{"syn/app":"/home/francois/Dev/syn/node_modules/syn/app.js","syn/components/Intro/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Intro/Controller.js","syn/components/Panel/Controller":"/home/francois/Dev/syn/node_modules/syn/components/Panel/Controller.js","syn/components/TopBar/Controller":"/home/francois/Dev/syn/node_modules/syn/components/TopBar/Controller.js"}],"/home/francois/Dev/syn/node_modules/cinco/es5.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  var Element = require('./es5/Element');
+  var Elements = require('./es5/Elements');
+  var Document = require('./es5/Document');
+  var Compiler = require('./es5/Compiler');
+
+  function Cinco() {
+    this.Element = Element;
+    this.Elements = Elements;
+    this.Document = Document;
+    this.Compiler = Compiler;
+    this.render = Compiler;
+  }
+
+  var cinco = new Cinco();
+
+  module.exports = cinco;
+
+  if (typeof window !== 'undefined') {
+    window.cinco = cinco;
+  }
+})();
+
+},{"./es5/Compiler":"/home/francois/Dev/syn/node_modules/cinco/es5/Compiler.js","./es5/Document":"/home/francois/Dev/syn/node_modules/cinco/es5/Document.js","./es5/Element":"/home/francois/Dev/syn/node_modules/cinco/es5/Element.js","./es5/Elements":"/home/francois/Dev/syn/node_modules/cinco/es5/Elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/es5/Compiler.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -53,13 +82,33 @@ Object.defineProperty(exports, '__esModule', {
 });
 var _bind = Function.prototype.bind;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];return arr2;
+  } else {
+    return Array.from(arr);
+  }
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError('Cannot call a class as a function');
+  }
+}
 
 var _Elements = require('./Elements');
 
@@ -256,7 +305,7 @@ var Compiler = (function () {
 exports['default'] = Compiler;
 module.exports = exports['default'];
 
-},{"./Element":"/home/francois/Dev/syn/node_modules/cinco/Element.js","./Elements":"/home/francois/Dev/syn/node_modules/cinco/Elements.js","domain":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/cinco/Document.js":[function(require,module,exports){
+},{"./Element":"/home/francois/Dev/syn/node_modules/cinco/es5/Element.js","./Elements":"/home/francois/Dev/syn/node_modules/cinco/es5/Elements.js","domain":"/usr/local/lib/node_modules/watchify/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/cinco/es5/Document.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -264,13 +313,33 @@ Object.defineProperty(exports, '__esModule', {
 });
 var _bind = Function.prototype.bind;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+function _toConsumableArray(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];return arr2;
+  } else {
+    return Array.from(arr);
+  }
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError('Cannot call a class as a function');
+  }
+}
 
 var _Elements = require('./Elements');
 
@@ -364,7 +433,7 @@ Document.doctype = '<!doctype html>';
 exports['default'] = Document;
 module.exports = exports['default'];
 
-},{"./Element":"/home/francois/Dev/syn/node_modules/cinco/Element.js","./Elements":"/home/francois/Dev/syn/node_modules/cinco/Elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/Element.js":[function(require,module,exports){
+},{"./Element":"/home/francois/Dev/syn/node_modules/cinco/es5/Element.js","./Elements":"/home/francois/Dev/syn/node_modules/cinco/es5/Elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/es5/Element.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -372,11 +441,25 @@ Object.defineProperty(exports, '__esModule', {
 });
 var _bind = Function.prototype.bind;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError('Cannot call a class as a function');
+  }
+}
 
 var _Compiler = require('./Compiler');
 
@@ -425,7 +508,7 @@ var Element = (function () {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    get: function () {
+    get: function get() {
       var classes = [];
 
       if (this.attributes && this.attributes.className) {
@@ -757,7 +840,7 @@ var Element = (function () {
 exports['default'] = Element;
 module.exports = exports['default'];
 
-},{"./Compiler":"/home/francois/Dev/syn/node_modules/cinco/Compiler.js","./Elements":"/home/francois/Dev/syn/node_modules/cinco/Elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/Elements.js":[function(require,module,exports){
+},{"./Compiler":"/home/francois/Dev/syn/node_modules/cinco/es5/Compiler.js","./Elements":"/home/francois/Dev/syn/node_modules/cinco/es5/Elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/es5/Elements.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -765,11 +848,25 @@ Object.defineProperty(exports, '__esModule', {
 });
 var _bind = Function.prototype.bind;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = (function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+})();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { 'default': obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError('Cannot call a class as a function');
+  }
+}
 
 var _Element = require('./Element');
 
@@ -794,7 +891,7 @@ var Elements = (function () {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    get: function () {
+    get: function get() {
       return this.elements.length;
     }
   }, {
@@ -903,49 +1000,7 @@ var Elements = (function () {
 exports['default'] = Elements;
 module.exports = exports['default'];
 
-},{"./Element":"/home/francois/Dev/syn/node_modules/cinco/Element.js"}],"/home/francois/Dev/syn/node_modules/cinco/index.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _Element = require('./Element');
-
-var _Element2 = _interopRequireDefault(_Element);
-
-var _Elements = require('./Elements');
-
-var _Elements2 = _interopRequireDefault(_Elements);
-
-var _Document = require('./Document');
-
-var _Document2 = _interopRequireDefault(_Document);
-
-var _Compiler = require('./Compiler');
-
-var _Compiler2 = _interopRequireDefault(_Compiler);
-
-function Cinco() {
-  this.Element = _Element2['default'];
-  this.Elements = _Elements2['default'];
-  this.Document = _Document2['default'];
-  this.Compiler = _Compiler2['default'];
-  this.render = _Compiler2['default'];
-}
-
-var cinco = new Cinco();
-
-exports['default'] = cinco;
-
-if (typeof window !== 'undefined') {
-  window.cinco = cinco;
-}
-module.exports = exports['default'];
-
-},{"./Compiler":"/home/francois/Dev/syn/node_modules/cinco/Compiler.js","./Document":"/home/francois/Dev/syn/node_modules/cinco/Document.js","./Element":"/home/francois/Dev/syn/node_modules/cinco/Element.js","./Elements":"/home/francois/Dev/syn/node_modules/cinco/Elements.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
+},{"./Element":"/home/francois/Dev/syn/node_modules/cinco/es5/Element.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -2472,7 +2527,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var _synComponentsItemView = require('syn/components/Item/View');
 
@@ -2499,7 +2554,7 @@ var Creator = (function (_Element) {
 
     itemBox.find('.item-text').get(0).empty().add(this.inputs());
 
-    this.add(new _cinco.Element('.is-section').add(itemBox));
+    this.add(new _cincoEs5.Element('.is-section').add(itemBox));
   }
 
   _inherits(Creator, _Element);
@@ -2512,7 +2567,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function modern() {
-      return new _cinco.Element('.modern').add(new _cinco.Element('h4').text('Drop image here'), new _cinco.Element('p').text('or'));
+      return new _cincoEs5.Element('.modern').add(new _cincoEs5.Element('h4').text('Drop image here'), new _cincoEs5.Element('p').text('or'));
     }
   }, {
     key: 'legacy',
@@ -2522,7 +2577,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function legacy() {
-      return new _cinco.Element('.phasing').add(new _cinco.Element('button.upload-image-button', { type: 'button' }).text('Choose a file'), new _cinco.Element('input.hide', {
+      return new _cincoEs5.Element('.phasing').add(new _cincoEs5.Element('button.upload-image-button', { type: 'button' }).text('Choose a file'), new _cincoEs5.Element('input.hide', {
         type: 'file',
         value: 'Upload image' }).close());
     }
@@ -2534,7 +2589,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function dropBox() {
-      return new _cinco.Element('.drop-box').add(this.modern(), this.legacy());
+      return new _cincoEs5.Element('.drop-box').add(this.modern(), this.legacy());
     }
   }, {
     key: 'submitButton',
@@ -2544,7 +2599,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function submitButton() {
-      return new _cinco.Element('button.button-create.shy.medium').add(new _cinco.Element('i.fa.fa-bullhorn'));
+      return new _cincoEs5.Element('button.button-create.shy.medium').add(new _cincoEs5.Element('i.fa.fa-bullhorn'));
     }
   }, {
     key: 'itemBox',
@@ -2557,7 +2612,7 @@ var Creator = (function (_Element) {
       return new _synComponentsItemView2['default']({
         item: {
           media: this.dropBox(),
-          buttons: new _cinco.Elements(this.submitButton()),
+          buttons: new _cincoEs5.Elements(this.submitButton()),
           collapsers: false
         }
       });
@@ -2570,7 +2625,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function inputs() {
-      return new _cinco.Element('.item-inputs').add(this.subject(), this.description());
+      return new _cincoEs5.Element('.item-inputs').add(this.subject(), this.description());
     }
   }, {
     key: 'subject',
@@ -2580,7 +2635,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function subject() {
-      return new _cinco.Element('input', {
+      return new _cincoEs5.Element('input', {
         type: 'text',
         placeholder: 'Item subject',
         required: 'required',
@@ -2594,7 +2649,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function description() {
-      return new _cinco.Element('textarea', {
+      return new _cincoEs5.Element('textarea', {
         placeholder: 'Item description',
         required: 'required',
         name: 'description'
@@ -2603,12 +2658,12 @@ var Creator = (function (_Element) {
   }]);
 
   return Creator;
-})(_cinco.Element);
+})(_cincoEs5.Element);
 
 exports['default'] = Creator;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Creator/controllers/create.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Creator/controllers/create.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -3151,7 +3206,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var Details = (function (_Element) {
   function Details(props) {
@@ -3160,7 +3215,7 @@ var Details = (function (_Element) {
     _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this, 'section');
     this.add(this.invitePeople(), this.progressBar());
     for (var i = 0; i < 4; i++) {
-      this.add(new _cinco.Element('.row.details-votes').add(new _cinco.Element('.tablet-30.middle').add(new _cinco.Element('h4', {
+      this.add(new _cincoEs5.Element('.row.details-votes').add(new _cincoEs5.Element('.tablet-30.middle').add(new _cincoEs5.Element('h4', {
         'data-toggle': 'tooltip',
         'data-placement': 'top'
       }))));
@@ -3173,27 +3228,27 @@ var Details = (function (_Element) {
   _createClass(Details, [{
     key: 'invitePeople',
     value: function invitePeople() {
-      return new _cinco.Element('section.feedback-pending.hide').add(new _cinco.Element('h4').text('Feedback pending'), new _cinco.Element('p').text('While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'), new _cinco.Element('a.btn.invite-people', { target: '_blank' }).text('Send'), new _cinco.Element('hr'));
+      return new _cincoEs5.Element('section.feedback-pending.hide').add(new _cincoEs5.Element('h4').text('Feedback pending'), new _cincoEs5.Element('p').text('While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'), new _cincoEs5.Element('a.btn.invite-people', { target: '_blank' }).text('Send'), new _cincoEs5.Element('hr'));
     }
   }, {
     key: 'progressBar',
     value: function progressBar() {
-      return new _cinco.Element('.row').add(new _cinco.Element('.tablet-30.middle').add(new _cinco.Element('h4').text('Promoted')), new _cinco.Element('.tablet-70.middle').add(new _cinco.Element('.progress')));
+      return new _cincoEs5.Element('.row').add(new _cincoEs5.Element('.tablet-30.middle').add(new _cincoEs5.Element('h4').text('Promoted')), new _cincoEs5.Element('.tablet-70.middle').add(new _cincoEs5.Element('.progress')));
     }
   }, {
     key: 'feedback',
     value: function feedback() {
-      return new _cinco.Element('.details-feedbacks').add(new _cinco.Element('h4').text('Feedback'), new _cinco.Element('.feedback-list'));
+      return new _cincoEs5.Element('.details-feedbacks').add(new _cincoEs5.Element('h4').text('Feedback'), new _cincoEs5.Element('.feedback-list'));
     }
   }]);
 
   return Details;
-})(_cinco.Element);
+})(_cincoEs5.Element);
 
 exports['default'] = Details;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js"}],"/home/francois/Dev/syn/node_modules/syn/components/EditAndGoAgain/Controller.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js"}],"/home/francois/Dev/syn/node_modules/syn/components/EditAndGoAgain/Controller.js":[function(require,module,exports){
 'use strict';
 
 !(function Component_EditAndGoAgain_Controller() {
@@ -3603,7 +3658,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
  *  @module       views/Intro
 */
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var _synComponentsPanelView = require('syn/components/Panel/View');
 
@@ -3635,14 +3690,14 @@ var Intro = (function (_Element) {
   _inherits(Intro, _Element);
 
   return Intro;
-})(_cinco.Element);
+})(_cincoEs5.Element);
 
 Intro.selector = '#intro';
 
 exports['default'] = Intro;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js","syn/components/Panel/View":"/home/francois/Dev/syn/node_modules/syn/components/Panel/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/Controller.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js","syn/components/Item/View":"/home/francois/Dev/syn/node_modules/syn/components/Item/View.js","syn/components/Panel/View":"/home/francois/Dev/syn/node_modules/syn/components/Panel/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/Controller.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4008,7 +4063,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var _synLibAppPage = require('syn/lib/app/Page');
 
@@ -4036,7 +4091,7 @@ var Item = (function (_Element) {
 
     this.props = props || {};
 
-    this.add(this.media(), this.buttons(), this.text(), this.arrow(), this.collapsers(), new _cinco.Element('.clear'));
+    this.add(this.media(), this.buttons(), this.text(), this.arrow(), this.collapsers(), new _cincoEs5.Element('.clear'));
   }
 
   _inherits(Item, _Element);
@@ -4046,12 +4101,12 @@ var Item = (function (_Element) {
     value: function media() {
       var _this = this;
 
-      return new _cinco.Element('.item-media-wrapper').add(new _cinco.Element('.item-media').add(function () {
+      return new _cincoEs5.Element('.item-media-wrapper').add(new _cincoEs5.Element('.item-media').add(function () {
         if (_this.props.item) {
           if (_this.props.item.media) {
             return _this.props.item.media;
           } else if (_this.props.item.image) {
-            return new _cinco.Element('img.img-responsive', {
+            return new _cincoEs5.Element('img.img-responsive', {
               src: _this.props.item.image });
           }
         }
@@ -4064,7 +4119,7 @@ var Item = (function (_Element) {
     value: function buttons() {
       var _this2 = this;
 
-      var itemButtons = new _cinco.Element('.item-buttons').condition(function () {
+      var itemButtons = new _cincoEs5.Element('.item-buttons').condition(function () {
         if ('buttons' in _this2.props) {
           return _this2.props.buttons !== false;
         }
@@ -4084,7 +4139,7 @@ var Item = (function (_Element) {
     value: function subject() {
       var _this3 = this;
 
-      return new _cinco.Element('h4.item-subject.header').add(new _cinco.Element('a', {
+      return new _cincoEs5.Element('h4.item-subject.header').add(new _cincoEs5.Element('a', {
         href: function href(locals) {
           if (locals && locals.item) {
             return (0, _synLibAppPage2['default'])('Item Page', locals && locals.item);
@@ -4103,7 +4158,7 @@ var Item = (function (_Element) {
     value: function description() {
       var _this4 = this;
 
-      return new _cinco.Element('.item-description.pre-text').text(function () {
+      return new _cincoEs5.Element('.item-description.pre-text').text(function () {
         if (_this4.props.item) {
           return _this4.props.item.description;
         }
@@ -4113,14 +4168,14 @@ var Item = (function (_Element) {
   }, {
     key: 'text',
     value: function text() {
-      return new _cinco.Element('.item-text').add(new _cinco.Element('.item-truncatable').add(this.subject(), this.description(), new _cinco.Element('.clear.clear-text')));
+      return new _cincoEs5.Element('.item-text').add(new _cincoEs5.Element('.item-truncatable').add(this.subject(), this.description(), new _cincoEs5.Element('.clear.clear-text')));
     }
   }, {
     key: 'collapsers',
     value: function collapsers() {
       var _this5 = this;
 
-      return new _cinco.Element('.item-collapsers').condition(function () {
+      return new _cincoEs5.Element('.item-collapsers').condition(function () {
         if ('collapsers' in _this5.props) {
           return _this5.props.collapsers !== false;
         }
@@ -4130,39 +4185,39 @@ var Item = (function (_Element) {
   }, {
     key: 'promote',
     value: function promote() {
-      return new _cinco.Element('.promote.is-container').add(new _cinco.Element('.is-section').add(new _synComponentsPromoteView2['default'](this.props)));
+      return new _cincoEs5.Element('.promote.is-container').add(new _cincoEs5.Element('.is-section').add(new _synComponentsPromoteView2['default'](this.props)));
     }
   }, {
     key: 'below',
     value: function below() {
-      return new _cinco.Element('.children.is-container').add(new _cinco.Element('.is-section'));
+      return new _cincoEs5.Element('.children.is-container').add(new _cincoEs5.Element('.is-section'));
     }
   }, {
     key: 'details',
     value: function details() {
-      return new _cinco.Element('.details.is-container').add(new _cinco.Element('.is-section').add(new _synComponentsDetailsView2['default'](this.props)));
+      return new _cincoEs5.Element('.details.is-container').add(new _cincoEs5.Element('.is-section').add(new _synComponentsDetailsView2['default'](this.props)));
     }
   }, {
     key: 'arrow',
     value: function arrow() {
       var _this6 = this;
 
-      return new _cinco.Element('.item-arrow').condition(function () {
+      return new _cincoEs5.Element('.item-arrow').condition(function () {
         if (_this6.props.item) {
           return _this6.props.item.collapsers !== false;
         }
         return true;
-      }).add(new _cinco.Element('div').add(new _cinco.Element('i.fa.fa-arrow-down')));
+      }).add(new _cincoEs5.Element('div').add(new _cincoEs5.Element('i.fa.fa-arrow-down')));
     }
   }]);
 
   return Item;
-})(_cinco.Element);
+})(_cincoEs5.Element);
 
 exports['default'] = Item;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js","syn/components/Details/View":"/home/francois/Dev/syn/node_modules/syn/components/Details/View.js","syn/components/ItemDefaultButtons/View":"/home/francois/Dev/syn/node_modules/syn/components/ItemDefaultButtons/View.js","syn/components/Promote/View":"/home/francois/Dev/syn/node_modules/syn/components/Promote/View.js","syn/lib/app/Page":"/home/francois/Dev/syn/node_modules/syn/lib/app/Page.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/media.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js","syn/components/Details/View":"/home/francois/Dev/syn/node_modules/syn/components/Details/View.js","syn/components/ItemDefaultButtons/View":"/home/francois/Dev/syn/node_modules/syn/components/ItemDefaultButtons/View.js","syn/components/Promote/View":"/home/francois/Dev/syn/node_modules/syn/components/Promote/View.js","syn/lib/app/Page":"/home/francois/Dev/syn/node_modules/syn/lib/app/Page.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Item/controllers/media.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4467,7 +4522,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var ItemDefaultButtons = (function (_Elements) {
   function ItemDefaultButtons(props) {
@@ -4475,28 +4530,28 @@ var ItemDefaultButtons = (function (_Elements) {
 
     _get(Object.getPrototypeOf(ItemDefaultButtons.prototype), 'constructor', this).call(this);
 
-    var loginButton = new _cinco.Element('button.item-toggle-promote.shy');
+    var loginButton = new _cincoEs5.Element('button.item-toggle-promote.shy');
 
-    loginButton.add(new _cinco.Element('span.promoted').text('0'), new _cinco.Element('i.fa.fa-bullhorn'));
+    loginButton.add(new _cincoEs5.Element('span.promoted').text('0'), new _cincoEs5.Element('i.fa.fa-bullhorn'));
 
-    var joinButton = new _cinco.Element('button.item-toggle-details.shy');
+    var joinButton = new _cincoEs5.Element('button.item-toggle-details.shy');
 
-    joinButton.add(new _cinco.Element('span.promoted-percent').text('0%'), new _cinco.Element('i.fa.fa-signal'));
+    joinButton.add(new _cincoEs5.Element('span.promoted-percent').text('0%'), new _cincoEs5.Element('i.fa.fa-signal'));
 
-    var related = new _cinco.Element('div').add(new _cinco.Element('span.related'));
+    var related = new _cincoEs5.Element('div').add(new _cincoEs5.Element('span.related'));
 
-    this.add(loginButton, new _cinco.Element('div'), joinButton, related);
+    this.add(loginButton, new _cincoEs5.Element('div'), joinButton, related);
   }
 
   _inherits(ItemDefaultButtons, _Elements);
 
   return ItemDefaultButtons;
-})(_cinco.Elements);
+})(_cincoEs5.Elements);
 
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Join/Controller.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Join/Controller.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5087,7 +5142,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var _synComponentsCreatorView = require('syn/components/Creator/View');
 
@@ -5116,51 +5171,51 @@ var Panel = (function (_Element) {
   _createClass(Panel, [{
     key: 'panelHeading',
     value: function panelHeading() {
-      return new _cinco.Element('.panel-heading').add(new _cinco.Element('h4.fa.fa-plus.toggle-creator').condition(this.props.creator !== false), new _cinco.Element('h4.panel-title'));
+      return new _cincoEs5.Element('.panel-heading').add(new _cincoEs5.Element('h4.fa.fa-plus.toggle-creator').condition(this.props.creator !== false), new _cincoEs5.Element('h4.panel-title'));
     }
   }, {
     key: 'panelBody',
     value: function panelBody() {
-      var body = new _cinco.Element('.panel-body');
+      var body = new _cincoEs5.Element('.panel-body');
 
       if (this.props.creator !== false) {
         body.add(new _synComponentsCreatorView2['default'](this.props));
       }
 
-      var items = new _cinco.Element('.items');
+      var items = new _cincoEs5.Element('.items');
 
       body.add(items);
 
       body.add(this.loadingItems());
 
-      body.add(new _cinco.Element('.padding.hide.pre').add(this.viewMore(), this.addSomething()));
+      body.add(new _cincoEs5.Element('.padding.hide.pre').add(this.viewMore(), this.addSomething()));
 
       return body;
     }
   }, {
     key: 'loadingItems',
     value: function loadingItems() {
-      return new _cinco.Element('.loading-items.hide').add(new _cinco.Element('i.fa.fa-circle-o-notch.fa-spin'), new _cinco.Element('span').text('Loading items...'));
+      return new _cincoEs5.Element('.loading-items.hide').add(new _cincoEs5.Element('i.fa.fa-circle-o-notch.fa-spin'), new _cincoEs5.Element('span').text('Loading items...'));
     }
   }, {
     key: 'viewMore',
     value: function viewMore() {
-      return new _cinco.Element('.load-more.hide').add(new _cinco.Element('a', { href: '#' }).text('View more'));
+      return new _cincoEs5.Element('.load-more.hide').add(new _cincoEs5.Element('a', { href: '#' }).text('View more'));
     }
   }, {
     key: 'addSomething',
     value: function addSomething() {
-      return new _cinco.Element('.create-new').add(new _cinco.Element('a', { href: '#' }).text('Click the + to be the first to add something here'));
+      return new _cincoEs5.Element('.create-new').add(new _cincoEs5.Element('a', { href: '#' }).text('Click the + to be the first to add something here'));
     }
   }]);
 
   return Panel;
-})(_cinco.Element);
+})(_cincoEs5.Element);
 
 exports['default'] = Panel;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js","syn/components/Creator/View":"/home/francois/Dev/syn/node_modules/syn/components/Creator/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Promote/Controller.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js","syn/components/Creator/View":"/home/francois/Dev/syn/node_modules/syn/components/Creator/View.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Promote/Controller.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5465,7 +5520,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var Promote = (function (_Element) {
   function Promote(props) {
@@ -5483,7 +5538,7 @@ var Promote = (function (_Element) {
   _createClass(Promote, [{
     key: 'promoteImage',
     value: function promoteImage(hand) {
-      return new _cinco.Element('.image.gutter', {
+      return new _cincoEs5.Element('.image.gutter', {
         style: 'float: left; width: 40%',
         className: [hand + '-item']
       });
@@ -5491,23 +5546,23 @@ var Promote = (function (_Element) {
   }, {
     key: 'promoteSubject',
     value: function promoteSubject(hand) {
-      return new _cinco.Element('.subject.gutter', {
+      return new _cincoEs5.Element('.subject.gutter', {
         className: [hand + '-item']
-      }).add(new _cinco.Element('h4'));
+      }).add(new _cincoEs5.Element('h4'));
     }
   }, {
     key: 'promoteDescription',
     value: function promoteDescription(hand) {
-      return new _cinco.Element('.description.gutter.pre-text', {
+      return new _cincoEs5.Element('.description.gutter.pre-text', {
         className: [hand + '-item']
       });
     }
   }, {
     key: 'promoteReference',
     value: function promoteReference(hand) {
-      return new _cinco.Element('.references.gutter', {
+      return new _cincoEs5.Element('.references.gutter', {
         className: [hand + '-item']
-      }).add(new _cinco.Element('a', {
+      }).add(new _cincoEs5.Element('a', {
         rel: 'nofollow',
         target: '_blank'
       }));
@@ -5516,16 +5571,16 @@ var Promote = (function (_Element) {
     key: 'promoteSliders',
     value: function promoteSliders(hand) {
 
-      var sliders = new _cinco.Element('.sliders', {
+      var sliders = new _cincoEs5.Element('.sliders', {
         className: [hand + '-item']
       });
 
       for (var i = 0; i < 4; i++) {
-        var slider = new _cinco.Element('.criteria-wrapper');
+        var slider = new _cincoEs5.Element('.criteria-wrapper');
 
-        slider.add(new _cinco.Element('row').add(new _cinco.Element('.tablet-40').add(new _cinco.Element('h4').add(new _cinco.Element('button.criteria-name.shy.block').text('Criteria'))), new _cinco.Element('.tablet-60', {
+        slider.add(new _cincoEs5.Element('row').add(new _cincoEs5.Element('.tablet-40').add(new _cincoEs5.Element('h4').add(new _cincoEs5.Element('button.criteria-name.shy.block').text('Criteria'))), new _cincoEs5.Element('.tablet-60', {
           style: 'margin-top: 2.5em'
-        }).add(new _cinco.Element('input.block', {
+        }).add(new _cincoEs5.Element('input.block', {
           type: 'range',
           min: '-1',
           max: '1',
@@ -5533,7 +5588,7 @@ var Promote = (function (_Element) {
           step: '1'
         }))));
 
-        slider.add(new _cinco.Element('.row.is-container.criteria-description-section').add(new _cinco.Element('.is-section').add(new _cinco.Element('.gutter.watch-100.criteria-description'))));
+        slider.add(new _cincoEs5.Element('.row.is-container.criteria-description-section').add(new _cincoEs5.Element('.is-section').add(new _cincoEs5.Element('.gutter.watch-100.criteria-description'))));
 
         sliders.add(slider);
       }
@@ -5543,45 +5598,45 @@ var Promote = (function (_Element) {
   }, {
     key: 'promoteFeedback',
     value: function promoteFeedback(hand) {
-      return new _cinco.Element('.feedback', {
+      return new _cincoEs5.Element('.feedback', {
         className: [hand + '-item']
-      }).add(new _cinco.Element('textarea.feedback-entry.block', {
+      }).add(new _cincoEs5.Element('textarea.feedback-entry.block', {
         placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?'
       }));
     }
   }, {
     key: 'promoteButton',
     value: function promoteButton(hand) {
-      return new _cinco.Element('.gutter', {
+      return new _cincoEs5.Element('.gutter', {
         className: [hand + '-item']
-      }).add(new _cinco.Element('button.block.promote').text('Promote'));
+      }).add(new _cincoEs5.Element('button.block.promote').text('Promote'));
     }
   }, {
     key: 'editAndGoAgain',
     value: function editAndGoAgain(hand) {
-      return new _cinco.Element('.gutter', {
+      return new _cincoEs5.Element('.gutter', {
         className: [hand + '-item']
-      }).add(new _cinco.Element('button.block.edit-and-go-again-toggle').text('Edit and go again'));
+      }).add(new _cincoEs5.Element('button.block.edit-and-go-again-toggle').text('Edit and go again'));
     }
   }, {
     key: 'compose',
     value: function compose() {
-      return new _cinco.Elements().add(new _cinco.Element('header.promote-steps').add(new _cinco.Element('h2').add(new _cinco.Element('span.cursor').text('1'), new _cinco.Element('span').text(' of '), new _cinco.Element('span.limit').text('5')), new _cinco.Element('h4').text('Evaluate each item below')), new _cinco.Element('.items-side-by-side').add(
+      return new _cincoEs5.Elements().add(new _cincoEs5.Element('header.promote-steps').add(new _cincoEs5.Element('h2').add(new _cincoEs5.Element('span.cursor').text('1'), new _cincoEs5.Element('span').text(' of '), new _cincoEs5.Element('span.limit').text('5')), new _cincoEs5.Element('h4').text('Evaluate each item below')), new _cincoEs5.Element('.items-side-by-side').add(
       // 1 column
-      new _cinco.Element('.split-hide-up').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left'), this.promoteReference('left'), this.promoteSliders('left'), this.promoteFeedback('left'), this.promoteButton('left'), this.editAndGoAgain('left'), this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'), this.promoteReference('right'), this.promoteSliders('right'), this.promoteFeedback('right'), this.promoteButton('right'), this.editAndGoAgain('right')),
+      new _cincoEs5.Element('.split-hide-up').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left'), this.promoteReference('left'), this.promoteSliders('left'), this.promoteFeedback('left'), this.promoteButton('left'), this.editAndGoAgain('left'), this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'), this.promoteReference('right'), this.promoteSliders('right'), this.promoteFeedback('right'), this.promoteButton('right'), this.editAndGoAgain('right')),
 
       // 2 columns
-      new _cinco.Element('.split-hide-down').add(new _cinco.Element('.row').add(new _cinco.Element('.split-50.watch-100').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left')), new _cinco.Element('.split-50.watch-100').add(this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'))), new _cinco.Element('.row').add(new _cinco.Element('.split-50.watch-100').add(this.promoteReference('left')), new _cinco.Element('.split-50.watch-100').add(this.promoteReference('right'))), new _cinco.Element('.row').add(new _cinco.Element('.split-50.watch-100').add(this.promoteSliders('left'), this.promoteFeedback('left')), new _cinco.Element('.split-50.watch-100').add(this.promoteSliders('right'), this.promoteFeedback('right'))), new _cinco.Element('h4.text-center').text('Which of these is most important for the community to consider?'), new _cinco.Element('.row').add(new _cinco.Element('.split-50.watch-100').add(this.promoteButton('left')), new _cinco.Element('.split-50.watch-100').add(this.promoteButton('right'))), new _cinco.Element('.row').add(new _cinco.Element('.split-50.watch-100').add(this.editAndGoAgain('left')), new _cinco.Element('.split-50.watch-100').add(this.editAndGoAgain('right')))), new _cinco.Element('button.finish.block').text('Neither')));
+      new _cincoEs5.Element('.split-hide-down').add(new _cincoEs5.Element('.row').add(new _cincoEs5.Element('.split-50.watch-100').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left')), new _cincoEs5.Element('.split-50.watch-100').add(this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'))), new _cincoEs5.Element('.row').add(new _cincoEs5.Element('.split-50.watch-100').add(this.promoteReference('left')), new _cincoEs5.Element('.split-50.watch-100').add(this.promoteReference('right'))), new _cincoEs5.Element('.row').add(new _cincoEs5.Element('.split-50.watch-100').add(this.promoteSliders('left'), this.promoteFeedback('left')), new _cincoEs5.Element('.split-50.watch-100').add(this.promoteSliders('right'), this.promoteFeedback('right'))), new _cincoEs5.Element('h4.text-center').text('Which of these is most important for the community to consider?'), new _cincoEs5.Element('.row').add(new _cincoEs5.Element('.split-50.watch-100').add(this.promoteButton('left')), new _cincoEs5.Element('.split-50.watch-100').add(this.promoteButton('right'))), new _cincoEs5.Element('.row').add(new _cincoEs5.Element('.split-50.watch-100').add(this.editAndGoAgain('left')), new _cincoEs5.Element('.split-50.watch-100').add(this.editAndGoAgain('right')))), new _cincoEs5.Element('button.finish.block').text('Neither')));
     }
   }]);
 
   return Promote;
-})(_cinco.Element);
+})(_cincoEs5.Element);
 
 exports['default'] = Promote;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Promote/controllers/render-item.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js"}],"/home/francois/Dev/syn/node_modules/syn/components/Promote/controllers/render-item.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6072,7 +6127,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _cinco = require('cinco');
+var _cincoEs5 = require('cinco/es5');
 
 var YouTube = (function (_Element) {
   function YouTube(props) {
@@ -6104,7 +6159,7 @@ var YouTube = (function (_Element) {
         return youTubeId = v;
       });
 
-      return new _cinco.Element('iframe[allowfullscreen]', {
+      return new _cincoEs5.Element('iframe[allowfullscreen]', {
         frameborder: '0',
         width: '300',
         height: '175',
@@ -6114,14 +6169,14 @@ var YouTube = (function (_Element) {
   }]);
 
   return YouTube;
-})(_cinco.Element);
+})(_cincoEs5.Element);
 
 YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 
 exports['default'] = YouTube;
 module.exports = exports['default'];
 
-},{"cinco":"/home/francois/Dev/syn/node_modules/cinco/index.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/app/Cache.js":[function(require,module,exports){
+},{"cinco/es5":"/home/francois/Dev/syn/node_modules/cinco/es5.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/app/Cache.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

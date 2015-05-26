@@ -1,6 +1,6 @@
 'use strict';
 
-import {Element} from 'cinco';
+import {Element} from 'cinco/es5';
 import config from 'syn/config';
 import Page from 'syn/lib/app/Page';
 

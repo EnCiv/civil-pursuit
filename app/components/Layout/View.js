@@ -1,6 +1,6 @@
 'use strict'
 
-import {Document, Element} from 'cinco';
+import {Document, Element} from 'cinco/es5';
 
 import config from 'syn/config';
 

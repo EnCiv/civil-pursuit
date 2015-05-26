@@ -1,7 +1,7 @@
 'use strict'
 
 import Layout from 'syn/components/Layout/View';
-import {Element} from 'cinco';
+import {Element} from 'cinco/es5';
 
 class PageNotFound extends Layout {
   constructor(props) {
