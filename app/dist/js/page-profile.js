@@ -1148,6 +1148,7 @@ var App = (function (_EventEmitter) {
       this.store.socket = {};
 
       this.socket.on('welcome', function (user) {
+        console.log('Connected to socket');
         _this.socket.synuser = user;
         _this.emit('ready');
       });
