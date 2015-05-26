@@ -30,15 +30,7 @@
     
     { name: 'mocha test/models/User/statics/disposable'},
 
-    { name: 'mocha test/web/landing-page' },
-    { name: 'mocha test/web/terms-of-service' },
-    { name: 'mocha test/web/not-found' },
-    { name: 'mocha test/web/item-not-found' },
-    { name: 'mocha test/web/item-page' },
-    { name: 'mocha test/web/create-topic' },
-    { name: 'mocha test/web/promote' },
-    { name: 'mocha test/web/sign-in' },
-    { name: 'mocha test/web/sign-up' },
+    { name: 'node app/bin/test test/web/pages/terms-of-service' },
 
     { name: 'git push heroku master' }
   ];
