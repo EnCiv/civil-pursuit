@@ -7,7 +7,7 @@ class YouTube extends Element {
   constructor (props) {
     super('.video_container');
 
-    if ( props.item && props.settings.env !== 'development' ) {
+    if ( props.item && props.settings.env !== 'development2' ) {
       let references = props.item.references || [];
 
       if ( references.length ) {
@@ -15,7 +15,7 @@ class YouTube extends Element {
 
         if ( YouTube.regex.test(url) ) {
           this.add(
-            this.iframe()
+            this.iframe(url)
           );
         }
       }

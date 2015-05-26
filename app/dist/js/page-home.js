@@ -7216,14 +7216,14 @@ var YouTube = (function (_Element) {
 
     _get(Object.getPrototypeOf(YouTube.prototype), 'constructor', this).call(this, '.video_container');
 
-    if (props.item && props.settings.env !== 'development') {
+    if (props.item && props.settings.env !== 'development2') {
       var references = props.item.references || [];
 
       if (references.length) {
         var url = references[0].url;
 
         if (YouTube.regex.test(url)) {
-          this.add(this.iframe());
+          this.add(this.iframe(url));
         }
       }
     }
