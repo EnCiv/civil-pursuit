@@ -179,6 +179,10 @@ class Describe extends EventEmitter {
           case 'text':
             this.getText(assertion, context, fulfill, reject);
             return;
+
+          case 'html':
+            this.getHTML(assertion, context, fulfill, reject);
+            return;
         }
 
         try {
@@ -296,6 +300,37 @@ class Describe extends EventEmitter {
 
         try {
           assertion.handler(text);
+
+          fulfill();
+        }
+        catch ( error ) {
+          this.emit('ko', assertion.describe);
+          reject(error);
+        }
+      }));
+    });
+
+  }
+
+  /** Driver getHTML
+  */
+
+  getHTML (assertion, context, fulfill, reject) { // 253
+
+    let d = new Domain().on('error', reject);
+
+    d.run(() => {
+      let selector = context.html;
+
+      this._driver.client.getHTML(selector, d.intercept(html => {
+        if ( ! this._isClean ) {
+          this.emit('ko', assertion.describe);
+          reject(new Error('Is not clean'));
+          return;
+        }
+
+        try {
+          assertion.handler(html);
 
           fulfill();
         }

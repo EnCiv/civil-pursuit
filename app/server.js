@@ -178,6 +178,7 @@ class HttpServer extends EventEmitter {
 
   getTermsOfServicePage () {
     this.app.get('/page/terms-of-service', (req, res, next) => {
+      req.page = 'terms of service';
       fs
         .createReadStream('TOS.md')
         .on('error', next)

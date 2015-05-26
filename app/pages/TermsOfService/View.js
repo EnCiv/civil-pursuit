@@ -14,7 +14,7 @@ class TOS extends Layout {
     var main = this.find('#main').get(0);
 
     main.add(
-      new Element('div').text(marked(props.TOS))
+      new Element('#terms-of-service/container').text(marked(props.TOS))
     );
   }
 }
