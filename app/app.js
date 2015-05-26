@@ -19,6 +19,7 @@ class App extends EventEmitter {
 
       this.socket
         .on('welcome', user => {
+          console.log('Connected to socket');
           this.socket.synuser = user;
           this.emit('ready');
         });
