@@ -21,16 +21,16 @@
 
     { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 1, 8792, 7182] },
 
-    { name: 'mocha test/lib/util/arguments-to-array' },
-    { name: 'mocha test/lib/util/cloudinary' },
-    { name: 'mocha test/lib/util/di' },
-    { name: 'mocha test/lib/util/encrypt' },
-    { name: 'mocha test/lib/util/get-url-title' },
-    { name: 'mocha test/lib/util/is/cloudinary-url' },
+    // { name: 'mocha test/lib/util/arguments-to-array' },
+    // { name: 'mocha test/lib/util/cloudinary' },
+    // { name: 'mocha test/lib/util/di' },
+    // { name: 'mocha test/lib/util/encrypt' },
+    // { name: 'mocha test/lib/util/get-url-title' },
+    // { name: 'mocha test/lib/util/is/cloudinary-url' },
     
-    { name: 'mocha test/models/Item/Item test/models/Item/methods test/models/Item/statics test/models/Item/pre' },
+    // { name: 'mocha test/models/Item/Item test/models/Item/methods test/models/Item/statics test/models/Item/pre' },
     
-    { name: 'mocha test/models/User/statics/disposable'},
+    // { name: 'mocha test/models/User/statics/disposable'},
 
     { name: 'node app/bin/test test/web/pages/terms-of-service' },
     { name: 'node app/bin/test test/web/pages/home' },
