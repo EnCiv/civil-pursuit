@@ -5,9 +5,7 @@ import should from 'should';
 import marked from 'marked';
 import Describe from 'syn/lib/app/Describe';
 import config from 'syn/config.json';
-import {EventEmitter} from 'events';
-import TopBar from '../components/top-bar';
-import Footer from '../components/footer';
+import Layout from '../components/layout';
 
 class TOSPage extends Describe {
 
@@ -17,6 +15,8 @@ class TOSPage extends Describe {
         'page'            :   'Terms Of Service'
       }
     });
+
+    let title = config.title.prefix + 'Terms of Service';
 
     this
 
@@ -37,19 +37,8 @@ class TOSPage extends Describe {
       )
 
       .assert(
-        'document has the right title',
-        { document: 'title' },
-        title => {
-          title.should.be.exactly(config.title.prefix + 'Terms of Service')
-        }
+        () => new Layout({ title: title }).driver(this._driver)
       )
-
-      .assert(
-        'document\'s encoding is UTF-8',
-        { attribute: { charset: 'meta[charset]' } },
-        charset => { charset.should.be.exactly('utf-8') })
-
-      .assert(() => new TopBar().driver(this._driver))
 
       .assert(
         'Page has the same content than source',
@@ -70,8 +59,6 @@ class TOSPage extends Describe {
           html.should.be.exactly(this._definitions.source);
         }
       )
-
-      .assert(() => new Footer().driver(this._driver))
 
     ;
   }

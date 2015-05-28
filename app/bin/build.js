@@ -39,6 +39,9 @@
   }
 
   function browserifyPages (pages, done) {
+
+    console.log('>> received request to browserify pages', pages);
+
     fs.readdir(paths.pages, function (error, files) {
       if ( error ) {
         return done(error);
@@ -50,7 +53,7 @@
         });
       }
 
-      console.log('browserifying pages', files);
+      console.log('>> will now browserify these pages', files);
 
       async.each(files, function (page, done) {
         var view;
@@ -60,10 +63,15 @@
           paths.js, 'page-' + S(page).humanize().slugify().s + '.js'
         ));
 
+        console.log('>> will now stat', source);
+
         fs.stat(source, function (error, stat) {
           if ( error ) {
+            console.log('>> skipping -- controller not found', source);
             return done();
           }
+
+          console.log('>> file found', source);
 
           browserifyFile(source, dest, done);
         });
@@ -73,6 +81,7 @@
   }
 
   function browserifyFile (source, dest, done) {
+    console.log('>> will now browserify', source, 'to', dest.path);
     browserify({
       entries     :   [source],
       transform   :   [babelify.configure({ modules: 'common', stage: 1 })],

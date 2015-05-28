@@ -6,24 +6,18 @@ import config from 'syn/config.json';
 import Page from 'syn/lib/app/Page';
 import Layout from '../components/layout';
 
-class ItemPage extends Describe {
+class ProfilePage extends Describe {
 
   constructor () {
     super('Item Page', {
-      'disposable'  :   [{ 'model': 'Item', 'name': 'Item' }]
-    });
-
-    this.on('disposed', () => {
-      this.driver({
-        uri: () => Page('Item Page', this.define('disposable').Item)
-      })
+      'disposable'  :   [{ 'model': 'User', 'name': 'User' }],
+      'web driver'  :   { page: 'Profile' }
     });
 
     this
 
       .assert(() => {
-        let title = config.title.prefix +
-          this.define('disposable').Item.subject;
+        let title = config.title.prefix + 'Profile';
 
         return new Layout({ title :title }).driver(this._driver);
       });
@@ -33,4 +27,4 @@ class ItemPage extends Describe {
 
 }
 
-export default ItemPage;
+export default ProfilePage;

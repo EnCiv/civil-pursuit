@@ -6,6 +6,10 @@ import {Element} from 'cinco/es5';
 
 class ProfilePage extends Layout {
   constructor(props) {
+    props = props || {};
+
+    props.title = props.title || 'Profile';
+
     super(props);
     this.props = props;
 

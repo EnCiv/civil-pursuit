@@ -15,11 +15,11 @@
   var deployMessage = process.argv[2];
 
   var tests = [
-    { name: 'app/bin/build.js css' },
-    { name: 'app/bin/build.js browserify-pages' },
-    { name: 'app/bin/build.js uglify-pages' },
+    // { name: 'app/bin/build.js css' },
+    // { name: 'app/bin/build.js browserify-pages' },
+    // { name: 'app/bin/build.js uglify-pages' },
 
-    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '\\ ') +'"', ok: [0, 1, 8792, 7182] },
+    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '¿¿¿') +'"', ok: [0, 1, 8792, 7182] },
 
     // { name: 'mocha test/lib/util/arguments-to-array' },
     // { name: 'mocha test/lib/util/cloudinary' },
@@ -37,6 +37,7 @@
     { name: 'node app/bin/test test/web/pages/home' },
     { name: 'node app/bin/test test/web/pages/item-not-found' },
     { name: 'node app/bin/test test/web/pages/item-page' },
+    { name: 'node app/bin/test test/web/pages/profile' },
 
     { name: 'git push heroku master' }
   ];
@@ -47,7 +48,9 @@
 
       console.log("\n", ('⌛ ' + action.name).bgBlue.bold, "\n");
 
-      var chunks = test.name.split(/\s/);
+      var chunks = test.name.split(/\s/).map(function (chunk) {
+        return chunk.replace(/¿¿¿/g, ' ');
+      });
 
       var cmd = chunks.shift();
 
