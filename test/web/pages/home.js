@@ -22,7 +22,9 @@ class HomePage extends Describe {
       .assert(
         'document has the right title',
         { document: 'title' },
-        title => { title.should.be.exactly(config.title) }
+        title => {
+          title.should.be.exactly(config.title.prefix + config.title.default)
+        }
       )
 
       .assert(
