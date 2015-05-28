@@ -34,7 +34,22 @@ class Layout extends Document {
   }
 
   title () {
-    return new Element('title').text(config.title);
+
+    let elem = new Element('title');
+
+    if ( this.props.title ) {
+      elem.text(config.title.prefix + this.props.title);
+    }
+
+    else if ( this.props.item ) {
+      elem.text(config.title.prefix + this.props.item.subject);
+    }
+
+    else {
+      elem.text(config.title.prefix + config.title.default);
+    }
+
+    return elem;
   }
 
   uACompatible () {

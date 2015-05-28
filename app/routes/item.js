@@ -1,46 +1,53 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function ItemRoute (req, res, next) {
+import domainRun from 'syn/lib/util/domain-run';
+import Item from 'syn/models/Item';
 
-    var app = this;
+function ItemRoute (req, res, next) {
 
-    app.arte.emit('message', 'Item Page', {
-      'looking in DB for item with short id'  :   req.params.item_short_id
-    });
+  domainRun(
+    d => {
+      
+      this.emit('message', 'Item Page', {
+        'looking in DB for item with short id' : req.params.item_short_id
+      });
 
-    require('syn/models/Item')
-      .getItem(req.params.item_short_id)
-      .then(function (item) {
+      Item
+        .getItem(req.params.item_short_id)
+        .then(item => {
 
-        if ( ! item ) {
-          app.arte.emit('message', 'Item Page', {
-            'item not found in DB': req.params.item_short_id
+          if ( ! item ) {
+            this.emit('message', 'Item Page', {
+              'item not found in DB': req.params.item_short_id
+            });
+
+            res.status(404);
+            req.page = 'not-found';
+
+            res.locals.item = null;
+
+            return next();
+          }
+
+          res.locals.item = item;
+
+          req.params.page = 'item';
+
+          this.emit('message', 'Item Page', {
+            'item found': {
+              'id': req.params.item_short_id,
+              '_id': item._id
+            }
           });
 
-          res.status(404);
-          req.page = 'not-found';
+          next();
 
-          return next();
-        }
+        }, next);
+    },
 
-        res.locals.item = item;
+    error => next
+  );
 
-        req.params.page = 'item';
+}
 
-        app.arte.emit('message', 'Item Page', {
-          'item found': {
-            'id': req.params.item_short_id,
-            '_id': item._id
-          }
-        });
-
-        next();
-
-      }, next);
-  }
-
-  module.exports = ItemRoute;
-
-} ();
+export default ItemRoute;

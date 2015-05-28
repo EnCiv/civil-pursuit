@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-! function () {
+! function appBinTest () {
   
   'use strict';
 
@@ -40,6 +40,8 @@
   var mongoose = require('mongoose');
 
   mongoose.connect(process.env.MONGOHQ_URL);
+
+  console.log('Running test', test._name);
 
   test
     .run()

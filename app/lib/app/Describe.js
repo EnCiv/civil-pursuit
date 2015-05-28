@@ -21,6 +21,8 @@ class Describe extends EventEmitter {
 
     this._definitions = {};
 
+    this._disposed = false;
+
     this._isClean = true;
 
     for ( let option in options ) {
@@ -31,26 +33,58 @@ class Describe extends EventEmitter {
     }
   }
 
+  /** Create disposable models */
+
+  disposable (...models) {
+
+    if ( ! this.define('disposable') ) {
+      this.define('disposable', {});
+    }
+
+    let promises = models.map(model =>
+      require('syn/models/' + model.model)
+        .disposable()
+        .then(disposed => {
+          console.log('>> new disposable', model.model, disposed);
+          this.define('disposable')[model.model] = disposed
+        })
+    );
+
+    return Promise.all(promises);
+  }
+
   /** Alias to build and runAll */
 
   run () {
-    console.log(this._name.bgBlue.bold);
+    let d  = new Domain().on('error', error => { this.emit('error', error) });
 
-    this.init();
+    d.run(() => {
+      console.log(this._name.bgBlue.bold);
 
-    this.on('built', assertions => this.runAll(assertions));
+      this.init();
+
+      this.on('built', assertions => this.runAll(assertions));
+    });
 
     return this;
   }
 
-  /** Build the assertions but start driver first if needed */
+  /** Build the assertions but create disposable data and start driver first if any needed */
 
   init () {
     process.nextTick(() => {
+      if ( this._options.disposable && ! this._disposed ) {
+        return this.disposable(...this._options.disposable).then(() => {
+          this._disposed = true;
+          this.emit('disposed');
+          this.init();
+        });
+      }
+
       if ( this._driverOptions ) {
         this._driver = new WebDriver(this._driverOptions);
 
-        this.emit('message', 'start driver');
+        this.emit('message', 'start driver', this._driverOptions);
 
         this._driver
           .on('ready', () =>
@@ -415,11 +449,14 @@ class Describe extends EventEmitter {
     return this;
   }
 
-  /** Add a new definition */
+  /** Get/set definition */
 
   define (key, value) {
-    this._definitions[key] = value;
-    return this;
+    if ( '1' in arguments ) {
+      this._definitions[key] = value;
+      return this;
+    }
+    return this._definitions[key];
   }
 
   /** Create driver client (or inherit driver from outside)
@@ -435,24 +472,39 @@ class Describe extends EventEmitter {
       return this;
     }
 
-    let uri;
+    let url;
 
-    let url = process.env.SYNAPP_SELENIUM_TARGET;
-
-    if ( typeof options.page === 'string' ) {
-      url += Page(options.page);
+    if ( options.url ) {
+      url = options.url;
     }
 
-    else if ( Array.isArray(options.page) ) {
-      url += Page.apply(null, options.page);
+    else if ( options.uri ) {
+      if ( typeof options.uri === 'string' ) {
+         url = process.env.SYNAPP_SELENIUM_TARGET + options.uri;
+      }
+      else if ( typeof options.uri === 'function' ) {
+         url = process.env.SYNAPP_SELENIUM_TARGET + options.uri();
+      }
     }
 
-    else if ( options.page === false ) {
-      url += '/no/such/page';
-    }
+    else {
+      url = process.env.SYNAPP_SELENIUM_TARGET;
 
-    else if ( options.page === null ) {
-      url += '/item/1234/no-such-item';
+      if ( typeof options.page === 'string' ) {
+        url += Page(options.page);
+      }
+
+      else if ( Array.isArray(options.page) ) {
+        url += Page.apply(null, options.page);
+      }
+
+      else if ( options.page === false ) {
+        url += '/no/such/page';
+      }
+
+      else if ( options.page === null ) {
+        url += '/item/1234/no-such-item';
+      }
     }
 
     let driverOptions = {
@@ -471,6 +523,8 @@ class Describe extends EventEmitter {
         }
       };
     }
+
+    console.log('driver options', driverOptions)
 
     this._driverOptions = driverOptions;
 

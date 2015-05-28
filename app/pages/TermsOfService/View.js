@@ -8,7 +8,12 @@ import {Element}            from 'cinco/es5';
 
 class TOS extends Layout {
   constructor(props) {
+    props = props || {};
+
+    props.title = 'Terms of Service';
+
     super(props);
+
     this.props = props;
 
     var main = this.find('#main').get(0);

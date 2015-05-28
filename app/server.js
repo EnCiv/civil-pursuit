@@ -197,7 +197,7 @@ class HttpServer extends EventEmitter {
 
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug',
-      this.itemRoute,
+      this.itemRoute.bind(this),
       this.renderPage.bind(this)
     );
   }

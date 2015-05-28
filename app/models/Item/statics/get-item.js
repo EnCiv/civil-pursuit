@@ -23,7 +23,12 @@
           .findOne({ "id": item_short_id })
           .exec(domain.intercept(function (item) {
 
-            fulfill(item);
+            item.toPanelItem((error, item) => {
+              if ( error ) {
+                return reject(error);
+              }
+              fulfill(item);
+            });
 
           }));
       });
