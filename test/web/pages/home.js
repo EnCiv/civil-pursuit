@@ -3,10 +3,10 @@
 import should from 'should';
 import Describe from 'syn/lib/app/Describe';
 import config from 'syn/config.json';
-
 import TopBar from '../components/top-bar';
 import Intro from '../components/intro';
 import Footer from '../components/footer';
+import Layout from '../components/layout';
 
 class HomePage extends Describe {
 
@@ -19,26 +19,15 @@ class HomePage extends Describe {
 
     this
 
-      .assert(
-        'document has the right title',
-        { document: 'title' },
-        title => {
-          title.should.be.exactly(config.title.prefix + config.title.default)
-        }
+      .assert(() =>
+        new Layout({ title: config.title.prefix + config.title.default })
+          .driver(this._driver)
       )
-
-      .assert(
-        'document\'s encoding is UTF-8',
-        { attribute: { charset: 'meta[charset]' } },
-        charset => { charset.should.be.exactly('utf-8') })
-
-      .assert(() => new TopBar().driver(this._driver))
-
-      .assert(() => new Intro().driver(this._driver))
 
       // .assert(() => new TopLevelPanel().driver(this._driver))
 
-      .assert(() => new Footer().driver(this._driver));
+    ;
+
   }
 
 }

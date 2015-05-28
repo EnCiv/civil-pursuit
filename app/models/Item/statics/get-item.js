@@ -23,6 +23,10 @@
           .findOne({ "id": item_short_id })
           .exec(domain.intercept(function (item) {
 
+            if ( ! item ) {
+              return fulfill(null);
+            }
+
             item.toPanelItem((error, item) => {
               if ( error ) {
                 return reject(error);

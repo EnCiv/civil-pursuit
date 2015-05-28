@@ -17,6 +17,9 @@ class Layout extends Document {
   constructor (props) {
     super();
     this.props = props || {};
+    console.log()
+    console.log('Layout props', props)
+    console.log()
     this.add(
       this.title(),
       this.uACompatible(),

@@ -7,6 +7,7 @@ import Describe from 'syn/lib/app/Describe';
 import config from 'syn/config.json';
 import {EventEmitter} from 'events';
 import TopBar from '../components/top-bar';
+import Footer from '../components/footer';
 
 class TOSPage extends Describe {
 
@@ -69,6 +70,10 @@ class TOSPage extends Describe {
           html.should.be.exactly(this._definitions.source);
         }
       )
+
+      .assert(() => new Footer().driver(this._driver))
+
+    ;
   }
 
 }

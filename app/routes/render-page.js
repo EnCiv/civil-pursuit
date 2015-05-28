@@ -13,9 +13,9 @@ function renderPage (req, res, next) {
       let props       =   getProps(this, req, res);
       let pageName    =   S(props.page).capitalize().camelize().s;
 
-      if ( pageName in cache ) {
-        return res.send(cache[pageName]);
-      }
+      // if ( pageName in cache ) {
+      //   return res.send(cache[pageName]);
+      // }
 
       let Page        =   require('syn/pages/' + pageName + '/View');
       let page        =   new Page(props);

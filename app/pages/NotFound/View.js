@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 import Layout from 'syn/components/Layout/View';
 import {Element} from 'cinco/es5';
@@ -7,16 +7,16 @@ class PageNotFound extends Layout {
   constructor(props) {
     props = props || {};
 
-    props.title = 'Page not found';
+    props.title = props.title || 'Page not found';
 
     super(props);
 
     var main = this.find('#main').get(0);
 
     main.add(
-      new Element('h1.gutter').text('Page not found'),
+      new Element('h1.gutter').text(props.title),
       new Element('p.gutter').text(
-        'We are sorry, this page was not found.'),
+        'We are sorry, your request could not be fulfilled because no relevant results were found.'),
       new Element('hr')
     );
   }

@@ -22,6 +22,9 @@ function ItemRoute (req, res, next) {
             });
 
             res.status(404);
+
+            res.locals.title = 'Item not found';
+
             req.page = 'not-found';
 
             res.locals.item = null;
@@ -32,6 +35,8 @@ function ItemRoute (req, res, next) {
           res.locals.item = item;
 
           req.params.page = 'item';
+
+          console.log('item', item)
 
           this.emit('message', 'Item Page', {
             'item found': {

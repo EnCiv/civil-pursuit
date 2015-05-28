@@ -7,6 +7,7 @@ import config from 'syn/config.json';
 import {EventEmitter} from 'events';
 import TopBar from '../components/top-bar';
 import Item from 'syn/models/Item';
+import Footer from '../components/footer';
 import Page from 'syn/lib/app/Page';
 
 class ItemPage extends Describe {
@@ -39,7 +40,11 @@ class ItemPage extends Describe {
         { attribute: { charset: 'meta[charset]' } },
         charset => { charset.should.be.exactly('utf-8') })
 
-      .assert(() => new TopBar().driver(this._driver));
+      .assert(() => new TopBar().driver(this._driver))
+
+      .assert(() => new Footer().driver(this._driver))
+
+    ;
   }
 
 }

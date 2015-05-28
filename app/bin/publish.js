@@ -19,7 +19,7 @@
     { name: 'app/bin/build.js browserify-pages' },
     { name: 'app/bin/build.js uglify-pages' },
 
-    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '-') +'"', ok: [0, 1, 8792, 7182] },
+    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '\\ ') +'"', ok: [0, 1, 8792, 7182] },
 
     // { name: 'mocha test/lib/util/arguments-to-array' },
     // { name: 'mocha test/lib/util/cloudinary' },
@@ -35,6 +35,7 @@
     { name: 'node app/bin/test test/web/pages/not-found' },
     { name: 'node app/bin/test test/web/pages/terms-of-service' },
     { name: 'node app/bin/test test/web/pages/home' },
+    { name: 'node app/bin/test test/web/pages/item-not-found' },
     { name: 'node app/bin/test test/web/pages/item-page' },
 
     { name: 'git push heroku master' }

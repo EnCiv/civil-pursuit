@@ -49,7 +49,13 @@
     .on('error', function (error) {
       console.log(time().magenta, '✖'.red.bold, ' Test error'.red, this._name, error.stack.split(/\n/));
       console.log(time().magenta, '✖ Test failed'.bgRed.bold, test._name.grey);
-      process.exit(1);
+
+      if ( test._driver ) {
+        test._driver.client.pause(3000);
+        test._driver.client.end(function () {
+          process.exit(1);
+        });
+      }
     })
     
     .on('ok', function (assertion, step, total) {
@@ -81,6 +87,7 @@
       console.log((time() + ' ✔ test done ' + test._name + "\t").bgGreen.bold);
       console.log()
       console.log()
+      test._driver.client.pause(3000);
       test._driver.client.end(function () {
         process.exit(0);
       });
