@@ -16,7 +16,8 @@ function props (server, req, res) {
     components    :   req.components,
     payload       :   req.body,
     TOS           :   res.locals.TOS,
-    title         :   res.locals.title
+    title         :   res.locals.title,
+    error         :   res.locals.error
   };
 
   if ( res.locals.item ) {

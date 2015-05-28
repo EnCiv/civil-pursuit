@@ -166,6 +166,20 @@ class HttpServer extends EventEmitter {
     this.getTermsOfServicePage();
     this.getItemPage();
     this.getPage();
+
+    this.app.get('/error', (req, res, next) => {
+      next(new Error('Test error > next with error'));
+    });
+
+    this.app.get('/error/synchronous', (req, res, next) => {
+      throw new Error('Test error > synchronous error');
+    });
+
+    this.app.get('/error/asynchronous', (req, res, next) => {
+      process.nextTick(() => {
+        throw new Error('Test error > asynchronous error');
+      });
+    });
   }
 
   getPage () {
@@ -226,7 +240,13 @@ class HttpServer extends EventEmitter {
 
       console.log('error', err.stack.split(/\n/));
       this.emit('error', err);
-    });
+
+      res.locals.error = err.stack.split(/\n/);
+      req.page = 'error';
+
+      next();
+
+    }, this.renderPage.bind(this));
   }
 
   start () {
