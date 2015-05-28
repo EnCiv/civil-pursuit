@@ -15,12 +15,10 @@ class HomePage extends Describe {
       }
     });
 
-    let title = config.title.prefix + config.title.default;
-
     this
 
       .assert(
-        () => new Layout({ title: title }).driver(this._driver)
+        () => new Layout().driver(this._driver)
       )
 
       .assert(

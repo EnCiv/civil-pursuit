@@ -5,7 +5,7 @@ import Describe from 'syn/lib/app/Describe';
 import config from 'syn/config.json';
 import Layout from '../components/layout';
 
-class TOSPage extends Describe {
+class ItemNotFoundPage extends Describe {
 
   constructor () {
     super('Item not found Page', {
@@ -25,4 +25,4 @@ class TOSPage extends Describe {
 
 }
 
-export default TOSPage;
+export default ItemNotFoundPage;

@@ -400,7 +400,29 @@ class Describe extends EventEmitter {
           runned ++;
 
           if ( runned === assertions.length ) {
-            this.emit('done');
+
+            // Remove disposable items
+            if ( this.define('disposable') ) {
+              let removers = [];
+
+              for ( let disposable of this._options.disposable ) {
+                if ( this.define('disposable')[disposable.name] ) {
+                  removers.push(this.define('disposable')[disposable.name]
+                    .remove());
+                }
+              }
+
+              Promise.all(removers).then(
+                () => this.emit('done'),
+                (error) => this.emit('error', error)
+              );
+
+            }
+
+            else {
+              this.emit('done')
+            }
+            
           }
 
           else {
