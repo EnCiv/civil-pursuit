@@ -34,8 +34,8 @@
 
     { name: 'node app/bin/test test/web/pages/not-found' },
     { name: 'node app/bin/test test/web/pages/error' },
-    { name: 'node app/bin/test test/web/pages/error/synchronous' },
-    { name: 'node app/bin/test test/web/pages/error/asynchronous' },
+    { name: 'node app/bin/test test/web/pages/synchronous-error' },
+    { name: 'node app/bin/test test/web/pages/asynchronous-error' },
     { name: 'node app/bin/test test/web/pages/terms-of-service' },
     { name: 'node app/bin/test test/web/pages/home' },
     { name: 'node app/bin/test test/web/pages/item-not-found' },
