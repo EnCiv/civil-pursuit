@@ -5,8 +5,11 @@ import {Element} from 'cinco/es5';
 
 class PageNotFound extends Layout {
   constructor(props) {
+    props = props || {};
+
+    props.title = 'Page not found';
+
     super(props);
-    this.props = props;
 
     var main = this.find('#main').get(0);
 

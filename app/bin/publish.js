@@ -32,6 +32,7 @@
     
     // { name: 'mocha test/models/User/statics/disposable'},
 
+    { name: 'node app/bin/test test/web/pages/not-found' },
     { name: 'node app/bin/test test/web/pages/terms-of-service' },
     { name: 'node app/bin/test test/web/pages/home' },
     { name: 'node app/bin/test test/web/pages/item-page' },

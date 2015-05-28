@@ -21,7 +21,8 @@
       component     :   req.component,
       components    :   req.components,
       payload       :   req.body,
-      TOS           :   res.locals.TOS
+      TOS           :   res.locals.TOS,
+      title         :   res.locals.title
     };
 
     if ( res.locals.item ) {
