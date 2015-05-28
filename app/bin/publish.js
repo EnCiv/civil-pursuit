@@ -19,7 +19,7 @@
     // { name: 'app/bin/build.js browserify-pages' },
     // { name: 'app/bin/build.js uglify-pages' },
 
-    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '¿¿¿') +'"', ok: [0, 1, 8792, 7182] },
+    { name: 'git commit -am "' + deployMessage.replace(/\s/g, '%%%%%') +'"', ok: [0, 1, 8792, 7182] },
 
     // { name: 'mocha test/lib/util/arguments-to-array' },
     // { name: 'mocha test/lib/util/cloudinary' },
@@ -49,7 +49,7 @@
       console.log("\n", ('⌛ ' + action.name).bgBlue.bold, "\n");
 
       var chunks = test.name.split(/\s/).map(function (chunk) {
-        return chunk.replace(/¿¿¿/g, ' ');
+        return chunk.replace(/%%%%%/g, ' ');
       });
 
       var cmd = chunks.shift();
