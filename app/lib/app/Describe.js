@@ -217,6 +217,14 @@ class Describe extends EventEmitter {
           case 'html':
             this.getHTML(assertion, context, fulfill, reject);
             return;
+
+          case 'click':
+            this.click(assertion, context, fulfill, reject);
+            return;
+
+          case 'pause':
+            this.pause(assertion, context, fulfill, reject);
+            return;
         }
 
         try {
@@ -373,6 +381,36 @@ class Describe extends EventEmitter {
           reject(error);
         }
       }));
+    });
+
+  }
+
+  /** Driver click
+  */
+
+  click (assertion, context, fulfill, reject) { // 253
+
+    let d = new Domain().on('error', reject);
+
+    d.run(() => {
+      let selector = context.click;
+
+      this._driver.client.click(selector, d.intercept(html => { fulfill() }));
+    });
+
+  }
+
+  /** Driver pause
+  */
+
+  pause (assertion, context, fulfill, reject) { // 253
+
+    let d = new Domain().on('error', reject);
+
+    d.run(() => {
+      let s = context.pause;
+
+      this._driver.client.pause(s * 1000, d.intercept(html => { fulfill() }));
     });
 
   }
