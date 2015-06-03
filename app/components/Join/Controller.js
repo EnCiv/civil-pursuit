@@ -68,6 +68,8 @@ class Join extends Controller {
           })
           
           .success((response) => {
+
+            this.socket.synuser = response;
             
             $('a.is-in').css('display', 'inline');
 

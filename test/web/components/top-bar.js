@@ -25,7 +25,7 @@ class TopBar extends Milk {
 
     // Get cookie
 
-    this.set('Cookie', () => this.getCookie('synuser'))
+    this.set('Cookie', () => this.getCookie('synuser'));
 
     // Set Selectors
 

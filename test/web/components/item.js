@@ -16,27 +16,41 @@ class Item extends Milk {
     this.props = props || {};
 
     let get = this.get.bind(this);
+    let find = this.find.bind(this);
 
     let item = this.props.item;
+
+    let itemIsAnObject = typeof item === 'object';
+    let itemIsASelector = typeof item === 'string';
+
+    console.log('item', item)
 
     if ( this.props.driver !== false ) {
       this.go('/');
     }
 
     this
-      .set('Item', () => this.find('#item-' + this.props.item._id))
+      
+      .set('Item', () => find('#item-' + item._id), null, itemIsAnObject)
+
+      .set('Item', () => find(item), null, itemIsASelector)
+      
       .set('Media Wrapper', () => this.find(
         get('Item').selector + '>.item-media-wrapper'
       ))
+
       .set('Media', () => this.find(
         get('Media Wrapper').selector + '>.item-media'
       ))
+      
       .set('Image', () => this.find(
         get('Media').selector + ' img.img-responsive'
       ))
+      
       .set('Video Container', () => this.find(
         get('Media Wrapper').selector + ' .video-container'
       ))
+      
       .set('Iframe', () => this.find(
         get('Video Container').selector + ' iframe'
       ));
@@ -48,7 +62,7 @@ class Item extends Milk {
       .ok(() => get('Media Wrapper').is(':visible'))
       .ok(() => get('Media').is(':visible'));
 
-    if ( YouTubeView.isYouTube(item) ) {
+    if ( itemIsAnObject && YouTubeView.isYouTube(item) ) {
       this
         .ok(() => get('Video Container').is(':visible'))
         .wait(1)
@@ -61,7 +75,7 @@ class Item extends Milk {
         );
     }
 
-    else {
+    else if ( itemIsAnObject ) {
       this
         .ok(() => get('Image').is(':visible'))
         .ok(() => get('Image').width()

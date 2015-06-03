@@ -5726,6 +5726,8 @@ var Join = (function (_Controller) {
           }
         }).success(function (response) {
 
+          _this.socket.synuser = response;
+
           $('a.is-in').css('display', 'inline');
 
           $('.topbar .is-out').remove();
@@ -5960,6 +5962,7 @@ var Panel = (function (_Controller) {
           // Toggle Creator
 
           _this.find('toggle creator').on('click', function () {
+            console.log('clicked', _this.socket.synuser);
             if (_this.socket.synuser) {
               _synLibUtilNav2['default'].toggle(_this.find('creator'), _this.template, d.intercept());
             } else {

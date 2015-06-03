@@ -69,6 +69,7 @@ class Panel extends Controller {
         // Toggle Creator
 
         this.find('toggle creator').on('click', () => {
+          console.log('clicked', this.socket.synuser)
           if ( this.socket.synuser ) {
             Nav.toggle(this.find('creator'), this.template, d.intercept());
           }

@@ -2,6 +2,7 @@
 
 import Milk from 'syn/lib/app/milk';
 import JoinTest from './join';
+import CreatorTest from './creator';
 
 class Panel extends Milk {
 
@@ -25,6 +26,10 @@ class Panel extends Milk {
       this.go('/');
     }
 
+    // Get cookie
+
+    this.set('Cookie', () => this.getCookie('synuser'));
+
     this
 
       .set('Panel', () => this.find(panelSelector))
@@ -32,6 +37,8 @@ class Panel extends Milk {
       .set('Heading', () => this.find(panelSelector + ' .panel-heading'))
 
       .set('Body', () => this.find(panelSelector + ' .panel-body'))
+
+      .set('Join', () => this.find(JoinTest.find('main')))
 
       .ok(() => get('Panel').is(':visible'))
 
@@ -59,16 +66,22 @@ class Panel extends Milk {
 
         .ok(() => get('Toggle').click());
 
-      if ( userIsSignedIn ) {
-      }
+      // User is signed in
 
-      else {
-        this
-          .ok(() => this.find(JoinTest.find('main')).is(true))
-          .ok(() => get('Toggle').click())
-          .wait(1)
-          .ok(() => this.find(JoinTest.find('main')).is(false));
-      }
+      this.wait(1, null, when => get('Cookie'));
+
+      this.import(CreatorTest,
+        () => ({ panel : this.get('Panel') }),
+        null,
+        when => get('Cookie'))
+
+      // User is not signed in
+
+      this
+        .ok(() => get('Join').is(true), null, when => ! get('Cookie'))
+        .ok(() => get('Toggle').click(), null, when => ! get('Cookie'))
+        .wait(1, null, when => ! get('Cookie'))
+        .ok(() => get('Join').is(false), null, when => ! get('Cookie'));
 
     }
   }

@@ -1611,6 +1611,8 @@ var Join = (function (_Controller) {
           }
         }).success(function (response) {
 
+          _this.socket.synuser = response;
+
           $('a.is-in').css('display', 'inline');
 
           $('.topbar .is-out').remove();

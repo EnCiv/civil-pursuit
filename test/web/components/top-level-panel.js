@@ -46,16 +46,16 @@ class TopLevelPanel extends Milk {
       .ok(() => get('Top Level Panel').count('.item[id]')
         .then(children => children.should.be.exactly(7)))
       
-      .each(
-        () => get('Items'),
-        item => this.import(ItemTest, () => {
-          return {
-            driver : false,
-            item : item
-          }
-        }, 'Panel item is an Item component'),
-        'Each panel item is an Item component'
-      );
+      // .each(
+      //   () => get('Items'),
+      //   item => this.import(ItemTest, () => {
+      //     return {
+      //       driver : false,
+      //       item : item
+      //     }
+      //   }, 'Panel item is an Item component'),
+      //   'Each panel item is an Item component'
+      // );
 
   }
 

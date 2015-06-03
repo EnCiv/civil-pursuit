@@ -23,13 +23,15 @@ class HomePage extends Milk {
 
       .import(LayoutTest)
 
-      .import(IntroTest, { driver : false })
+      .import(IntroTest)
 
-      .import(TopLevelPanelTest, { driver : false })
+      .import(TopLevelPanelTest)
 
       .import(JoinTest, { toggled : false })
 
-      .import(LayoutTest)
+      // .import(LayoutTest)
+
+      .import(TopLevelPanelTest)
 
     ;
   }
