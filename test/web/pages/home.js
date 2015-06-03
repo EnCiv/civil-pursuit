@@ -1,34 +1,24 @@
 'use strict';
 
 import should from 'should';
-import Describe from 'syn/lib/app/Describe';
+import Milk from 'syn/lib/app/milk';
 import config from 'syn/config.json';
-import Intro from '../components/intro';
-import Layout from '../components/layout';
-import Sign from '../stories/sign';
+import IntroTest from '../components/intro';
+import LayoutTest from '../components/layout';
+import TopLevelPanelTest from '../components/top-level-panel';
 
-class HomePage extends Describe {
+class HomePage extends Milk {
 
   constructor () {
-    super('Landing Page', {
-      'web driver'        :   {
-        'page'            :   'Home'
-      }
-    });
+    super('Landing Page', { viewport : 'tablet' });
 
     this
 
-      .assert(
-        () => new Layout().driver(this._driver)
-      )
+      .import(LayoutTest, { driver : false })
 
-      .assert(
-        () => new Intro().driver(this._driver)
-      )
+      .import(IntroTest, { driver : false })
 
-      // .assert(() => new TopLevelPanel().driver(this._driver))
-
-      .assert(() => new Sign().driver(this._driver))
+      .import(TopLevelPanelTest, { driver : false })
 
     ;
   }

@@ -96,7 +96,7 @@ class TopBar extends Controller {
 
         new Login({ $vexContent: $vexContent });
 
-        $vexContent.find('.forgot-password-link').on('click', function () {
+        $vexContent.find('.forgot-password-link').on('click', () => {
           new ForgotPassword();
           vex.close($vexContent.data().vex.id);
           return false;
@@ -120,20 +120,22 @@ class TopBar extends Controller {
   joinDialog () {
     vex.defaultOptions.className = 'vex-theme-flat-attack';
 
+    let joinDialog = this.joinDialog.bind(this);
+
     vex.dialog.confirm({
 
       afterOpen: ($vexContent) => {
         this.find('join button')
           .off('click')
-          .on('click', function () {
+          .on('click', () => {
             vex.close();
           });
 
         new Join({ $vexContent: $vexContent });
       },
 
-      afterClose: function () {
-        $('.join-button').on('click', () => this.joinDialog());
+      afterClose: () => {
+        $('.join-button').on('click', () => joinDialog());
       },
 
       message: $('#join').text(),
@@ -142,7 +144,7 @@ class TopBar extends Controller {
             text: 'x Close'
           })
       ],
-      callback: function(value) {
+      callback: (value) => {
         
       },
       defaultOptions: {

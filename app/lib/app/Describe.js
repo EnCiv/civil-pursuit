@@ -2,9 +2,11 @@
 
 import {EventEmitter} from 'events';
 import {Domain} from 'domain';
+import util from 'util';
 import colors from 'colors';
 import WebDriver from 'syn/lib/test/webdriver';
 import Page from 'syn/lib/app/Page';
+import run from 'syn/lib/util/run';
 
 class Describe extends EventEmitter {
 
@@ -56,15 +58,16 @@ class Describe extends EventEmitter {
   /** Alias to build and runAll */
 
   run () {
-    let d  = new Domain().on('error', error => { this.emit('error', error) });
+    run(
+      () => {
+        console.log(this._name.bgBlue.bold);
 
-    d.run(() => {
-      console.log(this._name.bgBlue.bold);
+        this.init();
 
-      this.init();
-
-      this.on('built', assertions => this.runAll(assertions));
-    });
+        this.on('built', assertions => this.runAll(assertions));
+      },
+      error => { this.emit('error', error) }
+    );
 
     return this;
   }
@@ -72,36 +75,39 @@ class Describe extends EventEmitter {
   /** Build the assertions but create disposable data and start driver first if any needed */
 
   init () {
-    process.nextTick(() => {
-      if ( this._options.disposable && ! this._disposed ) {
-        return this.disposable(...this._options.disposable).then(() => {
-          this._disposed = true;
-          this.emit('disposed');
-          this.init();
-        });
-      }
+    run.next(
+      d => {
+        if ( this._options.disposable && ! this._disposed ) {
+          return this.disposable(...this._options.disposable).then(() => {
+            this._disposed = true;
+            this.emit('disposed');
+            this.init();
+          });
+        }
 
-      if ( this._driverOptions ) {
-        this._driver = new WebDriver(this._driverOptions);
+        if ( this._driverOptions ) {
+          this._driver = new WebDriver(this._driverOptions);
 
-        this.emit('message', 'start driver', this._driverOptions);
+          this.emit('message', 'start driver', this._driverOptions);
 
-        this._driver
-          .on('ready', () =>
-            this.emit('message', 'driver ready', this._driverOptions))
+          this._driver
+            .on('ready', () =>
+              this.emit('message', 'driver ready', this._driverOptions))
 
-          .on('ready', () => this.build());
+            .on('ready', () => this.build());
 
-        // this._driver.on('ready', () => this.build());
+          // this._driver.on('ready', () => this.build());
 
-        // this._driver.on('ready', () => this.emit('driver ready'));
+          // this._driver.on('ready', () => this.emit('driver ready'));
 
-        // this.on('error', () => this._driver.client.end());
-      }
-      else {
-        this.build();
-      }
-    });
+          // this.on('error', () => this._driver.client.end());
+        }
+        else {
+          this.build();
+        }
+      },
+      error => { this.emit('error', error) }
+    );
 
     return this;
   }
@@ -115,6 +121,7 @@ class Describe extends EventEmitter {
     // this.emit('message', 'Building', this._name);
 
     let assertions = this._assertions.map(assertion => (fulfill, reject) => {
+      
       // this.emit('message', 'Building test', assertion, this._name, this._isClean);
 
       if ( ! this._isClean ) {
@@ -122,42 +129,80 @@ class Describe extends EventEmitter {
         return reject(new Error('Test is not clean'));
       }
 
-      let d = new Domain().on('error', reject);
+      run(
+        d => {
+          if ( typeof assertion.describe === 'function' ) {
+            assertion = assertion.describe();
+            assertion.context = {};
+          }
 
-      d.run(() => {
+          if ( typeof assertion.context === 'function' ) {
+            assertion = assertion.context();
+          }
 
-        if ( typeof assertion.describe === 'function' ) {
-          assertion = assertion.describe();
-        }
+          if ( (assertion instanceof Describe) ) {
+            return this.buildModule(assertion, fulfill, reject);
+          }
 
-        if ( (assertion instanceof Describe) ) {
-          return this.buildModule(assertion, fulfill, reject);
-        }
+          let context = assertion.context;
+          let contextKey = Object.keys(context)[0];
+          let contextValue;
 
-        let context = assertion.context;
-        let contextKey = Object.keys(context)[0];
-        let contextValue;
+          switch ( contextKey ) {
+            case 'lambda':
+              contextValue = context.lambda;
+              break;
 
-        switch ( contextKey ) {
-          case 'lambda':
-            contextValue = context.lambda;
-            break;
+            case 'definition':
+              contextValue = this._definitions[context[contextKey]];
+              break;
 
-          case 'definition':
-            contextValue = this._definitions[context[contextKey]];
-            break;
+            case 'before':
+              assertion.handler()
+                .then(fulfill, reject);
+              return;
 
-          case 'before':
-            assertion.handler()
-              .then(fulfill, reject);
-            return;
+            case 'document':
+              switch ( context.document ) {
+                case 'title':
 
-          case 'document':
-            switch ( context.document ) {
-              case 'title':
+                  this._driver.client.getTitle(d.intercept(title => {
 
-                this._driver.client.getTitle(d.intercept(title => {
+                    if ( ! this._isClean ) {
+                      this.emit('ko', assertion.describe);
+                      reject(new Error('Is not clean'));
+                      return;
+                    }
 
+                    try {
+                      assertion.handler(title);
+                      //this.emit('ok', assertion.describe);
+
+                      fulfill();
+                    }
+                    catch ( error ) {
+                      this.emit('ko', assertion.describe);
+                      reject(error);
+                    }
+                  }));
+
+                  return;
+              }
+              break;
+
+            case 'visible':
+              this.getVisibility(true, assertion, context, fulfill, reject);
+              return;
+
+            case 'hidden':
+              this.getVisibility(false, assertion, context, fulfill, reject);
+              return;
+
+            case 'attribute':
+              let attr = Object.keys(context.attribute)[0];
+              let selector = context.attribute[attr];
+              this._driver.client.getAttribute(selector, attr,
+                d.intercept( attr => {
                   if ( ! this._isClean ) {
                     this.emit('ko', assertion.describe);
                     reject(new Error('Is not clean'));
@@ -165,9 +210,7 @@ class Describe extends EventEmitter {
                   }
 
                   try {
-                    assertion.handler(title);
-                    //this.emit('ok', assertion.describe);
-
+                    assertion.handler(attr);
                     fulfill();
                   }
                   catch ( error ) {
@@ -175,70 +218,53 @@ class Describe extends EventEmitter {
                     reject(error);
                   }
                 }));
+              return;
 
-                return;
-            }
-            break;
+            case 'text':
+              this.getText(assertion, context, fulfill, reject);
+              return;
 
-          case 'visible':
-            this.getVisibility(true, assertion, context, fulfill, reject);
-            return;
+            case 'html':
+              this.getHTML(assertion, context, fulfill, reject);
+              return;
 
-          case 'hidden':
-            this.getVisibility(false, assertion, context, fulfill, reject);
-            return;
+            case 'classes':
+              this.getClasses(assertion, context.classes, fulfill, reject);
+              return;
 
-          case 'attribute':
-            let attr = Object.keys(context.attribute)[0];
-            let selector = context.attribute[attr];
-            this._driver.client.getAttribute(selector, attr,
-              d.intercept( attr => {
-                if ( ! this._isClean ) {
-                  this.emit('ko', assertion.describe);
-                  reject(new Error('Is not clean'));
-                  return;
-                }
+            case 'click':
+              this.click(assertion, context, fulfill, reject);
+              return;
 
-                try {
-                  assertion.handler(attr);
-                  fulfill();
-                }
-                catch ( error ) {
-                  this.emit('ko', assertion.describe);
-                  reject(error);
-                }
-              }));
-            return;
+            case 'pause':
+              this.pause(assertion, context, fulfill, reject);
+              return;
 
-          case 'text':
-            this.getText(assertion, context, fulfill, reject);
-            return;
+            case 'not':
+              this.not(assertion, context, fulfill, reject);
+              return;
 
-          case 'html':
-            this.getHTML(assertion, context, fulfill, reject);
-            return;
+            case 'value':
+              if ( 'set' in context ) {
+                this.setValue(assertion, context.value, context.set, fulfill, reject);
+              }
+              return;
+          }
 
-          case 'click':
-            this.click(assertion, context, fulfill, reject);
-            return;
+          try {
+            assertion.handler(contextValue);
+            this.emit('ok', assertion.describe);
 
-          case 'pause':
-            this.pause(assertion, context, fulfill, reject);
-            return;
-        }
-
-        try {
-          assertion.handler(contextValue);
-          this.emit('ok', assertion.describe);
-
-          fulfill();
-        }
-        catch ( error ) {
-          this.emit('ko', assertion.describe, error);
-          reject(error);
-        }
-
-      })
+            fulfill();
+          }
+          catch ( error ) {
+            this.emit('ko', assertion.describe, error);
+            reject(error);
+          }
+        },
+        reject
+      );
+    
     });
 
     this.emit('built', assertions);
@@ -295,8 +321,13 @@ class Describe extends EventEmitter {
     d.run(() => {
 
       let contextKey = visible ? 'visible' : 'hidden';
+      let selector = context[contextKey];
 
-      this._driver.client.isVisible(context[contextKey], d.intercept(
+      if ( typeof selector === 'function' ) {
+        selector = selector();
+      }
+
+      this._driver.client.isVisible(selector, d.intercept(
         isVisible => {
           if ( ! this._isClean ) {
             this.emit('ko', assertion.describe);
@@ -317,8 +348,80 @@ class Describe extends EventEmitter {
 
           else {
             this.emit('ko', assertion.describe);
-            reject(error);
+
+            let errorMessage = util.format('Element is not %s: %s',
+              contextKey, context[contextKey]);
+
+            reject(new Error(errorMessage));
           }
+        }));
+    });
+  }
+
+  /** Driver get attribute
+  */
+
+  getAttribute (assertion, context, fulfill, reject) {
+    let attr = Object.keys(context.attribute)[0];
+    let selector = context.attribute[attr];
+    this._driver.client.getAttribute(selector, attr,
+      d.intercept( attr => {
+        if ( ! this._isClean ) {
+          this.emit('ko', assertion.describe);
+          reject(new Error('Is not clean'));
+          return;
+        }
+
+        try {
+          assertion.handler(attr);
+          fulfill();
+        }
+        catch ( error ) {
+          this.emit('ko', assertion.describe);
+          reject(error);
+        }
+      }));
+  }
+
+  /** Driver get atribute
+  */
+
+  getClasses (assertion, selector, fulfill, reject) {
+    let d = new Domain().on('error', error => {
+      console.log('error', error);
+      this.emit('ko', assertion.describe);
+      reject(error);
+    });
+
+    d.run(() => {
+      this._driver.client.getAttribute(selector, 'class',
+        d.intercept( attr => {
+          if ( ! this._isClean ) {
+            this.emit('ko', assertion.describe);
+            reject(new Error('Is not clean'));
+            return;
+          }
+
+          let assertClasses = (classList) => {
+            let classes = classList.split(/\s+/);
+
+            try {
+              assertion.handler(classes);
+              fulfill();
+            }
+            catch ( error ) {
+              this.emit('ko', assertion.describe);
+              reject(error);
+            }
+          };
+
+          if ( Array.isArray(attr) ) {
+            attr.forEach(assertClasses);
+          }
+          else {
+            assertClasses(attr);
+          }
+
         }));
     });
   }
@@ -352,6 +455,14 @@ class Describe extends EventEmitter {
       }));
     });
 
+  }
+
+  setValue (assertion, selector, value, fulfill, reject) {
+    let d = new Domain().on('error', reject);
+
+    d.run(() => {
+      this._driver.client.setValue(selector, value, d.intercept(fulfill));
+    });
   }
 
   /** Driver getHTML
@@ -411,6 +522,34 @@ class Describe extends EventEmitter {
       let s = context.pause;
 
       this._driver.client.pause(s * 1000, d.intercept(html => { fulfill() }));
+    });
+
+  }
+
+  /** Driver element does not exist
+  */
+
+  not (assertion, context, fulfill, reject) { // 253
+
+    let d = new Domain().on('error', reject);
+
+    d.run(() => {
+      let selector = context.not;
+
+      this._driver.client.isExisting(selector, d.intercept(exists => {
+        if ( ! this._isClean ) {
+          this.emit('ko', assertion.describe);
+          reject(new Error('Is not clean'));
+          return;
+        }
+
+        if ( ! exists ) {
+          fulfill();
+        }
+        else {
+          reject(new Error('Does exist: ' + selector));
+        }
+      }));
     });
 
   }
@@ -509,6 +648,58 @@ class Describe extends EventEmitter {
     return this;
   }
 
+  select (name, selector) {
+    let $ = {
+      is: (state, not) => {
+
+        if ( /^:visible/.test(state) ) {
+          if ( not ) {
+            this.assert(name + ' should be hidden', { hidden: selector });
+          }
+          else {
+            this.assert(name + ' should be visible', { visible: selector });
+          }
+        }
+
+        if ( /\./.test(state) ) {
+          state.replace(/\.([a-z0-9-_\/]+)/i, (matches, className) => {
+            if ( not ) {
+              this.assert(name + ' should not have class ' + className,
+                { classes: selector },
+                classes => classes.indexOf(className).should.be.exactly(-1));
+            }
+            else {
+              this.assert(name + ' should have class ' + className,
+                { classes: selector },
+                classes => classes.indexOf(className).should.be.above(-1));
+            }
+          });
+        }
+        return $;
+      },
+      click: () => {
+        this.assert(name + ' should click', { click: selector });
+      },
+      val: (value) => {
+        if ( typeof value === 'string' ) {
+          this.assert(name + ' should have value ' + value,
+            { value: selector, set: value });
+        }
+      }
+    };
+
+    $.not = (state) => {
+      if ( state ) {
+        $.is(state, true)
+      }
+      else {
+        this.assert(name + ' should not be present', { not: selector });
+      }
+    };
+
+    return $;
+  }
+
   /** Get/set definition */
 
   define (key, value) {
@@ -525,6 +716,8 @@ class Describe extends EventEmitter {
    */
 
   driver (options) {
+
+    options = options || {};
 
     if ( options instanceof WebDriver ) {
       this._driverOptions = null;

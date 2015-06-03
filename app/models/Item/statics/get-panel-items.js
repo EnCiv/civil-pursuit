@@ -20,8 +20,6 @@
     var promise = new Promise(function (fulfill, reject) {
       di(reject, deps, function (domain, mongoose, async, config, Item) {
 
-        console.log('GET PANEL ITEMS', panel)
-
         var query = {};
 
         for ( var i in panel ) {
@@ -45,7 +43,6 @@
                 },
 
                 domain.intercept(function (items) {
-                  console.log('panelified items', items)
                   fulfill(items);
                 }));
 

@@ -1,61 +1,65 @@
 'use strict';
 
 import should from 'should';
-import Describe from 'syn/lib/app/Describe';
+import Milk from 'syn/lib/app/milk';
 import config from 'syn/config.json';
-import Type from 'syn/models/Type';
-import Item from 'syn/models/Item';
+import TypeModel from 'syn/models/Type';
+import ItemModel from 'syn/models/Item';
+import PanelTest from './panel';
 
-class Intro extends Describe {
+class Intro extends Milk {
 
-  constructor () {
-    super('Intro', {
-      'web driver'    :   {
-        'page'        :   'Home'
-      }
-    });
+  constructor (props) {
+    props = props || {};
+
+    let options = { viewport : props.viewport };
+
+    super('Intro', options);
+
+    this.props = props;
+
+    let get = this.get.bind(this);
+    let find = this.find.bind(this);
+
+    let findType = () => TypeModel.findOne({ name : 'Intro' }).exec();
+    let findIntro = () => ItemModel.findOne({ type : get('Type')._id }).exec();
+
+    if ( this.props.go !== false ) {
+      this.go('/');
+    }
 
     this
+      .set('Type', findType, 'Get Intro\'s type from DB')
 
-      .before(
-        'Get intro from DB',
-        () => Type
-          .findOne({ name: 'Intro' })
-          .exec()
-          .then(type => {
-            this.define('Type', type);
+      .set('intro', findIntro, 'Get Intro from DB')
 
-            Item
-              .findOne({ type: type._id })
-              .exec()
-              .then(item => this.define('Item', item))
-          })
+      .set('Intro', () => find('#intro'))
+      
+      .set('Panel', () => find(get('Intro').selector + ' .panel'))
+      
+      .set('Title', () => find(get('Panel').selector + ' .panel-title'))
+      
+      .set('Subject', () => find(get('Panel').selector + ' .item-subject'))
+      
+      .set('Description', () => 
+        find(get('Panel').selector + ' .item-description'))
+
+      .ok(() => get('Intro').is(':visible'))
+
+      .import(PanelTest, () => { return {
+        panel : get('Panel').selector, creator : false, driver : false
+      }})
+
+      .ok(() => get('Title').text()
+        .then(text => text.should.be.exactly(get('intro').subject))
       )
 
-      .assert(
-        'Intro should be visible',
-        { visible: '#intro' }
+      .ok(() => get('Subject').text()
+        .then(text => text.should.be.exactly(get('intro').subject))
       )
 
-      .assert(
-        'Panel title should be intro\'s subject',
-        { text: '#intro .panel-title' },
-        subject =>
-          { subject.should.be.exactly(this._definitions.Item.subject) }
-      )
-
-      .assert(
-        'Item subject should be intro\'s subject',
-        { text: '#intro .item-subject' },
-        subject =>
-          { subject.should.be.exactly(this._definitions.Item.subject) }
-      )
-
-      .assert(
-        'Item description should be intro\'s description',
-        { text: '#intro .item-description' },
-        description =>
-          { description.should.be.exactly(this._definitions.Item.description) }
+      .ok(() => get('Description').text()
+        .then(text => text.should.be.exactly(get('intro').description))
       );
   }
 

@@ -4,21 +4,33 @@ import {Element} from 'cinco/es5';
 
 class YouTube extends Element {
 
+  static isYouTube (item) {
+    let is = false;
+
+    let references = item.references || [];
+
+    if ( references.length ) {
+      let url = references[0].url;
+
+      if ( YouTube.regex.test(url) ) {
+        is = true;
+      }
+    }
+
+    return is;
+  }
+
   constructor (props) {
-    super('.video_container');
+    super('.video-container');
 
     if ( props.item && props.settings.env !== 'development2' ) {
-      let references = props.item.references || [];
 
-      if ( references.length ) {
-        let url = references[0].url;
-
-        if ( YouTube.regex.test(url) ) {
-          this.add(
-            this.iframe(url)
-          );
-        }
+      if ( YouTube.isYouTube(props.item) ) {
+        this.add(
+          this.iframe(props.item.references[0].url)
+        );
       }
+
     }
   }
 

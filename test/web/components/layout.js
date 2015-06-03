@@ -1,51 +1,44 @@
 'use strict';
 
 import should from 'should';
-import Describe from 'syn/lib/app/Describe';
+import Milk from 'syn/lib/app/milk';
 import config from 'syn/config.json';
-import TopBar from '../components/top-bar';
-import Footer from '../components/footer';
+import TopBarTest from '../components/top-bar';
+import FooterTest from '../components/footer';
 
-class Layout extends Describe {
+class Layout extends Milk {
 
   constructor (props) {
 
     props = props || {};
 
-    super('Layout', {
-      'web driver'        :   {
-        'uri'             :   '/'
-      }
-    });
+    let options = { viewport : props.viewport };
 
-    this
+    super('Layout', options);
 
-      .assert(
-        'document has the right title',
-        { document: 'title' },
-        title => {
-          let expectedTitle;
+    this.props = props;
 
-          if ( props.title ) {
-            expectedTitle = props.title;
-          }
+    if ( this.props.go !== false ) {
+      this.go('/');
+    }
 
-          else {
-            expectedTitle = config.title.prefix + config.title.default;
-          }
+    let expectedTitle;
 
-          title.should.be.exactly(expectedTitle);
-        }
-      )
+    if ( props.title ) {
+      expectedTitle = props.title;
+    }
 
-      .assert(
-        'document\'s encoding is UTF-8',
-        { attribute: { charset: 'meta[charset]' } },
-        charset => { charset.should.be.exactly('utf-8') })
+    else {
+      expectedTitle = config.title.prefix + config.title.default;
+    }
 
-      .assert(() => new TopBar().driver(this._driver))
+    this.title(title => title.should.be.exactly(expectedTitle));
 
-      .assert(() => new Footer().driver(this._driver))
+    this.ok(() => this.find('meta[charset="utf-8"]').is(true));
+
+    this.import(TopBarTest, { driver : false });
+
+    this.import(FooterTest, { driver : false });
 
     ;
   }

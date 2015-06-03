@@ -4,132 +4,195 @@
   
   'use strict';
 
+  var domain = require('domain').create();
+
   require('colors');
 
   require("babel/register")({ modules: 'common', stage: 1 });
 
   var printTime = require('syn/lib/util/print-time');
 
+  var test;
+
   function time () {
     return printTime().join(':');
   }
 
-  function formatName (name) {
-    for ( var i = name.length; i < 20; i ++ ) {
-      name += ' ';
+  function onError (error) {
+    console.log(
+      time().magenta,
+      '✖'.red.bold,
+      ' Test error'.red,
+      test.name
+    );
+
+    if ( error.stack ) {
+      error.stack.split(/\n/).forEach(function (line) {
+        console.log(line.yellow);
+      });
     }
 
-    return name;
+    else {
+      console.log(error);
+    }
+
+    console.log(
+      time().magenta,
+      '✖ Test failed'.bgRed.bold,
+      test.name.grey
+    );
+
+    if ( test.driver ) {
+      test.driver.pause(3000);
+      test.driver.end(function () {
+        process.exit(1);
+      });
+    }
   }
 
-  var script = process.argv[2];
+  domain.on('error', onError);
 
-  var Test = require('../../' + script);
+  domain.run(function () {
 
-  var test = new Test();
+    function formatName (name) {
+      for ( var i = name.length; i < 20; i ++ ) {
+        name += ' ';
+      }
 
-  var done = false;
-
-  process.on('exit', function () {
-    if ( ! done ) {
-      console.log((time() + ' ✖ Test failed ' + test._name).bgRed.bold);
-      process.exit(1);
+      return name;
     }
-  });
 
-  var mongoose = require('mongoose');
+    var script = process.argv[2];
 
-  mongoose.connect(process.env.MONGOHQ_URL);
+    var viewport;
 
-  console.log('Running test', test._name);
+    for ( var i = 3; i < process.argv.length; i ++ ) {
+      var splits = process.argv[i].split('=');
 
-  test
-    .run()
-    
-    .on('error', function (error) {
-      console.log(time().magenta, '✖'.red.bold, ' Test error'.red, this._name, error.stack.split(/\n/));
-      console.log(time().magenta, '✖ Test failed'.bgRed.bold, test._name.grey);
-
-      if ( test._driver ) {
-        test._driver.client.pause(3000);
-        test._driver.client.end(function () {
-          process.exit(1);
-        });
+      if ( splits[0] === 'viewport' ) {
+        viewport = splits[1];
       }
-    })
-    
-    .on('ok', function (assertion, step, total) {
-      console.log(
-        time().magenta,
-        '✔'.green.bold,
-        formatName(test._name).green.bold,
-        ((step + 1) + '/' + total).bgGreen.bold,
-        assertion.green);
-    })
+    }
 
-    .on('ok from', function (assertion, test, step, total) {
-      console.log(
-        time().magenta,
-        '✔'.green.bold,
-        formatName(test).green.bold,
-        ((step + 1) + '/' + total).bgGreen.bold,
-        assertion.green);
-    })
-    
-    .on('ko', function (assertion) {
-      console.log(time().magenta, '✖'.red.bold, assertion.red, test._name.grey);
-    })
-    
-    .on('done', function () {
-      done = true;
-      console.log()
-      console.log()
-      console.log((time() + ' ✔ test done ' + test._name + "\t").bgGreen.bold);
-      console.log()
-      console.log()
-      test._driver.client.pause(3000);
-      test._driver.client.end(function () {
-        process.exit(0);
-      });
-    })
-    
-    .on('message', function (message) {
-      var args = [];
-      for ( var arg in arguments ) {
-        if ( +arg ) {
-          args.push(arguments[arg]);
-        }
-      }
-      console.log.apply(console, [
-        time().magenta,
-        '*'.bold.blue,
-        formatName(test._name).blue.bold,
-        message.bgBlue.bold].concat(args.map(function (arg) {
-          if ( typeof arg === 'string' ) {
-            arg = arg.blue;
-          }
-          return arg;
-        })));
-    })
+    var Test = require('../../' + script);
 
-    .on('message from', function (test, message) {
-      var args = [];
-      for ( var arg in arguments ) {
-        if ( +arg > 1 ) {
-          args.push(arguments[arg]);
-        }
+    test = new Test({ viewport : viewport });
+
+    var done = false;
+
+    process.on('exit', function () {
+      if ( ! done ) {
+        console.log((time() + ' ✖ Test failed ' + test._name).bgRed.bold);
+        process.exit(1);
       }
-      console.log.apply(console, [
-        time().magenta,
-        '*'.bold.blue,
-        formatName(test).blue.bold,
-        message.bgBlue.bold].concat(args.map(function (arg) {
-          if ( typeof arg === 'string' ) {
-            arg = arg.blue;
-          }
-          return arg;
-        })));
     });
+
+    var mongoose = require('mongoose');
+
+    mongoose.connect(process.env.MONGOHQ_URL);
+
+    // mongoose.connection.on('connected', console.log.bind(console, 'connected'))
+
+    console.log(time().bgMagenta + 'BIN'.bgBlue.bold + test._name.bgCyan.bold);
+
+    test
+      .run()
+      
+      .on('error', onError)
+
+      .on('ready', function () {
+        time().bgMagenta + 'READY'.bgGreen.bold + test.name.bgCyan.bold
+      })
+      
+      .on('ok', function (assertion, step, total) {
+        console.log(
+          time().bgMagenta +
+          ' ✔ '.bgGreen.bold +
+          formatName(test.name).bgGreen.bold +
+          ((step + 1) + '/' + total).bgBlack.bold +
+          (' ' + assertion + ' ').bgYellow.black.bold);
+      })
+
+      .on('ok from', function (assertion, test, step, total) {
+        console.log(
+          time().bgMagenta +
+          ' ✔ '.bgGreen.bold +
+          formatName(test).bgGreen.bold +
+          ((step + 1) + '/' + total).bgBlack.bold +
+          (' ' + assertion + ' ').bgYellow.black.bold);
+      })
+
+      .on('ko', function (assertion) {
+        console.log(
+          time().bgMagenta +
+          ' ✖ '.bgGreen.bold +
+          formatName(test.name).bgGreen.bold +
+          (' ' + assertion + ' ').bgYellow.black.bold);
+      })
+
+      .on('ko from', function (assertion, test) {
+        console.log(
+          time().bgMagenta +
+          ' ✖ '.bgGreen.bold +
+          formatName(test.name).bgGreen.bold +
+          (' ' + assertion + ' ').bgYellow.black.bold);
+      })
+      
+      // .on('ko', function (assertion) {
+      //   console.log(time().magenta, '✖'.red.bold, assertion.red, test._name.grey);
+      // })
+      
+      .on('done', function () {
+        done = true;
+        var str = (time() + ' ✔ test done ' + test._name + "\t").bgGreen.bold;
+
+        console.log(str.green.italic)
+        console.log(str);
+        console.log(str.green.italic)
+        test.driver.pause(3000);
+        test.driver.end(function () {
+          process.exit(0);
+        });
+      })
+      
+      // .on('message', function (message) {
+      //   var args = [];
+      //   for ( var arg in arguments ) {
+      //     if ( +arg ) {
+      //       args.push(arguments[arg]);
+      //     }
+      //   }
+      //   console.log.apply(console, [
+      //     time().magenta,
+      //     '*'.bold.blue,
+      //     formatName(test._name).blue.bold,
+      //     message.bgBlue.bold].concat(args.map(function (arg) {
+      //       if ( typeof arg === 'string' ) {
+      //         arg = arg.grey;
+      //       }
+      //       return arg;
+      //     })));
+      // })
+
+      // .on('message from', function (test, message) {
+      //   var args = [];
+      //   for ( var arg in arguments ) {
+      //     if ( +arg > 1 ) {
+      //       args.push(arguments[arg]);
+      //     }
+      //   }
+      //   console.log.apply(console, [
+      //     time().magenta,
+      //     '*'.bold.blue,
+      //     formatName(test).blue.bold,
+      //     message.bgBlue.bold].concat(args.map(function (arg) {
+      //       if ( typeof arg === 'string' ) {
+      //         arg = arg.blue;
+      //       }
+      //       return arg;
+      //     })));
+      // });
+  });
 
 } ();
 

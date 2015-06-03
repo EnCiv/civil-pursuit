@@ -10,8 +10,6 @@ class TopBar extends Element {
     super('.topbar');
     this.props = props || {};
 
-    console.log('TOPBAR!!!!!', props);
-
     this.add(
       this.rightButtons(),
       this.logo()

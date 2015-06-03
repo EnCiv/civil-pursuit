@@ -1,59 +1,48 @@
 'use strict';
 
 import should from 'should';
-import Describe from 'syn/lib/app/Describe';
+import Milk from 'syn/lib/app/milk';
 import config from 'syn/config.json';
+import JoinTest from '../components/join';
+import VexTest from '../components/vex';
 
-class TopBar extends Describe {
+class TopBar extends Milk {
 
-  constructor () {
-    super('Top Bar', {
-      'web driver'        :   {
-        'page'            :   'Home'
-      }
-    });
+  constructor (props) {
+    props = props || {};
+
+    let options = { viewport : props.viewport };
+
+    super('Top Bar', options);
+
+    this.props = props;
+
+    if ( this.props.go !== false ) {
+      this.go('/');
+    }
 
     this
-      .assert(
-        'Top bar should be visible',
-        { visible: '.topbar' }
+      .ok(() => this.find('.topbar').is(':visible'))
+      .ok(() => this.find('.topbar-right').is(':visible'))
+      .ok(() => this.find('button.online-now').is(':visible'))
+      .ok(() => this.find('span.online-users').text()
+        .then(text => (+text).should.be.a.Number.and.is.above(-1))
       )
+      .ok(() => this.find('button.login-button').is(':visible'))
+      .ok(() => this.find('button.join-button').is(':visible'))
+      .ok(() => this.find('a[title="Profile"]').not(':visible'))
+      .ok(() => this.find('a[title="Sign out"]').not(':visible'))
 
-      .assert(
-        'Top bar should have a right section',
-        { visible: '.topbar-right' }
-      )
+      .import(VexTest, { driver : false, trigger: 'button.join-button' })
 
-      .assert(
-        'Top bar should have a container to display number of online users',
-        { visible: 'button.online-now' }
-      )
+      .ok(() => this.find('button.join-button').click())
+      .wait(1)
+      .ok(() => this.find(JoinTest.find('main')).is(true))
 
-      .assert(
-        'There should be at least 0 user online now',
-        { text: 'span.online-users' },
-        text => { (+text).should.be.a.Number.and.is.above(-1) }
-      )
-
-      .assert(
-        'Top bar should have a login button',
-        { visible: 'button.login-button' }
-      )
-
-      .assert(
-        'Top bar should have a join button',
-        { visible: 'button.join-button' }
-      )
-
-      .assert(
-        'Top bar should **not** have a link to profile page',
-        { hidden: 'a[title="Profile"]' }
-      )
-
-      .assert(
-        'Top bar should **not** have a link to signout',
-        { hidden: 'a[title="Sign out"]' }
-      );
+      .ok(() => this.find('button.join-button').click())
+      .wait(1)
+      .ok(() => this.find(JoinTest.find('main')).is(false));
+    ;
   }
 
 }

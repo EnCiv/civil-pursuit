@@ -6,7 +6,7 @@ import SignUpStory from '../stories/sign-up';
 
 class SignStory extends Describe {
 
-  constructor () {
+  constructor (props) {
     super('Sign Story', {
       'web driver'        :   {
         'page'            :   'Home'

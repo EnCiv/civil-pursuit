@@ -5,9 +5,9 @@
   var webdriverio = require('webdriverio');
   var Promise = require('promise');
 
-  desiredCapabilities: {
-      browserName: 'firefox'
-    }
+  // desiredCapabilities: {
+  //     browserName: 'firefox'
+  //   }
 
   function webDriver (options) {
 

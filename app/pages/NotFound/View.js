@@ -14,7 +14,7 @@ class PageNotFound extends Layout {
     var main = this.find('#main').get(0);
 
     main.add(
-      new Element('h1.gutter').text(props.title),
+      new Element('h1.gutter.warning').text(props.title),
       new Element('p.gutter').text(
         'We are sorry, your request could not be fulfilled because no relevant results were found.'),
       new Element('hr')

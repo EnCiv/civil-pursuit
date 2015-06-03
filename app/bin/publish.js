@@ -32,15 +32,15 @@
     
     // { name: 'mocha test/models/User/statics/disposable'},
 
-    { name: 'node app/bin/test test/web/pages/not-found' },
-    { name: 'node app/bin/test test/web/pages/error' },
-    { name: 'node app/bin/test test/web/pages/synchronous-error' },
-    { name: 'node app/bin/test test/web/pages/asynchronous-error' },
-    { name: 'node app/bin/test test/web/pages/terms-of-service' },
+    // { name: 'node app/bin/test test/web/pages/not-found' },
+    // { name: 'node app/bin/test test/web/pages/error' },
+    // { name: 'node app/bin/test test/web/pages/synchronous-error' },
+    // { name: 'node app/bin/test test/web/pages/asynchronous-error' },
+    // { name: 'node app/bin/test test/web/pages/terms-of-service' },
     { name: 'node app/bin/test test/web/pages/home' },
-    { name: 'node app/bin/test test/web/pages/item-not-found' },
-    { name: 'node app/bin/test test/web/pages/item-page' },
-    { name: 'node app/bin/test test/web/pages/profile' },
+    // { name: 'node app/bin/test test/web/pages/item-not-found' },
+    // { name: 'node app/bin/test test/web/pages/item-page' },
+    // { name: 'node app/bin/test test/web/pages/profile' },
 
     { name: 'git push heroku master' }
   ];

@@ -1,26 +1,28 @@
 'use strict';
 
-import Describe from 'syn/lib/app/Describe';
+import Milk from 'syn/lib/app/milk';
 import Page from 'syn/lib/app/Page';
 
-class Footer extends Describe {
+class Footer extends Milk {
 
-  constructor () {
-    super('Footer', {
-      'web driver'        :   {
-        'page'            :   'Home'
-      }
-    });
+  constructor (props) {
+    props = props || {};
+
+    let options = { viewport : props.viewport };
+
+    super('Footer', options);
+
+    this.props = props;
+
+    if ( this.props.go !== false ) {
+      this.go('/');
+    }
 
     this
-      .assert(
-        'Footer should be visible',
-        { visible: '#footer' }
-      )
-
-      .assert(
-        'Footer should have a link to the Terms of Service Page',
-        { visible: 'a[href="' + Page('Terms Of Service') + '"]'}
+      .ok(() => this.find('#footer').is(':visible'))
+      .ok(() => this.find('#footer ' +
+          'a[href="' + Page('Terms Of Service') + '"]')
+        .is(':visible')
       );
   }
 

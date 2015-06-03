@@ -6,7 +6,8 @@ import TopBar from '../components/top-bar';
 
 class SignUpStory extends Describe {
 
-  constructor () {
+  constructor (props) {
+
     super('Sign Up Story', {
       'web driver'        :   {
         'page'            :   'Home'
@@ -16,17 +17,13 @@ class SignUpStory extends Describe {
     this
 
       .assert(
-        () => new TopBar().driver(this._driver)
-      )
-
-      .assert(
         'Click Join button',
         { click: 'button.join-button' }
       )
 
       .assert(
         'Wait 1 second',
-        { pause: 1 }
+        { pause: 5 }
       )
 
     ;
