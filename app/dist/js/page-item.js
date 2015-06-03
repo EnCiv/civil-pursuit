@@ -4784,7 +4784,7 @@ var Item = (function (_Controller) {
 
       // READ MORE
 
-      this.find('media').find('img').on('load', (function () {
+      this.find('media').find('img, iframe').on('load', (function () {
         if (!_this.template.find('.more').length) {
           (0, _synLibUtilReadMore2['default'])(item, _this.template);
         }
@@ -7635,6 +7635,10 @@ module.exports = exports['default'];
     /** {HTMLElement} Image container in DOM */
 
     var $image = $item.find('.item-media img');
+
+    if (!$image.length) {
+      $image = $item.find('.item-media iframe');
+    }
 
     /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
 

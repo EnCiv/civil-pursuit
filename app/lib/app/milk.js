@@ -180,7 +180,7 @@ class Selector {
     return new Promise((fulfill, reject) => {
       this.driver.getHTML(this.selector + ' ' + selector, (error, html) => {
         if ( error ) {
-          return reject(error);
+          return fulfill(0);
         }
         if ( ! html ) {
           fulfill(0);
@@ -237,8 +237,23 @@ class Selector {
           if ( error ) {
             return reject(error);
           }
-          console.log('GOT TEXT', this.selector, text)
           fulfill(text);
+        });
+      });
+    }
+  }
+
+  attr (attr, value) {
+    if ( ( '1' in arguments ) ) {
+
+    }
+    else {
+      return new Promise((fulfill, reject) => {
+        this.driver.getAttribute(this.selector, attr, (error, attrs) => {
+          if ( error ) {
+            return reject(error);
+          }
+          fulfill(attrs);
         });
       });
     }
@@ -246,6 +261,11 @@ class Selector {
 }
 
 class Milk extends EventEmitter {
+
+  static formatToHTMLText (str) {
+    return str
+      .replace(/  +/g, ' ');
+  }
 
   constructor (name, options) {
     super();
@@ -275,7 +295,7 @@ class Milk extends EventEmitter {
     return this._keys[key];
   }
 
-  set (key, value, message) {
+  set (key, value, message, condition) {
     return this.wrap(d => {
       
       let handler = () => new Promise((fulfill, reject) => {
@@ -298,7 +318,9 @@ class Milk extends EventEmitter {
 
       message = message || 'Set ' + key;
 
-      this.actions.push({ handler: handler, message: message });
+      this.actions.push(
+        { handler: handler, message: message, condition : condition }
+      );
 
       return this;
     });
@@ -605,7 +627,7 @@ class Milk extends EventEmitter {
             break;
         }
 
-        this.emit('ready');
+        this.driver.pause(2500, () => this.emit('ready'));
       });
     });
   }

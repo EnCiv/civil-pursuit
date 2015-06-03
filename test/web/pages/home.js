@@ -29,7 +29,7 @@ class HomePage extends Milk {
 
       .import(JoinTest, { toggled : false })
 
-      // .import(LayoutTest)
+      .import(LayoutTest)
 
       .import(TopLevelPanelTest)
 

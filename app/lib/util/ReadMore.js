@@ -23,6 +23,10 @@
 
     var $image          =     $item.find('.item-media img');
 
+    if ( ! $image.length ) {
+      $image            =     $item.find('.item-media iframe');
+    }
+
     /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
 
     var $text           =     $item.find('.item-text');

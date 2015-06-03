@@ -134,6 +134,7 @@ class Join extends Milk {
       // User already taken
 
       .ok(() => get('Submit').click())
+      .wait(1)
       .ok(() => get('Exists').is(':visible'))
 
       // Create user

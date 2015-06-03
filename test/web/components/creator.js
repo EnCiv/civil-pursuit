@@ -47,7 +47,8 @@ class Creator extends Milk {
 
     // Item
 
-    this.import(ItemTest, () => ({ item : get('Item').selector}));
+    this.import(ItemTest, () => (
+      { item : get('Item').selector, buttons: false }));
   }
 
 }

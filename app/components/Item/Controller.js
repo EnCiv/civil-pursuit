@@ -137,7 +137,7 @@ class Item extends Controller {
 
     // READ MORE
 
-    this.find('media').find('img').on('load', () => {
+    this.find('media').find('img, iframe').on('load', () => {
       if ( ! this.template.find('.more').length ) {
         readMore(item, this.template);
       }
