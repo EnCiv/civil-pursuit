@@ -1625,80 +1625,6 @@ var Join = (function (_Controller) {
 })(_synLibAppController2['default']);
 
 exports['default'] = Join;
-
-!(function () {
-
-  'use strict';
-
-  var Form = require('syn/lib/util/Form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function join($vexContent) {
-    var $form = $('form[name="join"]');
-
-    $form.find('.i-agree').on('click', function () {
-
-      var agreed = $(this).find('.agreed');
-
-      if (agreed.hasClass('fa-square-o')) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      } else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-
-    var form = new Form($form);
-
-    function join() {
-      app.domain.run(function () {
-
-        $form.find('.please-agree').addClass('hide');
-        $form.find('.already-taken').hide();
-
-        if (form.labels.password.val() !== form.labels.confirm.val()) {
-          form.labels.confirm.focus().addClass('error');
-
-          return;
-        }
-
-        if (!$form.find('.agreed').hasClass('fa-check-square-o')) {
-          $form.find('.please-agree').removeClass('hide');
-
-          return;
-        }
-
-        $.ajax({
-          url: '/sign/up',
-          type: 'POST',
-          data: {
-            email: form.labels.email.val(),
-            password: form.labels.password.val()
-          }
-        }).error(function (response, state, code) {
-          if (response.status === 401) {
-            $form.find('.already-taken').show();
-          }
-        }).success(function (response) {
-
-          $('a.is-in').css('display', 'inline');
-
-          $('.topbar .is-out').remove();
-
-          vex.close($vexContent.data().vex.id);
-        });
-      });
-    }
-
-    form.send(join);
-  }
-
-  module.exports = join;
-})();
 module.exports = exports['default'];
 
 },{"syn/lib/app/Controller":14,"syn/lib/util/Form":16}],11:[function(require,module,exports){
@@ -1969,6 +1895,8 @@ var TopBar = (function (_Controller) {
 
       vex.defaultOptions.className = 'vex-theme-flat-attack';
 
+      var joinDialog = this.joinDialog.bind(this);
+
       vex.dialog.confirm({
 
         afterOpen: function afterOpen($vexContent) {
@@ -1980,10 +1908,8 @@ var TopBar = (function (_Controller) {
         },
 
         afterClose: function afterClose() {
-          var _this5 = this;
-
           $('.join-button').on('click', function () {
-            return _this5.joinDialog();
+            return joinDialog();
           });
         },
 

@@ -14,7 +14,7 @@ class Vex extends Milk {
 
     this.props = props || {};
 
-    if ( this.props.go !== false ) {
+    if ( this.props.driver !== false ) {
       this.go('/');
     }
 

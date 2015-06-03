@@ -24,7 +24,7 @@ class TopLevelPanel extends Milk {
 
     this.set('Items', findItems, 'Fetch top level items from DB');
 
-    if ( this.props.go !== false ) {
+    if ( this.props.driver !== false ) {
       this.go('/');
     }
 

@@ -17,32 +17,82 @@ class TopBar extends Milk {
 
     this.props = props;
 
-    if ( this.props.go !== false ) {
+    if ( this.props.driver !== false ) {
       this.go('/');
     }
 
+    let get = this.get.bind(this);
+
+    // Get cookie
+
+    this.set('Cookie', () => this.getCookie('synuser'))
+
+    // Set Selectors
+
+    this.set('Topbar',            () => this.find('.topbar'));
+    this.set('Right',             () => this.find('.topbar-right'));
+    this.set('Login button',      () => this.find('button.login-button'));
+    this.set('Join button',       () => this.find('button.join-button'));
+    this.set('Online now',        () => this.find('button.online-now'));
+    this.set('Users online',      () => this.find('span.online-users'));
+    this.set('Link to Profile',   () => this.find('a[title="Profile"]'));
+    this.set('Link to Sign Out',  () => this.find('a[title="Sign out"]'));
+    this.set('Join',              () => this.find(JoinTest.find('main')));
+
+    // Main
+
+    this.ok(() => get('Topbar').is(':visible'));
+
+    // Right
+
+    this.ok(() => get('Right').is(':visible'));
+
+    // Online users
+
+    if ( this.options.viewport === 'tablet' ) {
+      this
+        .ok(() => get('Online now').is(':visible'))
+        .ok(() => get('Users online').text()
+          .then(text => (+text).should.be.a.Number.and.is.above(-1))
+        );
+    }
+
+    // Links
+
     this
-      .ok(() => this.find('.topbar').is(':visible'))
-      .ok(() => this.find('.topbar-right').is(':visible'))
-      .ok(() => this.find('button.online-now').is(':visible'))
-      .ok(() => this.find('span.online-users').text()
-        .then(text => (+text).should.be.a.Number.and.is.above(-1))
-      )
-      .ok(() => this.find('button.login-button').is(':visible'))
-      .ok(() => this.find('button.join-button').is(':visible'))
-      .ok(() => this.find('a[title="Profile"]').not(':visible'))
-      .ok(() => this.find('a[title="Sign out"]').not(':visible'))
+      .ok(() => get('Link to Profile').is(
+        get('Cookie') ? ':visible' : ':hidden'
+      ))
+      .ok(() => get('Link to Sign Out').is(
+        get('Cookie') ? ':visible' : ':hidden'
+      ));
 
-      .import(VexTest, { driver : false, trigger: 'button.join-button' })
+    // Login Button
 
-      .ok(() => this.find('button.join-button').click())
-      .wait(1)
-      .ok(() => this.find(JoinTest.find('main')).is(true))
+    this.ok(() => get('Login button').is(!get('Cookie')));
 
-      .ok(() => this.find('button.join-button').click())
-      .wait(1)
-      .ok(() => this.find(JoinTest.find('main')).is(false));
-    ;
+    // Join Button
+
+    this.ok(() => get('Join button').is(!get('Cookie')));
+
+    // Join Button - Vex
+
+    this.import(VexTest,
+      { trigger: 'button.join-button' },
+      null,
+      when => ! get('Cookie')
+    );
+
+    // Join Button - Toggle Join
+
+    this
+      .ok(() => get('Join button').click(), null, when => ! get('Cookie'))
+      .wait(1, null, when => ! get('Cookie'))
+      .ok(() => get('Join').is(true), null, when => ! get('Cookie'))
+
+      .ok(() => get('Join button').click(), null, when => ! get('Cookie'))
+      .wait(1, null, when => ! get('Cookie'))
+      .ok(() => get('Join').is(false), null, when => ! get('Cookie'));
   }
 
 }

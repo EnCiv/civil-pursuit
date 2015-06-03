@@ -24,7 +24,7 @@ class Intro extends Milk {
     let findType = () => TypeModel.findOne({ name : 'Intro' }).exec();
     let findIntro = () => ItemModel.findOne({ type : get('Type')._id }).exec();
 
-    if ( this.props.go !== false ) {
+    if ( this.props.driver !== false ) {
       this.go('/');
     }
 

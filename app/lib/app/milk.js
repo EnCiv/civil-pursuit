@@ -57,6 +57,20 @@ class Selector {
       });
     }
 
+    else if ( state === ':hidden' ) {
+      return new Promise((fulfill, reject) => {
+        this.driver.isVisible(this.selector, (error, visible) => {
+          if ( error ) {
+            return reject(error);
+          }
+          if ( visible ) {
+            return reject(new Error('Selector ' + this.selector + ' is **not** hidden'));
+          }
+          fulfill();
+        });
+      });
+    }
+
     else if ( /^\./.test(state) ) {
       let _className = state.replace(/^\./, '');
 
@@ -304,7 +318,6 @@ class Milk extends EventEmitter {
         this.startDriver();
       }
 
-
       this.on('ready', () => {
         let current = 0;
         let total = this.actions.length;
@@ -315,6 +328,23 @@ class Milk extends EventEmitter {
 
           if ( action ) {
             // console.log((current + '/' + this.actions.length + ' ' + action.message).grey);
+
+            if ( action.condition ) {
+              let condition = action.condition;
+
+              if ( typeof condition === 'function' ) {
+                condition = condition(current);
+              }
+
+              // console.log('condition?', condition)
+
+              if ( ! condition ) {
+                this.emit('skip', action.message);
+                current ++;
+                runOne();
+                return;
+              }
+            }
 
             let promise = action.handler(current);
 
@@ -327,13 +357,18 @@ class Milk extends EventEmitter {
                   runOne();
                 },
                 error => {
+                  if ( this.clean ) {
+                    this.clean();
+                  }
                   this.emit('error', error)
                 }
               );
           }
 
           else {
-            console.log('All tests ok!')
+            if ( this.clean ) {
+              this.clean();
+            }
             this.emit('done');
           }
 
@@ -345,15 +380,17 @@ class Milk extends EventEmitter {
     });
   }
 
-  ok (handler, message) {
+  ok (handler, message, condition) {
     message = message || 'Asserting ' + fnToStr(handler);
 
-    this.actions.push({ message: message, handler: handler });
+    this.actions.push(
+      { message: message, handler: handler, condition : condition }
+    );
 
     return this;
   }
 
-  wait (seconds, message) {
+  wait (seconds, message, condition) {
     message = message || 'Pause ' + seconds + ' seconds';
 
     this.actions.push({
@@ -365,22 +402,29 @@ class Milk extends EventEmitter {
           }
           fulfill();
         });
-      })
+      }),
+      condition : condition
     });
 
     return this;
   }
 
-  import (TestClass, options, message) {
+  import (TestClass, options, message, condition) {
     return this.wrap(d => {
 
       message = message || 'Importing ' + TestClass.name;
+
+      options = options || {};
 
       let handler = () => new Promise((fulfill, reject) => {
         let driver;
 
         if ( typeof options === 'function' ) {
           options = options();
+        }
+
+        if ( ! ('driver' in options) ) {
+          options.driver = false;
         }
 
         let importee = new TestClass(options);
@@ -398,11 +442,48 @@ class Milk extends EventEmitter {
           .on('error', reject)
           .on('ko', ko => this.emit('ko from', ko, importee.constructor.name))
           .on('ko from',
-            (ko, from) => this.emit('ko from', ko, from));
+            (ko, from) => this.emit('ko from', ko, from))
+          .on('skip', skip => this.emit('skip from', skip, importee.constructor.name))
+          .on('skip from',
+            (skip, from) => this.emit('skip from', skip, from));
       });
+
+      this.actions.push(
+      { message: message, handler: handler, condition : condition }
+    );
+
+    });
+  }
+
+  cookie (name, message) {
+    return this.wrap(d => {
+
+      message = message || 'Getting cookie ' + name;
+
+      let handler = () => this.getCookie(name);
 
       this.actions.push({ message: message, handler: handler });
 
+    });
+  }
+
+  getCookie (name) {
+    return new Promise((fulfill, reject) => {
+      this.driver.getCookie(name, (error, cookie) => {
+        if ( error ) {
+          return reject(error);
+        }
+        fulfill(cookie);
+      });
+    });
+  }
+
+  when (condition, ...thens) {
+    return this.wrap(d => {
+      thens.forEach(then => {
+        let cmd = Object.keys(then)[0];
+        this[cmd]()
+      });
     });
   }
 

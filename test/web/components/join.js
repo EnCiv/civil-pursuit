@@ -45,6 +45,9 @@ class Join extends Milk {
 
     if ( this.props.driver !== false ) {
       this.go('/');
+    }
+
+    if ( this.props.toggled === false ) {
       this.ok(() => this.find('.join-button').click());
       this.wait(1);
     }
@@ -145,6 +148,14 @@ class Join extends Milk {
       .wait(1)
       .ok(() => get('Main').is(false))
     ;
+  }
+
+  clean () {
+    let User = this.get('User');
+
+    if ( User ) {
+      User.remove();
+    }
   }
 }
 

@@ -7,9 +7,11 @@ class Item extends Milk {
 
   constructor (props) {
 
-    super('Item', {
-      viewport: 'tablet'
-    });
+    props = props || {};
+
+    let options = { viewport : props.viewport };
+
+    super('Item', options);
 
     this.props = props || {};
 

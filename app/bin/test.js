@@ -137,6 +137,24 @@
           formatName(test.name).bgGreen.bold +
           (' ' + assertion + ' ').bgYellow.black.bold);
       })
+
+      .on('skip', function (assertion) {
+        console.log(
+          time().bgMagenta +
+          ' * '.bgMagenta.bold +
+          formatName(test.name).bgGreen.bold +
+          'SKIP'.bgBlack.bold +
+          (' ' + assertion + ' ').bgYellow.black.bold);
+      })
+
+      .on('skip from', function (assertion, test) {
+        console.log(
+          time().bgMagenta +
+          ' * '.bgMagenta.bold +
+          formatName(test).grey.bold +
+          'SKIP'.bgBlack.bold +
+          (' ' + assertion + ' ').bold.grey);
+      })
       
       // .on('ko', function (assertion) {
       //   console.log(time().magenta, '✖'.red.bold, assertion.red, test._name.grey);
