@@ -5,7 +5,6 @@ import MediaController  from 'syn/components/Item/controllers/media';
 import View             from 'syn/components/Item/View';
 import Promote          from 'syn/components/Promote/Controller';
 import Details          from 'syn/components/Details/Controller';
-import TopBar           from 'syn/components/TopBar/Controller';
 import S                from 'string';
 import Nav              from 'syn/lib/util/Nav';
 import readMore         from 'syn/lib/util/ReadMore';

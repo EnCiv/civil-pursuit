@@ -25,8 +25,6 @@ class Item extends Milk {
 
     let useDefaultButtons = this.props.button;
 
-    console.log('item', item)
-
     if ( this.props.driver !== false ) {
       this.go('/');
     }

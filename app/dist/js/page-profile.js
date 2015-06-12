@@ -24,7 +24,7 @@ synapp.app.ready(function () {
   // new Profile().render();
 });
 
-},{"syn/app":8,"syn/components/TopBar/Controller":12}],2:[function(require,module,exports){
+},{"syn/app":8,"syn/components/TopBar/Controller":9}],2:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -1106,247 +1106,223 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":6,"_process":5,"inherits":4}],8:[function(require,module,exports){
-'use strict';
+'use strict'
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
+import {EventEmitter} from 'events';
+import domain from 'domain';
+import cache from 'syn/lib/app/Cache';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+class App extends EventEmitter {
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+  constructor (isPage) {
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _events = require('events');
-
-var _domain = require('domain');
-
-var _domain2 = _interopRequireDefault(_domain);
-
-var _synLibAppCache = require('syn/lib/app/Cache');
-
-var _synLibAppCache2 = _interopRequireDefault(_synLibAppCache);
-
-var App = (function (_EventEmitter) {
-  function App(isPage) {
-    var _this = this;
-
-    _classCallCheck(this, App);
-
-    _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this);
+    super();
 
     this.store = {};
 
     this.connect();
 
-    if (isPage) {
+    if ( isPage ) {
       this.store.socket = {};
 
-      this.socket.on('welcome', function (user) {
-        console.log('Connected to socket');
-        _this.socket.synuser = user;
-        _this.emit('ready');
-      });
+      this.socket
+        .on('welcome', user => {
+          console.log('Connected to socket');
+          this.socket.synuser = user;
+          this.emit('ready');
+        });
     }
 
-    this.domain = _domain2['default'].create().on('error', function (error) {
-      return _this.emit('error', error);
-    });
+    this.domain = domain.create()
+      .on('error', error => this.emit('error', error));
 
-    this.domain.intercept = function (handler) {
-      return function (error) {
-        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
-          args[_key2 - 1] = arguments[_key2];
+    this.domain.intercept = handler => (error, ...args) => 
+      this.domain.run(() => {
+        if ( error ) {
+          throw error;
         }
+        if ( handler ) {
+          handler(...args);
+        }
+      });
 
-        return _this.domain.run(function () {
-          if (error) {
-            throw error;
-          }
-          if (handler) {
-            handler.apply(undefined, args);
-          }
-        });
-      };
-    };
   }
 
-  _inherits(App, _EventEmitter);
+  /** Get local store by key
+   *  @arg      {String} key
+   *  @return   Any
+  */
 
-  _createClass(App, [{
-    key: 'get',
+  get (key) {
+    return this.store[key];
+  }
 
-    /** Get local store by key
-     *  @arg      {String} key
-     *  @return   Any
-    */
+  /** Get global store by key
+   *  @arg      {String} key
+   *  @return   Any
+  */
 
-    value: function get(key) {
-      return this.store[key];
+  getGlobal (key) {
+    return synapp.app.store[key];
+  }
+
+  /** Set local store by key
+   *  @arg      {String} key
+   *  @arg      {Any} value
+   *  @return   App
+  */
+
+  set (key, value) {
+    this.store[key] = value;
+
+    this.emit('set', key, value);
+
+    return this;
+  }
+
+  /** Set global store by key
+   *  @arg      {String} key
+   *  @arg      {Any} value
+   *  @return   App
+  */
+
+  setGlobal (key, value) {
+    this.store[key] = value;
+
+    this.emit('set global', key, value);
+
+    return this;
+  }
+
+  /** Copy a global into local and stay in sync with changes
+   *  @arg      {String} key
+  */
+
+  copy (key) {
+    this.store[key] = this.getGlobal(key);
+
+    this.on('set global', (_key, value) => {
+      if ( key === _key ) {
+        this.store.set(key, value);
+      }
+    });
+  }
+
+  /** Throw App error
+   *  @arg      {Error} err
+  */
+
+  error (err) {
+    console.log('App error');
+  }
+
+  /** Execute handler on App ready
+   *  @arg      {Function} fn
+  */
+
+  ready (fn) {
+    this.on('ready', fn);
+  }
+
+  /** Set store by key
+   *  @arg      {String} key
+   *  @arg      {Any} value
+   *  @return   App
+  */
+
+  connect () {
+
+    if ( ! io.$$socket ) {
+      io.$$socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
     }
-  }, {
-    key: 'getGlobal',
 
-    /** Get global store by key
-     *  @arg      {String} key
-     *  @return   Any
-    */
+    this.socket = io.$$socket;
 
-    value: function getGlobal(key) {
-      return synapp.app.store[key];
-    }
-  }, {
-    key: 'set',
+  }
 
-    /** Set local store by key
-     *  @arg      {String} key
-     *  @arg      {Any} value
-     *  @return   App
-    */
+  publish (event, ...messages) {
 
-    value: function set(key, value) {
-      this.store[key] = value;
+    let unsubscribe = () => {
+      this.socket.removeListener('OK ' + event, this.handler);
+    };
 
-      this.emit('set', key, value);
+    return {
+      subscribe: (handler) => {
+        this.socket
+          .on('OK ' + event, (...responses) =>
+            handler({ unsubscribe: unsubscribe.bind(handler)}, ...responses)  
+          )
+          .emit(event, ...messages);
+      }
+    };
 
-      return this;
-    }
-  }, {
-    key: 'setGlobal',
+  }
 
-    /** Set global store by key
-     *  @arg      {String} key
-     *  @arg      {Any} value
-     *  @return   App
-    */
+  load () {
 
-    value: function setGlobal(key, value) {
-      this.store[key] = value;
-
-      this.emit('set global', key, value);
-
-      return this;
-    }
-  }, {
-    key: 'copy',
-
-    /** Copy a global into local and stay in sync with changes
-     *  @arg      {String} key
-    */
-
-    value: function copy(key) {
-      var _this2 = this;
-
-      this.store[key] = this.getGlobal(key);
-
-      this.on('set global', function (_key, value) {
-        if (key === _key) {
-          _this2.store.set(key, value);
-        }
-      });
-    }
-  }, {
-    key: 'error',
-
-    /** Throw App error
-     *  @arg      {Error} err
-    */
-
-    value: function error(err) {
-      console.log('App error');
-    }
-  }, {
-    key: 'ready',
-
-    /** Execute handler on App ready
-     *  @arg      {Function} fn
-    */
-
-    value: function ready(fn) {
-      this.on('ready', fn);
-    }
-  }, {
-    key: 'connect',
-
-    /** Set store by key
-     *  @arg      {String} key
-     *  @arg      {Any} value
-     *  @return   App
-    */
-
-    value: function connect() {
-
-      if (!io.$$socket) {
-        io.$$socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
+    if ( ! this.template ) {
+      if ( cache.getTemplate(this.componentName) ) {
+        this.template = $(cache.getTemplate(this.componentName));
       }
 
-      this.socket = io.$$socket;
-    }
-  }, {
-    key: 'publish',
-    value: function publish(event) {
-      var _this3 = this;
-
-      for (var _len2 = arguments.length, messages = Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-        messages[_key3 - 1] = arguments[_key3];
+      else {
+        let View = this.view;
+        let view = new View(this.props);
+        cache.setTemplate(this.componentName, view.render());
+        this.template = $(cache.getTemplate(this.componentName));
       }
-
-      var unsubscribe = function unsubscribe() {
-        _this3.socket.removeListener('OK ' + event, _this3.handler);
-      };
-
-      return {
-        subscribe: function subscribe(handler) {
-          var _socket$on;
-
-          (_socket$on = _this3.socket.on('OK ' + event, function () {
-            for (var _len3 = arguments.length, responses = Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
-              responses[_key4] = arguments[_key4];
-            }
-
-            return handler.apply(undefined, [{ unsubscribe: unsubscribe.bind(handler) }].concat(responses));
-          })).emit.apply(_socket$on, [event].concat(messages));
-        }
-      };
     }
-  }, {
-    key: 'load',
-    value: function load() {
 
-      if (!this.template) {
-        if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
-          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
-        } else {
-          var View = this.view;
-          var view = new View(this.props);
-          _synLibAppCache2['default'].setTemplate(this.componentName, view.render());
-          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
-        }
-      }
+    return this.template;
+  }
 
-      return this.template;
-    }
-  }]);
+}
 
-  return App;
-})(_events.EventEmitter);
+export default App;
 
-exports['default'] = App;
 
-function anon() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function anon () {
 
   'use strict';
 
-  var domain = require('domain');
-  var Socket = require('syn/lib/app/Socket');
-  var Cache = require('syn/lib/app/Cache');
+  var domain    =   require('domain');
+  var Socket    =   require('syn/lib/app/Socket');
+  var Cache     =   require('syn/lib/app/Cache');
 
-  function Domain(onError) {
+  function Domain (onError) {
     return domain.create().on('error', onError);
   }
 
@@ -1355,7 +1331,7 @@ function anon() {
    *  @extends EventEmitter
    */
 
-  function Synapp() {
+  function Synapp () {
     var self = this;
 
     this.domain = new Domain(function (error) {
@@ -1364,14 +1340,16 @@ function anon() {
 
     this.domain.intercept = function (fn, _self) {
 
-      if (typeof fn !== 'function') {
+      if ( typeof fn !== 'function' ) {
         fn = function () {};
       }
 
       return function (error) {
-        if (error && error instanceof Error) {
+        if ( error && error instanceof Error ) {
           self.domain.emit('error', error);
-        } else {
+        }
+
+        else {
           var args = Array.prototype.slice.call(arguments);
 
           args.shift();
@@ -1389,11 +1367,12 @@ function anon() {
 
       /** Location */
 
-      if (window.location.pathname) {
+      if ( window.location.pathname ) {
 
-        if (/^\/item\//.test(window.location.pathname)) {
+        if ( /^\/item\//.test(window.location.pathname) ) {
           self.location.item = window.location.pathname.split(/\//)[2];
         }
+
       }
 
       self.socket = new Socket(self.emit.bind(self)).socket;
@@ -1441,347 +1420,36 @@ function anon() {
 
   // Export
 
-  if (module && module.exports) {
+  if ( module && module.exports ) {
     module.exports = Synapp;
   }
 
-  if (typeof window === 'object') {
+  if ( typeof window === 'object' ) {
     window.Synapp = Synapp;
   }
+
 }
-module.exports = exports['default'];
 
-},{"domain":2,"events":3,"syn/lib/app/Cache":13,"syn/lib/app/Socket":15,"util":7}],9:[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  var Form = require('syn/lib/util/Form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function forgotPassword($vexContent) {
-    var signForm = $('form[name="forgot-password"]');
-
-    var form = new Form(signForm);
-
-    form.send(function () {
-      var domain = require('domain').create();
-
-      domain.on('error', function (error) {});
-
-      domain.run(function () {
-
-        $('.forgot-password-pending.hide').removeClass('hide');
-        $('.forgot-password-email-not-found').not('.hide').addClass('hide');
-        $('.forgot-password-ok').not('.hide').addClass('hide');
-
-        app.socket.once('no such email', function (_email) {
-          if (_email === form.labels.email.val()) {
-
-            $('.forgot-password-pending').addClass('hide');
-
-            setTimeout(function () {});
-
-            $('.forgot-password-email-not-found').removeClass('hide');
-          }
-        });
-
-        app.socket.on('password is resettable', function (_email) {
-          if (_email === form.labels.email.val()) {
-            $('.forgot-password-pending').addClass('hide');
-
-            $('.forgot-password-ok').removeClass('hide');
-
-            setTimeout(function () {
-              vex.close($vexContent.data().vex.id);
-            }, 2500);
-          }
-        });
-
-        app.socket.emit('send password', form.labels.email.val());
-      });
-    });
-  }
-
-  module.exports = forgotPassword;
-})();
-
-//
-
-// $('.forgot-password-pending').css('display', 'block');
-
-},{"domain":2,"syn/lib/util/Form":16}],10:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _synLibAppController = require('syn/lib/app/Controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synLibUtilForm = require('syn/lib/util/Form');
-
-var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
-
-var Join = (function (_Controller) {
-  function Join(props) {
-    _classCallCheck(this, Join);
-
-    _get(Object.getPrototypeOf(Join.prototype), 'constructor', this).call(this);
-
-    this.props = props || {};
-
-    this.form = new _synLibUtilForm2['default'](this.template);
-
-    this.form.send(this.submit.bind(this));
-
-    this.template.find('.i-agree').on('click', function () {
-
-      var agreed = $(this).find('.agreed');
-
-      if (agreed.hasClass('fa-square-o')) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      } else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-  }
-
-  _inherits(Join, _Controller);
-
-  _createClass(Join, [{
-    key: 'template',
-    get: function () {
-      return $('form[name="join"]');
-    }
-  }, {
-    key: 'submit',
-    value: function submit(e) {
-      var _this = this;
-
-      var d = this.domain;
-
-      d.run(function () {
-
-        _this.template.find('.please-agree').addClass('hide');
-
-        _this.template.find('.already-taken').hide();
-
-        if (_this.form.labels.password.val() !== _this.form.labels.confirm.val()) {
-          _this.form.labels.confirm.focus().addClass('error');
-
-          return;
-        }
-
-        if (!_this.template.find('.agreed').hasClass('fa-check-square-o')) {
-          _this.template.find('.please-agree').removeClass('hide');
-
-          return;
-        }
-
-        $.ajax({
-          url: '/sign/up',
-          type: 'POST',
-          data: {
-            email: _this.form.labels.email.val(),
-            password: _this.form.labels.password.val()
-          }
-        }).error(function (response, state, code) {
-          if (response.status === 401) {
-            _this.template.find('.already-taken').show();
-          }
-        }).success(function (response) {
-
-          _this.socket.synuser = response;
-
-          $('a.is-in').css('display', 'inline');
-
-          $('.topbar .is-out').remove();
-
-          vex.close(_this.props.$vexContent.data().vex.id);
-        });
-      });
-    }
-  }]);
-
-  return Join;
-})(_synLibAppController2['default']);
-
-exports['default'] = Join;
-module.exports = exports['default'];
-
-},{"syn/lib/app/Controller":14,"syn/lib/util/Form":16}],11:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _synLibAppController = require('syn/lib/app/Controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synLibUtilForm = require('syn/lib/util/Form');
-
-var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
-
-var _synLibUtilNav = require('syn/lib/util/Nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var Login = (function (_Controller) {
-  function Login(props) {
-    _classCallCheck(this, Login);
-
-    _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
-
-    this.props = props || {};
-
-    this.form = new _synLibUtilForm2['default'](this.template);
-
-    this.form.send(this.submit.bind(this));
-  }
-
-  _inherits(Login, _Controller);
-
-  _createClass(Login, [{
-    key: 'template',
-    get: function () {
-      return $('form[name="login"]');
-    }
-  }, {
-    key: 'submit',
-    value: function submit(e) {
-      var _this = this;
-
-      var d = this.domain;
-
-      d.run(function () {
-        if ($('.login-error-404').hasClass('is-shown')) {
-          return _synLibUtilNav2['default'].hide($('.login-error-404'), d.intercept(function () {
-            // this.send(login);
-            _this.form.submit();
-          }));
-        }
-
-        if ($('.login-error-401').hasClass('is-shown')) {
-          return _synLibUtilNav2['default'].hide($('.login-error-401'), d.intercept(function () {
-            // this.send(login);
-            _this.form.submit();
-          }));
-        }
-
-        $.ajax({
-          url: '/sign/in',
-          type: 'POST',
-          data: {
-            email: _this.form.labels.email.val(),
-            password: _this.form.labels.password.val()
-          } }).error(function (response) {
-          switch (response.status) {
-            case 404:
-              _synLibUtilNav2['default'].show($('.login-error-404'));
-              break;
-
-            case 401:
-              _synLibUtilNav2['default'].show($('.login-error-401'));
-              break;
-          }
-        }).success(function (response) {
-          $('a.is-in').css('display', 'inline');
-
-          $('.topbar .is-out').remove();
-
-          vex.close(_this.props.$vexContent.data().vex.id);
-        });
-      });
-    }
-  }]);
-
-  return Login;
-})(_synLibAppController2['default']);
-
-exports['default'] = Login;
-module.exports = exports['default'];
-
-},{"syn/lib/app/Controller":14,"syn/lib/util/Form":16,"syn/lib/util/Nav":17}],12:[function(require,module,exports){
+},{"domain":2,"events":3,"syn/lib/app/Cache":10,"syn/lib/app/Socket":11,"util":7}],9:[function(require,module,exports){
 /**
  * @package     App.Component.TopbBar.Controller
 */
 
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
+import Controller from 'syn/lib/app/Controller';
+import Login from 'syn/components/Login/Controller';
+import Join from 'syn/components/Join/Controller';
+import ForgotPassword from 'syn/components/ForgotPassword/Controller';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _synLibAppController = require('syn/lib/app/Controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synComponentsLoginController = require('syn/components/Login/Controller');
-
-var _synComponentsLoginController2 = _interopRequireDefault(_synComponentsLoginController);
-
-var _synComponentsJoinController = require('syn/components/Join/Controller');
-
-var _synComponentsJoinController2 = _interopRequireDefault(_synComponentsJoinController);
-
-var _synComponentsForgotPasswordController = require('syn/components/ForgotPassword/Controller');
-
-var _synComponentsForgotPasswordController2 = _interopRequireDefault(_synComponentsForgotPasswordController);
-
-var TopBar = (function (_Controller) {
+class TopBar extends Controller {
 
   /**
    *  @arg    {Object} props
   */
 
-  function TopBar(props) {
-    var _this = this;
-
-    _classCallCheck(this, TopBar);
-
-    _get(Object.getPrototypeOf(TopBar.prototype), 'constructor', this).call(this);
+  constructor (props) {
+    super();
 
     this.props = props;
 
@@ -1789,241 +1457,178 @@ var TopBar = (function (_Controller) {
 
     this.store['online users'] = 0;
 
-    this.socket.on('online users', function (num) {
-      return _this.set('online users', num);
-    });
+    this.socket.on('online users', (num) =>
+      this.set('online users', num)
+    );
 
-    this.on('set', function (key, value) {
-      if (key === 'online users') {
-        _this.renderOnlineUsers();
+    this.on('set', (key, value) => {
+      if ( key === 'online users' ) {
+        this.renderOnlineUsers();
       }
     });
   }
 
-  _inherits(TopBar, _Controller);
+  find (name) {
+    switch ( name ) {
+      case 'online users':
+        return this.template.find('.online-users');
 
-  _createClass(TopBar, [{
-    key: 'find',
-    value: function find(name) {
-      switch (name) {
-        case 'online users':
-          return this.template.find('.online-users');
+      case 'right section':
+        return this.template.find('.topbar-right');
 
-        case 'right section':
-          return this.template.find('.topbar-right');
+      case 'login button':
+        return this.template.find('.login-button');
 
-        case 'login button':
-          return this.template.find('.login-button');
+      case 'join button':
+        return this.template.find('.join-button');
 
-        case 'join button':
-          return this.template.find('.join-button');
+      case 'is in':
+        return this.template.find('.is-in');
 
-        case 'is in':
-          return this.template.find('.is-in');
+      case 'is out':
+        return this.template.find('.is-out');
+    }
+  }
 
-        case 'is out':
-          return this.template.find('.is-out');
+  render () {
+    this.renderOnlineUsers();
+
+    synapp.app.on('set', (key, value) => {
+      if ( key === 'onlineUsers' ) {
+        this.find('online users').text(value);
       }
+    });
+
+    this.find('right section').removeClass('hide');
+
+    if ( ! this.socket.synuser ) {
+      this.find('login button').on('click', this.loginDialog.bind(this));
+      this.find('join button').on('click', this.joinDialog.bind(this));
+      this.find('is in').hide();
     }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
 
-      this.renderOnlineUsers();
-
-      synapp.app.on('set', function (key, value) {
-        if (key === 'onlineUsers') {
-          _this2.find('online users').text(value);
-        }
-      });
-
-      this.find('right section').removeClass('hide');
-
-      if (!this.socket.synuser) {
-        this.find('login button').on('click', this.loginDialog.bind(this));
-        this.find('join button').on('click', this.joinDialog.bind(this));
-        this.find('is in').hide();
-      } else {
-        this.find('is out').remove();
-        this.find('is in').css('display', 'inline');
-      }
+    else {
+      this.find('is out').remove();
+      this.find('is in').css('display', 'inline');
     }
-  }, {
-    key: 'renderOnlineUsers',
-    value: function renderOnlineUsers() {
-      this.find('online users').text(this.get('online users'));
-    }
-  }, {
-    key: 'loginDialog',
-    value: function loginDialog() {
-      var _this3 = this;
+  }
 
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
+  renderOnlineUsers () {
+    this.find('online users').text(this.get('online users'));
+  }
 
-      vex.dialog.confirm({
+  loginDialog () {
+    vex.defaultOptions.className = 'vex-theme-flat-attack';
 
-        afterOpen: function afterOpen($vexContent) {
-          _this3.find('login button').off('click').on('click', function () {
-            return vex.close();
-          });
+    vex.dialog.confirm({
 
-          new _synComponentsLoginController2['default']({ $vexContent: $vexContent });
+      afterOpen: ($vexContent) => {
+        this.find('login button')
+          .off('click')
+          .on('click', () => vex.close());
 
-          $vexContent.find('.forgot-password-link').on('click', function () {
-            new _synComponentsForgotPasswordController2['default']();
-            vex.close($vexContent.data().vex.id);
-            return false;
-          });
-        },
+        new Login({ $vexContent: $vexContent });
 
-        afterClose: function afterClose() {
-          $('.login-button').on('click', function () {
-            return _this3.loginDialog();
-          });
-        },
+        $vexContent.find('.forgot-password-link').on('click', () => {
+          new ForgotPassword();
+          vex.close($vexContent.data().vex.id);
+          return false;
+        });
+      },
 
-        message: $('#login').text(),
+      afterClose: () => {
+        $('.login-button').on('click', () => this.loginDialog());
+      },
 
-        buttons: [$.extend({}, vex.dialog.buttons.NO, {
-          text: 'x Close'
-        })]
-      });
-    }
-  }, {
-    key: 'joinDialog',
-    value: function joinDialog() {
-      var _this4 = this;
+      message: $('#login').text(),
 
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
+      buttons: [
+         $.extend({}, vex.dialog.buttons.NO, {
+            text: 'x Close'
+          })
+      ]
+    });
+  }
 
-      var joinDialog = this.joinDialog.bind(this);
+  joinDialog () {
+    vex.defaultOptions.className = 'vex-theme-flat-attack';
 
-      vex.dialog.confirm({
+    let joinDialog = this.joinDialog.bind(this);
 
-        afterOpen: function afterOpen($vexContent) {
-          _this4.find('join button').off('click').on('click', function () {
+    vex.dialog.confirm({
+
+      afterOpen: ($vexContent) => {
+        this.find('join button')
+          .off('click')
+          .on('click', () => {
             vex.close();
           });
 
-          new _synComponentsJoinController2['default']({ $vexContent: $vexContent });
-        },
+        new Join({ $vexContent: $vexContent });
+      },
 
-        afterClose: function afterClose() {
-          $('.join-button').on('click', function () {
-            return joinDialog();
-          });
-        },
+      afterClose: () => {
+        $('.join-button').on('click', () => joinDialog());
+      },
 
-        message: $('#join').text(),
-        buttons: [$.extend({}, vex.dialog.buttons.NO, {
-          text: 'x Close'
-        })],
-        callback: function callback(value) {},
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
+      message: $('#join').text(),
+      buttons: [
+         $.extend({}, vex.dialog.buttons.NO, {
+            text: 'x Close'
+          })
+      ],
+      callback: (value) => {
+        
+      },
+      defaultOptions: {
+        closeCSS: {
+          color: 'red'
         }
-      });
-    }
-  }]);
+      }
+    });
+  }
 
-  return TopBar;
-})(_synLibAppController2['default']);
+}
 
-exports['default'] = TopBar;
-module.exports = exports['default'];
+export default TopBar;
 
-},{"syn/components/ForgotPassword/Controller":9,"syn/components/Join/Controller":10,"syn/components/Login/Controller":11,"syn/lib/app/Controller":14}],13:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
+class Cache {
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var Cache = (function () {
-  function Cache() {
-    _classCallCheck(this, Cache);
-
+  constructor () {
     this.cache = {
       templates: {}
     };
   }
 
-  _createClass(Cache, [{
-    key: 'getTemplate',
-    value: function getTemplate(tpl) {
-      return this.cache.templates[tpl];
-    }
-  }, {
-    key: 'setTemplate',
-    value: function setTemplate(tpl, val) {
-      this.cache.templates[tpl] = val;
-    }
-  }]);
-
-  return Cache;
-})();
-
-exports['default'] = new Cache();
-module.exports = exports['default'];
-
-},{}],14:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _synApp = require('syn/app');
-
-var _synApp2 = _interopRequireDefault(_synApp);
-
-var Controller = (function (_App) {
-  function Controller() {
-    _classCallCheck(this, Controller);
-
-    _get(Object.getPrototypeOf(Controller.prototype), 'constructor', this).call(this);
+  getTemplate (tpl) {
+    return this.cache.templates[tpl];
   }
 
-  _inherits(Controller, _App);
+  setTemplate (tpl, val) {
+    this.cache.templates[tpl] = val;
+  }
 
-  return Controller;
-})(_synApp2['default']);
+}
 
-exports['default'] = Controller;
-module.exports = exports['default'];
-
-},{"syn/app":8}],15:[function(require,module,exports){
-'use strict';
-
-!(function () {
-
+export default new Cache()
+},{}],11:[function(require,module,exports){
+! function () {
+  
   'use strict';
 
-  function Socket(emit) {
+  function Socket (emit) {
     var self = this;
 
     /** Socket */
-
+    
     self.socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
 
-    self.socket.once('welcome', function onSocketWelcome(user) {
+    self.socket.once('welcome', function onSocketWelcome (user) {
       emit('ready', user);
-      if (user) {
+      if ( user ) {
         console.info('Welcome', user);
         $('a.is-in').css('display', 'inline');
         self.socket.synuser = user;
@@ -2035,11 +1640,12 @@ module.exports = exports['default'];
       var args = [];
       var done;
 
-      for (var i in arguments) {
-        if (+i) {
-          if (typeof arguments[i] === 'function') {
+      for ( var i in arguments ) {
+        if ( +i ) {
+          if ( typeof arguments[i] === 'function' ) {
             done = arguments[i];
-          } else {
+          }
+          else {
             args.push(arguments[i]);
           }
         }
@@ -2048,499 +1654,16 @@ module.exports = exports['default'];
       self.socket.emit.apply(self.socket, [event].concat(args));
 
       self.socket.on('OK ' + event, done);
-    };
 
-    self.socket.on('error', function onSocketError(error) {
+    }
+
+    self.socket.on('error', function onSocketError (error) {
       console.error('socket error', error);
     });
   }
 
   module.exports = Socket;
-})();
 
-},{}],16:[function(require,module,exports){
-'use strict';
+} ();
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var _synLibUtilDomainRun = require('syn/lib/util/domain-run');
-
-var _synLibUtilDomainRun2 = _interopRequireDefault(_synLibUtilDomainRun);
-
-var Form = (function () {
-  function Form(form) {
-    var _this = this;
-
-    _classCallCheck(this, Form);
-
-    var self = this;
-
-    this.form = form;
-
-    this.labels = {};
-
-    form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
-
-    // #193 Disable <Enter> keys
-
-    form.find('input').on('keydown', function (e) {
-      if (e.keyCode === 13) {
-        return false;
-      }
-    });
-
-    form.on('submit', function (e) {
-      setTimeout(function () {
-        return _this.submit(e);
-      });
-      return false;
-    });
-  }
-
-  _createClass(Form, [{
-    key: 'send',
-    value: function send(fn) {
-      this.ok = fn;
-      return this;
-    }
-  }, {
-    key: 'submit',
-    value: function submit(e) {
-      var errors = [];
-
-      this.form.find('[required]').each(function () {
-        var val = $(this).val();
-
-        if (!val) {
-
-          if (!errors.length) {
-            $(this).addClass('error').focus();
-          }
-
-          errors.push({ required: $(this).attr('name') });
-        } else {
-          $(this).removeClass('error');
-        }
-      });
-
-      if (!errors.length) {
-        this.ok();
-      }
-
-      return false;
-    }
-  }]);
-
-  return Form;
-})();
-
-exports['default'] = Form;
-module.exports = exports['default'];
-
-},{"syn/lib/util/domain-run":18}],17:[function(require,module,exports){
-(function (process){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  N   A   V
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function toggle(elem, poa, cb) {
-    if (!elem.hasClass('is-toggable')) {
-      elem.addClass('is-toggable');
-    }
-
-    if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    if (elem.hasClass('is-shown')) {
-      unreveal(elem, poa, cb);
-    } else {
-      reveal(elem, poa, cb);
-    }
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function reveal(elem, poa, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    if (typeof cb !== 'function') {
-      cb = console.log.bind(console);
-    }
-
-    emitter.revealed = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-      if (!elem.hasClass('is-toggable')) {
-        elem.addClass('is-toggable');
-      }
-
-      console.log('%c reveal', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>', elem.attr('class'));
-
-      if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
-        var error = new Error('Animation already in progress');
-        error.code = 'ANIMATION_IN_PROGRESS';
-        return cb(error);
-      }
-
-      elem.removeClass('is-hidden').addClass('is-showing');
-
-      if (poa) {
-        scroll(poa, function () {
-          show(elem, function () {
-            emitter.emit('success');
-            cb();
-          });
-        });
-      } else {
-        show(elem, function () {
-          emitter.emit('success');
-          cb();
-        });
-      }
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function unreveal(elem, poa, cb) {
-    if (!elem.hasClass('is-toggable')) {
-      elem.addClass('is-toggable');
-    }
-
-    console.log('%c unreveal', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
-
-    if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    elem.removeClass('is-shown').addClass('is-hiding');
-
-    if (poa) {
-      scroll(poa, function () {
-        hide(elem, cb);
-      });
-    } else {
-      hide(elem, cb);
-    }
-  }
-
-  /**
-   *  @function scroll
-   *  @description Scroll the page till the point of attention is at the top of the screen
-   *  @return null
-   *  @arg {function} pointOfAttention - jQuery List
-   *  @arg {function} cb - Function to call once scroll is complete
-   *  @arg {number} speed - A number of milliseconds to set animation duration
-   */
-
-  function scroll(pointOfAttention, cb, speed) {
-    // console.log('%c scroll', 'font-weight: bold',
-    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.scrolled = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    emitter.then = function (fn, fn2) {
-      emitter.on('success', fn);
-      if (fn2) emitter.on('error', fn2);
-      return this;
-    };
-
-    var poa = pointOfAttention.offset().top - 60;
-
-    var current = $('body,html').scrollTop();
-
-    if (typeof cb !== 'function') {
-      cb = function () {};
-    }
-
-    if (current === poa || current > poa && current - poa < 50 || poa > current && poa - current < 50) {
-
-      emitter.emit('success');
-
-      return typeof cb === 'function' ? cb() : true;
-    }
-
-    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing')).then(function () {
-
-      emitter.emit('success');
-
-      if (typeof cb === 'function') {
-        cb();
-      }
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function show(elem, cb) {
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.shown = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-
-      console.log('%c show', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
-
-      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-      if (elem.hasClass('.is-showing') || elem.hasClass('.is-hiding')) {
-
-        emitter.emit('error', new Error('Already in progress'));
-
-        if (typeof cb === 'function') {
-          cb(new Error('Show failed'));
-        }
-
-        return false;
-      }
-
-      // make sure margin-top is equal to height for smooth scrolling
-
-      elem.css('margin-top', '-' + elem.height() + 'px');
-
-      // animate is-section
-
-      $.when(elem.find('.is-section:first').animate({
-        marginTop: 0
-      }, 500)).then(function () {
-        elem.removeClass('is-showing').addClass('is-shown');
-
-        if (elem.css('margin-top') !== 0) {
-          elem.animate({ 'margin-top': 0 }, 250);
-        }
-
-        emitter.emit('success');
-
-        if (cb) {
-          cb();
-        }
-      });
-
-      elem.animate({
-        opacity: 1
-      }, 500);
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function hide(elem, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.hiding = function (cb) {
-      this.on('hiding', cb);
-      return this;
-    };
-
-    emitter.hidden = function (cb) {
-      this.on('hidden', cb);
-      return this;
-    };
-
-    emitter.error = function (cb) {
-      this.on('error', cb);
-      return this;
-    };
-
-    process.nextTick(function () {
-
-      var domain = require('domain').create();
-
-      domain.on('error', function (error) {
-        emitter.emit('error', error);
-      });
-
-      domain.run(function () {
-
-        if (!elem.length) {
-          return cb();
-        }
-
-        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-        if (elem.hasClass('.is-showing') || elem.hasClass('.is-hiding')) {
-          emitter.emit('bounced');
-          return false;
-        }
-
-        emitter.emit('hiding');
-
-        console.log('%c hide', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
-
-        elem.removeClass('is-shown').addClass('is-hiding');;
-
-        elem.find('.is-section:first').animate({
-          'margin-top': '-' + elem.height() + 'px' }, 1000, function () {
-          elem.removeClass('is-hiding').addClass('is-hidden');
-
-          emitter.emit('hidden');
-
-          if (cb) cb();
-        });
-
-        elem.animate({
-          opacity: 0
-        }, 1000);
-      });
-    });
-
-    return emitter;
-  }
-
-  module.exports = {
-    toggle: toggle,
-    reveal: reveal,
-    unreveal: unreveal,
-    show: show,
-    hide: hide,
-    scroll: scroll
-  };
-})();
-
-// 'padding-top': elem.height() + 'px'
-
-}).call(this,require('_process'))
-},{"_process":5,"domain":2,"events":3}],18:[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  var domain = require('domain');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function domainRun(fn, reject) {
-    var d = domain.create();
-
-    d.intercept = function (fn, _self) {
-
-      if (typeof fn !== 'function') {
-        fn = function () {};
-      }
-
-      return function (error) {
-        if (error && error instanceof Error) {
-          d.emit('error', error);
-        } else {
-          var args = Array.prototype.slice.call(arguments);
-
-          args.shift();
-
-          fn.apply(_self, args);
-        }
-      };
-    };
-
-    d.on('error', function onDomainError(error) {
-      console.error(error);
-
-      if (error.stack) {
-        error.stack.split(/\n/).forEach(function (line) {
-          line.split(/\n/).forEach(console.warn.bind(console));
-        });
-      }
-
-      if (typeof reject === 'function') {
-        reject(error);
-      }
-    });
-
-    d.run(function () {
-      fn(d);
-    });
-  }
-
-  module.exports = domainRun;
-})();
-
-},{"domain":2}]},{},[1]);
+},{}]},{},[1]);

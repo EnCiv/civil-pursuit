@@ -21,15 +21,15 @@ class HomePage extends Milk {
 
       .go('/')
 
-      .import(LayoutTest)
+      // .import(LayoutTest)
 
-      .import(IntroTest)
+      // .import(IntroTest)
 
-      .import(TopLevelPanelTest)
+      // .import(TopLevelPanelTest)
 
       .import(JoinTest, { toggled : false })
 
-      .import(LayoutTest)
+      // .import(LayoutTest)
 
       .import(TopLevelPanelTest)
 

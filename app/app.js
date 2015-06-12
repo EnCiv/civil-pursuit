@@ -132,6 +132,11 @@ class App extends EventEmitter {
 
   }
 
+  reconnect () {
+    console.log('reconnecting')
+    this.socket.close().connect();
+  }
+
   publish (event, ...messages) {
 
     let unsubscribe = () => {

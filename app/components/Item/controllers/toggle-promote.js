@@ -1,6 +1,7 @@
 'use strict';
 
 import Nav              from 'syn/lib/util/Nav';
+import TopBar           from 'syn/components/TopBar/Controller';
 
 function tooglePromote ($trigger) {
 

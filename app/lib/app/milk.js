@@ -26,7 +26,6 @@ class Selector {
   }
 
   is (state) {
-
     if ( typeof state === 'boolean' ) {
       return new Promise((fulfill, reject) => {
         this.driver.isExisting(this.selector, (error, exists) => {
@@ -35,8 +34,8 @@ class Selector {
           }
           if ( exists !== state ) {
             return reject(new Error(
-              'Element ' + (exists ? 'exists' : 'does not exist: ' +
-                this.selector)));
+              'Element ' + (exists ? 'exists' : 'does not exist: ') +
+                this.selector));
           }
           fulfill();
         });
@@ -73,7 +72,6 @@ class Selector {
 
     else if ( /^\./.test(state) ) {
       let _className = state.replace(/^\./, '');
-
       return new Promise((fulfill, reject) => {
         this.driver.getAttribute(this.selector, 'class',
           (error, className) => {
@@ -102,6 +100,10 @@ class Selector {
           }
         );
       });
+    }
+
+    else {
+      console.log('is what?')
     }
   }
 

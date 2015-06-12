@@ -14,7 +14,7 @@ class Join extends Element {
 
   signWithTwitter () {
     return new Element('a.button', { href: Page('Sign With Twitter') }).add(
-      new Element('i.fa.fa-facebook'),
+      new Element('i.fa.fa-twitter'),
       new Element('span').text(' Twitter')
     );
   }

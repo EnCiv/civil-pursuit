@@ -187,10 +187,10 @@ class Panel extends Controller {
 
     /** Load template */
 
-    if ( ! cache.getTemplate('Item') ) {
+    // if ( ! cache.getTemplate('Item') ) {
       new Item().load();
-      return this.preInsertItem(items, cb);
-    }
+      // return this.preInsertItem(items, cb);
+    // }
 
     /** Items to object */
 

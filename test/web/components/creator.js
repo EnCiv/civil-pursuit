@@ -36,19 +36,45 @@ class Creator extends Milk {
     this.set('Item', () => find(get('Creator').selector +
       ' > .is-section > .item'));
 
-    this.set('Toggle', () => find(get('Item').selector + ' .button-create'))
+    this.set('Create', () => find(get('Item').selector + ' .button-create'));
+
+    this.set('Subject', () => find(get('Creator').selector + ' input[name="subject"]'));
+
+    this.set('Description', () => find(get('Creator').selector + ' textarea[name="description"]'));
 
     // Visibility
 
-    this.ok(() => get('Creator').is(':visible'));
-    this.ok(() => get('Creator').is('.is-shown'));
-    this.ok(() => get('Toggle').is(':visible'));
-    this.ok(() => get('Toggle').click());
+    this.ok(() => get('Creator').is(':visible'), 'Creator is visible');
+    this.ok(() => get('Creator').is('.is-shown'), 'Creator has class "is-shown", meaning it has been expanded successfully by our navigation system');
+    this.ok(() => get('Create').is(':visible'), 'Create button is visible');
 
     // Item
 
     this.import(ItemTest, () => (
       { item : get('Item').selector, buttons: false }));
+
+    // Validations
+
+    this.ok(() => get('Create').click(), 'Click on Create button');
+
+    this.ok(() => get('Subject').is('.error'), 'Subject field is showing error because it is empty');
+
+    this.ok(() => get('Subject').val('This is a subject'), 'Writing a subject');
+
+    this.ok(() => get('Create').click(), 'Click on Create button');
+
+    this.ok(() => get('Subject').not('.error'), 'Subject field is showing error because it is empty');
+
+    this.ok(() => get('Description').is('.error'), 'Description field is showing error because it is empty');
+
+    this.ok(() => get('Description').val('This is a description'), 'Writing a description');
+
+    this.ok(() => get('Create').click(), 'Click on Create button');
+
+    this.ok(() => get('Subject').not('.error'), 'Subject field is showing error because it is empty');
+
+    this.ok(() => get('Description').not('.error'), 'Description field is showing error because it is empty');
+
   }
 
 }

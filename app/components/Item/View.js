@@ -4,12 +4,14 @@ import {Element} from 'cinco/es5';
 
 class Item extends Element {
 
-  constructor (props) {
+  constructor (props, extra) {
     super('.item');
 
     this.attr('id', props.item ? 'item-' + props.item.id  : '');
 
     this.props = props || {};
+
+    this.extra = extra || {};
 
     this.add(
       this.media(),
@@ -103,11 +105,14 @@ class Item extends Element {
 
   collapsers () {
 
+    console.warn('should we collpase?', this.props)
+
     return new Element('.item-collapsers')
       .condition(() => {
-        if ( 'collapsers' in this.props ) {
-          return this.props.collapsers  !== false
+        if ( this.props.item && 'collapsers' in this.props.item ) {
+          return this.props.item.collapsers  !== false;
         }
+
         return true;
       })
       .add(

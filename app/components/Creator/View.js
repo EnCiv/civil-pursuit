@@ -9,7 +9,7 @@ import ItemView  from 'syn/components/Item/View';
 
 class Creator extends Element {
   
-  constructor (props) {
+  constructor (props, extra) {
     super('form.creator.is-container', {
       name                :     'create',
       novalidate          :     'novalidate',
@@ -17,10 +17,12 @@ class Creator extends Element {
       method              :     'POST'
     })
     
-    this.props = props
-    
+    this.props = props;
+
+    this.extra = extra || {};
+
     var itemBox = this.itemBox();
-    
+
     itemBox
       .find('.item-text')
       .get(0)

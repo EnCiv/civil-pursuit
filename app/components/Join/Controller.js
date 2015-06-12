@@ -52,6 +52,8 @@ class Join extends Controller {
           return;
         }
 
+        console.info('signing up')
+
         $.ajax({
           url: '/sign/up',
           type: 'POST',
@@ -69,8 +71,8 @@ class Join extends Controller {
           
           .success((response) => {
 
-            this.socket.synuser = response;
-            
+            this.reconnect();
+
             $('a.is-in').css('display', 'inline');
 
             $('.topbar .is-out').remove();
