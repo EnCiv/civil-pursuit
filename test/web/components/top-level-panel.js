@@ -43,7 +43,7 @@ class TopLevelPanel extends Milk {
         }
       })
       
-      .ok(() => get('Top Level Panel').count('.item[id]')
+      .ok(() => get('Top Level Panel').count('.item[id]:not(.new)')
         .then(children => children.should.be.exactly(7)))
       
       .each(

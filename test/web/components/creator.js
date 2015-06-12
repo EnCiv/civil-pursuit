@@ -2,6 +2,7 @@
 
 import Milk from 'syn/lib/app/milk';
 import ItemTest from './item';
+import ItemModel from 'syn/models/Item';
 
 class Creator extends Milk {
 
@@ -22,6 +23,8 @@ class Creator extends Milk {
       this.go('/');
     }
 
+    let Item;
+
     // Get cookie
 
     this.set('Cookie', () => this.getCookie('synuser'));
@@ -41,6 +44,8 @@ class Creator extends Milk {
     this.set('Subject', () => find(get('Creator').selector + ' input[name="subject"]'));
 
     this.set('Description', () => find(get('Creator').selector + ' textarea[name="description"]'));
+
+    this.set('New item', () => find(get('Panel').selector + ' > .panel-body > .items .item.new'));
 
     // Visibility
 
@@ -74,6 +79,47 @@ class Creator extends Milk {
     this.ok(() => get('Subject').not('.error'), 'Subject field is showing error because it is empty');
 
     this.ok(() => get('Description').not('.error'), 'Description field is showing error because it is empty');
+
+    // New item is an item
+
+    this.wait(2.5);
+
+    this.ok(() => get('New item').is(':visible'), 'Newly created item has appeared on the items list of the panel the creator belongs to');
+
+    this.ok(() => new Promise((ok, ko) => {
+
+      console.log('will now fetch db')
+
+      get('New item')
+        .attr('id')
+        .then(
+          id => {
+            ItemModel
+              .findById(id.split('-')[1])
+              .exec()
+              .then(
+                item => {
+                  console.log('got response', item)
+                  if ( ! item ) {
+                    return ko(new Error('New item not found in DB'));
+                  }
+                  item.toPanelItem((error, item) => {
+                    if ( error ) {
+                      return ko(error);
+                    }
+                    Item = item;
+                    ok();
+                  });
+                },
+                ko
+              );
+          },
+          ko
+        );
+
+    }), 'Get new item from DB');
+
+    this.import(ItemTest, () => ({ item : Item }));
 
   }
 

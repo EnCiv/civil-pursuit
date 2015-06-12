@@ -7,6 +7,7 @@ import IntroTest from '../components/intro';
 import LayoutTest from '../components/layout';
 import JoinTest from '../components/join';
 import TopLevelPanelTest from '../components/top-level-panel';
+import SignOutTest from '../components/sign-out';
 
 class HomePage extends Milk {
 
@@ -30,6 +31,12 @@ class HomePage extends Milk {
       .import(JoinTest, { toggled : false })
 
       // .import(LayoutTest)
+
+      // .import(TopLevelPanelTest)
+
+      .import(SignOutTest)
+
+      .import(LayoutTest)
 
       .import(TopLevelPanelTest)
 

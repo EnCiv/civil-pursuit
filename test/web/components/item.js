@@ -2,6 +2,7 @@
 
 import Milk from 'syn/lib/app/milk';
 import YouTubeView from 'syn/components/YouTube/View';
+import config from 'syn/config.json';
 
 class Item extends Milk {
 
@@ -89,38 +90,52 @@ class Item extends Milk {
 
     this
 
-      .ok(() => get('Item').is(':visible'))
-      .ok(() => get('Item').is('.item'))
-      .ok(() => get('Media Wrapper').is(':visible'))
-      .ok(() => get('Media').is(':visible'))
-      .ok(() => get('Buttons').is(':visible'))
-      .ok(() => get('Text').is(':visible'));
+      .ok(() => get('Item').is(':visible'), 'Item is visible')
+      .ok(() => get('Item').is('.item'), 'Item has the class ".visible"')
+      .ok(() => get('Media Wrapper').is(':visible'), 'Item Media Wrapper is visible')
+      .ok(() => get('Media').is(':visible'), 'Item Media is visible')
+      .ok(() => get('Buttons').is(':visible'), 'Item Buttons are visible')
+      .ok(() => get('Text').is(':visible'), 'Item Text is visible');
 
     if ( itemIsAnObject && YouTubeView.isYouTube(item) ) {
       this
-        .ok(() => get('Video Container').is(':visible'))
+        .ok(() => get('Video Container').is(':visible'), 'Item Video Container is visible')
         .wait(1)
-        .ok(() => get('Iframe').is(':visible'))
+        .ok(() => get('Iframe').is(':visible'), 'Item YouTube Iframe is visible')
         .ok(() => get('Iframe').width()
-          .then(width => width.should.be.exactly(183))
+          .then(width => width.should.be.exactly(183)),
+          'Iframe should be the exact width'
         )
         .ok(() => get('Iframe').height()
-          .then(height => height.should.be.exactly(133))
+          .then(height => height.should.be.exactly(133)),
+          'Iframe should be the exact height'
         );
     }
 
     else if ( itemIsAnObject ) {
       this
-        .ok(() => get('Image').is(':visible'))
+        .ok(() => get('Image').is(':visible'), 'Item Image is visible')
         .ok(() => get('Image').width()
-          .then(width => width.should.be.exactly(183))
+          .then(width => width.should.be.exactly(183)),
+          'Item image has the right withd'
         )
         .ok(() => get('Image').height()
-          .then(height => height.should.be.exactly(122))
-        )
-        .ok(() => get('Image').attr('src')
-          .then(src => src.should.be.exactly(item.image))
+          .then(height => height.should.be.exactly(122)),
+          'Item image has the right height'
         );
+
+      if ( item.image ) {
+        this.ok(() => get('Image').attr('src')
+          .then(src => src.should.be.exactly(item.image)),
+          'Item Image is the same than in DB'
+        );
+      }
+      else {
+        this.ok(() => get('Image').attr('src')
+          .then(src => src.should.be.exactly(config.public['default item image'])),
+          'Item Image is the default image'
+        );
+      }
     }
 
     if ( itemIsAnObject ) {
@@ -128,11 +143,12 @@ class Item extends Milk {
       // VERIFY TEXT
 
       this
-        .ok(() => get('Truncatable').is(':visible'))
+        .ok(() => get('Truncatable').is(':visible'), 'Item Truncatable space is visible')
         
-        .ok(() => get('Subject').is(':visible'))
+        .ok(() => get('Subject').is(':visible'), 'Item subject is visible')
         .ok(() => get('Subject').text()
-          .then(text => text.should.be.exactly(item.subject)))
+          .then(text => text.should.be.exactly(item.subject)),
+          'Subject has the same text than DB')
 
         .ok(() => 
           Promise.all([
@@ -146,23 +162,34 @@ class Item extends Milk {
             if ( ! more ) {
               text.should.be.exactly(Milk.formatToHTMLText(item.description));
             }
-          })
+          }),
+          'Item Description is the same than in DB'
         )
     
       // BUTTONS
 
       if ( this.props.buttons !== false ) {
+        // PROMOTE
         this
-          .ok(() => get('Toggle promote').is(':visible'))
+          .ok(() => get('Toggle promote').is(':visible'), 'Promote toggle button is visible')
           .ok(() => get('Toggle promote').text()
-            .then(text => (+text).should.be.exactly(item.promotions)))
-          .ok(() => get('Toggle details').is(':visible'))
+            .then(text => (+text).should.be.exactly(item.promotions)),
+            'Promote toggle button text is the right amount of times item has been promoted');
+
+        // DETAILS
+        this
+          .ok(() => get('Toggle details').is(':visible'), 'Details toggle button is visible')
           .ok(() => get('Toggle details').text()
             .then(text => text.should.be.exactly(
-              item.popularity.number.toString() + '%')))
-          .ok(() => get('Related').is(':visible'))
+              item.popularity.number.toString() + '%')),
+            'Deatisl toggle button text is item\'s popularity');
+
+        // RELATED
+        this
+          .ok(() => get('Related').is(':visible'), 'Related buttons is visible')
           .ok(() => get('Related').text()
-            .then(text => (+text).should.be.exactly(item.children)));
+            .then(text => (+text).should.be.exactly(item.children)),
+            'Related button text is the number of direct children');
       }
     }
 
