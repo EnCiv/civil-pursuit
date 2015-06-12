@@ -22,23 +22,23 @@ class HomePage extends Milk {
 
       .go('/')
 
-      // .import(LayoutTest)
+      .import(LayoutTest)
 
-      // .import(IntroTest)
+      .import(IntroTest)
 
       .import(TopLevelPanelTest)
 
-      // .import(JoinTest, { toggled : false })
+      .import(JoinTest, { toggled : false })
 
-      // .import(LayoutTest)
+      .import(LayoutTest)
 
-      // .import(TopLevelPanelTest)
+      .import(TopLevelPanelTest)
 
-      // .import(SignOutTest)
+      .import(SignOutTest)
 
-      // .import(LayoutTest)
+      .import(LayoutTest)
 
-      // .import(TopLevelPanelTest)
+      .import(TopLevelPanelTest)
 
     ;
   }

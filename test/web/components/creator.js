@@ -55,8 +55,12 @@ class Creator extends Milk {
 
     // Item
 
-    this.import(ItemTest, () => (
-      { item : get('Item').selector, buttons: false }));
+    this.import(ItemTest, () => ({
+      item          :   get('Item').selector,
+      buttons       :   false,
+      collapsers    :   false,
+      promote       :   false
+    }));
 
     // Validations
 
@@ -88,8 +92,6 @@ class Creator extends Milk {
 
     this.ok(() => new Promise((ok, ko) => {
 
-      console.log('will now fetch db')
-
       get('New item')
         .attr('id')
         .then(
@@ -99,7 +101,6 @@ class Creator extends Milk {
               .exec()
               .then(
                 item => {
-                  console.log('got response', item)
                   if ( ! item ) {
                     return ko(new Error('New item not found in DB'));
                   }
@@ -119,7 +120,7 @@ class Creator extends Milk {
 
     }), 'Get new item from DB');
 
-    this.import(ItemTest, () => ({ item : Item }));
+    this.import(ItemTest, () => ({ item : Item, promote : true }));
 
   }
 

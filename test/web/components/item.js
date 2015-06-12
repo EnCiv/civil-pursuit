@@ -3,6 +3,8 @@
 import Milk from 'syn/lib/app/milk';
 import YouTubeView from 'syn/components/YouTube/View';
 import config from 'syn/config.json';
+import JoinTest from './join';
+import PromoteTest from './promote';
 
 class Item extends Milk {
 
@@ -30,8 +32,12 @@ class Item extends Milk {
       this.go('/');
     }
 
+    this.set('Join', () => this.find(JoinTest.find('main')));
+
     this
       
+      .set('Cookie', () => this.getCookie('synuser'))
+
       .set('Item', () => find('#item-' + item._id), null, () => itemIsAnObject)
 
       .set('Item', () => find(item), null, () => itemIsASelector)
@@ -86,6 +92,10 @@ class Item extends Milk {
 
       .set('Related', () => this.find(
         get('Buttons').selector + ' span.related'
+      ))
+
+      .set('Collapsers', () => this.find(
+        get('Item').selector + '>.item-collapsers'
       ));
 
     this
@@ -103,11 +113,11 @@ class Item extends Milk {
         .wait(1)
         .ok(() => get('Iframe').is(':visible'), 'Item YouTube Iframe is visible')
         .ok(() => get('Iframe').width()
-          .then(width => width.should.be.exactly(183)),
+          .then(width => width.should.be.within(183, 186)),
           'Iframe should be the exact width'
         )
         .ok(() => get('Iframe').height()
-          .then(height => height.should.be.exactly(133)),
+          .then(height => height.should.be.within(133, 135)),
           'Iframe should be the exact height'
         );
     }
@@ -116,11 +126,11 @@ class Item extends Milk {
       this
         .ok(() => get('Image').is(':visible'), 'Item Image is visible')
         .ok(() => get('Image').width()
-          .then(width => width.should.be.exactly(183)),
+          .then(width => width.should.be.within(183, 186)),
           'Item image has the right withd'
         )
         .ok(() => get('Image').height()
-          .then(height => height.should.be.exactly(122)),
+          .then(height => height.should.be.within(122, 125)),
           'Item image has the right height'
         );
 
@@ -193,7 +203,43 @@ class Item extends Milk {
       }
     }
 
-    // useDefaultButtons
+    // COLLAPSERS
+
+    if ( this.props.collapsers !== false && item.collapsers !== false ) {
+      this.ok(() => get('Collapsers').is(true), 'Collapsers are hidden');
+    }
+
+    // PROMOTE
+
+    if ( this.props.promote !== false && item.promote !== false ) {
+
+      // NO COOKIE
+
+      this
+        .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! get('Cookie'))
+        .wait(1, null, when => ! get('Cookie'))
+        .ok(() => get('Join').is(true), null, when => ! get('Cookie'))
+
+        .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! get('Cookie'))
+        .wait(1, null, when => ! get('Cookie'))
+        .ok(() => get('Join').is(false), null, when => ! get('Cookie'));
+
+      // COOKIE
+
+      // Don't click because components like Creator have already shown Promote when new item was created
+      if ( this.props.promote !== true ) {
+        this
+          .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => get('Cookie'))
+      }
+
+      this
+        .wait(1, null, when => get('Cookie'))
+        .import(PromoteTest, { item : item }, null, when => get('Cookie'))
+        .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => get('Cookie'))
+        .wait(1, null, when => get('Cookie'));
+
+    }
+
   }
 
 }
