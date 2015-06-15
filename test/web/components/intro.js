@@ -61,6 +61,7 @@ class Intro extends Milk {
         buttons : false,
         references : false,
         promote : false,
+        details : false,
         element : get('Item')
       }));
   }

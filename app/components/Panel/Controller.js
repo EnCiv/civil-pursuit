@@ -20,6 +20,7 @@ class Panel extends Controller {
 
     if ( this.props.panel ) {
       this.set('panel', this.props.panel);
+      this.panel = this.props.panel;
     }
 
     if ( this.props.panel ) {
@@ -60,7 +61,7 @@ class Panel extends Controller {
 
       d.run(() => {
 
-        let panel = this.get('panel');
+        let panel = this.panel;
 
         // Fill title                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

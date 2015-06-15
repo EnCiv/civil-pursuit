@@ -1,232 +1,241 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var others = 5;
+import { Domain } from 'domain';
+import { EventEmitter } from 'events';
+import config from 'syn/config.json';
+import CriteriaModel from 'syn/models/Criteria';
+import TypeModel from 'syn/models/Type';
 
-  var async = require('async');
+const OTHERS = 5;
 
-  var config = require('syn/config.json');
+class Evaluation {
 
-  function Evaluation (props) {
+  constructor (props) {
     for ( var i in props ) {
       this[i] = props[i];
     }
   }
 
-  /**
-   *  @class
-   *  @arg {String} itemId - Item Object ID
-   *  @arg {Function} cb 
-   */
+}
 
-  function Evaluate (model, userId, itemId, cb) {
+class Evaluator extends EventEmitter {
 
-    var self = this;
-
-    this.model    =   model;
-    this.itemId   =   itemId;
-    this.userId   =   userId;
-    this.cb       =   cb;
-
-    this.domain   =   require('domain').create();
-    
-    this.domain.on('error', function (error) {
-      cb(error);
+  static Factory (userId, itemId) {
+    return new Promise((ok, ko) => {
+      new Evaluator(this, userId, itemId)
+        .on('error', ko)
+        .go()
+        .then(ok, ko);
     });
+  }
+
+  constructor (model, userId, itemId) {
+    super();
+
+    this.ItemModel  =   model;
+    this.itemId     =   itemId;
+    this.userId     =   userId;
+    this.domain     =   new Domain();
+    
+    this.domain.on('error', error => this.emit('error', error));
 
   }
 
-  /**
-   *  @method
-   *  @return null
-   */
-
-  Evaluate.prototype.go = function () {
-    var self = this;
-
-    self.domain.run(function () {
-      
-      self
-        .model
-        .findById(self.itemId)
-        .populate('user')
-        .exec(self.domain.intercept(function (item) {
-          
-          if ( ! item ) {
-            throw new Error('Item not found');
-          }
-
-          self.item = item;
-
-          switch ( self.item.type ) {
-            case 'Agree':
-            case 'Disagree':
-            case 'Pro':
-            case 'Con':
-
-              self.makeSplit();
-
-              break;
-
-            default:
-
-              self.make();
-              
-              break;
-          }
-        }));
-
-    });
-  };
-
-  Evaluate.prototype.makeSplit = function () {
-    
-    var self = this;
-
-    var right;
-
-    switch ( self.item.type ) {
-      case 'Agree':
-        right = 'Disagree';
-        break;
-      
-      case 'Disagree':
-        right = 'Agree';
-        break;
-      
-      case 'Pro':
-        right = 'Con';
-        break;
-      
-      case 'Con':
-        right = 'Pro';
-        break;
-    }
-
-    var parallels = {
-
-      left: function (done) {
-        self.findOthers(2, done);
-      },
-
-      right: function (done) {
-        self.findOthers(3, done, right);
-      },
-
-      criterias: function (done) {
-        require('syn/models/Criteria')
-          .find({ type: self.item.type})
-          .populate('type')
-          .exec(done);
-      }
-
-    };
-
-    async.parallel(parallels, self.domain.intercept(self.packAndGo.bind(self)));
-  }
-
-  /**
-   *  @method
-   *  @return null
-   *  @arg {number} limit
-   *  @arg {function} done
-   *  @arg {string} type - default self.item.type
-   */
-
-  Evaluate.prototype.findOthers = function (limit, done, type) {
-    
-    var self = this;
-
-    var query = {
-      type      :     type || self.item.type,
-      parent    :     self.item.parent
-    };
-
-    self
-
-      .model
-
-      .count(query)
-
-      .where('_id').ne(self.item._id)
-
-      // .where('user').ne(self.userId)
-
-      .exec(self.domain.intercept(function (number) {
-
-        var start = Math.max(0, Math.floor((number-limit)*Math.random()));
-
-        self
-          
-          .model
-
-          .find(query)
-
+  go () {
+    return new Promise((ok, ko) => {
+      this.domain.run(() => {
+        this
+          .ItemModel
+          .findById(this.itemId)
           .populate('user')
+          .exec(this.domain.intercept(item => {
+            
+            if ( ! item ) {
+              throw new Error('Item not found');
+            }
 
-          .where('_id').ne(self.item._id)
 
-          // .where('user').ne(self.userId)
+            this.item = item;
 
-          .skip(start)
+            this
+              .findType({ parent : this.item.type })
+              .then(
+                parentType => {
+                  if ( ! parentType ) {
+                    this.make().then(ok, ko);
+                  }
+                  else if ( parentType.harmony && parentType.harmony.length && parentType.harmony.some(h => h.toString() === this.item.type.toString()) ) {
+                    this.makeSplit().then(ok, ko); 
+                  }
+                  else {
+                    this.make().then(ok, ko);
+                  }
+                },
+                ko
+              );
 
-          .limit(limit)
+          }));
 
-          .sort({ views: 1, created: 1 })
+      });
+    });
+  }
 
-          .exec(done);
+  findType (typeId) {
+    return TypeModel.findOne(typeId).exec();
+  }
 
-      }));
+  make () {
+    return new Promise((ok, ko) => {
+
+      Promise.all([
+          this.findOthers(OTHERS),
+          CriteriaModel
+          .find({ type: this.item.type})
+          .populate('type')
+          .exec()
+        ])
+        .then(
+          results => {
+            this.packAndGo({
+              items : results[0],
+              criterias : results[1]
+            }).then(ok, ko);
+          },
+          ko
+        );
+    });
+  }
+
+  makeSplit () {
+    return new Promise((ok, ko) => {
+      let right;
+
+      switch ( this.item.type ) {
+        case 'Agree':
+          right = 'Disagree';
+          break;
+        
+        case 'Disagree':
+          right = 'Agree';
+          break;
+        
+        case 'Pro':
+          right = 'Con';
+          break;
+        
+        case 'Con':
+          right = 'Pro';
+          break;
+      }
+
+      let promises = [
+        this.findOthers(2),
+        this.findOthers(3, right),
+        CriteriaModel
+          .find({ type: this.item.type})
+          .populate('type')
+          .exec()
+      ]
+
+      Promise.all(promise).then(
+        results => {
+          this.packAndGo({
+            left      : results[0],
+            right     : results[1],
+            criterias : results[2]
+          })
+            .then(ok, ko);
+        }
+      );
+    });
+  }
+
+  findOthers (limit, type) {
+    
+    return new Promise((ok, ko) => {
+      let query = {
+        type      :     type || this.item.type,
+        parent    :     this.item.parent
+      };
+
+      this
+
+        .ItemModel
+
+        .count(query)
+
+        .where('_id').ne(this.item._id)
+
+        // .where('user').ne(this.userId)
+
+        .exec(this.domain.intercept(number => {
+
+          let start = Math.max(0, Math.floor((number-limit)*Math.random()));
+
+          this
+            
+            .ItemModel
+
+            .find(query)
+
+            .populate('user')
+
+            .where('_id').ne(this.item._id)
+
+            // .where('user').ne(this.userId)
+
+            .skip(start)
+
+            .limit(limit)
+
+            .sort({ views: 1, created: 1 })
+
+            .exec()
+
+            .then(ok, ko);
+
+        }));
+      });
 
   }
 
-  /**
-   *  @method
-   *  @return null
-   *  @args {Object} results- Parallelization results
-   */
+  packAndGo (results) {
+    return new Promise((ok, ko) => {
+      if ( ! ( 'items' in results ) && ( 'left' in results ) ) {
+        results.items = [];
 
-  Evaluate.prototype.packAndGo = function (results) {
+        for ( var i = 0; i < 3; i ++ ) {
+          if ( results.left[i] ) {
+            results.items.push(results.left[i]);
+          }
 
-    var self = this;
-
-    if ( ! ( 'items' in results ) && ( 'left' in results ) ) {
-      results.items = [];
-
-      for ( var i = 0; i < 3; i ++ ) {
-        if ( results.left[i] ) {
-          results.items.push(results.left[i]);
-        }
-
-        if ( results.right[i] ) {
-          results.items.push(results.right[i]);
+          if ( results.right[i] ) {
+            results.items.push(results.right[i]);
+          }
         }
       }
-    }
 
-    if ( config['evaluation context item position'] === 'last' ) {
-      results.items.push(self.item);
-    }
+      if ( config['evaluation context item position'] === 'last' ) {
+        results.items.push(this.item);
+      }
 
-    else {
-      results.items.unshift(self.item);
-    }
+      else {
+        results.items.unshift(this.item);
+      }
 
-    self.cb(null, new Evaluation({
-      type:         self.item.type,
-      item:         self.itemId,
-      items:        results.items.map(self.map, self),
-      criterias:    results.criterias
-    }));
+      let evaluation = new Evaluation({
+        type:         this.item.type,
+        item:         this.itemId,
+        items:        results.items.map(this.map, this),
+        criterias:    results.criterias
+      });
+
+
+      ok(evaluation);
+    });
   }
 
-  /**
-   *  @method
-   *  @arg {Object} item
-   */
-
-  Evaluate.prototype.map = function (item) {
+  map (item) {
 
     return item.toObject({ transform: function (doc, ret, options) {
       if ( ret.user ) {
@@ -234,36 +243,8 @@
       }
     }});
 
-  };
+  }
 
-  /**
-   *  @method
-   *  @return null
-   */
+}
 
-  Evaluate.prototype.make = function () {
-    var self = this;
-
-    var parallels = {
-
-      items: function (done) {
-        self.findOthers(others, done);
-      },
-      
-      criterias: function (done) {
-        require('syn/models/Criteria')
-          .find({ type: self.item.type})
-          .populate('type')
-          .exec(done);
-      }
-
-    };
-
-    async.parallel(parallels, self.domain.intercept(self.packAndGo.bind(self)));
-  };
-
-  module.exports = function (userId, itemId, cb) { 
-    return new Evaluate(this, userId, itemId, cb).go();
-  };
-
-} ();
+export default Evaluator.Factory;

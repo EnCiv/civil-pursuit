@@ -4,10 +4,10 @@ import Nav              from 'syn/lib/util/Nav';
 import Panel            from 'syn/components/Panel/Controller';
 
 function toggleArrow ($trigger) {
-  let $item   =   $trigger.closest('.item');
-  let item    =   $item.data('item');
-  let arrow   =   $trigger.find('i');
-  let storeItem = this.get('item');
+  let $item       =   $trigger.closest('.item');
+  let item        =   $item.data('item');
+  let arrow       =   $trigger.find('i');
+  let storeItem   =   this.get('item');
 
   let d = this.domain;
 
@@ -32,33 +32,45 @@ function toggleArrow ($trigger) {
 
           item.find('children').append(split);
 
-          var panelLeft = new Panel(harmony[0], storeItem._id);
+          console.info('harmony', harmony)
 
-          panelLeft.load(d.intercept(function (template) {
-            template.addClass('split-view');
+          var panelLeft = new Panel({
+            panel : {
+              type    :   harmony[0],
+              parent  :   storeItem._id
+            }
+          });
 
-            split.find('.left-split').append(template);
+          panelLeft.load();
 
-            setTimeout(function () {
-              panelLeft.render(d.intercept(function () {
-                panelLeft.fill(d.intercept());
-              }));
-            });
-          }));
+          panelLeft.template.addClass('split-view');
 
-          var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], storeItem._id);
+          split.find('.left-split').append(panelLeft.template);
 
-          panelRight.load(d.intercept(function (template) {
-            template.addClass('split-view');
+          setTimeout(function () {
+            panelLeft.render(d.intercept(function () {
+              panelLeft.fill(d.intercept());
+            }));
+          });
 
-            split.find('.right-split').append(template);
+          var panelRight = new Panel({
+            panel : {
+              type    : harmony[1],
+              parent  : storeItem._id
+            }
+          });
 
-            setTimeout(function () {
-              panelRight.render(d.intercept(function () {
-                panelRight.fill(d.intercept());
-              }));
-            });
-          }));
+          panelRight.load();
+
+          panelRight.template.addClass('split-view');
+
+          split.find('.right-split').append(panelRight.template);
+
+          setTimeout(function () {
+            panelRight.render(d.intercept(function () {
+              panelRight.fill(d.intercept());
+            }));
+          });
         }
 
         var subtype = storeItem.subtype;

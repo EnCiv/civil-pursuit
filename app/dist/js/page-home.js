@@ -4170,9 +4170,15 @@ var Details = (function (_Controller) {
 
       var item = this.get('item');
 
+      var currentAmount = item.popularity.number;
+
+      if (isNaN(currentAmount)) {
+        currentAmount = 0;
+      }
+
       this.find('promoted bar').goalProgress({
         goalAmount: 100,
-        currentAmount: Math.floor(item.promotions * 100 / item.views),
+        currentAmount: currentAmount,
         textBefore: '',
         textAfter: '%'
       });
@@ -5055,7 +5061,13 @@ var Item = (function (_Controller) {
 
       // POPULARITY
 
-      this.find('promotions %').text((item.popularity.number || 0) + '%');
+      var popularity = item.popularity.number;
+
+      if (isNaN(popularity)) {
+        popularity = 0;
+      }
+
+      this.find('promotions %').text(popularity + '%');
 
       // CHILDREN
 
@@ -5503,33 +5515,45 @@ function toggleArrow($trigger) {
 
         item.find('children').append(split);
 
-        var panelLeft = new _synComponentsPanelController2['default'](harmony[0], storeItem._id);
+        console.info('harmony', harmony);
 
-        panelLeft.load(d.intercept(function (template) {
-          template.addClass('split-view');
+        var panelLeft = new _synComponentsPanelController2['default']({
+          panel: {
+            type: harmony[0],
+            parent: storeItem._id
+          }
+        });
 
-          split.find('.left-split').append(template);
+        panelLeft.load();
 
-          setTimeout(function () {
-            panelLeft.render(d.intercept(function () {
-              panelLeft.fill(d.intercept());
-            }));
-          });
-        }));
+        panelLeft.template.addClass('split-view');
 
-        var panelRight = new (require('syn/components/Panel/Controller'))(harmony[1], storeItem._id);
+        split.find('.left-split').append(panelLeft.template);
 
-        panelRight.load(d.intercept(function (template) {
-          template.addClass('split-view');
+        setTimeout(function () {
+          panelLeft.render(d.intercept(function () {
+            panelLeft.fill(d.intercept());
+          }));
+        });
 
-          split.find('.right-split').append(template);
+        var panelRight = new _synComponentsPanelController2['default']({
+          panel: {
+            type: harmony[1],
+            parent: storeItem._id
+          }
+        });
 
-          setTimeout(function () {
-            panelRight.render(d.intercept(function () {
-              panelRight.fill(d.intercept());
-            }));
-          });
-        }));
+        panelRight.load();
+
+        panelRight.template.addClass('split-view');
+
+        split.find('.right-split').append(panelRight.template);
+
+        setTimeout(function () {
+          panelRight.render(d.intercept(function () {
+            panelRight.fill(d.intercept());
+          }));
+        });
       }
 
       var subtype = storeItem.subtype;
@@ -5974,6 +5998,7 @@ var Panel = (function (_Controller) {
 
     if (this.props.panel) {
       this.set('panel', this.props.panel);
+      this.panel = this.props.panel;
     }
 
     if (this.props.panel) {
@@ -6021,7 +6046,7 @@ var Panel = (function (_Controller) {
 
         d.run(function () {
 
-          var panel = _this.get('panel');
+          var panel = _this.panel;
 
           // Fill title                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -159,7 +159,13 @@ class Item extends Controller {
 
     // POPULARITY
 
-    this.find('promotions %').text((item.popularity.number || 0) + '%');
+    let popularity = item.popularity.number;
+
+    if ( isNaN(popularity) ) {
+      popularity = 0;
+    }
+
+    this.find('promotions %').text(popularity + '%');
 
     // CHILDREN
 

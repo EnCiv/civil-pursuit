@@ -48,10 +48,16 @@ class Details extends Controller {
 
     let item = this.get('item');
 
+    let currentAmount = item.popularity.number;
+
+    if ( isNaN(currentAmount) ) {
+      currentAmount = 0;
+    }
+
     this.find('promoted bar')
       .goalProgress({
         goalAmount        :   100,
-        currentAmount     :   Math.floor(item.promotions * 100 / item.views),
+        currentAmount     :   currentAmount,
         textBefore        :   '',
         textAfter         :   '%'
       });

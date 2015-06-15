@@ -5,6 +5,7 @@ import YouTubeView from 'syn/components/YouTube/View';
 import config from 'syn/config.json';
 import JoinTest from './join';
 import PromoteTest from './promote';
+import DetailsTest from './details';
 
 class Item extends Milk {
 
@@ -270,7 +271,7 @@ class Item extends Milk {
         .ok(() => get('Join').is(true), null, when => ! get('Cookie'))
 
         .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! get('Cookie'))
-        .wait(1, null, when => ! get('Cookie'))
+        .wait(2, null, when => ! get('Cookie'))
         .ok(() => get('Join').is(false), null, when => ! get('Cookie'));
 
       // COOKIE
@@ -285,7 +286,26 @@ class Item extends Milk {
         .wait(1, null, when => get('Cookie'))
         .import(PromoteTest, { item : item }, null, when => get('Cookie'))
         .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => get('Cookie'))
-        .wait(1, null, when => get('Cookie'));
+        .wait(2, null, when => get('Cookie'));
+
+    }
+
+    // DETAILS
+
+    if ( this.props.details !== false && item.details !== false ) {
+
+      this
+        .ok(() => get('Toggle details').click(),
+          'Clicking on Details toggle buttons')
+
+        .wait(2)
+
+        .import(DetailsTest, { item : item })
+
+        .ok(() => get('Toggle details').click(),
+          'Clicking on Details toggle button')
+
+        .wait(1);
 
     }
 

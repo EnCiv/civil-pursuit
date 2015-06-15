@@ -3,6 +3,7 @@
 import Milk from 'syn/lib/app/milk';
 import ItemTest from './item';
 import ItemModel from 'syn/models/Item';
+import getUrlTitle from 'syn/lib/util/get-url-title';
 
 class Creator extends Milk {
 
@@ -51,6 +52,8 @@ class Creator extends Milk {
 
     this.set('New item', () => find(get('Panel').selector + ' > .panel-body > .items .item.new'));
 
+    this.set('Title', () => getUrlTitle('http://example.com'))
+
     // Visibility
 
     this.ok(() => get('Creator').is(':visible'), 'Creator is visible');
@@ -63,7 +66,9 @@ class Creator extends Milk {
       item          :   get('Item').selector,
       buttons       :   false,
       collapsers    :   false,
-      promote       :   false
+      promote       :   false,
+      details       :   false,
+      references    :   false
     }));
 
     // Validations
@@ -95,7 +100,20 @@ class Creator extends Milk {
     this.ok(() => get('Reference board').is(':visible'));
 
     this.ok(() => get('Reference board').text()
-      .then(text => text.should.be.exactly('Looking up title')));
+      .then(text =>  {
+        try {
+          text.should.be.exactly('Looking up title')
+        } catch (error) {
+          text.should.be.exactly(get('Title'))
+        }
+      })
+    );
+
+    this.wait(5);
+
+    this.ok(() => get('Reference board').text()
+      .then(text =>  text.should.be.exactly(get('Title')) )
+    );
 
     // Submit with all required fields
 

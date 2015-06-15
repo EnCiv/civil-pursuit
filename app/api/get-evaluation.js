@@ -1,28 +1,20 @@
-! function () {
+'use strict';
 
-  'use strict';
+import ItemModel from 'syn/models/Item';
+import run from 'syn/lib/util/run';
 
-  function getEvaluation (event, item_id) {
-    var socket = this;
+function getEvaluation (event, itemId) {
+  run(
+    d => {
+      ItemModel
+        .evaluate(this.synuser.id, itemId)
+        .then(
+          evaluation => this.ok(event, evaluation),
+          this.error.bind(this)
+        );
+    },
+    this.error.bind(this)
+  );
+}
 
-    var domainRun = require('syn/lib/util/domain-run');
-
-    domainRun(
-
-      function (domain) {
-        require('syn/models/Item')
-          .evaluate(socket.synuser.id, item_id, domain.intercept(function (evaluation) {
-            socket.ok(event, evaluation);
-          }));
-      },
-
-      function (error) {
-        socket.app.arte.emit('error', error);
-      }
-
-    );
-  }
-
-  module.exports = getEvaluation;
-
-} ();
+export default getEvaluation;
