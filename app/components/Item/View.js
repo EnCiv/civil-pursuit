@@ -99,7 +99,7 @@ class Item extends Element {
         href    :   '#',
         target  :   '_blank',
         rel     :   'nofollow'
-      }).text('hello')
+      }).text()
     );
   }
 
