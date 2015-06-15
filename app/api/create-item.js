@@ -30,7 +30,7 @@
       },
 
       function (error) {
-        socket.app.arte.emit('error', error);
+        socket.error(error);
       }
 
     );

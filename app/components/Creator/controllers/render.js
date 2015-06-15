@@ -8,6 +8,8 @@ import domain from 'domain';
 function renderCreator (cb) {
   var q = new Promise((fulfill, reject) => {
 
+    let self = this;
+
     let d = domain.create().on('error', reject);
 
     d.run(() => {
@@ -37,7 +39,7 @@ function renderCreator (cb) {
 
       // Get reference's title
 
-      this.find('reference').on('change', function () {
+      this.find('reference').on('blur', function () {
 
         var creator     =   $(this).closest('.creator').data('creator');
 
@@ -46,28 +48,37 @@ function renderCreator (cb) {
 
         board.removeClass('hide').text('Looking up title');
 
-        app.socket.emit('get url title', $(this).val(),
-          function (error, ref) {
-            if ( ref.title ) {
-              
-              board.text(ref.title);
-              reference.data('title', ref.title);
+        var url = $(this).val();
 
-              var yt = __YouTube(ref.url);
+        if ( url ) {
+          self.getTitle(url)
+            .then(
+              title => {
+                if ( title ) {
+                  board.text(title).on('click', function () {
+                    reference.css('display', 'block');
+                    board.addClass('hide');
+                  });
+                  reference.data('title', title).css('display', 'none');
 
-              if ( yt ) {
-                creator.find('dropbox').hide();
+                  var yt = YouTube(url);
 
-                creator.find('item media')
-                  .empty()
-                  .append(yt);
+                  if ( yt ) {
+                    creator.find('dropbox').hide();
+
+                    creator.find('item media')
+                      .empty()
+                      .append(yt);
+                  }
+                }
+                else {
+                  board.text('Looking up')
+                    .addClass('hide');
+                }
               }
-            }
-            else {
-              board.text('Looking up')
-                .addClass('hide');
-            }
-          });
+            );
+        }
+
       });
 
       // Build form using Form provider

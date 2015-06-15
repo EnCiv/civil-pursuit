@@ -93,13 +93,24 @@ class Item extends Element {
       })
   }
 
+  references () {
+    return new Element('h5.item-reference').add(
+      new Element('a', {
+        href    :   '#',
+        target  :   '_blank',
+        rel     :   'nofollow'
+      }).text('hello')
+    );
+  }
+
   text () {
     return new Element('.item-text').add(
       new Element('.item-truncatable').add(
         this.subject(),
-        this.description(),
-        new Element('.clear.clear-text')
-      )
+        this.references(),
+        this.description()
+      ),
+      new Element('.clear.clear-text')
     );
   }
 

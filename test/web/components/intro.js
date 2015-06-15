@@ -6,6 +6,7 @@ import config from 'syn/config.json';
 import TypeModel from 'syn/models/Type';
 import ItemModel from 'syn/models/Item';
 import PanelTest from './panel';
+import ItemTest from './item';
 
 class Intro extends Milk {
 
@@ -38,29 +39,30 @@ class Intro extends Milk {
       .set('Panel', () => find(get('Intro').selector + ' .panel'))
       
       .set('Title', () => find(get('Panel').selector + ' .panel-title'))
-      
-      .set('Subject', () => find(get('Panel').selector + ' .item-subject'))
-      
-      .set('Description', () => 
-        find(get('Panel').selector + ' .item-description'))
 
-      .ok(() => get('Intro').is(':visible'))
+      .set('Item', () => find(get('Panel').selector +  ' .item'))
+
+
+
+      .ok(() => get('Intro').is(':visible'), 'Intro is visible')
 
       .import(PanelTest, () => { return {
         panel : get('Panel').selector, creator : false, driver : false
       }})
 
       .ok(() => get('Title').text()
-        .then(text => text.should.be.exactly(get('intro').subject))
+        .then(text => text.should.be.exactly(get('intro').subject)),
+        'Panel title should be Intro\'s subject'
       )
 
-      .ok(() => get('Subject').text()
-        .then(text => text.should.be.exactly(get('intro').subject))
-      )
-
-      .ok(() => get('Description').text()
-        .then(text => text.should.be.exactly(get('intro').description))
-      );
+      .import(ItemTest, () => ({
+        item : get('intro'),
+        collapsers : false,
+        buttons : false,
+        references : false,
+        promote : false,
+        element : get('Item')
+      }));
   }
 
 }

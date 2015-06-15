@@ -4486,7 +4486,7 @@ a:hover {
 }
 textarea {
   width: calc(99%);
-  min-height: 120px;
+  min-height: 96px;
   overflow: hidden !important;
   resize: none;
   transition: 0.05s;

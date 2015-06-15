@@ -105,7 +105,8 @@ class Creator extends Element {
   inputs () { 
     return new Element('.item-inputs').add(
       this.subject(),
-      this.description()
+      this.description(),
+      this.reference()
     );
   }
 
@@ -132,6 +133,22 @@ class Creator extends Element {
       required            :     'required',
       name                :     'description'
     });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  URL
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  reference () {
+    return new Elements(
+      new Element('input.reference', {
+        type                :     'url',
+        placeholder         :     'http://',
+        name                :     'reference'
+      }),
+
+      new Element('.reference-board.hide').text('Looking up')
+    );
   }
 
 }

@@ -140,6 +140,10 @@ class API extends EventEmitter {
       socket.emit('OK ' + event, ...responses);
     };
 
+    socket.error = error => {
+      this.emit('error', error);
+    };
+
     for ( let handler in this.handlers ) {
       socket.on(handler, (...messages) =>
         console.log('<<<'.bold.cyan, handler.bold.cyan, ...messages)

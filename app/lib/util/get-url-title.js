@@ -1,71 +1,51 @@
-! function () {
+'use strict';
 
-  'use strict';
+import S from 'string';
+import request from 'request';
+import config from 'syn/config.json';
+import run from 'syn/lib/util/run';
 
-  var config = require('syn/config.json');
+function getUrlTitle (url) {
+  console.log('get url title', url)
+  return new Promise((ok, ko) => {
+    let req = {
+      url             :   url,
+      timeout         :   1000 * 5,
+      headers         :   {
+        'User-Agent'  :   config['user agent']
+      }
+    };
+    console.log('request', req)
+    request(req, (error, response, body) => {
+      console.log('response', response)
+      if ( error ) {
+        return ko(error);
+      }
+      if ( response.statusCode === 200 ) {
 
-  var request = require('request');
-
-  var Promise = require('promise');
-
-  function getUrlTitle (url, cb) {
-
-    var q = new Promise(function (fulfill, reject) {
-
-      var domain = require('domain').create();
-
-      domain.on('error', reject);
-
-      console.log('fetching url', url)
-
-      domain.run(function () {
-        request({
-            url             :   url,
-            timeout         :   1000 * 5,
-            headers         :   {
-              'User-Agent'  :   config['user agent']
-            }
-          },
-          domain.intercept(function (response, body) {
-            var title;
-
-            var S = require('string');
+        let title;
             
-            if ( response.statusCode === 200 ) {
-              
-              body
+        body
 
-                .replace(/\r/g, '')
+          .replace(/\r/g, '')
 
-                .replace(/\n/g, '')
+          .replace(/\n/g, '')
 
-                .replace(/\t/g, '')
+          .replace(/\t/g, '')
 
-                .replace(/<title>(.+)<\/title>/, function (matched, _title) {
+          .replace(/<title>(.+)<\/title>/, (matched, _title) => {
 
-                  title = S(_title).decodeHTMLEntities().s;
+            title = S(_title).decodeHTMLEntities().s;
 
-                });
-
-              fulfill(title);
-            }
-
-            else {
-              throw new Error('Got status code ' + response.statusCode);
-            }
-          }));
-      });
-
+          });
+          console.log('title', title)
+        ok(title);
+      }
+      else {
+        ko(new Error('Got status code ' + response.statusCode));
+      }
     });
+  });
+}
 
-    if ( typeof cb === 'function' ) {
-      q.then(cb.bind(null, null), cb);
-    }
-
-    return q;
-
-  }
-
-  module.exports = getUrlTitle;
-
-} ();
+export default getUrlTitle;

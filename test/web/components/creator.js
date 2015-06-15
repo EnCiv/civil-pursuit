@@ -45,6 +45,10 @@ class Creator extends Milk {
 
     this.set('Description', () => find(get('Creator').selector + ' textarea[name="description"]'));
 
+    this.set('Reference', () => find(get('Creator').selector + ' input[name="reference"]'));
+
+    this.set('Reference board', () => find(get('Creator').selector + ' .reference-board'));
+
     this.set('New item', () => find(get('Panel').selector + ' > .panel-body > .items .item.new'));
 
     // Visibility
@@ -81,6 +85,19 @@ class Creator extends Milk {
     this.ok(() => get('Description').is('.error'), 'Description field is showing error because it is empty');
 
     this.ok(() => get('Description').val('This is a description created ' + new Date()), 'Writing a description');
+
+    // Reference
+
+    this.ok(() => get('Reference').val('http://example.com'));
+
+    this.ok(() => get('Description').click());
+
+    this.ok(() => get('Reference board').is(':visible'));
+
+    this.ok(() => get('Reference board').text()
+      .then(text => text.should.be.exactly('Looking up title')));
+
+    // Submit with all required fields
 
     this.ok(() => get('Create').click(), 'Click on Create button');
 

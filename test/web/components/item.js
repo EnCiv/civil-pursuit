@@ -36,12 +36,20 @@ class Item extends Milk {
 
     this
       
-      .set('Cookie', () => this.getCookie('synuser'))
+      .set('Cookie', () => this.getCookie('synuser'));
 
-      .set('Item', () => find('#item-' + item._id), null, () => itemIsAnObject)
+    if ( props.element ) {
+      this.set('Item', () => props.element, null, props.element);
+    }
 
-      .set('Item', () => find(item), null, () => itemIsASelector)
+    else {
+      this
+        .set('Item', () => find('#item-' + item._id), null, () => itemIsAnObject)
+
+        .set('Item', () => find(item), null, () => itemIsASelector);
+    }
       
+    this
       .set('Media Wrapper', () => this.find(
         get('Item').selector + '>.item-media-wrapper'
       ))
@@ -82,6 +90,10 @@ class Item extends Milk {
         get('Text').selector + ' .item-description.pre-text'
       ))
 
+      .set('Reference', () => this.find(
+        get('Text').selector + ' .item-reference a'
+      ))
+
       .set('Toggle promote', () => this.find(
         get('Buttons').selector + ' button.item-toggle-promote'
       ))
@@ -98,14 +110,24 @@ class Item extends Milk {
         get('Item').selector + '>.item-collapsers'
       ));
 
+    // Visibility
+
     this
 
-      .ok(() => get('Item').is(':visible'), 'Item is visible')
-      .ok(() => get('Item').is('.item'), 'Item has the class ".visible"')
-      .ok(() => get('Media Wrapper').is(':visible'), 'Item Media Wrapper is visible')
-      .ok(() => get('Media').is(':visible'), 'Item Media is visible')
-      .ok(() => get('Buttons').is(':visible'), 'Item Buttons are visible')
-      .ok(() => get('Text').is(':visible'), 'Item Text is visible');
+      .ok(() => get('Item').is(':visible'),
+        'Item is visible')
+      
+      .ok(() => get('Item').is('.item'),
+        'Item has the class ".visible"')
+      
+      .ok(() => get('Media Wrapper').is(':visible'),
+        'Item Media Wrapper is visible')
+
+      .ok(() => get('Media').is(':visible'),
+        'Item Media is visible')
+
+      .ok(() => get('Text').is(':visible'),
+        'Item Text is visible');
 
     if ( itemIsAnObject && YouTubeView.isYouTube(item) ) {
       this
@@ -156,13 +178,15 @@ class Item extends Milk {
         .ok(() => get('Truncatable').is(':visible'), 'Item Truncatable space is visible')
         
         .ok(() => get('Subject').is(':visible'), 'Item subject is visible')
+        
         .ok(() => get('Subject').text()
           .then(text => text.should.be.exactly(item.subject)),
           'Subject has the same text than DB')
 
+        
         .ok(() => 
           Promise.all([
-            get('Description').count('.more'),
+            get('Truncatable').count('.more'),
             get('Description').text()
           ])
           .then(results => {
@@ -174,11 +198,36 @@ class Item extends Milk {
             }
           }),
           'Item Description is the same than in DB'
-        )
+        );
+
+      // REFERENCES
+
+      this.ok(() => get('Reference').text()
+        .then(text => {
+          if ( itemIsAnObject ) {
+            let ref = item.references.length ? item.references[0] : null;
+
+            if ( ref ) {
+              if ( ref.title ) {
+                text.should.be.exactly(ref.title);
+              }
+              else {
+                text.should.be.exactly(ref.url);
+              }
+            }
+            else {
+              text.should.be.exactly('');
+            }
+          }
+        }), 'Verify reference',
+        () => props.references !== false)
     
       // BUTTONS
 
-      if ( this.props.buttons !== false ) {
+      if ( props.buttons !== false ) {
+        this.ok(() => get('Buttons').is(':visible'),
+          'Item Buttons are visible')
+
         // PROMOTE
         this
           .ok(() => get('Toggle promote').is(':visible'), 'Promote toggle button is visible')
