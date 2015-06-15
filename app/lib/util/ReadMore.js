@@ -4,9 +4,15 @@
 
   function spanify (des) {
 
-    return des.replace(/\n/g, "\n ").split(' ')
+    var div = ' <div---class="syn-lb"></div> ';
+
+    return des.replace(/\n/g, div).split(/\s/)
 
       .map(function (word) {
+        if ( word === div.trim() ) {
+          return $(div.trim().replace(/\-\-\-/g, ' '));
+        }
+
         var span = $('<span class="word"></span>');
         span.text(word + ' ');
         return span;

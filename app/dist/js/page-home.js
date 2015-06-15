@@ -4767,6 +4767,8 @@ var Login = (function (_Controller) {
               break;
           }
         }).success(function (response) {
+          _this.reconnect();
+
           $('a.is-in').css('display', 'inline');
 
           $('.topbar .is-out').remove();
@@ -6784,7 +6786,13 @@ module.exports = exports['default'];
 
   function spanify(des) {
 
-    return des.replace(/\n/g, '\n ').split(' ').map(function (word) {
+    var div = ' <div---class="syn-lb"></div> ';
+
+    return des.replace(/\n/g, div).split(/\s/).map(function (word) {
+      if (word === div.trim()) {
+        return $(div.trim().replace(/\-\-\-/g, ' '));
+      }
+
       var span = $('<span class="word"></span>');
       span.text(word + ' ');
       return span;

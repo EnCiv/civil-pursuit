@@ -1,21 +1,14 @@
-! function () {
+'use strict';
 
-  'use strict';
+import ItemModel from 'syn/models/Item';
+import run from 'syn/lib/util/run';
 
-  var Item = require('syn/models/Item');  
+function getItems (event, panel, item) {
 
-  function getItems (event, panel, item) {
-
-    var socket = this;
-
-    function onDomainError (error) {
-      socket.app.arte.emit('error', error);
-    }
-
-    function run (domain) {
-
-      var id = 'panel-' + panel.type._id || panel.type;
-      var query = { type: panel.type._id || panel.type};
+  run(
+    d => {
+      let id    = 'panel-' + panel.type._id || panel.type;
+      let query = { type: panel.type._id || panel.type};
 
       if ( panel.parent ) {
         id += '-' + panel.parent;
@@ -26,17 +19,15 @@
         query.skip = panel.skip;
       }
 
-      Item
+      ItemModel
 
         .getPanelItems(query)
 
-        .then(socket.ok.bind(socket, event, panel), onDomainError);
-    }
+        .then(this.ok.bind(this, event, panel), error => {});
+    },
+    error => {}
+  );
 
-    require('syn/lib/util/domain-run')(run, onDomainError);
+}
 
-  }
-
-  module.exports = getItems;
-
-} ();
+export default getItems;

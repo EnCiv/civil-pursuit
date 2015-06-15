@@ -8,6 +8,8 @@
 
   var findRandom      =     require('mongoose-simple-random');
 
+  var getParents      =     require('syn/models/Type/methods/get-parents');
+
   var TypeSchema      =     new Schema({
 
     "name"        :     {
@@ -31,6 +33,8 @@
 
   TypeSchema.plugin(findRandom);
 
-  var Type = module.exports = mongoose.model('Type', TypeSchema);
+  TypeSchema.methods.getParents = getParents;
+
+  module.exports = mongoose.model('Type', TypeSchema);
 
 } ();

@@ -2,28 +2,30 @@
   
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  var mongodb = require('mongodb');
+  var Client = mongodb.MongoClient;
+  var URL = require('url');
 
   function importModel (model, src, cb) {
 
     // First find source
 
-    var srcName;
+    var srcName, url;
 
     switch ( src ) {
       case 'alpha':
         srcName = 'synappalpha';
+        url = 'mongodb://alpha78!:' + encodeURIComponent('8d73jdSJWn?"ks') + '@kahana.mongohq.com:10078';
         break;
     }
 
-    require('child_process')
-      .exec('heroku config:get MONGOHQ_URL', d.intercept(function () {
-        console.log(arguments);
-      }));
+    Client.connect(url, function (error, db) {
+      if ( error ) {
+        return cb(error);
+      }
+      var collection = db.collection(model);
+      console.log(collection);
+    });
 
   }
 

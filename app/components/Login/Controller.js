@@ -59,6 +59,8 @@ class Login extends Controller {
         })
 
         .success(response => {
+          this.reconnect();
+          
           $('a.is-in').css('display', 'inline');
 
           $('.topbar .is-out').remove();

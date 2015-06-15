@@ -1,138 +1,157 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var mongoose = require('mongoose');
+import mongoose     from    'mongoose';
+import TypeModel    from    'syn/models/Type';
+import ItemModel    from    'syn/models/Item';
+import mongodb      from    'mongodb';
 
-  var async = require('async');
+function v2 () {
+  return new Promise((ok, ko) => {
+    console.log('v2');
 
-  var Type = require('syn/models/Type');
-  var Item = require('syn/models/Item');
+    // mongoose.connect(process.env.MONGOHQ_URL);
 
-  mongoose.connect(process.env.MONGOHQ_URL);
+    // let MongoClient = mongodb.MongoClient;
 
-  var MongoClient = require('mongodb').MongoClient;
+    let _Types = [
+      { name: 'Intro' },
+      { name: 'Topic' },
+      { name: 'Problem',  parent: 'Topic',    harmony: ['Agree', 'Disagree'] },
+      { name: 'Solution', parent: 'Problem',  harmony: ['Pro', 'Con'] },
+      { name: 'Pro',      parent: 'Solution' },
+      { name: 'Con',      parent: 'Solution' },
+      { name: 'Agree',    parent: 'Problem' },
+      { name: 'Disagree', parent: 'Problem' },
+    ];
 
-  // Connection URL
-  var url = process.env.MONGOHQ_URL;
+    // Name
 
-  var _Types = [
+    let promisesName = _Types.map(t => new Promise((ok, ko) => {
+      TypeModel
+        .findOne({ name : t.name })
+        .exec()
+        .then(
+          type => {
+            if ( type ) {
+              return ok();
+            }
 
-    { name: 'Intro' },
-    { name: 'Topic' },
-    { name: 'Problem',  parent: 'Topic',    harmony: ['Agree', 'Disagree'] },
-    { name: 'Solution', parent: 'Problem',  harmony: ['Pro', 'Con'] },
-    { name: 'Pro',      parent: 'Solution' },
-    { name: 'Con',      parent: 'Solution' },
-    { name: 'Agree',    parent: 'Problem' },
-    { name: 'Disagree', parent: 'Problem' },
+            TypeModel
+              .create({ name : t.name })
+              .then(ok, ko);
+          },
+          ko
+        );
+    }));
 
-  ];
+    console.log('v2', 'Insert types just with name if not exist');
 
-  async.each(_Types, function forEachType (_type, done) {
-    Type.findOne({ name: _type.name }, function (error, type) {
-      if ( error ) return done(error);
+    Promise.all(promisesName).then(
+      () => {
+        // Parent
 
-      var parallels = {};
+        console.log('v2', 'Insert types just with parent if not exist');
 
-      if ( _type.parent ) {
-        parallels.parent = Type.findOne.bind(Type, { name: _type.parent });
-      }
+        let promisesParent = _Types
+          .filter(t => t.parent)
+          .map(t => new Promise((ok, ko) => {
 
-      if ( _type.harmony && _type.harmony.length ) {
-        parallels.harmonyLeft = Type.findOne.bind(Type, { name: _type.harmony[0] });
-        parallels.harmonyRight = Type.findOne.bind(Type, { name: _type.harmony[1] });
-      }
+            TypeModel
+              .findOne({ name : t.name })
+              .exec()
+              .then(
+                T => {
+                  if ( T.parent ) {
+                    return ok();
+                  }
 
-      if ( ! type ) {
-        async.parallel(parallels, function (error) {
-          if ( error ) return done(error);
-          forEachType(_type, done);
-        });
+                  TypeModel
+                    .findOne({ name : t.parent })
+                    .exec()
+                    .then(
+                      parent => {
+                        if ( ! parent ) {
+                          return ko();
+                        }
 
-        return;
-      }
+                        T.parent = parent;
+                        T.save(error => {
+                          if ( error ) {
+                            return ko(error);
+                          }
+                          ok();
+                        });
 
-      async.parallel(parallels, function (error, results) {
-        if ( error ) return done(error);
+                      },
+                      ko
+                    );
+                },
+                ko
+              );
 
-        if ( _type.parent ) {
-          var parent = results.parent;
+          }));
 
-          if ( ! type.parent || parent._id.toString() !== type.parent.toString() ) {
-            type.parent = parent._id;
-          }
-        }
+        Promise.all(promisesParent).then(
+          () => {
+            // Harmony
 
-        if ( _type.harmony && _type.harmony.length ) {
-          type.harmony.push(results.harmonyLeft._id, results.harmonyRight._id);
-        }
+            console.log('v2', 'Insert types just with harmony if not exist');
 
-        type.save(updateItemTypes.bind(null, done));
+            let promisesHarmony = _Types
+              .filter(t => t.harmony)
+              .map(t => new Promise((ok, ko) => {
+                  
+                TypeModel
+                  .findOne({ name : t.name })
+                  .exec()
+                  .then(
+                    T => {
 
-      });
-    });
-  }, function (error) {
-    if ( error ) {
-      throw error;
-    }
-    console.log('Migration v2 OK');
-    process.exit(0);
+                      if ( T.harmony.length ) {
+                        return ok();
+                      }
+
+                      TypeModel
+                        .find({ name : { $in : [t.harmony[0], t.harmony[1]] } })
+                        .exec()
+                        .then(
+                          harmony => {
+
+                            if ( ! harmony.length ) {
+                              return ko();
+                            }
+
+                            T.harmony = harmony;
+
+                            T.save(error => {
+                              if ( error ) {
+                                return ko(error);
+                              }
+                              else {
+                                ok();
+                              }
+                            });
+
+                          },
+                          ko
+                        );
+                    },
+                    ko
+                  );
+              }));
+          
+            Promise.all(promisesHarmony).then(() => {
+              console.log('v2', 'Done', ok); ok() }, ko);
+          },
+          ko
+        );
+      },
+      ko
+    );
+
   });
+}
 
-  function updateItemTypes (cb) {
+export default v2;
 
-    Type.find(function (error, typesAsArray) {
-
-      var types = {};
-
-      typesAsArray.forEach(function (type) {
-        types[type.name] = type._id;
-      });
-
-      MongoClient.connect(url, function(err, db) {
-
-        if ( err ) throw err;
-
-        var mapped = [];
-
-        db.collection('items')
-          .find({ type: { $type: 2 } })
-          .toArray(function (error, items) {
-            
-            mapped = mapped.concat(items.map(function (item) {
-              item.type = types[item.type];
-
-              return item;
-            }));
-
-            async.each(mapped, function (item, cb) {
-              db.collection('items').update({ _id: item._id },
-              {
-                $set: {
-                  type: item.type
-                }
-              }, cb);
-            }, cb);
-
-          });
-
-      });
-
-    });
-  }
-
-  // async.series([ seeIfWeAlreadyMigrated ],
-
-  //   function (error, results) {
-  //     if ( error ) throw error;
-
-  //     updateItemTypes(function (error, results) {
-  //       if ( error ) throw error;
-
-  //       console.log('Migratin OK');
-  //       process.exit(0);
-  //     });
-  //   });
-
-} ();
+// v2();

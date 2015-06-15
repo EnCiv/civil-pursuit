@@ -6,6 +6,7 @@ import config from 'syn/config.json';
 import IntroTest from '../components/intro';
 import LayoutTest from '../components/layout';
 import JoinTest from '../components/join';
+import LoginTest from '../components/login';
 import TopLevelPanelTest from '../components/top-level-panel';
 import SignOutTest from '../components/sign-out';
 
@@ -22,25 +23,29 @@ class HomePage extends Milk {
 
       .go('/')
 
-      .import(LayoutTest)
+      // .import(LayoutTest)
 
-      .import(IntroTest)
+      // .import(IntroTest)
+
+      // .import(TopLevelPanelTest)
+
+      // .import(JoinTest, { toggled : false })
+
+      // .import(LayoutTest)
+
+      // .import(TopLevelPanelTest)
+
+      // .import(SignOutTest)
+
+      // .import(LayoutTest)
+
+      // .import(TopLevelPanelTest)
+
+      .import(LoginTest, { toggled : false })
+
+      // .import(LayoutTest)
 
       .import(TopLevelPanelTest)
-
-      .import(JoinTest, { toggled : false })
-
-      .import(LayoutTest)
-
-      .import(TopLevelPanelTest)
-
-      .import(SignOutTest)
-
-      .import(LayoutTest)
-
-      .import(TopLevelPanelTest)
-
-    ;
   }
 
 }

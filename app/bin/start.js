@@ -3,104 +3,179 @@
   
   'use strict';
 
-  require("babel/register")({
+  require('colors');
+  var fs        =   require('fs');
+  var path      =   require('path');
+  var domain    =   require('domain');
+  var babel     =   require('babel/register');
+  var Promise   =   require('promise');
+  var mongoose  =   require('mongoose');
+  var Log       =   require('../lib/app/Log');
+  var symlink   =   require('../lib/app/symlink');
+
+  babel({
     modules   :   'common',
     stage     :   1,
     // ignore    :   /node_modules\/[^(cinco)]/
   });
 
-  var Log = require('../lib/app/Log');
-
   var log = new Log('bin/start');
-
-  require('colors');
-
-  var hello;
 
   function parseError(error) {
     return error.stack.split(/\n/);
   }
 
-  require('fs').createReadStream(require('path').resolve(__dirname, '../..', 'README.md'))
-    .on('data', function (data) {
-      if ( ! hello ) {
-        var bits = data.toString().split(/---/);
-       hello = bits[1];
+  function readMe () {
+    return new Promise(function(ok, ko) {
+      log.loading('Loading README');
 
-       start();
-      }
+      var README$path = path.resolve(__dirname, '../..', 'README.md');
+
+      fs.createReadStream(README$path)
+        .on('error', ko)
+        .on('data', function (data) {
+          var bits = data.toString().split(/---/);
+          console.log(bits[1].yellow);
+        })
+        .on('end', function () {
+          log.success('Loading README');
+          ok();
+        });
     });
+  }
 
-  var symlink       =   require('../lib/app/symlink');
-  
-  var async         =   require('async');
+  function createSymLink () {
+    return new Promise(function(ok, ko) {
+      log.loading('Symlink library');
 
+      symlink(function (error) {
+        if ( error ) {
+          load.error(error);
+          return ko(error);
+        }
 
-  function start () {
-    console.log('     ' +
-      '/                               \\'.bold.bgBlue.underline);
-    console.log('     ' +
-      '|        S Y N A P P            |'.bold.bgBlue.underline);
-    console.log('     ' +
-      '\\                               /'.bold.bgBlue);
+        log.success('Symlink library');
 
-    console.log(hello.yellow);
+        ok();
+      });
+    });
+  }
 
-    require('mongoose').connect(process.env.MONGOHQ_URL);
+  function connectToMongoose () {
+    return new Promise(function(ok, ko) {
+      log.loading('Connecting to MongoDB ' + process.env.MONGOHQ_URL);
 
-    function onError(error) {
-      console.log('server error caught in start script', parseError(error));
-      error.stack.split(/\n/).forEach(console.log.bind(console));
-      // logError(error);
-    }
+      if ( ! process.env.MONGOHQ_URL ) {
+        return ko(new Error('Missing MongoDB URL'));
+      }
 
-    var domain = require('domain').create();
-    
-    domain
+      mongoose.connect(process.env.MONGOHQ_URL);
+
+      mongoose.connection.on('connected', function () {
+        log.success('Connecting to MongoDB ' + process.env.MONGOHQ_URL);
+        ok();
+      });
+    });
+  }
+
+  function startHttpServer () {
+    return new Promise(function (ok, ko) {
+      var Server = require('../server');
+
+      log.loading('Starting HTTP server');
       
-      .on('error', onError)
-    
-      .run(function () {
-        log.loading('Symlink library');
-
-        symlink(domain.intercept(function () {
-          log.success('Symlink library');
-
-          var migrations    =   require('../lib/db/migrate.js');
-          var Server        =   require('../server');
-          
-          log.loading('Migrations library');
-
-          log.loading('Starting HTTP server');
-          
-          new Server()
-            .on('listening', function () {
-              log.success('Starting HTTP server')
-            });
-
-          // fork.on('message', function (message) {
-          //   console.log('oh message', message)
-          // })
-          
-          // migrations(domain.intercept(function () {
-          //   log.success('Migrations OK');
-
-          //   log.loading('Starting HTTP server');
-            
-          //   new Server()
-          //     .on('listening', function () {
-          //       log.success('Starting HTTP server')
-          //     });
-
-          //   // fork.on('message', function (message) {
-          //   //   console.log('oh message', message)
-          //   // })
-
-          // }))
-
-        }));
-
+      new Server()
+        .on('listening', function () {
+          log.success('Starting HTTP server');
+          ok();
+        });
       });
   }
+
+  readMe().then(
+    function () {
+      createSymLink().then(
+        function () {
+          connectToMongoose().then(
+            function () {
+              startHttpServer().then(
+                function () {console.log('Synapp started')},
+                ko
+              );
+            },
+            function (error) {
+              console.log(parseError(error));
+              throw error;
+            }
+          );
+        },
+        function (error) {
+          console.log(parseError(error));
+          throw error;
+        }
+      );
+    },
+
+    function (error) {
+      console.log(parseError(error));
+      throw error;
+    }
+  );
+
+
+
+    
+
+  // function start () {
+  //   console.log('     ' +
+  //     '/                               \\'.bold.bgBlue.underline);
+  //   console.log('     ' +
+  //     '|        S Y N A P P            |'.bold.bgBlue.underline);
+  //   console.log('     ' +
+  //     '\\                               /'.bold.bgBlue);
+
+  //   console.log(README.yellow);
+
+  //   function onError(error) {
+  //     console.log('server error caught in start script', parseError(error));
+  //     error.stack.split(/\n/).forEach(console.log.bind(console));
+  //     // logError(error);
+  //   }
+
+  //   var d = domain.create().on('error', onError);
+    
+  //   d.run(function () {
+
+  //     log.loading('Connecting to MongoDB ' + process.env.MONGOHQ_URL);
+
+  //     mongoose.connect(process.env.MONGOHQ_URL);
+
+  //     mongoose.connection.on('connected', function () {
+  //       log.success('Connecting to MongoDB ' + process.env.MONGOHQ_URL);
+  //     });
+
+  //     log.loading('Symlink library');
+
+  //     symlink(d.intercept(function () {
+  //       log.success('Symlink library');
+
+  //       log.loading('DB Populate');
+
+  //       var Populate = require('../lib/db/populate.js');
+
+  //       new Populate().fill()
+
+  //       log.success('DB Populate');
+
+  //       log.loading('DB Migrations');
+
+  //       var migrations    =   require('../lib/db/migrate.js');
+
+  //       log.success('DB Migrations');
+        
+
+  //     }));
+  //   });
+  // }
 
 } ();

@@ -37,7 +37,9 @@
 
             .then(function (intro) {
 
-              console.log('intro', intro)
+              if ( ! intro ) {
+                // console.
+              }
 
               intro.toPanelItem(domain.intercept(function (intro) {
                 socket.ok(event, intro);

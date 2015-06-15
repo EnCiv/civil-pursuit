@@ -66,19 +66,25 @@ class Creator extends Milk {
 
     this.ok(() => get('Create').click(), 'Click on Create button');
 
+    this.wait(.5);
+
     this.ok(() => get('Subject').is('.error'), 'Subject field is showing error because it is empty');
 
     this.ok(() => get('Subject').val('This is a subject'), 'Writing a subject');
 
     this.ok(() => get('Create').click(), 'Click on Create button');
 
+    this.wait(.5);
+
     this.ok(() => get('Subject').not('.error'), 'Subject field is showing error because it is empty');
 
     this.ok(() => get('Description').is('.error'), 'Description field is showing error because it is empty');
 
-    this.ok(() => get('Description').val('This is a description'), 'Writing a description');
+    this.ok(() => get('Description').val('This is a description created ' + new Date()), 'Writing a description');
 
     this.ok(() => get('Create').click(), 'Click on Create button');
+
+    this.wait(.5);
 
     this.ok(() => get('Subject').not('.error'), 'Subject field is showing error because it is empty');
 
