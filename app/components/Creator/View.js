@@ -57,6 +57,7 @@ class Creator extends Element {
         .text('Choose a file'),
 
       new Element('input.hide', {
+        name                :     'image',
         type                :     'file', 
         value               :     'Upload image',
       })

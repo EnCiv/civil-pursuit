@@ -6,7 +6,6 @@ import config from 'syn/config.json';
 import run from 'syn/lib/util/run';
 
 function getUrlTitle (url) {
-  console.log('get url title', url)
   return new Promise((ok, ko) => {
     let req = {
       url             :   url,
@@ -15,9 +14,7 @@ function getUrlTitle (url) {
         'User-Agent'  :   config['user agent']
       }
     };
-    console.log('request', req)
     request(req, (error, response, body) => {
-      console.log('response', response)
       if ( error ) {
         return ko(error);
       }
@@ -38,7 +35,6 @@ function getUrlTitle (url) {
             title = S(_title).decodeHTMLEntities().s;
 
           });
-          console.log('title', title)
         ok(title);
       }
       else {

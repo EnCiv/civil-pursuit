@@ -71,9 +71,16 @@ class Panel extends Milk {
       this.wait(1, null, when => get('Cookie'));
 
       this.import(CreatorTest,
-        () => ({ panel : this.get('Panel') }),
+        () => ({ panel : this.get('Panel'), viewport : this.props.viewport }),
         null,
-        when => get('Cookie'))
+        when => get('Cookie'));
+
+      this.ok(() => get('Toggle').click()).wait(1);
+
+      this.import(CreatorTest,
+        () => ({ panel : this.get('Panel'), upload : true, viewport : this.props.viewport }),
+        null,
+        when => get('Cookie'));
 
       // User is not signed in
 

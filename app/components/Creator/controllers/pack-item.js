@@ -42,6 +42,11 @@ function packItem () {
     }
   }
 
+  this.find('subject').val('');
+  this.find('description').val('');
+  this.find('reference').val('').css('display', 'block');
+  this.find('reference board').text('').addClass('hide');
+
   this.packaged = item;
 }
 

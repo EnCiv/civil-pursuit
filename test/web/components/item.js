@@ -284,7 +284,7 @@ class Item extends Milk {
 
       this
         .wait(1, null, when => get('Cookie'))
-        .import(PromoteTest, { item : item }, null, when => get('Cookie'))
+        .import(PromoteTest, { item : item, viewport : this.props.viewport }, null, when => get('Cookie'))
         .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => get('Cookie'))
         .wait(2, null, when => get('Cookie'));
 

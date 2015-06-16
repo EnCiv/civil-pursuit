@@ -33,6 +33,7 @@ class Promote extends Milk {
     
     this.set('Limit', () => find(get('Header').selector + ' .limit'));
 
+    this.set('Side by side', () => find(get('Main').selector + ' .items-side-by-side'));
 
     if ( this.props.driver !== false ) {
       this.go('/');
@@ -52,6 +53,18 @@ class Promote extends Milk {
         (+(text.trim())).should.be.exactly((get('Evaluation').items.length - 1))
       ),
       'Limit shows the right number');
+
+    this.ok(() => get('Side by side').is(':visible'), 'Side by side is visible');
+
+    console.log('viewport', this.props.viewport)
+
+    // switch ( this.props.viewport ) {
+    //   case 'tablet':
+    //     this.set('View', () => find(get('Side by side').selector + ' .split-hide-down'));
+    //     break;
+    // }
+
+    // this.ok(() => get('View').is(':visible'));
   }
 }
 

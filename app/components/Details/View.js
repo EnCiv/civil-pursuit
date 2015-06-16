@@ -1,28 +1,21 @@
 'use strict';
 
-import {Element} from 'cinco/es5';
+import { Element, Elements } from 'cinco/es5';
 
 class Details extends Element {
 
   constructor (props) {
     super('section');
-    this.add(
-      this.invitePeople(),
-      this.progressBar()
-    )
-    for ( var i = 0; i < 4; i ++ ) {
-      this.add(
-        new Element('.row.details-votes').add(
-          new Element('.tablet-30.middle').add(
-            new Element('h4', {
-              'data-toggle'     :   'tooltip',
-              'data-placement'  :   'top'
-            })
-          )
-        )
-      );
-    }
-    this.add(this.feedback());
+    
+    this
+      .add(
+        this.invitePeople(),
+        this.progressBar()
+      )
+    
+      .add(this.votes())
+    
+      .add(this.feedback());
   }
 
   invitePeople () {
@@ -56,6 +49,28 @@ class Details extends Element {
       new Element('h4').text('Feedback'),
       new Element('.feedback-list')
     );
+  }
+
+  votes () {
+    let votes = new Elements();
+
+    for ( let i = 0; i < 4; i ++ ) {
+      votes.add(
+        new Element('.row.details-votes').add(
+          new Element('.tablet-30.middle').add(
+            new Element('h4', {
+              'data-toggle'     :   'tooltip',
+              'data-placement'  :   'top'
+            }).text('Criteria')
+          ),
+          new Element('.tablet-70.middle').add(
+            new Element('svg.chart')
+          )
+        )
+      );
+    }
+
+    return votes;
   }
 }
 

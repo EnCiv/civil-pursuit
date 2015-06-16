@@ -46,9 +46,7 @@ class Item extends Controller {
 
       case "promote":             return this.template.find('.promote');
 
-
-
-      case "reference":           return this.template.find('.item-reference:first a');
+      case "reference":           return this.template.find(' > .item-text .item-reference a');
 
       case "media":               return this.template.find('.item-media:first');
 
@@ -145,6 +143,7 @@ class Item extends Controller {
     // REFERENCES
 
     if ( (item.references) && item.references.length ) {
+      console.warn('has references', this.find('reference'))
       this.find('reference')
         .attr('href', item.references[0].url)
         .text(item.references[0].title || item.references[0].url);

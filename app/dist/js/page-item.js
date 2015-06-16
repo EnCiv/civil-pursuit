@@ -3675,6 +3675,7 @@ var Creator = (function (_Element) {
 
     value: function legacy() {
       return new _cincoEs5.Element('.phasing').add(new _cincoEs5.Element('button.upload-image-button', { type: 'button' }).text('Choose a file'), new _cincoEs5.Element('input.hide', {
+        name: 'image',
         type: 'file',
         value: 'Upload image'
       }).close());
@@ -3890,13 +3891,13 @@ function created(item) {
     item.youtube = this.packaged.youtube;
   }
 
-  var item = new _synComponentsItemController2['default']({ item: item });
+  item = new _synComponentsItemController2['default']({ item: item });
 
   var items = this.panelContainer.find('items');
 
   item.load();
 
-  console.log('inserting', item.template, items);
+  console.log('inserting', item);
 
   item.template.addClass('new');
   items.prepend(item.template);
@@ -3955,6 +3956,11 @@ function packItem() {
       item.image = item.upload;
     }
   }
+
+  this.find('subject').val('');
+  this.find('description').val('');
+  this.find('reference').val('').css('display', 'block');
+  this.find('reference board').text('').addClass('hide');
 
   this.packaged = item;
 }
@@ -4204,13 +4210,15 @@ var Details = (function (_Controller) {
     }
   }, {
     key: 'votes',
-    value: function votes() {
-      var self = this;
+    value: function votes(criteria, svg) {
+      var details = this.get('details');
 
       setTimeout(function () {
-        var vote = self.details.votes[criteria._id];
+        var vote = details.votes[criteria._id];
 
-        svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
+        console.info('vote', vote);
+
+        svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
 
         var data = [];
 
@@ -4301,13 +4309,13 @@ var Details = (function (_Controller) {
           _this.find('feedback list').append(tpl).append('<hr/>');
         });
 
-        // // Votes
+        // Votes
 
-        // details.criterias.forEach(function (criteria, i) {
-        //   self.find('votes').eq(i).find('h4').text(criteria.name);
+        details.criterias.forEach(function (criteria, i) {
+          _this.find('votes').eq(i).find('h4').text(criteria.name);
 
-        //   self.votes(criteria, self.find('votes').eq(i).find('svg'));
-        // });
+          _this.votes(criteria, _this.find('votes').eq(i).find('svg'));
+        });
       });
     }
   }]);
@@ -4340,14 +4348,8 @@ var Details = (function (_Element) {
     _classCallCheck(this, Details);
 
     _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this, 'section');
-    this.add(this.invitePeople(), this.progressBar());
-    for (var i = 0; i < 4; i++) {
-      this.add(new _cincoEs5.Element('.row.details-votes').add(new _cincoEs5.Element('.tablet-30.middle').add(new _cincoEs5.Element('h4', {
-        'data-toggle': 'tooltip',
-        'data-placement': 'top'
-      }))));
-    }
-    this.add(this.feedback());
+
+    this.add(this.invitePeople(), this.progressBar()).add(this.votes()).add(this.feedback());
   }
 
   _inherits(Details, _Element);
@@ -4366,6 +4368,20 @@ var Details = (function (_Element) {
     key: 'feedback',
     value: function feedback() {
       return new _cincoEs5.Element('.details-feedbacks').add(new _cincoEs5.Element('h4').text('Feedback'), new _cincoEs5.Element('.feedback-list'));
+    }
+  }, {
+    key: 'votes',
+    value: function votes() {
+      var votes = new _cincoEs5.Elements();
+
+      for (var i = 0; i < 4; i++) {
+        votes.add(new _cincoEs5.Element('.row.details-votes').add(new _cincoEs5.Element('.tablet-30.middle').add(new _cincoEs5.Element('h4', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'top'
+        }).text('Criteria')), new _cincoEs5.Element('.tablet-70.middle').add(new _cincoEs5.Element('svg.chart'))));
+      }
+
+      return votes;
     }
   }]);
 
@@ -4729,7 +4745,7 @@ var Item = (function (_Controller) {
           return this.template.find('.promote');
 
         case 'reference':
-          return this.template.find('.item-reference:first a');
+          return this.template.find(' > .item-text .item-reference a');
 
         case 'media':
           return this.template.find('.item-media:first');
@@ -4841,6 +4857,7 @@ var Item = (function (_Controller) {
       // REFERENCES
 
       if (item.references && item.references.length) {
+        console.warn('has references', this.find('reference'));
         this.find('reference').attr('href', item.references[0].url).text(item.references[0].title || item.references[0].url);
       } else {
         this.find('reference').empty();
@@ -5104,7 +5121,7 @@ var Item = (function (_Element) {
         href: '#',
         target: '_blank',
         rel: 'nofollow'
-      }).text('hello'));
+      }).text('reference'));
     }
   }, {
     key: 'text',
@@ -5115,8 +5132,6 @@ var Item = (function (_Element) {
     key: 'collapsers',
     value: function collapsers() {
       var _this5 = this;
-
-      console.warn('should we collpase?', this.props);
 
       return new _cincoEs5.Element('.item-collapsers').condition(function () {
         if (_this5.props.item && 'collapsers' in _this5.props.item) {

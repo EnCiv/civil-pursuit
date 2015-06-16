@@ -99,7 +99,7 @@ class Item extends Element {
         href    :   '#',
         target  :   '_blank',
         rel     :   'nofollow'
-      }).text()
+      }).text('reference')
     );
   }
 
@@ -115,8 +115,6 @@ class Item extends Element {
   }
 
   collapsers () {
-
-    console.warn('should we collpase?', this.props)
 
     return new Element('.item-collapsers')
       .condition(() => {

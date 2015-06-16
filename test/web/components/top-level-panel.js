@@ -38,8 +38,9 @@ class TopLevelPanel extends Milk {
 
       .import(PanelTest, () => {
         return {
-          driver  : false,
-          panel   : get('Top Level Panel').selector
+          driver    : false,
+          panel     : get('Top Level Panel').selector,
+          viewport  : this.props.viewport
         }
       })
       
@@ -50,8 +51,9 @@ class TopLevelPanel extends Milk {
         () => get('Items'),
         item => this.import(ItemTest, () => {
           return {
-            driver : false,
-            item : item
+            driver    :   false,
+            item      :   item,
+            viewport  :   this.props.viewport
           }
         }, 'Panel item is an Item component'),
         'Each panel item is an Item component'

@@ -97,15 +97,17 @@ class Details extends Controller {
     }
   }
 
-  votes () {
-    var self = this;
+  votes (criteria, svg) {
+    let details = this.get('details');
 
-    setTimeout(function () {
-      var vote = self.details.votes[criteria._id];
+    setTimeout(() => {
+      let vote = details.votes[criteria._id];
 
-      svg.attr('id', 'chart-' + self.details.item._id + '-' + criteria._id);
+      console.info('vote', vote)
 
-      var data = [];
+      svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
+
+      let data = [];
 
       // If no votes, show nothing
 
@@ -120,20 +122,20 @@ class Details extends Controller {
         }
       }
 
-      for ( var number in vote.values ) {
+      for ( let number in vote.values ) {
         data.push({
           label: 'number',
           value: vote.values[number] * 100 / vote.total
         });
       }
 
-      var columns = ['votes'];
+      let columns = ['votes'];
 
       data.forEach(function (d) {
         columns.push(d.value);
       });
 
-      var chart = c3.generate({
+      let chart = c3.generate({
         bindto        :   '#' + svg.attr('id'),
         data          :   {
           x           :   'x',
@@ -197,13 +199,13 @@ class Details extends Controller {
 
         });
 
-        // // Votes
+        // Votes
 
-        // details.criterias.forEach(function (criteria, i) {
-        //   self.find('votes').eq(i).find('h4').text(criteria.name);
+        details.criterias.forEach((criteria, i) => {
+          this.find('votes').eq(i).find('h4').text(criteria.name);
 
-        //   self.votes(criteria, self.find('votes').eq(i).find('svg'));
-        // });
+          this.votes(criteria, this.find('votes').eq(i).find('svg'));
+        });
       });
   }
 

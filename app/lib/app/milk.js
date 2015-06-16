@@ -169,12 +169,23 @@ class Selector {
 
   val (value) {
     return new Promise((fulfill, reject) => {
-      this.driver.setValue(this.selector, value, error => {
-        if ( error ) {
-          return reject(error);
-        }
-        fulfill();
-      });
+      if ( typeof value === 'string' ) {
+        this.driver.setValue(this.selector, value, error => {
+          if ( error ) {
+            return reject(error);
+          }
+          fulfill();
+        });
+      }
+      else {
+        this.driver.getValue(this.selector, (error, text) => {
+          if ( error ) {
+            return reject(error);
+          }
+          fulfill(text);
+        });
+      }
+        
     });
   }
 
@@ -259,6 +270,17 @@ class Selector {
         });
       });
     }
+  }
+
+  upload (file) {
+    return new Promise((fulfill, reject) => {
+      this.driver.chooseFile(this.selector, file, error => {
+        if ( error ) {
+          return reject(error);
+        }
+        fulfill();
+      });
+    });
   }
 }
 

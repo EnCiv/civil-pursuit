@@ -1,5 +1,8 @@
 'use strict';
 
+import fs from 'fs';
+import request from 'request';
+import config from 'syn/config.json';
 import Milk from 'syn/lib/app/milk';
 import ItemTest from './item';
 import ItemModel from 'syn/models/Item';
@@ -52,13 +55,21 @@ class Creator extends Milk {
 
     this.set('New item', () => find(get('Panel').selector + ' > .panel-body > .items .item.new'));
 
-    this.set('Title', () => getUrlTitle('http://example.com'))
+    this.set('Title', () => getUrlTitle('http://example.com'));
+
+    this.set('Input file', () => find(get('Creator').selector + ' input[type="file"][name="image"]'));
 
     // Visibility
 
     this.ok(() => get('Creator').is(':visible'), 'Creator is visible');
     this.ok(() => get('Creator').is('.is-shown'), 'Creator has class "is-shown", meaning it has been expanded successfully by our navigation system');
     this.ok(() => get('Create').is(':visible'), 'Create button is visible');
+
+    // Form should be empty
+
+    this.ok(() => get('Subject').val()
+      .then(val => val.should.be.exactly('')),
+      'Subject should be empty');
 
     // Item
 
@@ -91,13 +102,28 @@ class Creator extends Milk {
 
     this.ok(() => get('Description').val('This is a description created ' + new Date()), 'Writing a description');
 
+    // Upload
+
+    if ( this.props.upload ) {
+      this.set('Test image', () => new Promise((ok, ko) => {
+        request(config['example image for test upload'])
+          .on('error', ko)
+          .on('end', ok)
+          .pipe(fs.createWriteStream('/tmp/test-upload.jpg'));
+      }));
+
+      // this.ok(() => get('Input file').upload('/tmp/test-upload.jpg'));
+    }
+
     // Reference
 
-    this.ok(() => get('Reference').val('http://example.com'));
+    this.ok(() => get('Reference').val('http://example.com'),  'Entering URL');
 
-    this.ok(() => get('Description').click());
+    this.ok(() => get('Description').click(), 'Bluring URL field');
 
-    this.ok(() => get('Reference board').is(':visible'));
+    this.wait(.5);
+
+    this.ok(() => get('Reference board').is(':visible'), 'Reference board is visible');
 
     this.ok(() => get('Reference board').text()
       .then(text =>  {
@@ -106,13 +132,15 @@ class Creator extends Milk {
         } catch (error) {
           text.should.be.exactly(get('Title'))
         }
-      })
+      }),
+      'Reference board is showing loading message or response'
     );
 
     this.wait(5);
 
     this.ok(() => get('Reference board').text()
-      .then(text =>  text.should.be.exactly(get('Title')) )
+      .then(text =>  text.should.be.exactly(get('Title')) ),
+      'Reference board shows title'
     );
 
     // Submit with all required fields
@@ -137,6 +165,9 @@ class Creator extends Milk {
         .attr('id')
         .then(
           id => {
+            if ( Array.isArray(id) ) {
+              id = id.pop();
+            }
             ItemModel
               .findById(id.split('-')[1])
               .exec()
@@ -161,7 +192,7 @@ class Creator extends Milk {
 
     }), 'Get new item from DB');
 
-    this.import(ItemTest, () => ({ item : Item, promote : true }));
+    this.import(ItemTest, () => ({ item : Item, promote : true, viewport : this.props.viewport }));
 
   }
 

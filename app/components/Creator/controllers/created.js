@@ -17,13 +17,13 @@ function created (item) {
     item.youtube = this.packaged.youtube;
   }
 
-  var item  = new Item({ item: item });
+  item  = new Item({ item: item });
 
   var items = this.panelContainer.find('items');
 
   item.load();
 
-  console.log('inserting', item.template, items);
+  console.log('inserting', item);
 
   item.template.addClass('new');
   items.prepend(item.template);
