@@ -4,6 +4,7 @@ import {EventEmitter} from 'events';
 import WebDriver from 'webdriverio';
 import wrap from 'syn/lib/util/run';
 import should from 'should';
+import UserModel from 'syn/models/User';
 
 function fnToStr (fn) {
   let bits = fn.toString().split(/\{/);
@@ -304,6 +305,8 @@ class Milk extends EventEmitter {
 
     this.actions = [];
     this._keys = {};
+
+    console.log('DRIVER'.bgBlue.bold + this.name.bgCyan.bold, this.options);
   }
 
   wrap (fn) {
@@ -524,6 +527,17 @@ class Milk extends EventEmitter {
     });
   }
 
+  setCookie (cookie) {
+    return new Promise((fulfill, reject) => {
+      this.driver.setCookie(cookie, (error, cookies) => {
+        if ( error ) {
+          return reject(error);
+        }
+        fulfill(cookies.filter({ name : 'synuser' })[0]);
+      });
+    });
+  }
+
   when (condition, ...thens) {
     return this.wrap(d => {
       thens.forEach(then => {
@@ -571,9 +585,7 @@ class Milk extends EventEmitter {
 
       this.actions.push({ message: message, handler: handler });
     });
-  }
-
-  
+  }  
 
   find (selector) {
     return new Selector(selector, this);
@@ -595,6 +607,43 @@ class Milk extends EventEmitter {
             if ( error ) {
               return reject(error);
             }
+
+            if ( this.options.session ) {
+              if ( this.options.session === '/test' ) {
+                console.log('DISPOSABLE USER'.bgBlue.bold + this.name.bgCyan.bold);
+                UserModel.disposable()
+                  .then(
+                    user => {
+                      let cookie = {
+                        name      :   'synuser',
+                        value     :   JSON.stringify({
+                          id      :   user._id,
+                          email   :   user.email
+                        }),
+                        httpOnly  :   true
+                      };
+                      
+                      this.driver.setCookie(cookie, (error, cookies) => {
+                        console.log('---------cookies', cookies, error)
+                      });
+
+                      this.driver.refresh(() => { console.log('Refreshed!') });
+
+                      this.driver.getCookie((error, cookies) => {
+                        if ( error ) {
+                          return reject(error);
+                        }
+                        console.log(cookies)
+                        fulfill();
+                      });
+                    },
+                    error => this.emit('error', error)
+                  );
+
+                return;
+              }
+            }
+
             fulfill(result);
           });
         });
@@ -631,9 +680,10 @@ class Milk extends EventEmitter {
 
   startDriver () {
     wrap(() => {
+
       let options = {
         desiredCapabilities : {
-          browserName: 'firefox'
+          browserName: 'chrome'
         }
       };
 

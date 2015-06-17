@@ -14,7 +14,7 @@ class Creator extends Milk {
 
     props = props || {};
 
-    let options = { viewport : props.viewport };
+    let options = { viewport : props.viewport, session : props.session };
 
     super('Creator', options);
 
@@ -25,6 +25,14 @@ class Creator extends Milk {
 
     if ( this.props.driver !== false ) {
       this.go('/');
+    }
+
+    if ( ! this.props.panel ) {
+      this.props.panel = find('.panels > .panel');
+      this.wait(2);
+      this.ok(() => find('.panels > .panel > .panel-heading .toggle-creator')
+        .click(), 'Click on Creator Toggle');
+      this.wait(2);
     }
 
     let Item;
@@ -121,7 +129,7 @@ class Creator extends Milk {
 
     this.ok(() => get('Description').click(), 'Bluring URL field');
 
-    this.wait(.5);
+    this.wait(1);
 
     this.ok(() => get('Reference board').is(':visible'), 'Reference board is visible');
 

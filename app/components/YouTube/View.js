@@ -37,7 +37,7 @@ class YouTube extends Element {
   iframe (url) {
     let youTubeId;
 
-    url.replace(url, (m, v) => youTubeId = v);
+    url.replace(YouTube.regex, (m, v) => youTubeId = v);
 
     return new Element('iframe[allowfullscreen]', {
       frameborder   :   "0",

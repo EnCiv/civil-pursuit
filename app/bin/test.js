@@ -64,19 +64,23 @@
 
     var script = process.argv[2];
 
-    var viewport;
+    var viewport, session;
 
-    for ( var i = 3; i < process.argv.length; i ++ ) {
+    for ( var i = 2; i < process.argv.length; i ++ ) {
       var splits = process.argv[i].split('=');
 
       if ( splits[0] === 'viewport' ) {
         viewport = splits[1];
       }
+
+      if ( splits[0] === 'session' ) {
+        session = splits[1];
+      }
     }
 
     var Test = require('../../' + script);
 
-    test = new Test({ viewport : viewport });
+    test = new Test({ viewport : viewport, session : session });
 
     var done = false;
 

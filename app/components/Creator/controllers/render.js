@@ -83,8 +83,6 @@ function renderCreator (cb) {
 
       // Build form using Form provider
 
-      console.log('creator', this.template)
-
       var form = new Form(this.template);
       
       form.send(this.create.bind(this));

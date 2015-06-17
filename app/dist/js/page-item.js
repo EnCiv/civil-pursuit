@@ -4065,8 +4065,6 @@ function renderCreator(cb) {
 
       // Build form using Form provider
 
-      console.log('creator', _this.template);
-
       var form = new _synLibUtilForm2['default'](_this.template);
 
       form.send(_this.create.bind(_this));
@@ -7079,7 +7077,7 @@ var YouTube = (function (_Element) {
     value: function iframe(url) {
       var youTubeId = undefined;
 
-      url.replace(url, function (m, v) {
+      url.replace(YouTube.regex, function (m, v) {
         return youTubeId = v;
       });
 
