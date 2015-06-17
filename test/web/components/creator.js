@@ -67,6 +67,8 @@ class Creator extends Milk {
 
     this.set('Input file', () => find(get('Creator').selector + ' input[type="file"][name="image"]'));
 
+    this.set('Choose file', () => find(get('Creator').selector + ' button.upload-image-button'));
+
     // Visibility
 
     this.ok(() => get('Creator').is(':visible'), 'Creator is visible');
@@ -120,7 +122,9 @@ class Creator extends Milk {
           .pipe(fs.createWriteStream('/tmp/test-upload.jpg'));
       }));
 
-      // this.ok(() => get('Input file').upload('/tmp/test-upload.jpg'));
+      this.ok(() => get('Input file').val('/tmp/test-upload.jpg'));
+
+      // ok(() => get('Choose file').click)
     }
 
     // Reference

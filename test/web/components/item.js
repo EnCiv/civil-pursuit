@@ -153,7 +153,7 @@ class Item extends Milk {
           'Item image has the right withd'
         )
         .ok(() => get('Image').height()
-          .then(height => height.should.be.within(122, 125)),
+          .then(height => height.should.be.within(121, 125)),
           'Item image has the right height'
         );
 

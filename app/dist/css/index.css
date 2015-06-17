@@ -5343,6 +5343,10 @@ footer {
   overflow: hidden;
   box-sizing: border-box;
 }
+.creator input[name="image"] {
+  position: absolute;
+  top: -1000px;
+}
 .editor,
 .editor.is-shown {
   border: none !important;
