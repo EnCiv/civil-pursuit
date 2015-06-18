@@ -143,6 +143,8 @@ class App extends EventEmitter {
       this.socket.removeListener('OK ' + event, this.handler);
     };
 
+    console.info('PUB', event, ...messages);
+
     return {
       subscribe: (handler) => {
         this.socket

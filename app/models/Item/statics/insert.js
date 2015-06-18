@@ -34,9 +34,25 @@ function insertItem (candidate, socket) {
               if ( error ) {
                 return ko(error);
               }
-              socket.emit('item changed ' + item._id, item);
+              item.toPanelItem((error, item) => {
+                if ( error ) {
+                  return ko(error);
+                }
+                socket.emit('item changed ' + item._id, item);
+              });
             });
-          }      
+          },
+
+          {
+            transformation : [
+              {
+                width         :   240,
+                height        :   135,
+                crop          :   'thumb',
+                gravity       :   'face'
+              }
+            ]
+          }
         );
       }
 

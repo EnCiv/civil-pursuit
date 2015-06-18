@@ -6,6 +6,7 @@ import config from 'syn/config.json';
 import JoinTest from './join';
 import PromoteTest from './promote';
 import DetailsTest from './details';
+import cloudinaryFormat from 'syn/lib/util/cloudinary-format';
 
 class Item extends Milk {
 
@@ -150,16 +151,16 @@ class Item extends Milk {
         .ok(() => get('Image').is(':visible'), 'Item Image is visible')
         .ok(() => get('Image').width()
           .then(width => width.should.be.within(183, 186)),
-          'Item image has the right withd'
+          'Item image has the right width'
         )
         .ok(() => get('Image').height()
-          .then(height => height.should.be.within(121, 125)),
+          .then(height => height.should.be.within(100, 150)),
           'Item image has the right height'
         );
 
       if ( item.image ) {
         this.ok(() => get('Image').attr('src')
-          .then(src => src.should.be.exactly(item.image)),
+          .then(src => src.should.be.exactly(cloudinaryFormat(item.image))),
           'Item Image is the same than in DB'
         );
       }

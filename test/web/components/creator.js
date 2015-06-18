@@ -124,7 +124,8 @@ class Creator extends Milk {
           .pipe(fs.createWriteStream('/tmp/test-upload.jpg'));
       }));
 
-      this.ok(() => get('Input file').val('/tmp/test-upload.jpg'));
+      // this.ok(() => get('Input file').val('/tmp/test-upload.jpg'));
+      this.ok(() => get('Input file').val('/home/francois/Pictures/jpb.jpg'));
 
       this.wait(3);
 

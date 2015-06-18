@@ -38,10 +38,13 @@ class API extends EventEmitter {
       fs.readdir(path.join(__dirname, 'api'), d.intercept(files => {
         
         files.forEach(file => {
-          let name = S(file.replace(/\.js$/, '')).humanize().s.toLowerCase();
-          let handler = require('syn/api/' + file);
+          let name      =   S(file.replace(/\.js$/, ''))
+            .humanize()
+            .s
+            .toLowerCase();
+          let handler   =   require('syn/api/' + file);
 
-          this.emit('message', 'Add handler', name)
+          this.emit('message', 'Add handler', [name, handler]);
 
           this.handlers[name] = handler;
         });

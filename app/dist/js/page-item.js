@@ -3310,6 +3310,8 @@ var App = (function (_EventEmitter) {
         _this3.socket.removeListener('OK ' + event, _this3.handler);
       };
 
+      console.info.apply(console, ['PUB', event].concat(messages));
+
       return {
         subscribe: function subscribe(handler) {
           var _socket$on;
@@ -4763,6 +4765,9 @@ var Item = (function (_Controller) {
         case 'details':
           return this.template.find('.details:first');
 
+        case 'buttons':
+          return this.template.find('> .item-buttons');
+
         case 'editor':
           return this.template.find('.editor:first');
 
@@ -4883,11 +4888,13 @@ var Item = (function (_Controller) {
 
       // CHILDREN
 
-      var buttonChildren = this.makeRelated();
-      buttonChildren.addClass('children-count');
-      buttonChildren.find('i').addClass('fa-fire');
-      buttonChildren.find('.related-number').text(item.children);
-      this.find('related').append(buttonChildren);
+      if (!this.find('buttons').find('.related-number').length) {
+        var buttonChildren = this.makeRelated();
+        buttonChildren.addClass('children-count');
+        buttonChildren.find('i').addClass('fa-fire');
+        buttonChildren.find('.related-number').text(item.children);
+        this.find('related').append(buttonChildren);
+      }
 
       // HARMONY
 
@@ -5194,6 +5201,8 @@ var _synComponentsYouTubeView = require('syn/components/YouTube/View');
 var _synComponentsYouTubeView2 = _interopRequireDefault(_synComponentsYouTubeView);
 
 function MediaController() {
+  var _this = this;
+
   var item = this.get('item');
 
   var references = item.references || [];
@@ -5227,15 +5236,28 @@ function MediaController() {
   // Item has image
 
   if (item.image && /^http/.test(item.image)) {
-    var src = item.image;
+    var _ret = (function () {
+      var src = item.image;
 
-    var _image = $('<img/>');
+      var image = $('<img/>');
 
-    _image.addClass('img-responsive');
+      image.addClass('img-responsive');
 
-    _image.attr('src', src);
+      image.attr('src', synapp.config['default item image']);
 
-    return _image;
+      _this.publish('format cloudinary image', src, item._id.toString()).subscribe(function (pubsub, img, _id) {
+        if (_id === item._id.toString()) {
+          image.attr('src', img);
+          pubsub.unsubscribe();
+        }
+      });
+
+      return {
+        v: image
+      };
+    })();
+
+    if (typeof _ret === 'object') return _ret.v;
   }
 
   // YouTube Cover Image

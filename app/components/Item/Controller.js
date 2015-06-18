@@ -60,6 +60,8 @@ class Item extends Controller {
 
       case "details":             return this.template.find('.details:first');
 
+      case "buttons":             return this.template.find('> .item-buttons');
+
       case "editor":              return this.template.find('.editor:first');
 
       case "toggle arrow":        return this.template.find('.item-arrow:first');
@@ -172,11 +174,13 @@ class Item extends Controller {
 
     // CHILDREN
 
-    var buttonChildren = this.makeRelated();
-    buttonChildren.addClass('children-count');
-    buttonChildren.find('i').addClass('fa-fire');
-    buttonChildren.find('.related-number').text(item.children);
-    this.find('related').append(buttonChildren);
+    if ( ! this.find('buttons').find('.related-number').length ) {
+      let buttonChildren = this.makeRelated();
+      buttonChildren.addClass('children-count');
+      buttonChildren.find('i').addClass('fa-fire');
+      buttonChildren.find('.related-number').text(item.children);
+      this.find('related').append(buttonChildren);
+    }
 
     // HARMONY
 

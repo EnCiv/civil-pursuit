@@ -1300,6 +1300,8 @@ var App = (function (_EventEmitter) {
         _this3.socket.removeListener('OK ' + event, _this3.handler);
       };
 
+      console.info.apply(console, ['PUB', event].concat(messages));
+
       return {
         subscribe: function subscribe(handler) {
           var _socket$on;

@@ -27,8 +27,6 @@
         
         .then(function (Intro) {
 
-          console.log('Intro', Intro)
-
           Item
 
             .findOne({ type: Intro._id })

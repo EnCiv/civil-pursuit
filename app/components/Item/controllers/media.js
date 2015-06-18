@@ -41,7 +41,16 @@ function MediaController () {
 
     image.addClass('img-responsive');
 
-    image.attr('src', src);
+    image.attr('src', synapp.config['default item image']);
+
+    this
+      .publish('format cloudinary image', src, item._id.toString())
+      .subscribe((pubsub, img, _id) => {
+        if ( _id === item._id.toString() ) {
+          image.attr('src', img);
+          pubsub.unsubscribe();
+        }
+      });
 
     return image;
   }
