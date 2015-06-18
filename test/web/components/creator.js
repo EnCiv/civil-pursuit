@@ -69,6 +69,8 @@ class Creator extends Milk {
 
     this.set('Choose file', () => find(get('Creator').selector + ' button.upload-image-button'));
 
+    this.set('Uploaded image', () => find(get('Creator').selector + ' .drop-box .preview-image'));
+
     // Visibility
 
     this.ok(() => get('Creator').is(':visible'), 'Creator is visible');
@@ -124,7 +126,12 @@ class Creator extends Milk {
 
       this.ok(() => get('Input file').val('/tmp/test-upload.jpg'));
 
-      // ok(() => get('Choose file').click)
+      this.wait(3);
+
+      this.ok(() => get('Uploaded image').is(':visible'));
+
+      this.ok(() => get('Uploaded image').attr('src')
+        .then(src => src.should.startWith('blob:')));
     }
 
     // Reference

@@ -28,7 +28,7 @@ class Panel extends Milk {
 
     // Get cookie
 
-    this.set('Cookie', () => this.getCookie('synuser'));
+    this.set('Cookie', ()     => this.getCookie('synuser'));
 
     this
 

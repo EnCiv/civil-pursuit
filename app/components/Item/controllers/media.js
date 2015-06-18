@@ -61,17 +61,17 @@ function MediaController () {
 
   // Uploaded image
 
-  if ( item.upload ) {
-    var src = item.image;
+  // if ( item.upload ) {
+  //   var src = item.image;
 
-    var image = $('<img/>');
+  //   var image = $('<img/>');
 
-    image.addClass('img-responsive');
+  //   image.addClass('img-responsive');
 
-    image.attr('src', item.upload);
+  //   image.attr('src', item.upload);
 
-    return image;
-  }
+  //   return image;
+  // }
 
   // default image
 

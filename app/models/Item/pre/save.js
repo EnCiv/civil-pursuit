@@ -35,37 +35,7 @@
 
       function packageItem () {
         next();
-        async.parallel([uploadImage, getUrlTitle], done);
-      }
-
-      function uploadImage (done) {
-        // If image declared (and in case of editing - if image changed)
-
-        var uploadImage = false;
-
-        if ( isNew ) {
-          uploadImage = !! self.image;
-        }
-        
-        else if ( self._original ) {
-          uploadImage = !! self.image !== self._original.image;
-        }
-
-        if ( uploadImage ) {
-          cloudinary.uploader.upload(
-            
-            path.join(config.tmp, self.image),
-            
-            function (result) {
-              self.image = result.url;
-              done();
-            }      
-          );
-        }
-
-        else {
-          done();
-        }
+        async.parallel([getUrlTitle], done);
       }
 
       function getUrlTitle (done) {

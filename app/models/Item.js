@@ -45,7 +45,8 @@
       'Get Item',
       'Get Panel Items',
       'Increment Promotion',
-      'Increment View'
+      'Increment View',
+      'Insert'
     ];
 
     statics.forEach(function (_static) {

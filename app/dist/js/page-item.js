@@ -3674,7 +3674,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function legacy() {
-      return new _cincoEs5.Element('.phasing').add(new _cincoEs5.Element('button.upload-image-button', { type: 'button' }).text('Choose a file'), new _cincoEs5.Element('input.hide', {
+      return new _cincoEs5.Element('.phasing').add(new _cincoEs5.Element('button.upload-image-button', { type: 'button' }).text('Choose a file'), new _cincoEs5.Element('input', {
         name: 'image',
         type: 'file',
         value: 'Upload image'
@@ -4698,6 +4698,8 @@ var _synComponentsItemControllersTogglePromote2 = _interopRequireDefault(_synCom
 
 var Item = (function (_Controller) {
   function Item(props) {
+    var _this = this;
+
     _classCallCheck(this, Item);
 
     _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this);
@@ -4706,6 +4708,10 @@ var Item = (function (_Controller) {
 
     if (this.props.item) {
       this.set('item', this.props.item);
+      this.socket.on('item changed ' + this.props.item._id, function (item) {
+        _this.set('item', item);
+        _this.render(function () {});
+      });
     }
 
     this.componentName = 'Item';
@@ -4797,7 +4803,7 @@ var Item = (function (_Controller) {
   }, {
     key: 'render',
     value: function render(cb) {
-      var _this = this;
+      var _this2 = this;
 
       var item = this.get('item');
 
@@ -4847,8 +4853,8 @@ var Item = (function (_Controller) {
       // READ MORE
 
       this.find('media').find('img, iframe').on('load', (function () {
-        if (!_this.template.find('.more').length) {
-          (0, _synLibUtilReadMore2['default'])(item, _this.template);
+        if (!_this2.template.find('.more').length) {
+          (0, _synLibUtilReadMore2['default'])(item, _this2.template);
         }
       }).bind(item));
 
@@ -5221,13 +5227,13 @@ function MediaController() {
   // Item has image
 
   if (item.image && /^http/.test(item.image)) {
-    var _src = item.image;
+    var src = item.image;
 
     var _image = $('<img/>');
 
     _image.addClass('img-responsive');
 
-    _image.attr('src', _src);
+    _image.attr('src', src);
 
     return _image;
   }
@@ -5247,17 +5253,17 @@ function MediaController() {
 
   // Uploaded image
 
-  if (item.upload) {
-    var src = item.image;
+  // if ( item.upload ) {
+  //   var src = item.image;
 
-    var image = $('<img/>');
+  //   var image = $('<img/>');
 
-    image.addClass('img-responsive');
+  //   image.addClass('img-responsive');
 
-    image.attr('src', item.upload);
+  //   image.attr('src', item.upload);
 
-    return image;
-  }
+  //   return image;
+  // }
 
   // default image
 

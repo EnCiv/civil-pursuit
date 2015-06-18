@@ -1,42 +1,29 @@
-! function () {
+'use strict';
 
-  'use strict';
+import run from 'syn/lib/util/run';
+import ItemModel from 'syn/models/Item';
 
-  function createItem (event, item) {
+function createItem (event, item) {
+  run(
+    d => {
+      item.type = item.type._id;
+      item.user = this.synuser.id;
 
-    var socket = this;
+      ItemModel.insert(item, this).then(
+        item => {
+          item.toPanelItem((error, item) => {
+            if ( error ) {
+              return this.error(error);
+            }
+            this.ok(event, item);
+          })
+        },
+        this.error.bind(this)
+      );
+    },
+    
+    this.error.bind(this)
+  );
+}
 
-    var domainRun = require('syn/lib/util/domain-run');
-
-    var Item = require('syn/models/Item');
-
-    domainRun(
-
-      function (domain) {
-
-        item.type = item.type._id;
-        item.user = socket.synuser.id;
-
-        console.log('socket/create-item', item);
-
-        Item
-          .create(item, domain.intercept(function (item) {
-            console.log('socket/create-item -- created', item);
-            item.toPanelItem(domain.intercept(function (item) {
-              console.log('socket/create-item -- panelified', item);
-              socket.ok(event, item);
-            }));
-          }));
-      },
-
-      function (error) {
-        socket.error(error);
-      }
-
-    );
-  
-  }
-
-  module.exports = createItem;
-
-} ();
+export default createItem;

@@ -20,6 +20,10 @@ class Item extends Controller {
 
     if ( this.props.item ) {
       this.set('item', this.props.item);
+      this.socket.on('item changed ' + this.props.item._id, item => {
+        this.set('item', item);
+        this.render(() => {});
+      });
     }
 
     this.componentName = 'Item';

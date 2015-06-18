@@ -683,7 +683,7 @@ class Milk extends EventEmitter {
 
       let options = {
         desiredCapabilities : {
-          browserName: 'chrome'
+          browserName: 'firefox'
         }
       };
 
