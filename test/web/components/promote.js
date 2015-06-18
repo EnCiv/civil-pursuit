@@ -2,6 +2,7 @@
 
 import Milk from 'syn/lib/app/milk';
 import ItemModel from 'syn/models/Item';
+import cloudinaryFormat from 'syn/lib/util/cloudinary-format';
 
 class Promote extends Milk {
 
@@ -54,17 +55,32 @@ class Promote extends Milk {
       ),
       'Limit shows the right number');
 
+    // SIDE BY SIDE
+
     this.ok(() => get('Side by side').is(':visible'), 'Side by side is visible');
 
-    console.log('viewport', this.props.viewport)
+    // VIEWPORT VIEW
 
-    // switch ( this.props.viewport ) {
-    //   case 'tablet':
-    //     this.set('View', () => find(get('Side by side').selector + ' .split-hide-down'));
-    //     break;
-    // }
+    switch ( this.props.viewport ) {
+      case 'tablet':
+        this.set('View', () => find(get('Side by side').selector + ' .split-hide-down'));
+        break;
+    }
 
-    // this.ok(() => get('View').is(':visible'));
+    this.ok(() => get('View').is(':visible'));
+
+    // LEFT IMAGE
+
+    this.set('Left image', () => find(get('View').selector + ' .left-item.image img.img-responsive'));
+
+    this.ok(() => get('Left image').is(':visible'));
+
+    this.ok(() => new Promise((ok, ko) => {console.log(get('Evaluation')); ok();}))
+
+    this.ok(() => get('Left image').attr('src')
+      .then(src => src.should.be.exactly(get('Evaluation').items[0].image)));
+
+
   }
 }
 
