@@ -4,59 +4,30 @@ import Nav from 'syn/lib/util/Nav';
 import Edit from 'syn/components/EditAndGoAgain/Controller';
 import Item from 'syn/components/Item/Controller';
 
-/**
- *  @function
- *  @return
- *  @arg
- */
-
-function renderItem (hand) {
+function _renderItem (item, hand) {
   let self = this;
 
-  var reverse = hand === 'left' ? 'right' : 'left';
-
-  var side = this.get(hand);
-
-  if ( ! side ) {
-    this.find('item subject', hand).hide();
-    this.find('item description', hand).hide();
-    this.find('item feedback', hand).hide();
-    this.find('sliders', hand).hide();
-    this.find('promote button', hand).hide();
-    this.find('promote label').hide();
-    this.find('edit and go again button', hand).hide();
-    this.find('promote button', reverse).hide();
-    this.find('edit and go again button', reverse).hide();
-    // this.find('finish button').hide();
-    return;
-  }
-
-  // Increment views counter
-
-  console.log('Adding view', hand, side.subject, side._id)
-
-  this.publish('add view', side._id)
-    .subscribe(pubsub => pubsub.unsubscribe());
+  this.find('side by side').attr('data-' + hand + '-item', item._id);
 
   // Subject
-  this.find('item subject', hand).text(side.subject);
+  this.find('item subject', hand).text(item.subject);
 
   // Description
 
-  this.find('item description', hand).text(side.description);
+  this.find('item description', hand).text(item.description);
 
   // Image
 
   this.find('item image', hand).empty().append(
-    new Item({ item: side }).media()
+    new Item({ item: item }).media()
   );
 
   // References
 
-  if ( side.references && side.references.length ) {
+  if ( item.references && item.references.length ) {
     this.find('item references', hand)
-      .attr('href', side.references[0].url)
-      .text(side.references[0].title || side.references[0].url);
+      .attr('href', item.references[0].url)
+      .text(item.references[0].title || item.references[0].url);
   }
 
   // Sliders
@@ -106,12 +77,6 @@ function renderItem (hand) {
       .data('criteria', self.get('criterias')[cid]._id);
   });
 
-  // Persona
-
-  // this.find('item persona image', hand).attr('src', promote.evaluation[hand].user.image);
-
-  // this.find('item persona name', hand).text(promote.evaluation[hand].user.first_name);
-
   // Feedback
 
   this.find('item feedback', hand).val('');
@@ -119,6 +84,41 @@ function renderItem (hand) {
   // Feedback - remove any marker from previous post / see #164
 
   this.find('item feedback', hand).removeClass('do-not-save-again');
+}
+
+function renderItem (hand) {
+  let self = this;
+
+  var reverse = hand === 'left' ? 'right' : 'left';
+
+  var side = this.get(hand);
+
+  if ( ! side ) {
+    this.find('item subject', hand).hide();
+    this.find('item description', hand).hide();
+    this.find('item feedback', hand).hide();
+    this.find('sliders', hand).hide();
+    this.find('promote button', hand).hide();
+    this.find('promote label').hide();
+    this.find('edit and go again button', hand).hide();
+    this.find('promote button', reverse).hide();
+    this.find('edit and go again button', reverse).hide();
+    // this.find('finish button').hide();
+    return;
+  }
+
+  this.socket.on('item changed ' + side._id.toString(), item => {
+    _renderItem.apply(this, [item, hand]);
+  });
+
+  // Increment views counter
+
+  this.publish('add view', side._id)
+    .subscribe(pubsub => pubsub.unsubscribe());
+
+  // Render item
+
+  _renderItem.apply(this, [side, hand]);
 
   // Promote button
 

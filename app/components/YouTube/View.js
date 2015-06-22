@@ -20,6 +20,14 @@ class YouTube extends Element {
     return is;
   }
 
+  static getId (url) {
+    let youTubeId;
+
+    url.replace(YouTube.regex, (m, v) => youTubeId = v);
+
+    return youTubeId;
+  }
+
   constructor (props) {
     super('.video-container');
 
@@ -35,9 +43,7 @@ class YouTube extends Element {
   }
 
   iframe (url) {
-    let youTubeId;
-
-    url.replace(YouTube.regex, (m, v) => youTubeId = v);
+    let youTubeId = YouTube.getId(url);
 
     return new Element('iframe[allowfullscreen]', {
       frameborder   :   "0",

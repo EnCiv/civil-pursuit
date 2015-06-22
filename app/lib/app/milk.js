@@ -283,6 +283,17 @@ class Selector {
       });
     });
   }
+
+  html () {
+    return new Promise((fulfill, reject) => {
+      this.driver.getHTML(this.selector, (error, html) => {
+        if ( error ) {
+          return reject(error);
+        }
+        fulfill(html);
+      });
+    });
+  }
 }
 
 class Milk extends EventEmitter {
