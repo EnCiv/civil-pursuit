@@ -190,7 +190,7 @@ class Promote extends Milk {
 
     ok(
       () => get('Left description').text()
-        .then(text => text.should.be.exactly(get('Left item').description)),
+        .then(text => text.should.be.exactly(Milk.formatToHTMLText(get('Left item').description))),
       'Left description is same than DB'
     );
   }
@@ -256,7 +256,7 @@ class Promote extends Milk {
 
     ok(
       () => get('Right description').text()
-        .then(text => text.should.be.exactly(get('Right item').description)),
+        .then(text => text.should.be.exactly(Milk.formatToHTMLText(get('Right item').description))),
       'Right description is same than DB'
     );
   }

@@ -5749,8 +5749,7 @@ function _renderItem(item, hand) {
   this.find('item subject', hand).text(item.subject);
 
   // Description
-  console.warn('!!!!!', hand, item);
-  this.find('item description', hand).text(hand + ' ' + item.id + ' ' + item.description);
+  this.find('item description', hand).text( /*hand + ' ' + item.id + ' ' + */item.description);
 
   // Image
 
@@ -5772,10 +5771,11 @@ function _renderItem(item, hand) {
     }
 
     self.find('sliders', hand).find('.criteria-name').eq(i).on('click', function () {
-      var self = $(this);
-      var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
+      var elem = $(this);
 
-      self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
+      var descriptionSection = elem.closest('.criteria-wrapper').find('.criteria-description-section');
+
+      elem.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
 
       if ($(this).hasClass('shy')) {
         $(this).removeClass('shy').addClass('info');
@@ -5783,7 +5783,7 @@ function _renderItem(item, hand) {
         $(this).removeClass('info').addClass('shy');
       }
 
-      _synLibUtilNav2['default'].hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
+      _synLibUtilNav2['default'].hide(elem.closest('.promote').find('.criteria-description-section.is-shown'), self.domain.intercept(function () {
         _synLibUtilNav2['default'].toggle(descriptionSection);
       }));
     }).text(self.get('criterias')[cid].name);
@@ -5847,7 +5847,7 @@ function renderItem(hand) {
 
     var opposite = left ? 'right' : 'left';
 
-    _synLibUtilNav2['default'].scroll(self.template, app.domain.intercept(function () {
+    _synLibUtilNav2['default'].scroll(self.template, self.domain.intercept(function () {
 
       // If cursor is smaller than limit, then keep on going
 
@@ -5884,19 +5884,19 @@ function renderItem(hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
-    _synLibUtilNav2['default'].unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
+    _synLibUtilNav2['default'].unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
 
       if (promote.item.find('editor').find('form').length) {
         console.warn('already loaded');
       } else {
         var edit = new _synComponentsEditAndGoAgainController2['default'](promote.item);
 
-        edit.get(app.domain.intercept(function (template) {
+        edit.get(self.domain.intercept(function (template) {
 
           promote.item.find('editor').find('.is-section').append(template);
 
-          _synLibUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, app.domain.intercept(function () {
-            _synLibUtilNav2['default'].show(template, app.domain.intercept(function () {
+          _synLibUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, self.domain.intercept(function () {
+            _synLibUtilNav2['default'].show(template, self.domain.intercept(function () {
               edit.render();
             }));
           }));

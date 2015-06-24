@@ -13,8 +13,7 @@ function _renderItem (item, hand) {
   this.find('item subject', hand).text(item.subject);
 
   // Description
-  console.warn('!!!!!', hand, item);
-  this.find('item description', hand).text(hand + ' ' + item.id + ' ' + item.description);
+  this.find('item description', hand).text(/*hand + ' ' + item.id + ' ' + */item.description);
 
   // Image
 
@@ -42,10 +41,11 @@ function _renderItem (item, hand) {
     self.find('sliders', hand).find('.criteria-name').eq(i)
       
       .on('click', function () {
-        var self = $(this);
-        var descriptionSection = self.closest('.criteria-wrapper').find('.criteria-description-section');
+        let elem = $(this);
 
-        self.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
+        let descriptionSection = elem.closest('.criteria-wrapper').find('.criteria-description-section');
+
+        elem.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
 
 
         if ( $(this).hasClass('shy') ) {
@@ -56,7 +56,7 @@ function _renderItem (item, hand) {
           $(this).removeClass('info').addClass('shy');
         }
 
-        Nav.hide(self.closest('.promote').find('.criteria-description-section.is-shown'), app.domain.intercept(function () {
+        Nav.hide(elem.closest('.promote').find('.criteria-description-section.is-shown'), self.domain.intercept(function () {
           Nav.toggle(descriptionSection);
         }));
 
@@ -131,7 +131,7 @@ function renderItem (hand) {
 
       var opposite = left ? 'right' : 'left';
 
-      Nav.scroll(self.template, app.domain.intercept(function () {
+      Nav.scroll(self.template, self.domain.intercept(function () {
 
         // If cursor is smaller than limit, then keep on going
       
@@ -179,7 +179,7 @@ function renderItem (hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
-    Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
+    Nav.unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
 
       if ( promote.item.find('editor').find('form').length ) {
         console.warn('already loaded')
@@ -188,13 +188,13 @@ function renderItem (hand) {
       else {
         var edit = new Edit(promote.item);
           
-        edit.get(app.domain.intercept(function (template) {
+        edit.get(self.domain.intercept(function (template) {
 
           promote.item.find('editor').find('.is-section').append(template);
 
           Nav.reveal(promote.item.find('editor'), promote.item.template,
-            app.domain.intercept(function () {
-              Nav.show(template, app.domain.intercept(function () {
+            self.domain.intercept(function () {
+              Nav.show(template, self.domain.intercept(function () {
                 edit.render();
               }));
             }));
