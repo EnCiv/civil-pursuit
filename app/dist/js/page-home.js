@@ -5287,7 +5287,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x3, _x4, _x5) { var _again = true; _function: while (_again) { var object = _x3, property = _x4, receiver = _x5; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x3 = parent; _x4 = property; _x5 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x4, _x5, _x6) { var _again = true; _function: while (_again) { var object = _x4, property = _x5, receiver = _x6; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x4 = parent; _x5 = property; _x6 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -5439,17 +5439,17 @@ var Promote = (function (_Controller) {
   }, {
     key: 'renderLeft',
     value: function renderLeft(left) {
-      this.renderItem('left');
+      this.renderItem('left', left);
     }
   }, {
     key: 'renderRight',
     value: function renderRight(right) {
-      this.renderItem('right');
+      this.renderItem('right', right);
     }
   }, {
     key: 'renderItem',
     value: (function (_renderItem) {
-      function renderItem(_x) {
+      function renderItem(_x, _x2) {
         return _renderItem.apply(this, arguments);
       }
 
@@ -5458,13 +5458,13 @@ var Promote = (function (_Controller) {
       };
 
       return renderItem;
-    })(function (hand) {
-      return _synComponentsPromoteControllersRenderItem2['default'].apply(this, [hand]);
+    })(function (hand, item) {
+      return _synComponentsPromoteControllersRenderItem2['default'].apply(this, [hand, item]);
     })
   }, {
     key: 'render',
     value: (function (_render) {
-      function render(_x2) {
+      function render(_x3) {
         return _render.apply(this, arguments);
       }
 
@@ -5749,8 +5749,8 @@ function _renderItem(item, hand) {
   this.find('item subject', hand).text(item.subject);
 
   // Description
-
-  this.find('item description', hand).text(item.description);
+  console.warn('!!!!!', hand, item);
+  this.find('item description', hand).text(hand + ' ' + item.id + ' ' + item.description);
 
   // Image
 
@@ -6233,11 +6233,7 @@ var YouTube = (function (_Element) {
   _createClass(YouTube, [{
     key: 'iframe',
     value: function iframe(url) {
-      var youTubeId = undefined;
-
-      url.replace(YouTube.regex, function (m, v) {
-        return youTubeId = v;
-      });
+      var youTubeId = YouTube.getId(url);
 
       return new _cincoEs5.Element('iframe[allowfullscreen]', {
         frameborder: '0',
@@ -6262,6 +6258,17 @@ var YouTube = (function (_Element) {
       }
 
       return is;
+    }
+  }, {
+    key: 'getId',
+    value: function getId(url) {
+      var youTubeId = undefined;
+
+      url.replace(YouTube.regex, function (m, v) {
+        return youTubeId = v;
+      });
+
+      return youTubeId;
     }
   }]);
 

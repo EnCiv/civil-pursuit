@@ -43,7 +43,8 @@
     );
 
     if ( test.driver ) {
-      test.driver.pause(3000);
+      test.driver.pause(10000);
+      test.driver.saveScreenshot('/tmp/snaphsot.png');
       test.driver.end(function () {
         process.exit(1);
       });

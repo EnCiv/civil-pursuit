@@ -17,13 +17,13 @@ class Promote extends Controller {
     this.itemController = itemController;
 
     this.store = {
-      item: null,
-      limit : 5,
-      cursor: 1,
-      left: null,
-      right: null,
-      criterias: [],
-      items: []
+      item      :   null,
+      limit     :   5,
+      cursor    :   1,
+      left      :   null,
+      right     :   null,
+      criterias :   [],
+      items     :   []
     };
 
     this.on('set', (key, value) => {
@@ -99,15 +99,15 @@ class Promote extends Controller {
   }
 
   renderLeft (left) {
-    this.renderItem('left');
+    this.renderItem('left', left);
   }
 
   renderRight (right) {
-    this.renderItem('right');
+    this.renderItem('right', right);
   }
 
-  renderItem (hand) {
-    return renderItem.apply(this, [hand]);
+  renderItem (hand, item) {
+    return renderItem.apply(this, [hand, item]);
   }
 
   render (cb) {

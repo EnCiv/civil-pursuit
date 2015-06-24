@@ -13,8 +13,8 @@ function _renderItem (item, hand) {
   this.find('item subject', hand).text(item.subject);
 
   // Description
-
-  this.find('item description', hand).text(item.description);
+  console.warn('!!!!!', hand, item);
+  this.find('item description', hand).text(hand + ' ' + item.id + ' ' + item.description);
 
   // Image
 
@@ -27,7 +27,7 @@ function _renderItem (item, hand) {
   if ( item.references && item.references.length ) {
     this.find('item references', hand)
       .attr('href', item.references[0].url)
-      .text(item.references[0].title || item.references[0].url);
+      .text((item.references[0].title || item.references[0].url));
   }
 
   // Sliders

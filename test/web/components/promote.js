@@ -75,6 +75,14 @@ class Promote extends Milk {
     set('Left video', () => find(get('View').selector + ' .left-item.image .video-container iframe'));
 
     set('Right video', () => find(get('View').selector + ' .right-item.image .video-container iframe'));
+
+    set('Left subject', () => find(get('View').selector + ' .left-item.subject h4'));
+
+    set('Right subject', () => find(get('View').selector + ' .right-item.subject h4'));
+
+    set('Left description', () => find(get('View').selector + ' .left-item.description'));
+
+    set('Right description', () => find(get('View').selector + ' .right-item.description'));
   }
 
   stories () {
@@ -110,16 +118,19 @@ class Promote extends Milk {
 
     ok(
       () => get('Side by side').attr('data-left-item')
-        .then(attr => this.leftSide(attr))
+        .then(attr => this.leftSide(attr)),
+      'Verify left item'
     );
 
     ok(
       () => get('Side by side').attr('data-right-item')
-        .then(attr => this.rightSide(attr))
+        .then(attr => this.rightSide(attr)),
+      'Verify right item'
     );
   }
 
   leftSide (id) {
+    console.log('left side', id)
     let ok      =   this.ok.bind(this);
     let get     =   this.get.bind(this);
     let set     =   this.set.bind(this);
@@ -166,9 +177,26 @@ class Promote extends Milk {
       'Left YouTube video is the same link than in DB',
       () => YouTube.isYouTube(get('Left item'))
     );
+
+    // Subject
+
+    ok(
+      () => get('Left subject').text()
+        .then(text => text.should.be.exactly(get('Left item').subject)),
+      'Left subject is same than DB'
+    );
+
+    // Description
+
+    ok(
+      () => get('Left description').text()
+        .then(text => text.should.be.exactly(get('Left item').description)),
+      'Left description is same than DB'
+    );
   }
 
   rightSide (id) {
+    console.log('right side', id)
     let ok      =   this.ok.bind(this);
     let get     =   this.get.bind(this);
     let set     =   this.set.bind(this);
@@ -214,6 +242,22 @@ class Promote extends Milk {
         }),
       'Right YouTube video is the same link than in DB',
       () => YouTube.isYouTube(get('Right item'))
+    );
+
+    // Subject
+
+    ok(
+      () => get('Right subject').text()
+        .then(text => text.should.be.exactly(get('Right item').subject)),
+      'Right subject is same than DB'
+    );
+
+    // Description
+
+    ok(
+      () => get('Right description').text()
+        .then(text => text.should.be.exactly(get('Right item').description)),
+      'Right description is same than DB'
     );
   }
 
