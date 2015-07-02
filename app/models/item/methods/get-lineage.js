@@ -29,7 +29,7 @@ function getLineage () {
         );
     };
 
-    getLineage(this.parent);
+    _getLineage(this.parent);
   });
 }
 

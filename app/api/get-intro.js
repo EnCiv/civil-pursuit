@@ -1,56 +1,56 @@
-! function () {
+'use strict';
 
-  'use strict';
+import ItemModel from 'syn/models/item';
+import TypeModel from 'syn/models/type';
 
-  
+function getIntro (event) {
+  try {
+    TypeModel
+      .findOne({ name : 'Intro' })
+      .exec()
+      .then(
+        intro => {
+          try {
+            if ( ! intro ) {
+              return this.error(new Error('Intro type not found'));
+            }
 
-  var Item        =   require('syn/models/item');
-  var Type        =   require('syn/models/type');
+            ItemModel
+              .findOne({ type : intro._id })
+              .exec()
+              .then(
+                intro => {
+                  try {
+                    if ( ! intro ) {
+                      return this.error(new Error('Intro item not found'));
+                    }
 
-  function getIntro (event) {
-    
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.emit('error', error);
-    });
-    
-    domain.run(function () {
-
-      Type
-        
-        .findOne({ name: 'Intro' })
-
-        .exec()
-        
-        .then(function (Intro) {
-
-          Item
-
-            .findOne({ type: Intro._id })
-
-            .exec()
-
-            .then(function (intro) {
-
-              if ( ! intro ) {
-                // console.
-              }
-
-              intro.toPanelItem(domain.intercept(function (intro) {
-                socket.ok(event, intro);
-              }));
-
-              
-            });
-
-        });
-    });
-
+                    intro
+                      .toPanelItem()
+                      .then(
+                        intro => {
+                          this.ok(event, intro)
+                        },
+                        this.error.bind(this)
+                      );
+                  }
+                  catch ( error ) {
+                    this.error(error);
+                  }
+                },
+                this.error.bind(this)
+              );
+          }
+          catch ( error ) {
+            this.error(error);
+          }
+        },
+        this.error.bind(this)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = getIntro;
-
-} ();
+export default getIntro;
