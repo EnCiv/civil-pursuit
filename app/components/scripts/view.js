@@ -62,7 +62,7 @@ class Scripts extends Elements {
 
       var page = this.props.page || 'home';
 
-      return '/js/page' + S(page).humanize().slugify().s + ext;
+      return '/js/pages/' + S(page).humanize().slugify().s + '/bundle' + ext;
     }});
   }
 

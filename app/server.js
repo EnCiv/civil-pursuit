@@ -216,8 +216,9 @@ class HttpServer extends EventEmitter {
   }
 
   static () {
-    this.app.use('/assets', express.static('assets'));
-    this.app.use('/css', express.static('dist/css'));
+    this.app.use('/assets/',      express.static('assets'));
+    this.app.use('/css/',         express.static('dist/css'));
+    this.app.use('/js/pages/',    express.static('dist/pages/'));
   }
 
   notFound () {
