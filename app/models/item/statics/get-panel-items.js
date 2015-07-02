@@ -1,65 +1,46 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var di = require('syn/lib/util/di/domain');
+import config from 'syn/config.json';
 
-  var Promise = require('promise');
+function getPanelItems (panel) {
+  return new Promise((ok, ko) => {
+    try {
+      let ItemModel = this;
 
-  var deps = [
-    'mongoose',
-    'async',
-    'syn/config',
-    'syn/models/item'
-  ]
+      let query = {};
 
-  function getPanelItems (panel, cb) {
-    
-    var self = this;
-
-    var promise = new Promise(function (fulfill, reject) {
-      di(reject, deps, function (domain, mongoose, async, config, Item) {
-
-        var query = {};
-
-        for ( var i in panel ) {
-          if ( i !== 'skip' ) {
-            query[i] = panel[i];
-          }
+      for ( let i in panel ) {
+        if ( i !== 'skip' ) {
+          query[i] = panel[i];
         }
+      }
 
-        if ( ! panel.item ) {
-          Item
-            .find(query)
-            .skip(panel.skip || 0)
-            .limit(panel.size || config.public['navigator batch size'])
-            .sort({ promotions: -1 })
-            .exec(domain.intercept(function (items) {
-              console.log('got items', items.length)
-              async.map(items,
-
-                function (item, cb) {
-                  item.toPanelItem(cb);
-                },
-
-                domain.intercept(function (items) {
-                  fulfill(items);
-                }));
-
-            }));
-        }
-
-      });
-    });
-
-    if ( typeof cb === 'function' ) {
-      promise.then(cb.bind(null, null), cb);
+      if ( ! panel.item ) {
+        ItemModel
+          .find(query)
+          .skip(panel.skip || 0)
+          .limit(panel.size || config.public['navigator batch size'])
+          .sort({ promotions: -1 })
+          .exec()
+          .then(
+            items => {
+              try {
+                Promise
+                  .all(items.map(item => item.toPanelItem()))
+                  .then(ok, ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }
     }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-    return promise;
-
-  }
-
-  module.exports = getPanelItems;
-
-} ();
+export default getPanelItems;
