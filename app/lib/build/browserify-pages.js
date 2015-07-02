@@ -1,10 +1,9 @@
 'use strict';
 
-import fs from 'fs';
-import path from 'path';
-import { format } from 'util';
-// import browserify from 'browserify';
-import { exec } from 'child_process';
+import fs             from 'fs';
+import path           from 'path';
+import { format }     from 'util';
+import { exec }       from 'child_process';
 
 const ROOT = path.resolve(__dirname, '../../..');
 const PAGES = path.join(ROOT, 'dist/pages');
@@ -32,6 +31,8 @@ function browserifyPages () {
           results => {
             results = results.filter(r => r);
 
+            // Browserify
+
             let promises = results.map(file => new Promise((ok, ko) => {
               console.log('browserifying', file)
               let cmd = format('browserify %s -o %s', path.join(file, 'ctrl.js'), path.join(file, 'bundle.js'));
@@ -41,15 +42,6 @@ function browserifyPages () {
                 }
                 ok();
               });
-              // browserify({
-              //   entries     :   [path.join(file, 'ctrl.js')],
-              //   debug       :   false,
-              //   fullPaths   :   false
-              // })
-              // .bundle()
-              // .pipe(path.join(file, 'bundle.js'))
-              // .on('error', ko)
-              // .on('end', ok);
             }));
 
             Promise

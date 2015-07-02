@@ -1,6 +1,6 @@
 'use strict';
 
-import {Element, Elements}    from 'cinco/dist';
+import { Element, Elements }  from 'cinco/dist';
 import config                 from 'syn/config.json';
 import S                      from 'string';
 
@@ -9,18 +9,34 @@ class Scripts extends Elements {
   constructor (props) {
     super();
     this.props = props || {};
-    this.add(
-      this.globals(),
-      this.socketIO(),
-      this.jQuery(),
-      this.autogrow(),
-      this.app(),
-      this.vex(),
-      this.socketStream(),
-      this.goalProgress(),
-      this.d3(),
-      this.c3()
-    );
+
+    if ( this.isProd() ) {
+      this.add(
+        this.globals(),
+        this.socketIO(),
+        this.jQuery(),
+        this.app(),
+        this.assets()
+      );
+    }
+    else {
+      this.add(
+        this.globals(),
+        this.socketIO(),
+        this.jQuery(),
+        this.autogrow(),
+        this.app(),
+        this.vex(),
+        this.socketStream(),
+        this.goalProgress(),
+        this.d3(),
+        this.c3()
+      );
+    }
+  }
+
+  isProd () {
+    return this.props.settings.env === 'production';
   }
 
   globals () {
@@ -36,7 +52,7 @@ class Scripts extends Elements {
   }
 
   socketStream () {
-    return new Element('script', { src: '/js/socket.io-stream.js' });
+    return new Element('script', { src: '/assets/js/socket.io-stream.js' });
   }
 
   jQuery () {
@@ -54,9 +70,7 @@ class Scripts extends Elements {
     return new Element('script', { src: () => {
       var ext = '.js';
 
-      var production = this.props.settings.env === 'production';
-
-      if ( production ) {
+      if ( this.isProd() ) {
         ext = '.min.js';
       }
 
@@ -67,7 +81,9 @@ class Scripts extends Elements {
   }
 
   vex () {
-    return new Element('script', { src : '/assets/vex-2.2.1/js/vex.combined.min.js' });
+    return new Element('script', {
+      src : '/assets/assets/vex-2.2.1/js/vex.combined.min.js'
+    });
   }
 
   goalProgress () {
@@ -87,6 +103,11 @@ class Scripts extends Elements {
         ? '/assets/bower_components/c3/c3.min.js'
         : '/assets/bower_components/c3/c3.js' });
     }
+
+
+  assets () {
+    return new Element('script', { src : '/assets/js/assets.min.js' }); 
+  }
 }
 
 export default Scripts;

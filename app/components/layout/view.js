@@ -1,16 +1,16 @@
 'use strict'
 
-import {Document, Element} from 'cinco/dist';
+import { Document, Element }  from 'cinco/dist';
 
-import config from 'syn/config';
+import config                 from 'syn/config.json';
 
-import GoogleAnalytics  from 'syn/components/google-analytics/view';
-import Styles           from 'syn/components/styles/view';
-import Scripts          from 'syn/components/scripts/view';
-import TopBar           from 'syn/components/top-bar/view';
-import Footer           from 'syn/components/footer/view';
-import Login            from 'syn/components/login/view';
-import Join             from 'syn/components/join/view';
+import GoogleAnalytics        from 'syn/components/google-analytics/view';
+import Styles                 from 'syn/components/styles/view';
+import Scripts                from 'syn/components/scripts/view';
+import TopBar                 from 'syn/components/top-bar/view';
+import Footer                 from 'syn/components/footer/view';
+import Login                  from 'syn/components/login/view';
+import Join                   from 'syn/components/join/view';
 
 class Layout extends Document {
   
