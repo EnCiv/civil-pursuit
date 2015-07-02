@@ -6,7 +6,7 @@
     socket.on('get story', function (index, cb) {
 
       var stream = require('fs').createReadStream(
-        '../../../business/stories/' + index + '.js');
+        'syn/business/stories/' + index + '.js');
       
       var story = '';
 

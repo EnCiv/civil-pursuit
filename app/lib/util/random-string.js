@@ -1,33 +1,33 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var di = require('syn/lib/util/DI');
+import { Domain } from 'domain';
+import crypto from 'crypto';
 
-  function randomString (size, cb) {
+function randomString (size) {
+  return new Promise((ok, ko) => {
+    crypto.randomBytes(48, (ex, buf) => {
+      try {
+        let token = buf.toString('base64');
 
-    di(['crypto'], function (crypto) {
-      crypto.randomBytes(48, function(ex, buf) {
-        var token = buf.toString('base64');
+        let str = '';
 
-        var str = '';
-
-        var i = 0;
+        let i = 0;
 
         while ( str.length < size ) {
           if ( token[i] !== '/' ) {
             str += token[i];
           }
 
-          i ++;
+          i++;
         }
 
-        cb(null, str);
-      });
+        ok(str);
+      }
+      catch ( error ) {
+        ko(error);
+      }
     });
+  });
+}
 
-  }
-
-  module.exports = randomString;
-
-} ();
+export default randomString;

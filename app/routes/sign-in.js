@@ -1,43 +1,39 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from 'syn/models/user';
 
-  
+function signIn (req, res, next) {
 
-  function signIn (req, res, next) {
+  try {
 
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      next(error);
-    });
-    
-    domain.run(function () {
+    let { email, password } = req.body;
 
-      var User = require('syn/models/User');
-
-      User.identify(req.body.email, req.body.password, domain.bind(function (error, user) {
-        if ( error ) {
+    UserModel
+      .identify(email, password)
+      .then(
+        user => {
+          req.user = user;
+          next();
+        },
+        error => {
           if ( /^User not found/.test(error.message) ) {
             res.statusCode = 404;
-            res.json({ 'user not found': req.body.email });
+            res.json({ 'user not found': email });
           }
           else if ( /^Wrong password/.test(error.message) ) {
             res.statusCode = 401;
-            res.json({ 'user not found': req.body.email });
+            res.json({ 'user not found': email });
           }
           else {
-            throw error;
+            next(error);
           }
         }
-        else {
-          req.user = user;
-          next();
-        }
-      }));
-    });
+      );
   }
 
-  module.exports = signIn;
+  catch ( error ) {
+    next(error);
+  }
+}
 
-} ();
+export default signIn;

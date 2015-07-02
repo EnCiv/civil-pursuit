@@ -14,7 +14,7 @@
 
       function (domain) {
 
-        require('syn/models/Item')
+        require('syn/models/item')
           .editAndGoAgain(item_id, domain.intercept(function (item) {
             socket.emit('edited item', item);
           }));

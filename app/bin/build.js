@@ -18,7 +18,7 @@
   var browserify  =   require('browserify');
   var babelify    =   require('babelify');
 
-  var paths       =   { root: path.resolve(require.resolve('syn/server'), '../../') };
+  var paths       =   { root: path.resolve(require.resolve('syn/server'), 'syn/') };
   
   paths.app           =   path.join(paths.root,   'app');
   paths.node_modules  =   path.join(paths.root,   'node_modules');
@@ -125,7 +125,7 @@
   };
 
   if ( process.argv[2] === '--help' || process.argv.length === 2 ) {
-    var md = require('path').resolve(__dirname, '../../doc/Build.md');
+    var md = require('path').resolve(__dirname, 'syn/doc/Build.md');
     return require('fs').createReadStream(md).pipe(process.stdout);
   }
 

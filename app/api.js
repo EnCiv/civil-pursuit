@@ -1,14 +1,14 @@
 'use strict';
 
-import {EventEmitter} from 'events';
-import fs from 'fs';
-import path from 'path';
-import {Domain} from 'domain';
-import config from 'syn/config.json';
-import SocketIO from 'socket.io';
-import S from 'string';
-import cookieParser from 'cookie-parser';
-import ss from 'socket.io-stream';
+import {EventEmitter}     from 'events';
+import fs                 from 'fs';
+import path               from 'path';
+import {Domain}           from 'domain';
+import config             from 'syn/config.json';
+import SocketIO           from 'socket.io';
+import S                  from 'string';
+import cookieParser       from 'cookie-parser';
+import ss                 from 'socket.io-stream';
 
 class API extends EventEmitter {
 

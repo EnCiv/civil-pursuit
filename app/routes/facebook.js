@@ -1,12 +1,14 @@
 'use strict';
 
-import passport from 'passport';
-import config from 'syn/config.json';
-import User from 'syn/models/User';
-import {Domain} from 'domain';
-import {FacebookStrategy} from 'passport-facebook';
-import util from 'util';
-import Passport from 'syn/lib/app/Passport';
+import { Domain }             from 'domain';
+import util                   from 'util';
+
+import passport               from 'passport';
+import { FacebookStrategy }   from 'passport-facebook';
+
+import config                 from 'syn/config.json';
+import User                   from 'syn/models/user';
+import Passport               from 'syn/lib/app/Passport';
 
 class Facebook extends Passport {
 

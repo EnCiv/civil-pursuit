@@ -4,7 +4,7 @@
 
   
 
-  var User = require('syn/models/User');
+  var User = require('syn/models/user');
 
   /**
    *  @function setEducation

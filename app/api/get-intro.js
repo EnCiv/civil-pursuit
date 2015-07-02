@@ -4,8 +4,8 @@
 
   
 
-  var Item        =   require('syn/models/Item');
-  var Type        =   require('syn/models/Type');
+  var Item        =   require('syn/models/item');
+  var Type        =   require('syn/models/type');
 
   function getIntro (event) {
     

@@ -1,41 +1,42 @@
-! function () {
+'use strict';
 
-  'use strict';
+import { Domain }   from 'domain';
+import UserModel    from 'syn/models/user';
 
-  function signUp (req, res, next) {
+function signUp (req, res, next) {
 
-    var domainRun = require('syn/lib/util/domain-run');
-    var User = require('syn/models/User');
+  try {
 
-    domainRun(function (domain) {
+    let { email, password } = req.body;
 
-      User
-        .create({
-          email       :   req.body.email,
-          password    :   req.body.password
-        }, domain.bind(function (error, user) {
-          
-          if ( error ) {
-            if ( /duplicate key/.test(error.message) ) {
-              res.statusCode = 401;
-              res.json({ error: 'username exists' });
-            }
-            else {
-              next(error);
-            }
-          }
+    let d = new Domain().on('error', next);
 
-          else {
-            req.user = user;
+    let cb = (error, user) => {
+      if ( error ) {
+        if ( /duplicate key/.test(error.message) ) {
+          res.statusCode = 401;
+          res.json({ error: 'username exists' });
+        }
+        else {
+          next(error);
+        }
+      }
 
-            next();
-          }
+      else {
+        req.user = user;
 
-        }));
+        next();
+      }
+    }
 
-    }, next);
+    UserModel
+      .create(email, password, d.bind(cb));
+  }
+  
+  catch ( error ) {
+    next(error);
   }
 
-  module.exports = signUp;
+}
 
-} ();
+export default signUp;

@@ -1,19 +1,29 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  module.exports = function (source, destination, done) {
-    var fs        =   require('fs');
-    var CleanCSS  =   require('clean-css');
+import fs from 'fs';
+import CleanCSS from 'clean-css';
 
-    var min = fs.createWriteStream(destination)
-      .on('finish', done);
+function minifyCSS (source, destination) {
+  return new Promise((ok, ko) => {
+    let min = fs.createWriteStream(destination)
+      .on('error', ko)
+      .on('finish', ok);
 
     fs.createReadStream(source)
+    .on('error', ko)
       .on('data', function (data) {
         min.write(new CleanCSS().minify(data.toString()).styles);
       })
       .on('end', min.end.bind(min));
-  };
+  });
+}
 
-} ();
+export default minifyCSS;
+
+if ( /minify\.js$/.test(process.argv[1]) ) {
+  minifyCSS(process.argv[2], process.argv[3])
+    .then(
+      () => console.log('minified'),
+      error => console.log(error.stack.split(/\n/))
+    );
+}

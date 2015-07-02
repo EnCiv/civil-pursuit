@@ -5,7 +5,7 @@
   function getEpcis (socket, pronto, monson, domain) {
     socket.on('get epics', function (cb) {
       
-      var epics = require('../../../business/epics.json');
+      var epics = require('syn/business/epics.json');
 
       socket.emit('got epics', epics);
 

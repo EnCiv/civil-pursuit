@@ -4,7 +4,7 @@
 
   var config      =   require('syn/config');
 
-  var User        =   require('syn/models/User');
+  var User        =   require('syn/models/user');
 
   var sendEmail   =   require('syn/lib/util/send-email');
 

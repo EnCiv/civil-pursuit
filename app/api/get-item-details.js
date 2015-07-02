@@ -11,7 +11,7 @@
     domainRun(
 
       function (domain) {
-        require('syn/models/Item')
+        require('syn/models/item')
           .getDetails(id, domain.intercept(function (details) {
             socket.ok(event, details);  
           }));

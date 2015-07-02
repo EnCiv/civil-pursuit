@@ -3,10 +3,10 @@
 import fs from 'fs';
 import path from 'path';
 import config from 'syn/config.json';
-import UserModel from 'syn/models/User';
-import TypeModel from 'syn/models/Type';
-import ItemModel from 'syn/models/Item';
-import v2 from '../../../migrations/v2';
+import UserModel from 'syn/models/user';
+import TypeModel from 'syn/models/type';
+import ItemModel from 'syn/models/item';
+import v2 from 'syn/migrations/v2';
 import mongoose from 'mongoose';
 
 class PopulateDB {
@@ -88,7 +88,7 @@ class PopulateDB {
               this.intro = { type : created };
               let intro = '';
               fs
-                .createReadStream(path.resolve(__dirname, '../../../intro.md'))
+                .createReadStream(path.resolve(__dirname, 'syn/intro.md'))
                 .on('data', data => intro += data.toString())
                 .on('end', () => {
                   ItemModel

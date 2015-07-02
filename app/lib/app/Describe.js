@@ -4,9 +4,9 @@ import {EventEmitter} from 'events';
 import {Domain} from 'domain';
 import util from 'util';
 import colors from 'colors';
-import WebDriver from 'syn/lib/test/webdriver';
-import Page from 'syn/lib/app/Page';
-import run from 'syn/lib/util/run';
+import WebDriver from 'synlib/test/webdriver';
+import Page from 'synlib/app/page';
+import run from 'synlib/util/run';
 
 class Describe extends EventEmitter {
 
@@ -44,7 +44,7 @@ class Describe extends EventEmitter {
     }
 
     let promises = models.map(model =>
-      require('syn/models/' + model.model)
+      require('synmodels/' + model.model)
         .disposable()
         .then(disposed => {
           console.log('>> new disposable', model.model, disposed);

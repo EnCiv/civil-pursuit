@@ -4,7 +4,7 @@
 
   
 
-  var User = require('syn/models/User');
+  var User = require('syn/models/user');
 
   /**
    *  @arg {ObjectID} user_id - User ID

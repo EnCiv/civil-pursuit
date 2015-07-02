@@ -65,7 +65,7 @@
 
     var script = process.argv[2];
 
-    var viewport, session;
+    var viewport, session, vendor;
 
     for ( var i = 2; i < process.argv.length; i ++ ) {
       var splits = process.argv[i].split('=');
@@ -77,11 +77,15 @@
       if ( splits[0] === 'session' ) {
         session = splits[1];
       }
+
+      if ( splits[0] === 'vendor' ) {
+        vendor = splits[1];
+      }
     }
 
-    var Test = require('../../' + script);
+    var Test = require('syn/' + script);
 
-    test = new Test({ viewport : viewport, session : session });
+    test = new Test({ viewport : viewport, session : session, vendor : vendor });
 
     var done = false;
 

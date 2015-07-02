@@ -4,7 +4,7 @@
 
   
 
-  var User        =   require('syn/models/User');
+  var User        =   require('syn/models/user');
 
   function resetPassword (key, token, password) {
     var socket = this;

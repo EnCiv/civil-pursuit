@@ -70,14 +70,14 @@ class Panel extends Milk {
 
       this.wait(1, null, when => get('Cookie'));
 
-      // this.import(CreatorTest,
-      //   () => ({ panel : this.get('Panel'), viewport : this.props.viewport }),
-      //   null,
-      //   when => get('Cookie'));
+      this.import(CreatorTest,
+        () => ({ panel : this.get('Panel'), viewport : this.props.viewport }),
+        null,
+        when => get('Cookie'));
 
-      // this
-      //   .ok(() => get('Toggle').click(), null, when => get('Cookie'))
-      //   .wait(1, null, when => get('Cookie'));
+      this
+        .ok(() => get('Toggle').click(), null, when => get('Cookie'))
+        .wait(2, null, when => get('Cookie'));
 
       this.import(CreatorTest,
         () => ({ panel : this.get('Panel'), upload : true, viewport : this.props.viewport }),

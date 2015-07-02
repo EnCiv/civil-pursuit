@@ -1,10 +1,18 @@
 'use strict';
 
-import passport from 'passport';
-import config from 'syn/config.json';
-import User from 'syn/models/User';
-import {Domain} from 'domain';
-import util from 'util';
+/** Passport Helper
+ *  
+ *  @class              Passport
+ *  @description        Helper for 3rd party signon with passport
+*/
+
+import {Domain}         from 'domain';
+import util             from 'util';
+
+import passport         from 'passport';
+
+import config           from 'syn/config.json';
+import UserModel        from 'syn/models/user';
 
 class Passport {
 
@@ -52,7 +60,7 @@ class Passport {
     d.run(() => {
       this.profile = profile;
       this.email = this.profile.id + '@facebook.com';
-      User.findOne({ email: email }, this.associate.bind(this, req, res, next));
+      UserModel.findOne({ email: email }, this.associate.bind(this, req, res, next));
     });
   }
 
@@ -60,7 +68,7 @@ class Passport {
     let d = new Domain().on('error', error => this.app.emit('error', error));
 
     d.run(() => {
-      User.create(
+      UserModel.create(
         { email: this.email, password: this.profile.id + Date.now() },
         d.bind((error, user) => {
           if ( error ) {

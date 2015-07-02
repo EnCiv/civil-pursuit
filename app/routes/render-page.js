@@ -1,35 +1,33 @@
 'use strict';
 
-import S from 'string';
-import getProps from 'syn/lib/app/props';
-import domainRun from 'syn/lib/util/domain-run';
+import S              from 'string';
+import getProps       from 'syn/lib/app/props';
 
 var cache = {}
 
 function renderPage (req, res, next) {
 
-  domainRun(
-    d => {
-      let props       =   getProps(this, req, res);
-      let pageName    =   S(props.page).capitalize().camelize().s;
+  try {
+    let props       =   getProps(this, req, res);
 
-      // if ( pageName in cache ) {
-      //   return res.send(cache[pageName]);
-      // }
+    let pageName    =   S(props.page).slugify().s;
 
-      let Page        =   require('syn/pages/' + pageName + '/View');
-      let page        =   new Page(props);
+    let Page        =   require('syn/pages/' + pageName + '/view');
+    
+    let page        =   new Page(props);
 
-      cache[pageName] = page.render();
+    cache[pageName] = page.render();
 
-      res.send(cache[pageName]);
+    res.send(cache[pageName]);
 
-      if ( pageName === 'Component' ) {
-        delete cache[pageName];
-      }
-    },
-    error => next
-  );
+    if ( pageName === 'Component' ) {
+      delete cache[pageName];
+    }
+  }
+
+  catch ( error ) {
+    next(error);
+  }
 
 }
 

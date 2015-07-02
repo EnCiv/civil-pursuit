@@ -1,25 +1,23 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
+import { Domain } from 'domain';
 
-  var di = require('syn/lib/util/di/domain');
+function encrypt (str) {
+  return new Promise((ok, ko) => {
+    try {
+      let d = new Domain().on('error', ko);
 
-  function encrypt (str, cb) {
-
-    di(cb, ['bcrypt'], function (domain, bcrypt) {
-
-      bcrypt.genSalt(10, domain.intercept(function (salt) {
-        bcrypt.hash(str, salt, domain.intercept(function (hash) {
-          cb(null, hash);
+      bcrypt.genSalt(10, d.intercept(salt => {
+        bcrypt.hash(str, salt, d.intercept(hash => {
+          ok(hash);
         }));
       }));
+    }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-    });
-
-  }
-
-  module.exports = encrypt;
-
-} ();
+export default encrypt;

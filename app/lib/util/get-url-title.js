@@ -1,9 +1,9 @@
 'use strict';
 
-import S from 'string';
-import request from 'request';
-import config from 'syn/config.json';
-import run from 'syn/lib/util/run';
+import S              from 'string';
+import request        from 'request';
+import config         from 'syn/config.json';
+import run            from './run';
 
 function getUrlTitle (url) {
   return new Promise((ok, ko) => {

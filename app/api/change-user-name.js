@@ -18,7 +18,7 @@
 
       function (domain) {
 
-        require('syn/models/User').update({ _id: user_id }, name,
+        require('syn/models/user').update({ _id: user_id }, name,
           domain.intercept(function (user) {
             socket.emit('user name changed', user);  
           }));

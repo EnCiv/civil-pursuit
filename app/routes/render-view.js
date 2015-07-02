@@ -13,7 +13,7 @@ function renderView (req, res, next) {
     return res.send(cache[viewName]);
   }
 
-  let View        =   require('syn/components/' + viewName + '/View');
+  let View        =   require('syn/components/' + viewName + '/view');
   let view        =   new View(props);
 
   cache[viewName] = view.render();

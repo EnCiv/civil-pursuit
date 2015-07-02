@@ -2,9 +2,9 @@
 
 import {EventEmitter} from 'events';
 import WebDriver from 'webdriverio';
-import wrap from 'syn/lib/util/run';
+import wrap from 'synlib/util/run';
 import should from 'should';
-import UserModel from 'syn/models/User';
+import UserModel from 'synmodels/User';
 
 function fnToStr (fn) {
   let bits = fn.toString().split(/\{/);
@@ -694,7 +694,7 @@ class Milk extends EventEmitter {
 
       let options = {
         desiredCapabilities : {
-          browserName: 'firefox'
+          browserName: this.options.vendor || 'firefox'
         }
       };
 

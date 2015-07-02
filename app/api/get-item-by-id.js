@@ -15,7 +15,7 @@
       },
 
       function (domain) {
-        require('syn/models/Item')
+        require('syn/models/item')
           .findById(id)
           .lean()
           .exec(domain.intercept(function (item) {

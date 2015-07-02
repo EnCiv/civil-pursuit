@@ -1,21 +1,20 @@
 'use strict';
 
-import domainRun from 'syn/lib/util/domain-run';
-import Item from 'syn/models/Item';
+import domainRun        from 'syn/lib/util/domain-run';
+import Item             from 'syn/models/item';
 
 function ItemRoute (req, res, next) {
 
-  domainRun(
-    d => {
-      
-      this.emit('message', 'Item Page', {
-        'looking in DB for item with short id' : req.params.item_short_id
-      });
+  try {
+    this.emit('message', 'Item Page', {
+      'looking in DB for item with short id' : req.params.item_short_id
+    });
 
-      Item
-        .getItem(req.params.item_short_id)
-        .then(item => {
+    Item
+      .getItem(req.params.item_short_id)
+      .then(item => {
 
+        try {
           if ( ! item ) {
             this.emit('message', 'Item Page', {
               'item not found in DB': req.params.item_short_id
@@ -46,12 +45,17 @@ function ItemRoute (req, res, next) {
           });
 
           next();
+        }
+        catch ( error ) {
+          next(error);
+        }
 
-        }, next);
-    },
+      }, next);
+  }
 
-    error => next
-  );
+  catch ( error ) {
+    next(error);
+  }
 
 }
 

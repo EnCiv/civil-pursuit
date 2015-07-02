@@ -15,7 +15,7 @@ class HomePage extends Milk {
   constructor (props) {
     props = props || {};
 
-    let options = { viewport : props.viewport };
+    let options = { viewport : props.viewport, vendor : props.vendor };
 
     super('Landing Page', options);
 

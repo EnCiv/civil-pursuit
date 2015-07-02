@@ -1,7 +1,7 @@
 'use strict';
 
 import run from 'syn/lib/util/run';
-import ItemModel from 'syn/models/Item';
+import ItemModel from 'syn/models/item';
 
 function createItem (event, item) {
   run(

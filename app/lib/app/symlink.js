@@ -1,40 +1,48 @@
-! function () {
-  
-  'use strict';
+'use striict';
 
-  function symLink (done) {
+import path from 'path';
+import fs from 'fs';
 
-    var domain = require('domain').create();
-    
-    domain
-      
-      .on('error', done)
-    
-      .run(function () {
-        var path = require('path');
+const ROOT      =   path.resolve(__dirname, '../../..');
+const APP       =   path.join(ROOT, 'app');
+const DIST      =   path.join(ROOT, 'dist');
+const PACKAGE   =   path.join(ROOT, 'package.json');
+const CONFIG    =   path.join(ROOT, 'config.json');
+const TARGET    =   path.join(ROOT, 'node_modules/syn');
 
-        var root = path.resolve(__dirname, '../../../');
-
-        var fs = require('fs');
-
-        fs.readlink(path.join(root, 'node_modules/syn'),
-          domain.bind(function (error) {
-            if ( ! error ) {
-              return done();
-            }
-
-            fs.symlink(path.join(root, 'app'), path.join(root, 'node_modules/syn'), domain.intercept(function () {
-
-              fs.symlink(path.join(root, 'package.json'), path.join(root, 'app/package.json'), done);
-
-              done();
-
-            }));
-
-          }));
-      });
+class SymLink {
+  static create () {
+    return new Promise((ok, ko) => {
+      SymLink
+        .link(DIST, TARGET)
+        .then(
+          () => {
+            SymLink
+              .link(PACKAGE, path.join(TARGET, 'package.json'))
+              .then(
+                () => {
+                  SymLink
+                    .link(CONFIG, path.join(TARGET, 'config.json'))
+                    .then(ok, ko);
+                },
+                ko
+              );
+          },
+          ko
+        );
+    });
   }
 
-  module.exports = symLink;
+  static link (src, dest) {
+    return new Promise((ok, ko) => {
+      fs.symlink(src, dest, error => {
+        // if ( error ) {
+        //   return ko(error);
+        // }
+        ok();
+      });
+    });
+  }
+}
 
-} ();
+export default SymLink.create;

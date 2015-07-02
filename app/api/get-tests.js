@@ -24,7 +24,7 @@
 
       console.log('<<"get items"', panel, item);
 
-      require('syn/models/Item')
+      require('syn/models/item')
         .find   (query)
         .skip   (panel.skip)
         .limit  (panel.size)

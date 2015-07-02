@@ -15,7 +15,7 @@
       },
 
       function (domain) {
-        require('syn/models/User')
+        require('syn/models/user')
           .saveImage(user_id, image, domain.intercept(function (user) {
             socket.emit('saved user image', user);
           }));

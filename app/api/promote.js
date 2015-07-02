@@ -13,7 +13,7 @@
     });
     
     domain.run(function () {
-      require('syn/models/Item')
+      require('syn/models/item')
         .incrementPromotion(item_id, domain.intercept(function (item) {
           socket.ok(event, item);  
         }));

@@ -1,40 +1,39 @@
 'use strict'
 
-import path from 'path';
-import fs from 'fs';
-import http from 'http';
-import {EventEmitter} from 'events';
-import express from 'express';
-import session from 'express-session';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import passport from 'passport';
-import printIt from 'syn/lib/util/express-pretty';
-import TwitterPassport from 'syn/routes/twitter';
+import path             from 'path';
+import fs               from 'fs';
+import http             from 'http';
+import { EventEmitter } from 'events';
+import express          from 'express';
+import session          from 'express-session';
+import bodyParser       from 'body-parser';
+import cookieParser     from 'cookie-parser';
+import passport         from 'passport';
+import printIt          from 'syn/lib/util/express-pretty';
+import TwitterPassport  from 'syn/routes/twitter';
 import FacebookPassport from 'syn/routes/facebook';
-import initPipeLine from 'syn/routes/init-pipeline';
-import renderPage from 'syn/routes/render-page';
-import itemRoute from 'syn/routes/item';
-import signInRoute from 'syn/routes/sign-in';
-import signUpRoute from 'syn/routes/sign-up';
-import signOutRoute from 'syn/routes/sign-out';
-import User from 'syn/models/User';
-import config from 'syn/config.json';
-import getTime from 'syn/lib/util/print-time';
-import API from 'syn/api';
-import Log from 'syn/lib/app/Log';
-
-var log = new Log('server');
+import initPipeLine     from 'syn/routes/init-pipeline';
+import renderPage       from 'syn/routes/render-page';
+import itemRoute        from 'syn/routes/item';
+import signInRoute      from 'syn/routes/sign-in';
+import signUpRoute      from 'syn/routes/sign-up';
+import signOutRoute     from 'syn/routes/sign-out';
+import User             from 'syn/models/user';
+import config           from 'syn/config.json';
+import getTime          from 'syn/lib/util/print-time';
+import API              from 'syn/api';
 
 class HttpServer extends EventEmitter {
 
   constructor () {
     super();
 
+    console.log('new server')
+
     this
 
       .on('message', function (message, info) {
-        log.info(message, info);
+        console.log(message, info);
       })
 
       .on('request', printIt)
@@ -217,7 +216,8 @@ class HttpServer extends EventEmitter {
   }
 
   static () {
-    this.app.use(express.static('app/dist'));
+    this.app.use('/assets', express.static('assets'));
+    this.app.use('/css', express.static('dist/css'));
   }
 
   notFound () {

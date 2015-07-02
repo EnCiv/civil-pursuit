@@ -1,9 +1,0 @@
-'use strict';
-
-import View from 'syn/components/YouTube/View';
-
-function YouTube (url) {
-  let yt = new View({ url: url, settings: { env: synapp.env } });
-}
-
-export default YouTube;

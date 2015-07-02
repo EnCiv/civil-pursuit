@@ -1,19 +1,13 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  
+import config from 'syn/config.json';
 
-  var config = require('syn/config.json');
+function setCookieUser (req, res, next) {
+  res.cookie('synuser',
+    { email: req.user.email, id: req.user._id },
+    config.cookie);
 
-  function setCookieUser (req, res, next) {
-    res.cookie('synuser',
-      { email: req.user.email, id: req.user._id },
-      config.cookie);
+  next();
+}
 
-    next();
-  }
-
-  module.exports = setCookieUser;
-
-} ();
+export default setCookieUser;

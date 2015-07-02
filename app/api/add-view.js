@@ -3,7 +3,7 @@
   'use strict';
 
   
-  var Item    =   require('syn/models/Item');
+  var Item    =   require('syn/models/item');
 
   /**
    *  @function addView

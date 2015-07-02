@@ -15,7 +15,7 @@
       },
 
       function (domain) {
-        require('syn/models/User')
+        require('syn/models/user')
           .identify(credentials.email, credentials.password,
             domain.intercept(function (user) {
               

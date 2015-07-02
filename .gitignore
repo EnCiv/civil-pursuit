@@ -1,9 +1,5 @@
 /node_modules/*
-/app/dist/bower_components/*
-/*.csv
 /.env.sh
 /.start.sh
-/app/web/sitemap.xml
-/app/web/sitemap-*.xml
-/app/package.json
-/data/*
+/dist/*
+/.vagrant/*

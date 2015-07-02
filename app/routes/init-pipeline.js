@@ -1,32 +1,28 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function initPipeLine (req, res, next) {
+import { Domain } from 'domain';
 
-    var domainRun = require('syn/lib/util/domain-run');
+function initPipeLine (req, res, next) {
 
-    var server = this;
+  try {
+    req.user = req.cookies.synuser;
 
-    domainRun(initPipeLine_, next);
-
-    function initPipeLine_ (domain) {
-      req.user = req.cookies.synuser;
-
-      if ( typeof req.user === 'string' ) {
-        req.user = JSON.parse(req.user);
-      }
-
-      server.emit('request', req);
-
-      // Forcing item
-      require('syn/models/Item');
-
-      next();
+    if ( typeof req.user === 'string' ) {
+      req.user = JSON.parse(req.user);
     }
 
+    this.emit('request', req);
+
+    // Forcing item
+    require('syn/models/item');
+
+    next();
   }
 
-  module.exports = initPipeLine;
+  catch ( error ) {
+    next(error);
+  }
 
-} ();
+}
+
+export default initPipeLine;

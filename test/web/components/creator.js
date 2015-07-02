@@ -63,8 +63,6 @@ class Creator extends Milk {
 
     this.set('New item', () => find(get('Panel').selector + ' > .panel-body > .items .item.new'));
 
-    this.set('Title', () => getUrlTitle('http://example.com'));
-
     this.set('Input file', () => find(get('Creator').selector + ' input[type="file"][name="image"]'));
 
     this.set('Choose file', () => find(get('Creator').selector + ' button.upload-image-button'));
@@ -137,31 +135,7 @@ class Creator extends Milk {
 
     // Reference
 
-    this.ok(() => get('Reference').val('http://example.com'),  'Entering URL');
-
-    this.ok(() => get('Description').click(), 'Bluring URL field');
-
-    this.wait(1);
-
-    this.ok(() => get('Reference board').is(':visible'), 'Reference board is visible');
-
-    this.ok(() => get('Reference board').text()
-      .then(text =>  {
-        try {
-          text.should.be.exactly('Looking up title')
-        } catch (error) {
-          text.should.be.exactly(get('Title'))
-        }
-      }),
-      'Reference board is showing loading message or response'
-    );
-
-    this.wait(5);
-
-    this.ok(() => get('Reference board').text()
-      .then(text =>  text.should.be.exactly(get('Title')) ),
-      'Reference board shows title'
-    );
+    this.references();
 
     // Submit with all required fields
 
@@ -186,7 +160,7 @@ class Creator extends Milk {
         .then(
           id => {
             if ( Array.isArray(id) ) {
-              id = id.pop();
+              id = id[0];
             }
             ItemModel
               .findById(id.split('-')[1])
@@ -214,6 +188,48 @@ class Creator extends Milk {
 
     this.import(ItemTest, () => ({ item : Item, promote : true, viewport : this.props.viewport }));
 
+  }
+
+  references (i) {
+
+    i = i || 0;
+
+    let urls = [
+      'http://example.com',
+      'http://synaccord.com',
+      'http://isup.me/http://synaccord.com'
+    ];
+
+    if ( i < urls.length ) {
+      this.set('Title', () => getUrlTitle(urls[i]));
+
+      this.ok(() => this.get('Reference').val(urls[i]),
+        'Entering URL');
+
+      this.ok(() => this.get('Description').click(),
+        'Bluring URL field');
+
+      this.ok(() => this.get('Reference board').is(':visible'),
+        'Reference board is visible');
+
+      this.ok(() => this.get('Reference board').text()
+        .then(text =>  {
+          try {
+            text.should.be.exactly('Looking up title');
+          } catch (error) {
+            text.should.be.exactly(this.get('Title'));
+          }
+        }),
+        'Reference board is showing loading message or response'
+      );
+
+      this.wait(5);
+
+      this.ok(() => this.get('Reference board').text()
+        .then(text =>  text.should.be.exactly(this.get('Title')) ),
+        'Reference board shows title'
+      );
+    }
   }
 
 }

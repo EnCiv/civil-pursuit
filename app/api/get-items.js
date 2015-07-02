@@ -1,6 +1,6 @@
 'use strict';
 
-import ItemModel from 'syn/models/Item';
+import ItemModel from 'syn/models/item';
 import run from 'syn/lib/util/run';
 
 function getItems (event, panel, item) {
