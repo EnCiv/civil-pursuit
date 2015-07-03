@@ -11,7 +11,7 @@ import MediaController  from './controllers/media';
 import toggleArrow      from './controllers/toggle-arrow';
 import togglePromote    from './controllers/toggle-promote';
 
-class Item extends Controller {
+class ItemCtrl extends Controller {
 
   constructor (props) {
     super();
@@ -20,22 +20,29 @@ class Item extends Controller {
 
     if ( this.props.item ) {
       this.set('item', this.props.item);
-      this.socket.on('item changed ' + this.props.item._id, item => {
-        this.set('item', item);
-        this.render(() => {});
-      });
     }
 
     this.componentName = 'Item';
     this.view = View;
   }
 
+  listen () {
+    let self = this;
+
+    this.socket.once(
+      'item image uploaded ' + this.props.item._id,
+      item => {
+        this.set('image', item.image);
+      });
+  }
+
   media () {
     return MediaController.apply(this);
   }
 
-  makeRelated () {
-    var button = $('<button class="shy counter"><span class="related-number"></span> <i class="fa"></i></button>');
+  makeRelated (cls) {
+    var button = $('<button class="shy counter"><span class="' + cls +
+      '-number"></span> <i class="fa"></i></button>');
 
     return button;
   }
@@ -90,6 +97,11 @@ class Item extends Controller {
 
   render (cb) {
 
+    if ( ! this.rendered ) {
+      setTimeout(() => this.listen());
+      this.rendered = true;
+    }
+
     let item = this.get('item');
 
     let self = this;
@@ -138,6 +150,14 @@ class Item extends Controller {
       this.find('media').empty().append(this.media());
     }
 
+    this.on('set', (key, value) => {
+      if ( key === 'image' ) {
+        item.image = value;
+        this.set('item', item);
+        this.find('media').empty().append(this.media());
+      }
+    });
+
     // READ MORE
 
     this.find('media').find('img, iframe').on('load', () => {
@@ -172,10 +192,10 @@ class Item extends Controller {
 
     this.find('promotions %').text(popularity + '%');
 
-    // CHILDREN
+    // CHILDREN / RELATED
 
     if ( ! this.find('buttons').find('.related-number').length ) {
-      let buttonChildren = this.makeRelated();
+      let buttonChildren = this.makeRelated('related');
       buttonChildren.addClass('children-count');
       buttonChildren.find('i').addClass('fa-fire');
       buttonChildren.find('.related-number').text(item.children);
@@ -185,9 +205,9 @@ class Item extends Controller {
     // HARMONY
 
     if ( 'harmony' in item ) {
-      var buttonHarmony = this.makeRelated();
+      var buttonHarmony = this.makeRelated('harmony');
       buttonHarmony.find('i').addClass('fa-music');
-      buttonHarmony.find('.related-number').text(item.harmony);
+      buttonHarmony.find('.harmony-number').text(item.harmony);
       this.find('related').append(buttonHarmony);
     }
 
@@ -285,4 +305,4 @@ class Item extends Controller {
 
 }
 
-export default Item;
+export default ItemCtrl;

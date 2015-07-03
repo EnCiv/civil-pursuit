@@ -5,7 +5,7 @@ import getUrlTitle from 'syn/lib/util/get-url-title';
 
 function preSaveItem (next, done) {
   try {
-    let ItemModel = this.constuctor;
+    let ItemModel = this.constructor;
 
     let d = new Domain().on('error', done);
 
@@ -15,11 +15,17 @@ function preSaveItem (next, done) {
       fetchUrlTitle(item)
         .then(
           title => {
-            if ( title ) {
-              item.references[0].title = title;
-            }
+            try {
 
-            done();
+              if ( title ) {
+                item.references[0].title = title;
+              }
+
+              done();
+            }
+            catch ( error ) {
+              done(error);
+            }
           }
         );
     };
@@ -29,8 +35,13 @@ function preSaveItem (next, done) {
         .generateShortId()
         .then(
           id => {
-            this.id = id;
-            packageItem(this);
+            try {
+              this.id = id;
+              packageItem(this);
+            }
+            catch ( error ) {
+              done(error);
+            }
           },
           done
         );
@@ -46,26 +57,32 @@ function preSaveItem (next, done) {
 
 function fetchUrlTitle (item) {
   return new Promise((ok, ko) => {
-    let lookForTitle;
+    try {
 
-    let { references } = item;
-    let [ ref ] = references;
+      let lookForTitle;
 
-    if ( ref ) {
-      let { url, title } = ref;
+      let { references } = item;
+      let [ ref ] = references;
 
-      if ( ! title ) {
-        lookForTitle = true;
+      if ( ref ) {
+        let { url, title } = ref;
+
+        if ( ! title ) {
+          lookForTitle = true;
+        }
+      }
+
+      if ( lookForTitle ) {
+        getUrlTitle(url)
+          .then(ok, ko);
+      }
+
+      else {
+        ok();
       }
     }
-
-    if ( lookForTitle ) {
-      getUrlTitle(url)
-        .then(ok, ko);
-    }
-
-    else {
-      ok();
+    catch ( error ) {
+      ko(error);
     }
   });
 }

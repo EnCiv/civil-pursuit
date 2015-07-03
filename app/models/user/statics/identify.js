@@ -2,9 +2,11 @@
 
 function identify (email,  password) {
   return new Promise((ok, ko) => {
+    console.log('identifying', email, password)
     try {
       this
         .findOne({ email : email })
+        .exec()
         .then(
           user => {
             try {
@@ -16,10 +18,15 @@ function identify (email,  password) {
                 .isPasswordValid(password, user.password)
                 .then(
                   isValid => {
-                    if ( ! isValid ) {
-                      throw new Error('Wrong password');
+                    try {
+                      if ( ! isValid ) {
+                        throw new Error('Wrong password');
+                      }
+                      ok(user);
                     }
-                    ok(user);
+                    catch ( error ) {
+                      ko(error);
+                    }
                   },
                   ko
                 );

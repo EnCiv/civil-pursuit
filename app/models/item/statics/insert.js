@@ -5,10 +5,12 @@ import cloudinary from 'syn/lib/util/cloudinary';
 import config from 'syn/config.json';
 
 function insertItem (candidate, socket) {
-  console.log('insert item', candidate, socket, this.create)
+  console.log('--insert item', candidate, "\n\n")
 
   return new Promise((ok, ko) => {
     let { image } = candidate;
+
+    console.log('--image', image, "\n\n")
 
     if ( candidate.image ) {
       delete candidate.image;
@@ -19,27 +21,30 @@ function insertItem (candidate, socket) {
         return ko(error);
       }
 
-      console.log('created', item)
+      console.log('--created', item, "\n\n")
       
       ok(item);
 
       if ( image ) {
+        console.log('--uploading image to cloudinary', item, "\n\n")
         cloudinary.uploader.upload(
           
           path.join(config.tmp, image),
           
           result => {
+            console.log('--got response from cloudinary', result, "\n\n")
+
             item.image = result.url;
             item.save(error => {
               if ( error ) {
                 return ko(error);
               }
-              item.toPanelItem((error, item) => {
-                if ( error ) {
-                  return ko(error);
-                }
-                socket.emit('item changed ' + item._id, item);
-              });
+              item
+                .toPanelItem()
+                .then(
+                  item => socket.emit('item image uploaded ' + item._id, item),
+                  error => socket.error(error)
+                );
             });
           },
 

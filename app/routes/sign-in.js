@@ -8,6 +8,8 @@ function signIn (req, res, next) {
 
     let { email, password } = req.body;
 
+    console.log('signing in', email, password)
+
     UserModel
       .identify(email, password)
       .then(
@@ -16,6 +18,8 @@ function signIn (req, res, next) {
           next();
         },
         error => {
+          console.log('error', error)
+
           if ( /^User not found/.test(error.message) ) {
             res.statusCode = 404;
             res.json({ 'user not found': email });

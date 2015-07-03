@@ -1,36 +1,23 @@
-! function () {
+'use strict';
 
-  'use strict';
+import FeedbackModel from 'syn/models/feedback';
 
-  function insertFeedback (event, feedback) {
+function insertFeedback (event, feedback) {
+  try {
+    if ( ! ( 'user' in feedback ) ) {
+      feedback.user = this.synuser.id;
+    }
 
-    var socket = this;
-
-    var Feedback = require('syn/models/Feedback');
-
-    var domainRun = require('syn/lib/util/domain-run');
-
-    domainRun(
-
-      function (domain) {
-
-        if ( ! ('user' in feedback) ) {
-          feedback.user = socket.synuser.id;
-        }
-
-        Feedback
-          .create(feedback, domain.intercept(function (inserted) {
-            socket.ok(event, inserted);  
-          }));
-      },
-
-      function (error) {
-        socket.emit('error', error);
-      }
-
-    );
+    FeedbackModel
+      .create(feedback)
+      .then(
+        inserted => this.ok(event, inserted),
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = insertFeedback;
-
-} ();
+export default insertFeedback;

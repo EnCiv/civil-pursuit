@@ -58,6 +58,7 @@ function save () {
 
             this.publish('create item', this.packaged)
               .subscribe((pubsub, item) => {
+                console.log('item created', item)
                 pubsub.unsubscribe();
                 this.created(item);
               });

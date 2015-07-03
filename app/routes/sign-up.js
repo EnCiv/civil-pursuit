@@ -30,7 +30,7 @@ function signUp (req, res, next) {
     }
 
     UserModel
-      .create(email, password, d.bind(cb));
+      .create({ email, password }, d.bind(cb));
   }
   
   catch ( error ) {

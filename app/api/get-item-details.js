@@ -1,30 +1,19 @@
-! function () {
+'use strict';
 
-  'use strict';
+import ItemModel from 'syn/models/item';
 
-  function getItemDetails (event, id) {
-
-    var socket = this;
-
-    var domainRun = require('syn/lib/util/domain-run');
-
-    domainRun(
-
-      function (domain) {
-        require('syn/models/item')
-          .getDetails(id, domain.intercept(function (details) {
-            socket.ok(event, details);  
-          }));
-      },
-
-      function (error) {
-        socket.app.arte.emit('error', error);
-      }
-
-    );
-    
+function getItemDetails (event, itemId) {
+  try {
+    ItemModel
+      .getDetails(itemId)
+      .then(
+        details => this.ok(event, details),
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = getItemDetails;
-
-} ();
+export default getItemDetails;

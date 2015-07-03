@@ -107,7 +107,7 @@ function renderItem (hand) {
     return;
   }
 
-  this.socket.on('item changed ' + side._id.toString(), item => {
+  this.socket.on('item image uploaded ' + side._id.toString(), item => {
     _renderItem.apply(this, [item, hand]);
   });
 
@@ -139,7 +139,7 @@ function renderItem (hand) {
 
           self.set('cursor', self.get('cursor') + 1);
 
-          self.publish('promote', promote.get(left ? 'left' : 'right')._id)
+          self.publish('promote', self.get(left ? 'left' : 'right')._id)
             .subscribe(pubsub => pubsub.unsubscribe());
 
           self
@@ -155,7 +155,7 @@ function renderItem (hand) {
                 .then(function () {
                   self.get(opposite, self.get('items')[self.get('cursor')]);
 
-                  promote
+                  self
                     .find('side by side')
                     .find('.' + opposite + '-item')
                     .animate({
@@ -169,7 +169,7 @@ function renderItem (hand) {
 
         else {
 
-          promote.finish();
+          self.finish();
 
         }
 

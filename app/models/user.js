@@ -1,10 +1,11 @@
 'use strict';
 
-import { default as mongoose, Schema }     from  'mongoose';
-import userSchema     from  './user/schema';
-import preSave        from  './user/pre/save';
-import toCamelCase    from  'syn/lib/util/to-camel-case';
-import toSlug         from  'syn/lib/util/to-slug';
+import { default as mongoose, Schema }  from  'mongoose';
+import findRandom                       from  'mongoose-simple-random';
+import userSchema                       from  './user/schema';
+import preSave                          from  './user/pre/save';
+import toCamelCase                      from  'syn/lib/util/to-camel-case';
+import toSlug                           from  'syn/lib/util/to-slug';
 
 let schema = new Schema(userSchema);
 
@@ -44,5 +45,9 @@ for ( let virtual of virtuals ) {
     .virtual(toCamelCase(virtual))
     .get(require(_virtual));
 }
+
+schema
+  .plugin(findRandom)
+  .pre('save', preSave);
 
 export default mongoose.model('User', schema);

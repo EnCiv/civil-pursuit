@@ -1,51 +1,60 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function getItemDetails (id, cb) {
-    var self = this;
+import VoteModel          from 'syn/models/vote';
+import FeedbackModel      from 'syn/models/feedback';
+import CriteriaModel      from 'syn/models/criteria';
 
-    var nextTick = require('syn/lib/domain/next-tick');
-
-    nextTick(cb, function getItemDetailsDomain (domain) {
-
-      require('async').parallel({
-          votes: function getVotes (then) {
-            require('syn/models/Vote').getAccumulation(id, then);
-          },
-
-          feedback: function getFeedback (then) {
-            require('syn/models/Feedback').find({ item: id }, then);
+function getItemDetails (itemId) {
+  return new Promise((ok, ko) => {
+    Promise
+      .all([
+        VoteModel.getAccumulation(itemId),
+        FeedbackModel.find({ item : itemId }).exec()
+      ])
+      .then(
+        results => {
+          try {
+            let [ votes, feedback ] = results;
+            this
+              .findById(itemId)
+              .exec()
+              .then(
+                item => {
+                  try {
+                    CriteriaModel
+                      .find({ type: item.type })
+                      .exec()
+                      .then(
+                        criterias => {
+                          try {
+                            ok({
+                              item      : item,
+                              votes     : votes,
+                              feedbacks : feedback,
+                              criterias : criterias
+                            });
+                          }
+                          catch ( error ) {
+                            ko(error);
+                          }
+                        },
+                        ko
+                      );
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                },
+                ko
+              );
+          }
+          catch ( error ) {
+            ko(error);
           }
         },
+        ko
+      );
+  });
+}
 
-        domain.intercept(function afterParallels (results) {
-
-          self.findById(id, domain.intercept(function onItem (item) {
-
-            /** Get type criterias */
-
-            require('syn/models/Criteria')
-              
-              .find({ type: item.type }, domain.intercept(function onCriterias (criterias) {
-
-                /** Return details */
-
-                cb(null, {
-                  item      : item,
-                  votes     : results.votes,
-                  feedbacks : results.feedback,
-                  criterias : criterias
-                });
-
-              }));
-          }));
-        }));
-
-    });
-
-  }
-
-  module.exports = getItemDetails;
-
-} ();
+export default getItemDetails;

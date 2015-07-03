@@ -5,6 +5,14 @@ import TypeModel from 'syn/models/type';
 
 function getIntro (event) {
   try {
+    if ( typeof this.error !== 'function' ) {
+      throw new Error('Missing error catcher');
+    }
+
+    if ( typeof this.ok !== 'function' ) {
+      throw new Error('Missing ok returner');
+    }
+
     TypeModel
       .findOne({ name : 'Intro' })
       .exec()
@@ -14,7 +22,6 @@ function getIntro (event) {
             if ( ! intro ) {
               return this.error(new Error('Intro type not found'));
             }
-
             ItemModel
               .findOne({ type : intro._id })
               .exec()
@@ -24,12 +31,16 @@ function getIntro (event) {
                     if ( ! intro ) {
                       return this.error(new Error('Intro item not found'));
                     }
-
                     intro
                       .toPanelItem()
                       .then(
                         intro => {
-                          this.ok(event, intro)
+                          try {
+                            this.ok(event, intro);
+                          }
+                          catch ( error ) {
+                            this.error.bind(this);
+                          }
                         },
                         this.error.bind(this)
                       );

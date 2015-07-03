@@ -7,9 +7,15 @@ import calcHarmony        from 'syn/lib/get-harmony';
 import TypeModel          from 'syn/models/type';
 import UserModel          from 'syn/models/user';
 
-function toPanelItem () {
+function toPanelItem (cb) {
   return new Promise((ok, ko) => {
     try {
+
+      if ( typeof cb === 'function' ) {
+        return ko(new Error('Deprecated use of toPanelItem with callback' +
+          '! Please use Promise syntax now'));
+      }
+
       let ItemModel = this.constructor;
 
       let {
@@ -39,12 +45,20 @@ function toPanelItem () {
       item.popularity   =   this.getPopularity();
       item.link         =   '/item/' + this.id + '/' + toSlug(this.subject);
 
+
       let getType       = () => new Promise((ok, ko) => {
         TypeModel
           .findById(this.type)
           .populate('harmony')
           .exec()
-          .then(ok, ko);
+          // .then(ok, ko);
+          .then(
+            type => {
+              console.log('yeah got type', type)
+              ok(type);
+            },
+            ko
+          )
       });
 
       let getUser       = () => new Promise((ok, ko) => {
@@ -53,11 +67,16 @@ function toPanelItem () {
           .exec()
           .then(
             user => {
-              if ( ! user ) {
-                throw new Error('User not found: ' + this.user);
+              try {
+                if ( ! user ) {
+                  throw new Error('User not found: ' + this.user);
+                }
+                let { gps, _id } = user;
+                ok({ 'full name' : user.fullName, gps, _id });
               }
-              let { gps, _id } = user;
-              ok({ 'full name' : user.fullName, gps, _id });
+              catch ( error ) {
+                ko(error);
+              }
             },
             ko
           );
@@ -80,15 +99,16 @@ function toPanelItem () {
           });
       });
 
-      let getHarmony    = () => new Promise((ok, ko) => {
+      let getHarmony    = (item) => new Promise((ok, ko) => {
+        console.log('harmony', item.type)
 
-        let { harmony } = this.type;
+        let { harmony } = item.type;
 
         let promises = harmony.map(side => {
           new Promise((ok, ko) => {
             ItemModel
               .where({
-                parent    :   this._id,
+                parent    :   item._id,
                 type      :   side._id
               })
               .count((error, count) => {
@@ -97,7 +117,7 @@ function toPanelItem () {
                 }
                 ok(count);
               })
-          })
+          });
         });
 
         Promise
@@ -129,7 +149,7 @@ function toPanelItem () {
                 return ok(item);
               }
 
-              getHarmony()
+              getHarmony(item)
                 .then(
                   harmony => {
                     item.harmony = harmony;

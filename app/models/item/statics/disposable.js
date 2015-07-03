@@ -2,6 +2,7 @@
 
 import TypeModel        from 'syn/models/type';
 import UserModel        from 'syn/models/user';
+import ItemModel        from 'syn/models/item';
 import { Domain }       from 'domain';
 
 function shuffle(array) {
@@ -27,90 +28,89 @@ class DisposableItem {
 
   static dispose (options) {
     options = options || {};
-    console.log('disposable item', options)
     
     return new Promise((ok, ko) => {
-      Promise
-        .all([
-          DisposableItem.findType(options),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable(),
-          UserModel.disposable()
-        ])
-        .then(
-          results => {
-            let type    = results[0];
-            let users   = results.filter((r, i) => i);
+      try {
+        Promise
+          .all([
+            DisposableItem.findType(options),
+            UserModel.disposable()
+          ])
+          .then(
+            results => {
+              try {
+                let type    = results[0];
+                let users   = results.filter((r, i) => i);
 
-            console.log({ type : type, users : users.length });
 
-            type.getParents().then(
-              parents => {
-                console.log('got parent types', parents);
+                type.getParents().then(
+                  parents => {
+                    try {
 
-                if ( ! parents ) {
-                  DisposableItem
-                    .createItem({ type : type, user: shuffle(users)[0] })
-                    .then(ok, ko);
-                }
-                else {
-                  parents.reverse();
+                      if ( ! parents ) {
+                        DisposableItem
+                          .createItem({ type : type, user: shuffle(users)[0] })
+                          .then(ok, ko);
+                      }
+                      else {
+                        parents.reverse();
 
-                  let cursor = 0;
+                        let cursor = 0;
 
-                  let parentItem;
+                        let parentItem;
 
-                  let createItem = (parent) => {
+                        let createItem = (parent) => {
 
-                    console.log('--create item', parent);
 
-                    if ( parents[cursor] ) {
-                      DisposableItem
-                        .createItem({
-                          type      :   parents[cursor],
-                          parent    :   parent,
-                          user      :   shuffle(users)[0]
-                        })
-                        .then(
-                          item => {
-                            console.log('item created', item)
-                            parentItem = item;
-                            cursor ++;
-                            createItem(item);
-                          },
-                          ko
-                        );
+                          if ( parents[cursor] ) {
+                            DisposableItem
+                              .createItem({
+                                type      :   parents[cursor],
+                                parent    :   parent,
+                                user      :   shuffle(users)[0]
+                              })
+                              .then(
+                                item => {
+                                  parentItem = item;
+                                  cursor ++;
+                                  createItem(item);
+                                },
+                                ko
+                              );
+                          }
+
+                          else {
+                            parents.reverse();
+
+                            DisposableItem.createItem({
+                              type      :   type,
+                              parent    :   parentItem,
+                              user      :   shuffle(users)[0]
+                            }).then(ok, ko);
+                          }
+
+                        };
+
+                        createItem();
+                      }
                     }
-
-                    else {
-                      parents.reverse();
-
-                      DisposableItem.createItem({
-                        type      :   type,
-                        parent    :   parentItem,
-                        user      :   shuffle(users)[0]
-                      }).then(ok, ko);
+                    catch ( error ) {
+                      ko(error);
                     }
-
-                  };
-
-                  createItem();
-                }
-              },
-              ko
-            );
-          },
-          ko
-        );
+                  },
+                  ko
+                );
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }
+      catch ( error ) {
+        ko(error);
+      }
     });
   }
 
@@ -119,33 +119,33 @@ class DisposableItem {
     options = options || {};
 
     return new Promise((ok, ko) => {
-      let d = new Domain().on('error', ko);
+      
+      try {
 
-      d.run(() => {
-        process.nextTick(() => {
-          console.log('disposable item', 'findType', options);
-
-          if ( options.type ) {
-            // Object ID
-            if ( typeof options.type === 'object' ) {
-              TypeModel
-                .findById(options.type)
-                .exec()
-                .then(ok, ko);
-            }
-          }
-          // Find any type
-          else {
+        if ( options.type ) {
+          // Object ID
+          if ( typeof options.type === 'object' ) {
             TypeModel
-              .findOneRandom((error, type) => {
-                if ( error ) {
-                  return ko(error);
-                }
-                ok(type);
-              });
+              .findById(options.type)
+              .exec()
+              .then(ok, ko);
           }
-        });
-      });
+        }
+        // Find any type
+        else {
+          TypeModel
+            .findOneRandom((error, type) => {
+              if ( error ) {
+                return ko(error);
+              }
+              ok(type);
+            });
+        }
+      }
+      catch ( error ) {
+        ko(error);
+      }
+
     });
   }
 
@@ -155,36 +155,33 @@ class DisposableItem {
 
     let { type, user, parent } = options;
 
-    return new Promise((fulfill, reject) => {
-      let d = new Domain().on('error', reject);
+    return new Promise((ok, ko) => {
+      
+      try {
+        let newItem     =   {
+          subject       :   'Disposable ' + type.name,
+          description   :   'Disposable Item of type ' + type.name +
+            "\nCreated " + new Date() ,
+          user          :   user._id,
+          type          :   type._id
+        };
 
-      d.run(() => {
-        process.nextTick(() => {
-          
-          let newItem     =   {
-            subject       :   'Disposable ' + type.name,
-            description   :   'Disposable Item of type ' + type.name +
-              "\nCreated " + new Date() ,
-            user          :   user._id,
-            type          :   type._id
-          };
+        if ( parent ) {
+          newItem.parent = parent._id;
+        }
 
-          if ( parent ) {
-            newItem.parent = parent._id;
-          }
 
-          console.log('!!create item', newItem)
+        // Create item in DB and done
 
-          // Create item in DB and done
+        let d = new Domain().on('error', ko);
 
-          require('syn/models/item')
-            .create(newItem, d.intercept(function (item) {
-              fulfill(item)
-            }));
+        ItemModel
+          .create(newItem, d.intercept(item => ok(item)));
+      }
+      catch ( error ) {
+        ko(error);
+      }
 
-    
-        });
-      });
     });
 
   }

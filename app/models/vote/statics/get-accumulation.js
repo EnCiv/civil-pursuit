@@ -1,67 +1,68 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  /**
-   *  @function
-   *  @return         null
-   *  @arg            {ObjectId} item_id
-   *  @arg            {Function} cb
-   */
+function initValues () {
+  let values = {};
 
-  function getAccumulation (item_id, cb) {
+  values['-1'] = 0;
+  values['+0'] = 0;
+  values['+1'] = 0;
 
-    var accumulation = {};
+  return values;
+}
 
-    this.find({ item: item_id })
-      .exec(function (error, votes) {
-        if ( error ) {
-          return cb(error);
-        }
+function getAccumulation (itemId) {
+  return new Promise((ok, ko) => {
+    try {
+      let accumulation = {};
 
-        function initValues () {
-          var values = {};
+      this
+        .find({ item: itemId })
+        .exec()
+        .then(
+          votes => {
+            try {
+              votes.forEach(vote => {
 
-          values['-1'] = 0;
-          values['+0'] = 0;
-          values['+1'] = 0;
+                let value;
 
-          return values;
-        }
+                if ( vote.value === 0 ) {
+                  value = '-1';
+                }
 
-        votes.forEach(function (vote) {
+                else if ( vote.value === 1 ) {
+                  value = '+0';
+                }
 
-          var value;
+                else if ( vote.value === 2 ) {
+                  value = '+1';
+                }
 
-          if ( vote.value === 0 ) {
-            value = '-1';
-          }
+                if ( ! accumulation[vote.criteria] ) {
+                  accumulation[vote.criteria] = {
+                    total: 0,
+                    values: initValues()
+                  };
+                }
+                
+                accumulation[vote.criteria].total ++;
 
-          else if ( vote.value === 1 ) {
-            value = '+0';
-          }
+                accumulation[vote.criteria].values[value] ++;
 
-          else if ( vote.value === 2 ) {
-            value = '+1';
-          }
+              });
 
-          if ( ! accumulation[vote.criteria] ) {
-            accumulation[vote.criteria] = {
-              total: 0,
-              values: initValues()
-            };
-          }
-          
-          accumulation[vote.criteria].total ++;
+              ok(accumulation);
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+    }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-          accumulation[vote.criteria].values[value] ++;
-
-        });
-
-        cb(null, accumulation);
-      });
-  }
-
-  module.exports = getAccumulation;
-
-} ();
+export default getAccumulation;

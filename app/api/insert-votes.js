@@ -1,47 +1,33 @@
-! function () {
+'use strict';
 
-  'use strict';
+import VoteModel from 'syn/models/vote';
 
-  
+function insertVotes (event, votes) {
+  try {
+    if ( ! this.synuser ) {
+      throw new Error('Must be logged in');
+    }
 
-  function insertVotes (event, votes) {
+    votes = votes.map(vote => {
+      vote.user = this.synuser.id;
+      return vote;
+    });
 
-    var Vote = require('syn/models/Vote');
+    console.log('creating votes', votes)
 
-    var socket = this;
-
-    var domainRun = require('syn/lib/util/domain-run');
-
-    domainRun(
-
-      function (domain) {
-
-        if ( ! socket.synuser ) {
-          throw new Error('Must be logged in');
-        }
-
-        votes = votes.map(function (vote) {
-          vote.user = socket.synuser.id;
-
-          return vote;
-        });
-
-        console.log('creating votes', votes)
-
-        Vote
-          .create(votes, domain.intercept(function (votes) {
-            console.log('got votes')
-            socket.ok(event, votes);
-          }));
-      },
-
-      function (error) {
-        socket.app.arte.emit('error', error);
-      }
-
-    );
+    VoteModel
+      .create(votes)
+      .then(
+        votes => {
+          console.log('got votes')
+          this.ok(event, votes);
+        },
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = insertVotes;
-
-} ();
+export default insertVotes;

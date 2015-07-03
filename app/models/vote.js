@@ -1,16 +1,8 @@
-/**
- * The Vote Model
- * 
- * @module Models
- * @class VoteSchema
- * @author francoisrvespa@gmail.com
-*/
+'use strict';
 
-var mongoose = require('mongoose');
-
-var findRandom = require('mongoose-simple-random');
-
-var Schema = mongoose.Schema;
+import { Schema, default as mongoose }    from 'mongoose';
+import findRandom           from 'mongoose-simple-random';
+import getAccumulation      from 'syn/models/vote/statics/get-accumulation';
 
 try {
   mongoose.model('User');
@@ -30,30 +22,28 @@ try {
   mongoose.model('Criteria');
 }
 catch ( error ) {
-  require('syn/models/Criteria');
+  require('syn/models/criteria');
 }
 
-var should = require('should');
-
-var VoteSchema = new Schema({
-  "item"        :     {
-  	"type": Schema.Types.ObjectId,
-  	"ref": "Item",
-  	"required": true
+let VoteSchema       =   new Schema({
+  "item"             :   {
+  	"type"           :   Schema.Types.ObjectId,
+  	"ref"            :   "Item",
+  	"required"       :   true
   },
-  "criteria": {
-  	"type": Schema.Types.ObjectId,
-  	"ref": "Criteria",
-  	"required": true
+  "criteria"         :   {
+  	"type"           :   Schema.Types.ObjectId,
+  	"ref"            :   "Criteria",
+  	"required"       :   true
   },
-  "user": {
-  	"type": Schema.Types.ObjectId,
-  	"ref": "User",
-  	"required": true
+  "user"             :   {
+  	"type"           :   Schema.Types.ObjectId,
+  	"ref"            :   "User",
+  	"required"       :   true
   },
-  "value": {
-  	"type": Number,
-  	"required": true
+  "value"            :   {
+  	"type"           :   Number,
+  	"required"       :   true
   }
 });
 
@@ -67,6 +57,6 @@ VoteSchema.plugin(findRandom);
  *  @return {Object}
  */
 
-VoteSchema.statics.getAccumulation = require('syn/models/Vote/statics/get-accumulation');
+VoteSchema.statics.getAccumulation = getAccumulation;
 
-module.exports = mongoose.model('Vote', VoteSchema);
+export default mongoose.model('Vote', VoteSchema);

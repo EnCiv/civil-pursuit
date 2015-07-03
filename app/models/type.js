@@ -21,7 +21,7 @@ let schema = new Schema({
   }
 });
 
-schema.plugin(getParents);
+schema.plugin(findRandom);
 schema.methods.getParents = getParents;
 
 export default mongoose.model('Type', schema);

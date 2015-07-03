@@ -1,7 +1,7 @@
 'use strict';
 
-import bcrypt from 'bcrypt';
-import { Domain } from 'domain';
+import bcrypt       from 'bcrypt';
+import { Domain }   from 'domain';
 
 function encrypt (str) {
   return new Promise((ok, ko) => {

@@ -1,37 +1,22 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var Promise = require('promise');
+function createDisposableUser () {
+  return new Promise((ok, ko) => {
+    let email = Math.random().toString() +
+      process.pid.toString() +
+      Date.now().toString() +
+      '@synaccord.com';
 
-  function createDisposableUser (cb) {
+    let disposable = {
+      email       :   email,
+      password    :   '1234'
+    };
 
-    var User = this;
+    this
+      .create(disposable)
+      .then(ok, ko);
 
-    var q = new Promise(function (fulfill, reject) {
+  });
+}
 
-      var disposableUser  =   {
-        "email"           :   Math.random().toString() + process.pid.toString() + Date.now().toString() + '@synaccord.com',
-        "password"        :   "1234"
-      };
-
-      process.nextTick(function () {
-        User
-
-          .create(disposableUser)
-
-          .then(fulfill, reject);
-      })
-
-    });
-
-    if ( typeof cb === 'function' ) {
-      q.then(cb.bind(null, null), cb);
-    }
-
-    return q;
-  }
-
-  module.exports = createDisposableUser;
-
-} ();
+export default createDisposableUser;
