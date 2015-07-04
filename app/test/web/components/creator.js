@@ -216,11 +216,8 @@ class Creator extends Milk {
     if ( i < urls.length ) {
       this.set('Title', () => getUrlTitle(urls[i]));
 
-      this.ok(() => this.get('Reference').val(urls[i]),
+      this.ok(() => this.get('Reference').val(urls[i] + '\u{E004}'),
         'Entering URL');
-
-      this.ok(() => this.get('Description').click(),
-        'Bluring URL field');
 
       this.ok(() => this.get('Reference board').is(':visible'),
         'Reference board is visible');

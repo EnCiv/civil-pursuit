@@ -1,41 +1,51 @@
 'use strict';
 
-import createItem from 'syn/api/createItem';
+import createItem from 'syn/api/create-item';
 
-function createItemTest () {
-  return new Promise((ok, ko) => {
-    try {
+class CreateItemTest {
 
-      let state = null;
+  static main () {
+    return Promise
+      .all([
+        CreateItemTest.missingSubjectThrowsError()
+      ]);
+  }
 
-      let event = 'create item';
+  static missingSubjectThrowsError () {
+    return new Promise((ok, ko) => {
+      try {
+        let state = null;
 
-      let mock = {
+        let event = 'create item';
 
-        error (error) {
-          ko(error);
-          state(false);
-        },
+        let mock = {
 
-        ok (event, intro) {
-          state = true;
-          ok(intro);
-        }
+          error (error) {
+            ok(error);
+            state = true;
+          },
 
-      };
+          ok (event) {
+            state = false;
+            ko(new Error('Script did not throw'));
+          }
 
-      getIntro.apply(mock, [event]);
+        };
 
-      setTimeout(() => {
-        if ( state === null ) {
-          ko(new Error('Script timed out'));
-        }
-      }, 2500);
-    }
-    catch ( error ) {
-      ko(error);
-    }
-  });
+        createItem.apply(mock, [event, {}]);
+
+        setTimeout(() => {
+          if ( state === null ) {
+            ko(new Error('Script timed out'));
+          }
+        }, 2500);
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
 }
 
-export default createItemTest;
+export default CreateItemTest.main;

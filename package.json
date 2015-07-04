@@ -4,7 +4,7 @@
   "description": "Synapp",
   "main": "index.js",
   "scripts": {
-    "test": "node dist/bin/test test/web/pages/home.js viewport=tablet vendor=firefox",
+    "test": "node dist/bin/test-models; node dist/bin/test-api; node dist/bin/test-routes; node dist/bin/test-browser test/web/pages/home viewport=tablet vendor=firefox",
     "start": "node dist/bin/start.js",
     "postinstall": "./post-install.sh",
     "build": "app/bin/build.js",

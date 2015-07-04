@@ -46,7 +46,7 @@ class Promote extends Milk {
 
     set('Cookie', () => this.getCookie('synuser'));
 
-    // Evaluation -- won't be the same than in Browser since evaluation are random, but like this we get the numbers of items in an evaluation - it should be 6 but it can be less
+    // Evaluation -- won't be the same than in Browser since evaluation are random, but like this we get the numbers of items in an evaluation - it should be 6 but it can be less -- also like this we get criterias
 
     set('Evaluation', () => ItemModel.evaluate(get('Cookie').id, this.item._id));
     
@@ -87,6 +87,8 @@ class Promote extends Milk {
     set('Left reference', () => find(get('View').selector + ' .left-item.references a'));
 
     set('Right reference', () => find(get('View').selector + ' .right-item.references a'));
+
+    // set('Left critteria', () => find(get('View').selector + ' .left-item.sliders .criteria-name'));
   }
 
   stories () {
@@ -240,6 +242,16 @@ class Promote extends Milk {
         .then(rel => rel.should.be.exactly('nofollow')),
       'Left reference link is not indexed by SEO',
       () => get('Left item').references[0]
+    );
+
+    // Criterias
+
+    ok(
+      () => get('Left criteria').text()
+        .then(text => {
+          text.should.be.an.Array;
+        }),
+      'Left criterias should be same than DB'
     );
   }
 

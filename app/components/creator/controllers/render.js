@@ -41,14 +41,14 @@ function renderCreator (cb) {
 
       this.find('reference').on('blur change', function () {
 
-        var creator     =   $(this).closest('.creator').data('creator');
+        let creator     =   $(this).closest('.creator').data('creator');
 
-        var board       =   creator.find('reference board');
-        var reference   =   $(this);
+        let board       =   creator.find('reference board');
+        let reference   =   $(this);
 
         board.removeClass('hide').text('Looking up title');
 
-        var url = $(this).val();
+        let url = $(this).val();
 
         if ( url ) {
           self.getTitle(url)
@@ -61,7 +61,7 @@ function renderCreator (cb) {
                   });
                   reference.data('title', title).css('display', 'none');
 
-                  var yt = YouTube(url);
+                  let yt = YouTube(url);
 
                   if ( yt ) {
                     creator.find('dropbox').hide();
