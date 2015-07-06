@@ -14,6 +14,16 @@ cd ..;
 
 echo
 echo '###'
+echo '    SYM LINK TEMP'
+echo '###'
+echo
+
+ln -s app/ dist/;
+ln -s package.json dist/package.json;
+ln -s config.json dist/config.json;
+
+echo
+echo '###'
 echo '    BABEL'
 echo '###'
 echo
