@@ -18,7 +18,7 @@ echo '    BABEL'
 echo '###'
 echo
 
-babel app/ --modules common --stage 1 --out-dir dist/
+node_modules/.bin/babel app/ --modules common --stage 1 --out-dir dist/
 
 
 echo
@@ -27,4 +27,4 @@ echo '    BROWSERIFY'
 echo '###'
 echo
 
-browserify dist/pages/home/ctrl.js -o dist/pages/home/bundle.js
+node_modules/.bin/browserify dist/pages/home/ctrl.js -o dist/pages/home/bundle.js
