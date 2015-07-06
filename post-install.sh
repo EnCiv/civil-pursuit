@@ -14,6 +14,14 @@ cd ..;
 
 echo
 echo '###'
+echo '    BABEL'
+echo '###'
+echo
+
+node_modules/.bin/babel app/ --modules common --stage 1 --out-dir dist/
+
+echo
+echo '###'
 echo '    SYM LINK TEMP'
 echo '###'
 echo
@@ -21,15 +29,6 @@ echo
 ln -s app/ dist/;
 ln -s package.json dist/package.json;
 ln -s config.json dist/config.json;
-
-echo
-echo '###'
-echo '    BABEL'
-echo '###'
-echo
-
-node_modules/.bin/babel app/ --modules common --stage 1 --out-dir dist/
-
 
 echo
 echo '###'
