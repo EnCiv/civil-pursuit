@@ -207,6 +207,7 @@ class HttpServer extends EventEmitter {
         });
     }, this.renderPage.bind(this));
   }
+  
 
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug',
