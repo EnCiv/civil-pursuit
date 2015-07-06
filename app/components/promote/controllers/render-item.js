@@ -43,7 +43,7 @@ function _renderItem (item, hand) {
       .on('click', function () {
         let elem = $(this);
 
-        let descriptionSection = elem.closest('.criteria-wrapper').find('.criteria-description-section');
+        let descriptionSection = elem.closest('.criteria-wrapper').find('.criteria-description');
 
         elem.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
 
@@ -56,9 +56,13 @@ function _renderItem (item, hand) {
           $(this).removeClass('info').addClass('shy');
         }
 
-        Nav.hide(elem.closest('.promote').find('.criteria-description-section.is-shown'), self.domain.intercept(function () {
-          Nav.toggle(descriptionSection);
-        }));
+        // Nav.hide(elem.closest('.promote').find('.criteria-description-section.is-shown'), self.domain.intercept(function () {
+        //   Nav.toggle(descriptionSection);
+        // }));
+
+        $('.criteria-description').hide();
+
+        descriptionSection.show();
 
         
       })

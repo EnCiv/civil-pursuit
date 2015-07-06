@@ -39,7 +39,7 @@ function renderCreator (cb) {
 
       // Get reference's title
 
-      this.find('reference').on('blur change', function () {
+      let findTitle = function () {
 
         let creator     =   $(this).closest('.creator').data('creator');
 
@@ -79,7 +79,15 @@ function renderCreator (cb) {
             );
         }
 
-      });
+      }
+
+      this.find('reference')
+        .on('blur change', findTitle)
+        .on('keydown', function (e) {
+          if ( e.keyCode === 9 ) {
+            findTitle.apply(this);
+          }
+        });
 
       // Build form using Form provider
 

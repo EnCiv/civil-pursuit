@@ -88,7 +88,21 @@ class Promote extends Milk {
 
     set('Right reference', () => find(get('View').selector + ' .right-item.references a'));
 
-    // set('Left critteria', () => find(get('View').selector + ' .left-item.sliders .criteria-name'));
+    set('Left criteria', () => find(get('View').selector + ' .left-item.sliders .criteria-name'));
+
+    set('Right criteria', () => find(get('View').selector + ' .right-item.sliders .criteria-name'));
+
+    for ( let i = 0; i < 4 ; i ++ ) {
+      set('Left criteria name #' + i, () => find(get('View').selector + ' .left-item.sliders .criteria-' + i + ' .criteria-name'));
+
+      set('Left criteria description #' + i, () => find(get('View').selector + ' .left-item.sliders .criteria-' + i + ' .criteria-description'));
+    }
+
+    for ( let i = 0; i < 4 ; i ++ ) {
+      set('Right criteria name #' + i, () => find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' .criteria-name'));
+
+      set('Right criteria description #' + i, () => find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' .criteria-description'));
+    }
   }
 
   stories () {
@@ -250,9 +264,31 @@ class Promote extends Milk {
       () => get('Left criteria').text()
         .then(text => {
           text.should.be.an.Array;
+          get('Evaluation').criterias.forEach((criteria, i) => {
+            criteria.name.should.be.exactly(text[i]);
+          });
         }),
       'Left criterias should be same than DB'
     );
+
+    for ( let i = 0; i < 4 ; i ++ ) {
+      ok(
+        () => get('Left criteria name #' + i).click(),
+        'Click on Criteria #' + i
+      );
+
+      this.wait(1);
+
+      ok(
+        () => get('Left criteria description #' + i).text()
+          .then(text => {
+            text.should.be.a.String;
+            get('Evaluation').criterias[i].description
+              .should.be.exactly(text);
+          }),
+        'Criteria description is correct #' + i
+      );
+    }
   }
 
   rightSide (id) {
@@ -363,6 +399,38 @@ class Promote extends Milk {
       'Right reference link is not indexed by SEO',
       () => get('Right item').references[0]
     );
+
+    // Criterias
+
+    ok(
+      () => get('Right criteria').text()
+        .then(text => {
+          text.should.be.an.Array;
+          get('Evaluation').criterias.forEach((criteria, i) => {
+            criteria.name.should.be.exactly(text[i]);
+          });
+        }),
+      'Right criterias should be same than DB'
+    );
+
+    for ( let i = 0; i < 4 ; i ++ ) {
+      ok(
+        () => get('Right criteria name #' + i).click(),
+        'Click on Criteria #' + i
+      );
+
+      // this.wait(3);
+
+      ok(
+        () => get('Right criteria description #' + i).text()
+          .then(text => {
+            text.should.be.a.String;
+            get('Evaluation').criterias[i].description
+              .should.be.exactly(text);
+          }),
+        'Criteria description is correct #' + i
+      );
+    }
   }
 
 }

@@ -44,14 +44,14 @@ class Promote extends Element {
 
   promoteSliders (hand) {
 
-    var sliders = new Element('.sliders', {
+    let sliders = new Element('.sliders', {
       className:  [hand + '-item']
     });
 
-    for ( var i = 0; i < 4; i ++ ) {
-      var slider = new Element('.criteria-wrapper');
+    for ( let i = 0; i < 4; i ++ ) {
+      let slider = new Element('.criteria-wrapper.criteria-' + i);
 
-      slider.add(new Element('row').add(
+      slider.add(new Element('.row').add(
         new Element('.tablet-40').add(
           new Element('h4').add(
             new Element('button.criteria-name.shy.block')
@@ -72,11 +72,7 @@ class Promote extends Element {
         )
       ));
 
-      slider.add(new Element('.row.is-container.criteria-description-section').add(
-          new Element('.is-section').add(
-            new Element('.gutter.watch-100.criteria-description')
-          )
-        ));
+      slider.add(new Element('h5.criteria-description.row.watch-100.gutter'));
 
       sliders.add(slider);
     }
@@ -174,12 +170,20 @@ class Promote extends Element {
 
           new Element('.row').add(
             new Element('.split-50.watch-100').add(
-              this.promoteSliders('left'),
+              this.promoteSliders('left')
+            ),
+
+            new Element('.split-50.watch-100').add(
+              this.promoteSliders('right')
+            )
+          ),
+
+          new Element('.row').add(
+            new Element('.split-50.watch-100').add(
               this.promoteFeedback('left')
             ),
 
             new Element('.split-50.watch-100').add(
-              this.promoteSliders('right'),
               this.promoteFeedback('right')
             )
           ),
