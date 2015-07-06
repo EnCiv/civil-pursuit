@@ -45,6 +45,14 @@ function connectToMongoose () {
 symlink()
   .then(
     () => {
+      console.log('SYMLINK OK')
+      console.log('SYMLINK OK')
+      console.log('SYMLINK OK')
+      console.log('SYMLINK OK')
+      console.log('SYMLINK OK')
+      console.log('SYMLINK OK')
+      console.log('SYMLINK OK')
+      console.log('SYMLINK OK')
       readMe().then(
         () => connectToMongoose().then(
           () => {

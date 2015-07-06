@@ -60,6 +60,14 @@ function connectToMongoose() {
 }
 
 (0, _libAppSymlink2['default'])().then(function () {
+  console.log('SYMLINK OK');
+  console.log('SYMLINK OK');
+  console.log('SYMLINK OK');
+  console.log('SYMLINK OK');
+  console.log('SYMLINK OK');
+  console.log('SYMLINK OK');
+  console.log('SYMLINK OK');
+  console.log('SYMLINK OK');
   readMe().then(function () {
     return connectToMongoose().then(function () {
       try {
