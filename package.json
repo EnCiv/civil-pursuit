@@ -63,16 +63,5 @@
     "socket.io-redis": "~0.1.4",
     "socket.io-stream": "~0.6.0",
     "string": "~2.2.0"
-  },
-  "browserify": {
-    "transform": [
-      [
-        "babelify",
-        {
-          "modules": "common",
-          "stage": 1
-        }
-      ]
-    ]
   }
 }
