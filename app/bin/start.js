@@ -7,7 +7,7 @@ import fs         from   'fs';
 import path       from   'path';
 import domain     from   'domain';
 import mongoose   from   'mongoose';
-import symlink    from    'syn/lib/app/symlink';
+import symlink    from   '../lib/app/symlink';
 
 function parseError(error) {
   console.log(error.stack.split(/\n/));

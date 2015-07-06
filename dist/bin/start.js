@@ -25,9 +25,9 @@ var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _synLibAppSymlink = require('syn/lib/app/symlink');
+var _libAppSymlink = require('../lib/app/symlink');
 
-var _synLibAppSymlink2 = _interopRequireDefault(_synLibAppSymlink);
+var _libAppSymlink2 = _interopRequireDefault(_libAppSymlink);
 
 function parseError(error) {
   console.log(error.stack.split(/\n/));
@@ -59,7 +59,7 @@ function connectToMongoose() {
   });
 }
 
-(0, _synLibAppSymlink2['default'])().then(function () {
+(0, _libAppSymlink2['default'])().then(function () {
   readMe().then(function () {
     return connectToMongoose().then(function () {
       try {
