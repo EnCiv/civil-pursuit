@@ -7,7 +7,7 @@
     "test": "node dist/bin/test-models; node dist/bin/test-api; node dist/bin/test-routes; node dist/bin/test-browser test/web/pages/home viewport=tablet vendor=firefox",
     "start": "node dist/bin/start.js",
     "postinstall": "./post-install.sh",
-    "build": "app/bin/build.js",
+    "build": "browserify dist/pages/home/ctrl.js -o dist/pages/home/bundle.js",
     "watch": "watchify dist/pages/home/ctrl.js -o dist/pages/home/bundle.js",
     "transpile": "babel app/ --modules common --stage 1 --out-dir dist/",
     "hot-transpile": "babel app/ --watch --modules common --stage 1 --out-dir dist/",
