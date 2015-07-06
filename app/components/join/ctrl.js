@@ -1,7 +1,7 @@
 'use strict';
 
-import Controller   from 'syn/lib/app/controller';
-import Form         from 'syn/lib/util/form';
+import Controller   from '../../lib/app/controller';
+import Form         from '../../lib/util/form';
 
 class Join extends Controller {
 

@@ -14,17 +14,17 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synRoutesSignUp = require('syn/routes/sign-up');
+var _routesSignUp = require('../../routes/sign-up');
 
-var _synRoutesSignUp2 = _interopRequireDefault(_synRoutesSignUp);
+var _routesSignUp2 = _interopRequireDefault(_routesSignUp);
 
-var _synLibUtilRandomString = require('syn/lib/util/random-string');
+var _libUtilRandomString = require('../../lib/util/random-string');
 
-var _synLibUtilRandomString2 = _interopRequireDefault(_synLibUtilRandomString);
+var _libUtilRandomString2 = _interopRequireDefault(_libUtilRandomString);
 
-var _synTestModelsUser = require('syn/test/models/user');
+var _testModelsUser = require('../../test/models/user');
 
-var _synTestModelsUser2 = _interopRequireDefault(_synTestModelsUser);
+var _testModelsUser2 = _interopRequireDefault(_testModelsUser);
 
 var TestSignUpRoute = (function () {
   function TestSignUpRoute() {
@@ -37,7 +37,7 @@ var TestSignUpRoute = (function () {
       return new Promise(function (ok, ko) {
         try {
 
-          (0, _synLibUtilRandomString2['default'])(15).then(function (str) {
+          (0, _libUtilRandomString2['default'])(15).then(function (str) {
             try {
               (function () {
                 var response = undefined;
@@ -46,7 +46,7 @@ var TestSignUpRoute = (function () {
                     if (error) {
                       return ko(error);
                     }
-                    _synTestModelsUser2['default'].isUser(req.user).then(ok, ko);
+                    _testModelsUser2['default'].isUser(req.user).then(ok, ko);
                   } catch (error) {
                     ko(error);
                   }
@@ -63,7 +63,7 @@ var TestSignUpRoute = (function () {
                   }
                 };
 
-                (0, _synRoutesSignUp2['default'])(req, res, next);
+                (0, _routesSignUp2['default'])(req, res, next);
               })();
             } catch (error) {
               ko(error);

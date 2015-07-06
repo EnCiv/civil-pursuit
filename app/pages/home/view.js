@@ -1,8 +1,8 @@
 'use strict'
 
-import Layout               from 'syn/components/layout/view';
-import IntroView            from 'syn/components/intro/view';
-import TopLevelPanelView    from 'syn/components/top-level-panel/view';
+import Layout               from '../../components/layout/view';
+import IntroView            from '../../components/intro/view';
+import TopLevelPanelView    from '../../components/top-level-panel/view';
 
 class HomePage extends Layout {
   constructor(props) {

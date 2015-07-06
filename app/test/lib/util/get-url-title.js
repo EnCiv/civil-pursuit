@@ -20,7 +20,7 @@
 
     before ( function () {
 
-      getUrlTitle = require('syn/lib/util/get-url-title');
+      getUrlTitle = require('../../../lib/app/get-url-title');
 
     } );
 

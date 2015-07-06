@@ -1,12 +1,12 @@
 'use strict';
 
 import { Schema }             from 'mongoose';
-import isUrl                  from 'syn/lib/util/is/url';
-import isLesserThan           from 'syn/lib/util/is/lesser-than';
+import isUrl                  from '../../lib/util/is/url';
+import isLesserThan           from '../../lib/util/is/lesser-than';
 
 try {
-  require('syn/models/type');
-  require('syn/models/user');
+  require('../../models/type');
+  require('../../models/user');
 }
 catch ( error ) {
   /** Already imported **/

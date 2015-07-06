@@ -5,12 +5,12 @@
   function validateGPS (user_id, lng, lat) {
     var socket = this;
 
-    var domainRun = require('syn/lib/util/domain-run');
+    var domainRun = require('../lib/util/domain-run');
 
     domainRun(
 
       function (domain) {
-        require('syn/models/user').update({ _id: user_id },
+        require('../models/user').update({ _id: user_id },
           {
             'gps': [lng, lat],
             'gps validated': Date.now()

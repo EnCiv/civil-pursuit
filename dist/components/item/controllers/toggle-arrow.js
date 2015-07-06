@@ -6,13 +6,13 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-var _synComponentsPanelCtrl = require('syn/components/panel//ctrl');
+var _componentsPanelCtrl = require('../../../components/panel//ctrl');
 
-var _synComponentsPanelCtrl2 = _interopRequireDefault(_synComponentsPanelCtrl);
+var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
 
 function toggleArrow($trigger) {
   var $item = $trigger.closest('.item');
@@ -26,7 +26,7 @@ function toggleArrow($trigger) {
     item.find('collapsers').show();
   }
 
-  _synLibUtilNav2['default'].toggle(item.find('children'), this.template, d.intercept(function () {
+  _libUtilNav2['default'].toggle(item.find('children'), this.template, d.intercept(function () {
 
     if (item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length) {
       item.find('collapsers').hide();
@@ -45,7 +45,7 @@ function toggleArrow($trigger) {
 
         console.info('harmony', harmony);
 
-        var panelLeft = new _synComponentsPanelCtrl2['default']({
+        var panelLeft = new _componentsPanelCtrl2['default']({
           panel: {
             type: harmony[0],
             parent: storeItem._id
@@ -64,7 +64,7 @@ function toggleArrow($trigger) {
           }));
         });
 
-        var panelRight = new _synComponentsPanelCtrl2['default']({
+        var panelRight = new _componentsPanelCtrl2['default']({
           panel: {
             type: harmony[1],
             parent: storeItem._id
@@ -87,7 +87,7 @@ function toggleArrow($trigger) {
       var subtype = storeItem.subtype;
 
       if (subtype) {
-        var subPanel = new _synComponentsPanelCtrl2['default']({
+        var subPanel = new _componentsPanelCtrl2['default']({
           panel: {
             type: subtype,
             parent: storeItem._id

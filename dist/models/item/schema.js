@@ -8,17 +8,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 var _mongoose = require('mongoose');
 
-var _synLibUtilIsUrl = require('syn/lib/util/is/url');
+var _libUtilIsUrl = require('../../lib/util/is/url');
 
-var _synLibUtilIsUrl2 = _interopRequireDefault(_synLibUtilIsUrl);
+var _libUtilIsUrl2 = _interopRequireDefault(_libUtilIsUrl);
 
-var _synLibUtilIsLesserThan = require('syn/lib/util/is/lesser-than');
+var _libUtilIsLesserThan = require('../../lib/util/is/lesser-than');
 
-var _synLibUtilIsLesserThan2 = _interopRequireDefault(_synLibUtilIsLesserThan);
+var _libUtilIsLesserThan2 = _interopRequireDefault(_libUtilIsLesserThan);
 
 try {
-  require('syn/models/type');
-  require('syn/models/user');
+  require('../../models/type');
+  require('../../models/user');
 } catch (error) {}
 
 var schema = {
@@ -42,7 +42,7 @@ var schema = {
     'url': {
 
       'type': String,
-      'validate': _synLibUtilIsUrl2['default']
+      'validate': _libUtilIsUrl2['default']
     },
 
     'title': String
@@ -52,14 +52,14 @@ var schema = {
 
     'type': String,
     // "required"        :   true,
-    'validate': (0, _synLibUtilIsLesserThan2['default'])(255)
+    'validate': (0, _libUtilIsLesserThan2['default'])(255)
   },
 
   'description': {
 
     'type': String,
     'required': true,
-    'validate': (0, _synLibUtilIsLesserThan2['default'])(5000)
+    'validate': (0, _libUtilIsLesserThan2['default'])(5000)
   },
 
   'type': {

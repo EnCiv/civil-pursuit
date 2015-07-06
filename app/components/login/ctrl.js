@@ -1,8 +1,8 @@
 'use strict';
 
-import Controller     from 'syn/lib/app/controller';
-import Form           from 'syn/lib/util/form';
-import Nav            from 'syn/lib/util/nav';
+import Controller     from '../../lib/app/controller';
+import Form           from '../../lib/util/form';
+import Nav            from '../../lib/util/nav';
 
 class Login extends Controller {
 

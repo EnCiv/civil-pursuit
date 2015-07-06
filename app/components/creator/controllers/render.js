@@ -1,8 +1,8 @@
 'use strict';
 
-import Upload         from 'syn/lib/util/upload';
-import Form           from 'syn/lib/util/form';
-import YouTube        from 'syn/components/youtube/ctrl';
+import Upload         from '../../../lib/util/upload';
+import Form           from '../../../lib/util/form';
+import YouTube        from '../../../components/youtube/ctrl';
 import domain         from 'domain';
 
 function renderCreator (cb) {

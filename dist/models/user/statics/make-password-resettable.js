@@ -10,9 +10,9 @@ function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else i
 
 var _domain = require('domain');
 
-var _synLibUtilRandomString = require('syn/lib/util/random-string');
+var _libUtilRandomString = require('../../../lib/util/random-string');
 
-var _synLibUtilRandomString2 = _interopRequireDefault(_synLibUtilRandomString);
+var _libUtilRandomString2 = _interopRequireDefault(_libUtilRandomString);
 
 function makePasswordResettable(email) {
   var _this = this;
@@ -20,9 +20,9 @@ function makePasswordResettable(email) {
   return new Promise(function (ok, ko) {
 
     var promises = [new Promise(function (ok, ko) {
-      (0, _synLibUtilRandomString2['default'])(8).then(ok, ko);
+      (0, _libUtilRandomString2['default'])(8).then(ok, ko);
     }), new Promise(function (ok, ko) {
-      (0, _synLibUtilRandomString2['default'])(8).then(ok, ko);
+      (0, _libUtilRandomString2['default'])(8).then(ok, ko);
     })];
 
     Promise.all(promises).then(function (results) {

@@ -1,6 +1,6 @@
 'use strict';
 
-import Item from 'syn/components/item/ctrl';
+import Item from '../../../components/item/ctrl';
 
 function created (item) {
   console.log('created item', item);

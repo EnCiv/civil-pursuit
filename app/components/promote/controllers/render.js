@@ -1,6 +1,6 @@
 'use strict';
 
-import Nav from 'syn/lib/util/nav';
+import Nav from '../../../lib/util/nav';
 
 /**
  *  @method Promote.render

@@ -9,19 +9,19 @@ import session          from 'express-session';
 import bodyParser       from 'body-parser';
 import cookieParser     from 'cookie-parser';
 import passport         from 'passport';
-import printIt          from 'syn/lib/util/express-pretty';
-import TwitterPassport  from 'syn/routes/twitter';
-import FacebookPassport from 'syn/routes/facebook';
-import initPipeLine     from 'syn/routes/init-pipeline';
-import renderPage       from 'syn/routes/render-page';
-import itemRoute        from 'syn/routes/item';
-import signInRoute      from 'syn/routes/sign-in';
-import signUpRoute      from 'syn/routes/sign-up';
-import signOutRoute     from 'syn/routes/sign-out';
-import User             from 'syn/models/user';
-import config           from 'syn/config.json';
-import getTime          from 'syn/lib/util/print-time';
-import API              from 'syn/api';
+import printIt          from './lib/util/express-pretty';
+import TwitterPassport  from './routes/twitter';
+import FacebookPassport from './routes/facebook';
+import initPipeLine     from './routes/init-pipeline';
+import renderPage       from './routes/render-page';
+import itemRoute        from './routes/item';
+import signInRoute      from './routes/sign-in';
+import signUpRoute      from './routes/sign-up';
+import signOutRoute     from './routes/sign-out';
+import User             from './models/user';
+import config           from '../config.json';
+import getTime          from './lib/util/print-time';
+import API              from './api';
 
 class HttpServer extends EventEmitter {
 

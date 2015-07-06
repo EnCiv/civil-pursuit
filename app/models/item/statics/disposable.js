@@ -1,8 +1,8 @@
 'use strict';
 
-import TypeModel        from 'syn/models/type';
-import UserModel        from 'syn/models/user';
-import ItemModel        from 'syn/models/item';
+import TypeModel        from '../../../models/type';
+import UserModel        from '../../../models/user';
+import ItemModel        from '../../../models/item';
 import { Domain }       from 'domain';
 
 function shuffle(array) {

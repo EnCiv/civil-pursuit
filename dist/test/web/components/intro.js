@@ -16,21 +16,21 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synModelsType = require('syn/models/type');
+var _modelsType = require('../../../models/type');
 
-var _synModelsType2 = _interopRequireDefault(_synModelsType);
+var _modelsType2 = _interopRequireDefault(_modelsType);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../../../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
 var _panel = require('./panel');
 
@@ -56,10 +56,10 @@ var Intro = (function (_Milk) {
     var find = this.find.bind(this);
 
     var findType = function findType() {
-      return _synModelsType2['default'].findOne({ name: 'Intro' }).exec();
+      return _modelsType2['default'].findOne({ name: 'Intro' }).exec();
     };
     var findIntro = function findIntro() {
-      return _synModelsItem2['default'].findOne({ type: get('Type')._id }).exec();
+      return _modelsItem2['default'].findOne({ type: get('Type')._id }).exec();
     };
 
     if (this.props.driver !== false) {
@@ -100,7 +100,7 @@ var Intro = (function (_Milk) {
   _inherits(Intro, _Milk);
 
   return Intro;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = Intro;
 module.exports = exports['default'];

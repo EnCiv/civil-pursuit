@@ -4,7 +4,7 @@
 
   var Domain = require('domain').Domain;
 
-  var config = require('syn/config.json');
+  var config = require('../../config.json');
 
   var Type = require('syn/models/type');
   var Item = require('syn/models/item');

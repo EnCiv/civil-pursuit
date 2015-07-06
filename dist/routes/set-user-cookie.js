@@ -6,12 +6,12 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 function setCookieUser(req, res, next) {
-  res.cookie('synuser', { email: req.user.email, id: req.user._id }, _synConfigJson2['default'].cookie);
+  res.cookie('synuser', { email: req.user.email, id: req.user._id }, _configJson2['default'].cookie);
 
   next();
 }

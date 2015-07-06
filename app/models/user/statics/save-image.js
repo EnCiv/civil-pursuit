@@ -2,8 +2,8 @@
 
 import path from 'path';
 import { Domain } from 'domain';
-import cloudinary from 'syn/lib/util/cloudinary';
-import config from 'syn/config.json';
+import cloudinary from '../../../lib/app/cloudinary';
+import config from '../../../../config.json';
 
 function saveImage (userId, image) {
   return new Promise((ok, ko) => {
@@ -17,3 +17,5 @@ function saveImage (userId, image) {
 }
 
 export default saveImage;
+
+var foo = 2;

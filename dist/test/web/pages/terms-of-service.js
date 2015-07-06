@@ -28,9 +28,9 @@ var _synLibAppDescribe = require('syn/lib/app/Describe');
 
 var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var _componentsLayout = require('../components/layout');
 
@@ -48,7 +48,7 @@ var TOSPage = (function (_Describe) {
       }
     });
 
-    var title = _synConfigJson2['default'].title.prefix + 'Terms of Service';
+    var title = _configJson2['default'].title.prefix + 'Terms of Service';
 
     this.before('Get Terms of Service source file', function () {
       var TOS = '';

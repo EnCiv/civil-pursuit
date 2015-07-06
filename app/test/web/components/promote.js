@@ -1,10 +1,10 @@
 'use strict';
 
-import Milk from 'syn/lib/app/milk';
-import ItemModel from 'syn/models/item';
-import cloudinaryFormat from 'syn/lib/util/cloudinary-format';
-import config from 'syn/config.json';
-import YouTube from 'syn/components/youtube/view';
+import Milk             from '../../../lib/app/milk';
+import ItemModel        from '../../../models/item';
+import cloudinaryFormat from '../../../lib/util/cloudinary-format';
+import config           from '../../../../config.json';
+import YouTube          from '../../../components/youtube/view';
 
 class Promote extends Milk {
 

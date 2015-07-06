@@ -6,12 +6,12 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synComponentsYoutubeView = require('syn/components/youtube/view');
+var _componentsYoutubeView = require('../../components/youtube/view');
 
-var _synComponentsYoutubeView2 = _interopRequireDefault(_synComponentsYoutubeView);
+var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
 
 function YouTube(url) {
-  var yt = new _synComponentsYoutubeView2['default']({ url: url, settings: { env: synapp.env } });
+  var yt = new _componentsYoutubeView2['default']({ url: url, settings: { env: synapp.env } });
 }
 
 exports['default'] = YouTube;

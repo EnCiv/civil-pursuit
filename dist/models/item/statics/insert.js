@@ -10,13 +10,13 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _synLibUtilCloudinary = require('syn/lib/util/cloudinary');
+var _libAppCloudinary = require('../../../lib/app/cloudinary');
 
-var _synLibUtilCloudinary2 = _interopRequireDefault(_synLibUtilCloudinary);
+var _libAppCloudinary2 = _interopRequireDefault(_libAppCloudinary);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 function insertItem(candidate, socket) {
   var _this = this;
@@ -43,7 +43,7 @@ function insertItem(candidate, socket) {
 
       if (image) {
         console.log('--uploading image to cloudinary', item, '\n\n');
-        _synLibUtilCloudinary2['default'].uploader.upload(_path2['default'].join(_synConfigJson2['default'].tmp, image), function (result) {
+        _libAppCloudinary2['default'].uploader.upload(_path2['default'].join(_configJson2['default'].tmp, image), function (result) {
           console.log('--got response from cloudinary', result, '\n\n');
 
           item.image = result.url;

@@ -6,18 +6,18 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-var _synComponentsTopBarCtrl = require('syn/components/top-bar//ctrl');
+var _componentsTopBarCtrl = require('../../../components/top-bar//ctrl');
 
-var _synComponentsTopBarCtrl2 = _interopRequireDefault(_synComponentsTopBarCtrl);
+var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
 
 function tooglePromote($trigger) {
 
   if (!this.socket.synuser) {
-    var topbar = new _synComponentsTopBarCtrl2['default']();
+    var topbar = new _componentsTopBarCtrl2['default']();
     topbar.find('join button').click();
     return;
   }
@@ -33,7 +33,7 @@ function tooglePromote($trigger) {
     }
 
     if ($('.creator.is-shown').length) {
-      _synLibUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
+      _libUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
         $trigger.click();
       });
 
@@ -41,7 +41,7 @@ function tooglePromote($trigger) {
     }
 
     if (item.find('details').hasClass('is-shown')) {
-      _synLibUtilNav2['default'].hide(item.find('details')).hidden(function () {
+      _libUtilNav2['default'].hide(item.find('details')).hidden(function () {
         $trigger.click();
       });
 
@@ -71,7 +71,7 @@ function tooglePromote($trigger) {
     item.find('collapsers').show();
   }
 
-  _synLibUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
+  _libUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
 
     if (item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length) {
       item.find('collapsers').hide();

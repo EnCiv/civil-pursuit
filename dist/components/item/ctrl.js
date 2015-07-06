@@ -18,25 +18,25 @@ var _string = require('string');
 
 var _string2 = _interopRequireDefault(_string);
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-var _synLibUtilReadMore = require('syn/lib/util/read-more');
+var _libUtilReadMore = require('../../lib/util/read-more');
 
-var _synLibUtilReadMore2 = _interopRequireDefault(_synLibUtilReadMore);
+var _libUtilReadMore2 = _interopRequireDefault(_libUtilReadMore);
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _synComponentsPromoteCtrl = require('syn/components/promote//ctrl');
+var _componentsPromoteCtrl = require('../../components/promote//ctrl');
 
-var _synComponentsPromoteCtrl2 = _interopRequireDefault(_synComponentsPromoteCtrl);
+var _componentsPromoteCtrl2 = _interopRequireDefault(_componentsPromoteCtrl);
 
-var _synComponentsDetailsCtrl = require('syn/components/details//ctrl');
+var _componentsDetailsCtrl = require('../../components/details//ctrl');
 
-var _synComponentsDetailsCtrl2 = _interopRequireDefault(_synComponentsDetailsCtrl);
+var _componentsDetailsCtrl2 = _interopRequireDefault(_componentsDetailsCtrl);
 
 var _view = require('./view');
 
@@ -184,11 +184,11 @@ var ItemCtrl = (function (_Controller) {
 
       // Create reference to promote if promotion enabled
 
-      this.promote = new _synComponentsPromoteCtrl2['default'](this.props, this);
+      this.promote = new _componentsPromoteCtrl2['default'](this.props, this);
 
       // Create reference to details
 
-      this.details = new _synComponentsDetailsCtrl2['default'](this.props, this);
+      this.details = new _componentsDetailsCtrl2['default'](this.props, this);
 
       // Set ID
 
@@ -205,7 +205,7 @@ var ItemCtrl = (function (_Controller) {
 
         var item = link.closest('.item');
 
-        _synLibUtilNav2['default'].scroll(item, function () {
+        _libUtilNav2['default'].scroll(item, function () {
           history.pushState(null, null, link.attr('href'));
           item.find('.item-text .more').click();
         });
@@ -235,7 +235,7 @@ var ItemCtrl = (function (_Controller) {
 
       this.find('media').find('img, iframe').on('load', (function () {
         if (!_this2.template.find('.more').length) {
-          (0, _synLibUtilReadMore2['default'])(item, _this2.template);
+          (0, _libUtilReadMore2['default'])(item, _this2.template);
         }
       }).bind(item));
 
@@ -336,7 +336,7 @@ var ItemCtrl = (function (_Controller) {
 
       if (item.find('promote').hasClass('is-shown')) {
         item.find('toggle promote').find('.caret').addClass('hide');
-        require('syn/lib/util/nav').hide(item.find('promote'));
+        require('../../lib/util/nav').hide(item.find('promote'));
       }
 
       var hiders = $('.details.is-shown');
@@ -345,7 +345,7 @@ var ItemCtrl = (function (_Controller) {
         item.find('collapsers').show();
       }
 
-      require('syn/lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
+      require('../../lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
 
         showHideCaret();
 
@@ -362,7 +362,7 @@ var ItemCtrl = (function (_Controller) {
           }
 
           if (hiders.length) {
-            require('syn/lib/util/nav').hide(hiders);
+            require('../../lib/util/nav').hide(hiders);
           }
         }
       }));
@@ -375,7 +375,7 @@ var ItemCtrl = (function (_Controller) {
   }]);
 
   return ItemCtrl;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 exports['default'] = ItemCtrl;
 module.exports = exports['default'];

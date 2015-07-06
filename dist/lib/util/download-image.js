@@ -8,7 +8,7 @@
 
   var di = require('syn/lib/util/di/domain');
 
-  var deps = ['path', 'fs', 'request', 'syn/lib/Test', 'syn/lib/util/cloudinary', 'syn/config.json', 'should'];
+  var deps = ['path', 'fs', 'request', 'syn/lib/Test', '../../../lib/app/cloudinary', '../../config.json', 'should'];
 
   module.exports = function test___utils__downloadImage(done) {
 

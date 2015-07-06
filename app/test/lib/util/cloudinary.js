@@ -10,7 +10,7 @@
 
     before ( function () {
 
-      cloudinary = require('syn/lib/util/cloudinary');
+      cloudinary = require('../../../lib/app/cloudinary');
 
     } );
 

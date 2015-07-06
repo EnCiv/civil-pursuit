@@ -26,17 +26,17 @@ var _passport2 = _interopRequireDefault(_passport);
 
 var _passportFacebook = require('passport-facebook');
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-var _synLibAppPassport = require('syn/lib/app/Passport');
+var _libAppPassport = require('../lib/app/Passport');
 
-var _synLibAppPassport2 = _interopRequireDefault(_synLibAppPassport);
+var _libAppPassport2 = _interopRequireDefault(_libAppPassport);
 
 var Facebook = (function (_Passport) {
   function Facebook(app) {
@@ -64,8 +64,8 @@ var Facebook = (function (_Passport) {
         var _strategy = app.locals.FacebookStrategy;
 
         _passport2['default'].use(new _strategy({
-          clientID: _synConfigJson2['default'].facebook['app id'],
-          clientSecret: _synConfigJson2['default'].facebook['app secret'],
+          clientID: _configJson2['default'].facebook['app id'],
+          clientSecret: _configJson2['default'].facebook['app secret'],
           callbackURL: callbackURL
         }, this.access.bind(this, req, res, next)));
       }
@@ -73,7 +73,7 @@ var Facebook = (function (_Passport) {
   }]);
 
   return Facebook;
-})(_synLibAppPassport2['default']);
+})(_libAppPassport2['default']);
 
 exports['default'] = Facebook;
 module.exports = exports['default'];

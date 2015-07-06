@@ -18,9 +18,9 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _synUtilPrintTime = require('syn/util/print-time');
+var _utilPrintTime = require('../../util/print-time');
 
-var _synUtilPrintTime2 = _interopRequireDefault(_synUtilPrintTime);
+var _utilPrintTime2 = _interopRequireDefault(_utilPrintTime);
 
 var Log = (function () {
   function Log(namespace) {
@@ -88,7 +88,7 @@ var Log = (function () {
         messages: messages.map(function (message) {
 
           if (message && message._uncolored) {
-            console.log((0, _synUtilPrintTime2['default'])().join(':').magenta, _this.namespace.grey, message.toString());
+            console.log((0, _utilPrintTime2['default'])().join(':').magenta, _this.namespace.grey, message.toString());
             return message._uncolored;
           } else {
             console.log(message);

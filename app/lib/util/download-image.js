@@ -11,8 +11,8 @@
     'fs',
     'request',
     'syn/lib/Test',
-    'syn/lib/util/cloudinary',
-    'syn/config.json',
+    '../../../lib/app/cloudinary',
+    '../../config.json',
     'should'
   ];
 

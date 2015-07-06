@@ -10,20 +10,20 @@ var _string = require('string');
 
 var _string2 = _interopRequireDefault(_string);
 
-var _synLibAppProps = require('syn/lib/app/props');
+var _libAppProps = require('../lib/app/props');
 
-var _synLibAppProps2 = _interopRequireDefault(_synLibAppProps);
+var _libAppProps2 = _interopRequireDefault(_libAppProps);
 
 var cache = {};
 
 function renderPage(req, res, next) {
 
   try {
-    var props = (0, _synLibAppProps2['default'])(this, req, res);
+    var props = (0, _libAppProps2['default'])(this, req, res);
 
     var pageName = (0, _string2['default'])(props.page).slugify().s;
 
-    var Page = require('syn/pages/' + pageName + '/view');
+    var Page = require('../pages/' + pageName + '/view');
 
     var page = new Page(props);
 

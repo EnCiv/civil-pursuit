@@ -1,11 +1,11 @@
 'use strict';
 
 import async              from 'async';
-import config             from 'syn/config.json';
-import toSlug             from 'syn/lib/util/to-slug';
-import calcHarmony        from 'syn/lib/get-harmony';
-import TypeModel          from 'syn/models/type';
-import UserModel          from 'syn/models/user';
+import config             from '../../../../config.json';
+import toSlug             from '../../../lib/util/to-slug';
+import calcHarmony        from '../../../lib/get-harmony';
+import TypeModel          from '../../type';
+import UserModel          from '../../user';
 
 function toPanelItem (cb) {
   return new Promise((ok, ko) => {

@@ -17,13 +17,13 @@ var Schema = mongoose.Schema;
 try {
   mongoose.model('User');
 } catch (error) {
-  require('syn/models/user');
+  require('../models/user');
 }
 
 try {
   mongoose.model('Item');
 } catch (error) {
-  require('syn/models/item');
+  require('../models/item');
 }
 
 var FeedbackSchema = new Schema({

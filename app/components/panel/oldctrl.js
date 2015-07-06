@@ -4,13 +4,13 @@ function _PanelComponent_ () {
 
   /** Providers */
 
-  var Nav       =   require('syn/lib/util/nav');
-  var Session   =   require('syn/lib/app/Session');
+  var Nav       =   require('../../lib/util/nav');
+  var Session   =   require('../../lib/app/Session');
 
   /** Components */
 
-  var Creator   =   require('syn/components/Creator/Controller');
-  var Item      =   require('syn/components/item/ctrl');
+  var Creator   =   require('../../components/Creator/Controller');
+  var Item      =   require('../../components/item/ctrl');
 
   /**
    *  @class
@@ -53,7 +53,7 @@ function _PanelComponent_ () {
     return this.id;
   };
 
-  Panel.prototype.load = require('syn/components/Panel/controllers/load');
+  Panel.prototype.load = require('../../components/Panel/controllers/load');
 
   Panel.prototype.find = function (name) {
     switch ( name ) {
@@ -89,13 +89,13 @@ function _PanelComponent_ () {
     }
   };
 
-  Panel.prototype.render        =   require('syn/components/Panel/controllers/render');
+  Panel.prototype.render        =   require('../../components/Panel/controllers/render');
 
-  Panel.prototype.toJSON        =   require('syn/components/Panel/controllers/to-json');
+  Panel.prototype.toJSON        =   require('../../components/Panel/controllers/to-json');
 
-  Panel.prototype.fill          =   require('syn/components/Panel/controllers/fill');
+  Panel.prototype.fill          =   require('../../components/Panel/controllers/fill');
 
-  Panel.prototype.preInsertItem =   require('syn/components/Panel/controllers/pre-insert-item');
+  Panel.prototype.preInsertItem =   require('../../components/Panel/controllers/pre-insert-item');
 
   Panel.prototype.insertItem    =   function (items, i, cb) {
 

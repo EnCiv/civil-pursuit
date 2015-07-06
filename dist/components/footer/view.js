@@ -14,13 +14,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synLibAppPage = require('syn/lib/app/page');
+var _libAppPage = require('../../lib/app/page');
 
-var _synLibAppPage2 = _interopRequireDefault(_synLibAppPage);
+var _libAppPage2 = _interopRequireDefault(_libAppPage);
 
 var Footer = (function (_Element) {
   function Footer(props) {
@@ -33,7 +33,7 @@ var Footer = (function (_Element) {
 
       return 'Copyright Ⓒ 2014 ' + (y > 2014 ? ' - ' + y : '') + ' by Synaccord.';
     }), new _cincoDist.Element('p').add(new _cincoDist.Element('a', {
-      href: (0, _synLibAppPage2['default'])('Terms Of Service')
+      href: (0, _libAppPage2['default'])('Terms Of Service')
     }).text('Terms of Service and Privacy Policy')));
   }
 

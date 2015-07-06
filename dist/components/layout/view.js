@@ -16,37 +16,37 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synComponentsGoogleAnalyticsView = require('syn/components/google-analytics/view');
+var _componentsGoogleAnalyticsView = require('../../components/google-analytics/view');
 
-var _synComponentsGoogleAnalyticsView2 = _interopRequireDefault(_synComponentsGoogleAnalyticsView);
+var _componentsGoogleAnalyticsView2 = _interopRequireDefault(_componentsGoogleAnalyticsView);
 
-var _synComponentsStylesView = require('syn/components/styles/view');
+var _componentsStylesView = require('../../components/styles/view');
 
-var _synComponentsStylesView2 = _interopRequireDefault(_synComponentsStylesView);
+var _componentsStylesView2 = _interopRequireDefault(_componentsStylesView);
 
-var _synComponentsScriptsView = require('syn/components/scripts/view');
+var _componentsScriptsView = require('../../components/scripts/view');
 
-var _synComponentsScriptsView2 = _interopRequireDefault(_synComponentsScriptsView);
+var _componentsScriptsView2 = _interopRequireDefault(_componentsScriptsView);
 
-var _synComponentsTopBarView = require('syn/components/top-bar/view');
+var _componentsTopBarView = require('../../components/top-bar/view');
 
-var _synComponentsTopBarView2 = _interopRequireDefault(_synComponentsTopBarView);
+var _componentsTopBarView2 = _interopRequireDefault(_componentsTopBarView);
 
-var _synComponentsFooterView = require('syn/components/footer/view');
+var _componentsFooterView = require('../../components/footer/view');
 
-var _synComponentsFooterView2 = _interopRequireDefault(_synComponentsFooterView);
+var _componentsFooterView2 = _interopRequireDefault(_componentsFooterView);
 
-var _synComponentsLoginView = require('syn/components/login/view');
+var _componentsLoginView = require('../../components/login/view');
 
-var _synComponentsLoginView2 = _interopRequireDefault(_synComponentsLoginView);
+var _componentsLoginView2 = _interopRequireDefault(_componentsLoginView);
 
-var _synComponentsJoinView = require('syn/components/join/view');
+var _componentsJoinView = require('../../components/join/view');
 
-var _synComponentsJoinView2 = _interopRequireDefault(_synComponentsJoinView);
+var _componentsJoinView2 = _interopRequireDefault(_componentsJoinView);
 
 var Layout = (function (_Document) {
   function Layout(props) {
@@ -57,7 +57,7 @@ var Layout = (function (_Document) {
     console.log();
     console.log('Layout props', props);
     console.log();
-    this.add(this.title(), this.uACompatible(), this.viewport(), new _synComponentsGoogleAnalyticsView2['default'](props), new _synComponentsStylesView2['default'](props), this.screens(), this.header(), this.main(), this.footer(), this.login(), this.join(), new _synComponentsScriptsView2['default'](props));
+    this.add(this.title(), this.uACompatible(), this.viewport(), new _componentsGoogleAnalyticsView2['default'](props), new _componentsStylesView2['default'](props), this.screens(), this.header(), this.main(), this.footer(), this.login(), this.join(), new _componentsScriptsView2['default'](props));
   }
 
   _inherits(Layout, _Document);
@@ -69,11 +69,11 @@ var Layout = (function (_Document) {
       var elem = new _cincoDist.Element('title');
 
       if (this.props.title) {
-        elem.text(_synConfigJson2['default'].title.prefix + this.props.title);
+        elem.text(_configJson2['default'].title.prefix + this.props.title);
       } else if (this.props.item) {
-        elem.text(_synConfigJson2['default'].title.prefix + this.props.item.subject);
+        elem.text(_configJson2['default'].title.prefix + this.props.item.subject);
       } else {
-        elem.text(_synConfigJson2['default'].title.prefix + _synConfigJson2['default'].title['default']);
+        elem.text(_configJson2['default'].title.prefix + _configJson2['default'].title['default']);
       }
 
       return elem;
@@ -102,7 +102,7 @@ var Layout = (function (_Document) {
   }, {
     key: 'header',
     value: function header() {
-      return new _cincoDist.Element('section', { role: 'header' }).add(new _synComponentsTopBarView2['default'](this.props));
+      return new _cincoDist.Element('section', { role: 'header' }).add(new _componentsTopBarView2['default'](this.props));
     }
   }, {
     key: 'main',
@@ -112,17 +112,17 @@ var Layout = (function (_Document) {
   }, {
     key: 'footer',
     value: function footer() {
-      return new _cincoDist.Element('section#footer', { role: 'footer' }).add(new _synComponentsFooterView2['default'](this.props));
+      return new _cincoDist.Element('section#footer', { role: 'footer' }).add(new _componentsFooterView2['default'](this.props));
     }
   }, {
     key: 'login',
     value: function login() {
-      return new _cincoDist.Element('script#login', { type: 'text/html' }).condition(!this.props.user).text(new _synComponentsLoginView2['default'](this.props).render());
+      return new _cincoDist.Element('script#login', { type: 'text/html' }).condition(!this.props.user).text(new _componentsLoginView2['default'](this.props).render());
     }
   }, {
     key: 'join',
     value: function join() {
-      return new _cincoDist.Element('script#join', { type: 'text/html' }).condition(!this.props.user).text(new _synComponentsJoinView2['default'](this.props).render());
+      return new _cincoDist.Element('script#join', { type: 'text/html' }).condition(!this.props.user).text(new _componentsJoinView2['default'](this.props).render());
     }
   }]);
 

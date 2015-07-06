@@ -20,9 +20,9 @@ var _synLibAppDescribe = require('syn/lib/app/Describe');
 
 var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var _synLibAppPage = require('syn/lib/app/page');
 
@@ -51,7 +51,7 @@ var ItemPage = (function (_Describe) {
     });
 
     this.assert(function () {
-      var title = _synConfigJson2['default'].title.prefix + _this.define('disposable').Item.subject;
+      var title = _configJson2['default'].title.prefix + _this.define('disposable').Item.subject;
 
       return new _componentsLayout2['default']({ title: title }).driver(_this._driver);
     });

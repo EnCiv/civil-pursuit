@@ -10,9 +10,9 @@ function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else i
 
 var _domain = require('domain');
 
-var _synLibUtilGetUrlTitle = require('syn/lib/util/get-url-title');
+var _libAppGetUrlTitle = require('../../../lib/app/get-url-title');
 
-var _synLibUtilGetUrlTitle2 = _interopRequireDefault(_synLibUtilGetUrlTitle);
+var _libAppGetUrlTitle2 = _interopRequireDefault(_libAppGetUrlTitle);
 
 function preSaveItem(next, done) {
   var _this = this;
@@ -80,7 +80,7 @@ function fetchUrlTitle(item) {
       }
 
       if (lookForTitle) {
-        (0, _synLibUtilGetUrlTitle2['default'])(url).then(ok, ko);
+        (0, _libAppGetUrlTitle2['default'])(url).then(ok, ko);
       } else {
         ok();
       }

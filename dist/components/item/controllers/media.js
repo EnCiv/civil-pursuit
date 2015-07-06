@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synComponentsYoutubeView = require('syn/components/youtube/view');
+var _componentsYoutubeView = require('../../../components/youtube/view');
 
-var _synComponentsYoutubeView2 = _interopRequireDefault(_synComponentsYoutubeView);
+var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
 
 function MediaController() {
   var _this = this;
@@ -21,13 +21,13 @@ function MediaController() {
 
   if (references.length) {
 
-    var youtube = new _synComponentsYoutubeView2['default']({
+    var youtube = new _componentsYoutubeView2['default']({
       settings: { env: synapp.props.settings.env },
       item: item
     });
 
     if (youtube.children.length) {
-      var _YouTube$resolve = _synComponentsYoutubeView2['default'].resolve(youtube.children[0].selector);
+      var _YouTube$resolve = _componentsYoutubeView2['default'].resolve(youtube.children[0].selector);
 
       var element = _YouTube$resolve.element;
 
@@ -73,7 +73,7 @@ function MediaController() {
   // YouTube Cover Image
 
   if (item.youtube) {
-    return $(new _synComponentsYoutubeView2['default']({
+    return $(new _componentsYoutubeView2['default']({
       item: {
         references: [{
           url: 'http://youtube.com/watch?v=' + item.youtube

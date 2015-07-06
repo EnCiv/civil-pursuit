@@ -1,8 +1,8 @@
 'use strict';
 
 import should       from 'should';
-import ItemModel    from 'syn/models/item';
-import UserModel    from 'syn/models/user';
+import ItemModel    from '../../models/item';
+import UserModel    from '../../models/user';
 
 class TestItemModel {
 

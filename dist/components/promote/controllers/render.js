@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
 /**
  *  @method Promote.render
@@ -22,7 +22,7 @@ function renderPromote(cb) {
   var d = this.domain;
 
   self.find('finish button').on('click', function () {
-    _synLibUtilNav2['default'].scroll(self.template, d.intercept(function () {
+    _libUtilNav2['default'].scroll(self.template, d.intercept(function () {
 
       var cursor = self.get('cursor');
       var limit = self.get('limit');

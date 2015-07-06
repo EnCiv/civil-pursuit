@@ -18,21 +18,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _synComponentsLoginCtrl = require('syn/components/login/ctrl');
+var _componentsLoginCtrl = require('../../components/login/ctrl');
 
-var _synComponentsLoginCtrl2 = _interopRequireDefault(_synComponentsLoginCtrl);
+var _componentsLoginCtrl2 = _interopRequireDefault(_componentsLoginCtrl);
 
-var _synComponentsJoinCtrl = require('syn/components/join/ctrl');
+var _componentsJoinCtrl = require('../../components/join/ctrl');
 
-var _synComponentsJoinCtrl2 = _interopRequireDefault(_synComponentsJoinCtrl);
+var _componentsJoinCtrl2 = _interopRequireDefault(_componentsJoinCtrl);
 
-var _synComponentsForgotPasswordCtrl = require('syn/components/forgot-password/ctrl');
+var _componentsForgotPasswordCtrl = require('../../components/forgot-password/ctrl');
 
-var _synComponentsForgotPasswordCtrl2 = _interopRequireDefault(_synComponentsForgotPasswordCtrl);
+var _componentsForgotPasswordCtrl2 = _interopRequireDefault(_componentsForgotPasswordCtrl);
 
 var TopBar = (function (_Controller) {
 
@@ -132,10 +132,10 @@ var TopBar = (function (_Controller) {
             return vex.close();
           });
 
-          new _synComponentsLoginCtrl2['default']({ $vexContent: $vexContent });
+          new _componentsLoginCtrl2['default']({ $vexContent: $vexContent });
 
           $vexContent.find('.forgot-password-link').on('click', function () {
-            new _synComponentsForgotPasswordCtrl2['default']();
+            new _componentsForgotPasswordCtrl2['default']();
             vex.close($vexContent.data().vex.id);
             return false;
           });
@@ -170,7 +170,7 @@ var TopBar = (function (_Controller) {
             vex.close();
           });
 
-          new _synComponentsJoinCtrl2['default']({ $vexContent: $vexContent });
+          new _componentsJoinCtrl2['default']({ $vexContent: $vexContent });
         },
 
         afterClose: function afterClose() {
@@ -194,7 +194,7 @@ var TopBar = (function (_Controller) {
   }]);
 
   return TopBar;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 exports['default'] = TopBar;
 module.exports = exports['default'];

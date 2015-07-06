@@ -20,13 +20,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synComponentsPanelView = require('syn/components/panel//view');
+var _componentsPanelView = require('../../components/panel//view');
 
-var _synComponentsPanelView2 = _interopRequireDefault(_synComponentsPanelView);
+var _componentsPanelView2 = _interopRequireDefault(_componentsPanelView);
 
-var _synComponentsItemView = require('syn/components/item/view');
+var _componentsItemView = require('../../components/item/view');
 
-var _synComponentsItemView2 = _interopRequireDefault(_synComponentsItemView);
+var _componentsItemView2 = _interopRequireDefault(_componentsItemView);
 
 var Intro = (function (_Element) {
   function Intro(props) {
@@ -37,9 +37,9 @@ var Intro = (function (_Element) {
     this.props = props;
 
     this.add(function () {
-      var panel = new _synComponentsPanelView2['default']({ creator: false });
+      var panel = new _componentsPanelView2['default']({ creator: false });
 
-      panel.find('.items').get(0).add(new _synComponentsItemView2['default']({
+      panel.find('.items').get(0).add(new _componentsItemView2['default']({
         buttons: false, collapsers: false
       }));
 

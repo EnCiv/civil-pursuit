@@ -14,13 +14,13 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-var _synLibUtilRandomString = require('syn/lib/util/random-string');
+var _libUtilRandomString = require('../../lib/util/random-string');
 
-var _synLibUtilRandomString2 = _interopRequireDefault(_synLibUtilRandomString);
+var _libUtilRandomString2 = _interopRequireDefault(_libUtilRandomString);
 
 var TestUserModel = (function () {
   function TestUserModel() {
@@ -76,14 +76,14 @@ var TestUserModel = (function () {
               }
             }, 2500);
 
-            (0, _synLibUtilRandomString2['default'])(15).then(function (str) {
+            (0, _libUtilRandomString2['default'])(15).then(function (str) {
               try {
                 var user = {
                   email: str + '@syntest.com',
                   password: '1234'
                 };
 
-                _synModelsUser2['default'].create(user).then(function (user) {
+                _modelsUser2['default'].create(user).then(function (user) {
                   try {
                     TestUserModel.isUser(user).then(function () {
                       state = true;
@@ -128,7 +128,7 @@ var TestUserModel = (function () {
               }
             }, 2500);
 
-            _synModelsUser2['default'].disposable().then(function (user) {
+            _modelsUser2['default'].disposable().then(function (user) {
               try {
                 TestUserModel.isUser(user).then(function () {
                   state = true;

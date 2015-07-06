@@ -1,42 +1,5010 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/dist/pages/home/ctrl.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/dist/app.js":[function(require,module,exports){
 'use strict';
 
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _events = require('events');
+
+var _domain = require('domain');
+
+var _domain2 = _interopRequireDefault(_domain);
+
+var _libAppCache = require('./lib/app/cache');
+
+var _libAppCache2 = _interopRequireDefault(_libAppCache);
+
+var App = (function (_EventEmitter) {
+  function App(isPage) {
+    var _this = this;
+
+    _classCallCheck(this, App);
+
+    _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this);
+
+    this.store = {};
+
+    this.connect();
+
+    if (isPage) {
+      this.store.socket = {};
+
+      this.socket.on('welcome', function (user) {
+        console.log('Connected to socket');
+        _this.socket.synuser = user;
+        _this.emit('ready');
+      });
+    }
+
+    this.domain = _domain2['default'].create().on('error', function (error) {
+      return _this.emit('error', error);
+    });
+
+    this.domain.intercept = function (handler) {
+      return function (error) {
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
+          args[_key2 - 1] = arguments[_key2];
+        }
+
+        return _this.domain.run(function () {
+          if (error) {
+            throw error;
+          }
+          if (handler) {
+            handler.apply(undefined, args);
+          }
+        });
+      };
+    };
+  }
+
+  _inherits(App, _EventEmitter);
+
+  _createClass(App, [{
+    key: 'get',
+
+    /** Get local store by key
+     *  @arg      {String} key
+     *  @return   Any
+    */
+
+    value: function get(key) {
+      return this.store[key];
+    }
+  }, {
+    key: 'getGlobal',
+
+    /** Get global store by key
+     *  @arg      {String} key
+     *  @return   Any
+    */
+
+    value: function getGlobal(key) {
+      return synapp.app.store[key];
+    }
+  }, {
+    key: 'set',
+
+    /** Set local store by key
+     *  @arg      {String} key
+     *  @arg      {Any} value
+     *  @return   App
+    */
+
+    value: function set(key, value) {
+      this.store[key] = value;
+
+      this.emit('set', key, value);
+
+      return this;
+    }
+  }, {
+    key: 'setGlobal',
+
+    /** Set global store by key
+     *  @arg      {String} key
+     *  @arg      {Any} value
+     *  @return   App
+    */
+
+    value: function setGlobal(key, value) {
+      this.store[key] = value;
+
+      this.emit('set global', key, value);
+
+      return this;
+    }
+  }, {
+    key: 'copy',
+
+    /** Copy a global into local and stay in sync with changes
+     *  @arg      {String} key
+    */
+
+    value: function copy(key) {
+      var _this2 = this;
+
+      this.store[key] = this.getGlobal(key);
+
+      this.on('set global', function (_key, value) {
+        if (key === _key) {
+          _this2.store.set(key, value);
+        }
+      });
+    }
+  }, {
+    key: 'error',
+
+    /** Throw App error
+     *  @arg      {Error} err
+    */
+
+    value: function error(err) {
+      console.log('App error');
+    }
+  }, {
+    key: 'ready',
+
+    /** Execute handler on App ready
+     *  @arg      {Function} fn
+    */
+
+    value: function ready(fn) {
+      this.on('ready', fn);
+    }
+  }, {
+    key: 'connect',
+
+    /** Set store by key
+     *  @arg      {String} key
+     *  @arg      {Any} value
+     *  @return   App
+    */
+
+    value: function connect() {
+
+      if (!io.$$socket) {
+        io.$$socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
+      }
+
+      this.socket = io.$$socket;
+    }
+  }, {
+    key: 'reconnect',
+    value: function reconnect() {
+      console.log('reconnecting');
+      this.socket.close().connect();
+    }
+  }, {
+    key: 'publish',
+    value: function publish(event) {
+      var _this3 = this;
+
+      for (var _len2 = arguments.length, messages = Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
+        messages[_key3 - 1] = arguments[_key3];
+      }
+
+      var unsubscribe = function unsubscribe() {
+        _this3.socket.removeListener('OK ' + event, _this3.handler);
+      };
+
+      console.info.apply(console, ['PUB', event].concat(messages));
+
+      return {
+        subscribe: function subscribe(handler) {
+          var _socket$on;
+
+          (_socket$on = _this3.socket.on('OK ' + event, function () {
+            for (var _len3 = arguments.length, responses = Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
+              responses[_key4] = arguments[_key4];
+            }
+
+            return handler.apply(undefined, [{ unsubscribe: unsubscribe.bind(handler) }].concat(responses));
+          })).emit.apply(_socket$on, [event].concat(messages));
+        }
+      };
+    }
+  }, {
+    key: 'load',
+    value: function load() {
+
+      if (!this.template) {
+        if (_libAppCache2['default'].getTemplate(this.componentName)) {
+          this.template = $(_libAppCache2['default'].getTemplate(this.componentName));
+        } else {
+          var View = this.view;
+          var view = new View(this.props);
+          _libAppCache2['default'].setTemplate(this.componentName, view.render());
+          this.template = $(_libAppCache2['default'].getTemplate(this.componentName));
+        }
+      }
+
+      return this.template;
+    }
+  }]);
+
+  return App;
+})(_events.EventEmitter);
+
+exports['default'] = App;
+module.exports = exports['default'];
+},{"./lib/app/cache":"/home/francois/Dev/syn/dist/lib/app/cache.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/components/creator/controllers/create.js":[function(require,module,exports){
+(function (process){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _libUtilNav = require('../../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var _componentsItemCtrl = require('../../../components/item/ctrl');
+
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
+
+var _libAppStream = require('../../../lib/app/Stream');
+
+var _libAppStream2 = _interopRequireDefault(_libAppStream);
+
+function save() {
+  var _this = this;
+
+  var d = this.domain;
+
+  process.nextTick(function () {
+
+    d.run(function () {
+
+      // Hide the Creator           // Catch errors
+
+      _libUtilNav2['default'].hide(_this.template).error(d.intercept())
+
+      // Hiding complete
+
+      .hidden(function () {
+
+        // Build the JSON object to save to MongoDB
+
+        _this.packItem();
+
+        // In case a file was uploaded
+
+        if (_this.packaged.upload) {
+
+          // Get file from template's data
+
+          var file = _this.template.find('.preview-image').data('file');
+
+          // New stream         //  Catch stream errors
+
+          new _libAppStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
+            _this.packaged.image = file.name;
+
+            console.log('create item', _this.packaged);
+
+            _this.publish('create item', _this.packaged).subscribe(function (pubsub, item) {
+              pubsub.unsubscribe();
+              _this.created(item);
+            });
+          });
+        }
+
+        // If nof ile was uploaded
+
+        else {
+          console.log('create item', _this.packaged);
+
+          _this.publish('create item', _this.packaged).subscribe(function (pubsub, item) {
+            console.log('item created', item);
+            pubsub.unsubscribe();
+            _this.created(item);
+          });
+        }
+      });
+    });
+  });
+
+  return false;
 }
 
-var _synApp = require('syn/app');
+exports['default'] = save;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../../lib/app/Stream":"/home/francois/Dev/syn/dist/lib/app/Stream.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/dist/components/creator/controllers/created.js":[function(require,module,exports){
+'use strict';
 
-var _synApp2 = _interopRequireDefault(_synApp);
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-var _synComponentsIntroCtrl = require('syn/components/intro/ctrl');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synComponentsIntroCtrl2 = _interopRequireDefault(_synComponentsIntroCtrl);
+var _componentsItemCtrl = require('../../../components/item/ctrl');
 
-var _synComponentsTopBarCtrl = require('syn/components/top-bar/ctrl');
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 
-var _synComponentsTopBarCtrl2 = _interopRequireDefault(_synComponentsTopBarCtrl);
+function created(item) {
+  console.log('created item', item);
 
-var _synComponentsPanelCtrl = require('syn/components/panel/ctrl');
+  var d = this.domain;
 
-var _synComponentsPanelCtrl2 = _interopRequireDefault(_synComponentsPanelCtrl);
+  this.parent.find('.create-new').hide();
 
-synapp.app = new _synApp2['default'](true);
+  if (this.packaged.upload) {
+    item.upload = this.packaged.upload;
+  }
+
+  if (this.packaged.youtube) {
+    item.youtube = this.packaged.youtube;
+  }
+
+  item = new _componentsItemCtrl2['default']({ item: item });
+
+  var items = this.panelContainer.find('items');
+
+  item.load();
+
+  console.log('inserting', item);
+
+  item.template.addClass('new');
+  items.prepend(item.template);
+  item.render(d.intercept(function () {
+    item.find('toggle promote').click();
+  }));
+}
+
+exports['default'] = created;
+module.exports = exports['default'];
+},{"../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js"}],"/home/francois/Dev/syn/dist/components/creator/controllers/pack-item.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function packItem() {
+
+  var item = {
+    type: this.panel.type,
+    subject: this.find('subject').val(),
+    description: this.find('description').val()
+  };
+
+  // Parent
+
+  if (this.panel.parent) {
+    item.parent = this.panel.parent;
+  }
+
+  // References
+
+  if (this.find('reference').val()) {
+    item.references = [{ url: this.find('reference').val() }];
+
+    if (this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title') {
+      item.references[0].title = this.find('reference board').text();
+    }
+  }
+
+  // Image
+
+  if (this.find('item media').find('img').length) {
+
+    // YouTube
+
+    if (this.find('item media').find('.youtube-preview').length) {
+      item.youtube = this.find('item media').find('.youtube-preview').data('video');
+    }
+
+    // Upload
+
+    else {
+      item.upload = this.find('item media').find('img').attr('src');
+      item.image = item.upload;
+    }
+  }
+
+  this.find('subject').val('');
+  this.find('description').val('');
+  this.find('reference').val('').css('display', 'block');
+  this.find('reference board').text('').addClass('hide');
+
+  this.packaged = item;
+}
+
+exports['default'] = packItem;
+module.exports = exports['default'];
+},{}],"/home/francois/Dev/syn/dist/components/creator/controllers/render.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _libUtilUpload = require('../../../lib/util/upload');
+
+var _libUtilUpload2 = _interopRequireDefault(_libUtilUpload);
+
+var _libUtilForm = require('../../../lib/util/form');
+
+var _libUtilForm2 = _interopRequireDefault(_libUtilForm);
+
+var _componentsYoutubeCtrl = require('../../../components/youtube/ctrl');
+
+var _componentsYoutubeCtrl2 = _interopRequireDefault(_componentsYoutubeCtrl);
+
+var _domain = require('domain');
+
+var _domain2 = _interopRequireDefault(_domain);
+
+function renderCreator(cb) {
+  var _this = this;
+
+  var q = new Promise(function (fulfill, reject) {
+
+    var self = _this;
+
+    var d = _domain2['default'].create().on('error', reject);
+
+    d.run(function () {
+      // Make sure template exists in DOM
+
+      if (!_this.template.length) {
+        throw new Error('Creator not found in panel ' + _this.panel.getId());
+      }
+
+      // Attach component to template's data
+
+      _this.template.data('creator', _this);
+
+      // Emulate input type file's behavior with button
+
+      _this.find('upload image button').on('click', function () {
+        _this.find('dropbox').find('[type="file"]').click();
+      });
+
+      // Use upload service
+
+      new _libUtilUpload2['default'](_this.find('dropbox'), _this.find('dropbox').find('input'), _this.find('dropbox'));
+
+      // Autogrow
+
+      _this.template.find('textarea').autogrow();
+
+      // Get reference's title
+
+      var findTitle = function findTitle() {
+
+        var creator = $(this).closest('.creator').data('creator');
+
+        var board = creator.find('reference board');
+        var reference = $(this);
+
+        board.removeClass('hide').text('Looking up title');
+
+        var url = $(this).val();
+
+        if (url) {
+          self.getTitle(url).then(function (title) {
+            if (title) {
+              board.text(title).on('click', function () {
+                reference.css('display', 'block');
+                board.addClass('hide');
+              });
+              reference.data('title', title).css('display', 'none');
+
+              var yt = (0, _componentsYoutubeCtrl2['default'])(url);
+
+              if (yt) {
+                creator.find('dropbox').hide();
+
+                creator.find('item media').empty().append(yt);
+              }
+            } else {
+              board.text('Looking up').addClass('hide');
+            }
+          });
+        }
+      };
+
+      _this.find('reference').on('blur change', findTitle).on('keydown', function (e) {
+        if (e.keyCode === 9) {
+          findTitle.apply(this);
+        }
+      });
+
+      // Build form using Form provider
+
+      var form = new _libUtilForm2['default'](_this.template);
+
+      form.send(_this.create.bind(_this));
+
+      // Done
+
+      fulfill();
+    });
+  });
+
+  if (typeof cb === 'function') {
+    q.then(cb.bind(null, null), cb);
+  }
+
+  return q;
+}
+
+exports['default'] = renderCreator;
+module.exports = exports['default'];
+},{"../../../components/youtube/ctrl":"/home/francois/Dev/syn/dist/components/youtube/ctrl.js","../../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../../lib/util/upload":"/home/francois/Dev/syn/dist/lib/util/upload.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/components/creator/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _componentsPanelCtrl = require('../../components/panel//ctrl');
+
+var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
+
+var _componentsCreatorControllersRender = require('../../components/creator//controllers/render');
+
+var _componentsCreatorControllersRender2 = _interopRequireDefault(_componentsCreatorControllersRender);
+
+var _componentsCreatorControllersCreate = require('../../components/creator//controllers/create');
+
+var _componentsCreatorControllersCreate2 = _interopRequireDefault(_componentsCreatorControllersCreate);
+
+var _componentsCreatorControllersCreated = require('../../components/creator//controllers/created');
+
+var _componentsCreatorControllersCreated2 = _interopRequireDefault(_componentsCreatorControllersCreated);
+
+var _componentsCreatorControllersPackItem = require('../../components/creator//controllers/pack-item');
+
+var _componentsCreatorControllersPackItem2 = _interopRequireDefault(_componentsCreatorControllersPackItem);
+
+var text = {
+  'looking up title': 'Looking up'
+};
+
+var Creator = (function (_Controller) {
+  function Creator(props, panelContainer) {
+    _classCallCheck(this, Creator);
+
+    _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).call(this);
+
+    this.props = props || {};
+
+    this.panel = props.panel;
+
+    this.panelContainer = panelContainer;
+  }
+
+  _inherits(Creator, _Controller);
+
+  _createClass(Creator, [{
+    key: 'parent',
+    get: function () {
+      return $('#' + _componentsPanelCtrl2['default'].getId(this.props.panel));
+    }
+  }, {
+    key: 'template',
+    get: function () {
+      return this.parent.find('.creator:first');
+    }
+  }, {
+    key: 'getTitle',
+    value: function getTitle(url) {
+      var _this = this;
+
+      console.info('get title', url);
+      return new Promise(function (ok, ko) {
+        _this.publish('get url title', url).subscribe(function (pubsub, title) {
+          console.info('get title', title);
+          ok(title);
+          pubsub.unsubscribe();
+        });
+      });
+    }
+  }, {
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'create button':
+          return this.template.find('.button-create:first');
+
+        case 'form':
+          return this.template.find('form');
+
+        case 'dropbox':
+          return this.template.find('.drop-box');
+
+        case 'subject':
+          return this.template.find('[name="subject"]');
+
+        case 'description':
+          return this.template.find('[name="description"]');
+
+        case 'item media':
+          return this.template.find('.item-media');
+
+        case 'reference':
+          return this.template.find('.reference');
+
+        case 'reference board':
+          return this.template.find('.reference-board');
+
+        case 'upload image button':
+          return this.template.find('.upload-image-button');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(cb) {
+      return _componentsCreatorControllersRender2['default'].apply(this, [cb]);
+    }
+  }, {
+    key: 'create',
+    value: function create(cb) {
+      return _componentsCreatorControllersCreate2['default'].apply(this, [cb]);
+    }
+  }, {
+    key: 'packItem',
+    value: function packItem(item) {
+      return _componentsCreatorControllersPackItem2['default'].apply(this, [item]);
+    }
+  }, {
+    key: 'created',
+    value: function created(item) {
+      return _componentsCreatorControllersCreated2['default'].apply(this, [item]);
+    }
+  }]);
+
+  return Creator;
+})(_libAppController2['default']);
+
+exports['default'] = Creator;
+module.exports = exports['default'];
+},{"../../components/creator//controllers/create":"/home/francois/Dev/syn/dist/components/creator/controllers/create.js","../../components/creator//controllers/created":"/home/francois/Dev/syn/dist/components/creator/controllers/created.js","../../components/creator//controllers/pack-item":"/home/francois/Dev/syn/dist/components/creator/controllers/pack-item.js","../../components/creator//controllers/render":"/home/francois/Dev/syn/dist/components/creator/controllers/render.js","../../components/panel//ctrl":"/home/francois/Dev/syn/dist/components/panel/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js"}],"/home/francois/Dev/syn/dist/components/creator/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var _componentsItemView = require('../../components/item/view');
+
+var _componentsItemView2 = _interopRequireDefault(_componentsItemView);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  Creator
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var Creator = (function (_Element) {
+  function Creator(props, extra) {
+    _classCallCheck(this, Creator);
+
+    _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).call(this, 'form.creator.is-container', {
+      name: 'create',
+      novalidate: 'novalidate',
+      role: 'form',
+      method: 'POST'
+    });
+
+    this.props = props;
+
+    this.extra = extra || {};
+
+    var itemBox = this.itemBox();
+
+    itemBox.find('.item-text').get(0).empty().add(this.inputs());
+
+    this.add(new _cincoDist.Element('.is-section').add(itemBox));
+  }
+
+  _inherits(Creator, _Element);
+
+  _createClass(Creator, [{
+    key: 'modern',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Drag and drop (modern browsers only)
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function modern() {
+      return new _cincoDist.Element('.modern').add(new _cincoDist.Element('h4').text('Drop image here'), new _cincoDist.Element('p').text('or'));
+    }
+  }, {
+    key: 'legacy',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Legacy input type file (masked by a button for design purposes)
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function legacy() {
+      return new _cincoDist.Element('.phasing').add(new _cincoDist.Element('button.upload-image-button', { type: 'button' }).text('Choose a file'), new _cincoDist.Element('input', {
+        name: 'image',
+        type: 'file',
+        value: 'Upload image' }).close());
+    }
+  }, {
+    key: 'dropBox',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Image uploader container
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function dropBox() {
+      return new _cincoDist.Element('.drop-box').add(this.modern(), this.legacy());
+    }
+  }, {
+    key: 'submitButton',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Submit button
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function submitButton() {
+      return new _cincoDist.Element('button.button-create.shy.medium').add(new _cincoDist.Element('i.fa.fa-bullhorn'));
+    }
+  }, {
+    key: 'itemBox',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Item Component
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function itemBox() {
+      return new _componentsItemView2['default']({
+        item: {
+          media: this.dropBox(),
+          buttons: new _cincoDist.Elements(this.submitButton()),
+          collapsers: false
+        }
+      });
+    }
+  }, {
+    key: 'inputs',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Text inputs
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function inputs() {
+      return new _cincoDist.Element('.item-inputs').add(this.subject(), this.description(), this.reference());
+    }
+  }, {
+    key: 'subject',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Subject field
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function subject() {
+      return new _cincoDist.Element('input', {
+        type: 'text',
+        placeholder: 'Item subject',
+        required: 'required',
+        name: 'subject' });
+    }
+  }, {
+    key: 'description',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Description field
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function description() {
+      return new _cincoDist.Element('textarea', {
+        placeholder: 'Item description',
+        required: 'required',
+        name: 'description'
+      });
+    }
+  }, {
+    key: 'reference',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  URL
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function reference() {
+      return new _cincoDist.Elements(new _cincoDist.Element('input.reference', {
+        type: 'url',
+        placeholder: 'http://',
+        name: 'reference'
+      }), new _cincoDist.Element('.reference-board.hide').text('Looking up'));
+    }
+  }]);
+
+  return Creator;
+})(_cincoDist.Element);
+
+exports['default'] = Creator;
+module.exports = exports['default'];
+},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/details/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _componentsEditAndGoAgainCtrl = require('../../components/edit-and-go-again/ctrl');
+
+var _componentsEditAndGoAgainCtrl2 = _interopRequireDefault(_componentsEditAndGoAgainCtrl);
+
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var Details = (function (_Controller) {
+  function Details(props, itemParent) {
+    _classCallCheck(this, Details);
+
+    _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this);
+
+    this.store = {
+      item: null,
+      details: null
+    };
+
+    if (props.item) {
+      this.set('item', props.item);
+    }
+
+    this.props = props || {};
+
+    this.itemParent = itemParent;
+
+    this.template = itemParent.find('details');
+  }
+
+  _inherits(Details, _Controller);
+
+  _createClass(Details, [{
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'promoted bar':
+          return this.template.find('.progress');
+
+        case 'feedback list':
+          return this.template.find('.feedback-list');
+
+        case 'votes':
+          return this.template.find('.details-votes');
+
+        case 'toggle edit and go again':
+          return this.template.find('.edit-and-go-again-toggler');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(cb) {
+      var self = this;
+
+      var d = this.domain;
+
+      var item = this.get('item');
+
+      var currentAmount = item.popularity.number;
+
+      if (isNaN(currentAmount)) {
+        currentAmount = 0;
+      }
+
+      this.find('promoted bar').goalProgress({
+        goalAmount: 100,
+        currentAmount: currentAmount,
+        textBefore: '',
+        textAfter: '%'
+      });
+
+      this.find('toggle edit and go again').on('click', function () {
+        NavProvider.unreveal(self.template, self.itemParent.template, d.intercept(function () {
+          if (self.item.find('editor').find('form').length) {
+            console.warn('already loaded');
+          } else {
+            var edit = new EditComponent(self.item);
+
+            edit.get(d.intercept(function (template) {
+
+              self.itemParent.find('editor').find('.is-section').append(template);
+
+              NavProvider.reveal(self.item.find('editor'), self.item.template, d.intercept(function () {
+                NavProvider.show(template, d.intercept(function () {
+                  edit.render();
+                }));
+              }));
+            }));
+          }
+        }));
+      });
+
+      if (this.socket.synuser) {
+        $('.is-in').removeClass('is-in');
+      }
+
+      if (!self.details) {
+        this.fetch();
+      }
+    }
+  }, {
+    key: 'votes',
+    value: function votes(criteria, svg) {
+      var details = this.get('details');
+
+      setTimeout(function () {
+        var vote = details.votes[criteria._id];
+
+        console.info('vote', vote);
+
+        svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
+
+        var data = [];
+
+        // If no votes, show nothing
+
+        if (!vote) {
+          vote = {
+            values: {
+              '-1': 0,
+              '0': 0,
+              '1': 0
+            },
+            total: 0
+          };
+        }
+
+        for (var number in vote.values) {
+          data.push({
+            label: 'number',
+            value: vote.values[number] * 100 / vote.total
+          });
+        }
+
+        var columns = ['votes'];
+
+        data.forEach(function (d) {
+          columns.push(d.value);
+        });
+
+        var chart = c3.generate({
+          bindto: '#' + svg.attr('id'),
+          data: {
+            x: 'x',
+            columns: [['x', -1, 0, 1], columns],
+            type: 'bar'
+          },
+          grid: {
+            x: {
+              lines: 3
+            }
+          },
+          axis: {
+            x: {},
+            y: {
+              max: 90,
+              show: false,
+              tick: {
+                count: 5,
+                format: function format(y) {
+                  return y;
+                }
+              }
+            }
+          },
+          size: {
+            height: 80
+          },
+          bar: {
+            width: $(window).width() / 5
+          }
+        });
+      }, 250);
+    }
+  }, {
+    key: 'feedback',
+    value: function feedback() {
+      console.log('item has feedback?', this.get('item'));
+    }
+  }, {
+    key: 'fetch',
+    value: function fetch() {
+      var _this = this;
+
+      var self = this;
+
+      var item = this.get('item');
+
+      this.publish('get item details', item._id).subscribe(function (pubsub, details) {
+        console.log('got item details', details);
+
+        _this.set('details', details);
+
+        // Feedback
+
+        details.feedbacks.forEach(function (feedback) {
+          var tpl = $('<div class="pretext feedback"></div>');
+          tpl.text(feedback.feedback);
+          _this.find('feedback list').append(tpl).append('<hr/>');
+        });
+
+        // Votes
+
+        details.criterias.forEach(function (criteria, i) {
+          _this.find('votes').eq(i).find('h4').text(criteria.name);
+
+          _this.votes(criteria, _this.find('votes').eq(i).find('svg'));
+        });
+      });
+    }
+  }]);
+
+  return Details;
+})(_libAppController2['default']);
+
+exports['default'] = Details;
+module.exports = exports['default'];
+},{"../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/details/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var Details = (function (_Element) {
+  function Details(props) {
+    _classCallCheck(this, Details);
+
+    _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this, 'section');
+
+    this.add(this.invitePeople(), this.progressBar()).add(this.votes()).add(this.feedback());
+  }
+
+  _inherits(Details, _Element);
+
+  _createClass(Details, [{
+    key: 'invitePeople',
+    value: function invitePeople() {
+      return new _cincoDist.Element('section.feedback-pending.hide').add(new _cincoDist.Element('h4').text('Feedback pending'), new _cincoDist.Element('p').text('While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'), new _cincoDist.Element('a.btn.invite-people', { target: '_blank' }).text('Send'), new _cincoDist.Element('hr'));
+    }
+  }, {
+    key: 'progressBar',
+    value: function progressBar() {
+      return new _cincoDist.Element('.row').add(new _cincoDist.Element('.tablet-30.middle').add(new _cincoDist.Element('h4').text('Promoted')), new _cincoDist.Element('.tablet-70.middle').add(new _cincoDist.Element('.progress')));
+    }
+  }, {
+    key: 'feedback',
+    value: function feedback() {
+      return new _cincoDist.Element('.details-feedbacks').add(new _cincoDist.Element('h4').text('Feedback'), new _cincoDist.Element('.feedback-list'));
+    }
+  }, {
+    key: 'votes',
+    value: function votes() {
+      var votes = new _cincoDist.Elements();
+
+      for (var i = 0; i < 4; i++) {
+        votes.add(new _cincoDist.Element('.row.details-votes').add(new _cincoDist.Element('.tablet-30.middle').add(new _cincoDist.Element('h4', {
+          'data-toggle': 'tooltip',
+          'data-placement': 'top'
+        }).text('Criteria')), new _cincoDist.Element('.tablet-70.middle').add(new _cincoDist.Element('svg.chart'))));
+      }
+
+      return votes;
+    }
+  }]);
+
+  return Details;
+})(_cincoDist.Element);
+
+exports['default'] = Details;
+module.exports = exports['default'];
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/edit-and-go-again/controllers/save.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  var Nav = require('../../../lib/util/nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function save() {
+    var edit = this;
+
+    console.log(edit.toItem());
+
+    Nav.hide(edit.template, app.domain.intercept(function () {
+      Nav.hide(edit.template.closest('.editor'), app.domain.intercept(function () {
+
+        var new_item = edit.toItem();
+
+        app.socket.emit('create item', new_item);
+
+        app.socket.once('could not create item', function (error) {
+          console.error(error);
+        });
+
+        app.socket.once('created item', function (item) {
+          console.log('created item', item);
+
+          if (new_item.upload) {
+            item.upload = new_item.upload;
+          }
+
+          if (new_item.youtube) {
+            item.youtube = new_item.youtube;
+          }
+
+          var item = new (require('../../../components/item/ctrl'))(item);
+
+          item.load(app.domain.intercept(function () {
+            item.template.insertBefore(edit.item.template);
+
+            item.render(app.domain.intercept(function () {
+              item.find('toggle promote').click();
+            }));
+          }));
+        });
+      }));
+    }));
+  }
+
+  module.exports = save;
+})();
+},{"../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js":[function(require,module,exports){
+'use strict';
+
+!(function Component_EditAndGoAgain_Controller() {
+
+  'use strict';
+
+  var Nav = require('../../lib/util/nav');
+  var Creator = require('../../components/creator//ctrl');
+  var Item = require('../../components/item/ctrl');
+  var Form = require('../../lib/util/form');
+
+  /**
+   *  @class
+   *
+   *  @arg {String} type
+   *  @arg {String?} parent
+   */
+
+  function Edit(item) {
+
+    console.log('EDIT', item);
+
+    if (!app) {
+      throw new Error('Missing app');
+    }
+
+    var self = this;
+
+    app.domain.run(function () {
+      if (!item || !item instanceof require('../../components/item/ctrl')) {
+        throw new Error('Item must be an Item');
+      }
+
+      self.item = item;
+    });
+  }
+
+  Edit.prototype.get = function (cb) {
+    var edit = this;
+
+    $.ajax({
+      url: '/partial/creator'
+    }).error(cb).success(function (data) {
+      edit.template = $(data);
+
+      cb(null, edit.template);
+    });
+
+    return this;
+  };
+
+  Edit.prototype.find = function (name) {
+    switch (name) {
+      case 'create button':
+        return this.template.find('.button-create:first');
+
+      case 'dropbox':
+        return this.template.find('.drop-box');
+
+      case 'subject':
+        return this.template.find('[name="subject"]');
+
+      case 'description':
+        return this.template.find('[name="description"]');
+
+      case 'item media':
+        return this.template.find('.item-media');
+
+      case 'reference':
+        return this.template.find('.reference');
+
+      case 'reference board':
+        return this.template.find('.reference-board');
+    }
+  };
+
+  Edit.prototype.render = function (cb) {
+
+    var edit = this;
+
+    // this.template.find('textarea').autogrow();
+
+    this.template.find('[name="subject"]').val(edit.item.item.subject);
+    this.template.find('[name="description"]').val(edit.item.item.description).autogrow();
+
+    if (edit.item.item.references.length) {
+      this.template.find('[name="reference"]').val(edit.item.item.references[0].url);
+    }
+
+    this.template.find('.item-media').empty().append(edit.item.media());
+
+    var form = new Form(this.template);
+
+    form.send(edit.save);
+
+    return this;
+  };
+
+  Edit.prototype.save = require('../../components/edit-and-go-again/controllers/save');
+
+  Edit.prototype.toItem = function () {
+    var item = {
+      from: this.item.item._id,
+      subject: this.find('subject').val(),
+      description: this.find('description').val(),
+      user: app.socket.synuser,
+      type: this.item.item.type
+    };
+
+    if (this.find('item media').find('img').length) {
+
+      if (this.find('item media').find('.youtube-preview').length) {
+        item.youtube = this.find('item media').find('.youtube-preview').data('video');
+      } else {
+        item.upload = this.find('item media').find('img').attr('src');
+      }
+    }
+
+    return item;
+  };
+
+  module.exports = Edit;
+})();
+},{"../../components/creator//ctrl":"/home/francois/Dev/syn/dist/components/creator/ctrl.js","../../components/edit-and-go-again/controllers/save":"/home/francois/Dev/syn/dist/components/edit-and-go-again/controllers/save.js","../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  var Form = require('../../lib/util/form');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function forgotPassword($vexContent) {
+    var signForm = $('form[name="forgot-password"]');
+
+    var form = new Form(signForm);
+
+    form.send(function () {
+      var domain = require('domain').create();
+
+      domain.on('error', function (error) {});
+
+      domain.run(function () {
+
+        $('.forgot-password-pending.hide').removeClass('hide');
+        $('.forgot-password-email-not-found').not('.hide').addClass('hide');
+        $('.forgot-password-ok').not('.hide').addClass('hide');
+
+        app.socket.once('no such email', function (_email) {
+          if (_email === form.labels.email.val()) {
+
+            $('.forgot-password-pending').addClass('hide');
+
+            setTimeout(function () {});
+
+            $('.forgot-password-email-not-found').removeClass('hide');
+          }
+        });
+
+        app.socket.on('password is resettable', function (_email) {
+          if (_email === form.labels.email.val()) {
+            $('.forgot-password-pending').addClass('hide');
+
+            $('.forgot-password-ok').removeClass('hide');
+
+            setTimeout(function () {
+              vex.close($vexContent.data().vex.id);
+            }, 2500);
+          }
+        });
+
+        app.socket.emit('send password', form.labels.email.val());
+      });
+    });
+  }
+
+  module.exports = forgotPassword;
+})();
+
+//
+
+// $('.forgot-password-pending').css('display', 'block');
+},{"../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/components/intro/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _view = require('./view');
+
+var _view2 = _interopRequireDefault(_view);
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _componentsItemCtrl = require('../../components/item/ctrl');
+
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
+
+var _libUtilReadMore = require('../../lib/util/read-more');
+
+var _libUtilReadMore2 = _interopRequireDefault(_libUtilReadMore);
+
+var Intro = (function (_Controller) {
+  function Intro(props) {
+    _classCallCheck(this, Intro);
+
+    _get(Object.getPrototypeOf(Intro.prototype), 'constructor', this).call(this);
+
+    this.props = props;
+
+    this.getIntro();
+  }
+
+  _inherits(Intro, _Controller);
+
+  _createClass(Intro, [{
+    key: 'template',
+    get: function () {
+      return $(_view2['default'].selector);
+    }
+  }, {
+    key: 'getIntro',
+    value: function getIntro() {
+      var _this = this;
+
+      this.publish('get intro').subscribe(function (pubsub, intro) {
+        _this.set('intro', intro);
+        pubsub.unsubscribe();
+      });
+    }
+  }, {
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'panel title':
+          return this.template.find('.panel-title');
+
+        case 'item subject':
+          return this.template.find('.item-subject a');
+
+        case 'item references':
+          return this.template.find('.item-reference');
+
+        case 'item buttons':
+          return this.template.find('.item-buttons');
+
+        case 'item arrow':
+          return this.template.find('.item-arrow');
+
+        case 'item media':
+          return this.template.find('.item-media');
+
+        case 'item image':
+          return this.template.find('.item-media img');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var intro = this.get('intro');
+
+      if (!intro) {
+        return this.on('set', function (key) {
+          return key === 'intro' && _this2.render();
+        });
+      }
+
+      this.renderPanel();
+
+      this.renderItem();
+    }
+  }, {
+    key: 'renderPanel',
+    value: function renderPanel() {
+      var intro = this.get('intro');
+      this.find('panel title').text(intro.subject);
+    }
+  }, {
+    key: 'renderItem',
+    value: function renderItem() {
+      var _this3 = this;
+
+      var intro = this.get('intro');
+
+      this.find('item subject').text(intro.subject);
+
+      this.find('item references').remove();
+
+      this.find('item buttons').remove();
+
+      this.find('item arrow').remove();
+
+      this.find('item media').empty().append(new _componentsItemCtrl2['default']({ item: intro }).media());
+
+      this.find('item image').load(function () {
+        return (0, _libUtilReadMore2['default'])(intro, _this3.template);
+      });
+    }
+  }]);
+
+  return Intro;
+})(_libAppController2['default']);
+
+exports['default'] = Intro;
+module.exports = exports['default'];
+},{"../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/read-more":"/home/francois/Dev/syn/dist/lib/util/read-more.js","./view":"/home/francois/Dev/syn/dist/components/intro/view.js"}],"/home/francois/Dev/syn/dist/components/intro/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  INTRO VIEW
+ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  @module       views/Intro
+*/
+
+var _cincoDist = require('cinco/dist');
+
+var _componentsPanelView = require('../../components/panel//view');
+
+var _componentsPanelView2 = _interopRequireDefault(_componentsPanelView);
+
+var _componentsItemView = require('../../components/item/view');
+
+var _componentsItemView2 = _interopRequireDefault(_componentsItemView);
+
+var Intro = (function (_Element) {
+  function Intro(props) {
+    _classCallCheck(this, Intro);
+
+    _get(Object.getPrototypeOf(Intro.prototype), 'constructor', this).call(this, Intro.selector);
+
+    this.props = props;
+
+    this.add(function () {
+      var panel = new _componentsPanelView2['default']({ creator: false });
+
+      panel.find('.items').get(0).add(new _componentsItemView2['default']({
+        buttons: false, collapsers: false
+      }));
+
+      return panel;
+    });
+  }
+
+  _inherits(Intro, _Element);
+
+  return Intro;
+})(_cincoDist.Element);
+
+Intro.selector = '#intro';
+
+exports['default'] = Intro;
+module.exports = exports['default'];
+},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","../../components/panel//view":"/home/francois/Dev/syn/dist/components/panel/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var ItemDefaultButtons = (function (_Elements) {
+  function ItemDefaultButtons(props) {
+    _classCallCheck(this, ItemDefaultButtons);
+
+    _get(Object.getPrototypeOf(ItemDefaultButtons.prototype), 'constructor', this).call(this);
+
+    var loginButton = new _cincoDist.Element('button.item-toggle-promote.shy');
+
+    loginButton.add(new _cincoDist.Element('span.promoted').text('0'), new _cincoDist.Element('i.fa.fa-bullhorn'));
+
+    var joinButton = new _cincoDist.Element('button.item-toggle-details.shy');
+
+    joinButton.add(new _cincoDist.Element('span.promoted-percent').text('0%'), new _cincoDist.Element('i.fa.fa-signal'));
+
+    var related = new _cincoDist.Element('div').add(new _cincoDist.Element('span.related'));
+
+    this.add(loginButton, new _cincoDist.Element('div'), joinButton, related);
+  }
+
+  _inherits(ItemDefaultButtons, _Elements);
+
+  return ItemDefaultButtons;
+})(_cincoDist.Elements);
+
+exports['default'] = ItemDefaultButtons;
+module.exports = exports['default'];
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item/controllers/media.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _componentsYoutubeView = require('../../../components/youtube/view');
+
+var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
+
+function MediaController() {
+  var _this = this;
+
+  var item = this.get('item');
+
+  var references = item.references || [];
+
+  // YouTube
+
+  if (references.length) {
+
+    var youtube = new _componentsYoutubeView2['default']({
+      settings: { env: synapp.props.settings.env },
+      item: item
+    });
+
+    if (youtube.children.length) {
+      var _YouTube$resolve = _componentsYoutubeView2['default'].resolve(youtube.children[0].selector);
+
+      var element = _YouTube$resolve.element;
+
+      if (element === 'iframe') {
+        return $(youtube.render());
+      }
+    }
+  }
+
+  // adjustImage
+
+  if (item.adjustImage) {
+    return $(item.adjustImage.replace(/\>$/, ' class="img-responsive" />'));
+  }
+
+  // Item has image
+
+  if (item.image && /^http/.test(item.image)) {
+    var _ret = (function () {
+      var src = item.image;
+
+      var image = $('<img/>');
+
+      image.addClass('img-responsive');
+
+      image.attr('src', synapp.config['default item image']);
+
+      _this.publish('format cloudinary image', src, item._id.toString()).subscribe(function (pubsub, img, _id) {
+        if (_id === item._id.toString()) {
+          image.attr('src', img);
+          pubsub.unsubscribe();
+        }
+      });
+
+      return {
+        v: image
+      };
+    })();
+
+    if (typeof _ret === 'object') return _ret.v;
+  }
+
+  // YouTube Cover Image
+
+  if (item.youtube) {
+    return $(new _componentsYoutubeView2['default']({
+      item: {
+        references: [{
+          url: 'http://youtube.com/watch?v=' + item.youtube
+        }]
+      },
+      settings: { env: synapp.props.settings.env }
+    }).render());
+  }
+
+  // Uploaded image
+
+  // if ( item.upload ) {
+  //   var src = item.image;
+
+  //   var image = $('<img/>');
+
+  //   image.addClass('img-responsive');
+
+  //   image.attr('src', item.upload);
+
+  //   return image;
+  // }
+
+  // default image
+
+  var image = $('<img/>');
+
+  image.addClass('img-responsive');
+
+  image.attr('src', synapp.config['default item image']);
+
+  return image;
+}
+
+exports['default'] = MediaController;
+module.exports = exports['default'];
+},{"../../../components/youtube/view":"/home/francois/Dev/syn/dist/components/youtube/view.js"}],"/home/francois/Dev/syn/dist/components/item/controllers/toggle-arrow.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _libUtilNav = require('../../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var _componentsPanelCtrl = require('../../../components/panel//ctrl');
+
+var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
+
+function toggleArrow($trigger) {
+  var $item = $trigger.closest('.item');
+  var item = $item.data('item');
+  var arrow = $trigger.find('i');
+  var storeItem = this.get('item');
+
+  var d = this.domain;
+
+  if (item.find('collapsers hidden').length) {
+    item.find('collapsers').show();
+  }
+
+  _libUtilNav2['default'].toggle(item.find('children'), this.template, d.intercept(function () {
+
+    if (item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length) {
+      item.find('collapsers').hide();
+    }
+
+    if (item.find('children').hasClass('is-shown') && !item.find('children').hasClass('is-loaded')) {
+
+      item.find('children').addClass('is-loaded');
+
+      var harmony = storeItem.type.harmony;
+
+      if (harmony.length) {
+        var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
+
+        item.find('children').append(split);
+
+        console.info('harmony', harmony);
+
+        var panelLeft = new _componentsPanelCtrl2['default']({
+          panel: {
+            type: harmony[0],
+            parent: storeItem._id
+          }
+        });
+
+        panelLeft.load();
+
+        panelLeft.template.addClass('split-view');
+
+        split.find('.left-split').append(panelLeft.template);
+
+        setTimeout(function () {
+          panelLeft.render(d.intercept(function () {
+            panelLeft.fill(d.intercept());
+          }));
+        });
+
+        var panelRight = new _componentsPanelCtrl2['default']({
+          panel: {
+            type: harmony[1],
+            parent: storeItem._id
+          }
+        });
+
+        panelRight.load();
+
+        panelRight.template.addClass('split-view');
+
+        split.find('.right-split').append(panelRight.template);
+
+        setTimeout(function () {
+          panelRight.render(d.intercept(function () {
+            panelRight.fill(d.intercept());
+          }));
+        });
+      }
+
+      var subtype = storeItem.subtype;
+
+      if (subtype) {
+        var subPanel = new _componentsPanelCtrl2['default']({
+          panel: {
+            type: subtype,
+            parent: storeItem._id
+          }
+        });
+
+        subPanel.load();
+
+        item.find('children').append(subPanel.template);
+
+        setTimeout(function () {
+          subPanel.render(d.intercept(function () {
+            return subPanel.fill(d.intercept());
+          }));
+        });
+      }
+    }
+
+    if (arrow.hasClass('fa-arrow-down')) {
+      arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+    } else {
+      arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+    }
+  }));
+}
+
+exports['default'] = toggleArrow;
+module.exports = exports['default'];
+},{"../../../components/panel//ctrl":"/home/francois/Dev/syn/dist/components/panel/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/item/controllers/toggle-promote.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _libUtilNav = require('../../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var _componentsTopBarCtrl = require('../../../components/top-bar//ctrl');
+
+var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
+
+function tooglePromote($trigger) {
+
+  if (!this.socket.synuser) {
+    var topbar = new _componentsTopBarCtrl2['default']();
+    topbar.find('join button').click();
+    return;
+  }
+
+  var $item = $trigger.closest('.item');
+  var item = $item.data('item');
+
+  var d = this.domain;
+
+  function hideOthers() {
+    if ($('.is-showing').length || $('.is-hidding').length) {
+      return false;
+    }
+
+    if ($('.creator.is-shown').length) {
+      _libUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
+        $trigger.click();
+      });
+
+      return false;
+    }
+
+    if (item.find('details').hasClass('is-shown')) {
+      _libUtilNav2['default'].hide(item.find('details')).hidden(function () {
+        $trigger.click();
+      });
+
+      item.find('toggle details').find('.caret').addClass('hide');
+
+      return false;
+    }
+  }
+
+  function promote() {
+    item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
+  }
+
+  function showHideCaret() {
+    if (item.find('promote').hasClass('is-shown')) {
+      $trigger.find('.caret').removeClass('hide');
+    } else {
+      $trigger.find('.caret').addClass('hide');
+    }
+  }
+
+  if (hideOthers() === false) {
+    return false;
+  }
+
+  if (item.find('collapsers hidden').length) {
+    item.find('collapsers').show();
+  }
+
+  _libUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
+
+    if (item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length) {
+      item.find('collapsers').hide();
+    }
+
+    promote();
+
+    showHideCaret();
+  });
+}
+
+exports['default'] = tooglePromote;
+module.exports = exports['default'];
+},{"../../../components/top-bar//ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/item/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _string = require('string');
+
+var _string2 = _interopRequireDefault(_string);
+
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var _libUtilReadMore = require('../../lib/util/read-more');
+
+var _libUtilReadMore2 = _interopRequireDefault(_libUtilReadMore);
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _componentsPromoteCtrl = require('../../components/promote//ctrl');
+
+var _componentsPromoteCtrl2 = _interopRequireDefault(_componentsPromoteCtrl);
+
+var _componentsDetailsCtrl = require('../../components/details//ctrl');
+
+var _componentsDetailsCtrl2 = _interopRequireDefault(_componentsDetailsCtrl);
+
+var _view = require('./view');
+
+var _view2 = _interopRequireDefault(_view);
+
+var _controllersMedia = require('./controllers/media');
+
+var _controllersMedia2 = _interopRequireDefault(_controllersMedia);
+
+var _controllersToggleArrow = require('./controllers/toggle-arrow');
+
+var _controllersToggleArrow2 = _interopRequireDefault(_controllersToggleArrow);
+
+var _controllersTogglePromote = require('./controllers/toggle-promote');
+
+var _controllersTogglePromote2 = _interopRequireDefault(_controllersTogglePromote);
+
+var ItemCtrl = (function (_Controller) {
+  function ItemCtrl(props) {
+    _classCallCheck(this, ItemCtrl);
+
+    _get(Object.getPrototypeOf(ItemCtrl.prototype), 'constructor', this).call(this);
+
+    this.props = props || {};
+
+    if (this.props.item) {
+      this.set('item', this.props.item);
+    }
+
+    this.componentName = 'Item';
+    this.view = _view2['default'];
+  }
+
+  _inherits(ItemCtrl, _Controller);
+
+  _createClass(ItemCtrl, [{
+    key: 'listen',
+    value: function listen() {
+      var _this = this;
+
+      var self = this;
+
+      this.socket.once('item image uploaded ' + this.props.item._id, function (item) {
+        _this.set('image', item.image);
+      });
+    }
+  }, {
+    key: 'media',
+    value: function media() {
+      return _controllersMedia2['default'].apply(this);
+    }
+  }, {
+    key: 'makeRelated',
+    value: function makeRelated(cls) {
+      var button = $('<button class="shy counter"><span class="' + cls + '-number"></span> <i class="fa"></i></button>');
+
+      return button;
+    }
+  }, {
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'subject':
+          return this.template.find('.item-subject a');
+
+        case 'description':
+          return this.template.find('.description');
+
+        case 'toggle promote':
+          return this.template.find('.item-toggle-promote');
+
+        case 'promote':
+          return this.template.find('.promote');
+
+        case 'reference':
+          return this.template.find(' > .item-text .item-reference a');
+
+        case 'media':
+          return this.template.find('.item-media:first');
+
+        case 'youtube preview':
+          return this.template.find('.youtube-preview:first');
+
+        case 'toggle details':
+          return this.template.find('.item-toggle-details:first');
+
+        case 'details':
+          return this.template.find('.details:first');
+
+        case 'buttons':
+          return this.template.find('> .item-buttons');
+
+        case 'editor':
+          return this.template.find('.editor:first');
+
+        case 'toggle arrow':
+          return this.template.find('.item-arrow:first');
+
+        case 'promotions':
+          return this.template.find('.promoted:first');
+
+        case 'promotions %':
+          return this.template.find('.promoted-percent:first');
+
+        case 'children':
+          return this.template.find('.children:first');
+
+        case 'collapsers':
+          return this.template.find('.item-collapsers:first');
+
+        case 'collapsers hidden':
+          return this.template.find('.item-collapsers:first:hidden');
+
+        case 'collapsers visible':
+          return this.template.find('.item-collapsers:first:visible');
+
+        case 'related count':
+          return this.template.find('.related-count');
+
+        case 'related':
+          return this.template.find('.related');
+
+        case 'related count plural':
+          return this.template.find('.related-count-plural');
+
+        case 'related name':
+          return this.template.find('.related-name');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(cb) {
+      var _this2 = this;
+
+      if (!this.rendered) {
+        setTimeout(function () {
+          return _this2.listen();
+        });
+        this.rendered = true;
+      }
+
+      var item = this.get('item');
+
+      var self = this;
+
+      // Create reference to promote if promotion enabled
+
+      this.promote = new _componentsPromoteCtrl2['default'](this.props, this);
+
+      // Create reference to details
+
+      this.details = new _componentsDetailsCtrl2['default'](this.props, this);
+
+      // Set ID
+
+      this.template.attr('id', 'item-' + item._id);
+
+      // Set Data
+
+      this.template.data('item', this);
+
+      // SUBJECT
+
+      this.find('subject').attr('href', '/item/' + item.id + '/' + (0, _string2['default'])(item.subject).slugify().s).text(item.subject).on('click', function (e) {
+        var link = $(this);
+
+        var item = link.closest('.item');
+
+        _libUtilNav2['default'].scroll(item, function () {
+          history.pushState(null, null, link.attr('href'));
+          item.find('.item-text .more').click();
+        });
+
+        return false;
+      });
+
+      // DESCRIPTION   
+
+      this.find('description').text(item.description);
+
+      // MEDIA
+
+      if (!this.find('media').find('img[data-rendered]').length) {
+        this.find('media').empty().append(this.media());
+      }
+
+      this.on('set', function (key, value) {
+        if (key === 'image') {
+          item.image = value;
+          _this2.set('item', item);
+          _this2.find('media').empty().append(_this2.media());
+        }
+      });
+
+      // READ MORE
+
+      this.find('media').find('img, iframe').on('load', (function () {
+        if (!_this2.template.find('.more').length) {
+          (0, _libUtilReadMore2['default'])(item, _this2.template);
+        }
+      }).bind(item));
+
+      // REFERENCES
+
+      if (item.references && item.references.length) {
+        console.warn('has references', this.find('reference'));
+        this.find('reference').attr('href', item.references[0].url).text(item.references[0].title || item.references[0].url);
+      } else {
+        this.find('reference').empty();
+      }
+
+      // PROMOTIONS
+
+      this.find('promotions').text(item.promotions);
+
+      // POPULARITY
+
+      var popularity = item.popularity.number;
+
+      if (isNaN(popularity)) {
+        popularity = 0;
+      }
+
+      this.find('promotions %').text(popularity + '%');
+
+      // CHILDREN / RELATED
+
+      if (!this.find('buttons').find('.related-number').length) {
+        var buttonChildren = this.makeRelated('related');
+        buttonChildren.addClass('children-count');
+        buttonChildren.find('i').addClass('fa-fire');
+        buttonChildren.find('.related-number').text(item.children);
+        this.find('related').append(buttonChildren);
+      }
+
+      // HARMONY
+
+      if ('harmony' in item) {
+        var buttonHarmony = this.makeRelated('harmony');
+        buttonHarmony.find('i').addClass('fa-music');
+        buttonHarmony.find('.harmony-number').text(item.harmony);
+        this.find('related').append(buttonHarmony);
+      }
+
+      this.template.find('.counter').on('click', function () {
+        var $trigger = $(this);
+        var $item = $trigger.closest('.item');
+        var item = $item.data('item');
+        item.find('toggle arrow').click();
+      });
+
+      // TOGGLE PROMOTE
+
+      this.find('toggle promote').on('click', function () {
+        self.togglePromote($(this));
+      });
+
+      // TOGGLE DETAILS
+
+      this.find('toggle details').on('click', function () {
+        self.toggleDetails($(this));
+      });
+
+      // TOGGLE ARROW
+
+      this.find('toggle arrow').removeClass('hide').on('click', function () {
+        self.toggleArrow($(this));
+      });
+
+      cb();
+    }
+  }, {
+    key: 'togglePromote',
+    value: function togglePromote($trigger) {
+      return _controllersTogglePromote2['default'].apply(this, [$trigger]);
+    }
+  }, {
+    key: 'toggleDetails',
+    value: function toggleDetails($trigger) {
+
+      var $item = $trigger.closest('.item');
+      var item = $item.data('item');
+
+      var d = this.domain;
+
+      function showHideCaret() {
+        if (item.find('details').hasClass('is-shown')) {
+          $trigger.find('.caret').removeClass('hide');
+        } else {
+          $trigger.find('.caret').addClass('hide');
+        }
+      }
+
+      if (item.find('promote').hasClass('is-showing')) {
+        return false;
+      }
+
+      if (item.find('promote').hasClass('is-shown')) {
+        item.find('toggle promote').find('.caret').addClass('hide');
+        require('../../lib/util/nav').hide(item.find('promote'));
+      }
+
+      var hiders = $('.details.is-shown');
+
+      if (item.find('collapsers hidden').length) {
+        item.find('collapsers').show();
+      }
+
+      require('../../lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
+
+        showHideCaret();
+
+        if (item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length) {
+          item.find('collapsers').hide();
+        }
+
+        if (item.find('details').hasClass('is-shown')) {
+
+          if (!item.find('details').hasClass('is-loaded')) {
+            item.find('details').addClass('is-loaded');
+
+            item.details.render(d.intercept());
+          }
+
+          if (hiders.length) {
+            require('../../lib/util/nav').hide(hiders);
+          }
+        }
+      }));
+    }
+  }, {
+    key: 'toggleArrow',
+    value: function toggleArrow($trigger) {
+      return _controllersToggleArrow2['default'].apply(this, [$trigger]);
+    }
+  }]);
+
+  return ItemCtrl;
+})(_libAppController2['default']);
+
+exports['default'] = ItemCtrl;
+module.exports = exports['default'];
+},{"../../components/details//ctrl":"/home/francois/Dev/syn/dist/components/details/ctrl.js","../../components/promote//ctrl":"/home/francois/Dev/syn/dist/components/promote/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","../../lib/util/read-more":"/home/francois/Dev/syn/dist/lib/util/read-more.js","./controllers/media":"/home/francois/Dev/syn/dist/components/item/controllers/media.js","./controllers/toggle-arrow":"/home/francois/Dev/syn/dist/components/item/controllers/toggle-arrow.js","./controllers/toggle-promote":"/home/francois/Dev/syn/dist/components/item/controllers/toggle-promote.js","./view":"/home/francois/Dev/syn/dist/components/item/view.js","string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/dist/components/item/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var _libAppPage = require('../../lib/app/page');
+
+var _libAppPage2 = _interopRequireDefault(_libAppPage);
+
+var _itemDefaultButtonsView = require('../item-default-buttons/view');
+
+var _itemDefaultButtonsView2 = _interopRequireDefault(_itemDefaultButtonsView);
+
+var _promoteView = require('../promote/view');
+
+var _promoteView2 = _interopRequireDefault(_promoteView);
+
+var _detailsView = require('../details/view');
+
+var _detailsView2 = _interopRequireDefault(_detailsView);
+
+var Item = (function (_Element) {
+  function Item(props, extra) {
+    _classCallCheck(this, Item);
+
+    _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this, '.item');
+
+    this.attr('id', props.item ? 'item-' + props.item.id : '');
+
+    this.props = props || {};
+
+    this.extra = extra || {};
+
+    this.add(this.media(), this.buttons(), this.text(), this.arrow(), this.collapsers(), new _cincoDist.Element('.clear'));
+  }
+
+  _inherits(Item, _Element);
+
+  _createClass(Item, [{
+    key: 'media',
+    value: function media() {
+      var _this = this;
+
+      return new _cincoDist.Element('.item-media-wrapper').add(new _cincoDist.Element('.item-media').add(function () {
+        if (_this.props.item) {
+          if (_this.props.item.media) {
+            return _this.props.item.media;
+          } else if (_this.props.item.image) {
+            return new _cincoDist.Element('img.img-responsive', {
+              src: _this.props.item.image });
+          }
+        }
+
+        return [];
+      }));
+    }
+  }, {
+    key: 'buttons',
+    value: function buttons() {
+      var _this2 = this;
+
+      var itemButtons = new _cincoDist.Element('.item-buttons').condition(function () {
+        if ('buttons' in _this2.props) {
+          return _this2.props.buttons !== false;
+        }
+        return true;
+      });
+
+      if (this.props.item && this.props.item.buttons) {
+        itemButtons.add(this.props.item.buttons);
+      } else {
+        itemButtons.add(new _itemDefaultButtonsView2['default'](this.props));
+      }
+
+      return itemButtons;
+    }
+  }, {
+    key: 'subject',
+    value: function subject() {
+      var _this3 = this;
+
+      return new _cincoDist.Element('h4.item-subject.header').add(new _cincoDist.Element('a', {
+        href: function href(locals) {
+          if (locals && locals.item) {
+            return (0, _libAppPage2['default'])('Item Page', locals && locals.item);
+          }
+          return '#';
+        }
+      }).text(function () {
+        if (_this3.props.item) {
+          return _this3.props.item.subject;
+        }
+        return '';
+      }));
+    }
+  }, {
+    key: 'description',
+    value: function description() {
+      var _this4 = this;
+
+      return new _cincoDist.Element('.item-description.pre-text').text(function () {
+        if (_this4.props.item) {
+          return _this4.props.item.description;
+        }
+        return '';
+      });
+    }
+  }, {
+    key: 'references',
+    value: function references() {
+      return new _cincoDist.Element('h5.item-reference').add(new _cincoDist.Element('a', {
+        href: '#',
+        target: '_blank',
+        rel: 'nofollow'
+      }).text('reference'));
+    }
+  }, {
+    key: 'text',
+    value: function text() {
+      return new _cincoDist.Element('.item-text').add(new _cincoDist.Element('.item-truncatable').add(this.subject(), this.references(), this.description()), new _cincoDist.Element('.clear.clear-text'));
+    }
+  }, {
+    key: 'collapsers',
+    value: function collapsers() {
+      var _this5 = this;
+
+      return new _cincoDist.Element('.item-collapsers').condition(function () {
+        if (_this5.props.item && 'collapsers' in _this5.props.item) {
+          return _this5.props.item.collapsers !== false;
+        }
+
+        return true;
+      }).add(this.promote(), this.details(), this.below());
+    }
+  }, {
+    key: 'promote',
+    value: function promote() {
+      return new _cincoDist.Element('.promote.is-container').add(new _cincoDist.Element('.is-section').add(new _promoteView2['default'](this.props)));
+    }
+  }, {
+    key: 'below',
+    value: function below() {
+      return new _cincoDist.Element('.children.is-container').add(new _cincoDist.Element('.is-section'));
+    }
+  }, {
+    key: 'details',
+    value: function details() {
+      return new _cincoDist.Element('.details.is-container').add(new _cincoDist.Element('.is-section').add(new _detailsView2['default'](this.props)));
+    }
+  }, {
+    key: 'arrow',
+    value: function arrow() {
+      var _this6 = this;
+
+      return new _cincoDist.Element('.item-arrow').condition(function () {
+        if (_this6.props.item) {
+          return _this6.props.item.collapsers !== false;
+        }
+        return true;
+      }).add(new _cincoDist.Element('div').add(new _cincoDist.Element('i.fa.fa-arrow-down')));
+    }
+  }]);
+
+  return Item;
+})(_cincoDist.Element);
+
+exports['default'] = Item;
+module.exports = exports['default'];
+},{"../../lib/app/page":"/home/francois/Dev/syn/dist/lib/app/page.js","../details/view":"/home/francois/Dev/syn/dist/components/details/view.js","../item-default-buttons/view":"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js","../promote/view":"/home/francois/Dev/syn/dist/components/promote/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/join/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _libUtilForm = require('../../lib/util/form');
+
+var _libUtilForm2 = _interopRequireDefault(_libUtilForm);
+
+var Join = (function (_Controller) {
+  function Join(props) {
+    _classCallCheck(this, Join);
+
+    _get(Object.getPrototypeOf(Join.prototype), 'constructor', this).call(this);
+
+    this.props = props || {};
+
+    this.form = new _libUtilForm2['default'](this.template);
+
+    this.form.send(this.submit.bind(this));
+
+    this.template.find('.i-agree').on('click', function () {
+
+      var agreed = $(this).find('.agreed');
+
+      if (agreed.hasClass('fa-square-o')) {
+        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
+      } else {
+        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
+      }
+    });
+  }
+
+  _inherits(Join, _Controller);
+
+  _createClass(Join, [{
+    key: 'template',
+    get: function () {
+      return $('form[name="join"]');
+    }
+  }, {
+    key: 'submit',
+    value: function submit(e) {
+      var _this = this;
+
+      var d = this.domain;
+
+      d.run(function () {
+
+        _this.template.find('.please-agree').addClass('hide');
+
+        _this.template.find('.already-taken').hide();
+
+        if (_this.form.labels.password.val() !== _this.form.labels.confirm.val()) {
+          _this.form.labels.confirm.focus().addClass('error');
+
+          return;
+        }
+
+        if (!_this.template.find('.agreed').hasClass('fa-check-square-o')) {
+          _this.template.find('.please-agree').removeClass('hide');
+
+          return;
+        }
+
+        console.info('signing up');
+
+        $.ajax({
+          url: '/sign/up',
+          type: 'POST',
+          data: {
+            email: _this.form.labels.email.val(),
+            password: _this.form.labels.password.val()
+          }
+        }).error(function (response, state, code) {
+          if (response.status === 401) {
+            _this.template.find('.already-taken').show();
+          }
+        }).success(function (response) {
+
+          _this.reconnect();
+
+          $('a.is-in').css('display', 'inline');
+
+          $('.topbar .is-out').remove();
+
+          vex.close(_this.props.$vexContent.data().vex.id);
+        });
+      });
+    }
+  }]);
+
+  return Join;
+})(_libAppController2['default']);
+
+exports['default'] = Join;
+module.exports = exports['default'];
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js"}],"/home/francois/Dev/syn/dist/components/login/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _libUtilForm = require('../../lib/util/form');
+
+var _libUtilForm2 = _interopRequireDefault(_libUtilForm);
+
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var Login = (function (_Controller) {
+  function Login(props) {
+    _classCallCheck(this, Login);
+
+    _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
+
+    this.props = props || {};
+
+    this.form = new _libUtilForm2['default'](this.template);
+
+    this.form.send(this.submit.bind(this));
+  }
+
+  _inherits(Login, _Controller);
+
+  _createClass(Login, [{
+    key: 'template',
+    get: function () {
+      return $('form[name="login"]');
+    }
+  }, {
+    key: 'submit',
+    value: function submit(e) {
+      var _this = this;
+
+      var d = this.domain;
+
+      d.run(function () {
+        if ($('.login-error-404').hasClass('is-shown')) {
+          return _libUtilNav2['default'].hide($('.login-error-404'), d.intercept(function () {
+            // this.send(login);
+            _this.form.submit();
+          }));
+        }
+
+        if ($('.login-error-401').hasClass('is-shown')) {
+          return _libUtilNav2['default'].hide($('.login-error-401'), d.intercept(function () {
+            // this.send(login);
+            _this.form.submit();
+          }));
+        }
+
+        $.ajax({
+          url: '/sign/in',
+          type: 'POST',
+          data: {
+            email: _this.form.labels.email.val(),
+            password: _this.form.labels.password.val()
+          } }).error(function (response) {
+          switch (response.status) {
+            case 404:
+              _libUtilNav2['default'].show($('.login-error-404'));
+              break;
+
+            case 401:
+              _libUtilNav2['default'].show($('.login-error-401'));
+              break;
+          }
+        }).success(function (response) {
+          _this.reconnect();
+
+          $('a.is-in').css('display', 'inline');
+
+          $('.topbar .is-out').remove();
+
+          vex.close(_this.props.$vexContent.data().vex.id);
+        });
+      });
+    }
+  }]);
+
+  return Login;
+})(_libAppController2['default']);
+
+exports['default'] = Login;
+module.exports = exports['default'];
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/panel/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var _componentsCreatorCtrl = require('../../components/creator/ctrl');
+
+var _componentsCreatorCtrl2 = _interopRequireDefault(_componentsCreatorCtrl);
+
+var _componentsItemCtrl = require('../../components/item/ctrl');
+
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
+
+var _componentsTopBarCtrl = require('../../components/top-bar/ctrl');
+
+var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
+
+var _componentsPanelView = require('../../components/panel/view');
+
+var _componentsPanelView2 = _interopRequireDefault(_componentsPanelView);
+
+var _libAppCache = require('../../lib/app/cache');
+
+var _libAppCache2 = _interopRequireDefault(_libAppCache);
+
+var Panel = (function (_Controller) {
+  function Panel(props) {
+    _classCallCheck(this, Panel);
+
+    _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this);
+
+    this.props = props;
+
+    this.componentName = 'Panel';
+    this.view = _componentsPanelView2['default'];
+
+    if (this.props.panel) {
+      this.set('panel', this.props.panel);
+      this.panel = this.props.panel;
+    }
+
+    if (this.props.panel) {
+      this.type = this.props.panel.type;
+      this.parent = this.props.panel.parent;
+      this.skip = this.props.panel.skip || 0;
+      this.size = this.props.panel.size || synapp.config['navigator batch size'];
+      this.id = Panel.getId(this.props.panel);
+    }
+  }
+
+  _inherits(Panel, _Controller);
+
+  _createClass(Panel, [{
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'title':
+          return this.template.find('.panel-title:first');
+
+        case 'toggle creator':
+          return this.template.find('.toggle-creator:first');
+
+        case 'creator':
+          return this.template.find('.creator:first');
+
+        case 'items':
+          return this.template.find('.items:first');
+
+        case 'load more':
+          return this.template.find('.load-more:first');
+
+        case 'create new':
+          return this.template.find('.create-new:first');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render(cb) {
+      var _this = this;
+
+      var q = new Promise(function (fulfill, reject) {
+
+        var d = _this.domain;
+
+        d.run(function () {
+
+          var panel = _this.panel;
+
+          // Fill title                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+          _this.find('title').text(panel.type.name);
+
+          // Toggle Creator
+
+          _this.find('toggle creator').on('click', function () {
+            console.log('clicked', _this.socket.synuser);
+            if (_this.socket.synuser) {
+              _libUtilNav2['default'].toggle(_this.find('creator'), _this.template, d.intercept());
+            } else {
+              var topbar = new _componentsTopBarCtrl2['default']();
+              topbar.find('join button').click();
+            }
+          });
+
+          // Panel ID
+
+          if (!_this.template.attr('id')) {
+            _this.template.attr('id', _this.id);
+          }
+
+          var creator = new _componentsCreatorCtrl2['default'](_this.props, _this);
+
+          creator.render().then(fulfill, d.intercept.bind(d));
+
+          _this.find('load more').on('click', function () {
+            _this.fill();
+            return false;
+          });
+
+          _this.find('create new').on('click', function () {
+            _this.find('toggle creator').click();
+            return false;
+          });
+
+          // Done
+
+          fulfill();
+        }, reject);
+      });
+
+      if (typeof cb === 'function') {
+        q.then(cb.bind(null, null), cb);
+      }
+
+      return q;
+    }
+  }, {
+    key: 'fill',
+    value: function fill(item, cb) {
+      var _this2 = this;
+
+      if (typeof item === 'function' && !cb) {
+        cb = item;
+        item = undefined;
+      }
+
+      var panel = this.toJSON();
+
+      if (item) {
+        panel.item = item;
+        panel.type = undefined;
+      }
+
+      this.publish('get items', panel).subscribe(function (pubsub, _panel, items) {
+        if (Panel.getId(panel) !== Panel.getId(_panel)) {
+          return;
+        }
+
+        pubsub.unsubscribe();
+
+        console.log('got panel items', items);
+
+        _this2.template.find('.hide.pre').removeClass('hide');
+        _this2.template.find('.show.pre').removeClass('show').hide();
+
+        _this2.template.find('.loading-items').hide();
+
+        if (items.length) {
+
+          _this2.find('create new').hide();
+          _this2.find('load more').show();
+
+          if (items.length < synapp.config['navigator batch size']) {
+            _this2.find('load more').hide();
+          }
+
+          _this2.skip += items.length;
+
+          _this2.preInsertItem(items, cb);
+        } else {
+          _this2.find('create new').show();
+          _this2.find('load more').hide();
+        }
+      });
+    }
+  }, {
+    key: 'toJSON',
+    value: function toJSON() {
+      var json = {
+        type: this.type,
+        size: this.size,
+        skip: this.skip };
+
+      if (this.parent) {
+        json.parent = this.parent;
+      }
+
+      return json;
+    }
+  }, {
+    key: 'preInsertItem',
+    value: function preInsertItem(items, cb) {
+      var _this3 = this;
+
+      var d = this.domain;
+
+      /** Load template */
+
+      // if ( ! cache.getTemplate('Item') ) {
+      new _componentsItemCtrl2['default']().load();
+      // return this.preInsertItem(items, cb);
+      // }
+
+      /** Items to object */
+
+      items = items.map(function (item) {
+        var props = {};
+
+        for (var _i in _this3.props) {
+          props[_i] = _this3.props;
+        }
+
+        props.item = item;
+
+        var itemComponent = new _componentsItemCtrl2['default'](props);
+
+        itemComponent.load();
+
+        _this3.find('items').append(itemComponent.template);
+
+        return itemComponent;
+      });
+
+      var i = 0;
+      var len = items.length;
+
+      function next() {
+        i++;
+
+        if (i === len && cb) {
+          cb();
+        }
+      }
+
+      items.forEach(function (item) {
+        return item.render(d.intercept(next));
+      });
+    }
+  }]);
+
+  return Panel;
+})(_libAppController2['default']);
+
+Panel.getId = function (panel) {
+  var id = 'panel-' + (panel.type._id || panel.type);
+
+  if (panel.parent) {
+    id += '-' + panel.parent;
+  }
+
+  return id;
+};
+
+exports['default'] = Panel;
+module.exports = exports['default'];
+/** This is about another panel */
+// item: app.location.item
+},{"../../components/creator/ctrl":"/home/francois/Dev/syn/dist/components/creator/ctrl.js","../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../components/panel/view":"/home/francois/Dev/syn/dist/components/panel/view.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js","../../lib/app/cache":"/home/francois/Dev/syn/dist/lib/app/cache.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/panel/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var _componentsCreatorView = require('../../components/creator/view');
+
+var _componentsCreatorView2 = _interopRequireDefault(_componentsCreatorView);
+
+var Panel = (function (_Element) {
+  function Panel(props) {
+    _classCallCheck(this, Panel);
+
+    _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, '.panel');
+
+    this.props = props || {};
+
+    this.attr('id', function () {
+      if (props.panel) {
+        var id = 'panel-' + (props.panel.type._id || props.panel.type);
+        return id;
+      }
+    });
+
+    this.add(this.panelHeading(), this.panelBody());
+  }
+
+  _inherits(Panel, _Element);
+
+  _createClass(Panel, [{
+    key: 'panelHeading',
+    value: function panelHeading() {
+      return new _cincoDist.Element('.panel-heading').add(new _cincoDist.Element('h4.fa.fa-plus.toggle-creator').condition(this.props.creator !== false), new _cincoDist.Element('h4.panel-title'));
+    }
+  }, {
+    key: 'panelBody',
+    value: function panelBody() {
+      var body = new _cincoDist.Element('.panel-body');
+
+      if (this.props.creator !== false) {
+        body.add(new _componentsCreatorView2['default'](this.props));
+      }
+
+      var items = new _cincoDist.Element('.items');
+
+      body.add(items);
+
+      body.add(this.loadingItems());
+
+      body.add(new _cincoDist.Element('.padding.hide.pre').add(this.viewMore(), this.addSomething()));
+
+      return body;
+    }
+  }, {
+    key: 'loadingItems',
+    value: function loadingItems() {
+      return new _cincoDist.Element('.loading-items.hide').add(new _cincoDist.Element('i.fa.fa-circle-o-notch.fa-spin'), new _cincoDist.Element('span').text('Loading items...'));
+    }
+  }, {
+    key: 'viewMore',
+    value: function viewMore() {
+      return new _cincoDist.Element('.load-more.hide').add(new _cincoDist.Element('a', { href: '#' }).text('View more'));
+    }
+  }, {
+    key: 'addSomething',
+    value: function addSomething() {
+      return new _cincoDist.Element('.create-new').add(new _cincoDist.Element('a', { href: '#' }).text('Click the + to be the first to add something here'));
+    }
+  }]);
+
+  return Panel;
+})(_cincoDist.Element);
+
+exports['default'] = Panel;
+module.exports = exports['default'];
+},{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _libUtilNav = require('../../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var _componentsEditAndGoAgainCtrl = require('../../../components/edit-and-go-again/ctrl');
+
+var _componentsEditAndGoAgainCtrl2 = _interopRequireDefault(_componentsEditAndGoAgainCtrl);
+
+var _componentsItemCtrl = require('../../../components/item/ctrl');
+
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
+
+function _renderItem(item, hand) {
+  var self = this;
+
+  this.find('side by side').attr('data-' + hand + '-item', item._id);
+
+  // Subject
+  this.find('item subject', hand).text(item.subject);
+
+  // Description
+  this.find('item description', hand).text( /*hand + ' ' + item.id + ' ' + */item.description);
+
+  // Image
+
+  this.find('item image', hand).empty().append(new _componentsItemCtrl2['default']({ item: item }).media());
+
+  // References
+
+  if (item.references && item.references.length) {
+    this.find('item references', hand).attr('href', item.references[0].url).text(item.references[0].title || item.references[0].url);
+  }
+
+  // Sliders
+
+  this.find('sliders', hand).find('.criteria-name').each(function (i) {
+    var cid = i;
+
+    if (cid > 3) {
+      cid -= 4;
+    }
+
+    self.find('sliders', hand).find('.criteria-name').eq(i).on('click', function () {
+      var elem = $(this);
+
+      var descriptionSection = elem.closest('.criteria-wrapper').find('.criteria-description');
+
+      elem.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
+
+      if ($(this).hasClass('shy')) {
+        $(this).removeClass('shy').addClass('info');
+      } else if ($(this).hasClass('info')) {
+        $(this).removeClass('info').addClass('shy');
+      }
+
+      // Nav.hide(elem.closest('.promote').find('.criteria-description-section.is-shown'), self.domain.intercept(function () {
+      //   Nav.toggle(descriptionSection);
+      // }));
+
+      $('.criteria-description').hide();
+
+      descriptionSection.show();
+    }).text(self.get('criterias')[cid].name);
+
+    self.find('sliders', hand).find('.criteria-description').eq(i).text(self.get('criterias')[cid].description);
+
+    self.find('sliders', hand).find('input').eq(i).val(0).data('criteria', self.get('criterias')[cid]._id);
+  });
+
+  // Feedback
+
+  this.find('item feedback', hand).val('');
+
+  // Feedback - remove any marker from previous post / see #164
+
+  this.find('item feedback', hand).removeClass('do-not-save-again');
+}
+
+function renderItem(hand) {
+  var _this = this;
+
+  var self = this;
+
+  var reverse = hand === 'left' ? 'right' : 'left';
+
+  var side = this.get(hand);
+
+  if (!side) {
+    this.find('item subject', hand).hide();
+    this.find('item description', hand).hide();
+    this.find('item feedback', hand).hide();
+    this.find('sliders', hand).hide();
+    this.find('promote button', hand).hide();
+    this.find('promote label').hide();
+    this.find('edit and go again button', hand).hide();
+    this.find('promote button', reverse).hide();
+    this.find('edit and go again button', reverse).hide();
+    // this.find('finish button').hide();
+    return;
+  }
+
+  this.socket.on('item image uploaded ' + side._id.toString(), function (item) {
+    _renderItem.apply(_this, [item, hand]);
+  });
+
+  // Increment views counter
+
+  this.publish('add view', side._id).subscribe(function (pubsub) {
+    return pubsub.unsubscribe();
+  });
+
+  // Render item
+
+  _renderItem.apply(this, [side, hand]);
+
+  // Promote button
+
+  this.find('promote button', hand).text(side.subject).off('click').on('click', function () {
+
+    var left = $(this).closest('.left-item').length;
+
+    var opposite = left ? 'right' : 'left';
+
+    _libUtilNav2['default'].scroll(self.template, self.domain.intercept(function () {
+
+      // If cursor is smaller than limit, then keep on going
+
+      if (self.get('cursor') < self.get('limit')) {
+
+        self.set('cursor', self.get('cursor') + 1);
+
+        self.publish('promote', self.get(left ? 'left' : 'right')._id).subscribe(function (pubsub) {
+          return pubsub.unsubscribe();
+        });
+
+        self.save(left ? 'left' : 'right', function () {
+          $.when(self.find('side by side').find('.' + opposite + '-item').animate({
+            opacity: 0
+          })).then(function () {
+            self.get(opposite, self.get('items')[self.get('cursor')]);
+
+            self.find('side by side').find('.' + opposite + '-item').animate({
+              opacity: 1
+            });
+          });
+        });
+      }
+
+      // If cursor equals limit, means end of evaluation cycle
+
+      else {
+
+        self.finish();
+      }
+    }));
+  });
+
+  // Edit and go again
+
+  this.find('edit and go again button', hand).on('click', function () {
+    _libUtilNav2['default'].unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
+
+      if (promote.item.find('editor').find('form').length) {
+        console.warn('already loaded');
+      } else {
+        var edit = new _componentsEditAndGoAgainCtrl2['default'](promote.item);
+
+        edit.get(self.domain.intercept(function (template) {
+
+          promote.item.find('editor').find('.is-section').append(template);
+
+          _libUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, self.domain.intercept(function () {
+            _libUtilNav2['default'].show(template, self.domain.intercept(function () {
+              edit.render();
+            }));
+          }));
+        }));
+      }
+    }));
+  });
+}
+
+exports['default'] = renderItem;
+module.exports = exports['default'];
+},{"../../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/render.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _libUtilNav = require('../../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+/**
+ *  @method Promote.render
+ *  @return
+ *  @arg
+ */
+
+function renderPromote(cb) {
+  var self = this;
+
+  var d = this.domain;
+
+  self.find('finish button').on('click', function () {
+    _libUtilNav2['default'].scroll(self.template, d.intercept(function () {
+
+      var cursor = self.get('cursor');
+      var limit = self.get('limit');
+
+      if (cursor < limit) {
+
+        self.save('left', function () {});
+
+        self.save('right', function () {});
+
+        $.when(self.find('side by side').find('.left-item, .right-item').animate({
+          opacity: 0
+        }, 1000)).then(function () {
+          self.set('cursor', cursor + 1);
+
+          self.set('left', self.get('items')[cursor]);
+
+          self.set('cursor', cursor + 1);
+
+          self.set('right', self.get('items')[cursor]);
+
+          self.find('side by side').find('.left-item').animate({
+            opacity: 1
+          }, 1000);
+
+          self.find('side by side').find('.right-item').animate({
+            opacity: 1
+          }, 1000);
+        });
+      } else {
+
+        self.finish();
+      }
+    }));
+  });
+}
+
+exports['default'] = renderPromote;
+module.exports = exports['default'];
+},{"../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var _componentsEditAndGoAgainCtrl = require('../../components/edit-and-go-again/ctrl');
+
+var _componentsEditAndGoAgainCtrl2 = _interopRequireDefault(_componentsEditAndGoAgainCtrl);
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _componentsPromoteControllersRender = require('../../components/promote/controllers/render');
+
+var _componentsPromoteControllersRender2 = _interopRequireDefault(_componentsPromoteControllersRender);
+
+var _componentsPromoteControllersRenderItem = require('../../components/promote/controllers/render-item');
+
+var _componentsPromoteControllersRenderItem2 = _interopRequireDefault(_componentsPromoteControllersRenderItem);
+
+var Promote = (function (_Controller) {
+  function Promote(props, itemController) {
+    var _this = this;
+
+    _classCallCheck(this, Promote);
+
+    _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this);
+
+    this.props = props || {};
+
+    if (this.props.item) {
+      this.set('item', this.props.item);
+    }
+
+    this.template = itemController.find('promote');
+
+    this.itemController = itemController;
+
+    this.store = {
+      item: null,
+      limit: 5,
+      cursor: 1,
+      left: null,
+      right: null,
+      criterias: [],
+      items: []
+    };
+
+    this.on('set', function (key, value) {
+      switch (key) {
+        case 'limit':
+          _this.renderLimit(value);
+          break;
+
+        case 'cursor':
+          _this.renderCursor(value);
+          break;
+
+        case 'left':
+          _this.renderLeft(value);
+          break;
+
+        case 'right':
+          _this.renderRight(value);
+          break;
+      }
+    });
+
+    this.domain.run(function () {
+      if (!_this.template.length) {
+        throw new Error('Promote template not found');
+      }
+    });
+  }
+
+  _inherits(Promote, _Controller);
+
+  _createClass(Promote, [{
+    key: 'find',
+    value: function find(name, more) {
+      switch (name) {
+
+        case 'item subject':
+          return this.template.find('.subject.' + more + '-item h4');
+
+        case 'item description':
+          return this.template.find('.description.' + more + '-item');;
+
+        case 'cursor':
+          return this.template.find('.cursor');
+
+        case 'limit':
+          return this.template.find('.limit');
+
+        case 'side by side':
+          return this.template.find('.items-side-by-side');
+
+        case 'finish button':
+          return this.template.find('.finish');
+
+        case 'sliders':
+          return this.find('side by side').find('.sliders.' + more + '-item');
+
+        case 'item image':
+          return this.find('side by side').find('.image.' + more + '-item');
+
+        case 'item persona':
+          return this.find('side by side').find('.persona.' + more + '-item');
+
+        case 'item references':
+          return this.find('side by side').find('.references.' + more + '-item a');
+
+        case 'item persona image':
+          return this.find('item persona', more).find('img');
+
+        case 'item persona name':
+          return this.find('item persona', more).find('.user-full-name');
+
+        case 'item feedback':
+          return this.find('side by side').find('.' + more + '-item.feedback .feedback-entry');
+
+        case 'promote button':
+          return this.find('side by side').find('.' + more + '-item .promote');
+
+        case 'promote label':
+          return this.find('side by side').find('.promote-label');
+
+        case 'edit and go again button':
+          return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
+      }
+    }
+  }, {
+    key: 'renderLimit',
+    value: function renderLimit(limit) {
+      this.find('limit').text(limit);
+    }
+  }, {
+    key: 'renderCursor',
+    value: function renderCursor(cursor) {
+      this.find('cursor').text(cursor);
+    }
+  }, {
+    key: 'renderLeft',
+    value: function renderLeft(left) {
+      this.renderItem('left', left);
+    }
+  }, {
+    key: 'renderRight',
+    value: function renderRight(right) {
+      this.renderItem('right', right);
+    }
+  }, {
+    key: 'renderItem',
+    value: function renderItem(hand, item) {
+      return _componentsPromoteControllersRenderItem2['default'].apply(this, [hand, item]);
+    }
+  }, {
+    key: 'render',
+    value: function render(cb) {
+      return _componentsPromoteControllersRender2['default'].apply(this, [cb]);
+    }
+  }, {
+    key: 'save',
+    value: function save(hand, cb) {
+
+      // For responsiveness reasons, there are a copy of each element in DOM
+      // one for small screen and one for regular screen -
+      // the ones that do not fit are hidden. So we want to make sure each time
+      // that we are working with the visible one
+
+      var self = this;
+
+      // feedback
+
+      var feedback = this.find('item feedback', hand).toArray().reduce(function (visible, item) {
+        if ($(item).is(':visible')) {
+          visible = $(item);
+        }
+        return visible;
+      });
+
+      if (feedback.val()) {
+
+        if (!feedback.hasClass('do-not-save-again')) {
+          this.publish('insert feedback', {
+            item: this.get(hand)._id,
+            feedback: feedback.val()
+          }).subscribe(function (pubsub) {
+            return pubsub.unsubscribe();
+          });
+
+          feedback.addClass('do-not-save-again');
+        }
+
+        // feedback.val('');
+      }
+
+      // votes
+
+      var votes = [];
+
+      this.template.find('.items-side-by-side:visible .' + hand + '-item input[type="range"]:visible').each(function () {
+        var vote = {
+          item: self.get(hand)._id,
+          value: +$(this).val(),
+          criteria: $(this).data('criteria')
+        };
+
+        votes.push(vote);
+      });
+
+      this.publish('insert votes', votes).subscribe(function (pubsub) {
+        return pubsub.unsubscribe();
+      });
+
+      cb();
+    }
+  }, {
+    key: 'getEvaluation',
+    value: function getEvaluation(cb) {
+      var _this2 = this;
+
+      if (!this.get('left')) {
+        (function () {
+
+          var item = _this2.itemController.get('item');
+
+          // Get evaluation via sockets
+
+          _this2.publish('get evaluation', item._id).subscribe(function (pubsub, evaluation) {
+            if (evaluation.item.toString() === item._id.toString()) {
+              console.info('got evaluation', evaluation);
+
+              pubsub.unsubscribe();
+
+              var limit = 5;
+
+              if (evaluation.items.length < 6) {
+                limit = evaluation.items.length - 1;
+
+                if (!evaluation.limit && evaluation.items.length === 1) {
+                  limit = 1;
+                }
+              }
+
+              _this2.set('criterias', evaluation.criterias);
+
+              _this2.set('items', evaluation.items);
+
+              _this2.set('limit', limit);
+
+              _this2.set('cursor', 1);
+
+              _this2.set('left', evaluation.items[0]);
+
+              _this2.set('right', evaluation.items[1]);
+
+              cb();
+            }
+          });
+        })();
+      } else {
+        cb();
+      }
+    }
+  }]);
+
+  return Promote;
+})(_libAppController2['default']);
+
+exports['default'] = Promote;
+module.exports = exports['default'];
+},{"../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../components/promote/controllers/render":"/home/francois/Dev/syn/dist/components/promote/controllers/render.js","../../components/promote/controllers/render-item":"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var Promote = (function (_Element) {
+  function Promote(props) {
+    _classCallCheck(this, Promote);
+
+    _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this, 'section');
+
+    this.props = props || {};
+
+    this.add(this.compose());
+  }
+
+  _inherits(Promote, _Element);
+
+  _createClass(Promote, [{
+    key: 'promoteImage',
+    value: function promoteImage(hand) {
+      return new _cincoDist.Element('.image.gutter', {
+        style: 'float: left; width: 40%',
+        className: [hand + '-item']
+      });
+    }
+  }, {
+    key: 'promoteSubject',
+    value: function promoteSubject(hand) {
+      return new _cincoDist.Element('.subject.gutter', {
+        className: [hand + '-item']
+      }).add(new _cincoDist.Element('h4'));
+    }
+  }, {
+    key: 'promoteDescription',
+    value: function promoteDescription(hand) {
+      return new _cincoDist.Element('.description.gutter.pre-text', {
+        className: [hand + '-item']
+      });
+    }
+  }, {
+    key: 'promoteReference',
+    value: function promoteReference(hand) {
+      return new _cincoDist.Element('.references.gutter', {
+        className: [hand + '-item']
+      }).add(new _cincoDist.Element('a', {
+        rel: 'nofollow',
+        target: '_blank'
+      }));
+    }
+  }, {
+    key: 'promoteSliders',
+    value: function promoteSliders(hand) {
+
+      var sliders = new _cincoDist.Element('.sliders', {
+        className: [hand + '-item']
+      });
+
+      for (var i = 0; i < 4; i++) {
+        var slider = new _cincoDist.Element('.criteria-wrapper.criteria-' + i);
+
+        slider.add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.tablet-40').add(new _cincoDist.Element('h4').add(new _cincoDist.Element('button.criteria-name.shy.block').text('Criteria'))), new _cincoDist.Element('.tablet-60', {
+          style: 'margin-top: 2.5em'
+        }).add(new _cincoDist.Element('input.block', {
+          type: 'range',
+          min: '-1',
+          max: '1',
+          value: '0',
+          step: '1'
+        }))));
+
+        slider.add(new _cincoDist.Element('h5.criteria-description.row.watch-100.gutter'));
+
+        sliders.add(slider);
+      }
+
+      return sliders;
+    }
+  }, {
+    key: 'promoteFeedback',
+    value: function promoteFeedback(hand) {
+      return new _cincoDist.Element('.feedback', {
+        className: [hand + '-item']
+      }).add(new _cincoDist.Element('textarea.feedback-entry.block', {
+        placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?'
+      }));
+    }
+  }, {
+    key: 'promoteButton',
+    value: function promoteButton(hand) {
+      return new _cincoDist.Element('.gutter', {
+        className: [hand + '-item']
+      }).add(new _cincoDist.Element('button.block.promote').text('Promote'));
+    }
+  }, {
+    key: 'editAndGoAgain',
+    value: function editAndGoAgain(hand) {
+      return new _cincoDist.Element('.gutter', {
+        className: [hand + '-item']
+      }).add(new _cincoDist.Element('button.block.edit-and-go-again-toggle').text('Edit and go again'));
+    }
+  }, {
+    key: 'compose',
+    value: function compose() {
+      return new _cincoDist.Elements().add(new _cincoDist.Element('header.promote-steps').add(new _cincoDist.Element('h2').add(new _cincoDist.Element('span.cursor').text('1'), new _cincoDist.Element('span').text(' of '), new _cincoDist.Element('span.limit').text('5')), new _cincoDist.Element('h4').text('Evaluate each item below')), new _cincoDist.Element('.items-side-by-side').add(
+      // 1 column
+      new _cincoDist.Element('.split-hide-up').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left'), this.promoteReference('left'), this.promoteSliders('left'), this.promoteFeedback('left'), this.promoteButton('left'), this.editAndGoAgain('left'), this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'), this.promoteReference('right'), this.promoteSliders('right'), this.promoteFeedback('right'), this.promoteButton('right'), this.editAndGoAgain('right')),
+
+      // 2 columns
+      new _cincoDist.Element('.split-hide-down').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('right'))), new _cincoDist.Element('h4.text-center').text('Which of these is most important for the community to consider?'), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('left')), new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('right')))), new _cincoDist.Element('button.finish.block').text('Neither')));
+    }
+  }]);
+
+  return Promote;
+})(_cincoDist.Element);
+
+exports['default'] = Promote;
+module.exports = exports['default'];
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js":[function(require,module,exports){
+/**
+ * @package     App.Component.TopbBar.Controller
+*/
+
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _componentsLoginCtrl = require('../../components/login/ctrl');
+
+var _componentsLoginCtrl2 = _interopRequireDefault(_componentsLoginCtrl);
+
+var _componentsJoinCtrl = require('../../components/join/ctrl');
+
+var _componentsJoinCtrl2 = _interopRequireDefault(_componentsJoinCtrl);
+
+var _componentsForgotPasswordCtrl = require('../../components/forgot-password/ctrl');
+
+var _componentsForgotPasswordCtrl2 = _interopRequireDefault(_componentsForgotPasswordCtrl);
+
+var TopBar = (function (_Controller) {
+
+  /**
+   *  @arg    {Object} props
+  */
+
+  function TopBar(props) {
+    var _this = this;
+
+    _classCallCheck(this, TopBar);
+
+    _get(Object.getPrototypeOf(TopBar.prototype), 'constructor', this).call(this);
+
+    this.props = props;
+
+    this.template = $('.topbar');
+
+    this.store['online users'] = 0;
+
+    this.socket.on('online users', function (num) {
+      return _this.set('online users', num);
+    });
+
+    this.on('set', function (key, value) {
+      if (key === 'online users') {
+        _this.renderOnlineUsers();
+      }
+    });
+  }
+
+  _inherits(TopBar, _Controller);
+
+  _createClass(TopBar, [{
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'online users':
+          return this.template.find('.online-users');
+
+        case 'right section':
+          return this.template.find('.topbar-right');
+
+        case 'login button':
+          return this.template.find('.login-button');
+
+        case 'join button':
+          return this.template.find('.join-button');
+
+        case 'is in':
+          return this.template.find('.is-in');
+
+        case 'is out':
+          return this.template.find('.is-out');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      this.renderOnlineUsers();
+
+      synapp.app.on('set', function (key, value) {
+        if (key === 'onlineUsers') {
+          _this2.find('online users').text(value);
+        }
+      });
+
+      this.find('right section').removeClass('hide');
+
+      if (!this.socket.synuser) {
+        this.find('login button').on('click', this.loginDialog.bind(this));
+        this.find('join button').on('click', this.joinDialog.bind(this));
+        this.find('is in').hide();
+      } else {
+        this.find('is out').remove();
+        this.find('is in').css('display', 'inline');
+      }
+    }
+  }, {
+    key: 'renderOnlineUsers',
+    value: function renderOnlineUsers() {
+      this.find('online users').text(this.get('online users'));
+    }
+  }, {
+    key: 'loginDialog',
+    value: function loginDialog() {
+      var _this3 = this;
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      vex.dialog.confirm({
+
+        afterOpen: function afterOpen($vexContent) {
+          _this3.find('login button').off('click').on('click', function () {
+            return vex.close();
+          });
+
+          new _componentsLoginCtrl2['default']({ $vexContent: $vexContent });
+
+          $vexContent.find('.forgot-password-link').on('click', function () {
+            new _componentsForgotPasswordCtrl2['default']();
+            vex.close($vexContent.data().vex.id);
+            return false;
+          });
+        },
+
+        afterClose: function afterClose() {
+          $('.login-button').on('click', function () {
+            return _this3.loginDialog();
+          });
+        },
+
+        message: $('#login').text(),
+
+        buttons: [$.extend({}, vex.dialog.buttons.NO, {
+          text: 'x Close'
+        })]
+      });
+    }
+  }, {
+    key: 'joinDialog',
+    value: function joinDialog() {
+      var _this4 = this;
+
+      vex.defaultOptions.className = 'vex-theme-flat-attack';
+
+      var joinDialog = this.joinDialog.bind(this);
+
+      vex.dialog.confirm({
+
+        afterOpen: function afterOpen($vexContent) {
+          _this4.find('join button').off('click').on('click', function () {
+            vex.close();
+          });
+
+          new _componentsJoinCtrl2['default']({ $vexContent: $vexContent });
+        },
+
+        afterClose: function afterClose() {
+          $('.join-button').on('click', function () {
+            return joinDialog();
+          });
+        },
+
+        message: $('#join').text(),
+        buttons: [$.extend({}, vex.dialog.buttons.NO, {
+          text: 'x Close'
+        })],
+        callback: function callback(value) {},
+        defaultOptions: {
+          closeCSS: {
+            color: 'red'
+          }
+        }
+      });
+    }
+  }]);
+
+  return TopBar;
+})(_libAppController2['default']);
+
+exports['default'] = TopBar;
+module.exports = exports['default'];
+},{"../../components/forgot-password/ctrl":"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js","../../components/join/ctrl":"/home/francois/Dev/syn/dist/components/join/ctrl.js","../../components/login/ctrl":"/home/francois/Dev/syn/dist/components/login/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js"}],"/home/francois/Dev/syn/dist/components/youtube/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _componentsYoutubeView = require('../../components/youtube/view');
+
+var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
+
+function YouTube(url) {
+  var yt = new _componentsYoutubeView2['default']({ url: url, settings: { env: synapp.env } });
+}
+
+exports['default'] = YouTube;
+module.exports = exports['default'];
+},{"../../components/youtube/view":"/home/francois/Dev/syn/dist/components/youtube/view.js"}],"/home/francois/Dev/syn/dist/components/youtube/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var YouTube = (function (_Element) {
+  function YouTube(props) {
+    _classCallCheck(this, YouTube);
+
+    _get(Object.getPrototypeOf(YouTube.prototype), 'constructor', this).call(this, '.video-container');
+
+    if (props.item && props.settings.env !== 'development2') {
+
+      if (YouTube.isYouTube(props.item)) {
+        this.add(this.iframe(props.item.references[0].url));
+      }
+    }
+  }
+
+  _inherits(YouTube, _Element);
+
+  _createClass(YouTube, [{
+    key: 'iframe',
+    value: function iframe(url) {
+      var youTubeId = YouTube.getId(url);
+
+      return new _cincoDist.Element('iframe[allowfullscreen]', {
+        frameborder: '0',
+        width: '300',
+        height: '175',
+        src: 'http://www.youtube.com/embed/' + youTubeId + '?autoplay=0'
+      });
+    }
+  }], [{
+    key: 'isYouTube',
+    value: function isYouTube(item) {
+      var is = false;
+
+      var references = item.references || [];
+
+      if (references.length) {
+        var url = references[0].url;
+
+        if (YouTube.regex.test(url)) {
+          is = true;
+        }
+      }
+
+      return is;
+    }
+  }, {
+    key: 'getId',
+    value: function getId(url) {
+      var youTubeId = undefined;
+
+      url.replace(YouTube.regex, function (m, v) {
+        return youTubeId = v;
+      });
+
+      return youTubeId;
+    }
+  }]);
+
+  return YouTube;
+})(_cincoDist.Element);
+
+YouTube.regex = /youtu\.?be.+v=([^&]+)/;
+
+exports['default'] = YouTube;
+module.exports = exports['default'];
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/lib/app/Stream.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function Stream(file) {
+
+    var stream = ss.createStream();
+
+    ss(synapp.app.socket).emit('upload image', stream, { size: file.size, name: file.name });
+
+    ss.createBlobReadStream(file).pipe(stream);
+
+    return stream;
+  }
+
+  module.exports = Stream;
+})();
+},{}],"/home/francois/Dev/syn/dist/lib/app/cache.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var Cache = (function () {
+  function Cache() {
+    _classCallCheck(this, Cache);
+
+    this.cache = {
+      templates: {}
+    };
+  }
+
+  _createClass(Cache, [{
+    key: 'getTemplate',
+    value: function getTemplate(tpl) {
+      return this.cache.templates[tpl];
+    }
+  }, {
+    key: 'setTemplate',
+    value: function setTemplate(tpl, val) {
+      this.cache.templates[tpl] = val;
+    }
+  }]);
+
+  return Cache;
+})();
+
+exports['default'] = new Cache();
+module.exports = exports['default'];
+},{}],"/home/francois/Dev/syn/dist/lib/app/controller.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _app = require('../../app');
+
+var _app2 = _interopRequireDefault(_app);
+
+var Controller = (function (_App) {
+  function Controller() {
+    _classCallCheck(this, Controller);
+
+    _get(Object.getPrototypeOf(Controller.prototype), 'constructor', this).call(this);
+  }
+
+  _inherits(Controller, _App);
+
+  return Controller;
+})(_app2['default']);
+
+exports['default'] = Controller;
+module.exports = exports['default'];
+},{"../../app":"/home/francois/Dev/syn/dist/app.js"}],"/home/francois/Dev/syn/dist/lib/app/page.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  var S = require('string');
+
+  function Page(page, more) {
+
+    switch (page) {
+      case 'Home':
+        return '/';
+
+      case 'Item Page':
+        return '/item/' + more.id + '/' + S(more.subject).slugify().s;
+
+      case 'Terms Of Service':
+        return '/page/terms-of-service';
+
+      case 'Profile':
+        return '/page/profile';
+
+      case 'Sign Out':
+        return '/sign/out';
+
+      case 'Sign With Facebook':
+        return '/sign/facebook';
+
+      case 'Sign With Twitter':
+        return '/sign/twitter';
+
+      default:
+        throw new Error('Page not registered: ' + page);
+    }
+  }
+
+  module.exports = Page;
+})();
+},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/dist/lib/util/domain-run.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  var domain = require('domain');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function domainRun(fn, reject) {
+    var d = domain.create();
+
+    d.intercept = function (fn, _self) {
+
+      if (typeof fn !== 'function') {
+        fn = function () {};
+      }
+
+      return function (error) {
+        if (error && error instanceof Error) {
+          d.emit('error', error);
+        } else {
+          var args = Array.prototype.slice.call(arguments);
+
+          args.shift();
+
+          fn.apply(_self, args);
+        }
+      };
+    };
+
+    d.on('error', function onDomainError(error) {
+      console.error(error);
+
+      if (error.stack) {
+        error.stack.split(/\n/).forEach(function (line) {
+          line.split(/\n/).forEach(console.warn.bind(console));
+        });
+      }
+
+      if (typeof reject === 'function') {
+        reject(error);
+      }
+    });
+
+    d.run(function () {
+      fn(d);
+    });
+  }
+
+  module.exports = domainRun;
+})();
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/lib/util/form.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _domainRun = require('./domain-run');
+
+var _domainRun2 = _interopRequireDefault(_domainRun);
+
+var Form = (function () {
+  function Form(form) {
+    var _this = this;
+
+    _classCallCheck(this, Form);
+
+    var self = this;
+
+    this.form = form;
+
+    this.labels = {};
+
+    form.find('[name]').each(function () {
+      self.labels[$(this).attr('name')] = $(this);
+    });
+
+    // #193 Disable <Enter> keys
+
+    form.find('input').on('keydown', function (e) {
+      if (e.keyCode === 13) {
+        return false;
+      }
+    });
+
+    form.on('submit', function (e) {
+      setTimeout(function () {
+        return _this.submit(e);
+      });
+      return false;
+    });
+  }
+
+  _createClass(Form, [{
+    key: 'send',
+    value: function send(fn) {
+      this.ok = fn;
+      return this;
+    }
+  }, {
+    key: 'submit',
+    value: function submit(e) {
+      var errors = [];
+
+      this.form.find('[required]').each(function () {
+        var val = $(this).val();
+
+        if (!val) {
+
+          if (!errors.length) {
+            $(this).addClass('error').focus();
+          }
+
+          errors.push({ required: $(this).attr('name') });
+        } else {
+          $(this).removeClass('error');
+        }
+      });
+
+      if (!errors.length) {
+        this.ok();
+      }
+
+      return false;
+    }
+  }]);
+
+  return Form;
+})();
+
+exports['default'] = Form;
+module.exports = exports['default'];
+},{"./domain-run":"/home/francois/Dev/syn/dist/lib/util/domain-run.js"}],"/home/francois/Dev/syn/dist/lib/util/nav.js":[function(require,module,exports){
+(function (process){
+/*
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+ 
+ *  N   A   V
+
+ *  ******************************************************
+ *  ******************************************************
+ *  ******************************************************
+*/
+
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function toggle(elem, poa, cb) {
+    if (!elem.hasClass('is-toggable')) {
+      elem.addClass('is-toggable');
+    }
+
+    if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
+      var error = new Error('Animation already in progress');
+      error.code = 'ANIMATION_IN_PROGRESS';
+      return cb(error);
+    }
+
+    if (elem.hasClass('is-shown')) {
+      unreveal(elem, poa, cb);
+    } else {
+      reveal(elem, poa, cb);
+    }
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function reveal(elem, poa, cb) {
+    var emitter = new (require('events').EventEmitter)();
+
+    if (typeof cb !== 'function') {
+      cb = console.log.bind(console);
+    }
+
+    emitter.revealed = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    setTimeout(function () {
+      if (!elem.hasClass('is-toggable')) {
+        elem.addClass('is-toggable');
+      }
+
+      console.log('%c reveal', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>', elem.attr('class'));
+
+      if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
+        var error = new Error('Animation already in progress');
+        error.code = 'ANIMATION_IN_PROGRESS';
+        return cb(error);
+      }
+
+      elem.removeClass('is-hidden').addClass('is-showing');
+
+      if (poa) {
+        scroll(poa, function () {
+          show(elem, function () {
+            emitter.emit('success');
+            cb();
+          });
+        });
+      } else {
+        show(elem, function () {
+          emitter.emit('success');
+          cb();
+        });
+      }
+    });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function unreveal(elem, poa, cb) {
+    if (!elem.hasClass('is-toggable')) {
+      elem.addClass('is-toggable');
+    }
+
+    console.log('%c unreveal', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
+
+    if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
+      var error = new Error('Animation already in progress');
+      error.code = 'ANIMATION_IN_PROGRESS';
+      return cb(error);
+    }
+
+    elem.removeClass('is-shown').addClass('is-hiding');
+
+    if (poa) {
+      scroll(poa, function () {
+        hide(elem, cb);
+      });
+    } else {
+      hide(elem, cb);
+    }
+  }
+
+  /**
+   *  @function scroll
+   *  @description Scroll the page till the point of attention is at the top of the screen
+   *  @return null
+   *  @arg {function} pointOfAttention - jQuery List
+   *  @arg {function} cb - Function to call once scroll is complete
+   *  @arg {number} speed - A number of milliseconds to set animation duration
+   */
+
+  function scroll(pointOfAttention, cb, speed) {
+    // console.log('%c scroll', 'font-weight: bold',
+    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
+
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.scrolled = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    emitter.then = function (fn, fn2) {
+      emitter.on('success', fn);
+      if (fn2) emitter.on('error', fn2);
+      return this;
+    };
+
+    var poa = pointOfAttention.offset().top - 60;
+
+    var current = $('body,html').scrollTop();
+
+    if (typeof cb !== 'function') {
+      cb = function () {};
+    }
+
+    if (current === poa || current > poa && current - poa < 50 || poa > current && poa - current < 50) {
+
+      emitter.emit('success');
+
+      return typeof cb === 'function' ? cb() : true;
+    }
+
+    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing')).then(function () {
+
+      emitter.emit('success');
+
+      if (typeof cb === 'function') {
+        cb();
+      }
+    });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function show(elem, cb) {
+
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.shown = function (fn) {
+      emitter.on('success', fn);
+      return this;
+    };
+
+    emitter.error = function (fn) {
+      emitter.on('error', fn);
+      return this;
+    };
+
+    setTimeout(function () {
+
+      console.log('%c show', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
+
+      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+      if (elem.hasClass('.is-showing') || elem.hasClass('.is-hiding')) {
+
+        emitter.emit('error', new Error('Already in progress'));
+
+        if (typeof cb === 'function') {
+          cb(new Error('Show failed'));
+        }
+
+        return false;
+      }
+
+      // make sure margin-top is equal to height for smooth scrolling
+
+      elem.css('margin-top', '-' + elem.height() + 'px');
+
+      // animate is-section
+
+      $.when(elem.find('.is-section:first').animate({
+        marginTop: 0
+      }, 500)).then(function () {
+        elem.removeClass('is-showing').addClass('is-shown');
+
+        if (elem.css('margin-top') !== 0) {
+          elem.animate({ 'margin-top': 0 }, 250);
+        }
+
+        emitter.emit('success');
+
+        if (cb) {
+          cb();
+        }
+      });
+
+      elem.animate({
+        opacity: 1
+      }, 500);
+    });
+
+    return emitter;
+  }
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function hide(elem, cb) {
+    var emitter = new (require('events').EventEmitter)();
+
+    emitter.hiding = function (cb) {
+      this.on('hiding', cb);
+      return this;
+    };
+
+    emitter.hidden = function (cb) {
+      this.on('hidden', cb);
+      return this;
+    };
+
+    emitter.error = function (cb) {
+      this.on('error', cb);
+      return this;
+    };
+
+    process.nextTick(function () {
+
+      var domain = require('domain').create();
+
+      domain.on('error', function (error) {
+        emitter.emit('error', error);
+      });
+
+      domain.run(function () {
+
+        if (!elem.length) {
+          return cb();
+        }
+
+        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
+
+        if (elem.hasClass('.is-showing') || elem.hasClass('.is-hiding')) {
+          emitter.emit('bounced');
+          return false;
+        }
+
+        emitter.emit('hiding');
+
+        console.log('%c hide', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
+
+        elem.removeClass('is-shown').addClass('is-hiding');;
+
+        elem.find('.is-section:first').animate({
+          'margin-top': '-' + elem.height() + 'px' }, 1000, function () {
+          elem.removeClass('is-hiding').addClass('is-hidden');
+
+          emitter.emit('hidden');
+
+          if (cb) cb();
+        });
+
+        elem.animate({
+          opacity: 0
+        }, 1000);
+      });
+    });
+
+    return emitter;
+  }
+
+  module.exports = {
+    toggle: toggle,
+    reveal: reveal,
+    unreveal: unreveal,
+    show: show,
+    hide: hide,
+    scroll: scroll
+  };
+})();
+
+// 'padding-top': elem.height() + 'px'
+}).call(this,require('_process'))
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/lib/util/read-more.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  function spanify(des) {
+
+    var div = ' <div---class="syn-lb"></div> ';
+
+    return des.replace(/\n/g, div).split(/\s/).map(function (word) {
+      if (word === div.trim()) {
+        return $(div.trim().replace(/\-\-\-/g, ' '));
+      }
+
+      var span = $('<span class="word"></span>');
+      span.text(word + ' ');
+      return span;
+    });
+  }
+
+  function readMore(item, $item) {
+
+    /** {HTMLElement} Description wrapper in DOM */
+
+    var $description = $item.find('.item-description');
+
+    /** {HTMLElement} Image container in DOM */
+
+    var $image = $item.find('.item-media img');
+
+    if (!$image.length) {
+      $image = $item.find('.item-media iframe');
+    }
+
+    /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
+
+    var $text = $item.find('.item-text');
+
+    /** {HTMLElement} Subject container in DOM */
+
+    var $subject = $item.find('.item-subject');
+
+    /** {HTMLElement} Reference container in DOM */
+
+    var $reference = $item.find('.item-reference');
+
+    /** {HTMLElement} Arrow container in DOM */
+
+    var $arrow = $item.find('.item-arrow');
+
+    /** {Number} Image height */
+
+    var imgHeight = $image.height();
+
+    // If screen >= phone, then divide imgHeight by 2
+
+    if ($('body').width() <= $('#screen-tablet').width()) {
+      imgHeight *= 2;
+    }
+
+    /** {Number} Top position of text wrapper */
+
+    var top = $text.offset().top;
+
+    // If **not** #intro, then subtract subject's height
+
+    if ($item.attr('id') !== 'intro') {
+
+      // Subtract height of subject from top
+
+      top -= $subject.height();
+    }
+
+    // If screen >= tablet
+
+    if ($('body').width() >= $('#screen-tablet').width()) {
+      // Subtract 40 pixels from top
+
+      top -= 40;
+    }
+
+    // If screen >= phone
+
+    else if ($('body').width() >= $('#screen-phone').width()) {
+      top -= 80;
+    }
+
+    // console.info( item.subject.substr(0, 30) + '...', 'top', Math.ceil(top), ',', Math.ceil(imgHeight) );
+
+    // Clear description
+
+    $description.text('');
+
+    // Spanify each word
+
+    spanify(item.description).forEach(function (word) {
+      $description.append(word);
+    });
+
+    // Hide words that are below limit
+
+    for (var i = $description.find('.word').length - 1; i >= 0; i--) {
+      var word = $description.find('.word').eq(i);
+      // console.log(Math.ceil(word.offset().top), Math.ceil(top),
+      //   { word: Math.ceil(word.offset().top - top), top: top, imgHeight: imgHeight, limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
+      if (word.offset().top - top > imgHeight) {
+        word.addClass('hidden-word').hide();
+      }
+    }
+
+    if ($description.find('.hidden-word').length) {
+      var more = $('<a href="#" class="more">more</a>');
+
+      more.on('click', function () {
+
+        if ($(this).hasClass('more')) {
+          $(this).removeClass('more').addClass('less').text('less');
+          $(this).closest('.item-description').find('.hidden-word').show();
+        } else {
+          $(this).removeClass('less').addClass('more').text('more');
+          $(this).closest('.item-description').find('.hidden-word').hide();
+        }
+
+        return false;
+      });
+
+      $description.append(more);
+    }
+
+    // Hide reference if too low and breaks design
+
+    if ($reference.text() && $arrow.offset().top - $reference.offset().top < 15) {
+
+      var more;
+
+      if ($description.find('.more').length) {
+        more = $description.find('.more');
+      } else {
+        more = $('<a href="#" class="more">more</a>');
+
+        more.on('click', function () {
+
+          if ($(this).hasClass('more')) {
+            $(this).removeClass('more').addClass('less').text('less');
+            $reference.show();
+          } else {
+            $(this).removeClass('less').addClass('more').text('more');
+            $reference.hide();
+          }
+
+          return false;
+        });
+      }
+
+      $description.append(more);
+
+      $reference.css('padding-bottom', '10px').data('is-hidden-reference', true).hide();
+    }
+  }
+
+  module.exports = readMore;
+})();
+},{}],"/home/francois/Dev/syn/dist/lib/util/upload.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  /**
+   *  @class    Upload
+   *  @arg      {HTMLElement} dropzone
+   *  @arg      {Input} file_input
+   *  @arg      {HTMLElement} thumbnail - Preview container
+   *  @arg      {Function} cb
+   */
+
+  function Upload(dropzone, file_input, thumbnail, cb) {
+    this.dropzone = dropzone;
+    this.file_input = file_input;
+    this.thumbnail = thumbnail;
+    this.cb = cb;
+
+    this.init();
+  }
+
+  Upload.prototype.init = function () {
+
+    if (window.File) {
+      if (this.dropzone) {
+        this.dropzone.on('dragover', this.hover.bind(this)).on('dragleave', this.hover.bind(this)).on('drop', this.handler.bind(this));
+      }
+
+      if (this.file_input) {
+        this.file_input.on('change', this.handler.bind(this));
+      }
+    } else {
+      if (dropzone) {
+        dropzone.find('.modern').hide();
+      }
+    }
+  };
+
+  Upload.prototype.hover = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  Upload.prototype.handler = function (e) {
+    this.hover(e);
+
+    var files = e.target.files || e.originalEvent.dataTransfer.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+      this.preview(f, e.target);
+    }
+  };
+
+  Upload.prototype.preview = function (file, target) {
+    var upload = this;
+
+    var img = new Image();
+
+    img.classList.add('img-responsive');
+    img.classList.add('preview-image');
+
+    img.addEventListener('load', function () {
+
+      $(img).data('file', file);
+
+      upload.thumbnail.empty().append(img);
+    }, false);
+
+    img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+    if (this.cb) {
+      this.cb(null, file);
+    }
+  };
+
+  module.exports = Upload;
+})();
+},{}],"/home/francois/Dev/syn/dist/pages/home/ctrl.js":[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _app = require('../../app');
+
+var _app2 = _interopRequireDefault(_app);
+
+var _componentsIntroCtrl = require('../../components/intro/ctrl');
+
+var _componentsIntroCtrl2 = _interopRequireDefault(_componentsIntroCtrl);
+
+var _componentsTopBarCtrl = require('../../components/top-bar/ctrl');
+
+var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
+
+var _componentsPanelCtrl = require('../../components/panel/ctrl');
+
+var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
+
+synapp.app = new _app2['default'](true);
 
 var panel = undefined;
 
 synapp.app.ready(function () {
 
-  new _synComponentsIntroCtrl2['default']().render();
+  new _componentsIntroCtrl2['default']().render();
 
-  new _synComponentsTopBarCtrl2['default']().render();
+  new _componentsTopBarCtrl2['default']().render();
 
   if (!panel) {
     synapp.app.publish('get top level type').subscribe(function (pubsub, topLevelPanel) {
 
       pubsub.unsubscribe();
 
-      panel = new _synComponentsPanelCtrl2['default']({ panel: { type: topLevelPanel } });
+      panel = new _componentsPanelCtrl2['default']({ panel: { type: topLevelPanel } });
 
       $('.panels').append(panel.load());
 
@@ -48,8 +5016,7 @@ synapp.app.ready(function () {
     });
   }
 });
-
-},{"syn/app":"/home/francois/Dev/syn/node_modules/syn/app.js","syn/components/intro/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/intro/ctrl.js","syn/components/panel/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/panel/ctrl.js","syn/components/top-bar/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/top-bar/ctrl.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"../../app":"/home/francois/Dev/syn/dist/app.js","../../components/intro/ctrl":"/home/francois/Dev/syn/dist/components/intro/ctrl.js","../../components/panel/ctrl":"/home/francois/Dev/syn/dist/components/panel/ctrl.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2511,5711 +7478,5 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 
 }).call(this);
-
-},{}],"/home/francois/Dev/syn/node_modules/syn/app.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _events = require('events');
-
-var _domain = require('domain');
-
-var _domain2 = _interopRequireDefault(_domain);
-
-var _synLibAppCache = require('syn/lib/app/cache');
-
-var _synLibAppCache2 = _interopRequireDefault(_synLibAppCache);
-
-var App = (function (_EventEmitter) {
-  function App(isPage) {
-    var _this = this;
-
-    _classCallCheck(this, App);
-
-    _get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this);
-
-    this.store = {};
-
-    this.connect();
-
-    if (isPage) {
-      this.store.socket = {};
-
-      this.socket.on('welcome', function (user) {
-        console.log('Connected to socket');
-        _this.socket.synuser = user;
-        _this.emit('ready');
-      });
-    }
-
-    this.domain = _domain2['default'].create().on('error', function (error) {
-      return _this.emit('error', error);
-    });
-
-    this.domain.intercept = function (handler) {
-      return function (error) {
-        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key2 = 1; _key2 < _len; _key2++) {
-          args[_key2 - 1] = arguments[_key2];
-        }
-
-        return _this.domain.run(function () {
-          if (error) {
-            throw error;
-          }
-          if (handler) {
-            handler.apply(undefined, args);
-          }
-        });
-      };
-    };
-  }
-
-  _inherits(App, _EventEmitter);
-
-  _createClass(App, [{
-    key: 'get',
-
-    /** Get local store by key
-     *  @arg      {String} key
-     *  @return   Any
-    */
-
-    value: function get(key) {
-      return this.store[key];
-    }
-  }, {
-    key: 'getGlobal',
-
-    /** Get global store by key
-     *  @arg      {String} key
-     *  @return   Any
-    */
-
-    value: function getGlobal(key) {
-      return synapp.app.store[key];
-    }
-  }, {
-    key: 'set',
-
-    /** Set local store by key
-     *  @arg      {String} key
-     *  @arg      {Any} value
-     *  @return   App
-    */
-
-    value: function set(key, value) {
-      this.store[key] = value;
-
-      this.emit('set', key, value);
-
-      return this;
-    }
-  }, {
-    key: 'setGlobal',
-
-    /** Set global store by key
-     *  @arg      {String} key
-     *  @arg      {Any} value
-     *  @return   App
-    */
-
-    value: function setGlobal(key, value) {
-      this.store[key] = value;
-
-      this.emit('set global', key, value);
-
-      return this;
-    }
-  }, {
-    key: 'copy',
-
-    /** Copy a global into local and stay in sync with changes
-     *  @arg      {String} key
-    */
-
-    value: function copy(key) {
-      var _this2 = this;
-
-      this.store[key] = this.getGlobal(key);
-
-      this.on('set global', function (_key, value) {
-        if (key === _key) {
-          _this2.store.set(key, value);
-        }
-      });
-    }
-  }, {
-    key: 'error',
-
-    /** Throw App error
-     *  @arg      {Error} err
-    */
-
-    value: function error(err) {
-      console.log('App error');
-    }
-  }, {
-    key: 'ready',
-
-    /** Execute handler on App ready
-     *  @arg      {Function} fn
-    */
-
-    value: function ready(fn) {
-      this.on('ready', fn);
-    }
-  }, {
-    key: 'connect',
-
-    /** Set store by key
-     *  @arg      {String} key
-     *  @arg      {Any} value
-     *  @return   App
-    */
-
-    value: function connect() {
-
-      if (!io.$$socket) {
-        io.$$socket = io.connect('http://' + window.location.hostname + ':' + window.location.port);
-      }
-
-      this.socket = io.$$socket;
-    }
-  }, {
-    key: 'reconnect',
-    value: function reconnect() {
-      console.log('reconnecting');
-      this.socket.close().connect();
-    }
-  }, {
-    key: 'publish',
-    value: function publish(event) {
-      var _this3 = this;
-
-      for (var _len2 = arguments.length, messages = Array(_len2 > 1 ? _len2 - 1 : 0), _key3 = 1; _key3 < _len2; _key3++) {
-        messages[_key3 - 1] = arguments[_key3];
-      }
-
-      var unsubscribe = function unsubscribe() {
-        _this3.socket.removeListener('OK ' + event, _this3.handler);
-      };
-
-      console.info.apply(console, ['PUB', event].concat(messages));
-
-      return {
-        subscribe: function subscribe(handler) {
-          var _socket$on;
-
-          (_socket$on = _this3.socket.on('OK ' + event, function () {
-            for (var _len3 = arguments.length, responses = Array(_len3), _key4 = 0; _key4 < _len3; _key4++) {
-              responses[_key4] = arguments[_key4];
-            }
-
-            return handler.apply(undefined, [{ unsubscribe: unsubscribe.bind(handler) }].concat(responses));
-          })).emit.apply(_socket$on, [event].concat(messages));
-        }
-      };
-    }
-  }, {
-    key: 'load',
-    value: function load() {
-
-      if (!this.template) {
-        if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
-          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
-        } else {
-          var View = this.view;
-          var view = new View(this.props);
-          _synLibAppCache2['default'].setTemplate(this.componentName, view.render());
-          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
-        }
-      }
-
-      return this.template;
-    }
-  }]);
-
-  return App;
-})(_events.EventEmitter);
-
-exports['default'] = App;
-module.exports = exports['default'];
-
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js","syn/lib/app/cache":"/home/francois/Dev/syn/node_modules/syn/lib/app/cache.js"}],"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/create.js":[function(require,module,exports){
-(function (process){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
-
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
-
-var _synLibAppStream = require('syn/lib/app/Stream');
-
-var _synLibAppStream2 = _interopRequireDefault(_synLibAppStream);
-
-function save() {
-  var _this = this;
-
-  var d = this.domain;
-
-  process.nextTick(function () {
-
-    d.run(function () {
-
-      // Hide the Creator           // Catch errors
-
-      _synLibUtilNav2['default'].hide(_this.template).error(d.intercept())
-
-      // Hiding complete
-
-      .hidden(function () {
-
-        // Build the JSON object to save to MongoDB
-
-        _this.packItem();
-
-        // In case a file was uploaded
-
-        if (_this.packaged.upload) {
-
-          // Get file from template's data
-
-          var file = _this.template.find('.preview-image').data('file');
-
-          // New stream         //  Catch stream errors
-
-          new _synLibAppStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
-            _this.packaged.image = file.name;
-
-            console.log('create item', _this.packaged);
-
-            _this.publish('create item', _this.packaged).subscribe(function (pubsub, item) {
-              pubsub.unsubscribe();
-              _this.created(item);
-            });
-          });
-        }
-
-        // If nof ile was uploaded
-
-        else {
-          console.log('create item', _this.packaged);
-
-          _this.publish('create item', _this.packaged).subscribe(function (pubsub, item) {
-            console.log('item created', item);
-            pubsub.unsubscribe();
-            _this.created(item);
-          });
-        }
-      });
-    });
-  });
-
-  return false;
-}
-
-exports['default'] = save;
-module.exports = exports['default'];
-
-}).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","syn/components/item/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js","syn/lib/app/Stream":"/home/francois/Dev/syn/node_modules/syn/lib/app/Stream.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/created.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
-
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
-
-function created(item) {
-  console.log('created item', item);
-
-  var d = this.domain;
-
-  this.parent.find('.create-new').hide();
-
-  if (this.packaged.upload) {
-    item.upload = this.packaged.upload;
-  }
-
-  if (this.packaged.youtube) {
-    item.youtube = this.packaged.youtube;
-  }
-
-  item = new _synComponentsItemCtrl2['default']({ item: item });
-
-  var items = this.panelContainer.find('items');
-
-  item.load();
-
-  console.log('inserting', item);
-
-  item.template.addClass('new');
-  items.prepend(item.template);
-  item.render(d.intercept(function () {
-    item.find('toggle promote').click();
-  }));
-}
-
-exports['default'] = created;
-module.exports = exports['default'];
-
-},{"syn/components/item/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js"}],"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/pack-item.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-function packItem() {
-
-  var item = {
-    type: this.panel.type,
-    subject: this.find('subject').val(),
-    description: this.find('description').val()
-  };
-
-  // Parent
-
-  if (this.panel.parent) {
-    item.parent = this.panel.parent;
-  }
-
-  // References
-
-  if (this.find('reference').val()) {
-    item.references = [{ url: this.find('reference').val() }];
-
-    if (this.find('reference board').text() && this.find('reference board').text() !== 'Looking up title') {
-      item.references[0].title = this.find('reference board').text();
-    }
-  }
-
-  // Image
-
-  if (this.find('item media').find('img').length) {
-
-    // YouTube
-
-    if (this.find('item media').find('.youtube-preview').length) {
-      item.youtube = this.find('item media').find('.youtube-preview').data('video');
-    }
-
-    // Upload
-
-    else {
-      item.upload = this.find('item media').find('img').attr('src');
-      item.image = item.upload;
-    }
-  }
-
-  this.find('subject').val('');
-  this.find('description').val('');
-  this.find('reference').val('').css('display', 'block');
-  this.find('reference board').text('').addClass('hide');
-
-  this.packaged = item;
-}
-
-exports['default'] = packItem;
-module.exports = exports['default'];
-
-},{}],"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/render.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synLibUtilUpload = require('syn/lib/util/upload');
-
-var _synLibUtilUpload2 = _interopRequireDefault(_synLibUtilUpload);
-
-var _synLibUtilForm = require('syn/lib/util/form');
-
-var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
-
-var _synComponentsYoutubeCtrl = require('syn/components/youtube/ctrl');
-
-var _synComponentsYoutubeCtrl2 = _interopRequireDefault(_synComponentsYoutubeCtrl);
-
-var _domain = require('domain');
-
-var _domain2 = _interopRequireDefault(_domain);
-
-function renderCreator(cb) {
-  var _this = this;
-
-  var q = new Promise(function (fulfill, reject) {
-
-    var self = _this;
-
-    var d = _domain2['default'].create().on('error', reject);
-
-    d.run(function () {
-      // Make sure template exists in DOM
-
-      if (!_this.template.length) {
-        throw new Error('Creator not found in panel ' + _this.panel.getId());
-      }
-
-      // Attach component to template's data
-
-      _this.template.data('creator', _this);
-
-      // Emulate input type file's behavior with button
-
-      _this.find('upload image button').on('click', function () {
-        _this.find('dropbox').find('[type="file"]').click();
-      });
-
-      // Use upload service
-
-      new _synLibUtilUpload2['default'](_this.find('dropbox'), _this.find('dropbox').find('input'), _this.find('dropbox'));
-
-      // Autogrow
-
-      _this.template.find('textarea').autogrow();
-
-      // Get reference's title
-
-      var findTitle = function findTitle() {
-
-        var creator = $(this).closest('.creator').data('creator');
-
-        var board = creator.find('reference board');
-        var reference = $(this);
-
-        board.removeClass('hide').text('Looking up title');
-
-        var url = $(this).val();
-
-        if (url) {
-          self.getTitle(url).then(function (title) {
-            if (title) {
-              board.text(title).on('click', function () {
-                reference.css('display', 'block');
-                board.addClass('hide');
-              });
-              reference.data('title', title).css('display', 'none');
-
-              var yt = (0, _synComponentsYoutubeCtrl2['default'])(url);
-
-              if (yt) {
-                creator.find('dropbox').hide();
-
-                creator.find('item media').empty().append(yt);
-              }
-            } else {
-              board.text('Looking up').addClass('hide');
-            }
-          });
-        }
-      };
-
-      _this.find('reference').on('blur change', findTitle).on('keydown', function (e) {
-        if (e.keyCode === 9) {
-          findTitle.apply(this);
-        }
-      });
-
-      // Build form using Form provider
-
-      var form = new _synLibUtilForm2['default'](_this.template);
-
-      form.send(_this.create.bind(_this));
-
-      // Done
-
-      fulfill();
-    });
-  });
-
-  if (typeof cb === 'function') {
-    q.then(cb.bind(null, null), cb);
-  }
-
-  return q;
-}
-
-exports['default'] = renderCreator;
-module.exports = exports['default'];
-
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","syn/components/youtube/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/youtube/ctrl.js","syn/lib/util/form":"/home/francois/Dev/syn/node_modules/syn/lib/util/form.js","syn/lib/util/upload":"/home/francois/Dev/syn/node_modules/syn/lib/util/upload.js"}],"/home/francois/Dev/syn/node_modules/syn/components/creator/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synComponentsPanelCtrl = require('syn/components/panel//ctrl');
-
-var _synComponentsPanelCtrl2 = _interopRequireDefault(_synComponentsPanelCtrl);
-
-var _synComponentsCreatorControllersRender = require('syn/components/creator//controllers/render');
-
-var _synComponentsCreatorControllersRender2 = _interopRequireDefault(_synComponentsCreatorControllersRender);
-
-var _synComponentsCreatorControllersCreate = require('syn/components/creator//controllers/create');
-
-var _synComponentsCreatorControllersCreate2 = _interopRequireDefault(_synComponentsCreatorControllersCreate);
-
-var _synComponentsCreatorControllersCreated = require('syn/components/creator//controllers/created');
-
-var _synComponentsCreatorControllersCreated2 = _interopRequireDefault(_synComponentsCreatorControllersCreated);
-
-var _synComponentsCreatorControllersPackItem = require('syn/components/creator//controllers/pack-item');
-
-var _synComponentsCreatorControllersPackItem2 = _interopRequireDefault(_synComponentsCreatorControllersPackItem);
-
-var text = {
-  'looking up title': 'Looking up'
-};
-
-var Creator = (function (_Controller) {
-  function Creator(props, panelContainer) {
-    _classCallCheck(this, Creator);
-
-    _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).call(this);
-
-    this.props = props || {};
-
-    this.panel = props.panel;
-
-    this.panelContainer = panelContainer;
-  }
-
-  _inherits(Creator, _Controller);
-
-  _createClass(Creator, [{
-    key: 'parent',
-    get: function get() {
-      return $('#' + _synComponentsPanelCtrl2['default'].getId(this.props.panel));
-    }
-  }, {
-    key: 'template',
-    get: function get() {
-      return this.parent.find('.creator:first');
-    }
-  }, {
-    key: 'getTitle',
-    value: function getTitle(url) {
-      var _this = this;
-
-      console.info('get title', url);
-      return new Promise(function (ok, ko) {
-        _this.publish('get url title', url).subscribe(function (pubsub, title) {
-          console.info('get title', title);
-          ok(title);
-          pubsub.unsubscribe();
-        });
-      });
-    }
-  }, {
-    key: 'find',
-    value: function find(name) {
-      switch (name) {
-        case 'create button':
-          return this.template.find('.button-create:first');
-
-        case 'form':
-          return this.template.find('form');
-
-        case 'dropbox':
-          return this.template.find('.drop-box');
-
-        case 'subject':
-          return this.template.find('[name="subject"]');
-
-        case 'description':
-          return this.template.find('[name="description"]');
-
-        case 'item media':
-          return this.template.find('.item-media');
-
-        case 'reference':
-          return this.template.find('.reference');
-
-        case 'reference board':
-          return this.template.find('.reference-board');
-
-        case 'upload image button':
-          return this.template.find('.upload-image-button');
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(cb) {
-      return _synComponentsCreatorControllersRender2['default'].apply(this, [cb]);
-    }
-  }, {
-    key: 'create',
-    value: function create(cb) {
-      return _synComponentsCreatorControllersCreate2['default'].apply(this, [cb]);
-    }
-  }, {
-    key: 'packItem',
-    value: function packItem(item) {
-      return _synComponentsCreatorControllersPackItem2['default'].apply(this, [item]);
-    }
-  }, {
-    key: 'created',
-    value: function created(item) {
-      return _synComponentsCreatorControllersCreated2['default'].apply(this, [item]);
-    }
-  }]);
-
-  return Creator;
-})(_synLibAppController2['default']);
-
-exports['default'] = Creator;
-module.exports = exports['default'];
-
-},{"syn/components/creator//controllers/create":"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/create.js","syn/components/creator//controllers/created":"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/created.js","syn/components/creator//controllers/pack-item":"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/pack-item.js","syn/components/creator//controllers/render":"/home/francois/Dev/syn/node_modules/syn/components/creator/controllers/render.js","syn/components/panel//ctrl":"/home/francois/Dev/syn/node_modules/syn/components/panel/ctrl.js","syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js"}],"/home/francois/Dev/syn/node_modules/syn/components/creator/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _cincoDist = require('cinco/dist');
-
-var _synComponentsItemView = require('syn/components/item/view');
-
-var _synComponentsItemView2 = _interopRequireDefault(_synComponentsItemView);
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  Creator
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-var Creator = (function (_Element) {
-  function Creator(props, extra) {
-    _classCallCheck(this, Creator);
-
-    _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).call(this, 'form.creator.is-container', {
-      name: 'create',
-      novalidate: 'novalidate',
-      role: 'form',
-      method: 'POST'
-    });
-
-    this.props = props;
-
-    this.extra = extra || {};
-
-    var itemBox = this.itemBox();
-
-    itemBox.find('.item-text').get(0).empty().add(this.inputs());
-
-    this.add(new _cincoDist.Element('.is-section').add(itemBox));
-  }
-
-  _inherits(Creator, _Element);
-
-  _createClass(Creator, [{
-    key: 'modern',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Drag and drop (modern browsers only)
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function modern() {
-      return new _cincoDist.Element('.modern').add(new _cincoDist.Element('h4').text('Drop image here'), new _cincoDist.Element('p').text('or'));
-    }
-  }, {
-    key: 'legacy',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Legacy input type file (masked by a button for design purposes)
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function legacy() {
-      return new _cincoDist.Element('.phasing').add(new _cincoDist.Element('button.upload-image-button', { type: 'button' }).text('Choose a file'), new _cincoDist.Element('input', {
-        name: 'image',
-        type: 'file',
-        value: 'Upload image' }).close());
-    }
-  }, {
-    key: 'dropBox',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Image uploader container
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function dropBox() {
-      return new _cincoDist.Element('.drop-box').add(this.modern(), this.legacy());
-    }
-  }, {
-    key: 'submitButton',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Submit button
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function submitButton() {
-      return new _cincoDist.Element('button.button-create.shy.medium').add(new _cincoDist.Element('i.fa.fa-bullhorn'));
-    }
-  }, {
-    key: 'itemBox',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Item Component
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function itemBox() {
-      return new _synComponentsItemView2['default']({
-        item: {
-          media: this.dropBox(),
-          buttons: new _cincoDist.Elements(this.submitButton()),
-          collapsers: false
-        }
-      });
-    }
-  }, {
-    key: 'inputs',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Text inputs
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function inputs() {
-      return new _cincoDist.Element('.item-inputs').add(this.subject(), this.description(), this.reference());
-    }
-  }, {
-    key: 'subject',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Subject field
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function subject() {
-      return new _cincoDist.Element('input', {
-        type: 'text',
-        placeholder: 'Item subject',
-        required: 'required',
-        name: 'subject' });
-    }
-  }, {
-    key: 'description',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  Description field
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function description() {
-      return new _cincoDist.Element('textarea', {
-        placeholder: 'Item description',
-        required: 'required',
-        name: 'description'
-      });
-    }
-  }, {
-    key: 'reference',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    //  URL
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function reference() {
-      return new _cincoDist.Elements(new _cincoDist.Element('input.reference', {
-        type: 'url',
-        placeholder: 'http://',
-        name: 'reference'
-      }), new _cincoDist.Element('.reference-board.hide').text('Looking up'));
-    }
-  }]);
-
-  return Creator;
-})(_cincoDist.Element);
-
-exports['default'] = Creator;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js","syn/components/item/view":"/home/francois/Dev/syn/node_modules/syn/components/item/view.js"}],"/home/francois/Dev/syn/node_modules/syn/components/details/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synComponentsEditAndGoAgainCtrl = require('syn/components/edit-and-go-again/ctrl');
-
-var _synComponentsEditAndGoAgainCtrl2 = _interopRequireDefault(_synComponentsEditAndGoAgainCtrl);
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var Details = (function (_Controller) {
-  function Details(props, itemParent) {
-    _classCallCheck(this, Details);
-
-    _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this);
-
-    this.store = {
-      item: null,
-      details: null
-    };
-
-    if (props.item) {
-      this.set('item', props.item);
-    }
-
-    this.props = props || {};
-
-    this.itemParent = itemParent;
-
-    this.template = itemParent.find('details');
-  }
-
-  _inherits(Details, _Controller);
-
-  _createClass(Details, [{
-    key: 'find',
-    value: function find(name) {
-      switch (name) {
-        case 'promoted bar':
-          return this.template.find('.progress');
-
-        case 'feedback list':
-          return this.template.find('.feedback-list');
-
-        case 'votes':
-          return this.template.find('.details-votes');
-
-        case 'toggle edit and go again':
-          return this.template.find('.edit-and-go-again-toggler');
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(cb) {
-      var self = this;
-
-      var d = this.domain;
-
-      var item = this.get('item');
-
-      var currentAmount = item.popularity.number;
-
-      if (isNaN(currentAmount)) {
-        currentAmount = 0;
-      }
-
-      this.find('promoted bar').goalProgress({
-        goalAmount: 100,
-        currentAmount: currentAmount,
-        textBefore: '',
-        textAfter: '%'
-      });
-
-      this.find('toggle edit and go again').on('click', function () {
-        NavProvider.unreveal(self.template, self.itemParent.template, d.intercept(function () {
-          if (self.item.find('editor').find('form').length) {
-            console.warn('already loaded');
-          } else {
-            var edit = new EditComponent(self.item);
-
-            edit.get(d.intercept(function (template) {
-
-              self.itemParent.find('editor').find('.is-section').append(template);
-
-              NavProvider.reveal(self.item.find('editor'), self.item.template, d.intercept(function () {
-                NavProvider.show(template, d.intercept(function () {
-                  edit.render();
-                }));
-              }));
-            }));
-          }
-        }));
-      });
-
-      if (this.socket.synuser) {
-        $('.is-in').removeClass('is-in');
-      }
-
-      if (!self.details) {
-        this.fetch();
-      }
-    }
-  }, {
-    key: 'votes',
-    value: function votes(criteria, svg) {
-      var details = this.get('details');
-
-      setTimeout(function () {
-        var vote = details.votes[criteria._id];
-
-        console.info('vote', vote);
-
-        svg.attr('id', 'chart-' + details.item._id + '-' + criteria._id);
-
-        var data = [];
-
-        // If no votes, show nothing
-
-        if (!vote) {
-          vote = {
-            values: {
-              '-1': 0,
-              '0': 0,
-              '1': 0
-            },
-            total: 0
-          };
-        }
-
-        for (var number in vote.values) {
-          data.push({
-            label: 'number',
-            value: vote.values[number] * 100 / vote.total
-          });
-        }
-
-        var columns = ['votes'];
-
-        data.forEach(function (d) {
-          columns.push(d.value);
-        });
-
-        var chart = c3.generate({
-          bindto: '#' + svg.attr('id'),
-          data: {
-            x: 'x',
-            columns: [['x', -1, 0, 1], columns],
-            type: 'bar'
-          },
-          grid: {
-            x: {
-              lines: 3
-            }
-          },
-          axis: {
-            x: {},
-            y: {
-              max: 90,
-              show: false,
-              tick: {
-                count: 5,
-                format: function format(y) {
-                  return y;
-                }
-              }
-            }
-          },
-          size: {
-            height: 80
-          },
-          bar: {
-            width: $(window).width() / 5
-          }
-        });
-      }, 250);
-    }
-  }, {
-    key: 'feedback',
-    value: function feedback() {
-      console.log('item has feedback?', this.get('item'));
-    }
-  }, {
-    key: 'fetch',
-    value: function fetch() {
-      var _this = this;
-
-      var self = this;
-
-      var item = this.get('item');
-
-      this.publish('get item details', item._id).subscribe(function (pubsub, details) {
-        console.log('got item details', details);
-
-        _this.set('details', details);
-
-        // Feedback
-
-        details.feedbacks.forEach(function (feedback) {
-          var tpl = $('<div class="pretext feedback"></div>');
-          tpl.text(feedback.feedback);
-          _this.find('feedback list').append(tpl).append('<hr/>');
-        });
-
-        // Votes
-
-        details.criterias.forEach(function (criteria, i) {
-          _this.find('votes').eq(i).find('h4').text(criteria.name);
-
-          _this.votes(criteria, _this.find('votes').eq(i).find('svg'));
-        });
-      });
-    }
-  }]);
-
-  return Details;
-})(_synLibAppController2['default']);
-
-exports['default'] = Details;
-module.exports = exports['default'];
-
-},{"syn/components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/edit-and-go-again/ctrl.js","syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/details/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _cincoDist = require('cinco/dist');
-
-var Details = (function (_Element) {
-  function Details(props) {
-    _classCallCheck(this, Details);
-
-    _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this, 'section');
-
-    this.add(this.invitePeople(), this.progressBar()).add(this.votes()).add(this.feedback());
-  }
-
-  _inherits(Details, _Element);
-
-  _createClass(Details, [{
-    key: 'invitePeople',
-    value: function invitePeople() {
-      return new _cincoDist.Element('section.feedback-pending.hide').add(new _cincoDist.Element('h4').text('Feedback pending'), new _cincoDist.Element('p').text('While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'), new _cincoDist.Element('a.btn.invite-people', { target: '_blank' }).text('Send'), new _cincoDist.Element('hr'));
-    }
-  }, {
-    key: 'progressBar',
-    value: function progressBar() {
-      return new _cincoDist.Element('.row').add(new _cincoDist.Element('.tablet-30.middle').add(new _cincoDist.Element('h4').text('Promoted')), new _cincoDist.Element('.tablet-70.middle').add(new _cincoDist.Element('.progress')));
-    }
-  }, {
-    key: 'feedback',
-    value: function feedback() {
-      return new _cincoDist.Element('.details-feedbacks').add(new _cincoDist.Element('h4').text('Feedback'), new _cincoDist.Element('.feedback-list'));
-    }
-  }, {
-    key: 'votes',
-    value: function votes() {
-      var votes = new _cincoDist.Elements();
-
-      for (var i = 0; i < 4; i++) {
-        votes.add(new _cincoDist.Element('.row.details-votes').add(new _cincoDist.Element('.tablet-30.middle').add(new _cincoDist.Element('h4', {
-          'data-toggle': 'tooltip',
-          'data-placement': 'top'
-        }).text('Criteria')), new _cincoDist.Element('.tablet-70.middle').add(new _cincoDist.Element('svg.chart'))));
-      }
-
-      return votes;
-    }
-  }]);
-
-  return Details;
-})(_cincoDist.Element);
-
-exports['default'] = Details;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/node_modules/syn/components/edit-and-go-again/controllers/save.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  var Nav = require('syn/lib/util/nav');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function save() {
-    var edit = this;
-
-    console.log(edit.toItem());
-
-    Nav.hide(edit.template, app.domain.intercept(function () {
-      Nav.hide(edit.template.closest('.editor'), app.domain.intercept(function () {
-
-        var new_item = edit.toItem();
-
-        app.socket.emit('create item', new_item);
-
-        app.socket.once('could not create item', function (error) {
-          console.error(error);
-        });
-
-        app.socket.once('created item', function (item) {
-          console.log('created item', item);
-
-          if (new_item.upload) {
-            item.upload = new_item.upload;
-          }
-
-          if (new_item.youtube) {
-            item.youtube = new_item.youtube;
-          }
-
-          var item = new (require('syn/components/item/ctrl'))(item);
-
-          item.load(app.domain.intercept(function () {
-            item.template.insertBefore(edit.item.template);
-
-            item.render(app.domain.intercept(function () {
-              item.find('toggle promote').click();
-            }));
-          }));
-        });
-      }));
-    }));
-  }
-
-  module.exports = save;
-})();
-
-},{"syn/components/item/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/edit-and-go-again/ctrl.js":[function(require,module,exports){
-'use strict';
-
-!(function Component_EditAndGoAgain_Controller() {
-
-  'use strict';
-
-  var Nav = require('syn/lib/util/nav');
-  var Creator = require('syn/components/creator//ctrl');
-  var Item = require('syn/components/item/ctrl');
-  var Form = require('syn/lib/util/form');
-
-  /**
-   *  @class
-   *
-   *  @arg {String} type
-   *  @arg {String?} parent
-   */
-
-  function Edit(item) {
-
-    console.log('EDIT', item);
-
-    if (!app) {
-      throw new Error('Missing app');
-    }
-
-    var self = this;
-
-    app.domain.run(function () {
-      if (!item || !item instanceof require('syn/components/item/ctrl')) {
-        throw new Error('Item must be an Item');
-      }
-
-      self.item = item;
-    });
-  }
-
-  Edit.prototype.get = function (cb) {
-    var edit = this;
-
-    $.ajax({
-      url: '/partial/creator'
-    }).error(cb).success(function (data) {
-      edit.template = $(data);
-
-      cb(null, edit.template);
-    });
-
-    return this;
-  };
-
-  Edit.prototype.find = function (name) {
-    switch (name) {
-      case 'create button':
-        return this.template.find('.button-create:first');
-
-      case 'dropbox':
-        return this.template.find('.drop-box');
-
-      case 'subject':
-        return this.template.find('[name="subject"]');
-
-      case 'description':
-        return this.template.find('[name="description"]');
-
-      case 'item media':
-        return this.template.find('.item-media');
-
-      case 'reference':
-        return this.template.find('.reference');
-
-      case 'reference board':
-        return this.template.find('.reference-board');
-    }
-  };
-
-  Edit.prototype.render = function (cb) {
-
-    var edit = this;
-
-    // this.template.find('textarea').autogrow();
-
-    this.template.find('[name="subject"]').val(edit.item.item.subject);
-    this.template.find('[name="description"]').val(edit.item.item.description).autogrow();
-
-    if (edit.item.item.references.length) {
-      this.template.find('[name="reference"]').val(edit.item.item.references[0].url);
-    }
-
-    this.template.find('.item-media').empty().append(edit.item.media());
-
-    var form = new Form(this.template);
-
-    form.send(edit.save);
-
-    return this;
-  };
-
-  Edit.prototype.save = require('syn/components/edit-and-go-again/controllers/save');
-
-  Edit.prototype.toItem = function () {
-    var item = {
-      from: this.item.item._id,
-      subject: this.find('subject').val(),
-      description: this.find('description').val(),
-      user: app.socket.synuser,
-      type: this.item.item.type
-    };
-
-    if (this.find('item media').find('img').length) {
-
-      if (this.find('item media').find('.youtube-preview').length) {
-        item.youtube = this.find('item media').find('.youtube-preview').data('video');
-      } else {
-        item.upload = this.find('item media').find('img').attr('src');
-      }
-    }
-
-    return item;
-  };
-
-  module.exports = Edit;
-})();
-
-},{"syn/components/creator//ctrl":"/home/francois/Dev/syn/node_modules/syn/components/creator/ctrl.js","syn/components/edit-and-go-again/controllers/save":"/home/francois/Dev/syn/node_modules/syn/components/edit-and-go-again/controllers/save.js","syn/components/item/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js","syn/lib/util/form":"/home/francois/Dev/syn/node_modules/syn/lib/util/form.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/forgot-password/ctrl.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  var Form = require('syn/lib/util/form');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function forgotPassword($vexContent) {
-    var signForm = $('form[name="forgot-password"]');
-
-    var form = new Form(signForm);
-
-    form.send(function () {
-      var domain = require('domain').create();
-
-      domain.on('error', function (error) {});
-
-      domain.run(function () {
-
-        $('.forgot-password-pending.hide').removeClass('hide');
-        $('.forgot-password-email-not-found').not('.hide').addClass('hide');
-        $('.forgot-password-ok').not('.hide').addClass('hide');
-
-        app.socket.once('no such email', function (_email) {
-          if (_email === form.labels.email.val()) {
-
-            $('.forgot-password-pending').addClass('hide');
-
-            setTimeout(function () {});
-
-            $('.forgot-password-email-not-found').removeClass('hide');
-          }
-        });
-
-        app.socket.on('password is resettable', function (_email) {
-          if (_email === form.labels.email.val()) {
-            $('.forgot-password-pending').addClass('hide');
-
-            $('.forgot-password-ok').removeClass('hide');
-
-            setTimeout(function () {
-              vex.close($vexContent.data().vex.id);
-            }, 2500);
-          }
-        });
-
-        app.socket.emit('send password', form.labels.email.val());
-      });
-    });
-  }
-
-  module.exports = forgotPassword;
-})();
-
-//
-
-// $('.forgot-password-pending').css('display', 'block');
-
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","syn/lib/util/form":"/home/francois/Dev/syn/node_modules/syn/lib/util/form.js"}],"/home/francois/Dev/syn/node_modules/syn/components/intro/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _view = require('./view');
-
-var _view2 = _interopRequireDefault(_view);
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
-
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
-
-var _synLibUtilReadMore = require('syn/lib/util/read-more');
-
-var _synLibUtilReadMore2 = _interopRequireDefault(_synLibUtilReadMore);
-
-var Intro = (function (_Controller) {
-  function Intro(props) {
-    _classCallCheck(this, Intro);
-
-    _get(Object.getPrototypeOf(Intro.prototype), 'constructor', this).call(this);
-
-    this.props = props;
-
-    this.getIntro();
-  }
-
-  _inherits(Intro, _Controller);
-
-  _createClass(Intro, [{
-    key: 'template',
-    get: function get() {
-      return $(_view2['default'].selector);
-    }
-  }, {
-    key: 'getIntro',
-    value: function getIntro() {
-      var _this = this;
-
-      this.publish('get intro').subscribe(function (pubsub, intro) {
-        _this.set('intro', intro);
-        pubsub.unsubscribe();
-      });
-    }
-  }, {
-    key: 'find',
-    value: function find(name) {
-      switch (name) {
-        case 'panel title':
-          return this.template.find('.panel-title');
-
-        case 'item subject':
-          return this.template.find('.item-subject a');
-
-        case 'item references':
-          return this.template.find('.item-reference');
-
-        case 'item buttons':
-          return this.template.find('.item-buttons');
-
-        case 'item arrow':
-          return this.template.find('.item-arrow');
-
-        case 'item media':
-          return this.template.find('.item-media');
-
-        case 'item image':
-          return this.template.find('.item-media img');
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var intro = this.get('intro');
-
-      if (!intro) {
-        return this.on('set', function (key) {
-          return key === 'intro' && _this2.render();
-        });
-      }
-
-      this.renderPanel();
-
-      this.renderItem();
-    }
-  }, {
-    key: 'renderPanel',
-    value: function renderPanel() {
-      var intro = this.get('intro');
-      this.find('panel title').text(intro.subject);
-    }
-  }, {
-    key: 'renderItem',
-    value: function renderItem() {
-      var _this3 = this;
-
-      var intro = this.get('intro');
-
-      this.find('item subject').text(intro.subject);
-
-      this.find('item references').remove();
-
-      this.find('item buttons').remove();
-
-      this.find('item arrow').remove();
-
-      this.find('item media').empty().append(new _synComponentsItemCtrl2['default']({ item: intro }).media());
-
-      this.find('item image').load(function () {
-        return (0, _synLibUtilReadMore2['default'])(intro, _this3.template);
-      });
-    }
-  }]);
-
-  return Intro;
-})(_synLibAppController2['default']);
-
-exports['default'] = Intro;
-module.exports = exports['default'];
-
-},{"./view":"/home/francois/Dev/syn/node_modules/syn/components/intro/view.js","syn/components/item/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js","syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js","syn/lib/util/read-more":"/home/francois/Dev/syn/node_modules/syn/lib/util/read-more.js"}],"/home/francois/Dev/syn/node_modules/syn/components/intro/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-/** ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  INTRO VIEW
- *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  @module       views/Intro
-*/
-
-var _cincoDist = require('cinco/dist');
-
-var _synComponentsPanelView = require('syn/components/panel//view');
-
-var _synComponentsPanelView2 = _interopRequireDefault(_synComponentsPanelView);
-
-var _synComponentsItemView = require('syn/components/item/view');
-
-var _synComponentsItemView2 = _interopRequireDefault(_synComponentsItemView);
-
-var Intro = (function (_Element) {
-  function Intro(props) {
-    _classCallCheck(this, Intro);
-
-    _get(Object.getPrototypeOf(Intro.prototype), 'constructor', this).call(this, Intro.selector);
-
-    this.props = props;
-
-    this.add(function () {
-      var panel = new _synComponentsPanelView2['default']({ creator: false });
-
-      panel.find('.items').get(0).add(new _synComponentsItemView2['default']({
-        buttons: false, collapsers: false
-      }));
-
-      return panel;
-    });
-  }
-
-  _inherits(Intro, _Element);
-
-  return Intro;
-})(_cincoDist.Element);
-
-Intro.selector = '#intro';
-
-exports['default'] = Intro;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js","syn/components/item/view":"/home/francois/Dev/syn/node_modules/syn/components/item/view.js","syn/components/panel//view":"/home/francois/Dev/syn/node_modules/syn/components/panel/view.js"}],"/home/francois/Dev/syn/node_modules/syn/components/item-default-buttons/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _cincoDist = require('cinco/dist');
-
-var ItemDefaultButtons = (function (_Elements) {
-  function ItemDefaultButtons(props) {
-    _classCallCheck(this, ItemDefaultButtons);
-
-    _get(Object.getPrototypeOf(ItemDefaultButtons.prototype), 'constructor', this).call(this);
-
-    var loginButton = new _cincoDist.Element('button.item-toggle-promote.shy');
-
-    loginButton.add(new _cincoDist.Element('span.promoted').text('0'), new _cincoDist.Element('i.fa.fa-bullhorn'));
-
-    var joinButton = new _cincoDist.Element('button.item-toggle-details.shy');
-
-    joinButton.add(new _cincoDist.Element('span.promoted-percent').text('0%'), new _cincoDist.Element('i.fa.fa-signal'));
-
-    var related = new _cincoDist.Element('div').add(new _cincoDist.Element('span.related'));
-
-    this.add(loginButton, new _cincoDist.Element('div'), joinButton, related);
-  }
-
-  _inherits(ItemDefaultButtons, _Elements);
-
-  return ItemDefaultButtons;
-})(_cincoDist.Elements);
-
-exports['default'] = ItemDefaultButtons;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/node_modules/syn/components/item/controllers/media.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synComponentsYoutubeView = require('syn/components/youtube/view');
-
-var _synComponentsYoutubeView2 = _interopRequireDefault(_synComponentsYoutubeView);
-
-function MediaController() {
-  var _this = this;
-
-  var item = this.get('item');
-
-  var references = item.references || [];
-
-  // YouTube
-
-  if (references.length) {
-
-    var youtube = new _synComponentsYoutubeView2['default']({
-      settings: { env: synapp.props.settings.env },
-      item: item
-    });
-
-    if (youtube.children.length) {
-      var _YouTube$resolve = _synComponentsYoutubeView2['default'].resolve(youtube.children[0].selector);
-
-      var element = _YouTube$resolve.element;
-
-      if (element === 'iframe') {
-        return $(youtube.render());
-      }
-    }
-  }
-
-  // adjustImage
-
-  if (item.adjustImage) {
-    return $(item.adjustImage.replace(/\>$/, ' class="img-responsive" />'));
-  }
-
-  // Item has image
-
-  if (item.image && /^http/.test(item.image)) {
-    var _ret = (function () {
-      var src = item.image;
-
-      var image = $('<img/>');
-
-      image.addClass('img-responsive');
-
-      image.attr('src', synapp.config['default item image']);
-
-      _this.publish('format cloudinary image', src, item._id.toString()).subscribe(function (pubsub, img, _id) {
-        if (_id === item._id.toString()) {
-          image.attr('src', img);
-          pubsub.unsubscribe();
-        }
-      });
-
-      return {
-        v: image
-      };
-    })();
-
-    if (typeof _ret === 'object') return _ret.v;
-  }
-
-  // YouTube Cover Image
-
-  if (item.youtube) {
-    return $(new _synComponentsYoutubeView2['default']({
-      item: {
-        references: [{
-          url: 'http://youtube.com/watch?v=' + item.youtube
-        }]
-      },
-      settings: { env: synapp.props.settings.env }
-    }).render());
-  }
-
-  // Uploaded image
-
-  // if ( item.upload ) {
-  //   var src = item.image;
-
-  //   var image = $('<img/>');
-
-  //   image.addClass('img-responsive');
-
-  //   image.attr('src', item.upload);
-
-  //   return image;
-  // }
-
-  // default image
-
-  var image = $('<img/>');
-
-  image.addClass('img-responsive');
-
-  image.attr('src', synapp.config['default item image']);
-
-  return image;
-}
-
-exports['default'] = MediaController;
-module.exports = exports['default'];
-
-},{"syn/components/youtube/view":"/home/francois/Dev/syn/node_modules/syn/components/youtube/view.js"}],"/home/francois/Dev/syn/node_modules/syn/components/item/controllers/toggle-arrow.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var _synComponentsPanelCtrl = require('syn/components/panel//ctrl');
-
-var _synComponentsPanelCtrl2 = _interopRequireDefault(_synComponentsPanelCtrl);
-
-function toggleArrow($trigger) {
-  var $item = $trigger.closest('.item');
-  var item = $item.data('item');
-  var arrow = $trigger.find('i');
-  var storeItem = this.get('item');
-
-  var d = this.domain;
-
-  if (item.find('collapsers hidden').length) {
-    item.find('collapsers').show();
-  }
-
-  _synLibUtilNav2['default'].toggle(item.find('children'), this.template, d.intercept(function () {
-
-    if (item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length) {
-      item.find('collapsers').hide();
-    }
-
-    if (item.find('children').hasClass('is-shown') && !item.find('children').hasClass('is-loaded')) {
-
-      item.find('children').addClass('is-loaded');
-
-      var harmony = storeItem.type.harmony;
-
-      if (harmony.length) {
-        var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-        item.find('children').append(split);
-
-        console.info('harmony', harmony);
-
-        var panelLeft = new _synComponentsPanelCtrl2['default']({
-          panel: {
-            type: harmony[0],
-            parent: storeItem._id
-          }
-        });
-
-        panelLeft.load();
-
-        panelLeft.template.addClass('split-view');
-
-        split.find('.left-split').append(panelLeft.template);
-
-        setTimeout(function () {
-          panelLeft.render(d.intercept(function () {
-            panelLeft.fill(d.intercept());
-          }));
-        });
-
-        var panelRight = new _synComponentsPanelCtrl2['default']({
-          panel: {
-            type: harmony[1],
-            parent: storeItem._id
-          }
-        });
-
-        panelRight.load();
-
-        panelRight.template.addClass('split-view');
-
-        split.find('.right-split').append(panelRight.template);
-
-        setTimeout(function () {
-          panelRight.render(d.intercept(function () {
-            panelRight.fill(d.intercept());
-          }));
-        });
-      }
-
-      var subtype = storeItem.subtype;
-
-      if (subtype) {
-        var subPanel = new _synComponentsPanelCtrl2['default']({
-          panel: {
-            type: subtype,
-            parent: storeItem._id
-          }
-        });
-
-        subPanel.load();
-
-        item.find('children').append(subPanel.template);
-
-        setTimeout(function () {
-          subPanel.render(d.intercept(function () {
-            return subPanel.fill(d.intercept());
-          }));
-        });
-      }
-    }
-
-    if (arrow.hasClass('fa-arrow-down')) {
-      arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-    } else {
-      arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-    }
-  }));
-}
-
-exports['default'] = toggleArrow;
-module.exports = exports['default'];
-
-},{"syn/components/panel//ctrl":"/home/francois/Dev/syn/node_modules/syn/components/panel/ctrl.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/item/controllers/toggle-promote.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var _synComponentsTopBarCtrl = require('syn/components/top-bar//ctrl');
-
-var _synComponentsTopBarCtrl2 = _interopRequireDefault(_synComponentsTopBarCtrl);
-
-function tooglePromote($trigger) {
-
-  if (!this.socket.synuser) {
-    var topbar = new _synComponentsTopBarCtrl2['default']();
-    topbar.find('join button').click();
-    return;
-  }
-
-  var $item = $trigger.closest('.item');
-  var item = $item.data('item');
-
-  var d = this.domain;
-
-  function hideOthers() {
-    if ($('.is-showing').length || $('.is-hidding').length) {
-      return false;
-    }
-
-    if ($('.creator.is-shown').length) {
-      _synLibUtilNav2['default'].hide($('.creator.is-shown')).hidden(function () {
-        $trigger.click();
-      });
-
-      return false;
-    }
-
-    if (item.find('details').hasClass('is-shown')) {
-      _synLibUtilNav2['default'].hide(item.find('details')).hidden(function () {
-        $trigger.click();
-      });
-
-      item.find('toggle details').find('.caret').addClass('hide');
-
-      return false;
-    }
-  }
-
-  function promote() {
-    item.promote.getEvaluation(d.intercept(item.promote.render.bind(item.promote)));
-  }
-
-  function showHideCaret() {
-    if (item.find('promote').hasClass('is-shown')) {
-      $trigger.find('.caret').removeClass('hide');
-    } else {
-      $trigger.find('.caret').addClass('hide');
-    }
-  }
-
-  if (hideOthers() === false) {
-    return false;
-  }
-
-  if (item.find('collapsers hidden').length) {
-    item.find('collapsers').show();
-  }
-
-  _synLibUtilNav2['default'].toggle(item.find('promote'), item.template, function (error) {
-
-    if (item.find('promote').hasClass('is-hidden') && item.find('collapsers visible').length) {
-      item.find('collapsers').hide();
-    }
-
-    promote();
-
-    showHideCaret();
-  });
-}
-
-exports['default'] = tooglePromote;
-module.exports = exports['default'];
-
-},{"syn/components/top-bar//ctrl":"/home/francois/Dev/syn/node_modules/syn/components/top-bar/ctrl.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _string = require('string');
-
-var _string2 = _interopRequireDefault(_string);
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var _synLibUtilReadMore = require('syn/lib/util/read-more');
-
-var _synLibUtilReadMore2 = _interopRequireDefault(_synLibUtilReadMore);
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synComponentsPromoteCtrl = require('syn/components/promote//ctrl');
-
-var _synComponentsPromoteCtrl2 = _interopRequireDefault(_synComponentsPromoteCtrl);
-
-var _synComponentsDetailsCtrl = require('syn/components/details//ctrl');
-
-var _synComponentsDetailsCtrl2 = _interopRequireDefault(_synComponentsDetailsCtrl);
-
-var _view = require('./view');
-
-var _view2 = _interopRequireDefault(_view);
-
-var _controllersMedia = require('./controllers/media');
-
-var _controllersMedia2 = _interopRequireDefault(_controllersMedia);
-
-var _controllersToggleArrow = require('./controllers/toggle-arrow');
-
-var _controllersToggleArrow2 = _interopRequireDefault(_controllersToggleArrow);
-
-var _controllersTogglePromote = require('./controllers/toggle-promote');
-
-var _controllersTogglePromote2 = _interopRequireDefault(_controllersTogglePromote);
-
-var ItemCtrl = (function (_Controller) {
-  function ItemCtrl(props) {
-    _classCallCheck(this, ItemCtrl);
-
-    _get(Object.getPrototypeOf(ItemCtrl.prototype), 'constructor', this).call(this);
-
-    this.props = props || {};
-
-    if (this.props.item) {
-      this.set('item', this.props.item);
-    }
-
-    this.componentName = 'Item';
-    this.view = _view2['default'];
-  }
-
-  _inherits(ItemCtrl, _Controller);
-
-  _createClass(ItemCtrl, [{
-    key: 'listen',
-    value: function listen() {
-      var _this = this;
-
-      var self = this;
-
-      this.socket.once('item image uploaded ' + this.props.item._id, function (item) {
-        _this.set('image', item.image);
-      });
-    }
-  }, {
-    key: 'media',
-    value: function media() {
-      return _controllersMedia2['default'].apply(this);
-    }
-  }, {
-    key: 'makeRelated',
-    value: function makeRelated(cls) {
-      var button = $('<button class="shy counter"><span class="' + cls + '-number"></span> <i class="fa"></i></button>');
-
-      return button;
-    }
-  }, {
-    key: 'find',
-    value: function find(name) {
-      switch (name) {
-        case 'subject':
-          return this.template.find('.item-subject a');
-
-        case 'description':
-          return this.template.find('.description');
-
-        case 'toggle promote':
-          return this.template.find('.item-toggle-promote');
-
-        case 'promote':
-          return this.template.find('.promote');
-
-        case 'reference':
-          return this.template.find(' > .item-text .item-reference a');
-
-        case 'media':
-          return this.template.find('.item-media:first');
-
-        case 'youtube preview':
-          return this.template.find('.youtube-preview:first');
-
-        case 'toggle details':
-          return this.template.find('.item-toggle-details:first');
-
-        case 'details':
-          return this.template.find('.details:first');
-
-        case 'buttons':
-          return this.template.find('> .item-buttons');
-
-        case 'editor':
-          return this.template.find('.editor:first');
-
-        case 'toggle arrow':
-          return this.template.find('.item-arrow:first');
-
-        case 'promotions':
-          return this.template.find('.promoted:first');
-
-        case 'promotions %':
-          return this.template.find('.promoted-percent:first');
-
-        case 'children':
-          return this.template.find('.children:first');
-
-        case 'collapsers':
-          return this.template.find('.item-collapsers:first');
-
-        case 'collapsers hidden':
-          return this.template.find('.item-collapsers:first:hidden');
-
-        case 'collapsers visible':
-          return this.template.find('.item-collapsers:first:visible');
-
-        case 'related count':
-          return this.template.find('.related-count');
-
-        case 'related':
-          return this.template.find('.related');
-
-        case 'related count plural':
-          return this.template.find('.related-count-plural');
-
-        case 'related name':
-          return this.template.find('.related-name');
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(cb) {
-      var _this2 = this;
-
-      if (!this.rendered) {
-        setTimeout(function () {
-          return _this2.listen();
-        });
-        this.rendered = true;
-      }
-
-      var item = this.get('item');
-
-      var self = this;
-
-      // Create reference to promote if promotion enabled
-
-      this.promote = new _synComponentsPromoteCtrl2['default'](this.props, this);
-
-      // Create reference to details
-
-      this.details = new _synComponentsDetailsCtrl2['default'](this.props, this);
-
-      // Set ID
-
-      this.template.attr('id', 'item-' + item._id);
-
-      // Set Data
-
-      this.template.data('item', this);
-
-      // SUBJECT
-
-      this.find('subject').attr('href', '/item/' + item.id + '/' + (0, _string2['default'])(item.subject).slugify().s).text(item.subject).on('click', function (e) {
-        var link = $(this);
-
-        var item = link.closest('.item');
-
-        _synLibUtilNav2['default'].scroll(item, function () {
-          history.pushState(null, null, link.attr('href'));
-          item.find('.item-text .more').click();
-        });
-
-        return false;
-      });
-
-      // DESCRIPTION  
-
-      this.find('description').text(item.description);
-
-      // MEDIA
-
-      if (!this.find('media').find('img[data-rendered]').length) {
-        this.find('media').empty().append(this.media());
-      }
-
-      this.on('set', function (key, value) {
-        if (key === 'image') {
-          item.image = value;
-          _this2.set('item', item);
-          _this2.find('media').empty().append(_this2.media());
-        }
-      });
-
-      // READ MORE
-
-      this.find('media').find('img, iframe').on('load', (function () {
-        if (!_this2.template.find('.more').length) {
-          (0, _synLibUtilReadMore2['default'])(item, _this2.template);
-        }
-      }).bind(item));
-
-      // REFERENCES
-
-      if (item.references && item.references.length) {
-        console.warn('has references', this.find('reference'));
-        this.find('reference').attr('href', item.references[0].url).text(item.references[0].title || item.references[0].url);
-      } else {
-        this.find('reference').empty();
-      }
-
-      // PROMOTIONS
-
-      this.find('promotions').text(item.promotions);
-
-      // POPULARITY
-
-      var popularity = item.popularity.number;
-
-      if (isNaN(popularity)) {
-        popularity = 0;
-      }
-
-      this.find('promotions %').text(popularity + '%');
-
-      // CHILDREN / RELATED
-
-      if (!this.find('buttons').find('.related-number').length) {
-        var buttonChildren = this.makeRelated('related');
-        buttonChildren.addClass('children-count');
-        buttonChildren.find('i').addClass('fa-fire');
-        buttonChildren.find('.related-number').text(item.children);
-        this.find('related').append(buttonChildren);
-      }
-
-      // HARMONY
-
-      if ('harmony' in item) {
-        var buttonHarmony = this.makeRelated('harmony');
-        buttonHarmony.find('i').addClass('fa-music');
-        buttonHarmony.find('.harmony-number').text(item.harmony);
-        this.find('related').append(buttonHarmony);
-      }
-
-      this.template.find('.counter').on('click', function () {
-        var $trigger = $(this);
-        var $item = $trigger.closest('.item');
-        var item = $item.data('item');
-        item.find('toggle arrow').click();
-      });
-
-      // TOGGLE PROMOTE
-
-      this.find('toggle promote').on('click', function () {
-        self.togglePromote($(this));
-      });
-
-      // TOGGLE DETAILS
-
-      this.find('toggle details').on('click', function () {
-        self.toggleDetails($(this));
-      });
-
-      // TOGGLE ARROW
-
-      this.find('toggle arrow').removeClass('hide').on('click', function () {
-        self.toggleArrow($(this));
-      });
-
-      cb();
-    }
-  }, {
-    key: 'togglePromote',
-    value: function togglePromote($trigger) {
-      return _controllersTogglePromote2['default'].apply(this, [$trigger]);
-    }
-  }, {
-    key: 'toggleDetails',
-    value: function toggleDetails($trigger) {
-
-      var $item = $trigger.closest('.item');
-      var item = $item.data('item');
-
-      var d = this.domain;
-
-      function showHideCaret() {
-        if (item.find('details').hasClass('is-shown')) {
-          $trigger.find('.caret').removeClass('hide');
-        } else {
-          $trigger.find('.caret').addClass('hide');
-        }
-      }
-
-      if (item.find('promote').hasClass('is-showing')) {
-        return false;
-      }
-
-      if (item.find('promote').hasClass('is-shown')) {
-        item.find('toggle promote').find('.caret').addClass('hide');
-        require('syn/lib/util/nav').hide(item.find('promote'));
-      }
-
-      var hiders = $('.details.is-shown');
-
-      if (item.find('collapsers hidden').length) {
-        item.find('collapsers').show();
-      }
-
-      require('syn/lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
-
-        showHideCaret();
-
-        if (item.find('details').hasClass('is-hidden') && item.find('collapsers visible').length) {
-          item.find('collapsers').hide();
-        }
-
-        if (item.find('details').hasClass('is-shown')) {
-
-          if (!item.find('details').hasClass('is-loaded')) {
-            item.find('details').addClass('is-loaded');
-
-            item.details.render(d.intercept());
-          }
-
-          if (hiders.length) {
-            require('syn/lib/util/nav').hide(hiders);
-          }
-        }
-      }));
-    }
-  }, {
-    key: 'toggleArrow',
-    value: function toggleArrow($trigger) {
-      return _controllersToggleArrow2['default'].apply(this, [$trigger]);
-    }
-  }]);
-
-  return ItemCtrl;
-})(_synLibAppController2['default']);
-
-exports['default'] = ItemCtrl;
-module.exports = exports['default'];
-
-},{"./controllers/media":"/home/francois/Dev/syn/node_modules/syn/components/item/controllers/media.js","./controllers/toggle-arrow":"/home/francois/Dev/syn/node_modules/syn/components/item/controllers/toggle-arrow.js","./controllers/toggle-promote":"/home/francois/Dev/syn/node_modules/syn/components/item/controllers/toggle-promote.js","./view":"/home/francois/Dev/syn/node_modules/syn/components/item/view.js","string":"/home/francois/Dev/syn/node_modules/string/lib/string.js","syn/components/details//ctrl":"/home/francois/Dev/syn/node_modules/syn/components/details/ctrl.js","syn/components/promote//ctrl":"/home/francois/Dev/syn/node_modules/syn/components/promote/ctrl.js","syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js","syn/lib/util/read-more":"/home/francois/Dev/syn/node_modules/syn/lib/util/read-more.js"}],"/home/francois/Dev/syn/node_modules/syn/components/item/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _cincoDist = require('cinco/dist');
-
-var _synLibAppPage = require('syn/lib/app/page');
-
-var _synLibAppPage2 = _interopRequireDefault(_synLibAppPage);
-
-var _synComponentsItemDefaultButtonsView = require('syn/components/item-default-buttons/view');
-
-var _synComponentsItemDefaultButtonsView2 = _interopRequireDefault(_synComponentsItemDefaultButtonsView);
-
-var _synComponentsPromoteView = require('syn/components/promote/view');
-
-var _synComponentsPromoteView2 = _interopRequireDefault(_synComponentsPromoteView);
-
-var _synComponentsDetailsView = require('syn/components/details/view');
-
-var _synComponentsDetailsView2 = _interopRequireDefault(_synComponentsDetailsView);
-
-var Item = (function (_Element) {
-  function Item(props, extra) {
-    _classCallCheck(this, Item);
-
-    _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this, '.item');
-
-    this.attr('id', props.item ? 'item-' + props.item.id : '');
-
-    this.props = props || {};
-
-    this.extra = extra || {};
-
-    this.add(this.media(), this.buttons(), this.text(), this.arrow(), this.collapsers(), new _cincoDist.Element('.clear'));
-  }
-
-  _inherits(Item, _Element);
-
-  _createClass(Item, [{
-    key: 'media',
-    value: function media() {
-      var _this = this;
-
-      return new _cincoDist.Element('.item-media-wrapper').add(new _cincoDist.Element('.item-media').add(function () {
-        if (_this.props.item) {
-          if (_this.props.item.media) {
-            return _this.props.item.media;
-          } else if (_this.props.item.image) {
-            return new _cincoDist.Element('img.img-responsive', {
-              src: _this.props.item.image });
-          }
-        }
-
-        return [];
-      }));
-    }
-  }, {
-    key: 'buttons',
-    value: function buttons() {
-      var _this2 = this;
-
-      var itemButtons = new _cincoDist.Element('.item-buttons').condition(function () {
-        if ('buttons' in _this2.props) {
-          return _this2.props.buttons !== false;
-        }
-        return true;
-      });
-
-      if (this.props.item && this.props.item.buttons) {
-        itemButtons.add(this.props.item.buttons);
-      } else {
-        itemButtons.add(new _synComponentsItemDefaultButtonsView2['default'](this.props));
-      }
-
-      return itemButtons;
-    }
-  }, {
-    key: 'subject',
-    value: function subject() {
-      var _this3 = this;
-
-      return new _cincoDist.Element('h4.item-subject.header').add(new _cincoDist.Element('a', {
-        href: function href(locals) {
-          if (locals && locals.item) {
-            return (0, _synLibAppPage2['default'])('Item Page', locals && locals.item);
-          }
-          return '#';
-        }
-      }).text(function () {
-        if (_this3.props.item) {
-          return _this3.props.item.subject;
-        }
-        return '';
-      }));
-    }
-  }, {
-    key: 'description',
-    value: function description() {
-      var _this4 = this;
-
-      return new _cincoDist.Element('.item-description.pre-text').text(function () {
-        if (_this4.props.item) {
-          return _this4.props.item.description;
-        }
-        return '';
-      });
-    }
-  }, {
-    key: 'references',
-    value: function references() {
-      return new _cincoDist.Element('h5.item-reference').add(new _cincoDist.Element('a', {
-        href: '#',
-        target: '_blank',
-        rel: 'nofollow'
-      }).text('reference'));
-    }
-  }, {
-    key: 'text',
-    value: function text() {
-      return new _cincoDist.Element('.item-text').add(new _cincoDist.Element('.item-truncatable').add(this.subject(), this.references(), this.description()), new _cincoDist.Element('.clear.clear-text'));
-    }
-  }, {
-    key: 'collapsers',
-    value: function collapsers() {
-      var _this5 = this;
-
-      return new _cincoDist.Element('.item-collapsers').condition(function () {
-        if (_this5.props.item && 'collapsers' in _this5.props.item) {
-          return _this5.props.item.collapsers !== false;
-        }
-
-        return true;
-      }).add(this.promote(), this.details(), this.below());
-    }
-  }, {
-    key: 'promote',
-    value: function promote() {
-      return new _cincoDist.Element('.promote.is-container').add(new _cincoDist.Element('.is-section').add(new _synComponentsPromoteView2['default'](this.props)));
-    }
-  }, {
-    key: 'below',
-    value: function below() {
-      return new _cincoDist.Element('.children.is-container').add(new _cincoDist.Element('.is-section'));
-    }
-  }, {
-    key: 'details',
-    value: function details() {
-      return new _cincoDist.Element('.details.is-container').add(new _cincoDist.Element('.is-section').add(new _synComponentsDetailsView2['default'](this.props)));
-    }
-  }, {
-    key: 'arrow',
-    value: function arrow() {
-      var _this6 = this;
-
-      return new _cincoDist.Element('.item-arrow').condition(function () {
-        if (_this6.props.item) {
-          return _this6.props.item.collapsers !== false;
-        }
-        return true;
-      }).add(new _cincoDist.Element('div').add(new _cincoDist.Element('i.fa.fa-arrow-down')));
-    }
-  }]);
-
-  return Item;
-})(_cincoDist.Element);
-
-exports['default'] = Item;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js","syn/components/details/view":"/home/francois/Dev/syn/node_modules/syn/components/details/view.js","syn/components/item-default-buttons/view":"/home/francois/Dev/syn/node_modules/syn/components/item-default-buttons/view.js","syn/components/promote/view":"/home/francois/Dev/syn/node_modules/syn/components/promote/view.js","syn/lib/app/page":"/home/francois/Dev/syn/node_modules/syn/lib/app/page.js"}],"/home/francois/Dev/syn/node_modules/syn/components/join/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synLibUtilForm = require('syn/lib/util/form');
-
-var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
-
-var Join = (function (_Controller) {
-  function Join(props) {
-    _classCallCheck(this, Join);
-
-    _get(Object.getPrototypeOf(Join.prototype), 'constructor', this).call(this);
-
-    this.props = props || {};
-
-    this.form = new _synLibUtilForm2['default'](this.template);
-
-    this.form.send(this.submit.bind(this));
-
-    this.template.find('.i-agree').on('click', function () {
-
-      var agreed = $(this).find('.agreed');
-
-      if (agreed.hasClass('fa-square-o')) {
-        agreed.removeClass('fa-square-o').addClass('fa-check-square-o');
-      } else {
-        agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
-      }
-    });
-  }
-
-  _inherits(Join, _Controller);
-
-  _createClass(Join, [{
-    key: 'template',
-    get: function get() {
-      return $('form[name="join"]');
-    }
-  }, {
-    key: 'submit',
-    value: function submit(e) {
-      var _this = this;
-
-      var d = this.domain;
-
-      d.run(function () {
-
-        _this.template.find('.please-agree').addClass('hide');
-
-        _this.template.find('.already-taken').hide();
-
-        if (_this.form.labels.password.val() !== _this.form.labels.confirm.val()) {
-          _this.form.labels.confirm.focus().addClass('error');
-
-          return;
-        }
-
-        if (!_this.template.find('.agreed').hasClass('fa-check-square-o')) {
-          _this.template.find('.please-agree').removeClass('hide');
-
-          return;
-        }
-
-        console.info('signing up');
-
-        $.ajax({
-          url: '/sign/up',
-          type: 'POST',
-          data: {
-            email: _this.form.labels.email.val(),
-            password: _this.form.labels.password.val()
-          }
-        }).error(function (response, state, code) {
-          if (response.status === 401) {
-            _this.template.find('.already-taken').show();
-          }
-        }).success(function (response) {
-
-          _this.reconnect();
-
-          $('a.is-in').css('display', 'inline');
-
-          $('.topbar .is-out').remove();
-
-          vex.close(_this.props.$vexContent.data().vex.id);
-        });
-      });
-    }
-  }]);
-
-  return Join;
-})(_synLibAppController2['default']);
-
-exports['default'] = Join;
-module.exports = exports['default'];
-
-},{"syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js","syn/lib/util/form":"/home/francois/Dev/syn/node_modules/syn/lib/util/form.js"}],"/home/francois/Dev/syn/node_modules/syn/components/login/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synLibUtilForm = require('syn/lib/util/form');
-
-var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var Login = (function (_Controller) {
-  function Login(props) {
-    _classCallCheck(this, Login);
-
-    _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
-
-    this.props = props || {};
-
-    this.form = new _synLibUtilForm2['default'](this.template);
-
-    this.form.send(this.submit.bind(this));
-  }
-
-  _inherits(Login, _Controller);
-
-  _createClass(Login, [{
-    key: 'template',
-    get: function get() {
-      return $('form[name="login"]');
-    }
-  }, {
-    key: 'submit',
-    value: function submit(e) {
-      var _this = this;
-
-      var d = this.domain;
-
-      d.run(function () {
-        if ($('.login-error-404').hasClass('is-shown')) {
-          return _synLibUtilNav2['default'].hide($('.login-error-404'), d.intercept(function () {
-            // this.send(login);
-            _this.form.submit();
-          }));
-        }
-
-        if ($('.login-error-401').hasClass('is-shown')) {
-          return _synLibUtilNav2['default'].hide($('.login-error-401'), d.intercept(function () {
-            // this.send(login);
-            _this.form.submit();
-          }));
-        }
-
-        $.ajax({
-          url: '/sign/in',
-          type: 'POST',
-          data: {
-            email: _this.form.labels.email.val(),
-            password: _this.form.labels.password.val()
-          } }).error(function (response) {
-          switch (response.status) {
-            case 404:
-              _synLibUtilNav2['default'].show($('.login-error-404'));
-              break;
-
-            case 401:
-              _synLibUtilNav2['default'].show($('.login-error-401'));
-              break;
-          }
-        }).success(function (response) {
-          _this.reconnect();
-
-          $('a.is-in').css('display', 'inline');
-
-          $('.topbar .is-out').remove();
-
-          vex.close(_this.props.$vexContent.data().vex.id);
-        });
-      });
-    }
-  }]);
-
-  return Login;
-})(_synLibAppController2['default']);
-
-exports['default'] = Login;
-module.exports = exports['default'];
-
-},{"syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js","syn/lib/util/form":"/home/francois/Dev/syn/node_modules/syn/lib/util/form.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/panel/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var _synComponentsCreatorCtrl = require('syn/components/creator/ctrl');
-
-var _synComponentsCreatorCtrl2 = _interopRequireDefault(_synComponentsCreatorCtrl);
-
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
-
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
-
-var _synComponentsTopBarCtrl = require('syn/components/top-bar/ctrl');
-
-var _synComponentsTopBarCtrl2 = _interopRequireDefault(_synComponentsTopBarCtrl);
-
-var _synComponentsPanelView = require('syn/components/panel/view');
-
-var _synComponentsPanelView2 = _interopRequireDefault(_synComponentsPanelView);
-
-var _synLibAppCache = require('syn/lib/app/cache');
-
-var _synLibAppCache2 = _interopRequireDefault(_synLibAppCache);
-
-var Panel = (function (_Controller) {
-  function Panel(props) {
-    _classCallCheck(this, Panel);
-
-    _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this);
-
-    this.props = props;
-
-    this.componentName = 'Panel';
-    this.view = _synComponentsPanelView2['default'];
-
-    if (this.props.panel) {
-      this.set('panel', this.props.panel);
-      this.panel = this.props.panel;
-    }
-
-    if (this.props.panel) {
-      this.type = this.props.panel.type;
-      this.parent = this.props.panel.parent;
-      this.skip = this.props.panel.skip || 0;
-      this.size = this.props.panel.size || synapp.config['navigator batch size'];
-      this.id = Panel.getId(this.props.panel);
-    }
-  }
-
-  _inherits(Panel, _Controller);
-
-  _createClass(Panel, [{
-    key: 'find',
-    value: function find(name) {
-      switch (name) {
-        case 'title':
-          return this.template.find('.panel-title:first');
-
-        case 'toggle creator':
-          return this.template.find('.toggle-creator:first');
-
-        case 'creator':
-          return this.template.find('.creator:first');
-
-        case 'items':
-          return this.template.find('.items:first');
-
-        case 'load more':
-          return this.template.find('.load-more:first');
-
-        case 'create new':
-          return this.template.find('.create-new:first');
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render(cb) {
-      var _this = this;
-
-      var q = new Promise(function (fulfill, reject) {
-
-        var d = _this.domain;
-
-        d.run(function () {
-
-          var panel = _this.panel;
-
-          // Fill title                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-          _this.find('title').text(panel.type.name);
-
-          // Toggle Creator
-
-          _this.find('toggle creator').on('click', function () {
-            console.log('clicked', _this.socket.synuser);
-            if (_this.socket.synuser) {
-              _synLibUtilNav2['default'].toggle(_this.find('creator'), _this.template, d.intercept());
-            } else {
-              var topbar = new _synComponentsTopBarCtrl2['default']();
-              topbar.find('join button').click();
-            }
-          });
-
-          // Panel ID
-
-          if (!_this.template.attr('id')) {
-            _this.template.attr('id', _this.id);
-          }
-
-          var creator = new _synComponentsCreatorCtrl2['default'](_this.props, _this);
-
-          creator.render().then(fulfill, d.intercept.bind(d));
-
-          _this.find('load more').on('click', function () {
-            _this.fill();
-            return false;
-          });
-
-          _this.find('create new').on('click', function () {
-            _this.find('toggle creator').click();
-            return false;
-          });
-
-          // Done
-
-          fulfill();
-        }, reject);
-      });
-
-      if (typeof cb === 'function') {
-        q.then(cb.bind(null, null), cb);
-      }
-
-      return q;
-    }
-  }, {
-    key: 'fill',
-    value: function fill(item, cb) {
-      var _this2 = this;
-
-      if (typeof item === 'function' && !cb) {
-        cb = item;
-        item = undefined;
-      }
-
-      var panel = this.toJSON();
-
-      if (item) {
-        panel.item = item;
-        panel.type = undefined;
-      }
-
-      this.publish('get items', panel).subscribe(function (pubsub, _panel, items) {
-        if (Panel.getId(panel) !== Panel.getId(_panel)) {
-          return;
-        }
-
-        pubsub.unsubscribe();
-
-        console.log('got panel items', items);
-
-        _this2.template.find('.hide.pre').removeClass('hide');
-        _this2.template.find('.show.pre').removeClass('show').hide();
-
-        _this2.template.find('.loading-items').hide();
-
-        if (items.length) {
-
-          _this2.find('create new').hide();
-          _this2.find('load more').show();
-
-          if (items.length < synapp.config['navigator batch size']) {
-            _this2.find('load more').hide();
-          }
-
-          _this2.skip += items.length;
-
-          _this2.preInsertItem(items, cb);
-        } else {
-          _this2.find('create new').show();
-          _this2.find('load more').hide();
-        }
-      });
-    }
-  }, {
-    key: 'toJSON',
-    value: function toJSON() {
-      var json = {
-        type: this.type,
-        size: this.size,
-        skip: this.skip };
-
-      if (this.parent) {
-        json.parent = this.parent;
-      }
-
-      return json;
-    }
-  }, {
-    key: 'preInsertItem',
-    value: function preInsertItem(items, cb) {
-      var _this3 = this;
-
-      var d = this.domain;
-
-      /** Load template */
-
-      // if ( ! cache.getTemplate('Item') ) {
-      new _synComponentsItemCtrl2['default']().load();
-      // return this.preInsertItem(items, cb);
-      // }
-
-      /** Items to object */
-
-      items = items.map(function (item) {
-        var props = {};
-
-        for (var _i in _this3.props) {
-          props[_i] = _this3.props;
-        }
-
-        props.item = item;
-
-        var itemComponent = new _synComponentsItemCtrl2['default'](props);
-
-        itemComponent.load();
-
-        _this3.find('items').append(itemComponent.template);
-
-        return itemComponent;
-      });
-
-      var i = 0;
-      var len = items.length;
-
-      function next() {
-        i++;
-
-        if (i === len && cb) {
-          cb();
-        }
-      }
-
-      items.forEach(function (item) {
-        return item.render(d.intercept(next));
-      });
-    }
-  }]);
-
-  return Panel;
-})(_synLibAppController2['default']);
-
-Panel.getId = function (panel) {
-  var id = 'panel-' + (panel.type._id || panel.type);
-
-  if (panel.parent) {
-    id += '-' + panel.parent;
-  }
-
-  return id;
-};
-
-exports['default'] = Panel;
-module.exports = exports['default'];
-/** This is about another panel */
-// item: app.location.item
-
-},{"syn/components/creator/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/creator/ctrl.js","syn/components/item/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js","syn/components/panel/view":"/home/francois/Dev/syn/node_modules/syn/components/panel/view.js","syn/components/top-bar/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/top-bar/ctrl.js","syn/lib/app/cache":"/home/francois/Dev/syn/node_modules/syn/lib/app/cache.js","syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/panel/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _cincoDist = require('cinco/dist');
-
-var _synComponentsCreatorView = require('syn/components/creator/view');
-
-var _synComponentsCreatorView2 = _interopRequireDefault(_synComponentsCreatorView);
-
-var Panel = (function (_Element) {
-  function Panel(props) {
-    _classCallCheck(this, Panel);
-
-    _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, '.panel');
-
-    this.props = props || {};
-
-    this.attr('id', function () {
-      if (props.panel) {
-        var id = 'panel-' + (props.panel.type._id || props.panel.type);
-        return id;
-      }
-    });
-
-    this.add(this.panelHeading(), this.panelBody());
-  }
-
-  _inherits(Panel, _Element);
-
-  _createClass(Panel, [{
-    key: 'panelHeading',
-    value: function panelHeading() {
-      return new _cincoDist.Element('.panel-heading').add(new _cincoDist.Element('h4.fa.fa-plus.toggle-creator').condition(this.props.creator !== false), new _cincoDist.Element('h4.panel-title'));
-    }
-  }, {
-    key: 'panelBody',
-    value: function panelBody() {
-      var body = new _cincoDist.Element('.panel-body');
-
-      if (this.props.creator !== false) {
-        body.add(new _synComponentsCreatorView2['default'](this.props));
-      }
-
-      var items = new _cincoDist.Element('.items');
-
-      body.add(items);
-
-      body.add(this.loadingItems());
-
-      body.add(new _cincoDist.Element('.padding.hide.pre').add(this.viewMore(), this.addSomething()));
-
-      return body;
-    }
-  }, {
-    key: 'loadingItems',
-    value: function loadingItems() {
-      return new _cincoDist.Element('.loading-items.hide').add(new _cincoDist.Element('i.fa.fa-circle-o-notch.fa-spin'), new _cincoDist.Element('span').text('Loading items...'));
-    }
-  }, {
-    key: 'viewMore',
-    value: function viewMore() {
-      return new _cincoDist.Element('.load-more.hide').add(new _cincoDist.Element('a', { href: '#' }).text('View more'));
-    }
-  }, {
-    key: 'addSomething',
-    value: function addSomething() {
-      return new _cincoDist.Element('.create-new').add(new _cincoDist.Element('a', { href: '#' }).text('Click the + to be the first to add something here'));
-    }
-  }]);
-
-  return Panel;
-})(_cincoDist.Element);
-
-exports['default'] = Panel;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js","syn/components/creator/view":"/home/francois/Dev/syn/node_modules/syn/components/creator/view.js"}],"/home/francois/Dev/syn/node_modules/syn/components/promote/controllers/render-item.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var _synComponentsEditAndGoAgainCtrl = require('syn/components/edit-and-go-again/ctrl');
-
-var _synComponentsEditAndGoAgainCtrl2 = _interopRequireDefault(_synComponentsEditAndGoAgainCtrl);
-
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
-
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
-
-function _renderItem(item, hand) {
-  var self = this;
-
-  this.find('side by side').attr('data-' + hand + '-item', item._id);
-
-  // Subject
-  this.find('item subject', hand).text(item.subject);
-
-  // Description
-  this.find('item description', hand).text( /*hand + ' ' + item.id + ' ' + */item.description);
-
-  // Image
-
-  this.find('item image', hand).empty().append(new _synComponentsItemCtrl2['default']({ item: item }).media());
-
-  // References
-
-  if (item.references && item.references.length) {
-    this.find('item references', hand).attr('href', item.references[0].url).text(item.references[0].title || item.references[0].url);
-  }
-
-  // Sliders
-
-  this.find('sliders', hand).find('.criteria-name').each(function (i) {
-    var cid = i;
-
-    if (cid > 3) {
-      cid -= 4;
-    }
-
-    self.find('sliders', hand).find('.criteria-name').eq(i).on('click', function () {
-      var elem = $(this);
-
-      var descriptionSection = elem.closest('.criteria-wrapper').find('.criteria-description');
-
-      elem.closest('.row-sliders').find('.criteria-name.info').removeClass('info').addClass('shy');
-
-      if ($(this).hasClass('shy')) {
-        $(this).removeClass('shy').addClass('info');
-      } else if ($(this).hasClass('info')) {
-        $(this).removeClass('info').addClass('shy');
-      }
-
-      // Nav.hide(elem.closest('.promote').find('.criteria-description-section.is-shown'), self.domain.intercept(function () {
-      //   Nav.toggle(descriptionSection);
-      // }));
-
-      $('.criteria-description').hide();
-
-      descriptionSection.show();
-    }).text(self.get('criterias')[cid].name);
-
-    self.find('sliders', hand).find('.criteria-description').eq(i).text(self.get('criterias')[cid].description);
-
-    self.find('sliders', hand).find('input').eq(i).val(0).data('criteria', self.get('criterias')[cid]._id);
-  });
-
-  // Feedback
-
-  this.find('item feedback', hand).val('');
-
-  // Feedback - remove any marker from previous post / see #164
-
-  this.find('item feedback', hand).removeClass('do-not-save-again');
-}
-
-function renderItem(hand) {
-  var _this = this;
-
-  var self = this;
-
-  var reverse = hand === 'left' ? 'right' : 'left';
-
-  var side = this.get(hand);
-
-  if (!side) {
-    this.find('item subject', hand).hide();
-    this.find('item description', hand).hide();
-    this.find('item feedback', hand).hide();
-    this.find('sliders', hand).hide();
-    this.find('promote button', hand).hide();
-    this.find('promote label').hide();
-    this.find('edit and go again button', hand).hide();
-    this.find('promote button', reverse).hide();
-    this.find('edit and go again button', reverse).hide();
-    // this.find('finish button').hide();
-    return;
-  }
-
-  this.socket.on('item image uploaded ' + side._id.toString(), function (item) {
-    _renderItem.apply(_this, [item, hand]);
-  });
-
-  // Increment views counter
-
-  this.publish('add view', side._id).subscribe(function (pubsub) {
-    return pubsub.unsubscribe();
-  });
-
-  // Render item
-
-  _renderItem.apply(this, [side, hand]);
-
-  // Promote button
-
-  this.find('promote button', hand).text(side.subject).off('click').on('click', function () {
-
-    var left = $(this).closest('.left-item').length;
-
-    var opposite = left ? 'right' : 'left';
-
-    _synLibUtilNav2['default'].scroll(self.template, self.domain.intercept(function () {
-
-      // If cursor is smaller than limit, then keep on going
-
-      if (self.get('cursor') < self.get('limit')) {
-
-        self.set('cursor', self.get('cursor') + 1);
-
-        self.publish('promote', self.get(left ? 'left' : 'right')._id).subscribe(function (pubsub) {
-          return pubsub.unsubscribe();
-        });
-
-        self.save(left ? 'left' : 'right', function () {
-          $.when(self.find('side by side').find('.' + opposite + '-item').animate({
-            opacity: 0
-          })).then(function () {
-            self.get(opposite, self.get('items')[self.get('cursor')]);
-
-            self.find('side by side').find('.' + opposite + '-item').animate({
-              opacity: 1
-            });
-          });
-        });
-      }
-
-      // If cursor equals limit, means end of evaluation cycle
-
-      else {
-
-        self.finish();
-      }
-    }));
-  });
-
-  // Edit and go again
-
-  this.find('edit and go again button', hand).on('click', function () {
-    _synLibUtilNav2['default'].unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
-
-      if (promote.item.find('editor').find('form').length) {
-        console.warn('already loaded');
-      } else {
-        var edit = new _synComponentsEditAndGoAgainCtrl2['default'](promote.item);
-
-        edit.get(self.domain.intercept(function (template) {
-
-          promote.item.find('editor').find('.is-section').append(template);
-
-          _synLibUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, self.domain.intercept(function () {
-            _synLibUtilNav2['default'].show(template, self.domain.intercept(function () {
-              edit.render();
-            }));
-          }));
-        }));
-      }
-    }));
-  });
-}
-
-exports['default'] = renderItem;
-module.exports = exports['default'];
-
-},{"syn/components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/edit-and-go-again/ctrl.js","syn/components/item/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/item/ctrl.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/promote/controllers/render.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-/**
- *  @method Promote.render
- *  @return
- *  @arg
- */
-
-function renderPromote(cb) {
-  var self = this;
-
-  var d = this.domain;
-
-  self.find('finish button').on('click', function () {
-    _synLibUtilNav2['default'].scroll(self.template, d.intercept(function () {
-
-      var cursor = self.get('cursor');
-      var limit = self.get('limit');
-
-      if (cursor < limit) {
-
-        self.save('left', function () {});
-
-        self.save('right', function () {});
-
-        $.when(self.find('side by side').find('.left-item, .right-item').animate({
-          opacity: 0
-        }, 1000)).then(function () {
-          self.set('cursor', cursor + 1);
-
-          self.set('left', self.get('items')[cursor]);
-
-          self.set('cursor', cursor + 1);
-
-          self.set('right', self.get('items')[cursor]);
-
-          self.find('side by side').find('.left-item').animate({
-            opacity: 1
-          }, 1000);
-
-          self.find('side by side').find('.right-item').animate({
-            opacity: 1
-          }, 1000);
-        });
-      } else {
-
-        self.finish();
-      }
-    }));
-  });
-}
-
-exports['default'] = renderPromote;
-module.exports = exports['default'];
-
-},{"syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/promote/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synLibUtilNav = require('syn/lib/util/nav');
-
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
-
-var _synComponentsEditAndGoAgainCtrl = require('syn/components/edit-and-go-again/ctrl');
-
-var _synComponentsEditAndGoAgainCtrl2 = _interopRequireDefault(_synComponentsEditAndGoAgainCtrl);
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synComponentsPromoteControllersRender = require('syn/components/promote/controllers/render');
-
-var _synComponentsPromoteControllersRender2 = _interopRequireDefault(_synComponentsPromoteControllersRender);
-
-var _synComponentsPromoteControllersRenderItem = require('syn/components/promote/controllers/render-item');
-
-var _synComponentsPromoteControllersRenderItem2 = _interopRequireDefault(_synComponentsPromoteControllersRenderItem);
-
-var Promote = (function (_Controller) {
-  function Promote(props, itemController) {
-    var _this = this;
-
-    _classCallCheck(this, Promote);
-
-    _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this);
-
-    this.props = props || {};
-
-    if (this.props.item) {
-      this.set('item', this.props.item);
-    }
-
-    this.template = itemController.find('promote');
-
-    this.itemController = itemController;
-
-    this.store = {
-      item: null,
-      limit: 5,
-      cursor: 1,
-      left: null,
-      right: null,
-      criterias: [],
-      items: []
-    };
-
-    this.on('set', function (key, value) {
-      switch (key) {
-        case 'limit':
-          _this.renderLimit(value);
-          break;
-
-        case 'cursor':
-          _this.renderCursor(value);
-          break;
-
-        case 'left':
-          _this.renderLeft(value);
-          break;
-
-        case 'right':
-          _this.renderRight(value);
-          break;
-      }
-    });
-
-    this.domain.run(function () {
-      if (!_this.template.length) {
-        throw new Error('Promote template not found');
-      }
-    });
-  }
-
-  _inherits(Promote, _Controller);
-
-  _createClass(Promote, [{
-    key: 'find',
-    value: function find(name, more) {
-      switch (name) {
-
-        case 'item subject':
-          return this.template.find('.subject.' + more + '-item h4');
-
-        case 'item description':
-          return this.template.find('.description.' + more + '-item');;
-
-        case 'cursor':
-          return this.template.find('.cursor');
-
-        case 'limit':
-          return this.template.find('.limit');
-
-        case 'side by side':
-          return this.template.find('.items-side-by-side');
-
-        case 'finish button':
-          return this.template.find('.finish');
-
-        case 'sliders':
-          return this.find('side by side').find('.sliders.' + more + '-item');
-
-        case 'item image':
-          return this.find('side by side').find('.image.' + more + '-item');
-
-        case 'item persona':
-          return this.find('side by side').find('.persona.' + more + '-item');
-
-        case 'item references':
-          return this.find('side by side').find('.references.' + more + '-item a');
-
-        case 'item persona image':
-          return this.find('item persona', more).find('img');
-
-        case 'item persona name':
-          return this.find('item persona', more).find('.user-full-name');
-
-        case 'item feedback':
-          return this.find('side by side').find('.' + more + '-item.feedback .feedback-entry');
-
-        case 'promote button':
-          return this.find('side by side').find('.' + more + '-item .promote');
-
-        case 'promote label':
-          return this.find('side by side').find('.promote-label');
-
-        case 'edit and go again button':
-          return this.find('side by side').find('.' + more + '-item .edit-and-go-again-toggle');
-      }
-    }
-  }, {
-    key: 'renderLimit',
-    value: function renderLimit(limit) {
-      this.find('limit').text(limit);
-    }
-  }, {
-    key: 'renderCursor',
-    value: function renderCursor(cursor) {
-      this.find('cursor').text(cursor);
-    }
-  }, {
-    key: 'renderLeft',
-    value: function renderLeft(left) {
-      this.renderItem('left', left);
-    }
-  }, {
-    key: 'renderRight',
-    value: function renderRight(right) {
-      this.renderItem('right', right);
-    }
-  }, {
-    key: 'renderItem',
-    value: function renderItem(hand, item) {
-      return _synComponentsPromoteControllersRenderItem2['default'].apply(this, [hand, item]);
-    }
-  }, {
-    key: 'render',
-    value: function render(cb) {
-      return _synComponentsPromoteControllersRender2['default'].apply(this, [cb]);
-    }
-  }, {
-    key: 'save',
-    value: function save(hand, cb) {
-
-      // For responsiveness reasons, there are a copy of each element in DOM
-      // one for small screen and one for regular screen -
-      // the ones that do not fit are hidden. So we want to make sure each time
-      // that we are working with the visible one
-
-      var self = this;
-
-      // feedback
-
-      var feedback = this.find('item feedback', hand).toArray().reduce(function (visible, item) {
-        if ($(item).is(':visible')) {
-          visible = $(item);
-        }
-        return visible;
-      });
-
-      if (feedback.val()) {
-
-        if (!feedback.hasClass('do-not-save-again')) {
-          this.publish('insert feedback', {
-            item: this.get(hand)._id,
-            feedback: feedback.val()
-          }).subscribe(function (pubsub) {
-            return pubsub.unsubscribe();
-          });
-
-          feedback.addClass('do-not-save-again');
-        }
-
-        // feedback.val('');
-      }
-
-      // votes
-
-      var votes = [];
-
-      this.template.find('.items-side-by-side:visible .' + hand + '-item input[type="range"]:visible').each(function () {
-        var vote = {
-          item: self.get(hand)._id,
-          value: +$(this).val(),
-          criteria: $(this).data('criteria')
-        };
-
-        votes.push(vote);
-      });
-
-      this.publish('insert votes', votes).subscribe(function (pubsub) {
-        return pubsub.unsubscribe();
-      });
-
-      cb();
-    }
-  }, {
-    key: 'getEvaluation',
-    value: function getEvaluation(cb) {
-      var _this2 = this;
-
-      if (!this.get('left')) {
-        (function () {
-
-          var item = _this2.itemController.get('item');
-
-          // Get evaluation via sockets
-
-          _this2.publish('get evaluation', item._id).subscribe(function (pubsub, evaluation) {
-            if (evaluation.item.toString() === item._id.toString()) {
-              console.info('got evaluation', evaluation);
-
-              pubsub.unsubscribe();
-
-              var limit = 5;
-
-              if (evaluation.items.length < 6) {
-                limit = evaluation.items.length - 1;
-
-                if (!evaluation.limit && evaluation.items.length === 1) {
-                  limit = 1;
-                }
-              }
-
-              _this2.set('criterias', evaluation.criterias);
-
-              _this2.set('items', evaluation.items);
-
-              _this2.set('limit', limit);
-
-              _this2.set('cursor', 1);
-
-              _this2.set('left', evaluation.items[0]);
-
-              _this2.set('right', evaluation.items[1]);
-
-              cb();
-            }
-          });
-        })();
-      } else {
-        cb();
-      }
-    }
-  }]);
-
-  return Promote;
-})(_synLibAppController2['default']);
-
-exports['default'] = Promote;
-module.exports = exports['default'];
-
-},{"syn/components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/edit-and-go-again/ctrl.js","syn/components/promote/controllers/render":"/home/francois/Dev/syn/node_modules/syn/components/promote/controllers/render.js","syn/components/promote/controllers/render-item":"/home/francois/Dev/syn/node_modules/syn/components/promote/controllers/render-item.js","syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js","syn/lib/util/nav":"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js"}],"/home/francois/Dev/syn/node_modules/syn/components/promote/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _cincoDist = require('cinco/dist');
-
-var Promote = (function (_Element) {
-  function Promote(props) {
-    _classCallCheck(this, Promote);
-
-    _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this, 'section');
-
-    this.props = props || {};
-
-    this.add(this.compose());
-  }
-
-  _inherits(Promote, _Element);
-
-  _createClass(Promote, [{
-    key: 'promoteImage',
-    value: function promoteImage(hand) {
-      return new _cincoDist.Element('.image.gutter', {
-        style: 'float: left; width: 40%',
-        className: [hand + '-item']
-      });
-    }
-  }, {
-    key: 'promoteSubject',
-    value: function promoteSubject(hand) {
-      return new _cincoDist.Element('.subject.gutter', {
-        className: [hand + '-item']
-      }).add(new _cincoDist.Element('h4'));
-    }
-  }, {
-    key: 'promoteDescription',
-    value: function promoteDescription(hand) {
-      return new _cincoDist.Element('.description.gutter.pre-text', {
-        className: [hand + '-item']
-      });
-    }
-  }, {
-    key: 'promoteReference',
-    value: function promoteReference(hand) {
-      return new _cincoDist.Element('.references.gutter', {
-        className: [hand + '-item']
-      }).add(new _cincoDist.Element('a', {
-        rel: 'nofollow',
-        target: '_blank'
-      }));
-    }
-  }, {
-    key: 'promoteSliders',
-    value: function promoteSliders(hand) {
-
-      var sliders = new _cincoDist.Element('.sliders', {
-        className: [hand + '-item']
-      });
-
-      for (var i = 0; i < 4; i++) {
-        var slider = new _cincoDist.Element('.criteria-wrapper.criteria-' + i);
-
-        slider.add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.tablet-40').add(new _cincoDist.Element('h4').add(new _cincoDist.Element('button.criteria-name.shy.block').text('Criteria'))), new _cincoDist.Element('.tablet-60', {
-          style: 'margin-top: 2.5em'
-        }).add(new _cincoDist.Element('input.block', {
-          type: 'range',
-          min: '-1',
-          max: '1',
-          value: '0',
-          step: '1'
-        }))));
-
-        slider.add(new _cincoDist.Element('h5.criteria-description.row.watch-100.gutter'));
-
-        sliders.add(slider);
-      }
-
-      return sliders;
-    }
-  }, {
-    key: 'promoteFeedback',
-    value: function promoteFeedback(hand) {
-      return new _cincoDist.Element('.feedback', {
-        className: [hand + '-item']
-      }).add(new _cincoDist.Element('textarea.feedback-entry.block', {
-        placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?'
-      }));
-    }
-  }, {
-    key: 'promoteButton',
-    value: function promoteButton(hand) {
-      return new _cincoDist.Element('.gutter', {
-        className: [hand + '-item']
-      }).add(new _cincoDist.Element('button.block.promote').text('Promote'));
-    }
-  }, {
-    key: 'editAndGoAgain',
-    value: function editAndGoAgain(hand) {
-      return new _cincoDist.Element('.gutter', {
-        className: [hand + '-item']
-      }).add(new _cincoDist.Element('button.block.edit-and-go-again-toggle').text('Edit and go again'));
-    }
-  }, {
-    key: 'compose',
-    value: function compose() {
-      return new _cincoDist.Elements().add(new _cincoDist.Element('header.promote-steps').add(new _cincoDist.Element('h2').add(new _cincoDist.Element('span.cursor').text('1'), new _cincoDist.Element('span').text(' of '), new _cincoDist.Element('span.limit').text('5')), new _cincoDist.Element('h4').text('Evaluate each item below')), new _cincoDist.Element('.items-side-by-side').add(
-      // 1 column
-      new _cincoDist.Element('.split-hide-up').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left'), this.promoteReference('left'), this.promoteSliders('left'), this.promoteFeedback('left'), this.promoteButton('left'), this.editAndGoAgain('left'), this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'), this.promoteReference('right'), this.promoteSliders('right'), this.promoteFeedback('right'), this.promoteButton('right'), this.editAndGoAgain('right')),
-
-      // 2 columns
-      new _cincoDist.Element('.split-hide-down').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('right'))), new _cincoDist.Element('h4.text-center').text('Which of these is most important for the community to consider?'), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('left')), new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('right')))), new _cincoDist.Element('button.finish.block').text('Neither')));
-    }
-  }]);
-
-  return Promote;
-})(_cincoDist.Element);
-
-exports['default'] = Promote;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/node_modules/syn/components/top-bar/ctrl.js":[function(require,module,exports){
-/**
- * @package     App.Component.TopbBar.Controller
-*/
-
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synLibAppController = require('syn/lib/app/controller');
-
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
-
-var _synComponentsLoginCtrl = require('syn/components/login/ctrl');
-
-var _synComponentsLoginCtrl2 = _interopRequireDefault(_synComponentsLoginCtrl);
-
-var _synComponentsJoinCtrl = require('syn/components/join/ctrl');
-
-var _synComponentsJoinCtrl2 = _interopRequireDefault(_synComponentsJoinCtrl);
-
-var _synComponentsForgotPasswordCtrl = require('syn/components/forgot-password/ctrl');
-
-var _synComponentsForgotPasswordCtrl2 = _interopRequireDefault(_synComponentsForgotPasswordCtrl);
-
-var TopBar = (function (_Controller) {
-
-  /**
-   *  @arg    {Object} props
-  */
-
-  function TopBar(props) {
-    var _this = this;
-
-    _classCallCheck(this, TopBar);
-
-    _get(Object.getPrototypeOf(TopBar.prototype), 'constructor', this).call(this);
-
-    this.props = props;
-
-    this.template = $('.topbar');
-
-    this.store['online users'] = 0;
-
-    this.socket.on('online users', function (num) {
-      return _this.set('online users', num);
-    });
-
-    this.on('set', function (key, value) {
-      if (key === 'online users') {
-        _this.renderOnlineUsers();
-      }
-    });
-  }
-
-  _inherits(TopBar, _Controller);
-
-  _createClass(TopBar, [{
-    key: 'find',
-    value: function find(name) {
-      switch (name) {
-        case 'online users':
-          return this.template.find('.online-users');
-
-        case 'right section':
-          return this.template.find('.topbar-right');
-
-        case 'login button':
-          return this.template.find('.login-button');
-
-        case 'join button':
-          return this.template.find('.join-button');
-
-        case 'is in':
-          return this.template.find('.is-in');
-
-        case 'is out':
-          return this.template.find('.is-out');
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      this.renderOnlineUsers();
-
-      synapp.app.on('set', function (key, value) {
-        if (key === 'onlineUsers') {
-          _this2.find('online users').text(value);
-        }
-      });
-
-      this.find('right section').removeClass('hide');
-
-      if (!this.socket.synuser) {
-        this.find('login button').on('click', this.loginDialog.bind(this));
-        this.find('join button').on('click', this.joinDialog.bind(this));
-        this.find('is in').hide();
-      } else {
-        this.find('is out').remove();
-        this.find('is in').css('display', 'inline');
-      }
-    }
-  }, {
-    key: 'renderOnlineUsers',
-    value: function renderOnlineUsers() {
-      this.find('online users').text(this.get('online users'));
-    }
-  }, {
-    key: 'loginDialog',
-    value: function loginDialog() {
-      var _this3 = this;
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      vex.dialog.confirm({
-
-        afterOpen: function afterOpen($vexContent) {
-          _this3.find('login button').off('click').on('click', function () {
-            return vex.close();
-          });
-
-          new _synComponentsLoginCtrl2['default']({ $vexContent: $vexContent });
-
-          $vexContent.find('.forgot-password-link').on('click', function () {
-            new _synComponentsForgotPasswordCtrl2['default']();
-            vex.close($vexContent.data().vex.id);
-            return false;
-          });
-        },
-
-        afterClose: function afterClose() {
-          $('.login-button').on('click', function () {
-            return _this3.loginDialog();
-          });
-        },
-
-        message: $('#login').text(),
-
-        buttons: [$.extend({}, vex.dialog.buttons.NO, {
-          text: 'x Close'
-        })]
-      });
-    }
-  }, {
-    key: 'joinDialog',
-    value: function joinDialog() {
-      var _this4 = this;
-
-      vex.defaultOptions.className = 'vex-theme-flat-attack';
-
-      var joinDialog = this.joinDialog.bind(this);
-
-      vex.dialog.confirm({
-
-        afterOpen: function afterOpen($vexContent) {
-          _this4.find('join button').off('click').on('click', function () {
-            vex.close();
-          });
-
-          new _synComponentsJoinCtrl2['default']({ $vexContent: $vexContent });
-        },
-
-        afterClose: function afterClose() {
-          $('.join-button').on('click', function () {
-            return joinDialog();
-          });
-        },
-
-        message: $('#join').text(),
-        buttons: [$.extend({}, vex.dialog.buttons.NO, {
-          text: 'x Close'
-        })],
-        callback: function callback(value) {},
-        defaultOptions: {
-          closeCSS: {
-            color: 'red'
-          }
-        }
-      });
-    }
-  }]);
-
-  return TopBar;
-})(_synLibAppController2['default']);
-
-exports['default'] = TopBar;
-module.exports = exports['default'];
-
-},{"syn/components/forgot-password/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/forgot-password/ctrl.js","syn/components/join/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/join/ctrl.js","syn/components/login/ctrl":"/home/francois/Dev/syn/node_modules/syn/components/login/ctrl.js","syn/lib/app/controller":"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js"}],"/home/francois/Dev/syn/node_modules/syn/components/youtube/ctrl.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-var _synComponentsYoutubeView = require('syn/components/youtube/view');
-
-var _synComponentsYoutubeView2 = _interopRequireDefault(_synComponentsYoutubeView);
-
-function YouTube(url) {
-  var yt = new _synComponentsYoutubeView2['default']({ url: url, settings: { env: synapp.env } });
-}
-
-exports['default'] = YouTube;
-module.exports = exports['default'];
-
-},{"syn/components/youtube/view":"/home/francois/Dev/syn/node_modules/syn/components/youtube/view.js"}],"/home/francois/Dev/syn/node_modules/syn/components/youtube/view.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _cincoDist = require('cinco/dist');
-
-var YouTube = (function (_Element) {
-  function YouTube(props) {
-    _classCallCheck(this, YouTube);
-
-    _get(Object.getPrototypeOf(YouTube.prototype), 'constructor', this).call(this, '.video-container');
-
-    if (props.item && props.settings.env !== 'development2') {
-
-      if (YouTube.isYouTube(props.item)) {
-        this.add(this.iframe(props.item.references[0].url));
-      }
-    }
-  }
-
-  _inherits(YouTube, _Element);
-
-  _createClass(YouTube, [{
-    key: 'iframe',
-    value: function iframe(url) {
-      var youTubeId = YouTube.getId(url);
-
-      return new _cincoDist.Element('iframe[allowfullscreen]', {
-        frameborder: '0',
-        width: '300',
-        height: '175',
-        src: 'http://www.youtube.com/embed/' + youTubeId + '?autoplay=0'
-      });
-    }
-  }], [{
-    key: 'isYouTube',
-    value: function isYouTube(item) {
-      var is = false;
-
-      var references = item.references || [];
-
-      if (references.length) {
-        var url = references[0].url;
-
-        if (YouTube.regex.test(url)) {
-          is = true;
-        }
-      }
-
-      return is;
-    }
-  }, {
-    key: 'getId',
-    value: function getId(url) {
-      var youTubeId = undefined;
-
-      url.replace(YouTube.regex, function (m, v) {
-        return youTubeId = v;
-      });
-
-      return youTubeId;
-    }
-  }]);
-
-  return YouTube;
-})(_cincoDist.Element);
-
-YouTube.regex = /youtu\.?be.+v=([^&]+)/;
-
-exports['default'] = YouTube;
-module.exports = exports['default'];
-
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/app/Stream.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function Stream(file) {
-
-    var stream = ss.createStream();
-
-    ss(synapp.app.socket).emit('upload image', stream, { size: file.size, name: file.name });
-
-    ss.createBlobReadStream(file).pipe(stream);
-
-    return stream;
-  }
-
-  module.exports = Stream;
-})();
-
-},{}],"/home/francois/Dev/syn/node_modules/syn/lib/app/cache.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-var Cache = (function () {
-  function Cache() {
-    _classCallCheck(this, Cache);
-
-    this.cache = {
-      templates: {}
-    };
-  }
-
-  _createClass(Cache, [{
-    key: 'getTemplate',
-    value: function getTemplate(tpl) {
-      return this.cache.templates[tpl];
-    }
-  }, {
-    key: 'setTemplate',
-    value: function setTemplate(tpl, val) {
-      this.cache.templates[tpl] = val;
-    }
-  }]);
-
-  return Cache;
-})();
-
-exports['default'] = new Cache();
-module.exports = exports['default'];
-
-},{}],"/home/francois/Dev/syn/node_modules/syn/lib/app/controller.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _get = function get(_x, _x2, _x3) {
-  var _again = true;_function: while (_again) {
-    var object = _x,
-        property = _x2,
-        receiver = _x3;desc = parent = getter = undefined;_again = false;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-      var parent = Object.getPrototypeOf(object);if (parent === null) {
-        return undefined;
-      } else {
-        _x = parent;_x2 = property;_x3 = receiver;_again = true;continue _function;
-      }
-    } else if ('value' in desc) {
-      return desc.value;
-    } else {
-      var getter = desc.get;if (getter === undefined) {
-        return undefined;
-      }return getter.call(receiver);
-    }
-  }
-};
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== 'function' && superClass !== null) {
-    throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) subClass.__proto__ = superClass;
-}
-
-var _synApp = require('syn/app');
-
-var _synApp2 = _interopRequireDefault(_synApp);
-
-var Controller = (function (_App) {
-  function Controller() {
-    _classCallCheck(this, Controller);
-
-    _get(Object.getPrototypeOf(Controller.prototype), 'constructor', this).call(this);
-  }
-
-  _inherits(Controller, _App);
-
-  return Controller;
-})(_synApp2['default']);
-
-exports['default'] = Controller;
-module.exports = exports['default'];
-
-},{"syn/app":"/home/francois/Dev/syn/node_modules/syn/app.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/app/page.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  var S = require('string');
-
-  function Page(page, more) {
-
-    switch (page) {
-      case 'Home':
-        return '/';
-
-      case 'Item Page':
-        return '/item/' + more.id + '/' + S(more.subject).slugify().s;
-
-      case 'Terms Of Service':
-        return '/page/terms-of-service';
-
-      case 'Profile':
-        return '/page/profile';
-
-      case 'Sign Out':
-        return '/sign/out';
-
-      case 'Sign With Facebook':
-        return '/sign/facebook';
-
-      case 'Sign With Twitter':
-        return '/sign/twitter';
-
-      default:
-        throw new Error('Page not registered: ' + page);
-    }
-  }
-
-  module.exports = Page;
-})();
-
-},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/util/domain-run.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  var domain = require('domain');
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function domainRun(fn, reject) {
-    var d = domain.create();
-
-    d.intercept = function (fn, _self) {
-
-      if (typeof fn !== 'function') {
-        fn = function () {};
-      }
-
-      return function (error) {
-        if (error && error instanceof Error) {
-          d.emit('error', error);
-        } else {
-          var args = Array.prototype.slice.call(arguments);
-
-          args.shift();
-
-          fn.apply(_self, args);
-        }
-      };
-    };
-
-    d.on('error', function onDomainError(error) {
-      console.error(error);
-
-      if (error.stack) {
-        error.stack.split(/\n/).forEach(function (line) {
-          line.split(/\n/).forEach(console.warn.bind(console));
-        });
-      }
-
-      if (typeof reject === 'function') {
-        reject(error);
-      }
-    });
-
-    d.run(function () {
-      fn(d);
-    });
-  }
-
-  module.exports = domainRun;
-})();
-
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/util/form.js":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ('value' in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-})();
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { 'default': obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError('Cannot call a class as a function');
-  }
-}
-
-var _synLibUtilDomainRun = require('syn/lib/util/domain-run');
-
-var _synLibUtilDomainRun2 = _interopRequireDefault(_synLibUtilDomainRun);
-
-var Form = (function () {
-  function Form(form) {
-    var _this = this;
-
-    _classCallCheck(this, Form);
-
-    var self = this;
-
-    this.form = form;
-
-    this.labels = {};
-
-    form.find('[name]').each(function () {
-      self.labels[$(this).attr('name')] = $(this);
-    });
-
-    // #193 Disable <Enter> keys
-
-    form.find('input').on('keydown', function (e) {
-      if (e.keyCode === 13) {
-        return false;
-      }
-    });
-
-    form.on('submit', function (e) {
-      setTimeout(function () {
-        return _this.submit(e);
-      });
-      return false;
-    });
-  }
-
-  _createClass(Form, [{
-    key: 'send',
-    value: function send(fn) {
-      this.ok = fn;
-      return this;
-    }
-  }, {
-    key: 'submit',
-    value: function submit(e) {
-      var errors = [];
-
-      this.form.find('[required]').each(function () {
-        var val = $(this).val();
-
-        if (!val) {
-
-          if (!errors.length) {
-            $(this).addClass('error').focus();
-          }
-
-          errors.push({ required: $(this).attr('name') });
-        } else {
-          $(this).removeClass('error');
-        }
-      });
-
-      if (!errors.length) {
-        this.ok();
-      }
-
-      return false;
-    }
-  }]);
-
-  return Form;
-})();
-
-exports['default'] = Form;
-module.exports = exports['default'];
-
-},{"syn/lib/util/domain-run":"/home/francois/Dev/syn/node_modules/syn/lib/util/domain-run.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/util/nav.js":[function(require,module,exports){
-(function (process){
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  N   A   V
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function toggle(elem, poa, cb) {
-    if (!elem.hasClass('is-toggable')) {
-      elem.addClass('is-toggable');
-    }
-
-    if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    if (elem.hasClass('is-shown')) {
-      unreveal(elem, poa, cb);
-    } else {
-      reveal(elem, poa, cb);
-    }
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function reveal(elem, poa, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    if (typeof cb !== 'function') {
-      cb = console.log.bind(console);
-    }
-
-    emitter.revealed = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-      if (!elem.hasClass('is-toggable')) {
-        elem.addClass('is-toggable');
-      }
-
-      console.log('%c reveal', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '<no id>', elem.attr('class'));
-
-      if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
-        var error = new Error('Animation already in progress');
-        error.code = 'ANIMATION_IN_PROGRESS';
-        return cb(error);
-      }
-
-      elem.removeClass('is-hidden').addClass('is-showing');
-
-      if (poa) {
-        scroll(poa, function () {
-          show(elem, function () {
-            emitter.emit('success');
-            cb();
-          });
-        });
-      } else {
-        show(elem, function () {
-          emitter.emit('success');
-          cb();
-        });
-      }
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function unreveal(elem, poa, cb) {
-    if (!elem.hasClass('is-toggable')) {
-      elem.addClass('is-toggable');
-    }
-
-    console.log('%c unreveal', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
-
-    if (elem.hasClass('is-showing') || elem.hasClass('is-hiding')) {
-      var error = new Error('Animation already in progress');
-      error.code = 'ANIMATION_IN_PROGRESS';
-      return cb(error);
-    }
-
-    elem.removeClass('is-shown').addClass('is-hiding');
-
-    if (poa) {
-      scroll(poa, function () {
-        hide(elem, cb);
-      });
-    } else {
-      hide(elem, cb);
-    }
-  }
-
-  /**
-   *  @function scroll
-   *  @description Scroll the page till the point of attention is at the top of the screen
-   *  @return null
-   *  @arg {function} pointOfAttention - jQuery List
-   *  @arg {function} cb - Function to call once scroll is complete
-   *  @arg {number} speed - A number of milliseconds to set animation duration
-   */
-
-  function scroll(pointOfAttention, cb, speed) {
-    // console.log('%c scroll', 'font-weight: bold',
-    //   (pointOfAttention.attr('id') ? '#' + pointOfAttention.attr('id') + ' ' : ''), pointOfAttention.attr('class'));
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.scrolled = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    emitter.then = function (fn, fn2) {
-      emitter.on('success', fn);
-      if (fn2) emitter.on('error', fn2);
-      return this;
-    };
-
-    var poa = pointOfAttention.offset().top - 60;
-
-    var current = $('body,html').scrollTop();
-
-    if (typeof cb !== 'function') {
-      cb = function () {};
-    }
-
-    if (current === poa || current > poa && current - poa < 50 || poa > current && poa - current < 50) {
-
-      emitter.emit('success');
-
-      return typeof cb === 'function' ? cb() : true;
-    }
-
-    $.when($('body,html').animate({ scrollTop: poa + 'px' }, 500, 'swing')).then(function () {
-
-      emitter.emit('success');
-
-      if (typeof cb === 'function') {
-        cb();
-      }
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function show(elem, cb) {
-
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.shown = function (fn) {
-      emitter.on('success', fn);
-      return this;
-    };
-
-    emitter.error = function (fn) {
-      emitter.on('error', fn);
-      return this;
-    };
-
-    setTimeout(function () {
-
-      console.log('%c show', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
-
-      // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-      if (elem.hasClass('.is-showing') || elem.hasClass('.is-hiding')) {
-
-        emitter.emit('error', new Error('Already in progress'));
-
-        if (typeof cb === 'function') {
-          cb(new Error('Show failed'));
-        }
-
-        return false;
-      }
-
-      // make sure margin-top is equal to height for smooth scrolling
-
-      elem.css('margin-top', '-' + elem.height() + 'px');
-
-      // animate is-section
-
-      $.when(elem.find('.is-section:first').animate({
-        marginTop: 0
-      }, 500)).then(function () {
-        elem.removeClass('is-showing').addClass('is-shown');
-
-        if (elem.css('margin-top') !== 0) {
-          elem.animate({ 'margin-top': 0 }, 250);
-        }
-
-        emitter.emit('success');
-
-        if (cb) {
-          cb();
-        }
-      });
-
-      elem.animate({
-        opacity: 1
-      }, 500);
-    });
-
-    return emitter;
-  }
-
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function hide(elem, cb) {
-    var emitter = new (require('events').EventEmitter)();
-
-    emitter.hiding = function (cb) {
-      this.on('hiding', cb);
-      return this;
-    };
-
-    emitter.hidden = function (cb) {
-      this.on('hidden', cb);
-      return this;
-    };
-
-    emitter.error = function (cb) {
-      this.on('error', cb);
-      return this;
-    };
-
-    process.nextTick(function () {
-
-      var domain = require('domain').create();
-
-      domain.on('error', function (error) {
-        emitter.emit('error', error);
-      });
-
-      domain.run(function () {
-
-        if (!elem.length) {
-          return cb();
-        }
-
-        // if ANY element at all is in the process of being shown, then do nothing because it has the priority and is a blocker
-
-        if (elem.hasClass('.is-showing') || elem.hasClass('.is-hiding')) {
-          emitter.emit('bounced');
-          return false;
-        }
-
-        emitter.emit('hiding');
-
-        console.log('%c hide', 'font-weight: bold', elem.attr('id') ? '#' + elem.attr('id') + ' ' : '', elem.attr('class'));
-
-        elem.removeClass('is-shown').addClass('is-hiding');;
-
-        elem.find('.is-section:first').animate({
-          'margin-top': '-' + elem.height() + 'px' }, 1000, function () {
-          elem.removeClass('is-hiding').addClass('is-hidden');
-
-          emitter.emit('hidden');
-
-          if (cb) cb();
-        });
-
-        elem.animate({
-          opacity: 0
-        }, 1000);
-      });
-    });
-
-    return emitter;
-  }
-
-  module.exports = {
-    toggle: toggle,
-    reveal: reveal,
-    unreveal: unreveal,
-    show: show,
-    hide: hide,
-    scroll: scroll
-  };
-})();
-
-// 'padding-top': elem.height() + 'px'
-
-}).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/syn/lib/util/read-more.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  function spanify(des) {
-
-    var div = ' <div---class="syn-lb"></div> ';
-
-    return des.replace(/\n/g, div).split(/\s/).map(function (word) {
-      if (word === div.trim()) {
-        return $(div.trim().replace(/\-\-\-/g, ' '));
-      }
-
-      var span = $('<span class="word"></span>');
-      span.text(word + ' ');
-      return span;
-    });
-  }
-
-  function readMore(item, $item) {
-
-    /** {HTMLElement} Description wrapper in DOM */
-
-    var $description = $item.find('.item-description');
-
-    /** {HTMLElement} Image container in DOM */
-
-    var $image = $item.find('.item-media img');
-
-    if (!$image.length) {
-      $image = $item.find('.item-media iframe');
-    }
-
-    /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
-
-    var $text = $item.find('.item-text');
-
-    /** {HTMLElement} Subject container in DOM */
-
-    var $subject = $item.find('.item-subject');
-
-    /** {HTMLElement} Reference container in DOM */
-
-    var $reference = $item.find('.item-reference');
-
-    /** {HTMLElement} Arrow container in DOM */
-
-    var $arrow = $item.find('.item-arrow');
-
-    /** {Number} Image height */
-
-    var imgHeight = $image.height();
-
-    // If screen >= phone, then divide imgHeight by 2
-
-    if ($('body').width() <= $('#screen-tablet').width()) {
-      imgHeight *= 2;
-    }
-
-    /** {Number} Top position of text wrapper */
-
-    var top = $text.offset().top;
-
-    // If **not** #intro, then subtract subject's height
-
-    if ($item.attr('id') !== 'intro') {
-
-      // Subtract height of subject from top
-
-      top -= $subject.height();
-    }
-
-    // If screen >= tablet
-
-    if ($('body').width() >= $('#screen-tablet').width()) {
-      // Subtract 40 pixels from top
-
-      top -= 40;
-    }
-
-    // If screen >= phone
-
-    else if ($('body').width() >= $('#screen-phone').width()) {
-      top -= 80;
-    }
-
-    // console.info( item.subject.substr(0, 30) + '...', 'top', Math.ceil(top), ',', Math.ceil(imgHeight) );
-
-    // Clear description
-
-    $description.text('');
-
-    // Spanify each word
-
-    spanify(item.description).forEach(function (word) {
-      $description.append(word);
-    });
-
-    // Hide words that are below limit
-
-    for (var i = $description.find('.word').length - 1; i >= 0; i--) {
-      var word = $description.find('.word').eq(i);
-      // console.log(Math.ceil(word.offset().top), Math.ceil(top),
-      //   { word: Math.ceil(word.offset().top - top), top: top, imgHeight: imgHeight, limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
-      if (word.offset().top - top > imgHeight) {
-        word.addClass('hidden-word').hide();
-      }
-    }
-
-    if ($description.find('.hidden-word').length) {
-      var more = $('<a href="#" class="more">more</a>');
-
-      more.on('click', function () {
-
-        if ($(this).hasClass('more')) {
-          $(this).removeClass('more').addClass('less').text('less');
-          $(this).closest('.item-description').find('.hidden-word').show();
-        } else {
-          $(this).removeClass('less').addClass('more').text('more');
-          $(this).closest('.item-description').find('.hidden-word').hide();
-        }
-
-        return false;
-      });
-
-      $description.append(more);
-    }
-
-    // Hide reference if too low and breaks design
-
-    if ($reference.text() && $arrow.offset().top - $reference.offset().top < 15) {
-
-      var more;
-
-      if ($description.find('.more').length) {
-        more = $description.find('.more');
-      } else {
-        more = $('<a href="#" class="more">more</a>');
-
-        more.on('click', function () {
-
-          if ($(this).hasClass('more')) {
-            $(this).removeClass('more').addClass('less').text('less');
-            $reference.show();
-          } else {
-            $(this).removeClass('less').addClass('more').text('more');
-            $reference.hide();
-          }
-
-          return false;
-        });
-      }
-
-      $description.append(more);
-
-      $reference.css('padding-bottom', '10px').data('is-hidden-reference', true).hide();
-    }
-  }
-
-  module.exports = readMore;
-})();
-
-},{}],"/home/francois/Dev/syn/node_modules/syn/lib/util/upload.js":[function(require,module,exports){
-'use strict';
-
-!(function () {
-
-  'use strict';
-
-  /**
-   *  @class    Upload
-   *  @arg      {HTMLElement} dropzone
-   *  @arg      {Input} file_input
-   *  @arg      {HTMLElement} thumbnail - Preview container
-   *  @arg      {Function} cb
-   */
-
-  function Upload(dropzone, file_input, thumbnail, cb) {
-    this.dropzone = dropzone;
-    this.file_input = file_input;
-    this.thumbnail = thumbnail;
-    this.cb = cb;
-
-    this.init();
-  }
-
-  Upload.prototype.init = function () {
-
-    if (window.File) {
-      if (this.dropzone) {
-        this.dropzone.on('dragover', this.hover.bind(this)).on('dragleave', this.hover.bind(this)).on('drop', this.handler.bind(this));
-      }
-
-      if (this.file_input) {
-        this.file_input.on('change', this.handler.bind(this));
-      }
-    } else {
-      if (dropzone) {
-        dropzone.find('.modern').hide();
-      }
-    }
-  };
-
-  Upload.prototype.hover = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  Upload.prototype.handler = function (e) {
-    this.hover(e);
-
-    var files = e.target.files || e.originalEvent.dataTransfer.files;
-
-    for (var i = 0, f; f = files[i]; i++) {
-      this.preview(f, e.target);
-    }
-  };
-
-  Upload.prototype.preview = function (file, target) {
-    var upload = this;
-
-    var img = new Image();
-
-    img.classList.add('img-responsive');
-    img.classList.add('preview-image');
-
-    img.addEventListener('load', function () {
-
-      $(img).data('file', file);
-
-      upload.thumbnail.empty().append(img);
-    }, false);
-
-    img.src = (window.URL || window.webkitURL).createObjectURL(file);
-
-    if (this.cb) {
-      this.cb(null, file);
-    }
-  };
-
-  module.exports = Upload;
-})();
 
 },{}]},{},["/home/francois/Dev/syn/dist/pages/home/ctrl.js"]);

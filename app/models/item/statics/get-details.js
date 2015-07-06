@@ -1,8 +1,8 @@
 'use strict';
 
-import VoteModel          from 'syn/models/vote';
-import FeedbackModel      from 'syn/models/feedback';
-import CriteriaModel      from 'syn/models/criteria';
+import VoteModel          from '../../../models/vote';
+import FeedbackModel      from '../../../models/feedback';
+import CriteriaModel      from '../../../models/criteria';
 
 function getItemDetails (itemId) {
   return new Promise((ok, ko) => {

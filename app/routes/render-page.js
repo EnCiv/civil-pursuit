@@ -1,7 +1,7 @@
 'use strict';
 
 import S              from 'string';
-import getProps       from 'syn/lib/app/props';
+import getProps       from '../lib/app/props';
 
 var cache = {}
 
@@ -12,7 +12,7 @@ function renderPage (req, res, next) {
 
     let pageName    =   S(props.page).slugify().s;
 
-    let Page        =   require('syn/pages/' + pageName + '/view');
+    let Page        =   require('../pages/' + pageName + '/view');
     
     let page        =   new Page(props);
 

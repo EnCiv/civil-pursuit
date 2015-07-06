@@ -18,17 +18,17 @@ var _view = require('./view');
 
 var _view2 = _interopRequireDefault(_view);
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
+var _componentsItemCtrl = require('../../components/item/ctrl');
 
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 
-var _synLibUtilReadMore = require('syn/lib/util/read-more');
+var _libUtilReadMore = require('../../lib/util/read-more');
 
-var _synLibUtilReadMore2 = _interopRequireDefault(_synLibUtilReadMore);
+var _libUtilReadMore2 = _interopRequireDefault(_libUtilReadMore);
 
 var Intro = (function (_Controller) {
   function Intro(props) {
@@ -122,16 +122,16 @@ var Intro = (function (_Controller) {
 
       this.find('item arrow').remove();
 
-      this.find('item media').empty().append(new _synComponentsItemCtrl2['default']({ item: intro }).media());
+      this.find('item media').empty().append(new _componentsItemCtrl2['default']({ item: intro }).media());
 
       this.find('item image').load(function () {
-        return (0, _synLibUtilReadMore2['default'])(intro, _this3.template);
+        return (0, _libUtilReadMore2['default'])(intro, _this3.template);
       });
     }
   }]);
 
   return Intro;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 exports['default'] = Intro;
 module.exports = exports['default'];

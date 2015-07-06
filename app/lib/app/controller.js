@@ -1,6 +1,6 @@
 'use strict';
 
-import App from 'syn/app';
+import App from '../../app';
 
 class Controller extends App {
 

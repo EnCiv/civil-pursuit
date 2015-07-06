@@ -1,8 +1,8 @@
 'use strict';
 
 import {Element} from 'cinco/dist';
-import config from 'syn/config.json';
-import Page from 'syn/lib/app/page';
+import config from '../../../config.json';
+import Page from '../../lib/app/page';
 
 class Footer extends Element {
   constructor (props) {

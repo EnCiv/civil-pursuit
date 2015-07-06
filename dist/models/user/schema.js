@@ -8,13 +8,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 var _mongoose = require('mongoose');
 
-var _synLibUtilIsCloudinaryUrl = require('syn/lib/util/is/cloudinary-url');
+var _libUtilIsCloudinaryUrl = require('../../lib/util/is/cloudinary-url');
 
-var _synLibUtilIsCloudinaryUrl2 = _interopRequireDefault(_synLibUtilIsCloudinaryUrl);
+var _libUtilIsCloudinaryUrl2 = _interopRequireDefault(_libUtilIsCloudinaryUrl);
 
 try {
-  require('syn/config');
-  require('syn/country');
+  require('../../config');
+  require('../../country');
 } catch (error) {}
 
 var schema = {
@@ -37,7 +37,7 @@ var schema = {
   'image': {
 
     'type': String,
-    'validate': _synLibUtilIsCloudinaryUrl2['default']
+    'validate': _libUtilIsCloudinaryUrl2['default']
   },
 
   /** twitter ID if any **/

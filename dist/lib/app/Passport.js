@@ -26,13 +26,13 @@ var _passport = require('passport');
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
 var Passport = (function () {
   function Passport(service, app) {
@@ -43,9 +43,9 @@ var Passport = (function () {
     this.app = app;
     this.user = null;
 
-    this.CALLBACK_URL = _synConfigJson2['default'][service][process.env.SYNAPP_ENV]['callback url'];
-    this.SIGNIN_ROUTE = _synConfigJson2['default']['public'].routes['sign in with ' + service];
-    this.OK_ROUTE = _synConfigJson2['default']['public'].routes['sign in with ' + service + ' OK'];
+    this.CALLBACK_URL = _configJson2['default'][service][process.env.SYNAPP_ENV]['callback url'];
+    this.SIGNIN_ROUTE = _configJson2['default']['public'].routes['sign in with ' + service];
+    this.OK_ROUTE = _configJson2['default']['public'].routes['sign in with ' + service + ' OK'];
 
     var d = new _domain.Domain().on('error', function (error) {
       return _this.app.emit('error', error);
@@ -90,7 +90,7 @@ var Passport = (function () {
       d.run(function () {
         _this3.profile = profile;
         _this3.email = _this3.profile.id + '@facebook.com';
-        _synModelsUser2['default'].findOne({ email: email }, _this3.associate.bind(_this3, req, res, next));
+        _modelsUser2['default'].findOne({ email: email }, _this3.associate.bind(_this3, req, res, next));
       });
     }
   }, {
@@ -103,7 +103,7 @@ var Passport = (function () {
       });
 
       d.run(function () {
-        _synModelsUser2['default'].create({ email: _this4.email, password: _this4.profile.id + Date.now() }, d.bind(function (error, user) {
+        _modelsUser2['default'].create({ email: _this4.email, password: _this4.profile.id + Date.now() }, d.bind(function (error, user) {
           if (error) {
             if (error.message && /duplicate/.test(error.message)) {
               return done(new Error('Duplicate user'));
@@ -151,7 +151,7 @@ var Passport = (function () {
       res.cookie('synuser', {
         email: this.user.email,
         id: this.user.id
-      }, _synConfigJson2['default'].cookie);
+      }, _configJson2['default'].cookie);
 
       res.redirect('/');
     }

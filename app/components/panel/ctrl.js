@@ -1,12 +1,12 @@
 'use strict';
 
-import Controller   from 'syn/lib/app/controller';
-import Nav          from 'syn/lib/util/nav';
-import Creator      from 'syn/components/creator/ctrl';
-import Item         from 'syn/components/item/ctrl';
-import TopBar       from 'syn/components/top-bar/ctrl';
-import View         from 'syn/components/panel/view';
-import cache        from 'syn/lib/app/cache';
+import Controller   from '../../lib/app/controller';
+import Nav          from '../../lib/util/nav';
+import Creator      from '../../components/creator/ctrl';
+import Item         from '../../components/item/ctrl';
+import TopBar       from '../../components/top-bar/ctrl';
+import View         from '../../components/panel/view';
+import cache        from '../../lib/app/cache';
 
 class Panel extends Controller {
 

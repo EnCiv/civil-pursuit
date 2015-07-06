@@ -7,15 +7,15 @@
   function getItemDetails(id, cb) {
     var self = this;
 
-    require('syn/lib/domain/next-tick')(cb, function getItemDetailsDomain(domain) {
+    require('../../../lib/domain/next-tick')(cb, function getItemDetailsDomain(domain) {
 
       require('async').parallel({
         votes: function getVotes(then) {
-          require('syn/Vote').getAccumulation(id, then);
+          require('../../../Vote').getAccumulation(id, then);
         },
 
         feedback: function getFeedback(then) {
-          require('syn/Feedback').find({ item: id }, then);
+          require('../../../Feedback').find({ item: id }, then);
         }
       }, domain.intercept(function afterParallels(results) {
 
@@ -23,7 +23,7 @@
 
           /** Get type criterias */
 
-          require('syn/Criteria').find({ type: item.type }, domain.intercept(function onCriterias(criterias) {
+          require('../../../Criteria').find({ type: item.type }, domain.intercept(function onCriterias(criterias) {
 
             /** Return details */
 

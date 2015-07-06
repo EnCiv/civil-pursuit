@@ -6,13 +6,13 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilDomainRun = require('syn/lib/util/domain-run');
+var _libUtilDomainRun = require('../lib/util/domain-run');
 
-var _synLibUtilDomainRun2 = _interopRequireDefault(_synLibUtilDomainRun);
+var _libUtilDomainRun2 = _interopRequireDefault(_libUtilDomainRun);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
 function ItemRoute(req, res, next) {
   var _this = this;
@@ -22,7 +22,7 @@ function ItemRoute(req, res, next) {
       'looking in DB for item with short id': req.params.item_short_id
     });
 
-    _synModelsItem2['default'].getItem(req.params.item_short_id).then(function (item) {
+    _modelsItem2['default'].getItem(req.params.item_short_id).then(function (item) {
 
       try {
         if (!item) {

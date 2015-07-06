@@ -4,9 +4,9 @@
 
   'use strict';
 
-  var config = require('syn/config.json');
+  var config = require('../../../../config.json');
 
-  var cloudinary = require('syn/lib/util/cloudinary');
+  var cloudinary = require('../../../lib/app/cloudinary');
 
   function getImage() {
 

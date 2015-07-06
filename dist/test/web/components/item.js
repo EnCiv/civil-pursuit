@@ -12,17 +12,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synComponentsYoutubeView = require('syn/components/youtube/view');
+var _componentsYoutubeView = require('../../../components/youtube/view');
 
-var _synComponentsYoutubeView2 = _interopRequireDefault(_synComponentsYoutubeView);
+var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var _join = require('./join');
 
@@ -36,9 +36,9 @@ var _details = require('./details');
 
 var _details2 = _interopRequireDefault(_details);
 
-var _synLibUtilCloudinaryFormat = require('syn/lib/util/cloudinary-format');
+var _libUtilCloudinaryFormat = require('../../../lib/util/cloudinary-format');
 
-var _synLibUtilCloudinaryFormat2 = _interopRequireDefault(_synLibUtilCloudinaryFormat);
+var _libUtilCloudinaryFormat2 = _interopRequireDefault(_libUtilCloudinaryFormat);
 
 var Item = (function (_Milk) {
   function Item(props) {
@@ -140,7 +140,7 @@ var Item = (function (_Milk) {
       return get('Text').is(':visible');
     }, 'Item Text is visible');
 
-    if (itemIsAnObject && _synComponentsYoutubeView2['default'].isYouTube(item)) {
+    if (itemIsAnObject && _componentsYoutubeView2['default'].isYouTube(item)) {
       this.ok(function () {
         return get('Video Container').is(':visible');
       }, 'Item Video Container is visible').wait(1).ok(function () {
@@ -170,13 +170,13 @@ var Item = (function (_Milk) {
       if (item.image) {
         this.ok(function () {
           return get('Image').attr('src').then(function (src) {
-            return src.should.be.exactly((0, _synLibUtilCloudinaryFormat2['default'])(item.image));
+            return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(item.image));
           });
         }, 'Item Image is the same than in DB');
       } else {
         this.ok(function () {
           return get('Image').attr('src').then(function (src) {
-            return src.should.be.exactly(_synConfigJson2['default']['public']['default item image']);
+            return src.should.be.exactly(_configJson2['default']['public']['default item image']);
           });
         }, 'Item Image is the default image');
       }
@@ -200,7 +200,7 @@ var Item = (function (_Milk) {
           var text = results[1];
 
           if (!more) {
-            text.should.be.exactly(_synLibAppMilk2['default'].formatToHTMLText(item.description));
+            text.should.be.exactly(_libAppMilk2['default'].formatToHTMLText(item.description));
           }
         });
       }, 'Item Description is the same than in DB');
@@ -347,7 +347,7 @@ var Item = (function (_Milk) {
   _inherits(Item, _Milk);
 
   return Item;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = Item;
 module.exports = exports['default'];

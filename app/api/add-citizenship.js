@@ -1,6 +1,6 @@
 'use strict';
 
-import UserModel from 'syn/models/user';
+import UserModel from '../models/user';
 
 /**
  *  @function addCitizenship

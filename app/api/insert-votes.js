@@ -1,6 +1,6 @@
 'use strict';
 
-import VoteModel from 'syn/models/vote';
+import VoteModel from '../models/vote';
 
 function insertVotes (event, votes) {
   try {

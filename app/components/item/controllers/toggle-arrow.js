@@ -1,7 +1,7 @@
 'use strict';
 
-import Nav              from 'syn/lib/util/nav';
-import Panel            from 'syn/components/panel//ctrl';
+import Nav              from '../../../lib/util/nav';
+import Panel            from '../../../components/panel//ctrl';
 
 function toggleArrow ($trigger) {
   let $item       =   $trigger.closest('.item');

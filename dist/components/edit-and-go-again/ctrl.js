@@ -4,10 +4,10 @@
 
   'use strict';
 
-  var Nav = require('syn/lib/util/nav');
-  var Creator = require('syn/components/creator//ctrl');
-  var Item = require('syn/components/item/ctrl');
-  var Form = require('syn/lib/util/form');
+  var Nav = require('../../lib/util/nav');
+  var Creator = require('../../components/creator//ctrl');
+  var Item = require('../../components/item/ctrl');
+  var Form = require('../../lib/util/form');
 
   /**
    *  @class
@@ -27,7 +27,7 @@
     var self = this;
 
     app.domain.run(function () {
-      if (!item || !item instanceof require('syn/components/item/ctrl')) {
+      if (!item || !item instanceof require('../../components/item/ctrl')) {
         throw new Error('Item must be an Item');
       }
 
@@ -96,7 +96,7 @@
     return this;
   };
 
-  Edit.prototype.save = require('syn/components/edit-and-go-again/controllers/save');
+  Edit.prototype.save = require('../../components/edit-and-go-again/controllers/save');
 
   Edit.prototype.toItem = function () {
     var item = {

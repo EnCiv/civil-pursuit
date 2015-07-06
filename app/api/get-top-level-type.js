@@ -4,7 +4,7 @@
 
   
 
-  var Type = require('syn/models/type');
+  var Type = require('../models/type');
 
   function getTopLevelTypes (event, user_id, country_id) {
 

@@ -6,23 +6,23 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilRun = require('syn/lib/util/run');
+var _libUtilRun = require('../lib/util/run');
 
-var _synLibUtilRun2 = _interopRequireDefault(_synLibUtilRun);
+var _libUtilRun2 = _interopRequireDefault(_libUtilRun);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-var _synLibUtilCloudinaryFormat = require('syn/lib/util/cloudinary-format');
+var _libUtilCloudinaryFormat = require('../lib/util/cloudinary-format');
 
-var _synLibUtilCloudinaryFormat2 = _interopRequireDefault(_synLibUtilCloudinaryFormat);
+var _libUtilCloudinaryFormat2 = _interopRequireDefault(_libUtilCloudinaryFormat);
 
 function formatCloudinaryImage(event, url, _id) {
   var _this = this;
 
-  (0, _synLibUtilRun2['default'])(function (d) {
-    _this.ok(event, (0, _synLibUtilCloudinaryFormat2['default'])(url), _id);
+  (0, _libUtilRun2['default'])(function (d) {
+    _this.ok(event, (0, _libUtilCloudinaryFormat2['default'])(url), _id);
   }, this.error.bind(this));
 }
 

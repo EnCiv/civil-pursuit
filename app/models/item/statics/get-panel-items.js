@@ -1,6 +1,6 @@
 'use strict';
 
-import config from 'syn/config.json';
+import config from '../../../../config.json';
 
 function getPanelItems (panel) {
   return new Promise((ok, ko) => {

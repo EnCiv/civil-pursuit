@@ -1,7 +1,7 @@
 'use strict';
 
 import S from 'string';
-import getProps from 'syn/lib/app/export-locals';
+import getProps from '../lib/app/export-locals';
 
 var cache = {}
 
@@ -13,7 +13,7 @@ function renderView (req, res, next) {
     return res.send(cache[viewName]);
   }
 
-  let View        =   require('syn/components/' + viewName + '/view');
+  let View        =   require('../components/' + viewName + '/view');
   let view        =   new View(props);
 
   cache[viewName] = view.render();

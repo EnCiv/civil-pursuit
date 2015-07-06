@@ -48,57 +48,57 @@ var _passport2 = require('passport');
 
 var _passport3 = _interopRequireDefault(_passport2);
 
-var _synLibUtilExpressPretty = require('syn/lib/util/express-pretty');
+var _libUtilExpressPretty = require('./lib/util/express-pretty');
 
-var _synLibUtilExpressPretty2 = _interopRequireDefault(_synLibUtilExpressPretty);
+var _libUtilExpressPretty2 = _interopRequireDefault(_libUtilExpressPretty);
 
-var _synRoutesTwitter = require('syn/routes/twitter');
+var _routesTwitter = require('./routes/twitter');
 
-var _synRoutesTwitter2 = _interopRequireDefault(_synRoutesTwitter);
+var _routesTwitter2 = _interopRequireDefault(_routesTwitter);
 
-var _synRoutesFacebook = require('syn/routes/facebook');
+var _routesFacebook = require('./routes/facebook');
 
-var _synRoutesFacebook2 = _interopRequireDefault(_synRoutesFacebook);
+var _routesFacebook2 = _interopRequireDefault(_routesFacebook);
 
-var _synRoutesInitPipeline = require('syn/routes/init-pipeline');
+var _routesInitPipeline = require('./routes/init-pipeline');
 
-var _synRoutesInitPipeline2 = _interopRequireDefault(_synRoutesInitPipeline);
+var _routesInitPipeline2 = _interopRequireDefault(_routesInitPipeline);
 
-var _synRoutesRenderPage = require('syn/routes/render-page');
+var _routesRenderPage = require('./routes/render-page');
 
-var _synRoutesRenderPage2 = _interopRequireDefault(_synRoutesRenderPage);
+var _routesRenderPage2 = _interopRequireDefault(_routesRenderPage);
 
-var _synRoutesItem = require('syn/routes/item');
+var _routesItem = require('./routes/item');
 
-var _synRoutesItem2 = _interopRequireDefault(_synRoutesItem);
+var _routesItem2 = _interopRequireDefault(_routesItem);
 
-var _synRoutesSignIn = require('syn/routes/sign-in');
+var _routesSignIn = require('./routes/sign-in');
 
-var _synRoutesSignIn2 = _interopRequireDefault(_synRoutesSignIn);
+var _routesSignIn2 = _interopRequireDefault(_routesSignIn);
 
-var _synRoutesSignUp = require('syn/routes/sign-up');
+var _routesSignUp = require('./routes/sign-up');
 
-var _synRoutesSignUp2 = _interopRequireDefault(_synRoutesSignUp);
+var _routesSignUp2 = _interopRequireDefault(_routesSignUp);
 
-var _synRoutesSignOut = require('syn/routes/sign-out');
+var _routesSignOut = require('./routes/sign-out');
 
-var _synRoutesSignOut2 = _interopRequireDefault(_synRoutesSignOut);
+var _routesSignOut2 = _interopRequireDefault(_routesSignOut);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('./models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synLibUtilPrintTime = require('syn/lib/util/print-time');
+var _libUtilPrintTime = require('./lib/util/print-time');
 
-var _synLibUtilPrintTime2 = _interopRequireDefault(_synLibUtilPrintTime);
+var _libUtilPrintTime2 = _interopRequireDefault(_libUtilPrintTime);
 
-var _synApi = require('syn/api');
+var _api = require('./api');
 
-var _synApi2 = _interopRequireDefault(_synApi);
+var _api2 = _interopRequireDefault(_api);
 
 var HttpServer = (function (_EventEmitter) {
   function HttpServer() {
@@ -110,8 +110,8 @@ var HttpServer = (function (_EventEmitter) {
 
     this.on('message', function (message, info) {
       console.log(message, info);
-    }).on('request', _synLibUtilExpressPretty2['default']).on('response', function (res) {
-      (0, _synLibUtilExpressPretty2['default'])(res.req, res);
+    }).on('request', _libUtilExpressPretty2['default']).on('response', function (res) {
+      (0, _libUtilExpressPretty2['default'])(res.req, res);
     });
 
     this.app = (0, _express2['default'])();
@@ -164,7 +164,7 @@ var HttpServer = (function (_EventEmitter) {
       });
 
       _passport3['default'].deserializeUser(function (id, done) {
-        _synModelsUser2['default'].findById(id, done);
+        _modelsUser2['default'].findById(id, done);
       });
 
       this.app.use(_passport3['default'].initialize());
@@ -183,7 +183,7 @@ var HttpServer = (function (_EventEmitter) {
     key: 'session',
     value: function session() {
       this.app.use((0, _expressSession2['default'])({
-        secret: _synConfigJson2['default'].secret,
+        secret: _configJson2['default'].secret,
         resave: true,
         saveUninitialized: true
       }));
@@ -191,43 +191,43 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'signers',
     value: function signers() {
-      this.app.all('/sign/in', _synRoutesSignIn2['default'], this.setUserCookie, function (req, res) {
+      this.app.all('/sign/in', _routesSignIn2['default'], this.setUserCookie, function (req, res) {
         res.json({
           'in': true,
           id: req.user._id
         });
       });
 
-      this.app.all('/sign/up', _synRoutesSignUp2['default'], this.setUserCookie, function (req, res) {
+      this.app.all('/sign/up', _routesSignUp2['default'], this.setUserCookie, function (req, res) {
         res.json({
           up: true,
           id: req.user._id
         });
       });
 
-      this.app.all('/sign/out', _synRoutesSignOut2['default']);
+      this.app.all('/sign/out', _routesSignOut2['default']);
     }
   }, {
     key: 'setUserCookie',
     value: function setUserCookie(req, res, next) {
-      res.cookie('synuser', { email: req.user.email, id: req.user._id }, _synConfigJson2['default'].cookie);
+      res.cookie('synuser', { email: req.user.email, id: req.user._id }, _configJson2['default'].cookie);
 
       next();
     }
   }, {
     key: 'facebookMiddleware',
     value: function facebookMiddleware() {
-      new _synRoutesFacebook2['default'](this.app);
+      new _routesFacebook2['default'](this.app);
     }
   }, {
     key: 'twitterMiddleware',
     value: function twitterMiddleware() {
-      new _synRoutesTwitter2['default'](this.app);
+      new _routesTwitter2['default'](this.app);
     }
   }, {
     key: 'initPipeLine',
     value: function initPipeLine() {
-      this.app.use(_synRoutesInitPipeline2['default'].bind(this));
+      this.app.use(_routesInitPipeline2['default'].bind(this));
     }
   }, {
     key: 'router',
@@ -337,7 +337,7 @@ var HttpServer = (function (_EventEmitter) {
 
         _this2.emit('listening');
 
-        new _synApi2['default'](_this2).on('error', function (error) {
+        new _api2['default'](_this2).on('error', function (error) {
           return _this2.emit('error', error);
         });
       });
@@ -347,8 +347,8 @@ var HttpServer = (function (_EventEmitter) {
   return HttpServer;
 })(_events.EventEmitter);
 
-HttpServer.prototype.renderPage = _synRoutesRenderPage2['default'];
-HttpServer.prototype.itemRoute = _synRoutesItem2['default'];
+HttpServer.prototype.renderPage = _routesRenderPage2['default'];
+HttpServer.prototype.itemRoute = _routesItem2['default'];
 
 exports['default'] = HttpServer;
 module.exports = exports['default'];

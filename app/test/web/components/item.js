@@ -1,12 +1,12 @@
 'use strict';
 
-import Milk from 'syn/lib/app/milk';
-import YouTubeView from 'syn/components/youtube/view';
-import config from 'syn/config.json';
-import JoinTest from './join';
-import PromoteTest from './promote';
-import DetailsTest from './details';
-import cloudinaryFormat from 'syn/lib/util/cloudinary-format';
+import Milk             from '../../../lib/app/milk';
+import YouTubeView      from '../../../components/youtube/view';
+import config           from '../../../../config.json';
+import JoinTest         from './join';
+import PromoteTest      from './promote';
+import DetailsTest      from './details';
+import cloudinaryFormat from '../../../lib/util/cloudinary-format';
 
 class Item extends Milk {
 

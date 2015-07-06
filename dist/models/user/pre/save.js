@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilEncrypt = require('syn/lib/util/encrypt');
+var _libUtilEncrypt = require('../../../lib/util/encrypt');
 
-var _synLibUtilEncrypt2 = _interopRequireDefault(_synLibUtilEncrypt);
+var _libUtilEncrypt2 = _interopRequireDefault(_libUtilEncrypt);
 
 function preSave(next) {
   var _this = this;
@@ -21,7 +21,7 @@ function preSave(next) {
 
     this.email = this.email.toLowerCase();
 
-    (0, _synLibUtilEncrypt2['default'])(this.password).then(function (hash) {
+    (0, _libUtilEncrypt2['default'])(this.password).then(function (hash) {
       try {
         _this.password = hash;
         next();

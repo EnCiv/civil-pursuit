@@ -1,7 +1,7 @@
 'use strict';
 
-import getUrlTitle  from  'syn/lib/util/get-url-title';
-import run          from  'syn/lib/util/run';
+import getUrlTitle  from  '../lib/app/get-url-title';
+import run          from  '../lib/util/run';
 
 function socketGetUrlTitle (event, url) {
   run(

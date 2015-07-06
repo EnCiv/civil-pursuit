@@ -14,25 +14,25 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-var _synComponentsEditAndGoAgainCtrl = require('syn/components/edit-and-go-again/ctrl');
+var _componentsEditAndGoAgainCtrl = require('../../components/edit-and-go-again/ctrl');
 
-var _synComponentsEditAndGoAgainCtrl2 = _interopRequireDefault(_synComponentsEditAndGoAgainCtrl);
+var _componentsEditAndGoAgainCtrl2 = _interopRequireDefault(_componentsEditAndGoAgainCtrl);
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _synComponentsPromoteControllersRender = require('syn/components/promote/controllers/render');
+var _componentsPromoteControllersRender = require('../../components/promote/controllers/render');
 
-var _synComponentsPromoteControllersRender2 = _interopRequireDefault(_synComponentsPromoteControllersRender);
+var _componentsPromoteControllersRender2 = _interopRequireDefault(_componentsPromoteControllersRender);
 
-var _synComponentsPromoteControllersRenderItem = require('syn/components/promote/controllers/render-item');
+var _componentsPromoteControllersRenderItem = require('../../components/promote/controllers/render-item');
 
-var _synComponentsPromoteControllersRenderItem2 = _interopRequireDefault(_synComponentsPromoteControllersRenderItem);
+var _componentsPromoteControllersRenderItem2 = _interopRequireDefault(_componentsPromoteControllersRenderItem);
 
 var Promote = (function (_Controller) {
   function Promote(props, itemController) {
@@ -168,12 +168,12 @@ var Promote = (function (_Controller) {
   }, {
     key: 'renderItem',
     value: function renderItem(hand, item) {
-      return _synComponentsPromoteControllersRenderItem2['default'].apply(this, [hand, item]);
+      return _componentsPromoteControllersRenderItem2['default'].apply(this, [hand, item]);
     }
   }, {
     key: 'render',
     value: function render(cb) {
-      return _synComponentsPromoteControllersRender2['default'].apply(this, [cb]);
+      return _componentsPromoteControllersRender2['default'].apply(this, [cb]);
     }
   }, {
     key: 'save',
@@ -282,7 +282,7 @@ var Promote = (function (_Controller) {
   }]);
 
   return Promote;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 exports['default'] = Promote;
 module.exports = exports['default'];

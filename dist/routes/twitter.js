@@ -16,17 +16,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _domain = require('domain');
 
-var _synLibAppPassport = require('syn/lib/app/Passport');
+var _libAppPassport = require('../lib/app/Passport');
 
-var _synLibAppPassport2 = _interopRequireDefault(_synLibAppPassport);
+var _libAppPassport2 = _interopRequireDefault(_libAppPassport);
 
 var _passportTwitter = require('passport-twitter');
 
 var _passportTwitter2 = _interopRequireDefault(_passportTwitter);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var Twitter = (function (_Passport) {
   function Twitter(app) {
@@ -46,16 +46,16 @@ var Twitter = (function (_Passport) {
         var callback;
 
         if (req.hostname === 'localhost') {
-          callback = require('util').format('http://%s:%d%s', req.hostname, this.app.get('port'), _synConfigJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
+          callback = require('util').format('http://%s:%d%s', req.hostname, this.app.get('port'), _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
         } else {
-          callback = require('util').format('http://%s%s', req.hostname, _synConfigJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
+          callback = require('util').format('http://%s%s', req.hostname, _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
         }
 
         var _strategy = this.app.locals.TwitterStrategy;
 
         passport.use(new _strategy({
-          consumerKey: _synConfigJson2['default'].twitter[process.env.SYNAPP_ENV]['key'],
-          consumerSecret: _synConfigJson2['default'].twitter[process.env.SYNAPP_ENV]['secret'],
+          consumerKey: _configJson2['default'].twitter[process.env.SYNAPP_ENV]['key'],
+          consumerSecret: _configJson2['default'].twitter[process.env.SYNAPP_ENV]['secret'],
           callbackURL: callback
         }, this.access.bind(this, req, res, next)));
       }
@@ -63,7 +63,7 @@ var Twitter = (function (_Passport) {
   }]);
 
   return Twitter;
-})(_synLibAppPassport2['default']);
+})(_libAppPassport2['default']);
 
 exports['default'] = Twitter;
 module.exports = exports['default'];

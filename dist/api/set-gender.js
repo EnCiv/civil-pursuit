@@ -4,7 +4,7 @@
 
   'use strict';
 
-  var User = require('syn/models/user');
+  var User = require('../models/user');
 
   /**
    *  @function setGender

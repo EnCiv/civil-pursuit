@@ -10,9 +10,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _synLibUtilDomainRun = require('syn/lib/util/domain-run');
+var _domainRun = require('./domain-run');
 
-var _synLibUtilDomainRun2 = _interopRequireDefault(_synLibUtilDomainRun);
+var _domainRun2 = _interopRequireDefault(_domainRun);
 
 var Form = (function () {
   function Form(form) {

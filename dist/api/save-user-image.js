@@ -8,10 +8,10 @@
 
     var socket = this;
 
-    require('syn/lib/domain')(function (error) {
+    require('../lib/domain')(function (error) {
       socket.app.arte.emit('error', error);
     }, function (domain) {
-      require('syn/models/user').saveImage(user_id, image, domain.intercept(function (user) {
+      require('../models/user').saveImage(user_id, image, domain.intercept(function (user) {
         socket.emit('saved user image', user);
       }));
     });

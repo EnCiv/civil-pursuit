@@ -24,7 +24,7 @@
 
       console.log('<<"get items"', panel, item);
 
-      require('syn/models/item')
+      require('../models/item')
         .find   (query)
         .skip   (panel.skip)
         .limit  (panel.size)
@@ -61,7 +61,7 @@
         }));
     }
 
-    require('syn/lib/domain')(onDomainError, run);
+    require('../lib/domain')(onDomainError, run);
 
   }
 

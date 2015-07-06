@@ -1,9 +1,9 @@
 'use strict';
 
 import should         from 'should';
-import signUp         from 'syn/routes/sign-up';
-import randomString   from 'syn/lib/util/random-string';
-import TestUserModel  from 'syn/test/models/user';
+import signUp         from '../../routes/sign-up';
+import randomString   from '../../lib/util/random-string';
+import TestUserModel  from '../../test/models/user';
 
 class TestSignUpRoute {
 

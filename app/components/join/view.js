@@ -1,7 +1,7 @@
 'use strict';
 
 import {Element, Elements} from 'cinco/dist';
-import Page from 'syn/lib/app/page';
+import Page from '../../lib/app/page';
 
 class Join extends Element {
 

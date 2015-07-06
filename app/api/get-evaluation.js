@@ -1,7 +1,7 @@
 'use strict';
 
-import ItemModel from 'syn/models/item';
-import run from 'syn/lib/util/run';
+import ItemModel from '../models/item';
+import run from '../lib/util/run';
 
 function getEvaluation (event, itemId) {
   run(

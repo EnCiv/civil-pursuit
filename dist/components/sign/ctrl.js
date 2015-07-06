@@ -14,9 +14,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
 var Sign = (function (_Controller) {
   function Sign(props) {
@@ -35,7 +35,7 @@ var Sign = (function (_Controller) {
   }]);
 
   return Sign;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 exports['default'] = Sign;
 

@@ -18,25 +18,25 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-var _synModelsType = require('syn/models/type');
+var _modelsType = require('../../models/type');
 
-var _synModelsType2 = _interopRequireDefault(_synModelsType);
+var _modelsType2 = _interopRequireDefault(_modelsType);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-var _synMigrationsV2 = require('syn/migrations/v2');
+var _migrationsV2 = require('../../migrations/v2');
 
-var _synMigrationsV22 = _interopRequireDefault(_synMigrationsV2);
+var _migrationsV22 = _interopRequireDefault(_migrationsV2);
 
 var _mongoose = require('mongoose');
 
@@ -84,7 +84,7 @@ var PopulateDB = (function () {
       return new Promise(function (ok, ko) {
 
         for (var i = 0; i < n; i++) {
-          _synModelsUser2['default'].disposable().then(function (user) {
+          _modelsUser2['default'].disposable().then(function (user) {
             _this2.users.push(user);
             ok();
           }, ko);
@@ -97,23 +97,23 @@ var PopulateDB = (function () {
       var _this3 = this;
 
       return new Promise(function (ok, ko) {
-        _synModelsType2['default'].findOne({ name: 'Intro' }).exec(function (error, type) {
+        _modelsType2['default'].findOne({ name: 'Intro' }).exec(function (error, type) {
           if (error) {
             return ko(error);
           }
           if (type) {
             return ok();
           }
-          _synModelsType2['default'].create({ name: 'Intro' }, function (error, created) {
+          _modelsType2['default'].create({ name: 'Intro' }, function (error, created) {
             if (error) {
               return ko(error);
             }
             _this3.intro = { type: created };
             var intro = '';
-            _fs2['default'].createReadStream(_path2['default'].resolve(__dirname, 'syn/intro.md')).on('data', function (data) {
+            _fs2['default'].createReadStream(_path2['default'].resolve(__dirname, '../../intro.md')).on('data', function (data) {
               return intro += data.toString();
             }).on('end', function () {
-              _synModelsItem2['default'].create({
+              _modelsItem2['default'].create({
                 user: _this3.users[0],
                 subject: 'Intro',
                 description: intro,
@@ -133,7 +133,7 @@ var PopulateDB = (function () {
   }, {
     key: 'fillTypes',
     value: function fillTypes() {
-      return (0, _synMigrationsV22['default'])().then(function (o) {
+      return (0, _migrationsV22['default'])().then(function (o) {
         return console.log('v2 oooo');
       });
     }
@@ -144,7 +144,7 @@ var PopulateDB = (function () {
         var promises = [];
 
         for (var i = 0; i < n; i++) {
-          promises.push(_synModelsItem2['default'].disposable());
+          promises.push(_modelsItem2['default'].disposable());
         }
 
         Promise.all(promises).then(ok, ko);

@@ -1,8 +1,8 @@
 'use strict';
 
-import path from 'path';
-import cloudinary from 'syn/lib/util/cloudinary';
-import config from 'syn/config.json';
+import path         from 'path';
+import cloudinary   from '../../../lib/app/cloudinary';
+import config       from '../../../../config.json';
 
 function insertItem (candidate, socket) {
   console.log('--insert item', candidate, "\n\n")

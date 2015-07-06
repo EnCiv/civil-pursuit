@@ -6,13 +6,13 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-var _synModelsType = require('syn/models/type');
+var _modelsType = require('../models/type');
 
-var _synModelsType2 = _interopRequireDefault(_synModelsType);
+var _modelsType2 = _interopRequireDefault(_modelsType);
 
 function getIntro(event) {
   var _this = this;
@@ -26,12 +26,12 @@ function getIntro(event) {
       throw new Error('Missing ok returner');
     }
 
-    _synModelsType2['default'].findOne({ name: 'Intro' }).exec().then(function (intro) {
+    _modelsType2['default'].findOne({ name: 'Intro' }).exec().then(function (intro) {
       try {
         if (!intro) {
           return _this.error(new Error('Intro type not found'));
         }
-        _synModelsItem2['default'].findOne({ type: intro._id }).exec().then(function (intro) {
+        _modelsItem2['default'].findOne({ type: intro._id }).exec().then(function (intro) {
           try {
             if (!intro) {
               return _this.error(new Error('Intro item not found'));

@@ -30,13 +30,13 @@ var _itemPostInit = require('./item/post/init');
 
 var _itemPostInit2 = _interopRequireDefault(_itemPostInit);
 
-var _synLibUtilToCamelCase = require('syn/lib/util/to-camel-case');
+var _libUtilToCamelCase = require('../lib/util/to-camel-case');
 
-var _synLibUtilToCamelCase2 = _interopRequireDefault(_synLibUtilToCamelCase);
+var _libUtilToCamelCase2 = _interopRequireDefault(_libUtilToCamelCase);
 
-var _synLibUtilToSlug = require('syn/lib/util/to-slug');
+var _libUtilToSlug = require('../lib/util/to-slug');
 
-var _synLibUtilToSlug2 = _interopRequireDefault(_synLibUtilToSlug);
+var _libUtilToSlug2 = _interopRequireDefault(_libUtilToSlug);
 
 var itemSchema = new _mongoose.Schema(_itemSchema2['default']);
 
@@ -55,7 +55,7 @@ try {
   for (var _iterator = statics[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
     var _static = _step.value;
 
-    itemSchema.statics[(0, _synLibUtilToCamelCase2['default'])(_static)] = require('./item/statics/' + (0, _synLibUtilToSlug2['default'])(_static));
+    itemSchema.statics[(0, _libUtilToCamelCase2['default'])(_static)] = require('./item/statics/' + (0, _libUtilToSlug2['default'])(_static));
   }
 } catch (err) {
   _didIteratorError = true;
@@ -87,7 +87,7 @@ try {
   for (var _iterator2 = methods[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
     var _method = _step2.value;
 
-    itemSchema.methods[(0, _synLibUtilToCamelCase2['default'])(_method)] = require('./item/methods/' + (0, _synLibUtilToSlug2['default'])(_method));
+    itemSchema.methods[(0, _libUtilToCamelCase2['default'])(_method)] = require('./item/methods/' + (0, _libUtilToSlug2['default'])(_method));
   }
 } catch (err) {
   _didIteratorError2 = true;

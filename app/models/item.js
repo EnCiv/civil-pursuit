@@ -7,8 +7,8 @@ import schema                           from './item/schema';
 import preValidate                      from './item/pre/validate';
 import preSave                          from './item/pre/save';
 import postInit                         from './item/post/init';
-import toCamelCase                      from  'syn/lib/util/to-camel-case';
-import toSlug                           from  'syn/lib/util/to-slug';
+import toCamelCase                      from  '../lib/util/to-camel-case';
+import toSlug                           from  '../lib/util/to-slug';
 
 let itemSchema = new Schema(schema);
 

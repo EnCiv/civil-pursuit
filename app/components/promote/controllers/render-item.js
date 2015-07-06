@@ -1,8 +1,8 @@
 'use strict';
 
-import Nav      from 'syn/lib/util/nav';
-import Edit     from 'syn/components/edit-and-go-again/ctrl';
-import Item     from 'syn/components/item/ctrl';
+import Nav      from '../../../lib/util/nav';
+import Edit     from '../../../components/edit-and-go-again/ctrl';
+import Item     from '../../../components/item/ctrl';
 
 function _renderItem (item, hand) {
   let self = this;

@@ -174,7 +174,7 @@ class Item extends Element {
 
 export default Item;
 
-import Page                   from 'syn/lib/app/page';
-import DefaultButtonsView     from 'syn/components/item-default-buttons/view';
-import Promote                from 'syn/components/promote/view';
-import Details                from 'syn/components/details/view';
+import Page                   from '../../lib/app/page';
+import DefaultButtonsView     from '../item-default-buttons/view';
+import Promote                from '../promote/view';
+import Details                from '../details/view';

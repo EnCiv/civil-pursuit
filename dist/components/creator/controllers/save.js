@@ -4,8 +4,8 @@
 
   'use strict';
 
-  var Nav = require('syn/lib/util/nav');
-  var Item = require('syn/components/iten/ctrl');
+  var Nav = require('../../../lib/util/nav');
+  var Item = require('../../../components/iten/ctrl');
 
   /**
    *  @function

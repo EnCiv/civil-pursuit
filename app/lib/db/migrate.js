@@ -2,7 +2,7 @@
   
   'use strict';
 
-  var Log = require('syn/lib/app/Log');
+  var Log = require('../../../../lib/app/Log');
   var log = new Log('lib/db/migrate');
 
   function migrate (cb) {

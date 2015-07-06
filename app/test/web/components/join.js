@@ -1,8 +1,8 @@
 'use strict';
 
 import should from 'should';
-import Milk from 'syn/lib/app/milk';
-import UserModel from 'syn/models/user';
+import Milk from '../../../lib/app/milk';
+import UserModel from '../../../models/user';
 
 class Join extends Milk {
 

@@ -1,8 +1,8 @@
 'use strict';
 
-import Controller       from 'syn/lib/app/controller';
-import EditAndGoAgain   from 'syn/components/edit-and-go-again/ctrl';
-import Nav              from 'syn/lib/util/nav';
+import Controller       from '../../lib/app/controller';
+import EditAndGoAgain   from '../../components/edit-and-go-again/ctrl';
+import Nav              from '../../lib/util/nav';
 
 class Details extends Controller {
 

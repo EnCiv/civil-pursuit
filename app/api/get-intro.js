@@ -1,7 +1,7 @@
 'use strict';
 
-import ItemModel from 'syn/models/item';
-import TypeModel from 'syn/models/type';
+import ItemModel from '../models/item';
+import TypeModel from '../models/type';
 
 function getIntro (event) {
   try {

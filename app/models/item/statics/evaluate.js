@@ -2,9 +2,9 @@
 
 import { Domain }                 from 'domain';
 import { EventEmitter }           from 'events';
-import config                     from 'syn/config.json';
-import CriteriaModel              from 'syn/models/criteria';
-import TypeModel                  from 'syn/models/type';
+import config                     from '../../../../config.json';
+import CriteriaModel              from '../../criteria';
+import TypeModel                  from '../../type';
 
 const OTHERS = 5;
 

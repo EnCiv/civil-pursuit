@@ -22,25 +22,25 @@ var _request = require('request');
 
 var _request2 = _interopRequireDefault(_request);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
 var _item = require('./item');
 
 var _item2 = _interopRequireDefault(_item);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../../../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-var _synLibUtilGetUrlTitle = require('syn/lib/util/get-url-title');
+var _libAppGetUrlTitle = require('../../../lib/app/get-url-title');
 
-var _synLibUtilGetUrlTitle2 = _interopRequireDefault(_synLibUtilGetUrlTitle);
+var _libAppGetUrlTitle2 = _interopRequireDefault(_libAppGetUrlTitle);
 
 var Creator = (function (_Milk) {
   function Creator(props) {
@@ -202,7 +202,7 @@ var Creator = (function (_Milk) {
     if (this.props.upload) {
       this.set('Test image', function () {
         return new Promise(function (ok, ko) {
-          (0, _request2['default'])(_synConfigJson2['default']['example image for test upload']).on('error', ko).on('end', ok).pipe(_fs2['default'].createWriteStream('/tmp/test-upload.jpg'));
+          (0, _request2['default'])(_configJson2['default']['example image for test upload']).on('error', ko).on('end', ok).pipe(_fs2['default'].createWriteStream('/tmp/test-upload.jpg'));
         });
       });
 
@@ -261,7 +261,7 @@ var Creator = (function (_Milk) {
             if (Array.isArray(id)) {
               id = id[0];
             }
-            _synModelsItem2['default'].findById(id.split('-')[1]).exec().then(function (item) {
+            _modelsItem2['default'].findById(id.split('-')[1]).exec().then(function (item) {
               try {
                 if (!item) {
                   return ko(new Error('New item not found in DB'));
@@ -299,7 +299,7 @@ var Creator = (function (_Milk) {
 
       if (i < urls.length) {
         this.set('Title', function () {
-          return (0, _synLibUtilGetUrlTitle2['default'])(urls[i]);
+          return (0, _libAppGetUrlTitle2['default'])(urls[i]);
         });
 
         this.ok(function () {
@@ -334,7 +334,7 @@ var Creator = (function (_Milk) {
   }]);
 
   return Creator;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = Creator;
 module.exports = exports['default'];

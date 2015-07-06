@@ -4,7 +4,7 @@ import fs from 'fs';
 import should from 'should';
 import marked from 'marked';
 import Describe from 'syn/lib/app/Describe';
-import config from 'syn/config.json';
+import config from '../../config.json';
 import Layout from '../components/layout';
 
 class TOSPage extends Describe {

@@ -20,17 +20,17 @@ var _webdriverio = require('webdriverio');
 
 var _webdriverio2 = _interopRequireDefault(_webdriverio);
 
-var _synLibUtilRun = require('syn/lib/util/run');
+var _libUtilRun = require('../../lib/util/run');
 
-var _synLibUtilRun2 = _interopRequireDefault(_synLibUtilRun);
+var _libUtilRun2 = _interopRequireDefault(_libUtilRun);
 
 var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
 function fnToStr(fn) {
   var bits = fn.toString().split(/\{/);
@@ -358,7 +358,7 @@ var Milk = (function (_EventEmitter) {
     value: function wrap(fn) {
       var _this12 = this;
 
-      (0, _synLibUtilRun2['default'])(fn, function (error) {
+      (0, _libUtilRun2['default'])(fn, function (error) {
         return _this12.emit('error', error);
       });
       return this;
@@ -698,7 +698,7 @@ var Milk = (function (_EventEmitter) {
                 if (_this22.options.session) {
                   if (_this22.options.session === '/test') {
                     console.log('DISPOSABLE USER'.bgBlue.bold + _this22.name.bgCyan.bold);
-                    _synModelsUser2['default'].disposable().then(function (user) {
+                    _modelsUser2['default'].disposable().then(function (user) {
                       var cookie = {
                         name: 'synuser',
                         value: JSON.stringify({
@@ -774,7 +774,7 @@ var Milk = (function (_EventEmitter) {
     value: function startDriver() {
       var _this24 = this;
 
-      (0, _synLibUtilRun2['default'])(function () {
+      (0, _libUtilRun2['default'])(function () {
 
         var options = {
           desiredCapabilities: {

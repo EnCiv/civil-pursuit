@@ -2,7 +2,7 @@
 
 import { EventEmitter }   from 'events';
 import domain             from 'domain';
-import cache              from 'syn/lib/app/cache';
+import cache              from './lib/app/cache';
 
 class App extends EventEmitter {
 

@@ -12,17 +12,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synModelsType = require('syn/models/type');
+var _modelsType = require('../../../models/type');
 
-var _synModelsType2 = _interopRequireDefault(_synModelsType);
+var _modelsType2 = _interopRequireDefault(_modelsType);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../../../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
 var _panel = require('./panel');
 
@@ -47,10 +47,10 @@ var TopLevelPanel = (function (_Milk) {
     var get = this.get.bind(this);
     var find = this.find.bind(this);
     var findType = function findType() {
-      return _synModelsType2['default'].findOne({ name: 'Topic' }).exec();
+      return _modelsType2['default'].findOne({ name: 'Topic' }).exec();
     };
     var findItems = function findItems() {
-      return _synModelsItem2['default'].getPanelItems({ type: get('Type')._id });
+      return _modelsItem2['default'].getPanelItems({ type: get('Type')._id });
     };
 
     this.set('Type', findType, 'Fetch top level type (Topic) from db');
@@ -91,7 +91,7 @@ var TopLevelPanel = (function (_Milk) {
   _inherits(TopLevelPanel, _Milk);
 
   return TopLevelPanel;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = TopLevelPanel;
 module.exports = exports['default'];

@@ -4,10 +4,10 @@
 
 'use strict';
 
-import Controller       from 'syn/lib/app/controller';
-import Login            from 'syn/components/login/ctrl';
-import Join             from 'syn/components/join/ctrl';
-import ForgotPassword   from 'syn/components/forgot-password/ctrl';
+import Controller       from '../../lib/app/controller';
+import Login            from '../../components/login/ctrl';
+import Join             from '../../components/join/ctrl';
+import ForgotPassword   from '../../components/forgot-password/ctrl';
 
 class TopBar extends Controller {
 

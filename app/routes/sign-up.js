@@ -1,7 +1,7 @@
 'use strict';
 
 import { Domain }   from 'domain';
-import UserModel    from 'syn/models/user';
+import UserModel    from '../models/user';
 
 function signUp (req, res, next) {
 

@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synModelsVote = require('syn/models/vote');
+var _modelsVote = require('../models/vote');
 
-var _synModelsVote2 = _interopRequireDefault(_synModelsVote);
+var _modelsVote2 = _interopRequireDefault(_modelsVote);
 
 function insertVotes(event, votes) {
   var _this = this;
@@ -25,7 +25,7 @@ function insertVotes(event, votes) {
 
     console.log('creating votes', votes);
 
-    _synModelsVote2['default'].create(votes).then(function (votes) {
+    _modelsVote2['default'].create(votes).then(function (votes) {
       console.log('got votes');
       _this.ok(event, votes);
     }, function (error) {

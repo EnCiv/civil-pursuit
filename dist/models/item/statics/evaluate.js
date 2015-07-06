@@ -18,17 +18,17 @@ var _domain = require('domain');
 
 var _events = require('events');
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synModelsCriteria = require('syn/models/criteria');
+var _criteria = require('../../criteria');
 
-var _synModelsCriteria2 = _interopRequireDefault(_synModelsCriteria);
+var _criteria2 = _interopRequireDefault(_criteria);
 
-var _synModelsType = require('syn/models/type');
+var _type = require('../../type');
 
-var _synModelsType2 = _interopRequireDefault(_synModelsType);
+var _type2 = _interopRequireDefault(_type);
 
 var OTHERS = 5;
 
@@ -93,7 +93,7 @@ var Evaluator = (function (_EventEmitter) {
   }, {
     key: 'findType',
     value: function findType(typeId) {
-      return _synModelsType2['default'].findOne(typeId).exec();
+      return _type2['default'].findOne(typeId).exec();
     }
   }, {
     key: 'make',
@@ -102,7 +102,7 @@ var Evaluator = (function (_EventEmitter) {
 
       return new Promise(function (ok, ko) {
 
-        Promise.all([_this3.findOthers(OTHERS), _synModelsCriteria2['default'].find({ type: _this3.item.type }).populate('type').exec()]).then(function (results) {
+        Promise.all([_this3.findOthers(OTHERS), _criteria2['default'].find({ type: _this3.item.type }).populate('type').exec()]).then(function (results) {
           _this3.packAndGo({
             items: results[0],
             criterias: results[1]
@@ -136,7 +136,7 @@ var Evaluator = (function (_EventEmitter) {
             break;
         }
 
-        var promises = [_this4.findOthers(2), _this4.findOthers(3, right), _synModelsCriteria2['default'].find({ type: _this4.item.type }).populate('type').exec()];
+        var promises = [_this4.findOthers(2), _this4.findOthers(3, right), _criteria2['default'].find({ type: _this4.item.type }).populate('type').exec()];
 
         Promise.all(promise).then(function (results) {
           _this4.packAndGo({
@@ -194,7 +194,7 @@ var Evaluator = (function (_EventEmitter) {
           }
         }
 
-        if (_synConfigJson2['default']['evaluation context item position'] === 'last') {
+        if (_configJson2['default']['evaluation context item position'] === 'last') {
           results.items.push(_this6.item);
         } else {
           results.items.unshift(_this6.item);

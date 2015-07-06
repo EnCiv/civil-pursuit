@@ -4,7 +4,7 @@
 
   'use strict';
 
-  var Model = require('syn/lib/Model');
+  var Model = require('../lib/Model');
 
   function getModels() {
 
@@ -20,7 +20,7 @@
       }));
     }
 
-    require('syn/lib/domain')(onDomainError, run);
+    require('../lib/domain')(onDomainError, run);
   }
 
   module.exports = getModels;

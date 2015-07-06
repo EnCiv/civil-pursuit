@@ -14,25 +14,25 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../../../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-var _synLibUtilCloudinaryFormat = require('syn/lib/util/cloudinary-format');
+var _libUtilCloudinaryFormat = require('../../../lib/util/cloudinary-format');
 
-var _synLibUtilCloudinaryFormat2 = _interopRequireDefault(_synLibUtilCloudinaryFormat);
+var _libUtilCloudinaryFormat2 = _interopRequireDefault(_libUtilCloudinaryFormat);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synComponentsYoutubeView = require('syn/components/youtube/view');
+var _componentsYoutubeView = require('../../../components/youtube/view');
 
-var _synComponentsYoutubeView2 = _interopRequireDefault(_synComponentsYoutubeView);
+var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
 
 var Promote = (function (_Milk) {
   function Promote(props) {
@@ -48,7 +48,7 @@ var Promote = (function (_Milk) {
 
     this.item = this.props.item;
 
-    this.isYouTube = this.item && this.item.references.length && _synComponentsYoutubeView2['default'].regex.test(this.item.references[0].url);
+    this.isYouTube = this.item && this.item.references.length && _componentsYoutubeView2['default'].regex.test(this.item.references[0].url);
 
     if (this.props.driver !== false) {
       this.go('/');
@@ -84,7 +84,7 @@ var Promote = (function (_Milk) {
       // Evaluation -- won't be the same than in Browser since evaluation are random, but like this we get the numbers of items in an evaluation - it should be 6 but it can be less -- also like this we get criterias
 
       set('Evaluation', function () {
-        return _synModelsItem2['default'].evaluate(get('Cookie').id, _this.item._id);
+        return _modelsItem2['default'].evaluate(get('Cookie').id, _this.item._id);
       });
 
       set('Main', function () {
@@ -272,27 +272,27 @@ var Promote = (function (_Milk) {
       var find = this.find.bind(this);
 
       set('Left item', function () {
-        return _synModelsItem2['default'].findById(id).exec();
+        return _modelsItem2['default'].findById(id).exec();
       });
 
       // Left image is item's image
 
       ok(function () {
         return get('Left image').attr('src').then(function (src) {
-          return src.should.be.exactly((0, _synLibUtilCloudinaryFormat2['default'])(get('Left item').image));
+          return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(get('Left item').image));
         });
       }, 'Left image', function () {
-        return get('Left item').image && !_synComponentsYoutubeView2['default'].isYouTube(get('Left item'));
+        return get('Left item').image && !_componentsYoutubeView2['default'].isYouTube(get('Left item'));
       });
 
       // Left image is default image
 
       ok(function () {
         return get('Left image').attr('src').then(function (src) {
-          return src.should.be.exactly(_synConfigJson2['default']['public']['default item image']);
+          return src.should.be.exactly(_configJson2['default']['public']['default item image']);
         });
       }, 'Left image is default image', function () {
-        return !get('Left item').image && !_synComponentsYoutubeView2['default'].isYouTube(get('Left item'));
+        return !get('Left item').image && !_componentsYoutubeView2['default'].isYouTube(get('Left item'));
       });
 
       // YouTube
@@ -300,16 +300,16 @@ var Promote = (function (_Milk) {
       ok(function () {
         return get('Left video').is(':visible');
       }, 'Left image is a YouTube video', function () {
-        return _synComponentsYoutubeView2['default'].isYouTube(get('Left item'));
+        return _componentsYoutubeView2['default'].isYouTube(get('Left item'));
       });
 
       ok(function () {
         return get('Left video').attr('src').then(function (src) {
-          var v = _synComponentsYoutubeView2['default'].getId(get('Left item').references[0].url);
+          var v = _componentsYoutubeView2['default'].getId(get('Left item').references[0].url);
           src.should.be.exactly('http://www.youtube.com/embed/' + v + '?autoplay=0');
         });
       }, 'Left YouTube video is the same link than in DB', function () {
-        return _synComponentsYoutubeView2['default'].isYouTube(get('Left item'));
+        return _componentsYoutubeView2['default'].isYouTube(get('Left item'));
       });
 
       // Subject
@@ -324,7 +324,7 @@ var Promote = (function (_Milk) {
 
       ok(function () {
         return get('Left description').text().then(function (text) {
-          return text.should.be.exactly(_synLibAppMilk2['default'].formatToHTMLText(get('Left item').description));
+          return text.should.be.exactly(_libAppMilk2['default'].formatToHTMLText(get('Left item').description));
         });
       }, 'Left description is same than DB');
 
@@ -420,27 +420,27 @@ var Promote = (function (_Milk) {
       var find = this.find.bind(this);
 
       set('Right item', function () {
-        return _synModelsItem2['default'].findById(id).exec();
+        return _modelsItem2['default'].findById(id).exec();
       });
 
       // Has image
 
       ok(function () {
         return get('Right image').attr('src').then(function (src) {
-          return src.should.be.exactly((0, _synLibUtilCloudinaryFormat2['default'])(get('Right item').image));
+          return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(get('Right item').image));
         });
       }, 'Right image', function () {
-        return get('Right item').image && !_synComponentsYoutubeView2['default'].isYouTube(get('Right item'));
+        return get('Right item').image && !_componentsYoutubeView2['default'].isYouTube(get('Right item'));
       });
 
       // Default image
 
       ok(function () {
         return get('Right image').attr('src').then(function (src) {
-          return src.should.be.exactly(_synConfigJson2['default']['public']['default item image']);
+          return src.should.be.exactly(_configJson2['default']['public']['default item image']);
         });
       }, 'Right image is default image', function () {
-        return !get('Right item').image && !_synComponentsYoutubeView2['default'].isYouTube(get('Right item'));
+        return !get('Right item').image && !_componentsYoutubeView2['default'].isYouTube(get('Right item'));
       });
 
       // YouTube
@@ -448,16 +448,16 @@ var Promote = (function (_Milk) {
       ok(function () {
         return get('Right video').is(':visible');
       }, 'Right image is a YouTube video', function () {
-        return _synComponentsYoutubeView2['default'].isYouTube(get('Right item'));
+        return _componentsYoutubeView2['default'].isYouTube(get('Right item'));
       });
 
       ok(function () {
         return get('Right video').attr('src').then(function (src) {
-          var v = _synComponentsYoutubeView2['default'].getId(get('Right item').references[0].url);
+          var v = _componentsYoutubeView2['default'].getId(get('Right item').references[0].url);
           src.should.be.exactly('http://www.youtube.com/embed/' + v + '?autoplay=0');
         });
       }, 'Right YouTube video is the same link than in DB', function () {
-        return _synComponentsYoutubeView2['default'].isYouTube(get('Right item'));
+        return _componentsYoutubeView2['default'].isYouTube(get('Right item'));
       });
 
       // Subject
@@ -472,7 +472,7 @@ var Promote = (function (_Milk) {
 
       ok(function () {
         return get('Right description').text().then(function (text) {
-          return text.should.be.exactly(_synLibAppMilk2['default'].formatToHTMLText(get('Right item').description));
+          return text.should.be.exactly(_libAppMilk2['default'].formatToHTMLText(get('Right item').description));
         });
       }, 'Right description is same than DB');
 
@@ -555,7 +555,7 @@ var Promote = (function (_Milk) {
   }]);
 
   return Promote;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = Promote;
 module.exports = exports['default'];

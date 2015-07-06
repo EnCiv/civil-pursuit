@@ -16,13 +16,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synConfig = require('syn/config');
+var _configJson = require('../../../config.json');
 
-var _synConfig2 = _interopRequireDefault(_synConfig);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synLibAppPage = require('syn/lib/app/page');
+var _libAppPage = require('../../lib/app/page');
 
-var _synLibAppPage2 = _interopRequireDefault(_synLibAppPage);
+var _libAppPage2 = _interopRequireDefault(_libAppPage);
 
 var TopBar = (function (_Element) {
   function TopBar(props) {
@@ -55,7 +55,7 @@ var TopBar = (function (_Element) {
     key: 'profileLink',
     value: function profileLink() {
       return new _cincoDist.Element('a.button.is-in', {
-        href: (0, _synLibAppPage2['default'])('Profile'),
+        href: (0, _libAppPage2['default'])('Profile'),
         title: 'Profile'
       }).add(new _cincoDist.Element('i.fa.fa-user'));
     }
@@ -63,7 +63,7 @@ var TopBar = (function (_Element) {
     key: 'signOutLink',
     value: function signOutLink() {
       return new _cincoDist.Element('a.button.is-in', {
-        href: (0, _synLibAppPage2['default'])('Sign Out'),
+        href: (0, _libAppPage2['default'])('Sign Out'),
         title: 'Sign out'
       }).add(new _cincoDist.Element('i.fa.fa-sign-out'));
     }

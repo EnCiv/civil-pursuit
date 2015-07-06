@@ -18,7 +18,7 @@
 
     mongoose.connect(process.env.MONGOHQ_URL);
 
-    var Model = require('syn/models/' + model);
+    var Model = require('../../models/' + model);
 
     console.log('Model found', Model)
 

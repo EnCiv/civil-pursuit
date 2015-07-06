@@ -12,17 +12,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synComponentsLayoutView = require('syn/components/layout/view');
+var _componentsLayoutView = require('../../components/layout/view');
 
-var _synComponentsLayoutView2 = _interopRequireDefault(_synComponentsLayoutView);
+var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
 
-var _synComponentsIntroView = require('syn/components/intro/view');
+var _componentsIntroView = require('../../components/intro/view');
 
-var _synComponentsIntroView2 = _interopRequireDefault(_synComponentsIntroView);
+var _componentsIntroView2 = _interopRequireDefault(_componentsIntroView);
 
-var _synComponentsTopLevelPanelView = require('syn/components/top-level-panel/view');
+var _componentsTopLevelPanelView = require('../../components/top-level-panel/view');
 
-var _synComponentsTopLevelPanelView2 = _interopRequireDefault(_synComponentsTopLevelPanelView);
+var _componentsTopLevelPanelView2 = _interopRequireDefault(_componentsTopLevelPanelView);
 
 var HomePage = (function (_Layout) {
   function HomePage(props) {
@@ -33,13 +33,13 @@ var HomePage = (function (_Layout) {
 
     var main = this.find('#main').get(0);
 
-    main.add(new _synComponentsIntroView2['default'](props), new _synComponentsTopLevelPanelView2['default'](props));
+    main.add(new _componentsIntroView2['default'](props), new _componentsTopLevelPanelView2['default'](props));
   }
 
   _inherits(HomePage, _Layout);
 
   return HomePage;
-})(_synComponentsLayoutView2['default']);
+})(_componentsLayoutView2['default']);
 
 exports['default'] = HomePage;
 module.exports = exports['default'];

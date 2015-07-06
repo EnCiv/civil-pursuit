@@ -8,13 +8,13 @@
 
     var socket = this;
 
-    var domainRun = require('syn/lib/util/domain-run');
+    var domainRun = require('../lib/util/domain-run');
 
     domainRun(
 
       function (domain) {
 
-        require('syn/models/item')
+        require('../models/item')
           .editAndGoAgain(item_id, domain.intercept(function (item) {
             socket.emit('edited item', item);
           }));

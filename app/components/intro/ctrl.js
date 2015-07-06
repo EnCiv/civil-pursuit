@@ -1,9 +1,9 @@
 'use strict';
 
 import View             from './view';
-import Controller       from 'syn/lib/app/controller';
-import Item             from 'syn/components/item/ctrl';
-import readMore         from 'syn/lib/util/read-more';
+import Controller       from '../../lib/app/controller';
+import Item             from '../../components/item/ctrl';
+import readMore         from '../../lib/util/read-more';
 
 class Intro extends Controller {
 

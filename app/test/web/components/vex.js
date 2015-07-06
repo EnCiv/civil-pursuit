@@ -1,6 +1,6 @@
 'use strict';
 
-import Milk from 'syn/lib/app/milk';
+import Milk from '../../../lib/app/milk';
 
 class Vex extends Milk {
 

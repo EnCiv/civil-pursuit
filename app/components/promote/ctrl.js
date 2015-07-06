@@ -226,8 +226,8 @@ class Promote extends Controller {
 
 export default Promote;
 
-import Nav          from 'syn/lib/util/nav';
-import Edit         from 'syn/components/edit-and-go-again/ctrl';
-import Controller   from 'syn/lib/app/controller';
-import render       from 'syn/components/promote/controllers/render';
-import renderItem   from 'syn/components/promote/controllers/render-item';
+import Nav          from '../../lib/util/nav';
+import Edit         from '../../components/edit-and-go-again/ctrl';
+import Controller   from '../../lib/app/controller';
+import render       from '../../components/promote/controllers/render';
+import renderItem   from '../../components/promote/controllers/render-item';

@@ -12,7 +12,7 @@
 
     before(function () {
 
-      cloudinary = require('syn/lib/util/cloudinary');
+      cloudinary = require('../../../lib/app/cloudinary');
     });
 
     it('should be an object', function () {

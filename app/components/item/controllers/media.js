@@ -1,6 +1,6 @@
 'use strict';
 
-import YouTube from 'syn/components/youtube/view';
+import YouTube from '../../../components/youtube/view';
 
 function MediaController () {
   let item = this.get('item');

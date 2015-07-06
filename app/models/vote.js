@@ -2,27 +2,27 @@
 
 import { Schema, default as mongoose }    from 'mongoose';
 import findRandom           from 'mongoose-simple-random';
-import getAccumulation      from 'syn/models/vote/statics/get-accumulation';
+import getAccumulation      from '../models/vote/statics/get-accumulation';
 
 try {
   mongoose.model('User');
 }
 catch ( error ) {
-  require('syn/models/user');
+  require('../models/user');
 }
 
 try {
   mongoose.model('Item');
 }
 catch ( error ) {
-  require('syn/models/item');
+  require('../models/item');
 }
 
 try {
   mongoose.model('Criteria');
 }
 catch ( error ) {
-  require('syn/models/criteria');
+  require('../models/criteria');
 }
 
 let VoteSchema       =   new Schema({

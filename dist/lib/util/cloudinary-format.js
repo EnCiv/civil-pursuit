@@ -6,14 +6,14 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilCloudinary = require('syn/lib/util/cloudinary');
+var _appCloudinary = require('../app/cloudinary');
 
-var _synLibUtilCloudinary2 = _interopRequireDefault(_synLibUtilCloudinary);
+var _appCloudinary2 = _interopRequireDefault(_appCloudinary);
 
 function formatImage(url) {
   var id = url.split(/\//).pop();
 
-  var image = _synLibUtilCloudinary2['default'].image(id, {
+  var image = _appCloudinary2['default'].image(id, {
     width: 240,
     height: 135,
     crop: 'thumb',

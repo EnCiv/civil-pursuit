@@ -14,33 +14,33 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-var _synComponentsCreatorCtrl = require('syn/components/creator/ctrl');
+var _componentsCreatorCtrl = require('../../components/creator/ctrl');
 
-var _synComponentsCreatorCtrl2 = _interopRequireDefault(_synComponentsCreatorCtrl);
+var _componentsCreatorCtrl2 = _interopRequireDefault(_componentsCreatorCtrl);
 
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
+var _componentsItemCtrl = require('../../components/item/ctrl');
 
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 
-var _synComponentsTopBarCtrl = require('syn/components/top-bar/ctrl');
+var _componentsTopBarCtrl = require('../../components/top-bar/ctrl');
 
-var _synComponentsTopBarCtrl2 = _interopRequireDefault(_synComponentsTopBarCtrl);
+var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
 
-var _synComponentsPanelView = require('syn/components/panel/view');
+var _componentsPanelView = require('../../components/panel/view');
 
-var _synComponentsPanelView2 = _interopRequireDefault(_synComponentsPanelView);
+var _componentsPanelView2 = _interopRequireDefault(_componentsPanelView);
 
-var _synLibAppCache = require('syn/lib/app/cache');
+var _libAppCache = require('../../lib/app/cache');
 
-var _synLibAppCache2 = _interopRequireDefault(_synLibAppCache);
+var _libAppCache2 = _interopRequireDefault(_libAppCache);
 
 var Panel = (function (_Controller) {
   function Panel(props) {
@@ -51,7 +51,7 @@ var Panel = (function (_Controller) {
     this.props = props;
 
     this.componentName = 'Panel';
-    this.view = _synComponentsPanelView2['default'];
+    this.view = _componentsPanelView2['default'];
 
     if (this.props.panel) {
       this.set('panel', this.props.panel);
@@ -114,9 +114,9 @@ var Panel = (function (_Controller) {
           _this.find('toggle creator').on('click', function () {
             console.log('clicked', _this.socket.synuser);
             if (_this.socket.synuser) {
-              _synLibUtilNav2['default'].toggle(_this.find('creator'), _this.template, d.intercept());
+              _libUtilNav2['default'].toggle(_this.find('creator'), _this.template, d.intercept());
             } else {
-              var topbar = new _synComponentsTopBarCtrl2['default']();
+              var topbar = new _componentsTopBarCtrl2['default']();
               topbar.find('join button').click();
             }
           });
@@ -127,7 +127,7 @@ var Panel = (function (_Controller) {
             _this.template.attr('id', _this.id);
           }
 
-          var creator = new _synComponentsCreatorCtrl2['default'](_this.props, _this);
+          var creator = new _componentsCreatorCtrl2['default'](_this.props, _this);
 
           creator.render().then(fulfill, d.intercept.bind(d));
 
@@ -226,7 +226,7 @@ var Panel = (function (_Controller) {
       /** Load template */
 
       // if ( ! cache.getTemplate('Item') ) {
-      new _synComponentsItemCtrl2['default']().load();
+      new _componentsItemCtrl2['default']().load();
       // return this.preInsertItem(items, cb);
       // }
 
@@ -241,7 +241,7 @@ var Panel = (function (_Controller) {
 
         props.item = item;
 
-        var itemComponent = new _synComponentsItemCtrl2['default'](props);
+        var itemComponent = new _componentsItemCtrl2['default'](props);
 
         itemComponent.load();
 
@@ -268,7 +268,7 @@ var Panel = (function (_Controller) {
   }]);
 
   return Panel;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 Panel.getId = function (panel) {
   var id = 'panel-' + (panel.type._id || panel.type);

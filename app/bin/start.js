@@ -42,35 +42,21 @@ function connectToMongoose () {
   });
 }
 
-symlink()
-  .then(
+readMe().then(
+  () => connectToMongoose().then(
     () => {
-      console.log('SYMLINK OK')
-      console.log('SYMLINK OK')
-      console.log('SYMLINK OK')
-      console.log('SYMLINK OK')
-      console.log('SYMLINK OK')
-      console.log('SYMLINK OK')
-      console.log('SYMLINK OK')
-      console.log('SYMLINK OK')
-      readMe().then(
-        () => connectToMongoose().then(
-          () => {
-            try {
-              console.log('connecting to server 22');
-              var Server = require('../server');
-              new Server()
-                .on('error', parseError)
-                .on('message', message => console.log('message', message));
-            }
-            catch ( error ) {
-              parseError(error);
-            }
-          },
-          parseError
-        ),
-        parseError
-      )
+      try {
+        console.log('connecting to server 22');
+        var Server = require('../server');
+        new Server()
+          .on('error', parseError)
+          .on('message', message => console.log('message', message));
+      }
+      catch ( error ) {
+        parseError(error);
+      }
     },
     parseError
-  );
+  ),
+  parseError
+);

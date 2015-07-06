@@ -4,7 +4,7 @@
 
   'use strict';
 
-  var Form = require('syn/lib/util/form');
+  var Form = require('../../lib/util/form');
 
   /**
    *  @method Sign.signIn

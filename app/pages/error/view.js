@@ -1,6 +1,6 @@
 'use strict';
 
-import Layout       from 'syn/components/layout/view';
+import Layout       from '../../components/layout/view';
 import {Element}    from 'cinco/dist';
 
 class ErrorPage extends Layout {

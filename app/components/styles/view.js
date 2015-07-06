@@ -1,7 +1,7 @@
 'use strict';
 
 import {Element, Elements} from 'cinco/dist';
-import config from 'syn/config.json';
+import config from '../../../config.json';
 
 class Stylesheet extends Element {
   constructor (href) {

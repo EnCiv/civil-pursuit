@@ -1,10 +1,10 @@
 'use strict';
 
 import should         from 'should';
-import Milk           from 'syn/lib/app/milk';
-import config         from 'syn/config.json';
-import TypeModel      from 'syn/models/type';
-import ItemModel      from 'syn/models/item';
+import Milk           from '../../../lib/app/milk';
+import config         from '../../../../config.json';
+import TypeModel      from '../../../models/type';
+import ItemModel      from '../../../models/item';
 import PanelTest      from './panel';
 import ItemTest       from './item';
 

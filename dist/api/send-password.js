@@ -4,11 +4,11 @@
 
   'use strict';
 
-  var config = require('syn/config');
+  var config = require('../../config.json');
 
-  var User = require('syn/models/user');
+  var User = require('../models/user');
 
-  var sendEmail = require('syn/lib/util/send-email');
+  var sendEmail = require('../lib/app/send-email');
 
   /**
    *  @function sendPassword

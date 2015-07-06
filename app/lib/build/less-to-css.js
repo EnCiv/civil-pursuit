@@ -6,7 +6,7 @@
     var cp        =   require('child_process');
     var path      =   require('path');
     var util      =   require('util');
-    var root      =   path.resolve(require.resolve('syn/server'), 'syn/');
+    var root      =   path.resolve(require.resolve('../../server'), '../../');
 
     cp.exec(util.format('%s %s %s',
       path.join(root, 'node_modules/.bin/lessc'), source, destination), done);

@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synComponentsItemView = require('syn/components/item/view');
+var _componentsItemView = require('../../components/item/view');
 
-var _synComponentsItemView2 = _interopRequireDefault(_synComponentsItemView);
+var _componentsItemView2 = _interopRequireDefault(_componentsItemView);
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  Creator
@@ -99,7 +99,7 @@ var Creator = (function (_Element) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function itemBox() {
-      return new _synComponentsItemView2['default']({
+      return new _componentsItemView2['default']({
         item: {
           media: this.dropBox(),
           buttons: new _cincoDist.Elements(this.submitButton()),

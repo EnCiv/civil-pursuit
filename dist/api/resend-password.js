@@ -4,7 +4,7 @@
 
   'use strict';
 
-  var config = require('syn/config.json');
+  var config = require('../../config.json');
 
   function resendPassword(socket, pronto, monson, domain, smtp) {
     socket.on('resend password', function (email, cb) {

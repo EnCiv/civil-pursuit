@@ -10,9 +10,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _synApiCreateItem = require('syn/api/create-item');
+var _apiCreateItem = require('../../api/create-item');
 
-var _synApiCreateItem2 = _interopRequireDefault(_synApiCreateItem);
+var _apiCreateItem2 = _interopRequireDefault(_apiCreateItem);
 
 var CreateItemTest = (function () {
   function CreateItemTest() {
@@ -48,7 +48,7 @@ var CreateItemTest = (function () {
 
             };
 
-            _synApiCreateItem2['default'].apply(mock, [event, {}]);
+            _apiCreateItem2['default'].apply(mock, [event, {}]);
 
             setTimeout(function () {
               if (state === null) {

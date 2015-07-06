@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilRandomString = require('syn/lib/util/random-string');
+var _libUtilRandomString = require('../../../lib/util/random-string');
 
-var _synLibUtilRandomString2 = _interopRequireDefault(_synLibUtilRandomString);
+var _libUtilRandomString2 = _interopRequireDefault(_libUtilRandomString);
 
 function generateShortId(_ok, _ko) {
   var _this = this;
@@ -23,7 +23,7 @@ function generateShortId(_ok, _ko) {
       (function () {
         var ItemModel = _this;
 
-        (0, _synLibUtilRandomString2['default'])(5).then(function (str) {
+        (0, _libUtilRandomString2['default'])(5).then(function (str) {
           try {
 
             ItemModel.findOne({ id: str }).lean().exec().then(function (item) {

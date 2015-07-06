@@ -1,7 +1,7 @@
 'use strict';
 
 import { Domain } from 'domain';
-import randomString from 'syn/lib/util/random-string';
+import randomString from '../../../lib/util/random-string';
 
 function makePasswordResettable (email) {
   return new Promise((ok, ko) => {

@@ -4,7 +4,7 @@
 
   'use strict';
 
-  var User = require('syn/models/user');
+  var User = require('../models/user');
 
   /**
    *  @arg {ObjectID} user_id - User ID
@@ -13,7 +13,7 @@
   function getUserInfo(user_id) {
     var socket = this;
 
-    require('syn/lib/domain')(function (error) {
+    require('../lib/domain')(function (error) {
       socket.emit('error', error);
     }, function (domain) {
       User.findById(user_id).lean().exec(domain.intercept(function (user) {

@@ -1,8 +1,8 @@
 'use strict';
 
 import should       from 'should';
-import UserModel    from 'syn/models/user';
-import randomString from 'syn/lib/util/random-string';
+import UserModel    from '../../models/user';
+import randomString from '../../lib/util/random-string';
 
 class TestUserModel {
 

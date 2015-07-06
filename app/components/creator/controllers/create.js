@@ -1,8 +1,8 @@
 'use strict';
 
-import Nav       from 'syn/lib/util/nav';
-import Item      from 'syn/components/item/ctrl';
-import Stream    from 'syn/lib/app/Stream';
+import Nav       from '../../../lib/util/nav';
+import Item      from '../../../components/item/ctrl';
+import Stream    from '../../../lib/app/Stream';
 
 function save () {
 

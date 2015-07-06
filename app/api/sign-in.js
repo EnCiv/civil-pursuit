@@ -8,14 +8,14 @@
 
     var socket = this;
 
-    require('syn/lib/domain')(
+    require('../lib/domain')(
 
       function (error) {
         socket.app.arte.emit('error', error);
       },
 
       function (domain) {
-        require('syn/models/user')
+        require('../models/user')
           .identify(credentials.email, credentials.password,
             domain.intercept(function (user) {
               

@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
 function signIn(req, res, next) {
 
@@ -20,7 +20,7 @@ function signIn(req, res, next) {
 
       console.log('signing in', email, password);
 
-      _synModelsUser2['default'].identify(email, password).then(function (user) {
+      _modelsUser2['default'].identify(email, password).then(function (user) {
         req.user = user;
         next();
       }, function (error) {

@@ -1,6 +1,6 @@
 'use strict';
 
-import createItem from 'syn/api/create-item';
+import createItem from '../../api/create-item';
 
 class CreateItemTest {
 

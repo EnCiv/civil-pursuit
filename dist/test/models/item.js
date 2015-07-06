@@ -14,13 +14,13 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
 var TestItemModel = (function () {
   function TestItemModel() {
@@ -130,7 +130,7 @@ var TestItemModel = (function () {
               }
             }, 2500);
 
-            _synModelsItem2['default'].disposable().then(function (item) {
+            _modelsItem2['default'].disposable().then(function (item) {
               try {
                 state = true;
                 ok(item);
@@ -161,7 +161,7 @@ var TestItemModel = (function () {
           }
         }, 2500);
 
-        _synModelsItem2['default'].disposable().then(function (item) {
+        _modelsItem2['default'].disposable().then(function (item) {
           try {
             TestItemModel.isItem(item).then(function () {
               try {

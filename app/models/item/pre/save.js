@@ -1,7 +1,7 @@
 'use strict';
 
 import { Domain } from 'domain';
-import getUrlTitle from 'syn/lib/util/get-url-title';
+import getUrlTitle from '../../../lib/app/get-url-title';
 
 function preSaveItem (next, done) {
   try {

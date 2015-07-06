@@ -20,9 +20,9 @@ var _domain = require('domain');
 
 var _domain2 = _interopRequireDefault(_domain);
 
-var _synLibAppCache = require('syn/lib/app/cache');
+var _libAppCache = require('./lib/app/cache');
 
-var _synLibAppCache2 = _interopRequireDefault(_synLibAppCache);
+var _libAppCache2 = _interopRequireDefault(_libAppCache);
 
 var App = (function (_EventEmitter) {
   function App(isPage) {
@@ -219,13 +219,13 @@ var App = (function (_EventEmitter) {
     value: function load() {
 
       if (!this.template) {
-        if (_synLibAppCache2['default'].getTemplate(this.componentName)) {
-          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+        if (_libAppCache2['default'].getTemplate(this.componentName)) {
+          this.template = $(_libAppCache2['default'].getTemplate(this.componentName));
         } else {
           var View = this.view;
           var view = new View(this.props);
-          _synLibAppCache2['default'].setTemplate(this.componentName, view.render());
-          this.template = $(_synLibAppCache2['default'].getTemplate(this.componentName));
+          _libAppCache2['default'].setTemplate(this.componentName, view.render());
+          this.template = $(_libAppCache2['default'].getTemplate(this.componentName));
         }
       }
 

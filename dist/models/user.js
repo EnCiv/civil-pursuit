@@ -22,13 +22,13 @@ var _userPreSave = require('./user/pre/save');
 
 var _userPreSave2 = _interopRequireDefault(_userPreSave);
 
-var _synLibUtilToCamelCase = require('syn/lib/util/to-camel-case');
+var _libUtilToCamelCase = require('../lib/util/to-camel-case');
 
-var _synLibUtilToCamelCase2 = _interopRequireDefault(_synLibUtilToCamelCase);
+var _libUtilToCamelCase2 = _interopRequireDefault(_libUtilToCamelCase);
 
-var _synLibUtilToSlug = require('syn/lib/util/to-slug');
+var _libUtilToSlug = require('../lib/util/to-slug');
 
-var _synLibUtilToSlug2 = _interopRequireDefault(_synLibUtilToSlug);
+var _libUtilToSlug2 = _interopRequireDefault(_libUtilToSlug);
 
 var schema = new _mongoose.Schema(_userSchema2['default']);
 
@@ -42,7 +42,7 @@ try {
   for (var _iterator = statics[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
     var _static = _step.value;
 
-    schema.statics[(0, _synLibUtilToCamelCase2['default'])(_static)] = require('./user/statics/' + (0, _synLibUtilToSlug2['default'])(_static));
+    schema.statics[(0, _libUtilToCamelCase2['default'])(_static)] = require('./user/statics/' + (0, _libUtilToSlug2['default'])(_static));
   }
 } catch (err) {
   _didIteratorError = true;
@@ -69,9 +69,9 @@ try {
   for (var _iterator2 = virtuals[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
     var virtual = _step2.value;
 
-    var _virtual = './user/virtuals/' + (0, _synLibUtilToSlug2['default'])(virtual) + '/get';
+    var _virtual = './user/virtuals/' + (0, _libUtilToSlug2['default'])(virtual) + '/get';
 
-    schema.virtual((0, _synLibUtilToCamelCase2['default'])(virtual)).get(require(_virtual));
+    schema.virtual((0, _libUtilToCamelCase2['default'])(virtual)).get(require(_virtual));
   }
 } catch (err) {
   _didIteratorError2 = true;

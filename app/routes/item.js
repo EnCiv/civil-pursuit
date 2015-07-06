@@ -1,7 +1,7 @@
 'use strict';
 
-import domainRun        from 'syn/lib/util/domain-run';
-import Item             from 'syn/models/item';
+import domainRun        from '../lib/util/domain-run';
+import Item             from '../models/item';
 
 function ItemRoute (req, res, next) {
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import Controller from 'syn/lib/app/controller';
+import Controller from '../../lib/app/controller';
 
 class Sign extends Controller {
 

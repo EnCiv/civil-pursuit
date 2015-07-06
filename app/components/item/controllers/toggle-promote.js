@@ -1,7 +1,7 @@
 'use strict';
 
-import Nav              from 'syn/lib/util/nav';
-import TopBar           from 'syn/components/top-bar//ctrl';
+import Nav              from '../../../lib/util/nav';
+import TopBar           from '../../../components/top-bar//ctrl';
 
 function tooglePromote ($trigger) {
 

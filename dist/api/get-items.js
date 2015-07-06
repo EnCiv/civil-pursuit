@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
 function getItems(event, panel, item) {
 
@@ -25,7 +25,7 @@ function getItems(event, panel, item) {
       query.skip = panel.skip;
     }
 
-    _synModelsItem2['default'].getPanelItems(query).then(this.ok.bind(this, event, panel), this.error.bind(this));
+    _modelsItem2['default'].getPanelItems(query).then(this.ok.bind(this, event, panel), this.error.bind(this));
   } catch (error) {
     this.error(error);
   }

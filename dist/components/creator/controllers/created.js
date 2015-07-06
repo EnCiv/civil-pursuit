@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
+var _componentsItemCtrl = require('../../../components/item/ctrl');
 
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 
 function created(item) {
   console.log('created item', item);
@@ -25,7 +25,7 @@ function created(item) {
     item.youtube = this.packaged.youtube;
   }
 
-  item = new _synComponentsItemCtrl2['default']({ item: item });
+  item = new _componentsItemCtrl2['default']({ item: item });
 
   var items = this.panelContainer.find('items');
 

@@ -12,9 +12,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synComponentsLayoutView = require('syn/components/layout/view');
+var _componentsLayoutView = require('../../components/layout/view');
 
-var _synComponentsLayoutView2 = _interopRequireDefault(_synComponentsLayoutView);
+var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
 
 var _cincoDist = require('cinco/dist');
 
@@ -50,7 +50,7 @@ var ErrorPage = (function (_Layout) {
   _inherits(ErrorPage, _Layout);
 
   return ErrorPage;
-})(_synComponentsLayoutView2['default']);
+})(_componentsLayoutView2['default']);
 
 exports['default'] = ErrorPage;
 module.exports = exports['default'];

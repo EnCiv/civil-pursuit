@@ -1,6 +1,6 @@
 'use strict';
 
-import encrypt from 'syn/lib/util/encrypt';
+import encrypt from '../../../lib/util/encrypt';
 
 function preSave (next) {
   try {

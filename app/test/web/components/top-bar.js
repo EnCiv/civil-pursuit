@@ -1,8 +1,8 @@
 'use strict';
 
 import should from 'should';
-import Milk from 'syn/lib/app/milk';
-import config from 'syn/config.json';
+import Milk from '../../../lib/app/milk';
+import config from '../../../../config.json';
 import JoinTest from '../components/join';
 import VexTest from '../components/vex';
 

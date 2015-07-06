@@ -2,11 +2,11 @@
 
 import { Schema } from 'mongoose';
 
-import isCloudinaryUrl from 'syn/lib/util/is/cloudinary-url';
+import isCloudinaryUrl from '../../lib/util/is/cloudinary-url';
 
 try {
-  require('syn/config');
-  require('syn/country');
+  require('../../config');
+  require('../../country');
 }
 catch ( error ) { /** Already imported **/ }
 

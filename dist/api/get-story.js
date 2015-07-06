@@ -7,7 +7,7 @@
   function getStory(socket, pronto, monson, domain) {
     socket.on('get story', function (index, cb) {
 
-      var stream = require('fs').createReadStream('syn/business/stories/' + index + '.js');
+      var stream = require('fs').createReadStream('../business/stories/' + index + '.js');
 
       var story = '';
 

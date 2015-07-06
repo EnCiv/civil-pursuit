@@ -4,8 +4,8 @@
 
   'use strict';
 
-  var Upload = require('syn/lib/util/upload');
-  var Nav = require('syn/lib/util/nav');
+  var Upload = require('../../lib/util/upload');
+  var Nav = require('../../lib/util/nav');
 
   /**
    *  @method     Identity.render

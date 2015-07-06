@@ -14,29 +14,29 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _synComponentsPanelCtrl = require('syn/components/panel//ctrl');
+var _componentsPanelCtrl = require('../../components/panel//ctrl');
 
-var _synComponentsPanelCtrl2 = _interopRequireDefault(_synComponentsPanelCtrl);
+var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
 
-var _synComponentsCreatorControllersRender = require('syn/components/creator//controllers/render');
+var _componentsCreatorControllersRender = require('../../components/creator//controllers/render');
 
-var _synComponentsCreatorControllersRender2 = _interopRequireDefault(_synComponentsCreatorControllersRender);
+var _componentsCreatorControllersRender2 = _interopRequireDefault(_componentsCreatorControllersRender);
 
-var _synComponentsCreatorControllersCreate = require('syn/components/creator//controllers/create');
+var _componentsCreatorControllersCreate = require('../../components/creator//controllers/create');
 
-var _synComponentsCreatorControllersCreate2 = _interopRequireDefault(_synComponentsCreatorControllersCreate);
+var _componentsCreatorControllersCreate2 = _interopRequireDefault(_componentsCreatorControllersCreate);
 
-var _synComponentsCreatorControllersCreated = require('syn/components/creator//controllers/created');
+var _componentsCreatorControllersCreated = require('../../components/creator//controllers/created');
 
-var _synComponentsCreatorControllersCreated2 = _interopRequireDefault(_synComponentsCreatorControllersCreated);
+var _componentsCreatorControllersCreated2 = _interopRequireDefault(_componentsCreatorControllersCreated);
 
-var _synComponentsCreatorControllersPackItem = require('syn/components/creator//controllers/pack-item');
+var _componentsCreatorControllersPackItem = require('../../components/creator//controllers/pack-item');
 
-var _synComponentsCreatorControllersPackItem2 = _interopRequireDefault(_synComponentsCreatorControllersPackItem);
+var _componentsCreatorControllersPackItem2 = _interopRequireDefault(_componentsCreatorControllersPackItem);
 
 var text = {
   'looking up title': 'Looking up'
@@ -60,7 +60,7 @@ var Creator = (function (_Controller) {
   _createClass(Creator, [{
     key: 'parent',
     get: function () {
-      return $('#' + _synComponentsPanelCtrl2['default'].getId(this.props.panel));
+      return $('#' + _componentsPanelCtrl2['default'].getId(this.props.panel));
     }
   }, {
     key: 'template',
@@ -116,27 +116,27 @@ var Creator = (function (_Controller) {
   }, {
     key: 'render',
     value: function render(cb) {
-      return _synComponentsCreatorControllersRender2['default'].apply(this, [cb]);
+      return _componentsCreatorControllersRender2['default'].apply(this, [cb]);
     }
   }, {
     key: 'create',
     value: function create(cb) {
-      return _synComponentsCreatorControllersCreate2['default'].apply(this, [cb]);
+      return _componentsCreatorControllersCreate2['default'].apply(this, [cb]);
     }
   }, {
     key: 'packItem',
     value: function packItem(item) {
-      return _synComponentsCreatorControllersPackItem2['default'].apply(this, [item]);
+      return _componentsCreatorControllersPackItem2['default'].apply(this, [item]);
     }
   }, {
     key: 'created',
     value: function created(item) {
-      return _synComponentsCreatorControllersCreated2['default'].apply(this, [item]);
+      return _componentsCreatorControllersCreated2['default'].apply(this, [item]);
     }
   }]);
 
   return Creator;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 exports['default'] = Creator;
 module.exports = exports['default'];

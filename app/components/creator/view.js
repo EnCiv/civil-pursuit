@@ -1,7 +1,7 @@
 'use strict';
 
 import {Element, Elements}    from 'cinco/dist';
-import ItemView               from 'syn/components/item/view';
+import ItemView               from '../../components/item/view';
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  Creator

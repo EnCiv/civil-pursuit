@@ -11,8 +11,8 @@ import util             from 'util';
 
 import passport         from 'passport';
 
-import config           from 'syn/config.json';
-import UserModel        from 'syn/models/user';
+import config           from '../../../config.json';
+import UserModel        from '../../models/user';
 
 class Passport {
 

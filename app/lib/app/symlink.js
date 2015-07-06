@@ -1,7 +1,7 @@
 'use striict';
 
-import path from 'path';
-import fs from 'fs';
+import path     from 'path';
+import fs       from 'fs';
 
 const ROOT      =   path.resolve(__dirname, '../../..');
 const APP       =   path.join(ROOT, 'app');

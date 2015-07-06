@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synLibAppPage = require('syn/lib/app/page');
+var _libAppPage = require('../../lib/app/page');
 
-var _synLibAppPage2 = _interopRequireDefault(_synLibAppPage);
+var _libAppPage2 = _interopRequireDefault(_libAppPage);
 
 var Join = (function (_Element) {
   function Join(props) {
@@ -34,12 +34,12 @@ var Join = (function (_Element) {
   _createClass(Join, [{
     key: 'signWithFacebook',
     value: function signWithFacebook() {
-      return new _cincoDist.Element('a.button', { href: (0, _synLibAppPage2['default'])('Sign With Facebook') }).add(new _cincoDist.Element('i.fa.fa-facebook'), new _cincoDist.Element('span').text(' Facebook'));
+      return new _cincoDist.Element('a.button', { href: (0, _libAppPage2['default'])('Sign With Facebook') }).add(new _cincoDist.Element('i.fa.fa-facebook'), new _cincoDist.Element('span').text(' Facebook'));
     }
   }, {
     key: 'signWithTwitter',
     value: function signWithTwitter() {
-      return new _cincoDist.Element('a.button', { href: (0, _synLibAppPage2['default'])('Sign With Twitter') }).add(new _cincoDist.Element('i.fa.fa-twitter'), new _cincoDist.Element('span').text(' Twitter'));
+      return new _cincoDist.Element('a.button', { href: (0, _libAppPage2['default'])('Sign With Twitter') }).add(new _cincoDist.Element('i.fa.fa-twitter'), new _cincoDist.Element('span').text(' Twitter'));
     }
   }, {
     key: 'email',
@@ -80,7 +80,7 @@ var Join = (function (_Element) {
     key: 'iAgree',
     value: function iAgree() {
       return new _cincoDist.Element('.i-agree').add(new _cincoDist.Element('button.shy', { type: 'button' }).add(new _cincoDist.Element('i.fa.fa-2x.fa-square-o.agreed')), new _cincoDist.Element('span').add(new _cincoDist.Element('span').text(' I agree to'), new _cincoDist.Element('a', {
-        href: (0, _synLibAppPage2['default'])('Terms Of Service')
+        href: (0, _libAppPage2['default'])('Terms Of Service')
       }).text('the terms of service'), new _cincoDist.Element('span').text('.')));
     }
   }, {

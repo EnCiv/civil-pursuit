@@ -1,6 +1,6 @@
 'use strict';
 
-import getIntro from 'syn/api/get-intro';
+import getIntro from '../../api/get-intro';
 
 function getIntroTest () {
   return new Promise((ok, ko) => {

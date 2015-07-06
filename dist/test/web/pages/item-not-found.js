@@ -20,9 +20,9 @@ var _synLibAppDescribe = require('syn/lib/app/Describe');
 
 var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var _componentsLayout = require('../components/layout');
 
@@ -41,7 +41,7 @@ var ItemNotFoundPage = (function (_Describe) {
     });
 
     this.assert(function () {
-      return new _componentsLayout2['default']({ title: _synConfigJson2['default'].title.prefix + 'Item not found' }).driver(_this._driver);
+      return new _componentsLayout2['default']({ title: _configJson2['default'].title.prefix + 'Item not found' }).driver(_this._driver);
     });
   }
 

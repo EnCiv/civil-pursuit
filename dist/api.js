@@ -26,9 +26,9 @@ var _path2 = _interopRequireDefault(_path);
 
 var _domain = require('domain');
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var _socketIo = require('socket.io');
 
@@ -89,7 +89,7 @@ var API = (function (_EventEmitter) {
 
           files.forEach(function (file) {
             var name = (0, _string2['default'])(file.replace(/\.js$/, '')).humanize().s.toLowerCase();
-            var handler = require('syn/api/' + file);
+            var handler = require('./api/' + file);
 
             _this2.emit('message', 'Add handler', [name, handler]);
 

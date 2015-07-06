@@ -6,17 +6,17 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilUpload = require('syn/lib/util/upload');
+var _libUtilUpload = require('../../../lib/util/upload');
 
-var _synLibUtilUpload2 = _interopRequireDefault(_synLibUtilUpload);
+var _libUtilUpload2 = _interopRequireDefault(_libUtilUpload);
 
-var _synLibUtilForm = require('syn/lib/util/form');
+var _libUtilForm = require('../../../lib/util/form');
 
-var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
+var _libUtilForm2 = _interopRequireDefault(_libUtilForm);
 
-var _synComponentsYoutubeCtrl = require('syn/components/youtube/ctrl');
+var _componentsYoutubeCtrl = require('../../../components/youtube/ctrl');
 
-var _synComponentsYoutubeCtrl2 = _interopRequireDefault(_synComponentsYoutubeCtrl);
+var _componentsYoutubeCtrl2 = _interopRequireDefault(_componentsYoutubeCtrl);
 
 var _domain = require('domain');
 
@@ -50,7 +50,7 @@ function renderCreator(cb) {
 
       // Use upload service
 
-      new _synLibUtilUpload2['default'](_this.find('dropbox'), _this.find('dropbox').find('input'), _this.find('dropbox'));
+      new _libUtilUpload2['default'](_this.find('dropbox'), _this.find('dropbox').find('input'), _this.find('dropbox'));
 
       // Autogrow
 
@@ -78,7 +78,7 @@ function renderCreator(cb) {
               });
               reference.data('title', title).css('display', 'none');
 
-              var yt = (0, _synComponentsYoutubeCtrl2['default'])(url);
+              var yt = (0, _componentsYoutubeCtrl2['default'])(url);
 
               if (yt) {
                 creator.find('dropbox').hide();
@@ -100,7 +100,7 @@ function renderCreator(cb) {
 
       // Build form using Form provider
 
-      var form = new _synLibUtilForm2['default'](_this.template);
+      var form = new _libUtilForm2['default'](_this.template);
 
       form.send(_this.create.bind(_this));
 

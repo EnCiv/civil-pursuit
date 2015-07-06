@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var Stylesheet = (function (_Element) {
   function Stylesheet(href) {
@@ -78,7 +78,7 @@ var Stylesheets = (function (_Element2) {
       var _this2 = this;
 
       return new Stylesheet(function () {
-        return _this2.isProd() ? _synConfigJson2['default']['font awesome'].cdn : '/assets/bower_components/font-awesome/css/font-awesome.css';
+        return _this2.isProd() ? _configJson2['default']['font awesome'].cdn : '/assets/bower_components/font-awesome/css/font-awesome.css';
       });
     }
   }, {

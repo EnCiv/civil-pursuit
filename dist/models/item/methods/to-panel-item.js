@@ -12,25 +12,25 @@ var _async = require('async');
 
 var _async2 = _interopRequireDefault(_async);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synLibUtilToSlug = require('syn/lib/util/to-slug');
+var _libUtilToSlug = require('../../../lib/util/to-slug');
 
-var _synLibUtilToSlug2 = _interopRequireDefault(_synLibUtilToSlug);
+var _libUtilToSlug2 = _interopRequireDefault(_libUtilToSlug);
 
-var _synLibGetHarmony = require('syn/lib/get-harmony');
+var _libGetHarmony = require('../../../lib/get-harmony');
 
-var _synLibGetHarmony2 = _interopRequireDefault(_synLibGetHarmony);
+var _libGetHarmony2 = _interopRequireDefault(_libGetHarmony);
 
-var _synModelsType = require('syn/models/type');
+var _type = require('../../type');
 
-var _synModelsType2 = _interopRequireDefault(_synModelsType);
+var _type2 = _interopRequireDefault(_type);
 
-var _synModelsUser = require('syn/models/user');
+var _user = require('../../user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _user2 = _interopRequireDefault(_user);
 
 function toPanelItem(cb) {
   var _this = this;
@@ -67,14 +67,14 @@ function toPanelItem(cb) {
           promotions: promotions
         };
 
-        item.image = item.image || _synConfigJson2['default']['public']['default item image'];
+        item.image = item.image || _configJson2['default']['public']['default item image'];
         item.imageHTML = _this.getImageHtml();
         item.popularity = _this.getPopularity();
-        item.link = '/item/' + _this.id + '/' + (0, _synLibUtilToSlug2['default'])(_this.subject);
+        item.link = '/item/' + _this.id + '/' + (0, _libUtilToSlug2['default'])(_this.subject);
 
         var getType = function getType() {
           return new Promise(function (ok, ko) {
-            _synModelsType2['default'].findById(_this.type).populate('harmony').exec()
+            _type2['default'].findById(_this.type).populate('harmony').exec()
             // .then(ok, ko);
             .then(function (type) {
               console.log('yeah got type', type);
@@ -85,7 +85,7 @@ function toPanelItem(cb) {
 
         var getUser = function getUser() {
           return new Promise(function (ok, ko) {
-            _synModelsUser2['default'].findById(_this.user).exec().then(function (user) {
+            _user2['default'].findById(_this.user).exec().then(function (user) {
               try {
                 if (!user) {
                   throw new Error('User not found: ' + _this.user);
@@ -103,7 +103,7 @@ function toPanelItem(cb) {
 
         var getSubtype = function getSubtype() {
           return new Promise(function (ok, ko) {
-            _synModelsType2['default'].findOne({ parent: _this.type }).exec().then(ok, ko);
+            _type2['default'].findOne({ parent: _this.type }).exec().then(ok, ko);
           });
         };
 
@@ -144,7 +144,7 @@ function toPanelItem(cb) {
               var pro = _results[0];
               var con = _results[1];
 
-              ok((0, _synLibGetHarmony2['default'])(pro, con));
+              ok((0, _libGetHarmony2['default'])(pro, con));
             }, ko);
           });
         };

@@ -8,7 +8,7 @@
 
     var socket = this;
 
-    require('syn/lib/domain/next-tick')(
+    require('../lib/domain/next-tick')(
 
       function (error) {
 
@@ -18,7 +18,7 @@
 
       function (domain) {
 
-        require('syn/models/Country')
+        require('../models/Country')
           .find()
           .lean()
           .exec(domain.intercept(function (countries) {

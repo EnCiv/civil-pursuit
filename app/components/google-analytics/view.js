@@ -1,7 +1,7 @@
 'use strict';
 
 import {Element} from 'cinco/dist';
-import config from 'syn/config.json';
+import config from '../../../config.json';
 
 class GoogleAnalytics extends Element {
   constructor (props) {

@@ -1,11 +1,11 @@
 'use strict';
 
 import S                from 'string';
-import Nav              from 'syn/lib/util/nav';
-import readMore         from 'syn/lib/util/read-more';
-import Controller       from 'syn/lib/app/controller';
-import Promote          from 'syn/components/promote//ctrl';
-import Details          from 'syn/components/details//ctrl';
+import Nav              from '../../lib/util/nav';
+import readMore         from '../../lib/util/read-more';
+import Controller       from '../../lib/app/controller';
+import Promote          from '../../components/promote//ctrl';
+import Details          from '../../components/details//ctrl';
 import View             from './view';
 import MediaController  from './controllers/media';
 import toggleArrow      from './controllers/toggle-arrow';
@@ -267,7 +267,7 @@ class ItemCtrl extends Controller {
 
     if ( item.find('promote').hasClass('is-shown') ) {
       item.find('toggle promote').find('.caret').addClass('hide');
-      require('syn/lib/util/nav').hide(item.find('promote'));
+      require('../../lib/util/nav').hide(item.find('promote'));
     }
 
     var hiders = $('.details.is-shown');
@@ -276,7 +276,7 @@ class ItemCtrl extends Controller {
       item.find('collapsers').show();
     }
 
-    require('syn/lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
+    require('../../lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
 
       showHideCaret();
 
@@ -293,7 +293,7 @@ class ItemCtrl extends Controller {
         }
 
         if ( hiders.length ) {
-          require('syn/lib/util/nav').hide(hiders);
+          require('../../lib/util/nav').hide(hiders);
         }
       }
     }));

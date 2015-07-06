@@ -12,13 +12,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synLibAppPage = require('syn/lib/app/page');
+var _libAppPage = require('../../../lib/app/page');
 
-var _synLibAppPage2 = _interopRequireDefault(_synLibAppPage);
+var _libAppPage2 = _interopRequireDefault(_libAppPage);
 
 var Footer = (function (_Milk) {
   function Footer(props) {
@@ -41,14 +41,14 @@ var Footer = (function (_Milk) {
     this.ok(function () {
       return _this.find('#footer').is(':visible');
     }).ok(function () {
-      return _this.find('#footer ' + 'a[href="' + (0, _synLibAppPage2['default'])('Terms Of Service') + '"]').is(':visible');
+      return _this.find('#footer ' + 'a[href="' + (0, _libAppPage2['default'])('Terms Of Service') + '"]').is(':visible');
     });
   }
 
   _inherits(Footer, _Milk);
 
   return Footer;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = Footer;
 module.exports = exports['default'];

@@ -6,17 +6,17 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-var _synComponentsEditAndGoAgainCtrl = require('syn/components/edit-and-go-again/ctrl');
+var _componentsEditAndGoAgainCtrl = require('../../../components/edit-and-go-again/ctrl');
 
-var _synComponentsEditAndGoAgainCtrl2 = _interopRequireDefault(_synComponentsEditAndGoAgainCtrl);
+var _componentsEditAndGoAgainCtrl2 = _interopRequireDefault(_componentsEditAndGoAgainCtrl);
 
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
+var _componentsItemCtrl = require('../../../components/item/ctrl');
 
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 
 function _renderItem(item, hand) {
   var self = this;
@@ -31,7 +31,7 @@ function _renderItem(item, hand) {
 
   // Image
 
-  this.find('item image', hand).empty().append(new _synComponentsItemCtrl2['default']({ item: item }).media());
+  this.find('item image', hand).empty().append(new _componentsItemCtrl2['default']({ item: item }).media());
 
   // References
 
@@ -129,7 +129,7 @@ function renderItem(hand) {
 
     var opposite = left ? 'right' : 'left';
 
-    _synLibUtilNav2['default'].scroll(self.template, self.domain.intercept(function () {
+    _libUtilNav2['default'].scroll(self.template, self.domain.intercept(function () {
 
       // If cursor is smaller than limit, then keep on going
 
@@ -166,19 +166,19 @@ function renderItem(hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
-    _synLibUtilNav2['default'].unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
+    _libUtilNav2['default'].unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
 
       if (promote.item.find('editor').find('form').length) {
         console.warn('already loaded');
       } else {
-        var edit = new _synComponentsEditAndGoAgainCtrl2['default'](promote.item);
+        var edit = new _componentsEditAndGoAgainCtrl2['default'](promote.item);
 
         edit.get(self.domain.intercept(function (template) {
 
           promote.item.find('editor').find('.is-section').append(template);
 
-          _synLibUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, self.domain.intercept(function () {
-            _synLibUtilNav2['default'].show(template, self.domain.intercept(function () {
+          _libUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, self.domain.intercept(function () {
+            _libUtilNav2['default'].show(template, self.domain.intercept(function () {
               edit.render();
             }));
           }));

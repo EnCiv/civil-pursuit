@@ -16,13 +16,13 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var _componentsTopBar = require('../components/top-bar');
 
@@ -55,7 +55,7 @@ var Layout = (function (_Milk) {
     if (props.title) {
       expectedTitle = props.title;
     } else {
-      expectedTitle = _synConfigJson2['default'].title.prefix + _synConfigJson2['default'].title['default'];
+      expectedTitle = _configJson2['default'].title.prefix + _configJson2['default'].title['default'];
     }
 
     this.title(function (title) {
@@ -76,7 +76,7 @@ var Layout = (function (_Milk) {
   _inherits(Layout, _Milk);
 
   return Layout;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = Layout;
 module.exports = exports['default'];

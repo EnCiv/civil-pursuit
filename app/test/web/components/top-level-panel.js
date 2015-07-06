@@ -1,8 +1,8 @@
 'use strict';
 
-import Milk from 'syn/lib/app/milk';
-import TypeModel from 'syn/models/type';
-import ItemModel from 'syn/models/item';
+import Milk from '../../../lib/app/milk';
+import TypeModel from '../../../models/type';
+import ItemModel from '../../../models/item';
 import PanelTest from './panel';
 import ItemTest from './item';
 

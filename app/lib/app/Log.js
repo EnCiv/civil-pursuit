@@ -2,7 +2,7 @@
 
 import colors from 'colors';
 import fs from 'fs';
-import printTime from 'syn/util/print-time';
+import printTime from '../../util/print-time';
 
 class Log {
 

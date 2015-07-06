@@ -12,9 +12,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synApp = require('syn/app');
+var _app = require('../../app');
 
-var _synApp2 = _interopRequireDefault(_synApp);
+var _app2 = _interopRequireDefault(_app);
 
 var Controller = (function (_App) {
   function Controller() {
@@ -26,7 +26,7 @@ var Controller = (function (_App) {
   _inherits(Controller, _App);
 
   return Controller;
-})(_synApp2['default']);
+})(_app2['default']);
 
 exports['default'] = Controller;
 module.exports = exports['default'];

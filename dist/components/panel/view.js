@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synComponentsCreatorView = require('syn/components/creator/view');
+var _componentsCreatorView = require('../../components/creator/view');
 
-var _synComponentsCreatorView2 = _interopRequireDefault(_synComponentsCreatorView);
+var _componentsCreatorView2 = _interopRequireDefault(_componentsCreatorView);
 
 var Panel = (function (_Element) {
   function Panel(props) {
@@ -51,7 +51,7 @@ var Panel = (function (_Element) {
       var body = new _cincoDist.Element('.panel-body');
 
       if (this.props.creator !== false) {
-        body.add(new _synComponentsCreatorView2['default'](this.props));
+        body.add(new _componentsCreatorView2['default'](this.props));
       }
 
       var items = new _cincoDist.Element('.items');

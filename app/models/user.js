@@ -4,8 +4,8 @@ import { default as mongoose, Schema }  from  'mongoose';
 import findRandom                       from  'mongoose-simple-random';
 import userSchema                       from  './user/schema';
 import preSave                          from  './user/pre/save';
-import toCamelCase                      from  'syn/lib/util/to-camel-case';
-import toSlug                           from  'syn/lib/util/to-slug';
+import toCamelCase                      from  '../lib/util/to-camel-case';
+import toSlug                           from  '../lib/util/to-slug';
 
 let schema = new Schema(userSchema);
 

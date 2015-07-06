@@ -1,7 +1,7 @@
 'use strict';
 
-import Milk from 'syn/lib/app/milk';
-import Page from 'syn/lib/app/page';
+import Milk from '../../../lib/app/milk';
+import Page from '../../../lib/app/page';
 
 class SignOut extends Milk {
 

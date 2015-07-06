@@ -16,13 +16,13 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synConfigJson = require('syn/config.json');
+var _configJson = require('../../../../config.json');
 
-var _synConfigJson2 = _interopRequireDefault(_synConfigJson);
+var _configJson2 = _interopRequireDefault(_configJson);
 
 var _componentsJoin = require('../components/join');
 
@@ -166,7 +166,7 @@ var TopBar = (function (_Milk) {
   _inherits(TopBar, _Milk);
 
   return TopBar;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = TopBar;
 module.exports = exports['default'];

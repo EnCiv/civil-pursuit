@@ -1,6 +1,6 @@
 'use strict';
 
-import FeedbackModel from 'syn/models/feedback';
+import FeedbackModel from '../models/feedback';
 
 function insertFeedback (event, feedback) {
   try {

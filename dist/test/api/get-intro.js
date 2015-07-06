@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synApiGetIntro = require('syn/api/get-intro');
+var _apiGetIntro = require('../../api/get-intro');
 
-var _synApiGetIntro2 = _interopRequireDefault(_synApiGetIntro);
+var _apiGetIntro2 = _interopRequireDefault(_apiGetIntro);
 
 function getIntroTest() {
   return new Promise(function (_ok, ko) {
@@ -33,7 +33,7 @@ function getIntroTest() {
 
         };
 
-        _synApiGetIntro2['default'].apply(mock, [event]);
+        _apiGetIntro2['default'].apply(mock, [event]);
 
         setTimeout(function () {
           if (state === null) {

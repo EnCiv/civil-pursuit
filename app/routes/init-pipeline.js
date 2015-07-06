@@ -14,7 +14,7 @@ function initPipeLine (req, res, next) {
     this.emit('request', req);
 
     // Forcing item
-    require('syn/models/item');
+    require('../models/item');
 
     next();
   }

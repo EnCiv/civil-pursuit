@@ -1,7 +1,7 @@
 'use strict';
 
 import { Domain } from 'domain';
-import encrypt from 'syn/lib/util/encrypt';
+import encrypt from '../../../lib/util/encrypt';
 
 function resetPassword (key, token, password) {
   return new Promise((ok, ko) => {

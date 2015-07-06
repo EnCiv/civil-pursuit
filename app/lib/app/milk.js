@@ -2,9 +2,9 @@
 
 import {EventEmitter}   from 'events';
 import WebDriver        from 'webdriverio';
-import wrap             from 'syn/lib/util/run';
+import wrap             from '../../lib/util/run';
 import should           from 'should';
-import UserModel        from 'syn/models/user';
+import UserModel        from '../../models/user';
 
 function fnToStr (fn) {
   let bits = fn.toString().split(/\{/);

@@ -1,9 +1,9 @@
 'use strict';
 
 import { Domain }         from 'domain';
-import Passport           from 'syn/lib/app/Passport';
+import Passport           from '../lib/app/Passport';
 import PassportTwitter    from 'passport-twitter';
-import config             from 'syn/config.json';
+import config             from '../../config.json';
 
 class Twitter extends Passport {
 

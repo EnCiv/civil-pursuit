@@ -1,6 +1,6 @@
 'use strict';
 
-import randomString from 'syn/lib/util/random-string';
+import randomString from '../../../lib/util/random-string';
 
 function generateShortId (_ok, _ko) {
   return new Promise((ok, ko) => {

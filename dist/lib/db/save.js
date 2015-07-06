@@ -33,7 +33,7 @@
     });
 
     function saveModel(model, done) {
-      var Model = require('syn/models/' + model);
+      var Model = require('../../models/' + model);
       var stream = fs.createWriteStream('data/' + model + '.js');
       var save = {
         starts: Date.now(),

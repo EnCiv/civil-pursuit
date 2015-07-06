@@ -4,7 +4,7 @@
 
   'use strict';
 
-  var Nav = require('syn/lib/util/nav');
+  var Nav = require('../../../lib/util/nav');
 
   /**
    *  @function
@@ -39,7 +39,7 @@
             item.youtube = new_item.youtube;
           }
 
-          var item = new (require('syn/components/item/ctrl'))(item);
+          var item = new (require('../../../components/item/ctrl'))(item);
 
           item.load(app.domain.intercept(function () {
             item.template.insertBefore(edit.item.template);

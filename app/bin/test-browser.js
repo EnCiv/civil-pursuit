@@ -10,7 +10,7 @@
 
   require("babel/register")({ modules: 'common', stage: 1 });
 
-  var printTime = require('syn/lib/util/print-time');
+  var printTime = require('../lib/util/print-time');
 
   var test;
 
@@ -83,7 +83,7 @@
       }
     }
 
-    var Test = require('syn/' + script);
+    var Test = require('../' + script);
 
     test = new Test({ viewport : viewport, session : session, vendor : vendor });
 

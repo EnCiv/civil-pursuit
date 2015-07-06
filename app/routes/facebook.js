@@ -6,9 +6,9 @@ import util                   from 'util';
 import passport               from 'passport';
 import { FacebookStrategy }   from 'passport-facebook';
 
-import config                 from 'syn/config.json';
-import User                   from 'syn/models/user';
-import Passport               from 'syn/lib/app/Passport';
+import config                 from '../../config.json';
+import User                   from '../models/user';
+import Passport               from '../lib/app/Passport';
 
 class Facebook extends Passport {
 

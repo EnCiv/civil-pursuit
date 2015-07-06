@@ -1,8 +1,8 @@
 'use strict';
 
-import {Element} from 'cinco/dist';
-import config from 'syn/config';
-import Page from 'syn/lib/app/page';
+import {Element}    from 'cinco/dist';
+import config       from '../../../config.json';
+import Page         from '../../lib/app/page';
 
 class TopBar extends Element {
   

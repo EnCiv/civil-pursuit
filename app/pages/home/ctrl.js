@@ -1,9 +1,9 @@
 'use strict';
 
-import App          from 'syn/app';
-import IntroCtrl    from 'syn/components/intro/ctrl';
-import TopBar       from 'syn/components/top-bar/ctrl';
-import Panel        from 'syn/components/panel/ctrl';
+import App          from '../../app';
+import IntroCtrl    from '../../components/intro/ctrl';
+import TopBar       from '../../components/top-bar/ctrl';
+import Panel        from '../../components/panel/ctrl';
 
 synapp.app = new App(true);
 

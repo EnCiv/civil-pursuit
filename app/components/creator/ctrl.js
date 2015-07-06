@@ -1,11 +1,11 @@
 'use strict';
 
-import Controller     from 'syn/lib/app/controller';
-import Panel          from 'syn/components/panel//ctrl';
-import render         from 'syn/components/creator//controllers/render';
-import create         from 'syn/components/creator//controllers/create';
-import created        from 'syn/components/creator//controllers/created';
-import packItem       from 'syn/components/creator//controllers/pack-item';
+import Controller     from '../../lib/app/controller';
+import Panel          from '../../components/panel//ctrl';
+import render         from '../../components/creator//controllers/render';
+import create         from '../../components/creator//controllers/create';
+import created        from '../../components/creator//controllers/created';
+import packItem       from '../../components/creator//controllers/pack-item';
 
 var text = {
   'looking up title': 'Looking up'

@@ -18,13 +18,13 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synLibAppMilk = require('syn/lib/app/milk');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppMilk2 = _interopRequireDefault(_synLibAppMilk);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../../../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
 var Join = (function (_Milk) {
   function Join(props) {
@@ -58,7 +58,7 @@ var Join = (function (_Milk) {
     // Create test user from DB
 
     .set('User', function () {
-      return _synModelsUser2['default'].disposable();
+      return _modelsUser2['default'].disposable();
     })
 
     // User to create
@@ -252,7 +252,7 @@ var Join = (function (_Milk) {
   }]);
 
   return Join;
-})(_synLibAppMilk2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = Join;
 module.exports = exports['default'];

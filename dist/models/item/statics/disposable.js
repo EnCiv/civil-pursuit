@@ -10,17 +10,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _synModelsType = require('syn/models/type');
+var _modelsType = require('../../../models/type');
 
-var _synModelsType2 = _interopRequireDefault(_synModelsType);
+var _modelsType2 = _interopRequireDefault(_modelsType);
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../../../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-var _synModelsItem = require('syn/models/item');
+var _modelsItem = require('../../../models/item');
 
-var _synModelsItem2 = _interopRequireDefault(_synModelsItem);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
 var _domain = require('domain');
 
@@ -57,7 +57,7 @@ var DisposableItem = (function () {
 
       return new Promise(function (ok, ko) {
         try {
-          Promise.all([DisposableItem.findType(options), _synModelsUser2['default'].disposable()]).then(function (results) {
+          Promise.all([DisposableItem.findType(options), _modelsUser2['default'].disposable()]).then(function (results) {
             try {
               (function () {
                 var type = results[0];
@@ -131,12 +131,12 @@ var DisposableItem = (function () {
           if (options.type) {
             // Object ID
             if (typeof options.type === 'object') {
-              _synModelsType2['default'].findById(options.type).exec().then(ok, ko);
+              _modelsType2['default'].findById(options.type).exec().then(ok, ko);
             }
           }
           // Find any type
           else {
-            _synModelsType2['default'].findOneRandom(function (error, type) {
+            _modelsType2['default'].findOneRandom(function (error, type) {
               if (error) {
                 return ko(error);
               }
@@ -176,7 +176,7 @@ var DisposableItem = (function () {
 
           var d = new _domain.Domain().on('error', ko);
 
-          _synModelsItem2['default'].create(newItem, d.intercept(function (item) {
+          _modelsItem2['default'].create(newItem, d.intercept(function (item) {
             return ok(item);
           }));
         } catch (error) {

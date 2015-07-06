@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synModelsFeedback = require('syn/models/feedback');
+var _modelsFeedback = require('../models/feedback');
 
-var _synModelsFeedback2 = _interopRequireDefault(_synModelsFeedback);
+var _modelsFeedback2 = _interopRequireDefault(_modelsFeedback);
 
 function insertFeedback(event, feedback) {
   var _this = this;
@@ -18,7 +18,7 @@ function insertFeedback(event, feedback) {
       feedback.user = this.synuser.id;
     }
 
-    _synModelsFeedback2['default'].create(feedback).then(function (inserted) {
+    _modelsFeedback2['default'].create(feedback).then(function (inserted) {
       return _this.ok(event, inserted);
     }, function (error) {
       return _this.error(error);

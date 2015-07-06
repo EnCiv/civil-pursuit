@@ -1,6 +1,6 @@
 'use strict';
 
-import cloudinary from 'syn/lib/util/cloudinary';
+import cloudinary from '../app/cloudinary';
 
 function formatImage (url) {
   let id = url.split(/\//).pop();

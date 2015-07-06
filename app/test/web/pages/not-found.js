@@ -2,7 +2,7 @@
 
 import should from 'should';
 import Describe from 'syn/lib/app/Describe';
-import config from 'syn/config.json';
+import config from '../../config.json';
 import Layout from '../components/layout';
 
 class NotFound extends Describe {

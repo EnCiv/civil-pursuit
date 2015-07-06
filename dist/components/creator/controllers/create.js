@@ -6,17 +6,17 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synLibUtilNav = require('syn/lib/util/nav');
+var _libUtilNav = require('../../../lib/util/nav');
 
-var _synLibUtilNav2 = _interopRequireDefault(_synLibUtilNav);
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-var _synComponentsItemCtrl = require('syn/components/item/ctrl');
+var _componentsItemCtrl = require('../../../components/item/ctrl');
 
-var _synComponentsItemCtrl2 = _interopRequireDefault(_synComponentsItemCtrl);
+var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 
-var _synLibAppStream = require('syn/lib/app/Stream');
+var _libAppStream = require('../../../lib/app/Stream');
 
-var _synLibAppStream2 = _interopRequireDefault(_synLibAppStream);
+var _libAppStream2 = _interopRequireDefault(_libAppStream);
 
 function save() {
   var _this = this;
@@ -29,7 +29,7 @@ function save() {
 
       // Hide the Creator           // Catch errors
 
-      _synLibUtilNav2['default'].hide(_this.template).error(d.intercept())
+      _libUtilNav2['default'].hide(_this.template).error(d.intercept())
 
       // Hiding complete
 
@@ -49,7 +49,7 @@ function save() {
 
           // New stream         //  Catch stream errors
 
-          new _synLibAppStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
+          new _libAppStream2['default'](file).on('error', d.intercept(function () {})).on('end', function () {
             _this.packaged.image = file.name;
 
             console.log('create item', _this.packaged);

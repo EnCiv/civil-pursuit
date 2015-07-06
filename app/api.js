@@ -4,7 +4,7 @@ import {EventEmitter}     from 'events';
 import fs                 from 'fs';
 import path               from 'path';
 import {Domain}           from 'domain';
-import config             from 'syn/config.json';
+import config             from '../config.json';
 import SocketIO           from 'socket.io';
 import S                  from 'string';
 import cookieParser       from 'cookie-parser';
@@ -42,7 +42,7 @@ class API extends EventEmitter {
             .humanize()
             .s
             .toLowerCase();
-          let handler   =   require('syn/api/' + file);
+          let handler   =   require('./api/' + file);
 
           this.emit('message', 'Add handler', [name, handler]);
 

@@ -7,8 +7,8 @@
 */
 
 import { Element }    from 'cinco/dist';
-import Panel          from 'syn/components/panel//view';
-import ItemView       from 'syn/components/item/view';
+import Panel          from '../../components/panel//view';
+import ItemView       from '../../components/item/view';
 
 class Intro extends Element {
 

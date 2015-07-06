@@ -2,11 +2,11 @@
 
 import fs from 'fs';
 import request from 'request';
-import config from 'syn/config.json';
-import Milk from 'syn/lib/app/milk';
+import config from '../../../../config.json';
+import Milk from '../../../lib/app/milk';
 import ItemTest from './item';
-import ItemModel from 'syn/models/item';
-import getUrlTitle from 'syn/lib/util/get-url-title';
+import ItemModel from '../../../models/item';
+import getUrlTitle from '../../../lib/app/get-url-title';
 
 class Creator extends Milk {
 

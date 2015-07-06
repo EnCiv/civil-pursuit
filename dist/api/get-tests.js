@@ -24,7 +24,7 @@
 
       console.log('<<"get items"', panel, item);
 
-      require('syn/models/item').find(query).skip(panel.skip).limit(panel.size).sort({ 'promotions': -1, 'views': -1, 'created': 1 }).exec(domain.intercept(function (items) {
+      require('../models/item').find(query).skip(panel.skip).limit(panel.size).sort({ 'promotions': -1, 'views': -1, 'created': 1 }).exec(domain.intercept(function (items) {
 
         console.log();
         console.log('- got items -', panel.type, items.length);
@@ -51,7 +51,7 @@
       }));
     }
 
-    require('syn/lib/domain')(onDomainError, run);
+    require('../lib/domain')(onDomainError, run);
   }
 
   module.exports = getItems;

@@ -14,13 +14,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synLibAppController = require('syn/lib/app/controller');
+var _libAppController = require('../../lib/app/controller');
 
-var _synLibAppController2 = _interopRequireDefault(_synLibAppController);
+var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _synLibUtilForm = require('syn/lib/util/form');
+var _libUtilForm = require('../../lib/util/form');
 
-var _synLibUtilForm2 = _interopRequireDefault(_synLibUtilForm);
+var _libUtilForm2 = _interopRequireDefault(_libUtilForm);
 
 var Join = (function (_Controller) {
   function Join(props) {
@@ -30,7 +30,7 @@ var Join = (function (_Controller) {
 
     this.props = props || {};
 
-    this.form = new _synLibUtilForm2['default'](this.template);
+    this.form = new _libUtilForm2['default'](this.template);
 
     this.form.send(this.submit.bind(this));
 
@@ -106,7 +106,7 @@ var Join = (function (_Controller) {
   }]);
 
   return Join;
-})(_synLibAppController2['default']);
+})(_libAppController2['default']);
 
 exports['default'] = Join;
 module.exports = exports['default'];

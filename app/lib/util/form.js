@@ -1,6 +1,6 @@
 'use strict';
 
-import domainRun from 'syn/lib/util/domain-run';
+import domainRun from './domain-run';
 
 class Form {
 

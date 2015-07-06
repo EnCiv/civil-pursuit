@@ -2,9 +2,9 @@
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synModelsUser = require('syn/models/user');
+var _modelsUser = require('../models/user');
 
-var _synModelsUser2 = _interopRequireDefault(_synModelsUser);
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
 /**
  *  @function addCitizenship
@@ -23,7 +23,7 @@ function addCitizenship(user_id, country_id) {
   });
 
   domain.run(function () {
-    _synModelsUser2['default'].addCitizenship(user_id, country_id, domain.intercept(function (item) {
+    _modelsUser2['default'].addCitizenship(user_id, country_id, domain.intercept(function (item) {
       socket.emit('citizenship added', item);
     }));
   });

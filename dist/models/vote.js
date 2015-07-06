@@ -14,26 +14,26 @@ var _mongooseSimpleRandom = require('mongoose-simple-random');
 
 var _mongooseSimpleRandom2 = _interopRequireDefault(_mongooseSimpleRandom);
 
-var _synModelsVoteStaticsGetAccumulation = require('syn/models/vote/statics/get-accumulation');
+var _modelsVoteStaticsGetAccumulation = require('../models/vote/statics/get-accumulation');
 
-var _synModelsVoteStaticsGetAccumulation2 = _interopRequireDefault(_synModelsVoteStaticsGetAccumulation);
+var _modelsVoteStaticsGetAccumulation2 = _interopRequireDefault(_modelsVoteStaticsGetAccumulation);
 
 try {
   _mongoose2['default'].model('User');
 } catch (error) {
-  require('syn/models/user');
+  require('../models/user');
 }
 
 try {
   _mongoose2['default'].model('Item');
 } catch (error) {
-  require('syn/models/item');
+  require('../models/item');
 }
 
 try {
   _mongoose2['default'].model('Criteria');
 } catch (error) {
-  require('syn/models/criteria');
+  require('../models/criteria');
 }
 
 var VoteSchema = new _mongoose.Schema({
@@ -68,7 +68,7 @@ VoteSchema.plugin(_mongooseSimpleRandom2['default']);
  *  @return {Object}
  */
 
-VoteSchema.statics.getAccumulation = _synModelsVoteStaticsGetAccumulation2['default'];
+VoteSchema.statics.getAccumulation = _modelsVoteStaticsGetAccumulation2['default'];
 
 exports['default'] = _mongoose2['default'].model('Vote', VoteSchema);
 module.exports = exports['default'];

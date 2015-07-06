@@ -59,26 +59,16 @@ function connectToMongoose() {
   });
 }
 
-(0, _libAppSymlink2['default'])().then(function () {
-  console.log('SYMLINK OK');
-  console.log('SYMLINK OK');
-  console.log('SYMLINK OK');
-  console.log('SYMLINK OK');
-  console.log('SYMLINK OK');
-  console.log('SYMLINK OK');
-  console.log('SYMLINK OK');
-  console.log('SYMLINK OK');
-  readMe().then(function () {
-    return connectToMongoose().then(function () {
-      try {
-        console.log('connecting to server 22');
-        var Server = require('../server');
-        new Server().on('error', parseError).on('message', function (message) {
-          return console.log('message', message);
-        });
-      } catch (error) {
-        parseError(error);
-      }
-    }, parseError);
+readMe().then(function () {
+  return connectToMongoose().then(function () {
+    try {
+      console.log('connecting to server 22');
+      var Server = require('../server');
+      new Server().on('error', parseError).on('message', function (message) {
+        return console.log('message', message);
+      });
+    } catch (error) {
+      parseError(error);
+    }
   }, parseError);
 }, parseError);

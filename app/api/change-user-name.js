@@ -8,7 +8,7 @@
 
     var socket = this;
 
-    require('syn/lib/domain/next-tick')(
+    require('../lib/domain/next-tick')(
 
       function (error) {
 
@@ -18,7 +18,7 @@
 
       function (domain) {
 
-        require('syn/models/user').update({ _id: user_id }, name,
+        require('../models/user').update({ _id: user_id }, name,
           domain.intercept(function (user) {
             socket.emit('user name changed', user);  
           }));

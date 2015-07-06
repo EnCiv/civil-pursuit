@@ -1,6 +1,6 @@
 'use strict';
 
-import config from 'syn/config.json';
+import config from '../../config.json';
 
 function setCookieUser (req, res, next) {
   res.cookie('synuser',

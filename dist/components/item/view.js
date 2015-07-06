@@ -16,21 +16,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synLibAppPage = require('syn/lib/app/page');
+var _libAppPage = require('../../lib/app/page');
 
-var _synLibAppPage2 = _interopRequireDefault(_synLibAppPage);
+var _libAppPage2 = _interopRequireDefault(_libAppPage);
 
-var _synComponentsItemDefaultButtonsView = require('syn/components/item-default-buttons/view');
+var _itemDefaultButtonsView = require('../item-default-buttons/view');
 
-var _synComponentsItemDefaultButtonsView2 = _interopRequireDefault(_synComponentsItemDefaultButtonsView);
+var _itemDefaultButtonsView2 = _interopRequireDefault(_itemDefaultButtonsView);
 
-var _synComponentsPromoteView = require('syn/components/promote/view');
+var _promoteView = require('../promote/view');
 
-var _synComponentsPromoteView2 = _interopRequireDefault(_synComponentsPromoteView);
+var _promoteView2 = _interopRequireDefault(_promoteView);
 
-var _synComponentsDetailsView = require('syn/components/details/view');
+var _detailsView = require('../details/view');
 
-var _synComponentsDetailsView2 = _interopRequireDefault(_synComponentsDetailsView);
+var _detailsView2 = _interopRequireDefault(_detailsView);
 
 var Item = (function (_Element) {
   function Item(props, extra) {
@@ -82,7 +82,7 @@ var Item = (function (_Element) {
       if (this.props.item && this.props.item.buttons) {
         itemButtons.add(this.props.item.buttons);
       } else {
-        itemButtons.add(new _synComponentsItemDefaultButtonsView2['default'](this.props));
+        itemButtons.add(new _itemDefaultButtonsView2['default'](this.props));
       }
 
       return itemButtons;
@@ -95,7 +95,7 @@ var Item = (function (_Element) {
       return new _cincoDist.Element('h4.item-subject.header').add(new _cincoDist.Element('a', {
         href: function href(locals) {
           if (locals && locals.item) {
-            return (0, _synLibAppPage2['default'])('Item Page', locals && locals.item);
+            return (0, _libAppPage2['default'])('Item Page', locals && locals.item);
           }
           return '#';
         }
@@ -148,7 +148,7 @@ var Item = (function (_Element) {
   }, {
     key: 'promote',
     value: function promote() {
-      return new _cincoDist.Element('.promote.is-container').add(new _cincoDist.Element('.is-section').add(new _synComponentsPromoteView2['default'](this.props)));
+      return new _cincoDist.Element('.promote.is-container').add(new _cincoDist.Element('.is-section').add(new _promoteView2['default'](this.props)));
     }
   }, {
     key: 'below',
@@ -158,7 +158,7 @@ var Item = (function (_Element) {
   }, {
     key: 'details',
     value: function details() {
-      return new _cincoDist.Element('.details.is-container').add(new _cincoDist.Element('.is-section').add(new _synComponentsDetailsView2['default'](this.props)));
+      return new _cincoDist.Element('.details.is-container').add(new _cincoDist.Element('.is-section').add(new _detailsView2['default'](this.props)));
     }
   }, {
     key: 'arrow',
