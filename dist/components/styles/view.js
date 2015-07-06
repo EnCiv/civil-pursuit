@@ -39,7 +39,7 @@ var Stylesheets = (function (_Element2) {
 
     _get(Object.getPrototypeOf(Stylesheets.prototype), 'constructor', this).call(this, 'styles');
     this.props = props;
-    this.add(this.reset(), this.app(), this.assets(), this.fontAwesome(), this.vex(), this.vexTheme(), this.c3(), this.tooltip(), this.goalProgress());
+    this.add(this.reset(), this.assets(), this.app(), this.fontAwesome(), this.vex(), this.vexTheme(), this.c3(), this.tooltip(), this.goalProgress());
   }
 
   _inherits(Stylesheets, _Element2);

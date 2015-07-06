@@ -17,8 +17,8 @@ class Stylesheets extends Element {
     this.props = props;
     this.add(
       this.reset(),
-      this.app(),
       this.assets(),
+      this.app(),
       this.fontAwesome(),
       this.vex(),
       this.vexTheme(),
