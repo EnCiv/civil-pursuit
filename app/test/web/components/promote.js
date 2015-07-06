@@ -103,6 +103,8 @@ class Promote extends Milk {
 
       set('Right criteria description #' + i, () => find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' .criteria-description'));
     }
+
+    set('Left feedback', () => find(get('View').selector + ' .left-item.feedback textarea.feedback-entry'));
   }
 
   stories () {
@@ -289,6 +291,11 @@ class Promote extends Milk {
         'Criteria description is correct #' + i
       );
     }
+
+    ok(
+      () => get('Left feedback').is(':visible'),
+      'Left feedback is visible'
+    );
   }
 
   rightSide (id) {
@@ -419,7 +426,7 @@ class Promote extends Milk {
         'Click on Criteria #' + i
       );
 
-      // this.wait(3);
+      this.wait(1);
 
       ok(
         () => get('Right criteria description #' + i).text()
