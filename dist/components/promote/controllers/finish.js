@@ -18,21 +18,21 @@
     promote.find('promote button').off('click');
     promote.find('finish button').off('click');
 
-    if (promote.evaluation.left) {
+    if (this.get('left')) {
       this.save('left');
     }
 
-    if (promote.evaluation.right) {
+    if (this.get('right')) {
       this.save('right');
     }
 
-    Nav.unreveal(promote.template, promote.item.template, app.domain.intercept(function () {
+    Nav.unreveal(promote.template, promote.itemController.template, this.domain.intercept(function () {
 
-      promote.item.details.get();
+      promote.itemController.details.get();
 
-      promote.item.find('toggle details').click();
+      promote.itemController.find('toggle details').click();
 
-      promote.item.find('details').find('.feedback-pending').removeClass('hide');
+      promote.itemController.find('details').find('.feedback-pending').removeClass('hide');
 
       promote.evaluation = null;
     }));

@@ -114,6 +114,10 @@ class Promote extends Controller {
     return render.apply(this, [cb]);
   }
 
+  finish (cb) {
+    return finish.apply(this, [cb]);
+  }
+
   save (hand, cb) {
 
     // For responsiveness reasons, there are a copy of each element in DOM
@@ -173,7 +177,9 @@ class Promote extends Controller {
       .publish('insert votes', votes)
       .subscribe(pubsub => pubsub.unsubscribe());
 
-    cb();
+    if ( typeof cb === 'function' ) {
+      cb();
+    }
   }
 
   getEvaluation (cb) {
@@ -231,3 +237,4 @@ import Edit         from '../../components/edit-and-go-again/ctrl';
 import Controller   from '../../lib/app/controller';
 import render       from '../../components/promote/controllers/render';
 import renderItem   from '../../components/promote/controllers/render-item';
+import finish       from '../../components/promote/controllers/finish';

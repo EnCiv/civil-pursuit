@@ -96,15 +96,37 @@ class Promote extends Milk {
       set('Left criteria name #' + i, () => find(get('View').selector + ' .left-item.sliders .criteria-' + i + ' .criteria-name'));
 
       set('Left criteria description #' + i, () => find(get('View').selector + ' .left-item.sliders .criteria-' + i + ' .criteria-description'));
+
+      set('Left criteria slider #' + i, () => find(get('View').selector + ' .left-item.sliders .criteria-' + i + ' input[type="range"]'));
     }
 
     for ( let i = 0; i < 4 ; i ++ ) {
       set('Right criteria name #' + i, () => find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' .criteria-name'));
 
       set('Right criteria description #' + i, () => find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' .criteria-description'));
+
+      set('Right criteria slider #' + i, () => find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' input[type="range"]'));
     }
 
     set('Left feedback', () => find(get('View').selector + ' .left-item.feedback textarea.feedback-entry'));
+
+    set('Left feedback value', 'This a feedback for the left item');
+
+    set('Right feedback', () => find(get('View').selector + ' .right-item.feedback textarea.feedback-entry'));
+
+    set('Right feedback value', 'This a feedback for the right item');
+
+    set('Promote label', () => find(get('View').selector + ' .promote-label-choose'));
+
+    set('Promote left item button', () => find(get('View').selector + ' .left-item .promote'));
+
+    set('Promote right item button', () => find(get('View').selector + ' .right-item .promote'));
+
+    set('Edit and go again left button', () => find(get('View').selector + ' .left-item .edit-and-go-again-toggle'));
+
+    set('Edit and go again right button', () => find(get('View').selector + ' .right-item .edit-and-go-again-toggle'));
+
+    set('Finish button', () => find(get('Main').selector + ' button.finish'));
   }
 
   stories () {
@@ -117,10 +139,6 @@ class Promote extends Milk {
     ok(() => get('Main').is(':visible'), 'Promote is visible');
     ok(() => get('Header').is(':visible'), 'Header is visible');
     ok(() => get('Cursor').is(':visible'), 'Cursor is visible');
-
-    ok(() => get('Cursor').text()
-      .then(text => text.should.be.exactly('1')),
-      'Cursor shows the right number');
     
     ok(() => get('Limit').text()
       .then(text => 
@@ -136,29 +154,81 @@ class Promote extends Milk {
 
     ok(() => get('View').is(':visible'), 'Side by side viewport view is visible');
 
-    // Get left item's id
-
-    ok(
-      () => get('Side by side').attr('data-left-item')
-        .then(attr => this.leftSide(attr)),
-      'Verify left item'
-    );
-
-    ok(
-      () => get('Side by side').attr('data-right-item')
-        .then(attr => this.rightSide(attr)),
-      'Verify right item'
-    );
+    for ( let i = 0; i < 5; i ++ ) {
+      this.cycle(i);
+    }
   }
 
-  leftSide (id) {
-    console.log('left side', id)
+  cycle (i) {
+    i = i || 0;
+
     let ok      =   this.ok.bind(this);
     let get     =   this.get.bind(this);
     let set     =   this.set.bind(this);
     let find    =   this.find.bind(this);
 
-    set('Left item', () => ItemModel.findById(id).exec());
+    ok(() => get('Cursor').text()
+      .then(text => text.should.be.exactly((i + 1).toString())),
+      'Cursor shows the right number');
+
+    // Get left item's id
+
+    this.leftSide();
+
+    this.rightSide();
+
+    ok(
+      () => get('Promote label').is(':visible'),
+      'Promote label is visible'
+    );
+
+    ok(
+      () => get('Promote label').text()
+        .then(text => text.trim().should.be.exactly('Which of these is most important for the community to consider?')),
+      'Promote label is visible'
+    );
+
+    ok(
+      () => get('Finish button').is(':visible'),
+      'Finish button is visible'
+    );
+
+    ok(
+      () => get('Finish button').text()
+        .then(text => text.should.be.exactly('Neither')),
+      'Finish button text is "Neither"'
+    );
+
+    ok(
+      () => get('Finish button').click(),
+      'Click on "Neither"'
+    );
+
+    this.wait(2);
+  }
+
+  leftSide () {
+
+    let ok      =   this.ok.bind(this);
+    let get     =   this.get.bind(this);
+    let set     =   this.set.bind(this);
+    let find    =   this.find.bind(this);
+
+    set('Left id', () => new Promise((ok, ko) => {
+      get('Side by side').attr('data-left-item')
+        .then(attr => ok(attr))
+    }));
+
+    set('Left item', () => ItemModel.findById(get('Left id')).exec());
+
+    ok(
+      () => new Promise((ok, ko) => {
+        console.log('Left id', get('Left id'));
+        console.log('Left item', get('Left item'));
+        // console.log('keys', this._keys)
+        ok();
+      })
+    );
 
     // Left image is item's image
 
@@ -290,22 +360,181 @@ class Promote extends Milk {
           }),
         'Criteria description is correct #' + i
       );
+
+      // Slider
+
+      ok(
+        () => get('Left criteria slider #' + i).is(':visible'),
+        'Criteria #' + i + ' has a left slider' 
+      );
+
+      ok(
+        () => get('Left criteria slider #' + i).val()
+          .then(val => (+val).should.be.exactly(0)),
+        'Criteria #' + i + ' \'s left slider is 0'
+      );
+
+      if ( i === 0 ) {
+        ok(
+          () => get('Left criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s left slider'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).keys('\u{E012}'),
+          'Set criteria #' + i + ' \'s left slider to -1'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(-1)),
+          'Criteria #' + i + ' \'s left slider is -1'
+        );
+      }
+
+      if ( i === 1 ) {
+        ok(
+          () => get('Left criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s left slider'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s left slider to -1'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s left slider is 1'
+        );
+      }
+
+      if ( i === 2 ) {
+        ok(
+          () => get('Left criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s left slider'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s left slider to 1'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s left slider is 1'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).keys('\u{E012}'),
+          'Set criteria #' + i + ' \'s left slider to 0'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(0)),
+          'Criteria #' + i + ' \'s left slider is 0'
+        );
+      }
+
+      if ( i === 3 ) {
+        ok(
+          () => get('Left criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s left slider'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s left slider to 1'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s left slider is 1'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s left slider to 1'
+        );
+
+        ok(
+          () => get('Left criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s left slider is 1'
+        );
+      }
     }
+
+    // Feedback
 
     ok(
       () => get('Left feedback').is(':visible'),
       'Left feedback is visible'
     );
+
+    ok(
+      () => get('Left feedback').val(get('Left feedback value')),
+      'Leave a feedback on left item'
+    );
+
+    // Promote item
+
+    ok(
+      () => get('Promote left item button').is(':visible'),
+      'You can see button to promote left item'
+    );
+
+    ok(
+      () => get('Promote left item button').text()
+        .then(text => text.should.be.exactly(get('Left item').subject)),
+      'Left promote button text is item\'s subject'
+    );
+
+    // Edit and go again
+
+    ok(
+      () => get('Edit and go again left button').is(':visible'),
+      'Edit and go again left button is visible'
+    );
+
+    ok(
+      () => get('Edit and go again left button').text()
+        .then(text => text.should.be.exactly('Edit and go again')),
+      'Edit and go again left button has the correct text'
+    );
   }
 
-  rightSide (id) {
-    console.log('right side', id)
+  rightSide () {
     let ok      =   this.ok.bind(this);
     let get     =   this.get.bind(this);
     let set     =   this.set.bind(this);
     let find    =   this.find.bind(this);
 
-    set('Right item', () => ItemModel.findById(id).exec());
+    set('Right id', () => new Promise((ok, ko) => {
+      get('Side by side').attr('data-right-item')
+        .then(attr => ok(attr))
+    }));
+
+    set('Right item', () => ItemModel.findById(get('Right id')).exec());
+
+    // Right is different from left
+
+    ok(
+      () => new Promise((ok, ko) => {
+        try {
+          get('Right id').should.not.be.exactly(get('Left id'));
+          ok();
+        }
+        catch (error) {
+          ko(error);
+        }
+      }),
+      'Left and right are different'
+    );
 
     // Has image
 
@@ -437,7 +666,152 @@ class Promote extends Milk {
           }),
         'Criteria description is correct #' + i
       );
+
+      // Slider
+
+      ok(
+        () => get('Right criteria slider #' + i).is(':visible'),
+        'Criteria #' + i + ' has a right slider' 
+      );
+
+      ok(
+        () => get('Right criteria slider #' + i).val()
+          .then(val => (+val).should.be.exactly(0)),
+        'Criteria #' + i + ' \'s right slider is 0'
+      );
+
+      if ( i === 1 ) {
+        ok(
+          () => get('Right criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s right slider'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).keys('\u{E012}'),
+          'Set criteria #' + i + ' \'s right slider to -1'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(-1)),
+          'Criteria #' + i + ' \'s right slider is -1'
+        );
+      }
+
+      if ( i === 3 ) {
+        ok(
+          () => get('Right criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s right slider'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s right slider to -1'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s right slider is 1'
+        );
+      }
+
+      if ( i === 2 ) {
+        ok(
+          () => get('Right criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s right slider'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s right slider to 1'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s right slider is 1'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).keys('\u{E012}'),
+          'Set criteria #' + i + ' \'s right slider to 0'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(0)),
+          'Criteria #' + i + ' \'s right slider is 0'
+        );
+      }
+
+      if ( i === 0 ) {
+        ok(
+          () => get('Right criteria slider #' + i).click(),
+          'Select criteria #' + i + ' \'s right slider'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s right slider to 1'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s right slider is 1'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).keys('\u{E014}'),
+          'Set criteria #' + i + ' \'s right slider to 1'
+        );
+
+        ok(
+          () => get('Right criteria slider #' + i).val()
+            .then(val => (+val).should.be.exactly(1)),
+          'Criteria #' + i + ' \'s right slider is 1'
+        );
+      }
     }
+
+    // Feedback
+
+    ok(
+      () => get('Right feedback').is(':visible'),
+      'Right feedback is visible'
+    );
+
+    ok(
+      () => get('Right feedback').val(get('Right feedback value')),
+      'Leave a feedback on right item'
+    );
+
+    // Promote item
+
+    ok(
+      () => get('Promote right item button').is(':visible'),
+      'You can see button to promote right item'
+    );
+
+    ok(
+      () => get('Promote right item button').text()
+        .then(text => text.should.be.exactly(get('Right item').subject)),
+      'Right promote button text is item\'s subject'
+    );
+
+    // Edit and go again
+
+    ok(
+      () => get('Edit and go again right button').is(':visible'),
+      'Edit and go again right button is visible'
+    );
+
+    ok(
+      () => get('Edit and go again right button').text()
+        .then(text => text.should.be.exactly('Edit and go again')),
+      'Edit and go again right button has the correct text'
+    );
   }
 
 }

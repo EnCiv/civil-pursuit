@@ -42,7 +42,7 @@ function renderPromote(cb) {
 
           self.set('cursor', cursor + 1);
 
-          self.set('right', self.get('items')[cursor]);
+          self.set('right', self.get('items')[cursor + 1]);
 
           self.find('side by side').find('.left-item').animate({
             opacity: 1

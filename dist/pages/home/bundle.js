@@ -3127,7 +3127,50 @@ var Panel = (function (_Element) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js":[function(require,module,exports){
+},{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/finish.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  var Nav = require('../../../lib/util/nav');
+
+  /**
+   *  @function
+   *  @return
+   *  @arg
+   */
+
+  function finish() {
+    var promote = this;
+
+    promote.find('promote button').off('click');
+    promote.find('finish button').off('click');
+
+    if (this.get('left')) {
+      this.save('left');
+    }
+
+    if (this.get('right')) {
+      this.save('right');
+    }
+
+    Nav.unreveal(promote.template, promote.itemController.template, this.domain.intercept(function () {
+
+      promote.itemController.details.get();
+
+      promote.itemController.find('toggle details').click();
+
+      promote.itemController.find('details').find('.feedback-pending').removeClass('hide');
+
+      promote.evaluation = null;
+    }));
+  }
+
+  module.exports = finish;
+})();
+},{"../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3150,6 +3193,8 @@ var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 
 function _renderItem(item, hand) {
   var self = this;
+
+  console.warn('RENDER ITEM', hand, item._id);
 
   this.find('side by side').attr('data-' + hand + '-item', item._id);
 
@@ -3365,7 +3410,7 @@ function renderPromote(cb) {
 
           self.set('cursor', cursor + 1);
 
-          self.set('right', self.get('items')[cursor]);
+          self.set('right', self.get('items')[cursor + 1]);
 
           self.find('side by side').find('.left-item').animate({
             opacity: 1
@@ -3421,6 +3466,10 @@ var _componentsPromoteControllersRender2 = _interopRequireDefault(_componentsPro
 var _componentsPromoteControllersRenderItem = require('../../components/promote/controllers/render-item');
 
 var _componentsPromoteControllersRenderItem2 = _interopRequireDefault(_componentsPromoteControllersRenderItem);
+
+var _componentsPromoteControllersFinish = require('../../components/promote/controllers/finish');
+
+var _componentsPromoteControllersFinish2 = _interopRequireDefault(_componentsPromoteControllersFinish);
 
 var Promote = (function (_Controller) {
   function Promote(props, itemController) {
@@ -3564,6 +3613,11 @@ var Promote = (function (_Controller) {
       return _componentsPromoteControllersRender2['default'].apply(this, [cb]);
     }
   }, {
+    key: 'finish',
+    value: function finish(cb) {
+      return _componentsPromoteControllersFinish2['default'].apply(this, [cb]);
+    }
+  }, {
     key: 'save',
     value: function save(hand, cb) {
 
@@ -3617,7 +3671,9 @@ var Promote = (function (_Controller) {
         return pubsub.unsubscribe();
       });
 
-      cb();
+      if (typeof cb === 'function') {
+        cb();
+      }
     }
   }, {
     key: 'getEvaluation',
@@ -3674,7 +3730,7 @@ var Promote = (function (_Controller) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../components/promote/controllers/render":"/home/francois/Dev/syn/dist/components/promote/controllers/render.js","../../components/promote/controllers/render-item":"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
+},{"../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../components/promote/controllers/finish":"/home/francois/Dev/syn/dist/components/promote/controllers/finish.js","../../components/promote/controllers/render":"/home/francois/Dev/syn/dist/components/promote/controllers/render.js","../../components/promote/controllers/render-item":"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3795,7 +3851,7 @@ var Promote = (function (_Element) {
       new _cincoDist.Element('.split-hide-up').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left'), this.promoteReference('left'), this.promoteSliders('left'), this.promoteFeedback('left'), this.promoteButton('left'), this.editAndGoAgain('left'), this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'), this.promoteReference('right'), this.promoteSliders('right'), this.promoteFeedback('right'), this.promoteButton('right'), this.editAndGoAgain('right')),
 
       // 2 columns
-      new _cincoDist.Element('.split-hide-down').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('right'))), new _cincoDist.Element('h4.text-center').text('Which of these is most important for the community to consider?'), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('left')), new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('right')))), new _cincoDist.Element('button.finish.block').text('Neither')));
+      new _cincoDist.Element('.split-hide-down').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('left'), this.promoteSubject('left'), this.promoteDescription('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteImage('right'), this.promoteSubject('right'), this.promoteDescription('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteReference('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteSliders('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteFeedback('right'))), new _cincoDist.Element('h4.text-center.promote-label-choose').text('Which of these is most important for the community to consider?'), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('left')), new _cincoDist.Element('.split-50.watch-100').add(this.promoteButton('right'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('left')), new _cincoDist.Element('.split-50.watch-100').add(this.editAndGoAgain('right')))), new _cincoDist.Element('button.finish.block').text('Neither')));
     }
   }]);
 

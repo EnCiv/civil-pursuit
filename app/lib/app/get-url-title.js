@@ -18,7 +18,9 @@ function getUrlTitle (url) {
       if ( error ) {
         return ko(error);
       }
-      if ( response.statusCode === 200 ) {
+
+      if ( response.statusCode === 200 ||
+        ( response.statusCode >= 300  && response.statusCode < 400 ) ) {
 
         let title;
             
@@ -35,6 +37,7 @@ function getUrlTitle (url) {
             title = S(_title).decodeHTMLEntities().s;
 
           });
+
         ok(title);
       }
       else {

@@ -173,6 +173,10 @@ var Promote = (function (_Milk) {
         set('Left criteria description #' + i, function () {
           return find(get('View').selector + ' .left-item.sliders .criteria-' + i + ' .criteria-description');
         });
+
+        set('Left criteria slider #' + i, function () {
+          return find(get('View').selector + ' .left-item.sliders .criteria-' + i + ' input[type="range"]');
+        });
       };
 
       for (var i = 0; i < 4; i++) {
@@ -187,6 +191,10 @@ var Promote = (function (_Milk) {
         set('Right criteria description #' + i, function () {
           return find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' .criteria-description');
         });
+
+        set('Right criteria slider #' + i, function () {
+          return find(get('View').selector + ' .right-item.sliders .criteria-' + i + ' input[type="range"]');
+        });
       };
 
       for (var i = 0; i < 4; i++) {
@@ -196,12 +204,42 @@ var Promote = (function (_Milk) {
       set('Left feedback', function () {
         return find(get('View').selector + ' .left-item.feedback textarea.feedback-entry');
       });
+
+      set('Left feedback value', 'This a feedback for the left item');
+
+      set('Right feedback', function () {
+        return find(get('View').selector + ' .right-item.feedback textarea.feedback-entry');
+      });
+
+      set('Right feedback value', 'This a feedback for the right item');
+
+      set('Promote label', function () {
+        return find(get('View').selector + ' .promote-label-choose');
+      });
+
+      set('Promote left item button', function () {
+        return find(get('View').selector + ' .left-item .promote');
+      });
+
+      set('Promote right item button', function () {
+        return find(get('View').selector + ' .right-item .promote');
+      });
+
+      set('Edit and go again left button', function () {
+        return find(get('View').selector + ' .left-item .edit-and-go-again-toggle');
+      });
+
+      set('Edit and go again right button', function () {
+        return find(get('View').selector + ' .right-item .edit-and-go-again-toggle');
+      });
+
+      set('Finish button', function () {
+        return find(get('Main').selector + ' button.finish');
+      });
     }
   }, {
     key: 'stories',
     value: function stories() {
-      var _this2 = this;
-
       var ok = this.ok.bind(this);
       var get = this.get.bind(this);
       var set = this.set.bind(this);
@@ -219,12 +257,6 @@ var Promote = (function (_Milk) {
       ok(function () {
         return get('Cursor').is(':visible');
       }, 'Cursor is visible');
-
-      ok(function () {
-        return get('Cursor').text().then(function (text) {
-          return text.should.be.exactly('1');
-        });
-      }, 'Cursor shows the right number');
 
       ok(function () {
         return get('Limit').text().then(function (text) {
@@ -246,33 +278,87 @@ var Promote = (function (_Milk) {
         return get('View').is(':visible');
       }, 'Side by side viewport view is visible');
 
-      // Get left item's id
-
-      ok(function () {
-        return get('Side by side').attr('data-left-item').then(function (attr) {
-          return _this2.leftSide(attr);
-        });
-      }, 'Verify left item');
-
-      ok(function () {
-        return get('Side by side').attr('data-right-item').then(function (attr) {
-          return _this2.rightSide(attr);
-        });
-      }, 'Verify right item');
+      for (var i = 0; i < 5; i++) {
+        this.cycle(i);
+      }
     }
   }, {
-    key: 'leftSide',
-    value: function leftSide(id) {
-      var _this3 = this;
+    key: 'cycle',
+    value: function cycle(i) {
+      i = i || 0;
 
-      console.log('left side', id);
       var ok = this.ok.bind(this);
       var get = this.get.bind(this);
       var set = this.set.bind(this);
       var find = this.find.bind(this);
 
+      ok(function () {
+        return get('Cursor').text().then(function (text) {
+          return text.should.be.exactly((i + 1).toString());
+        });
+      }, 'Cursor shows the right number');
+
+      // Get left item's id
+
+      this.leftSide();
+
+      this.rightSide();
+
+      ok(function () {
+        return get('Promote label').is(':visible');
+      }, 'Promote label is visible');
+
+      ok(function () {
+        return get('Promote label').text().then(function (text) {
+          return text.trim().should.be.exactly('Which of these is most important for the community to consider?');
+        });
+      }, 'Promote label is visible');
+
+      ok(function () {
+        return get('Finish button').is(':visible');
+      }, 'Finish button is visible');
+
+      ok(function () {
+        return get('Finish button').text().then(function (text) {
+          return text.should.be.exactly('Neither');
+        });
+      }, 'Finish button text is "Neither"');
+
+      ok(function () {
+        return get('Finish button').click();
+      }, 'Click on "Neither"');
+
+      this.wait(2);
+    }
+  }, {
+    key: 'leftSide',
+    value: function leftSide() {
+      var _this2 = this;
+
+      var ok = this.ok.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
+      var find = this.find.bind(this);
+
+      set('Left id', function () {
+        return new Promise(function (ok, ko) {
+          get('Side by side').attr('data-left-item').then(function (attr) {
+            return ok(attr);
+          });
+        });
+      });
+
       set('Left item', function () {
-        return _modelsItem2['default'].findById(id).exec();
+        return _modelsItem2['default'].findById(get('Left id')).exec();
+      });
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          console.log('Left id', get('Left id'));
+          console.log('Left item', get('Left item'));
+          // console.log('keys', this._keys)
+          ok();
+        });
       });
 
       // Left image is item's image
@@ -390,7 +476,7 @@ var Promote = (function (_Milk) {
           return get('Left criteria name #' + i).click();
         }, 'Click on Criteria #' + i);
 
-        _this3.wait(1);
+        _this2.wait(1);
 
         ok(function () {
           return get('Left criteria description #' + i).text().then(function (text) {
@@ -398,30 +484,176 @@ var Promote = (function (_Milk) {
             get('Evaluation').criterias[i].description.should.be.exactly(text);
           });
         }, 'Criteria description is correct #' + i);
+
+        // Slider
+
+        ok(function () {
+          return get('Left criteria slider #' + i).is(':visible');
+        }, 'Criteria #' + i + ' has a left slider');
+
+        ok(function () {
+          return get('Left criteria slider #' + i).val().then(function (val) {
+            return (+val).should.be.exactly(0);
+          });
+        }, 'Criteria #' + i + ' \'s left slider is 0');
+
+        if (i === 0) {
+          ok(function () {
+            return get('Left criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s left slider');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s left slider to -1');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(-1);
+            });
+          }, 'Criteria #' + i + ' \'s left slider is -1');
+        }
+
+        if (i === 1) {
+          ok(function () {
+            return get('Left criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s left slider');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s left slider to -1');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s left slider is 1');
+        }
+
+        if (i === 2) {
+          ok(function () {
+            return get('Left criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s left slider');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s left slider to 1');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s left slider is 1');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s left slider to 0');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(0);
+            });
+          }, 'Criteria #' + i + ' \'s left slider is 0');
+        }
+
+        if (i === 3) {
+          ok(function () {
+            return get('Left criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s left slider');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s left slider to 1');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s left slider is 1');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s left slider to 1');
+
+          ok(function () {
+            return get('Left criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s left slider is 1');
+        }
       };
 
       for (var i = 0; i < 4; i++) {
         _loop3(i);
       }
 
+      // Feedback
+
       ok(function () {
         return get('Left feedback').is(':visible');
       }, 'Left feedback is visible');
+
+      ok(function () {
+        return get('Left feedback').val(get('Left feedback value'));
+      }, 'Leave a feedback on left item');
+
+      // Promote item
+
+      ok(function () {
+        return get('Promote left item button').is(':visible');
+      }, 'You can see button to promote left item');
+
+      ok(function () {
+        return get('Promote left item button').text().then(function (text) {
+          return text.should.be.exactly(get('Left item').subject);
+        });
+      }, 'Left promote button text is item\'s subject');
+
+      // Edit and go again
+
+      ok(function () {
+        return get('Edit and go again left button').is(':visible');
+      }, 'Edit and go again left button is visible');
+
+      ok(function () {
+        return get('Edit and go again left button').text().then(function (text) {
+          return text.should.be.exactly('Edit and go again');
+        });
+      }, 'Edit and go again left button has the correct text');
     }
   }, {
     key: 'rightSide',
-    value: function rightSide(id) {
-      var _this4 = this;
+    value: function rightSide() {
+      var _this3 = this;
 
-      console.log('right side', id);
       var ok = this.ok.bind(this);
       var get = this.get.bind(this);
       var set = this.set.bind(this);
       var find = this.find.bind(this);
 
-      set('Right item', function () {
-        return _modelsItem2['default'].findById(id).exec();
+      set('Right id', function () {
+        return new Promise(function (ok, ko) {
+          get('Side by side').attr('data-right-item').then(function (attr) {
+            return ok(attr);
+          });
+        });
       });
+
+      set('Right item', function () {
+        return _modelsItem2['default'].findById(get('Right id')).exec();
+      });
+
+      // Right is different from left
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          try {
+            get('Right id').should.not.be.exactly(get('Left id'));
+            ok();
+          } catch (error) {
+            ko(error);
+          }
+        });
+      }, 'Left and right are different');
 
       // Has image
 
@@ -538,7 +770,7 @@ var Promote = (function (_Milk) {
           return get('Right criteria name #' + i).click();
         }, 'Click on Criteria #' + i);
 
-        _this4.wait(1);
+        _this3.wait(1);
 
         ok(function () {
           return get('Right criteria description #' + i).text().then(function (text) {
@@ -546,11 +778,141 @@ var Promote = (function (_Milk) {
             get('Evaluation').criterias[i].description.should.be.exactly(text);
           });
         }, 'Criteria description is correct #' + i);
+
+        // Slider
+
+        ok(function () {
+          return get('Right criteria slider #' + i).is(':visible');
+        }, 'Criteria #' + i + ' has a right slider');
+
+        ok(function () {
+          return get('Right criteria slider #' + i).val().then(function (val) {
+            return (+val).should.be.exactly(0);
+          });
+        }, 'Criteria #' + i + ' \'s right slider is 0');
+
+        if (i === 1) {
+          ok(function () {
+            return get('Right criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s right slider');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s right slider to -1');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(-1);
+            });
+          }, 'Criteria #' + i + ' \'s right slider is -1');
+        }
+
+        if (i === 3) {
+          ok(function () {
+            return get('Right criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s right slider');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s right slider to -1');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s right slider is 1');
+        }
+
+        if (i === 2) {
+          ok(function () {
+            return get('Right criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s right slider');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s right slider to 1');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s right slider is 1');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s right slider to 0');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(0);
+            });
+          }, 'Criteria #' + i + ' \'s right slider is 0');
+        }
+
+        if (i === 0) {
+          ok(function () {
+            return get('Right criteria slider #' + i).click();
+          }, 'Select criteria #' + i + ' \'s right slider');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s right slider to 1');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s right slider is 1');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).keys('');
+          }, 'Set criteria #' + i + ' \'s right slider to 1');
+
+          ok(function () {
+            return get('Right criteria slider #' + i).val().then(function (val) {
+              return (+val).should.be.exactly(1);
+            });
+          }, 'Criteria #' + i + ' \'s right slider is 1');
+        }
       };
 
       for (var i = 0; i < 4; i++) {
         _loop4(i);
       }
+
+      // Feedback
+
+      ok(function () {
+        return get('Right feedback').is(':visible');
+      }, 'Right feedback is visible');
+
+      ok(function () {
+        return get('Right feedback').val(get('Right feedback value'));
+      }, 'Leave a feedback on right item');
+
+      // Promote item
+
+      ok(function () {
+        return get('Promote right item button').is(':visible');
+      }, 'You can see button to promote right item');
+
+      ok(function () {
+        return get('Promote right item button').text().then(function (text) {
+          return text.should.be.exactly(get('Right item').subject);
+        });
+      }, 'Right promote button text is item\'s subject');
+
+      // Edit and go again
+
+      ok(function () {
+        return get('Edit and go again right button').is(':visible');
+      }, 'Edit and go again right button is visible');
+
+      ok(function () {
+        return get('Edit and go again right button').text().then(function (text) {
+          return text.should.be.exactly('Edit and go again');
+        });
+      }, 'Edit and go again right button has the correct text');
     }
   }]);
 

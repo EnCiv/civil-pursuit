@@ -16,8 +16,8 @@ function renderPromote (cb) {
   self.find('finish button').on('click', function () {
     Nav.scroll(self.template, d.intercept(function () {
 
-      let cursor = self.get('cursor');
-      let limit = self.get('limit');
+      let cursor    = self.get('cursor');
+      let limit     = self.get('limit');
 
       if ( cursor < limit ) {
 
@@ -40,7 +40,7 @@ function renderPromote (cb) {
 
             self.set('cursor', cursor + 1);
 
-            self.set('right', self.get('items')[cursor]);
+            self.set('right', self.get('items')[cursor + 1  ]);
 
             self
               .find('side by side')

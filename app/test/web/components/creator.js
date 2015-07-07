@@ -1,12 +1,12 @@
 'use strict';
 
-import fs from 'fs';
-import request from 'request';
-import config from '../../../../config.json';
-import Milk from '../../../lib/app/milk';
-import ItemTest from './item';
-import ItemModel from '../../../models/item';
-import getUrlTitle from '../../../lib/app/get-url-title';
+import fs                   from 'fs';
+import request              from 'request';
+import config               from '../../../../config.json';
+import Milk                 from '../../../lib/app/milk';
+import ItemTest             from './item';
+import ItemModel            from '../../../models/item';
+import getUrlTitle          from '../../../lib/app/get-url-title';
 
 class Creator extends Milk {
 

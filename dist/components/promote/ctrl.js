@@ -34,6 +34,10 @@ var _componentsPromoteControllersRenderItem = require('../../components/promote/
 
 var _componentsPromoteControllersRenderItem2 = _interopRequireDefault(_componentsPromoteControllersRenderItem);
 
+var _componentsPromoteControllersFinish = require('../../components/promote/controllers/finish');
+
+var _componentsPromoteControllersFinish2 = _interopRequireDefault(_componentsPromoteControllersFinish);
+
 var Promote = (function (_Controller) {
   function Promote(props, itemController) {
     var _this = this;
@@ -176,6 +180,11 @@ var Promote = (function (_Controller) {
       return _componentsPromoteControllersRender2['default'].apply(this, [cb]);
     }
   }, {
+    key: 'finish',
+    value: function finish(cb) {
+      return _componentsPromoteControllersFinish2['default'].apply(this, [cb]);
+    }
+  }, {
     key: 'save',
     value: function save(hand, cb) {
 
@@ -229,7 +238,9 @@ var Promote = (function (_Controller) {
         return pubsub.unsubscribe();
       });
 
-      cb();
+      if (typeof cb === 'function') {
+        cb();
+      }
     }
   }, {
     key: 'getEvaluation',

@@ -7,6 +7,8 @@ import Item     from '../../../components/item/ctrl';
 function _renderItem (item, hand) {
   let self = this;
 
+  console.warn('RENDER ITEM', hand, item._id)
+
   this.find('side by side').attr('data-' + hand + '-item', item._id);
 
   // Subject

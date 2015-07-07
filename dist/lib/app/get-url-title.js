@@ -35,7 +35,8 @@ function getUrlTitle(url) {
       if (error) {
         return ko(error);
       }
-      if (response.statusCode === 200) {
+
+      if (response.statusCode === 200 || response.statusCode >= 300 && response.statusCode < 400) {
         (function () {
 
           var title = undefined;
@@ -44,6 +45,7 @@ function getUrlTitle(url) {
 
             title = (0, _string2['default'])(_title).decodeHTMLEntities().s;
           });
+
           ok(title);
         })();
       } else {

@@ -188,7 +188,7 @@ class Promote extends Element {
             )
           ),
 
-          new Element('h4.text-center').text('Which of these is most important for the community to consider?'),
+          new Element('h4.text-center.promote-label-choose').text('Which of these is most important for the community to consider?'),
 
           new Element('.row').add(
             new Element('.split-50.watch-100').add(
