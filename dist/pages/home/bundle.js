@@ -270,6 +270,8 @@ function save() {
 
     d.run(function () {
 
+      console.info('NEW ITEM');
+
       // Hide the Creator           // Catch errors
 
       _libUtilNav2['default'].hide(_this.template).error(d.intercept())
@@ -463,6 +465,9 @@ function renderCreator(cb) {
     var d = _domain2['default'].create().on('error', reject);
 
     d.run(function () {
+
+      console.info('I AM RENDERING THE CREATOR', _this.panel, _this.template);
+
       // Make sure template exists in DOM
 
       if (!_this.template.length) {
@@ -532,6 +537,8 @@ function renderCreator(cb) {
       // Build form using Form provider
 
       var form = new _libUtilForm2['default'](_this.template);
+
+      console.info('NEW FORM');
 
       form.send(_this.create.bind(_this));
 
@@ -618,7 +625,7 @@ var Creator = (function (_Controller) {
   }, {
     key: 'template',
     get: function () {
-      return this.parent.find('.creator:first');
+      return this.parent.find('>.panel-body > .creator');
     }
   }, {
     key: 'getTitle',
@@ -1899,7 +1906,6 @@ var _componentsTopBarCtrl = require('../../../components/top-bar//ctrl');
 var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
 
 function tooglePromote($trigger) {
-
   if (!this.socket.synuser) {
     var topbar = new _componentsTopBarCtrl2['default']();
     topbar.find('join button').click();
@@ -2851,6 +2857,7 @@ var Panel = (function (_Controller) {
     value: function render(cb) {
       var _this = this;
 
+      console.warn('RENDER PANEL', this.props.panel, this.id);
       var q = new Promise(function (fulfill, reject) {
 
         var d = _this.domain;
@@ -2877,9 +2884,9 @@ var Panel = (function (_Controller) {
 
           // Panel ID
 
-          if (!_this.template.attr('id')) {
-            _this.template.attr('id', _this.id);
-          }
+          // if ( ! this.template.attr('id') ) {
+          _this.template.attr('id', _this.id);
+          // }
 
           var creator = new _componentsCreatorCtrl2['default'](_this.props, _this);
 
@@ -3194,9 +3201,7 @@ var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 function _renderItem(item, hand) {
   var self = this;
 
-  console.warn('RENDER ITEM', hand, item._id);
-
-  this.find('side by side').attr('data-' + hand + '-item', item._id);
+  this.find('side by side').attr('data-' + hand + '-item', item._id).attr('data-' + hand + '-views', item.views);
 
   // Subject
   this.find('item subject', hand).text(item.subject);

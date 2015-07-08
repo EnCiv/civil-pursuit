@@ -18,7 +18,7 @@ class Creator extends Controller {
   }
 
   get template () {
-    return this.parent.find('.creator:first');
+    return this.parent.find('>.panel-body > .creator');
   }
 
   constructor (props, panelContainer) {

@@ -55,6 +55,7 @@ class Panel extends Controller {
   }
 
   render (cb) {
+    console.warn('RENDER PANEL', this.props.panel, this.id)
     var q = new Promise((fulfill, reject) => {
 
       let d = this.domain;
@@ -82,11 +83,11 @@ class Panel extends Controller {
 
         // Panel ID
 
-        if ( ! this.template.attr('id') ) {
+        // if ( ! this.template.attr('id') ) {
           this.template.attr('id', this.id);
-        }
+        // }
 
-        var creator = new Creator(this.props, this);
+        let creator = new Creator(this.props, this);
 
         creator
           .render()
@@ -229,7 +230,7 @@ class Panel extends Controller {
 
 }
 
-Panel.getId = function (panel) {
+Panel.getId = panel => {
   let id = 'panel-' + (panel.type._id || panel.type);
 
   if ( panel.parent ) {

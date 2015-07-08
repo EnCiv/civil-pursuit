@@ -27,6 +27,8 @@ function save() {
 
     d.run(function () {
 
+      console.info('NEW ITEM');
+
       // Hide the Creator           // Catch errors
 
       _libUtilNav2['default'].hide(_this.template).error(d.intercept())

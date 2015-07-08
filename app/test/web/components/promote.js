@@ -214,20 +214,28 @@ class Promote extends Milk {
     let set     =   this.set.bind(this);
     let find    =   this.find.bind(this);
 
+    // Find item in DB
+
     set('Left id', () => new Promise((ok, ko) => {
       get('Side by side').attr('data-left-item')
         .then(attr => ok(attr))
     }));
 
+    set('Left views', () => new Promise((ok, ko) => {
+      get('Side by side').attr('data-left-views')
+        .then(attr => ok(attr))
+    }));
+
     set('Left item', () => ItemModel.findById(get('Left id')).exec());
+
+    // Make sure views have incremented
 
     ok(
       () => new Promise((ok, ko) => {
-        console.log('Left id', get('Left id'));
-        console.log('Left item', get('Left item'));
-        // console.log('keys', this._keys)
+        +(get('Left item').views).should.be.above(+(get('Left views')));
         ok();
-      })
+      }),
+      'Views of left item should have incremented'
     );
 
     // Left image is item's image
@@ -520,6 +528,21 @@ class Promote extends Milk {
     }));
 
     set('Right item', () => ItemModel.findById(get('Right id')).exec());
+
+    set('Right views', () => new Promise((ok, ko) => {
+      get('Side by side').attr('data-right-views')
+        .then(attr => ok(attr))
+    }));
+
+    // Make sure views have incremented
+
+    ok(
+      () => new Promise((ok, ko) => {
+        +(get('Right item').views).should.be.above(+(get('Right views')));
+        ok();
+      }),
+      'Views of right item should have incremented'
+    );
 
     // Right is different from left
 

@@ -15,7 +15,6 @@ var _componentsTopBarCtrl = require('../../../components/top-bar//ctrl');
 var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
 
 function tooglePromote($trigger) {
-
   if (!this.socket.synuser) {
     var topbar = new _componentsTopBarCtrl2['default']();
     topbar.find('join button').click();

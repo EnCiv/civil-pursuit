@@ -65,7 +65,7 @@ var Creator = (function (_Controller) {
   }, {
     key: 'template',
     get: function () {
-      return this.parent.find('.creator:first');
+      return this.parent.find('>.panel-body > .creator');
     }
   }, {
     key: 'getTitle',

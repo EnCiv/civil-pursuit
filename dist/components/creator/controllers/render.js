@@ -32,6 +32,9 @@ function renderCreator(cb) {
     var d = _domain2['default'].create().on('error', reject);
 
     d.run(function () {
+
+      console.info('I AM RENDERING THE CREATOR', _this.panel, _this.template);
+
       // Make sure template exists in DOM
 
       if (!_this.template.length) {
@@ -101,6 +104,8 @@ function renderCreator(cb) {
       // Build form using Form provider
 
       var form = new _libUtilForm2['default'](_this.template);
+
+      console.info('NEW FORM');
 
       form.send(_this.create.bind(_this));
 

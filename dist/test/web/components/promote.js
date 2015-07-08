@@ -340,9 +340,19 @@ var Promote = (function (_Milk) {
       var set = this.set.bind(this);
       var find = this.find.bind(this);
 
+      // Find item in DB
+
       set('Left id', function () {
         return new Promise(function (ok, ko) {
           get('Side by side').attr('data-left-item').then(function (attr) {
+            return ok(attr);
+          });
+        });
+      });
+
+      set('Left views', function () {
+        return new Promise(function (ok, ko) {
+          get('Side by side').attr('data-left-views').then(function (attr) {
             return ok(attr);
           });
         });
@@ -352,14 +362,14 @@ var Promote = (function (_Milk) {
         return _modelsItem2['default'].findById(get('Left id')).exec();
       });
 
+      // Make sure views have incremented
+
       ok(function () {
         return new Promise(function (ok, ko) {
-          console.log('Left id', get('Left id'));
-          console.log('Left item', get('Left item'));
-          // console.log('keys', this._keys)
+          +get('Left item').views.should.be.above(+get('Left views'));
           ok();
         });
-      });
+      }, 'Views of left item should have incremented');
 
       // Left image is item's image
 
@@ -641,6 +651,23 @@ var Promote = (function (_Milk) {
       set('Right item', function () {
         return _modelsItem2['default'].findById(get('Right id')).exec();
       });
+
+      set('Right views', function () {
+        return new Promise(function (ok, ko) {
+          get('Side by side').attr('data-right-views').then(function (attr) {
+            return ok(attr);
+          });
+        });
+      });
+
+      // Make sure views have incremented
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          +get('Right item').views.should.be.above(+get('Right views'));
+          ok();
+        });
+      }, 'Views of right item should have incremented');
 
       // Right is different from left
 

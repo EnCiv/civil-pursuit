@@ -13,6 +13,9 @@ function renderCreator (cb) {
     let d = domain.create().on('error', reject);
 
     d.run(() => {
+
+      console.info('I AM RENDERING THE CREATOR', this.panel, this.template)
+
       // Make sure template exists in DOM
 
       if ( ! this.template.length ) {
@@ -92,6 +95,8 @@ function renderCreator (cb) {
       // Build form using Form provider
 
       var form = new Form(this.template);
+
+      console.info('NEW FORM')
       
       form.send(this.create.bind(this));
 

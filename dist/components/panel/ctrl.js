@@ -97,6 +97,7 @@ var Panel = (function (_Controller) {
     value: function render(cb) {
       var _this = this;
 
+      console.warn('RENDER PANEL', this.props.panel, this.id);
       var q = new Promise(function (fulfill, reject) {
 
         var d = _this.domain;
@@ -123,9 +124,9 @@ var Panel = (function (_Controller) {
 
           // Panel ID
 
-          if (!_this.template.attr('id')) {
-            _this.template.attr('id', _this.id);
-          }
+          // if ( ! this.template.attr('id') ) {
+          _this.template.attr('id', _this.id);
+          // }
 
           var creator = new _componentsCreatorCtrl2['default'](_this.props, _this);
 

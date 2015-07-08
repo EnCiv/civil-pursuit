@@ -21,9 +21,7 @@ var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 function _renderItem(item, hand) {
   var self = this;
 
-  console.warn('RENDER ITEM', hand, item._id);
-
-  this.find('side by side').attr('data-' + hand + '-item', item._id);
+  this.find('side by side').attr('data-' + hand + '-item', item._id).attr('data-' + hand + '-views', item.views);
 
   // Subject
   this.find('item subject', hand).text(item.subject);

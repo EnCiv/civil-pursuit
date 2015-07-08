@@ -12,6 +12,8 @@ function save () {
 
     d.run(() => {
 
+      console.info('NEW ITEM')
+
       // Hide the Creator           // Catch errors
 
       Nav.hide(this.template).error(d.intercept())
