@@ -3,6 +3,7 @@
 import Milk             from '../../../lib/app/milk';
 import ItemModel        from '../../../models/item';
 import VoteModel        from '../../../models/vote';
+import FeedbackModel    from '../../../models/feedback';
 import cloudinaryFormat from '../../../lib/util/cloudinary-format';
 import config           from '../../../../config.json';
 import YouTube          from '../../../components/youtube/view';
@@ -221,6 +222,8 @@ class Promote extends Milk {
     this.wait(2);
 
     this.verifyVotes(i);
+
+    this.verifyFeedback();
   }
 
   leftSide () {
@@ -558,6 +561,14 @@ class Promote extends Milk {
     set('Right id', () => new Promise((ok, ko) => {
       get('Side by side').attr('data-right-item')
         .then(attr => ok(attr))
+    }));
+
+    set('Right votes', () => new Promise((ok, ko) => {
+      get('Side by side').attr('data-right-votes')
+        .then(attr => {
+          console.log('Right votes', get('Right id'), attr);
+          ok(attr);
+        }, ko)
     }));
 
     set('Right item', () => ItemModel.findById(get('Right id')).exec());
@@ -943,7 +954,36 @@ class Promote extends Milk {
       'Verify votes for left item got saved'
     );
 
-    // Votes should have incremented [LEFT]
+    // Votes should have incremented [RIGHT]
+
+    ok(
+      () => new Promise((ok, ko) => {
+        let votes = +get('Right votes');
+        let where = {
+          item    :   get('Right item')._id
+        };
+
+        console.log('count', where);
+
+        VoteModel
+          .where(where)
+          .count((error, count) => {
+            if ( error ) {
+              return ko(error);
+            }
+            try {
+              count.should.be.exactly(votes + 4);
+              ok();
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          });
+      }),
+      'Votes should have incremented [RIGHT]'
+    );
+
+    // Votes should have incremented [RIGHT]
 
     ok(
       () => new Promise((ok, ko) => {
@@ -978,6 +1018,46 @@ class Promote extends Milk {
           )
       }),
       'Verify votes for right item got saved'
+    );
+  }
+
+  verifyFeedback () {
+    let ok      =   this.ok.bind(this);
+    let get     =   this.get.bind(this);
+    let set     =   this.set.bind(this);
+
+    // Left feedback got saved
+
+    ok(
+      () => new Promise((ok, ko) => {
+        let cookie = JSON.parse(
+          decodeURIComponent(get('Cookie').value.replace(/^j%3A/, ''))
+        );
+
+        FeedbackModel
+          .findOne({
+            item  :   get('Left id'),
+            user  :   cookie.id
+          })
+          .sort({ _id : -1 })
+          .exec()
+          .then(
+            feedback => {
+              console.log('got feedback', feedback)
+              try {
+                feedback.should.be.an.Object;
+                feedback.feedback.should.be.exactly(get('Left feedback value'));
+                ok();
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }),
+
+      'Left feedback got saved'
     );
   }
 

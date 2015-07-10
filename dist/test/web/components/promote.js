@@ -26,6 +26,10 @@ var _modelsVote = require('../../../models/vote');
 
 var _modelsVote2 = _interopRequireDefault(_modelsVote);
 
+var _modelsFeedback = require('../../../models/feedback');
+
+var _modelsFeedback2 = _interopRequireDefault(_modelsFeedback);
+
 var _libUtilCloudinaryFormat = require('../../../lib/util/cloudinary-format');
 
 var _libUtilCloudinaryFormat2 = _interopRequireDefault(_libUtilCloudinaryFormat);
@@ -350,6 +354,8 @@ var Promote = (function (_Milk) {
       this.wait(2);
 
       this.verifyVotes(i);
+
+      this.verifyFeedback();
     }
   }, {
     key: 'leftSide',
@@ -680,6 +686,15 @@ var Promote = (function (_Milk) {
           get('Side by side').attr('data-right-item').then(function (attr) {
             return ok(attr);
           });
+        });
+      });
+
+      set('Right votes', function () {
+        return new Promise(function (ok, ko) {
+          get('Side by side').attr('data-right-votes').then(function (attr) {
+            console.log('Right votes', get('Right id'), attr);
+            ok(attr);
+          }, ko);
         });
       });
 
@@ -1034,7 +1049,32 @@ var Promote = (function (_Milk) {
         });
       }, 'Verify votes for left item got saved');
 
-      // Votes should have incremented [LEFT]
+      // Votes should have incremented [RIGHT]
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          var votes = +get('Right votes');
+          var where = {
+            item: get('Right item')._id
+          };
+
+          console.log('count', where);
+
+          _modelsVote2['default'].where(where).count(function (error, count) {
+            if (error) {
+              return ko(error);
+            }
+            try {
+              count.should.be.exactly(votes + 4);
+              ok();
+            } catch (error) {
+              ko(error);
+            }
+          });
+        });
+      }, 'Votes should have incremented [RIGHT]');
+
+      // Votes should have incremented [RIGHT]
 
       ok(function () {
         return new Promise(function (ok, ko) {
@@ -1058,6 +1098,35 @@ var Promote = (function (_Milk) {
           }, ko);
         });
       }, 'Verify votes for right item got saved');
+    }
+  }, {
+    key: 'verifyFeedback',
+    value: function verifyFeedback() {
+      var ok = this.ok.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
+
+      // Left feedback got saved
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          var cookie = JSON.parse(decodeURIComponent(get('Cookie').value.replace(/^j%3A/, '')));
+
+          _modelsFeedback2['default'].findOne({
+            item: get('Left id'),
+            user: cookie.id
+          }).sort({ _id: -1 }).exec().then(function (feedback) {
+            console.log('got feedback', feedback);
+            try {
+              feedback.should.be.an.Object;
+              feedback.feedback.should.be.exactly(get('Left feedback value'));
+              ok();
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        });
+      }, 'Left feedback got saved');
     }
   }]);
 

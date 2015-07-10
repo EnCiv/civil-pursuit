@@ -244,35 +244,35 @@ class Creator extends Milk {
         );
     });
 
-    if ( i < urls.length ) {
-      this.set('Title', resolveTitle);
+    this.set('Title', () => new Promise((ok, ko) => {
+      resolveTitle().then(ok, ko);
+    }));
 
-      this.ok(() => this.get('Reference').val(urls[i] + '\u{E004}'),
-        'Entering URL');
+    this.ok(() => this.get('Reference').val(urls[i] + '\u{E004}'),
+      'Entering URL');
 
-      this.wait(1);
+    this.wait(1);
 
-      this.ok(() => this.get('Reference board').is(':visible'),
-        'Reference board is visible');
+    this.ok(() => this.get('Reference board').is(':visible'),
+      'Reference board is visible');
 
-      this.ok(() => this.get('Reference board').text()
-        .then(text =>  {
-          try {
-            text.should.be.exactly('Looking up title');
-          } catch (error) {
-            text.should.be.exactly(this.get('Title'));
-          }
-        }),
-        'Reference board is showing loading message or response'
-      );
+    this.ok(() => this.get('Reference board').text()
+      .then(text =>  {
+        try {
+          text.should.be.exactly('Looking up title');
+        } catch (error) {
+          text.should.be.exactly(this.get('Title'));
+        }
+      }),
+      'Reference board is showing loading message or response'
+    );
 
-      this.wait(5);
+    this.wait(5);
 
-      this.ok(() => this.get('Reference board').text()
-        .then(text =>  text.should.be.exactly(this.get('Title')) ),
-        'Reference board shows title'
-      );
-    }
+    this.ok(() => this.get('Reference board').text()
+      .then(text =>  text.should.be.exactly(this.get('Title')) ),
+      'Reference board shows title'
+    );
   }
 
 }

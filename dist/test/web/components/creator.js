@@ -324,37 +324,39 @@ var Creator = (function (_Milk) {
         });
       };
 
-      if (i < urls.length) {
-        this.set('Title', resolveTitle);
+      this.set('Title', function () {
+        return new Promise(function (ok, ko) {
+          resolveTitle().then(ok, ko);
+        });
+      });
 
-        this.ok(function () {
-          return _this2.get('Reference').val(urls[i] + '');
-        }, 'Entering URL');
+      this.ok(function () {
+        return _this2.get('Reference').val(urls[i] + '');
+      }, 'Entering URL');
 
-        this.wait(1);
+      this.wait(1);
 
-        this.ok(function () {
-          return _this2.get('Reference board').is(':visible');
-        }, 'Reference board is visible');
+      this.ok(function () {
+        return _this2.get('Reference board').is(':visible');
+      }, 'Reference board is visible');
 
-        this.ok(function () {
-          return _this2.get('Reference board').text().then(function (text) {
-            try {
-              text.should.be.exactly('Looking up title');
-            } catch (error) {
-              text.should.be.exactly(_this2.get('Title'));
-            }
-          });
-        }, 'Reference board is showing loading message or response');
+      this.ok(function () {
+        return _this2.get('Reference board').text().then(function (text) {
+          try {
+            text.should.be.exactly('Looking up title');
+          } catch (error) {
+            text.should.be.exactly(_this2.get('Title'));
+          }
+        });
+      }, 'Reference board is showing loading message or response');
 
-        this.wait(5);
+      this.wait(5);
 
-        this.ok(function () {
-          return _this2.get('Reference board').text().then(function (text) {
-            return text.should.be.exactly(_this2.get('Title'));
-          });
-        }, 'Reference board shows title');
-      }
+      this.ok(function () {
+        return _this2.get('Reference board').text().then(function (text) {
+          return text.should.be.exactly(_this2.get('Title'));
+        });
+      }, 'Reference board shows title');
     }
   }]);
 
