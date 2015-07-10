@@ -67,24 +67,27 @@ var Evaluator = (function (_EventEmitter) {
 
       return new Promise(function (ok, ko) {
         _this2.domain.run(function () {
-          _this2.ItemModel.findById(_this2.itemId).populate('user').exec(_this2.domain.intercept(function (item) {
+          _this2.ItemModel.findById(_this2.itemId)
+          // .populate('user')
+          .exec(_this2.domain.intercept(function (item) {
 
             if (!item) {
               throw new Error('Item not found');
             }
 
-            _this2.item = item;
-
-            _this2.findType({ parent: _this2.item.type }).then(function (parentType) {
-              if (!parentType) {
-                _this2.make().then(ok, ko);
-              } else if (parentType.harmony && parentType.harmony.length && parentType.harmony.some(function (h) {
-                return h.toString() === _this2.item.type.toString();
-              })) {
-                _this2.makeSplit().then(ok, ko);
-              } else {
-                _this2.make().then(ok, ko);
-              }
+            item.toPanelItem().then(function (item) {
+              _this2.item = item;
+              _this2.findType({ parent: _this2.item.type }).then(function (parentType) {
+                if (!parentType) {
+                  _this2.make().then(ok, ko);
+                } else if (parentType.harmony && parentType.harmony.length && parentType.harmony.some(function (h) {
+                  return h.toString() === _this2.item.type.toString();
+                })) {
+                  _this2.makeSplit().then(ok, ko);
+                } else {
+                  _this2.make().then(ok, ko);
+                }
+              }, ko);
             }, ko);
           }));
         });
@@ -166,11 +169,19 @@ var Evaluator = (function (_EventEmitter) {
 
           var start = Math.max(0, Math.floor((number - limit) * Math.random()));
 
-          _this5.ItemModel.find(query).populate('user').where('_id').ne(_this5.item._id)
+          _this5.ItemModel.find(query)
+
+          // .populate('user')
+
+          .where('_id').ne(_this5.item._id)
 
           // .where('user').ne(this.userId)
 
-          .skip(start).limit(limit).sort({ views: 1, created: 1 }).exec().then(ok, ko);
+          .skip(start).limit(limit).sort({ views: 1, created: 1 }).exec().then(function (items) {
+            Promise.all(items.map(function (item) {
+              return item.toPanelItem();
+            })).then(ok, ko);
+          }, ko);
         }));
       });
     }
@@ -203,7 +214,7 @@ var Evaluator = (function (_EventEmitter) {
         var evaluation = new Evaluation({
           type: _this6.item.type,
           item: _this6.itemId,
-          items: results.items.map(_this6.map, _this6),
+          items: results.items /*.map(this.map, this)*/,
           criterias: results.criterias
         });
 

@@ -2,6 +2,7 @@
 
 import Milk             from '../../../lib/app/milk';
 import ItemModel        from '../../../models/item';
+import VoteModel        from '../../../models/vote';
 import cloudinaryFormat from '../../../lib/util/cloudinary-format';
 import config           from '../../../../config.json';
 import YouTube          from '../../../components/youtube/view';
@@ -154,7 +155,7 @@ class Promote extends Milk {
 
     ok(() => get('View').is(':visible'), 'Side by side viewport view is visible');
 
-    for ( let i = 0; i < 5; i ++ ) {
+    for ( let i = 0; i < 5 ; i += 2 ) {
       this.cycle(i);
     }
   }
@@ -167,9 +168,22 @@ class Promote extends Milk {
     let set     =   this.set.bind(this);
     let find    =   this.find.bind(this);
 
+    ok(() => new Promise((ok, ko) => {
+      console.log();
+      console.log();
+      console.log();
+      console.log('Evaluation cycle, pass #' + i);
+      console.log();
+      console.log();
+      console.log();
+      ok();
+    }), 'Pass #' + i);
+
     ok(() => get('Cursor').text()
       .then(text => text.should.be.exactly((i + 1).toString())),
       'Cursor shows the right number');
+
+    this.wait(2);
 
     // Get left item's id
 
@@ -205,6 +219,8 @@ class Promote extends Milk {
     );
 
     this.wait(2);
+
+    this.verifyVotes(i);
   }
 
   leftSide () {
@@ -221,14 +237,30 @@ class Promote extends Milk {
         .then(attr => ok(attr))
     }));
 
+    set('Left votes', () => new Promise((ok, ko) => {
+      get('Side by side').attr('data-left-votes')
+        .then(attr => {
+          console.log('Left votes', get('Left id'), attr);
+          ok(attr);
+        }, ko)
+    }));
+
+    set('Left item', () => new Promise((ok, ko) => {
+      ItemModel.findById(get('Left id')).exec().then(
+        item => {
+          console.log('left item', item);
+          ok(item);
+        },
+        ko
+      );
+    }));
+
+    // Make sure views have incremented
+
     set('Left views', () => new Promise((ok, ko) => {
       get('Side by side').attr('data-left-views')
         .then(attr => ok(attr))
     }));
-
-    set('Left item', () => ItemModel.findById(get('Left id')).exec());
-
-    // Make sure views have incremented
 
     ok(
       () => new Promise((ok, ko) => {
@@ -254,7 +286,8 @@ class Promote extends Milk {
     ok(
       () => get('Left image').attr('src')
         .then(src => src.should.be.exactly(
-          config.public['default item image'])
+            cloudinaryFormat(config.public['default item image'])
+          )
         ),
       'Left image is default image',
       () => ! get('Left item').image && !YouTube.isYouTube(get('Left item')));
@@ -575,7 +608,8 @@ class Promote extends Milk {
      ok(
       () => get('Right image').attr('src')
         .then(src => src.should.be.exactly(
-          config.public['default item image'])
+            cloudinaryFormat(config.public['default item image'])
+          )
         ),
       'Right image is default image',
       () => ! get('Right item').image && !YouTube.isYouTube(get('Right item')));
@@ -834,6 +868,116 @@ class Promote extends Milk {
       () => get('Edit and go again right button').text()
         .then(text => text.should.be.exactly('Edit and go again')),
       'Edit and go again right button has the correct text'
+    );
+  }
+
+  verifyVotes (i) {
+    let ok      =   this.ok.bind(this);
+    let get     =   this.get.bind(this);
+    let set     =   this.set.bind(this);
+    let find    =   this.find.bind(this);
+
+    // Votes should have incremented [LEFT]
+
+    ok(
+      () => new Promise((ok, ko) => {
+        let votes = +get('Left votes');
+        let where = {
+          item    :   get('Left item')._id
+        };
+
+        console.log('count', where);
+
+        VoteModel
+          .where(where)
+          .count((error, count) => {
+            if ( error ) {
+              return ko(error);
+            }
+            try {
+              count.should.be.exactly(votes + 4);
+              ok();
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          });
+      }),
+      'Votes should have incremented [LEFT]'
+    );
+
+    // Votes should have the right values [LEFT]
+
+    ok(
+      () => new Promise((ok, ko) => {
+        let cookie = JSON.parse(
+          decodeURIComponent(get('Cookie').value.replace(/^j%3A/, ''))
+        );
+
+        VoteModel
+          .find({
+            user    :   cookie.id,
+            item    :   get('Left item')._id
+          })
+          .sort({ _id : -1 })
+          .limit(4)
+          .exec()
+          .then(
+            votes => {
+              try {
+                votes.reverse();
+                console.log('votes', votes)
+                votes[0].value.should.be.exactly(-1);
+                votes[1].value.should.be.exactly(1);
+                votes[2].value.should.be.exactly(0);
+                votes[3].value.should.be.exactly(1);
+                ok();
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          )
+      }),
+      'Verify votes for left item got saved'
+    );
+
+    // Votes should have incremented [LEFT]
+
+    ok(
+      () => new Promise((ok, ko) => {
+        let cookie = JSON.parse(
+          decodeURIComponent(get('Cookie').value.replace(/^j%3A/, ''))
+        );
+
+        VoteModel
+          .find({
+            user    :   cookie.id,
+            item    :   get('Right item')._id
+          })
+          .sort({ _id : -1 })
+          .limit(4)
+          .exec()
+          .then(
+            votes => {
+              try {
+                votes.reverse();
+                console.log('votes', votes)
+                votes[0].value.should.be.exactly(1);
+                votes[1].value.should.be.exactly(-1);
+                votes[2].value.should.be.exactly(0);
+                votes[3].value.should.be.exactly(1);
+                ok();
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          )
+      }),
+      'Verify votes for right item got saved'
     );
   }
 

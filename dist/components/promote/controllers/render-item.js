@@ -21,7 +21,9 @@ var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 function _renderItem(item, hand) {
   var self = this;
 
-  this.find('side by side').attr('data-' + hand + '-item', item._id).attr('data-' + hand + '-views', item.views);
+  console.info('Evaluated item', hand, item);
+
+  this.find('side by side').attr('data-' + hand + '-item', item._id).attr('data-' + hand + '-views', item.views).attr('data-' + hand + '-votes', item.votes);
 
   // Subject
   this.find('item subject', hand).text(item.subject);

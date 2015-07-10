@@ -22,6 +22,10 @@ var _modelsItem = require('../../../models/item');
 
 var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
+var _modelsVote = require('../../../models/vote');
+
+var _modelsVote2 = _interopRequireDefault(_modelsVote);
+
 var _libUtilCloudinaryFormat = require('../../../lib/util/cloudinary-format');
 
 var _libUtilCloudinaryFormat2 = _interopRequireDefault(_libUtilCloudinaryFormat);
@@ -278,7 +282,7 @@ var Promote = (function (_Milk) {
         return get('View').is(':visible');
       }, 'Side by side viewport view is visible');
 
-      for (var i = 0; i < 5; i++) {
+      for (var i = 0; i < 5; i += 2) {
         this.cycle(i);
       }
     }
@@ -293,10 +297,25 @@ var Promote = (function (_Milk) {
       var find = this.find.bind(this);
 
       ok(function () {
+        return new Promise(function (ok, ko) {
+          console.log();
+          console.log();
+          console.log();
+          console.log('Evaluation cycle, pass #' + i);
+          console.log();
+          console.log();
+          console.log();
+          ok();
+        });
+      }, 'Pass #' + i);
+
+      ok(function () {
         return get('Cursor').text().then(function (text) {
           return text.should.be.exactly((i + 1).toString());
         });
       }, 'Cursor shows the right number');
+
+      this.wait(2);
 
       // Get left item's id
 
@@ -329,6 +348,8 @@ var Promote = (function (_Milk) {
       }, 'Click on "Neither"');
 
       this.wait(2);
+
+      this.verifyVotes(i);
     }
   }, {
     key: 'leftSide',
@@ -350,6 +371,26 @@ var Promote = (function (_Milk) {
         });
       });
 
+      set('Left votes', function () {
+        return new Promise(function (ok, ko) {
+          get('Side by side').attr('data-left-votes').then(function (attr) {
+            console.log('Left votes', get('Left id'), attr);
+            ok(attr);
+          }, ko);
+        });
+      });
+
+      set('Left item', function () {
+        return new Promise(function (ok, ko) {
+          _modelsItem2['default'].findById(get('Left id')).exec().then(function (item) {
+            console.log('left item', item);
+            ok(item);
+          }, ko);
+        });
+      });
+
+      // Make sure views have incremented
+
       set('Left views', function () {
         return new Promise(function (ok, ko) {
           get('Side by side').attr('data-left-views').then(function (attr) {
@@ -357,12 +398,6 @@ var Promote = (function (_Milk) {
           });
         });
       });
-
-      set('Left item', function () {
-        return _modelsItem2['default'].findById(get('Left id')).exec();
-      });
-
-      // Make sure views have incremented
 
       ok(function () {
         return new Promise(function (ok, ko) {
@@ -385,7 +420,7 @@ var Promote = (function (_Milk) {
 
       ok(function () {
         return get('Left image').attr('src').then(function (src) {
-          return src.should.be.exactly(_configJson2['default']['public']['default item image']);
+          return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(_configJson2['default']['public']['default item image']));
         });
       }, 'Left image is default image', function () {
         return !get('Left item').image && !_componentsYoutubeView2['default'].isYouTube(get('Left item'));
@@ -696,7 +731,7 @@ var Promote = (function (_Milk) {
 
       ok(function () {
         return get('Right image').attr('src').then(function (src) {
-          return src.should.be.exactly(_configJson2['default']['public']['default item image']);
+          return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(_configJson2['default']['public']['default item image']));
         });
       }, 'Right image is default image', function () {
         return !get('Right item').image && !_componentsYoutubeView2['default'].isYouTube(get('Right item'));
@@ -940,6 +975,89 @@ var Promote = (function (_Milk) {
           return text.should.be.exactly('Edit and go again');
         });
       }, 'Edit and go again right button has the correct text');
+    }
+  }, {
+    key: 'verifyVotes',
+    value: function verifyVotes(i) {
+      var ok = this.ok.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
+      var find = this.find.bind(this);
+
+      // Votes should have incremented [LEFT]
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          var votes = +get('Left votes');
+          var where = {
+            item: get('Left item')._id
+          };
+
+          console.log('count', where);
+
+          _modelsVote2['default'].where(where).count(function (error, count) {
+            if (error) {
+              return ko(error);
+            }
+            try {
+              count.should.be.exactly(votes + 4);
+              ok();
+            } catch (error) {
+              ko(error);
+            }
+          });
+        });
+      }, 'Votes should have incremented [LEFT]');
+
+      // Votes should have the right values [LEFT]
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          var cookie = JSON.parse(decodeURIComponent(get('Cookie').value.replace(/^j%3A/, '')));
+
+          _modelsVote2['default'].find({
+            user: cookie.id,
+            item: get('Left item')._id
+          }).sort({ _id: -1 }).limit(4).exec().then(function (votes) {
+            try {
+              votes.reverse();
+              console.log('votes', votes);
+              votes[0].value.should.be.exactly(-1);
+              votes[1].value.should.be.exactly(1);
+              votes[2].value.should.be.exactly(0);
+              votes[3].value.should.be.exactly(1);
+              ok();
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        });
+      }, 'Verify votes for left item got saved');
+
+      // Votes should have incremented [LEFT]
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          var cookie = JSON.parse(decodeURIComponent(get('Cookie').value.replace(/^j%3A/, '')));
+
+          _modelsVote2['default'].find({
+            user: cookie.id,
+            item: get('Right item')._id
+          }).sort({ _id: -1 }).limit(4).exec().then(function (votes) {
+            try {
+              votes.reverse();
+              console.log('votes', votes);
+              votes[0].value.should.be.exactly(1);
+              votes[1].value.should.be.exactly(-1);
+              votes[2].value.should.be.exactly(0);
+              votes[3].value.should.be.exactly(1);
+              ok();
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        });
+      }, 'Verify votes for right item got saved');
     }
   }]);
 

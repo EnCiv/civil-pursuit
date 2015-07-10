@@ -213,8 +213,39 @@ class Creator extends Milk {
       'http://isup.me/http://synaccord.com'
     ];
 
+    let resolveTitle = () => new Promise((ok, ko) => {
+      console.log('Getting url', urls[i]);
+      getUrlTitle(urls[i])
+        .then(
+          title => {
+            console.log('Got title', title)
+            try {
+              if ( ! title ) {
+                console.log('Could not resolve title of  ' + urls[i]);
+
+                i ++;
+
+                if ( ! urls[i] ) {
+                  throw new Error('No more URLS to resolve');
+                }
+
+                resolveTitle().then(ok, ko);
+              }
+              else {
+                console.log('Resolved title', title)
+                ok(title);
+              }
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+    });
+
     if ( i < urls.length ) {
-      this.set('Title', () => getUrlTitle(urls[i]));
+      this.set('Title', resolveTitle);
 
       this.ok(() => this.get('Reference').val(urls[i] + '\u{E004}'),
         'Entering URL');

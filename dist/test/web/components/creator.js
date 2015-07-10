@@ -297,10 +297,35 @@ var Creator = (function (_Milk) {
 
       var urls = ['http://example.com', 'http://synaccord.com', 'http://isup.me/http://synaccord.com'];
 
-      if (i < urls.length) {
-        this.set('Title', function () {
-          return (0, _libAppGetUrlTitle2['default'])(urls[i]);
+      var resolveTitle = function resolveTitle() {
+        return new Promise(function (ok, ko) {
+          console.log('Getting url', urls[i]);
+          (0, _libAppGetUrlTitle2['default'])(urls[i]).then(function (title) {
+            console.log('Got title', title);
+            try {
+              if (!title) {
+                console.log('Could not resolve title of  ' + urls[i]);
+
+                i++;
+
+                if (!urls[i]) {
+                  throw new Error('No more URLS to resolve');
+                }
+
+                resolveTitle().then(ok, ko);
+              } else {
+                console.log('Resolved title', title);
+                ok(title);
+              }
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
         });
+      };
+
+      if (i < urls.length) {
+        this.set('Title', resolveTitle);
 
         this.ok(function () {
           return _this2.get('Reference').val(urls[i] + '');

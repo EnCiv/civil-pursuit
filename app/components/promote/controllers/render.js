@@ -36,11 +36,11 @@ function renderPromote (cb) {
           .then(function () {
             self.set('cursor', cursor + 1);
 
-            self.set('left', self.get('items')[cursor]);
+            self.set('left', self.get('items')[cursor + 1]);
 
-            self.set('cursor', cursor + 1);
+            self.set('cursor', cursor + 2);
 
-            self.set('right', self.get('items')[cursor + 1  ]);
+            self.set('right', self.get('items')[cursor + 2  ]);
 
             self
               .find('side by side')

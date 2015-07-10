@@ -6,6 +6,7 @@ import toSlug             from '../../../lib/util/to-slug';
 import calcHarmony        from '../../../lib/get-harmony';
 import TypeModel          from '../../type';
 import UserModel          from '../../user';
+import VoteModel          from '../../vote';
 
 function toPanelItem (cb) {
   return new Promise((ok, ko) => {
@@ -99,6 +100,17 @@ function toPanelItem (cb) {
           });
       });
 
+      let countVotes = () => new Promise((ok, ko) => {
+        VoteModel
+          .where({ item : this._id })
+          .count((error, count) => {
+            if ( error ) {
+              return ko(error);
+            }
+            ok(count);
+          });
+      });
+
       let getHarmony    = (item) => new Promise((ok, ko) => {
         console.log('harmony', item.type)
 
@@ -137,12 +149,19 @@ function toPanelItem (cb) {
           getType(),
           getUser(),
           getSubtype(),
-          countChildren()
+          countChildren(),
+          countVotes()
         ])
         .then(
           results => {
             try {
-              [ item.lineage, item.type, item.user, item.subtype, item.children
+              [
+                item.lineage,
+                item.type,
+                item.user,
+                item.subtype,
+                item.children,
+                item.votes
               ] = results;
 
               if ( ! item.type.harmony.length ) {

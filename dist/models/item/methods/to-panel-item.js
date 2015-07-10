@@ -32,6 +32,10 @@ var _user = require('../../user');
 
 var _user2 = _interopRequireDefault(_user);
 
+var _vote = require('../../vote');
+
+var _vote2 = _interopRequireDefault(_vote);
+
 function toPanelItem(cb) {
   var _this = this;
 
@@ -118,6 +122,17 @@ function toPanelItem(cb) {
           });
         };
 
+        var countVotes = function countVotes() {
+          return new Promise(function (ok, ko) {
+            _vote2['default'].where({ item: _this._id }).count(function (error, count) {
+              if (error) {
+                return ko(error);
+              }
+              ok(count);
+            });
+          });
+        };
+
         var getHarmony = function getHarmony(item) {
           return new Promise(function (ok, ko) {
             console.log('harmony', item.type);
@@ -149,15 +164,16 @@ function toPanelItem(cb) {
           });
         };
 
-        Promise.all([_this.getLineage(), getType(), getUser(), getSubtype(), countChildren()]).then(function (results) {
+        Promise.all([_this.getLineage(), getType(), getUser(), getSubtype(), countChildren(), countVotes()]).then(function (results) {
           try {
-            var _results2 = _slicedToArray(results, 5);
+            var _results2 = _slicedToArray(results, 6);
 
             item.lineage = _results2[0];
             item.type = _results2[1];
             item.user = _results2[2];
             item.subtype = _results2[3];
             item.children = _results2[4];
+            item.votes = _results2[5];
 
             if (!item.type.harmony.length) {
               return ok(item);

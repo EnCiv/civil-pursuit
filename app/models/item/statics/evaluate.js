@@ -47,29 +47,34 @@ class Evaluator extends EventEmitter {
         this
           .ItemModel
           .findById(this.itemId)
-          .populate('user')
+          // .populate('user')
           .exec(this.domain.intercept(item => {
             
             if ( ! item ) {
               throw new Error('Item not found');
             }
 
-
-            this.item = item;
-
-            this
-              .findType({ parent : this.item.type })
+            item
+              .toPanelItem()
               .then(
-                parentType => {
-                  if ( ! parentType ) {
-                    this.make().then(ok, ko);
-                  }
-                  else if ( parentType.harmony && parentType.harmony.length && parentType.harmony.some(h => h.toString() === this.item.type.toString()) ) {
-                    this.makeSplit().then(ok, ko); 
-                  }
-                  else {
-                    this.make().then(ok, ko);
-                  }
+                item => {
+                  this.item = item;
+                  this
+                    .findType({ parent : this.item.type })
+                    .then(
+                      parentType => {
+                        if ( ! parentType ) {
+                          this.make().then(ok, ko);
+                        }
+                        else if ( parentType.harmony && parentType.harmony.length && parentType.harmony.some(h => h.toString() === this.item.type.toString()) ) {
+                          this.makeSplit().then(ok, ko); 
+                        }
+                        else {
+                          this.make().then(ok, ko);
+                        }
+                      },
+                      ko
+                    );
                 },
                 ko
               );
@@ -178,7 +183,7 @@ class Evaluator extends EventEmitter {
 
             .find(query)
 
-            .populate('user')
+            // .populate('user')
 
             .where('_id').ne(this.item._id)
 
@@ -192,7 +197,14 @@ class Evaluator extends EventEmitter {
 
             .exec()
 
-            .then(ok, ko);
+            .then(
+              items => {
+                Promise
+                  .all(items.map(item => item.toPanelItem()))
+                  .then(ok, ko);
+              },
+              ko
+            );
 
         }));
       });
@@ -226,7 +238,7 @@ class Evaluator extends EventEmitter {
       let evaluation = new Evaluation({
         type:         this.item.type,
         item:         this.itemId,
-        items:        results.items.map(this.map, this),
+        items:        results.items/*.map(this.map, this)*/,
         criterias:    results.criterias
       });
 

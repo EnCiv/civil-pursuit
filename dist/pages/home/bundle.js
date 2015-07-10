@@ -3137,46 +3137,44 @@ module.exports = exports['default'];
 },{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/finish.js":[function(require,module,exports){
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var Nav = require('../../../lib/util/nav');
+var _libUtilNav = require('../../../lib/util/nav');
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
-  function finish() {
-    var promote = this;
+function finish() {
+  var promote = this;
 
-    promote.find('promote button').off('click');
-    promote.find('finish button').off('click');
+  promote.find('promote button').off('click');
+  promote.find('finish button').off('click');
 
-    if (this.get('left')) {
-      this.save('left');
-    }
-
-    if (this.get('right')) {
-      this.save('right');
-    }
-
-    Nav.unreveal(promote.template, promote.itemController.template, this.domain.intercept(function () {
-
-      promote.itemController.details.get();
-
-      promote.itemController.find('toggle details').click();
-
-      promote.itemController.find('details').find('.feedback-pending').removeClass('hide');
-
-      promote.evaluation = null;
-    }));
+  if (this.get('left')) {
+    this.save('left');
   }
 
-  module.exports = finish;
-})();
+  if (this.get('right')) {
+    this.save('right');
+  }
+
+  _libUtilNav2['default'].unreveal(promote.template, promote.itemController.template, this.domain.intercept(function () {
+
+    promote.itemController.details.get();
+
+    promote.itemController.find('toggle details').click();
+
+    promote.itemController.find('details').find('.feedback-pending').removeClass('hide');
+
+    promote.evaluation = null;
+  }));
+}
+
+exports['default'] = finish;
+module.exports = exports['default'];
 },{"../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js":[function(require,module,exports){
 'use strict';
 
@@ -3201,7 +3199,9 @@ var _componentsItemCtrl2 = _interopRequireDefault(_componentsItemCtrl);
 function _renderItem(item, hand) {
   var self = this;
 
-  this.find('side by side').attr('data-' + hand + '-item', item._id).attr('data-' + hand + '-views', item.views);
+  console.info('Evaluated item', hand, item);
+
+  this.find('side by side').attr('data-' + hand + '-item', item._id).attr('data-' + hand + '-views', item.views).attr('data-' + hand + '-votes', item.votes);
 
   // Subject
   this.find('item subject', hand).text(item.subject);
@@ -3411,11 +3411,11 @@ function renderPromote(cb) {
         }, 1000)).then(function () {
           self.set('cursor', cursor + 1);
 
-          self.set('left', self.get('items')[cursor]);
+          self.set('left', self.get('items')[cursor + 1]);
 
-          self.set('cursor', cursor + 1);
+          self.set('cursor', cursor + 2);
 
-          self.set('right', self.get('items')[cursor + 1]);
+          self.set('right', self.get('items')[cursor + 2]);
 
           self.find('side by side').find('.left-item').animate({
             opacity: 1
