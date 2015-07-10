@@ -1,8 +1,8 @@
 'use strict'
 
-import Layout               from 'syn/components/layout/view';
-import IntroView            from 'syn/components/Intro/view';
-import TopLevelPanelView    from 'syn/components/TopLevelPanel/view';
+import Layout               from '../../components/layout/view';
+import IntroView            from '../../components/Intro/view';
+import TopLevelPanelView    from '../../components/TopLevelPanel/view';
 import marked               from 'marked';
 import {Element}            from 'cinco/dist';
 

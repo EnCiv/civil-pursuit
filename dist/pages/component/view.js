@@ -18,13 +18,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _synComponentsLayoutView = require('syn/components/layout/view');
+var _componentsLayoutView = require('../../components/layout/view');
 
-var _synComponentsLayoutView2 = _interopRequireDefault(_synComponentsLayoutView);
+var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
 
-var _synComponentsYoutubeView = require('syn/components/youtube/view');
+var _componentsYoutubeView = require('../../components/youtube/view');
 
-var _synComponentsYoutubeView2 = _interopRequireDefault(_synComponentsYoutubeView);
+var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
 
 var ComponentPage = (function (_Layout) {
   function ComponentPage(props) {
@@ -85,7 +85,7 @@ var ComponentPage = (function (_Layout) {
   }]);
 
   return ComponentPage;
-})(_synComponentsLayoutView2['default']);
+})(_componentsLayoutView2['default']);
 
 exports['default'] = ComponentPage;
 module.exports = exports['default'];

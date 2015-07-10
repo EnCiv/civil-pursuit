@@ -12,13 +12,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synComponentsLayoutView = require('syn/components/layout/view');
+var _componentsLayoutView = require('../../components/layout/view');
 
-var _synComponentsLayoutView2 = _interopRequireDefault(_synComponentsLayoutView);
+var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
 
-var _synComponentsPanelView = require('syn/components/Panel/view');
+var _componentsPanelView = require('../../components/panel/view');
 
-var _synComponentsPanelView2 = _interopRequireDefault(_synComponentsPanelView);
+var _componentsPanelView2 = _interopRequireDefault(_componentsPanelView);
 
 var _cincoDist = require('cinco/dist');
 
@@ -35,7 +35,7 @@ var ProfilePage = (function (_Layout) {
 
     var main = this.find('#main').get(0);
 
-    var panel = new _synComponentsPanelView2['default']({});
+    var panel = new _componentsPanelView2['default']({});
 
     main.add(new _cincoDist.Element('#profile.center').add(panel));
   }
@@ -43,7 +43,7 @@ var ProfilePage = (function (_Layout) {
   _inherits(ProfilePage, _Layout);
 
   return ProfilePage;
-})(_synComponentsLayoutView2['default']);
+})(_componentsLayoutView2['default']);
 
 exports['default'] = ProfilePage;
 module.exports = exports['default'];

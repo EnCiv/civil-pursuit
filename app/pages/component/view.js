@@ -1,8 +1,8 @@
 'use strict'
 
-import {Element} from 'cinco/dist';
-import Layout from 'syn/components/layout/view';
-import YouTube from 'syn/components/youtube/view';
+import {Element}      from 'cinco/dist';
+import Layout         from '../../components/layout/view';
+import YouTube        from '../../components/youtube/view';
 
 class ComponentPage extends Layout {
   constructor(props) {

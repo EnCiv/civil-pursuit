@@ -12,17 +12,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synComponentsLayoutView = require('syn/components/layout/view');
+var _componentsLayoutView = require('../../components/layout/view');
 
-var _synComponentsLayoutView2 = _interopRequireDefault(_synComponentsLayoutView);
+var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
 
-var _synComponentsItemView = require('syn/components/item/view');
+var _componentsItemView = require('../../components/item/view');
 
-var _synComponentsItemView2 = _interopRequireDefault(_synComponentsItemView);
+var _componentsItemView2 = _interopRequireDefault(_componentsItemView);
 
-var _synComponentsPanelView = require('syn/components/Panel/view');
+var _componentsPanelView = require('../../components/panel/view');
 
-var _synComponentsPanelView2 = _interopRequireDefault(_synComponentsPanelView);
+var _componentsPanelView2 = _interopRequireDefault(_componentsPanelView);
 
 var ItemPage = (function (_Layout) {
   function ItemPage(props) {
@@ -31,9 +31,9 @@ var ItemPage = (function (_Layout) {
     _get(Object.getPrototypeOf(ItemPage.prototype), 'constructor', this).call(this, props);
     this.props = props;
 
-    var panel = new _synComponentsPanelView2['default'](props);
+    var panel = new _componentsPanelView2['default'](props);
 
-    var item = new _synComponentsItemView2['default'](props);
+    var item = new _componentsItemView2['default'](props);
 
     panel.find('h4.panel-title').each(function (title) {
       title.text(props.item.subject);
@@ -51,7 +51,7 @@ var ItemPage = (function (_Layout) {
   _inherits(ItemPage, _Layout);
 
   return ItemPage;
-})(_synComponentsLayoutView2['default']);
+})(_componentsLayoutView2['default']);
 
 exports['default'] = ItemPage;
 module.exports = exports['default'];

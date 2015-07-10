@@ -2,29 +2,29 @@
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _synApp = require('syn/app');
+var _app = require('../../app');
 
-var _synApp2 = _interopRequireDefault(_synApp);
+var _app2 = _interopRequireDefault(_app);
 
-var _synComponentsTopBarCtrl = require('syn/components/top-bar/ctrl');
+var _componentsTopBarCtrl = require('../../components/top-bar/ctrl');
 
-var _synComponentsTopBarCtrl2 = _interopRequireDefault(_synComponentsTopBarCtrl);
+var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
 
-var _synComponentsPanelCtrl = require('syn/components/panel/ctrl');
+var _componentsPanelCtrl = require('../../components/panel/ctrl');
 
-var _synComponentsPanelCtrl2 = _interopRequireDefault(_synComponentsPanelCtrl);
+var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
 
-synapp.app = new _synApp2['default'](true);
+synapp.app = new _app2['default'](true);
 
 synapp.app.ready(function () {
 
-  new _synComponentsTopBarCtrl2['default']().render();
+  new _componentsTopBarCtrl2['default']().render();
 
   synapp.app.publish('get top-level type').subscribe(function (pubsub, topLevelPanel) {
 
     pubsub.unsubscribe();
 
-    var panel = new _synComponentsPanelCtrl2['default']({ panel: { type: topLevelPanel } });
+    var panel = new _componentsPanelCtrl2['default']({ panel: { type: topLevelPanel } });
 
     $('.panels').append(panel.load());
 

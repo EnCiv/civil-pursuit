@@ -1,8 +1,8 @@
 'use strict'
 
-import Layout from 'syn/components/layout/view';
-import Item           from 'syn/components/item/view';
-import Panel          from 'syn/components/Panel/view';
+import Layout         from '../../components/layout/view';
+import Item           from '../../components/item/view';
+import Panel          from '../../components/panel/view';
 
 class ItemPage extends Layout {
   constructor(props) {

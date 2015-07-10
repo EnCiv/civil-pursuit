@@ -1,7 +1,7 @@
 'use strict';
 
-import App from 'syn/app';
-import TopBar from 'syn/components/top-bar/ctrl';
+import App        from '../../app';
+import TopBar     from '../../components/top-bar/ctrl';
 
 synapp.app = new App(true);
 

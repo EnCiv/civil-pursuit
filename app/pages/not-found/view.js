@@ -1,7 +1,7 @@
 'use strict';
 
-import Layout from '../../components/layout/view';
-import {Element} from 'cinco/dist';
+import Layout       from '../../components/layout/view';
+import { Element }  from 'cinco/dist';
 
 class PageNotFound extends Layout {
   constructor(props) {

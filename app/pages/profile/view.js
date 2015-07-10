@@ -1,8 +1,8 @@
 'use strict'
 
-import Layout from 'syn/components/layout/view';
-import Panel from 'syn/components/Panel/view';
-import {Element} from 'cinco/dist';
+import Layout         from '../../components/layout/view';
+import Panel          from '../../components/panel/view';
+import {Element}      from 'cinco/dist';
 
 class ProfilePage extends Layout {
   constructor(props) {

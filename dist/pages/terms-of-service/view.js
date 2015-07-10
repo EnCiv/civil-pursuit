@@ -12,17 +12,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _synComponentsLayoutView = require('syn/components/layout/view');
+var _componentsLayoutView = require('../../components/layout/view');
 
-var _synComponentsLayoutView2 = _interopRequireDefault(_synComponentsLayoutView);
+var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
 
-var _synComponentsIntroView = require('syn/components/Intro/view');
+var _componentsIntroView = require('../../components/Intro/view');
 
-var _synComponentsIntroView2 = _interopRequireDefault(_synComponentsIntroView);
+var _componentsIntroView2 = _interopRequireDefault(_componentsIntroView);
 
-var _synComponentsTopLevelPanelView = require('syn/components/TopLevelPanel/view');
+var _componentsTopLevelPanelView = require('../../components/TopLevelPanel/view');
 
-var _synComponentsTopLevelPanelView2 = _interopRequireDefault(_synComponentsTopLevelPanelView);
+var _componentsTopLevelPanelView2 = _interopRequireDefault(_componentsTopLevelPanelView);
 
 var _marked = require('marked');
 
@@ -50,7 +50,7 @@ var TOS = (function (_Layout) {
   _inherits(TOS, _Layout);
 
   return TOS;
-})(_synComponentsLayoutView2['default']);
+})(_componentsLayoutView2['default']);
 
 exports['default'] = TOS;
 module.exports = exports['default'];
