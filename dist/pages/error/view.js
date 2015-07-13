@@ -41,7 +41,7 @@ var ErrorPage = (function (_Layout) {
 
       main.add(ul);
     } else {
-      main.add(new _cincoDist.Element('p').text('An error occurred. Please try again in a moment'));
+      main.add(new _cincoDist.Element('p.gutter').text('An error occurred. Please try again in a moment'));
     }
 
     main.add(new _cincoDist.Element('hr'));

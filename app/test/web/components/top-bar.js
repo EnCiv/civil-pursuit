@@ -1,10 +1,11 @@
 'use strict';
 
-import should from 'should';
-import Milk from '../../../lib/app/milk';
-import config from '../../../../config.json';
-import JoinTest from '../components/join';
-import VexTest from '../components/vex';
+import should           from 'should';
+import Milk             from '../../../lib/app/milk';
+import config           from '../../../../config.json';
+import JoinTest         from '../components/join';
+import LoginTest        from '../components/login';
+import VexTest          from '../components/vex';
 
 class TopBar extends Milk {
 
@@ -38,6 +39,7 @@ class TopBar extends Milk {
     this.set('Link to Profile',   () => this.find('a[title="Profile"]'));
     this.set('Link to Sign Out',  () => this.find('a[title="Sign out"]'));
     this.set('Join',              () => this.find(JoinTest.find('main')));
+    this.set('Login',             () => this.find(LoginTest.find('main')));
 
     // Main
 
@@ -70,6 +72,25 @@ class TopBar extends Milk {
     // Login Button
 
     this.ok(() => get('Login button').is(!get('Cookie')));
+
+    // Login Button - Vex
+
+    this.import(VexTest,
+      { trigger: 'button.login-button' },
+      null,
+      when => ! get('Cookie')
+    );
+
+    // Login Button - Toggle Login
+
+    this
+      .ok(() => get('Login button').click(), null, when => ! get('Cookie'))
+      .wait(1, null, when => ! get('Cookie'))
+      .ok(() => get('Login').is(true), null, when => ! get('Cookie'))
+
+      .ok(() => get('Login button').click(), null, when => ! get('Cookie'))
+      .wait(1, null, when => ! get('Cookie'))
+      .ok(() => get('Login').is(false), null, when => ! get('Cookie'));
 
     // Join Button
 

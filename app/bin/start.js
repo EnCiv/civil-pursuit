@@ -46,7 +46,6 @@ readMe().then(
   () => connectToMongoose().then(
     () => {
       try {
-        console.log('connecting to server 22');
         var Server = require('../server');
         new Server()
           .on('error', parseError)

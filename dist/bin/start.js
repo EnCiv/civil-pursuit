@@ -62,7 +62,6 @@ function connectToMongoose() {
 readMe().then(function () {
   return connectToMongoose().then(function () {
     try {
-      console.log('connecting to server 22');
       var Server = require('../server');
       new Server().on('error', parseError).on('message', function (message) {
         return console.log('message', message);

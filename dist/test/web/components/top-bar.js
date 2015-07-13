@@ -28,6 +28,10 @@ var _componentsJoin = require('../components/join');
 
 var _componentsJoin2 = _interopRequireDefault(_componentsJoin);
 
+var _componentsLogin = require('../components/login');
+
+var _componentsLogin2 = _interopRequireDefault(_componentsLogin);
+
 var _componentsVex = require('../components/vex');
 
 var _componentsVex2 = _interopRequireDefault(_componentsVex);
@@ -87,6 +91,9 @@ var TopBar = (function (_Milk) {
     this.set('Join', function () {
       return _this.find(_componentsJoin2['default'].find('main'));
     });
+    this.set('Login', function () {
+      return _this.find(_componentsLogin2['default'].find('main'));
+    });
 
     // Main
 
@@ -124,6 +131,36 @@ var TopBar = (function (_Milk) {
 
     this.ok(function () {
       return get('Login button').is(!get('Cookie'));
+    });
+
+    // Login Button - Vex
+
+    this['import'](_componentsVex2['default'], { trigger: 'button.login-button' }, null, function (when) {
+      return !get('Cookie');
+    });
+
+    // Login Button - Toggle Login
+
+    this.ok(function () {
+      return get('Login button').click();
+    }, null, function (when) {
+      return !get('Cookie');
+    }).wait(1, null, function (when) {
+      return !get('Cookie');
+    }).ok(function () {
+      return get('Login').is(true);
+    }, null, function (when) {
+      return !get('Cookie');
+    }).ok(function () {
+      return get('Login button').click();
+    }, null, function (when) {
+      return !get('Cookie');
+    }).wait(1, null, function (when) {
+      return !get('Cookie');
+    }).ok(function () {
+      return get('Login').is(false);
+    }, null, function (when) {
+      return !get('Cookie');
     });
 
     // Join Button

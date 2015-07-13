@@ -1291,77 +1291,35 @@ var _componentsTopBarCtrl2 = _interopRequireDefault(_componentsTopBarCtrl);
 synapp.app = new _app2['default'](true);
 
 synapp.app.ready(function () {
-
   new _componentsTopBarCtrl2['default']().render();
 });
 },{"../../app":1,"../../components/top-bar/ctrl":5}],12:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
-	var events = require('events')
+	var events = require('events');
 
 	// Export Domain
-	var domain = {}
+	var domain = {};
 	domain.createDomain = domain.create = function(){
-		var d = new events.EventEmitter()
-
-		function emitError(e) {
-			d.emit('error', e)
-		}
-
-		d.add = function(emitter){
-			emitter.on('error', emitError)
-		}
-		d.remove = function(emitter){
-			emitter.removeListener('error', emitError)
-		}
-		d.bind = function(fn){
-			return function(){
-				var args = Array.prototype.slice.call(arguments)
-				try {
-					fn.apply(null, args)
-				}
-				catch (err){
-					emitError(err)
-				}
-			}
-		}
-		d.intercept = function(fn){
-			return function(err){
-				if ( err ) {
-					emitError(err)
-				}
-				else {
-					var args = Array.prototype.slice.call(arguments, 1)
-					try {
-						fn.apply(null, args)
-					}
-					catch (err){
-						emitError(err)
-					}
-				}
-			}
-		}
+		var d = new events.EventEmitter();
 		d.run = function(fn){
 			try {
-				fn()
+				fn();
 			}
 			catch (err) {
-				emitError(err)
+				this.emit('error', err);
 			}
-			return this
+			return this;
 		};
 		d.dispose = function(){
-			this.removeAllListeners()
-			return this
+			this.removeAllListeners();
+			return this;
 		};
-		d.enter = d.exit = function(){
-			return this
-		}
-		return d
+		return d;
 	};
-	return domain
-}).call(this)
+	return domain;
+}).call(this);
 },{"events":13}],13:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -1673,8 +1631,6 @@ var process = module.exports = {};
 process.nextTick = (function () {
     var canSetImmediate = typeof window !== 'undefined'
     && window.setImmediate;
-    var canMutationObserver = typeof window !== 'undefined'
-    && window.MutationObserver;
     var canPost = typeof window !== 'undefined'
     && window.postMessage && window.addEventListener
     ;
@@ -1683,29 +1639,8 @@ process.nextTick = (function () {
         return function (f) { return window.setImmediate(f) };
     }
 
-    var queue = [];
-
-    if (canMutationObserver) {
-        var hiddenDiv = document.createElement("div");
-        var observer = new MutationObserver(function () {
-            var queueList = queue.slice();
-            queue.length = 0;
-            queueList.forEach(function (fn) {
-                fn();
-            });
-        });
-
-        observer.observe(hiddenDiv, { attributes: true });
-
-        return function nextTick(fn) {
-            if (!queue.length) {
-                hiddenDiv.setAttribute('yes', 'no');
-            }
-            queue.push(fn);
-        };
-    }
-
     if (canPost) {
+        var queue = [];
         window.addEventListener('message', function (ev) {
             var source = ev.source;
             if ((source === window || source === null) && ev.data === 'process-tick') {
@@ -1745,7 +1680,7 @@ process.emit = noop;
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
-};
+}
 
 // TODO(shtylman)
 process.cwd = function () { return '/' };

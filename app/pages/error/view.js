@@ -24,7 +24,7 @@ class ErrorPage extends Layout {
     }
 
     else {
-      main.add(new Element('p').text('An error occurred. Please try again in a moment'));
+      main.add(new Element('p.gutter').text('An error occurred. Please try again in a moment'));
     }
 
     main.add(new Element('hr')); 
