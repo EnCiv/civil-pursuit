@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -24,11 +26,11 @@ var _marked = require('marked');
 
 var _marked2 = _interopRequireDefault(_marked);
 
-var _synLibAppDescribe = require('syn/lib/app/Describe');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _configJson = require('../../config.json');
+var _configJson = require('../../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
@@ -36,53 +38,76 @@ var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
-var TOSPage = (function (_Describe) {
-  function TOSPage() {
-    var _this = this;
-
+var TOSPage = (function (_Milk) {
+  function TOSPage(props) {
     _classCallCheck(this, TOSPage);
 
-    _get(Object.getPrototypeOf(TOSPage.prototype), 'constructor', this).call(this, 'Terms of service page', {
-      'web driver': {
-        'page': 'Terms Of Service'
-      }
+    props = props || {};
+
+    var options = { viewport: props.viewport, vendor: props.vendor };
+
+    _get(Object.getPrototypeOf(TOSPage.prototype), 'constructor', this).call(this, 'Terms of Service Page', options);
+
+    this.go('/page/terms-of-service')['import'](_componentsLayout2['default'], {
+      title: _configJson2['default'].title.prefix + 'Terms of Service'
     });
 
-    var title = _configJson2['default'].title.prefix + 'Terms of Service';
+    this.actors();
 
-    this.before('Get Terms of Service source file', function () {
-      var TOS = '';
-
-      return new Promise(function (fulfill, reject) {
-        _fs2['default'].createReadStream('TOS.md').on('error', function (error) {
-          return reject;
-        }).on('data', function (data) {
-          return TOS += data.toString();
-        }).on('end', function () {
-          return _this.define('source', (0, _marked2['default'])(TOS));
-        }).on('end', function () {
-          return fulfill();
-        });
-      });
-    }).assert(function () {
-      return new _componentsLayout2['default']({ title: title }).driver(_this._driver);
-    }).assert('Page has the same content than source', { html: '#terms-of-service/container' }, function (html) {
-      // webdriver bug: sometimes it returns outer HTML instead of inner
-      if (/^<div id="terms-of-service\/container">/.test(html)) {
-        html = html.replace(/^<div id="terms-of-service\/container">/, '').replace(/<\/div>$/, '');
-      }
-
-      // Note that some characters changed because of HTML formatting
-      _this._definitions.source = _this._definitions.source.replace(/\&quot;/g, '"').replace(/\&#39;/g, '\'');
-
-      html.should.be.exactly(_this._definitions.source);
-    });
+    this.stories();
   }
 
-  _inherits(TOSPage, _Describe);
+  _inherits(TOSPage, _Milk);
+
+  _createClass(TOSPage, [{
+    key: 'actors',
+    value: function actors() {
+      var _this = this;
+
+      this.set('Container', function () {
+        return _this.find('#terms-of-service/container');
+      });
+
+      this.set('Markup', function () {
+        return new Promise(function (ok, ko) {
+          var TOS = '';
+
+          _fs2['default'].createReadStream('TOS.md').on('error', function (error) {
+            return ko;
+          }).on('data', function (data) {
+            return TOS += data.toString();
+          }).on('end', function () {
+            return ok((0, _marked2['default'])(TOS));
+          });
+        });
+      });
+    }
+  }, {
+    key: 'stories',
+    value: function stories() {
+      var _this2 = this;
+
+      this.ok(function () {
+        return _this2.get('Container').html().then(function (html) {
+
+          var markup = /^<div class="gutter" id="terms-of-service\/container">/;
+
+          // webdriver bug: sometimes it returns outer HTML instead of inner
+          if (markup.test(html)) {
+            html = html.replace(markup, '').replace(/<\/div>$/, '');
+          }
+
+          // Note that some characters changed because of HTML formatting
+          var md = _this2.get('Markup').replace(/\&quot;/g, '"').replace(/\&#39;/g, '\'');
+
+          html.should.be.exactly(md);
+        });
+      });
+    }
+  }]);
 
   return TOSPage;
-})(_synLibAppDescribe2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = TOSPage;
 module.exports = exports['default'];

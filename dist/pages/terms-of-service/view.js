@@ -16,14 +16,6 @@ var _componentsLayoutView = require('../../components/layout/view');
 
 var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
 
-var _componentsIntroView = require('../../components/Intro/view');
-
-var _componentsIntroView2 = _interopRequireDefault(_componentsIntroView);
-
-var _componentsTopLevelPanelView = require('../../components/TopLevelPanel/view');
-
-var _componentsTopLevelPanelView2 = _interopRequireDefault(_componentsTopLevelPanelView);
-
 var _marked = require('marked');
 
 var _marked2 = _interopRequireDefault(_marked);
@@ -44,7 +36,7 @@ var TOS = (function (_Layout) {
 
     var main = this.find('#main').get(0);
 
-    main.add(new _cincoDist.Element('#terms-of-service/container').text((0, _marked2['default'])(props.TOS)));
+    main.add(new _cincoDist.Element('#terms-of-service/container.gutter').text((0, _marked2['default'])(props.TOS)));
   }
 
   _inherits(TOS, _Layout);

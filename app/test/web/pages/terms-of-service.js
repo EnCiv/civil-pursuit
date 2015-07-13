@@ -1,66 +1,74 @@
 'use strict';
 
-import fs from 'fs';
-import should from 'should';
-import marked from 'marked';
-import Describe from 'syn/lib/app/Describe';
-import config from '../../config.json';
-import Layout from '../components/layout';
+import fs             from 'fs';
+import should         from 'should';
+import marked         from 'marked';
+import Milk           from '../../../lib/app/milk';
+import config         from '../../../../config.json';
+import LayoutTest     from '../components/layout';
 
-class TOSPage extends Describe {
+class TOSPage extends Milk {
 
-  constructor () {
-    super('Terms of service page', {
-      'web driver'        :   {
-        'page'            :   'Terms Of Service'
-      }
-    });
+  constructor (props) {
+    props = props || {};
 
-    let title = config.title.prefix + 'Terms of Service';
+    let options = { viewport : props.viewport, vendor : props.vendor };
+
+    super('Terms of Service Page', options);
 
     this
 
-      .before(
-        'Get Terms of Service source file',
-        () => {
-          let TOS = '';
+      .go('/page/terms-of-service')
 
-          return new Promise((fulfill, reject) => {
-            fs
-              .createReadStream('TOS.md')
-              .on('error', error => reject)
-              .on('data', data => TOS += data.toString())
-              .on('end', () => this.define('source', marked(TOS)))
-              .on('end', () => fulfill());
-          });
-        }
-      )
+      .import(LayoutTest, {
+        title   :   config.title.prefix + 'Terms of Service'
+      })
+    ;
 
-      .assert(
-        () => new Layout({ title: title }).driver(this._driver)
-      )
+    this.actors();
 
-      .assert(
-        'Page has the same content than source',
-        { html: '#terms-of-service/container' },
-        (html) => {
+    this.stories();
+  }
+
+  actors () {
+
+    this.set('Container', () => this.find('#terms-of-service/container'));
+
+    this.set('Markup', () => new Promise((ok, ko) => {
+      let TOS = '';
+
+      fs
+        .createReadStream('TOS.md')
+        .on('error', error => ko)
+        .on('data', data => TOS += data.toString())
+        .on('end', () => ok(marked(TOS)));
+
+    }));
+  }
+
+  stories () {
+
+    this.ok(
+      () => this.get('Container').html()
+        .then(html => {
+
+          let markup = /^<div class="gutter" id="terms-of-service\/container">/;
+          
           // webdriver bug: sometimes it returns outer HTML instead of inner
-          if ( /^<div id="terms-of-service\/container">/.test(html) ) {
-            html = html.replace(/^<div id="terms-of-service\/container">/, '')
-              .replace(/<\/div>$/, '');
+          if ( markup.test(html) ) {
+            html = html.replace(markup, '').replace(/<\/div>$/, '');
           }
 
           // Note that some characters changed because of HTML formatting
-          this._definitions.source = this._definitions.source
+          let md = this.get('Markup')
             .replace(/\&quot;/g, '"')
             .replace(/\&#39;/g, "'");
 
 
-          html.should.be.exactly(this._definitions.source);
-        }
-      )
+          html.should.be.exactly(md);
+        })
+    );
 
-    ;
   }
 
 }

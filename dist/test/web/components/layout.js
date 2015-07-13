@@ -24,13 +24,13 @@ var _configJson = require('../../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
-var _componentsTopBar = require('../components/top-bar');
+var _topBar = require('./top-bar');
 
-var _componentsTopBar2 = _interopRequireDefault(_componentsTopBar);
+var _topBar2 = _interopRequireDefault(_topBar);
 
-var _componentsFooter = require('../components/footer');
+var _footer = require('./footer');
 
-var _componentsFooter2 = _interopRequireDefault(_componentsFooter);
+var _footer2 = _interopRequireDefault(_footer);
 
 var Layout = (function (_Milk) {
   function Layout(props) {
@@ -66,9 +66,9 @@ var Layout = (function (_Milk) {
       return _this.find('meta[charset="utf-8"]').is(true);
     });
 
-    this['import'](_componentsTopBar2['default'], { driver: false });
+    this['import'](_topBar2['default'], { driver: false });
 
-    this['import'](_componentsFooter2['default'], { driver: false });
+    this['import'](_footer2['default'], { driver: false });
 
     ;
   }

@@ -1,10 +1,10 @@
 'use strict';
 
-import should from 'should';
-import Milk from '../../../lib/app/milk';
-import config from '../../../../config.json';
-import TopBarTest from '../components/top-bar';
-import FooterTest from '../components/footer';
+import should         from 'should';
+import Milk           from '../../../lib/app/milk';
+import config         from '../../../../config.json';
+import TopBarTest     from './top-bar';
+import FooterTest     from './footer';
 
 class Layout extends Milk {
 
