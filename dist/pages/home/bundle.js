@@ -1138,7 +1138,9 @@ var Details = (function (_Element) {
   _createClass(Details, [{
     key: 'invitePeople',
     value: function invitePeople() {
-      return new _cincoDist.Element('section.feedback-pending.hide').add(new _cincoDist.Element('h4').text('Feedback pending'), new _cincoDist.Element('p').text('While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'), new _cincoDist.Element('a.btn.invite-people', { target: '_blank' }).text('Send'), new _cincoDist.Element('hr'));
+      return new _cincoDist.Element('section.feedback-pending.hide').add(new _cincoDist.Element('h4').text('Feedback pending'), new _cincoDist.Element('p').text('While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'), new _cincoDist.Element('textarea.invite-people-body', {
+        placeholder: 'Hey! I am participating in bringing synergy to democracy. Join me at '
+      }), new _cincoDist.Element('button.invite-people').text('Send'), new _cincoDist.Element('hr'));
     }
   }, {
     key: 'progressBar',

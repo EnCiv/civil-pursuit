@@ -1,27 +1,23 @@
 'use strict';
 
-import should from 'should';
-import Describe from 'syn/lib/app/Describe';
-import config from '../../config.json';
-import Layout from '../components/layout';
+import Milk           from '../../../lib/app/milk';
+import config         from '../../../../config.json';
+import LayoutTest     from '../components/layout';
 
-class NotFound extends Describe {
+class NotFound extends Milk {
 
-  constructor () {
-    super('Page not found', {
-      'web driver'        :   {
-        'uri'             :   '/page/not-found'
-      }
-    });
+  constructor (props) {
+    props = props || {};
+
+    let options = { viewport : props.viewport, vendor : props.vendor };
+
+    super('Page not found', options);
 
     this
 
-      .assert(() => {
-        let title = config.title.prefix + 'Page not found';
+      .go('/page/not/found')
 
-        return new Layout({ title :title }).driver(this._driver);
-      })
-
+      .import(LayoutTest)
     ;
   }
 

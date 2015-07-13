@@ -24,8 +24,12 @@ class Details extends Element {
       
       new Element('p').text(
         'While you are waiting for your feedback this is a great time to invite the people you know to join the effort to bring synergy to democracy.'),
+
+      new Element('textarea.invite-people-body', {
+        placeholder   :   'Hey! I am participating in bringing synergy to democracy. Join me at '
+      }),
       
-      new Element('a.btn.invite-people', { target: '_blank' })
+      new Element('button.invite-people')
         .text('Send'),
       
       new Element('hr')

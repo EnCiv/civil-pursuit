@@ -23,7 +23,7 @@ class HomePage extends Milk {
 
       .go('/')
 
-      // .import(LayoutTest)
+      .import(LayoutTest)
 
       // .import(IntroTest)
 
@@ -41,11 +41,11 @@ class HomePage extends Milk {
 
       // .import(TopLevelPanelTest)
 
-      .import(LoginTest, { toggled : false })
+      // .import(LoginTest, { toggled : false })
 
       // .import(LayoutTest)
 
-      .import(TopLevelPanelTest, { viewport : props.viewport });
+      // .import(TopLevelPanelTest, { viewport : props.viewport });
   }
 
 }

@@ -15,7 +15,22 @@ class ProfilePage extends Layout {
 
     var main = this.find('#main').get(0);
 
-    var panel = new Panel({});
+    var panel = new Panel({ creator : false });
+
+    panel
+      .find('.items')
+      .get(0)
+      .add(
+        new Element('.gutter').add(
+          new Element('.row.gutter-bottom').add(
+            new Element('.tablet-50').add(
+              new Element('.is-container.is-profile-section').add(
+                new Element('.is-section')
+              )
+            )
+          )
+        )
+      );
 
     main.add(
       new Element('#profile.center').add(

@@ -7,6 +7,7 @@ import FeedbackModel    from '../../../models/feedback';
 import cloudinaryFormat from '../../../lib/util/cloudinary-format';
 import config           from '../../../../config.json';
 import YouTube          from '../../../components/youtube/view';
+import DetailsTest      from './details';
 
 class Promote extends Milk {
 
@@ -159,6 +160,12 @@ class Promote extends Milk {
     for ( let i = 0; i < 5 ; i += 2 ) {
       this.cycle(i);
     }
+
+    this.wait(2.5);
+
+    this.import(DetailsTest, () => ({
+      item          :   this.item
+    }));
   }
 
   cycle (i) {

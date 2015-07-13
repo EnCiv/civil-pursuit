@@ -35,7 +35,9 @@ var ProfilePage = (function (_Layout) {
 
     var main = this.find('#main').get(0);
 
-    var panel = new _componentsPanelView2['default']({});
+    var panel = new _componentsPanelView2['default']({ creator: false });
+
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('.is-container.is-profile-section').add(new _cincoDist.Element('.is-section'))))));
 
     main.add(new _cincoDist.Element('#profile.center').add(panel));
   }

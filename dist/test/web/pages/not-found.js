@@ -12,15 +12,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _should = require('should');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _should2 = _interopRequireDefault(_should);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _synLibAppDescribe = require('syn/lib/app/Describe');
-
-var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
-
-var _configJson = require('../../config.json');
+var _configJson = require('../../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
@@ -28,29 +24,23 @@ var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
-var NotFound = (function (_Describe) {
-  function NotFound() {
-    var _this = this;
-
+var NotFound = (function (_Milk) {
+  function NotFound(props) {
     _classCallCheck(this, NotFound);
 
-    _get(Object.getPrototypeOf(NotFound.prototype), 'constructor', this).call(this, 'Page not found', {
-      'web driver': {
-        'uri': '/page/not-found'
-      }
-    });
+    props = props || {};
 
-    this.assert(function () {
-      var title = _configJson2['default'].title.prefix + 'Page not found';
+    var options = { viewport: props.viewport, vendor: props.vendor };
 
-      return new _componentsLayout2['default']({ title: title }).driver(_this._driver);
-    });
+    _get(Object.getPrototypeOf(NotFound.prototype), 'constructor', this).call(this, 'Page not found', options);
+
+    this.go('/page/not/found')['import'](_componentsLayout2['default']);
   }
 
-  _inherits(NotFound, _Describe);
+  _inherits(NotFound, _Milk);
 
   return NotFound;
-})(_synLibAppDescribe2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = NotFound;
 module.exports = exports['default'];

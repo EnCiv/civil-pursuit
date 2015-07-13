@@ -58,31 +58,7 @@ var HomePage = (function (_Milk) {
 
     _get(Object.getPrototypeOf(HomePage.prototype), 'constructor', this).call(this, 'Landing Page', options);
 
-    this.go('/')
-
-    // .import(LayoutTest)
-
-    // .import(IntroTest)
-
-    // .import(TopLevelPanelTest)
-
-    // .import(JoinTest, { toggled : false })
-
-    // .import(LayoutTest)
-
-    // .import(TopLevelPanelTest)
-
-    // .import(SignOutTest)
-
-    // .import(LayoutTest)
-
-    // .import(TopLevelPanelTest)
-
-    ['import'](_componentsLogin2['default'], { toggled: false })
-
-    // .import(LayoutTest)
-
-    ['import'](_componentsTopLevelPanel2['default'], { viewport: props.viewport });
+    this.go('/')['import'](_componentsLayout2['default']);
   }
 
   _inherits(HomePage, _Milk);
@@ -92,3 +68,24 @@ var HomePage = (function (_Milk) {
 
 exports['default'] = HomePage;
 module.exports = exports['default'];
+// .import(IntroTest)
+
+// .import(TopLevelPanelTest)
+
+// .import(JoinTest, { toggled : false })
+
+// .import(LayoutTest)
+
+// .import(TopLevelPanelTest)
+
+// .import(SignOutTest)
+
+// .import(LayoutTest)
+
+// .import(TopLevelPanelTest)
+
+// .import(LoginTest, { toggled : false })
+
+// .import(LayoutTest)
+
+// .import(TopLevelPanelTest, { viewport : props.viewport });

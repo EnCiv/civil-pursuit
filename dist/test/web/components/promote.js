@@ -42,6 +42,10 @@ var _componentsYoutubeView = require('../../../components/youtube/view');
 
 var _componentsYoutubeView2 = _interopRequireDefault(_componentsYoutubeView);
 
+var _details = require('./details');
+
+var _details2 = _interopRequireDefault(_details);
+
 var Promote = (function (_Milk) {
   function Promote(props) {
     _classCallCheck(this, Promote);
@@ -248,6 +252,8 @@ var Promote = (function (_Milk) {
   }, {
     key: 'stories',
     value: function stories() {
+      var _this2 = this;
+
       var ok = this.ok.bind(this);
       var get = this.get.bind(this);
       var set = this.set.bind(this);
@@ -289,6 +295,14 @@ var Promote = (function (_Milk) {
       for (var i = 0; i < 5; i += 2) {
         this.cycle(i);
       }
+
+      this.wait(2.5);
+
+      this['import'](_details2['default'], function () {
+        return {
+          item: _this2.item
+        };
+      });
     }
   }, {
     key: 'cycle',
@@ -360,7 +374,7 @@ var Promote = (function (_Milk) {
   }, {
     key: 'leftSide',
     value: function leftSide() {
-      var _this2 = this;
+      var _this3 = this;
 
       var ok = this.ok.bind(this);
       var get = this.get.bind(this);
@@ -527,7 +541,7 @@ var Promote = (function (_Milk) {
           return get('Left criteria name #' + i).click();
         }, 'Click on Criteria #' + i);
 
-        _this2.wait(1);
+        _this3.wait(1);
 
         ok(function () {
           return get('Left criteria description #' + i).text().then(function (text) {
@@ -674,7 +688,7 @@ var Promote = (function (_Milk) {
   }, {
     key: 'rightSide',
     value: function rightSide() {
-      var _this3 = this;
+      var _this4 = this;
 
       var ok = this.ok.bind(this);
       var get = this.get.bind(this);
@@ -847,7 +861,7 @@ var Promote = (function (_Milk) {
           return get('Right criteria name #' + i).click();
         }, 'Click on Criteria #' + i);
 
-        _this3.wait(1);
+        _this4.wait(1);
 
         ok(function () {
           return get('Right criteria description #' + i).text().then(function (text) {
