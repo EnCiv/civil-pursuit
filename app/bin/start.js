@@ -2,12 +2,12 @@
 
 'use strict';
 
-import colors     from   'colors';
-import fs         from   'fs';
-import path       from   'path';
-import domain     from   'domain';
-import mongoose   from   'mongoose';
-import symlink    from   '../lib/app/symlink';
+import colors         from   'colors';
+import fs             from   'fs';
+import path           from   'path';
+import { Domain }     from   'domain';
+import mongoose       from   'mongoose';
+import Server         from   '../server';
 
 function parseError(error) {
   console.log(error.stack.split(/\n/));
@@ -46,10 +46,14 @@ readMe().then(
   () => connectToMongoose().then(
     () => {
       try {
-        var Server = require('../server');
-        new Server()
-          .on('error', parseError)
-          .on('message', message => console.log('message', message));
+        let d = new Domain().on('error', error => parseError);
+        d.run(() => {
+          process.nextTick(() => {
+            new Server()
+              .on('error', parseError)
+              .on('message', message => console.log('message', message));
+            });
+        });
       }
       catch ( error ) {
         parseError(error);

@@ -19,15 +19,13 @@ var _path2 = _interopRequireDefault(_path);
 
 var _domain = require('domain');
 
-var _domain2 = _interopRequireDefault(_domain);
-
 var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
-var _libAppSymlink = require('../lib/app/symlink');
+var _server = require('../server');
 
-var _libAppSymlink2 = _interopRequireDefault(_libAppSymlink);
+var _server2 = _interopRequireDefault(_server);
 
 function parseError(error) {
   console.log(error.stack.split(/\n/));
@@ -62,9 +60,15 @@ function connectToMongoose() {
 readMe().then(function () {
   return connectToMongoose().then(function () {
     try {
-      var Server = require('../server');
-      new Server().on('error', parseError).on('message', function (message) {
-        return console.log('message', message);
+      var d = new _domain.Domain().on('error', function (error) {
+        return parseError;
+      });
+      d.run(function () {
+        process.nextTick(function () {
+          new _server2['default']().on('error', parseError).on('message', function (message) {
+            return console.log('message', message);
+          });
+        });
       });
     } catch (error) {
       parseError(error);

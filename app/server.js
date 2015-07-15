@@ -4,6 +4,7 @@ import path                     from 'path';
 import fs                       from 'fs';
 import http                     from 'http';
 import { EventEmitter }         from 'events';
+import { Domain }               from 'domain';
 import express                  from 'express';
 import session                  from 'express-session';
 import bodyParser               from 'body-parser';
@@ -42,35 +43,44 @@ class HttpServer extends EventEmitter {
         printIt(res.req, res);
       });
 
-    this.app = express();
+    try {
+      new Domain()
+        .on('error', error => this.emit('error', error))
+        .run(() => {
+          this.app = express();
 
-    this.set();
+          this.set();
 
-    this.parsers();
+          this.parsers();
 
-    this.cookies();
+          this.cookies();
 
-    this.session();
+          this.session();
 
-    this.passport();
+          this.passport();
 
-    this.twitterMiddleware();
+          this.twitterMiddleware();
 
-    this.facebookMiddleware();
+          this.facebookMiddleware();
 
-    this.initPipeLine();
+          this.initPipeLine();
 
-    this.signers();
+          this.signers();
 
-    this.router();
+          this.router();
 
-    this.static();
+          this.static();
 
-    this.notFound();
+          this.notFound();
 
-    this.error();
+          this.error();
 
-    this.start();
+          this.start();
+      });
+    }
+    catch ( error ) {
+      this.emit('error', error);
+    }
   }
 
   set () {
@@ -161,6 +171,7 @@ class HttpServer extends EventEmitter {
   }
 
   router () {
+    this.timeout();
     this.getLandingPage();
     this.getTermsOfServicePage();
     this.getItemPage();
@@ -178,6 +189,17 @@ class HttpServer extends EventEmitter {
       process.nextTick(() => {
         throw new Error('Test error > asynchronous error');
       });
+    });
+  }
+
+  timeout () {
+    this.app.use((req, res, next) => {
+      setTimeout(() => {
+        if ( ! res.headersSent ) {
+          next(new Error('Test error > timeout'));
+        }
+      }, 1000 * 60);
+      next();
     });
   }
 

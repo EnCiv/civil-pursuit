@@ -28,6 +28,8 @@ var _http2 = _interopRequireDefault(_http);
 
 var _events = require('events');
 
+var _domain = require('domain');
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
@@ -102,6 +104,8 @@ var _api2 = _interopRequireDefault(_api);
 
 var HttpServer = (function (_EventEmitter) {
   function HttpServer() {
+    var _this = this;
+
     _classCallCheck(this, HttpServer);
 
     _get(Object.getPrototypeOf(HttpServer.prototype), 'constructor', this).call(this);
@@ -114,35 +118,43 @@ var HttpServer = (function (_EventEmitter) {
       (0, _libUtilExpressPretty2['default'])(res.req, res);
     });
 
-    this.app = (0, _express2['default'])();
+    try {
+      new _domain.Domain().on('error', function (error) {
+        return _this.emit('error', error);
+      }).run(function () {
+        _this.app = (0, _express2['default'])();
 
-    this.set();
+        _this.set();
 
-    this.parsers();
+        _this.parsers();
 
-    this.cookies();
+        _this.cookies();
 
-    this.session();
+        _this.session();
 
-    this.passport();
+        _this.passport();
 
-    this.twitterMiddleware();
+        _this.twitterMiddleware();
 
-    this.facebookMiddleware();
+        _this.facebookMiddleware();
 
-    this.initPipeLine();
+        _this.initPipeLine();
 
-    this.signers();
+        _this.signers();
 
-    this.router();
+        _this.router();
 
-    this['static']();
+        _this['static']();
 
-    this.notFound();
+        _this.notFound();
 
-    this.error();
+        _this.error();
 
-    this.start();
+        _this.start();
+      });
+    } catch (error) {
+      this.emit('error', error);
+    }
   }
 
   _inherits(HttpServer, _EventEmitter);
@@ -232,6 +244,7 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'router',
     value: function router() {
+      this.timeout();
       this.getLandingPage();
       this.getTermsOfServicePage();
       this.getItemPage();
@@ -249,6 +262,18 @@ var HttpServer = (function (_EventEmitter) {
         process.nextTick(function () {
           throw new Error('Test error > asynchronous error');
         });
+      });
+    }
+  }, {
+    key: 'timeout',
+    value: function timeout() {
+      this.app.use(function (req, res, next) {
+        setTimeout(function () {
+          if (!res.headersSent) {
+            next(new Error('Test error > timeout'));
+          }
+        }, 1000 * 60);
+        next();
       });
     }
   }, {
@@ -301,7 +326,7 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'error',
     value: function error() {
-      var _this = this;
+      var _this2 = this;
 
       this.app.use(function (err, req, res, next) {
 
@@ -310,7 +335,7 @@ var HttpServer = (function (_EventEmitter) {
         }
 
         console.log('error', err.stack.split(/\n/));
-        _this.emit('error', err);
+        _this2.emit('error', err);
 
         res.locals.error = err.stack.split(/\n/);
         req.page = 'error';
@@ -321,24 +346,24 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'start',
     value: function start() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.server = _http2['default'].createServer(this.app);
 
       this.server.on('error', function (error) {
-        _this2.emit('error', error);
+        _this3.emit('error', error);
       });
 
       this.server.listen(this.app.get('port'), function () {
-        _this2.emit('message', 'Server is listening', {
-          port: _this2.app.get('port'),
-          env: _this2.app.get('env')
+        _this3.emit('message', 'Server is listening', {
+          port: _this3.app.get('port'),
+          env: _this3.app.get('env')
         });
 
-        _this2.emit('listening');
+        _this3.emit('listening');
 
-        new _api2['default'](_this2).on('error', function (error) {
-          return _this2.emit('error', error);
+        new _api2['default'](_this3).on('error', function (error) {
+          return _this3.emit('error', error);
         });
       });
     }
