@@ -3602,6 +3602,10 @@ var Promote = (function (_Controller) {
     key: 'renderCursor',
     value: function renderCursor(cursor) {
       this.find('cursor').text(cursor);
+
+      if (cursor === this.get('limit')) {
+        this.find('finish button').text('Finish');
+      }
     }
   }, {
     key: 'renderLeft',

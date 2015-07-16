@@ -439,6 +439,14 @@ var Promote = (function (_Milk) {
       });
 
       ok(function () {
+        return get('Finish button').text().then(function (text) {
+          return text.should.be.exactly('Finish');
+        });
+      }, 'Neither button should now show text "Finish"', function () {
+        return i === 3;
+      });
+
+      ok(function () {
         return get('Finish button').click();
       }, 'Promote neither', function () {
         return i === 3;

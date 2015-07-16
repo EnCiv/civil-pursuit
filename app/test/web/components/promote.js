@@ -297,6 +297,13 @@ class Promote extends Milk {
     );
 
     ok(
+      () => get('Finish button').text()
+        .then(text => text.should.be.exactly('Finish')),
+      'Neither button should now show text "Finish"',
+      () => i === 3
+    );
+
+    ok(
       () => get('Finish button').click(),
       'Promote neither',
       () => i === 3

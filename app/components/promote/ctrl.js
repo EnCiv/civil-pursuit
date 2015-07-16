@@ -98,6 +98,10 @@ class Promote extends Controller {
 
   renderCursor (cursor) {
     this.find('cursor').text(cursor);
+
+    if ( cursor === this.get('limit') ) {
+      this.find('finish button').text('Finish');
+    }
   }
 
   renderLeft (left) {
