@@ -159,7 +159,7 @@ class Promote extends Milk {
 
     ok(() => get('View').is(':visible'), 'Side by side viewport view is visible');
 
-    for ( let i = 0; i < 6 ; i += 2 ) {
+    for ( let i = 0; i < 4 ; i ++ ) {
       this.cycle(i);
     }
 
@@ -266,16 +266,16 @@ class Promote extends Milk {
         ok();
       }),
       'Promoting right item',
-      () => i === 2
+      () => i === 1
     );
 
     ok(
       () => get('Promote right item button').click(),
       'Promote right item',
-      () => i === 2
+      () => i === 1
     );
 
-    set('Last action', 'promote right item', null, () => i === 2);
+    set('Last action', 'promote right item', null, () => i === 1);
 
     ok(
       () => new Promise((ok, ko) => {
@@ -287,22 +287,30 @@ class Promote extends Milk {
         ok();
       }),
       'Promoting neither',
-      () => i === 4
+      () => i === 2
     );
 
     ok(
       () => get('Finish button').click(),
       'Promote neither',
-      () => i === 4
+      () => i === 2
     );
 
-    set('Last action', 'promote neither', null, () => i === 4);
+    ok(
+      () => get('Finish button').click(),
+      'Promote neither',
+      () => i === 3
+    );
+
+    set('Last action', 'promote neither', null, () => i === 2);
 
     this.wait(2);
 
     this.verifyVotes(i);
 
     this.verifyFeedback();
+
+    this.verifyPromoted();
   }
 
   leftSide () {
@@ -1223,6 +1231,52 @@ class Promote extends Milk {
       () => {
         get('Last action') !== 'promote right item'
       }
+    );
+  }
+
+  verifyPromoted () {
+    let ok      =   this.ok.bind(this);
+    let get     =   this.get.bind(this);
+    let set     =   this.set.bind(this);
+
+    ok(
+      () => new Promise((ok, ko) => {
+        ItemModel
+          .findById(get('Left id'))
+          .exec()
+          .then(
+            item => {
+              if ( ! item ) {
+                return ko(new Error('Could not find left item after promoting it'));
+              }
+              item.promotions.should.be.exactly(get('Left item').promotions + 1);
+              ok();
+            },
+            ko
+          );
+      }),
+      'Left item promotions counter should have incremented by 1 in DB',
+      () => get('Last action') === 'promote left item'
+    );
+
+    ok(
+      () => new Promise((ok, ko) => {
+        ItemModel
+          .findById(get('Right id'))
+          .exec()
+          .then(
+            item => {
+              if ( ! item ) {
+                return ko(new Error('Could not find right item after promoting it'));
+              }
+              item.promotions.should.be.exactly(get('Right item').promotions + 1);
+              ok();
+            },
+            ko
+          );
+      }),
+      'Right item promotions counter should have incremented by 1 in DB',
+      () => get('Last action') === 'promote right item'
     );
   }
 

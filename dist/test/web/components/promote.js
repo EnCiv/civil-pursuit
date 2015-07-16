@@ -294,7 +294,7 @@ var Promote = (function (_Milk) {
         return get('View').is(':visible');
       }, 'Side by side viewport view is visible');
 
-      for (var i = 0; i < 6; i += 2) {
+      for (var i = 0; i < 4; i++) {
         this.cycle(i);
       }
 
@@ -406,17 +406,17 @@ var Promote = (function (_Milk) {
           ok();
         });
       }, 'Promoting right item', function () {
-        return i === 2;
+        return i === 1;
       });
 
       ok(function () {
         return get('Promote right item button').click();
       }, 'Promote right item', function () {
-        return i === 2;
+        return i === 1;
       });
 
       set('Last action', 'promote right item', null, function () {
-        return i === 2;
+        return i === 1;
       });
 
       ok(function () {
@@ -429,17 +429,23 @@ var Promote = (function (_Milk) {
           ok();
         });
       }, 'Promoting neither', function () {
-        return i === 4;
+        return i === 2;
       });
 
       ok(function () {
         return get('Finish button').click();
       }, 'Promote neither', function () {
-        return i === 4;
+        return i === 2;
+      });
+
+      ok(function () {
+        return get('Finish button').click();
+      }, 'Promote neither', function () {
+        return i === 3;
       });
 
       set('Last action', 'promote neither', null, function () {
-        return i === 4;
+        return i === 2;
       });
 
       this.wait(2);
@@ -447,6 +453,8 @@ var Promote = (function (_Milk) {
       this.verifyVotes(i);
 
       this.verifyFeedback();
+
+      this.verifyPromoted();
     }
   }, {
     key: 'leftSide',
@@ -1311,6 +1319,41 @@ var Promote = (function (_Milk) {
         });
       }, 'Right feedback got saved', function () {
         get('Last action') !== 'promote right item';
+      });
+    }
+  }, {
+    key: 'verifyPromoted',
+    value: function verifyPromoted() {
+      var ok = this.ok.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          _modelsItem2['default'].findById(get('Left id')).exec().then(function (item) {
+            if (!item) {
+              return ko(new Error('Could not find left item after promoting it'));
+            }
+            item.promotions.should.be.exactly(get('Left item').promotions + 1);
+            ok();
+          }, ko);
+        });
+      }, 'Left item promotions counter should have incremented by 1 in DB', function () {
+        return get('Last action') === 'promote left item';
+      });
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          _modelsItem2['default'].findById(get('Right id')).exec().then(function (item) {
+            if (!item) {
+              return ko(new Error('Could not find right item after promoting it'));
+            }
+            item.promotions.should.be.exactly(get('Right item').promotions + 1);
+            ok();
+          }, ko);
+        });
+      }, 'Right item promotions counter should have incremented by 1 in DB', function () {
+        return get('Last action') === 'promote right item';
       });
     }
   }]);
