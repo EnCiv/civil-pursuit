@@ -54,10 +54,12 @@ var ItemPage = (function (_Milk) {
 
     this.set('Item Document', function () {
       return _modelsItem2['default'].disposable();
-    });
-
-    this.go(function () {
+    }).go(function () {
       return '/item/' + _this.get('Item Document').id + '/' + (0, _string2['default'])(_this.get('Item Document').subject).slugify();
+    }, 'Going to disposable item URL')['import'](_componentsLayout2['default'], {
+      title: function title() {
+        return _configJson2['default'].title.prefix + _this.get('Item Document').subject;
+      }
     });
   }
 

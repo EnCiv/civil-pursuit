@@ -24,8 +24,12 @@ class Layout extends Milk {
 
     let expectedTitle;
 
-    if ( props.title ) {
+    if ( typeof props.title === 'string' ) {
       expectedTitle = props.title;
+    }
+
+    else if ( typeof props.title === 'function' ) {
+      expectedTitle = props.title();
     }
 
     else {

@@ -17,10 +17,22 @@ class ItemPage extends Milk {
 
     super('Item Page', options);
 
-    this.set('Item Document', () => ItemModel.disposable());
+    this
 
-    this.go(() => '/item/' + this.get('Item Document').id + '/' +
-      S(this.get('Item Document').subject).slugify());
+      .set('Item Document', () => ItemModel.disposable())
+
+      .go(
+        () => '/item/' + this.get('Item Document').id + '/' +
+          S(this.get('Item Document').subject).slugify(),
+
+        'Going to disposable item URL'
+      )
+
+      .import(LayoutTest, {
+        title : () => config.title.prefix + this.get('Item Document').subject
+      })
+
+      ;
   }
 
 }

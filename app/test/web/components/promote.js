@@ -232,7 +232,8 @@ class Promote extends Milk {
     ok(
       () => get('Finish button').text()
         .then(text => text.should.be.exactly('Neither')),
-      'Finish button text is "Neither"'
+      'Finish button text is "Neither"',
+      () => i !== 3
     );
 
     ok(

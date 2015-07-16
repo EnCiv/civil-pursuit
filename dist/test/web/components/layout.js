@@ -52,8 +52,10 @@ var Layout = (function (_Milk) {
 
     var expectedTitle = undefined;
 
-    if (props.title) {
+    if (typeof props.title === 'string') {
       expectedTitle = props.title;
+    } else if (typeof props.title === 'function') {
+      expectedTitle = props.title();
     } else {
       expectedTitle = _configJson2['default'].title.prefix + _configJson2['default'].title['default'];
     }

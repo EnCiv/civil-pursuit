@@ -371,7 +371,9 @@ var Promote = (function (_Milk) {
         return get('Finish button').text().then(function (text) {
           return text.should.be.exactly('Neither');
         });
-      }, 'Finish button text is "Neither"');
+      }, 'Finish button text is "Neither"', function () {
+        return i !== 3;
+      });
 
       ok(function () {
         return new Promise(function (ok, ko) {

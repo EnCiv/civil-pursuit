@@ -58,9 +58,7 @@ var HomePage = (function (_Milk) {
 
     _get(Object.getPrototypeOf(HomePage.prototype), 'constructor', this).call(this, 'Landing Page', options);
 
-    this.go('/')
-
-    // .import(LayoutTest)
+    this.go('/')['import'](_componentsLayout2['default'])
 
     // .import(IntroTest)
 
