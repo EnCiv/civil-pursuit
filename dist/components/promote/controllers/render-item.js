@@ -147,11 +147,13 @@ function renderItem(hand) {
           $.when(self.find('side by side').find('.' + opposite + '-item').animate({
             opacity: 0
           })).then(function () {
-            self.get(opposite, self.get('items')[self.get('cursor')]);
+            self.set(opposite, self.get('items')[self.get('cursor')]);
 
             self.find('side by side').find('.' + opposite + '-item').animate({
               opacity: 1
             });
+
+            // self.set('left', self.get('items')[cursor + 1]);
           });
         });
       }

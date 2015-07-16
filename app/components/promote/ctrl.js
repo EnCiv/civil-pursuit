@@ -33,6 +33,7 @@ class Promote extends Controller {
           break;
 
         case 'cursor':
+          console.info('cursor changed', value);
           this.renderCursor(value);
           break;
 
@@ -41,6 +42,7 @@ class Promote extends Controller {
           break;
 
         case 'right':
+          console.info('right changed', value);
           this.renderRight(value);
           break;
       }

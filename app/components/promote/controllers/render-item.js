@@ -162,7 +162,7 @@ function renderItem (hand) {
                   })
               )
                 .then(function () {
-                  self.get(opposite, self.get('items')[self.get('cursor')]);
+                  self.set(opposite, self.get('items')[self.get('cursor')]);
 
                   self
                     .find('side by side')
@@ -170,6 +170,8 @@ function renderItem (hand) {
                     .animate({
                       opacity: 1
                     });
+
+                  // self.set('left', self.get('items')[cursor + 1]);
                 });
             });
             }

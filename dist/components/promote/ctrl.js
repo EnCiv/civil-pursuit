@@ -73,6 +73,7 @@ var Promote = (function (_Controller) {
           break;
 
         case 'cursor':
+          console.info('cursor changed', value);
           _this.renderCursor(value);
           break;
 
@@ -81,6 +82,7 @@ var Promote = (function (_Controller) {
           break;
 
         case 'right':
+          console.info('right changed', value);
           _this.renderRight(value);
           break;
       }

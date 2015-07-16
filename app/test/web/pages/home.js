@@ -23,7 +23,7 @@ class HomePage extends Milk {
 
       .go('/')
 
-      .import(LayoutTest)
+      // .import(LayoutTest)
 
       // .import(IntroTest)
 
@@ -31,7 +31,7 @@ class HomePage extends Milk {
 
       // Join
 
-      // .import(JoinTest, { toggled : false })
+      .import(JoinTest, { toggled : false })
 
       // .import(LayoutTest)
 

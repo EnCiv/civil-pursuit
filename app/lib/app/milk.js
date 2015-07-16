@@ -329,9 +329,9 @@ class Milk extends EventEmitter {
   go (url, message) {
     return this.wrap(d => {
 
-      if ( typeof url === 'string' || /^\//.test(url) ) {
-        url = process.env.SYNAPP_SELENIUM_TARGET + url;
-      }
+      // if ( typeof url === 'string' || /^\//.test(url) ) {
+      //   url = process.env.SYNAPP_SELENIUM_TARGET + url;
+      // }
 
       let handler = () => new Promise((fulfill, reject) => {
 

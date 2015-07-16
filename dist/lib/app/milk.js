@@ -392,9 +392,9 @@ var Milk = (function (_EventEmitter) {
 
       return this.wrap(function (d) {
 
-        if (typeof url === 'string' || /^\//.test(url)) {
-          url = process.env.SYNAPP_SELENIUM_TARGET + url;
-        }
+        // if ( typeof url === 'string' || /^\//.test(url) ) {
+        //   url = process.env.SYNAPP_SELENIUM_TARGET + url;
+        // }
 
         var handler = function handler() {
           return new Promise(function (fulfill, reject) {
