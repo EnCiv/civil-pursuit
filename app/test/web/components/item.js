@@ -310,12 +310,37 @@ class Item extends Milk {
 
       this
         .wait(1, null, when => get('Cookie'))
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
-        .import(PromoteTest, { item : item, viewport : options.viewport }, null, when => get('Cookie'))
+        .import(PromoteTest,
+          {
+            item, 
+            viewport    :   options.viewport
+          },
+          
+          'Launch Promote test if User is signed in',
+          
+          when => get('Cookie'))
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
-        .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => get('Cookie'))
+        .ok(
+          () => get('Toggle promote').click(),
+
+          'Clicking on Promote toggle buttons should show Promote (if User is signed in)',
+
+          when => get('Cookie'))
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
-        .wait(2, null, when => get('Cookie'));
+        .wait(
+          2,
+
+          'Wait 2 seconds for Promote screen to hide (if User is signed in)', 
+
+          when => get('Cookie')
+        );
 
     }
 

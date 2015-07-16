@@ -36,10 +36,10 @@ node dist/bin/test-browser test/web/pages/not-found viewport=tablet vendor=firef
 
 node dist/bin/test-browser test/web/pages/terms-of-service viewport=tablet vendor=firefox &&
 
-# Browser / Item Page
-
-node dist/bin/test-browser test/web/pages/item-page viewport=tablet vendor=firefox &&
-
 # Browser / Home
 
-node dist/bin/test-browser test/web/pages/home viewport=tablet vendor=firefox 
+node dist/bin/test-browser test/web/pages/home viewport=tablet vendor=firefox &&
+
+# Browser / Item Page
+
+node dist/bin/test-browser test/web/pages/item-page viewport=tablet vendor=firefox

@@ -190,6 +190,8 @@ var Promote = (function (_Controller) {
     key: 'save',
     value: function save(hand, cb) {
 
+      console.info('saving', hand);
+
       // For responsiveness reasons, there are a copy of each element in DOM
       // one for small screen and one for regular screen -
       // the ones that do not fit are hidden. So we want to make sure each time

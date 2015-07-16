@@ -130,6 +130,8 @@ class Promote extends Milk {
     set('Edit and go again right button', () => find(get('View').selector + ' .right-item .edit-and-go-again-toggle'));
 
     set('Finish button', () => find(get('Main').selector + ' button.finish'));
+
+    set('Last action', 'null');
   }
 
   stories () {
@@ -157,7 +159,7 @@ class Promote extends Milk {
 
     ok(() => get('View').is(':visible'), 'Side by side viewport view is visible');
 
-    for ( let i = 0; i < 5 ; i += 2 ) {
+    for ( let i = 0; i < 6 ; i += 2 ) {
       this.cycle(i);
     }
 
@@ -189,7 +191,19 @@ class Promote extends Milk {
 
     ok(() => get('Cursor').text()
       .then(text => text.should.be.exactly((i + 1).toString())),
-      'Cursor shows the right number');
+      'Cursor shows the right number',
+      () => {
+        get('Last action') === 'neither'
+      }
+    );
+
+    ok(() => get('Cursor').text()
+      .then(text => text.should.be.exactly((i).toString())),
+      'Cursor shows the right number',
+      () => {
+        get('Last action') !== 'neither'
+      }
+    );
 
     this.wait(2);
 
@@ -222,9 +236,67 @@ class Promote extends Milk {
     );
 
     ok(
-      () => get('Finish button').click(),
-      'Click on "Neither"'
+      () => new Promise((ok, ko) => {
+        console.log();
+        console.log();
+        console.log('Promoting left item');
+        console.log();
+        console.log();
+        ok();
+      }),
+      'Promoting left item',
+      () => i === 0
     );
+
+    ok(
+      () => get('Promote left item button').click(),
+      'Promote left item',
+      () => i === 0
+    );
+
+    set('Last action', 'promote left item', null, () => i === 0);
+
+    ok(
+      () => new Promise((ok, ko) => {
+        console.log();
+        console.log();
+        console.log('Promoting right item');
+        console.log();
+        console.log();
+        ok();
+      }),
+      'Promoting right item',
+      () => i === 2
+    );
+
+    ok(
+      () => get('Promote right item button').click(),
+      'Promote right item',
+      () => i === 2
+    );
+
+    set('Last action', 'promote right item', null, () => i === 2);
+
+    ok(
+      () => new Promise((ok, ko) => {
+        console.log();
+        console.log();
+        console.log('Promoting neither');
+        console.log();
+        console.log();
+        ok();
+      }),
+      'Promoting neither',
+      () => i === 4
+    );
+
+    ok(
+      () => get('Finish button').click(),
+      'Promote neither',
+      () => i === 4
+    );
+
+    set('Last action', 'promote neither', null, () => i === 4);
 
     this.wait(2);
 
@@ -422,18 +494,21 @@ class Promote extends Milk {
       ok(
         () => get('Left criteria slider #' + i).val()
           .then(val => (+val).should.be.exactly(0)),
-        'Criteria #' + i + ' \'s left slider is 0'
+        'Criteria #' + i + ' \'s left slider is 0',
+        () => get('Last action') !== 'promote left item'
       );
 
       if ( i === 0 ) {
         ok(
           () => get('Left criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s left slider'
+          'Select criteria #' + i + ' \'s left slider',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).keys('\u{E012}'),
-          'Set criteria #' + i + ' \'s left slider to -1'
+          'Set criteria #' + i + ' \'s left slider to -1',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
@@ -446,12 +521,14 @@ class Promote extends Milk {
       if ( i === 1 ) {
         ok(
           () => get('Left criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s left slider'
+          'Select criteria #' + i + ' \'s left slider',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s left slider to -1'
+          'Set criteria #' + i + ' \'s left slider to -1',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
@@ -464,23 +541,27 @@ class Promote extends Milk {
       if ( i === 2 ) {
         ok(
           () => get('Left criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s left slider'
+          'Select criteria #' + i + ' \'s left slider',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s left slider to 1'
+          'Set criteria #' + i + ' \'s left slider to 1',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).val()
             .then(val => (+val).should.be.exactly(1)),
-          'Criteria #' + i + ' \'s left slider is 1'
+          'Criteria #' + i + ' \'s left slider is 1',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).keys('\u{E012}'),
-          'Set criteria #' + i + ' \'s left slider to 0'
+          'Set criteria #' + i + ' \'s left slider to 0',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
@@ -493,23 +574,27 @@ class Promote extends Milk {
       if ( i === 3 ) {
         ok(
           () => get('Left criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s left slider'
+          'Select criteria #' + i + ' \'s left slider',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s left slider to 1'
+          'Set criteria #' + i + ' \'s left slider to 1',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).val()
             .then(val => (+val).should.be.exactly(1)),
-          'Criteria #' + i + ' \'s left slider is 1'
+          'Criteria #' + i + ' \'s left slider is 1',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
           () => get('Left criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s left slider to 1'
+          'Set criteria #' + i + ' \'s left slider to 1',
+          () => get('Last action') !== 'promote left item'
         );
 
         ok(
@@ -529,7 +614,8 @@ class Promote extends Milk {
 
     ok(
       () => get('Left feedback').val(get('Left feedback value')),
-      'Leave a feedback on left item'
+      'Leave a feedback on left item',
+      () => get('Last action') !== 'promote left item'
     );
 
     // Promote item
@@ -752,18 +838,21 @@ class Promote extends Milk {
       ok(
         () => get('Right criteria slider #' + i).val()
           .then(val => (+val).should.be.exactly(0)),
-        'Criteria #' + i + ' \'s right slider is 0'
+        'Criteria #' + i + ' \'s right slider is 0',
+        () => get('Last action') !== 'promote right item'
       );
 
       if ( i === 1 ) {
         ok(
           () => get('Right criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s right slider'
+          'Select criteria #' + i + ' \'s right slider',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).keys('\u{E012}'),
-          'Set criteria #' + i + ' \'s right slider to -1'
+          'Set criteria #' + i + ' \'s right slider to -1',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
@@ -776,12 +865,14 @@ class Promote extends Milk {
       if ( i === 3 ) {
         ok(
           () => get('Right criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s right slider'
+          'Select criteria #' + i + ' \'s right slider',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s right slider to -1'
+          'Set criteria #' + i + ' \'s right slider to -1',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
@@ -794,23 +885,27 @@ class Promote extends Milk {
       if ( i === 2 ) {
         ok(
           () => get('Right criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s right slider'
+          'Select criteria #' + i + ' \'s right slider',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s right slider to 1'
+          'Set criteria #' + i + ' \'s right slider to 1',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).val()
             .then(val => (+val).should.be.exactly(1)),
-          'Criteria #' + i + ' \'s right slider is 1'
+          'Criteria #' + i + ' \'s right slider is 1',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).keys('\u{E012}'),
-          'Set criteria #' + i + ' \'s right slider to 0'
+          'Set criteria #' + i + ' \'s right slider to 0',
+        () => get('Last action') !== 'promote right item'
         );
 
         ok(
@@ -823,23 +918,27 @@ class Promote extends Milk {
       if ( i === 0 ) {
         ok(
           () => get('Right criteria slider #' + i).click(),
-          'Select criteria #' + i + ' \'s right slider'
+          'Select criteria #' + i + ' \'s right slider',
+          () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s right slider to 1'
+          'Set criteria #' + i + ' \'s right slider to 1',
+          () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).val()
             .then(val => (+val).should.be.exactly(1)),
-          'Criteria #' + i + ' \'s right slider is 1'
+          'Criteria #' + i + ' \'s right slider is 1',
+          () => get('Last action') !== 'promote right item'
         );
 
         ok(
           () => get('Right criteria slider #' + i).keys('\u{E014}'),
-          'Set criteria #' + i + ' \'s right slider to 1'
+          'Set criteria #' + i + ' \'s right slider to 1',
+          () => get('Last action') !== 'promote right item'
         );
 
         ok(
@@ -859,7 +958,8 @@ class Promote extends Milk {
 
     ok(
       () => get('Right feedback').val(get('Right feedback value')),
-      'Leave a feedback on right item'
+      'Leave a feedback on right item',
+      () => get('Last action') !== 'promote right item'
     );
 
     // Promote item
@@ -896,6 +996,7 @@ class Promote extends Milk {
     let find    =   this.find.bind(this);
 
     // Votes should have incremented [LEFT]
+    // if last action was anything but Promoting left item
 
     ok(
       () => new Promise((ok, ko) => {
@@ -921,10 +1022,14 @@ class Promote extends Milk {
             }
           });
       }),
-      'Votes should have incremented [LEFT]'
+      'Votes should have incremented [LEFT]',
+      () => {
+        get('Last action') !== 'promote left item'
+      }
     );
 
     // Votes should have the right values [LEFT]
+    // if last action was anything but Promoting left item
 
     ok(
       () => new Promise((ok, ko) => {
@@ -958,7 +1063,10 @@ class Promote extends Milk {
             ko
           )
       }),
-      'Verify votes for left item got saved'
+      'Verify votes for left item got saved',
+      () => {
+        get('Last action') !== 'promote left item'
+      }
     );
 
     // Votes should have incremented [RIGHT]
@@ -987,7 +1095,10 @@ class Promote extends Milk {
             }
           });
       }),
-      'Votes should have incremented [RIGHT]'
+      'Votes should have incremented [RIGHT]',
+      () => {
+        get('Last action') !== 'promote right item'
+      }
     );
 
     // Votes should have incremented [RIGHT]
@@ -1024,7 +1135,10 @@ class Promote extends Milk {
             ko
           )
       }),
-      'Verify votes for right item got saved'
+      'Verify votes for right item got saved',
+      () => {
+        get('Last action') !== 'promote right item'
+      }
     );
   }
 
@@ -1034,6 +1148,7 @@ class Promote extends Milk {
     let set     =   this.set.bind(this);
 
     // Left feedback got saved
+    // if last action was anything but Promoting left item
 
     ok(
       () => new Promise((ok, ko) => {
@@ -1064,7 +1179,50 @@ class Promote extends Milk {
           );
       }),
 
-      'Left feedback got saved'
+      'Left feedback got saved',
+
+      () => {
+        get('Last action') !== 'promote left item'
+      }
+    );
+
+    // Right feedback got saved
+    // if last action was anything but Promoting right item
+
+    ok(
+      () => new Promise((ok, ko) => {
+        let cookie = JSON.parse(
+          decodeURIComponent(get('Cookie').value.replace(/^j%3A/, ''))
+        );
+
+        FeedbackModel
+          .findOne({
+            item  :   get('Right id'),
+            user  :   cookie.id
+          })
+          .sort({ _id : -1 })
+          .exec()
+          .then(
+            feedback => {
+              console.log('got feedback', feedback)
+              try {
+                feedback.should.be.an.Object;
+                feedback.feedback.should.be.exactly(get('Right feedback value'));
+                ok();
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }),
+
+      'Right feedback got saved',
+
+      () => {
+        get('Last action') !== 'promote right item'
+      }
     );
   }
 

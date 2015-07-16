@@ -331,13 +331,28 @@ var Item = (function (_Milk) {
 
       this.wait(1, null, function (when) {
         return get('Cookie');
-      })['import'](_promote2['default'], { item: item, viewport: options.viewport }, null, function (when) {
+      })
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      ['import'](_promote2['default'], {
+        item: item,
+        viewport: options.viewport
+      }, 'Launch Promote test if User is signed in', function (when) {
         return get('Cookie');
-      }).ok(function () {
+      })
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      .ok(function () {
         return get('Toggle promote').click();
-      }, 'Clicking on Promote toggle buttons should show Promote', function (when) {
+      }, 'Clicking on Promote toggle buttons should show Promote (if User is signed in)', function (when) {
         return get('Cookie');
-      }).wait(2, null, function (when) {
+      })
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      .wait(2, 'Wait 2 seconds for Promote screen to hide (if User is signed in)', function (when) {
         return get('Cookie');
       });
     }

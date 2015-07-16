@@ -3323,7 +3323,7 @@ function renderItem(hand) {
           return pubsub.unsubscribe();
         });
 
-        self.save(left ? 'left' : 'right', function () {
+        self.save(opposite, function () {
           $.when(self.find('side by side').find('.' + opposite + '-item').animate({
             opacity: 0
           })).then(function () {
@@ -3631,6 +3631,8 @@ var Promote = (function (_Controller) {
   }, {
     key: 'save',
     value: function save(hand, cb) {
+
+      console.info('saving', hand);
 
       // For responsiveness reasons, there are a copy of each element in DOM
       // one for small screen and one for regular screen -

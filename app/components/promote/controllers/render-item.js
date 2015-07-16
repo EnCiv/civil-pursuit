@@ -152,7 +152,7 @@ function renderItem (hand) {
             .subscribe(pubsub => pubsub.unsubscribe());
 
           self
-            .save(left ? 'left' : 'right', () => {
+            .save(opposite, () => {
               $.when(
                 self
                   .find('side by side')

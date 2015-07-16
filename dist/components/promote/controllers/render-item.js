@@ -143,7 +143,7 @@ function renderItem(hand) {
           return pubsub.unsubscribe();
         });
 
-        self.save(left ? 'left' : 'right', function () {
+        self.save(opposite, function () {
           $.when(self.find('side by side').find('.' + opposite + '-item').animate({
             opacity: 0
           })).then(function () {

@@ -248,6 +248,8 @@ var Promote = (function (_Milk) {
       set('Finish button', function () {
         return find(get('Main').selector + ' button.finish');
       });
+
+      set('Last action', 'null');
     }
   }, {
     key: 'stories',
@@ -292,7 +294,7 @@ var Promote = (function (_Milk) {
         return get('View').is(':visible');
       }, 'Side by side viewport view is visible');
 
-      for (var i = 0; i < 5; i += 2) {
+      for (var i = 0; i < 6; i += 2) {
         this.cycle(i);
       }
 
@@ -331,7 +333,17 @@ var Promote = (function (_Milk) {
         return get('Cursor').text().then(function (text) {
           return text.should.be.exactly((i + 1).toString());
         });
-      }, 'Cursor shows the right number');
+      }, 'Cursor shows the right number', function () {
+        get('Last action') === 'neither';
+      });
+
+      ok(function () {
+        return get('Cursor').text().then(function (text) {
+          return text.should.be.exactly(i.toString());
+        });
+      }, 'Cursor shows the right number', function () {
+        get('Last action') !== 'neither';
+      });
 
       this.wait(2);
 
@@ -362,8 +374,73 @@ var Promote = (function (_Milk) {
       }, 'Finish button text is "Neither"');
 
       ok(function () {
+        return new Promise(function (ok, ko) {
+          console.log();
+          console.log();
+          console.log('Promoting left item');
+          console.log();
+          console.log();
+          ok();
+        });
+      }, 'Promoting left item', function () {
+        return i === 0;
+      });
+
+      ok(function () {
+        return get('Promote left item button').click();
+      }, 'Promote left item', function () {
+        return i === 0;
+      });
+
+      set('Last action', 'promote left item', null, function () {
+        return i === 0;
+      });
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          console.log();
+          console.log();
+          console.log('Promoting right item');
+          console.log();
+          console.log();
+          ok();
+        });
+      }, 'Promoting right item', function () {
+        return i === 2;
+      });
+
+      ok(function () {
+        return get('Promote right item button').click();
+      }, 'Promote right item', function () {
+        return i === 2;
+      });
+
+      set('Last action', 'promote right item', null, function () {
+        return i === 2;
+      });
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          console.log();
+          console.log();
+          console.log('Promoting neither');
+          console.log();
+          console.log();
+          ok();
+        });
+      }, 'Promoting neither', function () {
+        return i === 4;
+      });
+
+      ok(function () {
         return get('Finish button').click();
-      }, 'Click on "Neither"');
+      }, 'Promote neither', function () {
+        return i === 4;
+      });
+
+      set('Last action', 'promote neither', null, function () {
+        return i === 4;
+      });
 
       this.wait(2);
 
@@ -560,16 +637,22 @@ var Promote = (function (_Milk) {
           return get('Left criteria slider #' + i).val().then(function (val) {
             return (+val).should.be.exactly(0);
           });
-        }, 'Criteria #' + i + ' \'s left slider is 0');
+        }, 'Criteria #' + i + ' \'s left slider is 0', function () {
+          return get('Last action') !== 'promote left item';
+        });
 
         if (i === 0) {
           ok(function () {
             return get('Left criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s left slider');
+          }, 'Select criteria #' + i + ' \'s left slider', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s left slider to -1');
+          }, 'Set criteria #' + i + ' \'s left slider to -1', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).val().then(function (val) {
@@ -581,11 +664,15 @@ var Promote = (function (_Milk) {
         if (i === 1) {
           ok(function () {
             return get('Left criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s left slider');
+          }, 'Select criteria #' + i + ' \'s left slider', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s left slider to -1');
+          }, 'Set criteria #' + i + ' \'s left slider to -1', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).val().then(function (val) {
@@ -597,21 +684,29 @@ var Promote = (function (_Milk) {
         if (i === 2) {
           ok(function () {
             return get('Left criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s left slider');
+          }, 'Select criteria #' + i + ' \'s left slider', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s left slider to 1');
+          }, 'Set criteria #' + i + ' \'s left slider to 1', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).val().then(function (val) {
               return (+val).should.be.exactly(1);
             });
-          }, 'Criteria #' + i + ' \'s left slider is 1');
+          }, 'Criteria #' + i + ' \'s left slider is 1', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s left slider to 0');
+          }, 'Set criteria #' + i + ' \'s left slider to 0', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).val().then(function (val) {
@@ -623,21 +718,29 @@ var Promote = (function (_Milk) {
         if (i === 3) {
           ok(function () {
             return get('Left criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s left slider');
+          }, 'Select criteria #' + i + ' \'s left slider', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s left slider to 1');
+          }, 'Set criteria #' + i + ' \'s left slider to 1', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).val().then(function (val) {
               return (+val).should.be.exactly(1);
             });
-          }, 'Criteria #' + i + ' \'s left slider is 1');
+          }, 'Criteria #' + i + ' \'s left slider is 1', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s left slider to 1');
+          }, 'Set criteria #' + i + ' \'s left slider to 1', function () {
+            return get('Last action') !== 'promote left item';
+          });
 
           ok(function () {
             return get('Left criteria slider #' + i).val().then(function (val) {
@@ -659,7 +762,9 @@ var Promote = (function (_Milk) {
 
       ok(function () {
         return get('Left feedback').val(get('Left feedback value'));
-      }, 'Leave a feedback on left item');
+      }, 'Leave a feedback on left item', function () {
+        return get('Last action') !== 'promote left item';
+      });
 
       // Promote item
 
@@ -880,16 +985,22 @@ var Promote = (function (_Milk) {
           return get('Right criteria slider #' + i).val().then(function (val) {
             return (+val).should.be.exactly(0);
           });
-        }, 'Criteria #' + i + ' \'s right slider is 0');
+        }, 'Criteria #' + i + ' \'s right slider is 0', function () {
+          return get('Last action') !== 'promote right item';
+        });
 
         if (i === 1) {
           ok(function () {
             return get('Right criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s right slider');
+          }, 'Select criteria #' + i + ' \'s right slider', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s right slider to -1');
+          }, 'Set criteria #' + i + ' \'s right slider to -1', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).val().then(function (val) {
@@ -901,11 +1012,15 @@ var Promote = (function (_Milk) {
         if (i === 3) {
           ok(function () {
             return get('Right criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s right slider');
+          }, 'Select criteria #' + i + ' \'s right slider', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s right slider to -1');
+          }, 'Set criteria #' + i + ' \'s right slider to -1', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).val().then(function (val) {
@@ -917,21 +1032,29 @@ var Promote = (function (_Milk) {
         if (i === 2) {
           ok(function () {
             return get('Right criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s right slider');
+          }, 'Select criteria #' + i + ' \'s right slider', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s right slider to 1');
+          }, 'Set criteria #' + i + ' \'s right slider to 1', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).val().then(function (val) {
               return (+val).should.be.exactly(1);
             });
-          }, 'Criteria #' + i + ' \'s right slider is 1');
+          }, 'Criteria #' + i + ' \'s right slider is 1', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s right slider to 0');
+          }, 'Set criteria #' + i + ' \'s right slider to 0', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).val().then(function (val) {
@@ -943,21 +1066,29 @@ var Promote = (function (_Milk) {
         if (i === 0) {
           ok(function () {
             return get('Right criteria slider #' + i).click();
-          }, 'Select criteria #' + i + ' \'s right slider');
+          }, 'Select criteria #' + i + ' \'s right slider', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s right slider to 1');
+          }, 'Set criteria #' + i + ' \'s right slider to 1', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).val().then(function (val) {
               return (+val).should.be.exactly(1);
             });
-          }, 'Criteria #' + i + ' \'s right slider is 1');
+          }, 'Criteria #' + i + ' \'s right slider is 1', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).keys('');
-          }, 'Set criteria #' + i + ' \'s right slider to 1');
+          }, 'Set criteria #' + i + ' \'s right slider to 1', function () {
+            return get('Last action') !== 'promote right item';
+          });
 
           ok(function () {
             return get('Right criteria slider #' + i).val().then(function (val) {
@@ -979,7 +1110,9 @@ var Promote = (function (_Milk) {
 
       ok(function () {
         return get('Right feedback').val(get('Right feedback value'));
-      }, 'Leave a feedback on right item');
+      }, 'Leave a feedback on right item', function () {
+        return get('Last action') !== 'promote right item';
+      });
 
       // Promote item
 
@@ -1014,6 +1147,7 @@ var Promote = (function (_Milk) {
       var find = this.find.bind(this);
 
       // Votes should have incremented [LEFT]
+      // if last action was anything but Promoting left item
 
       ok(function () {
         return new Promise(function (ok, ko) {
@@ -1036,9 +1170,12 @@ var Promote = (function (_Milk) {
             }
           });
         });
-      }, 'Votes should have incremented [LEFT]');
+      }, 'Votes should have incremented [LEFT]', function () {
+        get('Last action') !== 'promote left item';
+      });
 
       // Votes should have the right values [LEFT]
+      // if last action was anything but Promoting left item
 
       ok(function () {
         return new Promise(function (ok, ko) {
@@ -1061,7 +1198,9 @@ var Promote = (function (_Milk) {
             }
           }, ko);
         });
-      }, 'Verify votes for left item got saved');
+      }, 'Verify votes for left item got saved', function () {
+        get('Last action') !== 'promote left item';
+      });
 
       // Votes should have incremented [RIGHT]
 
@@ -1086,7 +1225,9 @@ var Promote = (function (_Milk) {
             }
           });
         });
-      }, 'Votes should have incremented [RIGHT]');
+      }, 'Votes should have incremented [RIGHT]', function () {
+        get('Last action') !== 'promote right item';
+      });
 
       // Votes should have incremented [RIGHT]
 
@@ -1111,7 +1252,9 @@ var Promote = (function (_Milk) {
             }
           }, ko);
         });
-      }, 'Verify votes for right item got saved');
+      }, 'Verify votes for right item got saved', function () {
+        get('Last action') !== 'promote right item';
+      });
     }
   }, {
     key: 'verifyFeedback',
@@ -1121,6 +1264,7 @@ var Promote = (function (_Milk) {
       var set = this.set.bind(this);
 
       // Left feedback got saved
+      // if last action was anything but Promoting left item
 
       ok(function () {
         return new Promise(function (ok, ko) {
@@ -1140,7 +1284,34 @@ var Promote = (function (_Milk) {
             }
           }, ko);
         });
-      }, 'Left feedback got saved');
+      }, 'Left feedback got saved', function () {
+        get('Last action') !== 'promote left item';
+      });
+
+      // Right feedback got saved
+      // if last action was anything but Promoting right item
+
+      ok(function () {
+        return new Promise(function (ok, ko) {
+          var cookie = JSON.parse(decodeURIComponent(get('Cookie').value.replace(/^j%3A/, '')));
+
+          _modelsFeedback2['default'].findOne({
+            item: get('Right id'),
+            user: cookie.id
+          }).sort({ _id: -1 }).exec().then(function (feedback) {
+            console.log('got feedback', feedback);
+            try {
+              feedback.should.be.an.Object;
+              feedback.feedback.should.be.exactly(get('Right feedback value'));
+              ok();
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        });
+      }, 'Right feedback got saved', function () {
+        get('Last action') !== 'promote right item';
+      });
     }
   }]);
 

@@ -331,13 +331,7 @@ class Creator extends Milk {
     });
 
     this.set('Title', () => new Promise((ok, ko) => {
-      resolveTitle().then(
-        title => {
-          console.log('We have title!', title);
-          ok(title);
-        },
-        ko
-      );
+      resolveTitle().then(ok, ko);
     }));
 
     this.ok(() => this.get('Reference').val(urls[i] + '\u{E004}'),

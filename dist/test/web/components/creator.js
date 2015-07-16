@@ -408,10 +408,7 @@ var Creator = (function (_Milk) {
 
       this.set('Title', function () {
         return new Promise(function (ok, ko) {
-          resolveTitle().then(function (title) {
-            console.log('We have title!', title);
-            ok(title);
-          }, ko);
+          resolveTitle().then(ok, ko);
         });
       });
 
