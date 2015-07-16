@@ -10,6 +10,10 @@ import getUrlTitle          from '../../../lib/app/get-url-title';
 
 class Creator extends Milk {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
 
     props = props || {};
@@ -20,28 +24,43 @@ class Creator extends Milk {
 
     this.props = props || {};
 
-    let get = this.get.bind(this);
-    let find = this.find.bind(this);
+    this.options = options;
 
     if ( this.props.driver !== false ) {
       this.go('/');
     }
 
+    // If no panel is passed as an argument (for example, creator is called as a stand alone test and not part of testing a panel), then let's click on the first + icon we find in order to reveal the Creator
+
     if ( ! this.props.panel ) {
-      this.props.panel = find('.panels > .panel');
+      this.props.panel = this.find('.panels > .panel');
       this.wait(2);
-      this.ok(() => find('.panels > .panel > .panel-heading .toggle-creator')
+      this.ok(() => this.find('.panels > .panel > .panel-heading .toggle-creator')
         .click(), 'Click on Creator Toggle');
       this.wait(2);
     }
 
-    let Item;
+    this.actors();
+
+    this.stories();
+
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  actors () {
+
+    let find  = this.find.bind(this);
+    let get   = this.get.bind(this);
+    let set   = this.set.bind(this);
 
     // Get cookie
 
     this.set('Cookie', () => this.getCookie('synuser'));
 
-    // DOM selectors
+    // ~~~~~~~~~ DOM selectors ~~~~~~~~~ \\
 
     this.set('Panel', () => this.props.panel);
     
@@ -68,6 +87,17 @@ class Creator extends Milk {
     this.set('Choose file', () => find(get('Creator').selector + ' button.upload-image-button'));
 
     this.set('Uploaded image', () => find(get('Creator').selector + ' .drop-box .preview-image'));
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  stories () {
+
+    let find  = this.find.bind(this);
+    let get   = this.get.bind(this);
+    let set   = this.set.bind(this);
 
     // Visibility
 
@@ -83,34 +113,21 @@ class Creator extends Milk {
 
     // Item
 
+    let options = this.options
+
     this.import(ItemTest, () => ({
       item          :   get('Item').selector,
       buttons       :   false,
       collapsers    :   false,
       promote       :   false,
       details       :   false,
-      references    :   false
+      references    :   false,
+      viewport: options.viewport
     }));
 
     // Validations
 
-    this.ok(() => get('Create').click(), 'Click on Create button');
-
-    this.wait(.5);
-
-    this.ok(() => get('Subject').is('.error'), 'Subject field is showing error because it is empty');
-
-    this.ok(() => get('Subject').val('This is a subject'), 'Writing a subject');
-
-    this.ok(() => get('Create').click(), 'Click on Create button');
-
-    this.wait(.5);
-
-    this.ok(() => get('Subject').not('.error'), 'Subject field is showing error because it is empty');
-
-    this.ok(() => get('Description').is('.error'), 'Description field is showing error because it is empty');
-
-    this.ok(() => get('Description').val('This is a description created ' + new Date()), 'Writing a description');
+    this.formValidations();
 
     // Upload
 
@@ -160,7 +177,6 @@ class Creator extends Milk {
         .then(
           id => {
             try {
-              console.log('got new item id', id)
               if ( Array.isArray(id) ) {
                 id = id[0];
               }
@@ -177,7 +193,7 @@ class Creator extends Milk {
                         .toPanelItem()
                         .then(
                           item => {
-                            Item = item;
+                            this.Item = item;
                             ok()
                           },
                           ko
@@ -199,11 +215,81 @@ class Creator extends Milk {
 
     }), 'Get new item from DB');
 
-    this.import(ItemTest, () => ({ item : Item, promote : true, viewport : this.props.viewport }));
-
+    this.import(ItemTest, () => ({ item : this.Item, promote : true, viewport: options.viewport }));
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  formValidations () {
+
+    let find  = this.find.bind(this);
+    let get   = this.get.bind(this);
+    let set   = this.set.bind(this);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.ok(() => get('Create').click(),
+
+      'Click on Create button');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.wait(.5);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.ok(() => get('Subject').is('.error'),
+
+      'Subject field is showing error because it is empty');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.ok(() => get('Subject').val('This is a subject'),
+
+      'Entering the subject');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.ok(() => get('Create').click(),
+
+      'Click on Create button');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.wait(.5);
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.ok(() => get('Subject').not('.error'),
+
+      'Subject field is showing error because it is empty');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.ok(() => get('Description').is('.error'),
+
+      'Description field is showing error because it is empty');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    this.ok(() => get('Description').val('This is a description created ' + new Date()),
+
+      'Entering the description');
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   references (i) {
+
+    let find  = this.find.bind(this);
+    let get   = this.get.bind(this);
+    let set   = this.set.bind(this);
 
     i = i || 0;
 
@@ -245,7 +331,13 @@ class Creator extends Milk {
     });
 
     this.set('Title', () => new Promise((ok, ko) => {
-      resolveTitle().then(ok, ko);
+      resolveTitle().then(
+        title => {
+          console.log('We have title!', title);
+          ok(title);
+        },
+        ko
+      );
     }));
 
     this.ok(() => this.get('Reference').val(urls[i] + '\u{E004}'),
@@ -274,6 +366,10 @@ class Creator extends Milk {
       'Reference board shows title'
     );
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 }
 

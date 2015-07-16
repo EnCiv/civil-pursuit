@@ -1,16 +1,18 @@
 'use strict';
 
-import Milk from '../../../lib/app/milk';
-import JoinTest from './join';
-import CreatorTest from './creator';
+import Milk           from '../../../lib/app/milk';
+import JoinTest       from './join';
+import CreatorTest    from './creator';
 
 class Panel extends Milk {
 
   constructor (props) {
 
-    super('Panel', {
-      viewport: 'tablet'
-    });
+    props = props || {};
+
+    let options = { viewport : props.viewport, session : props.session };
+
+    super('Panel', options);
 
     this.props = props || {};
 
@@ -71,7 +73,7 @@ class Panel extends Milk {
       this.wait(1, null, when => get('Cookie'));
 
       this.import(CreatorTest,
-        () => ({ panel : this.get('Panel'), viewport : this.props.viewport }),
+        () => ({ panel : this.get('Panel'), viewport : options.viewport }),
         null,
         when => get('Cookie'));
 
@@ -80,7 +82,7 @@ class Panel extends Milk {
         .wait(2, null, when => get('Cookie'));
 
       this.import(CreatorTest,
-        () => ({ panel : this.get('Panel'), upload : true, viewport : this.props.viewport }),
+        () => ({ panel : this.get('Panel'), upload : true, viewport : options.viewport }),
         null,
         when => get('Cookie'));
 

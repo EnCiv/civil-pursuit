@@ -30,9 +30,11 @@ var Panel = (function (_Milk) {
 
     _classCallCheck(this, Panel);
 
-    _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, 'Panel', {
-      viewport: 'tablet'
-    });
+    props = props || {};
+
+    var options = { viewport: props.viewport, session: props.session };
+
+    _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, 'Panel', options);
 
     this.props = props || {};
 
@@ -93,7 +95,7 @@ var Panel = (function (_Milk) {
       });
 
       this['import'](_creator2['default'], function () {
-        return { panel: _this.get('Panel'), viewport: _this.props.viewport };
+        return { panel: _this.get('Panel'), viewport: options.viewport };
       }, null, function (when) {
         return get('Cookie');
       });
@@ -107,7 +109,7 @@ var Panel = (function (_Milk) {
       });
 
       this['import'](_creator2['default'], function () {
-        return { panel: _this.get('Panel'), upload: true, viewport: _this.props.viewport };
+        return { panel: _this.get('Panel'), upload: true, viewport: options.viewport };
       }, null, function (when) {
         return get('Cookie');
       });

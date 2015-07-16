@@ -81,7 +81,6 @@ function toPanelItem(cb) {
             _type2['default'].findById(_this.type).populate('harmony').exec()
             // .then(ok, ko);
             .then(function (type) {
-              console.log('yeah got type', type);
               ok(type);
             }, ko);
           });
@@ -135,8 +134,6 @@ function toPanelItem(cb) {
 
         var getHarmony = function getHarmony(item) {
           return new Promise(function (ok, ko) {
-            console.log('harmony', item.type);
-
             var harmony = item.type.harmony;
 
             var promises = harmony.map(function (side) {

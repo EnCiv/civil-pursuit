@@ -106,7 +106,7 @@ var Milk = (function (_EventEmitter) {
 
                 promise.then(function (result) {
                   return _this2._keys[key] = result;
-                }, _this2.intercept(d)).then(fulfill);
+                }, _this2.intercept(d)).then(fulfill, reject);
               })();
             } else {
               _this2._keys[key] = value;

@@ -14,6 +14,16 @@ class Item extends Milk {
 
     props = props || {};
 
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+    console.log('Item props', props)
+    console.log()
+    console.log()
+    console.log()
+    console.log()
+
     let options = { viewport : props.viewport };
 
     super('Item', options);
@@ -300,8 +310,11 @@ class Item extends Milk {
 
       this
         .wait(1, null, when => get('Cookie'))
-        .import(PromoteTest, { item : item, viewport : this.props.viewport }, null, when => get('Cookie'))
+        
+        .import(PromoteTest, { item : item, viewport : options.viewport }, null, when => get('Cookie'))
+        
         .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => get('Cookie'))
+        
         .wait(2, null, when => get('Cookie'));
 
     }
@@ -316,7 +329,7 @@ class Item extends Milk {
 
         .wait(2)
 
-        .import(DetailsTest, { item : item })
+        .import(DetailsTest, { item : item, viewport : options.viewport })
 
         .ok(() => get('Toggle details').click(),
           'Clicking on Details toggle button')

@@ -43,6 +43,11 @@ var _libAppGetUrlTitle = require('../../../lib/app/get-url-title');
 var _libAppGetUrlTitle2 = _interopRequireDefault(_libAppGetUrlTitle);
 
 var Creator = (function (_Milk) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Creator(props) {
     var _this = this;
 
@@ -56,242 +61,319 @@ var Creator = (function (_Milk) {
 
     this.props = props || {};
 
-    var get = this.get.bind(this);
-    var find = this.find.bind(this);
+    this.options = options;
 
     if (this.props.driver !== false) {
       this.go('/');
     }
 
+    // If no panel is passed as an argument (for example, creator is called as a stand alone test and not part of testing a panel), then let's click on the first + icon we find in order to reveal the Creator
+
     if (!this.props.panel) {
-      this.props.panel = find('.panels > .panel');
+      this.props.panel = this.find('.panels > .panel');
       this.wait(2);
       this.ok(function () {
-        return find('.panels > .panel > .panel-heading .toggle-creator').click();
+        return _this.find('.panels > .panel > .panel-heading .toggle-creator').click();
       }, 'Click on Creator Toggle');
       this.wait(2);
     }
 
-    var Item = undefined;
+    this.actors();
 
-    // Get cookie
-
-    this.set('Cookie', function () {
-      return _this.getCookie('synuser');
-    });
-
-    // DOM selectors
-
-    this.set('Panel', function () {
-      return _this.props.panel;
-    });
-
-    this.set('Creator', function () {
-      return find(get('Panel').selector + ' > .panel-body > form.creator');
-    });
-
-    this.set('Item', function () {
-      return find(get('Creator').selector + ' > .is-section > .item');
-    });
-
-    this.set('Create', function () {
-      return find(get('Item').selector + ' .button-create');
-    });
-
-    this.set('Subject', function () {
-      return find(get('Creator').selector + ' input[name="subject"]');
-    });
-
-    this.set('Description', function () {
-      return find(get('Creator').selector + ' textarea[name="description"]');
-    });
-
-    this.set('Reference', function () {
-      return find(get('Creator').selector + ' input[name="reference"]');
-    });
-
-    this.set('Reference board', function () {
-      return find(get('Creator').selector + ' .reference-board');
-    });
-
-    this.set('New item', function () {
-      return find(get('Panel').selector + ' > .panel-body > .items .item.new');
-    });
-
-    this.set('Input file', function () {
-      return find(get('Creator').selector + ' input[type="file"][name="image"]');
-    });
-
-    this.set('Choose file', function () {
-      return find(get('Creator').selector + ' button.upload-image-button');
-    });
-
-    this.set('Uploaded image', function () {
-      return find(get('Creator').selector + ' .drop-box .preview-image');
-    });
-
-    // Visibility
-
-    this.ok(function () {
-      return get('Creator').is(':visible');
-    }, 'Creator is visible');
-    this.ok(function () {
-      return get('Creator').is('.is-shown');
-    }, 'Creator has class "is-shown", meaning it has been expanded successfully by our navigation system');
-    this.ok(function () {
-      return get('Create').is(':visible');
-    }, 'Create button is visible');
-
-    // Form should be empty
-
-    this.ok(function () {
-      return get('Subject').val().then(function (val) {
-        return val.should.be.exactly('');
-      });
-    }, 'Subject should be empty');
-
-    // Item
-
-    this['import'](_item2['default'], function () {
-      return {
-        item: get('Item').selector,
-        buttons: false,
-        collapsers: false,
-        promote: false,
-        details: false,
-        references: false
-      };
-    });
-
-    // Validations
-
-    this.ok(function () {
-      return get('Create').click();
-    }, 'Click on Create button');
-
-    this.wait(0.5);
-
-    this.ok(function () {
-      return get('Subject').is('.error');
-    }, 'Subject field is showing error because it is empty');
-
-    this.ok(function () {
-      return get('Subject').val('This is a subject');
-    }, 'Writing a subject');
-
-    this.ok(function () {
-      return get('Create').click();
-    }, 'Click on Create button');
-
-    this.wait(0.5);
-
-    this.ok(function () {
-      return get('Subject').not('.error');
-    }, 'Subject field is showing error because it is empty');
-
-    this.ok(function () {
-      return get('Description').is('.error');
-    }, 'Description field is showing error because it is empty');
-
-    this.ok(function () {
-      return get('Description').val('This is a description created ' + new Date());
-    }, 'Writing a description');
-
-    // Upload
-
-    if (this.props.upload) {
-      this.set('Test image', function () {
-        return new Promise(function (ok, ko) {
-          (0, _request2['default'])(_configJson2['default']['example image for test upload']).on('error', ko).on('end', ok).pipe(_fs2['default'].createWriteStream('/tmp/test-upload.jpg'));
-        });
-      });
-
-      // this.ok(() => get('Input file').val('/tmp/test-upload.jpg'));
-      this.ok(function () {
-        return get('Input file').val('/home/francois/Pictures/jpb.jpg');
-      });
-
-      this.wait(3);
-
-      this.ok(function () {
-        return get('Uploaded image').is(':visible');
-      });
-
-      this.ok(function () {
-        return get('Uploaded image').attr('src').then(function (src) {
-          return src.should.startWith('blob:');
-        });
-      });
-    }
-
-    // Reference
-
-    this.references();
-
-    // Submit with all required fields
-
-    this.ok(function () {
-      return get('Create').click();
-    }, 'Click on Create button');
-
-    this.wait(0.5);
-
-    this.ok(function () {
-      return get('Subject').not('.error');
-    }, 'Subject field is showing error because it is empty');
-
-    this.ok(function () {
-      return get('Description').not('.error');
-    }, 'Description field is showing error because it is empty');
-
-    // New item is an item
-
-    this.wait(2.5);
-
-    this.ok(function () {
-      return get('New item').is(':visible');
-    }, 'Newly created item has appeared on the items list of the panel the creator belongs to');
-
-    this.ok(function () {
-      return new Promise(function (ok, ko) {
-
-        get('New item').attr('id').then(function (id) {
-          try {
-            console.log('got new item id', id);
-            if (Array.isArray(id)) {
-              id = id[0];
-            }
-            _modelsItem2['default'].findById(id.split('-')[1]).exec().then(function (item) {
-              try {
-                if (!item) {
-                  return ko(new Error('New item not found in DB'));
-                }
-                item.toPanelItem().then(function (item) {
-                  Item = item;
-                  ok();
-                }, ko);
-              } catch (error) {
-                ko(error);
-              }
-            }, ko);
-          } catch (error) {
-            ko(error);
-          }
-        }, ko);
-      });
-    }, 'Get new item from DB');
-
-    this['import'](_item2['default'], function () {
-      return { item: Item, promote: true, viewport: _this.props.viewport };
-    });
+    this.stories();
   }
 
   _inherits(Creator, _Milk);
 
   _createClass(Creator, [{
-    key: 'references',
-    value: function references(i) {
+    key: 'actors',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function actors() {
       var _this2 = this;
+
+      var find = this.find.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
+
+      // Get cookie
+
+      this.set('Cookie', function () {
+        return _this2.getCookie('synuser');
+      });
+
+      // ~~~~~~~~~ DOM selectors ~~~~~~~~~ \\
+
+      this.set('Panel', function () {
+        return _this2.props.panel;
+      });
+
+      this.set('Creator', function () {
+        return find(get('Panel').selector + ' > .panel-body > form.creator');
+      });
+
+      this.set('Item', function () {
+        return find(get('Creator').selector + ' > .is-section > .item');
+      });
+
+      this.set('Create', function () {
+        return find(get('Item').selector + ' .button-create');
+      });
+
+      this.set('Subject', function () {
+        return find(get('Creator').selector + ' input[name="subject"]');
+      });
+
+      this.set('Description', function () {
+        return find(get('Creator').selector + ' textarea[name="description"]');
+      });
+
+      this.set('Reference', function () {
+        return find(get('Creator').selector + ' input[name="reference"]');
+      });
+
+      this.set('Reference board', function () {
+        return find(get('Creator').selector + ' .reference-board');
+      });
+
+      this.set('New item', function () {
+        return find(get('Panel').selector + ' > .panel-body > .items .item.new');
+      });
+
+      this.set('Input file', function () {
+        return find(get('Creator').selector + ' input[type="file"][name="image"]');
+      });
+
+      this.set('Choose file', function () {
+        return find(get('Creator').selector + ' button.upload-image-button');
+      });
+
+      this.set('Uploaded image', function () {
+        return find(get('Creator').selector + ' .drop-box .preview-image');
+      });
+    }
+  }, {
+    key: 'stories',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function stories() {
+      var _this3 = this;
+
+      var find = this.find.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
+
+      // Visibility
+
+      this.ok(function () {
+        return get('Creator').is(':visible');
+      }, 'Creator is visible');
+      this.ok(function () {
+        return get('Creator').is('.is-shown');
+      }, 'Creator has class "is-shown", meaning it has been expanded successfully by our navigation system');
+      this.ok(function () {
+        return get('Create').is(':visible');
+      }, 'Create button is visible');
+
+      // Form should be empty
+
+      this.ok(function () {
+        return get('Subject').val().then(function (val) {
+          return val.should.be.exactly('');
+        });
+      }, 'Subject should be empty');
+
+      // Item
+
+      var options = this.options;
+
+      this['import'](_item2['default'], function () {
+        return {
+          item: get('Item').selector,
+          buttons: false,
+          collapsers: false,
+          promote: false,
+          details: false,
+          references: false,
+          viewport: options.viewport
+        };
+      });
+
+      // Validations
+
+      this.formValidations();
+
+      // Upload
+
+      if (this.props.upload) {
+        this.set('Test image', function () {
+          return new Promise(function (ok, ko) {
+            (0, _request2['default'])(_configJson2['default']['example image for test upload']).on('error', ko).on('end', ok).pipe(_fs2['default'].createWriteStream('/tmp/test-upload.jpg'));
+          });
+        });
+
+        // this.ok(() => get('Input file').val('/tmp/test-upload.jpg'));
+        this.ok(function () {
+          return get('Input file').val('/home/francois/Pictures/jpb.jpg');
+        });
+
+        this.wait(3);
+
+        this.ok(function () {
+          return get('Uploaded image').is(':visible');
+        });
+
+        this.ok(function () {
+          return get('Uploaded image').attr('src').then(function (src) {
+            return src.should.startWith('blob:');
+          });
+        });
+      }
+
+      // Reference
+
+      this.references();
+
+      // Submit with all required fields
+
+      this.ok(function () {
+        return get('Create').click();
+      }, 'Click on Create button');
+
+      this.wait(0.5);
+
+      this.ok(function () {
+        return get('Subject').not('.error');
+      }, 'Subject field is showing error because it is empty');
+
+      this.ok(function () {
+        return get('Description').not('.error');
+      }, 'Description field is showing error because it is empty');
+
+      // New item is an item
+
+      this.wait(2.5);
+
+      this.ok(function () {
+        return get('New item').is(':visible');
+      }, 'Newly created item has appeared on the items list of the panel the creator belongs to');
+
+      this.ok(function () {
+        return new Promise(function (ok, ko) {
+
+          get('New item').attr('id').then(function (id) {
+            try {
+              if (Array.isArray(id)) {
+                id = id[0];
+              }
+              _modelsItem2['default'].findById(id.split('-')[1]).exec().then(function (item) {
+                try {
+                  if (!item) {
+                    return ko(new Error('New item not found in DB'));
+                  }
+                  item.toPanelItem().then(function (item) {
+                    _this3.Item = item;
+                    ok();
+                  }, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              }, ko);
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        });
+      }, 'Get new item from DB');
+
+      this['import'](_item2['default'], function () {
+        return { item: _this3.Item, promote: true, viewport: options.viewport };
+      });
+    }
+  }, {
+    key: 'formValidations',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function formValidations() {
+
+      var find = this.find.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.ok(function () {
+        return get('Create').click();
+      }, 'Click on Create button');
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.wait(0.5);
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.ok(function () {
+        return get('Subject').is('.error');
+      }, 'Subject field is showing error because it is empty');
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.ok(function () {
+        return get('Subject').val('This is a subject');
+      }, 'Entering the subject');
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.ok(function () {
+        return get('Create').click();
+      }, 'Click on Create button');
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.wait(0.5);
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.ok(function () {
+        return get('Subject').not('.error');
+      }, 'Subject field is showing error because it is empty');
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.ok(function () {
+        return get('Description').is('.error');
+      }, 'Description field is showing error because it is empty');
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+      this.ok(function () {
+        return get('Description').val('This is a description created ' + new Date());
+      }, 'Entering the description');
+
+      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }
+  }, {
+    key: 'references',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function references(i) {
+      var _this4 = this;
+
+      var find = this.find.bind(this);
+      var get = this.get.bind(this);
+      var set = this.set.bind(this);
 
       i = i || 0;
 
@@ -326,26 +408,29 @@ var Creator = (function (_Milk) {
 
       this.set('Title', function () {
         return new Promise(function (ok, ko) {
-          resolveTitle().then(ok, ko);
+          resolveTitle().then(function (title) {
+            console.log('We have title!', title);
+            ok(title);
+          }, ko);
         });
       });
 
       this.ok(function () {
-        return _this2.get('Reference').val(urls[i] + '');
+        return _this4.get('Reference').val(urls[i] + '');
       }, 'Entering URL');
 
       this.wait(1);
 
       this.ok(function () {
-        return _this2.get('Reference board').is(':visible');
+        return _this4.get('Reference board').is(':visible');
       }, 'Reference board is visible');
 
       this.ok(function () {
-        return _this2.get('Reference board').text().then(function (text) {
+        return _this4.get('Reference board').text().then(function (text) {
           try {
             text.should.be.exactly('Looking up title');
           } catch (error) {
-            text.should.be.exactly(_this2.get('Title'));
+            text.should.be.exactly(_this4.get('Title'));
           }
         });
       }, 'Reference board is showing loading message or response');
@@ -353,11 +438,16 @@ var Creator = (function (_Milk) {
       this.wait(5);
 
       this.ok(function () {
-        return _this2.get('Reference board').text().then(function (text) {
-          return text.should.be.exactly(_this2.get('Title'));
+        return _this4.get('Reference board').text().then(function (text) {
+          return text.should.be.exactly(_this4.get('Title'));
         });
       }, 'Reference board shows title');
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   }]);
 
   return Creator;

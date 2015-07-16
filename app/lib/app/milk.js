@@ -70,7 +70,7 @@ class Milk extends EventEmitter {
 
           promise
             .then(result => this._keys[key] = result, this.intercept(d))
-            .then(fulfill);
+            .then(fulfill, reject);
         }
         else {
           this._keys[key] = value;
@@ -80,9 +80,7 @@ class Milk extends EventEmitter {
 
       message = message || '>>> Set ' + key;
 
-      this.actions.push(
-        { handler: handler, message: message, condition : condition }
-      );
+      this.actions.push({ handler, message, condition });
 
       return this;
     });

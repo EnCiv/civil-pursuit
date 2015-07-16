@@ -68,7 +68,11 @@ var HomePage = (function (_Milk) {
 
     // Join
 
-    ['import'](_componentsJoin2['default'], { toggled: false });
+    ['import'](_componentsJoin2['default'], { toggled: false, viewport: options.viewport })
+
+    // .import(LayoutTest)
+
+    ['import'](_componentsTopLevelPanel2['default'], { viewport: options.viewport });
   }
 
   _inherits(HomePage, _Milk);
@@ -78,10 +82,6 @@ var HomePage = (function (_Milk) {
 
 exports['default'] = HomePage;
 module.exports = exports['default'];
-// .import(LayoutTest)
-
-// .import(TopLevelPanelTest)
-
 // Sign out
 
 // .import(SignOutTest)

@@ -9,9 +9,11 @@ import ItemTest from './item';
 class TopLevelPanel extends Milk {
 
   constructor (props) {
-    super('Top Level Panel', {
-      viewport: 'tablet'
-    });
+    props = props || {};
+
+    let options = { viewport : props.viewport, session : props.session };
+
+    super('Top Level Panel', options);
 
     this.props = props || {};
 
@@ -38,9 +40,9 @@ class TopLevelPanel extends Milk {
 
       .import(PanelTest, () => {
         return {
-          driver    : false,
-          panel     : get('Top Level Panel').selector,
-          viewport  : this.props.viewport
+          driver    :   false,
+          panel     :   get('Top Level Panel').selector,
+          viewport  :   options.viewport
         }
       })
       
@@ -53,7 +55,7 @@ class TopLevelPanel extends Milk {
           return {
             driver    :   false,
             item      :   item,
-            viewport  :   this.props.viewport
+            viewport  :   options.viewport
           }
         }, 'Panel item is an Item component'),
         'Each panel item is an Item component'

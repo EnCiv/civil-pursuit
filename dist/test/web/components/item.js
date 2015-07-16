@@ -48,6 +48,16 @@ var Item = (function (_Milk) {
 
     props = props || {};
 
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+    console.log('Item props', props);
+    console.log();
+    console.log();
+    console.log();
+    console.log();
+
     var options = { viewport: props.viewport };
 
     _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this, 'Item', options);
@@ -321,7 +331,7 @@ var Item = (function (_Milk) {
 
       this.wait(1, null, function (when) {
         return get('Cookie');
-      })['import'](_promote2['default'], { item: item, viewport: this.props.viewport }, null, function (when) {
+      })['import'](_promote2['default'], { item: item, viewport: options.viewport }, null, function (when) {
         return get('Cookie');
       }).ok(function () {
         return get('Toggle promote').click();
@@ -338,7 +348,7 @@ var Item = (function (_Milk) {
 
       this.ok(function () {
         return get('Toggle details').click();
-      }, 'Clicking on Details toggle buttons').wait(2)['import'](_details2['default'], { item: item }).ok(function () {
+      }, 'Clicking on Details toggle buttons').wait(2)['import'](_details2['default'], { item: item, viewport: options.viewport }).ok(function () {
         return get('Toggle details').click();
       }, 'Clicking on Details toggle button').wait(1);
     }

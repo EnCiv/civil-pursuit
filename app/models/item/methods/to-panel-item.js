@@ -55,7 +55,6 @@ function toPanelItem (cb) {
           // .then(ok, ko);
           .then(
             type => {
-              console.log('yeah got type', type)
               ok(type);
             },
             ko
@@ -112,7 +111,6 @@ function toPanelItem (cb) {
       });
 
       let getHarmony    = (item) => new Promise((ok, ko) => {
-        console.log('harmony', item.type)
 
         let { harmony } = item.type;
 

@@ -38,9 +38,11 @@ var TopLevelPanel = (function (_Milk) {
 
     _classCallCheck(this, TopLevelPanel);
 
-    _get(Object.getPrototypeOf(TopLevelPanel.prototype), 'constructor', this).call(this, 'Top Level Panel', {
-      viewport: 'tablet'
-    });
+    props = props || {};
+
+    var options = { viewport: props.viewport, session: props.session };
+
+    _get(Object.getPrototypeOf(TopLevelPanel.prototype), 'constructor', this).call(this, 'Top Level Panel', options);
 
     this.props = props || {};
 
@@ -69,7 +71,7 @@ var TopLevelPanel = (function (_Milk) {
       return {
         driver: false,
         panel: get('Top Level Panel').selector,
-        viewport: _this.props.viewport
+        viewport: options.viewport
       };
     }).ok(function () {
       return get('Top Level Panel').count('.item[id]:not(.new)').then(function (children) {
@@ -82,7 +84,7 @@ var TopLevelPanel = (function (_Milk) {
         return {
           driver: false,
           item: item,
-          viewport: _this.props.viewport
+          viewport: options.viewport
         };
       }, 'Panel item is an Item component');
     }, 'Each panel item is an Item component');
