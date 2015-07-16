@@ -1,34 +1,26 @@
 'use strict';
 
-import should from 'should';
-import Describe from 'syn/lib/app/Describe';
-import config from '../../config.json';
-import Page from 'syn/lib/app/page';
-import Layout from '../components/layout';
+import should           from 'should';
+import S                from 'string';
+import Milk             from '../../../lib/app/milk';
+import config           from '../../../../config.json';
+import IntroTest        from '../components/intro';
+import LayoutTest       from '../components/layout';
+import ItemModel        from '../../../models/item';
 
-class ItemPage extends Describe {
+class ItemPage extends Milk {
 
-  constructor () {
-    super('Item Page', {
-      'disposable'  :   [{ 'model': 'Item', 'name': 'Item' }]
-    });
+  constructor (props) {
+    props = props || {};
 
-    this.on('disposed', () => {
-      this.driver({
-        uri: () => Page('Item Page', this.define('disposable').Item)
-      })
-    });
+    let options = { viewport : props.viewport, vendor : props.vendor };
 
-    this
+    super('Item Page', options);
 
-      .assert(() => {
-        let title = config.title.prefix +
-          this.define('disposable').Item.subject;
+    this.set('Item Document', () => ItemModel.disposable());
 
-        return new Layout({ title :title }).driver(this._driver);
-      });
-
-    ;
+    this.go(() => '/item/' + this.get('Item Document').id + '/' +
+      S(this.get('Item Document').subject).slugify());
   }
 
 }

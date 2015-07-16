@@ -329,59 +329,92 @@ class Milk extends EventEmitter {
   go (url, message) {
     return this.wrap(d => {
 
-      if ( /^\//.test(url) ) {
+      if ( typeof url === 'string' || /^\//.test(url) ) {
         url = process.env.SYNAPP_SELENIUM_TARGET + url;
       }
 
       let handler = () => new Promise((fulfill, reject) => {
-        this.driver.url(url, (error, result) => {
-          if ( error ) {
-            return reject(error);
+
+        let go = url => {
+
+          if ( typeof url === 'string' || /^\//.test(url) ) {
+            url = process.env.SYNAPP_SELENIUM_TARGET + url;
           }
-          this.driver.pause(2000, (error, result) => {
+          
+          this.driver.url(url, (error, result) => {
             if ( error ) {
               return reject(error);
             }
-
-            if ( this.options.session ) {
-              if ( this.options.session === '/test' ) {
-                console.log('DISPOSABLE USER'.bgBlue.bold + this.name.bgCyan.bold);
-                UserModel.disposable()
-                  .then(
-                    user => {
-                      let cookie = {
-                        name      :   'synuser',
-                        value     :   JSON.stringify({
-                          id      :   user._id,
-                          email   :   user.email
-                        }),
-                        httpOnly  :   true
-                      };
-                      
-                      this.driver.setCookie(cookie, (error, cookies) => {
-                        console.log('---------cookies', cookies, error)
-                      });
-
-                      this.driver.refresh(() => { console.log('Refreshed!') });
-
-                      this.driver.getCookie((error, cookies) => {
-                        if ( error ) {
-                          return reject(error);
-                        }
-                        console.log(cookies)
-                        fulfill();
-                      });
-                    },
-                    error => this.emit('error', error)
-                  );
-
-                return;
+            
+            this.driver.pause(2000, (error, result) => {
+              if ( error ) {
+                return reject(error);
               }
-            }
 
-            fulfill(result);
+              if ( this.options.session ) {
+                if ( this.options.session === '/test' ) {
+                  console.log('DISPOSABLE USER'.bgBlue.bold + this.name.bgCyan.bold);
+                  
+                  UserModel.disposable()
+                    .then(
+                      user => {
+                        let cookie = {
+                          name      :   'synuser',
+                          value     :   JSON.stringify({
+                            id      :   user._id,
+                            email   :   user.email
+                          }),
+                          httpOnly  :   true
+                        };
+                        
+                        this.driver.setCookie(cookie, (error, cookies) => {
+                          console.log('---------cookies', cookies, error)
+                        });
+
+                        this.driver.refresh(() => { console.log('Refreshed!') });
+
+                        this.driver.getCookie((error, cookies) => {
+                          if ( error ) {
+                            return reject(error);
+                          }
+                          console.log(cookies)
+                          fulfill();
+                        });
+                      },
+                      error => this.emit('error', error)
+                    );
+
+                  return;
+                }
+              }
+
+              fulfill(result);
+            });
           });
-        });
+        };
+
+        if ( typeof url === 'function' ) {
+
+          url = url();
+
+          if ( url instanceof Promise ) {
+            console.log('url is a promise');
+            url = url.then(
+              url   => go(url),
+              error => this.emit('error', error)
+            );
+          }
+
+          else if ( typeof url === 'string' ) {
+            go(url);
+          }
+
+          return;
+        }
+
+        else {
+          go(url);
+        }
       });
 
       message = message || 'Going to url ' + url;

@@ -392,60 +392,90 @@ var Milk = (function (_EventEmitter) {
 
       return this.wrap(function (d) {
 
-        if (/^\//.test(url)) {
+        if (typeof url === 'string' || /^\//.test(url)) {
           url = process.env.SYNAPP_SELENIUM_TARGET + url;
         }
 
         var handler = function handler() {
           return new Promise(function (fulfill, reject) {
-            _this11.driver.url(url, function (error, result) {
-              if (error) {
-                return reject(error);
+
+            var go = function go(url) {
+
+              if (typeof url === 'string' || /^\//.test(url)) {
+                url = process.env.SYNAPP_SELENIUM_TARGET + url;
               }
-              _this11.driver.pause(2000, function (error, result) {
+
+              _this11.driver.url(url, function (error, result) {
                 if (error) {
                   return reject(error);
                 }
 
-                if (_this11.options.session) {
-                  if (_this11.options.session === '/test') {
-                    console.log('DISPOSABLE USER'.bgBlue.bold + _this11.name.bgCyan.bold);
-                    _modelsUser2['default'].disposable().then(function (user) {
-                      var cookie = {
-                        name: 'synuser',
-                        value: JSON.stringify({
-                          id: user._id,
-                          email: user.email
-                        }),
-                        httpOnly: true
-                      };
-
-                      _this11.driver.setCookie(cookie, function (error, cookies) {
-                        console.log('---------cookies', cookies, error);
-                      });
-
-                      _this11.driver.refresh(function () {
-                        console.log('Refreshed!');
-                      });
-
-                      _this11.driver.getCookie(function (error, cookies) {
-                        if (error) {
-                          return reject(error);
-                        }
-                        console.log(cookies);
-                        fulfill();
-                      });
-                    }, function (error) {
-                      return _this11.emit('error', error);
-                    });
-
-                    return;
+                _this11.driver.pause(2000, function (error, result) {
+                  if (error) {
+                    return reject(error);
                   }
-                }
 
-                fulfill(result);
+                  if (_this11.options.session) {
+                    if (_this11.options.session === '/test') {
+                      console.log('DISPOSABLE USER'.bgBlue.bold + _this11.name.bgCyan.bold);
+
+                      _modelsUser2['default'].disposable().then(function (user) {
+                        var cookie = {
+                          name: 'synuser',
+                          value: JSON.stringify({
+                            id: user._id,
+                            email: user.email
+                          }),
+                          httpOnly: true
+                        };
+
+                        _this11.driver.setCookie(cookie, function (error, cookies) {
+                          console.log('---------cookies', cookies, error);
+                        });
+
+                        _this11.driver.refresh(function () {
+                          console.log('Refreshed!');
+                        });
+
+                        _this11.driver.getCookie(function (error, cookies) {
+                          if (error) {
+                            return reject(error);
+                          }
+                          console.log(cookies);
+                          fulfill();
+                        });
+                      }, function (error) {
+                        return _this11.emit('error', error);
+                      });
+
+                      return;
+                    }
+                  }
+
+                  fulfill(result);
+                });
               });
-            });
+            };
+
+            if (typeof url === 'function') {
+
+              url = url();
+
+              if (url instanceof Promise) {
+                console.log('url is a promise');
+                url = url.then(function (url) {
+                  return go(url);
+                }, function (error) {
+                  return _this11.emit('error', error);
+                });
+              } else if (typeof url === 'string') {
+                go(url);
+              }
+
+              return;
+            } else {
+              go(url);
+            }
           });
         };
 

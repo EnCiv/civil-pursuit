@@ -16,53 +16,55 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synLibAppDescribe = require('syn/lib/app/Describe');
+var _string = require('string');
 
-var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
+var _string2 = _interopRequireDefault(_string);
 
-var _configJson = require('../../config.json');
+var _libAppMilk = require('../../../lib/app/milk');
+
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
+
+var _configJson = require('../../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
-var _synLibAppPage = require('syn/lib/app/page');
+var _componentsIntro = require('../components/intro');
 
-var _synLibAppPage2 = _interopRequireDefault(_synLibAppPage);
+var _componentsIntro2 = _interopRequireDefault(_componentsIntro);
 
 var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
-var ItemPage = (function (_Describe) {
-  function ItemPage() {
+var _modelsItem = require('../../../models/item');
+
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
+
+var ItemPage = (function (_Milk) {
+  function ItemPage(props) {
     var _this = this;
 
     _classCallCheck(this, ItemPage);
 
-    _get(Object.getPrototypeOf(ItemPage.prototype), 'constructor', this).call(this, 'Item Page', {
-      'disposable': [{ 'model': 'Item', 'name': 'Item' }]
+    props = props || {};
+
+    var options = { viewport: props.viewport, vendor: props.vendor };
+
+    _get(Object.getPrototypeOf(ItemPage.prototype), 'constructor', this).call(this, 'Item Page', options);
+
+    this.set('Item Document', function () {
+      return _modelsItem2['default'].disposable();
     });
 
-    this.on('disposed', function () {
-      _this.driver({
-        uri: function uri() {
-          return (0, _synLibAppPage2['default'])('Item Page', _this.define('disposable').Item);
-        }
-      });
+    this.go(function () {
+      return '/item/' + _this.get('Item Document').id + '/' + (0, _string2['default'])(_this.get('Item Document').subject).slugify();
     });
-
-    this.assert(function () {
-      var title = _configJson2['default'].title.prefix + _this.define('disposable').Item.subject;
-
-      return new _componentsLayout2['default']({ title: title }).driver(_this._driver);
-    });
-
-    ;
   }
 
-  _inherits(ItemPage, _Describe);
+  _inherits(ItemPage, _Milk);
 
   return ItemPage;
-})(_synLibAppDescribe2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = ItemPage;
 module.exports = exports['default'];

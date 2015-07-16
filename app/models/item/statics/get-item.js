@@ -2,7 +2,7 @@
 
 function getItemById (id) {
   return new Promise((ok, ko) => {
-    let ItemModel = this.constructor;
+    let ItemModel = this;
 
     ItemModel
       .findOne({ id : id })

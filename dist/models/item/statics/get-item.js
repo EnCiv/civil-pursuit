@@ -7,7 +7,7 @@ function getItemById(id) {
   var _this = this;
 
   return new Promise(function (ok, ko) {
-    var ItemModel = _this.constructor;
+    var ItemModel = _this;
 
     ItemModel.findOne({ id: id }).exec().then(function (item) {
       if (!item) {
