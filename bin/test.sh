@@ -40,6 +40,10 @@ node dist/bin/test-browser test/web/pages/terms-of-service viewport=tablet vendo
 
 node dist/bin/test-browser test/web/pages/home viewport=tablet vendor=firefox &&
 
+# Browser / Item Page not found
+
+node dist/bin/test-browser test/web/pages/item-not-found viewport=tablet vendor=firefox
+
 # Browser / Item Page
 
 node dist/bin/test-browser test/web/pages/item-page viewport=tablet vendor=firefox

@@ -1,25 +1,26 @@
 'use strict';
 
-import should from 'should';
-import Describe from 'syn/lib/app/Describe';
-import config from '../../config.json';
-import Layout from '../components/layout';
+import should           from 'should';
+import Milk             from '../../../lib/app/milk';
+import config           from '../../../../config.json';
+import LayoutTest       from '../components/layout';
 
-class ItemNotFoundPage extends Describe {
+class ItemNotFoundPage extends Milk {
 
-  constructor () {
-    super('Item not found Page', {
-      'web driver'        :   {
-        'uri'             :   '/item/12345/no-such-item'
-      }
-    });
+  constructor (props) {
+    props = props || {};
+
+    let options = { viewport : props.viewport, vendor : props.vendor };
+
+    super('Item Page not found', options);
 
     this
-      .assert(() =>
-        new Layout({ title : config.title.prefix + 'Item not found'})
-          .driver(this._driver)
-      )
 
+      .go('/item/not/found')
+
+      .import(LayoutTest, {
+        title   :   config.title.prefix + 'Item not found'
+      })
     ;
   }
 

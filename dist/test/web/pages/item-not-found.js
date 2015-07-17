@@ -16,11 +16,11 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synLibAppDescribe = require('syn/lib/app/Describe');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _configJson = require('../../config.json');
+var _configJson = require('../../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
@@ -28,27 +28,25 @@ var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
-var ItemNotFoundPage = (function (_Describe) {
-  function ItemNotFoundPage() {
-    var _this = this;
-
+var ItemNotFoundPage = (function (_Milk) {
+  function ItemNotFoundPage(props) {
     _classCallCheck(this, ItemNotFoundPage);
 
-    _get(Object.getPrototypeOf(ItemNotFoundPage.prototype), 'constructor', this).call(this, 'Item not found Page', {
-      'web driver': {
-        'uri': '/item/12345/no-such-item'
-      }
-    });
+    props = props || {};
 
-    this.assert(function () {
-      return new _componentsLayout2['default']({ title: _configJson2['default'].title.prefix + 'Item not found' }).driver(_this._driver);
+    var options = { viewport: props.viewport, vendor: props.vendor };
+
+    _get(Object.getPrototypeOf(ItemNotFoundPage.prototype), 'constructor', this).call(this, 'Item Page not found', options);
+
+    this.go('/item/not/found')['import'](_componentsLayout2['default'], {
+      title: _configJson2['default'].title.prefix + 'Item not found'
     });
   }
 
-  _inherits(ItemNotFoundPage, _Describe);
+  _inherits(ItemNotFoundPage, _Milk);
 
   return ItemNotFoundPage;
-})(_synLibAppDescribe2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = ItemNotFoundPage;
 module.exports = exports['default'];
