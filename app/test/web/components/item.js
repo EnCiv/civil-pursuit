@@ -1,336 +1,421 @@
 'use strict';
 
-import Milk             from '../../../lib/app/milk';
-import YouTubeView      from '../../../components/youtube/view';
-import config           from '../../../../config.json';
-import JoinTest         from './join';
-import PromoteTest      from './promote';
-import DetailsTest      from './details';
-import cloudinaryFormat from '../../../lib/util/cloudinary-format';
+import Milk                 from '../../../lib/app/milk';
+import YouTubeView          from '../../../components/youtube/view';
+import config               from '../../../../config.json';
+import JoinTest             from './join';
+import PromoteTest          from './promote';
+import DetailsTest          from './details';
+import cloudinaryFormat     from '../../../lib/util/cloudinary-format';
 
 class Item extends Milk {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (props) {
 
     props = props || {};
 
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-    console.log('Item props', props)
-    console.log()
-    console.log()
-    console.log()
-    console.log()
-
     let options = { viewport : props.viewport };
 
     super('Item', options);
 
-    this.props = props || {};
-
-    let get = this.get.bind(this);
-    let find = this.find.bind(this);
-
-    let item = this.props.item;
-
-    let itemIsAnObject = typeof item === 'object';
-    let itemIsASelector = typeof item === 'string';
-
-    let useDefaultButtons = this.props.button;
+    this.props            =   props;
+    this.options          =   options;
+    this.item             =   this.props.item;
+    this.itemIsAnObject   =   typeof this.item === 'object';
+    this.itemIsASelector  =   typeof this.item === 'string';
 
     if ( this.props.driver !== false ) {
       this.go('/');
     }
 
-    this.set('Join', () => this.find(JoinTest.find('main')));
+    this.actors();
 
+    this.stories();
+
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  actors () {
     this
-      
-      .set('Cookie', () => this.getCookie('synuser'));
+      .set('Join',    () => this.find(JoinTest.find('main')))
+      .set('Cookie',  () => this.getCookie('synuser'));
 
-    if ( props.element ) {
-      this.set('Item', () => props.element, null, props.element);
+    if ( this.props.element ) {
+      this.set('Item', () => this.props.element, null, this.props.element);
     }
 
     else {
       this
-        .set('Item', () => find('#item-' + item._id), null, () => itemIsAnObject)
+        .set('Item', () => this.find('#item-' + this.item._id), null, () => this.itemIsAnObject)
 
-        .set('Item', () => find(item), null, () => itemIsASelector);
+        .set('Item', () => this.find(this.item), null, () => this.itemIsASelector);
     }
       
     this
       .set('Media Wrapper', () => this.find(
-        get('Item').selector + '>.item-media-wrapper'
+        this.get('Item').selector + '>.item-media-wrapper'
       ))
 
       .set('Media', () => this.find(
-        get('Media Wrapper').selector + '>.item-media'
+        this.get('Media Wrapper').selector + '>.item-media'
       ))
       
       .set('Image', () => this.find(
-        get('Media').selector + ' img.img-responsive'
+        this.get('Media').selector + ' img.img-responsive'
       ))
       
       .set('Video Container', () => this.find(
-        get('Media Wrapper').selector + ' .video-container'
+        this.get('Media Wrapper').selector + ' .video-container'
       ))
       
       .set('Iframe', () => this.find(
-        get('Video Container').selector + ' iframe'
+        this.get('Video Container').selector + ' iframe'
       ))
 
       .set('Buttons', () => this.find(
-        get('Item').selector + '>.item-buttons'
+        this.get('Item').selector + '>.item-buttons'
       ))
 
       .set('Text', () => this.find(
-        get('Item').selector + '>.item-text'
+        this.get('Item').selector + '>.item-text'
       ))
 
       .set('Truncatable', () => this.find(
-        get('Text').selector + '>.item-truncatable'
+        this.get('Text').selector + '>.item-truncatable'
       ))
 
       .set('Subject', () => this.find(
-        get('Text').selector + ' h4.item-subject.header'
+        this.get('Text').selector + ' h4.item-subject.header'
       ))
 
       .set('Description', () => this.find(
-        get('Text').selector + ' .item-description.pre-text'
+        this.get('Text').selector + ' .item-description.pre-text'
       ))
 
       .set('Reference', () => this.find(
-        get('Text').selector + ' .item-reference a'
+        this.get('Text').selector + ' .item-reference a'
       ))
 
       .set('Toggle promote', () => this.find(
-        get('Buttons').selector + ' button.item-toggle-promote'
+        this.get('Buttons').selector + ' button.item-toggle-promote'
       ))
 
       .set('Toggle details', () => this.find(
-        get('Buttons').selector + ' .item-toggle-details'
+        this.get('Buttons').selector + ' .item-toggle-details'
       ))
 
       .set('Related', () => this.find(
-        get('Buttons').selector + ' span.related-number'
+        this.get('Buttons').selector + ' span.related-number'
       ))
 
       .set('Harmony', () => this.find(
-        get('Buttons').selector + ' span.harmony-number'
+        this.get('Buttons').selector + ' span.harmony-number'
       ))
 
       .set('Collapsers', () => this.find(
-        get('Item').selector + '>.item-collapsers'
-      ));
+        this.get('Item').selector + '>.item-collapsers'
+      ))
 
+      .set('Collapse arrow', () => this.find(
+        this.get('Item').selector + '>.item-arrow i.fa'
+      ))
+
+      .set('Children', () => this.find(
+        this.get('Collapsers').selector + '>.children'
+      ))
+
+      .set(
+        'Child Panel Harmony Left',
+
+        () => {
+
+          let selector = this.get('Children').selector;
+
+          selector += ' .tablet-50.left-split .panel.split-view#panel-';
+
+          selector += this.item.type.harmony[0]._id + '-';
+
+          selector += this.item._id;
+
+          return this.find(selector);
+
+        },
+
+        'Child Panel Harmony Left',
+
+        () => this.item.type.harmony[0]
+      );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  stories () {
     // Visibility
 
     this
 
-      .ok(() => get('Item').is(':visible'),
+      .ok(() => this.get('Item').is(':visible'),
         'Item is visible')
       
-      .ok(() => get('Item').is('.item'),
+      .ok(() => this.get('Item').is('.item'),
         'Item has the class ".visible"')
       
-      .ok(() => get('Media Wrapper').is(':visible'),
+      .ok(() => this.get('Media Wrapper').is(':visible'),
         'Item Media Wrapper is visible')
 
-      .ok(() => get('Media').is(':visible'),
+      .ok(() => this.get('Media').is(':visible'),
         'Item Media is visible')
 
-      .ok(() => get('Text').is(':visible'),
+      .ok(() => this.get('Text').is(':visible'),
         'Item Text is visible');
 
-    if ( itemIsAnObject && YouTubeView.isYouTube(item) ) {
+    // Media
+
+    this.media();
+
+    if ( this.itemIsAnObject ) {
+
+      // VERIFY TEXT
+
+      this.text();
+
+      // BUTTONS
+
+      this.buttons();
+    }
+
+    // COLLAPSERS
+
+    this.collapsers();
+
+    // PROMOTE
+
+    this.promote();
+
+    // DETAILS
+
+    this.details();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  media () {
+    if ( this.itemIsAnObject && YouTubeView.isYouTube(this.item) ) {
       this
-        .ok(() => get('Video Container').is(':visible'), 'Item Video Container is visible')
+        .ok(() => this.get('Video Container').is(':visible'), 'Item Video Container is visible')
         .wait(1)
-        .ok(() => get('Iframe').is(':visible'), 'Item YouTube Iframe is visible')
-        .ok(() => get('Iframe').width()
+        .ok(() => this.get('Iframe').is(':visible'), 'Item YouTube Iframe is visible')
+        .ok(() => this.get('Iframe').width()
           .then(width => width.should.be.within(183, 186)),
           'Iframe should be the exact width'
         )
-        .ok(() => get('Iframe').height()
+        .ok(() => this.get('Iframe').height()
           .then(height => height.should.be.within(133, 135)),
           'Iframe should be the exact height'
         );
     }
 
-    else if ( itemIsAnObject ) {
+    else if ( this.itemIsAnObject ) {
       this
-        .ok(() => get('Image').is(':visible'), 'Item Image is visible')
-        .ok(() => get('Image').width()
+        .ok(() => this.get('Image').is(':visible'), 'Item Image is visible')
+        .ok(() => this.get('Image').width()
           .then(width => width.should.be.within(183, 186)),
           'Item image has the right width'
         )
-        .ok(() => get('Image').height()
+        .ok(() => this.get('Image').height()
           .then(height => height.should.be.within(100, 150)),
           'Item image has the right height'
         );
 
-      if ( item.image ) {
-        this.ok(() => get('Image').attr('src')
-          .then(src => src.should.be.exactly(cloudinaryFormat(item.image))),
+      if ( this.item.image ) {
+        this.ok(() => this.get('Image').attr('src')
+          .then(src => src.should.be.exactly(cloudinaryFormat(this.item.image))),
           'Item Image is the same than in DB'
         );
       }
       else {
-        this.ok(() => get('Image').attr('src')
+        this.ok(() => this.get('Image').attr('src')
           .then(src => src.should.be.exactly(config.public['default item image'])),
           'Item Image is the default image'
         );
       }
     }
+  }
 
-    if ( itemIsAnObject ) {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      // VERIFY TEXT
+  text () {
+    this
+      .ok(() => this.get('Truncatable').is(':visible'), 'Item Truncatable space is visible')
+      
+      .ok(() => this.get('Subject').is(':visible'), 'Item subject is visible')
+      
+      .ok(() => this.get('Subject').text()
+        .then(text => text.should.be.exactly(this.item.subject)),
+        'Subject has the same text than DB')
 
-      this
-        .ok(() => get('Truncatable').is(':visible'), 'Item Truncatable space is visible')
-        
-        .ok(() => get('Subject').is(':visible'), 'Item subject is visible')
-        
-        .ok(() => get('Subject').text()
-          .then(text => text.should.be.exactly(item.subject)),
-          'Subject has the same text than DB')
+      
+      .ok(() => 
+        Promise.all([
+          this.get('Truncatable').count('.more'),
+          this.get('Description').text()
+        ])
+        .then(results => {
+          let more = results[0];
+          let text = results[1];
+          
+          if ( ! more ) {
+            text.should.be.exactly(Milk.formatToHTMLText(this.item.description));
+          }
+        }),
+        'Item Description is the same than in DB'
+      );
 
-        
-        .ok(() => 
-          Promise.all([
-            get('Truncatable').count('.more'),
-            get('Description').text()
-          ])
-          .then(results => {
-            let more = results[0];
-            let text = results[1];
-            
-            if ( ! more ) {
-              text.should.be.exactly(Milk.formatToHTMLText(item.description));
-            }
-          }),
-          'Item Description is the same than in DB'
-        );
+    // REFERENCES
 
-      // REFERENCES
+    this.ok(() => this.get('Reference').text()
+      .then(text => {
+        if ( this.itemIsAnObject ) {
+          let ref = this.item.references.length ? this.item.references[0] : null;
 
-      this.ok(() => get('Reference').text()
-        .then(text => {
-          if ( itemIsAnObject ) {
-            let ref = item.references.length ? item.references[0] : null;
-
-            if ( ref ) {
-              if ( ref.title ) {
-                text.should.be.exactly(ref.title);
-              }
-              else {
-                text.should.be.exactly(ref.url);
-              }
+          if ( ref ) {
+            if ( ref.title ) {
+              text.should.be.exactly(ref.title);
             }
             else {
-              text.should.be.exactly('');
+              text.should.be.exactly(ref.url);
             }
           }
-        }), 'Verify reference',
-        () => props.references !== false)
-    
-      // BUTTONS
+          else {
+            text.should.be.exactly('');
+          }
+        }
+      }), 'Verify reference',
+      () => this.props.references !== false);
+  }
 
-      if ( props.buttons !== false ) {
-        this.ok(() => get('Buttons').is(':visible'),
-          'Item Buttons are visible')
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        // PROMOTE
-        this
-          .ok(() => get('Toggle promote').is(':visible'), 'Promote toggle button is visible')
-          .ok(() => get('Toggle promote').text()
-            .then(text => (+text).should.be.exactly(item.promotions)),
-            'Promote toggle button text is the right amount of times item has been promoted');
+  buttons () {
+    if ( this.props.buttons !== false ) {
+      this.ok(() => this.get('Buttons').is(':visible'),
+        'Item Buttons are visible')
 
-        // DETAILS
-        this
-          .ok(() => get('Toggle details').is(':visible'), 'Details toggle button is visible')
-          .ok(() => get('Toggle details').text()
-            .then(text => text.should.be.exactly(
-              item.popularity.number.toString() + '%')),
-            'Deatisl toggle button text is item\'s popularity');
+      // PROMOTE
+      this
+        .ok(() => this.get('Toggle promote').is(':visible'), 'Promote toggle button is visible')
+        .ok(() => this.get('Toggle promote').text()
+          .then(text => (+text).should.be.exactly(this.item.promotions)),
+          'Promote toggle button text is the right amount of times item has been promoted');
 
-        // RELATED
-        this
-          .ok(() => get('Related').is(':visible'), 'Related buttons is visible')
-          .ok(() => get('Related').text()
-            .then(text => {
-              (+text).should.be.exactly(item.children)
-            }),
-            'Related button text is the number of direct children');
+      // DETAILS
+      this
+        .ok(() => this.get('Toggle details').is(':visible'), 'Details toggle button is visible')
+        .ok(() => this.get('Toggle details').text()
+          .then(text => text.should.be.exactly(
+            this.item.popularity.number.toString() + '%')),
+          'Deatisl toggle button text is item\'s popularity');
 
-        // HARMONY
-        this
-          .ok(() => get('Harmony').is(':visible'), 'Harmony buttons is visible')
-          .ok(() => get('Harmony').text()
-            .then(text => {
-              (+text).should.be.exactly(item.harmony)
-            }),
-            'Harmony button text is the number of direct children');
-      }
+      // RELATED
+      this
+        .ok(() => this.get('Related').is(':visible'), 'Related buttons is visible')
+        .ok(() => this.get('Related').text()
+          .then(text => {
+            (+text).should.be.exactly(this.item.children)
+          }),
+          'Related button text is the number of direct children');
+
+      // HARMONY
+      this
+        .ok(() => this.get('Harmony').is(':visible'), 'Harmony buttons is visible')
+        .ok(() => this.get('Harmony').text()
+          .then(text => {
+            (+text).should.be.exactly(this.item.harmony)
+          }),
+          'Harmony button text is the number of direct children');
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  collapsers () {
+    if ( this.props.collapsers === false || this.item.collapsers === false ) {
+      return false;
     }
 
-    // COLLAPSERS
+    this
+      
+      .ok(() => this.get('Collapsers').is(true),
+        'Collapsers are hidden')
+      
+      .ok(() => this.get('Collapse arrow').is(':visible'),
+        'Collapse arrow is visible')
 
-    if ( this.props.collapsers !== false && item.collapsers !== false ) {
-      this.ok(() => get('Collapsers').is(true), 'Collapsers are hidden');
-    }
+      .ok(() => this.get('Collapse arrow').click(),
+        'Collapse arrow is clickable')
 
-    // PROMOTE
+      .wait(2)
 
-    if ( this.props.promote !== false && item.promote !== false ) {
+      .ok(() => this.get('Children').is(':visible'),
+        'Children panels are visible')
+
+      .ok(
+        () => this.get('Child Panel Harmony Left').is(':visible'),
+        'Left harmony children panel is visible',
+        () => this.item.type.harmony.length
+      );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  promote () {
+    if ( this.props.promote !== false && this.item.promote !== false ) {
 
       // NO COOKIE
 
       this
-        .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! get('Cookie'))
-        .wait(1, null, when => ! get('Cookie'))
-        .ok(() => get('Join').is(true), null, when => ! get('Cookie'))
+        .ok(() => this.get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! this.get('Cookie'))
+        .wait(1, null, when => ! this.get('Cookie'))
+        .ok(() => this.get('Join').is(true), null, when => ! this.get('Cookie'))
 
-        .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! get('Cookie'))
-        .wait(2, null, when => ! get('Cookie'))
-        .ok(() => get('Join').is(false), null, when => ! get('Cookie'));
+        .ok(() => this.get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! this.get('Cookie'))
+        .wait(2, null, when => ! this.get('Cookie'))
+        .ok(() => this.get('Join').is(false), null, when => ! this.get('Cookie'));
 
       // COOKIE
 
       // Don't click because components like Creator have already shown Promote when new item was created
       if ( this.props.promote !== true ) {
         this
-          .ok(() => get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => get('Cookie'))
+          .ok(() => this.get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Promote', when => this.get('Cookie'))
       }
 
       this
-        .wait(1, null, when => get('Cookie'))
+        .wait(1, null, when => this.get('Cookie'))
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
         .import(PromoteTest,
           {
-            item, 
-            viewport    :   options.viewport
+            item        :   this.item, 
+            viewport    :   this.options.viewport
           },
           
           'Launch Promote test if User is signed in',
           
-          when => get('Cookie'))
+          when => this.get('Cookie'))
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
         .ok(
-          () => get('Toggle promote').click(),
+          () => this.get('Toggle promote').click(),
 
           'Clicking on Promote toggle buttons should show Promote (if User is signed in)',
 
-          when => get('Cookie'))
+          when => this.get('Cookie'))
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         
@@ -339,30 +424,31 @@ class Item extends Milk {
 
           'Wait 2 seconds for Promote screen to hide (if User is signed in)', 
 
-          when => get('Cookie')
+          when => this.get('Cookie')
         );
 
     }
+  }
 
-    // DETAILS
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    if ( this.props.details !== false && item.details !== false ) {
+  details () {
+    if ( this.props.details !== false && this.item.details !== false ) {
 
       this
-        .ok(() => get('Toggle details').click(),
+        .ok(() => this.get('Toggle details').click(),
           'Clicking on Details toggle buttons')
 
         .wait(2)
 
-        .import(DetailsTest, { item : item, viewport : options.viewport })
+        .import(DetailsTest, { item : this.item, viewport : this.options.viewport })
 
-        .ok(() => get('Toggle details').click(),
+        .ok(() => this.get('Toggle details').click(),
           'Clicking on Details toggle button')
 
         .wait(1);
 
     }
-
   }
 
 }

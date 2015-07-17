@@ -95,8 +95,7 @@ class Evaluator extends EventEmitter {
       Promise.all([
           this.findOthers(OTHERS),
           CriteriaModel
-          .find({ type: this.item.type})
-          .populate('type')
+          .find()
           .exec()
         ])
         .then(

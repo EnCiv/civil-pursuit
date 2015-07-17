@@ -105,7 +105,7 @@ var Evaluator = (function (_EventEmitter) {
 
       return new Promise(function (ok, ko) {
 
-        Promise.all([_this3.findOthers(OTHERS), _criteria2['default'].find({ type: _this3.item.type }).populate('type').exec()]).then(function (results) {
+        Promise.all([_this3.findOthers(OTHERS), _criteria2['default'].find().exec()]).then(function (results) {
           _this3.packAndGo({
             items: results[0],
             criterias: results[1]
