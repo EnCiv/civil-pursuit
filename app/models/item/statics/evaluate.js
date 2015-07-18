@@ -43,45 +43,82 @@ class Evaluator extends EventEmitter {
 
   go () {
     return new Promise((ok, ko) => {
-      this.domain.run(() => {
+      try {
         this
           .ItemModel
           .findById(this.itemId)
-          // .populate('user')
-          .exec(this.domain.intercept(item => {
-            
-            if ( ! item ) {
-              throw new Error('Item not found');
-            }
+          .exec()
+          .then(
+            item => {
+              try {
+                if ( ! item ) {
+                  throw new Error('Item not found');
+                }
 
-            item
-              .toPanelItem()
-              .then(
-                item => {
-                  this.item = item;
-                  this
-                    .findType({ parent : this.item.type })
-                    .then(
-                      parentType => {
-                        if ( ! parentType ) {
-                          this.make().then(ok, ko);
-                        }
-                        else if ( parentType.harmony && parentType.harmony.length && parentType.harmony.some(h => h.toString() === this.item.type.toString()) ) {
-                          this.makeSplit().then(ok, ko); 
-                        }
-                        else {
-                          this.make().then(ok, ko);
-                        }
-                      },
-                      ko
-                    );
-                },
-                ko
-              );
+                item
+                  .toPanelItem()
+                  .then(
+                    item => {
+                      try {
+                        this.item = item;
 
-          }));
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log(this.item)
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
+                        console.log('-------------------------------')
 
-      });
+                        this.item.type
+                          .isHarmony()
+                          .then(
+                            is => {
+                              try {
+                                if ( is ) {
+                                  this.makeSplit().then(ok, ko); 
+                                }
+                                else {
+                                  this.make().then(ok, ko);
+                                }
+                              }
+                              catch ( error ) {
+                                this.emit('error', error);
+                              }
+                            },
+                            ko
+                          );
+                      }
+                      catch ( error ) {
+                        this.emit('error', error);
+                      }
+                    },
+                    ko
+                  );
+              }
+              catch ( error ) {
+                this.emit('error', error);
+              }
+            },
+            error => this.emit('error', error)
+          );
+
+      }
+      catch ( error ) {
+        this.emit('error', error);
+      }
     });
   }
 
@@ -112,101 +149,115 @@ class Evaluator extends EventEmitter {
 
   makeSplit () {
     return new Promise((ok, ko) => {
-      let right;
+      try {
+        this.item.type
+          .getOpposite()
+          .then(
+            right => {
+              try {
+                let promises = [
+                  this.findOthers(2),
+                  this.findOthers(3, right),
+                  CriteriaModel
+                    .find()
+                    .exec()
+                ]
 
-      switch ( this.item.type ) {
-        case 'Agree':
-          right = 'Disagree';
-          break;
-        
-        case 'Disagree':
-          right = 'Agree';
-          break;
-        
-        case 'Pro':
-          right = 'Con';
-          break;
-        
-        case 'Con':
-          right = 'Pro';
-          break;
+                Promise.all(promises).then(
+                  results => {
+                    try {
+                      console.log('results', results);
+                      let [ left, right, criterias ] = results;
+
+                      this
+                        .packAndGo({ left, right, criterias })
+                        .then(ok, ko);
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  },
+                  ko
+                );
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
       }
-
-      let promises = [
-        this.findOthers(2),
-        this.findOthers(3, right),
-        CriteriaModel
-          .find({ type: this.item.type})
-          .populate('type')
-          .exec()
-      ]
-
-      Promise.all(promise).then(
-        results => {
-          this.packAndGo({
-            left      : results[0],
-            right     : results[1],
-            criterias : results[2]
-          })
-            .then(ok, ko);
-        }
-      );
+      catch ( error ) {
+        ko(error);
+      }
     });
   }
 
   findOthers (limit, type) {
     
     return new Promise((ok, ko) => {
-      let query = {
-        type      :     type || this.item.type,
-        parent    :     this.item.parent
-      };
+      try {
+        let query = {
+          type      :     type || this.item.type,
+          parent    :     this.item.lineage[0]
+        };
 
-      this
+        console.log()
+        console.log()
+        console.log()
+        console.log('find others query', query)
+        console.log()
+        console.log()
 
-        .ItemModel
+        this
 
-        .count(query)
+          .ItemModel
 
-        .where('_id').ne(this.item._id)
+          .count(query)
 
-        // .where('user').ne(this.userId)
+          .where('_id').ne(this.item._id)
 
-        .exec(this.domain.intercept(number => {
+          // .where('user').ne(this.userId)
 
-          let start = Math.max(0, Math.floor((number-limit)*Math.random()));
+          .exec(this.domain.intercept(number => {
 
-          this
-            
-            .ItemModel
+            let start = Math.max(0, Math.floor((number-limit)*Math.random()));
 
-            .find(query)
+            this
+              
+              .ItemModel
 
-            // .populate('user')
+              .find(query)
 
-            .where('_id').ne(this.item._id)
+              // .populate('user')
 
-            // .where('user').ne(this.userId)
+              .where('_id').ne(this.item._id)
 
-            .skip(start)
+              // .where('user').ne(this.userId)
 
-            .limit(limit)
+              .skip(start)
 
-            .sort({ views: 1, created: 1 })
+              .limit(limit)
 
-            .exec()
+              .sort({ views: 1, created: 1 })
 
-            .then(
-              items => {
-                Promise
-                  .all(items.map(item => item.toPanelItem()))
-                  .then(ok, ko);
-              },
-              ko
-            );
+              .exec()
 
-        }));
-      });
+              .then(
+                items => {
+                  Promise
+                    .all(items.map(item => item.toPanelItem()))
+                    .then(ok, ko);
+                },
+                ko
+              );
+
+          }));
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
 
   }
 

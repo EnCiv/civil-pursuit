@@ -10,6 +10,8 @@ var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_ag
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -66,31 +68,61 @@ var Evaluator = (function (_EventEmitter) {
       var _this2 = this;
 
       return new Promise(function (ok, ko) {
-        _this2.domain.run(function () {
-          _this2.ItemModel.findById(_this2.itemId)
-          // .populate('user')
-          .exec(_this2.domain.intercept(function (item) {
+        try {
+          _this2.ItemModel.findById(_this2.itemId).exec().then(function (item) {
+            try {
+              if (!item) {
+                throw new Error('Item not found');
+              }
 
-            if (!item) {
-              throw new Error('Item not found');
-            }
+              item.toPanelItem().then(function (item) {
+                try {
+                  _this2.item = item;
 
-            item.toPanelItem().then(function (item) {
-              _this2.item = item;
-              _this2.findType({ parent: _this2.item.type }).then(function (parentType) {
-                if (!parentType) {
-                  _this2.make().then(ok, ko);
-                } else if (parentType.harmony && parentType.harmony.length && parentType.harmony.some(function (h) {
-                  return h.toString() === _this2.item.type.toString();
-                })) {
-                  _this2.makeSplit().then(ok, ko);
-                } else {
-                  _this2.make().then(ok, ko);
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log(_this2.item);
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+                  console.log('-------------------------------');
+
+                  _this2.item.type.isHarmony().then(function (is) {
+                    try {
+                      if (is) {
+                        _this2.makeSplit().then(ok, ko);
+                      } else {
+                        _this2.make().then(ok, ko);
+                      }
+                    } catch (error) {
+                      _this2.emit('error', error);
+                    }
+                  }, ko);
+                } catch (error) {
+                  _this2.emit('error', error);
                 }
               }, ko);
-            }, ko);
-          }));
-        });
+            } catch (error) {
+              _this2.emit('error', error);
+            }
+          }, function (error) {
+            return _this2.emit('error', error);
+          });
+        } catch (error) {
+          _this2.emit('error', error);
+        }
       });
     }
   }, {
@@ -119,35 +151,33 @@ var Evaluator = (function (_EventEmitter) {
       var _this4 = this;
 
       return new Promise(function (ok, ko) {
-        var right = undefined;
+        try {
+          _this4.item.type.getOpposite().then(function (right) {
+            try {
+              var promises = [_this4.findOthers(2), _this4.findOthers(3, right), _criteria2['default'].find().exec()];
 
-        switch (_this4.item.type) {
-          case 'Agree':
-            right = 'Disagree';
-            break;
+              Promise.all(promises).then(function (results) {
+                try {
+                  console.log('results', results);
 
-          case 'Disagree':
-            right = 'Agree';
-            break;
+                  var _results = _slicedToArray(results, 3);
 
-          case 'Pro':
-            right = 'Con';
-            break;
+                  var left = _results[0];
+                  var _right = _results[1];
+                  var criterias = _results[2];
 
-          case 'Con':
-            right = 'Pro';
-            break;
+                  _this4.packAndGo({ left: left, right: _right, criterias: criterias }).then(ok, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              }, ko);
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        } catch (error) {
+          ko(error);
         }
-
-        var promises = [_this4.findOthers(2), _this4.findOthers(3, right), _criteria2['default'].find({ type: _this4.item.type }).populate('type').exec()];
-
-        Promise.all(promise).then(function (results) {
-          _this4.packAndGo({
-            left: results[0],
-            right: results[1],
-            criterias: results[2]
-          }).then(ok, ko);
-        });
       });
     }
   }, {
@@ -156,33 +186,46 @@ var Evaluator = (function (_EventEmitter) {
       var _this5 = this;
 
       return new Promise(function (ok, ko) {
-        var query = {
-          type: type || _this5.item.type,
-          parent: _this5.item.parent
-        };
+        try {
+          (function () {
+            var query = {
+              type: type || _this5.item.type,
+              parent: _this5.item.lineage[0]
+            };
 
-        _this5.ItemModel.count(query).where('_id').ne(_this5.item._id)
+            console.log();
+            console.log();
+            console.log();
+            console.log('find others query', query);
+            console.log();
+            console.log();
 
-        // .where('user').ne(this.userId)
+            _this5.ItemModel.count(query).where('_id').ne(_this5.item._id)
 
-        .exec(_this5.domain.intercept(function (number) {
+            // .where('user').ne(this.userId)
 
-          var start = Math.max(0, Math.floor((number - limit) * Math.random()));
+            .exec(_this5.domain.intercept(function (number) {
 
-          _this5.ItemModel.find(query)
+              var start = Math.max(0, Math.floor((number - limit) * Math.random()));
 
-          // .populate('user')
+              _this5.ItemModel.find(query)
 
-          .where('_id').ne(_this5.item._id)
+              // .populate('user')
 
-          // .where('user').ne(this.userId)
+              .where('_id').ne(_this5.item._id)
 
-          .skip(start).limit(limit).sort({ views: 1, created: 1 }).exec().then(function (items) {
-            Promise.all(items.map(function (item) {
-              return item.toPanelItem();
-            })).then(ok, ko);
-          }, ko);
-        }));
+              // .where('user').ne(this.userId)
+
+              .skip(start).limit(limit).sort({ views: 1, created: 1 }).exec().then(function (items) {
+                Promise.all(items.map(function (item) {
+                  return item.toPanelItem();
+                })).then(ok, ko);
+              }, ko);
+            }));
+          })();
+        } catch (error) {
+          ko(error);
+        }
       });
     }
   }, {

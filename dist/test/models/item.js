@@ -31,13 +31,12 @@ var TestItemModel = (function () {
     key: 'main',
     value: function main() {
       return new Promise(function (ok, ko) {
-        Promise.all([TestItemModel.disposable(), TestItemModel.toPanelItem()]).then(ok, ko);
+        Promise.all([TestItemModel.disposable(), TestItemModel.toPanelItem(), TestItemModel.evaluate()]).then(ok, ko);
       });
     }
   }, {
     key: 'isItem',
     value: function isItem(item) {
-      console.log(item);
       return new Promise(function (ok, ko) {
         try {
           item.should.be.an.Object;
@@ -194,6 +193,18 @@ var TestItemModel = (function () {
           state = false;
           ko(error);
         });
+      });
+    }
+  }, {
+    key: 'evaluate',
+    value: function evaluate() {
+      return new Promise(function (ok, ko) {
+        _modelsItem2['default'].disposable().then(function (item) {
+          _modelsItem2['default'].evaluate(item.user, item._id).then(function (evaluation) {
+            // console.log('Evaluation', evaluation);
+            ok();
+          }, ko);
+        }, ko);
       });
     }
   }]);

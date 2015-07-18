@@ -18,6 +18,14 @@ var _typeMethodsGetParents = require('./type/methods/get-parents');
 
 var _typeMethodsGetParents2 = _interopRequireDefault(_typeMethodsGetParents);
 
+var _typeMethodsIsHarmony = require('./type/methods/is-harmony');
+
+var _typeMethodsIsHarmony2 = _interopRequireDefault(_typeMethodsIsHarmony);
+
+var _typeMethodsGetOpposite = require('./type/methods/get-opposite');
+
+var _typeMethodsGetOpposite2 = _interopRequireDefault(_typeMethodsGetOpposite);
+
 var schema = new _mongoose.Schema({
   'name': {
     type: String,
@@ -36,7 +44,10 @@ var schema = new _mongoose.Schema({
 });
 
 schema.plugin(_mongooseSimpleRandom2['default']);
+
 schema.methods.getParents = _typeMethodsGetParents2['default'];
+schema.methods.isHarmony = _typeMethodsIsHarmony2['default'];
+schema.methods.getOpposite = _typeMethodsGetOpposite2['default'];
 
 exports['default'] = _mongoose2['default'].model('Type', schema);
 module.exports = exports['default'];

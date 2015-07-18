@@ -76,6 +76,21 @@ function toPanelItem(cb) {
         item.popularity = _this.getPopularity();
         item.link = '/item/' + _this.id + '/' + (0, _libUtilToSlug2['default'])(_this.subject);
 
+        // let getParent     =   () => new Promise((ok, ko) => {
+        //   try {
+        //     if ( ! this.parent ) {
+        //       return ok(null);
+        //     }
+        //     ItemModel
+        //       .findById(this.parent)
+        //       .exec()
+        //       .then(ok, ko);
+        //   }
+        //   catch ( error ) {
+        //     ko(error);
+        //   }
+        // });
+
         var getType = function getType() {
           return new Promise(function (ok, ko) {
             _type2['default'].findById(_this.type).populate('harmony').exec()

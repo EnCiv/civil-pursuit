@@ -11,14 +11,14 @@ class TestItemModel {
       Promise
         .all([
           TestItemModel.disposable(),
-          TestItemModel.toPanelItem()
+          TestItemModel.toPanelItem(),
+          TestItemModel.evaluate()
         ])
         .then(ok, ko);
     });
   }
 
   static isItem (item) {
-    console.log(item)
     return new Promise((ok, ko) => {
       try {
         item.should.be.an.Object;
@@ -203,6 +203,30 @@ class TestItemModel {
             state = false;
             ko(error);
           }
+        );
+    });
+  }
+
+  static evaluate () {
+    return new Promise((ok ,ko) => {
+      ItemModel
+        .disposable()
+        .then(
+          item => {
+            ItemModel
+              .evaluate(
+                item.user,
+                item._id
+              )
+              .then(
+                evaluation => {
+                  // console.log('Evaluation', evaluation);
+                  ok();
+                },
+                ko
+              );
+          },
+          ko
         );
     });
   }

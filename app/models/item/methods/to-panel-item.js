@@ -46,6 +46,20 @@ function toPanelItem (cb) {
       item.popularity   =   this.getPopularity();
       item.link         =   '/item/' + this.id + '/' + toSlug(this.subject);
 
+      // let getParent     =   () => new Promise((ok, ko) => {
+      //   try {
+      //     if ( ! this.parent ) {
+      //       return ok(null);
+      //     }
+      //     ItemModel
+      //       .findById(this.parent)
+      //       .exec()
+      //       .then(ok, ko);
+      //   }
+      //   catch ( error ) {
+      //     ko(error);
+      //   }
+      // });
 
       let getType       = () => new Promise((ok, ko) => {
         TypeModel
