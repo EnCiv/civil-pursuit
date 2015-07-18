@@ -59,3 +59,38 @@ for ( let _method of methods ) {
 };
 
 export default mongoose.model('Item', itemSchema);
+
+
+
+
+// mongoose.connect(process.env.MONGOHQ_URL);
+
+// mongoose
+//   .model('Item')
+//   .evaluate('559bcac5e2b1cc2a26b94e99', '5596a82de83e51f01a078941')
+//   .then(
+//     evaluation => {
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log();
+//       console.log('evaluation', evaluation);
+//     },
+//     error => error.stack.split(/\n/).forEach(console.log.bind(console))
+//   );

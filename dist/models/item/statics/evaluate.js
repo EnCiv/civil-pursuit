@@ -187,11 +187,53 @@ var Evaluator = (function (_EventEmitter) {
 
       return new Promise(function (ok, ko) {
         try {
+          var _iteratorNormalCompletion;
+
+          var _didIteratorError;
+
+          var _iteratorError;
+
+          var _iterator, _step;
+
           (function () {
-            var query = {
-              type: type || _this5.item.type,
-              parent: _this5.item.lineage[0]
-            };
+
+            var query = {};
+
+            if (type) {
+              query.type = type._id;
+            } else {
+              query.type = _this5.item.type._id;
+            }
+
+            if (_this5.item.lineage.length) {
+              var _parent = undefined;
+              _iteratorNormalCompletion = true;
+              _didIteratorError = false;
+              _iteratorError = undefined;
+
+              try {
+                for (_iterator = _this5.item.lineage[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                  var ancestor = _step.value;
+
+                  _parent = ancestor;
+                }
+              } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion && _iterator['return']) {
+                    _iterator['return']();
+                  }
+                } finally {
+                  if (_didIteratorError) {
+                    throw _iteratorError;
+                  }
+                }
+              }
+
+              query.parent = _parent._id;
+            }
 
             console.log();
             console.log();

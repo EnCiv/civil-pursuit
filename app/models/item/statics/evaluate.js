@@ -197,10 +197,23 @@ class Evaluator extends EventEmitter {
     
     return new Promise((ok, ko) => {
       try {
-        let query = {
-          type      :     type || this.item.type,
-          parent    :     this.item.lineage[0]
-        };
+
+        let query = {};
+
+        if ( type ) {
+          query.type = type._id;
+        }
+        else {
+          query.type = this.item.type._id;
+        }
+
+        if ( this.item.lineage.length ) {
+          let parent;
+          for ( let ancestor of this.item.lineage ) {
+            parent = ancestor;
+          }
+          query.parent    = parent._id;
+        }
 
         console.log()
         console.log()
