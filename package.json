@@ -15,7 +15,7 @@
     "min-css"       :   "bash bin/min-css.sh",
     "uglify"        :   "node dist/lib/build/uglify-pages.js",
     "uglify-assets" :   "bash bin/uglify-assets.sh",
-    "deploy-no-test":   "bbash bin/deploy-no-test.sh",
+    "deploy-no-test":   "bash bin/deploy-no-test.sh",
     "deploy"        :   "bash bin/deploy.sh"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
