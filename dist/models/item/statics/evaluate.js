@@ -54,6 +54,7 @@ var Evaluator = (function (_EventEmitter) {
     this.itemId = itemId;
     this.userId = userId;
     this.domain = new _domain.Domain();
+    this.type = 'regular';
 
     this.domain.on('error', function (error) {
       return _this.emit('error', error);
@@ -63,8 +64,11 @@ var Evaluator = (function (_EventEmitter) {
   _inherits(Evaluator, _EventEmitter);
 
   _createClass(Evaluator, [{
-    key: 'go',
-    value: function go() {
+    key: 'getItem',
+
+    // Get model item from DB and panelify it
+
+    value: function getItem() {
       var _this2 = this;
 
       return new Promise(function (ok, ko) {
@@ -78,38 +82,7 @@ var Evaluator = (function (_EventEmitter) {
               item.toPanelItem().then(function (item) {
                 try {
                   _this2.item = item;
-
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log(_this2.item);
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-                  console.log('-------------------------------');
-
-                  _this2.item.type.isHarmony().then(function (is) {
-                    try {
-                      if (is) {
-                        _this2.makeSplit().then(ok, ko);
-                      } else {
-                        _this2.make().then(ok, ko);
-                      }
-                    } catch (error) {
-                      _this2.emit('error', error);
-                    }
-                  }, ko);
+                  ok();
                 } catch (error) {
                   _this2.emit('error', error);
                 }
@@ -121,7 +94,33 @@ var Evaluator = (function (_EventEmitter) {
             return _this2.emit('error', error);
           });
         } catch (error) {
-          _this2.emit('error', error);
+          ko(error);
+        }
+      });
+    }
+  }, {
+    key: 'go',
+    value: function go() {
+      var _this3 = this;
+
+      return new Promise(function (ok, ko) {
+        try {
+          _this3.getItem().then(function () {
+            _this3.item.type.isHarmony().then(function (is) {
+              try {
+                if (is) {
+                  _this3.type = 'split';
+                  _this3.makeSplit().then(ok, ko);
+                } else {
+                  _this3.make().then(ok, ko);
+                }
+              } catch (error) {
+                _this3.emit('error', error);
+              }
+            }, ko);
+          }, ko);
+        } catch (error) {
+          _this3.emit('error', error);
         }
       });
     }
@@ -133,40 +132,48 @@ var Evaluator = (function (_EventEmitter) {
   }, {
     key: 'make',
     value: function make() {
-      var _this3 = this;
+      var _this4 = this;
 
       return new Promise(function (ok, ko) {
 
-        Promise.all([_this3.findOthers(OTHERS), _criteria2['default'].find().exec()]).then(function (results) {
-          _this3.packAndGo({
-            items: results[0],
-            criterias: results[1]
-          }).then(ok, ko);
-        }, ko);
+        try {
+          Promise.all([_this4.findOthers(OTHERS), _criteria2['default'].find().exec()]).then(function (results) {
+            try {
+              var _results = _slicedToArray(results, 2);
+
+              var items = _results[0];
+              var criterias = _results[1];
+
+              _this4.packAndGo({ items: items, criterias: criterias }).then(ok, ko);
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        } catch (error) {
+          ko(error);
+        }
       });
     }
   }, {
     key: 'makeSplit',
     value: function makeSplit() {
-      var _this4 = this;
+      var _this5 = this;
 
       return new Promise(function (ok, ko) {
         try {
-          _this4.item.type.getOpposite().then(function (right) {
+          _this5.item.type.getOpposite().then(function (right) {
             try {
-              var promises = [_this4.findOthers(2), _this4.findOthers(3, right), _criteria2['default'].find().exec()];
+              var promises = [_this5.findOthers(5), _this5.findOthers(6, right), _criteria2['default'].find().exec()];
 
               Promise.all(promises).then(function (results) {
                 try {
-                  console.log('results', results);
+                  var _results2 = _slicedToArray(results, 3);
 
-                  var _results = _slicedToArray(results, 3);
+                  var left = _results2[0];
+                  var _right = _results2[1];
+                  var criterias = _results2[2];
 
-                  var left = _results[0];
-                  var _right = _results[1];
-                  var criterias = _results[2];
-
-                  _this4.packAndGo({ left: left, right: _right, criterias: criterias }).then(ok, ko);
+                  _this5.packAndGo({ left: left, right: _right, criterias: criterias }).then(ok, ko);
                 } catch (error) {
                   ko(error);
                 }
@@ -183,7 +190,7 @@ var Evaluator = (function (_EventEmitter) {
   }, {
     key: 'findOthers',
     value: function findOthers(limit, type) {
-      var _this5 = this;
+      var _this6 = this;
 
       return new Promise(function (ok, ko) {
         try {
@@ -202,17 +209,17 @@ var Evaluator = (function (_EventEmitter) {
             if (type) {
               query.type = type._id;
             } else {
-              query.type = _this5.item.type._id;
+              query.type = _this6.item.type._id;
             }
 
-            if (_this5.item.lineage.length) {
+            if (_this6.item.lineage.length) {
               var _parent = undefined;
               _iteratorNormalCompletion = true;
               _didIteratorError = false;
               _iteratorError = undefined;
 
               try {
-                for (_iterator = _this5.item.lineage[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                for (_iterator = _this6.item.lineage[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                   var ancestor = _step.value;
 
                   _parent = ancestor;
@@ -235,26 +242,19 @@ var Evaluator = (function (_EventEmitter) {
               query.parent = _parent._id;
             }
 
-            console.log();
-            console.log();
-            console.log();
-            console.log('find others query', query);
-            console.log();
-            console.log();
-
-            _this5.ItemModel.count(query).where('_id').ne(_this5.item._id)
+            _this6.ItemModel.count(query).where('_id').ne(_this6.item._id)
 
             // .where('user').ne(this.userId)
 
-            .exec(_this5.domain.intercept(function (number) {
+            .exec(_this6.domain.intercept(function (number) {
 
               var start = Math.max(0, Math.floor((number - limit) * Math.random()));
 
-              _this5.ItemModel.find(query)
+              _this6.ItemModel.find(query)
 
               // .populate('user')
 
-              .where('_id').ne(_this5.item._id)
+              .where('_id').ne(_this6.item._id)
 
               // .where('user').ne(this.userId)
 
@@ -273,13 +273,15 @@ var Evaluator = (function (_EventEmitter) {
   }, {
     key: 'packAndGo',
     value: function packAndGo(results) {
-      var _this6 = this;
+      var _this7 = this;
 
       return new Promise(function (ok, ko) {
         if (!('items' in results) && 'left' in results) {
           results.items = [];
 
-          for (var i = 0; i < 3; i++) {
+          results.left.unshift(_this7.item);
+
+          for (var i = 0; i < 6; i++) {
             if (results.left[i]) {
               results.items.push(results.left[i]);
             }
@@ -288,17 +290,14 @@ var Evaluator = (function (_EventEmitter) {
               results.items.push(results.right[i]);
             }
           }
-        }
-
-        if (_configJson2['default']['evaluation context item position'] === 'last') {
-          results.items.push(_this6.item);
         } else {
-          results.items.unshift(_this6.item);
+          results.items.unshift(_this7.item);
         }
 
         var evaluation = new Evaluation({
-          type: _this6.item.type,
-          item: _this6.itemId,
+          split: _this7.type === 'split',
+          type: _this7.item.type,
+          item: _this7.itemId,
           items: results.items /*.map(this.map, this)*/,
           criterias: results.criterias
         });
@@ -319,10 +318,10 @@ var Evaluator = (function (_EventEmitter) {
   }], [{
     key: 'Factory',
     value: function Factory(userId, itemId) {
-      var _this7 = this;
+      var _this8 = this;
 
       return new Promise(function (ok, ko) {
-        new Evaluator(_this7, userId, itemId).on('error', ko).go().then(ok, ko);
+        new Evaluator(_this8, userId, itemId).on('error', ko).go().then(ok, ko);
       });
     }
   }]);

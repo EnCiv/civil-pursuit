@@ -36,12 +36,15 @@ class Evaluator extends EventEmitter {
     this.itemId     =   itemId;
     this.userId     =   userId;
     this.domain     =   new Domain();
+    this.type       =   'regular';
     
     this.domain.on('error', error => this.emit('error', error));
 
   }
 
-  go () {
+  // Get model item from DB and panelify it
+
+  getItem () {
     return new Promise((ok, ko) => {
       try {
         this
@@ -61,45 +64,7 @@ class Evaluator extends EventEmitter {
                     item => {
                       try {
                         this.item = item;
-
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log(this.item)
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-                        console.log('-------------------------------')
-
-                        this.item.type
-                          .isHarmony()
-                          .then(
-                            is => {
-                              try {
-                                if ( is ) {
-                                  this.makeSplit().then(ok, ko); 
-                                }
-                                else {
-                                  this.make().then(ok, ko);
-                                }
-                              }
-                              catch ( error ) {
-                                this.emit('error', error);
-                              }
-                            },
-                            ko
-                          );
+                        ok();
                       }
                       catch ( error ) {
                         this.emit('error', error);
@@ -114,7 +79,42 @@ class Evaluator extends EventEmitter {
             },
             error => this.emit('error', error)
           );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
 
+  go () {
+    return new Promise((ok, ko) => {
+      try {
+        this
+          .getItem()
+          .then(
+            () => {
+              this.item.type
+                .isHarmony()
+                .then(
+                  is => {
+                    try {
+                      if ( is ) {
+                        this.type = 'split';
+                        this.makeSplit().then(ok, ko); 
+                      }
+                      else {
+                        this.make().then(ok, ko);
+                      }
+                    }
+                    catch ( error ) {
+                      this.emit('error', error);
+                    }
+                  },
+                  ko
+                );
+            },
+            ko
+          );
       }
       catch ( error ) {
         this.emit('error', error);
@@ -129,21 +129,33 @@ class Evaluator extends EventEmitter {
   make () {
     return new Promise((ok, ko) => {
 
-      Promise.all([
+      try {
+        Promise.all([
           this.findOthers(OTHERS),
           CriteriaModel
-          .find()
-          .exec()
+            .find()
+            .exec()
         ])
         .then(
           results => {
-            this.packAndGo({
-              items : results[0],
-              criterias : results[1]
-            }).then(ok, ko);
+            try {
+              let [ items, criterias ] = results;
+
+              this
+                .packAndGo({ items, criterias })
+                .then(ok, ko);
+            }
+            catch ( error ) {
+              ko(error);
+            }
           },
           ko
         );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+
     });
   }
 
@@ -156,8 +168,8 @@ class Evaluator extends EventEmitter {
             right => {
               try {
                 let promises = [
-                  this.findOthers(2),
-                  this.findOthers(3, right),
+                  this.findOthers(5),
+                  this.findOthers(6, right),
                   CriteriaModel
                     .find()
                     .exec()
@@ -166,9 +178,7 @@ class Evaluator extends EventEmitter {
                 Promise.all(promises).then(
                   results => {
                     try {
-                      console.log('results', results);
                       let [ left, right, criterias ] = results;
-
                       this
                         .packAndGo({ left, right, criterias })
                         .then(ok, ko);
@@ -214,13 +224,6 @@ class Evaluator extends EventEmitter {
           }
           query.parent    = parent._id;
         }
-
-        console.log()
-        console.log()
-        console.log()
-        console.log('find others query', query)
-        console.log()
-        console.log()
 
         this
 
@@ -279,7 +282,9 @@ class Evaluator extends EventEmitter {
       if ( ! ( 'items' in results ) && ( 'left' in results ) ) {
         results.items = [];
 
-        for ( var i = 0; i < 3; i ++ ) {
+        results.left.unshift(this.item);
+
+        for ( var i = 0; i < 6; i ++ ) {
           if ( results.left[i] ) {
             results.items.push(results.left[i]);
           }
@@ -290,19 +295,16 @@ class Evaluator extends EventEmitter {
         }
       }
 
-      if ( config['evaluation context item position'] === 'last' ) {
-        results.items.push(this.item);
-      }
-
       else {
         results.items.unshift(this.item);
       }
 
       let evaluation = new Evaluation({
-        type:         this.item.type,
-        item:         this.itemId,
-        items:        results.items/*.map(this.map, this)*/,
-        criterias:    results.criterias
+        split     :   this.type === 'split',
+        type      :   this.item.type,
+        item      :   this.itemId,
+        items     :   results.items/*.map(this.map, this)*/,
+        criterias :   results.criterias
       });
 
 

@@ -147,7 +147,53 @@ function renderItem(hand) {
           $.when(self.find('side by side').find('.' + opposite + '-item').animate({
             opacity: 0
           })).then(function () {
-            self.set(opposite, self.get('items')[self.get('cursor')]);
+            if (self.get('split')) {
+              var cursor = undefined;
+
+              switch (opposite) {
+                case 'left':
+                  switch (self.get('cursor')) {
+                    case 2:
+                      cursor = 2;
+                      break;
+                    case 3:
+                      cursor = 4;
+                      break;
+                    case 4:
+                      cursor = 6;
+                      break;
+                    case 5:
+                      cursor = 8;
+                      break;
+                  }
+                  break;
+
+                case 'right':
+                  switch (self.get('cursor')) {
+                    case 2:
+                      cursor = 3;
+                      break;
+                    case 3:
+                      cursor = 5;
+                      break;
+                    case 4:
+                      cursor = 7;
+                      break;
+                    case 5:
+                      cursor = 9;
+                      break;
+                  }
+                  break;
+              }
+
+              if (opposite === 'right' && cursor % 2 === 0) {
+                cursor++;
+              }
+
+              self.set(opposite, self.get('items')[cursor]);
+            } else {
+              self.set(opposite, self.get('items')[self.get('cursor')]);
+            }
 
             self.find('side by side').find('.' + opposite + '-item').animate({
               opacity: 1

@@ -226,6 +226,8 @@ class Promote extends Controller {
 
             this.set('right', evaluation.items[1]);
 
+            this.set('split', evaluation.split);
+
             cb();
           }
         });

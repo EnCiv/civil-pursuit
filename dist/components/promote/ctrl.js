@@ -290,6 +290,8 @@ var Promote = (function (_Controller) {
 
               _this2.set('right', evaluation.items[1]);
 
+              _this2.set('split', evaluation.split);
+
               cb();
             }
           });
