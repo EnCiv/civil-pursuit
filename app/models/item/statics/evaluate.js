@@ -284,7 +284,17 @@ class Evaluator extends EventEmitter {
 
         results.left.unshift(this.item);
 
-        for ( var i = 0; i < 6; i ++ ) {
+        let max = 6;
+
+        if ( results.left.length < max ) {
+          max = results.left.length;
+        }
+
+        if ( results.right.length < max ) {
+          max = results.right.length;
+        }
+
+        for ( var i = 0; i < max; i ++ ) {
           if ( results.left[i] ) {
             results.items.push(results.left[i]);
           }
