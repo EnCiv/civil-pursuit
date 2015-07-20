@@ -190,7 +190,7 @@ class Details extends Controller {
 
         // Feedback
 
-        details.feedbacks.forEach(feedback => {
+        details.feedback.forEach(feedback => {
           let tpl = $('<div class="pretext feedback"></div>');
           tpl.text(feedback.feedback);
           this.find('feedback list')

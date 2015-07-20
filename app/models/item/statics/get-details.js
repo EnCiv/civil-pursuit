@@ -1,59 +1,55 @@
 'use strict';
 
-import VoteModel          from '../../../models/vote';
-import FeedbackModel      from '../../../models/feedback';
-import CriteriaModel      from '../../../models/criteria';
+import VoteModel          from '../../vote';
+import FeedbackModel      from '../../feedback';
+import CriteriaModel      from '../../criteria';
 
 function getItemDetails (itemId) {
   return new Promise((ok, ko) => {
-    Promise
-      .all([
+    try {
+      let promises = [
         VoteModel.getAccumulation(itemId),
-        FeedbackModel.find({ item : itemId }).exec()
-      ])
-      .then(
-        results => {
-          try {
-            let [ votes, feedback ] = results;
-            this
-              .findById(itemId)
-              .exec()
-              .then(
-                item => {
-                  try {
-                    CriteriaModel
-                      .find({ type: item.type })
-                      .exec()
-                      .then(
-                        criterias => {
-                          try {
-                            ok({
-                              item      : item,
-                              votes     : votes,
-                              feedbacks : feedback,
-                              criterias : criterias
-                            });
-                          }
-                          catch ( error ) {
-                            ko(error);
-                          }
-                        },
-                        ko
-                      );
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                },
-                ko
-              );
-          }
-          catch ( error ) {
-            ko(error);
-          }
-        },
-        ko
-      );
+        FeedbackModel.find({ item : itemId}).exec(),
+        CriteriaModel.find().limit(4).exec()
+      ];
+
+      Promise
+        .all(promises)
+        .then(
+          results => {
+            try {
+              let [ votes, feedback, criterias ] = results;
+
+              this
+                .findById(itemId)
+                .exec()
+                .then(
+                  item => {
+                    try {
+                      ok({
+                        item  : item,
+                        votes,
+                        feedback,
+                        criterias
+                      });
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  },
+                  ko
+                );
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+    }
+    catch ( error ) {
+      ko(error);
+    }
   });
 }
 

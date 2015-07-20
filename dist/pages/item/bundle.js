@@ -1085,7 +1085,7 @@ var Details = (function (_Controller) {
 
         // Feedback
 
-        details.feedbacks.forEach(function (feedback) {
+        details.feedback.forEach(function (feedback) {
           var tpl = $('<div class="pretext feedback"></div>');
           tpl.text(feedback.feedback);
           _this.find('feedback list').append(tpl).append('<hr/>');
