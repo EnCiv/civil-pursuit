@@ -209,6 +209,10 @@ class Promote extends Controller {
             if ( evaluation.items.length < 6 ) {
               limit = evaluation.items.length - 2;
 
+              if ( ! limit ) {
+                limit = 1;
+              }
+
               if ( ! evaluation.limit && evaluation.items.length === 1 ) {
                 limit = 1;
               }

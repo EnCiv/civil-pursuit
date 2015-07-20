@@ -42,19 +42,25 @@ function renderPromote (cb) {
 
             self.set('right', self.get('items')[cursor + 2  ]);
 
-            self
-              .find('side by side')
-              .find('.left-item')
-              .animate({
-                opacity: 1
-              }, 1000);
+            if ( self.get('cursor') > self.get('limit') ) {
+              self.finish();
+            }
 
-            self
-              .find('side by side')
-              .find('.right-item')
-              .animate({
-                opacity: 1
-              }, 1000);
+            else {
+              self
+                .find('side by side')
+                .find('.left-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+
+              self
+                .find('side by side')
+                .find('.right-item')
+                .animate({
+                  opacity: 1
+                }, 1000);
+            }
           });
       }
 
