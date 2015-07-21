@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 
-bash ./build.sh &&
+bash bin/build.sh &&
 git push heroku master
