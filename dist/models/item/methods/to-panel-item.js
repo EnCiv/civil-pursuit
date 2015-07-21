@@ -136,6 +136,48 @@ function toPanelItem(cb) {
           });
         };
 
+        var countSubType = function countSubType(subtype) {
+          return new Promise(function (ok, ko) {
+
+            var query = {
+              parent: _this._id,
+              type: subtype
+            };
+
+            ItemModel.count(query, function (error, count) {
+              if (error) {
+                return ko(error);
+              }
+              ok(count);
+            });
+          });
+        };
+
+        var countHarmony = function countHarmony(harmony) {
+          return new Promise(function (ok, ko) {
+
+            if (!harmony.length) {
+              return ok(0);
+            }
+
+            var query = {
+              parent: _this._id,
+              type: {
+                $in: harmony.map(function (h) {
+                  return h._id;
+                })
+              }
+            };
+
+            ItemModel.count(query, function (error, count) {
+              if (error) {
+                return ko(error);
+              }
+              ok(count);
+            });
+          });
+        };
+
         var countVotes = function countVotes() {
           return new Promise(function (ok, ko) {
             _vote2['default'].where({ item: _this._id }).count(function (error, count) {
@@ -176,24 +218,31 @@ function toPanelItem(cb) {
           });
         };
 
-        Promise.all([_this.getLineage(), getType(), getUser(), getSubtype(), countChildren(), countVotes()]).then(function (results) {
+        Promise.all([_this.getLineage(), getType(), getUser(), getSubtype(), countVotes()]).then(function (results) {
           try {
-            var _results2 = _slicedToArray(results, 6);
+            var _results2 = _slicedToArray(results, 5);
 
             item.lineage = _results2[0];
             item.type = _results2[1];
             item.user = _results2[2];
             item.subtype = _results2[3];
-            item.children = _results2[4];
-            item.votes = _results2[5];
+            item.votes = _results2[4];
 
-            if (!item.type.harmony.length) {
-              return ok(item);
-            }
+            countSubType(item.subtype).then(function (count) {
+              try {
+                item.children = count;
 
-            getHarmony(item).then(function (harmony) {
-              item.harmony = harmony;
-              ok(item);
+                if (!item.type.harmony.length) {
+                  return ok(item);
+                }
+
+                getHarmony(item).then(function (harmony) {
+                  item.harmony = harmony;
+                  ok(item);
+                }, ko);
+              } catch (error) {
+                ko(error);
+              }
             }, ko);
           } catch (error) {
             ko(error);

@@ -14,14 +14,7 @@ class ItemNotFoundPage extends Milk {
 
     super('Item Page not found', options);
 
-    this
-
-      .go('/item/not/found')
-
-      .import(LayoutTest, {
-        title   :   config.title.prefix + 'Item not found'
-      })
-    ;
+    this.go('/item/not/found');
 
     this.actors();
 
@@ -37,17 +30,23 @@ class ItemNotFoundPage extends Milk {
 
   stories () {
 
-    this.ok(
-      () => this.get('Header').text()
-        .then(text => text.should.be.exactly('Item not found')),
-      'Header should say "Item not found"'
-    );
+    this
 
-    this.ok(
-      () => this.get('Text').text()
-        .then(text => text.should.be.exactly('We are sorry, your request could not be fulfilled because no relevant results were found.')),
-      'Text should say "We are sorry, your request could not be fulfilled because no relevant results were found."'
-    );
+      .import(LayoutTest, {
+        title   :   config.title.prefix + 'Item not found'
+      })
+
+      .ok(
+        () => this.get('Header').text()
+          .then(text => text.should.be.exactly('Item not found')),
+        'Header should say "Item not found"'
+      )
+
+      .ok(
+        () => this.get('Text').text()
+          .then(text => text.should.be.exactly('We are sorry, your request could not be fulfilled because no relevant results were found.')),
+        'Text should say "We are sorry, your request could not be fulfilled because no relevant results were found."'
+      );
 
   }
 

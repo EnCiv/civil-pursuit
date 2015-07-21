@@ -38,6 +38,10 @@ var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
+var _componentsJoin = require('../components/join');
+
+var _componentsJoin2 = _interopRequireDefault(_componentsJoin);
+
 var TOSPage = (function (_Milk) {
   function TOSPage(props) {
     _classCallCheck(this, TOSPage);
@@ -48,9 +52,9 @@ var TOSPage = (function (_Milk) {
 
     _get(Object.getPrototypeOf(TOSPage.prototype), 'constructor', this).call(this, 'Terms of Service Page', options);
 
-    this.go('/page/terms-of-service')['import'](_componentsLayout2['default'], {
-      title: _configJson2['default'].title.prefix + 'Terms of Service'
-    });
+    this.options = options;
+
+    this.go('/page/terms-of-service');
 
     this.actors();
 
@@ -87,7 +91,9 @@ var TOSPage = (function (_Milk) {
     value: function stories() {
       var _this2 = this;
 
-      this.ok(function () {
+      this['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Terms of Service'
+      }).ok(function () {
         return _this2.get('Container').html().then(function (html) {
 
           var markup = /^<div class="gutter" id="terms-of-service\/container">/;
@@ -102,6 +108,8 @@ var TOSPage = (function (_Milk) {
 
           html.should.be.exactly(md);
         });
+      })['import'](_componentsJoin2['default'], { toggled: false, viewport: this.options.viewport })['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Terms of Service'
       });
     }
   }]);

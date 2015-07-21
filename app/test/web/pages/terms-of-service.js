@@ -6,6 +6,7 @@ import marked         from 'marked';
 import Milk           from '../../../lib/app/milk';
 import config         from '../../../../config.json';
 import LayoutTest     from '../components/layout';
+import JoinTest       from '../components/join';
 
 class TOSPage extends Milk {
 
@@ -16,14 +17,9 @@ class TOSPage extends Milk {
 
     super('Terms of Service Page', options);
 
-    this
+    this.options = options;
 
-      .go('/page/terms-of-service')
-
-      .import(LayoutTest, {
-        title   :   config.title.prefix + 'Terms of Service'
-      })
-    ;
+    this.go('/page/terms-of-service');
 
     this.actors();
 
@@ -48,26 +44,38 @@ class TOSPage extends Milk {
 
   stories () {
 
-    this.ok(
-      () => this.get('Container').html()
-        .then(html => {
+    this
 
-          let markup = /^<div class="gutter" id="terms-of-service\/container">/;
-          
-          // webdriver bug: sometimes it returns outer HTML instead of inner
-          if ( markup.test(html) ) {
-            html = html.replace(markup, '').replace(/<\/div>$/, '');
-          }
+      .import(LayoutTest, {
+        title   :   config.title.prefix + 'Terms of Service'
+      })
 
-          // Note that some characters changed because of HTML formatting
-          let md = this.get('Markup')
-            .replace(/\&quot;/g, '"')
-            .replace(/\&#39;/g, "'");
+      .ok(
+        () => this.get('Container').html()
+          .then(html => {
+
+            let markup = /^<div class="gutter" id="terms-of-service\/container">/;
+            
+            // webdriver bug: sometimes it returns outer HTML instead of inner
+            if ( markup.test(html) ) {
+              html = html.replace(markup, '').replace(/<\/div>$/, '');
+            }
+
+            // Note that some characters changed because of HTML formatting
+            let md = this.get('Markup')
+              .replace(/\&quot;/g, '"')
+              .replace(/\&#39;/g, "'");
 
 
-          html.should.be.exactly(md);
-        })
-    );
+            html.should.be.exactly(md);
+          })
+      )
+
+      .import(JoinTest, { toggled : false, viewport : this.options.viewport })
+
+      .import(LayoutTest, {
+        title   :   config.title.prefix + 'Terms of Service'
+      });
 
   }
 

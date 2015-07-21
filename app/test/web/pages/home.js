@@ -27,15 +27,15 @@ class HomePage extends Milk {
 
       // .import(IntroTest)
 
-      .import(TopLevelPanelTest)
+      // .import(TopLevelPanelTest)
 
       // Join
 
-      // .import(JoinTest, { toggled : false, viewport : options.viewport })
+      .import(JoinTest, { toggled : false, viewport : options.viewport })
 
       // .import(LayoutTest)
 
-      // .import(TopLevelPanelTest, { viewport : options.viewport })
+      .import(TopLevelPanelTest, { viewport : options.viewport })
 
       // Sign out
 

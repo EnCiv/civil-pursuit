@@ -12,34 +12,37 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _componentsLayoutView = require('../../components/layout/view');
+var _cincoDist = require('cinco/dist');
 
-var _componentsLayoutView2 = _interopRequireDefault(_componentsLayoutView);
+var _configJson = require('../../../config.json');
 
-var _componentsProfileView = require('../../components/profile/view');
+var _configJson2 = _interopRequireDefault(_configJson);
 
-var _componentsProfileView2 = _interopRequireDefault(_componentsProfileView);
+var _identityView = require('../identity/view');
 
-var ProfilePage = (function (_Layout) {
-  function ProfilePage(props) {
-    _classCallCheck(this, ProfilePage);
+var _identityView2 = _interopRequireDefault(_identityView);
 
-    props = props || {};
+var _panelView = require('../panel/view');
 
-    props.title = props.title || 'Profile';
+var _panelView2 = _interopRequireDefault(_panelView);
 
-    _get(Object.getPrototypeOf(ProfilePage.prototype), 'constructor', this).call(this, props);
-    this.props = props;
+var ProfileView = (function (_Element) {
+  function ProfileView(props, extra) {
+    _classCallCheck(this, ProfileView);
 
-    var main = this.find('#main').get(0);
+    _get(Object.getPrototypeOf(ProfileView.prototype), 'constructor', this).call(this, '#profile.center');
 
-    main.add(new _componentsProfileView2['default']());
+    var panel = new _panelView2['default']({ creator: false });
+
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _identityView2['default']()))));
+
+    this.add(panel);
   }
 
-  _inherits(ProfilePage, _Layout);
+  _inherits(ProfileView, _Element);
 
-  return ProfilePage;
-})(_componentsLayoutView2['default']);
+  return ProfileView;
+})(_cincoDist.Element);
 
-exports['default'] = ProfilePage;
+exports['default'] = ProfileView;
 module.exports = exports['default'];

@@ -140,9 +140,11 @@ class Item extends Element {
   }
 
   below () {
-    return new Element('.children.is-container').add(
-      new Element('.is-section')
-    )
+    // return new Element('.children.is-container').add(
+    //   new Element('.is-section')
+    // );
+
+    return new Element('.children');
   }
 
   details () {

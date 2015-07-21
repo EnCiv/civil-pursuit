@@ -1,0 +1,71 @@
+#identity.section.center
+  .gutter
+    .tablet-40.user-image-container
+      img.img-responsive.user-image.radius(src=synapp.public['user image'])
+
+    h2.profile-section-title Identity
+
+    .tablet-push-40.gutter
+      .pre-text=synapp.profile.identity.description
+
+  .identity-collapse.is-container.row
+    .is-section
+
+      .row.gutter
+        p.image-buttons.row
+          button.block.upload-image Upload Image
+          input.upload-identity-picture.hide(type='file')
+
+        .names.input-group-tablet.gutter-right
+          input.watch-100.tablet-40(type='text' placeholder='First name' name='first-name')
+          
+          input.watch-100.tablet-20(type='text' placeholder='Middle name' name='middle-name')
+          
+          input.watch-100.tablet-40(type='text' placeholder='Last name' name='last-name')
+
+      .row
+
+        button.very.shy.tablet-30 Citizenship
+        
+        select.citizenship.tablet-70.gutter
+          option(value='') Choose one
+
+
+      .row
+
+        button.very.shy.tablet-30 Citizenship
+        
+        select.citizenship.tablet-70.gutter
+          option(value='') Choose one
+
+      .row
+        button.very.shy.tablet-30 Birthdate
+        
+        input.tablet-70.gutter.dob(type='date')
+
+      .row
+        button.very.shy.tablet-30 Sex
+        
+        select.gender.tablet-70.gutter
+          option(value='') Choose one
+          option(value='M') Male
+          option(value='F') Female
+
+
+        //-   .row
+        //-     .phone-50.tablet-100.gutter Citizenship
+        //-     .phone-50.tablet-100.gutter
+        //-       select.citizenship
+        //-         option(value='') Choose one
+        //- .tablet-50
+        //-   .row
+        //-     .watch-85.gutter Citizen of another country
+        //-     .watch-15.gutter
+        //-       input(type='checkbox')
+        //-   .row
+        //-     .watch-85.gutter Citizen of another country
+        //-     .watch-15.gutter
+        //-       input(type='checkbox')
+
+  .row.toggle-arrow.gutter.text-center
+    i.fa.fa-arrow-down.cursor-pointer

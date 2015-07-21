@@ -1,31 +1,33 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @arg {ObjectID} user_id - User ID
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function getUserInfo(user_id) {
-    var socket = this;
+function getUserInfo(event, userId) {
+  var _this = this;
 
-    require('../lib/domain')(function (error) {
-      socket.emit('error', error);
-    }, function (domain) {
-      User.findById(user_id).lean().exec(domain.intercept(function (user) {
+  try {
+    _modelsUser2['default'].findById(userId).lean().exec().then(function (user) {
+      try {
         delete user.password;
-        socket.emit('got user info', user);
-      }));
+        _this.ok(event, user);
+      } catch (error) {
+        _this.error(error);
+      }
+    }, function (error) {
+      return _this.error(error);
     });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  /**
-   *  Export as a socket event listener
-   */
-
-  module.exports = getUserInfo;
-})();
+exports['default'] = getUserInfo;
+module.exports = exports['default'];

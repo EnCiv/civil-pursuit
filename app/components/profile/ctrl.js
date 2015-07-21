@@ -1,13 +1,68 @@
-! function () {
+'use strict';
+
+import Controller       from  '../../lib/app/controller';
+import View             from  './view';
+import IdentityCtrl     from  '../identity/ctrl';
+
+class ProfileCtrl extends Controller {
+
+  constructor (props) {
+    super();
+
+    this.template = $('#profile');
+
+    this.user = props.session.user;
+  }
+
+  find (name) {
+    switch ( name ) {
+      case 'panel title':
+        return $('.panel-title', this.template);
+
+      case 'items section':
+        return this.template.find('.items .is-container.is-profile-section');
+
+      case 'panel load more':
+        return this.template.find('.loading-items');
+
+      case 'Identity':
+        return this.template.find('#identity');
+
+      case 'toggle creator':
+        return this.template.find('.toggle-creator');
+    }
+  }
+
+  render () {
+    this.find('panel title').text('Profile');
+
+    this
+      .publish('get user info', this.user.id)
+      .subscribe((pubsub, user) => {
+        this.identity = new IdentityCtrl({ user });
+        this.identity.render();
+        pubsub.unsubscribe();
+      });
+  }
+
+  renderUser () {
+
+  }
+
+}
+
+export default ProfileCtrl;
+
+function foo () {
   
   'use strict';
 
-  var Nav               =   require('syn/lib/util/nav');
-  var Identity          =   require('syn/components/Identity/Controller');
-  var Residence         =   require('syn/components/Residence/Controller');
-  var Demographics      =   require('syn/components/Demographics/Controller');
-  var Voter             =   require('syn/components/Voter/Controller');
-  var Public_Persona    =   require('syn/components/PublicPersona/Controller');
+  // var Nav               =   require('syn/lib/util/nav');
+  // var Identity          =   require('syn/components/Identity/Controller');
+  // var Residence         =   require('syn/components/Residence/Controller');
+  // var Demographics      =   require('syn/components/Demographics/Controller');
+  // var Voter             =   require('syn/components/Voter/Controller');
+  // var Public_Persona    =   require('syn/components/PublicPersona/Controller');
 
   /**
    *  @class      Profile
@@ -178,4 +233,4 @@ app.socket.synuser);
 
   module.exports = Profile;
 
-} ();
+}

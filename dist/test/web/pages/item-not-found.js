@@ -40,9 +40,7 @@ var ItemNotFoundPage = (function (_Milk) {
 
     _get(Object.getPrototypeOf(ItemNotFoundPage.prototype), 'constructor', this).call(this, 'Item Page not found', options);
 
-    this.go('/item/not/found')['import'](_componentsLayout2['default'], {
-      title: _configJson2['default'].title.prefix + 'Item not found'
-    });
+    this.go('/item/not/found');
 
     this.actors();
 
@@ -68,13 +66,13 @@ var ItemNotFoundPage = (function (_Milk) {
     value: function stories() {
       var _this2 = this;
 
-      this.ok(function () {
+      this['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Item not found'
+      }).ok(function () {
         return _this2.get('Header').text().then(function (text) {
           return text.should.be.exactly('Item not found');
         });
-      }, 'Header should say "Item not found"');
-
-      this.ok(function () {
+      }, 'Header should say "Item not found"').ok(function () {
         return _this2.get('Text').text().then(function (text) {
           return text.should.be.exactly('We are sorry, your request could not be fulfilled because no relevant results were found.');
         });

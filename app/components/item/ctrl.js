@@ -4,8 +4,9 @@ import S                from 'string';
 import Nav              from '../../lib/util/nav';
 import readMore         from '../../lib/util/read-more';
 import Controller       from '../../lib/app/controller';
-import Promote          from '../../components/promote//ctrl';
-import Details          from '../../components/details//ctrl';
+import Promote          from '../../components/promote/ctrl';
+import Details          from '../../components/details/ctrl';
+import PanelCtrl        from '../../components/panel/ctrl';
 import View             from './view';
 import MediaController  from './controllers/media';
 import toggleArrow      from './controllers/toggle-arrow';
@@ -106,6 +107,8 @@ class ItemCtrl extends Controller {
 
     let self = this;
 
+    self.toggleArrow = this.toggleArrow.bind(this);
+
     // Create reference to promote if promotion enabled
 
     this.promote = new Promote(this.props, this);
@@ -202,20 +205,30 @@ class ItemCtrl extends Controller {
       this.find('related').append(buttonChildren);
     }
 
+    this.template.find('.children-count').on('click', function () {
+      var $trigger    =   $(this);
+      var $item       =   $trigger.closest('.item');
+      var item        =   $item.data('item');
+      // item.find('toggle arrow').click();
+      self.toggleArrow(item.find('toggle arrow'), true, false);
+    });
+
     // HARMONY
 
     if ( 'harmony' in item ) {
       var buttonHarmony = this.makeRelated('harmony');
+      buttonHarmony.addClass('harmony-percent');
       buttonHarmony.find('i').addClass('fa-music');
       buttonHarmony.find('.harmony-number').text(item.harmony);
       this.find('related').append(buttonHarmony);
     }
 
-    this.template.find('.counter').on('click', function () {
+    this.template.find('.harmony-percent').on('click', function () {
       var $trigger    =   $(this);
       var $item       =   $trigger.closest('.item');
       var item        =   $item.data('item');
-      item.find('toggle arrow').click();
+      // item.find('toggle arrow').click();
+      self.toggleArrow(item.find('toggle arrow'), false, true);
     });
     
     // TOGGLE PROMOTE
@@ -235,7 +248,7 @@ class ItemCtrl extends Controller {
     this.find('toggle arrow')
       .removeClass('hide')
       .on('click', function () {
-        self.toggleArrow($(this));
+        self.toggleArrow($(this), true, true);
       });
 
     cb();
@@ -243,6 +256,10 @@ class ItemCtrl extends Controller {
 
   togglePromote ($trigger) {
     return togglePromote.apply(this, [$trigger]);
+  }
+
+  toggleArrow ($trigger, showSubtype, showHarmony) {
+    return toggleArrow.apply(this, [$trigger, showSubtype, showHarmony]);
   }
 
   toggleDetails ($trigger) {
@@ -297,10 +314,6 @@ class ItemCtrl extends Controller {
         }
       }
     }));
-  }
-
-  toggleArrow ($trigger)  {
-    return toggleArrow.apply(this, [$trigger]);
   }
 
 }

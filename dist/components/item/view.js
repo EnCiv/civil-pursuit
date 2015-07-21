@@ -153,7 +153,11 @@ var Item = (function (_Element) {
   }, {
     key: 'below',
     value: function below() {
-      return new _cincoDist.Element('.children.is-container').add(new _cincoDist.Element('.is-section'));
+      // return new Element('.children.is-container').add(
+      //   new Element('.is-section')
+      // );
+
+      return new _cincoDist.Element('.children');
     }
   }, {
     key: 'details',

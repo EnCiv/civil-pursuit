@@ -58,32 +58,51 @@ class Milk extends EventEmitter {
   }
 
   set (key, value, message, condition) {
-    return this.wrap(d => {
-      
-      let handler = () => new Promise((fulfill, reject) => {
-        if ( typeof value === 'function' ) {
-          let promise = value();
 
-          if ( ! ( promise instanceof Promise) ) {
-            promise = new Promise(ok => ok(promise));
+    try {
+      let handler = () => new Promise((ok, ko) => {
+        try {
+          if ( typeof value === 'function' ) {
+            let promise = value();
+
+            if ( ! ( promise instanceof Promise) ) {
+              promise = new Promise(ok => ok(promise));
+            }
+
+            promise
+              .then(
+                result => {
+                  try {
+                    this._keys[key] = result;
+                    ok(result);
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                }
+              );
           }
-
-          promise
-            .then(result => this._keys[key] = result, this.intercept(d))
-            .then(fulfill, reject);
+          else {
+            this._keys[key] = value;
+            ok();
+          }
         }
-        else {
-          this._keys[key] = value;
-          fulfill();
+
+        catch ( error ) {
+          this.emit('error', error)
         }
       });
 
       message = message || '>>> Set ' + key;
 
       this.actions.push({ handler, message, condition });
+    }
 
-      return this;
-    });
+    catch ( error ) {
+      this.emit('error', error)
+    }
+
+    return this;
   }
 
   run (driver) {

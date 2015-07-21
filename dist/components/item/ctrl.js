@@ -30,13 +30,17 @@ var _libAppController = require('../../lib/app/controller');
 
 var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _componentsPromoteCtrl = require('../../components/promote//ctrl');
+var _componentsPromoteCtrl = require('../../components/promote/ctrl');
 
 var _componentsPromoteCtrl2 = _interopRequireDefault(_componentsPromoteCtrl);
 
-var _componentsDetailsCtrl = require('../../components/details//ctrl');
+var _componentsDetailsCtrl = require('../../components/details/ctrl');
 
 var _componentsDetailsCtrl2 = _interopRequireDefault(_componentsDetailsCtrl);
+
+var _componentsPanelCtrl = require('../../components/panel/ctrl');
+
+var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
 
 var _view = require('./view');
 
@@ -182,6 +186,8 @@ var ItemCtrl = (function (_Controller) {
 
       var self = this;
 
+      self.toggleArrow = this.toggleArrow.bind(this);
+
       // Create reference to promote if promotion enabled
 
       this.promote = new _componentsPromoteCtrl2['default'](this.props, this);
@@ -272,20 +278,30 @@ var ItemCtrl = (function (_Controller) {
         this.find('related').append(buttonChildren);
       }
 
+      this.template.find('.children-count').on('click', function () {
+        var $trigger = $(this);
+        var $item = $trigger.closest('.item');
+        var item = $item.data('item');
+        // item.find('toggle arrow').click();
+        self.toggleArrow(item.find('toggle arrow'), true, false);
+      });
+
       // HARMONY
 
       if ('harmony' in item) {
         var buttonHarmony = this.makeRelated('harmony');
+        buttonHarmony.addClass('harmony-percent');
         buttonHarmony.find('i').addClass('fa-music');
         buttonHarmony.find('.harmony-number').text(item.harmony);
         this.find('related').append(buttonHarmony);
       }
 
-      this.template.find('.counter').on('click', function () {
+      this.template.find('.harmony-percent').on('click', function () {
         var $trigger = $(this);
         var $item = $trigger.closest('.item');
         var item = $item.data('item');
-        item.find('toggle arrow').click();
+        // item.find('toggle arrow').click();
+        self.toggleArrow(item.find('toggle arrow'), false, true);
       });
 
       // TOGGLE PROMOTE
@@ -303,7 +319,7 @@ var ItemCtrl = (function (_Controller) {
       // TOGGLE ARROW
 
       this.find('toggle arrow').removeClass('hide').on('click', function () {
-        self.toggleArrow($(this));
+        self.toggleArrow($(this), true, true);
       });
 
       cb();
@@ -312,6 +328,11 @@ var ItemCtrl = (function (_Controller) {
     key: 'togglePromote',
     value: function togglePromote($trigger) {
       return _controllersTogglePromote2['default'].apply(this, [$trigger]);
+    }
+  }, {
+    key: 'toggleArrow',
+    value: function toggleArrow($trigger, showSubtype, showHarmony) {
+      return _controllersToggleArrow2['default'].apply(this, [$trigger, showSubtype, showHarmony]);
     }
   }, {
     key: 'toggleDetails',
@@ -366,11 +387,6 @@ var ItemCtrl = (function (_Controller) {
           }
         }
       }));
-    }
-  }, {
-    key: 'toggleArrow',
-    value: function toggleArrow($trigger) {
-      return _controllersToggleArrow2['default'].apply(this, [$trigger]);
     }
   }]);
 

@@ -55,7 +55,7 @@
 
     var script = process.argv[2];
 
-    var viewport, session, vendor;
+    var viewport, session, vendor, env;
 
     for (var i = 2; i < process.argv.length; i++) {
       var splits = process.argv[i].split('=');
@@ -71,11 +71,15 @@
       if (splits[0] === 'vendor') {
         vendor = splits[1];
       }
+
+      if (splits[0] === 'env') {
+        env = splits[1];
+      }
     }
 
     var Test = require('../' + script);
 
-    test = new Test({ viewport: viewport, session: session, vendor: vendor });
+    test = new Test({ viewport: viewport, session: session, vendor: vendor, env: env });
 
     var done = false;
 

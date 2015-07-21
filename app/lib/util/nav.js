@@ -1,24 +1,10 @@
-/*
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
- 
- *  N   A   V
-
- *  ******************************************************
- *  ******************************************************
- *  ******************************************************
-*/
-
 ! function () {
 
   'use strict';
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
+  function make () {
+    return $('<div class="is-container"><div class="is-section"></div></div>');
+  }
 
   function toggle (elem, poa, cb) {
     if ( ! elem.hasClass('is-toggable') ) {
@@ -346,12 +332,13 @@
   }
 
   module.exports = {
-    toggle:       toggle,
-    reveal:       reveal,
-    unreveal:     unreveal,
-    show:         show,
-    hide:         hide,
-    scroll:       scroll
+    toggle      :     toggle,
+    reveal      :     reveal,
+    unreveal    :     unreveal,
+    show        :     show,
+    hide        :     hide,
+    make        :     make,
+    scroll      :     scroll
   };
 
 } ();

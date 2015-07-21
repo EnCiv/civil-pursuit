@@ -195,7 +195,9 @@ var Creator = (function (_Milk) {
 
       this['import'](_item2['default'], function () {
         return {
-          item: get('Item').selector,
+          item: {
+            selector: get('Item').selector
+          },
           buttons: false,
           collapsers: false,
           promote: false,
@@ -293,7 +295,13 @@ var Creator = (function (_Milk) {
       }, 'Get new item from DB');
 
       this['import'](_item2['default'], function () {
-        return { item: _this3.Item, promote: true, viewport: options.viewport };
+        return {
+          item: {
+            document: _this3.Item
+          },
+          promote: true,
+          viewport: options.viewport
+        };
       });
     }
   }, {

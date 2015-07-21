@@ -7,6 +7,7 @@ import JoinTest             from './join';
 import PromoteTest          from './promote';
 import DetailsTest          from './details';
 import cloudinaryFormat     from '../../../lib/util/cloudinary-format';
+import ItemModel            from '../../../models/item';
 
 class Item extends Milk {
 
@@ -20,11 +21,10 @@ class Item extends Milk {
 
     super('Item', options);
 
+    console.log('props', props);
+
     this.props            =   props;
     this.options          =   options;
-    this.item             =   this.props.item;
-    this.itemIsAnObject   =   typeof this.item === 'object';
-    this.itemIsASelector  =   typeof this.item === 'string';
 
     if ( this.props.driver !== false ) {
       this.go('/');
@@ -39,24 +39,37 @@ class Item extends Milk {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   actors () {
+
+    // if ( this.props.element ) {
+    //   this.set('Item', () => this.props.element, null, this.props.element);
+    // }
+
+    // else {
+    //   this
+    //     .set('Item', () => this.find('#item-' + this.item._id), null, () => this.itemIsAnObject)
+
+    //     .set('Item', () => this.find(this.item), null, () => this.itemIsASelector);
+    // }
+
     this
-      .set('Join',    () => this.find(JoinTest.find('main')))
-      .set('Cookie',  () => this.getCookie('synuser'));
-
-    if ( this.props.element ) {
-      this.set('Item', () => this.props.element, null, this.props.element);
-    }
-
-    else {
-      this
-        .set('Item', () => this.find('#item-' + this.item._id), null, () => this.itemIsAnObject)
-
-        .set('Item', () => this.find(this.item), null, () => this.itemIsASelector);
-    }
+      .set('Join',      () => this.find(JoinTest.find('main')))
       
-    this
+      .set('Cookie',    () => this.getCookie('synuser'))
+      
+      .set('View',      () => this.find(this.props.item.selector), null,
+        () => this.props.item.selector)
+      
+      .set('View',      () => this.find('#item-' + this.props.item.document._id), null,
+        () => this.props.item.document)
+
+      .set('Document', this.props.item.document, null,
+        () => this.props.item.document)
+      
+      .set('Document',  this.getDocumentFromId.bind(this), null,
+        () => ! this.props.item.document)
+
       .set('Media Wrapper', () => this.find(
-        this.get('Item').selector + '>.item-media-wrapper'
+        this.get('View').selector + '>.item-media-wrapper'
       ))
 
       .set('Media', () => this.find(
@@ -76,11 +89,11 @@ class Item extends Milk {
       ))
 
       .set('Buttons', () => this.find(
-        this.get('Item').selector + '>.item-buttons'
+        this.get('View').selector + '>.item-buttons'
       ))
 
       .set('Text', () => this.find(
-        this.get('Item').selector + '>.item-text'
+        this.get('View').selector + '>.item-text'
       ))
 
       .set('Truncatable', () => this.find(
@@ -116,11 +129,11 @@ class Item extends Milk {
       ))
 
       .set('Collapsers', () => this.find(
-        this.get('Item').selector + '>.item-collapsers'
+        this.get('View').selector + '>.item-collapsers'
       ))
 
       .set('Collapse arrow', () => this.find(
-        this.get('Item').selector + '>.item-arrow i.fa'
+        this.get('View').selector + '>.item-arrow i.fa'
       ))
 
       .set('Children', () => this.find(
@@ -136,9 +149,9 @@ class Item extends Milk {
 
           selector += ' .tablet-50.left-split .panel.split-view#panel-';
 
-          selector += this.item.type.harmony[0]._id + '-';
+          selector += this.get('Document').type.harmony[0]._id + '-';
 
-          selector += this.item._id;
+          selector += this.get('Document')._id;
 
           return this.find(selector);
 
@@ -146,7 +159,7 @@ class Item extends Milk {
 
         'Child Panel Harmony Left',
 
-        () => this.item.type.harmony[0]
+        () => this.get('Document') && this.get('Document').type.harmony[0]
       );
   }
 
@@ -450,6 +463,57 @@ class Item extends Milk {
 
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  getDocumentFromId () {
+    return new Promise((ok, ko) => {
+      try {
+        this
+          .get('View')
+          .attr('id')
+          .then(
+            id => {
+              try {
+
+                let itemId = id.split('-')[1];
+
+                if ( itemId === 'undefined' ) {
+                  return ok(null);
+                }
+
+                ItemModel
+                  .findById(itemId)
+                  .exec()
+                  .then(
+                    item => {
+                      try {
+                        if ( ! item ) {
+                          throw new Error('Item not found: ' + itemId);
+                        }
+                        ok(item);
+                      }
+                      catch ( error ) {
+                        ko(error);
+                      }
+                    },
+                    ko
+                  );
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    })
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 }
 

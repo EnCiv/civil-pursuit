@@ -116,13 +116,15 @@ class Creator extends Milk {
     let options = this.options
 
     this.import(ItemTest, () => ({
-      item          :   get('Item').selector,
+      item          :   {
+        selector    :   get('Item').selector
+      },
       buttons       :   false,
       collapsers    :   false,
       promote       :   false,
       details       :   false,
       references    :   false,
-      viewport: options.viewport
+      viewport      :   options.viewport
     }));
 
     // Validations
@@ -215,7 +217,13 @@ class Creator extends Milk {
 
     }), 'Get new item from DB');
 
-    this.import(ItemTest, () => ({ item : this.Item, promote : true, viewport: options.viewport }));
+    this.import(ItemTest, () => ({
+      item        :   {
+        document  :   this.Item
+      },
+      promote     :   true,
+      viewport    :   options.viewport
+    }));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

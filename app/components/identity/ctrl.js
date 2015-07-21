@@ -1,9 +1,64 @@
-! function () {
+'use strict';
+
+import Controller       from  '../../lib/app/controller';
+import Nav              from '../../lib/util/nav';
+
+class IdentityCtrl extends Controller {
+
+  constructor (props) {
+    super(props);
+
+    this.props = props;
+
+    this.user = this.props.user;
+
+    this.template = $('#identity');
+  }
+
+  find (name) {
+
+    let { template } = this;
+
+    switch ( name ) {
+      case 'toggle arrow':
+      return $('.toggle-arrow i.fa', template);
+
+      case 'expand':
+      return $('.identity-collapse', template);
+
+      case 'image':
+      return $('img.user-image', template);
+    }
+  }
+
+  render () {
+
+    // Show
+
+    Nav.reveal(this.find('expand'), this.template,
+      this.domain.intercept(() => {
+        this.find('toggle arrow')
+          .removeClass('fa-arrow-down')
+          .addClass('fa-arrow-up');
+      }));
+
+    // User image
+
+    console.info('USER', this.user);
+
+    if ( this.user.image ) {
+      this.find('image').attr('src', this.user.image);
+    }
+  }
+
+}
+
+export default IdentityCtrl;
+
+function foo () {
   
   'use strict';
 
-  var Nav     =   require('syn/lib/util/nav');
-  var Upload  =   require('syn/lib/util/upload');
 
   /**
    *  @function
@@ -12,7 +67,7 @@
    */
 
   function Identity (profile) {
-    this.template = $('#identity');
+    template = $('#identity');
 
     this.profile = profile;
 
@@ -59,7 +114,7 @@
     }
   };
 
-  Identity.prototype.render = require('syn/components/Identity/controllers/render');
+  // Identity.prototype.render = require('syn/components/Identity/controllers/render');
 
   /**
    *  @method saveName
@@ -76,8 +131,8 @@
       
       
       
-app.socket.synuser, name);
-  };
+      app.socket.synuser, name);
+        };
 
   /**
    *  @method
@@ -169,4 +224,4 @@ app.socket.synuser, name);
 
   module.exports = Identity;
 
-} ();
+}

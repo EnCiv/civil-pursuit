@@ -42,6 +42,10 @@ var _libUtilCloudinaryFormat = require('../../../lib/util/cloudinary-format');
 
 var _libUtilCloudinaryFormat2 = _interopRequireDefault(_libUtilCloudinaryFormat);
 
+var _modelsItem = require('../../../models/item');
+
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
+
 var Item = (function (_Milk) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,11 +59,10 @@ var Item = (function (_Milk) {
 
     _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this, 'Item', options);
 
+    console.log('props', props);
+
     this.props = props;
     this.options = options;
-    this.item = this.props.item;
-    this.itemIsAnObject = typeof this.item === 'object';
-    this.itemIsASelector = typeof this.item === 'string';
 
     if (this.props.driver !== false) {
       this.go('/');
@@ -80,30 +83,35 @@ var Item = (function (_Milk) {
     value: function actors() {
       var _this = this;
 
+      // if ( this.props.element ) {
+      //   this.set('Item', () => this.props.element, null, this.props.element);
+      // }
+
+      // else {
+      //   this
+      //     .set('Item', () => this.find('#item-' + this.item._id), null, () => this.itemIsAnObject)
+
+      //     .set('Item', () => this.find(this.item), null, () => this.itemIsASelector);
+      // }
+
       this.set('Join', function () {
         return _this.find(_join2['default'].find('main'));
       }).set('Cookie', function () {
         return _this.getCookie('synuser');
-      });
-
-      if (this.props.element) {
-        this.set('Item', function () {
-          return _this.props.element;
-        }, null, this.props.element);
-      } else {
-        this.set('Item', function () {
-          return _this.find('#item-' + _this.item._id);
-        }, null, function () {
-          return _this.itemIsAnObject;
-        }).set('Item', function () {
-          return _this.find(_this.item);
-        }, null, function () {
-          return _this.itemIsASelector;
-        });
-      }
-
-      this.set('Media Wrapper', function () {
-        return _this.find(_this.get('Item').selector + '>.item-media-wrapper');
+      }).set('View', function () {
+        return _this.find(_this.props.item.selector);
+      }, null, function () {
+        return _this.props.item.selector;
+      }).set('View', function () {
+        return _this.find('#item-' + _this.props.item.document._id);
+      }, null, function () {
+        return _this.props.item.document;
+      }).set('Document', this.props.item.document, null, function () {
+        return _this.props.item.document;
+      }).set('Document', this.getDocumentFromId.bind(this), null, function () {
+        return !_this.props.item.document;
+      }).set('Media Wrapper', function () {
+        return _this.find(_this.get('View').selector + '>.item-media-wrapper');
       }).set('Media', function () {
         return _this.find(_this.get('Media Wrapper').selector + '>.item-media');
       }).set('Image', function () {
@@ -113,9 +121,9 @@ var Item = (function (_Milk) {
       }).set('Iframe', function () {
         return _this.find(_this.get('Video Container').selector + ' iframe');
       }).set('Buttons', function () {
-        return _this.find(_this.get('Item').selector + '>.item-buttons');
+        return _this.find(_this.get('View').selector + '>.item-buttons');
       }).set('Text', function () {
-        return _this.find(_this.get('Item').selector + '>.item-text');
+        return _this.find(_this.get('View').selector + '>.item-text');
       }).set('Truncatable', function () {
         return _this.find(_this.get('Text').selector + '>.item-truncatable');
       }).set('Subject', function () {
@@ -133,9 +141,9 @@ var Item = (function (_Milk) {
       }).set('Harmony', function () {
         return _this.find(_this.get('Buttons').selector + ' span.harmony-number');
       }).set('Collapsers', function () {
-        return _this.find(_this.get('Item').selector + '>.item-collapsers');
+        return _this.find(_this.get('View').selector + '>.item-collapsers');
       }).set('Collapse arrow', function () {
-        return _this.find(_this.get('Item').selector + '>.item-arrow i.fa');
+        return _this.find(_this.get('View').selector + '>.item-arrow i.fa');
       }).set('Children', function () {
         return _this.find(_this.get('Collapsers').selector + '>.children');
       }).set('Child Panel Harmony Left', function () {
@@ -144,13 +152,13 @@ var Item = (function (_Milk) {
 
         selector += ' .tablet-50.left-split .panel.split-view#panel-';
 
-        selector += _this.item.type.harmony[0]._id + '-';
+        selector += _this.get('Document').type.harmony[0]._id + '-';
 
-        selector += _this.item._id;
+        selector += _this.get('Document')._id;
 
         return _this.find(selector);
       }, 'Child Panel Harmony Left', function () {
-        return _this.item.type.harmony[0];
+        return _this.get('Document') && _this.get('Document').type.harmony[0];
       });
     }
   }, {
@@ -467,6 +475,53 @@ var Item = (function (_Milk) {
         }, 'Clicking on Details toggle button').wait(1);
       }
     }
+  }, {
+    key: 'getDocumentFromId',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function getDocumentFromId() {
+      var _this9 = this;
+
+      return new Promise(function (ok, ko) {
+        try {
+          _this9.get('View').attr('id').then(function (id) {
+            try {
+              var _ret = (function () {
+
+                var itemId = id.split('-')[1];
+
+                if (itemId === 'undefined') {
+                  return {
+                    v: ok(null)
+                  };
+                }
+
+                _modelsItem2['default'].findById(itemId).exec().then(function (item) {
+                  try {
+                    if (!item) {
+                      throw new Error('Item not found: ' + itemId);
+                    }
+                    ok(item);
+                  } catch (error) {
+                    ko(error);
+                  }
+                }, ko);
+              })();
+
+              if (typeof _ret === 'object') return _ret.v;
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        } catch (error) {
+          ko(error);
+        }
+      });
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   }]);
 
   return Item;

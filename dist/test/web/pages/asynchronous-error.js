@@ -30,28 +30,34 @@ var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
-var ErrorPage = (function (_Milk) {
-  function ErrorPage(props) {
-    _classCallCheck(this, ErrorPage);
+var _componentsJoin = require('../components/join');
+
+var _componentsJoin2 = _interopRequireDefault(_componentsJoin);
+
+var SynchronousErrorPage = (function (_Milk) {
+  function SynchronousErrorPage(props) {
+    _classCallCheck(this, SynchronousErrorPage);
 
     props = props || {};
 
-    var options = { viewport: props.viewport, vendor: props.vendor };
+    var options = {
+      viewport: props.viewport,
+      vendor: props.vendor,
+      env: props.env || 'production'
+    };
 
-    _get(Object.getPrototypeOf(ErrorPage.prototype), 'constructor', this).call(this, 'Error Page (asynchronous)', options);
+    _get(Object.getPrototypeOf(SynchronousErrorPage.prototype), 'constructor', this).call(this, 'Error Page (asynchronous)', options);
 
-    this.go('/error/asynchronous')['import'](_componentsLayout2['default'], {
-      title: _configJson2['default'].title.prefix + 'Error'
-    });
+    this.go('/error/asynchronous');
 
     this.actors();
 
     this.stories();
   }
 
-  _inherits(ErrorPage, _Milk);
+  _inherits(SynchronousErrorPage, _Milk);
 
-  _createClass(ErrorPage, [{
+  _createClass(SynchronousErrorPage, [{
     key: 'actors',
     value: function actors() {
       var _this = this;
@@ -62,28 +68,39 @@ var ErrorPage = (function (_Milk) {
       this.set('Text', function () {
         return _this.find('#main p');
       });
+      this.set('Stack', function () {
+        return _this.find('#main ul');
+      });
     }
   }, {
     key: 'stories',
     value: function stories() {
       var _this2 = this;
 
-      this.ok(function () {
+      this['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Error'
+      }).ok(function () {
         return _this2.get('Header').text().then(function (text) {
           return text.should.be.exactly('Error');
         });
-      }, 'Header should say "Error"');
-
-      this.ok(function () {
+      }, 'Header should say "Error"').ok(function () {
         return _this2.get('Text').text().then(function (text) {
           return text.should.be.exactly('An error occurred. Please try again in a moment');
         });
-      }, 'Text should say "An error occurred. Please try again in a moment"');
+      }, 'Text should say "An error occurred. Please try again in a moment"', function () {
+        return _this2.options.env === 'production';
+      }).ok(function () {
+        return _this2.get('Stack').is(':visible');
+      }, 'There should be an error stack', function () {
+        return _this2.options.env === 'development';
+      })['import'](_componentsJoin2['default'], { toggled: false, viewport: this.options.viewport })['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Error'
+      });
     }
   }]);
 
-  return ErrorPage;
+  return SynchronousErrorPage;
 })(_libAppMilk2['default']);
 
-exports['default'] = ErrorPage;
+exports['default'] = SynchronousErrorPage;
 module.exports = exports['default'];

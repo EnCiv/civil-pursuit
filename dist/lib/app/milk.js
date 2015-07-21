@@ -90,37 +90,47 @@ var Milk = (function (_EventEmitter) {
     value: function set(key, value, message, condition) {
       var _this2 = this;
 
-      return this.wrap(function (d) {
-
+      try {
         var handler = function handler() {
-          return new Promise(function (fulfill, reject) {
-            if (typeof value === 'function') {
-              (function () {
-                var promise = value();
+          return new Promise(function (ok, ko) {
+            try {
+              if (typeof value === 'function') {
+                (function () {
+                  var promise = value();
 
-                if (!(promise instanceof Promise)) {
-                  promise = new Promise(function (ok) {
-                    return ok(promise);
+                  if (!(promise instanceof Promise)) {
+                    promise = new Promise(function (ok) {
+                      return ok(promise);
+                    });
+                  }
+
+                  promise.then(function (result) {
+                    try {
+                      _this2._keys[key] = result;
+                      ok(result);
+                    } catch (error) {
+                      ko(error);
+                    }
                   });
-                }
-
-                promise.then(function (result) {
-                  return _this2._keys[key] = result;
-                }, _this2.intercept(d)).then(fulfill, reject);
-              })();
-            } else {
-              _this2._keys[key] = value;
-              fulfill();
+                })();
+              } else {
+                _this2._keys[key] = value;
+                ok();
+              }
+            } catch (error) {
+              _this2.emit('error', error);
             }
           });
         };
 
         message = message || '>>> Set ' + key;
 
-        _this2.actions.push({ handler: handler, message: message, condition: condition });
+        this.actions.push({ handler: handler, message: message, condition: condition });
+      } catch (error) {
+        this.emit('error', error);
+      }
 
-        return _this2;
-      });
+      return this;
     }
   }, {
     key: 'run',

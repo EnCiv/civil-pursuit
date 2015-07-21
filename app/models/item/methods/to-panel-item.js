@@ -113,6 +113,44 @@ function toPanelItem (cb) {
           });
       });
 
+      let countSubType = subtype => new Promise((ok, ko) => {
+
+        let query = {
+          parent    :   this._id,
+          type      :   subtype
+        };
+
+        ItemModel
+          .count(query, (error, count) => {
+            if ( error ) {
+              return ko(error);
+            }
+            ok(count);
+          });
+      });
+
+      let countHarmony = harmony => new Promise((ok, ko) => {
+
+        if ( ! harmony.length ) {
+          return ok(0);
+        }
+
+        let query = {
+          parent    :   this._id,
+          type      :   {
+            $in     :   harmony.map(h => h._id)
+          }
+        };
+
+        ItemModel
+          .count(query, (error, count) => {
+            if ( error ) {
+              return ko(error);
+            }
+            ok(count);
+          });
+      });
+
       let countVotes = () => new Promise((ok, ko) => {
         VoteModel
           .where({ item : this._id })
@@ -161,7 +199,6 @@ function toPanelItem (cb) {
           getType(),
           getUser(),
           getSubtype(),
-          countChildren(),
           countVotes()
         ])
         .then(
@@ -172,22 +209,34 @@ function toPanelItem (cb) {
                 item.type,
                 item.user,
                 item.subtype,
-                item.children,
                 item.votes
               ] = results;
 
-              if ( ! item.type.harmony.length ) {
-                return ok(item);
-              }
-
-              getHarmony(item)
+              countSubType(item.subtype)
                 .then(
-                  harmony => {
-                    item.harmony = harmony;
-                    ok(item);
+                  count => {
+                    try {
+                      item.children = count;
+
+                      if ( ! item.type.harmony.length ) {
+                        return ok(item);
+                      }
+
+                      getHarmony(item)
+                        .then(
+                          harmony => {
+                            item.harmony = harmony;
+                            ok(item);
+                          },
+                          ko
+                        );
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
                   },
                   ko
-                )
+                );
             }
             catch ( error ) {
               ko(error);

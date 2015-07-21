@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -16,11 +18,11 @@ var _should = require('should');
 
 var _should2 = _interopRequireDefault(_should);
 
-var _synLibAppDescribe = require('syn/lib/app/Describe');
+var _libAppMilk = require('../../../lib/app/milk');
 
-var _synLibAppDescribe2 = _interopRequireDefault(_synLibAppDescribe);
+var _libAppMilk2 = _interopRequireDefault(_libAppMilk);
 
-var _configJson = require('../../config.json');
+var _configJson = require('../../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
@@ -28,30 +30,44 @@ var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
-var ProfilePage = (function (_Describe) {
-  function ProfilePage() {
-    var _this = this;
-
+var ProfilePage = (function (_Milk) {
+  function ProfilePage(props) {
     _classCallCheck(this, ProfilePage);
 
-    _get(Object.getPrototypeOf(ProfilePage.prototype), 'constructor', this).call(this, 'Profile Page', {
-      'disposable': [{ 'model': 'User', 'name': 'User' }],
-      'web driver': { page: 'Profile' }
-    });
+    props = props || {};
 
-    this.assert(function () {
-      var title = _configJson2['default'].title.prefix + 'Profile';
+    var options = { viewport: props.viewport, vendor: props.vendor };
 
-      return new _componentsLayout2['default']({ title: title }).driver(_this._driver);
-    });
+    _get(Object.getPrototypeOf(ProfilePage.prototype), 'constructor', this).call(this, 'Profile Page', options);
 
-    ;
+    this.go('/page/profile');
+
+    this.stories();
+
+    // this
+
+    //   .assert(() => {
+    //     let title = config.title.prefix + 'Profile';
+
+    //     return new Layout({ title :title }).driver(this._driver);
+    //   });
+
+    // ;
   }
 
-  _inherits(ProfilePage, _Describe);
+  _inherits(ProfilePage, _Milk);
+
+  _createClass(ProfilePage, [{
+    key: 'stories',
+    value: function stories() {
+      this['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Profile'
+      });
+    }
+  }]);
 
   return ProfilePage;
-})(_synLibAppDescribe2['default']);
+})(_libAppMilk2['default']);
 
 exports['default'] = ProfilePage;
 module.exports = exports['default'];

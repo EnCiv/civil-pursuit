@@ -2,14 +2,14 @@
 
 import App          from '../../app';
 import TopBar       from '../../components/top-bar/ctrl';
-// import Profile from '../../components/Profile/Controller';
+import Profile      from '../../components/profile/ctrl';
 
 synapp.app = new App(true);
 
-synapp.app.ready(() => {
+synapp.app.ready(session => {
 
   new TopBar().render();
 
-  // new Profile().render();
+  new Profile({ session }).render();
 
 });

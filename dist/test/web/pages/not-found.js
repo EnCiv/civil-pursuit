@@ -30,6 +30,10 @@ var _componentsLayout = require('../components/layout');
 
 var _componentsLayout2 = _interopRequireDefault(_componentsLayout);
 
+var _componentsJoin = require('../components/join');
+
+var _componentsJoin2 = _interopRequireDefault(_componentsJoin);
+
 var NotFound = (function (_Milk) {
   function NotFound(props) {
     _classCallCheck(this, NotFound);
@@ -40,9 +44,9 @@ var NotFound = (function (_Milk) {
 
     _get(Object.getPrototypeOf(NotFound.prototype), 'constructor', this).call(this, 'Page not found', options);
 
-    this.go('/page/not/found')['import'](_componentsLayout2['default'], {
-      title: _configJson2['default'].title.prefix + 'Page not found'
-    });
+    this.options = options;
+
+    this.go('/page/not/found');
 
     this.actors();
 
@@ -68,17 +72,19 @@ var NotFound = (function (_Milk) {
     value: function stories() {
       var _this2 = this;
 
-      this.ok(function () {
+      this['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Page not found'
+      }).ok(function () {
         return _this2.get('Header').text().then(function (text) {
           return text.should.be.exactly('Page not found');
         });
-      }, 'Header should say "Page not found"');
-
-      this.ok(function () {
+      }, 'Header should say "Page not found"').ok(function () {
         return _this2.get('Text').text().then(function (text) {
           return text.should.be.exactly('We are sorry, your request could not be fulfilled because no relevant results were found.');
         });
-      }, 'Text should say "We are sorry, your request could not be fulfilled because no relevant results were found."');
+      }, 'Text should say "We are sorry, your request could not be fulfilled because no relevant results were found."')['import'](_componentsJoin2['default'], { toggled: false, viewport: this.options.viewport })['import'](_componentsLayout2['default'], {
+        title: _configJson2['default'].title.prefix + 'Page not found'
+      });
     }
   }]);
 

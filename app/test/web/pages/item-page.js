@@ -7,6 +7,7 @@ import config           from '../../../../config.json';
 import IntroTest        from '../components/intro';
 import LayoutTest       from '../components/layout';
 import ItemModel        from '../../../models/item';
+import JoinTest       from '../components/join';
 
 class ItemPage extends Milk {
 
@@ -17,6 +18,8 @@ class ItemPage extends Milk {
 
     super('Item Page', options);
 
+    this.options = options;
+
     this
 
       .set('Item Document', () => ItemModel.disposable())
@@ -26,13 +29,29 @@ class ItemPage extends Milk {
           S(this.get('Item Document').subject).slugify(),
 
         'Going to disposable item URL'
-      )
+      );
+
+    this.actors();
+
+    this.stories();
+  }
+
+  actors () {
+
+  }
+
+  stories () {
+    this
 
       .import(LayoutTest, {
         title : () => config.title.prefix + this.get('Item Document').subject
       })
 
-      ;
+      .import(JoinTest, { toggled : false, viewport : this.options.viewport })
+
+      .import(LayoutTest, {
+        title : () => config.title.prefix + this.get('Item Document').subject
+      });
   }
 
 }
