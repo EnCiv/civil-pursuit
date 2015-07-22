@@ -471,8 +471,8 @@ class Item extends Milk {
         .import(PromoteTest,
           {
             item        :   {
-              Document  :   this.get('Document'),
-              View      :   this.get('View')
+              Document  :   () => this.get('Document'),
+              View      :   () => this.get('View')
             }, 
             viewport    :   this.options.viewport
           },

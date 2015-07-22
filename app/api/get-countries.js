@@ -1,36 +1,28 @@
-! function () {
+'use strict';
 
-  'use strict';
+import CountryModel from '../models/country';
 
-  
-
-  function getCountries () {
-
-    var socket = this;
-
-    require('../lib/domain/next-tick')(
-
-      function (error) {
-
-        socket.pronto.emit('error', error);
-      
-      },
-
-      function (domain) {
-
-        require('../models/Country')
-          .find()
-          .lean()
-          .exec(domain.intercept(function (countries) {
-            socket.emit('got countries', countries);  
-          }));
-
-      }
-
-    );
-  
+function getCountries (event) {
+  try {
+    CountryModel
+      .find()
+      .lean()
+      .exec()
+      .then(
+        countries => {
+          try {
+            this.ok(event, countries);
+          }
+          catch ( error ) {
+            this.error(error);
+          }
+        },
+        error => { this.error(error) }
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = getCountries;
-
-} ();
+export default getCountries;

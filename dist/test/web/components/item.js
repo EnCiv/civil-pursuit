@@ -450,8 +450,12 @@ var Item = (function (_Milk) {
 
         ['import'](_promote2['default'], {
           item: {
-            Document: this.get('Document'),
-            View: this.get('View')
+            Document: function Document() {
+              return _this8.get('Document');
+            },
+            View: function View() {
+              return _this8.get('View');
+            }
           },
           viewport: this.options.viewport
         }, 'Launch Promote test if User is signed in', function (when) {

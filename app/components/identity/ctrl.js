@@ -44,6 +44,9 @@ class IdentityCtrl extends Controller {
 
       case 'last name':
       return $('[name="last-name"]', template);
+
+      case 'citizenship':
+      return $('.citizenship', template);
     }
   }
 
@@ -98,6 +101,16 @@ class IdentityCtrl extends Controller {
     // Names
 
     this.names();
+
+    // Citizenship
+
+    this
+      .publish('get countries')
+      .subscribe((pubsub, countries) => {
+        this.set('countries', countries);
+        this.citizenship();
+        pubsub.unsubscribe();
+      });
   }
 
   avatar () {
@@ -181,6 +194,43 @@ class IdentityCtrl extends Controller {
             pubsub.unsubscribe();
           });
       }
+    });
+  }
+
+  citizenship () {
+    let countries = this.get('countries');
+
+    function addOption (country, index) {
+      var option = $('<option></option>');
+
+      option.val(country._id);
+
+      option.text(country.name);
+
+      // if ( identity.profile.user && identity.profile.user.citizenship
+      //   && identity.profile.user.citizenship[index] === country._id ) {
+      //   option.attr('selected', true);
+      // } 
+
+      return option;
+    }
+
+    this.find('citizenship').each(function (index) {
+
+      var select = $(this);
+
+      countries.forEach(function (country) {
+        if ( country.name === 'USA' ) {
+          select.append(addOption(country, index));
+        }
+      });
+
+      countries.forEach(function (country) {
+        if ( country.name !== 'USA' ) {
+          select.append(addOption(country, index));
+        }
+      });
+
     });
   }
 

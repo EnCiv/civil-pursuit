@@ -1,23 +1,32 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  function getCountries() {
+var _modelsCountry = require('../models/country');
 
-    var socket = this;
+var _modelsCountry2 = _interopRequireDefault(_modelsCountry);
 
-    require('../lib/domain/next-tick')(function (error) {
+function getCountries(event) {
+  var _this = this;
 
-      socket.pronto.emit('error', error);
-    }, function (domain) {
-
-      require('../models/Country').find().lean().exec(domain.intercept(function (countries) {
-        socket.emit('got countries', countries);
-      }));
+  try {
+    _modelsCountry2['default'].find().lean().exec().then(function (countries) {
+      try {
+        _this.ok(event, countries);
+      } catch (error) {
+        _this.error(error);
+      }
+    }, function (error) {
+      _this.error(error);
     });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = getCountries;
-})();
+exports['default'] = getCountries;
+module.exports = exports['default'];

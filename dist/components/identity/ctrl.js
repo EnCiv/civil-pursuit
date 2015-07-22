@@ -70,6 +70,9 @@ var IdentityCtrl = (function (_Controller) {
 
         case 'last name':
           return $('[name="last-name"]', template);
+
+        case 'citizenship':
+          return $('.citizenship', template);
       }
     }
   }, {
@@ -103,6 +106,7 @@ var IdentityCtrl = (function (_Controller) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
 
       // Show
 
@@ -125,11 +129,19 @@ var IdentityCtrl = (function (_Controller) {
       // Names
 
       this.names();
+
+      // Citizenship
+
+      this.publish('get countries').subscribe(function (pubsub, countries) {
+        _this2.set('countries', countries);
+        _this2.citizenship();
+        pubsub.unsubscribe();
+      });
     }
   }, {
     key: 'avatar',
     value: function avatar() {
-      var _this2 = this;
+      var _this3 = this;
 
       /** input[type=file] is hidden for cosmetic reasons
             and is substituted visually by a button.
@@ -137,20 +149,20 @@ var IdentityCtrl = (function (_Controller) {
       */
 
       this.find('upload button pretty').on('click', function () {
-        _this2.find('upload button').click();
+        _this3.find('upload button').click();
       });
 
       new _libUtilUpload2['default'](null, this.find('upload button'), this.template.find('.user-image-container'), function (error, file) {
         var stream = ss.createStream();
 
-        ss(_this2.socket).emit('upload image', stream, { size: file.size, name: file.name });
+        ss(_this3.socket).emit('upload image', stream, { size: file.size, name: file.name });
 
         ss.createBlobReadStream(file).pipe(stream);
 
         stream.on('end', function () {
           // new_item.image = file.name;
 
-          _this2.publish('save user image', file.name).subscribe(function (pubsub, user) {
+          _this3.publish('save user image', file.name).subscribe(function (pubsub, user) {
             console.log('image saved', user);
             pubsub.unsubscribe();
           });
@@ -199,6 +211,43 @@ var IdentityCtrl = (function (_Controller) {
             pubsub.unsubscribe();
           });
         }
+      });
+    }
+  }, {
+    key: 'citizenship',
+    value: function citizenship() {
+      var countries = this.get('countries');
+
+      function addOption(country, index) {
+        var option = $('<option></option>');
+
+        option.val(country._id);
+
+        option.text(country.name);
+
+        // if ( identity.profile.user && identity.profile.user.citizenship
+        //   && identity.profile.user.citizenship[index] === country._id ) {
+        //   option.attr('selected', true);
+        // }
+
+        return option;
+      }
+
+      this.find('citizenship').each(function (index) {
+
+        var select = $(this);
+
+        countries.forEach(function (country) {
+          if (country.name === 'USA') {
+            select.append(addOption(country, index));
+          }
+        });
+
+        countries.forEach(function (country) {
+          if (country.name !== 'USA') {
+            select.append(addOption(country, index));
+          }
+        });
       });
     }
   }]);

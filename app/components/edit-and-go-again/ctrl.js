@@ -1,6 +1,7 @@
 'use strict';
 
 import Controller       from  '../../lib/app/controller';
+import Nav              from  '../../lib/util/nav';
 import View             from './view';
 
 class EditAndGoAgainCtrl extends Controller {
@@ -12,7 +13,6 @@ class EditAndGoAgainCtrl extends Controller {
   }
 
   load () {
-    console.warn('EditAndGoAgain', new View().render());
     this.template = $(new View().render());
   }
 

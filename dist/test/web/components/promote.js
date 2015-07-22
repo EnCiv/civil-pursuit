@@ -58,6 +58,8 @@ var Promote = (function (_Milk) {
 
     this.props = props;
 
+    console.log('PROMOTE props', props);
+
     this.set('Item View', this.props.item.View);
     this.set('Item Document', this.props.item.Document);
 

@@ -1246,6 +1246,10 @@ var _libAppController = require('../../lib/app/controller');
 
 var _libAppController2 = _interopRequireDefault(_libAppController);
 
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
 var _view = require('./view');
 
 var _view2 = _interopRequireDefault(_view);
@@ -1264,7 +1268,6 @@ var EditAndGoAgainCtrl = (function (_Controller) {
   _createClass(EditAndGoAgainCtrl, [{
     key: 'load',
     value: function load() {
-      console.warn('EditAndGoAgain', new _view2['default']().render());
       this.template = $(new _view2['default']().render());
     }
   }, {
