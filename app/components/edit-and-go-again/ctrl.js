@@ -1,4 +1,23 @@
-! function Component_EditAndGoAgain_Controller () {
+'use strict';
+
+import Controller       from  '../../lib/app/controller';
+
+class EditAndGoAgainCtrl extends Controller {
+
+  constructor (props) {
+    super();
+
+    this.item = props.item;
+  }
+
+
+
+}
+
+export default EditAndGoAgainCtrl;
+
+
+function Component_EditAndGoAgain_Controller () {
 
   'use strict';
 
@@ -133,4 +152,4 @@ app.socket.synuser,
 
   module.exports = Edit;
 
-} ();
+}

@@ -61,6 +61,9 @@ var IdentityCtrl = (function (_Controller) {
 
         case 'upload button':
           return $('.upload-identity-picture', template);
+
+        case 'first name':
+          return $('[name="first-name"]', template);
       }
     }
   }, {
@@ -112,6 +115,10 @@ var IdentityCtrl = (function (_Controller) {
       // Upload image
 
       this.avatar();
+
+      // Names
+
+      this.names();
     }
   }, {
     key: 'avatar',
@@ -142,6 +149,20 @@ var IdentityCtrl = (function (_Controller) {
             pubsub.unsubscribe();
           });
         });
+      });
+    }
+  }, {
+    key: 'names',
+    value: function names() {
+      var self = this;
+
+      this.find('first name').on('change', function () {
+        if ($(this).val()) {
+          self.publish('set first name', $(this).val()).subscribe(function (pubsub) {
+            console.log('first name saved');
+            pubsub.unsubscribe();
+          });
+        }
       });
     }
   }]);

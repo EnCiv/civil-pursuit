@@ -35,6 +35,9 @@ class IdentityCtrl extends Controller {
 
       case 'upload button':
       return $('.upload-identity-picture', template);
+
+      case 'first name':
+      return $('[name="first-name"]', template);
     }
   }
 
@@ -85,6 +88,10 @@ class IdentityCtrl extends Controller {
     // Upload image
 
     this.avatar();
+
+    // Names
+
+    this.names();
   }
 
   avatar () {
@@ -120,6 +127,21 @@ class IdentityCtrl extends Controller {
           });
         });
       });
+  }
+
+  names () {
+    let self = this;
+
+    this.find('first name').on('change', function () {
+      if ( $(this).val() ) {
+        self
+          .publish('set first name', $(this).val())
+          .subscribe((pubsub) => {
+            console.log('first name saved');
+            pubsub.unsubscribe();
+          });
+      }
+    });
   }
 
 }

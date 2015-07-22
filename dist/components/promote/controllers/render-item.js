@@ -216,18 +216,18 @@ function renderItem(hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
-    _libUtilNav2['default'].unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
+    _libUtilNav2['default'].unreveal(self.template, self.item.template, self.domain.intercept(function () {
 
-      if (promote.item.find('editor').find('form').length) {
+      if (self.item.find('editor').find('form').length) {
         console.warn('already loaded');
       } else {
-        var edit = new _componentsEditAndGoAgainCtrl2['default'](promote.item);
+        var edit = new _componentsEditAndGoAgainCtrl2['default']({ item: self.item });
 
         edit.get(self.domain.intercept(function (template) {
 
-          promote.item.find('editor').find('.is-section').append(template);
+          self.item.find('editor').find('.is-section').append(template);
 
-          _libUtilNav2['default'].reveal(promote.item.find('editor'), promote.item.template, self.domain.intercept(function () {
+          _libUtilNav2['default'].reveal(self.item.find('editor'), self.item.template, self.domain.intercept(function () {
             _libUtilNav2['default'].show(template, self.domain.intercept(function () {
               edit.render();
             }));

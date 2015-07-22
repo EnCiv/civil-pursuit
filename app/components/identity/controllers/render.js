@@ -70,11 +70,7 @@
 
         stream.on('end', function () {
           // new_item.image = file.name;
-          app.socket.emit('save user image',       
-      
-      
-      
-app.socket.synuser, file.name);
+          app.socket.emit('save user image',app.socket.synuser, file.name);
 
           app.socket.once('saved user image', function (user) {
             console.log('image saved', user);

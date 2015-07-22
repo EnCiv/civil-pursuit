@@ -1,8 +1,8 @@
 'use strict';
 
-import Nav      from '../../../lib/util/nav';
-import Edit     from '../../../components/edit-and-go-again/ctrl';
-import Item     from '../../../components/item/ctrl';
+import Nav                from '../../../lib/util/nav';
+import EditAndGoAgainCtrl from '../../../components/edit-and-go-again/ctrl';
+import ItemCtrl           from '../../../components/item/ctrl';
 
 function _renderItem (item, hand) {
   let self = this;
@@ -23,7 +23,7 @@ function _renderItem (item, hand) {
   // Image
 
   this.find('item image', hand).empty().append(
-    new Item({ item: item }).media()
+    new ItemCtrl({ item: item }).media()
   );
 
   // References
@@ -237,20 +237,20 @@ function renderItem (hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
-    Nav.unreveal(promote.template, promote.item.template, self.domain.intercept(function () {
+    Nav.unreveal(self.template, self.item.template, self.domain.intercept(function () {
 
-      if ( promote.item.find('editor').find('form').length ) {
+      if ( self.item.find('editor').find('form').length ) {
         console.warn('already loaded')
       }
 
       else {
-        var edit = new Edit(promote.item);
+        var edit = new EditAndGoAgainCtrl({ item : self.item });
           
         edit.get(self.domain.intercept(function (template) {
 
-          promote.item.find('editor').find('.is-section').append(template);
+          self.item.find('editor').find('.is-section').append(template);
 
-          Nav.reveal(promote.item.find('editor'), promote.item.template,
+          Nav.reveal(self.item.find('editor'), self.item.template,
             self.domain.intercept(function () {
               Nav.show(template, self.domain.intercept(function () {
                 edit.render();
