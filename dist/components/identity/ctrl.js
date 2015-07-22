@@ -64,6 +64,12 @@ var IdentityCtrl = (function (_Controller) {
 
         case 'first name':
           return $('[name="first-name"]', template);
+
+        case 'middle name':
+          return $('[name="middle-name"]', template);
+
+        case 'last name':
+          return $('[name="last-name"]', template);
       }
     }
   }, {
@@ -156,10 +162,40 @@ var IdentityCtrl = (function (_Controller) {
     value: function names() {
       var self = this;
 
+      if (this.user.first_name) {
+        this.find('first name').val(this.user.first_name);
+      }
+
       this.find('first name').on('change', function () {
         if ($(this).val()) {
           self.publish('set first name', $(this).val()).subscribe(function (pubsub) {
             console.log('first name saved');
+            pubsub.unsubscribe();
+          });
+        }
+      });
+
+      if (this.user.middle_name) {
+        this.find('middle name').val(this.user.middle_name);
+      }
+
+      this.find('middle name').on('change', function () {
+        if ($(this).val()) {
+          self.publish('set middle name', $(this).val()).subscribe(function (pubsub) {
+            console.log('middle name saved');
+            pubsub.unsubscribe();
+          });
+        }
+      });
+
+      if (this.user.last_name) {
+        this.find('last name').val(this.user.last_name);
+      }
+
+      this.find('last name').on('change', function () {
+        if ($(this).val()) {
+          self.publish('set last name', $(this).val()).subscribe(function (pubsub) {
+            console.log('last name saved');
             pubsub.unsubscribe();
           });
         }

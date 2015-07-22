@@ -214,29 +214,23 @@ var Item = (function (_Milk) {
     value: function youTube() {
       var _this3 = this;
 
+      var condition = function condition() {
+        return _this3.get('Document') && _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
+      };
+
       this.ok(function () {
         return _this3.get('Video Container').is(':visible');
-      }, 'Item Video Container is visible', function () {
-        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
-      }).wait(1, null, function () {
-        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
-      }).ok(function () {
+      }, 'Item Video Container is visible', condition).wait(1, null, condition).ok(function () {
         return _this3.get('Iframe').is(':visible');
-      }, 'Item YouTube Iframe is visible', function () {
-        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
-      }).ok(function () {
+      }, 'Item YouTube Iframe is visible', condition).ok(function () {
         return _this3.get('Iframe').width().then(function (width) {
           return width.should.be.within(183, 186);
         });
-      }, 'Iframe should be the exact width', function () {
-        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
-      }).ok(function () {
+      }, 'Iframe should be the exact width', condition).ok(function () {
         return _this3.get('Iframe').height().then(function (height) {
           return height.should.be.within(133, 135);
         });
-      }, 'Iframe should be the exact height', function () {
-        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
-      });
+      }, 'Iframe should be the exact height', condition);
     }
   }, {
     key: 'image',
@@ -246,35 +240,37 @@ var Item = (function (_Milk) {
     value: function image() {
       var _this4 = this;
 
+      var condition = function condition() {
+        return _this4.get('Document') && !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document'));
+      };
+
+      var conditionHasImage = function conditionHasImage() {
+        return _this4.get('Document') && !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document')) && _this4.get('Document').image;
+      };
+
+      var conditionDoesNotHaveImage = function conditionDoesNotHaveImage() {
+        return _this4.get('Document') && !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document')) && !_this4.get('Document').image;
+      };
+
       this.ok(function () {
         return _this4.get('Image').is(':visible');
-      }, 'Item Image is visible', function () {
-        return !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document'));
-      }).ok(function () {
+      }, 'Item Image is visible', condition).ok(function () {
         return _this4.get('Image').width().then(function (width) {
           return width.should.be.within(183, 186);
         });
-      }, 'Item image has the right width', function () {
-        return !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document'));
-      }).ok(function () {
+      }, 'Item image has the right width', condition).ok(function () {
         return _this4.get('Image').height().then(function (height) {
           return height.should.be.within(100, 150);
         });
-      }, 'Item image has the right height', function () {
-        return !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document'));
-      }).ok(function () {
+      }, 'Item image has the right height', condition).ok(function () {
         return _this4.get('Image').attr('src').then(function (src) {
           return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(_this4.get('Document').image));
         });
-      }, 'Item Image is the same than in DB', function () {
-        return _this4.get('Document').image;
-      }).ok(function () {
+      }, 'Item Image is the same than in DB', conditionHasImage).ok(function () {
         return _this4.get('Image').attr('src').then(function (src) {
           return src.should.be.exactly(_configJson2['default']['public']['default item image']);
         });
-      }, 'Item Image is the default image', function () {
-        return !_this4.get('Document').image;
-      });
+      }, 'Item Image is the default image', conditionDoesNotHaveImage);
     }
   }, {
     key: 'text',
@@ -502,7 +498,6 @@ var Item = (function (_Milk) {
           _this10.get('View').attr('id').then(function (id) {
             try {
               var _ret = (function () {
-
                 var itemId = id.split('-')[1];
 
                 if (itemId === 'undefined') {

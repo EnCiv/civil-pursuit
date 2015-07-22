@@ -1,6 +1,7 @@
 'use strict';
 
 import Controller       from  '../../lib/app/controller';
+import View             from './view';
 
 class EditAndGoAgainCtrl extends Controller {
 
@@ -10,7 +11,13 @@ class EditAndGoAgainCtrl extends Controller {
     this.item = props.item;
   }
 
+  load () {
+    this.template = $(new View().render());
+  }
 
+  render () {
+    
+  }
 
 }
 

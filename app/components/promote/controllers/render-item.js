@@ -237,26 +237,29 @@ function renderItem (hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
-    Nav.unreveal(self.template, self.item.template, self.domain.intercept(function () {
+    Nav.unreveal(self.template, self.itemController.template, self.domain.intercept(function () {
 
-      if ( self.item.find('editor').find('form').length ) {
+      if ( self.itemController.find('editor').find('form').length ) {
         console.warn('already loaded')
       }
 
       else {
-        var edit = new EditAndGoAgainCtrl({ item : self.item });
+        let item  =   self.itemController,
+          edit    =   new EditAndGoAgainCtrl({ item });
+
+        edit.load();
+
+        item
+          .find('editor')
+          .find('.is-section')
+          .append(edit.template);
           
-        edit.get(self.domain.intercept(function (template) {
-
-          self.item.find('editor').find('.is-section').append(template);
-
-          Nav.reveal(self.item.find('editor'), self.item.template,
-            self.domain.intercept(function () {
-              Nav.show(template, self.domain.intercept(function () {
-                edit.render();
-              }));
+        Nav.reveal(item.find('editor'), item.template,
+          self.domain.intercept(function () {
+            Nav.show(edit.template, self.domain.intercept(function () {
+              edit.render();
             }));
-        }));
+          }));
 
       }
 

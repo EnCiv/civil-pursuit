@@ -216,23 +216,25 @@ function renderItem(hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
-    _libUtilNav2['default'].unreveal(self.template, self.item.template, self.domain.intercept(function () {
+    _libUtilNav2['default'].unreveal(self.template, self.itemController.template, self.domain.intercept(function () {
 
-      if (self.item.find('editor').find('form').length) {
+      if (self.itemController.find('editor').find('form').length) {
         console.warn('already loaded');
       } else {
-        var edit = new _componentsEditAndGoAgainCtrl2['default']({ item: self.item });
+        (function () {
+          var item = self.itemController,
+              edit = new _componentsEditAndGoAgainCtrl2['default']({ item: item });
 
-        edit.get(self.domain.intercept(function (template) {
+          edit.load();
 
-          self.item.find('editor').find('.is-section').append(template);
+          item.find('editor').find('.is-section').append(edit.template);
 
-          _libUtilNav2['default'].reveal(self.item.find('editor'), self.item.template, self.domain.intercept(function () {
-            _libUtilNav2['default'].show(template, self.domain.intercept(function () {
+          _libUtilNav2['default'].reveal(item.find('editor'), item.template, self.domain.intercept(function () {
+            _libUtilNav2['default'].show(edit.template, self.domain.intercept(function () {
               edit.render();
             }));
           }));
-        }));
+        })();
       }
     }));
   });

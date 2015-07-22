@@ -210,70 +210,86 @@ class Item extends Milk {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   youTube () {
+
+    let condition = () => this.get('Document') &&
+      YouTubeView.isYouTube(this.get('Document'));
+
     this
       .ok(
         () => this.get('Video Container').is(':visible'),
         'Item Video Container is visible',
-        () => YouTubeView.isYouTube(this.get('Document'))
+        condition
       )
 
-      .wait(1, null, () => YouTubeView.isYouTube(this.get('Document')))
+      .wait(1, null, condition)
       
       .ok(
         () => this.get('Iframe').is(':visible'),
         'Item YouTube Iframe is visible',
-        () => YouTubeView.isYouTube(this.get('Document'))
+        condition
       )
       
       .ok(() => this.get('Iframe').width()
         .then(width => width.should.be.within(183, 186)),
         'Iframe should be the exact width',
-        () => YouTubeView.isYouTube(this.get('Document'))
+        condition
       )
       
       .ok(() => this.get('Iframe').height()
         .then(height => height.should.be.within(133, 135)),
         'Iframe should be the exact height',
-        () => YouTubeView.isYouTube(this.get('Document'))
+        condition
       );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   image () {
+
+    let condition = () => this.get('Document') &&
+      ! YouTubeView.isYouTube(this.get('Document'));
+
+    let conditionHasImage = () => this.get('Document') &&
+      ! YouTubeView.isYouTube(this.get('Document')) &&
+      this.get('Document').image;
+
+    let conditionDoesNotHaveImage = () => this.get('Document') &&
+      ! YouTubeView.isYouTube(this.get('Document')) &&
+      ! this.get('Document').image;
+
     this
       .ok(
         () => this.get('Image').is(':visible'),
         'Item Image is visible',
-        () => ! YouTubeView.isYouTube(this.get('Document'))
+        condition
       )
       
       .ok(
         () => this.get('Image').width()
           .then(width => width.should.be.within(183, 186)),
         'Item image has the right width',
-        () => ! YouTubeView.isYouTube(this.get('Document'))
+        condition
       )
       
       .ok(
         () => this.get('Image').height()
           .then(height => height.should.be.within(100, 150)),
         'Item image has the right height',
-        () => ! YouTubeView.isYouTube(this.get('Document'))
+        condition
       )
 
       .ok(
         () => this.get('Image').attr('src')
           .then(src => src.should.be.exactly(cloudinaryFormat(this.get('Document').image))),
         'Item Image is the same than in DB',
-        () => this.get('Document').image
+        conditionHasImage
       )
 
       .ok(
         () => this.get('Image').attr('src')
           .then(src => src.should.be.exactly(config.public['default item image'])),
         'Item Image is the default image',
-        () => ! this.get('Document').image
+        conditionDoesNotHaveImage
       );
   }
 
@@ -492,7 +508,6 @@ class Item extends Milk {
           .then(
             id => {
               try {
-
                 let itemId = id.split('-')[1];
 
                 if ( itemId === 'undefined' ) {
