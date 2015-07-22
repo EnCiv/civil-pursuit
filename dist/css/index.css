@@ -4613,6 +4613,9 @@ select.medium.block {
 select.block {
   width: calc(98%);
 }
+select.block.gutter {
+  width: calc(93%) !important;
+}
 .form-group label {
   font-weight: bold;
 }
@@ -5322,7 +5325,8 @@ footer {
 /******************************************************************************
 |   CREATOR FORM
 \*****************************************************************************/
-.creator {
+.creator,
+.editor {
   clear: both;
   /**************************************************************************
   |   SUBMIT BUTTON
@@ -5335,23 +5339,30 @@ footer {
   \*************************************************************************/
 }
 .creator .item-buttons button,
-.creator .item-buttons .button {
+.editor .item-buttons button,
+.creator .item-buttons .button,
+.editor .item-buttons .button {
   display: block;
   width: 40px;
 }
-.creator .item-inputs {
+.creator .item-inputs,
+.editor .item-inputs {
   left: 0;
   position: relative;
   overflow: hidden;
 }
 .creator .item-inputs input[type="text"],
+.editor .item-inputs input[type="text"],
 .creator .item-inputs input[type="url"],
-.creator .item-inputs textarea {
+.editor .item-inputs input[type="url"],
+.creator .item-inputs textarea,
+.editor .item-inputs textarea {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
 }
-.creator input[name="image"] {
+.creator input[name="image"],
+.editor input[name="image"] {
   height: 1px;
   width: 1px;
   background: #fff;

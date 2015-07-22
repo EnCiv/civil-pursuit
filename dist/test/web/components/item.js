@@ -131,8 +131,6 @@ var Item = (function (_Milk) {
         return _this.find(_this.get('Buttons').selector + ' span.harmony-number');
       }).set('Collapsers', function () {
         return _this.find(_this.get('View').selector + '>.item-collapsers');
-      }).set('Collapse arrow', function () {
-        return _this.find(_this.get('View').selector + '>.item-arrow i.fa');
       }).set('Children', function () {
         return _this.find(_this.get('Collapsers').selector + '>.children');
       }).set('Child Panel Harmony Left', function () {
@@ -282,13 +280,19 @@ var Item = (function (_Milk) {
 
       this.ok(function () {
         return _this5.get('Truncatable').is(':visible');
-      }, 'Item Truncatable space is visible').ok(function () {
+      }, 'Item Truncatable space is visible', function () {
+        return _this5.get('Document');
+      }).ok(function () {
         return _this5.get('Subject').is(':visible');
-      }, 'Item subject is visible').ok(function () {
+      }, 'Item subject is visible', function () {
+        return _this5.get('Document');
+      }).ok(function () {
         return _this5.get('Subject').text().then(function (text) {
           return text.should.be.exactly(_this5.get('Document').subject);
         });
-      }, 'Subject has the same text than DB').ok(function () {
+      }, 'Subject has the same text than DB', function () {
+        return _this5.get('Document');
+      }).ok(function () {
         return Promise.all([_this5.get('Truncatable').count('.more'), _this5.get('Description').text()]).then(function (results) {
           var more = results[0];
           var text = results[1];
@@ -297,7 +301,9 @@ var Item = (function (_Milk) {
             text.should.be.exactly(_libAppMilk2['default'].formatToHTMLText(_this5.get('Document').description));
           }
         });
-      }, 'Item Description is the same than in DB');
+      }, 'Item Description is the same than in DB', function () {
+        return _this5.get('Document');
+      });
 
       // REFERENCES
 
@@ -316,7 +322,7 @@ var Item = (function (_Milk) {
           }
         });
       }, 'Verify reference', function () {
-        return _this5.props.references !== false;
+        return _this5.props.references !== false && _this5.get('Document');
       });
     }
   }, {
@@ -383,17 +389,13 @@ var Item = (function (_Milk) {
 
       this.ok(function () {
         return _this7.get('Collapsers').is(true);
-      }, 'Collapsers are hidden').ok(function () {
-        return _this7.get('Collapse arrow').is(':visible');
-      }, 'Collapse arrow is visible').ok(function () {
-        return _this7.get('Collapse arrow').click();
-      }, 'Collapse arrow is clickable').wait(2).ok(function () {
-        return _this7.get('Children').is(':visible');
-      }, 'Children panels are visible').ok(function () {
-        return _this7.get('Child Panel Harmony Left').is(':visible');
-      }, 'Left harmony children panel is visible', function () {
-        return _this7.get('Document').type.harmony.length;
-      });
+      }, 'Collapsers are hidden');
+
+      // .ok(
+      //   () => this.get('Child Panel Harmony Left').is(':visible'),
+      //   'Left harmony children panel is visible',
+      //   () => this.get('Document').type.harmony.length
+      // );
     }
   }, {
     key: 'promote',
@@ -415,17 +417,17 @@ var Item = (function (_Milk) {
           return !_this8.get('Cookie');
         }).ok(function () {
           return _this8.get('Join').is(true);
-        }, null, function (when) {
+        }, 'Join Panel should be visible', function (when) {
           return !_this8.get('Cookie');
         }).ok(function () {
           return _this8.get('Toggle promote').click();
-        }, 'Clicking on Promote toggle buttons should show Join', function (when) {
+        }, 'Clicking on Promote toggle buttons should hide Join', function (when) {
           return !_this8.get('Cookie');
         }).wait(2, null, function (when) {
           return !_this8.get('Cookie');
         }).ok(function () {
           return _this8.get('Join').is(false);
-        }, null, function (when) {
+        }, 'Join Panel should be removed', function (when) {
           return !_this8.get('Cookie');
         });
 
@@ -447,7 +449,10 @@ var Item = (function (_Milk) {
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         ['import'](_promote2['default'], {
-          item: this.get('Document'),
+          item: {
+            Document: this.get('Document'),
+            View: this.get('View')
+          },
           viewport: this.options.viewport
         }, 'Launch Promote test if User is signed in', function (when) {
           return _this8.get('Cookie');

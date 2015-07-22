@@ -1159,7 +1159,7 @@ var IdentityView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.identity-collapse.is-container.row').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row.gutter').add(this.avatar(), this.civility())));
+      return new _cincoDist.Element('.identity-collapse.is-container.row').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row.gutter').add(this.avatar(), this.civility(), this.citizenship())));
     }
   }, {
     key: 'avatar',
@@ -1189,6 +1189,11 @@ var IdentityView = (function (_Element) {
     key: 'toggle',
     value: function toggle() {
       return new _cincoDist.Element('.row.toggle-arrow.gutter.text-center').add(new _cincoDist.Element('i.fa.fa-arrow-down.cursor-pointer'));
+    }
+  }, {
+    key: 'citizenship',
+    value: function citizenship() {
+      return new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one'))));
     }
   }]);
 

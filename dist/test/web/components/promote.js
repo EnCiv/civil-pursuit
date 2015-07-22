@@ -58,9 +58,8 @@ var Promote = (function (_Milk) {
 
     this.props = props;
 
-    this.item = this.props.item;
-
-    this.isYouTube = this.item && this.item.references.length && _componentsYoutubeView2['default'].regex.test(this.item.references[0].url);
+    this.set('Item View', this.props.item.View);
+    this.set('Item Document', this.props.item.Document);
 
     if (this.props.driver !== false) {
       this.go('/');
@@ -81,12 +80,6 @@ var Promote = (function (_Milk) {
       var get = this.get.bind(this);
       var find = this.find.bind(this);
 
-      // Item View
-
-      set('Item', function () {
-        return find('#item-' + _this.item._id);
-      });
-
       // Cookie
 
       set('Cookie', function () {
@@ -96,11 +89,11 @@ var Promote = (function (_Milk) {
       // Evaluation -- won't be the same than in Browser since evaluation are random, but like this we get the numbers of items in an evaluation - it should be 6 but it can be less -- also like this we get criterias
 
       set('Evaluation', function () {
-        return _modelsItem2['default'].evaluate(get('Cookie').id, _this.item._id);
+        return _modelsItem2['default'].evaluate(get('Cookie').id, _this.get('Item Document')._id);
       });
 
       set('Main', function () {
-        return find(get('Item').selector + ' > .item-collapsers > .promote');
+        return find(get('Item View').selector + ' > .item-collapsers > .promote');
       });
 
       set('Header', function () {
@@ -262,7 +255,7 @@ var Promote = (function (_Milk) {
       var find = this.find.bind(this);
 
       ok(function () {
-        return get('Item').is(':visible');
+        return get('Item View').is(':visible');
       }, 'Item is visible');
       ok(function () {
         return get('Main').is(':visible');
@@ -302,7 +295,7 @@ var Promote = (function (_Milk) {
 
       this['import'](_details2['default'], function () {
         return {
-          item: _this2.item
+          item: _this2.get('Item Document')
         };
       });
     }

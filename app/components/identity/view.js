@@ -36,7 +36,8 @@ class IdentityView extends Element {
       new Element('.is-section').add(
         new Element('.row.gutter').add(
           this.avatar(),
-          this.civility()
+          this.civility(),
+          this.citizenship()
         )
       )
     );
@@ -76,6 +77,17 @@ class IdentityView extends Element {
   toggle () {
     return new Element('.row.toggle-arrow.gutter.text-center').add(
       new Element('i.fa.fa-arrow-down.cursor-pointer')
+    );
+  }
+
+  citizenship () {
+    return new Element('.row').add(
+      new Element('button.very.shy.tablet-30').text('Citizenship'),
+      new Element('.tablet-70').add(
+        new Element('select.citizenship.block.gutter').add(
+          new Element('option', { value : '' }).text('Choose one')
+        )
+      )
     );
   }
 

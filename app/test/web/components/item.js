@@ -121,10 +121,6 @@ class Item extends Milk {
         this.get('View').selector + '>.item-collapsers'
       ))
 
-      .set('Collapse arrow', () => this.find(
-        this.get('View').selector + '>.item-arrow i.fa'
-      ))
-
       .set('Children', () => this.find(
         this.get('Collapsers').selector + '>.children'
       ))
@@ -297,29 +293,42 @@ class Item extends Milk {
 
   text () {
     this
-      .ok(() => this.get('Truncatable').is(':visible'), 'Item Truncatable space is visible')
+      .ok(
+        () => this.get('Truncatable').is(':visible'),
+        'Item Truncatable space is visible',
+        () => this.get('Document')
+      )
       
-      .ok(() => this.get('Subject').is(':visible'), 'Item subject is visible')
+      .ok(
+        () => this.get('Subject').is(':visible'),
+        'Item subject is visible',
+        () => this.get('Document')
+      )
       
-      .ok(() => this.get('Subject').text()
-        .then(text => text.should.be.exactly(this.get('Document').subject)),
-        'Subject has the same text than DB')
+      .ok(
+        () => this.get('Subject').text()
+          .then(text => text.should.be.exactly(this.get('Document').subject)),
+        'Subject has the same text than DB',
+        () => this.get('Document')
+      )
 
       
-      .ok(() => 
-        Promise.all([
-          this.get('Truncatable').count('.more'),
-          this.get('Description').text()
-        ])
-        .then(results => {
-          let more = results[0];
-          let text = results[1];
-          
-          if ( ! more ) {
-            text.should.be.exactly(Milk.formatToHTMLText(this.get('Document').description));
-          }
-        }),
-        'Item Description is the same than in DB'
+      .ok(
+        () => 
+          Promise.all([
+            this.get('Truncatable').count('.more'),
+            this.get('Description').text()
+          ])
+          .then(results => {
+            let more = results[0];
+            let text = results[1];
+            
+            if ( ! more ) {
+              text.should.be.exactly(Milk.formatToHTMLText(this.get('Document').description));
+            }
+          }),
+        'Item Description is the same than in DB',
+        () => this.get('Document')
       );
 
     // REFERENCES
@@ -340,7 +349,7 @@ class Item extends Milk {
           text.should.be.exactly('');
         }
       }), 'Verify reference',
-      () => this.props.references !== false);
+      () => this.props.references !== false && this.get('Document'));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -395,24 +404,13 @@ class Item extends Milk {
     this
       
       .ok(() => this.get('Collapsers').is(true),
-        'Collapsers are hidden')
-      
-      .ok(() => this.get('Collapse arrow').is(':visible'),
-        'Collapse arrow is visible')
+        'Collapsers are hidden');
 
-      .ok(() => this.get('Collapse arrow').click(),
-        'Collapse arrow is clickable')
-
-      .wait(2)
-
-      .ok(() => this.get('Children').is(':visible'),
-        'Children panels are visible')
-
-      .ok(
-        () => this.get('Child Panel Harmony Left').is(':visible'),
-        'Left harmony children panel is visible',
-        () => this.get('Document').type.harmony.length
-      );
+      // .ok(
+      //   () => this.get('Child Panel Harmony Left').is(':visible'),
+      //   'Left harmony children panel is visible',
+      //   () => this.get('Document').type.harmony.length
+      // );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -423,13 +421,39 @@ class Item extends Milk {
       // NO COOKIE
 
       this
-        .ok(() => this.get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! this.get('Cookie'))
-        .wait(1, null, when => ! this.get('Cookie'))
-        .ok(() => this.get('Join').is(true), null, when => ! this.get('Cookie'))
+        .ok(
+          () => this.get('Toggle promote').click(),
+          'Clicking on Promote toggle buttons should show Join',
+          when => ! this.get('Cookie'))
+        
+        .wait(
+          1,
+          null,
+          when => ! this.get('Cookie')
+        )
+        
+        .ok(
+          () => this.get('Join').is(true),
+          'Join Panel should be visible',
+          when => ! this.get('Cookie')
+        )
 
-        .ok(() => this.get('Toggle promote').click(), 'Clicking on Promote toggle buttons should show Join', when => ! this.get('Cookie'))
-        .wait(2, null, when => ! this.get('Cookie'))
-        .ok(() => this.get('Join').is(false), null, when => ! this.get('Cookie'));
+        .ok(
+          () => this.get('Toggle promote').click(),
+          'Clicking on Promote toggle buttons should hide Join',
+          when => ! this.get('Cookie')
+        )
+        
+        .wait(
+          2,
+          null,
+          when => ! this.get('Cookie')
+        )
+        
+        .ok(
+          () => this.get('Join').is(false),
+          'Join Panel should be removed',
+          when => ! this.get('Cookie'));
 
       // COOKIE
 
@@ -446,7 +470,10 @@ class Item extends Milk {
         
         .import(PromoteTest,
           {
-            item        :   this.get('Document'), 
+            item        :   {
+              Document  :   this.get('Document'),
+              View      :   this.get('View')
+            }, 
             viewport    :   this.options.viewport
           },
           

@@ -20,11 +20,8 @@ class Promote extends Milk {
 
     this.props = props;
 
-    this.item = this.props.item;
-
-    this.isYouTube = this.item &&
-      this.item.references.length &&
-      YouTube.regex.test(this.item.references[0].url);
+    this.set('Item View', this.props.item.View);
+    this.set('Item Document', this.props.item.Document);
 
     if ( this.props.driver !== false ) {
       this.go('/');
@@ -41,19 +38,15 @@ class Promote extends Milk {
     let get     = this.get.bind(this);
     let find    = this.find.bind(this);
 
-    // Item View
-
-    set('Item', () => find('#item-' + this.item._id));
-
     // Cookie
 
     set('Cookie', () => this.getCookie('synuser'));
 
     // Evaluation -- won't be the same than in Browser since evaluation are random, but like this we get the numbers of items in an evaluation - it should be 6 but it can be less -- also like this we get criterias
 
-    set('Evaluation', () => ItemModel.evaluate(get('Cookie').id, this.item._id));
+    set('Evaluation', () => ItemModel.evaluate(get('Cookie').id, this.get('Item Document')._id));
     
-    set('Main', () => find(get('Item').selector + ' > .item-collapsers > .promote'));
+    set('Main', () => find(get('Item View').selector + ' > .item-collapsers > .promote'));
 
     set('Header', () => find(get('Main').selector + ' header.promote-steps'));
 
@@ -140,7 +133,7 @@ class Promote extends Milk {
     let set     =   this.set.bind(this);
     let find    =   this.find.bind(this);
 
-    ok(() => get('Item').is(':visible'), 'Item is visible');
+    ok(() => get('Item View').is(':visible'), 'Item is visible');
     ok(() => get('Main').is(':visible'), 'Promote is visible');
     ok(() => get('Header').is(':visible'), 'Header is visible');
     ok(() => get('Cursor').is(':visible'), 'Cursor is visible');
@@ -166,7 +159,7 @@ class Promote extends Milk {
     this.wait(2.5);
 
     this.import(DetailsTest, () => ({
-      item          :   this.item
+      item          :   this.get('Item Document')
     }));
   }
 
