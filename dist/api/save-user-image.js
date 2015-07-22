@@ -1,21 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  function saveUserImage(user_id, image) {
+var _modelsUser = require('../models/user');
 
-    var socket = this;
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-    require('../lib/domain')(function (error) {
-      socket.app.arte.emit('error', error);
-    }, function (domain) {
-      require('../models/user').saveImage(user_id, image, domain.intercept(function (user) {
-        socket.emit('saved user image', user);
-      }));
+function saveUserImage(event, image) {
+  var _this = this;
+
+  try {
+    _modelsUser2['default'].saveImage(this.synuser.id, image).then(function (user) {
+      return socket.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = saveUserImage;
-})();
+exports['default'] = saveUserImage;
+module.exports = exports['default'];

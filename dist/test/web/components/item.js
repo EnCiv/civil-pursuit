@@ -83,17 +83,6 @@ var Item = (function (_Milk) {
     value: function actors() {
       var _this = this;
 
-      // if ( this.props.element ) {
-      //   this.set('Item', () => this.props.element, null, this.props.element);
-      // }
-
-      // else {
-      //   this
-      //     .set('Item', () => this.find('#item-' + this.item._id), null, () => this.itemIsAnObject)
-
-      //     .set('Item', () => this.find(this.item), null, () => this.itemIsASelector);
-      // }
-
       this.set('Join', function () {
         return _this.find(_join2['default'].find('main'));
       }).set('Cookie', function () {
@@ -172,9 +161,9 @@ var Item = (function (_Milk) {
       // Visibility
 
       this.ok(function () {
-        return _this2.get('Item').is(':visible');
+        return _this2.get('View').is(':visible');
       }, 'Item is visible').ok(function () {
-        return _this2.get('Item').is('.item');
+        return _this2.get('View').is('.item');
       }, 'Item has the class ".visible"').ok(function () {
         return _this2.get('Media Wrapper').is(':visible');
       }, 'Item Media Wrapper is visible').ok(function () {
@@ -187,16 +176,13 @@ var Item = (function (_Milk) {
 
       this.media();
 
-      if (this.itemIsAnObject) {
+      // VERIFY TEXT
 
-        // VERIFY TEXT
+      this.text();
 
-        this.text();
+      // BUTTONS
 
-        // BUTTONS
-
-        this.buttons();
-      }
+      this.buttons();
 
       // COLLAPSERS
 
@@ -216,49 +202,79 @@ var Item = (function (_Milk) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function media() {
+      this.youTube();
+
+      this.image();
+    }
+  }, {
+    key: 'youTube',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function youTube() {
       var _this3 = this;
 
-      if (this.itemIsAnObject && _componentsYoutubeView2['default'].isYouTube(this.item)) {
-        this.ok(function () {
-          return _this3.get('Video Container').is(':visible');
-        }, 'Item Video Container is visible').wait(1).ok(function () {
-          return _this3.get('Iframe').is(':visible');
-        }, 'Item YouTube Iframe is visible').ok(function () {
-          return _this3.get('Iframe').width().then(function (width) {
-            return width.should.be.within(183, 186);
-          });
-        }, 'Iframe should be the exact width').ok(function () {
-          return _this3.get('Iframe').height().then(function (height) {
-            return height.should.be.within(133, 135);
-          });
-        }, 'Iframe should be the exact height');
-      } else if (this.itemIsAnObject) {
-        this.ok(function () {
-          return _this3.get('Image').is(':visible');
-        }, 'Item Image is visible').ok(function () {
-          return _this3.get('Image').width().then(function (width) {
-            return width.should.be.within(183, 186);
-          });
-        }, 'Item image has the right width').ok(function () {
-          return _this3.get('Image').height().then(function (height) {
-            return height.should.be.within(100, 150);
-          });
-        }, 'Item image has the right height');
+      this.ok(function () {
+        return _this3.get('Video Container').is(':visible');
+      }, 'Item Video Container is visible', function () {
+        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
+      }).wait(1, null, function () {
+        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
+      }).ok(function () {
+        return _this3.get('Iframe').is(':visible');
+      }, 'Item YouTube Iframe is visible', function () {
+        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
+      }).ok(function () {
+        return _this3.get('Iframe').width().then(function (width) {
+          return width.should.be.within(183, 186);
+        });
+      }, 'Iframe should be the exact width', function () {
+        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
+      }).ok(function () {
+        return _this3.get('Iframe').height().then(function (height) {
+          return height.should.be.within(133, 135);
+        });
+      }, 'Iframe should be the exact height', function () {
+        return _componentsYoutubeView2['default'].isYouTube(_this3.get('Document'));
+      });
+    }
+  }, {
+    key: 'image',
 
-        if (this.item.image) {
-          this.ok(function () {
-            return _this3.get('Image').attr('src').then(function (src) {
-              return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(_this3.item.image));
-            });
-          }, 'Item Image is the same than in DB');
-        } else {
-          this.ok(function () {
-            return _this3.get('Image').attr('src').then(function (src) {
-              return src.should.be.exactly(_configJson2['default']['public']['default item image']);
-            });
-          }, 'Item Image is the default image');
-        }
-      }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function image() {
+      var _this4 = this;
+
+      this.ok(function () {
+        return _this4.get('Image').is(':visible');
+      }, 'Item Image is visible', function () {
+        return !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document'));
+      }).ok(function () {
+        return _this4.get('Image').width().then(function (width) {
+          return width.should.be.within(183, 186);
+        });
+      }, 'Item image has the right width', function () {
+        return !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document'));
+      }).ok(function () {
+        return _this4.get('Image').height().then(function (height) {
+          return height.should.be.within(100, 150);
+        });
+      }, 'Item image has the right height', function () {
+        return !_componentsYoutubeView2['default'].isYouTube(_this4.get('Document'));
+      }).ok(function () {
+        return _this4.get('Image').attr('src').then(function (src) {
+          return src.should.be.exactly((0, _libUtilCloudinaryFormat2['default'])(_this4.get('Document').image));
+        });
+      }, 'Item Image is the same than in DB', function () {
+        return _this4.get('Document').image;
+      }).ok(function () {
+        return _this4.get('Image').attr('src').then(function (src) {
+          return src.should.be.exactly(_configJson2['default']['public']['default item image']);
+        });
+      }, 'Item Image is the default image', function () {
+        return !_this4.get('Document').image;
+      });
     }
   }, {
     key: 'text',
@@ -266,23 +282,23 @@ var Item = (function (_Milk) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function text() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.ok(function () {
-        return _this4.get('Truncatable').is(':visible');
+        return _this5.get('Truncatable').is(':visible');
       }, 'Item Truncatable space is visible').ok(function () {
-        return _this4.get('Subject').is(':visible');
+        return _this5.get('Subject').is(':visible');
       }, 'Item subject is visible').ok(function () {
-        return _this4.get('Subject').text().then(function (text) {
-          return text.should.be.exactly(_this4.item.subject);
+        return _this5.get('Subject').text().then(function (text) {
+          return text.should.be.exactly(_this5.get('Document').subject);
         });
       }, 'Subject has the same text than DB').ok(function () {
-        return Promise.all([_this4.get('Truncatable').count('.more'), _this4.get('Description').text()]).then(function (results) {
+        return Promise.all([_this5.get('Truncatable').count('.more'), _this5.get('Description').text()]).then(function (results) {
           var more = results[0];
           var text = results[1];
 
           if (!more) {
-            text.should.be.exactly(_libAppMilk2['default'].formatToHTMLText(_this4.item.description));
+            text.should.be.exactly(_libAppMilk2['default'].formatToHTMLText(_this5.get('Document').description));
           }
         });
       }, 'Item Description is the same than in DB');
@@ -290,23 +306,21 @@ var Item = (function (_Milk) {
       // REFERENCES
 
       this.ok(function () {
-        return _this4.get('Reference').text().then(function (text) {
-          if (_this4.itemIsAnObject) {
-            var ref = _this4.item.references.length ? _this4.item.references[0] : null;
+        return _this5.get('Reference').text().then(function (text) {
+          var ref = _this5.get('Document').references.length ? _this5.get('Document').references[0] : null;
 
-            if (ref) {
-              if (ref.title) {
-                text.should.be.exactly(ref.title);
-              } else {
-                text.should.be.exactly(ref.url);
-              }
+          if (ref) {
+            if (ref.title) {
+              text.should.be.exactly(ref.title);
             } else {
-              text.should.be.exactly('');
+              text.should.be.exactly(ref.url);
             }
+          } else {
+            text.should.be.exactly('');
           }
         });
       }, 'Verify reference', function () {
-        return _this4.props.references !== false;
+        return _this5.props.references !== false;
       });
     }
   }, {
@@ -315,46 +329,46 @@ var Item = (function (_Milk) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function buttons() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.props.buttons !== false) {
         this.ok(function () {
-          return _this5.get('Buttons').is(':visible');
+          return _this6.get('Buttons').is(':visible');
         }, 'Item Buttons are visible');
 
         // PROMOTE
         this.ok(function () {
-          return _this5.get('Toggle promote').is(':visible');
+          return _this6.get('Toggle promote').is(':visible');
         }, 'Promote toggle button is visible').ok(function () {
-          return _this5.get('Toggle promote').text().then(function (text) {
-            return (+text).should.be.exactly(_this5.item.promotions);
+          return _this6.get('Toggle promote').text().then(function (text) {
+            return (+text).should.be.exactly(_this6.get('Document').promotions);
           });
         }, 'Promote toggle button text is the right amount of times item has been promoted');
 
         // DETAILS
         this.ok(function () {
-          return _this5.get('Toggle details').is(':visible');
+          return _this6.get('Toggle details').is(':visible');
         }, 'Details toggle button is visible').ok(function () {
-          return _this5.get('Toggle details').text().then(function (text) {
-            return text.should.be.exactly(_this5.item.popularity.number.toString() + '%');
+          return _this6.get('Toggle details').text().then(function (text) {
+            return text.should.be.exactly(_this6.get('Document').popularity.number.toString() + '%');
           });
         }, 'Deatisl toggle button text is item\'s popularity');
 
         // RELATED
         this.ok(function () {
-          return _this5.get('Related').is(':visible');
+          return _this6.get('Related').is(':visible');
         }, 'Related buttons is visible').ok(function () {
-          return _this5.get('Related').text().then(function (text) {
-            (+text).should.be.exactly(_this5.item.children);
+          return _this6.get('Related').text().then(function (text) {
+            (+text).should.be.exactly(_this6.get('Document').children);
           });
         }, 'Related button text is the number of direct children');
 
         // HARMONY
         this.ok(function () {
-          return _this5.get('Harmony').is(':visible');
+          return _this6.get('Harmony').is(':visible');
         }, 'Harmony buttons is visible').ok(function () {
-          return _this5.get('Harmony').text().then(function (text) {
-            (+text).should.be.exactly(_this5.item.harmony);
+          return _this6.get('Harmony').text().then(function (text) {
+            (+text).should.be.exactly(_this6.get('Document').harmony);
           });
         }, 'Harmony button text is the number of direct children');
       }
@@ -365,24 +379,24 @@ var Item = (function (_Milk) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function collapsers() {
-      var _this6 = this;
+      var _this7 = this;
 
-      if (this.props.collapsers === false || this.item.collapsers === false) {
+      if (this.props.collapsers === false) {
         return false;
       }
 
       this.ok(function () {
-        return _this6.get('Collapsers').is(true);
+        return _this7.get('Collapsers').is(true);
       }, 'Collapsers are hidden').ok(function () {
-        return _this6.get('Collapse arrow').is(':visible');
+        return _this7.get('Collapse arrow').is(':visible');
       }, 'Collapse arrow is visible').ok(function () {
-        return _this6.get('Collapse arrow').click();
+        return _this7.get('Collapse arrow').click();
       }, 'Collapse arrow is clickable').wait(2).ok(function () {
-        return _this6.get('Children').is(':visible');
+        return _this7.get('Children').is(':visible');
       }, 'Children panels are visible').ok(function () {
-        return _this6.get('Child Panel Harmony Left').is(':visible');
+        return _this7.get('Child Panel Harmony Left').is(':visible');
       }, 'Left harmony children panel is visible', function () {
-        return _this6.item.type.harmony.length;
+        return _this7.get('Document').type.harmony.length;
       });
     }
   }, {
@@ -391,32 +405,32 @@ var Item = (function (_Milk) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function promote() {
-      var _this7 = this;
+      var _this8 = this;
 
-      if (this.props.promote !== false && this.item.promote !== false) {
+      if (this.props.promote !== false) {
 
         // NO COOKIE
 
         this.ok(function () {
-          return _this7.get('Toggle promote').click();
+          return _this8.get('Toggle promote').click();
         }, 'Clicking on Promote toggle buttons should show Join', function (when) {
-          return !_this7.get('Cookie');
+          return !_this8.get('Cookie');
         }).wait(1, null, function (when) {
-          return !_this7.get('Cookie');
+          return !_this8.get('Cookie');
         }).ok(function () {
-          return _this7.get('Join').is(true);
+          return _this8.get('Join').is(true);
         }, null, function (when) {
-          return !_this7.get('Cookie');
+          return !_this8.get('Cookie');
         }).ok(function () {
-          return _this7.get('Toggle promote').click();
+          return _this8.get('Toggle promote').click();
         }, 'Clicking on Promote toggle buttons should show Join', function (when) {
-          return !_this7.get('Cookie');
+          return !_this8.get('Cookie');
         }).wait(2, null, function (when) {
-          return !_this7.get('Cookie');
+          return !_this8.get('Cookie');
         }).ok(function () {
-          return _this7.get('Join').is(false);
+          return _this8.get('Join').is(false);
         }, null, function (when) {
-          return !_this7.get('Cookie');
+          return !_this8.get('Cookie');
         });
 
         // COOKIE
@@ -424,37 +438,37 @@ var Item = (function (_Milk) {
         // Don't click because components like Creator have already shown Promote when new item was created
         if (this.props.promote !== true) {
           this.ok(function () {
-            return _this7.get('Toggle promote').click();
+            return _this8.get('Toggle promote').click();
           }, 'Clicking on Promote toggle buttons should show Promote', function (when) {
-            return _this7.get('Cookie');
+            return _this8.get('Cookie');
           });
         }
 
         this.wait(1, null, function (when) {
-          return _this7.get('Cookie');
+          return _this8.get('Cookie');
         })
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         ['import'](_promote2['default'], {
-          item: this.item,
+          item: this.get('Document'),
           viewport: this.options.viewport
         }, 'Launch Promote test if User is signed in', function (when) {
-          return _this7.get('Cookie');
+          return _this8.get('Cookie');
         })
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         .ok(function () {
-          return _this7.get('Toggle promote').click();
+          return _this8.get('Toggle promote').click();
         }, 'Clicking on Promote toggle buttons should show Promote (if User is signed in)', function (when) {
-          return _this7.get('Cookie');
+          return _this8.get('Cookie');
         })
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         .wait(2, 'Wait 2 seconds for Promote screen to hide (if User is signed in)', function (when) {
-          return _this7.get('Cookie');
+          return _this8.get('Cookie');
         });
       }
     }
@@ -464,14 +478,14 @@ var Item = (function (_Milk) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function details() {
-      var _this8 = this;
+      var _this9 = this;
 
-      if (this.props.details !== false && this.item.details !== false) {
+      if (this.props.details !== false) {
 
         this.ok(function () {
-          return _this8.get('Toggle details').click();
-        }, 'Clicking on Details toggle buttons').wait(2)['import'](_details2['default'], { item: this.item, viewport: this.options.viewport }).ok(function () {
-          return _this8.get('Toggle details').click();
+          return _this9.get('Toggle details').click();
+        }, 'Clicking on Details toggle buttons').wait(2)['import'](_details2['default'], { item: this.get('Document'), viewport: this.options.viewport }).ok(function () {
+          return _this9.get('Toggle details').click();
         }, 'Clicking on Details toggle button').wait(1);
       }
     }
@@ -481,11 +495,11 @@ var Item = (function (_Milk) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function getDocumentFromId() {
-      var _this9 = this;
+      var _this10 = this;
 
       return new Promise(function (ok, ko) {
         try {
-          _this9.get('View').attr('id').then(function (id) {
+          _this10.get('View').attr('id').then(function (id) {
             try {
               var _ret = (function () {
 

@@ -1,30 +1,19 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
 
-  
-
-  function saveUserImage (user_id, image) {
-
-    var socket = this;
-
-    require('../lib/domain')(
-
-      function (error) {
-        socket.app.arte.emit('error', error);
-      },
-
-      function (domain) {
-        require('../models/user')
-          .saveImage(user_id, image, domain.intercept(function (user) {
-            socket.emit('saved user image', user);
-          }));
-      }
-
-    );
-  
+function saveUserImage (event, image) {
+  try {
+    UserModel
+      .saveImage(this.synuser.id, image)
+      .then(
+        user => socket.ok(event, user),
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = saveUserImage;
-
-} ();
+export default saveUserImage;

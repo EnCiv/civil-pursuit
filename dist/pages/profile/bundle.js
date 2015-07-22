@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/config.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "tmp"             :   "/tmp",
   
   "title"           :   {
@@ -763,6 +763,10 @@ var _libUtilNav = require('../../lib/util/nav');
 
 var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
+var _libUtilUpload = require('../../lib/util/upload');
+
+var _libUtilUpload2 = _interopRequireDefault(_libUtilUpload);
+
 var IdentityCtrl = (function (_Controller) {
   function IdentityCtrl(props) {
     _classCallCheck(this, IdentityCtrl);
@@ -792,6 +796,12 @@ var IdentityCtrl = (function (_Controller) {
 
         case 'image':
           return $('img.user-image', template);
+
+        case 'upload button pretty':
+          return $('.upload-image', template);
+
+        case 'upload button':
+          return $('.upload-identity-picture', template);
       }
     }
   }, {
@@ -839,6 +849,41 @@ var IdentityCtrl = (function (_Controller) {
       if (this.user.image) {
         this.find('image').attr('src', this.user.image);
       }
+
+      // Upload image
+
+      this.avatar();
+    }
+  }, {
+    key: 'avatar',
+    value: function avatar() {
+      var _this2 = this;
+
+      /** input[type=file] is hidden for cosmetic reasons
+            and is substituted visually by a button.
+          This snippet binds clicking button with clicking the input[type=file]
+      */
+
+      this.find('upload button pretty').on('click', function () {
+        _this2.find('upload button').click();
+      });
+
+      new _libUtilUpload2['default'](null, this.find('upload button'), this.template.find('.user-image-container'), function (error, file) {
+        var stream = ss.createStream();
+
+        ss(_this2.socket).emit('upload image', stream, { size: file.size, name: file.name });
+
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          // new_item.image = file.name;
+
+          _this2.publish('save user image', file.name).subscribe(function (pubsub, user) {
+            console.log('image saved', user);
+            pubsub.unsubscribe();
+          });
+        });
+      });
     }
   }]);
 
@@ -1013,7 +1058,7 @@ function foo() {
   module.exports = Identity;
 }
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/identity/view.js":[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","../../lib/util/upload":"/home/francois/Dev/syn/dist/lib/util/upload.js"}],"/home/francois/Dev/syn/dist/components/identity/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2846,7 +2891,87 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/pages/profile/ctrl.js":[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/lib/util/upload.js":[function(require,module,exports){
+'use strict';
+
+!(function () {
+
+  'use strict';
+
+  /**
+   *  @class    Upload
+   *  @arg      {HTMLElement} dropzone
+   *  @arg      {Input} file_input
+   *  @arg      {HTMLElement} thumbnail - Preview container
+   *  @arg      {Function} cb
+   */
+
+  function Upload(dropzone, file_input, thumbnail, cb) {
+    this.dropzone = dropzone;
+    this.file_input = file_input;
+    this.thumbnail = thumbnail;
+    this.cb = cb;
+
+    this.init();
+  }
+
+  Upload.prototype.init = function () {
+
+    if (window.File) {
+      if (this.dropzone) {
+        this.dropzone.on('dragover', this.hover.bind(this)).on('dragleave', this.hover.bind(this)).on('drop', this.handler.bind(this));
+      }
+
+      if (this.file_input) {
+        this.file_input.on('change', this.handler.bind(this));
+      }
+    } else {
+      if (dropzone) {
+        dropzone.find('.modern').hide();
+      }
+    }
+  };
+
+  Upload.prototype.hover = function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  Upload.prototype.handler = function (e) {
+    this.hover(e);
+
+    var files = e.target.files || e.originalEvent.dataTransfer.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+      this.preview(f, e.target);
+    }
+  };
+
+  Upload.prototype.preview = function (file, target) {
+    var upload = this;
+
+    var img = new Image();
+
+    img.classList.add('img-responsive');
+    img.classList.add('preview-image');
+
+    img.addEventListener('load', function () {
+
+      $(img).data('file', file);
+
+      upload.thumbnail.empty().append(img);
+    }, false);
+
+    img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+    if (this.cb) {
+      this.cb(null, file);
+    }
+  };
+
+  module.exports = Upload;
+})();
+},{}],"/home/francois/Dev/syn/dist/pages/profile/ctrl.js":[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }

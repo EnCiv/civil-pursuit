@@ -40,17 +40,6 @@ class Item extends Milk {
 
   actors () {
 
-    // if ( this.props.element ) {
-    //   this.set('Item', () => this.props.element, null, this.props.element);
-    // }
-
-    // else {
-    //   this
-    //     .set('Item', () => this.find('#item-' + this.item._id), null, () => this.itemIsAnObject)
-
-    //     .set('Item', () => this.find(this.item), null, () => this.itemIsASelector);
-    // }
-
     this
       .set('Join',      () => this.find(JoinTest.find('main')))
       
@@ -170,10 +159,10 @@ class Item extends Milk {
 
     this
 
-      .ok(() => this.get('Item').is(':visible'),
+      .ok(() => this.get('View').is(':visible'),
         'Item is visible')
       
-      .ok(() => this.get('Item').is('.item'),
+      .ok(() => this.get('View').is('.item'),
         'Item has the class ".visible"')
       
       .ok(() => this.get('Media Wrapper').is(':visible'),
@@ -189,16 +178,13 @@ class Item extends Milk {
 
     this.media();
 
-    if ( this.itemIsAnObject ) {
+    // VERIFY TEXT
 
-      // VERIFY TEXT
+    this.text();
 
-      this.text();
+    // BUTTONS
 
-      // BUTTONS
-
-      this.buttons();
-    }
+    this.buttons();
 
     // COLLAPSERS
 
@@ -216,46 +202,79 @@ class Item extends Milk {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   media () {
-    if ( this.itemIsAnObject && YouTubeView.isYouTube(this.item) ) {
-      this
-        .ok(() => this.get('Video Container').is(':visible'), 'Item Video Container is visible')
-        .wait(1)
-        .ok(() => this.get('Iframe').is(':visible'), 'Item YouTube Iframe is visible')
-        .ok(() => this.get('Iframe').width()
-          .then(width => width.should.be.within(183, 186)),
-          'Iframe should be the exact width'
-        )
-        .ok(() => this.get('Iframe').height()
-          .then(height => height.should.be.within(133, 135)),
-          'Iframe should be the exact height'
-        );
-    }
+    this.youTube();
 
-    else if ( this.itemIsAnObject ) {
-      this
-        .ok(() => this.get('Image').is(':visible'), 'Item Image is visible')
-        .ok(() => this.get('Image').width()
+    this.image();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  youTube () {
+    this
+      .ok(
+        () => this.get('Video Container').is(':visible'),
+        'Item Video Container is visible',
+        () => YouTubeView.isYouTube(this.get('Document'))
+      )
+
+      .wait(1, null, () => YouTubeView.isYouTube(this.get('Document')))
+      
+      .ok(
+        () => this.get('Iframe').is(':visible'),
+        'Item YouTube Iframe is visible',
+        () => YouTubeView.isYouTube(this.get('Document'))
+      )
+      
+      .ok(() => this.get('Iframe').width()
+        .then(width => width.should.be.within(183, 186)),
+        'Iframe should be the exact width',
+        () => YouTubeView.isYouTube(this.get('Document'))
+      )
+      
+      .ok(() => this.get('Iframe').height()
+        .then(height => height.should.be.within(133, 135)),
+        'Iframe should be the exact height',
+        () => YouTubeView.isYouTube(this.get('Document'))
+      );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  image () {
+    this
+      .ok(
+        () => this.get('Image').is(':visible'),
+        'Item Image is visible',
+        () => ! YouTubeView.isYouTube(this.get('Document'))
+      )
+      
+      .ok(
+        () => this.get('Image').width()
           .then(width => width.should.be.within(183, 186)),
-          'Item image has the right width'
-        )
-        .ok(() => this.get('Image').height()
+        'Item image has the right width',
+        () => ! YouTubeView.isYouTube(this.get('Document'))
+      )
+      
+      .ok(
+        () => this.get('Image').height()
           .then(height => height.should.be.within(100, 150)),
-          'Item image has the right height'
-        );
+        'Item image has the right height',
+        () => ! YouTubeView.isYouTube(this.get('Document'))
+      )
 
-      if ( this.item.image ) {
-        this.ok(() => this.get('Image').attr('src')
-          .then(src => src.should.be.exactly(cloudinaryFormat(this.item.image))),
-          'Item Image is the same than in DB'
-        );
-      }
-      else {
-        this.ok(() => this.get('Image').attr('src')
+      .ok(
+        () => this.get('Image').attr('src')
+          .then(src => src.should.be.exactly(cloudinaryFormat(this.get('Document').image))),
+        'Item Image is the same than in DB',
+        () => this.get('Document').image
+      )
+
+      .ok(
+        () => this.get('Image').attr('src')
           .then(src => src.should.be.exactly(config.public['default item image'])),
-          'Item Image is the default image'
-        );
-      }
-    }
+        'Item Image is the default image',
+        () => ! this.get('Document').image
+      );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -267,7 +286,7 @@ class Item extends Milk {
       .ok(() => this.get('Subject').is(':visible'), 'Item subject is visible')
       
       .ok(() => this.get('Subject').text()
-        .then(text => text.should.be.exactly(this.item.subject)),
+        .then(text => text.should.be.exactly(this.get('Document').subject)),
         'Subject has the same text than DB')
 
       
@@ -281,7 +300,7 @@ class Item extends Milk {
           let text = results[1];
           
           if ( ! more ) {
-            text.should.be.exactly(Milk.formatToHTMLText(this.item.description));
+            text.should.be.exactly(Milk.formatToHTMLText(this.get('Document').description));
           }
         }),
         'Item Description is the same than in DB'
@@ -291,20 +310,18 @@ class Item extends Milk {
 
     this.ok(() => this.get('Reference').text()
       .then(text => {
-        if ( this.itemIsAnObject ) {
-          let ref = this.item.references.length ? this.item.references[0] : null;
+        let ref = this.get('Document').references.length ? this.get('Document').references[0] : null;
 
-          if ( ref ) {
-            if ( ref.title ) {
-              text.should.be.exactly(ref.title);
-            }
-            else {
-              text.should.be.exactly(ref.url);
-            }
+        if ( ref ) {
+          if ( ref.title ) {
+            text.should.be.exactly(ref.title);
           }
           else {
-            text.should.be.exactly('');
+            text.should.be.exactly(ref.url);
           }
+        }
+        else {
+          text.should.be.exactly('');
         }
       }), 'Verify reference',
       () => this.props.references !== false);
@@ -321,7 +338,7 @@ class Item extends Milk {
       this
         .ok(() => this.get('Toggle promote').is(':visible'), 'Promote toggle button is visible')
         .ok(() => this.get('Toggle promote').text()
-          .then(text => (+text).should.be.exactly(this.item.promotions)),
+          .then(text => (+text).should.be.exactly(this.get('Document').promotions)),
           'Promote toggle button text is the right amount of times item has been promoted');
 
       // DETAILS
@@ -329,7 +346,7 @@ class Item extends Milk {
         .ok(() => this.get('Toggle details').is(':visible'), 'Details toggle button is visible')
         .ok(() => this.get('Toggle details').text()
           .then(text => text.should.be.exactly(
-            this.item.popularity.number.toString() + '%')),
+            this.get('Document').popularity.number.toString() + '%')),
           'Deatisl toggle button text is item\'s popularity');
 
       // RELATED
@@ -337,7 +354,7 @@ class Item extends Milk {
         .ok(() => this.get('Related').is(':visible'), 'Related buttons is visible')
         .ok(() => this.get('Related').text()
           .then(text => {
-            (+text).should.be.exactly(this.item.children)
+            (+text).should.be.exactly(this.get('Document').children)
           }),
           'Related button text is the number of direct children');
 
@@ -346,7 +363,7 @@ class Item extends Milk {
         .ok(() => this.get('Harmony').is(':visible'), 'Harmony buttons is visible')
         .ok(() => this.get('Harmony').text()
           .then(text => {
-            (+text).should.be.exactly(this.item.harmony)
+            (+text).should.be.exactly(this.get('Document').harmony)
           }),
           'Harmony button text is the number of direct children');
     }
@@ -355,7 +372,7 @@ class Item extends Milk {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   collapsers () {
-    if ( this.props.collapsers === false || this.item.collapsers === false ) {
+    if ( this.props.collapsers === false ) {
       return false;
     }
 
@@ -378,14 +395,14 @@ class Item extends Milk {
       .ok(
         () => this.get('Child Panel Harmony Left').is(':visible'),
         'Left harmony children panel is visible',
-        () => this.item.type.harmony.length
+        () => this.get('Document').type.harmony.length
       );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   promote () {
-    if ( this.props.promote !== false && this.item.promote !== false ) {
+    if ( this.props.promote !== false ) {
 
       // NO COOKIE
 
@@ -413,7 +430,7 @@ class Item extends Milk {
         
         .import(PromoteTest,
           {
-            item        :   this.item, 
+            item        :   this.get('Document'), 
             viewport    :   this.options.viewport
           },
           
@@ -446,7 +463,7 @@ class Item extends Milk {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   details () {
-    if ( this.props.details !== false && this.item.details !== false ) {
+    if ( this.props.details !== false ) {
 
       this
         .ok(() => this.get('Toggle details').click(),
@@ -454,7 +471,7 @@ class Item extends Milk {
 
         .wait(2)
 
-        .import(DetailsTest, { item : this.item, viewport : this.options.viewport })
+        .import(DetailsTest, { item : this.get('Document'), viewport : this.options.viewport })
 
         .ok(() => this.get('Toggle details').click(),
           'Clicking on Details toggle button')

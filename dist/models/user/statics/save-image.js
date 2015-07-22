@@ -24,13 +24,23 @@ function saveImage(userId, image) {
   var _this = this;
 
   return new Promise(function (ok, ko) {
-    var d = new _domain.Domain().on('error', ko);
+    try {
+      (function () {
+        var d = new _domain.Domain().on('error', ko);
 
-    _libAppCloudinary2['default'].uploader.upload(_path2['default'].join(_configJson2['default'].tmp, image), function (result) {
-      _this.update({ _id: userId }, { image: result.url }, d.intercept(function () {
-        return ok(result);
-      }));
-    });
+        _libAppCloudinary2['default'].uploader.upload(_path2['default'].join(_configJson2['default'].tmp, image), function (result) {
+          try {
+            _this.update({ _id: userId }, { image: result.url }, d.intercept(function () {
+              return ok(result);
+            }));
+          } catch (error) {
+            ko(error);
+          }
+        });
+      })();
+    } catch (error) {
+      ko(error);
+    }
   });
 }
 

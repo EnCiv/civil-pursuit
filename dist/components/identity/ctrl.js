@@ -22,6 +22,10 @@ var _libUtilNav = require('../../lib/util/nav');
 
 var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
 
+var _libUtilUpload = require('../../lib/util/upload');
+
+var _libUtilUpload2 = _interopRequireDefault(_libUtilUpload);
+
 var IdentityCtrl = (function (_Controller) {
   function IdentityCtrl(props) {
     _classCallCheck(this, IdentityCtrl);
@@ -51,6 +55,12 @@ var IdentityCtrl = (function (_Controller) {
 
         case 'image':
           return $('img.user-image', template);
+
+        case 'upload button pretty':
+          return $('.upload-image', template);
+
+        case 'upload button':
+          return $('.upload-identity-picture', template);
       }
     }
   }, {
@@ -98,6 +108,41 @@ var IdentityCtrl = (function (_Controller) {
       if (this.user.image) {
         this.find('image').attr('src', this.user.image);
       }
+
+      // Upload image
+
+      this.avatar();
+    }
+  }, {
+    key: 'avatar',
+    value: function avatar() {
+      var _this2 = this;
+
+      /** input[type=file] is hidden for cosmetic reasons
+            and is substituted visually by a button.
+          This snippet binds clicking button with clicking the input[type=file]
+      */
+
+      this.find('upload button pretty').on('click', function () {
+        _this2.find('upload button').click();
+      });
+
+      new _libUtilUpload2['default'](null, this.find('upload button'), this.template.find('.user-image-container'), function (error, file) {
+        var stream = ss.createStream();
+
+        ss(_this2.socket).emit('upload image', stream, { size: file.size, name: file.name });
+
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', function () {
+          // new_item.image = file.name;
+
+          _this2.publish('save user image', file.name).subscribe(function (pubsub, user) {
+            console.log('image saved', user);
+            pubsub.unsubscribe();
+          });
+        });
+      });
     }
   }]);
 

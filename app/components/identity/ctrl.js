@@ -2,6 +2,7 @@
 
 import Controller       from  '../../lib/app/controller';
 import Nav              from '../../lib/util/nav';
+import Upload           from '../../lib/util/upload';
 
 class IdentityCtrl extends Controller {
 
@@ -28,6 +29,12 @@ class IdentityCtrl extends Controller {
 
       case 'image':
       return $('img.user-image', template);
+
+      case 'upload button pretty':
+      return $('.upload-image', template);
+
+      case 'upload button':
+      return $('.upload-identity-picture', template);
     }
   }
 
@@ -74,6 +81,45 @@ class IdentityCtrl extends Controller {
     if ( this.user.image ) {
       this.find('image').attr('src', this.user.image);
     }
+
+    // Upload image
+
+    this.avatar();
+  }
+
+  avatar () {
+    /** input[type=file] is hidden for cosmetic reasons
+          and is substituted visually by a button.
+        This snippet binds clicking button with clicking the input[type=file]
+    */
+
+    this.find('upload button pretty').on('click', () => {
+      this.find('upload button').click();
+    });
+
+    new Upload(
+      null,
+      this.find('upload button'),
+      this.template.find('.user-image-container'),
+      (error, file) => {
+        let stream = ss.createStream();
+
+        ss(this.socket)
+          .emit('upload image', stream, { size: file.size, name: file.name });
+        
+        ss.createBlobReadStream(file).pipe(stream);
+
+        stream.on('end', () => {
+          // new_item.image = file.name;
+
+        this
+          .publish('save user image', file.name)
+          .subscribe((pubsub, user) => {
+            console.log('image saved', user);
+            pubsub.unsubscribe();
+          });
+        });
+      });
   }
 
 }
