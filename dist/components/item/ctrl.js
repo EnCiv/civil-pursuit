@@ -134,7 +134,7 @@ var ItemCtrl = (function (_Controller) {
           return this.template.find('> .item-buttons');
 
         case 'editor':
-          return this.template.find('>.collapsers >.edit-and-go-again');
+          return this.template.find('>.item-collapsers >.edit-and-go-again');
 
         case 'toggle arrow':
           return this.template.find('.item-arrow:first');

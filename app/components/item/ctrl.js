@@ -70,7 +70,7 @@ class ItemCtrl extends Controller {
 
       case "buttons":             return this.template.find('> .item-buttons');
 
-      case "editor":              return this.template.find('>.collapsers >.edit-and-go-again');
+      case "editor":              return this.template.find('>.item-collapsers >.edit-and-go-again');
 
       case "toggle arrow":        return this.template.find('.item-arrow:first');
 

@@ -22,7 +22,7 @@ var EditAndGoAgainView = (function (_CreatorView) {
 
     _get(Object.getPrototypeOf(EditAndGoAgainView.prototype), 'constructor', this).call(this);
 
-    this.removeClass('creator');
+    this.removeClass('creator').removeClass('is-container').addClass('editor');
   }
 
   _inherits(EditAndGoAgainView, _CreatorView);
@@ -32,5 +32,3 @@ var EditAndGoAgainView = (function (_CreatorView) {
 
 exports['default'] = EditAndGoAgainView;
 module.exports = exports['default'];
-// .removeClass('is-container')
-// .addClass('editor');
