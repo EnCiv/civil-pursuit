@@ -44,7 +44,9 @@ var Item = (function (_Element) {
 
     this.extra = extra || {};
 
-    this.add(this.media(), this.buttons(), this.text(), this.arrow(), this.collapsers(), new _cincoDist.Element('.clear'));
+    this.add(this.media(), this.buttons(), this.text(),
+    // this.arrow(),
+    this.collapsers(), new _cincoDist.Element('.clear'));
   }
 
   _inherits(Item, _Element);

@@ -11,8 +11,6 @@ import PanelCtrl        from '../../../components/panel/ctrl';
 
 function toggleArrow ($trigger, showSubtype = true, showHarmony = true) {
 
-  console.info({ showSubtype, showHarmony });
-
   let ItemView    =   $trigger.closest('.item'),
     ItemCtrl      =   ItemView.data('item'),
     ItemDocument  =   this.get('item'),

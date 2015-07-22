@@ -17,7 +17,7 @@ class Item extends Element {
       this.media(),
       this.buttons(),
       this.text(),
-      this.arrow(),
+      // this.arrow(),
       this.collapsers(),
       new Element('.clear')
     );

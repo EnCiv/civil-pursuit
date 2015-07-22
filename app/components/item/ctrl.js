@@ -172,7 +172,6 @@ class ItemCtrl extends Controller {
     // REFERENCES
 
     if ( (item.references) && item.references.length ) {
-      console.warn('has references', this.find('reference'))
       this.find('reference')
         .attr('href', item.references[0].url)
         .text(item.references[0].title || item.references[0].url);

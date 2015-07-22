@@ -31,20 +31,45 @@ class IdentityCtrl extends Controller {
     }
   }
 
-  render () {
-
-    // Show
-
+  show () {
     Nav.reveal(this.find('expand'), this.template,
       this.domain.intercept(() => {
         this.find('toggle arrow')
           .removeClass('fa-arrow-down')
           .addClass('fa-arrow-up');
       }));
+  }
+
+  toggle () {
+
+    let self = this;
+
+    this.find('toggle arrow').on('click', function () {
+      
+      let arrow = $(this);
+
+      Nav.toggle(self.find('expand'), self.template, () => {
+        if ( self.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+  }
+
+  render () {
+
+    // Show
+
+    this.show();
+
+    /** Toggle arrow: expand/collapse identity */
+
+    this.toggle();
 
     // User image
-
-    console.info('USER', this.user);
 
     if ( this.user.image ) {
       this.find('image').attr('src', this.user.image);

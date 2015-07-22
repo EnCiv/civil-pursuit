@@ -1,5 +1,5 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports={
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/config.json":[function(require,module,exports){
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "tmp"             :   "/tmp",
   
   "title"           :   {
@@ -197,7 +197,7 @@ module.exports={
 
   "default user" : "synbot@synaccord.com"
 }
-},{}],2:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/app.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -438,7 +438,7 @@ var App = (function (_EventEmitter) {
 
 exports['default'] = App;
 module.exports = exports['default'];
-},{"./lib/app/cache":17,"domain":24,"events":25}],3:[function(require,module,exports){
+},{"./lib/app/cache":"/home/francois/Dev/syn/dist/lib/app/cache.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/components/creator/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -607,7 +607,7 @@ var Creator = (function (_Element) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/item/view":9,"cinco/dist":27}],4:[function(require,module,exports){
+},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/details/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -673,7 +673,7 @@ var Details = (function (_Element) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"cinco/dist":27}],5:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -738,7 +738,7 @@ module.exports = exports['default'];
 //
 
 // $('.forgot-password-pending').css('display', 'block');
-},{"../../lib/util/form":21,"domain":24}],6:[function(require,module,exports){
+},{"../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/components/identity/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -795,19 +795,46 @@ var IdentityCtrl = (function (_Controller) {
       }
     }
   }, {
-    key: 'render',
-    value: function render() {
+    key: 'show',
+    value: function show() {
       var _this = this;
-
-      // Show
 
       _libUtilNav2['default'].reveal(this.find('expand'), this.template, this.domain.intercept(function () {
         _this.find('toggle arrow').removeClass('fa-arrow-down').addClass('fa-arrow-up');
       }));
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+
+      var self = this;
+
+      this.find('toggle arrow').on('click', function () {
+
+        var arrow = $(this);
+
+        _libUtilNav2['default'].toggle(self.find('expand'), self.template, function () {
+          if (self.find('expand').hasClass('is-hidden')) {
+            arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+          } else {
+            arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+          }
+        });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+
+      // Show
+
+      this.show();
+
+      /** Toggle arrow: expand/collapse identity */
+
+      this.toggle();
 
       // User image
-
-      console.info('USER', this.user);
 
       if (this.user.image) {
         this.find('image').attr('src', this.user.image);
@@ -986,7 +1013,7 @@ function foo() {
   module.exports = Identity;
 }
 module.exports = exports['default'];
-},{"../../lib/app/controller":18,"../../lib/util/nav":22}],7:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/identity/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1068,7 +1095,7 @@ var IdentityView = (function (_Element) {
 
 exports['default'] = IdentityView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"cinco/dist":27}],8:[function(require,module,exports){
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1109,7 +1136,7 @@ var ItemDefaultButtons = (function (_Elements) {
 
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
-},{"cinco/dist":27}],9:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1156,7 +1183,9 @@ var Item = (function (_Element) {
 
     this.extra = extra || {};
 
-    this.add(this.media(), this.buttons(), this.text(), this.arrow(), this.collapsers(), new _cincoDist.Element('.clear'));
+    this.add(this.media(), this.buttons(), this.text(),
+    // this.arrow(),
+    this.collapsers(), new _cincoDist.Element('.clear'));
   }
 
   _inherits(Item, _Element);
@@ -1295,7 +1324,7 @@ var Item = (function (_Element) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"../../lib/app/page":19,"../details/view":4,"../item-default-buttons/view":8,"../promote/view":15,"cinco/dist":27}],10:[function(require,module,exports){
+},{"../../lib/app/page":"/home/francois/Dev/syn/dist/lib/app/page.js","../details/view":"/home/francois/Dev/syn/dist/components/details/view.js","../item-default-buttons/view":"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js","../promote/view":"/home/francois/Dev/syn/dist/components/promote/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/join/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1408,7 +1437,7 @@ var Join = (function (_Controller) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../../lib/app/controller":18,"../../lib/util/form":21}],11:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js"}],"/home/francois/Dev/syn/dist/components/login/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1513,7 +1542,7 @@ var Login = (function (_Controller) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../../lib/app/controller":18,"../../lib/util/form":21,"../../lib/util/nav":22}],12:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/panel/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1602,7 +1631,7 @@ var Panel = (function (_Element) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../../components/creator/view":3,"cinco/dist":27}],13:[function(require,module,exports){
+},{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/profile/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1858,7 +1887,7 @@ function foo() {
   module.exports = Profile;
 }
 module.exports = exports['default'];
-},{"../../lib/app/controller":18,"../identity/ctrl":6,"./view":14}],14:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../identity/ctrl":"/home/francois/Dev/syn/dist/components/identity/ctrl.js","./view":"/home/francois/Dev/syn/dist/components/profile/view.js"}],"/home/francois/Dev/syn/dist/components/profile/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1907,7 +1936,7 @@ var ProfileView = (function (_Element) {
 
 exports['default'] = ProfileView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"../identity/view":7,"../panel/view":12,"cinco/dist":27}],15:[function(require,module,exports){
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","../identity/view":"/home/francois/Dev/syn/dist/components/identity/view.js","../panel/view":"/home/francois/Dev/syn/dist/components/panel/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2037,7 +2066,7 @@ var Promote = (function (_Element) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"cinco/dist":27}],16:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js":[function(require,module,exports){
 /**
  * @package     App.Component.TopbBar.Controller
 */
@@ -2238,7 +2267,7 @@ var TopBar = (function (_Controller) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../../components/forgot-password/ctrl":5,"../../components/join/ctrl":10,"../../components/login/ctrl":11,"../../lib/app/controller":18}],17:[function(require,module,exports){
+},{"../../components/forgot-password/ctrl":"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js","../../components/join/ctrl":"/home/francois/Dev/syn/dist/components/join/ctrl.js","../../components/login/ctrl":"/home/francois/Dev/syn/dist/components/login/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js"}],"/home/francois/Dev/syn/dist/lib/app/cache.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2275,7 +2304,7 @@ var Cache = (function () {
 
 exports['default'] = new Cache();
 module.exports = exports['default'];
-},{}],18:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/lib/app/controller.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2308,7 +2337,7 @@ var Controller = (function (_App) {
 
 exports['default'] = Controller;
 module.exports = exports['default'];
-},{"../../app":2}],19:[function(require,module,exports){
+},{"../../app":"/home/francois/Dev/syn/dist/app.js"}],"/home/francois/Dev/syn/dist/lib/app/page.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -2348,7 +2377,7 @@ module.exports = exports['default'];
 
   module.exports = Page;
 })();
-},{"string":32}],20:[function(require,module,exports){
+},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/dist/lib/util/domain-run.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -2406,7 +2435,7 @@ module.exports = exports['default'];
 
   module.exports = domainRun;
 })();
-},{"domain":24}],21:[function(require,module,exports){
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/lib/util/form.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2494,7 +2523,7 @@ var Form = (function () {
 
 exports['default'] = Form;
 module.exports = exports['default'];
-},{"./domain-run":20}],22:[function(require,module,exports){
+},{"./domain-run":"/home/francois/Dev/syn/dist/lib/util/domain-run.js"}],"/home/francois/Dev/syn/dist/lib/util/nav.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -2817,7 +2846,7 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":26,"domain":24,"events":25}],23:[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/pages/profile/ctrl.js":[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -2842,7 +2871,7 @@ synapp.app.ready(function (session) {
 
   new _componentsProfileCtrl2['default']({ session: session }).render();
 });
-},{"../../app":2,"../../components/profile/ctrl":13,"../../components/top-bar/ctrl":16}],24:[function(require,module,exports){
+},{"../../app":"/home/francois/Dev/syn/dist/app.js","../../components/profile/ctrl":"/home/francois/Dev/syn/dist/components/profile/ctrl.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -2910,7 +2939,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":25}],25:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3213,7 +3242,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],26:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3301,7 +3330,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],27:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/cinco/dist/index.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3345,7 +3374,7 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./lib/compiler":28,"./lib/document":29,"./lib/element":30,"./lib/elements":31}],28:[function(require,module,exports){
+},{"./lib/compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./lib/document":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js","./lib/element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./lib/elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3576,7 +3605,7 @@ var Compiler = (function () {
 exports['default'] = Compiler;
 module.exports = exports['default'];
 
-},{"./element":30,"./elements":31,"domain":24}],29:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3704,7 +3733,7 @@ Document.doctype = '<!doctype html>';
 exports['default'] = Document;
 module.exports = exports['default'];
 
-},{"./element":30,"./elements":31}],30:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4111,7 +4140,7 @@ var Element = (function () {
 exports['default'] = Element;
 module.exports = exports['default'];
 
-},{"./compiler":28,"./elements":31}],31:[function(require,module,exports){
+},{"./compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4271,7 +4300,7 @@ var Elements = (function () {
 exports['default'] = Elements;
 module.exports = exports['default'];
 
-},{"./element":30}],32:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -5305,4 +5334,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[23]);
+},{}]},{},["/home/francois/Dev/syn/dist/pages/profile/ctrl.js"]);

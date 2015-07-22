@@ -130,44 +130,6 @@
 
       $description.append(more);
     }
-
-    // Hide reference if too low and breaks design
-
-    if ( $reference.text() && (($arrow.offset().top - $reference.offset().top) < 15 ) ) {
-
-      var more;
-
-      if ( $description.find('.more').length ) {
-        more = $description.find('.more');
-      }
-
-      else {
-        more = $('<a href="#" class="more">more</a>');
-
-        more.on('click', function () {
-
-          if ( $(this).hasClass('more') ) {
-            $(this).removeClass('more').addClass('less').text('less');
-            $reference.show();
-          }
-
-          else {
-            $(this).removeClass('less').addClass('more').text('more');
-            $reference.hide();
-          }
-
-          return false;
-
-        });
-      }
-
-      $description.append(more);
-
-      $reference
-        .css('padding-bottom', '10px')
-        .data('is-hidden-reference', true)
-        .hide();
-    }
   }
 
   module.exports = readMore;

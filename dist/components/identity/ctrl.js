@@ -54,19 +54,46 @@ var IdentityCtrl = (function (_Controller) {
       }
     }
   }, {
-    key: 'render',
-    value: function render() {
+    key: 'show',
+    value: function show() {
       var _this = this;
-
-      // Show
 
       _libUtilNav2['default'].reveal(this.find('expand'), this.template, this.domain.intercept(function () {
         _this.find('toggle arrow').removeClass('fa-arrow-down').addClass('fa-arrow-up');
       }));
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+
+      var self = this;
+
+      this.find('toggle arrow').on('click', function () {
+
+        var arrow = $(this);
+
+        _libUtilNav2['default'].toggle(self.find('expand'), self.template, function () {
+          if (self.find('expand').hasClass('is-hidden')) {
+            arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+          } else {
+            arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+          }
+        });
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+
+      // Show
+
+      this.show();
+
+      /** Toggle arrow: expand/collapse identity */
+
+      this.toggle();
 
       // User image
-
-      console.info('USER', this.user);
 
       if (this.user.image) {
         this.find('image').attr('src', this.user.image);

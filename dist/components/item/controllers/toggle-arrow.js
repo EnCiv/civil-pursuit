@@ -24,8 +24,6 @@ function toggleArrow($trigger) {
   var showSubtype = arguments[1] === undefined ? true : arguments[1];
   var showHarmony = arguments[2] === undefined ? true : arguments[2];
 
-  console.info({ showSubtype: showSubtype, showHarmony: showHarmony });
-
   var ItemView = $trigger.closest('.item'),
       ItemCtrl = ItemView.data('item'),
       ItemDocument = this.get('item'),
