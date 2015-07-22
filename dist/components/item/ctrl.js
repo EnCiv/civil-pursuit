@@ -68,8 +68,6 @@ var ItemCtrl = (function (_Controller) {
 
     if (this.props.item) {
       this.set('item', this.props.item);
-
-      console.warn('ITEM', this.props.item);
     }
 
     this.componentName = 'Item';

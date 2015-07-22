@@ -1269,7 +1269,17 @@ var EditAndGoAgainCtrl = (function (_Controller) {
     }
   }, {
     key: 'render',
-    value: function render() {}
+    value: function render() {
+      this.template.find('[name="subject"]').val(this.item.get('item').subject);
+
+      this.template.find('[name="description"]').val(this.item.get('item').description).autogrow();
+
+      if (this.item.get('item').references.length) {
+        this.template.find('[name="reference"]').val(this.item.get('item').references[0].url);
+      }
+
+      this.template.find('.item-media').empty().append(this.item.media());
+    }
   }]);
 
   return EditAndGoAgainCtrl;
@@ -2214,8 +2224,6 @@ var ItemCtrl = (function (_Controller) {
 
     if (this.props.item) {
       this.set('item', this.props.item);
-
-      console.warn('ITEM', this.props.item);
     }
 
     this.componentName = 'Item';

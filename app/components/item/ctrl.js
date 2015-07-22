@@ -21,8 +21,6 @@ class ItemCtrl extends Controller {
 
     if ( this.props.item ) {
       this.set('item', this.props.item);
-
-      console.warn('ITEM', this.props.item);
     }
 
     this.componentName = 'Item';
