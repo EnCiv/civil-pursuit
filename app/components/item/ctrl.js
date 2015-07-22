@@ -209,7 +209,7 @@ class ItemCtrl extends Controller {
       var $item       =   $trigger.closest('.item');
       var item        =   $item.data('item');
       // item.find('toggle arrow').click();
-      self.toggleArrow(item.find('toggle arrow'), true, false);
+      self.toggleArrow(true, false);
     });
 
     // HARMONY
@@ -227,7 +227,7 @@ class ItemCtrl extends Controller {
       var $item       =   $trigger.closest('.item');
       var item        =   $item.data('item');
       // item.find('toggle arrow').click();
-      self.toggleArrow(item.find('toggle arrow'), false, true);
+      self.toggleArrow(false, true);
     });
     
     // TOGGLE PROMOTE
@@ -242,14 +242,6 @@ class ItemCtrl extends Controller {
       self.toggleDetails($(this));
     });
 
-    // TOGGLE ARROW
-
-    this.find('toggle arrow')
-      .removeClass('hide')
-      .on('click', function () {
-        self.toggleArrow($(this), true, true);
-      });
-
     cb();
   }
 
@@ -257,8 +249,8 @@ class ItemCtrl extends Controller {
     return togglePromote.apply(this, [$trigger]);
   }
 
-  toggleArrow ($trigger, showSubtype, showHarmony) {
-    return toggleArrow.apply(this, [$trigger, showSubtype, showHarmony]);
+  toggleArrow (showSubtype, showHarmony) {
+    return toggleArrow.apply(this, [showSubtype, showHarmony]);
   }
 
   toggleDetails ($trigger) {

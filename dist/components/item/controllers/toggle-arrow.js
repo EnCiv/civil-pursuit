@@ -20,12 +20,12 @@ var _componentsPanelCtrl = require('../../../components/panel/ctrl');
 
 var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
 
-function toggleArrow($trigger) {
-  var showSubtype = arguments[1] === undefined ? true : arguments[1];
-  var showHarmony = arguments[2] === undefined ? true : arguments[2];
+function toggleArrow() {
+  var showSubtype = arguments[0] === undefined ? true : arguments[0];
+  var showHarmony = arguments[1] === undefined ? true : arguments[1];
 
-  var ItemView = $trigger.closest('.item'),
-      ItemCtrl = ItemView.data('item'),
+  var ItemView = this.template,
+      ItemCtrl = this,
       ItemDocument = this.get('item'),
       subType = ItemDocument.subtype,
       collapsers = {
@@ -137,20 +137,13 @@ function toggleArrow($trigger) {
   };
 
   if (ItemCtrl.find('children').hasClass('is-shown')) {
-    console.info('Hide children');
 
     _libUtilNav2['default'].unreveal(ItemCtrl.find('children').find('.toggable-panel'), ItemView, d.intercept(function () {
       ItemCtrl.find('children').removeClass('is-shown');
-
-      $trigger.find('i.fa').removeClass('fa-arrow-up').addClass('fa-arrow-down');
     }));
   } else {
 
-    console.info('Show children');
-
     _libUtilNav2['default'].reveal(ItemCtrl.find('children').find('.toggable-panel'), ItemView, d.intercept(function () {
-
-      console.log('Children shown');
 
       if (!ItemCtrl.find('children').hasClass('harmony-loaded')) {
         loadHarmony();
@@ -169,61 +162,9 @@ function toggleArrow($trigger) {
       }
 
       ItemCtrl.find('children').addClass('is-shown');
-
-      $trigger.find('i.fa').removeClass('fa-arrow-down').addClass('fa-arrow-up');
     }));
   }
 }
-
-// function old () {
-//   Nav.toggle(item.find('children'), this.template, d.intercept(() => {
-//     if ( item.find('children').hasClass('is-hidden') && item.find('collapsers visible').length ) {
-//       item.find('collapsers').hide();
-//     }
-
-//     if ( item.find('children').hasClass('is-shown') && ! item.find('children').hasClass('is-loaded') ) {
-
-//       item.find('children').addClass('is-loaded');
-
-//       var harmony = storeItem.type.harmony;
-
-//       if ( harmony.length ) {
-//         var split = $('<div class="row"><div class="tablet-50 left-split"></div><div class="tablet-50 right-split"></div></div>');
-
-//         item.find('children').append(split);
-
-//       }
-
-//       var subtype = storeItem.subtype;
-
-//       if ( subtype ) {
-//         var subPanel = new Panel({
-//           panel: {
-//             type    :   subtype,
-//             parent  :   storeItem._id
-//           }
-//         });
-
-//         subPanel.load();
-
-//         item.find('children').append(subPanel.template);
-
-//         setTimeout(() => {
-//           subPanel.render(d.intercept(() =>
-//             subPanel.fill(d.intercept())
-//           ));
-//         });
-//       }
-//     }
-
-//     if ( arrow.hasClass('fa-arrow-down') ) {
-//       arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-//     }
-//     else {
-//       arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-//     }
-//   }));
-// }
 
 exports['default'] = toggleArrow;
 module.exports = exports['default'];

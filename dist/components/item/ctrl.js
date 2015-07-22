@@ -282,7 +282,7 @@ var ItemCtrl = (function (_Controller) {
         var $item = $trigger.closest('.item');
         var item = $item.data('item');
         // item.find('toggle arrow').click();
-        self.toggleArrow(item.find('toggle arrow'), true, false);
+        self.toggleArrow(true, false);
       });
 
       // HARMONY
@@ -300,7 +300,7 @@ var ItemCtrl = (function (_Controller) {
         var $item = $trigger.closest('.item');
         var item = $item.data('item');
         // item.find('toggle arrow').click();
-        self.toggleArrow(item.find('toggle arrow'), false, true);
+        self.toggleArrow(false, true);
       });
 
       // TOGGLE PROMOTE
@@ -315,12 +315,6 @@ var ItemCtrl = (function (_Controller) {
         self.toggleDetails($(this));
       });
 
-      // TOGGLE ARROW
-
-      this.find('toggle arrow').removeClass('hide').on('click', function () {
-        self.toggleArrow($(this), true, true);
-      });
-
       cb();
     }
   }, {
@@ -330,8 +324,8 @@ var ItemCtrl = (function (_Controller) {
     }
   }, {
     key: 'toggleArrow',
-    value: function toggleArrow($trigger, showSubtype, showHarmony) {
-      return _controllersToggleArrow2['default'].apply(this, [$trigger, showSubtype, showHarmony]);
+    value: function toggleArrow(showSubtype, showHarmony) {
+      return _controllersToggleArrow2['default'].apply(this, [showSubtype, showHarmony]);
     }
   }, {
     key: 'toggleDetails',
