@@ -32,12 +32,10 @@ class Creator extends Controller {
   }
 
   getTitle (url) {
-    console.info('get title', url);
     return new Promise((ok, ko) => {
       this
         .publish('get url title', url)
         .subscribe((pubsub, title) => {
-          console.info('get title', title);
           ok(title);
           pubsub.unsubscribe();
         });

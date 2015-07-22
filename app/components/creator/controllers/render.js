@@ -14,8 +14,6 @@ function renderCreator (cb) {
 
     d.run(() => {
 
-      console.info('I AM RENDERING THE CREATOR', this.panel, this.template)
-
       // Make sure template exists in DOM
 
       if ( ! this.template.length ) {
@@ -96,8 +94,6 @@ function renderCreator (cb) {
 
       var form = new Form(this.template);
 
-      console.info('NEW FORM')
-      
       form.send(this.create.bind(this));
 
       // Done

@@ -97,7 +97,6 @@ var Panel = (function (_Controller) {
     value: function render(cb) {
       var _this = this;
 
-      console.warn('RENDER PANEL', this.props.panel, this.id);
       var q = new Promise(function (fulfill, reject) {
 
         var d = _this.domain;
@@ -177,8 +176,6 @@ var Panel = (function (_Controller) {
         }
 
         pubsub.unsubscribe();
-
-        console.log('got panel items', items);
 
         _this2.template.find('.hide.pre').removeClass('hide');
         _this2.template.find('.show.pre').removeClass('show').hide();

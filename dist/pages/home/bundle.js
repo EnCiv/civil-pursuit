@@ -466,8 +466,6 @@ function renderCreator(cb) {
 
     d.run(function () {
 
-      console.info('I AM RENDERING THE CREATOR', _this.panel, _this.template);
-
       // Make sure template exists in DOM
 
       if (!_this.template.length) {
@@ -537,8 +535,6 @@ function renderCreator(cb) {
       // Build form using Form provider
 
       var form = new _libUtilForm2['default'](_this.template);
-
-      console.info('NEW FORM');
 
       form.send(_this.create.bind(_this));
 
@@ -632,10 +628,8 @@ var Creator = (function (_Controller) {
     value: function getTitle(url) {
       var _this = this;
 
-      console.info('get title', url);
       return new Promise(function (ok, ko) {
         _this.publish('get url title', url).subscribe(function (pubsub, title) {
-          console.info('get title', title);
           ok(title);
           pubsub.unsubscribe();
         });
@@ -2217,6 +2211,8 @@ var ItemCtrl = (function (_Controller) {
 
     if (this.props.item) {
       this.set('item', this.props.item);
+
+      console.warn('ITEM', this.props.item);
     }
 
     this.componentName = 'Item';
@@ -3046,7 +3042,6 @@ var Panel = (function (_Controller) {
     value: function render(cb) {
       var _this = this;
 
-      console.warn('RENDER PANEL', this.props.panel, this.id);
       var q = new Promise(function (fulfill, reject) {
 
         var d = _this.domain;
@@ -3126,8 +3121,6 @@ var Panel = (function (_Controller) {
         }
 
         pubsub.unsubscribe();
-
-        console.log('got panel items', items);
 
         _this2.template.find('.hide.pre').removeClass('hide');
         _this2.template.find('.show.pre').removeClass('show').hide();

@@ -55,7 +55,6 @@ class Panel extends Controller {
   }
 
   render (cb) {
-    console.warn('RENDER PANEL', this.props.panel, this.id)
     var q = new Promise((fulfill, reject) => {
 
       let d = this.domain;
@@ -139,8 +138,6 @@ class Panel extends Controller {
         }
 
         pubsub.unsubscribe();
-
-        console.log('got panel items', items);
 
         this.template.find('.hide.pre').removeClass('hide');
         this.template.find('.show.pre').removeClass('show').hide();

@@ -72,10 +72,8 @@ var Creator = (function (_Controller) {
     value: function getTitle(url) {
       var _this = this;
 
-      console.info('get title', url);
       return new Promise(function (ok, ko) {
         _this.publish('get url title', url).subscribe(function (pubsub, title) {
-          console.info('get title', title);
           ok(title);
           pubsub.unsubscribe();
         });

@@ -97,10 +97,48 @@ function toPanelItem (cb) {
       });
 
       let getSubtype    = () => new Promise((ok, ko) => {
-        TypeModel
-          .findOne({ parent : this.type })
-          .exec()
-          .then(ok, ko);
+        try {
+          TypeModel
+            .find({ parent : this.type })
+            .exec()
+            .then(
+              types => {
+                try {
+                  if ( ! types.length ) {
+                    return ok(null);
+                  }
+                  let promises = types.map(type => type.isHarmony());
+                  Promise
+                    .all(promises)
+                    .then(
+                      results => {
+                        try {
+                          let subtype = results.reduce(
+                            (subtype, isHarmony, index) => {
+                              if ( ! isHarmony ) {
+                                subtype = types[index];
+                              }
+                              return subtype;
+                            }, null);
+
+                          ok(subtype);
+                        }
+                        catch ( error ) {
+                          ko(error);
+                        }
+                      },
+                      ko
+                    );
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko);
+        }
+        catch ( error ) {
+          ko(error);
+        }
       });
 
       let countChildren = () => new Promise((ok, ko) => {

@@ -121,7 +121,36 @@ function toPanelItem(cb) {
 
         var getSubtype = function getSubtype() {
           return new Promise(function (ok, ko) {
-            _type2['default'].findOne({ parent: _this.type }).exec().then(ok, ko);
+            try {
+              _type2['default'].find({ parent: _this.type }).exec().then(function (types) {
+                try {
+                  if (!types.length) {
+                    return ok(null);
+                  }
+                  var promises = types.map(function (type) {
+                    return type.isHarmony();
+                  });
+                  Promise.all(promises).then(function (results) {
+                    try {
+                      var subtype = results.reduce(function (subtype, isHarmony, index) {
+                        if (!isHarmony) {
+                          subtype = types[index];
+                        }
+                        return subtype;
+                      }, null);
+
+                      ok(subtype);
+                    } catch (error) {
+                      ko(error);
+                    }
+                  }, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              }, ko);
+            } catch (error) {
+              ko(error);
+            }
           });
         };
 
