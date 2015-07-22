@@ -126,47 +126,88 @@ function toggleArrow (showSubtype = true, showHarmony = true) {
     }
   };
 
-  if ( ItemCtrl.find('children').hasClass('is-shown') ) {
+  let
+    subtypeIsShown    = ItemView.find('.subtype-panel').hasClass('is-shown'),
+    subtypeIsShowing  = ItemView.find('.subtype-panel').hasClass('is-showing'),
+    subtypeIsHidden   = ItemView.find('.subtype-panel').hasClass('is-hidden'),
+    subtypeIsHiding   = ItemView.find('.subtype-panel').hasClass('is-hiding'),
 
-    Nav.unreveal(ItemCtrl.find('children').find('.toggable-panel'), ItemView,
-      d.intercept(() => {
-        ItemCtrl.find('children').removeClass('is-shown');
-    }));
+    splitIsShown    = ItemView.find('.harmony-panel').hasClass('is-shown'),
+    splitIsShowing  = ItemView.find('.harmony-panel').hasClass('is-showing'),
+    splitIsHidden   = ItemView.find('.harmony-panel').hasClass('is-hidden'),
+    splitIsHiding   = ItemView.find('.harmony-panel').hasClass('is-hiding');
+
+  if ( subtypeIsShown ) {
+    Nav.unreveal(ItemView.find('.subtype-panel'), ItemView);
+  }
+  else if ( subtypeIsHidden || ( ! subtypeIsShowing && ! subtypeIsHiding ) ) {
+    if ( showSubtype ) {
+      if ( ! ItemView.find('.subtype-panel').length ) {
+        loadSubtype();
+      }
+      else {
+        Nav.reveal(ItemView.find('.subtype-panel'), ItemView);
+      }
+    }
   }
 
-  else {
-
-    Nav.reveal(ItemCtrl.find('children').find('.toggable-panel'), ItemView,
-      d.intercept(() => {
-
-
-        if ( ! ItemCtrl.find('children').hasClass('harmony-loaded') ) {
-          loadHarmony();
-        }
-
-        else if ( ! showHarmony ) {
-          ItemCtrl.find('children').find('.harmony-panel').hide();
-        }
-
-        else {
-          ItemCtrl.find('children').find('.harmony-panel').show();
-        }
-
-        if ( ! ItemCtrl.find('children').hasClass('subtype-loaded') ) {
-          loadSubtype();
-        }
-
-        else if ( ! showSubtype ) {
-          ItemCtrl.find('children').find('.subtype-panel').hide();
-        }
-
-        else {
-          ItemCtrl.find('children').find('.subtype-panel').show();
-        }
-        
-        ItemCtrl.find('children').addClass('is-shown');
-    }));
+  if ( splitIsShown ) {
+    Nav.unreveal(ItemView.find('.harmony-panel'), ItemView);
   }
+  else if ( splitIsHidden || ( ! splitIsShowing && ! splitIsHiding ) ) {
+    if ( showHarmony ) {
+      if ( ! ItemView.find('.harmony-panel').length ) {
+        loadHarmony();
+      }
+      else {
+        Nav.reveal(ItemView.find('.harmony-panel'), ItemView);
+      }
+    }
+  }
+
+  let foo22 = () => {
+    if ( ItemCtrl.find('children').hasClass('is-shown') ) {
+
+      Nav.unreveal(ItemCtrl.find('children').find('.toggable-panel'), ItemView,
+        d.intercept(() => {
+          ItemCtrl.find('children').removeClass('is-shown');
+      }));
+    }
+
+    else {
+
+      Nav.reveal(ItemCtrl.find('children').find('.toggable-panel'), ItemView,
+        d.intercept(() => {
+
+
+          if ( ! ItemCtrl.find('children').hasClass('harmony-loaded') ) {
+            loadHarmony();
+          }
+
+          else if ( ! showHarmony ) {
+            ItemCtrl.find('children').find('.harmony-panel').hide();
+          }
+
+          else {
+            ItemCtrl.find('children').find('.harmony-panel').show();
+          }
+
+          if ( ! ItemCtrl.find('children').hasClass('subtype-loaded') ) {
+            loadSubtype();
+          }
+
+          else if ( ! showSubtype ) {
+            ItemCtrl.find('children').find('.subtype-panel').hide();
+          }
+
+          else {
+            ItemCtrl.find('children').find('.subtype-panel').show();
+          }
+          
+          ItemCtrl.find('children').addClass('is-shown');
+      }));
+    }
+  };
   
 }
 
