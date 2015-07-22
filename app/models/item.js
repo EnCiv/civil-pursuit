@@ -64,33 +64,3 @@ export default mongoose.model('Item', itemSchema);
 
 
 // mongoose.connect(process.env.MONGOHQ_URL);
-
-// mongoose
-//   .model('Item')
-//   .evaluate('559bcac5e2b1cc2a26b94e99', '55ab6fcc8be171f70dba5bdc')
-//   .then(
-//     evaluation => {
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log();
-//       console.log('evaluation', evaluation);
-//     },
-//     error => error.stack.split(/\n/).forEach(console.log.bind(console))
-//   );

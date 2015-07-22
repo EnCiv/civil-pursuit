@@ -220,30 +220,36 @@ function toPanelItem(cb) {
 
         var getHarmony = function getHarmony(item) {
           return new Promise(function (ok, ko) {
-            var harmony = item.type.harmony;
+            try {
+              var harmony = item.type.harmony;
 
-            var promises = harmony.map(function (side) {
-              new Promise(function (ok, ko) {
-                ItemModel.where({
-                  parent: item._id,
-                  type: side._id
-                }).count(function (error, count) {
-                  if (error) {
-                    return ko(error);
-                  }
-                  ok(count);
+              var promises = harmony.map(function (side) {
+                return new Promise(function (ok, ko) {
+                  ItemModel.where({
+                    parent: item._id,
+                    type: side._id
+                  }).count(function (error, count) {
+                    if (error) {
+                      return ko(error);
+                    }
+                    ok(count);
+                  });
                 });
               });
-            });
 
-            Promise.all(promises).then(function (results) {
-              var _results = _slicedToArray(results, 2);
+              // console.log(promises);
 
-              var pro = _results[0];
-              var con = _results[1];
+              Promise.all(promises).then(function (results) {
+                var _results = _slicedToArray(results, 2);
 
-              ok((0, _libGetHarmony2['default'])(pro, con));
-            }, ko);
+                var pro = _results[0];
+                var con = _results[1];
+
+                ok((0, _libGetHarmony2['default'])(pro, con));
+              }, ko);
+            } catch (error) {
+              ko(error);
+            }
           });
         };
 

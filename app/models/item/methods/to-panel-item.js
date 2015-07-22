@@ -201,34 +201,41 @@ function toPanelItem (cb) {
       });
 
       let getHarmony    = (item) => new Promise((ok, ko) => {
+        try {
+          let { harmony } = item.type;
 
-        let { harmony } = item.type;
 
-        let promises = harmony.map(side => {
-          new Promise((ok, ko) => {
-            ItemModel
-              .where({
-                parent    :   item._id,
-                type      :   side._id
-              })
-              .count((error, count) => {
-                if ( error ) {
-                  return ko(error);
-                }
-                ok(count);
-              })
-          });
-        });
-
-        Promise
-          .all(promises)
-          .then(
-            results => {
-              let [ pro, con ] = results;
-              ok(calcHarmony(pro, con));
-            },
-            ko
+          let promises = harmony.map(side => 
+            new Promise((ok, ko) => {
+              ItemModel
+                .where({
+                  parent    :   item._id,
+                  type      :   side._id
+                })
+                .count((error, count) => {
+                  if ( error ) {
+                    return ko(error);
+                  }
+                  ok(count);
+                })
+            })
           );
+
+          // console.log(promises);
+
+          Promise
+            .all(promises)
+            .then(
+              results => {
+                let [ pro, con ] = results;
+                ok(calcHarmony(pro, con));
+              },
+              ko
+            );
+        }
+        catch ( error ) {
+          ko(error);
+        }
       });
 
       Promise
