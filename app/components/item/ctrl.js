@@ -30,7 +30,7 @@ class ItemCtrl extends Controller {
   listen () {
     let self = this;
 
-    this.socket.once(
+    this.socket.on(
       'item image uploaded ' + this.props.item._id,
       item => {
         this.set('image', item.image);
@@ -194,41 +194,48 @@ class ItemCtrl extends Controller {
 
     this.find('promotions %').text(popularity + '%');
 
-    // CHILDREN / RELATED
+    // CHILDREN / RELATED /SUBTYPE
 
-    if ( ! this.find('buttons').find('.related-number').length ) {
-      let buttonChildren = this.makeRelated('related');
-      buttonChildren.addClass('children-count');
-      buttonChildren.find('i').addClass('fa-fire');
-      buttonChildren.find('.related-number').text(item.children);
-      this.find('related').append(buttonChildren);
+    if ( item.subtype ) {
+      if ( ! this.find('buttons').find('.related-number').length ) {
+        let buttonChildren = this.makeRelated('related');
+        buttonChildren.addClass('children-count');
+        buttonChildren.find('i').addClass('fa-fire');
+        buttonChildren.find('.related-number').text(item.children);
+        this.find('related').append(buttonChildren);
+      }
+
+      this.template.find('.children-count').on('click', function () {
+        var $trigger    =   $(this);
+        var $item       =   $trigger.closest('.item');
+        var item        =   $item.data('item');
+        // item.find('toggle arrow').click();
+        self.toggleArrow(true, false);
+      });
     }
-
-    this.template.find('.children-count').on('click', function () {
-      var $trigger    =   $(this);
-      var $item       =   $trigger.closest('.item');
-      var item        =   $item.data('item');
-      // item.find('toggle arrow').click();
-      self.toggleArrow(true, false);
-    });
 
     // HARMONY
 
-    if ( 'harmony' in item ) {
+    // if ( 'harmony' in item ) {
+    if ( item.type.harmony.length ) {
       var buttonHarmony = this.makeRelated('harmony');
       buttonHarmony.addClass('harmony-percent');
       buttonHarmony.find('i').addClass('fa-music');
       buttonHarmony.find('.harmony-number').text(item.harmony);
       this.find('related').append(buttonHarmony);
+
+      this.template.find('.harmony-percent').on('click', function () {
+        var $trigger    =   $(this);
+        var $item       =   $trigger.closest('.item');
+        var item        =   $item.data('item');
+        // item.find('toggle arrow').click();
+        self.toggleArrow(false, true);
+      });
     }
 
-    this.template.find('.harmony-percent').on('click', function () {
-      var $trigger    =   $(this);
-      var $item       =   $trigger.closest('.item');
-      var item        =   $item.data('item');
-      // item.find('toggle arrow').click();
-      self.toggleArrow(false, true);
-    });
+    else {
+
+    }      
     
     // TOGGLE PROMOTE
 
