@@ -21,8 +21,6 @@ class ItemCtrl extends Controller {
 
     if ( this.props.item ) {
       this.set('item', this.props.item);
-
-      console.warn('ITEM', this.props.item);
     }
 
     this.componentName = 'Item';
@@ -72,7 +70,7 @@ class ItemCtrl extends Controller {
 
       case "buttons":             return this.template.find('> .item-buttons');
 
-      case "editor":              return this.template.find('.editor:first');
+      case "editor":              return this.template.find('>.collapsers >.edit-and-go-again');
 
       case "toggle arrow":        return this.template.find('.item-arrow:first');
 

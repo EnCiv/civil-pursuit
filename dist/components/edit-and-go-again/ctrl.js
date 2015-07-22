@@ -36,6 +36,7 @@ var EditAndGoAgainCtrl = (function (_Controller) {
   _createClass(EditAndGoAgainCtrl, [{
     key: 'load',
     value: function load() {
+      console.warn('EditAndGoAgain', new _view2['default']().render());
       this.template = $(new _view2['default']().render());
     }
   }, {

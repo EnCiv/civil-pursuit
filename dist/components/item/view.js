@@ -145,7 +145,7 @@ var Item = (function (_Element) {
         }
 
         return true;
-      }).add(this.promote(), this.details(), this.below());
+      }).add(this.promote(), this.details(), this.editAndGoAgain(), this.below());
     }
   }, {
     key: 'promote',
@@ -165,6 +165,11 @@ var Item = (function (_Element) {
     key: 'details',
     value: function details() {
       return new _cincoDist.Element('.details.is-container').add(new _cincoDist.Element('.is-section').add(new _detailsView2['default'](this.props)));
+    }
+  }, {
+    key: 'editAndGoAgain',
+    value: function editAndGoAgain() {
+      return new _cincoDist.Element('.edit-and-go-again.is-container').add(new _cincoDist.Element('.is-section'));
     }
   }, {
     key: 'arrow',

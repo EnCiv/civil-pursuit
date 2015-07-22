@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/dist/app.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -239,7 +239,7 @@ var App = (function (_EventEmitter) {
 
 exports['default'] = App;
 module.exports = exports['default'];
-},{"./lib/app/cache":33,"domain":42,"events":43}],2:[function(require,module,exports){
+},{"./lib/app/cache":"/home/francois/Dev/syn/dist/lib/app/cache.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/components/creator/controllers/create.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -327,7 +327,7 @@ function save() {
 exports['default'] = save;
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"../../../components/item/ctrl":18,"../../../lib/app/Stream":32,"../../../lib/util/nav":38,"_process":44}],3:[function(require,module,exports){
+},{"../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../../lib/app/Stream":"/home/francois/Dev/syn/dist/lib/app/Stream.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js"}],"/home/francois/Dev/syn/dist/components/creator/controllers/created.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -372,7 +372,7 @@ function created(item) {
 
 exports['default'] = created;
 module.exports = exports['default'];
-},{"../../../components/item/ctrl":18}],4:[function(require,module,exports){
+},{"../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js"}],"/home/francois/Dev/syn/dist/components/creator/controllers/pack-item.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -430,7 +430,7 @@ function packItem() {
 
 exports['default'] = packItem;
 module.exports = exports['default'];
-},{}],5:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/components/creator/controllers/render.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -553,7 +553,7 @@ function renderCreator(cb) {
 
 exports['default'] = renderCreator;
 module.exports = exports['default'];
-},{"../../../components/youtube/ctrl":30,"../../../lib/util/form":37,"../../../lib/util/upload":40,"domain":42}],6:[function(require,module,exports){
+},{"../../../components/youtube/ctrl":"/home/francois/Dev/syn/dist/components/youtube/ctrl.js","../../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../../lib/util/upload":"/home/francois/Dev/syn/dist/lib/util/upload.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/components/creator/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -694,7 +694,7 @@ var Creator = (function (_Controller) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/creator//controllers/create":2,"../../components/creator//controllers/created":3,"../../components/creator//controllers/pack-item":4,"../../components/creator//controllers/render":5,"../../components/panel//ctrl":22,"../../lib/app/controller":34}],7:[function(require,module,exports){
+},{"../../components/creator//controllers/create":"/home/francois/Dev/syn/dist/components/creator/controllers/create.js","../../components/creator//controllers/created":"/home/francois/Dev/syn/dist/components/creator/controllers/created.js","../../components/creator//controllers/pack-item":"/home/francois/Dev/syn/dist/components/creator/controllers/pack-item.js","../../components/creator//controllers/render":"/home/francois/Dev/syn/dist/components/creator/controllers/render.js","../../components/panel//ctrl":"/home/francois/Dev/syn/dist/components/panel/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js"}],"/home/francois/Dev/syn/dist/components/creator/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -863,7 +863,7 @@ var Creator = (function (_Element) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/item/view":19,"cinco/dist":45}],8:[function(require,module,exports){
+},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/details/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1101,7 +1101,7 @@ var Details = (function (_Controller) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"../../components/edit-and-go-again/ctrl":11,"../../lib/app/controller":34,"../../lib/util/nav":38}],9:[function(require,module,exports){
+},{"../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/details/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1167,7 +1167,7 @@ var Details = (function (_Element) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"cinco/dist":45}],10:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/edit-and-go-again/controllers/save.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -1225,7 +1225,7 @@ module.exports = exports['default'];
 
   module.exports = save;
 })();
-},{"../../../components/item/ctrl":18,"../../../lib/util/nav":38}],11:[function(require,module,exports){
+},{"../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1264,6 +1264,7 @@ var EditAndGoAgainCtrl = (function (_Controller) {
   _createClass(EditAndGoAgainCtrl, [{
     key: 'load',
     value: function load() {
+      console.warn('EditAndGoAgain', new _view2['default']().render());
       this.template = $(new _view2['default']().render());
     }
   }, {
@@ -1398,7 +1399,7 @@ function Component_EditAndGoAgain_Controller() {
   module.exports = Edit;
 }
 module.exports = exports['default'];
-},{"../../components/creator//ctrl":6,"../../components/edit-and-go-again/controllers/save":10,"../../components/item/ctrl":18,"../../lib/app/controller":34,"../../lib/util/form":37,"../../lib/util/nav":38,"./view":12}],12:[function(require,module,exports){
+},{"../../components/creator//ctrl":"/home/francois/Dev/syn/dist/components/creator/ctrl.js","../../components/edit-and-go-again/controllers/save":"/home/francois/Dev/syn/dist/components/edit-and-go-again/controllers/save.js","../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","./view":"/home/francois/Dev/syn/dist/components/edit-and-go-again/view.js"}],"/home/francois/Dev/syn/dist/components/edit-and-go-again/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1422,6 +1423,8 @@ var EditAndGoAgainView = (function (_CreatorView) {
     _classCallCheck(this, EditAndGoAgainView);
 
     _get(Object.getPrototypeOf(EditAndGoAgainView.prototype), 'constructor', this).call(this);
+
+    this.removeClass('creator');
   }
 
   _inherits(EditAndGoAgainView, _CreatorView);
@@ -1431,7 +1434,9 @@ var EditAndGoAgainView = (function (_CreatorView) {
 
 exports['default'] = EditAndGoAgainView;
 module.exports = exports['default'];
-},{"../creator/view":7}],13:[function(require,module,exports){
+// .removeClass('is-container')
+// .addClass('editor');
+},{"../creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js"}],"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -1496,7 +1501,7 @@ module.exports = exports['default'];
 //
 
 // $('.forgot-password-pending').css('display', 'block');
-},{"../../lib/util/form":37,"domain":42}],14:[function(require,module,exports){
+},{"../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1537,7 +1542,7 @@ var ItemDefaultButtons = (function (_Elements) {
 
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
-},{"cinco/dist":45}],15:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item/controllers/media.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1650,7 +1655,7 @@ function MediaController() {
 
 exports['default'] = MediaController;
 module.exports = exports['default'];
-},{"../../../components/youtube/view":31}],16:[function(require,module,exports){
+},{"../../../components/youtube/view":"/home/francois/Dev/syn/dist/components/youtube/view.js"}],"/home/francois/Dev/syn/dist/components/item/controllers/toggle-arrow.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1856,7 +1861,7 @@ function toggleArrow() {
 
 exports['default'] = toggleArrow;
 module.exports = exports['default'];
-},{"../../../components/panel/ctrl":22,"../../../lib/util/nav":38}],17:[function(require,module,exports){
+},{"../../../components/panel/ctrl":"/home/francois/Dev/syn/dist/components/panel/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/item/controllers/toggle-promote.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1943,7 +1948,7 @@ function tooglePromote($trigger) {
 
 exports['default'] = tooglePromote;
 module.exports = exports['default'];
-},{"../../../components/top-bar//ctrl":29,"../../../lib/util/nav":38}],18:[function(require,module,exports){
+},{"../../../components/top-bar//ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/item/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2014,8 +2019,6 @@ var ItemCtrl = (function (_Controller) {
 
     if (this.props.item) {
       this.set('item', this.props.item);
-
-      console.warn('ITEM', this.props.item);
     }
 
     this.componentName = 'Item';
@@ -2082,7 +2085,7 @@ var ItemCtrl = (function (_Controller) {
           return this.template.find('> .item-buttons');
 
         case 'editor':
-          return this.template.find('.editor:first');
+          return this.template.find('>.collapsers >.edit-and-go-again');
 
         case 'toggle arrow':
           return this.template.find('.item-arrow:first');
@@ -2339,7 +2342,7 @@ var ItemCtrl = (function (_Controller) {
 
 exports['default'] = ItemCtrl;
 module.exports = exports['default'];
-},{"../../components/details/ctrl":8,"../../components/panel/ctrl":22,"../../components/promote/ctrl":27,"../../lib/app/controller":34,"../../lib/util/nav":38,"../../lib/util/read-more":39,"./controllers/media":15,"./controllers/toggle-arrow":16,"./controllers/toggle-promote":17,"./view":19,"string":50}],19:[function(require,module,exports){
+},{"../../components/details/ctrl":"/home/francois/Dev/syn/dist/components/details/ctrl.js","../../components/panel/ctrl":"/home/francois/Dev/syn/dist/components/panel/ctrl.js","../../components/promote/ctrl":"/home/francois/Dev/syn/dist/components/promote/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","../../lib/util/read-more":"/home/francois/Dev/syn/dist/lib/util/read-more.js","./controllers/media":"/home/francois/Dev/syn/dist/components/item/controllers/media.js","./controllers/toggle-arrow":"/home/francois/Dev/syn/dist/components/item/controllers/toggle-arrow.js","./controllers/toggle-promote":"/home/francois/Dev/syn/dist/components/item/controllers/toggle-promote.js","./view":"/home/francois/Dev/syn/dist/components/item/view.js","string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/dist/components/item/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2487,7 +2490,7 @@ var Item = (function (_Element) {
         }
 
         return true;
-      }).add(this.promote(), this.details(), this.below());
+      }).add(this.promote(), this.details(), this.editAndGoAgain(), this.below());
     }
   }, {
     key: 'promote',
@@ -2509,6 +2512,11 @@ var Item = (function (_Element) {
       return new _cincoDist.Element('.details.is-container').add(new _cincoDist.Element('.is-section').add(new _detailsView2['default'](this.props)));
     }
   }, {
+    key: 'editAndGoAgain',
+    value: function editAndGoAgain() {
+      return new _cincoDist.Element('.edit-and-go-again.is-container').add(new _cincoDist.Element('.is-section'));
+    }
+  }, {
     key: 'arrow',
     value: function arrow() {
       var _this6 = this;
@@ -2527,7 +2535,7 @@ var Item = (function (_Element) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"../../lib/app/page":35,"../details/view":9,"../item-default-buttons/view":14,"../promote/view":28,"cinco/dist":45}],20:[function(require,module,exports){
+},{"../../lib/app/page":"/home/francois/Dev/syn/dist/lib/app/page.js","../details/view":"/home/francois/Dev/syn/dist/components/details/view.js","../item-default-buttons/view":"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js","../promote/view":"/home/francois/Dev/syn/dist/components/promote/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/join/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2640,7 +2648,7 @@ var Join = (function (_Controller) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../../lib/app/controller":34,"../../lib/util/form":37}],21:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js"}],"/home/francois/Dev/syn/dist/components/login/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2745,7 +2753,7 @@ var Login = (function (_Controller) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../../lib/app/controller":34,"../../lib/util/form":37,"../../lib/util/nav":38}],22:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/panel/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3030,7 +3038,7 @@ exports['default'] = Panel;
 module.exports = exports['default'];
 /** This is about another panel */
 // item: app.location.item
-},{"../../components/creator/ctrl":6,"../../components/item/ctrl":18,"../../components/panel/view":23,"../../components/top-bar/ctrl":29,"../../lib/app/cache":33,"../../lib/app/controller":34,"../../lib/util/nav":38}],23:[function(require,module,exports){
+},{"../../components/creator/ctrl":"/home/francois/Dev/syn/dist/components/creator/ctrl.js","../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../components/panel/view":"/home/francois/Dev/syn/dist/components/panel/view.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js","../../lib/app/cache":"/home/francois/Dev/syn/dist/lib/app/cache.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/panel/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3119,7 +3127,7 @@ var Panel = (function (_Element) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../../components/creator/view":7,"cinco/dist":45}],24:[function(require,module,exports){
+},{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/finish.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3160,7 +3168,7 @@ function finish() {
 
 exports['default'] = finish;
 module.exports = exports['default'];
-},{"../../../lib/util/nav":38}],25:[function(require,module,exports){
+},{"../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3405,7 +3413,7 @@ function renderItem(hand) {
 
 exports['default'] = renderItem;
 module.exports = exports['default'];
-},{"../../../components/edit-and-go-again/ctrl":11,"../../../components/item/ctrl":18,"../../../lib/util/nav":38}],26:[function(require,module,exports){
+},{"../../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../../components/item/ctrl":"/home/francois/Dev/syn/dist/components/item/ctrl.js","../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/controllers/render.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3474,7 +3482,7 @@ function renderPromote(cb) {
 
 exports['default'] = renderPromote;
 module.exports = exports['default'];
-},{"../../../lib/util/nav":38}],27:[function(require,module,exports){
+},{"../../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3788,7 +3796,7 @@ var Promote = (function (_Controller) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"../../components/edit-and-go-again/ctrl":11,"../../components/promote/controllers/finish":24,"../../components/promote/controllers/render":26,"../../components/promote/controllers/render-item":25,"../../lib/app/controller":34,"../../lib/util/nav":38}],28:[function(require,module,exports){
+},{"../../components/edit-and-go-again/ctrl":"/home/francois/Dev/syn/dist/components/edit-and-go-again/ctrl.js","../../components/promote/controllers/finish":"/home/francois/Dev/syn/dist/components/promote/controllers/finish.js","../../components/promote/controllers/render":"/home/francois/Dev/syn/dist/components/promote/controllers/render.js","../../components/promote/controllers/render-item":"/home/francois/Dev/syn/dist/components/promote/controllers/render-item.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3918,7 +3926,7 @@ var Promote = (function (_Element) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"cinco/dist":45}],29:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js":[function(require,module,exports){
 /**
  * @package     App.Component.TopbBar.Controller
 */
@@ -4119,7 +4127,7 @@ var TopBar = (function (_Controller) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../../components/forgot-password/ctrl":13,"../../components/join/ctrl":20,"../../components/login/ctrl":21,"../../lib/app/controller":34}],30:[function(require,module,exports){
+},{"../../components/forgot-password/ctrl":"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js","../../components/join/ctrl":"/home/francois/Dev/syn/dist/components/join/ctrl.js","../../components/login/ctrl":"/home/francois/Dev/syn/dist/components/login/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js"}],"/home/francois/Dev/syn/dist/components/youtube/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4138,7 +4146,7 @@ function YouTube(url) {
 
 exports['default'] = YouTube;
 module.exports = exports['default'];
-},{"../../components/youtube/view":31}],31:[function(require,module,exports){
+},{"../../components/youtube/view":"/home/francois/Dev/syn/dist/components/youtube/view.js"}],"/home/francois/Dev/syn/dist/components/youtube/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4220,7 +4228,7 @@ YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 
 exports['default'] = YouTube;
 module.exports = exports['default'];
-},{"cinco/dist":45}],32:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/lib/app/Stream.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -4246,7 +4254,7 @@ module.exports = exports['default'];
 
   module.exports = Stream;
 })();
-},{}],33:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/lib/app/cache.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4283,7 +4291,7 @@ var Cache = (function () {
 
 exports['default'] = new Cache();
 module.exports = exports['default'];
-},{}],34:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/lib/app/controller.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4316,7 +4324,7 @@ var Controller = (function (_App) {
 
 exports['default'] = Controller;
 module.exports = exports['default'];
-},{"../../app":1}],35:[function(require,module,exports){
+},{"../../app":"/home/francois/Dev/syn/dist/app.js"}],"/home/francois/Dev/syn/dist/lib/app/page.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -4356,7 +4364,7 @@ module.exports = exports['default'];
 
   module.exports = Page;
 })();
-},{"string":50}],36:[function(require,module,exports){
+},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/dist/lib/util/domain-run.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -4414,7 +4422,7 @@ module.exports = exports['default'];
 
   module.exports = domainRun;
 })();
-},{"domain":42}],37:[function(require,module,exports){
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/lib/util/form.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4502,7 +4510,7 @@ var Form = (function () {
 
 exports['default'] = Form;
 module.exports = exports['default'];
-},{"./domain-run":36}],38:[function(require,module,exports){
+},{"./domain-run":"/home/francois/Dev/syn/dist/lib/util/domain-run.js"}],"/home/francois/Dev/syn/dist/lib/util/nav.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -4825,7 +4833,7 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":44,"domain":42,"events":43}],39:[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/lib/util/read-more.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -4959,7 +4967,7 @@ module.exports = exports['default'];
 
   module.exports = readMore;
 })();
-},{}],40:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/lib/util/upload.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -5039,7 +5047,7 @@ module.exports = exports['default'];
 
   module.exports = Upload;
 })();
-},{}],41:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/pages/item/ctrl.js":[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -5077,7 +5085,7 @@ synapp.app.ready(function () {
     });
   });
 });
-},{"../../app":1,"../../components/panel/ctrl":22,"../../components/top-bar/ctrl":29}],42:[function(require,module,exports){
+},{"../../app":"/home/francois/Dev/syn/dist/app.js","../../components/panel/ctrl":"/home/francois/Dev/syn/dist/components/panel/ctrl.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -5145,7 +5153,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":43}],43:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5448,7 +5456,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],44:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5536,7 +5544,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],45:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/cinco/dist/index.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5580,7 +5588,7 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./lib/compiler":46,"./lib/document":47,"./lib/element":48,"./lib/elements":49}],46:[function(require,module,exports){
+},{"./lib/compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./lib/document":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js","./lib/element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./lib/elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5811,7 +5819,7 @@ var Compiler = (function () {
 exports['default'] = Compiler;
 module.exports = exports['default'];
 
-},{"./element":48,"./elements":49,"domain":42}],47:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5939,7 +5947,7 @@ Document.doctype = '<!doctype html>';
 exports['default'] = Document;
 module.exports = exports['default'];
 
-},{"./element":48,"./elements":49}],48:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6221,10 +6229,10 @@ var Element = (function () {
           return _className !== className;
         });
 
-        var regexp = new RegExp('.' + className + '(.|#|\\[|$)', 'g');
+        var regexp = new RegExp('(.' + className + ')(.|#|\\[|$)', 'g');
 
         if (regexp.test(this.selector)) {
-          this.selector = this.selector.replace(regexp, '');
+          this.selector = this.selector.replace(regexp, '$2');
         }
       }
 
@@ -6346,7 +6354,7 @@ var Element = (function () {
 exports['default'] = Element;
 module.exports = exports['default'];
 
-},{"./compiler":46,"./elements":49}],49:[function(require,module,exports){
+},{"./compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6506,7 +6514,7 @@ var Elements = (function () {
 exports['default'] = Elements;
 module.exports = exports['default'];
 
-},{"./element":48}],50:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -7540,4 +7548,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[41]);
+},{}]},{},["/home/francois/Dev/syn/dist/pages/item/ctrl.js"]);

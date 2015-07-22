@@ -6,6 +6,11 @@ class EditAndGoAgainView extends CreatorView {
 
   constructor () {
     super();
+
+    this
+      .removeClass('creator')
+      // .removeClass('is-container')
+      // .addClass('editor');
   }
 
 }

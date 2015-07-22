@@ -127,6 +127,7 @@ class Item extends Element {
       .add(
         this.promote(),
         this.details(),
+        this.editAndGoAgain(),
         this.below()
       );
   }
@@ -153,6 +154,12 @@ class Item extends Element {
         new Details(this.props)
       )
     )
+  }
+
+  editAndGoAgain () {
+    return new Element('.edit-and-go-again.is-container').add(
+      new Element('.is-section')
+    );
   }
 
   arrow () {

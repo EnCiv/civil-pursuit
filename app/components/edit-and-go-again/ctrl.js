@@ -12,6 +12,7 @@ class EditAndGoAgainCtrl extends Controller {
   }
 
   load () {
+    console.warn('EditAndGoAgain', new View().render());
     this.template = $(new View().render());
   }
 
