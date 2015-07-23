@@ -3,7 +3,8 @@
 import Controller       from  '../../lib/app/controller';
 import Nav              from  '../../lib/util/nav';
 import Form             from  '../../lib/util/form';
-import View             from './view';
+import View             from  './view';
+import ItemCtrl         from  '../item/ctrl';
 
 class EditAndGoAgainCtrl extends Controller {
 
@@ -71,9 +72,18 @@ class EditAndGoAgainCtrl extends Controller {
 
         this
           .publish('create item', newItem)
-          .subscribe((pubsub, item) => {
-            console.warn('NEW ITEM', item);
+          .subscribe((pubsub, document) => {
             pubsub.unsubscribe();
+
+            let item = new ItemCtrl({ item : document });
+
+            item.load();
+
+            item.template.insertBefore(this.item.template);
+
+            item.render(this.domain.intercept(() => {
+              item.find('toggle promote').click();
+            }));
           });
 
         // app.socket.emit('create item', new_item);

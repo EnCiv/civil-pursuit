@@ -311,7 +311,7 @@ class ItemCtrl extends Controller {
 
     if ( item.find('promote').hasClass('is-shown') ) {
       item.find('toggle promote').find('.caret').addClass('hide');
-      require('../../lib/util/nav').hide(item.find('promote'));
+      Nav.hide(item.find('promote'));
     }
 
     var hiders = $('.details.is-shown');
@@ -320,7 +320,7 @@ class ItemCtrl extends Controller {
       item.find('collapsers').show();
     }
 
-    require('../../lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
+    Nav.toggle(item.find('details'), item.template, d.intercept(function () {
 
       showHideCaret();
 
@@ -337,7 +337,7 @@ class ItemCtrl extends Controller {
         }
 
         if ( hiders.length ) {
-          require('../../lib/util/nav').hide(hiders);
+          Nav.hide(hiders);
         }
       }
     }));

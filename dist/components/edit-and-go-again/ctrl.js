@@ -30,6 +30,10 @@ var _view = require('./view');
 
 var _view2 = _interopRequireDefault(_view);
 
+var _itemCtrl = require('../item/ctrl');
+
+var _itemCtrl2 = _interopRequireDefault(_itemCtrl);
+
 var EditAndGoAgainCtrl = (function (_Controller) {
   function EditAndGoAgainCtrl(props) {
     _classCallCheck(this, EditAndGoAgainCtrl);
@@ -99,9 +103,18 @@ var EditAndGoAgainCtrl = (function (_Controller) {
 
           var newItem = _this.toItem();
 
-          _this.publish('create item', newItem).subscribe(function (pubsub, item) {
-            console.warn('NEW ITEM', item);
+          _this.publish('create item', newItem).subscribe(function (pubsub, document) {
             pubsub.unsubscribe();
+
+            var item = new _itemCtrl2['default']({ item: document });
+
+            item.load();
+
+            item.template.insertBefore(_this.item.template);
+
+            item.render(_this.domain.intercept(function () {
+              item.find('toggle promote').click();
+            }));
           });
 
           // app.socket.emit('create item', new_item);

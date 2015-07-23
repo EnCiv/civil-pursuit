@@ -237,6 +237,9 @@ function renderItem (hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
+
+    let $button = $(this);
+
     Nav.unreveal(self.template, self.itemController.template, self.domain.intercept(function () {
 
       if ( self.itemController.find('editor').find('form').length ) {
@@ -244,22 +247,61 @@ function renderItem (hand) {
       }
 
       else {
-        let item  =   self.itemController,
-          edit    =   new EditAndGoAgainCtrl({ item });
 
-        edit.load();
+        let item;
 
-        item
-          .find('editor')
-          .find('.is-section')
-          .append(edit.template);
-          
-        Nav.reveal(item.find('editor'), item.template,
-          self.domain.intercept(function () {
-            Nav.show(edit.template, self.domain.intercept(function () {
-              edit.render();
+        // Does this item already loaded in UI?
+
+        let itemLoaded = $('#item-' + side._id).length;
+
+        console.warn('Item exists?', itemLoaded);
+
+        let renderEditor = item => {
+          let edit = new EditAndGoAgainCtrl({ item });
+
+          edit.load();
+
+          item
+            .find('editor')
+            .find('.is-section')
+            .append(edit.template);
+            
+          Nav.reveal(item.find('editor'), item.template,
+            self.domain.intercept(function () {
+              Nav.show(edit.template, self.domain.intercept(function () {
+                edit.render();
+              }));
             }));
-          }));
+        };
+
+        // if item loaded
+
+        if ( itemLoaded ) {
+          item = self.itemController;
+
+          renderEditor(item);
+        }
+        else {
+          item = new ItemCtrl({ item : side });
+
+          item.load();
+
+          item.render(() => {
+
+            let panel = $button.closest('.panel');
+
+            panel.find('>.panel-body > .items').prepend(item.template);
+
+            Nav.reveal(item.template, panel, () => {
+
+              item.find('collapsers').show();
+
+              Nav.unreveal(item.find('promote'), item.template);
+
+              renderEditor(item);
+            });
+          });
+        }
 
       }
 

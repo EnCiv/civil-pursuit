@@ -1200,6 +1200,10 @@ var _view = require('./view');
 
 var _view2 = _interopRequireDefault(_view);
 
+var _itemCtrl = require('../item/ctrl');
+
+var _itemCtrl2 = _interopRequireDefault(_itemCtrl);
+
 var EditAndGoAgainCtrl = (function (_Controller) {
   function EditAndGoAgainCtrl(props) {
     _classCallCheck(this, EditAndGoAgainCtrl);
@@ -1269,9 +1273,18 @@ var EditAndGoAgainCtrl = (function (_Controller) {
 
           var newItem = _this.toItem();
 
-          _this.publish('create item', newItem).subscribe(function (pubsub, item) {
-            console.warn('NEW ITEM', item);
+          _this.publish('create item', newItem).subscribe(function (pubsub, document) {
             pubsub.unsubscribe();
+
+            var item = new _itemCtrl2['default']({ item: document });
+
+            item.load();
+
+            item.template.insertBefore(_this.item.template);
+
+            item.render(_this.domain.intercept(function () {
+              item.find('toggle promote').click();
+            }));
           });
 
           // app.socket.emit('create item', new_item);
@@ -1466,7 +1479,7 @@ exports['default'] = EditAndGoAgainCtrl;
 
 // }
 module.exports = exports['default'];
-},{"../../lib/app/controller":35,"../../lib/util/form":38,"../../lib/util/nav":39,"./view":11}],11:[function(require,module,exports){
+},{"../../lib/app/controller":35,"../../lib/util/form":38,"../../lib/util/nav":39,"../item/ctrl":19,"./view":11}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2590,7 +2603,7 @@ var ItemCtrl = (function (_Controller) {
 
       if (item.find('promote').hasClass('is-shown')) {
         item.find('toggle promote').find('.caret').addClass('hide');
-        require('../../lib/util/nav').hide(item.find('promote'));
+        _libUtilNav2['default'].hide(item.find('promote'));
       }
 
       var hiders = $('.details.is-shown');
@@ -2599,7 +2612,7 @@ var ItemCtrl = (function (_Controller) {
         item.find('collapsers').show();
       }
 
-      require('../../lib/util/nav').toggle(item.find('details'), item.template, d.intercept(function () {
+      _libUtilNav2['default'].toggle(item.find('details'), item.template, d.intercept(function () {
 
         showHideCaret();
 
@@ -2616,7 +2629,7 @@ var ItemCtrl = (function (_Controller) {
           }
 
           if (hiders.length) {
-            require('../../lib/util/nav').hide(hiders);
+            _libUtilNav2['default'].hide(hiders);
           }
         }
       }));
@@ -3673,24 +3686,65 @@ function renderItem(hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
+
+    var $button = $(this);
+
     _libUtilNav2['default'].unreveal(self.template, self.itemController.template, self.domain.intercept(function () {
 
       if (self.itemController.find('editor').find('form').length) {
         console.warn('already loaded');
       } else {
         (function () {
-          var item = self.itemController,
-              edit = new _componentsEditAndGoAgainCtrl2['default']({ item: item });
 
-          edit.load();
+          var item = undefined;
 
-          item.find('editor').find('.is-section').append(edit.template);
+          // Does this item already loaded in UI?
 
-          _libUtilNav2['default'].reveal(item.find('editor'), item.template, self.domain.intercept(function () {
-            _libUtilNav2['default'].show(edit.template, self.domain.intercept(function () {
-              edit.render();
+          var itemLoaded = $('#item-' + side._id).length;
+
+          console.warn('Item exists?', itemLoaded);
+
+          var renderEditor = function renderEditor(item) {
+            var edit = new _componentsEditAndGoAgainCtrl2['default']({ item: item });
+
+            edit.load();
+
+            item.find('editor').find('.is-section').append(edit.template);
+
+            _libUtilNav2['default'].reveal(item.find('editor'), item.template, self.domain.intercept(function () {
+              _libUtilNav2['default'].show(edit.template, self.domain.intercept(function () {
+                edit.render();
+              }));
             }));
-          }));
+          };
+
+          // if item loaded
+
+          if (itemLoaded) {
+            item = self.itemController;
+
+            renderEditor(item);
+          } else {
+            item = new _componentsItemCtrl2['default']({ item: side });
+
+            item.load();
+
+            item.render(function () {
+
+              var panel = $button.closest('.panel');
+
+              panel.find('>.panel-body > .items').prepend(item.template);
+
+              _libUtilNav2['default'].reveal(item.template, panel, function () {
+
+                item.find('collapsers').show();
+
+                _libUtilNav2['default'].unreveal(item.find('promote'), item.template);
+
+                renderEditor(item);
+              });
+            });
+          }
         })();
       }
     }));

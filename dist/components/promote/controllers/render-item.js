@@ -216,24 +216,65 @@ function renderItem(hand) {
   // Edit and go again
 
   this.find('edit and go again button', hand).on('click', function () {
+
+    var $button = $(this);
+
     _libUtilNav2['default'].unreveal(self.template, self.itemController.template, self.domain.intercept(function () {
 
       if (self.itemController.find('editor').find('form').length) {
         console.warn('already loaded');
       } else {
         (function () {
-          var item = self.itemController,
-              edit = new _componentsEditAndGoAgainCtrl2['default']({ item: item });
 
-          edit.load();
+          var item = undefined;
 
-          item.find('editor').find('.is-section').append(edit.template);
+          // Does this item already loaded in UI?
 
-          _libUtilNav2['default'].reveal(item.find('editor'), item.template, self.domain.intercept(function () {
-            _libUtilNav2['default'].show(edit.template, self.domain.intercept(function () {
-              edit.render();
+          var itemLoaded = $('#item-' + side._id).length;
+
+          console.warn('Item exists?', itemLoaded);
+
+          var renderEditor = function renderEditor(item) {
+            var edit = new _componentsEditAndGoAgainCtrl2['default']({ item: item });
+
+            edit.load();
+
+            item.find('editor').find('.is-section').append(edit.template);
+
+            _libUtilNav2['default'].reveal(item.find('editor'), item.template, self.domain.intercept(function () {
+              _libUtilNav2['default'].show(edit.template, self.domain.intercept(function () {
+                edit.render();
+              }));
             }));
-          }));
+          };
+
+          // if item loaded
+
+          if (itemLoaded) {
+            item = self.itemController;
+
+            renderEditor(item);
+          } else {
+            item = new _componentsItemCtrl2['default']({ item: side });
+
+            item.load();
+
+            item.render(function () {
+
+              var panel = $button.closest('.panel');
+
+              panel.find('>.panel-body > .items').prepend(item.template);
+
+              _libUtilNav2['default'].reveal(item.template, panel, function () {
+
+                item.find('collapsers').show();
+
+                _libUtilNav2['default'].unreveal(item.find('promote'), item.template);
+
+                renderEditor(item);
+              });
+            });
+          }
         })();
       }
     }));
