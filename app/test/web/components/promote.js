@@ -127,6 +127,8 @@ class Promote extends Milk {
     set('Finish button', () => find(get('Main').selector + ' button.finish'));
 
     set('Last action', 'null');
+
+    set('Item Harmony', () => find(get('Item View').selector + '>.item-buttons .promoted-percent'));
   }
 
   stories () {
@@ -361,6 +363,13 @@ class Promote extends Milk {
         ok();
       }),
       'Views of left item should have incremented'
+    );
+
+    ok(
+      () => get('Item Harmony').text()
+        .then(text => text.should.be.exactly(get('Item Document').popularity.number.toString()  + '%')),
+      'Item harmony should have updated',
+      () => get('Left id') === get('Item Document')._id
     );
 
     // Left image is item's image

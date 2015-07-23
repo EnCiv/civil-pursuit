@@ -21,8 +21,7 @@ function setCitizenship(userId, countryId, position) {
             throw new Error('No such user ' + userId);
           }
 
-          // user.citizenship[position] = countryId;
-          user.citizenship.push(countryId);
+          user.citizenship.set(position, countryId);
 
           user.save(function (error) {
             try {

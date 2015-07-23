@@ -245,6 +245,10 @@ var Promote = (function (_Milk) {
       });
 
       set('Last action', 'null');
+
+      set('Item Harmony', function () {
+        return find(get('Item View').selector + '>.item-buttons .promoted-percent');
+      });
     }
   }, {
     key: 'stories',
@@ -515,6 +519,14 @@ var Promote = (function (_Milk) {
           ok();
         });
       }, 'Views of left item should have incremented');
+
+      ok(function () {
+        return get('Item Harmony').text().then(function (text) {
+          return text.should.be.exactly(get('Item Document').popularity.number.toString() + '%');
+        });
+      }, 'Item harmony should have updated', function () {
+        return get('Left id') === get('Item Document')._id;
+      });
 
       // Left image is item's image
 

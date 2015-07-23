@@ -178,7 +178,7 @@ echo
 echo
 echo
 
-node dist/bin/test-browser test/web/pages/home viewport=tablet vendor=firefox env=production || exit 1;
+# node dist/bin/test-browser test/web/pages/home viewport=tablet vendor=firefox env=production || exit 1;
 
 # Browser / Item Page not found
 
