@@ -65,18 +65,16 @@ class EditAndGoAgainCtrl extends Controller {
 
   save () {
     Nav.hide(this.template, this.domain.intercept(() => {
-      Nav.hide(this.template.closest('.editor'), this.domain.intercept(() => {
+      Nav.hide(this.template.closest('.edit-and-go-again'), this.domain.intercept(() => {
         
-        let new_item = this.toItem();
+        let newItem = this.toItem();
 
-        return console.warn('NEW IITEM', new_item);
-
-        // this
-        //   .publish('get intro')
-        //   .subscribe((pubsub, intro) => {
-        //     this.set('intro', intro);
-        //     pubsub.unsubscribe();
-        //   });
+        this
+          .publish('create item', newItem)
+          .subscribe((pubsub, item) => {
+            console.warn('NEW ITEM', item);
+            pubsub.unsubscribe();
+          });
 
         // app.socket.emit('create item', new_item);
 
@@ -112,20 +110,20 @@ class EditAndGoAgainCtrl extends Controller {
   toItem () {
     var item = {
       from          :     this.item.get('item')._id,
-      subject       :     this.find('subject').val(), /* 2 */
-      description   :     this.find('description').val(),
+      subject       :     this.template.find('[name="subject"]').val(), /* 2 */
+      description   :     this.template.find('[name="description"]').val(),
       user          :     this.socket.synuser,
       type          :     this.item.get('item').type
     };
 
-    if ( this.find('item media').find('img').length ) {
+    if ( this.template.find('.item-media').find('img').length ) {
 
-      if ( this.find('item media').find('.youtube-preview').length ) {
-        item.youtube = this.find('item media').find('.youtube-preview').data('video');
+      if ( this.template.find('.item-media').find('.youtube-preview').length ) {
+        item.youtube = this.template.find('.item-media').find('.youtube-preview').data('video');
       }
 
       else {
-        item.upload = this.find('item media').find('img').attr('src');
+        item.upload = this.template.find('.item-media').find('img').attr('src');
       }
     }
  

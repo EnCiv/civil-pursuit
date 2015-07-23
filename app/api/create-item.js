@@ -1,6 +1,6 @@
 'use strict';
 
-import ItemModel    from '../models/item';
+import ItemModel from '../models/item';
 
 function createItem (event, item) {
   try {
