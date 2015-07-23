@@ -42,7 +42,7 @@ class TopBar extends Element {
   }
 
   profileLink () {
-    return new Element('a.button.is-in', {
+    return new Element('a.button.is-in.link-to-profile', {
       href   :   Page('Profile'),
       title  :   'Profile'
     })

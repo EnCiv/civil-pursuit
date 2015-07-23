@@ -54,7 +54,7 @@ var TopBar = (function (_Element) {
   }, {
     key: 'profileLink',
     value: function profileLink() {
-      return new _cincoDist.Element('a.button.is-in', {
+      return new _cincoDist.Element('a.button.is-in.link-to-profile', {
         href: (0, _libAppPage2['default'])('Profile'),
         title: 'Profile'
       }).add(new _cincoDist.Element('i.fa.fa-user'));

@@ -109,11 +109,7 @@
               console.log('citizenship set', select.val(), index);
             })
 
-            .emit('set citizenship',       
-      
-      
-      
-app.socket.synuser, select.val(), index);
+            .emit('set citizenship', app.socket.synuser, select.val(), index);
         }
       });
 

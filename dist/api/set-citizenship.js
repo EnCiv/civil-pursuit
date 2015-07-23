@@ -1,34 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function setCitizenship
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} country_id - The Country ID
-   *  @arg {Number} position - 0 or 1
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function setCitizenship(user_id, country_id, position) {
+function setCitizenship(event, countryId, position) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].setCitizenship(this.synuser.id, countryId, position).then(function (user) {
+      _this.ok(event, user);
+    }, function (error) {
+      _this.error(error);
     });
-
-    domain.run(function () {
-      User.setCitizenship(user_id, country_id, position, domain.intercept(function (item) {
-        socket.emit('citizenship set', item);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = setCitizenship;
-})();
+exports['default'] = setCitizenship;
+module.exports = exports['default'];

@@ -85,6 +85,23 @@ var ItemCtrl = (function (_Controller) {
 
       this.socket.on('item image uploaded ' + this.props.item._id, function (item) {
         _this.set('image', item.image);
+      }).on('Item changed', function (itemId, changed) {
+        if (itemId === _this.get('item')._id) {
+
+          if ('views' in changed) {
+            var item = _this.get('item');
+            item.views = changed.views;
+            _this.set('item', item);
+          }
+
+          if ('popularity' in changed) {
+            var item = _this.get('item');
+            item.popularity = changed.popularity;
+            _this.set('item', item);
+
+            _this.renderPopularity();
+          }
+        }
       });
     }
   }, {
@@ -259,13 +276,7 @@ var ItemCtrl = (function (_Controller) {
 
       // POPULARITY
 
-      var popularity = item.popularity.number;
-
-      if (isNaN(popularity)) {
-        popularity = 0;
-      }
-
-      this.find('promotions %').text(popularity + '%');
+      this.renderPopularity();
 
       // CHILDREN / RELATED /SUBTYPE
 
@@ -319,6 +330,19 @@ var ItemCtrl = (function (_Controller) {
       });
 
       cb();
+    }
+  }, {
+    key: 'renderPopularity',
+    value: function renderPopularity() {
+      var item = this.get('item');
+
+      var popularity = item.popularity.number;
+
+      if (isNaN(popularity)) {
+        popularity = 0;
+      }
+
+      this.find('promotions %').text(popularity + '%');
     }
   }, {
     key: 'togglePromote',

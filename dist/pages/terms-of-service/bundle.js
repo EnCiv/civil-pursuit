@@ -612,6 +612,9 @@ var TopBar = (function (_Controller) {
 
         case 'is out':
           return this.template.find('.is-out');
+
+        case 'link to profile':
+          return $('.link-to-profile', this.template);
       }
     }
   }, {

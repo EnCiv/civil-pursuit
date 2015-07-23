@@ -3,24 +3,44 @@
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _mongoose = require('mongoose');
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
 function setCitizenship(userId, countryId, position) {
   var _this = this;
 
   return new Promise(function (ok, ko) {
-    _this.findById(userId).exec().then(function (user) {
-      if (!user) {
-        return ko(new Error('No such user ' + userId));
-      }
+    try {
+      _this.findById(userId).exec().then(function (user) {
+        try {
+          if (!user) {
+            throw new Error('No such user ' + userId);
+          }
 
-      user.citizenship[position] = countryId;
+          // user.citizenship[position] = countryId;
+          user.citizenship.push(countryId);
 
-      user.save(function (error) {
-        if (error) {
-          return ko(error);
+          user.save(function (error) {
+            try {
+              if (error) {
+                throw error;
+              }
+              ok(user);
+            } catch (error) {
+              ko(error);
+            }
+          });
+        } catch (error) {
+          ko(error);
         }
-        ok(user);
       });
-    });
+    } catch (error) {
+      ko(error);
+    }
   });
 }
 

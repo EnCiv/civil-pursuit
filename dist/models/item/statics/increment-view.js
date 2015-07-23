@@ -1,18 +1,31 @@
-"use strict";
+'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function incrementView(itemId) {
+  var _this = this;
 
-  "use strict";
+  return new Promise(function (ok, ko) {
+    try {
+      _this.findByIdAndUpdate(itemId, { $inc: { 'views': 1 } }, function (error, item) {
+        try {
+          if (error) {
+            throw error;
+          }
+          if (!item) {
+            throw new Error('Item not found: ' + itemId);
+          }
+          ok(item);
+        } catch (error) {
+          ko(error);
+        }
+      });
+    } catch (error) {
+      ko(error);
+    }
+  });
+}
 
-  /**
-   *  @function
-   *  @return
-   *  @arg
-   */
-
-  function incrementView(id, cb) {
-    this.findByIdAndUpdate(id, { $inc: { "views": 1 } }, cb);
-  }
-
-  module.exports = incrementView;
-})();
+exports['default'] = incrementView;
+module.exports = exports['default'];

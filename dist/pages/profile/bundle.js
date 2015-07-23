@@ -957,7 +957,12 @@ var IdentityCtrl = (function (_Controller) {
   }, {
     key: 'citizenship',
     value: function citizenship() {
+
+      var self = this;
+
       var countries = this.get('countries');
+
+      // Function to append an Option Element to a Country Select List
 
       function addOption(country, index) {
         var option = $('<option></option>');
@@ -974,9 +979,13 @@ var IdentityCtrl = (function (_Controller) {
         return option;
       }
 
+      // For each Country Select Lists, create Option Elements for each Country
+
       this.find('citizenship').each(function (index) {
 
         var select = $(this);
+
+        // USA goes 1st of the list
 
         countries.forEach(function (country) {
           if (country.name === 'USA') {
@@ -984,9 +993,23 @@ var IdentityCtrl = (function (_Controller) {
           }
         });
 
+        // Then all the other countries
+
         countries.forEach(function (country) {
           if (country.name !== 'USA') {
             select.append(addOption(country, index));
+          }
+        });
+
+        // Save to back-end
+
+        select.on('change', function () {
+          var citizenship = $(this).val();
+
+          if (citizenship) {
+            self.publish('set citizenship', citizenship, index).subscribe(function (pubsub) {
+              pubsub.unsubscribe();
+            });
           }
         });
       });
@@ -1128,6 +1151,8 @@ function foo() {
 
   Identity.prototype.renderCountries = function () {
     var identity = this;
+
+    // Function to append an Option Element to a Country Select List
 
     function addOption(country, index) {
       var option = $('<option></option>');
@@ -2317,6 +2342,9 @@ var TopBar = (function (_Controller) {
 
         case 'is out':
           return this.template.find('.is-out');
+
+        case 'link to profile':
+          return $('.link-to-profile', this.template);
       }
     }
   }, {

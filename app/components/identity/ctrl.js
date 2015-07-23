@@ -198,7 +198,12 @@ class IdentityCtrl extends Controller {
   }
 
   citizenship () {
+
+    let self = this;
+
     let countries = this.get('countries');
+
+    // Function to append an Option Element to a Country Select List
 
     function addOption (country, index) {
       var option = $('<option></option>');
@@ -215,9 +220,13 @@ class IdentityCtrl extends Controller {
       return option;
     }
 
+    // For each Country Select Lists, create Option Elements for each Country
+
     this.find('citizenship').each(function (index) {
 
       var select = $(this);
+
+      // USA goes 1st of the list
 
       countries.forEach(function (country) {
         if ( country.name === 'USA' ) {
@@ -225,9 +234,25 @@ class IdentityCtrl extends Controller {
         }
       });
 
+      // Then all the other countries
+
       countries.forEach(function (country) {
         if ( country.name !== 'USA' ) {
           select.append(addOption(country, index));
+        }
+      });
+
+      // Save to back-end
+
+      select.on('change', function () {
+        let citizenship = $(this).val();
+
+        if ( citizenship ) {
+          self
+            .publish('set citizenship', citizenship, index)
+            .subscribe((pubsub) => {
+              pubsub.unsubscribe();
+            });
         }
       });
 
@@ -369,10 +394,12 @@ function foo () {
   */
 
   Identity.prototype.renderCountries = function () {
-    var identity = this;
+    let identity = this;
+
+    // Function to append an Option Element to a Country Select List
 
     function addOption (country, index) {
-      var option = $('<option></option>');
+      let option = $('<option></option>');
 
       option.val(country._id);
 

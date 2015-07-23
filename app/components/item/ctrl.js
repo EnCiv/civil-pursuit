@@ -30,11 +30,34 @@ class ItemCtrl extends Controller {
   listen () {
     let self = this;
 
-    this.socket.on(
-      'item image uploaded ' + this.props.item._id,
-      item => {
-        this.set('image', item.image);
-      });
+    this.socket
+      
+      .on('item image uploaded ' + this.props.item._id,
+
+        item => {
+          this.set('image', item.image);
+        })
+      
+      .on('Item changed',
+
+        (itemId, changed) => {
+          if ( itemId === this.get('item')._id ) {
+
+            if ( 'views' in changed ) {
+              let item    =   this.get('item');
+              item.views  =   changed.views;
+              this.set('item', item);
+            }
+
+            if ( 'popularity' in changed ) {
+              let item          =   this.get('item');
+              item.popularity   =   changed.popularity;
+              this.set('item', item);
+
+              this.renderPopularity()
+            }
+          }
+        });
   }
 
   media () {
@@ -186,13 +209,7 @@ class ItemCtrl extends Controller {
 
     // POPULARITY
 
-    let popularity = item.popularity.number;
-
-    if ( isNaN(popularity) ) {
-      popularity = 0;
-    }
-
-    this.find('promotions %').text(popularity + '%');
+    this.renderPopularity();
 
     // CHILDREN / RELATED /SUBTYPE
 
@@ -250,6 +267,18 @@ class ItemCtrl extends Controller {
     });
 
     cb();
+  }
+
+  renderPopularity () {
+    let item = this.get('item');
+
+    let popularity = item.popularity.number;
+
+    if ( isNaN(popularity) ) {
+      popularity = 0;
+    }
+
+    this.find('promotions %').text(popularity + '%');
   }
 
   togglePromote ($trigger) {

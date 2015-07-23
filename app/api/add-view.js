@@ -1,33 +1,30 @@
-! function () {
+'use strict';
 
-  'use strict';
+import ItemModel from '../models/item';
 
-  
-  var Item    =   require('../models/item');
+function addView (event, itemId) {
+  try {
+    ItemModel
+      .incrementView(itemId)
+      .then(
+        item => {
+          this.ok(event, item.views);
 
-  /**
-   *  @function addView
-   *  @arg {string} itemId - The Item Object ID
-   */
+          let changed = {
+            views       :   item.views,
+            popularity  :   item.getPopularity()
+          };
 
-  function addView (event, itemId) {
+          this.emit('Item changed', item._id, changed);
 
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      Item.incrementView(itemId, domain.intercept(function (item) {
-        socket.ok(event, item);
-      }));
-    });
-
+          this.broadcast.emit('Item changed', item._id, changed);
+        },
+        error => { this.error(error) }
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = addView;
-
-} ();
+export default addView;

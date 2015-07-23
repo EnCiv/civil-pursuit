@@ -1,32 +1,37 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var Item = require('../models/item');
+var _modelsItem = require('../models/item');
 
-  /**
-   *  @function addView
-   *  @arg {string} itemId - The Item Object ID
-   */
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-  function addView(event, itemId) {
+function addView(event, itemId) {
+  var _this = this;
 
-    var socket = this;
+  try {
+    _modelsItem2['default'].incrementView(itemId).then(function (item) {
+      _this.ok(event, item.views);
 
-    var domain = require('domain').create();
+      var changed = {
+        views: item.views,
+        popularity: item.getPopularity()
+      };
 
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+      _this.emit('Item changed', item._id, changed);
+
+      _this.broadcast.emit('Item changed', item._id, changed);
+    }, function (error) {
+      _this.error(error);
     });
-
-    domain.run(function () {
-      Item.incrementView(itemId, domain.intercept(function (item) {
-        socket.ok(event, item);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = addView;
-})();
+exports['default'] = addView;
+module.exports = exports['default'];
