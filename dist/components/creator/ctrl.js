@@ -18,25 +18,33 @@ var _libAppController = require('../../lib/app/controller');
 
 var _libAppController2 = _interopRequireDefault(_libAppController);
 
-var _componentsPanelCtrl = require('../../components/panel//ctrl');
+var _panelCtrl = require('../panel/ctrl');
 
-var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
+var _panelCtrl2 = _interopRequireDefault(_panelCtrl);
 
-var _componentsCreatorControllersRender = require('../../components/creator//controllers/render');
+var _controllersRender = require('./controllers/render');
 
-var _componentsCreatorControllersRender2 = _interopRequireDefault(_componentsCreatorControllersRender);
+var _controllersRender2 = _interopRequireDefault(_controllersRender);
 
-var _componentsCreatorControllersCreate = require('../../components/creator//controllers/create');
+var _controllersCreate = require('./controllers/create');
 
-var _componentsCreatorControllersCreate2 = _interopRequireDefault(_componentsCreatorControllersCreate);
+var _controllersCreate2 = _interopRequireDefault(_controllersCreate);
 
-var _componentsCreatorControllersCreated = require('../../components/creator//controllers/created');
+var _controllersCreated = require('./controllers/created');
 
-var _componentsCreatorControllersCreated2 = _interopRequireDefault(_componentsCreatorControllersCreated);
+var _controllersCreated2 = _interopRequireDefault(_controllersCreated);
 
-var _componentsCreatorControllersPackItem = require('../../components/creator//controllers/pack-item');
+var _controllersPackItem = require('./controllers/pack-item');
 
-var _componentsCreatorControllersPackItem2 = _interopRequireDefault(_componentsCreatorControllersPackItem);
+var _controllersPackItem2 = _interopRequireDefault(_controllersPackItem);
+
+var _controllersReferences = require('./controllers/references');
+
+var _controllersReferences2 = _interopRequireDefault(_controllersReferences);
+
+var _controllersGetTitle = require('./controllers/get-title');
+
+var _controllersGetTitle2 = _interopRequireDefault(_controllersGetTitle);
 
 var text = {
   'looking up title': 'Looking up'
@@ -60,24 +68,12 @@ var Creator = (function (_Controller) {
   _createClass(Creator, [{
     key: 'parent',
     get: function () {
-      return $('#' + _componentsPanelCtrl2['default'].getId(this.props.panel));
+      return $('#' + _panelCtrl2['default'].getId(this.props.panel));
     }
   }, {
     key: 'template',
     get: function () {
       return this.parent.find('>.panel-body > .creator');
-    }
-  }, {
-    key: 'getTitle',
-    value: function getTitle(url) {
-      var _this = this;
-
-      return new Promise(function (ok, ko) {
-        _this.publish('get url title', url).subscribe(function (pubsub, title) {
-          ok(title);
-          pubsub.unsubscribe();
-        });
-      });
     }
   }, {
     key: 'find',
@@ -114,22 +110,32 @@ var Creator = (function (_Controller) {
   }, {
     key: 'render',
     value: function render(cb) {
-      return _componentsCreatorControllersRender2['default'].apply(this, [cb]);
+      return _controllersRender2['default'].apply(this, [cb]);
+    }
+  }, {
+    key: 'renderReferences',
+    value: function renderReferences() {
+      return _controllersReferences2['default'].apply(this, ['creator']);
+    }
+  }, {
+    key: 'getTitle',
+    value: function getTitle(url) {
+      return _controllersGetTitle2['default'].apply(this, [url]);
     }
   }, {
     key: 'create',
     value: function create(cb) {
-      return _componentsCreatorControllersCreate2['default'].apply(this, [cb]);
+      return _controllersCreate2['default'].apply(this, [cb]);
     }
   }, {
     key: 'packItem',
     value: function packItem(item) {
-      return _componentsCreatorControllersPackItem2['default'].apply(this, [item]);
+      return _controllersPackItem2['default'].apply(this, [item]);
     }
   }, {
     key: 'created',
     value: function created(item) {
-      return _componentsCreatorControllersCreated2['default'].apply(this, [item]);
+      return _controllersCreated2['default'].apply(this, [item]);
     }
   }]);
 

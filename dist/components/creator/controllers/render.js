@@ -14,10 +14,6 @@ var _libUtilForm = require('../../../lib/util/form');
 
 var _libUtilForm2 = _interopRequireDefault(_libUtilForm);
 
-var _componentsYoutubeCtrl = require('../../../components/youtube/ctrl');
-
-var _componentsYoutubeCtrl2 = _interopRequireDefault(_componentsYoutubeCtrl);
-
 var _domain = require('domain');
 
 var _domain2 = _interopRequireDefault(_domain);
@@ -57,47 +53,9 @@ function renderCreator(cb) {
 
       _this.template.find('textarea').autogrow();
 
-      // Get reference's title
+      // References
 
-      var findTitle = function findTitle() {
-
-        var creator = $(this).closest('.creator').data('creator');
-
-        var board = creator.find('reference board');
-        var reference = $(this);
-
-        board.removeClass('hide').text('Looking up title');
-
-        var url = $(this).val();
-
-        if (url) {
-          self.getTitle(url).then(function (title) {
-            if (title) {
-              board.text(title).on('click', function () {
-                reference.css('display', 'block');
-                board.addClass('hide');
-              });
-              reference.data('title', title).css('display', 'none');
-
-              var yt = (0, _componentsYoutubeCtrl2['default'])(url);
-
-              if (yt) {
-                creator.find('dropbox').hide();
-
-                creator.find('item media').empty().append(yt);
-              }
-            } else {
-              board.text('Looking up').addClass('hide');
-            }
-          });
-        }
-      };
-
-      _this.find('reference').on('blur change', findTitle).on('keydown', function (e) {
-        if (e.keyCode === 9) {
-          findTitle.apply(this);
-        }
-      });
+      _this.renderReferences();
 
       // Build form using Form provider
 

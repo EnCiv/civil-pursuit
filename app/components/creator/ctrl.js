@@ -1,11 +1,13 @@
 'use strict';
 
-import Controller     from '../../lib/app/controller';
-import Panel          from '../../components/panel//ctrl';
-import render         from '../../components/creator//controllers/render';
-import create         from '../../components/creator//controllers/create';
-import created        from '../../components/creator//controllers/created';
-import packItem       from '../../components/creator//controllers/pack-item';
+import Controller             from '../../lib/app/controller';
+import Panel                  from '../panel/ctrl';
+import render                 from './controllers/render';
+import create                 from './controllers/create';
+import created                from './controllers/created';
+import packItem               from './controllers/pack-item';
+import renderReferences       from './controllers/references';
+import getTitle               from './controllers/get-title';
 
 var text = {
   'looking up title': 'Looking up'
@@ -29,17 +31,6 @@ class Creator extends Controller {
     this.panel = props.panel;
 
     this.panelContainer = panelContainer;
-  }
-
-  getTitle (url) {
-    return new Promise((ok, ko) => {
-      this
-        .publish('get url title', url)
-        .subscribe((pubsub, title) => {
-          ok(title);
-          pubsub.unsubscribe();
-        });
-    });
   }
 
   find (name) {
@@ -66,6 +57,14 @@ class Creator extends Controller {
 
   render (cb) {
     return render.apply(this, [cb]);
+  }
+
+  renderReferences () {
+    return renderReferences.apply(this, ['creator']);
+  }
+
+  getTitle (url) {
+    return getTitle.apply(this, [url]);
   }
 
   create (cb) {

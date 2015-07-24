@@ -2,7 +2,6 @@
 
 import Upload         from '../../../lib/util/upload';
 import Form           from '../../../lib/util/form';
-import YouTube        from '../../../components/youtube/ctrl';
 import domain         from 'domain';
 
 function renderCreator (cb) {
@@ -38,57 +37,9 @@ function renderCreator (cb) {
 
       this.template.find('textarea').autogrow();
 
-      // Get reference's title
+      // References
 
-      let findTitle = function () {
-
-        let creator     =   $(this).closest('.creator').data('creator');
-
-        let board       =   creator.find('reference board');
-        let reference   =   $(this);
-
-        board.removeClass('hide').text('Looking up title');
-
-        let url = $(this).val();
-
-        if ( url ) {
-          self.getTitle(url)
-            .then(
-              title => {
-                if ( title ) {
-                  board.text(title).on('click', function () {
-                    reference.css('display', 'block');
-                    board.addClass('hide');
-                  });
-                  reference.data('title', title).css('display', 'none');
-
-                  let yt = YouTube(url);
-
-                  if ( yt ) {
-                    creator.find('dropbox').hide();
-
-                    creator.find('item media')
-                      .empty()
-                      .append(yt);
-                  }
-                }
-                else {
-                  board.text('Looking up')
-                    .addClass('hide');
-                }
-              }
-            );
-        }
-
-      }
-
-      this.find('reference')
-        .on('blur change', findTitle)
-        .on('keydown', function (e) {
-          if ( e.keyCode === 9 ) {
-            findTitle.apply(this);
-          }
-        });
+      this.renderReferences();
 
       // Build form using Form provider
 
