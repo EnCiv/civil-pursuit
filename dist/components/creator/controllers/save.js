@@ -41,6 +41,7 @@
       // In case a file was uploaded
 
       if (new_item.upload) {
+        console.log('has upload');
         var file = creator.template.find('.preview-image').data('file');
 
         var stream = ss.createStream();

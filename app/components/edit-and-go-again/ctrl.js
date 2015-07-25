@@ -65,50 +65,19 @@ class EditAndGoAgainCtrl extends Controller {
         .val(this.item.get('item').references[0].url);
     }
 
-    // Media
+    // Media & upload image
 
-    this.template.find('.item-media')
-      .empty()
+    this.template
+      .find('.item-media .uploaded-image')
       .append(this.item.media());
 
-    // Upload image
+    this.template
+      .find('.drop-box')
+      .css('display', 'none');
 
-    let chooseAnotherImage = $('<div class="text-center gutter"></div>');
-    let chooseAnotherImageLink = $('<a href="">Choose another image</a>');
-    let closeChooseAnotherImage = $('<i class="fa fa-times cursor-pointer"></i>');
-    let gap = $('<span> </span>');
-
-    chooseAnotherImage.append(closeChooseAnotherImage, gap, chooseAnotherImageLink);
-
-    chooseAnotherImageLink.on('click', (e) => {
-      e.preventDefault();
-      let dropbox   = this.template.find('.drop-box');
-      let itemMedia = this.template.find('.item-media');
-      if ( dropbox.css('display') === 'none' ) {
-        dropbox.css('display', 'block');
-        itemMedia.find('>img, >iframe').css('display', 'none');
-        itemMedia.find('.fa-times').css('display', 'inline');
-      }
-    });
-
-    closeChooseAnotherImage.on('click', (e) => {
-      let dropbox   = this.template.find('.drop-box');
-      let itemMedia = this.template.find('.item-media');
-
-      if ( dropbox.css('display') === 'block' ) {
-        dropbox.css('display', 'none');
-        itemMedia.find('>img, >iframe').css('display', 'inline');
-        itemMedia.find('.fa-times')
-          .css('display', 'none');
-      }
-    });
-
-    this.template.find('.item-media')
-      .append(chooseAnotherImage)
-      .append($('.drop-box'));
-
-    this.template.find('.drop-box').css('display', 'none');
-    this.template.find('.item-media .fa-times').css('display', 'none');
+    this.template
+      .find('.choose-another-image')
+      .css('display', 'block');
 
     // References
 
@@ -143,21 +112,47 @@ class EditAndGoAgainCtrl extends Controller {
         
         let newItem = this.toItem();
 
-        this
-          .publish('create item', newItem)
-          .subscribe((pubsub, document) => {
-            pubsub.unsubscribe();
+        let create = () => {
+          this
+            .publish('create item', newItem)
+            .subscribe((pubsub, document) => {
+              pubsub.unsubscribe();
 
-            let item = new ItemCtrl({ item : document });
+              let item = new ItemCtrl({ item : document });
 
-            item.load();
+              item.load();
 
-            item.template.insertBefore(this.item.template);
+              item.template.insertBefore(this.item.template);
 
-            item.render(this.domain.intercept(() => {
-              item.find('toggle promote').click();
-            }));
+              item.render(this.domain.intercept(() => {
+                item.find('toggle promote').click();
+              }));
+            });
+        };
+
+        if ( newItem.upload ) {
+          let file = this.template.find('.preview-image').data('file');
+
+          let stream = ss.createStream();
+
+          ss(this.socket).emit('upload image', stream,
+            { size: file.size, name: file.name });
+          
+          ss.createBlobReadStream(file).pipe(stream);
+
+          stream.on('end', function () {
+            newItem.image = file.name;
+
+            create();
           });
+        }
+
+        // If nof ile was uploaded
+
+        else {
+          create();
+        }
+          
       }));
     }));
   }

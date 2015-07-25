@@ -119,9 +119,7 @@ var HttpServer = (function (_EventEmitter) {
     });
 
     try {
-      new _domain.Domain().on('error', function (error) {
-        return _this.emit('error', error);
-      }).run(function () {
+      process.nextTick(function () {
         _this.app = (0, _express2['default'])();
 
         _this.set();

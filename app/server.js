@@ -44,38 +44,36 @@ class HttpServer extends EventEmitter {
       });
 
     try {
-      new Domain()
-        .on('error', error => this.emit('error', error))
-        .run(() => {
-          this.app = express();
+      process.nextTick(() => {
+        this.app = express();
 
-          this.set();
+        this.set();
 
-          this.parsers();
+        this.parsers();
 
-          this.cookies();
+        this.cookies();
 
-          this.session();
+        this.session();
 
-          this.passport();
+        this.passport();
 
-          this.twitterMiddleware();
+        this.twitterMiddleware();
 
-          this.facebookMiddleware();
+        this.facebookMiddleware();
 
-          this.initPipeLine();
+        this.initPipeLine();
 
-          this.signers();
+        this.signers();
 
-          this.router();
+        this.router();
 
-          this.static();
+        this.static();
 
-          this.notFound();
+        this.notFound();
 
-          this.error();
+        this.error();
 
-          this.start();
+        this.start();
       });
     }
     catch ( error ) {

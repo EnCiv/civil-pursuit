@@ -97,7 +97,6 @@ var EditAndGoAgainCtrl = (function (_Controller) {
   }, {
     key: 'render',
     value: function render() {
-      var _this = this;
 
       this.template.find('[name="subject"]').val(this.item.get('item').subject);
 
@@ -107,45 +106,13 @@ var EditAndGoAgainCtrl = (function (_Controller) {
         this.template.find('[name="reference"]').val(this.item.get('item').references[0].url);
       }
 
-      // Media
+      // Media & upload image
 
-      this.template.find('.item-media').empty().append(this.item.media());
-
-      // Upload image
-
-      var chooseAnotherImage = $('<div class="text-center gutter"></div>');
-      var chooseAnotherImageLink = $('<a href="">Choose another image</a>');
-      var closeChooseAnotherImage = $('<i class="fa fa-times cursor-pointer"></i>');
-      var gap = $('<span> </span>');
-
-      chooseAnotherImage.append(closeChooseAnotherImage, gap, chooseAnotherImageLink);
-
-      chooseAnotherImageLink.on('click', function (e) {
-        e.preventDefault();
-        var dropbox = _this.template.find('.drop-box');
-        var itemMedia = _this.template.find('.item-media');
-        if (dropbox.css('display') === 'none') {
-          dropbox.css('display', 'block');
-          itemMedia.find('>img, >iframe').css('display', 'none');
-          itemMedia.find('.fa-times').css('display', 'inline');
-        }
-      });
-
-      closeChooseAnotherImage.on('click', function (e) {
-        var dropbox = _this.template.find('.drop-box');
-        var itemMedia = _this.template.find('.item-media');
-
-        if (dropbox.css('display') === 'block') {
-          dropbox.css('display', 'none');
-          itemMedia.find('>img, >iframe').css('display', 'inline');
-          itemMedia.find('.fa-times').css('display', 'none');
-        }
-      });
-
-      this.template.find('.item-media').append(chooseAnotherImage).append($('.drop-box'));
+      this.template.find('.item-media .uploaded-image').append(this.item.media());
 
       this.template.find('.drop-box').css('display', 'none');
-      this.template.find('.item-media .fa-times').css('display', 'none');
+
+      this.template.find('.choose-another-image').css('display', 'block');
 
       // References
 
@@ -179,26 +146,52 @@ var EditAndGoAgainCtrl = (function (_Controller) {
   }, {
     key: 'save',
     value: function save() {
-      var _this2 = this;
+      var _this = this;
 
       _libUtilNav2['default'].hide(this.template, this.domain.intercept(function () {
-        _libUtilNav2['default'].hide(_this2.template.closest('.edit-and-go-again'), _this2.domain.intercept(function () {
+        _libUtilNav2['default'].hide(_this.template.closest('.edit-and-go-again'), _this.domain.intercept(function () {
 
-          var newItem = _this2.toItem();
+          var newItem = _this.toItem();
 
-          _this2.publish('create item', newItem).subscribe(function (pubsub, document) {
-            pubsub.unsubscribe();
+          var create = function create() {
+            _this.publish('create item', newItem).subscribe(function (pubsub, document) {
+              pubsub.unsubscribe();
 
-            var item = new _itemCtrl2['default']({ item: document });
+              var item = new _itemCtrl2['default']({ item: document });
 
-            item.load();
+              item.load();
 
-            item.template.insertBefore(_this2.item.template);
+              item.template.insertBefore(_this.item.template);
 
-            item.render(_this2.domain.intercept(function () {
-              item.find('toggle promote').click();
-            }));
-          });
+              item.render(_this.domain.intercept(function () {
+                item.find('toggle promote').click();
+              }));
+            });
+          };
+
+          if (newItem.upload) {
+            (function () {
+              var file = _this.template.find('.preview-image').data('file');
+
+              var stream = ss.createStream();
+
+              ss(_this.socket).emit('upload image', stream, { size: file.size, name: file.name });
+
+              ss.createBlobReadStream(file).pipe(stream);
+
+              stream.on('end', function () {
+                newItem.image = file.name;
+
+                create();
+              });
+            })();
+          }
+
+          // If nof ile was uploaded
+
+          else {
+            create();
+          }
         }));
       }));
     }
