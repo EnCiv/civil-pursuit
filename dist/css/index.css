@@ -5368,6 +5368,10 @@ footer {
   background: #fff;
   border: 0px solid #fff;
 }
+.creator .choose-another-image,
+.editor .choose-another-image {
+  display: none;
+}
 .editor,
 .editor.is-shown {
   border: none !important;

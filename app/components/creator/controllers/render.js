@@ -1,6 +1,5 @@
 'use strict';
 
-import Upload         from '../../../lib/util/upload';
 import Form           from '../../../lib/util/form';
 import domain         from 'domain';
 
@@ -23,15 +22,9 @@ function renderCreator (cb) {
 
       this.template.data('creator', this);
 
-      // Emulate input type file's behavior with button
+      // Uploader
 
-      this.find('upload image button').on('click',  () => {
-        this.find('dropbox').find('[type="file"]').click();
-      });
-
-      // Use upload service
-
-      new Upload(this.find('dropbox'), this.find('dropbox').find('input'), this.find('dropbox'));
+      this.uploader();
 
       // Autogrow
 

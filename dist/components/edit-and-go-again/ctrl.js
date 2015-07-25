@@ -42,6 +42,10 @@ var _creatorControllersGetTitle = require('../creator/controllers/get-title');
 
 var _creatorControllersGetTitle2 = _interopRequireDefault(_creatorControllersGetTitle);
 
+var _creatorControllersUpload = require('../creator/controllers/upload');
+
+var _creatorControllersUpload2 = _interopRequireDefault(_creatorControllersUpload);
+
 var EditAndGoAgainCtrl = (function (_Controller) {
   function EditAndGoAgainCtrl(props) {
     _classCallCheck(this, EditAndGoAgainCtrl);
@@ -65,9 +69,6 @@ var EditAndGoAgainCtrl = (function (_Controller) {
     key: 'find',
     value: function find(name) {
       switch (name) {
-        case '?':
-          return 'this';
-
         case 'create button':
           return this.template.find('.button-create:first');
 
@@ -88,11 +89,15 @@ var EditAndGoAgainCtrl = (function (_Controller) {
 
         case 'reference board':
           return this.template.find('.reference-board');
+
+        case 'upload image button':
+          return this.template.find('.upload-image-button');
       }
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this = this;
 
       this.template.find('[name="subject"]').val(this.item.get('item').subject);
 
@@ -102,11 +107,55 @@ var EditAndGoAgainCtrl = (function (_Controller) {
         this.template.find('[name="reference"]').val(this.item.get('item').references[0].url);
       }
 
+      // Media
+
       this.template.find('.item-media').empty().append(this.item.media());
+
+      // Upload image
+
+      var chooseAnotherImage = $('<div class="text-center gutter"></div>');
+      var chooseAnotherImageLink = $('<a href="">Choose another image</a>');
+      var closeChooseAnotherImage = $('<i class="fa fa-times cursor-pointer"></i>');
+      var gap = $('<span> </span>');
+
+      chooseAnotherImage.append(closeChooseAnotherImage, gap, chooseAnotherImageLink);
+
+      chooseAnotherImageLink.on('click', function (e) {
+        e.preventDefault();
+        var dropbox = _this.template.find('.drop-box');
+        var itemMedia = _this.template.find('.item-media');
+        if (dropbox.css('display') === 'none') {
+          dropbox.css('display', 'block');
+          itemMedia.find('>img, >iframe').css('display', 'none');
+          itemMedia.find('.fa-times').css('display', 'inline');
+        }
+      });
+
+      closeChooseAnotherImage.on('click', function (e) {
+        var dropbox = _this.template.find('.drop-box');
+        var itemMedia = _this.template.find('.item-media');
+
+        if (dropbox.css('display') === 'block') {
+          dropbox.css('display', 'none');
+          itemMedia.find('>img, >iframe').css('display', 'inline');
+          itemMedia.find('.fa-times').css('display', 'none');
+        }
+      });
+
+      this.template.find('.item-media').append(chooseAnotherImage).append($('.drop-box'));
+
+      this.template.find('.drop-box').css('display', 'none');
+      this.template.find('.item-media .fa-times').css('display', 'none');
 
       // References
 
       this.renderReferences();
+
+      // Uploader
+
+      this.uploader();
+
+      // Form
 
       var form = new _libUtilForm2['default'](this.template);
 
@@ -118,6 +167,11 @@ var EditAndGoAgainCtrl = (function (_Controller) {
       return _creatorControllersReferences2['default'].apply(this, ['editor']);
     }
   }, {
+    key: 'uploader',
+    value: function uploader() {
+      return _creatorControllersUpload2['default'].apply(this);
+    }
+  }, {
     key: 'getTitle',
     value: function getTitle(url) {
       return _creatorControllersGetTitle2['default'].apply(this, [url]);
@@ -125,23 +179,23 @@ var EditAndGoAgainCtrl = (function (_Controller) {
   }, {
     key: 'save',
     value: function save() {
-      var _this = this;
+      var _this2 = this;
 
       _libUtilNav2['default'].hide(this.template, this.domain.intercept(function () {
-        _libUtilNav2['default'].hide(_this.template.closest('.edit-and-go-again'), _this.domain.intercept(function () {
+        _libUtilNav2['default'].hide(_this2.template.closest('.edit-and-go-again'), _this2.domain.intercept(function () {
 
-          var newItem = _this.toItem();
+          var newItem = _this2.toItem();
 
-          _this.publish('create item', newItem).subscribe(function (pubsub, document) {
+          _this2.publish('create item', newItem).subscribe(function (pubsub, document) {
             pubsub.unsubscribe();
 
             var item = new _itemCtrl2['default']({ item: document });
 
             item.load();
 
-            item.template.insertBefore(_this.item.template);
+            item.template.insertBefore(_this2.item.template);
 
-            item.render(_this.domain.intercept(function () {
+            item.render(_this2.domain.intercept(function () {
               item.find('toggle promote').click();
             }));
           });

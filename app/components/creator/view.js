@@ -66,13 +66,35 @@ class Creator extends Element {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Uploaded image placeholder
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  uploadedImagePlaceholder () {
+    return new Element('.uploaded-image');
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  //  Option to upload another image
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  uploadAnotherImage () {
+    return new Element('.gutter.text-center.choose-another-image').add(
+      new Element().add(
+        new Element('i.fa.fa-upload'),
+        new Element('a.back-to-dropbox', { href : '#' }).text('Choose another image')
+      )
+    );
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   //  Image uploader container
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   dropBox () {
     return new Element('.drop-box').add(
       this.modern(),
-      this.legacy());
+      this.legacy()
+    );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,7 +114,11 @@ class Creator extends Element {
   itemBox () {
     return new ItemView({
       item                :     {
-        media             :     this.dropBox(),
+        media             :     new Elements(
+          this.dropBox(),
+          this.uploadedImagePlaceholder(),
+          this.uploadAnotherImage()
+        ),
         buttons           :     new Elements(this.submitButton()),
         collapsers        :     false
       }

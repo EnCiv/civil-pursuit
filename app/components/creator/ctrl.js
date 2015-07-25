@@ -8,6 +8,7 @@ import created                from './controllers/created';
 import packItem               from './controllers/pack-item';
 import renderReferences       from './controllers/references';
 import getTitle               from './controllers/get-title';
+import uploader               from './controllers/upload';
 
 var text = {
   'looking up title': 'Looking up'
@@ -61,6 +62,10 @@ class Creator extends Controller {
 
   renderReferences () {
     return renderReferences.apply(this, ['creator']);
+  }
+
+  uploader () {
+    return uploader.apply(this);
   }
 
   getTitle (url) {

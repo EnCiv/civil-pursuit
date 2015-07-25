@@ -6,10 +6,6 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _libUtilUpload = require('../../../lib/util/upload');
-
-var _libUtilUpload2 = _interopRequireDefault(_libUtilUpload);
-
 var _libUtilForm = require('../../../lib/util/form');
 
 var _libUtilForm2 = _interopRequireDefault(_libUtilForm);
@@ -39,15 +35,9 @@ function renderCreator(cb) {
 
       _this.template.data('creator', _this);
 
-      // Emulate input type file's behavior with button
+      // Uploader
 
-      _this.find('upload image button').on('click', function () {
-        _this.find('dropbox').find('[type="file"]').click();
-      });
-
-      // Use upload service
-
-      new _libUtilUpload2['default'](_this.find('dropbox'), _this.find('dropbox').find('input'), _this.find('dropbox'));
+      _this.uploader();
 
       // Autogrow
 

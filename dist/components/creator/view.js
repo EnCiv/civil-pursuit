@@ -72,6 +72,26 @@ var Creator = (function (_Element) {
         value: 'Upload image' }).close());
     }
   }, {
+    key: 'uploadedImagePlaceholder',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Uploaded image placeholder
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function uploadedImagePlaceholder() {
+      return new _cincoDist.Element('.uploaded-image');
+    }
+  }, {
+    key: 'uploadAnotherImage',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Option to upload another image
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function uploadAnotherImage() {
+      return new _cincoDist.Element('.gutter.text-center.choose-another-image').add(new _cincoDist.Element().add(new _cincoDist.Element('i.fa.fa-upload'), new _cincoDist.Element('a.back-to-dropbox', { href: '#' }).text('Choose another image')));
+    }
+  }, {
     key: 'dropBox',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,7 +121,7 @@ var Creator = (function (_Element) {
     value: function itemBox() {
       return new _componentsItemView2['default']({
         item: {
-          media: this.dropBox(),
+          media: new _cincoDist.Elements(this.dropBox(), this.uploadedImagePlaceholder(), this.uploadAnotherImage()),
           buttons: new _cincoDist.Elements(this.submitButton()),
           collapsers: false
         }

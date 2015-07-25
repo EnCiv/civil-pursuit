@@ -35,11 +35,7 @@
 
         // Adding user from global synapp
 
-        new_item.user =       
-      
-      
-      
-app.socket.synuser;
+        new_item.user = app.socket.synuser;
 
         // In case a file was uploaded
 

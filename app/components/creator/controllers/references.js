@@ -13,10 +13,20 @@ function renderReferences (ref) {
 
     let board       =   creator.find('reference board');
     let reference   =   $(this);
+    let url         =   $(this).val();
+
+    if ( ! /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(url) ) {
+
+      if ( url ) {
+        $(this).addClass('error');
+      }
+
+      return false;
+    }
+
+    $(this).removeClass('error');
 
     board.removeClass('hide').text('Looking up title');
-
-    let url = $(this).val();
 
     if ( url ) {
       self.getTitle(url)

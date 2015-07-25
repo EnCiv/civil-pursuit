@@ -7,6 +7,7 @@ import View               from  './view';
 import ItemCtrl           from  '../item/ctrl';
 import renderReferences   from  '../creator/controllers/references';
 import getTitle           from  '../creator/controllers/get-title';
+import uploader           from  '../creator/controllers/upload';
 
 class EditAndGoAgainCtrl extends Controller {
 
@@ -25,8 +26,6 @@ class EditAndGoAgainCtrl extends Controller {
 
   find (name) {
     switch ( name ) {
-      case '?': return 'this';
-
       case 'create button':
         return this.template.find('.button-create:first');
 
@@ -47,6 +46,9 @@ class EditAndGoAgainCtrl extends Controller {
 
       case 'reference board':
         return this.template.find('.reference-board');
+
+      case 'upload image button':
+        return this.template.find('.upload-image-button');
     }
   }
 
@@ -63,13 +65,60 @@ class EditAndGoAgainCtrl extends Controller {
         .val(this.item.get('item').references[0].url);
     }
 
+    // Media
+
     this.template.find('.item-media')
       .empty()
       .append(this.item.media());
 
+    // Upload image
+
+    let chooseAnotherImage = $('<div class="text-center gutter"></div>');
+    let chooseAnotherImageLink = $('<a href="">Choose another image</a>');
+    let closeChooseAnotherImage = $('<i class="fa fa-times cursor-pointer"></i>');
+    let gap = $('<span> </span>');
+
+    chooseAnotherImage.append(closeChooseAnotherImage, gap, chooseAnotherImageLink);
+
+    chooseAnotherImageLink.on('click', (e) => {
+      e.preventDefault();
+      let dropbox   = this.template.find('.drop-box');
+      let itemMedia = this.template.find('.item-media');
+      if ( dropbox.css('display') === 'none' ) {
+        dropbox.css('display', 'block');
+        itemMedia.find('>img, >iframe').css('display', 'none');
+        itemMedia.find('.fa-times').css('display', 'inline');
+      }
+    });
+
+    closeChooseAnotherImage.on('click', (e) => {
+      let dropbox   = this.template.find('.drop-box');
+      let itemMedia = this.template.find('.item-media');
+
+      if ( dropbox.css('display') === 'block' ) {
+        dropbox.css('display', 'none');
+        itemMedia.find('>img, >iframe').css('display', 'inline');
+        itemMedia.find('.fa-times')
+          .css('display', 'none');
+      }
+    });
+
+    this.template.find('.item-media')
+      .append(chooseAnotherImage)
+      .append($('.drop-box'));
+
+    this.template.find('.drop-box').css('display', 'none');
+    this.template.find('.item-media .fa-times').css('display', 'none');
+
     // References
 
     this.renderReferences();
+
+    // Uploader
+
+    this.uploader();
+
+    // Form
 
     let form = new Form(this.template);
 
@@ -78,6 +127,10 @@ class EditAndGoAgainCtrl extends Controller {
 
   renderReferences () {
     return renderReferences.apply(this, ['editor']);
+  }
+
+  uploader () {
+    return uploader.apply(this);
   }
 
   getTitle (url) {

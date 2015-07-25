@@ -21,10 +21,20 @@ function renderReferences(ref) {
 
     var board = creator.find('reference board');
     var reference = $(this);
+    var url = $(this).val();
+
+    if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(url)) {
+
+      if (url) {
+        $(this).addClass('error');
+      }
+
+      return false;
+    }
+
+    $(this).removeClass('error');
 
     board.removeClass('hide').text('Looking up title');
-
-    var url = $(this).val();
 
     if (url) {
       self.getTitle(url).then(function (title) {

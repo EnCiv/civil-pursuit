@@ -1,26 +1,18 @@
-! function () {
+'use strict';
 
-  'use strict';
+import { EventEmitter } from 'events';
 
-  /**
-   *  @class    Upload
-   *  @arg      {HTMLElement} dropzone
-   *  @arg      {Input} file_input
-   *  @arg      {HTMLElement} thumbnail - Preview container
-   *  @arg      {Function} cb
-   */
+class Upload extends EventEmitter {
+  
+  constructor (dropzone, fileInput, thumbnail) {
+    super();
 
-  function Upload (dropzone, file_input, thumbnail, cb) {
     this.dropzone     =   dropzone;
-    this.file_input   =   file_input;
+    this.fileInput    =   fileInput;
     this.thumbnail    =   thumbnail;
-    this.cb           =   cb;
-
-    this.init();
   }
 
-  Upload.prototype.init = function () {
-
+  init () {
     if ( window.File ) {
       if ( this.dropzone ) {
         this.dropzone
@@ -29,8 +21,8 @@
           .on('drop',       this.handler.bind(this));
       }
 
-      if ( this.file_input ) {
-        this.file_input.on('change', this.handler.bind(this));
+      if ( this.fileInput ) {
+        this.fileInput.on('change', this.handler.bind(this));
       }
     }
 
@@ -39,14 +31,31 @@
         dropzone.find('.modern').hide();
       }
     }
-  };
+  }
 
-  Upload.prototype.hover = function (e) {
+  destroy () {
+    if ( window.File ) {
+      if ( this.dropzone ) {
+        this.dropzone
+          .off('dragover')
+          .off('dragleave')
+          .off('drop');
+      }
+
+      if ( this.fileInput ) {
+        this.fileInput.off('change');
+      }
+    }
+
+    return this;
+  }
+
+  hover (e) {
     e.stopPropagation();
     e.preventDefault();
-  };
+  }
 
-  Upload.prototype.handler = function (e) {
+  handler (e) {
     this.hover(e);
 
     var files = e.target.files || e.originalEvent.dataTransfer.files;
@@ -54,9 +63,9 @@
     for (var i = 0, f; f = files[i]; i++) {
       this.preview(f, e.target);
     }
-  };
+  }
 
-  Upload.prototype.preview = function(file, target) {
+  preview (file, target) {
     var upload = this;
 
     var img = new Image();
@@ -74,11 +83,9 @@
     
     img.src = (window.URL || window.webkitURL).createObjectURL(file);
 
-    if ( this.cb ) {
-      this.cb(null, file);
-    }
-  };
+    this.emit('uploaded', file);
+  }
 
-  module.exports = Upload;
+}
 
-} ();
+export default Upload;

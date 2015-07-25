@@ -46,6 +46,10 @@ var _controllersGetTitle = require('./controllers/get-title');
 
 var _controllersGetTitle2 = _interopRequireDefault(_controllersGetTitle);
 
+var _controllersUpload = require('./controllers/upload');
+
+var _controllersUpload2 = _interopRequireDefault(_controllersUpload);
+
 var text = {
   'looking up title': 'Looking up'
 };
@@ -116,6 +120,11 @@ var Creator = (function (_Controller) {
     key: 'renderReferences',
     value: function renderReferences() {
       return _controllersReferences2['default'].apply(this, ['creator']);
+    }
+  }, {
+    key: 'uploader',
+    value: function uploader() {
+      return _controllersUpload2['default'].apply(this);
     }
   }, {
     key: 'getTitle',

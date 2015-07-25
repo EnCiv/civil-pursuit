@@ -239,7 +239,7 @@ var App = (function (_EventEmitter) {
 
 exports['default'] = App;
 module.exports = exports['default'];
-},{"./lib/app/cache":34,"domain":43,"events":44}],2:[function(require,module,exports){
+},{"./lib/app/cache":35,"domain":44,"events":45}],2:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -327,7 +327,7 @@ function save() {
 exports['default'] = save;
 module.exports = exports['default'];
 }).call(this,require('_process'))
-},{"../../../components/item/ctrl":19,"../../../lib/app/Stream":33,"../../../lib/util/nav":39,"_process":45}],3:[function(require,module,exports){
+},{"../../../components/item/ctrl":20,"../../../lib/app/Stream":34,"../../../lib/util/nav":40,"_process":46}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -372,7 +372,7 @@ function created(item) {
 
 exports['default'] = created;
 module.exports = exports['default'];
-},{"../../../components/item/ctrl":19}],4:[function(require,module,exports){
+},{"../../../components/item/ctrl":20}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -473,10 +473,20 @@ function renderReferences(ref) {
 
     var board = creator.find('reference board');
     var reference = $(this);
+    var url = $(this).val();
+
+    if (!/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(url)) {
+
+      if (url) {
+        $(this).addClass('error');
+      }
+
+      return false;
+    }
+
+    $(this).removeClass('error');
 
     board.removeClass('hide').text('Looking up title');
-
-    var url = $(this).val();
 
     if (url) {
       self.getTitle(url).then(function (title) {
@@ -510,7 +520,7 @@ function renderReferences(ref) {
 
 exports['default'] = renderReferences;
 module.exports = exports['default'];
-},{"../../youtube/ctrl":31}],7:[function(require,module,exports){
+},{"../../youtube/ctrl":32}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -518,10 +528,6 @@ Object.defineProperty(exports, '__esModule', {
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _libUtilUpload = require('../../../lib/util/upload');
-
-var _libUtilUpload2 = _interopRequireDefault(_libUtilUpload);
 
 var _libUtilForm = require('../../../lib/util/form');
 
@@ -552,15 +558,9 @@ function renderCreator(cb) {
 
       _this.template.data('creator', _this);
 
-      // Emulate input type file's behavior with button
+      // Uploader
 
-      _this.find('upload image button').on('click', function () {
-        _this.find('dropbox').find('[type="file"]').click();
-      });
-
-      // Use upload service
-
-      new _libUtilUpload2['default'](_this.find('dropbox'), _this.find('dropbox').find('input'), _this.find('dropbox'));
+      _this.uploader();
 
       // Autogrow
 
@@ -591,7 +591,53 @@ function renderCreator(cb) {
 
 exports['default'] = renderCreator;
 module.exports = exports['default'];
-},{"../../../lib/util/form":38,"../../../lib/util/upload":41,"domain":43}],8:[function(require,module,exports){
+},{"../../../lib/util/form":39,"domain":44}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _libUtilUpload = require('../../../lib/util/upload');
+
+var _libUtilUpload2 = _interopRequireDefault(_libUtilUpload);
+
+function uploader() {
+  var _this = this;
+
+  // Emulate input type file's behavior with button
+
+  this.find('upload image button').on('click', function () {
+    _this.find('dropbox').find('[type="file"]').click();
+  });
+
+  // Use upload service
+
+  var upload = new _libUtilUpload2['default'](this.find('dropbox'), this.find('dropbox').find('input'), this.template.find('.uploaded-image'));
+
+  upload.init();
+
+  upload.on('uploaded', function () {
+    _this.find('dropbox').css('display', 'none');
+    _this.template.find('.choose-another-image').css('display', 'block');
+  });
+
+  // Upload another image
+  this.template.find('.back-to-dropbox').on('click', function (e) {
+    e.preventDefault();
+    _this.template.find('.choose-another-image').css('display', 'none');
+    _this.template.find('.uploaded-image').empty();
+    _this.find('dropbox').css('display', 'block');
+    upload.destroy().init();
+    _this.find('dropbox').find('[type="file"]').click();
+  });
+}
+
+exports['default'] = uploader;
+module.exports = exports['default'];
+},{"../../../lib/util/upload":42}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -639,6 +685,10 @@ var _controllersReferences2 = _interopRequireDefault(_controllersReferences);
 var _controllersGetTitle = require('./controllers/get-title');
 
 var _controllersGetTitle2 = _interopRequireDefault(_controllersGetTitle);
+
+var _controllersUpload = require('./controllers/upload');
+
+var _controllersUpload2 = _interopRequireDefault(_controllersUpload);
 
 var text = {
   'looking up title': 'Looking up'
@@ -712,6 +762,11 @@ var Creator = (function (_Controller) {
       return _controllersReferences2['default'].apply(this, ['creator']);
     }
   }, {
+    key: 'uploader',
+    value: function uploader() {
+      return _controllersUpload2['default'].apply(this);
+    }
+  }, {
     key: 'getTitle',
     value: function getTitle(url) {
       return _controllersGetTitle2['default'].apply(this, [url]);
@@ -738,7 +793,7 @@ var Creator = (function (_Controller) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../lib/app/controller":35,"../panel/ctrl":23,"./controllers/create":2,"./controllers/created":3,"./controllers/get-title":4,"./controllers/pack-item":5,"./controllers/references":6,"./controllers/render":7}],9:[function(require,module,exports){
+},{"../../lib/app/controller":36,"../panel/ctrl":24,"./controllers/create":2,"./controllers/created":3,"./controllers/get-title":4,"./controllers/pack-item":5,"./controllers/references":6,"./controllers/render":7,"./controllers/upload":8}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -813,6 +868,26 @@ var Creator = (function (_Element) {
         value: 'Upload image' }).close());
     }
   }, {
+    key: 'uploadedImagePlaceholder',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Uploaded image placeholder
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function uploadedImagePlaceholder() {
+      return new _cincoDist.Element('.uploaded-image');
+    }
+  }, {
+    key: 'uploadAnotherImage',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //  Option to upload another image
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function uploadAnotherImage() {
+      return new _cincoDist.Element('.gutter.text-center.choose-another-image').add(new _cincoDist.Element().add(new _cincoDist.Element('i.fa.fa-upload'), new _cincoDist.Element('a.back-to-dropbox', { href: '#' }).text('Choose another image')));
+    }
+  }, {
     key: 'dropBox',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -842,7 +917,7 @@ var Creator = (function (_Element) {
     value: function itemBox() {
       return new _componentsItemView2['default']({
         item: {
-          media: this.dropBox(),
+          media: new _cincoDist.Elements(this.dropBox(), this.uploadedImagePlaceholder(), this.uploadAnotherImage()),
           buttons: new _cincoDist.Elements(this.submitButton()),
           collapsers: false
         }
@@ -907,7 +982,7 @@ var Creator = (function (_Element) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/item/view":20,"cinco/dist":46}],10:[function(require,module,exports){
+},{"../../components/item/view":21,"cinco/dist":47}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1145,7 +1220,7 @@ var Details = (function (_Controller) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"../../components/edit-and-go-again/ctrl":12,"../../lib/app/controller":35,"../../lib/util/nav":39}],11:[function(require,module,exports){
+},{"../../components/edit-and-go-again/ctrl":13,"../../lib/app/controller":36,"../../lib/util/nav":40}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1211,7 +1286,7 @@ var Details = (function (_Element) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"cinco/dist":46}],12:[function(require,module,exports){
+},{"cinco/dist":47}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1256,6 +1331,10 @@ var _creatorControllersGetTitle = require('../creator/controllers/get-title');
 
 var _creatorControllersGetTitle2 = _interopRequireDefault(_creatorControllersGetTitle);
 
+var _creatorControllersUpload = require('../creator/controllers/upload');
+
+var _creatorControllersUpload2 = _interopRequireDefault(_creatorControllersUpload);
+
 var EditAndGoAgainCtrl = (function (_Controller) {
   function EditAndGoAgainCtrl(props) {
     _classCallCheck(this, EditAndGoAgainCtrl);
@@ -1279,9 +1358,6 @@ var EditAndGoAgainCtrl = (function (_Controller) {
     key: 'find',
     value: function find(name) {
       switch (name) {
-        case '?':
-          return 'this';
-
         case 'create button':
           return this.template.find('.button-create:first');
 
@@ -1302,11 +1378,15 @@ var EditAndGoAgainCtrl = (function (_Controller) {
 
         case 'reference board':
           return this.template.find('.reference-board');
+
+        case 'upload image button':
+          return this.template.find('.upload-image-button');
       }
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this = this;
 
       this.template.find('[name="subject"]').val(this.item.get('item').subject);
 
@@ -1316,11 +1396,55 @@ var EditAndGoAgainCtrl = (function (_Controller) {
         this.template.find('[name="reference"]').val(this.item.get('item').references[0].url);
       }
 
+      // Media
+
       this.template.find('.item-media').empty().append(this.item.media());
+
+      // Upload image
+
+      var chooseAnotherImage = $('<div class="text-center gutter"></div>');
+      var chooseAnotherImageLink = $('<a href="">Choose another image</a>');
+      var closeChooseAnotherImage = $('<i class="fa fa-times cursor-pointer"></i>');
+      var gap = $('<span> </span>');
+
+      chooseAnotherImage.append(closeChooseAnotherImage, gap, chooseAnotherImageLink);
+
+      chooseAnotherImageLink.on('click', function (e) {
+        e.preventDefault();
+        var dropbox = _this.template.find('.drop-box');
+        var itemMedia = _this.template.find('.item-media');
+        if (dropbox.css('display') === 'none') {
+          dropbox.css('display', 'block');
+          itemMedia.find('>img, >iframe').css('display', 'none');
+          itemMedia.find('.fa-times').css('display', 'inline');
+        }
+      });
+
+      closeChooseAnotherImage.on('click', function (e) {
+        var dropbox = _this.template.find('.drop-box');
+        var itemMedia = _this.template.find('.item-media');
+
+        if (dropbox.css('display') === 'block') {
+          dropbox.css('display', 'none');
+          itemMedia.find('>img, >iframe').css('display', 'inline');
+          itemMedia.find('.fa-times').css('display', 'none');
+        }
+      });
+
+      this.template.find('.item-media').append(chooseAnotherImage).append($('.drop-box'));
+
+      this.template.find('.drop-box').css('display', 'none');
+      this.template.find('.item-media .fa-times').css('display', 'none');
 
       // References
 
       this.renderReferences();
+
+      // Uploader
+
+      this.uploader();
+
+      // Form
 
       var form = new _libUtilForm2['default'](this.template);
 
@@ -1332,6 +1456,11 @@ var EditAndGoAgainCtrl = (function (_Controller) {
       return _creatorControllersReferences2['default'].apply(this, ['editor']);
     }
   }, {
+    key: 'uploader',
+    value: function uploader() {
+      return _creatorControllersUpload2['default'].apply(this);
+    }
+  }, {
     key: 'getTitle',
     value: function getTitle(url) {
       return _creatorControllersGetTitle2['default'].apply(this, [url]);
@@ -1339,23 +1468,23 @@ var EditAndGoAgainCtrl = (function (_Controller) {
   }, {
     key: 'save',
     value: function save() {
-      var _this = this;
+      var _this2 = this;
 
       _libUtilNav2['default'].hide(this.template, this.domain.intercept(function () {
-        _libUtilNav2['default'].hide(_this.template.closest('.edit-and-go-again'), _this.domain.intercept(function () {
+        _libUtilNav2['default'].hide(_this2.template.closest('.edit-and-go-again'), _this2.domain.intercept(function () {
 
-          var newItem = _this.toItem();
+          var newItem = _this2.toItem();
 
-          _this.publish('create item', newItem).subscribe(function (pubsub, document) {
+          _this2.publish('create item', newItem).subscribe(function (pubsub, document) {
             pubsub.unsubscribe();
 
             var item = new _itemCtrl2['default']({ item: document });
 
             item.load();
 
-            item.template.insertBefore(_this.item.template);
+            item.template.insertBefore(_this2.item.template);
 
-            item.render(_this.domain.intercept(function () {
+            item.render(_this2.domain.intercept(function () {
               item.find('toggle promote').click();
             }));
           });
@@ -1391,7 +1520,7 @@ var EditAndGoAgainCtrl = (function (_Controller) {
 
 exports['default'] = EditAndGoAgainCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":35,"../../lib/util/form":38,"../../lib/util/nav":39,"../creator/controllers/get-title":4,"../creator/controllers/references":6,"../item/ctrl":19,"./view":13}],13:[function(require,module,exports){
+},{"../../lib/app/controller":36,"../../lib/util/form":39,"../../lib/util/nav":40,"../creator/controllers/get-title":4,"../creator/controllers/references":6,"../creator/controllers/upload":8,"../item/ctrl":20,"./view":14}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1426,7 +1555,7 @@ var EditAndGoAgainView = (function (_CreatorView) {
 
 exports['default'] = EditAndGoAgainView;
 module.exports = exports['default'];
-},{"../creator/view":9}],14:[function(require,module,exports){
+},{"../creator/view":10}],15:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -1491,7 +1620,7 @@ module.exports = exports['default'];
 //
 
 // $('.forgot-password-pending').css('display', 'block');
-},{"../../lib/util/form":38,"domain":43}],15:[function(require,module,exports){
+},{"../../lib/util/form":39,"domain":44}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1532,7 +1661,7 @@ var ItemDefaultButtons = (function (_Elements) {
 
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
-},{"cinco/dist":46}],16:[function(require,module,exports){
+},{"cinco/dist":47}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1645,7 +1774,7 @@ function MediaController() {
 
 exports['default'] = MediaController;
 module.exports = exports['default'];
-},{"../../../components/youtube/view":32}],17:[function(require,module,exports){
+},{"../../../components/youtube/view":33}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1851,7 +1980,7 @@ function toggleArrow() {
 
 exports['default'] = toggleArrow;
 module.exports = exports['default'];
-},{"../../../components/panel/ctrl":23,"../../../lib/util/nav":39}],18:[function(require,module,exports){
+},{"../../../components/panel/ctrl":24,"../../../lib/util/nav":40}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1938,7 +2067,7 @@ function tooglePromote($trigger) {
 
 exports['default'] = tooglePromote;
 module.exports = exports['default'];
-},{"../../../components/top-bar//ctrl":30,"../../../lib/util/nav":39}],19:[function(require,module,exports){
+},{"../../../components/top-bar//ctrl":31,"../../../lib/util/nav":40}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2356,7 +2485,7 @@ var ItemCtrl = (function (_Controller) {
 
 exports['default'] = ItemCtrl;
 module.exports = exports['default'];
-},{"../../components/details/ctrl":10,"../../components/panel/ctrl":23,"../../components/promote/ctrl":28,"../../lib/app/controller":35,"../../lib/util/nav":39,"../../lib/util/read-more":40,"./controllers/media":16,"./controllers/toggle-arrow":17,"./controllers/toggle-promote":18,"./view":20,"string":51}],20:[function(require,module,exports){
+},{"../../components/details/ctrl":11,"../../components/panel/ctrl":24,"../../components/promote/ctrl":29,"../../lib/app/controller":36,"../../lib/util/nav":40,"../../lib/util/read-more":41,"./controllers/media":17,"./controllers/toggle-arrow":18,"./controllers/toggle-promote":19,"./view":21,"string":52}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2549,7 +2678,7 @@ var Item = (function (_Element) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"../../lib/app/page":36,"../details/view":11,"../item-default-buttons/view":15,"../promote/view":29,"cinco/dist":46}],21:[function(require,module,exports){
+},{"../../lib/app/page":37,"../details/view":12,"../item-default-buttons/view":16,"../promote/view":30,"cinco/dist":47}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2662,7 +2791,7 @@ var Join = (function (_Controller) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../../lib/app/controller":35,"../../lib/util/form":38}],22:[function(require,module,exports){
+},{"../../lib/app/controller":36,"../../lib/util/form":39}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2767,7 +2896,7 @@ var Login = (function (_Controller) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../../lib/app/controller":35,"../../lib/util/form":38,"../../lib/util/nav":39}],23:[function(require,module,exports){
+},{"../../lib/app/controller":36,"../../lib/util/form":39,"../../lib/util/nav":40}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3052,7 +3181,7 @@ exports['default'] = Panel;
 module.exports = exports['default'];
 /** This is about another panel */
 // item: app.location.item
-},{"../../components/creator/ctrl":8,"../../components/item/ctrl":19,"../../components/panel/view":24,"../../components/top-bar/ctrl":30,"../../lib/app/cache":34,"../../lib/app/controller":35,"../../lib/util/nav":39}],24:[function(require,module,exports){
+},{"../../components/creator/ctrl":9,"../../components/item/ctrl":20,"../../components/panel/view":25,"../../components/top-bar/ctrl":31,"../../lib/app/cache":35,"../../lib/app/controller":36,"../../lib/util/nav":40}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3141,7 +3270,7 @@ var Panel = (function (_Element) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../../components/creator/view":9,"cinco/dist":46}],25:[function(require,module,exports){
+},{"../../components/creator/view":10,"cinco/dist":47}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3182,7 +3311,7 @@ function finish() {
 
 exports['default'] = finish;
 module.exports = exports['default'];
-},{"../../../lib/util/nav":39}],26:[function(require,module,exports){
+},{"../../../lib/util/nav":40}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3468,7 +3597,7 @@ function renderItem(hand) {
 
 exports['default'] = renderItem;
 module.exports = exports['default'];
-},{"../../../components/edit-and-go-again/ctrl":12,"../../../components/item/ctrl":19,"../../../lib/util/nav":39}],27:[function(require,module,exports){
+},{"../../../components/edit-and-go-again/ctrl":13,"../../../components/item/ctrl":20,"../../../lib/util/nav":40}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3537,7 +3666,7 @@ function renderPromote(cb) {
 
 exports['default'] = renderPromote;
 module.exports = exports['default'];
-},{"../../../lib/util/nav":39}],28:[function(require,module,exports){
+},{"../../../lib/util/nav":40}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3851,7 +3980,7 @@ var Promote = (function (_Controller) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"../../components/edit-and-go-again/ctrl":12,"../../components/promote/controllers/finish":25,"../../components/promote/controllers/render":27,"../../components/promote/controllers/render-item":26,"../../lib/app/controller":35,"../../lib/util/nav":39}],29:[function(require,module,exports){
+},{"../../components/edit-and-go-again/ctrl":13,"../../components/promote/controllers/finish":26,"../../components/promote/controllers/render":28,"../../components/promote/controllers/render-item":27,"../../lib/app/controller":36,"../../lib/util/nav":40}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3981,7 +4110,7 @@ var Promote = (function (_Element) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"cinco/dist":46}],30:[function(require,module,exports){
+},{"cinco/dist":47}],31:[function(require,module,exports){
 /**
  * @package     App.Component.TopbBar.Controller
 */
@@ -4185,7 +4314,7 @@ var TopBar = (function (_Controller) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../../components/forgot-password/ctrl":14,"../../components/join/ctrl":21,"../../components/login/ctrl":22,"../../lib/app/controller":35}],31:[function(require,module,exports){
+},{"../../components/forgot-password/ctrl":15,"../../components/join/ctrl":22,"../../components/login/ctrl":23,"../../lib/app/controller":36}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4204,7 +4333,7 @@ function YouTube(url) {
 
 exports['default'] = YouTube;
 module.exports = exports['default'];
-},{"../../components/youtube/view":32}],32:[function(require,module,exports){
+},{"../../components/youtube/view":33}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4286,7 +4415,7 @@ YouTube.regex = /youtu\.?be.+v=([^&]+)/;
 
 exports['default'] = YouTube;
 module.exports = exports['default'];
-},{"cinco/dist":46}],33:[function(require,module,exports){
+},{"cinco/dist":47}],34:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -4312,7 +4441,7 @@ module.exports = exports['default'];
 
   module.exports = Stream;
 })();
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4349,7 +4478,7 @@ var Cache = (function () {
 
 exports['default'] = new Cache();
 module.exports = exports['default'];
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4382,7 +4511,7 @@ var Controller = (function (_App) {
 
 exports['default'] = Controller;
 module.exports = exports['default'];
-},{"../../app":1}],36:[function(require,module,exports){
+},{"../../app":1}],37:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -4422,7 +4551,7 @@ module.exports = exports['default'];
 
   module.exports = Page;
 })();
-},{"string":51}],37:[function(require,module,exports){
+},{"string":52}],38:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -4480,7 +4609,7 @@ module.exports = exports['default'];
 
   module.exports = domainRun;
 })();
-},{"domain":43}],38:[function(require,module,exports){
+},{"domain":44}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4568,7 +4697,7 @@ var Form = (function () {
 
 exports['default'] = Form;
 module.exports = exports['default'];
-},{"./domain-run":37}],39:[function(require,module,exports){
+},{"./domain-run":38}],40:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -4891,7 +5020,7 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":45,"domain":43,"events":44}],40:[function(require,module,exports){
+},{"_process":46,"domain":44,"events":45}],41:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -5025,87 +5154,114 @@ module.exports = exports['default'];
 
   module.exports = readMore;
 })();
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-  /**
-   *  @class    Upload
-   *  @arg      {HTMLElement} dropzone
-   *  @arg      {Input} file_input
-   *  @arg      {HTMLElement} thumbnail - Preview container
-   *  @arg      {Function} cb
-   */
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-  function Upload(dropzone, file_input, thumbnail, cb) {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _events = require('events');
+
+var Upload = (function (_EventEmitter) {
+  function Upload(dropzone, fileInput, thumbnail) {
+    _classCallCheck(this, Upload);
+
+    _get(Object.getPrototypeOf(Upload.prototype), 'constructor', this).call(this);
+
     this.dropzone = dropzone;
-    this.file_input = file_input;
+    this.fileInput = fileInput;
     this.thumbnail = thumbnail;
-    this.cb = cb;
-
-    this.init();
   }
 
-  Upload.prototype.init = function () {
+  _inherits(Upload, _EventEmitter);
 
-    if (window.File) {
-      if (this.dropzone) {
-        this.dropzone.on('dragover', this.hover.bind(this)).on('dragleave', this.hover.bind(this)).on('drop', this.handler.bind(this));
-      }
+  _createClass(Upload, [{
+    key: 'init',
+    value: function init() {
+      if (window.File) {
+        if (this.dropzone) {
+          this.dropzone.on('dragover', this.hover.bind(this)).on('dragleave', this.hover.bind(this)).on('drop', this.handler.bind(this));
+        }
 
-      if (this.file_input) {
-        this.file_input.on('change', this.handler.bind(this));
-      }
-    } else {
-      if (dropzone) {
-        dropzone.find('.modern').hide();
+        if (this.fileInput) {
+          this.fileInput.on('change', this.handler.bind(this));
+        }
+      } else {
+        if (dropzone) {
+          dropzone.find('.modern').hide();
+        }
       }
     }
-  };
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      if (window.File) {
+        if (this.dropzone) {
+          this.dropzone.off('dragover').off('dragleave').off('drop');
+        }
 
-  Upload.prototype.hover = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-  };
+        if (this.fileInput) {
+          this.fileInput.off('change');
+        }
+      }
 
-  Upload.prototype.handler = function (e) {
-    this.hover(e);
-
-    var files = e.target.files || e.originalEvent.dataTransfer.files;
-
-    for (var i = 0, f; f = files[i]; i++) {
-      this.preview(f, e.target);
+      return this;
     }
-  };
-
-  Upload.prototype.preview = function (file, target) {
-    var upload = this;
-
-    var img = new Image();
-
-    img.classList.add('img-responsive');
-    img.classList.add('preview-image');
-
-    img.addEventListener('load', function () {
-
-      $(img).data('file', file);
-
-      upload.thumbnail.empty().append(img);
-    }, false);
-
-    img.src = (window.URL || window.webkitURL).createObjectURL(file);
-
-    if (this.cb) {
-      this.cb(null, file);
+  }, {
+    key: 'hover',
+    value: function hover(e) {
+      e.stopPropagation();
+      e.preventDefault();
     }
-  };
+  }, {
+    key: 'handler',
+    value: function handler(e) {
+      this.hover(e);
 
-  module.exports = Upload;
-})();
-},{}],42:[function(require,module,exports){
+      var files = e.target.files || e.originalEvent.dataTransfer.files;
+
+      for (var i = 0, f; f = files[i]; i++) {
+        this.preview(f, e.target);
+      }
+    }
+  }, {
+    key: 'preview',
+    value: function preview(file, target) {
+      var upload = this;
+
+      var img = new Image();
+
+      img.classList.add('img-responsive');
+      img.classList.add('preview-image');
+
+      img.addEventListener('load', function () {
+
+        $(img).data('file', file);
+
+        upload.thumbnail.empty().append(img);
+      }, false);
+
+      img.src = (window.URL || window.webkitURL).createObjectURL(file);
+
+      this.emit('uploaded', file);
+    }
+  }]);
+
+  return Upload;
+})(_events.EventEmitter);
+
+exports['default'] = Upload;
+module.exports = exports['default'];
+},{"events":45}],43:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -5143,7 +5299,7 @@ synapp.app.ready(function () {
     });
   });
 });
-},{"../../app":1,"../../components/panel/ctrl":23,"../../components/top-bar/ctrl":30}],43:[function(require,module,exports){
+},{"../../app":1,"../../components/panel/ctrl":24,"../../components/top-bar/ctrl":31}],44:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -5211,7 +5367,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":44}],44:[function(require,module,exports){
+},{"events":45}],45:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5514,7 +5670,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -5602,7 +5758,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5646,7 +5802,7 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./lib/compiler":47,"./lib/document":48,"./lib/element":49,"./lib/elements":50}],47:[function(require,module,exports){
+},{"./lib/compiler":48,"./lib/document":49,"./lib/element":50,"./lib/elements":51}],48:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5877,7 +6033,7 @@ var Compiler = (function () {
 exports['default'] = Compiler;
 module.exports = exports['default'];
 
-},{"./element":49,"./elements":50,"domain":43}],48:[function(require,module,exports){
+},{"./element":50,"./elements":51,"domain":44}],49:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6005,7 +6161,7 @@ Document.doctype = '<!doctype html>';
 exports['default'] = Document;
 module.exports = exports['default'];
 
-},{"./element":49,"./elements":50}],49:[function(require,module,exports){
+},{"./element":50,"./elements":51}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6045,14 +6201,19 @@ var Element = (function () {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  function Element(selector, attr, children) {
+  function Element() {
+    var selector = arguments[0] === undefined ? 'div' : arguments[0];
+
     var _this = this;
+
+    var attr = arguments[1] === undefined ? {} : arguments[1];
+    var children = arguments[2] === undefined ? [] : arguments[2];
 
     _classCallCheck(this, Element);
 
     this.selector = selector;
-    this.attributes = attr || {};
-    this.children = children || [];
+    this.attributes = attr;
+    this.children = children;
     this.conditions = [];
     this.textNode = '';
 
@@ -6412,7 +6573,7 @@ var Element = (function () {
 exports['default'] = Element;
 module.exports = exports['default'];
 
-},{"./compiler":47,"./elements":50}],50:[function(require,module,exports){
+},{"./compiler":48,"./elements":51}],51:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6572,7 +6733,7 @@ var Elements = (function () {
 exports['default'] = Elements;
 module.exports = exports['default'];
 
-},{"./element":49}],51:[function(require,module,exports){
+},{"./element":50}],52:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -7606,4 +7767,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[42]);
+},{}]},{},[43]);
