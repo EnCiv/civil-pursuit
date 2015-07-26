@@ -79,7 +79,7 @@ h1 {
 h2 {
   font-size: 2.1em;
   font-weight: 700;
-  margin: 0.5em 0;
+  margin: 0.75rem 0;
 }
 h3 {
   font-size: 1.8em;
@@ -5065,6 +5065,9 @@ a.button {
   padding: 0.3em 0.6em 0.6em 0.6em;
   clear: both;
   /****************************************************************************
+  |   Buttons
+  \***************************************************************************/
+  /****************************************************************************
   |   Subject
   \***************************************************************************/
   /****************************************************************************
@@ -5074,7 +5077,7 @@ a.button {
   |   Reference
   \***************************************************************************/
   /****************************************************************************
-  |   Arrow
+  |   Collapsers
   \***************************************************************************/
 }
 .item + .item {
@@ -5089,14 +5092,31 @@ a.button {
 }
 .item .item-buttons {
   float: right;
-  text-align: right;
   padding-left: 1em;
-  padding-bottom: 1em;
+  text-align: right;
 }
 .item .item-buttons button,
 .item .item-buttons .button {
   padding: 0.3em !important;
   text-align: right;
+  display: inline-block;
+}
+.item .item-buttons .item-toggle-promote,
+.item .item-buttons .item-toggle-details {
+  display: block;
+  margin: 0.375rem 0;
+  float: right;
+  clear: both;
+}
+.item .item-buttons .item-toggle-promote {
+  margin-top: 0;
+}
+.item .item-buttons .related {
+  margin-top: 6rem;
+  clear: both;
+}
+.item .item-buttons .related button:first-child {
+  margin-right: 0.75rem;
 }
 .item .item-text {
   margin-left: 0;
@@ -5138,50 +5158,6 @@ a.button {
   word-wrap: break-word;
   background: #fff;
 }
-.item .item-arrow {
-  margin-left: 0;
-  padding: 0;
-  position: relative;
-  left: 25%;
-  width: 75%;
-}
-@media (max-width: 440px) {
-  .item .item-arrow {
-    margin-top: 0;
-  }
-}
-.item .item-arrow i {
-  margin-left: -2em;
-  cursor: pointer;
-}
-.item .subject-placeholder {
-  background: #ccc;
-  padding: 0.2em;
-  text-align: center;
-  color: #999;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.item .description-placeholder {
-  background: #eee;
-  text-align: center;
-  color: #aaa;
-  border-radius: 4px;
-  overflow: hidden;
-  height: 3.7em;
-}
-@media (max-width: 440px) {
-  .item .description-placeholder {
-    margin-right: 0;
-  }
-}
-.item .reference-placeholder {
-  background: #eee;
-  border-radius: 4px;
-  text-align: center;
-  overflow: hidden;
-  color: #aaaaaa;
-}
 .item .item-collapsers {
   clear: both;
   margin-right: -0.375rem;
@@ -5197,7 +5173,7 @@ a.button {
   box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
 }
 .item .item-collapsers .is-container.is-shown {
-  margin-top: 0.8em;
+  margin-top: 1.9em !important;
 }
 .item .item-collapsers .children.is-shown {
   padding: 1px;
@@ -5254,6 +5230,13 @@ footer {
 }
 .promote-steps {
   text-align: center;
+  margin: 0;
+  padding: 0.375rem;
+}
+.items-side-by-side {
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*\
+  /*      SLIDERS
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 }
 .items-side-by-side .side {
   padding: 0.375rem;
@@ -5261,6 +5244,9 @@ footer {
 }
 .items-side-by-side .side.left-item {
   padding-right: 0 !important;
+}
+.items-side-by-side .side .subject {
+  border: 1px solid black;
 }
 @media (min-width: 600px) {
   .items-side-by-side .side {
@@ -5271,14 +5257,36 @@ footer {
     box-sizing: border-box;
   }
 }
-.items-side-by-side input[type="range"] {
-  width: 96%;
+.items-side-by-side .subject {
+  padding-top: 0;
 }
-.items-side-by-side .cirteria-wrapper {
+.items-side-by-side .subject h4 {
+  margin-top: -0.35rem;
+  padding-bottom: 0 !important;
+}
+.items-side-by-side .feedback-entry {
+  width: calc(92.5%);
+}
+.items-side-by-side input[type="range"] {
+  width: calc(91%) !important;
+}
+.items-side-by-side .items-to-evaluate {
+  margin-bottom: 0 !important;
+}
+.items-side-by-side .item-references-evaluate {
+  margin-top: -0.75rem !important;
+}
+.items-side-by-side .sliders .cirteria-wrapper {
   clear: both;
 }
-.items-side-by-side .criteria-description {
+.items-side-by-side .sliders .criteria-description {
   display: none;
+}
+.items-side-by-side .sliders .criteria-button-title {
+  margin: 0;
+}
+.items-side-by-side .finish {
+  font-weight: bold;
 }
 .details.is-shown {
   padding: 0.8em;

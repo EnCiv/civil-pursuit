@@ -112,7 +112,7 @@ var ItemCtrl = (function (_Controller) {
   }, {
     key: 'makeRelated',
     value: function makeRelated(cls) {
-      var button = $('<button class="shy counter"><span class="' + cls + '-number"></span> <i class="fa"></i></button>');
+      var button = $('<button class="shy counter radius"><span class="' + cls + '-number"></span> <i class="fa"></i></button>');
 
       return button;
     }

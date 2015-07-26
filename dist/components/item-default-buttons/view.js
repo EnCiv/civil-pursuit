@@ -18,17 +18,17 @@ var ItemDefaultButtons = (function (_Elements) {
 
     _get(Object.getPrototypeOf(ItemDefaultButtons.prototype), 'constructor', this).call(this);
 
-    var loginButton = new _cincoDist.Element('button.item-toggle-promote.shy');
+    var loginButton = new _cincoDist.Element('button.item-toggle-promote.shy.radius');
 
     loginButton.add(new _cincoDist.Element('span.promoted').text('0'), new _cincoDist.Element('i.fa.fa-bullhorn'));
 
-    var joinButton = new _cincoDist.Element('button.item-toggle-details.shy');
+    var joinButton = new _cincoDist.Element('button.item-toggle-details.shy.radius');
 
     joinButton.add(new _cincoDist.Element('span.promoted-percent').text('0%'), new _cincoDist.Element('i.fa.fa-signal'));
 
-    var related = new _cincoDist.Element('div').add(new _cincoDist.Element('span.related'));
+    var related = new _cincoDist.Element('.related');
 
-    this.add(loginButton, new _cincoDist.Element('div'), joinButton, related);
+    this.add(loginButton, joinButton, related);
   }
 
   _inherits(ItemDefaultButtons, _Elements);

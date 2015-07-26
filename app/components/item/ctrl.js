@@ -65,7 +65,7 @@ class ItemCtrl extends Controller {
   }
 
   makeRelated (cls) {
-    var button = $('<button class="shy counter"><span class="' + cls +
+    var button = $('<button class="shy counter radius"><span class="' + cls +
       '-number"></span> <i class="fa"></i></button>');
 
     return button;

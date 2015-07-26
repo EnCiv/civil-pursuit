@@ -15,26 +15,26 @@ class Promote extends Element {
   }
 
   promoteImage (hand) {
-    return new Element('.image.gutter', {
+    return new Element('.image.gutter-right.gutter-bottom', {
       style         :   'float: left; width: 40%',
       className     :   [hand + '-item']
     });
   }
 
   promoteSubject (hand) {
-    return new Element('.subject.gutter', {
+    return new Element('.subject', {
       className    :   [hand + '-item']
     }).add(new Element('h4'));
   }
 
   promoteDescription (hand) {
-    return new Element('.description.gutter.pre-text', {
+    return new Element('.description.gutter-right.pre-text', {
       className    :   [hand + '-item']
     });
   }
 
   promoteReference (hand) {
-    return new Element('.references.gutter', {
+    return new Element('.references.gutter-right', {
       className    :   [hand + '-item']
     }).add(new Element('a', {
       rel       :   'nofollow',
@@ -53,14 +53,14 @@ class Promote extends Element {
 
       slider.add(new Element('.row').add(
         new Element('.tablet-40').add(
-          new Element('h4').add(
-            new Element('button.criteria-name.shy.block')
+          new Element('h5.criteria-button-title').add(
+            new Element('button.criteria-name.shy.block.text-left')
               .text('Criteria')
           )
         ),
 
         new Element('.tablet-60', {
-          style: 'margin-top: 2.5em'
+          style: 'margin-top: 0.5em'
         }).add(
           new Element('input.block', {
             type: 'range',
@@ -91,7 +91,7 @@ class Promote extends Element {
   }
 
   promoteButton (hand) {
-    return new Element('.gutter', {
+    return new Element('.gutter-bottom.gutter-right', {
       className    :   [hand + '-item']
     }).add(
       new Element('button.block.promote').text('Promote')
@@ -99,7 +99,7 @@ class Promote extends Element {
   }
 
   editAndGoAgain (hand) {
-    return new Element('.gutter', {
+    return new Element('.gutter-bottom.gutter-right', {
       className    :   [hand + '-item']
     }).add(
       new Element('button.block.edit-and-go-again-toggle')
@@ -108,6 +108,11 @@ class Promote extends Element {
   }
 
   compose () {
+
+    let leftImage = this.promoteImage('left');
+
+    leftImage.addClass('.gutter-left');
+
     return new Elements().add(
       
       new Element('header.promote-steps').add(
@@ -143,10 +148,10 @@ class Promote extends Element {
         ),
 
         // 2 columns
-        new Element('.split-hide-down').add(
-          new Element('.row').add(
+        new Element('.split-hide-down.gutter-left').add(
+          new Element('.row.items-to-evaluate').add(
             new Element('.split-50.watch-100').add(
-              this.promoteImage('left'),
+              leftImage,
               this.promoteSubject('left'),
               this.promoteDescription('left')
             ),
@@ -158,7 +163,7 @@ class Promote extends Element {
             )
           ),
 
-          new Element('.row').add(
+          new Element('.row.item-references-evaluate').add(
             new Element('.split-50.watch-100').add(
               this.promoteReference('left')
             ),
@@ -188,7 +193,7 @@ class Promote extends Element {
             )
           ),
 
-          new Element('h4.text-center.promote-label-choose').text('Which of these is most important for the community to consider?'),
+          new Element('h5.text-center.promote-label-choose').text('Which of these is most important for the community to consider?'),
 
           new Element('.row').add(
             new Element('.split-50.watch-100').add(

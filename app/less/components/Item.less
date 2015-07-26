@@ -45,15 +45,41 @@
     padding-top           :     0.36em;
   }
 
+  /****************************************************************************
+  |   Buttons
+  \***************************************************************************/
+
   .item-buttons           {
     float                 :     right;
     text-align            :     right;
     padding-left          :     1em;
-    padding-bottom        :     1em;
+    text-align            :     right;
 
     button, .button       {
       padding             :     0.3em !important;
       text-align          :     right;
+      display             :     inline-block;
+    }
+
+    .item-toggle-promote,
+    .item-toggle-details  {
+      display             :     block;
+      margin              :     @syn-gap / 2 0;
+      float               :     right;
+      clear               :     both;
+    }
+
+    .item-toggle-promote  {
+      margin-top          :     0;
+    }
+
+    .related              {
+      margin-top          :     6rem;
+      clear               :     both;
+
+      button:first-child  {
+        margin-right      :     @syn-gap;
+      }
     }
   }
 
@@ -112,59 +138,8 @@
   }
 
   /****************************************************************************
-  |   Arrow
+  |   Collapsers
   \***************************************************************************/
-
-  .item-arrow             {
-    margin-left           :     0;
-    padding               :     0;
-    position              :     relative;
-    left                  :     25%;
-    width                 :     75%;
-
-    @media (max-width: @screenPhone) {
-      margin-top          :     0
-    }
-
-    i                     {
-      margin-left         :     -2em;
-      .cursor-pointer     (     );
-    }
-  }
-
-  .subject-placeholder {
-      background: #ccc;
-      padding: 0.2em;
-      text-align: center;
-      color: #999;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-  .description-placeholder {
-    background: #eee;
-    // padding: 0.6em;
-    text-align: center;
-    color: #aaa;
-    border-radius: 4px;
-    overflow: hidden;
-    // margin-top: -20px;
-    height: 3.7em;
-
-    @media (max-width: @screenPhone) {
-      margin-right: 0
-    }
-  }
-
-  .reference-placeholder {
-    background: #eee;
-    // padding: 0.4em;
-    border-radius: 4px;
-    text-align: center;
-    overflow: hidden;
-    // margin-top: -20px;
-    color: #aaa
-  }
 
   .item-collapsers {
     clear: both;
@@ -180,7 +155,7 @@
       .box-shadow(-2px; 2px; 3px; 3px; 0; 0; 0; 0.14);
 
       &.is-shown {
-        margin-top: 0.8em;
+        margin-top: (@syn-gutter-width * 1.9) !important;
         // margin-bottom: 40px;
       }
     }

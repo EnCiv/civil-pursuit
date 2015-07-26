@@ -1,40 +1,79 @@
 @import "var";
 
-.promote-steps {
-  text-align: center
+.promote-steps          {
+  text-align            :   center;
+  margin                :   0;
+  padding               :   (@syn-gap / 2);
 }
 
-.items-side-by-side {
-  .side {
-    padding: @syn-panel-gutter / 2;
-    border: 1px solid #ccc;
+.items-side-by-side     {
+  .side                 {
+    padding             :   @syn-panel-gutter / 2;
+    border              :   1px solid #ccc;
 
-    &.left-item {
-      padding-right: 0 !important;
+    &.left-item         {
+      padding-right     :   0 !important;
     }
 
-    &.right-item {
+    .subject            {
+      border            :   1px solid black;
     }
 
-    @media (min-width: @screenSplit) {
-      width: 50%;
-      float: left;
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
-      box-sizing: border-box;
+    @media (min-width: @screenSplit) 
+                        {
+      width             :   50%;
+      float             :   left;
+      -webkit-box-sizing:   border-box;
+      -moz-box-sizing   :   border-box;
+      box-sizing        :   border-box;
     }
   }
 
-  input[type="range"] {
-    width : 96%
+  .subject              {
+    padding-top         :   0;
+
+    h4                  {
+      margin-top        :   -0.35rem;
+      padding-bottom    :   0 !important;
+    }
   }
 
-  .cirteria-wrapper {
-    clear: both
+  .feedback-entry       {
+    width               :   calc(100% - (@syn-gap * 10));
   }
 
-  .criteria-description {
-    display: none
+  input[type="range"]   {
+    width               :   calc(100% - (@syn-gap * 12)) !important;
+  }
+
+  .items-to-evaluate    {
+    margin-bottom       :   0 !important;
+  }
+
+  .item-references-evaluate {
+    margin-top          :   -(@syn-gap) !important;
+  }
+
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*\
+  /*      SLIDERS
+  /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  .sliders {
+    .cirteria-wrapper {
+      clear: both
+    }
+
+    .criteria-description {
+      display: none
+    }
+
+    .criteria-button-title {
+      margin            :   0
+    }
+  }
+
+  .finish               {
+    font-weight         :   bold
   }
 
 }

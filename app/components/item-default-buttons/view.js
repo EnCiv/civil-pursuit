@@ -6,25 +6,24 @@ class ItemDefaultButtons extends Elements {
   constructor (props) {
     super()
 
-    let loginButton = new Element('button.item-toggle-promote.shy');
+    let loginButton = new Element('button.item-toggle-promote.shy.radius');
       
     loginButton.add(
       new Element('span.promoted').text('0'),
       new Element('i.fa.fa-bullhorn')
     );
 
-    let joinButton = new Element('button.item-toggle-details.shy');
+    let joinButton = new Element('button.item-toggle-details.shy.radius');
 
     joinButton.add(
       new Element('span.promoted-percent').text('0%'),
       new Element('i.fa.fa-signal')
     );
 
-    let related = new Element('div').add(new Element('span.related'));
+    let related = new Element('.related');
 
     this.add(
       loginButton,
-      new Element('div'),
       joinButton,
       related
     );

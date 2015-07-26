@@ -32,6 +32,15 @@ function _renderItem (item, hand) {
     this.find('item references', hand)
       .attr('href', item.references[0].url)
       .text((item.references[0].title || item.references[0].url));
+
+    this.find('item references', hand)
+      .closest('.item-references-evaluate')
+      .css('display', 'block');
+  }
+  else {
+    this.find('item references', hand)
+      .closest('.item-references-evaluate')
+      .css('display', 'none');
   }
 
   // Sliders
