@@ -14,9 +14,11 @@ function setCitizenship(userId, countryId, position) {
             throw new Error('No such user ' + userId);
           }
 
-          user.citizenship.set(position, countryId);
+          if (!Array.isArray(user.citizenship)) {
+            user.citizenship = [];
+          }
 
-          console.log('&&&&&&&&&', user);
+          user.citizenship.set(position, countryId);
 
           user.save(function (error) {
             try {

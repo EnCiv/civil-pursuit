@@ -93,10 +93,10 @@ class IdentityView extends Element {
         )
       ),
       new Element('.row').add(
-        new Element('button.very.shy.tablet-30').text('Citizenship'),
+        new Element('button.very.shy.tablet-30').text('Dual citizenship'),
         new Element('.tablet-70').add(
           new Element('select.citizenship.block.gutter').add(
-            new Element('option', { value : '' }).text('Choose one')
+            new Element('option', { value : '' }).text('None')
           )
         )
       )
@@ -115,12 +115,13 @@ class IdentityView extends Element {
   gender () {
     return new Element('.row').add(
       new Element('button.very.shy.tablet-30').text('Gender'),
-      new Element('.tablet-35').add(
-        new Element('button.gender-male.gender').text('Male')
-      ),
-      new Element('.tablet-35').add(
-        new Element('button.block.gender-female.gender').text('Female')
-      )
+      new Element('.tablet-70').add(
+          new Element('select.gender.block.gutter').add(
+            new Element('option', { value : 'M' }).text('Male'),
+            new Element('option', { value : 'F' }).text('Female'),
+            new Element('option', { value : 'O' }).text('Other')
+          )
+        )
     );
   }
 

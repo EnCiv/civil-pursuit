@@ -118,7 +118,7 @@ let schema = {
 
     "dob"               :   Date,
 
-    "gender"            :   String, /** M for male, F for female */
+    "gender"            :   String, /** M for male, F for female, O for other */
 
     "registered_voter"  :   Boolean,
 

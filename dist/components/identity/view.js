@@ -75,7 +75,7 @@ var IdentityView = (function (_Element) {
   }, {
     key: 'citizenship',
     value: function citizenship() {
-      return new _cincoDist.Elements(new _cincoDist.Element('.row.gutter-top').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))));
+      return new _cincoDist.Elements(new _cincoDist.Element('.row.gutter-top').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Dual citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('None')))));
     }
   }, {
     key: 'dob',
@@ -85,7 +85,7 @@ var IdentityView = (function (_Element) {
   }, {
     key: 'gender',
     value: function gender() {
-      return new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Gender'), new _cincoDist.Element('.tablet-35').add(new _cincoDist.Element('button.gender-male.gender').text('Male')), new _cincoDist.Element('.tablet-35').add(new _cincoDist.Element('button.block.gender-female.gender').text('Female')));
+      return new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Gender'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.gender.block.gutter').add(new _cincoDist.Element('option', { value: 'M' }).text('Male'), new _cincoDist.Element('option', { value: 'F' }).text('Female'), new _cincoDist.Element('option', { value: 'O' }).text('Other'))));
     }
   }]);
 
