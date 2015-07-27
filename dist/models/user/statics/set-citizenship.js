@@ -14,6 +14,13 @@ function setCitizenship(userId, countryId, position) {
             throw new Error('No such user ' + userId);
           }
 
+          console.log('////////////////////////');
+          console.log('////////////////////////');
+          console.log('////////////////////////');
+          console.log(countryId);
+          console.log('////////////////////////');
+          console.log('////////////////////////');
+
           user.citizenship.set(position, countryId);
 
           user.save(function (error) {
