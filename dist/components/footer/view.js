@@ -31,7 +31,7 @@ var Footer = (function (_Element) {
     this.add(new _cincoDist.Element('p').text(function () {
       var y = new Date().getFullYear();
 
-      return 'Copyright Ⓒ 2014 ' + (y > 2014 ? ' - ' + y : '') + ' by Synaccord.';
+      return 'Copyright Ⓒ 2014 ' + (y > 2014 ? ' - ' + y : '') + ' by Synaccord, LLC.';
     }), new _cincoDist.Element('p').add(new _cincoDist.Element('a', {
       href: (0, _libAppPage2['default'])('Terms Of Service')
     }).text('Terms of Service and Privacy Policy')));

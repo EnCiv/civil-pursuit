@@ -14,7 +14,7 @@ class Footer extends Element {
 
         return 'Copyright Ⓒ 2014 ' +
           (y > 2014 ? " - " + y : "") +
-          ' by Synaccord.'; }),
+          ' by Synaccord, LLC.'; }),
 
       new Element('p').add(
         new Element('a', {

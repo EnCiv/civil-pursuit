@@ -5288,6 +5288,9 @@ footer {
 .items-side-by-side .finish {
   font-weight: bold;
 }
+.items-side-by-side .edit-and-go-again-toggle {
+  font-style: italic;
+}
 .details.is-shown {
   padding: 0.8em;
 }

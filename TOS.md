@@ -3,7 +3,7 @@
  
 # TERMS OF SERVICE
  
-This website that you are visiting (the “Website”), is owned by Synaccord (the “Company”).
+This website that you are visiting (the “Website”), is owned by Synaccord, LLC (the “Company”).
  
 **Illegal or Abusive Usage is Strictly Prohibited:** You must not abuse, harass, threaten, impersonate or intimidate other users of our website.  You may not use the Company’s Website for any illegal or unauthorized purpose.  International users agree to comply with all local laws regarding online conduct and acceptable content.  Should you be found to have engaged in illegal or abusive usage of our website, Company will suspend your account or usage as applicable.
 
