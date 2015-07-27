@@ -1,35 +1,21 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
 
-  
-
-  var User = require('../models/user');
-
-  /**
-   *  @function setBirthdate
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {Date} birthdate
-   */
-
-  function setBirthdate (user_id, birthdate) {
-
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      User.setBirthdate(user_id, birthdate, domain.intercept(function () {
-        socket.emit('birthdate set', user_id);
-      }));
-    });
-
+function setBirthdate (event, birthdate) {
+  try {
+    UserModel
+      .setBirthdate(this.synuser.id, birthdate)
+      .then(
+        user => {
+          this.ok(event, user);
+        },
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = setBirthdate;
-
-} ();
+export default setBirthdate;

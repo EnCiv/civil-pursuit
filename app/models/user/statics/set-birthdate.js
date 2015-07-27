@@ -1,23 +1,41 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function setBirthdate (user_id, dob, cb) {
+function setBirthdate (userId, dob) {
+  return new Promise((ok, ko) => {
+    try {
+      this
+        .findById(userId)
+        .exec()
+        .then(
+          user => {
+            try {
+              if ( ! user ) {
+                throw new Error('No such user ' + userId);
+              }
+              user.dob = dob;
+              user.save(error => {
+                try {
+                  if ( error ) {
+                    throw error;
+                  }
+                  ok(user);
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              });
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+    }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-    var domain = require('domain').create();
-    
-    domain
-      
-      .on('error', cb)
-    
-      .run(function () {
-        var User = require('../../../models/user');
-
-        process.nextTick(
-          User.update.bind(User, { _id: user_id }, { dob: dob }, cb));
-      });
-  }
-
-  module.exports = setBirthdate;
-
-} ();
+export default setBirthdate;

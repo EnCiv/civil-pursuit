@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function setGender
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {String} gender - M for male, F for female
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function setGender(user_id, gender) {
+function setGender(event, gender) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].setGender(this.synuser.id, gender).then(function (user) {
+      return _this.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
-
-    domain.run(function () {
-      User.setGender(user_id, gender, domain.intercept(function () {
-        socket.emit('gender set', user_id);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = setGender;
-})();
+exports['default'] = setGender;
+module.exports = exports['default'];

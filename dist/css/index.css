@@ -4549,6 +4549,22 @@ input[type="url"].block,
 textarea.block {
   width: calc(98%);
 }
+input[type="text"].block.gutter,
+input[type="password"].block.gutter,
+input[type="date"].block.gutter,
+input[type="datetime"].block.gutter,
+input[type="datetime-local"].block.gutter,
+input[type="month"].block.gutter,
+input[type="week"].block.gutter,
+input[type="email"].block.gutter,
+input[type="number"].block.gutter,
+input[type="search"].block.gutter,
+input[type="tel"].block.gutter,
+input[type="time"].block.gutter,
+input[type="url"].block.gutter,
+textarea.block.gutter {
+  width: calc(87.5%) !important;
+}
 input[type="text"].error,
 input[type="password"].error,
 input[type="date"].error,
@@ -4599,7 +4615,7 @@ input[type="time"].medium.block,
 input[type="url"].medium.block,
 textarea.medium.block {
   width: calc(97.5%);
-  padding: 1em 0.5em;
+  padding: 1em .5em;
 }
 select.medium {
   font-size: 125%;
@@ -5414,6 +5430,10 @@ footer {
 }
 #profile {
   margin-top: 10px;
+}
+.gender-male {
+  width: calc(99.25%);
+  margin-left: .75em;
 }
 table {
   width: 100%;

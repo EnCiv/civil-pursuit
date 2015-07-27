@@ -41,7 +41,7 @@ var IdentityView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.identity-collapse.is-container.row').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row.gutter').add(this.avatar(), this.civility(), this.citizenship())));
+      return new _cincoDist.Element('.identity-collapse.is-container.row').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row.gutter').add(this.avatar(), this.civility(), this.citizenship(), this.dob(), this.gender())));
     }
   }, {
     key: 'avatar',
@@ -53,7 +53,7 @@ var IdentityView = (function (_Element) {
   }, {
     key: 'civility',
     value: function civility() {
-      return new _cincoDist.Element('.names.input-group-tablet.gutter-right').add(new _cincoDist.Element('input.watch-100.tablet-40', {
+      return new _cincoDist.Element('.names.input-group-tablet.gutter-right.gutter-bottom').add(new _cincoDist.Element('input.watch-100.tablet-40', {
         type: 'text',
         placeholder: 'First name',
         name: 'first-name'
@@ -75,7 +75,17 @@ var IdentityView = (function (_Element) {
   }, {
     key: 'citizenship',
     value: function citizenship() {
-      return new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one'))));
+      return new _cincoDist.Elements(new _cincoDist.Element('.row.gutter-top').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Citizenship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.citizenship.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))));
+    }
+  }, {
+    key: 'dob',
+    value: function dob() {
+      return new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Birthdate'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('input.block.gutter.dob', { type: 'date' })));
+    }
+  }, {
+    key: 'gender',
+    value: function gender() {
+      return new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Gender'), new _cincoDist.Element('.tablet-35').add(new _cincoDist.Element('button.gender-male.gender').text('Male')), new _cincoDist.Element('.tablet-35').add(new _cincoDist.Element('button.block.gender-female.gender').text('Female')));
     }
   }]);
 

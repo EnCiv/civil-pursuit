@@ -73,6 +73,15 @@ var IdentityCtrl = (function (_Controller) {
 
         case 'citizenship':
           return $('.citizenship', template);
+
+        case 'dob':
+          return $('input.dob', template);
+
+        case 'gender male':
+          return $('.gender-male', template);
+
+        case 'gender female':
+          return $('.gender-female', template);
       }
     }
   }, {
@@ -137,6 +146,14 @@ var IdentityCtrl = (function (_Controller) {
         _this2.citizenship();
         pubsub.unsubscribe();
       });
+
+      // Birthdate
+
+      this.dob();
+
+      // Gender
+
+      this.renderGender();
     }
   }, {
     key: 'avatar',
@@ -216,6 +233,7 @@ var IdentityCtrl = (function (_Controller) {
   }, {
     key: 'citizenship',
     value: function citizenship() {
+      var _this4 = this;
 
       var self = this;
 
@@ -223,20 +241,19 @@ var IdentityCtrl = (function (_Controller) {
 
       // Function to append an Option Element to a Country Select List
 
-      function addOption(country, index) {
+      var addOption = function addOption(country, index) {
         var option = $('<option></option>');
 
         option.val(country._id);
 
         option.text(country.name);
 
-        // if ( identity.profile.user && identity.profile.user.citizenship
-        //   && identity.profile.user.citizenship[index] === country._id ) {
-        //   option.attr('selected', true);
-        // }
+        if (_this4.user && _this4.user.citizenship && _this4.user.citizenship[index] === country._id) {
+          option.attr('selected', true);
+        }
 
         return option;
-      }
+      };
 
       // For each Country Select Lists, create Option Elements for each Country
 
@@ -272,6 +289,85 @@ var IdentityCtrl = (function (_Controller) {
           }
         });
       });
+    }
+  }, {
+    key: 'dob',
+    value: function dob() {
+      var self = this;
+
+      this.find('dob').on('change', function () {
+        self.publish('set birthdate', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      if (this.user && this.user.dob) {
+        var dob = new Date(this.user.dob);
+
+        var dob_year = dob.getFullYear();
+        var dob_month = dob.getMonth() + 1;
+        var dob_day = dob.getDate() + 1;
+
+        if (dob_month < 10) {
+          dob_month = '0' + dob_month;
+        }
+
+        if (dob_day < 10) {
+          dob_day = '0' + dob_day;
+        }
+
+        this.find('dob').val([dob_year, dob_month, dob_day].join('-'));
+      }
+    }
+  }, {
+    key: 'renderGender',
+    value: function renderGender() {
+
+      var self = this;
+
+      this.find('gender male').on('click', function (e) {
+        e.preventDefault();
+        if ($(this).hasClass('primary')) {
+          $(this).removeClass('primary');
+          self.find('gender female').addClass('primary');
+          self.publish('set gender', 'F').subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        } else {
+          $(this).addClass('primary');
+          self.find('gender female').removeClass('primary');
+          self.publish('set gender', 'M').subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        }
+      });
+
+      this.find('gender female').on('click', function (e) {
+        e.preventDefault();
+        if ($(this).hasClass('primary')) {
+          $(this).removeClass('primary');
+          self.find('gender male').addClass('primary');
+          self.publish('set gender', 'M').subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        } else {
+          $(this).addClass('primary');
+          self.find('gender male').removeClass('primary');
+          self.publish('set gender', 'F').subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        }
+      });
+
+      if (this.user && this.user.gender) {
+        if (this.user.gender === 'M') {
+          this.find('gender male').addClass('primary');
+          this.find('gender female').removeClass('primary');
+        } else if (this.user.gender === 'F') {
+          this.find('gender female').addClass('primary');
+          this.find('gender male').removeClass('primary');
+        }
+      }
     }
   }]);
 

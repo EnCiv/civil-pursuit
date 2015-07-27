@@ -47,6 +47,15 @@ class IdentityCtrl extends Controller {
 
       case 'citizenship':
       return $('.citizenship', template);
+
+      case 'dob':
+      return $('input.dob', template);
+
+      case 'gender male':
+      return $('.gender-male', template);
+
+      case 'gender female':
+      return $('.gender-female', template);
     }
   }
 
@@ -111,6 +120,14 @@ class IdentityCtrl extends Controller {
         this.citizenship();
         pubsub.unsubscribe();
       });
+
+    // Birthdate
+
+    this.dob();
+
+    // Gender
+
+    this.renderGender();
   }
 
   avatar () {
@@ -205,17 +222,17 @@ class IdentityCtrl extends Controller {
 
     // Function to append an Option Element to a Country Select List
 
-    function addOption (country, index) {
+    let addOption = (country, index) => {
       var option = $('<option></option>');
 
       option.val(country._id);
 
       option.text(country.name);
 
-      // if ( identity.profile.user && identity.profile.user.citizenship
-      //   && identity.profile.user.citizenship[index] === country._id ) {
-      //   option.attr('selected', true);
-      // } 
+      if ( this.user && this.user.citizenship
+        && this.user.citizenship[index] === country._id ) {
+        option.attr('selected', true);
+      } 
 
       return option;
     }
@@ -257,6 +274,102 @@ class IdentityCtrl extends Controller {
       });
 
     });
+  }
+
+  dob () {
+    let self = this;
+
+    this
+      .find('dob')
+      .on('change', function () {
+        self
+          .publish('set birthdate', $(this).val())
+          .subscribe((pubsub) => {
+            pubsub.unsubscribe();
+          });
+      });
+
+    if ( this.user && this.user.dob ) {
+      let dob = new Date(this.user.dob);
+
+      let dob_year  = dob.getFullYear();
+      let dob_month = dob.getMonth() + 1;
+      let dob_day   = dob.getDate() + 1;
+
+      if ( dob_month < 10 ) {
+        dob_month = "0" + dob_month;
+      }
+
+      if ( dob_day < 10 ) {
+        dob_day = "0" + dob_day;
+      }
+
+      this.find('dob').val([dob_year, dob_month, dob_day].join('-'));
+    }
+  }
+
+  renderGender () {
+
+    let self = this;
+
+    this
+      .find('gender male')
+      .on('click', function (e) {
+        e.preventDefault();
+        if ( $(this).hasClass('primary') ) {
+          $(this).removeClass('primary');
+          self.find('gender female').addClass('primary');
+          self
+            .publish('set gender', 'F')
+            .subscribe((pubsub) => {
+              pubsub.unsubscribe();
+            });
+        }
+        else {
+          $(this).addClass('primary');
+          self.find('gender female').removeClass('primary');
+          self
+            .publish('set gender', 'M')
+            .subscribe((pubsub) => {
+              pubsub.unsubscribe();
+            });
+        }
+      });
+
+    this
+      .find('gender female')
+      .on('click', function (e) {
+        e.preventDefault();
+        if ( $(this).hasClass('primary') ) {
+          $(this).removeClass('primary');
+          self.find('gender male').addClass('primary');
+          self
+            .publish('set gender', 'M')
+            .subscribe((pubsub) => {
+              pubsub.unsubscribe();
+            });
+        }
+        else {
+          $(this).addClass('primary');
+          self.find('gender male').removeClass('primary');
+          self
+            .publish('set gender', 'F')
+            .subscribe((pubsub) => {
+              pubsub.unsubscribe();
+            });
+        }
+      });
+    
+    if ( this.user && this.user.gender ) {
+      if ( this.user.gender === 'M' ) {
+        this.find('gender male').addClass('primary');
+        this.find('gender female').removeClass('primary');
+      }
+      else if ( this.user.gender === 'F' ) {
+        this.find('gender female').addClass('primary');
+        this.find('gender male').removeClass('primary');
+      }
+    }
   }
 
 }

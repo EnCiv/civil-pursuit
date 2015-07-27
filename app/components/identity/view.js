@@ -37,7 +37,9 @@ class IdentityView extends Element {
         new Element('.row.gutter').add(
           this.avatar(),
           this.civility(),
-          this.citizenship()
+          this.citizenship(),
+          this.dob(),
+          this.gender()
         )
       )
     );
@@ -53,7 +55,7 @@ class IdentityView extends Element {
   }
 
   civility () {
-    return new Element('.names.input-group-tablet.gutter-right').add(
+    return new Element('.names.input-group-tablet.gutter-right.gutter-bottom').add(
       new Element('input.watch-100.tablet-40', {
         type          :   'text',
         placeholder   :   'First name',
@@ -81,12 +83,43 @@ class IdentityView extends Element {
   }
 
   citizenship () {
-    return new Element('.row').add(
-      new Element('button.very.shy.tablet-30').text('Citizenship'),
-      new Element('.tablet-70').add(
-        new Element('select.citizenship.block.gutter').add(
-          new Element('option', { value : '' }).text('Choose one')
+    return new Elements(
+      new Element('.row.gutter-top').add(
+        new Element('button.very.shy.tablet-30').text('Citizenship'),
+        new Element('.tablet-70').add(
+          new Element('select.citizenship.block.gutter').add(
+            new Element('option', { value : '' }).text('Choose one')
+          )
         )
+      ),
+      new Element('.row').add(
+        new Element('button.very.shy.tablet-30').text('Citizenship'),
+        new Element('.tablet-70').add(
+          new Element('select.citizenship.block.gutter').add(
+            new Element('option', { value : '' }).text('Choose one')
+          )
+        )
+      )
+    );
+  }
+
+  dob () {
+    return new Element('.row').add(
+      new Element('button.very.shy.tablet-30').text('Birthdate'),
+      new Element('.tablet-70').add(
+        new Element('input.block.gutter.dob', { type : 'date' })
+      )
+    );
+  }
+
+  gender () {
+    return new Element('.row').add(
+      new Element('button.very.shy.tablet-30').text('Gender'),
+      new Element('.tablet-35').add(
+        new Element('button.gender-male.gender').text('Male')
+      ),
+      new Element('.tablet-35').add(
+        new Element('button.block.gender-female.gender').text('Female')
       )
     );
   }

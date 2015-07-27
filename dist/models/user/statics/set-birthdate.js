@@ -1,19 +1,38 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function setBirthdate(userId, dob) {
+  var _this = this;
 
-  'use strict';
+  return new Promise(function (ok, ko) {
+    try {
+      _this.findById(userId).exec().then(function (user) {
+        try {
+          if (!user) {
+            throw new Error('No such user ' + userId);
+          }
+          user.dob = dob;
+          user.save(function (error) {
+            try {
+              if (error) {
+                throw error;
+              }
+              ok(user);
+            } catch (error) {
+              ko(error);
+            }
+          });
+        } catch (error) {
+          ko(error);
+        }
+      }, ko);
+    } catch (error) {
+      ko(error);
+    }
+  });
+}
 
-  function setBirthdate(user_id, dob, cb) {
-
-    var domain = require('domain').create();
-
-    domain.on('error', cb).run(function () {
-      var User = require('../../../models/user');
-
-      process.nextTick(User.update.bind(User, { _id: user_id }, { dob: dob }, cb));
-    });
-  }
-
-  module.exports = setBirthdate;
-})();
+exports['default'] = setBirthdate;
+module.exports = exports['default'];

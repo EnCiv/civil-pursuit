@@ -1,7 +1,5 @@
 'use strict';
 
-import mongoose from 'mongoose';
-
 function setCitizenship (userId, countryId, position) {
   return new Promise((ok, ko) => {
     try {

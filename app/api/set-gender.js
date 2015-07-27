@@ -1,35 +1,19 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
 
-  
-
-  var User = require('../models/user');
-
-  /**
-   *  @function setGender
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {String} gender - M for male, F for female
-   */
-
-  function setGender (user_id, gender) {
-
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      User.setGender(user_id, gender, domain.intercept(function () {
-        socket.emit('gender set', user_id);
-      }));
-    });
-
+function setGender (event, gender) {
+  try {
+    UserModel
+      .setGender(this.synuser.id, gender)
+      .then(
+        user => this.ok(event, user),
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = setGender;
-
-} ();
+export default setGender;

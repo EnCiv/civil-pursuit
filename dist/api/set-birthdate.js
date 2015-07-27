@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function setBirthdate
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {Date} birthdate
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function setBirthdate(user_id, birthdate) {
+function setBirthdate(event, birthdate) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].setBirthdate(this.synuser.id, birthdate).then(function (user) {
+      _this.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
-
-    domain.run(function () {
-      User.setBirthdate(user_id, birthdate, domain.intercept(function () {
-        socket.emit('birthdate set', user_id);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = setBirthdate;
-})();
+exports['default'] = setBirthdate;
+module.exports = exports['default'];
