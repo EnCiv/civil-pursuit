@@ -219,7 +219,7 @@ class IdentityCtrl extends Controller {
 
     // Function to append an Option Element to a Country Select List
 
-    let addOption = (country, index) => {
+    let addOption = (country, index, isAlreadySelected) => {
       var option = $('<option></option>');
 
       option.val(country._id);
@@ -229,7 +229,11 @@ class IdentityCtrl extends Controller {
       if ( this.user && this.user.citizenship
         && this.user.citizenship[index] === country._id ) {
         option.attr('selected', true);
-      } 
+      }
+
+      if ( isAlreadySelected ) {
+        option.addClass('hide');
+      }
 
       return option;
     }
@@ -251,16 +255,20 @@ class IdentityCtrl extends Controller {
       // USA goes 1st of the list
 
       countries.forEach(function (country) {
-        if ( country.name === 'USA' && citizenshipFromOtherList !== country._id ) {
-          select.append(addOption(country, index));
+        if ( country.name === 'USA' ) {
+          select.append(
+            addOption(country, index, ( citizenshipFromOtherList === country._id ))
+          );
         }
       });
 
       // Then all the other countries
 
       countries.forEach(function (country) {
-        if ( country.name !== 'USA' && citizenshipFromOtherList !== country._id ) {
-          select.append(addOption(country, index));
+        if ( country.name !== 'USA' ) {
+          select.append(
+            addOption(country, index, ( citizenshipFromOtherList === country._id ))
+          );
         }
       });
 
@@ -268,6 +276,16 @@ class IdentityCtrl extends Controller {
 
       select.on('change', function () {
         let citizenship = $(this).val();
+
+        self.template
+          .find('.citizenship option.hide')
+          .removeClass('hide');
+
+        self.template
+          .find('.citizenship')
+          .eq(otherIndex)
+          .find('option[value="' + $(this).val() + '"]')
+          .addClass('hide');
 
         if ( citizenship ) {
           self
