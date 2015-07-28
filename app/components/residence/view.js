@@ -45,7 +45,17 @@ class ResidenceView extends Element {
             new Element('span.not-yet-validated').add(
               new Element('i.fa.fa-exclamation-circle'),
               new Element('span').text(' Not yet validated!')
+            ),
+
+            new Element('span.hide.pre.is-validated').add(
+              new Element('i.fa.fa-check'),
+              new Element('span').text(' Validated'),
+              new Element('span.validated-moment')
             )
+          ),
+
+          new Element('.tablet-50').add(
+            new Element('button.btn.btn-block.validate-gps', { disabled : true }).text('GPS - Validate')
           )
         )
       )

@@ -3,6 +3,7 @@
 import Controller       from  '../../lib/app/controller';
 import View             from  './view';
 import IdentityCtrl     from  '../identity/ctrl';
+import ResidenceCtrl    from  '../residence/ctrl';
 
 class ProfileCtrl extends Controller {
 
@@ -39,8 +40,13 @@ class ProfileCtrl extends Controller {
     this
       .publish('get user info', this.user.id)
       .subscribe((pubsub, user) => {
+        
         this.identity = new IdentityCtrl({ user });
         this.identity.render();
+
+        this.residence = new ResidenceCtrl({ user });
+        this.residence.render();
+
         pubsub.unsubscribe();
       });
   }

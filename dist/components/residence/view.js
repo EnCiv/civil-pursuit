@@ -46,7 +46,7 @@ var ResidenceView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.residence-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('span.not-yet-validated').add(new _cincoDist.Element('i.fa.fa-exclamation-circle'), new _cincoDist.Element('span').text(' Not yet validated!'))))));
+      return new _cincoDist.Element('.residence-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('span.not-yet-validated').add(new _cincoDist.Element('i.fa.fa-exclamation-circle'), new _cincoDist.Element('span').text(' Not yet validated!')), new _cincoDist.Element('span.hide.pre.is-validated').add(new _cincoDist.Element('i.fa.fa-check'), new _cincoDist.Element('span').text(' Validated'), new _cincoDist.Element('span.validated-moment'))), new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('button.btn.btn-block.validate-gps', { disabled: true }).text('GPS - Validate')))));
     }
   }]);
 

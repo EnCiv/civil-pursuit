@@ -1,32 +1,40 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
 
-  function validateGPS (user_id, lng, lat) {
-    var socket = this;
+function validateGPS (event, lng, lat) {
+  try {
+    UserModel
+      .findById(this.synuser.id)
+      .exec()
+      .then(
+        user => {
+          try {
+            user.gps = [lng, lat];
+            user['gps validated'] = Date.now();
 
-    var domainRun = require('../lib/util/domain-run');
-
-    domainRun(
-
-      function (domain) {
-        require('../models/user').update({ _id: user_id },
-          {
-            'gps': [lng, lat],
-            'gps validated': Date.now()
-          },
-
-          domain.intercept(function () {
-            socket.emit('validated gps');
-          }));
-      },
-
-      function (error) {
-        socket.app.arte.emit('error', error);
-      }
-    );
+            user.save(error => {
+              try {
+                if ( error ) {
+                  throw error;
+                }
+                this.ok(event, user);
+              }
+              catch ( error ) {
+                this.error(error);
+              }
+            });
+          }
+          catch ( error ) {
+            this.error(error);
+          }
+        },
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = validateGPS;
-
-} ();
+export default validateGPS;

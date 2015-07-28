@@ -26,6 +26,10 @@ var _identityCtrl = require('../identity/ctrl');
 
 var _identityCtrl2 = _interopRequireDefault(_identityCtrl);
 
+var _residenceCtrl = require('../residence/ctrl');
+
+var _residenceCtrl2 = _interopRequireDefault(_residenceCtrl);
+
 var ProfileCtrl = (function (_Controller) {
   function ProfileCtrl(props) {
     _classCallCheck(this, ProfileCtrl);
@@ -67,8 +71,13 @@ var ProfileCtrl = (function (_Controller) {
       this.find('panel title').text('Profile');
 
       this.publish('get user info', this.user.id).subscribe(function (pubsub, user) {
+
         _this.identity = new _identityCtrl2['default']({ user: user });
         _this.identity.render();
+
+        _this.residence = new _residenceCtrl2['default']({ user: user });
+        _this.residence.render();
+
         pubsub.unsubscribe();
       });
     }

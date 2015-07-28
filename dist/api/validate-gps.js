@@ -1,25 +1,44 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  function validateGPS(user_id, lng, lat) {
-    var socket = this;
+var _modelsUser = require('../models/user');
 
-    var domainRun = require('../lib/util/domain-run');
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-    domainRun(function (domain) {
-      require('../models/user').update({ _id: user_id }, {
-        'gps': [lng, lat],
-        'gps validated': Date.now()
-      }, domain.intercept(function () {
-        socket.emit('validated gps');
-      }));
+function validateGPS(event, lng, lat) {
+  var _this = this;
+
+  try {
+    _modelsUser2['default'].findById(this.synuser.id).exec().then(function (user) {
+      try {
+        user.gps = [lng, lat];
+        user['gps validated'] = Date.now();
+
+        user.save(function (error) {
+          try {
+            if (error) {
+              throw error;
+            }
+            _this.ok(event, user);
+          } catch (error) {
+            _this.error(error);
+          }
+        });
+      } catch (error) {
+        _this.error(error);
+      }
     }, function (error) {
-      socket.app.arte.emit('error', error);
+      return _this.error(error);
     });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = validateGPS;
-})();
+exports['default'] = validateGPS;
+module.exports = exports['default'];

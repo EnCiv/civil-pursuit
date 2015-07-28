@@ -1,27 +1,23 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var Nav = require('syn/lib/util/nav');
+import Controller       from  '../../lib/app/controller';
+import Nav              from '../../lib/util/nav';
 
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
+class ResidenceCtrl extends Controller {
+  constructor (props) {
+    super(props);
 
-  function Residence (profile) {
+    this.props = props;
+
+    this.user = this.props.user;
+
     this.template = $('#residence');
-
-    this.template.data('residence', this);
-
-    this.profile = profile;
   }
 
-  Residence.prototype.find = function (name) {
+  find (name) {
     switch ( name ) {
       case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
+        return this.template.find('.toggle-arrow i.fa');
 
       case 'expand':
         return this.template.find('.residence-collapse');
@@ -38,18 +34,24 @@
       case 'validated moment':
         return this.template.find('.validated-moment');
     }
-  };
+  }
 
-  Residence.prototype.render = function () {
+  render () {
+    this.toggle();
 
-    var residence = this;
+    this.renderGPS();
+  }
 
-    this.find('toggle arrow').find('i').on('click', function () {
+  toggle () {
+
+    let self = this;
+
+    this.find('toggle arrow').on('click', function () {
       
-      var arrow = $(this);
+      let arrow = $(this);
 
-      Nav.toggle(residence.find('expand'), residence.template, function () {
-        if ( residence.find('expand').hasClass('is-hidden') ) {
+      Nav.toggle(self.find('expand'), self.template, () => {
+        if ( self.find('expand').hasClass('is-hidden') ) {
           arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
         }
         else {
@@ -57,52 +59,40 @@
         }
       });
     });
+  }
 
-    // Validate GPS button
+  renderGPS () {
+    let self = this;
 
     this.find('validate gps button').on('click', function () {
       navigator.geolocation.watchPosition(function(position) {
 
         console.log('location');
 
-        app.socket.emit('validate gps',       
-      
-      
-      
-app.socket.synuser, position.coords.longitude, position.coords.latitude);
+        let { longitude, latitude } = position.coords;
 
-        app.socket.once('validated gps', function () {
-          console.log('validated');
-        });
+        self
+          .publish('validate gps', longitude, latitude)
+          .subscribe((pubsub) => {
+            console.log('gps validated')
+            pubsub.unsubscribe();
+          });
       });
     });
-  };
 
-  Residence.prototype.renderUser = function () {
-
-    var residence = this;
-
-    if ( this.profile.user ) {
-
-      // GPS
-
-      if ( this.profile.user.gps ) {
-        this.find('not yet validated').hide();
-        this.find('is validated').removeClass('hide').show();
-        this.find('validated moment').text(function () {
-          var date = new Date(residence.profile.user['gps validated']);
-          return [(date.getMonth() + 1 ), (date.getDay() + 1), date.getFullYear()].join('/');
-        });
-      }
-
-      // NO GPS
-
-      else {
-        this.find('validate gps button').attr('disabled', false);
-      }
+    if ( this.user && this.user['gps validated'] ) {
+      this.find('not yet validated').hide();
+      this.find('is validated').removeClass('hide').show();
+      this.find('validated moment').text(() => {
+        var date = new Date(this.user['gps validated']);
+        return [(date.getMonth() + 1 ), (date.getDay() + 1), date.getFullYear()].join('/');
+      });
+      this.find('validate gps button').attr('disabled', true);
     }
-  };
+    else {
+      this.find('validate gps button').attr('disabled', false);
+    }
+  }
+}
 
-  module.exports = Residence;
-
-} ();
+export default ResidenceCtrl;
