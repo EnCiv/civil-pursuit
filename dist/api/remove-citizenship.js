@@ -10,11 +10,11 @@ var _modelsUser = require('../models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-function removeCitizenship(event, position) {
+function removeCitizenship(event, citizenship) {
   var _this = this;
 
   try {
-    _modelsUser2['default'].unsetCitizenship(this.synuser.id, position).then(function (user) {
+    _modelsUser2['default'].unsetCitizenship(this.synuser.id, citizenship).then(function (user) {
       _this.ok(event, user);
     }, function (error) {
       _this.error(error);

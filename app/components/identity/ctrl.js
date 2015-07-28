@@ -294,9 +294,9 @@ class IdentityCtrl extends Controller {
               pubsub.unsubscribe();
             });
         }
-        else if ( index === 1 ) {
+        else if ( index === 1 && self.user && self.user.citizenship[1] ) {
           self
-            .publish('remove citizenship', citizenship, index)
+            .publish('remove citizenship', self.user.citizenship[1])
             .subscribe((pubsub) => {
               pubsub.unsubscribe();
             });

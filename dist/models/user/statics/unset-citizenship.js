@@ -3,7 +3,7 @@
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-function unsetCitizenship(userId, position) {
+function unsetCitizenship(userId, citizenship) {
   var _this = this;
 
   return new Promise(function (ok, ko) {
@@ -18,7 +18,7 @@ function unsetCitizenship(userId, position) {
             user.citizenship = [];
           }
 
-          user.citizenship.pull(position);
+          user.citizenship.pull(citizenship);
 
           user.save(function (error) {
             try {

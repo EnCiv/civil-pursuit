@@ -1,6 +1,6 @@
 'use strict';
 
-function unsetCitizenship (userId, position) {
+function unsetCitizenship (userId, citizenship) {
   return new Promise((ok, ko) => {
     try {
       this
@@ -17,7 +17,7 @@ function unsetCitizenship (userId, position) {
                 user.citizenship = [];
               }
 
-              user.citizenship.pull(position);
+              user.citizenship.pull(citizenship);
 
               user.save(error => {
                 try {

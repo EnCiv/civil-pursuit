@@ -299,8 +299,8 @@ var IdentityCtrl = (function (_Controller) {
             self.publish('set citizenship', citizenship, index).subscribe(function (pubsub) {
               pubsub.unsubscribe();
             });
-          } else if (index === 1) {
-            self.publish('remove citizenship', citizenship, index).subscribe(function (pubsub) {
+          } else if (index === 1 && self.user && self.user.citizenship[1]) {
+            self.publish('remove citizenship', self.user.citizenship[1]).subscribe(function (pubsub) {
               pubsub.unsubscribe();
             });
           }
