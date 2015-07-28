@@ -240,10 +240,18 @@ class IdentityCtrl extends Controller {
 
       var select = $(this);
 
+      let citizenshipFromOtherList;
+
+      let otherIndex = index ? 0 : 1;
+
+      if ( self.user && self.user.citizenship[otherIndex] ) {
+        citizenshipFromOtherList = self.user.citizenship[otherIndex];
+      }
+
       // USA goes 1st of the list
 
       countries.forEach(function (country) {
-        if ( country.name === 'USA' ) {
+        if ( country.name === 'USA' && citizenshipFromOtherList !== country._id ) {
           select.append(addOption(country, index));
         }
       });
@@ -251,7 +259,7 @@ class IdentityCtrl extends Controller {
       // Then all the other countries
 
       countries.forEach(function (country) {
-        if ( country.name !== 'USA' ) {
+        if ( country.name !== 'USA' && citizenshipFromOtherList !== country._id ) {
           select.append(addOption(country, index));
         }
       });
@@ -264,6 +272,13 @@ class IdentityCtrl extends Controller {
         if ( citizenship ) {
           self
             .publish('set citizenship', citizenship, index)
+            .subscribe((pubsub) => {
+              pubsub.unsubscribe();
+            });
+        }
+        else if ( index === 1 ) {
+          self
+            .publish('remove citizenship', citizenship, index)
             .subscribe((pubsub) => {
               pubsub.unsubscribe();
             });

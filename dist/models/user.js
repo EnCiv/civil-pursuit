@@ -32,7 +32,7 @@ var _libUtilToSlug2 = _interopRequireDefault(_libUtilToSlug);
 
 var schema = new _mongoose.Schema(_userSchema2['default']);
 
-var statics = ['Identify', 'Reset password', 'Make password resettable', 'Is password valid', 'Save image', 'Add Race', 'Remove Race', 'Set marital status', 'Set employment', 'Set education', 'Set citizenship', 'Set birthdate', 'Set gender', 'Set registered voter', 'Set party', 'Disposable'];
+var statics = ['Identify', 'Reset password', 'Make password resettable', 'Is password valid', 'Save image', 'Add Race', 'Remove Race', 'Set marital status', 'Set employment', 'Set education', 'Set citizenship', 'Set birthdate', 'Set gender', 'Set registered voter', 'Set party', 'Disposable', 'Unset citizenship'];
 
 var _iteratorNormalCompletion = true;
 var _didIteratorError = false;

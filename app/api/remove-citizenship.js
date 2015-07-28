@@ -1,35 +1,19 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
 
-  
-
-  var User = require('../models/user');
-
-  /**
-   *  @function removeCitizenship
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} country_id - The Country ID
-   */
-
-  function removeCitizenship (user_id, country_id) {
-
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      User.removeCitizenship(user_id, country_id, domain.intercept(function (item) {
-        socket.emit('citizenship removed', item);
-      }));
-    });
-
+function removeCitizenship (event, position) {
+  try {
+    UserModel
+      .unsetCitizenship(this.synuser.id, position)
+      .then(
+        user => { this.ok(event, user) },
+        error => { this.error(error) }
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = removeCitizenship;
-
-} ();
+export default removeCitizenship;

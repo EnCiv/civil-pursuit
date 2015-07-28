@@ -25,7 +25,8 @@ let statics = [
   'Set gender',
   'Set registered voter',
   'Set party',
-  'Disposable'
+  'Disposable',
+  'Unset citizenship'
 ];
 
 for ( let _static of statics ) {

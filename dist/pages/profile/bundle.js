@@ -1019,10 +1019,18 @@ var IdentityCtrl = (function (_Controller) {
 
         var select = $(this);
 
+        var citizenshipFromOtherList = undefined;
+
+        var otherIndex = index ? 0 : 1;
+
+        if (self.user && self.user.citizenship[otherIndex]) {
+          citizenshipFromOtherList = self.user.citizenship[otherIndex];
+        }
+
         // USA goes 1st of the list
 
         countries.forEach(function (country) {
-          if (country.name === 'USA') {
+          if (country.name === 'USA' && citizenshipFromOtherList !== country._id) {
             select.append(addOption(country, index));
           }
         });
@@ -1030,7 +1038,7 @@ var IdentityCtrl = (function (_Controller) {
         // Then all the other countries
 
         countries.forEach(function (country) {
-          if (country.name !== 'USA') {
+          if (country.name !== 'USA' && citizenshipFromOtherList !== country._id) {
             select.append(addOption(country, index));
           }
         });
@@ -1042,6 +1050,10 @@ var IdentityCtrl = (function (_Controller) {
 
           if (citizenship) {
             self.publish('set citizenship', citizenship, index).subscribe(function (pubsub) {
+              pubsub.unsubscribe();
+            });
+          } else if (index === 1) {
+            self.publish('remove citizenship', citizenship, index).subscribe(function (pubsub) {
               pubsub.unsubscribe();
             });
           }

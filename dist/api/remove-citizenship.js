@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function removeCitizenship
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} country_id - The Country ID
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function removeCitizenship(user_id, country_id) {
+function removeCitizenship(event, position) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].unsetCitizenship(this.synuser.id, position).then(function (user) {
+      _this.ok(event, user);
+    }, function (error) {
+      _this.error(error);
     });
-
-    domain.run(function () {
-      User.removeCitizenship(user_id, country_id, domain.intercept(function (item) {
-        socket.emit('citizenship removed', item);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = removeCitizenship;
-})();
+exports['default'] = removeCitizenship;
+module.exports = exports['default'];
