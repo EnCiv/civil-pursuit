@@ -1,0 +1,26 @@
+#residence.section
+  .gutter
+    img.img-responsive.tablet-40(src=synapp.profile.residence.image)
+
+    h2 Residence
+
+    .gutter.pre-text=synapp.profile.residence.description
+
+  .residence-collapse.is-container
+    .is-section
+
+      .row
+        .col-xs-6.text-muted.padding.text-center
+          span.not-yet-validated
+            i.fa.fa-exclamation-circle
+            span  Not yet validated!
+          span.hide.pre.is-validated
+            i.fa.fa-check
+            span  Validated 
+            span.validated-moment date
+
+        .col-xs-6
+          button.btn.btn-block.validate-gps(disabled) GPS - Validate
+
+  .row.toggle-arrow.padding.text-center
+    i.fa.fa-arrow-down.cursor-pointer

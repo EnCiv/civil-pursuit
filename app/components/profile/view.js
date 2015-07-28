@@ -2,8 +2,9 @@
 
 import { Element, Elements }    from 'cinco/dist';
 import config                   from '../../../config.json';
-import IdentityView             from '../identity/view';
 import PanelView                from '../panel/view';
+import IdentityView             from '../identity/view';
+import ResidenceView            from '../residence/view';
 
 class ProfileView extends Element {
 
@@ -20,6 +21,9 @@ class ProfileView extends Element {
           new Element('.row.gutter-bottom').add(
             new Element('.tablet-50').add(
               new IdentityView()
+            ),
+            new Element('.tablet-50').add(
+              new ResidenceView()
             )
           )
         )

@@ -18,13 +18,17 @@ var _configJson = require('../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
+var _panelView = require('../panel/view');
+
+var _panelView2 = _interopRequireDefault(_panelView);
+
 var _identityView = require('../identity/view');
 
 var _identityView2 = _interopRequireDefault(_identityView);
 
-var _panelView = require('../panel/view');
+var _residenceView = require('../residence/view');
 
-var _panelView2 = _interopRequireDefault(_panelView);
+var _residenceView2 = _interopRequireDefault(_residenceView);
 
 var ProfileView = (function (_Element) {
   function ProfileView(props, extra) {
@@ -34,7 +38,7 @@ var ProfileView = (function (_Element) {
 
     var panel = new _panelView2['default']({ creator: false });
 
-    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _identityView2['default']()))));
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50').add(new _residenceView2['default']()))));
 
     this.add(panel);
   }
