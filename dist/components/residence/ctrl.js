@@ -58,6 +58,18 @@ var ResidenceCtrl = (function (_Controller) {
 
         case 'validated moment':
           return this.template.find('.validated-moment');
+
+        case 'city':
+          return this.template.find('.city');
+
+        case 'state':
+          return this.template.find('.state');
+
+        case 'zip':
+          return this.template.find('.zip');
+
+        case 'zip4':
+          return this.template.find('.zip4');
       }
     }
   }, {
@@ -66,6 +78,12 @@ var ResidenceCtrl = (function (_Controller) {
       this.toggle();
 
       this.renderGPS();
+
+      this.renderCity();
+
+      this.renderState();
+
+      this.renderZips();
     }
   }, {
     key: 'toggle',
@@ -95,9 +113,6 @@ var ResidenceCtrl = (function (_Controller) {
 
       this.find('validate gps button').on('click', function () {
         navigator.geolocation.watchPosition(function (position) {
-
-          console.log('location');
-
           var _position$coords = position.coords;
           var longitude = _position$coords.longitude;
           var latitude = _position$coords.latitude;
@@ -119,6 +134,73 @@ var ResidenceCtrl = (function (_Controller) {
         this.find('validate gps button').attr('disabled', true);
       } else {
         this.find('validate gps button').attr('disabled', false);
+      }
+    }
+  }, {
+    key: 'renderCity',
+    value: function renderCity() {
+      var self = this;
+
+      this.find('city').on('change', function () {
+        self.publish('set city', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      if (this.user.city) {
+        this.find('city').val(this.user.city);
+      }
+    }
+  }, {
+    key: 'renderState',
+    value: function renderState() {
+      var _this2 = this;
+
+      var self = this;
+
+      this.find('state').on('change', function () {
+        self.publish('set state', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      this.publish('get states').subscribe(function (pubsub, states) {
+        pubsub.unsubscribe();
+
+        states.forEach(function (state) {
+          var option = $('<option value="' + state._id + '">' + state.name + '</option>');
+
+          if (state._id === _this2.user.state) {
+            option.attr('selected', true);
+          }
+
+          _this2.find('state').append(option);
+        });
+      });
+    }
+  }, {
+    key: 'renderZips',
+    value: function renderZips() {
+      var self = this;
+
+      this.find('zip').on('change', function () {
+        self.publish('set zip', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      if (this.user.zip) {
+        this.find('zip').val(this.user.zip);
+      }
+
+      this.find('zip4').on('change', function () {
+        self.publish('set zip4', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      if (this.user.zip4) {
+        this.find('zip4').val(this.user.zip4);
       }
     }
   }]);

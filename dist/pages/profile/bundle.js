@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/config.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "tmp"             :   "/tmp",
   
   "title"           :   {
@@ -627,7 +627,65 @@ var Creator = (function (_Element) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/details/view.js":[function(require,module,exports){
+},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/demographics/view.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var _configJson = require('../../../config.json');
+
+var _configJson2 = _interopRequireDefault(_configJson);
+
+var DemoraphicsView = (function (_Element) {
+  function DemoraphicsView(props) {
+    _classCallCheck(this, DemoraphicsView);
+
+    _get(Object.getPrototypeOf(DemoraphicsView.prototype), 'constructor', this).call(this, '#demographics.section');
+
+    this.add(new _cincoDist.Elements(this.header(), this.body(), this.toggle()));
+  }
+
+  _inherits(DemoraphicsView, _Element);
+
+  _createClass(DemoraphicsView, [{
+    key: 'header',
+    value: function header() {
+      return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
+        src: _configJson2['default'].profile.demographics.image
+      })), new _cincoDist.Element('h2.profile-section-title').text('Demographics'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.demographics.description)));
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+      return new _cincoDist.Element('.row.toggle-arrow.gutter.text-center').add(new _cincoDist.Element('i.fa.fa-arrow-down.cursor-pointer'));
+    }
+  }, {
+    key: 'body',
+    value: function body() {
+      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add()));
+    }
+  }]);
+
+  return DemoraphicsView;
+})(_cincoDist.Element);
+
+exports['default'] = DemoraphicsView;
+module.exports = exports['default'];
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/details/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2056,6 +2114,10 @@ var _residenceView = require('../residence/view');
 
 var _residenceView2 = _interopRequireDefault(_residenceView);
 
+var _demographicsView = require('../demographics/view');
+
+var _demographicsView2 = _interopRequireDefault(_demographicsView);
+
 var ProfileView = (function (_Element) {
   function ProfileView(props, extra) {
     _classCallCheck(this, ProfileView);
@@ -2064,7 +2126,7 @@ var ProfileView = (function (_Element) {
 
     var panel = new _panelView2['default']({ creator: false });
 
-    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50').add(new _residenceView2['default']()))));
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()))));
 
     this.add(panel);
   }
@@ -2076,7 +2138,7 @@ var ProfileView = (function (_Element) {
 
 exports['default'] = ProfileView;
 module.exports = exports['default'];
-},{"../../../config.json":"/home/francois/Dev/syn/config.json","../identity/view":"/home/francois/Dev/syn/dist/components/identity/view.js","../panel/view":"/home/francois/Dev/syn/dist/components/panel/view.js","../residence/view":"/home/francois/Dev/syn/dist/components/residence/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","../demographics/view":"/home/francois/Dev/syn/dist/components/demographics/view.js","../identity/view":"/home/francois/Dev/syn/dist/components/identity/view.js","../panel/view":"/home/francois/Dev/syn/dist/components/panel/view.js","../residence/view":"/home/francois/Dev/syn/dist/components/residence/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2272,6 +2334,18 @@ var ResidenceCtrl = (function (_Controller) {
 
         case 'validated moment':
           return this.template.find('.validated-moment');
+
+        case 'city':
+          return this.template.find('.city');
+
+        case 'state':
+          return this.template.find('.state');
+
+        case 'zip':
+          return this.template.find('.zip');
+
+        case 'zip4':
+          return this.template.find('.zip4');
       }
     }
   }, {
@@ -2280,6 +2354,12 @@ var ResidenceCtrl = (function (_Controller) {
       this.toggle();
 
       this.renderGPS();
+
+      this.renderCity();
+
+      this.renderState();
+
+      this.renderZips();
     }
   }, {
     key: 'toggle',
@@ -2309,9 +2389,6 @@ var ResidenceCtrl = (function (_Controller) {
 
       this.find('validate gps button').on('click', function () {
         navigator.geolocation.watchPosition(function (position) {
-
-          console.log('location');
-
           var _position$coords = position.coords;
           var longitude = _position$coords.longitude;
           var latitude = _position$coords.latitude;
@@ -2333,6 +2410,73 @@ var ResidenceCtrl = (function (_Controller) {
         this.find('validate gps button').attr('disabled', true);
       } else {
         this.find('validate gps button').attr('disabled', false);
+      }
+    }
+  }, {
+    key: 'renderCity',
+    value: function renderCity() {
+      var self = this;
+
+      this.find('city').on('change', function () {
+        self.publish('set city', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      if (this.user.city) {
+        this.find('city').val(this.user.city);
+      }
+    }
+  }, {
+    key: 'renderState',
+    value: function renderState() {
+      var _this2 = this;
+
+      var self = this;
+
+      this.find('state').on('change', function () {
+        self.publish('set state', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      this.publish('get states').subscribe(function (pubsub, states) {
+        pubsub.unsubscribe();
+
+        states.forEach(function (state) {
+          var option = $('<option value="' + state._id + '">' + state.name + '</option>');
+
+          if (state._id === _this2.user.state) {
+            option.attr('selected', true);
+          }
+
+          _this2.find('state').append(option);
+        });
+      });
+    }
+  }, {
+    key: 'renderZips',
+    value: function renderZips() {
+      var self = this;
+
+      this.find('zip').on('change', function () {
+        self.publish('set zip', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      if (this.user.zip) {
+        this.find('zip').val(this.user.zip);
+      }
+
+      this.find('zip4').on('change', function () {
+        self.publish('set zip4', $(this).val()).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+
+      if (this.user.zip4) {
+        this.find('zip4').val(this.user.zip4);
       }
     }
   }]);
@@ -2391,7 +2535,16 @@ var ResidenceView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.residence-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('span.not-yet-validated').add(new _cincoDist.Element('i.fa.fa-exclamation-circle'), new _cincoDist.Element('span').text(' Not yet validated!')), new _cincoDist.Element('span.hide.pre.is-validated').add(new _cincoDist.Element('i.fa.fa-check'), new _cincoDist.Element('span').text(' Validated'), new _cincoDist.Element('span.validated-moment'))), new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('button.btn.btn-block.validate-gps', { disabled: true }).text('GPS - Validate')))));
+      return new _cincoDist.Element('.residence-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('span.not-yet-validated').add(new _cincoDist.Element('i.fa.fa-exclamation-circle'), new _cincoDist.Element('span').text(' Not yet validated!')), new _cincoDist.Element('span.hide.pre.is-validated').add(new _cincoDist.Element('i.fa.fa-check'), new _cincoDist.Element('span').text(' Validated'), new _cincoDist.Element('span.validated-moment'))), new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('button.btn.btn-block.validate-gps', { disabled: true }).text('GPS - Validate'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('input.tablet-40.gutter.city', {
+        type: 'text',
+        placeholder: 'City'
+      }), new _cincoDist.Element('select.tablet-30.gutter.state').add(new _cincoDist.Element('option', { value: '' }).text('State')), new _cincoDist.Element('input.tablet-15.gutter.zip', {
+        type: 'text',
+        placeholder: 'ZIP'
+      }), new _cincoDist.Element('input.tablet-15.gutter.zip4', {
+        type: 'text',
+        placeholder: 'ZIP +4'
+      }))));
     }
   }]);
 

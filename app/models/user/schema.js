@@ -7,6 +7,7 @@ import isCloudinaryUrl from '../../lib/util/is/cloudinary-url';
 try {
   require('../../config');
   require('../../country');
+  require('../../state');
 }
 catch ( error ) { /** Already imported **/ }
 
@@ -124,11 +125,23 @@ let schema = {
 
     /** Political party **/
 
-    "party"             :   {
+    "party"             :     {
       
-      "type"            :    Schema.Types.ObjectId,
-      "ref"             :    "Config.party"
-    }
+      "type"            :     Schema.Types.ObjectId,
+      "ref"             :     "Config.party"
+    },
+
+    "city"              :     String,
+
+    "state"             :     {
+      
+      "type"            :     Schema.Types.ObjectId,
+      "ref"             :     "State"
+    },
+
+    "zip"               :     String,
+
+    "zip4"              :     String
   };
 
 export default schema;

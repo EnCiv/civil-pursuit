@@ -40,7 +40,7 @@ class ResidenceView extends Element {
   body () {
     return new Element('.residence-collapse.is-container').add(
       new Element('.is-section').add(
-        new Element('.row').add(
+        new Element('.row.gutter-bottom').add(
           new Element('.tablet-50').add(
             new Element('span.not-yet-validated').add(
               new Element('i.fa.fa-exclamation-circle'),
@@ -57,6 +57,24 @@ class ResidenceView extends Element {
           new Element('.tablet-50').add(
             new Element('button.btn.btn-block.validate-gps', { disabled : true }).text('GPS - Validate')
           )
+        ),
+
+        new Element('.row').add(
+          new Element('input.tablet-40.gutter.city', {
+            type          :   'text',
+            placeholder   :   'City'
+          }),
+          new Element('select.tablet-30.gutter.state').add(
+            new Element('option', { value : '' }).text('State')
+          ),
+          new Element('input.tablet-15.gutter.zip', {
+            type          :   'text',
+            placeholder   :   'ZIP'
+          }),
+          new Element('input.tablet-15.gutter.zip4', {
+            type          :   'text',
+            placeholder   :   'ZIP +4'
+          })
         )
       )
     );

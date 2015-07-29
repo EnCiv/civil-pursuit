@@ -5,6 +5,7 @@ import config                   from '../../../config.json';
 import PanelView                from '../panel/view';
 import IdentityView             from '../identity/view';
 import ResidenceView            from '../residence/view';
+import DemographicsView         from '../demographics/view';
 
 class ProfileView extends Element {
 
@@ -19,11 +20,17 @@ class ProfileView extends Element {
       .add(
         new Element('.gutter').add(
           new Element('.row.gutter-bottom').add(
-            new Element('.tablet-50').add(
+            new Element('.tablet-50.gutter').add(
               new IdentityView()
             ),
-            new Element('.tablet-50').add(
+            new Element('.tablet-50.gutter').add(
               new ResidenceView()
+            )
+          ),
+
+          new Element('.row.gutter-bottom').add(
+            new Element('.tablet-50').add(
+              new DemographicsView()
             )
           )
         )

@@ -33,6 +33,18 @@ class ResidenceCtrl extends Controller {
 
       case 'validated moment':
         return this.template.find('.validated-moment');
+
+      case 'city':
+        return this.template.find('.city');
+
+      case 'state':
+        return this.template.find('.state');
+
+      case 'zip':
+        return this.template.find('.zip');
+
+      case 'zip4':
+        return this.template.find('.zip4');
     }
   }
 
@@ -40,6 +52,12 @@ class ResidenceCtrl extends Controller {
     this.toggle();
 
     this.renderGPS();
+
+    this.renderCity();
+
+    this.renderState();
+
+    this.renderZips();
   }
 
   toggle () {
@@ -66,9 +84,6 @@ class ResidenceCtrl extends Controller {
 
     this.find('validate gps button').on('click', function () {
       navigator.geolocation.watchPosition(function(position) {
-
-        console.log('location');
-
         let { longitude, latitude } = position.coords;
 
         self
@@ -91,6 +106,78 @@ class ResidenceCtrl extends Controller {
     }
     else {
       this.find('validate gps button').attr('disabled', false);
+    }
+  }
+
+  renderCity () {
+    let self = this;
+
+    this.find('city').on('change', function () {
+      self
+        .publish('set city', $(this).val())
+        .subscribe(pubsub => {
+          pubsub.unsubscribe();
+        });
+    });
+
+    if ( this.user.city ) {
+      this.find('city').val(this.user.city);
+    }
+  }
+
+  renderState () {
+    let self = this;
+
+    this.find('state').on('change', function () {
+      self
+        .publish('set state', $(this).val())
+        .subscribe(pubsub => {
+          pubsub.unsubscribe();
+        });
+    });
+
+    this
+      .publish('get states')
+      .subscribe((pubsub, states) => {
+        pubsub.unsubscribe();
+
+        states.forEach(state => {
+          let option = $(`<option value="${state._id}">${state.name}</option>`);
+
+          if ( state._id === this.user.state ) {
+            option.attr('selected', true);
+          }
+
+          this.find('state').append(option);
+        });
+      });
+  }
+
+  renderZips () {
+    let self = this;
+
+    this.find('zip').on('change', function () {
+      self
+        .publish('set zip', $(this).val())
+        .subscribe(pubsub => {
+          pubsub.unsubscribe();
+        });
+    });
+
+    if ( this.user.zip ) {
+      this.find('zip').val(this.user.zip);
+    }
+
+    this.find('zip4').on('change', function () {
+      self
+        .publish('set zip4', $(this).val())
+        .subscribe(pubsub => {
+          pubsub.unsubscribe();
+        });
+    });
+
+    if ( this.user.zip4 ) {
+      this.find('zip4').val(this.user.zip4);
     }
   }
 }

@@ -10,4 +10,6 @@ watchify dist/pages/terms-of-service/ctrl.js -o dist/pages/terms-of-service/bund
 
 watchify dist/pages/error/ctrl.js -o dist/pages/error/bundle.js &
 
+watchify dist/pages/test/ctrl.js -o dist/pages/test/bundle.js &
+
 watchify dist/pages/item/ctrl.js -o dist/pages/item/bundle.js

@@ -20,23 +20,23 @@ var _configJson = require('../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
-var ResidenceView = (function (_Element) {
-  function ResidenceView(props) {
-    _classCallCheck(this, ResidenceView);
+var DemoraphicsView = (function (_Element) {
+  function DemoraphicsView(props) {
+    _classCallCheck(this, DemoraphicsView);
 
-    _get(Object.getPrototypeOf(ResidenceView.prototype), 'constructor', this).call(this, '#residence.section');
+    _get(Object.getPrototypeOf(DemoraphicsView.prototype), 'constructor', this).call(this, '#demographics.section');
 
     this.add(new _cincoDist.Elements(this.header(), this.body(), this.toggle()));
   }
 
-  _inherits(ResidenceView, _Element);
+  _inherits(DemoraphicsView, _Element);
 
-  _createClass(ResidenceView, [{
+  _createClass(DemoraphicsView, [{
     key: 'header',
     value: function header() {
       return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
-        src: _configJson2['default'].profile.residence.image
-      })), new _cincoDist.Element('h2.profile-section-title').text('Residence'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.residence.description)));
+        src: _configJson2['default'].profile.demographics.image
+      })), new _cincoDist.Element('h2.profile-section-title').text('Demographics'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.demographics.description)));
     }
   }, {
     key: 'toggle',
@@ -46,21 +46,12 @@ var ResidenceView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.residence-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('span.not-yet-validated').add(new _cincoDist.Element('i.fa.fa-exclamation-circle'), new _cincoDist.Element('span').text(' Not yet validated!')), new _cincoDist.Element('span.hide.pre.is-validated').add(new _cincoDist.Element('i.fa.fa-check'), new _cincoDist.Element('span').text(' Validated'), new _cincoDist.Element('span.validated-moment'))), new _cincoDist.Element('.tablet-50').add(new _cincoDist.Element('button.btn.btn-block.validate-gps', { disabled: true }).text('GPS - Validate'))), new _cincoDist.Element('.row').add(new _cincoDist.Element('input.tablet-40.gutter.city', {
-        type: 'text',
-        placeholder: 'City'
-      }), new _cincoDist.Element('select.tablet-30.gutter.state').add(new _cincoDist.Element('option', { value: '' }).text('State')), new _cincoDist.Element('input.tablet-15.gutter.zip', {
-        type: 'text',
-        placeholder: 'ZIP'
-      }), new _cincoDist.Element('input.tablet-15.gutter.zip4', {
-        type: 'text',
-        placeholder: 'ZIP +4'
-      }))));
+      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add()));
     }
   }]);
 
-  return ResidenceView;
+  return DemoraphicsView;
 })(_cincoDist.Element);
 
-exports['default'] = ResidenceView;
+exports['default'] = DemoraphicsView;
 module.exports = exports['default'];

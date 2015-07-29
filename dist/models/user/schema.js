@@ -15,6 +15,7 @@ var _libUtilIsCloudinaryUrl2 = _interopRequireDefault(_libUtilIsCloudinaryUrl);
 try {
   require('../../config');
   require('../../country');
+  require('../../state');
 } catch (error) {}
 
 var schema = {
@@ -133,7 +134,19 @@ var schema = {
 
     'type': _mongoose.Schema.Types.ObjectId,
     'ref': 'Config.party'
-  }
+  },
+
+  'city': String,
+
+  'state': {
+
+    'type': _mongoose.Schema.Types.ObjectId,
+    'ref': 'State'
+  },
+
+  'zip': String,
+
+  'zip4': String
 };
 
 exports['default'] = schema;

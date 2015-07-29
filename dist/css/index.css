@@ -4617,6 +4617,9 @@ textarea.medium.block {
   width: calc(97.5%);
   padding: 1em .5em;
 }
+select.gutter {
+  padding: .62em .5em;
+}
 select.medium {
   font-size: 125%;
   border-width: 2px;

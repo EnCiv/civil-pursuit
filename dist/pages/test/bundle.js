@@ -1265,7 +1265,7 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/pages/terms-of-service/ctrl.js":[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/pages/test/ctrl.js":[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -1283,6 +1283,21 @@ synapp.app = new _app2['default'](true);
 synapp.app.ready(function () {
 
   new _componentsTopBarCtrl2['default']().render();
+
+  synapp.app.publish('get tests').subscribe(function (pubsub, tests) {
+
+    var pages = tests.filter(function (test) {
+      return test.type === 'page';
+    });
+
+    $('.number-of-pages').text(pages.length);
+
+    pages.forEach(function (page) {
+      var tr = $('<tr id="state-' + page._id + '">\n            <td>' + page.name + '</td>\n          </tr>');
+
+      $('.test-pages tbody').append(tr);
+    });
+  });
 });
 },{"../../app":"/home/francois/Dev/syn/dist/app.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
@@ -1743,4 +1758,4 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}]},{},["/home/francois/Dev/syn/dist/pages/terms-of-service/ctrl.js"]);
+},{}]},{},["/home/francois/Dev/syn/dist/pages/test/ctrl.js"]);
