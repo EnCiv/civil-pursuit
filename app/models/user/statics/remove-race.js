@@ -1,38 +1,34 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function removeRace (user_id, race_id, cb) {
-    
-    this
-      .findById(user_id)
-      .exec()
-      .then(removeUserRace, cb);
+function removeRace (userId, raceId) {
+  return new Promise((ok, ko) => {
+    try {
+      this
+        .findById(userId)
+        .exec()
+        .then(
+          user => {
+            try {
+              user.race.pull(raceId);
 
-    function removeUserRace (user) {
-
-      var domain = require('domain').create();
-      
-      domain
-        
-        .on('error', cb)
-      
-        .run(function () {
-          if ( ! user ) {
-            return reject(new Error('No such user ' + user_id));
-          }
-
-          user.race = user.race.filter(function (race) {
-            return race.toString() !== race_id.toString();
-          });
-
-          user.save(cb);
-        });
-      
+              user.save(error => {
+                if ( error ) {
+                  return ko(error);
+                }
+                ok(user);
+              });
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
     }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-  }
-
-  module.exports = removeRace;
-
-} ();
+export default removeRace;

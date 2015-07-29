@@ -28,6 +28,9 @@ class NotFound extends Milk {
 
     this.set('Header', () => this.find('#main h1'));
     this.set('Text', () => this.find('#main p'));
+    this.set('Test', () => TestModel.findOne({
+      name : 'Page not found', type : 'page'
+    }).exec());
 
   }
 

@@ -66,6 +66,11 @@ var NotFound = (function (_Milk) {
       this.set('Text', function () {
         return _this.find('#main p');
       });
+      this.set('Test', function () {
+        return TestModel.findOne({
+          name: 'Page not found', type: 'page'
+        }).exec();
+      });
     }
   }, {
     key: 'stories',

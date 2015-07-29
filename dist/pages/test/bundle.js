@@ -1296,12 +1296,16 @@ synapp.app.ready(function () {
       var stories = [];
 
       page.stories.forEach(function (story) {
-        stories.push('<tr>\n              <td>' + story.name + '</td>\n            </tr>');
+        stories.push('<tr>\n              <td>' + story.name + '</td>\n              <td></td>\n              <td></td>\n            </tr>');
       });
 
-      var tr = $('<tr id="state-' + page._id + '">\n            <th>' + page.name + '</th>\n            <td><button class="primary block">Run</button></td>\n          </tr>\n          <tr>\n            <td colspan="2">\n              <table>\n                <thead>\n                  <tr>\n                    <th>Story</th>\n                  </tr>\n                </thead>\n                <tbody>\n                  ' + stories.join('') + '\n                </tbody>\n              </table>\n            </td>\n          </tr>');
+      var tr = $('<tr id="state-' + page._id + '">\n            <th>' + page.name + '</th>\n            <td><button class="primary block run-test">Run</button></td>\n          </tr>\n          <tr>\n            <td colspan="2">\n              <table>\n                <thead>\n                  <tr>\n                    <th>Story</th>\n                    <th>Status</th>\n                    <th>Last run</th>\n                  </tr>\n                </thead>\n                <tbody>\n                  ' + stories.join('') + '\n                </tbody>\n              </table>\n            </td>\n          </tr>');
 
       $('.test-pages tbody').append(tr);
+
+      tr.find('.run-test').on('click', function () {
+        synapp.app.publish('run test', page).subscribe();
+      });
     });
   });
 });

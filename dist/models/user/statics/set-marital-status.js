@@ -1,27 +1,33 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function setMaritalStatus(userId, statusId) {
+  var _this = this;
 
-  'use strict';
+  return new Promise(function (ok, ko) {
+    try {
+      _this.findById(userId).exec().then(function (user) {
+        try {
+          if (!user) {
+            throw new Error('No such user ' + userId);
+          }
+          user.married = statusId;
+          user.save(function (error) {
+            if (error) {
+              ko(error);
+            } else {
+              ok(user);
+            }
+          });
+        } catch (error) {}
+      }, ko);
+    } catch (error) {
+      ko(error);
+    }
+  });
+}
 
-  function setMaritalStatus(user_id, status_id, cb) {
-
-    var self = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', cb).run(process.nextTick.bind(process, function () {
-      self.findById(user_id).exec(domain.intercept(function (user) {
-        if (!user) {
-          throw new Error('No such user: ' + user_id);
-        }
-
-        user.married = status_id;
-
-        user.save(cb);
-      }));
-    }));
-  }
-
-  module.exports = setMaritalStatus;
-})();
+exports['default'] = setMaritalStatus;
+module.exports = exports['default'];

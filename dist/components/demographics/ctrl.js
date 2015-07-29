@@ -67,6 +67,12 @@ var DemographicsCtrl = (function (_Controller) {
       this.toggle();
 
       this.renderRaces();
+
+      this.renderEducation();
+
+      this.renderRelationship();
+
+      this.renderEmployment();
     }
   }, {
     key: 'toggle',
@@ -96,17 +102,98 @@ var DemographicsCtrl = (function (_Controller) {
       this.config.race.forEach(function (race) {
         var raceRow = $('<div class ="row gutter">\n          <div class="watch-70 left">' + race.name + '</div>\n          <div class="watch-30 left">\n            <input class="race" type="checkbox" value="' + race._id + '" />\n          </div>\n        </div>');
 
+        if (self.user.race.indexOf(race._id) > -1) {
+          raceRow.find('.race').attr('checked', true);
+        }
+
         raceRow.find('.race').on('change', function () {
           if ($(this).is(':checked')) {
             self.publish('add race', $(this).val()).subscribe(function (pubsub) {
               pubsub.unsubscribe();
             });
           } else {
-            console.log(false);
+            self.publish('remove race', $(this).val()).subscribe(function (pubsub) {
+              pubsub.unsubscribe();
+            });
           }
         });
 
         racesWrapper.append(raceRow);
+      });
+    }
+  }, {
+    key: 'renderEducation',
+    value: function renderEducation() {
+      var _this = this;
+
+      var self = this;
+
+      this.config.education.forEach(function (education) {
+        var educationOption = $('<option value="' + education._id + '">' + education.name + '</option>');
+
+        if (self.user.education === education._id) {
+          educationOption.attr('selected', true);
+        }
+
+        _this.find('education').append(educationOption);
+      });
+
+      this.find('education').on('change', function () {
+        if ($(this).val()) {
+          self.publish('set education', $(this).val()).subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        }
+      });
+    }
+  }, {
+    key: 'renderRelationship',
+    value: function renderRelationship() {
+      var _this2 = this;
+
+      var self = this;
+
+      this.config.married.forEach(function (relationship) {
+        var relationshipOption = $('<option value="' + relationship._id + '">' + relationship.name + '</option>');
+
+        if (self.user.married === relationship._id) {
+          relationshipOption.attr('selected', true);
+        }
+
+        _this2.find('married').append(relationshipOption);
+      });
+
+      this.find('married').on('change', function () {
+        if ($(this).val()) {
+          self.publish('set marital status', $(this).val()).subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        }
+      });
+    }
+  }, {
+    key: 'renderEmployment',
+    value: function renderEmployment() {
+      var _this3 = this;
+
+      var self = this;
+
+      this.config.employment.forEach(function (employment) {
+        var employmentOption = $('<option value="' + employment._id + '">' + employment.name + '</option>');
+
+        if (self.user.employment === employment._id) {
+          employmentOption.attr('selected', true);
+        }
+
+        _this3.find('employment').append(employmentOption);
+      });
+
+      this.find('employment').on('change', function () {
+        if ($(this).val()) {
+          self.publish('set employment', $(this).val()).subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        }
       });
     }
   }]);
@@ -115,152 +202,4 @@ var DemographicsCtrl = (function (_Controller) {
 })(_libAppController2['default']);
 
 exports['default'] = DemographicsCtrl;
-
-function x() {
-
-  'use strict';
-
-  // var Nav = require('syn/lib/util/nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Demographics(profile) {
-    this.template = $('#demographics');
-
-    this.template.data('demographics', this);
-
-    this.profile = profile;
-  }
-
-  Demographics.prototype.find = function (name) {
-    switch (name) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow i.fa');
-
-      case 'expand':
-        return this.template.find('.demographics-collapse');
-
-      case 'race':
-        return this.template.find('input.race');
-      case 'married':
-        return this.template.find('select.married');
-      case 'employment':
-        return this.template.find('select.employment');
-      case 'education':
-        return this.template.find('select.education');
-    }
-  };
-
-  Demographics.prototype.render = function () {
-
-    var demographics = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-
-      var arrow = $(this);
-
-      _libUtilNav2['default'].toggle(demographics.find('expand'), demographics.template, function () {
-        if (demographics.find('expand').hasClass('is-hidden')) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        } else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Save race **/
-
-    this.find('race').on('change', function () {
-      var is_checked = $(this).is(':checked');
-
-      if (is_checked) {
-        app.socket.once('race added', function () {
-          console.log('race added', arguments);
-        });
-
-        app.socket.emit('add race', app.socket.synuser, $(this).val());
-      } else {
-        app.socket.once('race removed', function () {
-          console.log('race removed', arguments);
-        });
-
-        app.socket.emit('remove race', app.socket.synuser, $(this).val());
-      }
-    });
-
-    /** Set marital status **/
-
-    this.find('married').on('change', function () {
-      if ($(this).val()) {
-        app.socket.once('marital status set', function () {
-          console.log('marital status set', arguments);
-        });
-
-        app.socket.emit('set marital status', app.socket.synuser, $(this).val());
-      }
-    });
-
-    /** Set employment **/
-
-    this.find('employment').on('change', function () {
-      if ($(this).val()) {
-        app.socket.once('employment set', function () {
-          console.log('employment set', arguments);
-        });
-
-        app.socket.emit('set employment', app.socket.synuser, $(this).val());
-      }
-    });
-
-    /** Set education **/
-
-    this.find('education').on('change', function () {
-      if ($(this).val()) {
-        app.socket.once('education set', function () {
-          console.log('education set', arguments);
-        });
-
-        app.socket.emit('set education', app.socket.synuser, $(this).val());
-      }
-    });
-  };
-
-  Demographics.prototype.renderUser = function () {
-
-    var demographics = this;
-
-    if (this.profile.user) {
-
-      if (this.profile.user.race && this.profile.user.race.length) {
-        this.profile.user.race.forEach(function (race) {
-
-          demographics.find('race').each(function () {
-
-            if ($(this).val() === race) {
-              $(this).attr('checked', true);
-            }
-          });
-        });
-      }
-
-      if (this.profile.user.married) {
-        this.find('married').val(this.profile.user.married);
-      }
-
-      if (this.profile.user.employment) {
-        this.find('employment').val(this.profile.user.employment);
-      }
-
-      if (this.profile.user.education) {
-        this.find('education').val(this.profile.user.education);
-      }
-    }
-  };
-
-  module.exports = Demographics;
-}
 module.exports = exports['default'];

@@ -34,6 +34,12 @@ class DemographicsCtrl extends Controller {
     this.toggle();
 
     this.renderRaces();
+
+    this.renderEducation();
+
+    this.renderRelationship();
+
+    this.renderEmployment();
   }
 
   toggle () {
@@ -67,6 +73,10 @@ class DemographicsCtrl extends Controller {
           </div>
         </div>`);
 
+      if ( self.user.race.indexOf(race._id) > -1 ) {
+        raceRow.find('.race').attr('checked', true);
+      }
+
       raceRow.find('.race').on('change', function () {
         if ( $(this).is(':checked') ) {
           self
@@ -76,7 +86,11 @@ class DemographicsCtrl extends Controller {
             });
         }
         else {
-          console.log(false);
+          self
+            .publish('remove race', $(this).val())
+            .subscribe(pubsub => {
+              pubsub.unsubscribe();
+            });
         }
       });
 
@@ -84,157 +98,78 @@ class DemographicsCtrl extends Controller {
     });
   }
 
-}
+  renderEducation() {
+    let self = this;
 
-export default DemographicsCtrl;
+    this.config.education.forEach(education => {
+      let educationOption = $(`<option value="${education._id}">${education.name}</option>`);
 
-function x () {
-  
-  'use strict';
-
-  // var Nav = require('syn/lib/util/nav');
-
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
-
-  function Demographics (profile) {
-    this.template = $('#demographics');
-
-    this.template.data('demographics', this);
-
-    this.profile = profile;
-  }
-
-  Demographics.prototype.find = function (name) {
-    switch ( name ) {
-      case 'toggle arrow':
-        return this.template.find('.toggle-arrow i.fa');
-
-      case 'expand':
-        return this.template.find('.demographics-collapse');
-
-      case 'race':          return this.template.find('input.race');
-      case 'married':       return this.template.find('select.married');
-      case 'employment':    return this.template.find('select.employment');
-      case 'education':     return this.template.find('select.education');
-    }
-  };
-
-  Demographics.prototype.render = function () {
-
-    var demographics = this;
-
-    this.find('toggle arrow').find('i').on('click', function () {
-      
-      var arrow = $(this);
-
-      Nav.toggle(demographics.find('expand'), demographics.template, function () {
-        if ( demographics.find('expand').hasClass('is-hidden') ) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        }
-        else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    /** Save race **/
-
-    this.find('race').on('change', function () {
-      var is_checked = $(this).is(':checked');
-
-      if ( is_checked ) {
-        app.socket.once('race added', function () {
-          console.log('race added', arguments);
-        });
-
-        app.socket.emit('add race', app.socket.synuser, $(this).val());
+      if ( self.user.education === education._id ) {
+        educationOption.attr('selected', true);
       }
 
-      else {
-        app.socket.once('race removed', function () {
-          console.log('race removed', arguments);
-        });
-
-        app.socket.emit('remove race', app.socket.synuser, $(this).val());
-      }
+      this.find('education').append(educationOption);
     });
-
-    /** Set marital status **/
-
-    this.find('married').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('marital status set', function () {
-          console.log('marital status set', arguments);
-        });
-
-        app.socket.emit('set marital status', app.socket.synuser, $(this).val());
-      }
-    });
-
-    /** Set employment **/
-
-    this.find('employment').on('change', function () {
-      if ( $(this).val() ) {
-        app.socket.once('employment set', function () {
-          console.log('employment set', arguments);
-        });
-
-        app.socket.emit('set employment', app.socket.synuser, $(this).val());
-      }
-    });
-
-    /** Set education **/
 
     this.find('education').on('change', function () {
       if ( $(this).val() ) {
-        app.socket.once('education set', function () {
-          console.log('education set', arguments);
-        });
-
-        app.socket.emit('set education', app.socket.synuser, $(this).val());
+        self
+          .publish('set education', $(this).val())
+          .subscribe(pubsub => {
+            pubsub.unsubscribe();
+          });
       }
     });
-  };
+  }
 
-  Demographics.prototype.renderUser = function () {
+  renderRelationship() {
+    let self = this;
 
-    var demographics = this;
+    this.config.married.forEach(relationship => {
+      let relationshipOption = $(`<option value="${relationship._id}">${relationship.name}</option>`);
 
-    if ( this.profile.user ) {
+      if ( self.user.married === relationship._id ) {
+        relationshipOption.attr('selected', true);
+      }
 
-      if ( this.profile.user.race && this.profile.user.race.length ) {
-        this.profile.user.race.forEach(function (race) {
+      this.find('married').append(relationshipOption);
+    });
 
-          demographics.find('race').each(function () {
-
-            if ( $(this).val() === race ) {
-              $(this).attr('checked', true);
-            }
-
+    this.find('married').on('change', function () {
+      if ( $(this).val() ) {
+        self
+          .publish('set marital status', $(this).val())
+          .subscribe(pubsub => {
+            pubsub.unsubscribe();
           });
+      }
+    });
+  }
 
+  renderEmployment() {
+    let self = this;
 
-        });
+    this.config.employment.forEach(employment => {
+      let employmentOption = $(`<option value="${employment._id}">${employment.name}</option>`);
+
+      if ( self.user.employment === employment._id ) {
+        employmentOption.attr('selected', true);
       }
 
-      if ( this.profile.user.married ) {
-        this.find('married').val(this.profile.user.married);
-      }
+      this.find('employment').append(employmentOption);
+    });
 
-      if ( this.profile.user.employment ) {
-        this.find('employment').val(this.profile.user.employment);
+    this.find('employment').on('change', function () {
+      if ( $(this).val() ) {
+        self
+          .publish('set employment', $(this).val())
+          .subscribe(pubsub => {
+            pubsub.unsubscribe();
+          });
       }
-
-      if ( this.profile.user.education ) {
-        this.find('education').val(this.profile.user.education);
-      }
-    }
-  };
-
-  module.exports = Demographics;
+    });
+  }
 
 }
+
+export default DemographicsCtrl;

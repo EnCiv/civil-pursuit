@@ -1,35 +1,19 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
 
-  
-
-  var User = require('../models/user');
-
-  /**
-   *  @function removeRace
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} rcae_id - The Config.Race ID
-   */
-
-  function removeRace (user_id, race_id) {
-
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      User.removeRace(user_id, race_id, domain.intercept(function (item) {
-        socket.emit('race removed', item);
-      }));
-    });
-
+function removeRace (event, raceId) {
+  try {
+    UserModel
+      .removeRace(this.synuser.id, raceId)
+      .then(
+        user => this.ok(event, user),
+        error => this.emit('error', error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = removeRace;
-
-} ();
+export default removeRace;

@@ -46,7 +46,7 @@ var DemoraphicsView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.phone-30.gutter').text('Race:'), new _cincoDist.Element('.phone-70.races'))));
+      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.phone-30.gutter').text('Race:'), new _cincoDist.Element('.phone-70.races')), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Education'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.education.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Relationship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.married.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Employment'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.employment.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one'))))));
     }
   }]);
 

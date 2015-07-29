@@ -1,35 +1,37 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function setEducation (user_id, education_id, cb) {
-
-    var self = this;
-
-    var domain = require('domain').create();
-    
-    domain
-      
-      .on('error', cb)
-    
-      .run(process.nextTick.bind(process, function () {
-        
-        self
-          .findById(user_id)
-          .exec(domain.intercept(function (user) {
-            if ( ! user ) {
-              throw new Error('No such user: ' + user_id);
+function setEducation (userId, educationId) {
+  return new Promise((ok, ko) => {
+    try {
+      this
+        .findById(userId)
+        .exec()
+        .then(
+          user => {
+            try {
+              if ( ! user ) {
+                throw new Error('User not found ' + userId);
+              }
+              user.education = educationId;
+              user.save(error => {
+                if ( error ) {
+                  return ko(error);
+                }
+                ok(user);
+              });
             }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+    }
 
-            user.education = education_id;
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-            user.save(cb);
-          }));
-
-      }));
-
-  }
-
-  module.exports = setEducation;
-
-} ();
+export default setEducation;

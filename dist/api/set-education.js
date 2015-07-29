@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function setEducation
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} education_id - The Config.Married ID
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function setEducation(user_id, education_id) {
+function setEducation(event, educationId) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].setEducation(this.synuser.id, educationId).then(function (user) {
+      return _this.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
-
-    domain.run(function () {
-      User.setEducation(user_id, education_id, domain.intercept(function (user) {
-        socket.emit('education set', user);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = setEducation;
-})();
+exports['default'] = setEducation;
+module.exports = exports['default'];

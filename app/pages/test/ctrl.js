@@ -23,12 +23,14 @@ synapp.app.ready(() => {
         page.stories.forEach(story => {
           stories.push(`<tr>
               <td>${story.name}</td>
+              <td></td>
+              <td></td>
             </tr>`);
         });
 
         let tr = $(`<tr id="state-${page._id}">
             <th>${page.name}</th>
-            <td><button class="primary block">Run</button></td>
+            <td><button class="primary block run-test">Run</button></td>
           </tr>
           <tr>
             <td colspan="2">
@@ -36,6 +38,8 @@ synapp.app.ready(() => {
                 <thead>
                   <tr>
                     <th>Story</th>
+                    <th>Status</th>
+                    <th>Last run</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -46,6 +50,12 @@ synapp.app.ready(() => {
           </tr>`);
 
         $('.test-pages tbody').append(tr);
+
+        tr.find('.run-test').on('click', () => {
+          synapp.app
+            .publish('run test', page)
+            .subscribe();
+        });
       });
     });
 

@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function setMaritalStatus
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} status_id - The Config.Married ID
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function setMaritalStatus(user_id, status_id) {
+function setMaritalStatus(event, statusId) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].setMaritalStatus(this.synuser.id, statusId).then(function (user) {
+      return _this.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
-
-    domain.run(function () {
-      User.setMaritalStatus(user_id, status_id, domain.intercept(function (user) {
-        socket.emit('marital status set', user);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = setMaritalStatus;
-})();
+exports['default'] = setMaritalStatus;
+module.exports = exports['default'];

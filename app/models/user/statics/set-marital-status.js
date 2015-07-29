@@ -1,33 +1,38 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function setMaritalStatus (user_id, status_id, cb) {
-
-    var self = this;
-
-    var domain = require('domain').create();
-    
-    domain
-      
-      .on('error', cb)
-    
-      .run(process.nextTick.bind(process, function () {
-        self
-          .findById(user_id)
-          .exec(domain.intercept(function (user) {
-            if ( ! user ) {
-              throw new Error('No such user: ' + user_id);
+function setMaritalStatus (userId, statusId) {
+  return new Promise((ok, ko) => {
+    try {
+      this
+        .findById(userId)
+        .exec()
+        .then(
+          user => {
+            try {
+              if ( ! user ) {
+                throw new Error('No such user ' + userId);
+              }
+              user.married = statusId;
+              user.save(error => {
+                if ( error ) {
+                  ko(error);
+                }
+                else {
+                  ok(user);
+                }
+              });
             }
+            catch ( error ) {
 
-            user.married = status_id;
+            }
+          },
+          ko
+        );
+    }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-            user.save(cb);
-          }));
-      }));
-
-  }
-
-  module.exports = setMaritalStatus;
-
-} ();
+export default setMaritalStatus;

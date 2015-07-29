@@ -1,37 +1,36 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function setEmployment (user_id, employment_id, cb) {
-
-    var self = this;
-
-    var domain = require('domain').create();
-    
-    domain
-      
-      .on('error', cb)
-    
-      .run(process.nextTick.bind(process, function () {
-        
-        self
-          
-          .findById(user_id)
-          
-          .exec(domain.intercept(function (user) {
-            if ( ! user ) {
-              throw new Error('No such user: ' + user_id);
+function setEmployment (userId, employmentId) {
+  return new Promise((ok, ko) => {
+    try {
+      this
+        .findById(userId)
+        .exec()
+        .then(
+          user => {
+            try {
+              if ( ! user ) {
+                throw new Error('No such user ' + userId);
+              }
+              user.employment = employmentId;
+              user.save(error => {
+                if ( error ) {
+                  ko(error);
+                }
+                ok(user);
+              });
             }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
+    }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-            user.employment = employment_id;
-
-            user.save(cb);
-          }));
-
-      }));
-
-  }
-
-  module.exports = setEmployment;
-
-} ();
+export default setEmployment;

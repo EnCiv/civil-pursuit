@@ -1,35 +1,19 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
 
-  
-
-  var User = require('../models/user');
-
-  /**
-   *  @function setEducation
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} education_id - The Config.Married ID
-   */
-
-  function setEducation (user_id, education_id) {
-
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      User.setEducation(user_id, education_id, domain.intercept(function (user) {
-        socket.emit('education set', user);
-      }));
-    });
-
+function setEducation (event, educationId) {
+  try {
+    UserModel
+      .setEducation(this.synuser.id, educationId)
+      .then(
+        user => this.ok(event, user),
+        error => this.error(error)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = setEducation;
-
-} ();
+export default setEducation;

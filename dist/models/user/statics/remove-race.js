@@ -1,30 +1,32 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function removeRace(userId, raceId) {
+  var _this = this;
 
-  'use strict';
+  return new Promise(function (ok, ko) {
+    try {
+      _this.findById(userId).exec().then(function (user) {
+        try {
+          user.race.pull(raceId);
 
-  function removeRace(user_id, race_id, cb) {
-
-    this.findById(user_id).exec().then(removeUserRace, cb);
-
-    function removeUserRace(user) {
-
-      var domain = require('domain').create();
-
-      domain.on('error', cb).run(function () {
-        if (!user) {
-          return reject(new Error('No such user ' + user_id));
+          user.save(function (error) {
+            if (error) {
+              return ko(error);
+            }
+            ok(user);
+          });
+        } catch (error) {
+          ko(error);
         }
-
-        user.race = user.race.filter(function (race) {
-          return race.toString() !== race_id.toString();
-        });
-
-        user.save(cb);
-      });
+      }, ko);
+    } catch (error) {
+      ko(error);
     }
-  }
+  });
+}
 
-  module.exports = removeRace;
-})();
+exports['default'] = removeRace;
+module.exports = exports['default'];

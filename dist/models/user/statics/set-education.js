@@ -1,28 +1,34 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function setEducation(userId, educationId) {
+  var _this = this;
 
-  'use strict';
-
-  function setEducation(user_id, education_id, cb) {
-
-    var self = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', cb).run(process.nextTick.bind(process, function () {
-
-      self.findById(user_id).exec(domain.intercept(function (user) {
-        if (!user) {
-          throw new Error('No such user: ' + user_id);
+  return new Promise(function (ok, ko) {
+    try {
+      _this.findById(userId).exec().then(function (user) {
+        try {
+          if (!user) {
+            throw new Error('User not found ' + userId);
+          }
+          user.education = educationId;
+          user.save(function (error) {
+            if (error) {
+              return ko(error);
+            }
+            ok(user);
+          });
+        } catch (error) {
+          ko(error);
         }
+      }, ko);
+    } catch (error) {
+      ko(error);
+    }
+  });
+}
 
-        user.education = education_id;
-
-        user.save(cb);
-      }));
-    }));
-  }
-
-  module.exports = setEducation;
-})();
+exports['default'] = setEducation;
+module.exports = exports['default'];

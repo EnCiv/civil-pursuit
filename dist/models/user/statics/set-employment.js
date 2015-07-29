@@ -1,28 +1,34 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function setEmployment(userId, employmentId) {
+  var _this = this;
 
-  'use strict';
-
-  function setEmployment(user_id, employment_id, cb) {
-
-    var self = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', cb).run(process.nextTick.bind(process, function () {
-
-      self.findById(user_id).exec(domain.intercept(function (user) {
-        if (!user) {
-          throw new Error('No such user: ' + user_id);
+  return new Promise(function (ok, ko) {
+    try {
+      _this.findById(userId).exec().then(function (user) {
+        try {
+          if (!user) {
+            throw new Error('No such user ' + userId);
+          }
+          user.employment = employmentId;
+          user.save(function (error) {
+            if (error) {
+              ko(error);
+            }
+            ok(user);
+          });
+        } catch (error) {
+          ko(error);
         }
+      }, ko);
+    } catch (error) {
+      ko(error);
+    }
+  });
+}
 
-        user.employment = employment_id;
-
-        user.save(cb);
-      }));
-    }));
-  }
-
-  module.exports = setEmployment;
-})();
+exports['default'] = setEmployment;
+module.exports = exports['default'];

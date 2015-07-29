@@ -43,6 +43,33 @@ class DemoraphicsView extends Element {
         new Element('.row').add(
           new Element('.phone-30.gutter').text('Race:'),
           new Element('.phone-70.races')
+        ),
+
+        new Element('.row').add(
+          new Element('button.very.shy.tablet-30').text('Education'),
+          new Element('.tablet-70').add(
+            new Element('select.education.block.gutter').add(
+              new Element('option', { value : '' }).text('Choose one')
+            )
+          )
+        ),
+
+        new Element('.row').add(
+          new Element('button.very.shy.tablet-30').text('Relationship'),
+          new Element('.tablet-70').add(
+            new Element('select.married.block.gutter').add(
+              new Element('option', { value : '' }).text('Choose one')
+            )
+          )
+        ),
+
+        new Element('.row').add(
+          new Element('button.very.shy.tablet-30').text('Employment'),
+          new Element('.tablet-70').add(
+            new Element('select.employment.block.gutter').add(
+              new Element('option', { value : '' }).text('Choose one')
+            )
+          )
         )
       )
     );
