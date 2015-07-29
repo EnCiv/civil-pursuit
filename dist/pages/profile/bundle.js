@@ -1,5 +1,5 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports={
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/config.json":[function(require,module,exports){
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "tmp"             :   "/tmp",
   
   "title"           :   {
@@ -197,7 +197,7 @@ module.exports={
 
   "default user" : "synbot@synaccord.com"
 }
-},{}],2:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/app.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -438,7 +438,7 @@ var App = (function (_EventEmitter) {
 
 exports['default'] = App;
 module.exports = exports['default'];
-},{"./lib/app/cache":20,"domain":28,"events":29}],3:[function(require,module,exports){
+},{"./lib/app/cache":"/home/francois/Dev/syn/dist/lib/app/cache.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/components/creator/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -627,7 +627,263 @@ var Creator = (function (_Element) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/item/view":10,"cinco/dist":31}],4:[function(require,module,exports){
+},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/demographics/ctrl.js":[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+'import strict';
+
+var DemographicsCtrl = (function (_Controller) {
+  function DemographicsCtrl(props) {
+    _classCallCheck(this, DemographicsCtrl);
+
+    _get(Object.getPrototypeOf(DemographicsCtrl.prototype), 'constructor', this).call(this, props);
+
+    this.props = props;
+    this.user = this.props.user;
+    this.config = this.props.config;
+
+    this.template = $('#demographics');
+  }
+
+  _inherits(DemographicsCtrl, _Controller);
+
+  _createClass(DemographicsCtrl, [{
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'toggle arrow':
+          return this.template.find('.toggle-arrow i.fa');
+
+        case 'expand':
+          return this.template.find('.demographics-collapse');
+
+        case 'race':
+          return this.template.find('input.race');
+        case 'races':
+          return this.template.find('.races');
+        case 'married':
+          return this.template.find('select.married');
+        case 'employment':
+          return this.template.find('select.employment');
+        case 'education':
+          return this.template.find('select.education');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      this.toggle();
+
+      this.renderRaces();
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+
+      var self = this;
+
+      this.find('toggle arrow').on('click', function () {
+
+        var arrow = $(this);
+
+        _libUtilNav2['default'].toggle(self.find('expand'), self.template, function () {
+          if (self.find('expand').hasClass('is-hidden')) {
+            arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+          } else {
+            arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+          }
+        });
+      });
+    }
+  }, {
+    key: 'renderRaces',
+    value: function renderRaces() {
+      var racesWrapper = this.find('races');
+
+      this.config.race.forEach(function (race) {
+        var raceRow = $('<div class ="row gutter">\n          <div class="watch-70 left">' + race.name + '</div>\n          <div class="watch-30 left">\n            <input class="race" type="checkbox" value="' + race._id + '" />\n          </div>\n        </div>');
+
+        racesWrapper.append(raceRow);
+      });
+    }
+  }]);
+
+  return DemographicsCtrl;
+})(_libAppController2['default']);
+
+exports['default'] = DemographicsCtrl;
+
+function x() {
+
+  'use strict';
+
+  // var Nav = require('syn/lib/util/nav');
+
+  /**
+   *  @class
+   *  @return
+   *  @arg
+   */
+
+  function Demographics(profile) {
+    this.template = $('#demographics');
+
+    this.template.data('demographics', this);
+
+    this.profile = profile;
+  }
+
+  Demographics.prototype.find = function (name) {
+    switch (name) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow i.fa');
+
+      case 'expand':
+        return this.template.find('.demographics-collapse');
+
+      case 'race':
+        return this.template.find('input.race');
+      case 'married':
+        return this.template.find('select.married');
+      case 'employment':
+        return this.template.find('select.employment');
+      case 'education':
+        return this.template.find('select.education');
+    }
+  };
+
+  Demographics.prototype.render = function () {
+
+    var demographics = this;
+
+    this.find('toggle arrow').find('i').on('click', function () {
+
+      var arrow = $(this);
+
+      _libUtilNav2['default'].toggle(demographics.find('expand'), demographics.template, function () {
+        if (demographics.find('expand').hasClass('is-hidden')) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        } else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+
+    /** Save race **/
+
+    this.find('race').on('change', function () {
+      var is_checked = $(this).is(':checked');
+
+      if (is_checked) {
+        app.socket.once('race added', function () {
+          console.log('race added', arguments);
+        });
+
+        app.socket.emit('add race', app.socket.synuser, $(this).val());
+      } else {
+        app.socket.once('race removed', function () {
+          console.log('race removed', arguments);
+        });
+
+        app.socket.emit('remove race', app.socket.synuser, $(this).val());
+      }
+    });
+
+    /** Set marital status **/
+
+    this.find('married').on('change', function () {
+      if ($(this).val()) {
+        app.socket.once('marital status set', function () {
+          console.log('marital status set', arguments);
+        });
+
+        app.socket.emit('set marital status', app.socket.synuser, $(this).val());
+      }
+    });
+
+    /** Set employment **/
+
+    this.find('employment').on('change', function () {
+      if ($(this).val()) {
+        app.socket.once('employment set', function () {
+          console.log('employment set', arguments);
+        });
+
+        app.socket.emit('set employment', app.socket.synuser, $(this).val());
+      }
+    });
+
+    /** Set education **/
+
+    this.find('education').on('change', function () {
+      if ($(this).val()) {
+        app.socket.once('education set', function () {
+          console.log('education set', arguments);
+        });
+
+        app.socket.emit('set education', app.socket.synuser, $(this).val());
+      }
+    });
+  };
+
+  Demographics.prototype.renderUser = function () {
+
+    var demographics = this;
+
+    if (this.profile.user) {
+
+      if (this.profile.user.race && this.profile.user.race.length) {
+        this.profile.user.race.forEach(function (race) {
+
+          demographics.find('race').each(function () {
+
+            if ($(this).val() === race) {
+              $(this).attr('checked', true);
+            }
+          });
+        });
+      }
+
+      if (this.profile.user.married) {
+        this.find('married').val(this.profile.user.married);
+      }
+
+      if (this.profile.user.employment) {
+        this.find('employment').val(this.profile.user.employment);
+      }
+
+      if (this.profile.user.education) {
+        this.find('education').val(this.profile.user.education);
+      }
+    }
+  };
+
+  module.exports = Demographics;
+}
+module.exports = exports['default'];
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/demographics/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -676,7 +932,7 @@ var DemoraphicsView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add()));
+      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.phone-30.gutter').text('Race:'), new _cincoDist.Element('.phone-70.races'))));
     }
   }]);
 
@@ -685,7 +941,7 @@ var DemoraphicsView = (function (_Element) {
 
 exports['default'] = DemoraphicsView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"cinco/dist":31}],5:[function(require,module,exports){
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/details/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -751,7 +1007,7 @@ var Details = (function (_Element) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"cinco/dist":31}],6:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -816,7 +1072,7 @@ module.exports = exports['default'];
 //
 
 // $('.forgot-password-pending').css('display', 'block');
-},{"../../lib/util/form":24,"domain":28}],7:[function(require,module,exports){
+},{"../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/components/identity/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1178,7 +1434,7 @@ var IdentityCtrl = (function (_Controller) {
 
 exports['default'] = IdentityCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":21,"../../lib/util/nav":25,"../../lib/util/upload":26}],8:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","../../lib/util/upload":"/home/francois/Dev/syn/dist/lib/util/upload.js"}],"/home/francois/Dev/syn/dist/components/identity/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1275,7 +1531,7 @@ var IdentityView = (function (_Element) {
 
 exports['default'] = IdentityView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"cinco/dist":31}],9:[function(require,module,exports){
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1316,7 +1572,7 @@ var ItemDefaultButtons = (function (_Elements) {
 
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
-},{"cinco/dist":31}],10:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1509,7 +1765,7 @@ var Item = (function (_Element) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"../../lib/app/page":22,"../details/view":5,"../item-default-buttons/view":9,"../promote/view":16,"cinco/dist":31}],11:[function(require,module,exports){
+},{"../../lib/app/page":"/home/francois/Dev/syn/dist/lib/app/page.js","../details/view":"/home/francois/Dev/syn/dist/components/details/view.js","../item-default-buttons/view":"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js","../promote/view":"/home/francois/Dev/syn/dist/components/promote/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/join/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1622,7 +1878,7 @@ var Join = (function (_Controller) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../../lib/app/controller":21,"../../lib/util/form":24}],12:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js"}],"/home/francois/Dev/syn/dist/components/login/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1727,7 +1983,7 @@ var Login = (function (_Controller) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../../lib/app/controller":21,"../../lib/util/form":24,"../../lib/util/nav":25}],13:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/panel/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1816,7 +2072,7 @@ var Panel = (function (_Element) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../../components/creator/view":3,"cinco/dist":31}],14:[function(require,module,exports){
+},{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/profile/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1848,6 +2104,10 @@ var _identityCtrl2 = _interopRequireDefault(_identityCtrl);
 var _residenceCtrl = require('../residence/ctrl');
 
 var _residenceCtrl2 = _interopRequireDefault(_residenceCtrl);
+
+var _demographicsCtrl = require('../demographics/ctrl');
+
+var _demographicsCtrl2 = _interopRequireDefault(_demographicsCtrl);
 
 var ProfileCtrl = (function (_Controller) {
   function ProfileCtrl(props) {
@@ -1890,14 +2150,22 @@ var ProfileCtrl = (function (_Controller) {
       this.find('panel title').text('Profile');
 
       this.publish('get user info', this.user.id).subscribe(function (pubsub, user) {
-
-        _this.identity = new _identityCtrl2['default']({ user: user });
-        _this.identity.render();
-
-        _this.residence = new _residenceCtrl2['default']({ user: user });
-        _this.residence.render();
-
         pubsub.unsubscribe();
+
+        _this.publish('get config').subscribe(function (pubsub, config) {
+          pubsub.unsubscribe();
+
+          var props = { user: user, config: config };
+
+          _this.identity = new _identityCtrl2['default'](props);
+          _this.identity.render();
+
+          _this.residence = new _residenceCtrl2['default'](props);
+          _this.residence.render();
+
+          _this.demographics = new _demographicsCtrl2['default'](props);
+          _this.demographics.render();
+        });
       });
     }
   }, {
@@ -1909,179 +2177,8 @@ var ProfileCtrl = (function (_Controller) {
 })(_libAppController2['default']);
 
 exports['default'] = ProfileCtrl;
-
-function foo() {
-
-  'use strict';
-
-  // var Nav               =   require('syn/lib/util/nav');
-  // var Identity          =   require('syn/components/Identity/Controller');
-  // var Residence         =   require('syn/components/Residence/Controller');
-  // var Demographics      =   require('syn/components/Demographics/Controller');
-  // var Voter             =   require('syn/components/Voter/Controller');
-  // var Public_Persona    =   require('syn/components/PublicPersona/Controller');
-
-  /**
-   *  @class      Profile
-   */
-
-  function Profile() {
-
-    /** Persistent this
-     *
-     *  @type           Profile
-    */
-
-    var profile = this;
-
-    /** DOM Container
-     *
-     *  @type           HTMLElement
-    */
-
-    this.template = $('.panel');
-
-    /** Local instance of Identity
-     *
-     *  @type           Identity
-    */
-
-    this.identity = new Identity(this);
-
-    /** Local instance of Residence
-     *
-     *  @type           Residence
-    */
-
-    this.residence = new Residence(this);
-
-    /** Local instance of Demographics
-     *
-     *  @type           Demographics
-    */
-
-    this.demographics = new Demographics(this);
-
-    /** Local instance of Voter
-     *
-     *  @type           Voter
-    */
-
-    this.voter = new Voter(this);
-
-    /** Local instance of Public_Persona
-     *
-     *  @type           Public_Persona
-    */
-
-    this.public_persona = new Public_Persona(this);
-
-    /** Get User Info from socket
-     *
-     *  @type           Socket
-    */
-
-    app.socket.once('got user info', function (user) {
-      console.log('got user info', user);
-      profile.user = user;
-
-      profile.renderUser();
-    }).emit('get user info', app.socket.synuser);
-
-    /** Get list of countries from socket
-     *
-     *  @type           Socket
-    */
-
-    app.socket.once('got countries', function (countries) {
-      console.log('got countries', countries);
-      profile.countries = countries;
-
-      profile.identity.renderCountries();
-    }).emit('get countries');
-  }
-
-  Profile.prototype.find = function (name) {
-    switch (name) {
-      case 'panel title':
-        return this.template.find('.panel-title');
-
-      case 'items section':
-        return this.template.find('.items .is-container.is-profile-section');
-
-      case 'panel load more':
-        return this.template.find('.loading-items');
-
-      case 'Identity':
-        return this.template.find('#identity');
-
-      case 'toggle creator':
-        return this.template.find('.toggle-creator');
-    }
-  };
-
-  Profile.prototype.render = function () {
-
-    var profile = this;
-
-    this.find('panel title').text('Profile');
-
-    this.find('toggle creator').remove();
-
-    this.find('panel load more').find('i,span').hide();
-
-    var togglePanel = $('<i class="fa cursor-pointer fa-arrow-up"></i>');
-
-    togglePanel.on('click', function () {
-
-      var arrow = $(this);
-
-      Nav.toggle(profile.find('items section'), null, function () {
-        if (profile.find('items section').hasClass('is-hidden')) {
-          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
-        } else {
-          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
-        }
-      });
-    });
-
-    Nav.show(this.find('items section'));
-
-    this.find('panel load more').append(togglePanel);
-
-    this.find('Identity').attr('id', 'identity');
-
-    this.identity.render();
-
-    this.residence.render();
-
-    this.demographics.render();
-
-    this.voter.render();
-
-    this.public_persona.render();
-  };
-
-  Profile.prototype.renderUser = function () {
-    var profile = this;
-
-    this.find('Identity').data('identity').user = this.user;
-
-    this.find('Identity').data('identity').renderUser();
-
-    this.residence.renderUser();
-
-    this.demographics.renderUser();
-
-    this.voter.renderUser();
-
-    this.public_persona.renderUser();
-  };
-
-  module.exports = Profile;
-}
 module.exports = exports['default'];
-},{"../../lib/app/controller":21,"../identity/ctrl":7,"../residence/ctrl":17,"./view":15}],15:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../demographics/ctrl":"/home/francois/Dev/syn/dist/components/demographics/ctrl.js","../identity/ctrl":"/home/francois/Dev/syn/dist/components/identity/ctrl.js","../residence/ctrl":"/home/francois/Dev/syn/dist/components/residence/ctrl.js","./view":"/home/francois/Dev/syn/dist/components/profile/view.js"}],"/home/francois/Dev/syn/dist/components/profile/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2138,7 +2235,7 @@ var ProfileView = (function (_Element) {
 
 exports['default'] = ProfileView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"../demographics/view":4,"../identity/view":8,"../panel/view":13,"../residence/view":18,"cinco/dist":31}],16:[function(require,module,exports){
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","../demographics/view":"/home/francois/Dev/syn/dist/components/demographics/view.js","../identity/view":"/home/francois/Dev/syn/dist/components/identity/view.js","../panel/view":"/home/francois/Dev/syn/dist/components/panel/view.js","../residence/view":"/home/francois/Dev/syn/dist/components/residence/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2273,7 +2370,7 @@ var Promote = (function (_Element) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"cinco/dist":31}],17:[function(require,module,exports){
+},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/residence/ctrl.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2486,7 +2583,7 @@ var ResidenceCtrl = (function (_Controller) {
 
 exports['default'] = ResidenceCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":21,"../../lib/util/nav":25}],18:[function(require,module,exports){
+},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/residence/view.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2553,7 +2650,7 @@ var ResidenceView = (function (_Element) {
 
 exports['default'] = ResidenceView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"cinco/dist":31}],19:[function(require,module,exports){
+},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js":[function(require,module,exports){
 /**
  * @package     App.Component.TopbBar.Controller
 */
@@ -2757,7 +2854,7 @@ var TopBar = (function (_Controller) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../../components/forgot-password/ctrl":6,"../../components/join/ctrl":11,"../../components/login/ctrl":12,"../../lib/app/controller":21}],20:[function(require,module,exports){
+},{"../../components/forgot-password/ctrl":"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js","../../components/join/ctrl":"/home/francois/Dev/syn/dist/components/join/ctrl.js","../../components/login/ctrl":"/home/francois/Dev/syn/dist/components/login/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js"}],"/home/francois/Dev/syn/dist/lib/app/cache.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2794,7 +2891,7 @@ var Cache = (function () {
 
 exports['default'] = new Cache();
 module.exports = exports['default'];
-},{}],21:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/dist/lib/app/controller.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2827,7 +2924,7 @@ var Controller = (function (_App) {
 
 exports['default'] = Controller;
 module.exports = exports['default'];
-},{"../../app":2}],22:[function(require,module,exports){
+},{"../../app":"/home/francois/Dev/syn/dist/app.js"}],"/home/francois/Dev/syn/dist/lib/app/page.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -2867,7 +2964,7 @@ module.exports = exports['default'];
 
   module.exports = Page;
 })();
-},{"string":36}],23:[function(require,module,exports){
+},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/dist/lib/util/domain-run.js":[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -2925,7 +3022,7 @@ module.exports = exports['default'];
 
   module.exports = domainRun;
 })();
-},{"domain":28}],24:[function(require,module,exports){
+},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/lib/util/form.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3013,7 +3110,7 @@ var Form = (function () {
 
 exports['default'] = Form;
 module.exports = exports['default'];
-},{"./domain-run":23}],25:[function(require,module,exports){
+},{"./domain-run":"/home/francois/Dev/syn/dist/lib/util/domain-run.js"}],"/home/francois/Dev/syn/dist/lib/util/nav.js":[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -3336,7 +3433,7 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":30,"domain":28,"events":29}],26:[function(require,module,exports){
+},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/lib/util/upload.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3443,7 +3540,7 @@ var Upload = (function (_EventEmitter) {
 
 exports['default'] = Upload;
 module.exports = exports['default'];
-},{"events":29}],27:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/pages/profile/ctrl.js":[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -3468,7 +3565,7 @@ synapp.app.ready(function (session) {
 
   new _componentsProfileCtrl2['default']({ session: session }).render();
 });
-},{"../../app":2,"../../components/profile/ctrl":14,"../../components/top-bar/ctrl":19}],28:[function(require,module,exports){
+},{"../../app":"/home/francois/Dev/syn/dist/app.js","../../components/profile/ctrl":"/home/francois/Dev/syn/dist/components/profile/ctrl.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3536,7 +3633,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":29}],29:[function(require,module,exports){
+},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3839,7 +3936,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],30:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3927,7 +4024,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],31:[function(require,module,exports){
+},{}],"/home/francois/Dev/syn/node_modules/cinco/dist/index.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3971,7 +4068,7 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./lib/compiler":32,"./lib/document":33,"./lib/element":34,"./lib/elements":35}],32:[function(require,module,exports){
+},{"./lib/compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./lib/document":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js","./lib/element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./lib/elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4202,7 +4299,7 @@ var Compiler = (function () {
 exports['default'] = Compiler;
 module.exports = exports['default'];
 
-},{"./element":34,"./elements":35,"domain":28}],33:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4330,7 +4427,7 @@ Document.doctype = '<!doctype html>';
 exports['default'] = Document;
 module.exports = exports['default'];
 
-},{"./element":34,"./elements":35}],34:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4742,7 +4839,7 @@ var Element = (function () {
 exports['default'] = Element;
 module.exports = exports['default'];
 
-},{"./compiler":32,"./elements":35}],35:[function(require,module,exports){
+},{"./compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4902,7 +4999,7 @@ var Elements = (function () {
 exports['default'] = Elements;
 module.exports = exports['default'];
 
-},{"./element":34}],36:[function(require,module,exports){
+},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -5936,4 +6033,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[27]);
+},{}]},{},["/home/francois/Dev/syn/dist/pages/profile/ctrl.js"]);

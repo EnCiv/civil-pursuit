@@ -1,8 +1,84 @@
-! function () {
+'import strict';
+
+import Controller       from  '../../lib/app/controller';
+import Nav              from '../../lib/util/nav';
+
+class DemographicsCtrl extends Controller {
+  constructor (props) {
+    super(props);
+
+    this.props  = props;
+    this.user   = this.props.user;
+    this.config = this.props.config;
+
+    this.template = $('#demographics');
+  }
+
+  find (name) {
+    switch ( name ) {
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow i.fa');
+
+      case 'expand':
+        return this.template.find('.demographics-collapse');
+
+      case 'race':          return this.template.find('input.race');
+      case 'races':         return this.template.find('.races');
+      case 'married':       return this.template.find('select.married');
+      case 'employment':    return this.template.find('select.employment');
+      case 'education':     return this.template.find('select.education');
+    }
+  }
+
+  render () {
+    this.toggle();
+
+    this.renderRaces();
+  }
+
+  toggle () {
+
+    let self = this;
+
+    this.find('toggle arrow').on('click', function () {
+      
+      let arrow = $(this);
+
+      Nav.toggle(self.find('expand'), self.template, () => {
+        if ( self.find('expand').hasClass('is-hidden') ) {
+          arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+        }
+        else {
+          arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+        }
+      });
+    });
+  }
+
+  renderRaces() {
+    let racesWrapper = this.find('races');
+
+    this.config.race.forEach(race => {
+      let raceRow = $(`<div class ="row gutter">
+          <div class="watch-70 left">${race.name}</div>
+          <div class="watch-30 left">
+            <input class="race" type="checkbox" value="${race._id}" />
+          </div>
+        </div>`);
+
+      racesWrapper.append(raceRow);
+    });
+  }
+
+}
+
+export default DemographicsCtrl;
+
+function x () {
   
   'use strict';
 
-  var Nav = require('syn/lib/util/nav');
+  // var Nav = require('syn/lib/util/nav');
 
   /**
    *  @class
@@ -21,7 +97,7 @@
   Demographics.prototype.find = function (name) {
     switch ( name ) {
       case 'toggle arrow':
-        return this.template.find('.toggle-arrow');
+        return this.template.find('.toggle-arrow i.fa');
 
       case 'expand':
         return this.template.find('.demographics-collapse');
@@ -61,11 +137,7 @@
           console.log('race added', arguments);
         });
 
-        app.socket.emit('add race',       
-      
-      
-      
-app.socket.synuser, $(this).val());
+        app.socket.emit('add race', app.socket.synuser, $(this).val());
       }
 
       else {
@@ -73,11 +145,7 @@ app.socket.synuser, $(this).val());
           console.log('race removed', arguments);
         });
 
-        app.socket.emit('remove race',       
-      
-      
-      
-app.socket.synuser, $(this).val());
+        app.socket.emit('remove race', app.socket.synuser, $(this).val());
       }
     });
 
@@ -89,11 +157,7 @@ app.socket.synuser, $(this).val());
           console.log('marital status set', arguments);
         });
 
-        app.socket.emit('set marital status',       
-      
-      
-      
-app.socket.synuser, $(this).val());
+        app.socket.emit('set marital status', app.socket.synuser, $(this).val());
       }
     });
 
@@ -105,11 +169,7 @@ app.socket.synuser, $(this).val());
           console.log('employment set', arguments);
         });
 
-        app.socket.emit('set employment',       
-      
-      
-      
-app.socket.synuser, $(this).val());
+        app.socket.emit('set employment', app.socket.synuser, $(this).val());
       }
     });
 
@@ -121,11 +181,7 @@ app.socket.synuser, $(this).val());
           console.log('education set', arguments);
         });
 
-        app.socket.emit('set education',       
-      
-      
-      
-app.socket.synuser, $(this).val());
+        app.socket.emit('set education', app.socket.synuser, $(this).val());
       }
     });
   };
@@ -167,4 +223,4 @@ app.socket.synuser, $(this).val());
 
   module.exports = Demographics;
 
-} ();
+}

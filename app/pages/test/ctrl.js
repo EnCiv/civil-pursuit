@@ -19,7 +19,8 @@ synapp.app.ready(() => {
 
       pages.forEach(page => {
         let tr = $(`<tr id="state-${page._id}">
-            <td>${page.name}</td>
+            <th>${page.name}</th>
+            <td><button class="primary block">Run</button></td>
           </tr>`);
 
         $('.test-pages tbody').append(tr);

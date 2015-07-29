@@ -33,7 +33,7 @@ var PageNotFound = (function (_Layout) {
     var main = this.find('#main').get(0);
 
     if (props.settings.env === 'development') {
-      main.add(new _cincoDist.Element('h1.gutter').text(props.title), new _cincoDist.Element('hr'), new _cincoDist.Element('h2.gutter').add(new _cincoDist.Element('small.number-of-pages').text('0'), new _cincoDist.Element('span').text(' Pages')), new _cincoDist.Element('table.test-pages').add(new _cincoDist.Element('thead').add(new _cincoDist.Element('tr').add(new _cincoDist.Element('th').text('Name'))), new _cincoDist.Element('tbody')));
+      main.add(new _cincoDist.Element('h1.gutter').text(props.title), new _cincoDist.Element('hr'), new _cincoDist.Element('h2.gutter').add(new _cincoDist.Element('small.number-of-pages').text('0'), new _cincoDist.Element('span').text(' Pages')), new _cincoDist.Element('table.test-pages').add(new _cincoDist.Element('thead').add(new _cincoDist.Element('tr').add(new _cincoDist.Element('th', { colspan: 2 }).text('Name'))), new _cincoDist.Element('tbody')));
     } else {
       main.add(new _cincoDist.Element('h1.gutter.warning').text(props.title), new _cincoDist.Element('p.gutter').text('We are sorry, your request could not be fulfilled because no relevant results were found.'), new _cincoDist.Element('hr'));
     }

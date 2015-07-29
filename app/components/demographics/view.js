@@ -41,7 +41,8 @@ class DemoraphicsView extends Element {
     return new Element('.demographics-collapse.is-container').add(
       new Element('.is-section').add(
         new Element('.row').add(
-          
+          new Element('.phone-30.gutter').text('Race:'),
+          new Element('.phone-70.races')
         )
       )
     );

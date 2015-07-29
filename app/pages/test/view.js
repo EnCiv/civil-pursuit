@@ -26,7 +26,7 @@ class PageNotFound extends Layout {
         new Element('table.test-pages').add(
           new Element('thead').add(
             new Element('tr').add(
-              new Element('th').text('Name')
+              new Element('th', { colspan : 2 }).text('Name')
             )
           ),
           new Element('tbody')

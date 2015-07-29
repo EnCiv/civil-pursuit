@@ -46,7 +46,7 @@ var DemoraphicsView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add()));
+      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.phone-30.gutter').text('Race:'), new _cincoDist.Element('.phone-70.races'))));
     }
   }]);
 

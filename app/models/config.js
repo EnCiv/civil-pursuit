@@ -8,7 +8,7 @@
 
   var Schema          =   mongoose.Schema;
 
-  var ConfigSchema    =   new Schema(require('./Config/schema'));
+  var ConfigSchema    =   new Schema(require('./config/schema'));
 
   ConfigSchema.plugin(findRandom);
 

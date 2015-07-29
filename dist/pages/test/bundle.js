@@ -1293,7 +1293,7 @@ synapp.app.ready(function () {
     $('.number-of-pages').text(pages.length);
 
     pages.forEach(function (page) {
-      var tr = $('<tr id="state-' + page._id + '">\n            <td>' + page.name + '</td>\n          </tr>');
+      var tr = $('<tr id="state-' + page._id + '">\n            <th>' + page.name + '</th>\n            <td><button class="primary block">Run</button></td>\n          </tr>');
 
       $('.test-pages tbody').append(tr);
     });
