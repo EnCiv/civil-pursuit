@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function addRace
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} rcae_id - The Config.Race ID
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function addRace(user_id, race_id) {
+function addRace(event, raceId) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].addRace(this.synuser.id, raceId).then(function (user) {
+      _this.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
-
-    domain.run(function () {
-      User.addRace(user_id, race_id, domain.intercept(function (item) {
-        socket.emit('race added', item);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = addRace;
-})();
+exports['default'] = addRace;
+module.exports = exports['default'];

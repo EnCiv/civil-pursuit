@@ -57,6 +57,7 @@ class DemographicsCtrl extends Controller {
 
   renderRaces() {
     let racesWrapper = this.find('races');
+    let self = this;
 
     this.config.race.forEach(race => {
       let raceRow = $(`<div class ="row gutter">
@@ -65,6 +66,19 @@ class DemographicsCtrl extends Controller {
             <input class="race" type="checkbox" value="${race._id}" />
           </div>
         </div>`);
+
+      raceRow.find('.race').on('change', function () {
+        if ( $(this).is(':checked') ) {
+          self
+            .publish('add race', $(this).val())
+            .subscribe(pubsub => {
+              pubsub.unsubscribe();
+            });
+        }
+        else {
+          console.log(false);
+        }
+      });
 
       racesWrapper.append(raceRow);
     });

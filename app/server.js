@@ -227,7 +227,7 @@ class HttpServer extends EventEmitter {
         });
     }, this.renderPage.bind(this));
   }
-  
+
 
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug',
@@ -285,7 +285,7 @@ class HttpServer extends EventEmitter {
       });
 
       this.emit('listening');
-      
+
       new API(this)
         .on('error', error => this.emit('error', error));
     });

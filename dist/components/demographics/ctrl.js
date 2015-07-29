@@ -91,9 +91,20 @@ var DemographicsCtrl = (function (_Controller) {
     key: 'renderRaces',
     value: function renderRaces() {
       var racesWrapper = this.find('races');
+      var self = this;
 
       this.config.race.forEach(function (race) {
         var raceRow = $('<div class ="row gutter">\n          <div class="watch-70 left">' + race.name + '</div>\n          <div class="watch-30 left">\n            <input class="race" type="checkbox" value="' + race._id + '" />\n          </div>\n        </div>');
+
+        raceRow.find('.race').on('change', function () {
+          if ($(this).is(':checked')) {
+            self.publish('add race', $(this).val()).subscribe(function (pubsub) {
+              pubsub.unsubscribe();
+            });
+          } else {
+            console.log(false);
+          }
+        });
 
         racesWrapper.append(raceRow);
       });

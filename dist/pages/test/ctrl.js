@@ -25,7 +25,13 @@ synapp.app.ready(function () {
     $('.number-of-pages').text(pages.length);
 
     pages.forEach(function (page) {
-      var tr = $('<tr id="state-' + page._id + '">\n            <th>' + page.name + '</th>\n            <td><button class="primary block">Run</button></td>\n          </tr>');
+      var stories = [];
+
+      page.stories.forEach(function (story) {
+        stories.push('<tr>\n              <td>' + story.name + '</td>\n            </tr>');
+      });
+
+      var tr = $('<tr id="state-' + page._id + '">\n            <th>' + page.name + '</th>\n            <td><button class="primary block">Run</button></td>\n          </tr>\n          <tr>\n            <td colspan="2">\n              <table>\n                <thead>\n                  <tr>\n                    <th>Story</th>\n                  </tr>\n                </thead>\n                <tbody>\n                  ' + stories.join('') + '\n                </tbody>\n              </table>\n            </td>\n          </tr>');
 
       $('.test-pages tbody').append(tr);
     });

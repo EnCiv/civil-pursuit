@@ -18,9 +18,31 @@ synapp.app.ready(() => {
       $('.number-of-pages').text(pages.length);
 
       pages.forEach(page => {
+        let stories = [];
+
+        page.stories.forEach(story => {
+          stories.push(`<tr>
+              <td>${story.name}</td>
+            </tr>`);
+        });
+
         let tr = $(`<tr id="state-${page._id}">
             <th>${page.name}</th>
             <td><button class="primary block">Run</button></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Story</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${stories.join('')}
+                </tbody>
+              </table>
+            </td>
           </tr>`);
 
         $('.test-pages tbody').append(tr);
