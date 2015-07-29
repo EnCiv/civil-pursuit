@@ -34,6 +34,10 @@ var _demographicsView = require('../demographics/view');
 
 var _demographicsView2 = _interopRequireDefault(_demographicsView);
 
+var _voterView = require('../voter/view');
+
+var _voterView2 = _interopRequireDefault(_voterView);
+
 var ProfileView = (function (_Element) {
   function ProfileView(props, extra) {
     _classCallCheck(this, ProfileView);
@@ -42,7 +46,7 @@ var ProfileView = (function (_Element) {
 
     var panel = new _panelView2['default']({ creator: false });
 
-    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()))));
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()), new _cincoDist.Element('.tablet-50').add(new _voterView2['default']()))));
 
     this.add(panel);
   }

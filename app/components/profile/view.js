@@ -6,6 +6,7 @@ import PanelView                from '../panel/view';
 import IdentityView             from '../identity/view';
 import ResidenceView            from '../residence/view';
 import DemographicsView         from '../demographics/view';
+import VoterView                from '../voter/view';
 
 class ProfileView extends Element {
 
@@ -31,6 +32,9 @@ class ProfileView extends Element {
           new Element('.row.gutter-bottom').add(
             new Element('.tablet-50').add(
               new DemographicsView()
+            ),
+            new Element('.tablet-50').add(
+              new VoterView()
             )
           )
         )

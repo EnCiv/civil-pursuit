@@ -130,7 +130,7 @@ module.exports={
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
     },
     "voter": {
-      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain voters then we increase our efforts to get more participation there.",
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
     },
     "public persona": {
@@ -438,7 +438,7 @@ var App = (function (_EventEmitter) {
 
 exports['default'] = App;
 module.exports = exports['default'];
-},{"./lib/app/cache":21,"domain":29,"events":30}],3:[function(require,module,exports){
+},{"./lib/app/cache":23,"domain":31,"events":32}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -627,7 +627,7 @@ var Creator = (function (_Element) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/item/view":11,"cinco/dist":32}],4:[function(require,module,exports){
+},{"../../components/item/view":11,"cinco/dist":34}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -833,7 +833,7 @@ var DemographicsCtrl = (function (_Controller) {
 
 exports['default'] = DemographicsCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":22,"../../lib/util/nav":26}],5:[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/nav":28}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -856,18 +856,18 @@ var _configJson = require('../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
-var DemoraphicsView = (function (_Element) {
-  function DemoraphicsView(props) {
-    _classCallCheck(this, DemoraphicsView);
+var DemographicsView = (function (_Element) {
+  function DemographicsView(props) {
+    _classCallCheck(this, DemographicsView);
 
-    _get(Object.getPrototypeOf(DemoraphicsView.prototype), 'constructor', this).call(this, '#demographics.section');
+    _get(Object.getPrototypeOf(DemographicsView.prototype), 'constructor', this).call(this, '#demographics.section');
 
     this.add(new _cincoDist.Elements(this.header(), this.body(), this.toggle()));
   }
 
-  _inherits(DemoraphicsView, _Element);
+  _inherits(DemographicsView, _Element);
 
-  _createClass(DemoraphicsView, [{
+  _createClass(DemographicsView, [{
     key: 'header',
     value: function header() {
       return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
@@ -886,12 +886,12 @@ var DemoraphicsView = (function (_Element) {
     }
   }]);
 
-  return DemoraphicsView;
+  return DemographicsView;
 })(_cincoDist.Element);
 
-exports['default'] = DemoraphicsView;
+exports['default'] = DemographicsView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"cinco/dist":32}],6:[function(require,module,exports){
+},{"../../../config.json":1,"cinco/dist":34}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -957,7 +957,7 @@ var Details = (function (_Element) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"cinco/dist":32}],7:[function(require,module,exports){
+},{"cinco/dist":34}],7:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -1022,7 +1022,7 @@ module.exports = exports['default'];
 //
 
 // $('.forgot-password-pending').css('display', 'block');
-},{"../../lib/util/form":25,"domain":29}],8:[function(require,module,exports){
+},{"../../lib/util/form":27,"domain":31}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1384,7 +1384,7 @@ var IdentityCtrl = (function (_Controller) {
 
 exports['default'] = IdentityCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":22,"../../lib/util/nav":26,"../../lib/util/upload":27}],9:[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/nav":28,"../../lib/util/upload":29}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1481,7 +1481,7 @@ var IdentityView = (function (_Element) {
 
 exports['default'] = IdentityView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"cinco/dist":32}],10:[function(require,module,exports){
+},{"../../../config.json":1,"cinco/dist":34}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1522,7 +1522,7 @@ var ItemDefaultButtons = (function (_Elements) {
 
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
-},{"cinco/dist":32}],11:[function(require,module,exports){
+},{"cinco/dist":34}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1715,7 +1715,7 @@ var Item = (function (_Element) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"../../lib/app/page":23,"../details/view":6,"../item-default-buttons/view":10,"../promote/view":17,"cinco/dist":32}],12:[function(require,module,exports){
+},{"../../lib/app/page":25,"../details/view":6,"../item-default-buttons/view":10,"../promote/view":17,"cinco/dist":34}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1828,7 +1828,7 @@ var Join = (function (_Controller) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../../lib/app/controller":22,"../../lib/util/form":25}],13:[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/form":27}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1933,7 +1933,7 @@ var Login = (function (_Controller) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../../lib/app/controller":22,"../../lib/util/form":25,"../../lib/util/nav":26}],14:[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/form":27,"../../lib/util/nav":28}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2022,7 +2022,7 @@ var Panel = (function (_Element) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../../components/creator/view":3,"cinco/dist":32}],15:[function(require,module,exports){
+},{"../../components/creator/view":3,"cinco/dist":34}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2058,6 +2058,10 @@ var _residenceCtrl2 = _interopRequireDefault(_residenceCtrl);
 var _demographicsCtrl = require('../demographics/ctrl');
 
 var _demographicsCtrl2 = _interopRequireDefault(_demographicsCtrl);
+
+var _voterCtrl = require('../voter/ctrl');
+
+var _voterCtrl2 = _interopRequireDefault(_voterCtrl);
 
 var ProfileCtrl = (function (_Controller) {
   function ProfileCtrl(props) {
@@ -2115,6 +2119,9 @@ var ProfileCtrl = (function (_Controller) {
 
           _this.demographics = new _demographicsCtrl2['default'](props);
           _this.demographics.render();
+
+          _this.voter = new _voterCtrl2['default'](props);
+          _this.voter.render();
         });
       });
     }
@@ -2128,7 +2135,7 @@ var ProfileCtrl = (function (_Controller) {
 
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":22,"../demographics/ctrl":4,"../identity/ctrl":8,"../residence/ctrl":18,"./view":16}],16:[function(require,module,exports){
+},{"../../lib/app/controller":24,"../demographics/ctrl":4,"../identity/ctrl":8,"../residence/ctrl":18,"../voter/ctrl":21,"./view":16}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2165,6 +2172,10 @@ var _demographicsView = require('../demographics/view');
 
 var _demographicsView2 = _interopRequireDefault(_demographicsView);
 
+var _voterView = require('../voter/view');
+
+var _voterView2 = _interopRequireDefault(_voterView);
+
 var ProfileView = (function (_Element) {
   function ProfileView(props, extra) {
     _classCallCheck(this, ProfileView);
@@ -2173,7 +2184,7 @@ var ProfileView = (function (_Element) {
 
     var panel = new _panelView2['default']({ creator: false });
 
-    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()))));
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()), new _cincoDist.Element('.tablet-50').add(new _voterView2['default']()))));
 
     this.add(panel);
   }
@@ -2185,7 +2196,7 @@ var ProfileView = (function (_Element) {
 
 exports['default'] = ProfileView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"../demographics/view":5,"../identity/view":9,"../panel/view":14,"../residence/view":19,"cinco/dist":32}],17:[function(require,module,exports){
+},{"../../../config.json":1,"../demographics/view":5,"../identity/view":9,"../panel/view":14,"../residence/view":19,"../voter/view":22,"cinco/dist":34}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2320,7 +2331,7 @@ var Promote = (function (_Element) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"cinco/dist":32}],18:[function(require,module,exports){
+},{"cinco/dist":34}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2533,7 +2544,7 @@ var ResidenceCtrl = (function (_Controller) {
 
 exports['default'] = ResidenceCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":22,"../../lib/util/nav":26}],19:[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/nav":28}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2600,7 +2611,7 @@ var ResidenceView = (function (_Element) {
 
 exports['default'] = ResidenceView;
 module.exports = exports['default'];
-},{"../../../config.json":1,"cinco/dist":32}],20:[function(require,module,exports){
+},{"../../../config.json":1,"cinco/dist":34}],20:[function(require,module,exports){
 /**
  * @package     App.Component.TopbBar.Controller
 */
@@ -2804,7 +2815,199 @@ var TopBar = (function (_Controller) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../../components/forgot-password/ctrl":7,"../../components/join/ctrl":12,"../../components/login/ctrl":13,"../../lib/app/controller":22}],21:[function(require,module,exports){
+},{"../../components/forgot-password/ctrl":7,"../../components/join/ctrl":12,"../../components/login/ctrl":13,"../../lib/app/controller":24}],21:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _libAppController = require('../../lib/app/controller');
+
+var _libAppController2 = _interopRequireDefault(_libAppController);
+
+var _libUtilNav = require('../../lib/util/nav');
+
+var _libUtilNav2 = _interopRequireDefault(_libUtilNav);
+
+var VoterCtrl = (function (_Controller) {
+  function VoterCtrl(props) {
+    _classCallCheck(this, VoterCtrl);
+
+    _get(Object.getPrototypeOf(VoterCtrl.prototype), 'constructor', this).call(this, props);
+
+    this.props = props;
+    this.user = this.props.user;
+    this.config = this.props.config;
+
+    this.template = $('#voter');
+  }
+
+  _inherits(VoterCtrl, _Controller);
+
+  _createClass(VoterCtrl, [{
+    key: 'find',
+    value: function find(name) {
+      switch (name) {
+        case 'toggle arrow':
+          return this.template.find('.toggle-arrow i.fa');
+
+        case 'expand':
+          return this.template.find('.voter-collapse');
+
+        case 'registered':
+          return this.template.find('.is-registered-voter');
+
+        case 'party':
+          return this.template.find('.party');
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      this.toggle();
+
+      this.renderPoliticalParty();
+
+      this.renderRegisteredVoter();
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+      console.log('render voter toggle');
+      var self = this;
+
+      this.find('toggle arrow').on('click', function () {
+
+        var arrow = $(this);
+
+        _libUtilNav2['default'].toggle(self.find('expand'), self.template, function () {
+          if (self.find('expand').hasClass('is-hidden')) {
+            arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
+          } else {
+            arrow.removeClass('fa-arrow-down').addClass('fa-arrow-up');
+          }
+        });
+      });
+    }
+  }, {
+    key: 'renderPoliticalParty',
+    value: function renderPoliticalParty() {
+      var _this = this;
+
+      var self = this;
+
+      this.config.party.forEach(function (party) {
+        var partyOption = $('<option value="' + party._id + '">' + party.name + '</option>');
+
+        if (self.user.party === party._id) {
+          partyOption.attr('selected', true);
+        }
+
+        _this.find('party').append(partyOption);
+      });
+
+      this.find('party').on('change', function () {
+        if ($(this).val()) {
+          self.publish('set party', $(this).val()).subscribe(function (pubsub) {
+            pubsub.unsubscribe();
+          });
+        }
+      });
+    }
+  }, {
+    key: 'renderRegisteredVoter',
+    value: function renderRegisteredVoter() {
+      var self = this;
+
+      if (this.user.registered_voter) {
+        this.find('registered').val('1');
+      } else {
+        this.find('registered').val('0');
+      }
+
+      this.find('registered').on('change', function () {
+        self.publish('set registered voter', !!($(this).val() === '1')).subscribe(function (pubsub) {
+          pubsub.unsubscribe();
+        });
+      });
+    }
+  }]);
+
+  return VoterCtrl;
+})(_libAppController2['default']);
+
+exports['default'] = VoterCtrl;
+module.exports = exports['default'];
+},{"../../lib/app/controller":24,"../../lib/util/nav":28}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _cincoDist = require('cinco/dist');
+
+var _configJson = require('../../../config.json');
+
+var _configJson2 = _interopRequireDefault(_configJson);
+
+var VoterView = (function (_Element) {
+  function VoterView(props) {
+    _classCallCheck(this, VoterView);
+
+    _get(Object.getPrototypeOf(VoterView.prototype), 'constructor', this).call(this, '#voter.section');
+
+    this.add(new _cincoDist.Elements(this.header(), this.body(), this.toggle()));
+  }
+
+  _inherits(VoterView, _Element);
+
+  _createClass(VoterView, [{
+    key: 'header',
+    value: function header() {
+      return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
+        src: _configJson2['default'].profile.voter.image
+      })), new _cincoDist.Element('h2.profile-section-title').text('Vote'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.voter.description)));
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+      return new _cincoDist.Element('.row.toggle-arrow.gutter.text-center').add(new _cincoDist.Element('i.fa.fa-arrow-down.cursor-pointer'));
+    }
+  }, {
+    key: 'body',
+    value: function body() {
+      return new _cincoDist.Element('.voter-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Registered voter'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.is-registered-voter.block.gutter').add(new _cincoDist.Element('option', { value: '1' }).text('Yes'), new _cincoDist.Element('option', { value: '0' }).text('No')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Political Party'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.party.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))))));
+    }
+  }]);
+
+  return VoterView;
+})(_cincoDist.Element);
+
+exports['default'] = VoterView;
+module.exports = exports['default'];
+},{"../../../config.json":1,"cinco/dist":34}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2841,7 +3044,7 @@ var Cache = (function () {
 
 exports['default'] = new Cache();
 module.exports = exports['default'];
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2874,7 +3077,7 @@ var Controller = (function (_App) {
 
 exports['default'] = Controller;
 module.exports = exports['default'];
-},{"../../app":2}],23:[function(require,module,exports){
+},{"../../app":2}],25:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -2914,7 +3117,7 @@ module.exports = exports['default'];
 
   module.exports = Page;
 })();
-},{"string":37}],24:[function(require,module,exports){
+},{"string":39}],26:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -2972,7 +3175,7 @@ module.exports = exports['default'];
 
   module.exports = domainRun;
 })();
-},{"domain":29}],25:[function(require,module,exports){
+},{"domain":31}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3060,7 +3263,7 @@ var Form = (function () {
 
 exports['default'] = Form;
 module.exports = exports['default'];
-},{"./domain-run":24}],26:[function(require,module,exports){
+},{"./domain-run":26}],28:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -3383,7 +3586,7 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":31,"domain":29,"events":30}],27:[function(require,module,exports){
+},{"_process":33,"domain":31,"events":32}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3490,7 +3693,7 @@ var Upload = (function (_EventEmitter) {
 
 exports['default'] = Upload;
 module.exports = exports['default'];
-},{"events":30}],28:[function(require,module,exports){
+},{"events":32}],30:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -3515,7 +3718,7 @@ synapp.app.ready(function (session) {
 
   new _componentsProfileCtrl2['default']({ session: session }).render();
 });
-},{"../../app":2,"../../components/profile/ctrl":15,"../../components/top-bar/ctrl":20}],29:[function(require,module,exports){
+},{"../../app":2,"../../components/profile/ctrl":15,"../../components/top-bar/ctrl":20}],31:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3583,7 +3786,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":30}],30:[function(require,module,exports){
+},{"events":32}],32:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3886,7 +4089,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -3974,7 +4177,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4018,7 +4221,7 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./lib/compiler":33,"./lib/document":34,"./lib/element":35,"./lib/elements":36}],33:[function(require,module,exports){
+},{"./lib/compiler":35,"./lib/document":36,"./lib/element":37,"./lib/elements":38}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4249,7 +4452,7 @@ var Compiler = (function () {
 exports['default'] = Compiler;
 module.exports = exports['default'];
 
-},{"./element":35,"./elements":36,"domain":29}],34:[function(require,module,exports){
+},{"./element":37,"./elements":38,"domain":31}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4377,7 +4580,7 @@ Document.doctype = '<!doctype html>';
 exports['default'] = Document;
 module.exports = exports['default'];
 
-},{"./element":35,"./elements":36}],35:[function(require,module,exports){
+},{"./element":37,"./elements":38}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4789,7 +4992,7 @@ var Element = (function () {
 exports['default'] = Element;
 module.exports = exports['default'];
 
-},{"./compiler":33,"./elements":36}],36:[function(require,module,exports){
+},{"./compiler":35,"./elements":38}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4949,7 +5152,7 @@ var Elements = (function () {
 exports['default'] = Elements;
 module.exports = exports['default'];
 
-},{"./element":35}],37:[function(require,module,exports){
+},{"./element":37}],39:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -5983,4 +6186,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},[28]);
+},{}]},{},[30]);

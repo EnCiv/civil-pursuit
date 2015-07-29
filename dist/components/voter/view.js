@@ -20,23 +20,23 @@ var _configJson = require('../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
-var DemographicsView = (function (_Element) {
-  function DemographicsView(props) {
-    _classCallCheck(this, DemographicsView);
+var VoterView = (function (_Element) {
+  function VoterView(props) {
+    _classCallCheck(this, VoterView);
 
-    _get(Object.getPrototypeOf(DemographicsView.prototype), 'constructor', this).call(this, '#demographics.section');
+    _get(Object.getPrototypeOf(VoterView.prototype), 'constructor', this).call(this, '#voter.section');
 
     this.add(new _cincoDist.Elements(this.header(), this.body(), this.toggle()));
   }
 
-  _inherits(DemographicsView, _Element);
+  _inherits(VoterView, _Element);
 
-  _createClass(DemographicsView, [{
+  _createClass(VoterView, [{
     key: 'header',
     value: function header() {
       return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
-        src: _configJson2['default'].profile.demographics.image
-      })), new _cincoDist.Element('h2.profile-section-title').text('Demographics'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.demographics.description)));
+        src: _configJson2['default'].profile.voter.image
+      })), new _cincoDist.Element('h2.profile-section-title').text('Vote'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.voter.description)));
     }
   }, {
     key: 'toggle',
@@ -46,12 +46,12 @@ var DemographicsView = (function (_Element) {
   }, {
     key: 'body',
     value: function body() {
-      return new _cincoDist.Element('.demographics-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('.phone-30.gutter').text('Race:'), new _cincoDist.Element('.phone-70.races')), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Education'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.education.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Relationship'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.married.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Employment'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.employment.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one'))))));
+      return new _cincoDist.Element('.voter-collapse.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Registered voter'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.is-registered-voter.block.gutter').add(new _cincoDist.Element('option', { value: '1' }).text('Yes'), new _cincoDist.Element('option', { value: '0' }).text('No')))), new _cincoDist.Element('.row').add(new _cincoDist.Element('button.very.shy.tablet-30').text('Political Party'), new _cincoDist.Element('.tablet-70').add(new _cincoDist.Element('select.party.block.gutter').add(new _cincoDist.Element('option', { value: '' }).text('Choose one')))))));
     }
   }]);
 
-  return DemographicsView;
+  return VoterView;
 })(_cincoDist.Element);
 
-exports['default'] = DemographicsView;
+exports['default'] = VoterView;
 module.exports = exports['default'];

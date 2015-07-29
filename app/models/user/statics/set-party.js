@@ -1,32 +1,38 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function setParty (user_id, party_id, cb) {
-
-    var self = this;
-
-    var domain = require('domain').create();
-    
-    domain
-      
-      .on('error', cb)
-    
-      .run(process.nextTick.bind(process, function () {
-        self
-          .findById(user_id)
-          .exec(domain.intercept(function (user) {
-            if ( ! user ) {
-              throw new Error('No such user: ' + user_id);
+function setParty (userId, partyId) {
+  return new Promise((ok, ko) => {
+    try {
+      this
+        .findById(userId)
+        .exec()
+        .then(
+          user => {
+            try {
+              if ( ! user ) {
+                throw new Error('No such user ' + userId);
+              }
+              user.party = partyId;
+              user.save(error => {
+                if ( error ) {
+                  ko(error);
+                }
+                else {
+                  ok(user);
+                }
+              });
             }
+            catch ( error ) {
 
-            user.party = party_id;
+            }
+          },
+          ko
+        );
+    }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-            user.save(cb);
-          }));
-      }));
-  }
-
-  module.exports = setParty;
-
-} ();
+export default setParty;

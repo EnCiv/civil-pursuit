@@ -1,23 +1,38 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  function setRegisteredVoter (user_id, registered_voter, cb) {
+function setRegisteredVoter (userId, isRegisteredVoter) {
+  return new Promise((ok, ko) => {
+    try {
+      this
+        .findById(userId)
+        .exec()
+        .then(
+          user => {
+            try {
+              if ( ! user ) {
+                throw new Error('No such user ' + userId);
+              }
+              user.registered_voter = isRegisteredVoter;
+              user.save(error => {
+                if ( error ) {
+                  ko(error);
+                }
+                else {
+                  ok(user);
+                }
+              });
+            }
+            catch ( error ) {
 
-    var domain = require('domain').create();
-    
-    domain
-      
-      .on('error', cb)
-    
-      .run(function () {
-        var User = require('../../../models/user');
+            }
+          },
+          ko
+        );
+    }
+    catch ( error ) {
+      ko(error);
+    }
+  });
+}
 
-        process.nextTick(
-          User.update.bind(User, { _id: user_id }, { registered_voter: registered_voter }, cb));
-      });
-  }
-
-  module.exports = setRegisteredVoter;
-
-} ();
+export default setRegisteredVoter;

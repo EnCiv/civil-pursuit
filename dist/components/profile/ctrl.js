@@ -34,6 +34,10 @@ var _demographicsCtrl = require('../demographics/ctrl');
 
 var _demographicsCtrl2 = _interopRequireDefault(_demographicsCtrl);
 
+var _voterCtrl = require('../voter/ctrl');
+
+var _voterCtrl2 = _interopRequireDefault(_voterCtrl);
+
 var ProfileCtrl = (function (_Controller) {
   function ProfileCtrl(props) {
     _classCallCheck(this, ProfileCtrl);
@@ -90,6 +94,9 @@ var ProfileCtrl = (function (_Controller) {
 
           _this.demographics = new _demographicsCtrl2['default'](props);
           _this.demographics.render();
+
+          _this.voter = new _voterCtrl2['default'](props);
+          _this.voter.render();
         });
       });
     }

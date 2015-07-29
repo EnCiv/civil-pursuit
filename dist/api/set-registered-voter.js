@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function setRegisteredVoter
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {Boolean} is_registered_voter
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function setRegisteredVoter(user_id, is_registered_voter) {
+function setRegisteredVoter(event, isRegistered) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].setRegisteredVoter(this.synuser.id, isRegistered).then(function (user) {
+      return _this.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
-
-    domain.run(function () {
-      User.setRegisteredVoter(user_id, is_registered_voter, domain.intercept(function () {
-        socket.emit('registered voter set', user_id);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = setRegisteredVoter;
-})();
+exports['default'] = setRegisteredVoter;
+module.exports = exports['default'];

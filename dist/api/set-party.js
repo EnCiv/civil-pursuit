@@ -1,33 +1,28 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var User = require('../models/user');
+var _modelsUser = require('../models/user');
 
-  /**
-   *  @function setParty
-   *  @arg {ObjectID} user_id - The User ID
-   *  @arg {ObjectID} party_id - Config.party ID
-   */
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  function setParty(user_id, party_id) {
+function setParty(event, partyId) {
+  var _this = this;
 
-    var socket = this;
-
-    var domain = require('domain').create();
-
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsUser2['default'].setParty(this.synuser.id, partyId).then(function (user) {
+      return _this.ok(event, user);
+    }, function (error) {
+      return _this.error(error);
     });
-
-    domain.run(function () {
-      User.setParty(user_id, party_id, domain.intercept(function () {
-        socket.emit('party set', user_id);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = setParty;
-})();
+exports['default'] = setParty;
+module.exports = exports['default'];

@@ -3,7 +3,7 @@
 import { Element, Elements }    from 'cinco/dist';
 import config                   from '../../../config.json';
 
-class DemoraphicsView extends Element {
+class DemographicsView extends Element {
 
   constructor (props) {
     super('#demographics.section');
@@ -77,4 +77,4 @@ class DemoraphicsView extends Element {
 
 }
 
-export default DemoraphicsView;
+export default DemographicsView;

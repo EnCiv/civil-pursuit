@@ -1,26 +1,23 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  var Nav = require('syn/lib/util/nav');
+import Controller       from  '../../lib/app/controller';
+import Nav              from '../../lib/util/nav';
 
-  /**
-   *  @class
-   *  @return
-   *  @arg
-   */
+class VoterCtrl extends Controller {
+  constructor (props) {
+    super(props);
 
-  function Voter (profile) {
+    this.props  = props;
+    this.user   = this.props.user;
+    this.config = this.props.config;
+
     this.template = $('#voter');
-
-    this.template.data('voter', this);
-
-    this.profile = profile;
   }
 
-  Voter.prototype.find = function (name) {
+  find (name) {
     switch ( name ) {
-      case 'toggle arrow':    return this.template.find('.toggle-arrow');
+      case 'toggle arrow':
+        return this.template.find('.toggle-arrow i.fa');
 
       case 'expand':          return this.template.find('.voter-collapse');
 
@@ -28,18 +25,26 @@
 
       case 'party':           return this.template.find('.party');
     }
-  };
+  }
 
-  Voter.prototype.render = function () {
+  render () {
+    this.toggle();
 
-    var voter = this;
+    this.renderPoliticalParty();
 
-    this.find('toggle arrow').find('i').on('click', function () {
+    this.renderRegisteredVoter();
+  }
+
+  toggle () {
+    console.log('render voter toggle');
+    let self = this;
+
+    this.find('toggle arrow').on('click', function () {
       
-      var arrow = $(this);
+      let arrow = $(this);
 
-      Nav.toggle(voter.find('expand'), voter.template, function () {
-        if ( voter.find('expand').hasClass('is-hidden') ) {
+      Nav.toggle(self.find('expand'), self.template, () => {
+        if ( self.find('expand').hasClass('is-hidden') ) {
           arrow.removeClass('fa-arrow-up').addClass('fa-arrow-down');
         }
         else {
@@ -47,60 +52,50 @@
         }
       });
     });
+  }
 
-    /** Save registered voter */
+  renderPoliticalParty () {
+    let self = this;
 
-    this.find('registered').on('change', function () {
+    this.config.party.forEach(party => {
+      let partyOption = $(`<option value="${party._id}">${party.name}</option>`);
 
-      app.socket
-
-        .on('registered voter set', function () {
-          console.log('registered voter set');
-        })
-
-        .emit('set registered voter',       
-      
-      
-      
-app.socket.synuser, $(this).is(':checked'));
-
-    });
-
-    /** Save political party */
-
-    this.find('party').on('change', function () {
-
-      if ( $(this).val() ) {
-        app.socket
-
-          .on('party set', function () {
-            console.log('party set');
-          })
-
-          .emit('set party',       
-      
-      
-      
-app.socket.synuser, $(this).val());
+      if ( self.user.party === party._id ) {
+        partyOption.attr('selected', true);
       }
 
+      this.find('party').append(partyOption);
     });
 
-  };
+    this.find('party').on('change', function () {
+      if ( $(this).val() ) {
+        self
+          .publish('set party', $(this).val())
+          .subscribe(pubsub => {
+            pubsub.unsubscribe();
+          });
+      }
+    });
+  }
 
-  Voter.prototype.renderUser = function () {
+  renderRegisteredVoter () {
+    let self = this;
 
-    var voter = this;
-
-    if ( this.profile.user ) {
-
-      this.find('registered').attr('checked', this.profile.user.registered_voter);
-
-      this.find('party').val(this.profile.user.party);
-     
+    if ( this.user.registered_voter ) {
+      this.find('registered').val('1');
     }
-  };
+    else {
+      this.find('registered').val('0');
+    }
 
-  module.exports = Voter;
+    this.find('registered').on('change', function () {
+      self
+        .publish('set registered voter', !!($(this).val() === '1'))
+        .subscribe(pubsub => {
+          pubsub.unsubscribe();
+        });
+    });
+  }
+}
 
-} ();
+export default VoterCtrl;

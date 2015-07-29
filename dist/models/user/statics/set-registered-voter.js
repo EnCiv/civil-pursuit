@@ -1,19 +1,33 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+function setRegisteredVoter(userId, isRegisteredVoter) {
+  var _this = this;
 
-  'use strict';
+  return new Promise(function (ok, ko) {
+    try {
+      _this.findById(userId).exec().then(function (user) {
+        try {
+          if (!user) {
+            throw new Error('No such user ' + userId);
+          }
+          user.registered_voter = isRegisteredVoter;
+          user.save(function (error) {
+            if (error) {
+              ko(error);
+            } else {
+              ok(user);
+            }
+          });
+        } catch (error) {}
+      }, ko);
+    } catch (error) {
+      ko(error);
+    }
+  });
+}
 
-  function setRegisteredVoter(user_id, registered_voter, cb) {
-
-    var domain = require('domain').create();
-
-    domain.on('error', cb).run(function () {
-      var User = require('../../../models/user');
-
-      process.nextTick(User.update.bind(User, { _id: user_id }, { registered_voter: registered_voter }, cb));
-    });
-  }
-
-  module.exports = setRegisteredVoter;
-})();
+exports['default'] = setRegisteredVoter;
+module.exports = exports['default'];

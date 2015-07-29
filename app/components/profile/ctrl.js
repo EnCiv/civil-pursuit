@@ -5,6 +5,7 @@ import View                 from  './view';
 import IdentityCtrl         from  '../identity/ctrl';
 import ResidenceCtrl        from  '../residence/ctrl';
 import DemographicsCtrl     from  '../demographics/ctrl';
+import VoterCtrl            from  '../voter/ctrl';
 
 class ProfileCtrl extends Controller {
 
@@ -58,6 +59,9 @@ class ProfileCtrl extends Controller {
 
             this.demographics = new DemographicsCtrl(props);
             this.demographics.render();
+
+            this.voter = new VoterCtrl(props);
+            this.voter.render();
           });
       });
   }

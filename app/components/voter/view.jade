@@ -1,0 +1,30 @@
+#voter.section
+  .gutter
+    img.img-responsive.tablet-40(src=synapp.profile.voter.image)
+
+    h2 Voter
+
+    .gutter.pre-text=synapp.profile.voter.description
+
+  .voter-collapse.is-container
+    .is-section
+
+      .gutter
+
+        .row
+          .phone-30.gutter Registered:
+
+          .phone-70.left.gutter
+            input.is-registered-voter(type='checkbox')
+
+        .row
+          .phone-30.gutter Political Party:
+
+          .phone-70.left.gutter
+            select.block.party
+              option(value='') Choose one
+              each party in config.party
+                option(value=party._id)=party.name
+
+  .row.toggle-arrow.padding.text-center
+    i.fa.fa-arrow-down.cursor-pointer
