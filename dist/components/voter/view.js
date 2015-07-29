@@ -36,7 +36,7 @@ var VoterView = (function (_Element) {
     value: function header() {
       return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
         src: _configJson2['default'].profile.voter.image
-      })), new _cincoDist.Element('h2.profile-section-title').text('Vote'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.voter.description)));
+      })), new _cincoDist.Element('h2.profile-section-title').text('Voter'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.voter.description)));
     }
   }, {
     key: 'toggle',

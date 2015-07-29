@@ -24,7 +24,7 @@ class VoterView extends Element {
           src   :   config.profile.voter.image
         })
       ),
-      new Element('h2.profile-section-title').text('Vote'),
+      new Element('h2.profile-section-title').text('Voter'),
       new Element('.tablet-push-40.gutter').add(
         new Element('.pre-text').text(config.profile.voter.description)
       )
