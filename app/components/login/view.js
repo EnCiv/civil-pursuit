@@ -10,7 +10,7 @@ class Login extends Element {
     this
 
       .add(
-        new Element('h4').text('Login with email'),
+        new Element('h4').text('Login'),
 
         new Element('form',
           {
@@ -41,6 +41,33 @@ class Login extends Element {
             ),
 
             new Element('.sign-success.success'),
+
+            // Social login
+
+            new Element('.row').add(
+
+              // Facebook login
+
+              new Element('.phone-50.gutter').add(
+                new Element('a', { href : '/sign/facebook' }).add(
+                  new Element('button.block', { type : 'button' }).add(
+                    new Element('i.fa.fa-facebook'),
+                    new Element('span').text(' Facebook')
+                  )
+                )
+              ),
+
+              // Twitter login
+
+              new Element('.phone-50.gutter').add(
+                new Element('a', { href : '/sign/twitter' }).add(
+                  new Element('button.block', { type : 'button' }).add(
+                    new Element('i.fa.fa-twitter'),
+                    new Element('span').text(' Twitter')
+                  )
+                )
+              )
+            ),
 
             new Element('.form-group').add(
               new Element('label').text('Email'),

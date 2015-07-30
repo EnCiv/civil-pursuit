@@ -16,6 +16,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _domain = require('domain');
 
+var _passport = require('passport');
+
+var _passport2 = _interopRequireDefault(_passport);
+
 var _libAppPassport = require('../lib/app/Passport');
 
 var _libAppPassport2 = _interopRequireDefault(_libAppPassport);
@@ -53,7 +57,7 @@ var Twitter = (function (_Passport) {
 
         var _strategy = this.app.locals.TwitterStrategy;
 
-        passport.use(new _strategy({
+        _passport2['default'].use(new _strategy({
           consumerKey: _configJson2['default'].twitter[process.env.SYNAPP_ENV]['key'],
           consumerSecret: _configJson2['default'].twitter[process.env.SYNAPP_ENV]['secret'],
           callbackURL: callback

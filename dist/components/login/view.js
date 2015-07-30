@@ -18,12 +18,24 @@ var Login = (function (_Element) {
 
     _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this, '.login-modal');
 
-    this.add(new _cincoDist.Element('h4').text('Login with email'), new _cincoDist.Element('form', {
+    this.add(new _cincoDist.Element('h4').text('Login'), new _cincoDist.Element('form', {
       role: 'form',
       method: 'POST',
       novalidate: 'novalidate',
       name: 'login'
-    }).add(new _cincoDist.Element('.login-error-404.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.danger').add(new _cincoDist.Element('p').add(new _cincoDist.Element('strong').text('Wrong email'))))), new _cincoDist.Element('.login-error-401.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.danger').add(new _cincoDist.Element('p').add(new _cincoDist.Element('strong').text('Wrong password'))))), new _cincoDist.Element('.sign-success.success'), new _cincoDist.Element('.form-group').add(new _cincoDist.Element('label').text('Email'), new _cincoDist.Element('input', {
+    }).add(new _cincoDist.Element('.login-error-404.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.danger').add(new _cincoDist.Element('p').add(new _cincoDist.Element('strong').text('Wrong email'))))), new _cincoDist.Element('.login-error-401.is-container').add(new _cincoDist.Element('.is-section').add(new _cincoDist.Element('.danger').add(new _cincoDist.Element('p').add(new _cincoDist.Element('strong').text('Wrong password'))))), new _cincoDist.Element('.sign-success.success'),
+
+    // Social login
+
+    new _cincoDist.Element('.row').add(
+
+    // Facebook login
+
+    new _cincoDist.Element('.phone-50.gutter').add(new _cincoDist.Element('a', { href: '/sign/facebook' }).add(new _cincoDist.Element('button.block', { type: 'button' }).add(new _cincoDist.Element('i.fa.fa-facebook'), new _cincoDist.Element('span').text(' Facebook')))),
+
+    // Twitter login
+
+    new _cincoDist.Element('.phone-50.gutter').add(new _cincoDist.Element('a', { href: '/sign/twitter' }).add(new _cincoDist.Element('button.block', { type: 'button' }).add(new _cincoDist.Element('i.fa.fa-twitter'), new _cincoDist.Element('span').text(' Twitter'))))), new _cincoDist.Element('.form-group').add(new _cincoDist.Element('label').text('Email'), new _cincoDist.Element('input', {
       type: 'email',
       placeholder: 'Email',
       name: 'email',

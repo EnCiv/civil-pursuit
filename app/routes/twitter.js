@@ -1,6 +1,7 @@
 'use strict';
 
 import { Domain }         from 'domain';
+import passport           from 'passport';
 import Passport           from '../lib/app/Passport';
 import PassportTwitter    from 'passport-twitter';
 import config             from '../../config.json';
@@ -31,11 +32,11 @@ class Twitter extends Passport {
 
       passport.use(
         new _strategy({
-          consumerKey:        config.twitter[process.env.SYNAPP_ENV]['key'],
-          consumerSecret:     config.twitter[process.env.SYNAPP_ENV]['secret'],
-          callbackURL:        callback
+          consumerKey     :   config.twitter[process.env.SYNAPP_ENV]['key'],
+          consumerSecret  :   config.twitter[process.env.SYNAPP_ENV]['secret'],
+          callbackURL     :   callback
         },
-        
+
         this.access.bind(this, req, res, next)
       ));
     }

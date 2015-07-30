@@ -1,7 +1,7 @@
 'use strict';
 
 /** Passport Helper
- *  
+ *
  *  @class              Passport
  *  @description        Helper for 3rd party signon with passport
 */
@@ -17,16 +17,19 @@ import UserModel        from '../../models/user';
 class Passport {
 
   constructor (service, app) {
-    this.app = app;
-    this.user = null;
+    try {
+      this.app = app;
+      this.user = null;
+      this.service = service;
 
-    this.CALLBACK_URL = config[service][process.env.SYNAPP_ENV]['callback url'];
-    this.SIGNIN_ROUTE = config.public.routes['sign in with ' + service];
-    this.OK_ROUTE = config.public.routes['sign in with ' + service + ' OK']; 
+      let { routes } = config.public;
 
-    let d = new Domain().on('error', error => this.app.emit('error', error));
+      let env = process.env.SYNAPP_ENV;
 
-    d.run(() => {
+      this.CALLBACK_URL   =   config[service][env]['callback url'];
+      this.SIGNIN_ROUTE   =   routes['sign in with ' + service];
+      this.OK_ROUTE       =   routes['sign in with ' + service + ' OK'];
+
       this.app.get(this.SIGNIN_ROUTE,
         this.serviceStrategy.bind(this),
         passport.authenticate(service));
@@ -36,13 +39,16 @@ class Passport {
 
       this.app.get(this.OK_ROUTE,
         this.ok.bind(this));
-    });
+    }
+    catch ( error ) {
+      this.app.emit('error', error);
+    }
   }
 
-  associate (req, res, next, user, done) {
-    let d = new Domain().on('error', error => this.app.emit('error', error));
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    d.run(() => {
+  associate (req, res, next, user, done) {
+    try {
       if ( user ) {
         this.user = user;
         done(null, user);
@@ -51,52 +57,81 @@ class Passport {
       else {
         this.createUser(req, res, next, done);
       }
-    });
+    }
+    catch ( error ) {
+      this.app.emit('error', error);
+      next(error);
+    }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   access (req, res, next, accessToken, refreshToken, profile, done) {
-    let d = new Domain().on('error', error => this.app.emit('error', error));
+    try {
+      this.profile  =   profile;
+      this.email    =   `${this.profile.id}@${this.service}.com`;
 
-    d.run(() => {
-      this.profile = profile;
-      this.email = this.profile.id + '@facebook.com';
-      UserModel.findOne({ email: email }, this.associate.bind(this, req, res, next));
-    });
+      UserModel
+        .findOne({ email: this.email })
+        .exec()
+        .then(
+          user => { this.associate(req, res, next, user, done) },
+          next
+        );
+    }
+    catch ( error ) {
+      next(error);
+    }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   createUser (req, res, next, done) {
-    let d = new Domain().on('error', error => this.app.emit('error', error));
+    try {
+      let d = new Domain().on('error', next);
 
-    d.run(() => {
-      UserModel.create(
-        { email: this.email, password: this.profile.id + Date.now() },
-        d.bind((error, user) => {
-          if ( error ) {
-            if ( error.message && /duplicate/.test(error.message) ) {
-              return done(new Error('Duplicate user'));
+      d.run(() => {
+        UserModel.create(
+          { email: this.email, password: this.profile.id + Date.now() },
+          d.bind((error, user) => {
+            try {
+              if ( error ) {
+                if ( error.message && /duplicate/.test(error.message) ) {
+                  return done(new Error('Duplicate user'));
+                }
+
+                return next(error);
+              }
+
+              this.user = user;
+
+              done(null, user);
             }
-            
-            return next(error);
-          }
-
-          this.user = user;
-          
-          done(null, user);
-        })
-      );
-
-
-    });
+            catch ( error ) {
+              next(error);
+            }
+          })
+        );
+      });
+    }
+    catch ( error ) {
+      next(error);
+    }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   serviceStrategy (req, res, next) {
-    let d = new Domain().on('error', error => this.app.emit('error', error));
-
-    d.run(() => {
+    try {
       this.strategy(req, res, next);
       next();
-    });
+    }
+    catch ( error ) {
+      next(error);
+    }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   redirect (req, res, next, error, user, info) {
     if ( error ) {
@@ -105,12 +140,16 @@ class Passport {
     res.redirect(this.OK_ROUTE);
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   callback (req, res, next) {
-    passport.authenticate('facebook', this.redirect.bind(this, req, res, next))
+    passport.authenticate(this.service, this.redirect.bind(this, req, res, next))
       (req, res, next);
   }
 
-  ok () {
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ok (req, res, next) {
     res.cookie('synuser', {
         email   : this.user.email,
         id      : this.user.id
@@ -118,6 +157,8 @@ class Passport {
 
     res.redirect('/');
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 
 export default Passport;

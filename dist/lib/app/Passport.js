@@ -11,7 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 /** Passport Helper
- *  
+ *
  *  @class              Passport
  *  @description        Helper for 3rd party signon with passport
 */
@@ -36,104 +36,122 @@ var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
 var Passport = (function () {
   function Passport(service, app) {
-    var _this = this;
-
     _classCallCheck(this, Passport);
 
-    this.app = app;
-    this.user = null;
+    try {
+      this.app = app;
+      this.user = null;
+      this.service = service;
 
-    this.CALLBACK_URL = _configJson2['default'][service][process.env.SYNAPP_ENV]['callback url'];
-    this.SIGNIN_ROUTE = _configJson2['default']['public'].routes['sign in with ' + service];
-    this.OK_ROUTE = _configJson2['default']['public'].routes['sign in with ' + service + ' OK'];
+      var routes = _configJson2['default']['public'].routes;
 
-    var d = new _domain.Domain().on('error', function (error) {
-      return _this.app.emit('error', error);
-    });
+      var env = process.env.SYNAPP_ENV;
 
-    d.run(function () {
-      _this.app.get(_this.SIGNIN_ROUTE, _this.serviceStrategy.bind(_this), _passport2['default'].authenticate(service));
+      this.CALLBACK_URL = _configJson2['default'][service][env]['callback url'];
+      this.SIGNIN_ROUTE = routes['sign in with ' + service];
+      this.OK_ROUTE = routes['sign in with ' + service + ' OK'];
 
-      _this.app.get(_this.CALLBACK_URL, _this.callback.bind(_this));
+      this.app.get(this.SIGNIN_ROUTE, this.serviceStrategy.bind(this), _passport2['default'].authenticate(service));
 
-      _this.app.get(_this.OK_ROUTE, _this.ok.bind(_this));
-    });
+      this.app.get(this.CALLBACK_URL, this.callback.bind(this));
+
+      this.app.get(this.OK_ROUTE, this.ok.bind(this));
+    } catch (error) {
+      this.app.emit('error', error);
+    }
   }
 
   _createClass(Passport, [{
     key: 'associate',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function associate(req, res, next, user, done) {
-      var _this2 = this;
-
-      var d = new _domain.Domain().on('error', function (error) {
-        return _this2.app.emit('error', error);
-      });
-
-      d.run(function () {
+      try {
         if (user) {
-          _this2.user = user;
+          this.user = user;
           done(null, user);
         } else {
-          _this2.createUser(req, res, next, done);
+          this.createUser(req, res, next, done);
         }
-      });
+      } catch (error) {
+        this.app.emit('error', error);
+        next(error);
+      }
     }
   }, {
     key: 'access',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function access(req, res, next, accessToken, refreshToken, profile, done) {
-      var _this3 = this;
+      var _this = this;
 
-      var d = new _domain.Domain().on('error', function (error) {
-        return _this3.app.emit('error', error);
-      });
+      try {
+        this.profile = profile;
+        this.email = '' + this.profile.id + '@' + this.service + '.com';
 
-      d.run(function () {
-        _this3.profile = profile;
-        _this3.email = _this3.profile.id + '@facebook.com';
-        _modelsUser2['default'].findOne({ email: email }, _this3.associate.bind(_this3, req, res, next));
-      });
+        _modelsUser2['default'].findOne({ email: this.email }).exec().then(function (user) {
+          _this.associate(req, res, next, user, done);
+        }, next);
+      } catch (error) {
+        next(error);
+      }
     }
   }, {
     key: 'createUser',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function createUser(req, res, next, done) {
-      var _this4 = this;
+      var _this2 = this;
 
-      var d = new _domain.Domain().on('error', function (error) {
-        return _this4.app.emit('error', error);
-      });
+      try {
+        (function () {
+          var d = new _domain.Domain().on('error', next);
 
-      d.run(function () {
-        _modelsUser2['default'].create({ email: _this4.email, password: _this4.profile.id + Date.now() }, d.bind(function (error, user) {
-          if (error) {
-            if (error.message && /duplicate/.test(error.message)) {
-              return done(new Error('Duplicate user'));
-            }
+          d.run(function () {
+            _modelsUser2['default'].create({ email: _this2.email, password: _this2.profile.id + Date.now() }, d.bind(function (error, user) {
+              try {
+                if (error) {
+                  if (error.message && /duplicate/.test(error.message)) {
+                    return done(new Error('Duplicate user'));
+                  }
 
-            return next(error);
-          }
+                  return next(error);
+                }
 
-          _this4.user = user;
+                _this2.user = user;
 
-          done(null, user);
-        }));
-      });
+                done(null, user);
+              } catch (error) {
+                next(error);
+              }
+            }));
+          });
+        })();
+      } catch (error) {
+        next(error);
+      }
     }
   }, {
     key: 'serviceStrategy',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function serviceStrategy(req, res, next) {
-      var _this5 = this;
-
-      var d = new _domain.Domain().on('error', function (error) {
-        return _this5.app.emit('error', error);
-      });
-
-      d.run(function () {
-        _this5.strategy(req, res, next);
+      try {
+        this.strategy(req, res, next);
         next();
-      });
+      } catch (error) {
+        next(error);
+      }
     }
   }, {
     key: 'redirect',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function redirect(req, res, next, error, user, info) {
       if (error) {
         return next(error);
@@ -142,12 +160,18 @@ var Passport = (function () {
     }
   }, {
     key: 'callback',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function callback(req, res, next) {
-      _passport2['default'].authenticate('facebook', this.redirect.bind(this, req, res, next))(req, res, next);
+      _passport2['default'].authenticate(this.service, this.redirect.bind(this, req, res, next))(req, res, next);
     }
   }, {
     key: 'ok',
-    value: function ok() {
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function ok(req, res, next) {
       res.cookie('synuser', {
         email: this.user.email,
         id: this.user.id
@@ -155,6 +179,9 @@ var Passport = (function () {
 
       res.redirect('/');
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   }]);
 
   return Passport;
