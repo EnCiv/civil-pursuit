@@ -1,20 +1,20 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/config.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports={
   "tmp"             :   "/tmp",
-  
+
   "title"           :   {
     "prefix"        :   "Synaccord | ",
     "default"       :   "Bring Synergy To Democracy"
   },
-  
+
   "secret"          :   "hYGhdj729k2kdmsñw9hsy6GGW",
-  
+
   "entry image maximum width"       : 160,
 
   "example image for test upload"   : "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
-  
+
   "cloudinary"      :   {
-    
+
     "cloud"         :   {
       "name"        :   "hscbexf6a"
     },
@@ -28,7 +28,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
   },
 
   "cookie":{
-    
+
     "path":"/",
     "signed": false,
     "maxAge": 604800000,
@@ -42,13 +42,13 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
       "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
       "callback url"  :   "/sign/facebook/oauth"
     },
-    
+
     "alpha": {
       "app id"        :   "295589523959214",
       "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
       "callback url"  :   "/sign/facebook/oauth"
     },
-    
+
     "beta": {
       "app id"        :   "295589523959214",
       "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
@@ -57,19 +57,19 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
   },
 
   "twitter": {
-    
+
     "alpha-heroku": {
       "key": "6RtcRvzZTyJf0mLh7vdzRszdD",
       "secret": "8pS3cts1YDZIv8uhAg5ZlupIkAXC9mw00UfHMMP60Ps1Gu78kY",
       "callback url": "/sign/twitter/oauth"
     },
-    
+
     "alpha": {
       "key": "ID4HLrtkRwRenjNyAkPKf1g89",
       "secret": "g3pyCCCLfEuuAzzzEPHnaH8jycwgkD2wvL2jlXhU91r9jEo2cQ",
       "callback url": "/sign/twitter/oauth"
     },
-    
+
     "beta": {
       "key": "ATRK8LP4rIboQjXx9YS3soSZ5",
       "secret": "HGFmYxchXHyjQgB0DSRRXcgnClyIgMKbrwokp7l5hmz8PSxqzr",
@@ -78,24 +78,24 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
   },
 
   "public":{
-    
+
     "navigator batch size": 6,
-    
+
     "item media": {
 
       "max-width": 180,
-      
+
       "max-height": 120
     },
 
     "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
 
     "user image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg",
-    
+
     "routes": {
 
       "terms of service": "/page/terms-of-service",
-      
+
       "sign in with twitter": "/sign/twitter",
 
       "sign in with twitter OK": "/sign/twitter/ok",
@@ -130,17 +130,17 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
     },
     "voter": {
-      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain voters then we increase our efforts to get more participation there.",
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.",
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
     },
     "public persona": {
-      "description": "This is the information shown about you that others can wee when they are evaluating your postings.",
+      "description": "This is the information shown about you that others can see when they are evaluating your postings.",
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
     }
   },
 
   "files": {
-    
+
     "app js": "app/js/Synapp.js",
 
     "app js compiled": "app/dist/js/index.js",
@@ -156,7 +156,7 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
     "dashboard less": "app/less/dashboard.less",
 
     "dashboard css": "app/dist/css/dashboard.css"
-  
+
   },
 
   "dirs": {
@@ -164,11 +164,11 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
     "dist js": "app/dist/js",
 
     "dist css": "app/dist/css"
-  
+
   },
 
   "google analytics": {
-    
+
     "key": "UA-55807209-1"
   },
 
@@ -197,7 +197,8 @@ module.exports=module.exports=module.exports=module.exports=module.exports=modul
 
   "default user" : "synbot@synaccord.com"
 }
-},{}],"/home/francois/Dev/syn/dist/app.js":[function(require,module,exports){
+
+},{}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -438,7 +439,7 @@ var App = (function (_EventEmitter) {
 
 exports['default'] = App;
 module.exports = exports['default'];
-},{"./lib/app/cache":"/home/francois/Dev/syn/dist/lib/app/cache.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/components/creator/view.js":[function(require,module,exports){
+},{"./lib/app/cache":23,"domain":31,"events":32}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -627,7 +628,7 @@ var Creator = (function (_Element) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"../../components/item/view":"/home/francois/Dev/syn/dist/components/item/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/demographics/ctrl.js":[function(require,module,exports){
+},{"../../components/item/view":11,"cinco/dist":34}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -833,7 +834,7 @@ var DemographicsCtrl = (function (_Controller) {
 
 exports['default'] = DemographicsCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/demographics/view.js":[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/nav":28}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -891,7 +892,7 @@ var DemographicsView = (function (_Element) {
 
 exports['default'] = DemographicsView;
 module.exports = exports['default'];
-},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/details/view.js":[function(require,module,exports){
+},{"../../../config.json":1,"cinco/dist":34}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -957,7 +958,7 @@ var Details = (function (_Element) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js":[function(require,module,exports){
+},{"cinco/dist":34}],7:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -1022,7 +1023,7 @@ module.exports = exports['default'];
 //
 
 // $('.forgot-password-pending').css('display', 'block');
-},{"../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/components/identity/ctrl.js":[function(require,module,exports){
+},{"../../lib/util/form":27,"domain":31}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1384,7 +1385,7 @@ var IdentityCtrl = (function (_Controller) {
 
 exports['default'] = IdentityCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js","../../lib/util/upload":"/home/francois/Dev/syn/dist/lib/util/upload.js"}],"/home/francois/Dev/syn/dist/components/identity/view.js":[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/nav":28,"../../lib/util/upload":29}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1481,7 +1482,7 @@ var IdentityView = (function (_Element) {
 
 exports['default'] = IdentityView;
 module.exports = exports['default'];
-},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js":[function(require,module,exports){
+},{"../../../config.json":1,"cinco/dist":34}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1522,7 +1523,7 @@ var ItemDefaultButtons = (function (_Elements) {
 
 exports['default'] = ItemDefaultButtons;
 module.exports = exports['default'];
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/item/view.js":[function(require,module,exports){
+},{"cinco/dist":34}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1715,7 +1716,7 @@ var Item = (function (_Element) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"../../lib/app/page":"/home/francois/Dev/syn/dist/lib/app/page.js","../details/view":"/home/francois/Dev/syn/dist/components/details/view.js","../item-default-buttons/view":"/home/francois/Dev/syn/dist/components/item-default-buttons/view.js","../promote/view":"/home/francois/Dev/syn/dist/components/promote/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/join/ctrl.js":[function(require,module,exports){
+},{"../../lib/app/page":25,"../details/view":6,"../item-default-buttons/view":10,"../promote/view":17,"cinco/dist":34}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1828,7 +1829,7 @@ var Join = (function (_Controller) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js"}],"/home/francois/Dev/syn/dist/components/login/ctrl.js":[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/form":27}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1933,7 +1934,7 @@ var Login = (function (_Controller) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/form":"/home/francois/Dev/syn/dist/lib/util/form.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/panel/view.js":[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/form":27,"../../lib/util/nav":28}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2022,7 +2023,7 @@ var Panel = (function (_Element) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../../components/creator/view":"/home/francois/Dev/syn/dist/components/creator/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/profile/ctrl.js":[function(require,module,exports){
+},{"../../components/creator/view":3,"cinco/dist":34}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2135,7 +2136,7 @@ var ProfileCtrl = (function (_Controller) {
 
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../demographics/ctrl":"/home/francois/Dev/syn/dist/components/demographics/ctrl.js","../identity/ctrl":"/home/francois/Dev/syn/dist/components/identity/ctrl.js","../residence/ctrl":"/home/francois/Dev/syn/dist/components/residence/ctrl.js","../voter/ctrl":"/home/francois/Dev/syn/dist/components/voter/ctrl.js","./view":"/home/francois/Dev/syn/dist/components/profile/view.js"}],"/home/francois/Dev/syn/dist/components/profile/view.js":[function(require,module,exports){
+},{"../../lib/app/controller":24,"../demographics/ctrl":4,"../identity/ctrl":8,"../residence/ctrl":18,"../voter/ctrl":21,"./view":16}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2184,7 +2185,7 @@ var ProfileView = (function (_Element) {
 
     var panel = new _panelView2['default']({ creator: false });
 
-    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()), new _cincoDist.Element('.tablet-50').add(new _voterView2['default']()))));
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('hr'), new _cincoDist.Element('h4.muted').text('Providing Profile information is optional. We know that it requires a lot of trust to provide it. We will use this information to provide you with a better experience by working to maintain diverse participation.'), new _cincoDist.Element('hr'), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()), new _cincoDist.Element('.tablet-50').add(new _voterView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-45.tablet-push-30').add())));
 
     this.add(panel);
   }
@@ -2196,7 +2197,7 @@ var ProfileView = (function (_Element) {
 
 exports['default'] = ProfileView;
 module.exports = exports['default'];
-},{"../../../config.json":"/home/francois/Dev/syn/config.json","../demographics/view":"/home/francois/Dev/syn/dist/components/demographics/view.js","../identity/view":"/home/francois/Dev/syn/dist/components/identity/view.js","../panel/view":"/home/francois/Dev/syn/dist/components/panel/view.js","../residence/view":"/home/francois/Dev/syn/dist/components/residence/view.js","../voter/view":"/home/francois/Dev/syn/dist/components/voter/view.js","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/promote/view.js":[function(require,module,exports){
+},{"../../../config.json":1,"../demographics/view":5,"../identity/view":9,"../panel/view":14,"../residence/view":19,"../voter/view":22,"cinco/dist":34}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2331,7 +2332,7 @@ var Promote = (function (_Element) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/residence/ctrl.js":[function(require,module,exports){
+},{"cinco/dist":34}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2544,7 +2545,7 @@ var ResidenceCtrl = (function (_Controller) {
 
 exports['default'] = ResidenceCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/residence/view.js":[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/nav":28}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2611,7 +2612,7 @@ var ResidenceView = (function (_Element) {
 
 exports['default'] = ResidenceView;
 module.exports = exports['default'];
-},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js":[function(require,module,exports){
+},{"../../../config.json":1,"cinco/dist":34}],20:[function(require,module,exports){
 /**
  * @package     App.Component.TopbBar.Controller
 */
@@ -2815,7 +2816,7 @@ var TopBar = (function (_Controller) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../../components/forgot-password/ctrl":"/home/francois/Dev/syn/dist/components/forgot-password/ctrl.js","../../components/join/ctrl":"/home/francois/Dev/syn/dist/components/join/ctrl.js","../../components/login/ctrl":"/home/francois/Dev/syn/dist/components/login/ctrl.js","../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js"}],"/home/francois/Dev/syn/dist/components/voter/ctrl.js":[function(require,module,exports){
+},{"../../components/forgot-password/ctrl":7,"../../components/join/ctrl":12,"../../components/login/ctrl":13,"../../lib/app/controller":24}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2949,7 +2950,7 @@ var VoterCtrl = (function (_Controller) {
 
 exports['default'] = VoterCtrl;
 module.exports = exports['default'];
-},{"../../lib/app/controller":"/home/francois/Dev/syn/dist/lib/app/controller.js","../../lib/util/nav":"/home/francois/Dev/syn/dist/lib/util/nav.js"}],"/home/francois/Dev/syn/dist/components/voter/view.js":[function(require,module,exports){
+},{"../../lib/app/controller":24,"../../lib/util/nav":28}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3007,7 +3008,7 @@ var VoterView = (function (_Element) {
 
 exports['default'] = VoterView;
 module.exports = exports['default'];
-},{"../../../config.json":"/home/francois/Dev/syn/config.json","cinco/dist":"/home/francois/Dev/syn/node_modules/cinco/dist/index.js"}],"/home/francois/Dev/syn/dist/lib/app/cache.js":[function(require,module,exports){
+},{"../../../config.json":1,"cinco/dist":34}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3044,7 +3045,7 @@ var Cache = (function () {
 
 exports['default'] = new Cache();
 module.exports = exports['default'];
-},{}],"/home/francois/Dev/syn/dist/lib/app/controller.js":[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3077,7 +3078,7 @@ var Controller = (function (_App) {
 
 exports['default'] = Controller;
 module.exports = exports['default'];
-},{"../../app":"/home/francois/Dev/syn/dist/app.js"}],"/home/francois/Dev/syn/dist/lib/app/page.js":[function(require,module,exports){
+},{"../../app":2}],25:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -3117,7 +3118,7 @@ module.exports = exports['default'];
 
   module.exports = Page;
 })();
-},{"string":"/home/francois/Dev/syn/node_modules/string/lib/string.js"}],"/home/francois/Dev/syn/dist/lib/util/domain-run.js":[function(require,module,exports){
+},{"string":39}],26:[function(require,module,exports){
 'use strict';
 
 !(function () {
@@ -3175,7 +3176,7 @@ module.exports = exports['default'];
 
   module.exports = domainRun;
 })();
-},{"domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/dist/lib/util/form.js":[function(require,module,exports){
+},{"domain":31}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3263,7 +3264,7 @@ var Form = (function () {
 
 exports['default'] = Form;
 module.exports = exports['default'];
-},{"./domain-run":"/home/francois/Dev/syn/dist/lib/util/domain-run.js"}],"/home/francois/Dev/syn/dist/lib/util/nav.js":[function(require,module,exports){
+},{"./domain-run":26}],28:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -3586,7 +3587,7 @@ module.exports = exports['default'];
 
 // 'padding-top': elem.height() + 'px'
 }).call(this,require('_process'))
-},{"_process":"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js","events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/lib/util/upload.js":[function(require,module,exports){
+},{"_process":33,"domain":31,"events":32}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3693,7 +3694,7 @@ var Upload = (function (_EventEmitter) {
 
 exports['default'] = Upload;
 module.exports = exports['default'];
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/dist/pages/profile/ctrl.js":[function(require,module,exports){
+},{"events":32}],30:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -3718,7 +3719,7 @@ synapp.app.ready(function (session) {
 
   new _componentsProfileCtrl2['default']({ session: session }).render();
 });
-},{"../../app":"/home/francois/Dev/syn/dist/app.js","../../components/profile/ctrl":"/home/francois/Dev/syn/dist/components/profile/ctrl.js","../../components/top-bar/ctrl":"/home/francois/Dev/syn/dist/components/top-bar/ctrl.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js":[function(require,module,exports){
+},{"../../app":2,"../../components/profile/ctrl":15,"../../components/top-bar/ctrl":20}],31:[function(require,module,exports){
 /*global define:false require:false */
 module.exports = (function(){
 	// Import Events
@@ -3786,7 +3787,7 @@ module.exports = (function(){
 	};
 	return domain
 }).call(this)
-},{"events":"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js"}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
+},{"events":32}],32:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4089,7 +4090,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],"/home/francois/Dev/syn/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4177,7 +4178,7 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],"/home/francois/Dev/syn/node_modules/cinco/dist/index.js":[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4221,7 +4222,7 @@ if (typeof window !== 'undefined') {
 }
 module.exports = exports['default'];
 
-},{"./lib/compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./lib/document":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js","./lib/element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./lib/elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js":[function(require,module,exports){
+},{"./lib/compiler":35,"./lib/document":36,"./lib/element":37,"./lib/elements":38}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4452,7 +4453,7 @@ var Compiler = (function () {
 exports['default'] = Compiler;
 module.exports = exports['default'];
 
-},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js","domain":"/home/francois/Dev/syn/node_modules/browserify/node_modules/domain-browser/index.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/document.js":[function(require,module,exports){
+},{"./element":37,"./elements":38,"domain":31}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4580,7 +4581,7 @@ Document.doctype = '<!doctype html>';
 exports['default'] = Document;
 module.exports = exports['default'];
 
-},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js":[function(require,module,exports){
+},{"./element":37,"./elements":38}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4992,7 +4993,7 @@ var Element = (function () {
 exports['default'] = Element;
 module.exports = exports['default'];
 
-},{"./compiler":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/compiler.js","./elements":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js"}],"/home/francois/Dev/syn/node_modules/cinco/dist/lib/elements.js":[function(require,module,exports){
+},{"./compiler":35,"./elements":38}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5152,7 +5153,7 @@ var Elements = (function () {
 exports['default'] = Elements;
 module.exports = exports['default'];
 
-},{"./element":"/home/francois/Dev/syn/node_modules/cinco/dist/lib/element.js"}],"/home/francois/Dev/syn/node_modules/string/lib/string.js":[function(require,module,exports){
+},{"./element":37}],39:[function(require,module,exports){
 /*
 string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 */
@@ -6186,4 +6187,4 @@ string.js - Copyright (C) 2012-2014, JP Richardson <jprichardson@gmail.com>
 
 }).call(this);
 
-},{}]},{},["/home/francois/Dev/syn/dist/pages/profile/ctrl.js"]);
+},{}]},{},[30]);

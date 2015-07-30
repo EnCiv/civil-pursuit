@@ -1,19 +1,19 @@
 {
   "tmp"             :   "/tmp",
-  
+
   "title"           :   {
     "prefix"        :   "Synaccord | ",
     "default"       :   "Bring Synergy To Democracy"
   },
-  
+
   "secret"          :   "hYGhdj729k2kdmsñw9hsy6GGW",
-  
+
   "entry image maximum width"       : 160,
 
   "example image for test upload"   : "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
-  
+
   "cloudinary"      :   {
-    
+
     "cloud"         :   {
       "name"        :   "hscbexf6a"
     },
@@ -27,7 +27,7 @@
   },
 
   "cookie":{
-    
+
     "path":"/",
     "signed": false,
     "maxAge": 604800000,
@@ -41,13 +41,13 @@
       "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
       "callback url"  :   "/sign/facebook/oauth"
     },
-    
+
     "alpha": {
       "app id"        :   "295589523959214",
       "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
       "callback url"  :   "/sign/facebook/oauth"
     },
-    
+
     "beta": {
       "app id"        :   "295589523959214",
       "app secret"    :   "1faefb08184d71117f62eb63eb0e22c7",
@@ -56,19 +56,19 @@
   },
 
   "twitter": {
-    
+
     "alpha-heroku": {
       "key": "6RtcRvzZTyJf0mLh7vdzRszdD",
       "secret": "8pS3cts1YDZIv8uhAg5ZlupIkAXC9mw00UfHMMP60Ps1Gu78kY",
       "callback url": "/sign/twitter/oauth"
     },
-    
+
     "alpha": {
       "key": "ID4HLrtkRwRenjNyAkPKf1g89",
       "secret": "g3pyCCCLfEuuAzzzEPHnaH8jycwgkD2wvL2jlXhU91r9jEo2cQ",
       "callback url": "/sign/twitter/oauth"
     },
-    
+
     "beta": {
       "key": "ATRK8LP4rIboQjXx9YS3soSZ5",
       "secret": "HGFmYxchXHyjQgB0DSRRXcgnClyIgMKbrwokp7l5hmz8PSxqzr",
@@ -77,24 +77,24 @@
   },
 
   "public":{
-    
+
     "navigator batch size": 6,
-    
+
     "item media": {
 
       "max-width": 180,
-      
+
       "max-height": 120
     },
 
     "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
 
     "user image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg",
-    
+
     "routes": {
 
       "terms of service": "/page/terms-of-service",
-      
+
       "sign in with twitter": "/sign/twitter",
 
       "sign in with twitter OK": "/sign/twitter/ok",
@@ -129,17 +129,17 @@
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
     },
     "voter": {
-      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain voters then we increase our efforts to get more participation there.",
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.",
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
     },
     "public persona": {
-      "description": "This is the information shown about you that others can wee when they are evaluating your postings.",
+      "description": "This is the information shown about you that others can see when they are evaluating your postings.",
       "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
     }
   },
 
   "files": {
-    
+
     "app js": "app/js/Synapp.js",
 
     "app js compiled": "app/dist/js/index.js",
@@ -155,7 +155,7 @@
     "dashboard less": "app/less/dashboard.less",
 
     "dashboard css": "app/dist/css/dashboard.css"
-  
+
   },
 
   "dirs": {
@@ -163,11 +163,11 @@
     "dist js": "app/dist/js",
 
     "dist css": "app/dist/css"
-  
+
   },
 
   "google analytics": {
-    
+
     "key": "UA-55807209-1"
   },
 

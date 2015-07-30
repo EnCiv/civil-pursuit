@@ -20,6 +20,12 @@ class ProfileView extends Element {
       .get(0)
       .add(
         new Element('.gutter').add(
+          new Element('hr'),
+          
+          new Element('h4.muted').text('Providing Profile information is optional. We know that it requires a lot of trust to provide it. We will use this information to provide you with a better experience by working to maintain diverse participation.'),
+
+          new Element('hr'),
+
           new Element('.row.gutter-bottom').add(
             new Element('.tablet-50.gutter').add(
               new IdentityView()
@@ -35,6 +41,12 @@ class ProfileView extends Element {
             ),
             new Element('.tablet-50').add(
               new VoterView()
+            )
+          ),
+
+          new Element('.row.gutter-bottom').add(
+            new Element('.tablet-45.tablet-push-30').add(
+
             )
           )
         )
