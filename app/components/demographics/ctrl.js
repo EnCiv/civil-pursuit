@@ -75,7 +75,7 @@ class DemographicsCtrl extends Controller {
           </div>
         </div>`);
 
-      if ( self.user.race.indexOf(race._id) > -1 ) {
+      if ( self.user.race && self.user.race.indexOf(race._id) > -1 ) {
         raceRow.find('.race').attr('checked', true);
       }
 

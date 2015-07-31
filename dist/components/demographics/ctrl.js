@@ -104,7 +104,7 @@ var DemographicsCtrl = (function (_Controller) {
       this.config.race.forEach(function (race) {
         var raceRow = $('<div class ="row gutter">\n          <div class="watch-70 left">' + race.name + '</div>\n          <div class="watch-30 left">\n            <input class="race" type="checkbox" value="' + race._id + '" />\n          </div>\n        </div>');
 
-        if (self.user.race.indexOf(race._id) > -1) {
+        if (self.user.race && self.user.race.indexOf(race._id) > -1) {
           raceRow.find('.race').attr('checked', true);
         }
 
