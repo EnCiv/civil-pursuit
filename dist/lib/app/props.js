@@ -16,7 +16,8 @@ function props(server, req, res) {
     req: {
       path: req.path,
       url: req.url,
-      params: req.params
+      params: req.params,
+      hostname: req.hostname
     },
     user: req.user,
     page: req.page || req.params.page || 'Home',

@@ -61,6 +61,12 @@ var CountDownCtrl = (function (_Controller) {
         case 'is registered':
           return $('.discussion-is_registered', this.template);
 
+        case 'invite':
+          return $('.discussion-invite_people', this.template);
+
+        case 'invite by email':
+          return $('.discussion-invite_people-button_email', this.template);
+
         default:
 
       }
@@ -134,6 +140,7 @@ var CountDownCtrl = (function (_Controller) {
       })) {
         this.find('register').hide();
         this.find('is registered').removeClass('hide');
+        this.find('invite').removeClass('hide');
       } else {
         this.find('register').on('click', function () {
           $('.join-button').click();

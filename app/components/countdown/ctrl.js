@@ -31,6 +31,10 @@ class CountDownCtrl extends Controller {
 
       case 'is registered': return $('.discussion-is_registered', this.template);
 
+      case 'invite': return $('.discussion-invite_people', this.template);
+
+      case 'invite by email': return $('.discussion-invite_people-button_email', this.template);
+
       default:
 
     }
@@ -98,6 +102,7 @@ class CountDownCtrl extends Controller {
     if ( this.socket.synuser && this.discussion.registered.some(user => this.socket.synuser.id) ) {
       this.find('register').hide();
       this.find('is registered').removeClass('hide');
+      this.find('invite').removeClass('hide');
     }
 
     else {
