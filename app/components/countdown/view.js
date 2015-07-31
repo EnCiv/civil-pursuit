@@ -28,18 +28,18 @@ class CountDownView extends Element {
                 new Element('span.countdown-seconds').text('0')
               ),
               new Element('.row').add(
-                new Element('.phone-30.phone-push-20').add(
+                new Element('.watch-30.watch-push-20').add(
                   new Element('h4').text('Registered participants')
                 ),
-                new Element('.phone-30').add(
+                new Element('.watch-30').add(
                   new Element('h4').text('Goal')
                 )
               ),
               new Element('.row').add(
-                new Element('.phone-30.phone-push-20').add(
+                new Element('.watch-30.watch-push-20').add(
                   new Element('h2.discussion-registered').text('0')
                 ),
-                new Element('.phone-30').add(
+                new Element('.watch-30').add(
                   new Element('h2.discussion-goal').text('0')
                 )
               )
