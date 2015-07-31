@@ -139,6 +139,7 @@ var IdentityCtrl = (function (_Controller) {
       // Citizenship
 
       this.publish('get countries').subscribe(function (pubsub, countries) {
+        console.warn('GOT COUNTRIES', countries);
         _this2.set('countries', countries);
         _this2.citizenship();
         pubsub.unsubscribe();

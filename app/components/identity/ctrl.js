@@ -70,7 +70,7 @@ class IdentityCtrl extends Controller {
     let self = this;
 
     this.find('toggle arrow').on('click', function () {
-      
+
       let arrow = $(this);
 
       Nav.toggle(self.find('expand'), self.template, () => {
@@ -113,6 +113,7 @@ class IdentityCtrl extends Controller {
     this
       .publish('get countries')
       .subscribe((pubsub, countries) => {
+        console.warn('GOT COUNTRIES', countries);
         this.set('countries', countries);
         this.citizenship();
         pubsub.unsubscribe();
@@ -146,7 +147,7 @@ class IdentityCtrl extends Controller {
 
         ss(this.socket)
           .emit('upload image', stream, { size: file.size, name: file.name });
-        
+
         ss.createBlobReadStream(file).pipe(stream);
 
         stream.on('end', () => {
@@ -349,7 +350,7 @@ class IdentityCtrl extends Controller {
           pubsub.unsubscribe();
         });
     });
-    
+
     if ( this.user && this.user.gender ) {
       this.find('gender').val(this.user.gender);
     }

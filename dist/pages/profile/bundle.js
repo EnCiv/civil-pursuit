@@ -1167,6 +1167,7 @@ var IdentityCtrl = (function (_Controller) {
       // Citizenship
 
       this.publish('get countries').subscribe(function (pubsub, countries) {
+        console.warn('GOT COUNTRIES', countries);
         _this2.set('countries', countries);
         _this2.citizenship();
         pubsub.unsubscribe();
@@ -2124,8 +2125,12 @@ var ProfileCtrl = (function (_Controller) {
       this.publish('get user info', this.user.id).subscribe(function (pubsub, user) {
         pubsub.unsubscribe();
 
+        console.warn('GOT USER', user);
+
         _this.publish('get config').subscribe(function (pubsub, config) {
           pubsub.unsubscribe();
+
+          console.warn('GOT CONFIG', config);
 
           var props = { user: user, config: config };
 

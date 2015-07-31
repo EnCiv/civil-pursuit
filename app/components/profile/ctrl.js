@@ -51,10 +51,14 @@ class ProfileCtrl extends Controller {
       .subscribe((pubsub, user) => {
         pubsub.unsubscribe();
 
+        console.warn('GOT USER', user);
+
         this
           .publish('get config')
           .subscribe((pubsub, config) => {
             pubsub.unsubscribe();
+
+            console.warn('GOT CONFIG', config);
 
             let props = { user, config };
 
