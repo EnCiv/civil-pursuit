@@ -139,7 +139,6 @@ var IdentityCtrl = (function (_Controller) {
       // Citizenship
 
       this.publish('get countries').subscribe(function (pubsub, countries) {
-        console.warn('GOT COUNTRIES', countries);
         _this2.set('countries', countries);
         _this2.citizenship();
         pubsub.unsubscribe();
@@ -167,7 +166,13 @@ var IdentityCtrl = (function (_Controller) {
         _this3.find('upload button').click();
       });
 
-      new _libUtilUpload2['default'](null, this.find('upload button'), this.template.find('.user-image-container'), function (error, file) {
+      var upload = new _libUtilUpload2['default'](null, this.find('upload button'), this.template.find('.user-image-container'));
+
+      upload.init();
+
+      upload.on('uploaded', function (file) {
+        console.log('to new upload');
+
         var stream = ss.createStream();
 
         ss(_this3.socket).emit('upload image', stream, { size: file.size, name: file.name });
@@ -267,7 +272,7 @@ var IdentityCtrl = (function (_Controller) {
 
         var otherIndex = index ? 0 : 1;
 
-        if (self.user && this.user.citizenship && self.user.citizenship[otherIndex]) {
+        if (self.user && self.user.citizenship && self.user.citizenship[otherIndex]) {
           citizenshipFromOtherList = self.user.citizenship[otherIndex];
         }
 

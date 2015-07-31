@@ -113,7 +113,6 @@ class IdentityCtrl extends Controller {
     this
       .publish('get countries')
       .subscribe((pubsub, countries) => {
-        console.warn('GOT COUNTRIES', countries);
         this.set('countries', countries);
         this.citizenship();
         pubsub.unsubscribe();
@@ -138,29 +137,35 @@ class IdentityCtrl extends Controller {
       this.find('upload button').click();
     });
 
-    new Upload(
+    let upload = new Upload(
       null,
       this.find('upload button'),
-      this.template.find('.user-image-container'),
-      (error, file) => {
-        let stream = ss.createStream();
+      this.template.find('.user-image-container')
+    );
 
-        ss(this.socket)
-          .emit('upload image', stream, { size: file.size, name: file.name });
+    upload.init();
 
-        ss.createBlobReadStream(file).pipe(stream);
+    upload.on('uploaded', file => {
+      console.log('to new upload');
 
-        stream.on('end', () => {
-          // new_item.image = file.name;
+      let stream = ss.createStream();
 
-        this
-          .publish('save user image', file.name)
-          .subscribe((pubsub, user) => {
-            console.log('image saved', user);
-            pubsub.unsubscribe();
-          });
+      ss(this.socket)
+        .emit('upload image', stream, { size: file.size, name: file.name });
+
+      ss.createBlobReadStream(file).pipe(stream);
+
+      stream.on('end', () => {
+        // new_item.image = file.name;
+
+      this
+        .publish('save user image', file.name)
+        .subscribe((pubsub, user) => {
+          console.log('image saved', user);
+          pubsub.unsubscribe();
         });
       });
+    });
   }
 
   names () {
@@ -249,7 +254,7 @@ class IdentityCtrl extends Controller {
 
       let otherIndex = index ? 0 : 1;
 
-      if ( self.user && this.user.citizenship && self.user.citizenship[otherIndex] ) {
+      if ( self.user && self.user.citizenship && self.user.citizenship[otherIndex] ) {
         citizenshipFromOtherList = self.user.citizenship[otherIndex];
       }
 

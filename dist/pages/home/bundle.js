@@ -5534,6 +5534,8 @@ var Upload = (function (_EventEmitter) {
 
     _get(Object.getPrototypeOf(Upload.prototype), 'constructor', this).call(this);
 
+    console.log('New upload');
+
     this.dropzone = dropzone;
     this.fileInput = fileInput;
     this.thumbnail = thumbnail;
@@ -5546,6 +5548,7 @@ var Upload = (function (_EventEmitter) {
     value: function init() {
       if (window.File) {
         if (this.dropzone) {
+          console.log('Upload', 'enable dropzone');
           this.dropzone.on('dragover', this.hover.bind(this)).on('dragleave', this.hover.bind(this)).on('drop', this.handler.bind(this));
         }
 

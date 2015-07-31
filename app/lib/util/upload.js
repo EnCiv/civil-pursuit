@@ -3,9 +3,11 @@
 import { EventEmitter } from 'events';
 
 class Upload extends EventEmitter {
-  
+
   constructor (dropzone, fileInput, thumbnail) {
     super();
+
+    console.log('New upload');
 
     this.dropzone     =   dropzone;
     this.fileInput    =   fileInput;
@@ -15,6 +17,7 @@ class Upload extends EventEmitter {
   init () {
     if ( window.File ) {
       if ( this.dropzone ) {
+        console.log('Upload', 'enable dropzone');
         this.dropzone
           .on('dragover',   this.hover.bind(this))
           .on('dragleave',  this.hover.bind(this))
@@ -72,7 +75,7 @@ class Upload extends EventEmitter {
 
     img.classList.add("img-responsive");
     img.classList.add("preview-image");
-    
+
     img.addEventListener('load', function () {
 
       $(img).data('file', file);
@@ -80,7 +83,7 @@ class Upload extends EventEmitter {
       upload.thumbnail.empty().append(img);
 
     }, false);
-    
+
     img.src = (window.URL || window.webkitURL).createObjectURL(file);
 
     this.emit('uploaded', file);
