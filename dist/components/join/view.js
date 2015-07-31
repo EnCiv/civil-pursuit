@@ -84,6 +84,11 @@ var Join = (function (_Element) {
       }).text('the terms of service'), new _cincoDist.Element('span').text('.')));
     }
   }, {
+    key: 'login',
+    value: function login() {
+      return new _cincoDist.Element('h5.text-center').add(new _cincoDist.Element('span').text('Already a member? '), new _cincoDist.Element('a.join-link_to_login', { href: '#' }).text('Log in'));
+    }
+  }, {
     key: 'form',
     value: function form() {
       return new _cincoDist.Element('form', {
@@ -91,7 +96,7 @@ var Join = (function (_Element) {
         role: 'form',
         method: 'POST',
         name: 'join'
-      }).add(new _cincoDist.Element('.block.warning.hide.please-agree').text('Please agree to our Terms of service'), new _cincoDist.Element('.block.warning.hide.already-taken').text('Email already taken'), new _cincoDist.Element('.row').add(this.email(), this.password(), this.confirm(), this.submit()), this.iAgree());
+      }).add(new _cincoDist.Element('.block.warning.hide.please-agree').text('Please agree to our Terms of service'), new _cincoDist.Element('.block.warning.hide.already-taken').text('Email already taken'), new _cincoDist.Element('.row').add(this.email(), this.password(), this.confirm(), this.submit()), this.iAgree(), this.login());
     }
   }]);
 

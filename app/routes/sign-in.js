@@ -1,6 +1,7 @@
 'use strict';
 
-import UserModel from '../models/user';
+import UserModel        from '../models/user';
+import DiscussionModel  from '../models/discussion';
 
 function signIn (req, res, next) {
 
@@ -8,13 +9,38 @@ function signIn (req, res, next) {
 
     let { email, password } = req.body;
 
-    console.log('signing in', email, password)
-
     UserModel
       .identify(email, password)
       .then(
         user => {
           req.user = user;
+
+          DiscussionModel
+            .findOne()
+            .exec()
+            .then(
+              discussion => {
+                try {
+                  if ( discussion.registered.some(registered => registered.equals(user._id)) ) {
+                    next();
+                  }
+
+                  discussion.registered.push(user._id);
+
+                  discussion.save(error => {
+                    if ( error ) {
+                      return next(error);
+                    }
+                    next();
+                  });
+                }
+                catch (error) {
+                  next(error);
+                }
+              },
+              next
+            );
+
           next();
         },
         error => {

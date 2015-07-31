@@ -69,6 +69,9 @@ var ProfileCtrl = (function (_Controller) {
 
         case 'toggle creator':
           return this.template.find('.toggle-creator');
+
+        case 'done':
+          return $('.profile-button_done', this.template);
       }
     }
   }, {
@@ -77,6 +80,10 @@ var ProfileCtrl = (function (_Controller) {
       var _this = this;
 
       this.find('panel title').text('Profile');
+
+      this.find('done').on('click', function () {
+        location.href = '/';
+      });
 
       this.publish('get user info', this.user.id).subscribe(function (pubsub, user) {
         pubsub.unsubscribe();

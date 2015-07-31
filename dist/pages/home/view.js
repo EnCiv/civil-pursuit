@@ -24,6 +24,10 @@ var _componentsTopLevelPanelView = require('../../components/top-level-panel/vie
 
 var _componentsTopLevelPanelView2 = _interopRequireDefault(_componentsTopLevelPanelView);
 
+var _componentsCountdownView = require('../../components/countdown/view');
+
+var _componentsCountdownView2 = _interopRequireDefault(_componentsCountdownView);
+
 var HomePage = (function (_Layout) {
   function HomePage(props) {
     _classCallCheck(this, HomePage);
@@ -33,7 +37,9 @@ var HomePage = (function (_Layout) {
 
     var main = this.find('#main').get(0);
 
-    main.add(new _componentsIntroView2['default'](props), new _componentsTopLevelPanelView2['default'](props));
+    main.add(new _componentsIntroView2['default'](props),
+    // new TopLevelPanelView(props),
+    new _componentsCountdownView2['default'](props));
   }
 
   _inherits(HomePage, _Layout);

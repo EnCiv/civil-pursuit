@@ -1,7 +1,8 @@
 'use strict';
 
-import { Domain }   from 'domain';
-import UserModel    from '../models/user';
+import { Domain }           from 'domain';
+import UserModel            from '../models/user';
+import DiscussionModel      from '../models/discussion';
 
 function signUp (req, res, next) {
 
@@ -30,9 +31,33 @@ function signUp (req, res, next) {
     }
 
     UserModel
-      .create({ email, password }, d.bind(cb));
+      .create({ email, password }, d.bind((error, user) => {
+        if ( error ) {
+          return cb(error);
+        }
+        DiscussionModel
+          .findOne()
+          .exec()
+          .then(
+            discussion => {
+              try {
+                discussion.registered.push(user._id);
+                discussion.save(error => {
+                  if ( error ) {
+                    cb(error);
+                  }
+                  cb(null, user);
+                });
+              }
+              catch ( error ) {
+                cb(error);
+              }
+            },
+            cb
+          )
+      }));
   }
-  
+
   catch ( error ) {
     next(error);
   }

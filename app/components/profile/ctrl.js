@@ -33,11 +33,18 @@ class ProfileCtrl extends Controller {
 
       case 'toggle creator':
         return this.template.find('.toggle-creator');
+
+      case 'done':
+        return $('.profile-button_done', this.template);
     }
   }
 
   render () {
     this.find('panel title').text('Profile');
+
+    this.find('done').on('click', () => {
+      location.href = '/';
+    });
 
     this
       .publish('get user info', this.user.id)

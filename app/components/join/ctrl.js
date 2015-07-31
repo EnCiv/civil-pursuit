@@ -29,6 +29,10 @@ class Join extends Controller {
         agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
       }
     });
+
+    this.template.find('.join-link_to_login').on('click', () => {
+      $('.login-button').click();
+    });
   }
 
   submit (e) {
@@ -37,7 +41,7 @@ class Join extends Controller {
     d.run(() => {
 
         this.template.find('.please-agree').addClass('hide');
-        
+
         this.template.find('.already-taken').hide();
 
         if ( this.form.labels.password.val() !== this.form.labels.confirm.val() ) {
@@ -45,7 +49,7 @@ class Join extends Controller {
 
           return;
         }
-        
+
         if ( ! this.template.find('.agreed').hasClass('fa-check-square-o') ) {
           this.template.find('.please-agree').removeClass('hide');
 
@@ -62,13 +66,13 @@ class Join extends Controller {
             password: this.form.labels.password.val()
           }
         })
-          
+
           .error((response, state, code) => {
             if ( response.status === 401 ) {
               this.template.find('.already-taken').show();
             }
           })
-          
+
           .success((response) => {
 
             this.reconnect();
@@ -78,6 +82,8 @@ class Join extends Controller {
             $('.topbar .is-out').remove();
 
             vex.close(this.props.$vexContent.data().vex.id);
+
+            location.href = '/page/profile';
           });
 
       });

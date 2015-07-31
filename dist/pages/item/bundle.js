@@ -2718,6 +2718,10 @@ var Join = (function (_Controller) {
         agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
       }
     });
+
+    this.template.find('.join-link_to_login').on('click', function () {
+      $('.login-button').click();
+    });
   }
 
   _inherits(Join, _Controller);
@@ -2774,6 +2778,8 @@ var Join = (function (_Controller) {
           $('.topbar .is-out').remove();
 
           vex.close(_this.props.$vexContent.data().vex.id);
+
+          location.href = '/page/profile';
         });
       });
     }
@@ -2879,6 +2885,8 @@ var Login = (function (_Controller) {
           $('.topbar .is-out').remove();
 
           vex.close(_this.props.$vexContent.data().vex.id);
+
+          location.href = '/page/profile';
         });
       });
     }

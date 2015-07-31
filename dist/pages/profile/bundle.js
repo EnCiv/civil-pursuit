@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/home/francois/Dev/syn/config.json":[function(require,module,exports){
-module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
+module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports=module.exports={
   "tmp"             :   "/tmp",
 
   "title"           :   {
@@ -1763,6 +1763,10 @@ var Join = (function (_Controller) {
         agreed.removeClass('fa-check-square-o').addClass('fa-square-o');
       }
     });
+
+    this.template.find('.join-link_to_login').on('click', function () {
+      $('.login-button').click();
+    });
   }
 
   _inherits(Join, _Controller);
@@ -1819,6 +1823,8 @@ var Join = (function (_Controller) {
           $('.topbar .is-out').remove();
 
           vex.close(_this.props.$vexContent.data().vex.id);
+
+          location.href = '/page/profile';
         });
       });
     }
@@ -1924,6 +1930,8 @@ var Login = (function (_Controller) {
           $('.topbar .is-out').remove();
 
           vex.close(_this.props.$vexContent.data().vex.id);
+
+          location.href = '/page/profile';
         });
       });
     }
@@ -2095,6 +2103,9 @@ var ProfileCtrl = (function (_Controller) {
 
         case 'toggle creator':
           return this.template.find('.toggle-creator');
+
+        case 'done':
+          return $('.profile-button_done', this.template);
       }
     }
   }, {
@@ -2103,6 +2114,10 @@ var ProfileCtrl = (function (_Controller) {
       var _this = this;
 
       this.find('panel title').text('Profile');
+
+      this.find('done').on('click', function () {
+        location.href = '/';
+      });
 
       this.publish('get user info', this.user.id).subscribe(function (pubsub, user) {
         pubsub.unsubscribe();
@@ -2185,7 +2200,7 @@ var ProfileView = (function (_Element) {
 
     var panel = new _panelView2['default']({ creator: false });
 
-    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('hr'), new _cincoDist.Element('h4.muted').text('Providing Profile information is optional. We know that it requires a lot of trust to provide it. We will use this information to provide you with a better experience by working to maintain diverse participation.'), new _cincoDist.Element('hr'), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()), new _cincoDist.Element('.tablet-50').add(new _voterView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-45.tablet-push-30').add())));
+    panel.find('.items').get(0).add(new _cincoDist.Element('.gutter').add(new _cincoDist.Element('hr'), new _cincoDist.Element('h4.muted').text('Providing Profile information is optional. We know that it requires a lot of trust to provide it. We will use this information to provide you with a better experience by working to maintain diverse participation.'), new _cincoDist.Element('hr'), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50.gutter').add(new _identityView2['default']()), new _cincoDist.Element('.tablet-50.gutter').add(new _residenceView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-50').add(new _demographicsView2['default']()), new _cincoDist.Element('.tablet-50').add(new _voterView2['default']())), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.tablet-45.tablet-push-30').add()), new _cincoDist.Element('.row.gutter-bottom').add(new _cincoDist.Element('.phone-30.phone-push-40').add(new _cincoDist.Element('button.primary.block.radius.profile-button_done').text('Done')))));
 
     this.add(panel);
   }

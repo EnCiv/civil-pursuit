@@ -11,9 +11,9 @@
  *    Please put only @import rules here or stuff related to importing
  *
  *    @author   francois
- * 
+ *
  *    __________________________________________________________________________
- *    
+ *
 */
 /**
  *    __________________________________________________________________________
@@ -5437,6 +5437,9 @@ footer {
 .gender-male {
   width: calc(99.25%);
   margin-left: .75em;
+}
+#countdown-panel header {
+  text-align: center;
 }
 table {
   width: 100%;

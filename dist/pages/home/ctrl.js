@@ -18,6 +18,10 @@ var _componentsPanelCtrl = require('../../components/panel/ctrl');
 
 var _componentsPanelCtrl2 = _interopRequireDefault(_componentsPanelCtrl);
 
+var _componentsCountdownCtrl = require('../../components/countdown/ctrl');
+
+var _componentsCountdownCtrl2 = _interopRequireDefault(_componentsCountdownCtrl);
+
 synapp.app = new _app2['default'](true);
 
 var panel = undefined;
@@ -25,6 +29,8 @@ var panel = undefined;
 synapp.app.ready(function () {
 
   new _componentsIntroCtrl2['default']().render();
+
+  new _componentsCountdownCtrl2['default']().render();
 
   new _componentsTopBarCtrl2['default']().render();
 

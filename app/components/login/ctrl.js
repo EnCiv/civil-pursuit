@@ -37,7 +37,7 @@ class Login extends Controller {
           this.form.submit();
         }))
       }
-      
+
       $.ajax({
           url         :   '/sign/in',
           type        :   'POST',
@@ -60,12 +60,14 @@ class Login extends Controller {
 
         .success(response => {
           this.reconnect();
-          
+
           $('a.is-in').css('display', 'inline');
 
           $('.topbar .is-out').remove();
 
           vex.close(this.props.$vexContent.data().vex.id);
+
+          location.href = '/page/profile';
 
         });
     });

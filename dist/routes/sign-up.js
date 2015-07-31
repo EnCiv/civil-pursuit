@@ -12,31 +12,54 @@ var _modelsUser = require('../models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
+var _modelsDiscussion = require('../models/discussion');
+
+var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
+
 function signUp(req, res, next) {
 
   try {
-    var _req$body = req.body;
-    var email = _req$body.email;
-    var password = _req$body.password;
+    (function () {
+      var _req$body = req.body;
+      var email = _req$body.email;
+      var password = _req$body.password;
 
-    var d = new _domain.Domain().on('error', next);
+      var d = new _domain.Domain().on('error', next);
 
-    var cb = function cb(error, user) {
-      if (error) {
-        if (/duplicate key/.test(error.message)) {
-          res.statusCode = 401;
-          res.json({ error: 'username exists' });
+      var cb = function cb(error, user) {
+        if (error) {
+          if (/duplicate key/.test(error.message)) {
+            res.statusCode = 401;
+            res.json({ error: 'username exists' });
+          } else {
+            next(error);
+          }
         } else {
-          next(error);
+          req.user = user;
+
+          next();
         }
-      } else {
-        req.user = user;
+      };
 
-        next();
-      }
-    };
-
-    _modelsUser2['default'].create({ email: email, password: password }, d.bind(cb));
+      _modelsUser2['default'].create({ email: email, password: password }, d.bind(function (error, user) {
+        if (error) {
+          return cb(error);
+        }
+        _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+          try {
+            discussion.registered.push(user._id);
+            discussion.save(function (error) {
+              if (error) {
+                cb(error);
+              }
+              cb(null, user);
+            });
+          } catch (error) {
+            cb(error);
+          }
+        }, cb);
+      }));
+    })();
   } catch (error) {
     next(error);
   }

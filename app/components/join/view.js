@@ -85,6 +85,13 @@ class Join extends Element {
     );
   }
 
+  login () {
+    return new Element('h5.text-center').add(
+      new Element('span').text('Already a member? '),
+      new Element('a.join-link_to_login', { href: '#' }).text('Log in')
+    );
+  }
+
   form () {
     return new Element('form', {
       novalidate  :   'novalidate',
@@ -111,7 +118,9 @@ class Join extends Element {
           this.submit()
         ),
 
-        this.iAgree()
+        this.iAgree(),
+
+        this.login()
 
       )
   }

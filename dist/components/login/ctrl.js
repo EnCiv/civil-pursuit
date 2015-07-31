@@ -92,6 +92,8 @@ var Login = (function (_Controller) {
           $('.topbar .is-out').remove();
 
           vex.close(_this.props.$vexContent.data().vex.id);
+
+          location.href = '/page/profile';
         });
       });
     }

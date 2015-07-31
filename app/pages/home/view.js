@@ -3,6 +3,7 @@
 import Layout               from '../../components/layout/view';
 import IntroView            from '../../components/intro/view';
 import TopLevelPanelView    from '../../components/top-level-panel/view';
+import CountDownView        from '../../components/countdown/view';
 
 class HomePage extends Layout {
   constructor(props) {
@@ -13,7 +14,8 @@ class HomePage extends Layout {
 
     main.add(
       new IntroView(props),
-      new TopLevelPanelView(props)
+      // new TopLevelPanelView(props),
+      new CountDownView(props)
     );
   }
 }
