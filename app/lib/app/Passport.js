@@ -13,6 +13,7 @@ import passport         from 'passport';
 
 import config           from '../../../config.json';
 import UserModel        from '../../models/user';
+import DiscussionModel  from '../../models/discussion';
 
 class Passport {
 
@@ -51,7 +52,32 @@ class Passport {
     try {
       if ( user ) {
         this.user = user;
-        done(null, user);
+
+        DiscussionModel
+          .findOne()
+          .exec()
+          .then(
+            discussion => {
+              try {
+                if ( discussion.registered.some(registered => registered.toString() === user._id.toString()) ) {
+                  return done(null, user);
+                }
+
+                discussion.registered.push(user._id);
+
+                discussion.save(error => {
+                  if ( error ) {
+                    return next(error);
+                  }
+                  done(null, user);
+                });
+              }
+              catch (error) {
+                next(error);
+              }
+            },
+            next
+          );
       }
 
       else {
@@ -105,7 +131,26 @@ class Passport {
 
               this.user = user;
 
-              done(null, user);
+              DiscussionModel
+                .findOne()
+                .exec()
+                .then(
+                  discussion => {
+                    try {
+                      discussion.registered.push(user._id);
+                      discussion.save(error => {
+                        if ( error ) {
+                          next(error);
+                        }
+                        done(null, user);
+                      });
+                    }
+                    catch ( error ) {
+                      next(error);
+                    }
+                  },
+                  next
+                );
             }
             catch ( error ) {
               next(error);
@@ -155,7 +200,7 @@ class Passport {
         id      : this.user.id
       }, config.cookie);
 
-    res.redirect('/');
+    res.redirect('/page/profile');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -54,7 +54,7 @@ function signUp (req, res, next) {
               }
             },
             cb
-          )
+          );
       }));
   }
 

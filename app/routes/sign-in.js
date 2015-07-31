@@ -21,8 +21,8 @@ function signIn (req, res, next) {
             .then(
               discussion => {
                 try {
-                  if ( discussion.registered.some(registered => registered.equals(user._id)) ) {
-                    next();
+                  if ( discussion.registered.some(registered => registered.toString() === user._id.toString() ) ) {
+                    return next();
                   }
 
                   discussion.registered.push(user._id);

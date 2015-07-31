@@ -34,6 +34,10 @@ var _modelsUser = require('../../models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
+var _modelsDiscussion = require('../../models/discussion');
+
+var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
+
 var Passport = (function () {
   function Passport(service, app) {
     _classCallCheck(this, Passport);
@@ -70,7 +74,27 @@ var Passport = (function () {
       try {
         if (user) {
           this.user = user;
-          done(null, user);
+
+          _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+            try {
+              if (discussion.registered.some(function (registered) {
+                return registered.toString() === user._id.toString();
+              })) {
+                return done(null, user);
+              }
+
+              discussion.registered.push(user._id);
+
+              discussion.save(function (error) {
+                if (error) {
+                  return next(error);
+                }
+                done(null, user);
+              });
+            } catch (error) {
+              next(error);
+            }
+          }, next);
         } else {
           this.createUser(req, res, next, done);
         }
@@ -123,7 +147,19 @@ var Passport = (function () {
 
                 _this2.user = user;
 
-                done(null, user);
+                _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+                  try {
+                    discussion.registered.push(user._id);
+                    discussion.save(function (error) {
+                      if (error) {
+                        next(error);
+                      }
+                      done(null, user);
+                    });
+                  } catch (error) {
+                    next(error);
+                  }
+                }, next);
               } catch (error) {
                 next(error);
               }
@@ -177,7 +213,7 @@ var Passport = (function () {
         id: this.user.id
       }, _configJson2['default'].cookie);
 
-      res.redirect('/');
+      res.redirect('/page/profile');
     }
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

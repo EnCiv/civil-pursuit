@@ -28,9 +28,9 @@ function signIn(req, res, next) {
         _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
           try {
             if (discussion.registered.some(function (registered) {
-              return registered.equals(user._id);
+              return registered.toString() === user._id.toString();
             })) {
-              next();
+              return next();
             }
 
             discussion.registered.push(user._id);
