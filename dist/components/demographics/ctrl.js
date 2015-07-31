@@ -92,6 +92,8 @@ var DemographicsCtrl = (function (_Controller) {
           }
         });
       });
+
+      this.find('toggle arrow').click();
     }
   }, {
     key: 'renderRaces',

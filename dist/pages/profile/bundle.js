@@ -723,6 +723,8 @@ var DemographicsCtrl = (function (_Controller) {
           }
         });
       });
+
+      this.find('toggle arrow').click();
     }
   }, {
     key: 'renderRaces',
@@ -2453,6 +2455,8 @@ var ResidenceCtrl = (function (_Controller) {
           }
         });
       });
+
+      this.find('toggle arrow').click();
     }
   }, {
     key: 'renderGPS',
@@ -2915,6 +2919,8 @@ var VoterCtrl = (function (_Controller) {
           }
         });
       });
+
+      this.find('toggle arrow').click();
     }
   }, {
     key: 'renderPoliticalParty',

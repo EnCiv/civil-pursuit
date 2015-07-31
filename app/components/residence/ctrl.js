@@ -65,7 +65,7 @@ class ResidenceCtrl extends Controller {
     let self = this;
 
     this.find('toggle arrow').on('click', function () {
-      
+
       let arrow = $(this);
 
       Nav.toggle(self.find('expand'), self.template, () => {
@@ -77,6 +77,8 @@ class ResidenceCtrl extends Controller {
         }
       });
     });
+
+    this.find('toggle arrow').click();
   }
 
   renderGPS () {

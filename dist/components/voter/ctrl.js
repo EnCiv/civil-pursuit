@@ -81,6 +81,8 @@ var VoterCtrl = (function (_Controller) {
           }
         });
       });
+
+      this.find('toggle arrow').click();
     }
   }, {
     key: 'renderPoliticalParty',
