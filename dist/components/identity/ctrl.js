@@ -246,7 +246,7 @@ var IdentityCtrl = (function (_Controller) {
 
         option.text(country.name);
 
-        if (_this4.user && _this4.user.citizenship && _this4.user.citizenship[index] === country._id) {
+        if (_this4.user && _this4.user.citizenship && _this4.user.citizenship[index] && _this4.user.citizenship[index] === country._id) {
           option.attr('selected', true);
         }
 
@@ -267,7 +267,7 @@ var IdentityCtrl = (function (_Controller) {
 
         var otherIndex = index ? 0 : 1;
 
-        if (self.user && self.user.citizenship[otherIndex]) {
+        if (self.user && this.user.citizenship && self.user.citizenship[otherIndex]) {
           citizenshipFromOtherList = self.user.citizenship[otherIndex];
         }
 

@@ -227,7 +227,7 @@ class IdentityCtrl extends Controller {
 
       option.text(country.name);
 
-      if ( this.user && this.user.citizenship
+      if ( this.user && this.user.citizenship && this.user.citizenship[index]
         && this.user.citizenship[index] === country._id ) {
         option.attr('selected', true);
       }
@@ -249,7 +249,7 @@ class IdentityCtrl extends Controller {
 
       let otherIndex = index ? 0 : 1;
 
-      if ( self.user && self.user.citizenship[otherIndex] ) {
+      if ( self.user && this.user.citizenship && self.user.citizenship[otherIndex] ) {
         citizenshipFromOtherList = self.user.citizenship[otherIndex];
       }
 
