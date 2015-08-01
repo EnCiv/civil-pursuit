@@ -26,17 +26,19 @@ var _passport2 = _interopRequireDefault(_passport);
 
 var _passportFacebook = require('passport-facebook');
 
-var _configJson = require('../../config.json');
-
-var _configJson2 = _interopRequireDefault(_configJson);
-
-var _modelsUser = require('../models/user');
-
-var _modelsUser2 = _interopRequireDefault(_modelsUser);
+var _passportFacebook2 = _interopRequireDefault(_passportFacebook);
 
 var _libAppPassport = require('../lib/app/Passport');
 
 var _libAppPassport2 = _interopRequireDefault(_libAppPassport);
+
+var _configJson = require('../../config.json');
+
+var _configJson2 = _interopRequireDefault(_configJson);
+
+/**
+bcn741_fAcEbOoK1981!?
+*/
 
 var Facebook = (function (_Passport) {
   function Facebook(app) {
@@ -51,21 +53,25 @@ var Facebook = (function (_Passport) {
     key: 'strategy',
     value: function strategy(req, res, next) {
       if (!this.app.locals.FacebookStrategy) {
-        this.app.locals.FacebookStrategy = _passportFacebook.FacebookStrategy;
+        this.app.locals.FacebookStrategy = _passportFacebook2['default'].Strategy;
 
         var callbackURL = this.CALLBACK_URL;
 
         if (req.hostname === 'localhost') {
-          callbackURL = _util2['default'].format('http://%s:%d%s', req.hostname, app.get('port'), callbackURL);
+          callbackURL = _util2['default'].format('http://%s:%d%s', req.hostname, this.app.get('port'), callbackURL);
         } else {
           callbackURL = _util2['default'].format('http://%s%s', req.hostname, callbackURL);
         }
 
-        var _strategy = app.locals.FacebookStrategy;
+        var _strategy = this.app.locals.FacebookStrategy;
+
+        console.log('passport', _passport2['default'].use);
+
+        console.log('strategy', _strategy);
 
         _passport2['default'].use(new _strategy({
-          clientID: _configJson2['default'].facebook['app id'],
-          clientSecret: _configJson2['default'].facebook['app secret'],
+          clientID: _configJson2['default'].facebook[process.env.SYNAPP_ENV]['app id'],
+          clientSecret: _configJson2['default'].facebook[process.env.SYNAPP_ENV]['app secret'],
           callbackURL: callbackURL
         }, this.access.bind(this, req, res, next)));
       }

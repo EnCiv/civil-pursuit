@@ -2,13 +2,14 @@
 
 import { Domain }             from 'domain';
 import util                   from 'util';
-
 import passport               from 'passport';
-import { FacebookStrategy }   from 'passport-facebook';
-
-import config                 from '../../config.json';
-import User                   from '../models/user';
+import PassportFacebook       from 'passport-facebook';
 import Passport               from '../lib/app/Passport';
+import config                 from '../../config.json';
+
+/**
+bcn741_fAcEbOoK1981!?
+*/
 
 class Facebook extends Passport {
 
@@ -18,27 +19,32 @@ class Facebook extends Passport {
 
   strategy (req, res, next) {
     if ( ! this.app.locals.FacebookStrategy ) {
-      this.app.locals.FacebookStrategy = FacebookStrategy;
+      this.app.locals.FacebookStrategy = PassportFacebook.Strategy;
 
       let callbackURL = this.CALLBACK_URL;
 
       if ( req.hostname === 'localhost' ) {
-        callbackURL = util.format("http://%s:%d%s", req.hostname, app.get('port'), callbackURL);
+        callbackURL = util.format("http://%s:%d%s", req.hostname,
+          this.app.get('port'), callbackURL);
       }
 
       else {
         callbackURL = util.format("http://%s%s", req.hostname, callbackURL)
       }
 
-      let _strategy = app.locals.FacebookStrategy;
+      let _strategy = this.app.locals.FacebookStrategy;
+
+      console.log('passport', passport.use);
+
+      console.log('strategy', _strategy);
 
       passport.use(
         new _strategy({
-          clientID:       config.facebook['app id'],
-          clientSecret:   config.facebook['app secret'],
-          callbackURL:    callbackURL
+          clientID        :   config.facebook[process.env.SYNAPP_ENV]['app id'],
+          clientSecret    :   config.facebook[process.env.SYNAPP_ENV]['app secret'],
+          callbackURL     :   callbackURL
         },
-        
+
         this.access.bind(this, req, res, next)
       ));
     }

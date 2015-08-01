@@ -1,6 +1,7 @@
 'use strict';
 
 import { Domain }         from 'domain';
+import { format }         from 'util';
 import passport           from 'passport';
 import Passport           from '../lib/app/Passport';
 import PassportTwitter    from 'passport-twitter';
@@ -19,12 +20,12 @@ class Twitter extends Passport {
       var callback;
 
       if ( req.hostname === 'localhost' ) {
-        callback = require('util').format("http://%s:%d%s",
+        callback = format("http://%s:%d%s",
           req.hostname, this.app.get('port'), config.twitter[process.env.SYNAPP_ENV]['callback url']);
       }
 
       else {
-        callback = require('util').format("http://%s%s",
+        callback = format("http://%s%s",
           req.hostname, config.twitter[process.env.SYNAPP_ENV]['callback url'])
       }
 

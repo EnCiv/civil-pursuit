@@ -16,6 +16,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _domain = require('domain');
 
+var _util = require('util');
+
 var _passport = require('passport');
 
 var _passport2 = _interopRequireDefault(_passport);
@@ -50,9 +52,9 @@ var Twitter = (function (_Passport) {
         var callback;
 
         if (req.hostname === 'localhost') {
-          callback = require('util').format('http://%s:%d%s', req.hostname, this.app.get('port'), _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
+          callback = (0, _util.format)('http://%s:%d%s', req.hostname, this.app.get('port'), _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
         } else {
-          callback = require('util').format('http://%s%s', req.hostname, _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
+          callback = (0, _util.format)('http://%s%s', req.hostname, _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
         }
 
         var _strategy = this.app.locals.TwitterStrategy;
