@@ -18,6 +18,10 @@ var _libAppController = require('../../lib/app/controller');
 
 var _libAppController2 = _interopRequireDefault(_libAppController);
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var CountDownCtrl = (function (_Controller) {
   function CountDownCtrl(props) {
     _classCallCheck(this, CountDownCtrl);
@@ -67,6 +71,24 @@ var CountDownCtrl = (function (_Controller) {
         case 'invite by email':
           return $('.discussion-invite_people-button_email', this.template);
 
+        case 'deadline month':
+          return $('.discussion-deadline-month', this.template);
+
+        case 'deadline day':
+          return $('.discussion-deadline-day', this.template);
+
+        case 'deadline year':
+          return $('.discussion-deadline-year', this.template);
+
+        case 'deadline hour':
+          return $('.discussion-deadline-hour', this.template);
+
+        case 'deadline minute':
+          return $('.discussion-deadline-minute', this.template);
+
+        case 'deadline ampm':
+          return $('.discussion-deadline-ampm', this.template);
+
         default:
 
       }
@@ -82,12 +104,26 @@ var CountDownCtrl = (function (_Controller) {
 
         _this.discussion = discussion;
 
-        setInterval(_this.renderCountdown.bind(_this), 1000);
+        _this.renderDeadline();
+
+        _this.timer = setInterval(_this.renderCountdown.bind(_this), 1000);
 
         _this.renderGoal();
 
         _this.renderRegister();
       });
+    }
+  }, {
+    key: 'renderDeadline',
+    value: function renderDeadline() {
+      var deadline = (0, _moment2['default'])(new Date(this.discussion.deadline));
+
+      this.find('deadline month').text(deadline.format('MMM'));
+      this.find('deadline day').text(deadline.format('D'));
+      this.find('deadline year').text(deadline.format('YYYY'));
+      this.find('deadline hour').text(deadline.format('h'));
+      this.find('deadline minute').text(deadline.format('mm'));
+      this.find('deadline ampm').text(deadline.format('a'));
     }
   }, {
     key: 'renderCountdown',
@@ -97,6 +133,12 @@ var CountDownCtrl = (function (_Controller) {
       var now = Date.now();
 
       var interval = deadline - now;
+
+      if (interval < 0) {
+        console.log('deadline OK');
+        clearTimeout(this.timer);
+        return this.renderDeadlineMet();
+      }
 
       var days = Math.floor(interval / (1000 * 60 * 60 * 24));
 
@@ -141,11 +183,18 @@ var CountDownCtrl = (function (_Controller) {
         this.find('register').hide();
         this.find('is registered').removeClass('hide');
         this.find('invite').removeClass('hide');
+        this.find('invite by email').attr('href', 'mailto:?Subject=' + encodeURIComponent(this.discussion.subject) + '&Body=' + encodeURIComponent(this.discussion.description.replace(/\{hostname\}/g, location.hostname)));
       } else {
         this.find('register').on('click', function () {
           $('.join-button').click();
         });
       }
+    }
+  }, {
+    key: 'renderDeadlineMet',
+    value: function renderDeadlineMet() {
+      this.template.hide();
+      $('.panels').removeClass('hide');
     }
   }]);
 

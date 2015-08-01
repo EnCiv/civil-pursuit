@@ -19,7 +19,22 @@ class CountDownView extends Element {
           new Element('#countdown-panel').add(
             new Element('header').add(
               new Element('h2').text('Countdown to discussion'),
-              new Element('h1').text('Aug. 12, 2015 4:00 pm Pacific Standard Time'),
+
+              new Element('h1').add(
+                new Element('span.discussion-deadline-month'),
+                new Element('span').text('. '),
+                new Element('span.discussion-deadline-day'),
+                new Element('span').text(', '),
+                new Element('span.discussion-deadline-year'),
+                new Element('span').text(', '),
+                new Element('span.discussion-deadline-hour'),
+                new Element('span').text(':'),
+                new Element('span.discussion-deadline-minute'),
+                new Element('span').text(' '),
+                new Element('span.discussion-deadline-ampm'),
+                new Element('span.discussion-deadline-timezone')
+              ),
+
               new Element('h2.dynamic-countdown').add(
                 new Element('span.countdown-days').text('0'),
                 new Element('span.countdown-days-label').text(' days T '),
@@ -59,7 +74,7 @@ class CountDownView extends Element {
             new Element('h4.text-center').text('Invite the diverse people you know'),
             new Element('.row').add(
               new Element('.watch-50.watch-push-25').add(
-                new Element('a.button.primary.block.discussion-invite_people-button_email', { href : `mailto:?subject=Democracy+Needs+You+-+Join+Me+in+Finding+the+Most+Important+Issues+in+our+Country&Body=Hi%0D%0A%0D%0AJoin+me+and+a+politically+diverse+group+of+people+on+http%3A%2F%2F${this.props.req.hostname}+to+find+consensus+on+the+most+important+issues+in+our+country%2C+and+then+find+the+solutions+that+unit+us.+Synaccord+is+beta+testing+a+web+app+that+helps+people+have+structured+conversations+in+diverse+groups+so+they+find+the+solutions+that+unite+us+and+disrupt+the+polarization+and+paralysis+that+we+are+getting+now.+Try+it+out%2C+democracy+needs+you.%0D%0ABut+sign+up+quickly%2C+the+test+group+closes+and+the+discussion+starts+on+8%2F12%2F2015+at+4%3A00PM+PDT.%0D%0A%0D%0AThanks%21`, target : '_blank' }).text('Email')
+                new Element('a.button.primary.block.discussion-invite_people-button_email', { href : '#', target : '_blank' }).text('Email')
               )
             )
           )

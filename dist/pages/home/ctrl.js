@@ -36,7 +36,6 @@ synapp.app.ready(function () {
 
   if (!panel) {
     synapp.app.publish('get top level type').subscribe(function (pubsub, topLevelPanel) {
-
       pubsub.unsubscribe();
 
       panel = new _componentsPanelCtrl2['default']({ panel: { type: topLevelPanel } });

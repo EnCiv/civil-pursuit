@@ -1,6 +1,7 @@
 'use strict';
 
-import Controller       from  '../../lib/app/controller';
+import Controller   from '../../lib/app/controller';
+import moment       from 'moment';
 
 class CountDownCtrl extends Controller {
   constructor (props) {
@@ -35,6 +36,18 @@ class CountDownCtrl extends Controller {
 
       case 'invite by email': return $('.discussion-invite_people-button_email', this.template);
 
+      case 'deadline month': return $('.discussion-deadline-month', this.template);
+
+      case 'deadline day': return $('.discussion-deadline-day', this.template);
+
+      case 'deadline year': return $('.discussion-deadline-year', this.template);
+
+      case 'deadline hour': return $('.discussion-deadline-hour', this.template);
+
+      case 'deadline minute': return $('.discussion-deadline-minute', this.template);
+
+      case 'deadline ampm': return $('.discussion-deadline-ampm', this.template);
+
       default:
 
     }
@@ -49,12 +62,25 @@ class CountDownCtrl extends Controller {
 
         this.discussion = discussion;
 
-        setInterval(this.renderCountdown.bind(this), 1000);
+        this.renderDeadline();
+
+        this.timer = setInterval(this.renderCountdown.bind(this), 1000);
 
         this.renderGoal();
 
         this.renderRegister();
       });
+  }
+
+  renderDeadline () {
+    let deadline = moment(new Date(this.discussion.deadline));
+
+    this.find('deadline month').text(deadline.format('MMM'));
+    this.find('deadline day').text(deadline.format('D'));
+    this.find('deadline year').text(deadline.format('YYYY'));
+    this.find('deadline hour').text(deadline.format('h'));
+    this.find('deadline minute').text(deadline.format('mm'));
+    this.find('deadline ampm').text(deadline.format('a'));
   }
 
   renderCountdown () {
@@ -63,6 +89,12 @@ class CountDownCtrl extends Controller {
     let now = Date.now();
 
     let interval = deadline - now;
+
+    if ( interval < 0 ) {
+      console.log('deadline OK');
+      clearTimeout(this.timer);
+      return this.renderDeadlineMet();
+    }
 
     let days = Math.floor(interval / ( 1000 * 60 * 60 * 24));
 
@@ -103,6 +135,7 @@ class CountDownCtrl extends Controller {
       this.find('register').hide();
       this.find('is registered').removeClass('hide');
       this.find('invite').removeClass('hide');
+      this.find('invite by email').attr('href', `mailto:?Subject=${encodeURIComponent(this.discussion.subject)}&Body=${encodeURIComponent(this.discussion.description.replace(/\{hostname\}/g, location.hostname))}`)
     }
 
     else {
@@ -110,6 +143,11 @@ class CountDownCtrl extends Controller {
         $('.join-button').click();
       });
     }
+  }
+
+  renderDeadlineMet () {
+    this.template.hide();
+    $('.panels').removeClass('hide');
   }
 }
 

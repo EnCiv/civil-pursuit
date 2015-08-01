@@ -22,7 +22,6 @@ synapp.app.ready(() => {
     synapp.app
       .publish('get top level type')
       .subscribe((pubsub, topLevelPanel) => {
-
         pubsub.unsubscribe();
 
         panel = new Panel({ panel: { type: topLevelPanel } });

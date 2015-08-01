@@ -4,7 +4,11 @@ import { default as mongoose, Schema } from 'mongoose';
 import UserModel from './user';
 
 let schema = new Schema({
-  "name"          :   {
+  "subject"       :   {
+    "type"        :   String,
+    "required"    :   true
+  },
+  "description"   :   {
     "type"        :   String,
     "required"    :   true
   },

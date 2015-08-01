@@ -37,9 +37,11 @@ var HomePage = (function (_Layout) {
 
     var main = this.find('#main').get(0);
 
-    main.add(new _componentsIntroView2['default'](props),
-    // new TopLevelPanelView(props),
-    new _componentsCountdownView2['default'](props));
+    var topPanelProps = props;
+
+    topPanelProps.countdown = true;
+
+    main.add(new _componentsIntroView2['default'](props), new _componentsTopLevelPanelView2['default'](topPanelProps), new _componentsCountdownView2['default'](props));
   }
 
   _inherits(HomePage, _Layout);

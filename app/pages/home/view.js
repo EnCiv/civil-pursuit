@@ -12,9 +12,13 @@ class HomePage extends Layout {
 
     var main = this.find('#main').get(0);
 
+    let topPanelProps = props;
+
+    topPanelProps.countdown = true;
+
     main.add(
       new IntroView(props),
-      // new TopLevelPanelView(props),
+      new TopLevelPanelView(topPanelProps),
       new CountDownView(props)
     );
   }

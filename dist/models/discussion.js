@@ -15,7 +15,11 @@ var _user = require('./user');
 var _user2 = _interopRequireDefault(_user);
 
 var schema = new _mongoose.Schema({
-  'name': {
+  'subject': {
+    'type': String,
+    'required': true
+  },
+  'description': {
     'type': String,
     'required': true
   },
