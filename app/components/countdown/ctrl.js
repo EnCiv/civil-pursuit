@@ -23,6 +23,8 @@ class CountDownCtrl extends Controller {
       case 'remaining minutes': return $('.countdown-minutes', this.template);
       case 'remaining seconds': return $('.countdown-seconds', this.template);
 
+      case 'remaining days label': return $('.countdown-days-label', this.template);
+
       case 'goal': return $('.discussion-goal', this.template);
       case 'registered': return $('.discussion-registered', this.template);
       case 'register': return $('.discussion-register_button', this.template);

@@ -294,6 +294,9 @@ var CountDownCtrl = (function (_Controller) {
         case 'remaining seconds':
           return $('.countdown-seconds', this.template);
 
+        case 'remaining days label':
+          return $('.countdown-days-label', this.template);
+
         case 'goal':
           return $('.discussion-goal', this.template);
         case 'registered':
