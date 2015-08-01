@@ -118,6 +118,11 @@ class CountDownCtrl extends Controller {
       this.find('remaining days label').text('day');
     }
 
+    if ( days === 0 ) {
+      this.find('remaining days').hide();
+      this.find('remaining days label').hide();
+    }
+
     this.find('remaining hours').text(hours < 10 ? `0${hours}` : hours);
 
     this.find('remaining minutes').text(minutes < 10 ? `0${minutes}` : minutes);
