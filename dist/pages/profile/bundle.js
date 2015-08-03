@@ -189,7 +189,7 @@ module.exports={
     "password": "1ew55acpns0b"
   },
 
-  "evaluation context item position": "first",
+  "evaluation context item position": "last",
 
   "forgot password email": "Hey,\r\n\r\nYou are receiving this email because you requested a password reset.\r\n\r\nYour reset key is:\r\n\r\n\t{key}\r\n\r\nTo reset your password, copy the reset key above and go to {url}\r\n\n\nThank you,\nThe Synaccord Team",
 
@@ -1674,11 +1674,7 @@ var Item = (function (_Element) {
       var _this5 = this;
 
       return new _cincoDist.Element('.item-collapsers').condition(function () {
-        if (_this5.props.item && 'collapsers' in _this5.props.item) {
-          return _this5.props.item.collapsers !== false;
-        }
-
-        return true;
+        return _this5.props.collapsers !== false;
       }).add(this.promote(), this.details(), this.editAndGoAgain(), this.below());
     }
   }, {

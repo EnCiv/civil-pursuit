@@ -279,7 +279,11 @@ var Evaluator = (function (_EventEmitter) {
         if (!('items' in results) && 'left' in results) {
           results.items = [];
 
-          results.left.unshift(_this7.item);
+          if (_configJson2['default']['evaluation context item position'] === 'first') {
+            results.left.unshift(_this7.item);
+          } else if (_configJson2['default']['evaluation context item position'] === 'last') {
+            results.left.push(_this7.item);
+          }
 
           var max = 6;
 
@@ -301,7 +305,11 @@ var Evaluator = (function (_EventEmitter) {
             }
           }
         } else {
-          results.items.unshift(_this7.item);
+          if (_configJson2['default']['evaluation context item position'] === 'first') {
+            results.items.unshift(_this7.item);
+          } else if (_configJson2['default']['evaluation context item position'] === 'first') {
+            results.items.push(_this7.item);
+          }
         }
 
         var evaluation = new Evaluation({

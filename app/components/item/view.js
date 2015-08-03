@@ -66,7 +66,7 @@ class Item extends Element {
 
   subject () {
     return new Element('h4.item-subject.header').add(
-      new Element('a', {    
+      new Element('a', {
         href: locals => {
           if ( locals && locals.item )    {
             return Page('Item Page', locals && locals.item);
@@ -117,13 +117,7 @@ class Item extends Element {
   collapsers () {
 
     return new Element('.item-collapsers')
-      .condition(() => {
-        if ( this.props.item && 'collapsers' in this.props.item ) {
-          return this.props.item.collapsers  !== false;
-        }
-
-        return true;
-      })
+      .condition(() => this.props.collapsers !== false)
       .add(
         this.promote(),
         this.details(),
@@ -164,7 +158,7 @@ class Item extends Element {
 
   arrow () {
     return new Element('.item-arrow')
-      
+
       .condition( () => {
         if ( this.props.item ) {
           return this.props.item.collapsers !==   false;

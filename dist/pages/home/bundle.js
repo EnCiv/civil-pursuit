@@ -347,8 +347,6 @@ var CountDownCtrl = (function (_Controller) {
       this.publish('get discussion').subscribe(function (pubsub, discussion) {
         pubsub.unsubscribe();
 
-        console.log('discussion', discussion);
-
         _this.discussion = discussion;
 
         _this.renderDeadline();
@@ -3034,11 +3032,7 @@ var Item = (function (_Element) {
       var _this5 = this;
 
       return new _cincoDist.Element('.item-collapsers').condition(function () {
-        if (_this5.props.item && 'collapsers' in _this5.props.item) {
-          return _this5.props.item.collapsers !== false;
-        }
-
-        return true;
+        return _this5.props.collapsers !== false;
       }).add(this.promote(), this.details(), this.editAndGoAgain(), this.below());
     }
   }, {
@@ -5720,11 +5714,12 @@ synapp.app.ready(function () {
 
   new _componentsIntroCtrl2['default']().render();
 
-  if ($('#countdown')) {
+  new _componentsTopBarCtrl2['default']().render();
+
+  if ($('#countdown').length) {
+    console.log('countdown');
     new _componentsCountdownCtrl2['default']().render();
   }
-
-  new _componentsTopBarCtrl2['default']().render();
 
   if (!panel) {
     synapp.app.publish('get top level type').subscribe(function (pubsub, topLevelPanel) {

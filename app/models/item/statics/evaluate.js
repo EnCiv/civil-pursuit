@@ -37,7 +37,7 @@ class Evaluator extends EventEmitter {
     this.userId     =   userId;
     this.domain     =   new Domain();
     this.type       =   'regular';
-    
+
     this.domain.on('error', error => this.emit('error', error));
 
   }
@@ -100,7 +100,7 @@ class Evaluator extends EventEmitter {
                     try {
                       if ( is ) {
                         this.type = 'split';
-                        this.makeSplit().then(ok, ko); 
+                        this.makeSplit().then(ok, ko);
                       }
                       else {
                         this.make().then(ok, ko);
@@ -204,7 +204,7 @@ class Evaluator extends EventEmitter {
   }
 
   findOthers (limit, type) {
-    
+
     return new Promise((ok, ko) => {
       try {
 
@@ -240,7 +240,7 @@ class Evaluator extends EventEmitter {
             let start = Math.max(0, Math.floor((number-limit)*Math.random()));
 
             this
-              
+
               .ItemModel
 
               .find(query)
@@ -282,7 +282,12 @@ class Evaluator extends EventEmitter {
       if ( ! ( 'items' in results ) && ( 'left' in results ) ) {
         results.items = [];
 
-        results.left.unshift(this.item);
+        if ( config["evaluation context item position"] === 'first' ) {
+          results.left.unshift(this.item);
+        }
+        else if ( config["evaluation context item position"] === 'last' ) {
+          results.left.push(this.item);
+        }
 
         let max = 6;
 
@@ -306,7 +311,12 @@ class Evaluator extends EventEmitter {
       }
 
       else {
-        results.items.unshift(this.item);
+        if ( config["evaluation context item position"] === 'first' ) {
+            results.items.unshift(this.item);
+        }
+        else if ( config["evaluation context item position"] === 'first' ) {
+            results.items.push(this.item);
+        }
       }
 
       let evaluation = new Evaluation({

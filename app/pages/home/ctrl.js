@@ -14,11 +14,12 @@ synapp.app.ready(() => {
 
   new IntroCtrl().render();
 
-  if ( $('#countdown') ) {
+  new (TopBar)().render();
+
+  if ( $('#countdown').length ) {
+    console.log('countdown')
     new CountDownCtrl().render();
   }
-
-  new (TopBar)().render();
 
   if ( ! panel ) {
     synapp.app

@@ -17,10 +17,6 @@ var TopLevelPanel = (function (_Element) {
     _classCallCheck(this, TopLevelPanel);
 
     _get(Object.getPrototypeOf(TopLevelPanel.prototype), 'constructor', this).call(this, '.panels');
-
-    if (props.countdown) {
-      this.addClass('hide');
-    }
   }
 
   _inherits(TopLevelPanel, _Element);

@@ -11,7 +11,7 @@ class Stylesheet extends Element {
 }
 
 class Stylesheets extends Element {
-  
+
   constructor (props) {
     super('styles');
     this.props = props;

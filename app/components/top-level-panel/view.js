@@ -6,10 +6,6 @@ class TopLevelPanel extends Element {
 
   constructor (props) {
     super('.panels');
-
-    if ( props.countdown ) {
-      this.addClass('hide');
-    }
   }
 
 }

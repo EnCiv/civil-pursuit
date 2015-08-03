@@ -30,11 +30,12 @@ synapp.app.ready(function () {
 
   new _componentsIntroCtrl2['default']().render();
 
-  if ($('#countdown')) {
+  new _componentsTopBarCtrl2['default']().render();
+
+  if ($('#countdown').length) {
+    console.log('countdown');
     new _componentsCountdownCtrl2['default']().render();
   }
-
-  new _componentsTopBarCtrl2['default']().render();
 
   if (!panel) {
     synapp.app.publish('get top level type').subscribe(function (pubsub, topLevelPanel) {
