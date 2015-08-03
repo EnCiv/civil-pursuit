@@ -14,7 +14,9 @@ synapp.app.ready(() => {
 
   new IntroCtrl().render();
 
-  new CountDownCtrl().render();
+  if ( $('#countdown') ) {
+    new CountDownCtrl().render();
+  }
 
   new (TopBar)().render();
 

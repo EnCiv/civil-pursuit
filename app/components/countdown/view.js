@@ -46,10 +46,10 @@ class CountDownView extends Element {
               ),
               new Element('.row').add(
                 new Element('.watch-30.watch-push-20').add(
-                  new Element('h4').text('Registered participants')
+                  new Element('h4').text('Openings')
                 ),
                 new Element('.watch-30').add(
-                  new Element('h4').text('Goal')
+                  new Element('h4').text('Remaining')
                 )
               ),
               new Element('.row').add(

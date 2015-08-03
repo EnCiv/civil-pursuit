@@ -7,10 +7,6 @@ import PassportFacebook       from 'passport-facebook';
 import Passport               from '../lib/app/Passport';
 import config                 from '../../config.json';
 
-/**
-bcn741_fAcEbOoK1981!?
-*/
-
 class Facebook extends Passport {
 
   constructor (app) {

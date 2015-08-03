@@ -102,6 +102,10 @@ var _api = require('./api');
 
 var _api2 = _interopRequireDefault(_api);
 
+var _modelsDiscussion = require('./models/discussion');
+
+var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
+
 var HttpServer = (function (_EventEmitter) {
   function HttpServer() {
     var _this = this;
@@ -282,6 +286,33 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'getLandingPage',
     value: function getLandingPage() {
+      var _this2 = this;
+
+      this.app.get('/', function (req, res, next) {
+        try {
+          var isAuthorized = false;
+
+          if (req.cookies && req.cookies.synuser) {
+            if (['francoisrvespa@gmail.com', 'ddfridley@yahoo.com'].some(function (email) {
+              return req.cookies.synuser.email;
+            })) {
+              isAuthorized = true;
+            }
+          }
+
+          if (isAuthorized) {
+            return _this2.renderPage(req, res, next);
+          }
+
+          _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+            res.locals.discussion = discussion;
+            _this2.renderPage(req, res, next);
+          }, next);
+        } catch (error) {
+          next(error);
+        }
+      });
+
       this.app.get('/', this.renderPage.bind(this));
     }
   }, {
@@ -324,7 +355,7 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'error',
     value: function error() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.app.use(function (err, req, res, next) {
 
@@ -333,7 +364,7 @@ var HttpServer = (function (_EventEmitter) {
         }
 
         console.log('error', err.stack.split(/\n/));
-        _this2.emit('error', err);
+        _this3.emit('error', err);
 
         res.locals.error = err.stack.split(/\n/);
         req.page = 'error';
@@ -344,24 +375,24 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'start',
     value: function start() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.server = _http2['default'].createServer(this.app);
 
       this.server.on('error', function (error) {
-        _this3.emit('error', error);
+        _this4.emit('error', error);
       });
 
       this.server.listen(this.app.get('port'), function () {
-        _this3.emit('message', 'Server is listening', {
-          port: _this3.app.get('port'),
-          env: _this3.app.get('env')
+        _this4.emit('message', 'Server is listening', {
+          port: _this4.app.get('port'),
+          env: _this4.app.get('env')
         });
 
-        _this3.emit('listening');
+        _this4.emit('listening');
 
-        new _api2['default'](_this3).on('error', function (error) {
-          return _this3.emit('error', error);
+        new _api2['default'](_this4).on('error', function (error) {
+          return _this4.emit('error', error);
         });
       });
     }

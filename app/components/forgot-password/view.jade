@@ -1,0 +1,25 @@
+script#forgot-password(type='text/html')
+  .forgot-password-dialog
+    h4 Forgot password
+
+    form(role='form' novalidate name='forgot-password')
+      .forgot-password-email-not-found.block.error.hide
+        i.fa.fa-warning
+        b  This email was not found.
+
+      .forgot-password-pending.block.info.hide
+        i.fa.fa-circle-o-notch.fa-spin
+        b  Operation in progress
+
+      .forgot-password-ok.block.success.hide
+        i.fa.fa-check
+        b  A reset key was sent to your email.
+
+      .form-section
+        label
+          big Enter your email address
+
+        .form-group
+          input.block(type='email' placeholder='Enter email address' name="email" required)
+
+        button.primary.block Send me password reactivation key

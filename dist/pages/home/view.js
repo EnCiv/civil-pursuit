@@ -41,7 +41,23 @@ var HomePage = (function (_Layout) {
 
     topPanelProps.countdown = true;
 
-    main.add(new _componentsIntroView2['default'](props), new _componentsTopLevelPanelView2['default'](topPanelProps), new _componentsCountdownView2['default'](props));
+    main.add(new _componentsIntroView2['default'](props));
+
+    if (props.discussion) {
+      var deadline = new Date(props.discussion.deadline);
+
+      var now = Date.now();
+
+      var interval = deadline - now;
+
+      if (interval < 0) {
+        main.add(new _componentsTopLevelPanelView2['default'](topPanelProps));
+      } else {
+        main.add(new _componentsCountdownView2['default'](props));
+      }
+    } else {
+      main.add(new _componentsTopLevelPanelView2['default'](topPanelProps));
+    }
   }
 
   _inherits(HomePage, _Layout);

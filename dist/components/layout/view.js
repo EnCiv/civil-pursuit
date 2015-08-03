@@ -20,33 +20,37 @@ var _configJson = require('../../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
-var _componentsGoogleAnalyticsView = require('../../components/google-analytics/view');
+var _googleAnalyticsView = require('../google-analytics/view');
 
-var _componentsGoogleAnalyticsView2 = _interopRequireDefault(_componentsGoogleAnalyticsView);
+var _googleAnalyticsView2 = _interopRequireDefault(_googleAnalyticsView);
 
-var _componentsStylesView = require('../../components/styles/view');
+var _stylesView = require('../styles/view');
 
-var _componentsStylesView2 = _interopRequireDefault(_componentsStylesView);
+var _stylesView2 = _interopRequireDefault(_stylesView);
 
-var _componentsScriptsView = require('../../components/scripts/view');
+var _scriptsView = require('../scripts/view');
 
-var _componentsScriptsView2 = _interopRequireDefault(_componentsScriptsView);
+var _scriptsView2 = _interopRequireDefault(_scriptsView);
 
-var _componentsTopBarView = require('../../components/top-bar/view');
+var _topBarView = require('../top-bar/view');
 
-var _componentsTopBarView2 = _interopRequireDefault(_componentsTopBarView);
+var _topBarView2 = _interopRequireDefault(_topBarView);
 
-var _componentsFooterView = require('../../components/footer/view');
+var _footerView = require('../footer/view');
 
-var _componentsFooterView2 = _interopRequireDefault(_componentsFooterView);
+var _footerView2 = _interopRequireDefault(_footerView);
 
-var _componentsLoginView = require('../../components/login/view');
+var _loginView = require('../login/view');
 
-var _componentsLoginView2 = _interopRequireDefault(_componentsLoginView);
+var _loginView2 = _interopRequireDefault(_loginView);
 
-var _componentsJoinView = require('../../components/join/view');
+var _joinView = require('../join/view');
 
-var _componentsJoinView2 = _interopRequireDefault(_componentsJoinView);
+var _joinView2 = _interopRequireDefault(_joinView);
+
+var _forgotPasswordView = require('../forgot-password/view');
+
+var _forgotPasswordView2 = _interopRequireDefault(_forgotPasswordView);
 
 var Layout = (function (_Document) {
   function Layout(props) {
@@ -57,7 +61,7 @@ var Layout = (function (_Document) {
     console.log();
     console.log('Layout props', props);
     console.log();
-    this.add(this.title(), this.uACompatible(), this.viewport(), new _componentsGoogleAnalyticsView2['default'](props), new _componentsStylesView2['default'](props), this.screens(), this.header(), this.main(), this.footer(), this.login(), this.join(), new _componentsScriptsView2['default'](props));
+    this.add(this.title(), this.uACompatible(), this.viewport(), new _googleAnalyticsView2['default'](props), new _stylesView2['default'](props), this.screens(), this.header(), this.main(), this.footer(), this.login(), this.join(), this.forgotPassword(), new _scriptsView2['default'](props));
   }
 
   _inherits(Layout, _Document);
@@ -102,7 +106,7 @@ var Layout = (function (_Document) {
   }, {
     key: 'header',
     value: function header() {
-      return new _cincoDist.Element('section', { role: 'header' }).add(new _componentsTopBarView2['default'](this.props));
+      return new _cincoDist.Element('section', { role: 'header' }).add(new _topBarView2['default'](this.props));
     }
   }, {
     key: 'main',
@@ -112,17 +116,22 @@ var Layout = (function (_Document) {
   }, {
     key: 'footer',
     value: function footer() {
-      return new _cincoDist.Element('section#footer', { role: 'footer' }).add(new _componentsFooterView2['default'](this.props));
+      return new _cincoDist.Element('section#footer', { role: 'footer' }).add(new _footerView2['default'](this.props));
     }
   }, {
     key: 'login',
     value: function login() {
-      return new _cincoDist.Element('script#login', { type: 'text/html' }).condition(!this.props.user).text(new _componentsLoginView2['default'](this.props).render());
+      return new _cincoDist.Element('script#login', { type: 'text/html' }).condition(!this.props.user).text(new _loginView2['default'](this.props).render());
     }
   }, {
     key: 'join',
     value: function join() {
-      return new _cincoDist.Element('script#join', { type: 'text/html' }).condition(!this.props.user).text(new _componentsJoinView2['default'](this.props).render());
+      return new _cincoDist.Element('script#join', { type: 'text/html' }).condition(!this.props.user).text(new _joinView2['default'](this.props).render());
+    }
+  }, {
+    key: 'forgotPassword',
+    value: function forgotPassword() {
+      return new _cincoDist.Element('script#forgot-password', { type: 'text/html' }).condition(!this.props.user).text(new _forgotPasswordView2['default'](this.props).render());
     }
   }]);
 

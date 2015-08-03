@@ -16,11 +16,25 @@ class HomePage extends Layout {
 
     topPanelProps.countdown = true;
 
-    main.add(
-      new IntroView(props),
-      new TopLevelPanelView(topPanelProps),
-      new CountDownView(props)
-    );
+    main.add(new IntroView(props));
+
+    if ( props.discussion ) {
+      let deadline = new Date(props.discussion.deadline);
+
+      let now = Date.now();
+
+      let interval = deadline - now;
+
+      if ( interval < 0 ) {
+        main.add(new TopLevelPanelView(topPanelProps));
+      }
+      else {
+        main.add(new CountDownView(props));
+      }
+    }
+    else {
+      main.add(new TopLevelPanelView(topPanelProps));
+    }
   }
 }
 

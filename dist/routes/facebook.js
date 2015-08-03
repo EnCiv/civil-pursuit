@@ -36,10 +36,6 @@ var _configJson = require('../../config.json');
 
 var _configJson2 = _interopRequireDefault(_configJson);
 
-/**
-bcn741_fAcEbOoK1981!?
-*/
-
 var Facebook = (function (_Passport) {
   function Facebook(app) {
     _classCallCheck(this, Facebook);

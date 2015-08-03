@@ -23,6 +23,7 @@ import User                     from './models/user';
 import config                   from '../config.json';
 import getTime                  from './lib/util/print-time';
 import API                      from './api';
+import DiscussionModel          from './models/discussion';
 
 class HttpServer extends EventEmitter {
 
@@ -206,6 +207,36 @@ class HttpServer extends EventEmitter {
   }
 
   getLandingPage () {
+    this.app.get('/', (req, res, next) => {
+      try {
+        let isAuthorized = false;
+
+        if ( req.cookies && req.cookies.synuser ) {
+          if ( ['francoisrvespa@gmail.com', 'ddfridley@yahoo.com'].some(email => req.cookies.synuser.email) ) {
+            isAuthorized = true;
+          }
+        }
+
+        if ( isAuthorized ) {
+          return this.renderPage(req, res, next);
+        }
+
+        DiscussionModel
+          .findOne()
+          .exec()
+          .then(
+            discussion => {
+              res.locals.discussion = discussion;
+              this.renderPage(req, res, next);
+            },
+            next
+          )
+      }
+      catch ( error ) {
+        next(error);
+      }
+    });
+
     this.app.get('/', this.renderPage.bind(this));
   }
 

@@ -4,16 +4,17 @@ import { Document, Element }  from 'cinco/dist';
 
 import config                 from '../../../config.json';
 
-import GoogleAnalytics        from '../../components/google-analytics/view';
-import Styles                 from '../../components/styles/view';
-import Scripts                from '../../components/scripts/view';
-import TopBar                 from '../../components/top-bar/view';
-import Footer                 from '../../components/footer/view';
-import Login                  from '../../components/login/view';
-import Join                   from '../../components/join/view';
+import GoogleAnalytics        from '../google-analytics/view';
+import Styles                 from '../styles/view';
+import Scripts                from '../scripts/view';
+import TopBar                 from '../top-bar/view';
+import Footer                 from '../footer/view';
+import Login                  from '../login/view';
+import Join                   from '../join/view';
+import ForgotPasswordView     from '../forgot-password/view';
 
 class Layout extends Document {
-  
+
   constructor (props) {
     super();
     this.props = props || {};
@@ -32,6 +33,7 @@ class Layout extends Document {
       this.footer(),
       this.login(),
       this.join(),
+      this.forgotPassword(),
       new Scripts(props)
     );
   }
@@ -103,6 +105,12 @@ class Layout extends Document {
     return new Element('script#join', { type: 'text/html' })
       .condition(! this.props.user)
       .text(new Join(this.props).render());
+  }
+
+  forgotPassword () {
+    return new Element('script#forgot-password', { type: 'text/html' })
+      .condition(! this.props.user)
+      .text(new ForgotPasswordView(this.props).render());
   }
 }
 

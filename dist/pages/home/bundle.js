@@ -5718,7 +5718,9 @@ synapp.app.ready(function () {
 
   new _componentsIntroCtrl2['default']().render();
 
-  new _componentsCountdownCtrl2['default']().render();
+  if ($('#countdown')) {
+    new _componentsCountdownCtrl2['default']().render();
+  }
 
   new _componentsTopBarCtrl2['default']().render();
 
