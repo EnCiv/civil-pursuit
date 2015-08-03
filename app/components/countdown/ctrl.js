@@ -62,6 +62,8 @@ class CountDownCtrl extends Controller {
       .subscribe((pubsub, discussion) => {
         pubsub.unsubscribe();
 
+        console.log('discussion', discussion);
+
         this.discussion = discussion;
 
         this.renderDeadline();

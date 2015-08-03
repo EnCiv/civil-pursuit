@@ -347,6 +347,8 @@ var CountDownCtrl = (function (_Controller) {
       this.publish('get discussion').subscribe(function (pubsub, discussion) {
         pubsub.unsubscribe();
 
+        console.log('discussion', discussion);
+
         _this.discussion = discussion;
 
         _this.renderDeadline();
