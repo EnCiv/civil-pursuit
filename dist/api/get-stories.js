@@ -6,16 +6,16 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _modelsTest = require('../models/test');
+var _modelsStory = require('../models/story');
 
-var _modelsTest2 = _interopRequireDefault(_modelsTest);
+var _modelsStory2 = _interopRequireDefault(_modelsStory);
 
-function getTests(event) {
+function getStories(event) {
   var _this = this;
 
   try {
-    _modelsTest2['default'].find().exec().then(function (tests) {
-      return _this.ok(event, tests);
+    _modelsStory2['default'].find().exec().then(function (stories) {
+      return _this.ok(event, stories);
     }, function (error) {
       return _this.error(error);
     });
@@ -24,5 +24,5 @@ function getTests(event) {
   }
 }
 
-exports['default'] = getTests;
+exports['default'] = getStories;
 module.exports = exports['default'];

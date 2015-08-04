@@ -1292,28 +1292,21 @@ synapp.app.ready(function () {
 
   new _componentsTopBarCtrl2['default']().render();
 
-  synapp.app.publish('get tests').subscribe(function (pubsub, tests) {
+  synapp.app.publish('get stories').subscribe(function (pubsub, stories) {
+    pubsub.unsubscribe();
 
-    var pages = tests.filter(function (test) {
-      return test.type === 'page';
-    });
+    console.log('stories', stories);
 
-    $('.number-of-pages').text(pages.length);
+    $('.test-stories tbody').empty();
 
-    pages.forEach(function (page) {
-      var stories = [];
+    stories.forEach(function (story) {
+      var tr = $('<tr>\n          <td style="font-weight: bold">' + story.pitch + '</td>\n          <td>\n            <button class="primary block radius run-story">Run</button>\n          </td>\n        </tr>');
 
-      page.stories.forEach(function (story) {
-        stories.push('<tr>\n              <td>' + story.name + '</td>\n              <td></td>\n              <td></td>\n            </tr>');
+      tr.find('.run-story').on('click', function () {
+        synapp.app.publish('run story').subscribe(function (pubsub) {});
       });
 
-      var tr = $('<tr id="state-' + page._id + '">\n            <th>' + page.name + '</th>\n            <td><button class="primary block run-test">Run</button></td>\n          </tr>\n          <tr>\n            <td colspan="2">\n              <table>\n                <thead>\n                  <tr>\n                    <th>Story</th>\n                    <th>Status</th>\n                    <th>Last run</th>\n                  </tr>\n                </thead>\n                <tbody>\n                  ' + stories.join('') + '\n                </tbody>\n              </table>\n            </td>\n          </tr>');
-
-      $('.test-pages tbody').append(tr);
-
-      tr.find('.run-test').on('click', function () {
-        synapp.app.publish('run test', page).subscribe();
-      });
+      $('.test-stories tbody').append(tr);
     });
   });
 });

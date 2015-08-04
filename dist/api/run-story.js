@@ -1,21 +1,23 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  function runStory(socket, pronto, monson, domain) {
-    socket.on('run story', function (index, cb) {
+var _libWebDriver = require('../lib/web-driver');
 
-      var epics = require('../business/epics.json');
+var _libWebDriver2 = _interopRequireDefault(_libWebDriver);
 
-      socket.emit('got epics', epics);
-
-      if (typeof cb === 'function') {
-        cb(null, epics);
-      }
-    });
+function runStory(event) {
+  try {
+    console.log('ooooo');
+    new _libWebDriver2['default']();
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = runStory;
-})();
+exports['default'] = runStory;
+module.exports = exports['default'];

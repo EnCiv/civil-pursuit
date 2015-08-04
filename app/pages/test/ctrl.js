@@ -10,53 +10,33 @@ synapp.app.ready(() => {
   new TopBar().render();
 
   synapp.app
-    .publish('get tests')
-    .subscribe((pubsub, tests) => {
+    .publish('get stories')
+    .subscribe((pubsub, stories) => {
+      pubsub.unsubscribe();
 
-      let pages = tests.filter(test => test.type === 'page');
+      console.log('stories', stories);
 
-      $('.number-of-pages').text(pages.length);
+      $('.test-stories tbody').empty();
 
-      pages.forEach(page => {
-        let stories = [];
+      stories.forEach(story => {
+        let tr = $(`<tr>
+          <td style="font-weight: bold">${story.pitch}</td>
+          <td>
+            <button class="primary block radius run-story">Run</button>
+          </td>
+        </tr>`);
 
-        page.stories.forEach(story => {
-          stories.push(`<tr>
-              <td>${story.name}</td>
-              <td></td>
-              <td></td>
-            </tr>`);
-        });
-
-        let tr = $(`<tr id="state-${page._id}">
-            <th>${page.name}</th>
-            <td><button class="primary block run-test">Run</button></td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Story</th>
-                    <th>Status</th>
-                    <th>Last run</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${stories.join('')}
-                </tbody>
-              </table>
-            </td>
-          </tr>`);
-
-        $('.test-pages tbody').append(tr);
-
-        tr.find('.run-test').on('click', () => {
+        tr.find('.run-story').on('click', () => {
           synapp.app
-            .publish('run test', page)
-            .subscribe();
+            .publish('run story')
+            .subscribe((pubsub) => {
+              
+            });
         });
+
+        $('.test-stories tbody').append(tr);
       });
+
     });
 
 });

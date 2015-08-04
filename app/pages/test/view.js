@@ -17,16 +17,20 @@ class PageNotFound extends Layout {
 
     if ( props.settings.env === 'development' ) {
       main.add(
-        new Element('h1.gutter').text(props.title),
-        new Element('hr'),
-        new Element('h2.gutter').add(
-          new Element('small.number-of-pages').text('0'),
-          new Element('span').text(' Pages')
+        new Element('h1.gutter').add(
+          new Element('small.stories-length').text('0'),
+          new Element('span').text(' Stories')
         ),
-        new Element('table.test-pages').add(
+
+        new Element('hr'),
+
+        new Element('table.test-stories').add(
           new Element('thead').add(
             new Element('tr').add(
-              new Element('th', { colspan : 2 }).text('Name')
+              new Element('th').add(
+                new Element('input', { type : 'checkbox' })
+              ),
+              new Element('th', { colspan : 2 }).text('Pitch')
             )
           ),
           new Element('tbody')

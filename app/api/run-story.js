@@ -1,21 +1,15 @@
-! function () {
+'use strict';
 
-  'use strict';
- 
-  function runStory (socket, pronto, monson, domain) {
-    socket.on('run story', function (index, cb) {
-      
-      var epics = require('../business/epics.json');
+import WebDriver from '../lib/web-driver';
 
-      socket.emit('got epics', epics);
-
-      if ( typeof cb === 'function' ) {
-        cb(null, epics);
-      }
-      
-    });
+function runStory (event) {
+  try {
+    console.log('ooooo');
+    new WebDriver();
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = runStory;
-
-} ();
+export default runStory;

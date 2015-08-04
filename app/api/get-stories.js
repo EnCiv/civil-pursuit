@@ -1,14 +1,14 @@
 'use strict';
 
-import TestModel from '../models/test';
+import StoryModel from '../models/story';
 
-function getTests (event) {
+function getStories (event) {
   try {
-    TestModel
+    StoryModel
       .find()
       .exec()
       .then(
-        tests => this.ok(event, tests),
+        stories => this.ok(event, stories),
         error => this.error(error)
       );
   }
@@ -17,4 +17,4 @@ function getTests (event) {
   }
 }
 
-export default getTests;
+export default getStories;

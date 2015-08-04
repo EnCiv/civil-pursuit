@@ -9,6 +9,10 @@
   function Page(page, more) {
 
     switch (page) {
+
+      case 'Error':
+        return '/error';
+
       case 'Home':
         return '/';
 

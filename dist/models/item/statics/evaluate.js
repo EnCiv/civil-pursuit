@@ -307,7 +307,7 @@ var Evaluator = (function (_EventEmitter) {
         } else {
           if (_configJson2['default']['evaluation context item position'] === 'first') {
             results.items.unshift(_this7.item);
-          } else if (_configJson2['default']['evaluation context item position'] === 'first') {
+          } else if (_configJson2['default']['evaluation context item position'] === 'last') {
             results.items.push(_this7.item);
           }
         }
@@ -317,7 +317,8 @@ var Evaluator = (function (_EventEmitter) {
           type: _this7.item.type,
           item: _this7.itemId,
           items: results.items /*.map(this.map, this)*/,
-          criterias: results.criterias
+          criterias: results.criterias,
+          position: _configJson2['default']['evaluation context item position']
         });
 
         ok(evaluation);

@@ -1,5 +1,5 @@
 ! function () {
-  
+
   'use strict';
 
   var S = require('string');
@@ -7,6 +7,10 @@
   function Page (page, more) {
 
     switch (page) {
+
+      case 'Error':
+        return '/error';
+
       case 'Home':
         return '/';
 

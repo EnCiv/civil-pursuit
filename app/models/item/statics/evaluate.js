@@ -314,7 +314,7 @@ class Evaluator extends EventEmitter {
         if ( config["evaluation context item position"] === 'first' ) {
             results.items.unshift(this.item);
         }
-        else if ( config["evaluation context item position"] === 'first' ) {
+        else if ( config["evaluation context item position"] === 'last' ) {
             results.items.push(this.item);
         }
       }
@@ -324,7 +324,8 @@ class Evaluator extends EventEmitter {
         type      :   this.item.type,
         item      :   this.itemId,
         items     :   results.items/*.map(this.map, this)*/,
-        criterias :   results.criterias
+        criterias :   results.criterias,
+        position  :   config["evaluation context item position"]
       });
 
 
