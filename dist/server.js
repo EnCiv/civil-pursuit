@@ -107,14 +107,12 @@ var _modelsDiscussion = require('./models/discussion');
 var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
 
 var HttpServer = (function (_EventEmitter) {
-  function HttpServer(discussion) {
+  function HttpServer() {
     var _this = this;
 
     _classCallCheck(this, HttpServer);
 
     _get(Object.getPrototypeOf(HttpServer.prototype), 'constructor', this).call(this);
-
-    this.discussion = discussion;
 
     console.log('new server');
 
@@ -295,30 +293,32 @@ var HttpServer = (function (_EventEmitter) {
           var isAuthorized = false;
 
           if (req.cookies && req.cookies.synuser) {
-            if (['francoisrvespa@gmail.com', 'ddfridley@yahoo.com'].some(function (email) {
-              return req.cookies.synuser.email;
-            })) {
+
+            if (req.cookies.synuser.email === 'francoisrvespa@gmail.com' || req.cookies.synuser.email === 'ddfridley@yahoo.com') {
               isAuthorized = true;
             }
           }
 
           if (isAuthorized) {
 
-            console.log('User is authorized'.bgBlue.bold);
+            console.log('User is authorized'.bgBlue.bold, req.cookies.synuser.email);
 
             return _this2.renderPage(req, res, next);
           }
 
           console.log('User is **NOT** authorized'.bgBlue.bold);
 
-          res.locals.discussion = _this2.discussion;
-          _this2.renderPage(req, res, next);
+          _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+
+            console.log('DISCUSSION', discussion);
+
+            res.locals.discussion = discussion;
+            _this2.renderPage(req, res, next);
+          }, console.log.bind(console));
         } catch (error) {
           next(error);
         }
       });
-
-      this.app.get('/', this.renderPage.bind(this));
     }
   }, {
     key: 'getTermsOfServicePage',

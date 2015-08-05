@@ -71,14 +71,9 @@ readMe().then(function () {
   return connectToMongoose().then(function () {
     try {
 
-      _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
-
-        console.log('DISCUSSION', discussion);
-
-        new _server2['default'](discussion).on('error', parseError).on('message', function (message) {
-          return console.log('message', message);
-        });
-      }, console.log.bind(console));
+      new _server2['default']().on('error', parseError).on('message', function (message) {
+        return console.log('message', message);
+      });
     } catch (error) {
       parseError(error);
     }

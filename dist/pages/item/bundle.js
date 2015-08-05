@@ -2944,6 +2944,8 @@ var Panel = (function (_Controller) {
 
     _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this);
 
+    console.log('new panel', props);
+
     this.props = props;
 
     this.componentName = 'Panel';

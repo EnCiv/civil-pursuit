@@ -27,10 +27,8 @@ import DiscussionModel          from './models/discussion';
 
 class HttpServer extends EventEmitter {
 
-  constructor (discussion) {
+  constructor () {
     super();
-
-    this.discussion = discussion;
 
     console.log('new server')
 
@@ -209,34 +207,49 @@ class HttpServer extends EventEmitter {
   }
 
   getLandingPage () {
-    this.app.get('/', (req, res, next) => {
-      try {
-        let isAuthorized = false;
+    this.app.get('/',
+      (req, res, next) => {
+        try {
+          let isAuthorized = false;
 
-        if ( req.cookies && req.cookies.synuser ) {
-          if ( ['francoisrvespa@gmail.com', 'ddfridley@yahoo.com'].some(email => req.cookies.synuser.email) ) {
-            isAuthorized = true;
+          if ( req.cookies && req.cookies.synuser ) {
+
+            if ( req.cookies.synuser.email === 'francoisrvespa@gmail.com'  ||
+              req.cookies.synuser.email === 'ddfridley@yahoo.com' ) {
+                  isAuthorized = true;
+              }
           }
+
+          if ( isAuthorized ) {
+
+            console.log('User is authorized'.bgBlue.bold, req.cookies.synuser.email);
+
+            return this.renderPage(req, res, next);
+          }
+
+          console.log('User is **NOT** authorized'.bgBlue.bold);
+
+          DiscussionModel
+            .findOne()
+            .exec()
+            .then(
+              discussion => {
+
+                console.log('DISCUSSION', discussion);
+
+                res.locals.discussion = discussion;
+                this.renderPage(req, res, next);
+              },
+              console.log.bind(console)
+            );
+
+
         }
-
-        if ( isAuthorized ) {
-
-          console.log('User is authorized'.bgBlue.bold);
-
-          return this.renderPage(req, res, next);
+        catch ( error ) {
+          next(error);
         }
-
-        console.log('User is **NOT** authorized'.bgBlue.bold);
-
-        res.locals.discussion = this.discussion;
-        this.renderPage(req, res, next);
       }
-      catch ( error ) {
-        next(error);
-      }
-    });
-
-    this.app.get('/', this.renderPage.bind(this));
+    );
   }
 
   getTermsOfServicePage () {

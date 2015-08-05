@@ -13,6 +13,8 @@ class Panel extends Controller {
   constructor (props) {
     super();
 
+    console.log('new panel', props);
+
     this.props = props;
 
     this.componentName = 'Panel';

@@ -56,20 +56,9 @@ readMe().then(
     () => {
       try {
 
-        DiscussionModel
-          .findOne()
-          .exec()
-          .then(
-            discussion => {
-
-              console.log('DISCUSSION', discussion);
-
-              new Server(discussion)
-                .on('error', parseError)
-                .on('message', message => console.log('message', message));
-            },
-            console.log.bind(console)
-          );
+        new Server()
+          .on('error', parseError)
+          .on('message', message => console.log('message', message));
 
 
       }
