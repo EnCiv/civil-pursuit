@@ -10,7 +10,7 @@ class Intro extends Controller {
   get template () {
     return $(View.selector);
   }
-  
+
   constructor (props) {
     super();
 
@@ -49,7 +49,7 @@ class Intro extends Controller {
         return this.template.find('.item-media');
 
       case 'item image':
-        return this.template.find('.item-media img');
+        return this.template.find('.item-media img, .item-media iframe');
     }
   }
 
@@ -60,10 +60,10 @@ class Intro extends Controller {
     if ( ! intro ) {
       return this.on('set', key => key === 'intro' && this.render());
     }
-      
+
     this.renderPanel();
 
-    this.renderItem();    
+    this.renderItem();
   }
 
   renderPanel () {

@@ -81,7 +81,7 @@ var Intro = (function (_Controller) {
           return this.template.find('.item-media');
 
         case 'item image':
-          return this.template.find('.item-media img');
+          return this.template.find('.item-media img, .item-media iframe');
       }
     }
   }, {

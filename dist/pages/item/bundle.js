@@ -2299,7 +2299,7 @@ var ItemCtrl = (function (_Controller) {
         return false;
       });
 
-      // DESCRIPTION   
+      // DESCRIPTION
 
       this.find('description').text(item.description);
 

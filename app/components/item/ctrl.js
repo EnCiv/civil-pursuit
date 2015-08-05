@@ -31,13 +31,13 @@ class ItemCtrl extends Controller {
     let self = this;
 
     this.socket
-      
+
       .on('item image uploaded ' + this.props.item._id,
 
         item => {
           this.set('image', item.image);
         })
-      
+
       .on('Item changed',
 
         (itemId, changed) => {
@@ -166,7 +166,7 @@ class ItemCtrl extends Controller {
         return false;
       });
 
-    // DESCRIPTION    
+    // DESCRIPTION
 
     this.find('description').text(item.description);
 
@@ -252,8 +252,8 @@ class ItemCtrl extends Controller {
 
     else {
 
-    }      
-    
+    }
+
     // TOGGLE PROMOTE
 
     this.find('toggle promote').on('click', function () {

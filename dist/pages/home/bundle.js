@@ -1911,7 +1911,7 @@ var Intro = (function (_Controller) {
           return this.template.find('.item-media');
 
         case 'item image':
-          return this.template.find('.item-media img');
+          return this.template.find('.item-media img, .item-media iframe');
       }
     }
   }, {
@@ -2710,7 +2710,7 @@ var ItemCtrl = (function (_Controller) {
         return false;
       });
 
-      // DESCRIPTION   
+      // DESCRIPTION
 
       this.find('description').text(item.description);
 
