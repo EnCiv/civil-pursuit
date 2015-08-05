@@ -47,7 +47,6 @@ for ( let _static of statics ) {
 // =======
 
 let methods = [
-  'Get Image Html',
   'Get Lineage',
   'Get Popularity',
   'To Panel Item'

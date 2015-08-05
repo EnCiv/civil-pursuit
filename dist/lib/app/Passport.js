@@ -26,9 +26,13 @@ var _passport = require('passport');
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _configJson = require('../../../config.json');
+var _publicJson = require('../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
+
+var _secretJson = require('../../../secret.json');
+
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
 var _modelsUser = require('../../models/user');
 
@@ -47,11 +51,11 @@ var Passport = (function () {
       this.user = null;
       this.service = service;
 
-      var routes = _configJson2['default']['public'].routes;
+      var routes = _publicJson2['default'].routes;
 
       var env = process.env.SYNAPP_ENV;
 
-      this.CALLBACK_URL = _configJson2['default'][service][env]['callback url'];
+      this.CALLBACK_URL = _secretJson2['default'][service][env]['callback url'];
       this.SIGNIN_ROUTE = routes['sign in with ' + service];
       this.OK_ROUTE = routes['sign in with ' + service + ' OK'];
 
@@ -211,7 +215,7 @@ var Passport = (function () {
       res.cookie('synuser', {
         email: this.user.email,
         id: this.user.id
-      }, _configJson2['default'].cookie);
+      }, _secretJson2['default'].cookie);
 
       res.redirect('/page/profile');
     }

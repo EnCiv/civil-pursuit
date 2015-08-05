@@ -3,7 +3,7 @@
 import path         from 'path';
 import { Domain }   from 'domain';
 import cloudinary   from '../../../lib/app/cloudinary';
-import config       from '../../../../config.json';
+import config       from '../../../../secret.json';
 
 function saveImage (userId, image) {
   return new Promise((ok, ko) => {

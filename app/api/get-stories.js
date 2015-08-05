@@ -6,6 +6,7 @@ function getStories (event) {
   try {
     StoryModel
       .find()
+      .populate('driver.page')
       .exec()
       .then(
         stories => this.ok(event, stories),

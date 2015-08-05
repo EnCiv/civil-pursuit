@@ -14,9 +14,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _configJson = require('../../../config.json');
+var _publicJson = require('../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 var GoogleAnalytics = (function (_Element) {
   function GoogleAnalytics(props) {
@@ -30,7 +30,7 @@ var GoogleAnalytics = (function (_Element) {
       return props.settings.env === 'production';
     });
 
-    this.text('(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');ga(\'create\', \'' + _configJson2['default']['google analytics'].key + '\', \'auto\'); ga(\'send\', \'pageview\');');
+    this.text('(function(i,s,o,g,r,a,m){i[\'GoogleAnalyticsObject\']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,\'script\',\'//www.google-analytics.com/analytics.js\',\'ga\');ga(\'create\', \'' + _publicJson2['default']['google analytics'].key + '\', \'auto\'); ga(\'send\', \'pageview\');');
   }
 
   _inherits(GoogleAnalytics, _Element);

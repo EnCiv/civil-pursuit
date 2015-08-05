@@ -2,7 +2,7 @@
 
 import { Document, Element }  from 'cinco/dist';
 
-import config                 from '../../../config.json';
+import config                 from '../../../public.json';
 
 import GoogleAnalytics        from '../google-analytics/view';
 import Styles                 from '../styles/view';

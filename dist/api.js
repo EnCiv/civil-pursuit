@@ -26,10 +26,6 @@ var _path2 = _interopRequireDefault(_path);
 
 var _domain = require('domain');
 
-var _configJson = require('../config.json');
-
-var _configJson2 = _interopRequireDefault(_configJson);
-
 var _socketIo = require('socket.io');
 
 var _socketIo2 = _interopRequireDefault(_socketIo);

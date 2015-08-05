@@ -5,7 +5,7 @@ import util                   from 'util';
 import passport               from 'passport';
 import PassportFacebook       from 'passport-facebook';
 import Passport               from '../lib/app/Passport';
-import config                 from '../../config.json';
+import config                 from '../../secret.json';
 
 class Facebook extends Passport {
 

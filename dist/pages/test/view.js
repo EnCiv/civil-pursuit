@@ -33,7 +33,7 @@ var PageNotFound = (function (_Layout) {
     var main = this.find('#main').get(0);
 
     if (props.settings.env === 'development') {
-      main.add(new _cincoDist.Element('h1.gutter').add(new _cincoDist.Element('small.stories-length').text('0'), new _cincoDist.Element('span').text(' Stories')), new _cincoDist.Element('hr'), new _cincoDist.Element('table.test-stories').add(new _cincoDist.Element('thead').add(new _cincoDist.Element('tr').add(new _cincoDist.Element('th').add(new _cincoDist.Element('input', { type: 'checkbox' })), new _cincoDist.Element('th', { colspan: 2 }).text('Pitch'))), new _cincoDist.Element('tbody')));
+      main.add(new _cincoDist.Element('h1.gutter').add(new _cincoDist.Element('small.stories-length').text('0'), new _cincoDist.Element('span').text(' Stories')), new _cincoDist.Element('hr'), new _cincoDist.Element('table.test-stories').add(new _cincoDist.Element('thead').add(new _cincoDist.Element('tr').add(new _cincoDist.Element('th').add(new _cincoDist.Element('input', { type: 'checkbox' })), new _cincoDist.Element('th', { colspan: 2 }).text('Pitch'), new _cincoDist.Element('th', { colspan: 2 }).text('Status'), new _cincoDist.Element('th', { colspan: 2 }).text('Last run'))), new _cincoDist.Element('tbody')), new _cincoDist.Element('button.block.primary.large.radius').text('Run'));
     } else {
       main.add(new _cincoDist.Element('h1.gutter.warning').text(props.title), new _cincoDist.Element('p.gutter').text('We are sorry, your request could not be fulfilled because no relevant results were found.'), new _cincoDist.Element('hr'));
     }

@@ -1,7 +1,7 @@
 'use strict';
 
 import { Element, Elements }    from 'cinco/dist';
-import config                   from '../../../config.json';
+import config                   from '../../../public.json';
 
 class IdentityView extends Element {
 
@@ -21,7 +21,7 @@ class IdentityView extends Element {
     return new Element('.gutter').add(
       new Element('.tablet-40.user-image-container').add(
         new Element('img.img-responsive.user-image.radius', {
-          src   :   config.public['user image']
+          src   :   config['user image']
         })
       ),
       new Element('h2.profile-section-title').text('Identity'),

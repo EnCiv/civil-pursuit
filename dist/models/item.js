@@ -77,7 +77,7 @@ try {
 // METHODS
 // =======
 
-var methods = ['Get Image Html', 'Get Lineage', 'Get Popularity', 'To Panel Item'];
+var methods = ['Get Lineage', 'Get Popularity', 'To Panel Item'];
 
 var _iteratorNormalCompletion2 = true;
 var _didIteratorError2 = false;

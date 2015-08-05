@@ -5,7 +5,7 @@ import { format }         from 'util';
 import passport           from 'passport';
 import Passport           from '../lib/app/Passport';
 import PassportTwitter    from 'passport-twitter';
-import config             from '../../config.json';
+import config             from '../../secret.json';
 
 class Twitter extends Passport {
 

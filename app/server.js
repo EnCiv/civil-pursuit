@@ -20,15 +20,17 @@ import signInRoute              from './routes/sign-in';
 import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
 import User                     from './models/user';
-import config                   from '../config.json';
+import config                   from '../secret.json';
 import getTime                  from './lib/util/print-time';
 import API                      from './api';
 import DiscussionModel          from './models/discussion';
 
 class HttpServer extends EventEmitter {
 
-  constructor () {
+  constructor (discussion) {
     super();
+
+    this.discussion = discussion;
 
     console.log('new server')
 
@@ -218,19 +220,16 @@ class HttpServer extends EventEmitter {
         }
 
         if ( isAuthorized ) {
+
+          console.log('User is authorized'.bgBlue.bold);
+
           return this.renderPage(req, res, next);
         }
 
-        DiscussionModel
-          .findOne()
-          .exec()
-          .then(
-            discussion => {
-              res.locals.discussion = discussion;
-              this.renderPage(req, res, next);
-            },
-            next
-          )
+        console.log('User is **NOT** authorized'.bgBlue.bold);
+
+        res.locals.discussion = this.discussion;
+        this.renderPage(req, res, next);
       }
       catch ( error ) {
         next(error);
@@ -319,6 +318,8 @@ class HttpServer extends EventEmitter {
 
       new API(this)
         .on('error', error => this.emit('error', error));
+
+      setTimeout(() => console.log('SERVER IS LISTENING'), 2000);
     });
   }
 

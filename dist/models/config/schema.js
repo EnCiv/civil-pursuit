@@ -19,6 +19,14 @@
     }],
     "party": [{
       "name": String
-    }]
+    }],
+    "viewport": {
+      "watch": Number,
+      "phone": Number,
+      "split": Number,
+      "tablet": Number,
+      "desktop": Number,
+      "large": Number
+    }
   };
 })();

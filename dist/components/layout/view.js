@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _configJson = require('../../../config.json');
+var _publicJson = require('../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 var _googleAnalyticsView = require('../google-analytics/view');
 
@@ -73,11 +73,11 @@ var Layout = (function (_Document) {
       var elem = new _cincoDist.Element('title');
 
       if (this.props.title) {
-        elem.text(_configJson2['default'].title.prefix + this.props.title);
+        elem.text(_publicJson2['default'].title.prefix + this.props.title);
       } else if (this.props.item) {
-        elem.text(_configJson2['default'].title.prefix + this.props.item.subject);
+        elem.text(_publicJson2['default'].title.prefix + this.props.item.subject);
       } else {
-        elem.text(_configJson2['default'].title.prefix + _configJson2['default'].title['default']);
+        elem.text(_publicJson2['default'].title.prefix + _publicJson2['default'].title['default']);
       }
 
       return elem;

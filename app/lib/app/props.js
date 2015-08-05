@@ -1,6 +1,6 @@
 'use strict';
 
-import config from '../../../config.json';
+import config from '../../../public.json';
 
 function props (server, req, res) {
   var locals      =   {
@@ -29,7 +29,7 @@ function props (server, req, res) {
     };
   }
 
-  locals.config   =   config.public;
+  locals.config   =   config;
 
   return locals;
 }

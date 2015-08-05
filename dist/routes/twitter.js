@@ -30,9 +30,9 @@ var _passportTwitter = require('passport-twitter');
 
 var _passportTwitter2 = _interopRequireDefault(_passportTwitter);
 
-var _configJson = require('../../config.json');
+var _secretJson = require('../../secret.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
 var Twitter = (function (_Passport) {
   function Twitter(app) {
@@ -52,16 +52,16 @@ var Twitter = (function (_Passport) {
         var callback;
 
         if (req.hostname === 'localhost') {
-          callback = (0, _util.format)('http://%s:%d%s', req.hostname, this.app.get('port'), _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
+          callback = (0, _util.format)('http://%s:%d%s', req.hostname, this.app.get('port'), _secretJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
         } else {
-          callback = (0, _util.format)('http://%s%s', req.hostname, _configJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
+          callback = (0, _util.format)('http://%s%s', req.hostname, _secretJson2['default'].twitter[process.env.SYNAPP_ENV]['callback url']);
         }
 
         var _strategy = this.app.locals.TwitterStrategy;
 
         _passport2['default'].use(new _strategy({
-          consumerKey: _configJson2['default'].twitter[process.env.SYNAPP_ENV]['key'],
-          consumerSecret: _configJson2['default'].twitter[process.env.SYNAPP_ENV]['secret'],
+          consumerKey: _secretJson2['default'].twitter[process.env.SYNAPP_ENV]['key'],
+          consumerSecret: _secretJson2['default'].twitter[process.env.SYNAPP_ENV]['secret'],
           callbackURL: callback
         }, this.access.bind(this, req, res, next)));
       }

@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _configJson = require('../../../config.json');
+var _publicJson = require('../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 var DemographicsView = (function (_Element) {
   function DemographicsView(props) {
@@ -35,8 +35,8 @@ var DemographicsView = (function (_Element) {
     key: 'header',
     value: function header() {
       return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
-        src: _configJson2['default'].profile.demographics.image
-      })), new _cincoDist.Element('h2.profile-section-title').text('Demographics'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.demographics.description)));
+        src: _publicJson2['default'].profile.demographics.image
+      })), new _cincoDist.Element('h2.profile-section-title').text('Demographics'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_publicJson2['default'].profile.demographics.description)));
     }
   }, {
     key: 'toggle',

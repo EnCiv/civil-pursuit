@@ -16,9 +16,9 @@ var _libAppCloudinary = require('../../../lib/app/cloudinary');
 
 var _libAppCloudinary2 = _interopRequireDefault(_libAppCloudinary);
 
-var _configJson = require('../../../../config.json');
+var _secretJson = require('../../../../secret.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
 function saveImage(userId, image) {
   var _this = this;
@@ -28,7 +28,7 @@ function saveImage(userId, image) {
       (function () {
         var d = new _domain.Domain().on('error', ko);
 
-        _libAppCloudinary2['default'].uploader.upload(_path2['default'].join(_configJson2['default'].tmp, image), function (result) {
+        _libAppCloudinary2['default'].uploader.upload(_path2['default'].join(_secretJson2['default'].tmp, image), function (result) {
           try {
             _this.update({ _id: userId }, { image: result.url }, d.intercept(function () {
               return ok(result);

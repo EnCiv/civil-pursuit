@@ -19,6 +19,9 @@ class HomePage extends Layout {
     main.add(new IntroView(props));
 
     if ( props.discussion ) {
+
+      console.log('we have discussion'.yellow);
+
       let deadline = new Date(props.discussion.deadline);
 
       let now = Date.now();

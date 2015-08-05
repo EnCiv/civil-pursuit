@@ -14,9 +14,9 @@ var _request = require('request');
 
 var _request2 = _interopRequireDefault(_request);
 
-var _configJson = require('../../../config.json');
+var _secretJson = require('../../../secret.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
 var _utilRun = require('../util/run');
 
@@ -28,7 +28,7 @@ function getUrlTitle(url) {
       url: url,
       timeout: 1000 * 5,
       headers: {
-        'User-Agent': _configJson2['default']['user agent']
+        'User-Agent': _secretJson2['default']['user agent']
       }
     };
     (0, _request2['default'])(req, function (error, response, body) {

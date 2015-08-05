@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _configJson = require('../../../config.json');
+var _publicJson = require('../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 var ResidenceView = (function (_Element) {
   function ResidenceView(props) {
@@ -35,8 +35,8 @@ var ResidenceView = (function (_Element) {
     key: 'header',
     value: function header() {
       return new _cincoDist.Element('.gutter').add(new _cincoDist.Element('.tablet-40.user-image-container').add(new _cincoDist.Element('img.img-responsive.user-image.radius', {
-        src: _configJson2['default'].profile.residence.image
-      })), new _cincoDist.Element('h2.profile-section-title').text('Residence'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_configJson2['default'].profile.residence.description)));
+        src: _publicJson2['default'].profile.residence.image
+      })), new _cincoDist.Element('h2.profile-section-title').text('Residence'), new _cincoDist.Element('.tablet-push-40.gutter').add(new _cincoDist.Element('.pre-text').text(_publicJson2['default'].profile.residence.description)));
     }
   }, {
     key: 'toggle',

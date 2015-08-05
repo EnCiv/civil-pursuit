@@ -4,7 +4,6 @@ import {EventEmitter}     from 'events';
 import fs                 from 'fs';
 import path               from 'path';
 import {Domain}           from 'domain';
-import config             from '../config.json';
 import SocketIO           from 'socket.io';
 import S                  from 'string';
 import cookieParser       from 'cookie-parser';
@@ -28,7 +27,7 @@ class API extends EventEmitter {
 
       this.fetchHandlers();
     });
-      
+
   }
 
   fetchHandlers () {
@@ -36,7 +35,7 @@ class API extends EventEmitter {
 
     d.run(() => {
       fs.readdir(path.join(__dirname, 'api'), d.intercept(files => {
-        
+
         files.forEach(file => {
           let name      =   S(file.replace(/\.js$/, ''))
             .humanize()
@@ -95,7 +94,7 @@ class API extends EventEmitter {
           "cookie"    :   socket.request.headers.cookie
         }
       };
-     
+
       cookieParser()(req, null, () => {});
 
       let cookie = req.cookies.synuser;
@@ -168,4 +167,3 @@ class API extends EventEmitter {
 }
 
 export default API;
-

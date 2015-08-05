@@ -2,8 +2,8 @@
 
   'use strict';
 
-  var config = require('../../config.json');
- 
+  // var config = require('../../config.json');
+
   function resendPassword (socket, pronto, monson, domain, smtp) {
     socket.on('resend password', function (email, cb) {
 
@@ -13,7 +13,7 @@
         subject: 'Reset your password',
         text: 'You have one new email'
       });
-      
+
     });
   }
 

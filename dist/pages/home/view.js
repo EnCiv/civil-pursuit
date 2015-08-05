@@ -44,6 +44,9 @@ var HomePage = (function (_Layout) {
     main.add(new _componentsIntroView2['default'](props));
 
     if (props.discussion) {
+
+      console.log('we have discussion'.yellow);
+
       var deadline = new Date(props.discussion.deadline);
 
       var now = Date.now();

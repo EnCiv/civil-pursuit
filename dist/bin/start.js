@@ -27,6 +27,16 @@ var _server = require('../server');
 
 var _server2 = _interopRequireDefault(_server);
 
+var _modelsDiscussion = require('../models/discussion');
+
+var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
+
+if (process.env.NODE_ENV === 'production') {
+  process.title = 'synappprod';
+} else {
+  process.title = 'synappdev';
+}
+
 function parseError(error) {
   console.log(error.stack.split(/\n/));
 }
@@ -60,16 +70,15 @@ function connectToMongoose() {
 readMe().then(function () {
   return connectToMongoose().then(function () {
     try {
-      var d = new _domain.Domain().on('error', function (error) {
-        return parseError;
-      });
-      d.run(function () {
-        process.nextTick(function () {
-          new _server2['default']().on('error', parseError).on('message', function (message) {
-            return console.log('message', message);
-          });
+
+      _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+
+        console.log('DISCUSSION', discussion);
+
+        new _server2['default'](discussion).on('error', parseError).on('message', function (message) {
+          return console.log('message', message);
         });
-      });
+      }, console.log.bind(console));
     } catch (error) {
       parseError(error);
     }

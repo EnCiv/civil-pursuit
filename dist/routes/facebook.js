@@ -32,9 +32,9 @@ var _libAppPassport = require('../lib/app/Passport');
 
 var _libAppPassport2 = _interopRequireDefault(_libAppPassport);
 
-var _configJson = require('../../config.json');
+var _secretJson = require('../../secret.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
 var Facebook = (function (_Passport) {
   function Facebook(app) {
@@ -66,8 +66,8 @@ var Facebook = (function (_Passport) {
         console.log('strategy', _strategy);
 
         _passport2['default'].use(new _strategy({
-          clientID: _configJson2['default'].facebook[process.env.SYNAPP_ENV]['app id'],
-          clientSecret: _configJson2['default'].facebook[process.env.SYNAPP_ENV]['app secret'],
+          clientID: _secretJson2['default'].facebook[process.env.SYNAPP_ENV]['app id'],
+          clientSecret: _secretJson2['default'].facebook[process.env.SYNAPP_ENV]['app secret'],
           callbackURL: callbackURL
         }, this.access.bind(this, req, res, next)));
       }

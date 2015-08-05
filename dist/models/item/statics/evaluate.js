@@ -20,9 +20,9 @@ var _domain = require('domain');
 
 var _events = require('events');
 
-var _configJson = require('../../../../config.json');
+var _publicJson = require('../../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 var _criteria = require('../../criteria');
 
@@ -279,9 +279,9 @@ var Evaluator = (function (_EventEmitter) {
         if (!('items' in results) && 'left' in results) {
           results.items = [];
 
-          if (_configJson2['default']['evaluation context item position'] === 'first') {
+          if (_publicJson2['default']['evaluation context item position'] === 'first') {
             results.left.unshift(_this7.item);
-          } else if (_configJson2['default']['evaluation context item position'] === 'last') {
+          } else if (_publicJson2['default']['evaluation context item position'] === 'last') {
             results.left.push(_this7.item);
           }
 
@@ -305,9 +305,9 @@ var Evaluator = (function (_EventEmitter) {
             }
           }
         } else {
-          if (_configJson2['default']['evaluation context item position'] === 'first') {
+          if (_publicJson2['default']['evaluation context item position'] === 'first') {
             results.items.unshift(_this7.item);
-          } else if (_configJson2['default']['evaluation context item position'] === 'last') {
+          } else if (_publicJson2['default']['evaluation context item position'] === 'last') {
             results.items.push(_this7.item);
           }
         }
@@ -318,7 +318,7 @@ var Evaluator = (function (_EventEmitter) {
           item: _this7.itemId,
           items: results.items /*.map(this.map, this)*/,
           criterias: results.criterias,
-          position: _configJson2['default']['evaluation context item position']
+          position: _publicJson2['default']['evaluation context item position']
         });
 
         ok(evaluation);

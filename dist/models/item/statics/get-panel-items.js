@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _configJson = require('../../../../config.json');
+var _publicJson = require('../../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 function getPanelItems(panel) {
   var _this = this;
@@ -26,7 +26,7 @@ function getPanelItems(panel) {
       }
 
       if (!panel.item) {
-        ItemModel.find(query).skip(panel.skip || 0).limit(panel.size || _configJson2['default']['public']['navigator batch size']).sort({ promotions: -1 }).exec().then(function (items) {
+        ItemModel.find(query).skip(panel.skip || 0).limit(panel.size || _publicJson2['default']['navigator batch size']).sort({ promotions: -1 }).exec().then(function (items) {
           try {
             Promise.all(items.map(function (item) {
               return item.toPanelItem();

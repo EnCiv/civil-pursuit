@@ -30,11 +30,15 @@ class PageNotFound extends Layout {
               new Element('th').add(
                 new Element('input', { type : 'checkbox' })
               ),
-              new Element('th', { colspan : 2 }).text('Pitch')
+              new Element('th', { colspan : 2 }).text('Pitch'),
+              new Element('th', { colspan : 2 }).text('Status'),
+              new Element('th', { colspan : 2 }).text('Last run')
             )
           ),
           new Element('tbody')
-        )
+        ),
+
+        new Element('button.block.primary.large.radius').text('Run')
       );
     }
 

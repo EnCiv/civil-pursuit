@@ -10,6 +10,10 @@ var _mongoose = require('mongoose');
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
+var _page = require('./page');
+
+var _page2 = _interopRequireDefault(_page);
+
 var schema = new _mongoose.Schema({
   'actors': {
     'type': _mongoose.Schema.Types.Mixed
@@ -17,6 +21,9 @@ var schema = new _mongoose.Schema({
   'pitch': {
     'type': String,
     'required': true
+  },
+  'description': {
+    'type': String
   },
   'unit': {
     'atom': {
@@ -26,10 +33,25 @@ var schema = new _mongoose.Schema({
     'params': [_mongoose.Schema.Types.Mixed]
   },
   'driver': {
-    'url': String,
-    'viewport': _mongoose.Schema.Types.Mixed,
-    'session': _mongoose.Schema.Types.Mixed,
-    'env': _mongoose.Schema.Types.Mixed
+    'page': {
+      'type': _mongoose.Schema.Types.ObjectId,
+      'ref': 'Page'
+    },
+    'env': {
+      'development': Boolean,
+      'production': Boolean
+    },
+    'vendor': {
+      'firefox': Boolean,
+      'chrome': Boolean
+    },
+    'viewport': {
+      'watch': Boolean,
+      'phone': Boolean,
+      'split': Boolean,
+      'tablet': Boolean,
+      'desktop': Boolean
+    }
   }
 });
 

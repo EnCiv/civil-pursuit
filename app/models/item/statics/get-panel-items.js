@@ -1,6 +1,6 @@
 'use strict';
 
-import config from '../../../../config.json';
+import publicConfig from '../../../../public.json';
 
 function getPanelItems (panel) {
   return new Promise((ok, ko) => {
@@ -19,7 +19,7 @@ function getPanelItems (panel) {
         ItemModel
           .find(query)
           .skip(panel.skip || 0)
-          .limit(panel.size || config.public['navigator batch size'])
+          .limit(panel.size || publicConfig['navigator batch size'])
           .sort({ promotions: -1 })
           .exec()
           .then(

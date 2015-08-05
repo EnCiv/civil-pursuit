@@ -11,7 +11,8 @@ import util             from 'util';
 
 import passport         from 'passport';
 
-import config           from '../../../config.json';
+import config           from '../../../public.json';
+import secret           from '../../../secret.json';
 import UserModel        from '../../models/user';
 import DiscussionModel  from '../../models/discussion';
 
@@ -23,11 +24,11 @@ class Passport {
       this.user = null;
       this.service = service;
 
-      let { routes } = config.public;
+      let { routes } = config;
 
       let env = process.env.SYNAPP_ENV;
 
-      this.CALLBACK_URL   =   config[service][env]['callback url'];
+      this.CALLBACK_URL   =   secret[service][env]['callback url'];
       this.SIGNIN_ROUTE   =   routes['sign in with ' + service];
       this.OK_ROUTE       =   routes['sign in with ' + service + ' OK'];
 
@@ -198,7 +199,7 @@ class Passport {
     res.cookie('synuser', {
         email   : this.user.email,
         id      : this.user.id
-      }, config.cookie);
+      }, secret.cookie);
 
     res.redirect('/page/profile');
   }

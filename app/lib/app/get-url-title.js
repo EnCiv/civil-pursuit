@@ -2,7 +2,7 @@
 
 import S              from 'string';
 import request        from 'request';
-import config         from '../../../config.json';
+import config         from '../../../secret.json';
 import run            from '../util/run';
 
 function getUrlTitle (url) {
@@ -23,7 +23,7 @@ function getUrlTitle (url) {
         ( response.statusCode >= 300  && response.statusCode < 400 ) ) {
 
         let title;
-            
+
         body
 
           .replace(/\r/g, '')

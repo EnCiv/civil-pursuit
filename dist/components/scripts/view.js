@@ -16,9 +16,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _cincoDist = require('cinco/dist');
 
-var _configJson = require('../../../config.json');
+var _publicJson = require('../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 var _string = require('string');
 
@@ -72,7 +72,7 @@ var Scripts = (function (_Elements) {
       var _this2 = this;
 
       return new _cincoDist.Element('script', { src: function src() {
-          return _this2.props.settings.env === 'production' ? _configJson2['default'].jquery.cdn : '/assets/bower_components/jquery/dist/jquery.js';
+          return _this2.props.settings.env === 'production' ? _publicJson2['default'].jquery.cdn : '/assets/bower_components/jquery/dist/jquery.js';
         } });
     }
   }, {

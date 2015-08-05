@@ -8,6 +8,15 @@ import path           from   'path';
 import { Domain }     from   'domain';
 import mongoose       from   'mongoose';
 import Server         from   '../server';
+import DiscussionModel          from '../models/discussion';
+
+if ( process.env.NODE_ENV === 'production' ) {
+  process.title = 'synappprod';
+}
+
+else {
+  process.title = 'synappdev';
+}
 
 function parseError(error) {
   console.log(error.stack.split(/\n/));
@@ -46,14 +55,23 @@ readMe().then(
   () => connectToMongoose().then(
     () => {
       try {
-        let d = new Domain().on('error', error => parseError);
-        d.run(() => {
-          process.nextTick(() => {
-            new Server()
-              .on('error', parseError)
-              .on('message', message => console.log('message', message));
-            });
-        });
+
+        DiscussionModel
+          .findOne()
+          .exec()
+          .then(
+            discussion => {
+
+              console.log('DISCUSSION', discussion);
+
+              new Server(discussion)
+                .on('error', parseError)
+                .on('message', message => console.log('message', message));
+            },
+            console.log.bind(console)
+          );
+
+
       }
       catch ( error ) {
         parseError(error);

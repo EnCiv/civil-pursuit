@@ -1,7 +1,7 @@
 'use strict';
 
 import async              from 'async';
-import config             from '../../../../config.json';
+import config             from '../../../../public.json';
 import toSlug             from '../../../lib/util/to-slug';
 import calcHarmony        from '../../../lib/get-harmony';
 import TypeModel          from '../../type';
@@ -41,8 +41,7 @@ function toPanelItem (cb) {
         promotions
       };
 
-      item.image        =   item.image || config.public['default item image'];
-      item.imageHTML    =   this.getImageHtml();
+      item.image        =   item.image || config['default item image'];
       item.popularity   =   this.getPopularity();
       item.link         =   '/item/' + this.id + '/' + toSlug(this.subject);
 
@@ -205,7 +204,7 @@ function toPanelItem (cb) {
           let { harmony } = item.type;
 
 
-          let promises = harmony.map(side => 
+          let promises = harmony.map(side =>
             new Promise((ok, ko) => {
               ItemModel
                 .where({
@@ -293,7 +292,7 @@ function toPanelItem (cb) {
 
     catch ( error ) {
       ko(error);
-    } 
+    }
 
   });
 }

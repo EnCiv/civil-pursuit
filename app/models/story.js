@@ -2,26 +2,46 @@
 
 import { default as mongoose, Schema } from 'mongoose';
 
+import Page from './page';
+
 let schema = new Schema({
-  "actors"        :   {
-    "type"        :   Schema.Types.Mixed
+  "actors"              :   {
+    "type"              :   Schema.Types.Mixed
   },
-  "pitch"         :   {
-    "type"        :   String,
-    "required"    :   true
+  "pitch"               :   {
+    "type"              :   String,
+    "required"          :   true
   },
-  "unit"          :   {
-    "atom"        :   {
-      "type"      :   String,
-      "required"  :   true
+  "description"         :   {
+    "type"              :   String
+  },
+  "unit"                :   {
+    "atom"              :   {
+      "type"            :   String,
+      "required"        :   true
     },
-    "params"      :   [Schema.Types.Mixed]
+    "params"            :   [Schema.Types.Mixed]
   },
-  "driver"        :   {
-    "url"         :   String,
-    "viewport"    :   Schema.Types.Mixed,
-    "session"     :   Schema.Types.Mixed,
-    "env"         :   Schema.Types.Mixed
+  "driver"              :   {
+    "page"              :   {
+      "type"            :   Schema.Types.ObjectId,
+      "ref"             :   "Page"
+    },
+    "env"               :   {
+      "development"     :   Boolean,
+      "production"      :   Boolean
+    },
+    "vendor"            :   {
+      "firefox"         :   Boolean,
+      "chrome"          :   Boolean
+    },
+    "viewport"          :   {
+      "watch"           :   Boolean,
+      "phone"           :   Boolean,
+      "split"           :   Boolean,
+      "tablet"          :   Boolean,
+      "desktop"         :   Boolean
+    }
   }
 });
 

@@ -2,7 +2,7 @@
 
 import { Domain }                 from 'domain';
 import { EventEmitter }           from 'events';
-import config                     from '../../../../config.json';
+import config                     from '../../../../public.json';
 import CriteriaModel              from '../../criteria';
 import TypeModel                  from '../../type';
 

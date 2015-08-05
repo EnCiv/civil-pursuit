@@ -1,7 +1,7 @@
 'use strict';
 
 import { Element, Elements }  from 'cinco/dist';
-import config                 from '../../../config.json';
+import config                 from '../../../public.json';
 import S                      from 'string';
 
 class Scripts extends Elements {

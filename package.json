@@ -6,6 +6,7 @@
   "scripts": {
     "test": "bash bin/test.sh",
     "start": "node dist/bin/start.js",
+    "magic-start": "npm install && npm start",
     "postinstall": "./post-install.sh",
     "build": "bash bin/bundle.sh",
     "watch": "bash bin/watchify.sh",
@@ -51,7 +52,7 @@
     "marked": "^0.3.3",
     "moment": "^2.10.6",
     "mongodb": "^2.0.31",
-    "mongoose": "~3.8.19",
+    "mongoose": "^4.1.1",
     "mongoose-simple-random": "~0.3.0",
     "nodemailer": "~1.3.0",
     "passport": "^0.2.2",

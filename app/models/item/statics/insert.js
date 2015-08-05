@@ -2,7 +2,7 @@
 
 import path         from 'path';
 import cloudinary   from '../../../lib/app/cloudinary';
-import config       from '../../../../config.json';
+import config       from '../../../../secret.json';
 
 function insertItem (candidate, socket) {
   console.log('--insert item', candidate, "\n\n")
@@ -22,15 +22,15 @@ function insertItem (candidate, socket) {
       }
 
       console.log('--created', item, "\n\n")
-      
+
       ok(item);
 
       if ( image ) {
         console.log('--uploading image to cloudinary', item, "\n\n")
         cloudinary.uploader.upload(
-          
+
           path.join(config.tmp, image),
-          
+
           result => {
             console.log('--got response from cloudinary', result, "\n\n")
 

@@ -1,7 +1,7 @@
 'use strict';
 
 import { Element, Elements }    from 'cinco/dist';
-import config                   from '../../../config.json';
+import config                   from '../../../public.json';
 import PanelView                from '../panel/view';
 import IdentityView             from '../identity/view';
 import ResidenceView            from '../residence/view';

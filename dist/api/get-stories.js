@@ -14,7 +14,7 @@ function getStories(event) {
   var _this = this;
 
   try {
-    _modelsStory2['default'].find().exec().then(function (stories) {
+    _modelsStory2['default'].find().populate('driver.page').exec().then(function (stories) {
       return _this.ok(event, stories);
     }, function (error) {
       return _this.error(error);

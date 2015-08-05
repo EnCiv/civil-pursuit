@@ -12,9 +12,9 @@ var _async = require('async');
 
 var _async2 = _interopRequireDefault(_async);
 
-var _configJson = require('../../../../config.json');
+var _publicJson = require('../../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 var _libUtilToSlug = require('../../../lib/util/to-slug');
 
@@ -71,8 +71,7 @@ function toPanelItem(cb) {
           promotions: promotions
         };
 
-        item.image = item.image || _configJson2['default']['public']['default item image'];
-        item.imageHTML = _this.getImageHtml();
+        item.image = item.image || _publicJson2['default']['default item image'];
         item.popularity = _this.getPopularity();
         item.link = '/item/' + _this.id + '/' + (0, _libUtilToSlug2['default'])(_this.subject);
 

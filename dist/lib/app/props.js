@@ -6,9 +6,9 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _configJson = require('../../../config.json');
+var _publicJson = require('../../../public.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _publicJson2 = _interopRequireDefault(_publicJson);
 
 function props(server, req, res) {
   var locals = {
@@ -37,7 +37,7 @@ function props(server, req, res) {
     };
   }
 
-  locals.config = _configJson2['default']['public'];
+  locals.config = _publicJson2['default'];
 
   return locals;
 }

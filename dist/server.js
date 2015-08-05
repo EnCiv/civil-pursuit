@@ -90,9 +90,9 @@ var _modelsUser = require('./models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-var _configJson = require('../config.json');
+var _secretJson = require('../secret.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
 var _libUtilPrintTime = require('./lib/util/print-time');
 
@@ -107,12 +107,14 @@ var _modelsDiscussion = require('./models/discussion');
 var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
 
 var HttpServer = (function (_EventEmitter) {
-  function HttpServer() {
+  function HttpServer(discussion) {
     var _this = this;
 
     _classCallCheck(this, HttpServer);
 
     _get(Object.getPrototypeOf(HttpServer.prototype), 'constructor', this).call(this);
+
+    this.discussion = discussion;
 
     console.log('new server');
 
@@ -197,7 +199,7 @@ var HttpServer = (function (_EventEmitter) {
     key: 'session',
     value: function session() {
       this.app.use((0, _expressSession2['default'])({
-        secret: _configJson2['default'].secret,
+        secret: _secretJson2['default'].secret,
         resave: true,
         saveUninitialized: true
       }));
@@ -224,7 +226,7 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'setUserCookie',
     value: function setUserCookie(req, res, next) {
-      res.cookie('synuser', { email: req.user.email, id: req.user._id }, _configJson2['default'].cookie);
+      res.cookie('synuser', { email: req.user.email, id: req.user._id }, _secretJson2['default'].cookie);
 
       next();
     }
@@ -301,13 +303,16 @@ var HttpServer = (function (_EventEmitter) {
           }
 
           if (isAuthorized) {
+
+            console.log('User is authorized'.bgBlue.bold);
+
             return _this2.renderPage(req, res, next);
           }
 
-          _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
-            res.locals.discussion = discussion;
-            _this2.renderPage(req, res, next);
-          }, next);
+          console.log('User is **NOT** authorized'.bgBlue.bold);
+
+          res.locals.discussion = _this2.discussion;
+          _this2.renderPage(req, res, next);
         } catch (error) {
           next(error);
         }
@@ -394,6 +399,10 @@ var HttpServer = (function (_EventEmitter) {
         new _api2['default'](_this4).on('error', function (error) {
           return _this4.emit('error', error);
         });
+
+        setTimeout(function () {
+          return console.log('SERVER IS LISTENING');
+        }, 2000);
       });
     }
   }]);

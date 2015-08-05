@@ -6,12 +6,12 @@ Object.defineProperty(exports, '__esModule', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _configJson = require('../../config.json');
+var _secretJson = require('../../secret.json');
 
-var _configJson2 = _interopRequireDefault(_configJson);
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
 function setCookieUser(req, res, next) {
-  res.cookie('synuser', { email: req.user.email, id: req.user._id }, _configJson2['default'].cookie);
+  res.cookie('synuser', { email: req.user.email, id: req.user._id }, _secretJson2['default'].cookie);
 
   next();
 }
