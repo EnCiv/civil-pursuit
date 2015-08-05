@@ -1,0 +1,75 @@
+{
+  "profile": {
+    "identity": {
+      "description": "This information is used to identify you and make sure that you are unique"
+    },
+    "residence": {
+      "description": "This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png"
+    },
+    "demographics": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
+    },
+    "voter": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
+    },
+    "public persona": {
+      "description": "This is the information shown about you that others can see when they are evaluating your postings.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
+    }
+  },
+
+  "navigator batch size": 6,
+
+  "item media": {
+
+    "max-width": 180,
+
+    "max-height": 120
+  },
+
+  "google analytics": {
+    "key": "UA-55807209-1"
+  },
+
+  "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
+
+  "user image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg",
+
+  "routes": {
+
+    "terms of service": "/page/terms-of-service",
+
+    "sign in with twitter": "/sign/twitter",
+
+    "sign in with twitter OK": "/sign/twitter/ok",
+
+    "sign in with facebook": "/sign/facebook",
+
+    "sign in with facebook OK": "/sign/facebook/ok"
+
+  },
+
+  "title"           :   {
+    "prefix"        :   "Synaccord | ",
+    "default"       :   "Bring Synergy To Democracy"
+  },
+
+  "entry image maximum width"       : 160,
+
+  "example image for test upload"   : "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
+
+  "font awesome": {
+    "cdn": "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+  },
+
+  "jquery":{
+    "cdn": "//code.jquery.com/jquery-2.1.1.min.js"
+  },
+
+  "evaluation context item position": "last",
+
+  "top level type" : "Topic"
+}
