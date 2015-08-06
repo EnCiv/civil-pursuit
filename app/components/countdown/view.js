@@ -21,15 +21,15 @@ class CountDownView extends Element {
               new Element('h2').text('Countdown to discussion'),
 
               new Element('h1').add(
-                new Element('span.discussion-deadline-month'),
+                new Element('span.discussion-deadline-month').text('0'),
                 new Element('span').text('. '),
-                new Element('span.discussion-deadline-day'),
+                new Element('span.discussion-deadline-day').text('0'),
                 new Element('span').text(', '),
-                new Element('span.discussion-deadline-year'),
+                new Element('span.discussion-deadline-year').text('0'),
                 new Element('span').text(', '),
-                new Element('span.discussion-deadline-hour'),
+                new Element('span.discussion-deadline-hour').text('0'),
                 new Element('span').text(':'),
-                new Element('span.discussion-deadline-minute'),
+                new Element('span.discussion-deadline-minute').text('0'),
                 new Element('span').text(' '),
                 new Element('span.discussion-deadline-ampm'),
                 new Element('span.discussion-deadline-timezone')
@@ -44,22 +44,24 @@ class CountDownView extends Element {
                 new Element('span').text(':'),
                 new Element('span.countdown-seconds').text('0')
               ),
-              new Element('.row').add(
-                new Element('.watch-30.watch-push-20').add(
-                  new Element('h4').text('Openings')
-                ),
-                new Element('.watch-30').add(
-                  new Element('h4').text('Remaining')
-                )
-              ),
-              new Element('.row').add(
-                new Element('.watch-30.watch-push-20').add(
-                  new Element('h2.discussion-registered').text('0')
-                ),
-                new Element('.watch-30').add(
-                  new Element('h2.discussion-goal').text('0')
-                )
-              )
+              // new Element('.row').add(
+              //   new Element('.watch-30.watch-push-20').add(
+              //     new Element('h4').text('Openings')
+              //   ),
+              //   new Element('.watch-30').add(
+              //     new Element('h4').text('Remaining')
+              //   )
+              // ),
+              // new Element('.row').add(
+              //   new Element('.watch-30.watch-push-20').add(
+              //     new Element('h2.discussion-registered').text('0')
+              //   ),
+              //   new Element('.watch-30').add(
+              //     new Element('h2.discussion-goal').text('0')
+              //   )
+              // )
+              new Element('h3.text-center').text('Openings remaining'),
+              new Element('h2.text-center.discussion-openings_remainings')
             ),
             new Element('.row').add(
               new Element('.phone-60.phone-push-20').add(

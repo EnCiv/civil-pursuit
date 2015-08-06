@@ -132,8 +132,9 @@ class CountDownCtrl extends Controller {
   }
 
   renderGoal () {
-    this.find('registered').text(this.discussion.registered.length);
-    this.find('goal').text(this.discussion.goal);
+    // this.find('registered').text(this.discussion.registered.length);
+    // this.find('goal').text(this.discussion.goal);
+    this.template.find('.discussion-openings_remainings').text(this.discussion.goal - this.discussion.registered.length);
   }
 
   renderRegister () {
