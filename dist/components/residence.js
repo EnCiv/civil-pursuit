@@ -107,6 +107,30 @@ var Residence = (function (_React$Component) {
       }
     }
   }, {
+    key: 'setZip',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function setZip() {
+      var zip = _react2['default'].findDOMNode(this.refs.zip).value;
+
+      if (zip) {
+        window.socket.emit('set zip', zip);
+      }
+    }
+  }, {
+    key: 'setZip4',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function setZip4() {
+      var zip4 = _react2['default'].findDOMNode(this.refs.zip4).value;
+
+      if (zip4) {
+        window.socket.emit('set zip4', zip4);
+      }
+    }
+  }, {
     key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,8 +223,8 @@ var Residence = (function (_React$Component) {
         _react2['default'].createElement(
           _utilInputGroup2['default'],
           { block: true, className: 'gutter' },
-          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Zip' }),
-          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Zip +4' })
+          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Zip', defaultValue: user.zip, onChange: this.setZip.bind(this), ref: 'zip' }),
+          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Zip +4', defaultValue: user.zip4, onChange: this.setZip4.bind(this), ref: 'zip4' })
         )
       );
     }

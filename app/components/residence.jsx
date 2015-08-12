@@ -53,6 +53,26 @@ class Residence extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  setZip () {
+    let zip = React.findDOMNode(this.refs.zip).value;
+
+    if ( zip ) {
+      window.socket.emit('set zip', zip);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  setZip4 () {
+    let zip4 = React.findDOMNode(this.refs.zip4).value;
+
+    if ( zip4 ) {
+      window.socket.emit('set zip4', zip4);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     let { user } = this.props;
 
@@ -106,8 +126,8 @@ class Residence extends React.Component {
         </InputGroup>
 
         <InputGroup block className="gutter">
-          <TextInput placeholder="Zip" />
-          <TextInput placeholder="Zip +4" />
+          <TextInput placeholder="Zip" defaultValue={ user.zip } onChange={ this.setZip.bind(this) } ref="zip" />
+          <TextInput placeholder="Zip +4" defaultValue={ user.zip4 } onChange={ this.setZip4.bind(this) } ref="zip4" />
         </InputGroup>
       </section>
     );
