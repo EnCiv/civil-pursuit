@@ -78,10 +78,10 @@ class Demographics extends React.Component {
 
     let races = config.race.map(race => (
       <Row>
-        <Column>
+        <Column className="gutter">
           { race.name }
         </Column>
-        <Column>
+        <Column className="gutter">
           <input type="checkbox" />
         </Column>
       </Row>
@@ -99,13 +99,57 @@ class Demographics extends React.Component {
         </section>
 
         <Row>
-          <Column>
+          <Column className="gutter">
             Race:
           </Column>
           <Column>
             { races }
           </Column>
         </Row>
+
+        <section className="gutter">
+          <Row baseline className="gutter-y">
+            <Column span="25">
+              Education
+            </Column>
+            <Column span="75">
+              <Select block medium ref="gender" defaultValue={ user.gender }>
+                <option value="">Choose one</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+              </Select>
+            </Column>
+          </Row>
+
+          <Row baseline className="gutter-y">
+            <Column span="25">
+              Relationship
+            </Column>
+            <Column span="75">
+              <Select block medium ref="gender" defaultValue={ user.gender }>
+                <option value="">Choose one</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+              </Select>
+            </Column>
+          </Row>
+
+          <Row baseline className="gutter-y">
+            <Column span="25">
+              Employment
+            </Column>
+            <Column span="75">
+              <Select block medium ref="gender" defaultValue={ user.gender }>
+                <option value="">Choose one</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+              </Select>
+            </Column>
+          </Row>
+        </section>
       </section>
     );
   }

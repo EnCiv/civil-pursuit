@@ -92,6 +92,8 @@ var Creator = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     value: function create() {
+      var _this2 = this;
+
       var subject = _react2['default'].findDOMNode(this.refs.subject).value;
       var description = _react2['default'].findDOMNode(this.refs.description).value;
       var url = _react2['default'].findDOMNode(this.refs.reference).value;
@@ -107,6 +109,13 @@ var Creator = (function (_React$Component) {
 
       window.socket.emit('create item', item).on('OK create item', function (item) {
         console.log(item);
+
+        _react2['default'].findDOMNode(_this2.refs.subject).value = '';
+        _react2['default'].findDOMNode(_this2.refs.description).value = '';
+        _react2['default'].findDOMNode(_this2.refs.reference).value = '';
+        _react2['default'].findDOMNode(_this2.refs.title).value = '';
+
+        window.socket.emit('get items', { type: _this2.props.type });
       });
     }
   }, {

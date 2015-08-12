@@ -146,12 +146,12 @@ var Demographics = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilColumn2['default'],
-            null,
+            { className: 'gutter' },
             race.name
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
-            null,
+            { className: 'gutter' },
             _react2['default'].createElement('input', { type: 'checkbox' })
           )
         );
@@ -184,13 +184,128 @@ var Demographics = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilColumn2['default'],
-            null,
+            { className: 'gutter' },
             'Race:'
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
             null,
             races
+          )
+        ),
+        _react2['default'].createElement(
+          'section',
+          { className: 'gutter' },
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            { baseline: true, className: 'gutter-y' },
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '25' },
+              'Education'
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '75' },
+              _react2['default'].createElement(
+                _utilSelect2['default'],
+                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                _react2['default'].createElement(
+                  'option',
+                  { value: '' },
+                  'Choose one'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'M' },
+                  'Male'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'F' },
+                  'Female'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'O' },
+                  'Other'
+                )
+              )
+            )
+          ),
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            { baseline: true, className: 'gutter-y' },
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '25' },
+              'Relationship'
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '75' },
+              _react2['default'].createElement(
+                _utilSelect2['default'],
+                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                _react2['default'].createElement(
+                  'option',
+                  { value: '' },
+                  'Choose one'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'M' },
+                  'Male'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'F' },
+                  'Female'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'O' },
+                  'Other'
+                )
+              )
+            )
+          ),
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            { baseline: true, className: 'gutter-y' },
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '25' },
+              'Employment'
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '75' },
+              _react2['default'].createElement(
+                _utilSelect2['default'],
+                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                _react2['default'].createElement(
+                  'option',
+                  { value: '' },
+                  'Choose one'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'M' },
+                  'Male'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'F' },
+                  'Female'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'O' },
+                  'Other'
+                )
+              )
+            )
           )
         )
       );

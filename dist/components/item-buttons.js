@@ -54,7 +54,7 @@ var ItemButtons = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilButton2['default'],
-            { small: true, shy: true },
+            { small: true, shy: true, onClick: this.toggleCreator.bind(this) },
             _react2['default'].createElement(
               'span',
               null,

@@ -58,6 +58,13 @@ class Creator extends React.Component {
     window.socket.emit('create item', item)
       .on('OK create item', item => {
         console.log(item);
+
+        React.findDOMNode(this.refs.subject).value = '';
+        React.findDOMNode(this.refs.description).value = '';
+        React.findDOMNode(this.refs.reference).value = '';
+        React.findDOMNode(this.refs.title).value = '';
+
+        window.socket.emit('get items', { type: this.props.type  })
       });
   }
 

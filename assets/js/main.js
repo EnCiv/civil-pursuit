@@ -11,18 +11,29 @@ var _componentsApp = require('../components/app');
 
 var _componentsApp2 = _interopRequireDefault(_componentsApp);
 
+var _events = require('events');
+
 var props = {
   online: 0,
   path: location.pathname,
   user: null,
   ready: false,
-  intro: window.synapp.intro
+  intro: window.synapp.intro,
+  reloads: 0
 };
 
 function render() {
   console.info('Rendering app', props);
   _react2['default'].render(_react2['default'].createElement(_componentsApp2['default'], props), document.getElementById('synapp'));
 }
+
+window.Dispatcher = new _events.EventEmitter();
+
+window.Dispatcher.on('reload', function () {
+  props.reloads++;
+  console.log('reload', props.reloads);
+  render();
+});
 
 window.socket = io();
 
@@ -36,7 +47,7 @@ window.socket.on('welcome', function (user) {
   props.online = users;
   render();
 });
-},{"../components/app":2,"react":206}],2:[function(require,module,exports){
+},{"../components/app":2,"events":48,"react":206}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -147,7 +158,7 @@ var App = (function (_React$Component) {
 
 exports['default'] = App;
 module.exports = exports['default'];
-},{"./home":7,"./kitchen-sink":14,"./layout":15,"./profile":18,"./stories":20,"./terms-of-service":21,"react":206}],3:[function(require,module,exports){
+},{"./home":7,"./kitchen-sink":13,"./layout":14,"./profile":17,"./stories":20,"./terms-of-service":21,"react":206}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -407,7 +418,7 @@ var Countdown = (function (_React$Component) {
 
 exports['default'] = Countdown;
 module.exports = exports['default'];
-},{"./panel":17,"./util/button":27,"moment":51,"react":206}],4:[function(require,module,exports){
+},{"./panel":16,"./util/button":27,"moment":51,"react":206}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -502,6 +513,8 @@ var Creator = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     value: function create() {
+      var _this2 = this;
+
       var subject = _react2['default'].findDOMNode(this.refs.subject).value;
       var description = _react2['default'].findDOMNode(this.refs.description).value;
       var url = _react2['default'].findDOMNode(this.refs.reference).value;
@@ -517,6 +530,13 @@ var Creator = (function (_React$Component) {
 
       window.socket.emit('create item', item).on('OK create item', function (item) {
         console.log(item);
+
+        _react2['default'].findDOMNode(_this2.refs.subject).value = '';
+        _react2['default'].findDOMNode(_this2.refs.description).value = '';
+        _react2['default'].findDOMNode(_this2.refs.reference).value = '';
+        _react2['default'].findDOMNode(_this2.refs.title).value = '';
+
+        window.socket.emit('get items', { type: _this2.props.type });
       });
     }
   }, {
@@ -774,12 +794,12 @@ var Demographics = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilColumn2['default'],
-            null,
+            { className: 'gutter' },
             race.name
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
-            null,
+            { className: 'gutter' },
             _react2['default'].createElement('input', { type: 'checkbox' })
           )
         );
@@ -812,13 +832,128 @@ var Demographics = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilColumn2['default'],
-            null,
+            { className: 'gutter' },
             'Race:'
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
             null,
             races
+          )
+        ),
+        _react2['default'].createElement(
+          'section',
+          { className: 'gutter' },
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            { baseline: true, className: 'gutter-y' },
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '25' },
+              'Education'
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '75' },
+              _react2['default'].createElement(
+                _utilSelect2['default'],
+                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                _react2['default'].createElement(
+                  'option',
+                  { value: '' },
+                  'Choose one'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'M' },
+                  'Male'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'F' },
+                  'Female'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'O' },
+                  'Other'
+                )
+              )
+            )
+          ),
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            { baseline: true, className: 'gutter-y' },
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '25' },
+              'Relationship'
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '75' },
+              _react2['default'].createElement(
+                _utilSelect2['default'],
+                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                _react2['default'].createElement(
+                  'option',
+                  { value: '' },
+                  'Choose one'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'M' },
+                  'Male'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'F' },
+                  'Female'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'O' },
+                  'Other'
+                )
+              )
+            )
+          ),
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            { baseline: true, className: 'gutter-y' },
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '25' },
+              'Employment'
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '75' },
+              _react2['default'].createElement(
+                _utilSelect2['default'],
+                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                _react2['default'].createElement(
+                  'option',
+                  { value: '' },
+                  'Choose one'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'M' },
+                  'Male'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'F' },
+                  'Female'
+                ),
+                _react2['default'].createElement(
+                  'option',
+                  { value: 'O' },
+                  'Other'
+                )
+              )
+            )
           )
         )
       );
@@ -1425,124 +1560,7 @@ var Intro = (function (_React$Component) {
 
 exports['default'] = Intro;
 module.exports = exports['default'];
-},{"./item":12,"./panel":17,"react":206}],10:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _utilButton = require('./util/button');
-
-var _utilButton2 = _interopRequireDefault(_utilButton);
-
-var _utilButtonGroup = require('./util/button-group');
-
-var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
-
-var _utilIcon = require('./util/icon');
-
-var _utilIcon2 = _interopRequireDefault(_utilIcon);
-
-var ItemButtons = (function (_React$Component) {
-  function ItemButtons() {
-    _classCallCheck(this, ItemButtons);
-
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
-  }
-
-  _inherits(ItemButtons, _React$Component);
-
-  _createClass(ItemButtons, [{
-    key: 'render',
-    value: function render() {
-      var item = this.props.item;
-
-      console.log({ item: item });
-
-      return _react2['default'].createElement(
-        'section',
-        { className: 'item-buttons' },
-        _react2['default'].createElement(
-          _utilButtonGroup2['default'],
-          null,
-          _react2['default'].createElement(
-            _utilButton2['default'],
-            { small: true, shy: true },
-            _react2['default'].createElement(
-              'span',
-              null,
-              item.promotions,
-              ' '
-            ),
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
-          )
-        ),
-        _react2['default'].createElement(
-          _utilButtonGroup2['default'],
-          null,
-          _react2['default'].createElement(
-            _utilButton2['default'],
-            { small: true, shy: true },
-            _react2['default'].createElement(
-              'span',
-              null,
-              item.popularity.number + '%',
-              ' '
-            ),
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
-          )
-        ),
-        _react2['default'].createElement(
-          _utilButtonGroup2['default'],
-          null,
-          _react2['default'].createElement(
-            _utilButton2['default'],
-            { small: true, shy: true },
-            _react2['default'].createElement(
-              'span',
-              null,
-              item.promotions,
-              ' '
-            ),
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })
-          ),
-          _react2['default'].createElement(
-            _utilButton2['default'],
-            { small: true, shy: true },
-            _react2['default'].createElement(
-              'span',
-              null,
-              item.popularity.number + '%',
-              ' '
-            ),
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
-          )
-        )
-      );
-    }
-  }]);
-
-  return ItemButtons;
-})(_react2['default'].Component);
-
-exports['default'] = ItemButtons;
-module.exports = exports['default'];
-},{"./util/button":27,"./util/button-group":26,"./util/icon":34,"react":206}],11:[function(require,module,exports){
+},{"./item":11,"./panel":16,"react":206}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1602,7 +1620,7 @@ var ItemMedia = (function (_React$Component) {
 
 exports['default'] = ItemMedia;
 module.exports = exports['default'];
-},{"./util/image":35,"react":206}],12:[function(require,module,exports){
+},{"./util/image":35,"react":206}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1635,6 +1653,10 @@ var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
 
+var _utilAccordion = require('./util/accordion');
+
+var _utilAccordion2 = _interopRequireDefault(_utilAccordion);
+
 var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
@@ -1643,9 +1665,15 @@ var _itemMedia = require('./item-media');
 
 var _itemMedia2 = _interopRequireDefault(_itemMedia);
 
-var _itemButtons = require('./item-buttons');
+// import ItemButtons      from './item-buttons';
 
-var _itemButtons2 = _interopRequireDefault(_itemButtons);
+var _promote = require('./promote');
+
+var _promote2 = _interopRequireDefault(_promote);
+
+var _utilButtonGroup = require('./util/button-group');
+
+var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
 
 var Item = (function (_React$Component) {
 
@@ -1657,11 +1685,23 @@ var Item = (function (_React$Component) {
     _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this, props);
 
     this.expanded = false;
+
+    this.state = {
+      showPromote: false
+    };
   }
 
   _inherits(Item, _React$Component);
 
   _createClass(Item, [{
+    key: 'togglePromote',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function togglePromote() {
+      this.setState({ showPromote: !this.state.showPromote });
+    }
+  }, {
     key: 'componentDidMount',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1739,7 +1779,66 @@ var Item = (function (_React$Component) {
           textSpan = 50;
 
       if (this.props.buttons !== false) {
-        buttons = _react2['default'].createElement(_itemButtons2['default'], { item: item });
+        buttons = _react2['default'].createElement(
+          'section',
+          { className: 'item-buttons' },
+          _react2['default'].createElement(
+            _utilButtonGroup2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true, onClick: this.togglePromote.bind(this) },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.promotions,
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+            )
+          ),
+          _react2['default'].createElement(
+            _utilButtonGroup2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.popularity.number + '%',
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
+            )
+          ),
+          _react2['default'].createElement(
+            _utilButtonGroup2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.promotions,
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })
+            ),
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.popularity.number + '%',
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
+            )
+          )
+        );
       } else {
         textSpan = 75;
       }
@@ -1795,7 +1894,16 @@ var Item = (function (_React$Component) {
             )
           )
         ),
-        _react2['default'].createElement('section', { style: { clear: 'both' } })
+        _react2['default'].createElement('section', { style: { clear: 'both' } }),
+        _react2['default'].createElement(
+          'section',
+          null,
+          _react2['default'].createElement(
+            _utilAccordion2['default'],
+            { show: this.state.showPromote },
+            _react2['default'].createElement(_promote2['default'], null)
+          )
+        )
       );
     }
 
@@ -1863,7 +1971,7 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"./item-buttons":10,"./item-media":11,"./util/button":27,"./util/column":29,"./util/icon":34,"./util/row":41,"react":206}],13:[function(require,module,exports){
+},{"./item-media":10,"./promote":18,"./util/accordion":25,"./util/button":27,"./util/button-group":26,"./util/column":29,"./util/icon":34,"./util/row":41,"react":206}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2163,7 +2271,7 @@ var Join = (function (_React$Component) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../lib/app/component":46,"./util/button":27,"./util/button-group":26,"./util/column":29,"./util/email-input":31,"./util/form":33,"./util/icon":34,"./util/input-group":36,"./util/link":38,"./util/modal":39,"./util/password":40,"./util/row":41,"./util/submit":43,"react":206,"superagent":207}],14:[function(require,module,exports){
+},{"../lib/app/component":46,"./util/button":27,"./util/button-group":26,"./util/column":29,"./util/email-input":31,"./util/form":33,"./util/icon":34,"./util/input-group":36,"./util/link":38,"./util/modal":39,"./util/password":40,"./util/row":41,"./util/submit":43,"react":206,"superagent":207}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2461,7 +2569,7 @@ var KitchenSink = (function (_React$Component) {
 
 exports['default'] = KitchenSink;
 module.exports = exports['default'];
-},{"./util/button":27,"./util/button-group":26,"./util/input-group":36,"./util/modal":39,"./util/select":42,"./util/text-input":45,"react":206}],15:[function(require,module,exports){
+},{"./util/button":27,"./util/button-group":26,"./util/input-group":36,"./util/modal":39,"./util/select":42,"./util/text-input":45,"react":206}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2532,7 +2640,7 @@ var Layout = (function (_React$Component) {
 
 exports['default'] = Layout;
 module.exports = exports['default'];
-},{"./footer":6,"./intro":9,"./panel":17,"./top-bar":22,"react":206}],16:[function(require,module,exports){
+},{"./footer":6,"./intro":9,"./panel":16,"./top-bar":22,"react":206}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2766,7 +2874,7 @@ var Login = (function (_React$Component) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../lib/app/component":46,"./util/button":27,"./util/button-group":26,"./util/column":29,"./util/email-input":31,"./util/form":33,"./util/icon":34,"./util/link":38,"./util/modal":39,"./util/password":40,"./util/row":41,"./util/submit":43,"react":206,"superagent":207}],17:[function(require,module,exports){
+},{"../lib/app/component":46,"./util/button":27,"./util/button-group":26,"./util/column":29,"./util/email-input":31,"./util/form":33,"./util/icon":34,"./util/link":38,"./util/modal":39,"./util/password":40,"./util/row":41,"./util/submit":43,"react":206,"superagent":207}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2869,7 +2977,7 @@ exports['default'] = Panel;
 module.exports = exports['default'];
 
 // console.warn('panel', props);
-},{"../lib/app/component":46,"./creator":4,"./util/accordion":25,"./util/icon":34,"react":206}],18:[function(require,module,exports){
+},{"../lib/app/component":46,"./creator":4,"./util/accordion":25,"./util/icon":34,"react":206}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3024,7 +3132,53 @@ var Profile = (function (_React$Component) {
 
 exports['default'] = Profile;
 module.exports = exports['default'];
-},{"../lib/app/component":46,"./demographics":5,"./identity":8,"./panel":17,"./residence":19,"./util/column":29,"./util/icon":34,"./util/row":41,"react":206}],19:[function(require,module,exports){
+},{"../lib/app/component":46,"./demographics":5,"./identity":8,"./panel":16,"./residence":19,"./util/column":29,"./util/icon":34,"./util/row":41,"react":206}],18:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var Promote = (function (_React$Component) {
+  function Promote() {
+    _classCallCheck(this, Promote);
+
+    if (_React$Component != null) {
+      _React$Component.apply(this, arguments);
+    }
+  }
+
+  _inherits(Promote, _React$Component);
+
+  _createClass(Promote, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        null,
+        'Promote'
+      );
+    }
+  }]);
+
+  return Promote;
+})(_react2['default'].Component);
+
+exports['default'] = Promote;
+module.exports = exports['default'];
+},{"react":206}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3737,7 +3891,7 @@ var TopBar = (function (_React$Component) {
 
 exports['default'] = TopBar;
 module.exports = exports['default'];
-},{"../lib/app/component":46,"./join":13,"./login":16,"./util/button":27,"./util/cloudinary-image":28,"./util/icon":34,"./util/link":38,"react":206}],23:[function(require,module,exports){
+},{"../lib/app/component":46,"./join":12,"./login":15,"./util/button":27,"./util/cloudinary-image":28,"./util/icon":34,"./util/link":38,"react":206}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3836,7 +3990,7 @@ var TopLevelPanel = (function (_React$Component) {
 
 exports['default'] = TopLevelPanel;
 module.exports = exports['default'];
-},{"./item":12,"./panel":17,"react":206}],24:[function(require,module,exports){
+},{"./item":11,"./panel":16,"react":206}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

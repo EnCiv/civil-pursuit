@@ -14,7 +14,7 @@ class ItemButtons extends React.Component {
     return (
       <section className="item-buttons">
         <ButtonGroup>
-          <Button small shy>
+          <Button small shy onClick={ this.toggleCreator.bind(this) }>
             <span>{ item.promotions } </span>
             <Icon icon="bullhorn" />
           </Button>

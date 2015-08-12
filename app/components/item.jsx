@@ -4,9 +4,12 @@ import React            from 'react';
 import Row              from './util/row';
 import Column           from './util/column';
 import Button           from './util/button';
+import Accordion        from './util/accordion';
 import Icon             from './util/icon';
 import ItemMedia        from './item-media';
-import ItemButtons      from './item-buttons';
+// import ItemButtons      from './item-buttons';
+import Promote          from './promote';
+import ButtonGroup      from './util/button-group';
 
 class Item extends React.Component {
 
@@ -67,6 +70,16 @@ class Item extends React.Component {
     super(props)
 
     this.expanded = false;
+
+    this.state = {
+      showPromote : false
+    };
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  togglePromote () {
+    this.setState({ showPromote : ! this.state.showPromote });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,7 +163,33 @@ class Item extends React.Component {
 
     if ( this.props.buttons !== false ) {
       buttons = (
-        <ItemButtons item={ item } />
+        <section className="item-buttons">
+          <ButtonGroup>
+            <Button small shy onClick={ this.togglePromote.bind(this) }>
+              <span>{ item.promotions } </span>
+              <Icon icon="bullhorn" />
+            </Button>
+          </ButtonGroup>
+
+          <ButtonGroup>
+            <Button small shy>
+              <span>{ item.popularity.number + '%' } </span>
+              <Icon icon="signal" />
+            </Button>
+          </ButtonGroup>
+
+          <ButtonGroup>
+            <Button small shy>
+              <span>{ item.promotions } </span>
+              <Icon icon="fire" />
+            </Button>
+
+            <Button small shy>
+              <span>{ item.popularity.number + '%' } </span>
+              <Icon icon="music" />
+            </Button>
+          </ButtonGroup>
+        </section>
       );
     }
     else {
@@ -182,6 +221,12 @@ class Item extends React.Component {
         </section>
 
         <section style={ { clear : 'both' }}></section>
+
+        <section>
+          <Accordion show={ this.state.showPromote }>
+            <Promote />
+          </Accordion>
+        </section>
       </article>
     );
   }

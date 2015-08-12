@@ -30,6 +30,10 @@ var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
 
+var _utilAccordion = require('./util/accordion');
+
+var _utilAccordion2 = _interopRequireDefault(_utilAccordion);
+
 var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
@@ -38,9 +42,15 @@ var _itemMedia = require('./item-media');
 
 var _itemMedia2 = _interopRequireDefault(_itemMedia);
 
-var _itemButtons = require('./item-buttons');
+// import ItemButtons      from './item-buttons';
 
-var _itemButtons2 = _interopRequireDefault(_itemButtons);
+var _promote = require('./promote');
+
+var _promote2 = _interopRequireDefault(_promote);
+
+var _utilButtonGroup = require('./util/button-group');
+
+var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
 
 var Item = (function (_React$Component) {
 
@@ -52,11 +62,23 @@ var Item = (function (_React$Component) {
     _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this, props);
 
     this.expanded = false;
+
+    this.state = {
+      showPromote: false
+    };
   }
 
   _inherits(Item, _React$Component);
 
   _createClass(Item, [{
+    key: 'togglePromote',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function togglePromote() {
+      this.setState({ showPromote: !this.state.showPromote });
+    }
+  }, {
     key: 'componentDidMount',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -134,7 +156,66 @@ var Item = (function (_React$Component) {
           textSpan = 50;
 
       if (this.props.buttons !== false) {
-        buttons = _react2['default'].createElement(_itemButtons2['default'], { item: item });
+        buttons = _react2['default'].createElement(
+          'section',
+          { className: 'item-buttons' },
+          _react2['default'].createElement(
+            _utilButtonGroup2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true, onClick: this.togglePromote.bind(this) },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.promotions,
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+            )
+          ),
+          _react2['default'].createElement(
+            _utilButtonGroup2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.popularity.number + '%',
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
+            )
+          ),
+          _react2['default'].createElement(
+            _utilButtonGroup2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.promotions,
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })
+            ),
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { small: true, shy: true },
+              _react2['default'].createElement(
+                'span',
+                null,
+                item.popularity.number + '%',
+                ' '
+              ),
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
+            )
+          )
+        );
       } else {
         textSpan = 75;
       }
@@ -190,7 +271,16 @@ var Item = (function (_React$Component) {
             )
           )
         ),
-        _react2['default'].createElement('section', { style: { clear: 'both' } })
+        _react2['default'].createElement('section', { style: { clear: 'both' } }),
+        _react2['default'].createElement(
+          'section',
+          null,
+          _react2['default'].createElement(
+            _utilAccordion2['default'],
+            { show: this.state.showPromote },
+            _react2['default'].createElement(_promote2['default'], null)
+          )
+        )
       );
     }
 
