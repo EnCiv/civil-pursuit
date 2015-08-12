@@ -73,14 +73,17 @@ var Profile = (function (_React$Component) {
           window.socket.emit('get countries').on('OK get countries', ok);
         }), new Promise(function (ok, ko) {
           window.socket.emit('get config').on('OK get config', ok);
+        }), new Promise(function (ok, ko) {
+          window.socket.emit('get states').on('OK get states', ok);
         })]).then(function (results) {
-          var _results = _slicedToArray(results, 3);
+          var _results = _slicedToArray(results, 4);
 
           var user = _results[0];
           var countries = _results[1];
           var config = _results[2];
+          var states = _results[3];
 
-          _this.setState({ ready: true, user: user, countries: countries, config: config });
+          _this.setState({ ready: true, user: user, countries: countries, config: config, states: states });
         });
       }
     }
@@ -106,7 +109,7 @@ var Profile = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50' },
-            _react2['default'].createElement(_residence2['default'], { user: this.state.user })
+            _react2['default'].createElement(_residence2['default'], { user: this.state.user, states: this.state.states })
           )
         );
       }

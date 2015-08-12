@@ -1093,6 +1093,10 @@ body {
   border-radius: 3px 3px 0 0;
   padding: 1px;
 }
+.syn-panel-heading h4 {
+  text-align: center;
+  flex-grow: 3;
+}
 .syn-panel-heading h4,
 .syn-panel-heading i.fa-plus {
   padding: 0 10px;
@@ -1184,5 +1188,16 @@ body {
 .syn-creator .syn-edit-url:not(.--visible),
 .syn-creator .url-editor.--hide {
   display: none;
+}
+.syn-creator [name="subject"] {
+  border-radius: 4px 4px 0 0;
+  border-bottom: none;
+}
+.syn-creator [name="reference"] {
+  border-radius: 0;
+  border-bottom: none;
+}
+.syn-creator [name="description"] {
+  border-radius: 0 0 4px 4px;
 }
 /**-------------------------------------------------------------// index      */

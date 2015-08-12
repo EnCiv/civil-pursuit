@@ -1,6 +1,7 @@
 'use strict';
 
 import { Document, Element, Elements } from 'cinco/dist';
+import publicConfig from '../../public.json';
 
 class Stylesheet extends Element {
   constructor(href) {
@@ -45,7 +46,8 @@ class Layout extends Document {
     }
     else {
       this.add(
-        new Stylesheet('/assets/css/index.min.css')
+        new Stylesheet('/assets/css/index.min.css'),
+        new Stylesheet(publicConfig['font awesome'].cdn)
       );
     }
 

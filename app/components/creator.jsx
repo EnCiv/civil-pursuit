@@ -115,21 +115,21 @@ class Creator extends React.Component {
 
           <section className="item-text">
             <div className="item-inputs">
-              <TextInput block placeholder="Subject" ref="subject" required />
+              <TextInput block placeholder="Subject" ref="subject" required name="subject" />
 
               <Row center-items>
                 <Icon icon="globe" spin={ true } text-muted className="--looking-up" ref="lookingUp" />
 
                 <Icon icon="exclamation" text-warning className="--error" ref="errorLookingUp" />
 
-                <TextInput block placeholder="http://" ref="reference" onBlur={ this.getUrlTitle.bind(this) } className="url-editor" />
+                <TextInput block placeholder="http://" ref="reference" onBlur={ this.getUrlTitle.bind(this) } className="url-editor" name="reference" />
 
                 <TextInput disabled value="This is the title" className="url-title" ref="title" />
 
                 <Icon icon="pencil" mute className="syn-edit-url" ref="editURL"  onClick={ this.editURL.bind(this) }/>
               </Row>
 
-              <TextArea block placeholder="Description" ref="description" required></TextArea>
+              <TextArea block placeholder="Description" ref="description" required name="description"></TextArea>
             </div>
           </section>
 

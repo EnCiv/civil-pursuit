@@ -33,12 +33,16 @@ class Profile extends React.Component {
           new Promise((ok, ko) => {
             window.socket.emit('get config')
               .on('OK get config', ok)
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get states')
+              .on('OK get states', ok)
           })
         ])
         .then(
           results => {
-            let [ user, countries, config ] = results;
-            this.setState({ ready : true, user, countries, config });
+            let [ user, countries, config, states ] = results;
+            this.setState({ ready : true, user, countries, config, states });
           }
         );
     }
@@ -60,7 +64,7 @@ class Profile extends React.Component {
           </Column>
 
           <Column span="50">
-            <Residence user={ this.state.user } />
+            <Residence user={ this.state.user } states={ this.state.states } />
           </Column>
         </Row>
       );

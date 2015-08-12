@@ -181,17 +181,17 @@ var Creator = (function (_React$Component) {
             _react2['default'].createElement(
               'div',
               { className: 'item-inputs' },
-              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true }),
+              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true, name: 'subject' }),
               _react2['default'].createElement(
                 _utilRow2['default'],
                 { 'center-items': true },
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'globe', spin: true, 'text-muted': true, className: '--looking-up', ref: 'lookingUp' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation', 'text-warning': true, className: '--error', ref: 'errorLookingUp' }),
-                _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor' }),
+                _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor', name: 'reference' }),
                 _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, value: 'This is the title', className: 'url-title', ref: 'title' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'pencil', mute: true, className: 'syn-edit-url', ref: 'editURL', onClick: this.editURL.bind(this) })
               ),
-              _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true })
+              _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true, name: 'description' })
             )
           ),
           _react2['default'].createElement('section', { style: { clear: 'both' } })

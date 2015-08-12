@@ -591,17 +591,17 @@ var Creator = (function (_React$Component) {
             _react2['default'].createElement(
               'div',
               { className: 'item-inputs' },
-              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true }),
+              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true, name: 'subject' }),
               _react2['default'].createElement(
                 _utilRow2['default'],
                 { 'center-items': true },
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'globe', spin: true, 'text-muted': true, className: '--looking-up', ref: 'lookingUp' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation', 'text-warning': true, className: '--error', ref: 'errorLookingUp' }),
-                _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor' }),
+                _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor', name: 'reference' }),
                 _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, value: 'This is the title', className: 'url-title', ref: 'title' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'pencil', mute: true, className: 'syn-edit-url', ref: 'editURL', onClick: this.editURL.bind(this) })
               ),
-              _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true })
+              _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true, name: 'description' })
             )
           ),
           _react2['default'].createElement('section', { style: { clear: 'both' } })
@@ -2647,14 +2647,17 @@ var Profile = (function (_React$Component) {
           window.socket.emit('get countries').on('OK get countries', ok);
         }), new Promise(function (ok, ko) {
           window.socket.emit('get config').on('OK get config', ok);
+        }), new Promise(function (ok, ko) {
+          window.socket.emit('get states').on('OK get states', ok);
         })]).then(function (results) {
-          var _results = _slicedToArray(results, 3);
+          var _results = _slicedToArray(results, 4);
 
           var user = _results[0];
           var countries = _results[1];
           var config = _results[2];
+          var states = _results[3];
 
-          _this.setState({ ready: true, user: user, countries: countries, config: config });
+          _this.setState({ ready: true, user: user, countries: countries, config: config, states: states });
         });
       }
     }
@@ -2680,7 +2683,7 @@ var Profile = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50' },
-            _react2['default'].createElement(_residence2['default'], { user: this.state.user })
+            _react2['default'].createElement(_residence2['default'], { user: this.state.user, states: this.state.states })
           )
         );
       }
@@ -2746,6 +2749,18 @@ var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
 
+var _utilInputGroup = require('./util/input-group');
+
+var _utilInputGroup2 = _interopRequireDefault(_utilInputGroup);
+
+var _utilTextInput = require('./util/text-input');
+
+var _utilTextInput2 = _interopRequireDefault(_utilTextInput);
+
+var _utilSelect = require('./util/select');
+
+var _utilSelect2 = _interopRequireDefault(_utilSelect);
+
 var Residence = (function (_React$Component) {
   function Residence(props) {
     _classCallCheck(this, Residence);
@@ -2780,7 +2795,7 @@ var Residence = (function (_React$Component) {
       if (!this.state.user['gps validated']) {
         gps = _react2['default'].createElement(
           _utilRow2['default'],
-          null,
+          { className: 'gutter' },
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50' },
@@ -2800,7 +2815,7 @@ var Residence = (function (_React$Component) {
       } else {
         gps = _react2['default'].createElement(
           _utilRow2['default'],
-          null,
+          { className: 'gutter' },
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50' },
@@ -2816,6 +2831,14 @@ var Residence = (function (_React$Component) {
         );
       }
 
+      var states = this.props.states.map(function (state) {
+        return _react2['default'].createElement(
+          'option',
+          { value: state._id },
+          state.name
+        );
+      });
+
       return _react2['default'].createElement(
         'section',
         null,
@@ -2826,7 +2849,7 @@ var Residence = (function (_React$Component) {
         ),
         _react2['default'].createElement(
           'section',
-          null,
+          { className: 'gutter' },
           _react2['default'].createElement(
             'h2',
             null,
@@ -2838,7 +2861,23 @@ var Residence = (function (_React$Component) {
             'This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.'
           )
         ),
-        gps
+        gps,
+        _react2['default'].createElement(
+          _utilInputGroup2['default'],
+          { block: true, className: 'gutter' },
+          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'City' }),
+          _react2['default'].createElement(
+            _utilSelect2['default'],
+            { style: { flexBasis: '30%' } },
+            states
+          )
+        ),
+        _react2['default'].createElement(
+          _utilInputGroup2['default'],
+          { block: true, className: 'gutter' },
+          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Zip' }),
+          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'Zip +4' })
+        )
       );
     }
   }]);
@@ -2848,7 +2887,7 @@ var Residence = (function (_React$Component) {
 
 exports['default'] = Residence;
 module.exports = exports['default'];
-},{"./util/button":26,"./util/column":28,"./util/icon":33,"./util/image":34,"./util/row":40,"react":205}],19:[function(require,module,exports){
+},{"./util/button":26,"./util/column":28,"./util/icon":33,"./util/image":34,"./util/input-group":35,"./util/row":40,"./util/select":41,"./util/text-input":44,"react":205}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
