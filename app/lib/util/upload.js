@@ -4,34 +4,32 @@ import { EventEmitter } from 'events';
 
 class Upload extends EventEmitter {
 
-  constructor (dropzone, fileInput, thumbnail) {
+  constructor (dropzone, fileInput, thumbnail, replace) {
     super();
-
-    console.log('New upload');
 
     this.dropzone     =   dropzone;
     this.fileInput    =   fileInput;
     this.thumbnail    =   thumbnail;
+    this.replace      =   replace;
   }
 
   init () {
     if ( window.File ) {
       if ( this.dropzone ) {
         console.log('Upload', 'enable dropzone');
-        this.dropzone
-          .on('dragover',   this.hover.bind(this))
-          .on('dragleave',  this.hover.bind(this))
-          .on('drop',       this.handler.bind(this));
+        this.dropzone.addEventListener('dragover',   this.hover.bind(this), false);
+        this.dropzone.addEventListener('dragleave',  this.hover.bind(this), false);
+        this.dropzone.addEventListener('drop',       this.handler.bind(this), false);
       }
 
       if ( this.fileInput ) {
-        this.fileInput.on('change', this.handler.bind(this));
+        this.fileInput.addEventListener('change', this.handler.bind(this), false);
       }
     }
 
     else {
       if ( dropzone ) {
-        dropzone.find('.modern').hide();
+        dropzone.querySelector('.modern').style.display = 'none';
       }
     }
   }
@@ -39,14 +37,13 @@ class Upload extends EventEmitter {
   destroy () {
     if ( window.File ) {
       if ( this.dropzone ) {
-        this.dropzone
-          .off('dragover')
-          .off('dragleave')
-          .off('drop');
+        this.dropzone.removeEventListener('dragover');
+        this.dropzone.removeEventListener('dragleave');
+        this.dropzone.removeEventListener('drop');
       }
 
       if ( this.fileInput ) {
-        this.fileInput.off('change');
+        this.fileInput.removeEventListener('change');
       }
     }
 
@@ -69,18 +66,25 @@ class Upload extends EventEmitter {
   }
 
   preview (file, target) {
-    var upload = this;
 
     var img = new Image();
 
-    img.classList.add("img-responsive");
+    img.classList.add("syn-img-responsive");
     img.classList.add("preview-image");
 
-    img.addEventListener('load', function () {
+    img.addEventListener('load', () => {
 
-      $(img).data('file', file);
+      img.dataset.file = file;
 
-      upload.thumbnail.empty().append(img);
+      this.thumbnail.style.display = 'block';
+
+      this.thumbnail.innerHTML = '';
+
+      this.thumbnail.appendChild(img);
+
+      this.dropzone.style.display = 'none';
+
+      this.replace.style.display = 'block';
 
     }, false);
 

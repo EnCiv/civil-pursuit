@@ -36,7 +36,7 @@ var Driver = (function (_EventEmitter) {
           }
         };
 
-        _this.driver = _webdriverio2['default'].remote(options).init(function () {
+        _this.client = _webdriverio2['default'].remote(options).init(function () {
           _this.emit('ready');
         });
       } catch (error) {

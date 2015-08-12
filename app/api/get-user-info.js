@@ -2,10 +2,10 @@
 
 import UserModel from '../models/user';
 
-function getUserInfo (event, userId) {
+function getUserInfo (event) {
   try {
     UserModel
-      .findById(userId)
+      .findById(this.synuser.id)
       .lean()
       .exec()
       .then(

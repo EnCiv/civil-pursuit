@@ -10,11 +10,11 @@ var _modelsUser = require('../models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-function getUserInfo(event, userId) {
+function getUserInfo(event) {
   var _this = this;
 
   try {
-    _modelsUser2['default'].findById(userId).lean().exec().then(function (user) {
+    _modelsUser2['default'].findById(this.synuser.id).lean().exec().then(function (user) {
       try {
         delete user.password;
         _this.ok(event, user);

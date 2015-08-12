@@ -15,16 +15,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var _events = require('events');
 
 var Upload = (function (_EventEmitter) {
-  function Upload(dropzone, fileInput, thumbnail) {
+  function Upload(dropzone, fileInput, thumbnail, replace) {
     _classCallCheck(this, Upload);
 
     _get(Object.getPrototypeOf(Upload.prototype), 'constructor', this).call(this);
 
-    console.log('New upload');
-
     this.dropzone = dropzone;
     this.fileInput = fileInput;
     this.thumbnail = thumbnail;
+    this.replace = replace;
   }
 
   _inherits(Upload, _EventEmitter);
@@ -35,15 +34,17 @@ var Upload = (function (_EventEmitter) {
       if (window.File) {
         if (this.dropzone) {
           console.log('Upload', 'enable dropzone');
-          this.dropzone.on('dragover', this.hover.bind(this)).on('dragleave', this.hover.bind(this)).on('drop', this.handler.bind(this));
+          this.dropzone.addEventListener('dragover', this.hover.bind(this), false);
+          this.dropzone.addEventListener('dragleave', this.hover.bind(this), false);
+          this.dropzone.addEventListener('drop', this.handler.bind(this), false);
         }
 
         if (this.fileInput) {
-          this.fileInput.on('change', this.handler.bind(this));
+          this.fileInput.addEventListener('change', this.handler.bind(this), false);
         }
       } else {
         if (dropzone) {
-          dropzone.find('.modern').hide();
+          dropzone.querySelector('.modern').style.display = 'none';
         }
       }
     }
@@ -52,11 +53,13 @@ var Upload = (function (_EventEmitter) {
     value: function destroy() {
       if (window.File) {
         if (this.dropzone) {
-          this.dropzone.off('dragover').off('dragleave').off('drop');
+          this.dropzone.removeEventListener('dragover');
+          this.dropzone.removeEventListener('dragleave');
+          this.dropzone.removeEventListener('drop');
         }
 
         if (this.fileInput) {
-          this.fileInput.off('change');
+          this.fileInput.removeEventListener('change');
         }
       }
 
@@ -82,18 +85,26 @@ var Upload = (function (_EventEmitter) {
   }, {
     key: 'preview',
     value: function preview(file, target) {
-      var upload = this;
+      var _this = this;
 
       var img = new Image();
 
-      img.classList.add('img-responsive');
+      img.classList.add('syn-img-responsive');
       img.classList.add('preview-image');
 
       img.addEventListener('load', function () {
 
-        $(img).data('file', file);
+        img.dataset.file = file;
 
-        upload.thumbnail.empty().append(img);
+        _this.thumbnail.style.display = 'block';
+
+        _this.thumbnail.innerHTML = '';
+
+        _this.thumbnail.appendChild(img);
+
+        _this.dropzone.style.display = 'none';
+
+        _this.replace.style.display = 'block';
       }, false);
 
       img.src = (window.URL || window.webkitURL).createObjectURL(file);

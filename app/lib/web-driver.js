@@ -15,7 +15,7 @@ class Driver extends EventEmitter {
           }
         };
 
-        this.driver = WebDriver.remote(options).init(() => {
+        this.client = WebDriver.remote(options).init(() => {
           this.emit('ready');
         });
       }

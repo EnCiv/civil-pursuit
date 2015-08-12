@@ -8,7 +8,8 @@ import path           from   'path';
 import { Domain }     from   'domain';
 import mongoose       from   'mongoose';
 import Server         from   '../server';
-import DiscussionModel          from '../models/discussion';
+import ItemModel      from '../models/item';
+import TypeModel      from '../models/type';
 
 if ( process.env.NODE_ENV === 'production' ) {
   process.title = 'synappprod';
@@ -56,10 +57,46 @@ readMe().then(
     () => {
       try {
 
-        new Server()
-          .on('error', parseError)
-          .on('message', message => console.log('message', message));
-
+        TypeModel
+          .findOne({ name : 'Intro' })
+          .exec()
+          .then(
+            type => {
+              try {
+                if ( ! type ) {
+                  throw new Error('Intro type not found');
+                }
+                ItemModel
+                  .findOne({ type })
+                  .exec()
+                  .then(
+                    intro => {
+                      try {
+                        if ( ! intro ) {
+                          throw new Error('Intro not found');
+                        }
+                        intro
+                          .toPanelItem()
+                          .then(
+                            intro => new Server({ intro })
+                              .on('error', parseError)
+                              .on('message', message => console.log('message', message)),
+                            error => parseError(error)
+                          )
+                      }
+                      catch ( error ) {
+                        parseError(error);
+                      }
+                    },
+                    error => parseError(error)
+                  );
+              }
+              catch ( error ) {
+                parseError(error);
+              }
+            },
+            error => parseError(error)
+          )
 
       }
       catch ( error ) {

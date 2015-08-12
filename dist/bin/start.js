@@ -27,9 +27,13 @@ var _server = require('../server');
 
 var _server2 = _interopRequireDefault(_server);
 
-var _modelsDiscussion = require('../models/discussion');
+var _modelsItem = require('../models/item');
 
-var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
+
+var _modelsType = require('../models/type');
+
+var _modelsType2 = _interopRequireDefault(_modelsType);
 
 if (process.env.NODE_ENV === 'production') {
   process.title = 'synappprod';
@@ -71,8 +75,34 @@ readMe().then(function () {
   return connectToMongoose().then(function () {
     try {
 
-      new _server2['default']().on('error', parseError).on('message', function (message) {
-        return console.log('message', message);
+      _modelsType2['default'].findOne({ name: 'Intro' }).exec().then(function (type) {
+        try {
+          if (!type) {
+            throw new Error('Intro type not found');
+          }
+          _modelsItem2['default'].findOne({ type: type }).exec().then(function (intro) {
+            try {
+              if (!intro) {
+                throw new Error('Intro not found');
+              }
+              intro.toPanelItem().then(function (intro) {
+                return new _server2['default']({ intro: intro }).on('error', parseError).on('message', function (message) {
+                  return console.log('message', message);
+                });
+              }, function (error) {
+                return parseError(error);
+              });
+            } catch (error) {
+              parseError(error);
+            }
+          }, function (error) {
+            return parseError(error);
+          });
+        } catch (error) {
+          parseError(error);
+        }
+      }, function (error) {
+        return parseError(error);
       });
     } catch (error) {
       parseError(error);

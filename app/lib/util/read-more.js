@@ -1,5 +1,5 @@
 ! function () {
-  
+
   'use strict';
 
   function spanify (des) {
@@ -19,35 +19,35 @@
       });
   }
 
-  function readMore (item, $item) {
+  function readMore (model, view) {
 
     /** {HTMLElement} Description wrapper in DOM */
 
-    var $description    =     $item.find('.item-description');
+    var $description    =     view.querySelector('.item-description');
 
     /** {HTMLElement} Image container in DOM */
 
-    var $image          =     $item.find('.item-media img');
+    var $image          =     view.querySelector('.item-media img');
 
     if ( ! $image.length ) {
-      $image            =     $item.find('.item-media iframe');
+      $image            =     view.querySelector('.item-media iframe');
     }
 
     /** {HTMLElement}  Text wrapper (Subject + Description + Reference) */
 
-    var $text           =     $item.find('.item-text');
+    var $text           =     view.querySelector('.item-text');
 
     /** {HTMLElement} Subject container in DOM */
 
-    var $subject        =     $item.find('.item-subject');
+    var $subject        =     view.querySelector('.item-subject');
 
     /** {HTMLElement} Reference container in DOM */
 
-    var $reference      =     $item.find('.item-reference');
+    var $reference      =     view.querySelector('.item-reference');
 
     /** {HTMLElement} Arrow container in DOM */
 
-    var $arrow          =     $item.find('.item-arrow')
+    var $arrow          =     view.querySelector('.item-arrow')
 
     /** {Number} Image height */
 
@@ -61,14 +61,14 @@
 
     /** {Number} Top position of text wrapper */
 
-    var top             =     $text.offset().top;
+    var top             =     $text.offsetTop;
 
     // If **not** #intro, then subtract subject's height
 
-    if ( $item.attr('id') !== 'intro' ) {
+    if ( view.attr('id') !== 'intro' ) {
 
       // Subtract height of subject from top
-      
+
       top -= $subject.height();
     }
 
@@ -100,8 +100,8 @@
 
     // Hide words that are below limit
 
-    for ( var i = $description.find('.word').length - 1; i >= 0; i -- ) {
-      var word = $description.find('.word').eq(i);
+    for ( var i = $description.querySelector('.word').length - 1; i >= 0; i -- ) {
+      var word = $description.querySelector('.word').eq(i);
       // console.log(Math.ceil(word.offset().top), Math.ceil(top),
       //   { word: Math.ceil(word.offset().top - top), top: top, imgHeight: imgHeight, limit: Math.ceil(imgHeight), hide: (word.offset().top - top) > imgHeight })
       if ( (word.offset().top - top) > imgHeight ) {
@@ -109,19 +109,19 @@
       }
     }
 
-    if ( $description.find('.hidden-word').length ) {
+    if ( $description.querySelector('.hidden-word').length ) {
       var more = $('<a href="#" class="more">more</a>');
 
       more.on('click', function () {
 
         if ( $(this).hasClass('more') ) {
           $(this).removeClass('more').addClass('less').text('less');
-          $(this).closest('.item-description').find('.hidden-word').show();
+          $(this).closest('.item-description').querySelector('.hidden-word').show();
         }
 
         else {
           $(this).removeClass('less').addClass('more').text('more');
-          $(this).closest('.item-description').find('.hidden-word').hide();
+          $(this).closest('.item-description').querySelector('.hidden-word').hide();
         }
 
         return false;

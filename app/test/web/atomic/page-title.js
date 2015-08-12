@@ -1,19 +1,24 @@
 'use strict';
 
-import Page         from '../../../lib/app/page';
+import should from 'should';
 
 class PageTitleAtomicTest {
-  constructor (page, pageAttributes, title) {
-    this.page = page;
-    this.pageAttributes = pageAttributes;
-    this.title = this.title;
+  constructor (title = {}) {
+    this.title = title;
   }
 
-  test () {
+  test (driver) {
     return new Promise((ok, ko) => {
       try {
-        let page = Page(this.page, this.pageAttributes);
-        ok(page);
+        driver.getTitle().then(title => {
+          try {
+            title.should.be.exactly(this.title);
+            ok();
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        });
       }
       catch ( error ) {
         ko(error);
@@ -24,5 +29,5 @@ class PageTitleAtomicTest {
 
 export default PageTitleAtomicTest;
 
-new PageTitleAtomicTest('Error', {}, { prefix : true, title : 'Error' })
-  .test().then(console.log.bind(console, 'ok'), console.log.bind(console, 'ko'));
+// new PageTitleAtomicTest('Error', {}, { prefix : true, title : 'Error' })
+//   .test().then(console.log.bind(console, 'ok'), console.log.bind(console, 'ko'));

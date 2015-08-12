@@ -7,7 +7,6 @@ function identify(email, password) {
   var _this = this;
 
   return new Promise(function (ok, ko) {
-    console.log('identifying', email, password);
     try {
       _this.findOne({ email: email }).exec().then(function (user) {
         try {

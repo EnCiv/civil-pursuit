@@ -2,7 +2,6 @@
 
 function identify (email,  password) {
   return new Promise((ok, ko) => {
-    console.log('identifying', email, password)
     try {
       this
         .findOne({ email : email })

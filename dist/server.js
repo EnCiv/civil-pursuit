@@ -8,6 +8,8 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -74,10 +76,6 @@ var _routesItem = require('./routes/item');
 
 var _routesItem2 = _interopRequireDefault(_routesItem);
 
-var _routesSignIn = require('./routes/sign-in');
-
-var _routesSignIn2 = _interopRequireDefault(_routesSignIn);
-
 var _routesSignUp = require('./routes/sign-up');
 
 var _routesSignUp2 = _interopRequireDefault(_routesSignUp);
@@ -106,15 +104,19 @@ var _modelsDiscussion = require('./models/discussion');
 
 var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
 
+var _routes = require('./routes');
+
+var Routes = _interopRequireWildcard(_routes);
+
 var HttpServer = (function (_EventEmitter) {
-  function HttpServer() {
+  function HttpServer(props) {
     var _this = this;
 
     _classCallCheck(this, HttpServer);
 
     _get(Object.getPrototypeOf(HttpServer.prototype), 'constructor', this).call(this);
 
-    console.log('new server');
+    this.props = props;
 
     this.on('message', function (message, info) {
       console.log(message, info);
@@ -205,14 +207,15 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'signers',
     value: function signers() {
-      this.app.all('/sign/in', _routesSignIn2['default'], this.setUserCookie, function (req, res) {
-        res.json({
+      this.app.post('/sign/in', Routes.signIn, Routes.setUserCookie, function (req, res) {
+        console.log(req.user);
+        res.send({
           'in': true,
           id: req.user._id
         });
       });
 
-      this.app.all('/sign/up', _routesSignUp2['default'], this.setUserCookie, function (req, res) {
+      this.app.all('/sign/up', _routesSignUp2['default'], Routes.setUserCookie, function (req, res) {
         res.json({
           up: true,
           id: req.user._id
@@ -220,13 +223,6 @@ var HttpServer = (function (_EventEmitter) {
       });
 
       this.app.all('/sign/out', _routesSignOut2['default']);
-    }
-  }, {
-    key: 'setUserCookie',
-    value: function setUserCookie(req, res, next) {
-      res.cookie('synuser', { email: req.user.email, id: req.user._id }, _secretJson2['default'].cookie);
-
-      next();
     }
   }, {
     key: 'facebookMiddleware',
@@ -249,8 +245,8 @@ var HttpServer = (function (_EventEmitter) {
       this.timeout();
       this.getLandingPage();
       this.getTermsOfServicePage();
-      this.getItemPage();
-      this.getPage();
+      // this.getItemPage();
+      // this.getPage();
 
       this.app.get('/error', function (req, res, next) {
         next(new Error('Test error > next with error'));
@@ -286,55 +282,27 @@ var HttpServer = (function (_EventEmitter) {
   }, {
     key: 'getLandingPage',
     value: function getLandingPage() {
-      var _this2 = this;
-
-      this.app.get('/', function (req, res, next) {
-        try {
-          var isAuthorized = false;
-
-          if (req.cookies && req.cookies.synuser) {
-
-            if (req.cookies.synuser.email === 'francoisrvespa@gmail.com' || req.cookies.synuser.email === 'ddfridley@yahoo.com') {
-              isAuthorized = true;
-            }
-          }
-
-          if (isAuthorized) {
-
-            console.log('User is authorized'.bgBlue.bold, req.cookies.synuser.email);
-
-            return _this2.renderPage(req, res, next);
-          }
-
-          console.log('User is **NOT** authorized'.bgBlue.bold);
-
-          _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
-
-            console.log('DISCUSSION', discussion);
-
-            res.locals.discussion = discussion;
-            _this2.renderPage(req, res, next);
-          }, console.log.bind(console));
-        } catch (error) {
-          next(error);
-        }
-      });
+      try {
+        this.app.get('/', Routes.homePage.bind(this));
+        this.app.get('/page/:page', Routes.homePage.bind(this));
+      } catch (error) {
+        this.emit('error', error);
+      }
     }
   }, {
     key: 'getTermsOfServicePage',
     value: function getTermsOfServicePage() {
-      this.app.get('/page/terms-of-service', function (req, res, next) {
-        req.page = 'terms of service';
+      this.app.get('/doc/terms-of-service.md', function (req, res, next) {
         _fs2['default'].createReadStream('TOS.md').on('error', next).on('data', function (data) {
           if (!this.data) {
             this.data = '';
           }
           this.data += data.toString();
         }).on('end', function () {
-          res.locals.TOS = this.data;
-          next();
+          res.header({ 'Content-Type': 'text/markdown; charset=UTF-8' });
+          res.send(this.data);
         });
-      }, this.renderPage.bind(this));
+      });
     }
   }, {
     key: 'getItemPage',
@@ -345,59 +313,46 @@ var HttpServer = (function (_EventEmitter) {
     key: 'static',
     value: function _static() {
       this.app.use('/assets/', _express2['default']['static']('assets'));
-      this.app.use('/css/', _express2['default']['static']('dist/css'));
-      this.app.use('/js/pages/', _express2['default']['static']('dist/pages/'));
     }
   }, {
     key: 'notFound',
     value: function notFound() {
-      this.app.use(function notFound(req, res, next) {
-        res.status(404);
-        req.page = 'not-found';
-        next();
-      }, this.renderPage.bind(this));
+      this.app.use(function (req, res, next) {
+        return res.send('Page not found');
+      });
     }
   }, {
     key: 'error',
     value: function error() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.app.use(function (err, req, res, next) {
 
-        if (!err.stack) {
-          console.log('bug', err);
-        }
-
-        console.log('error', err.stack.split(/\n/));
-        _this3.emit('error', err);
-
-        res.locals.error = err.stack.split(/\n/);
-        req.page = 'error';
-
-        next();
-      }, this.renderPage.bind(this));
+        _this2.emit('error', err);
+        res.send(err);
+      });
     }
   }, {
     key: 'start',
     value: function start() {
-      var _this4 = this;
+      var _this3 = this;
 
       this.server = _http2['default'].createServer(this.app);
 
       this.server.on('error', function (error) {
-        _this4.emit('error', error);
+        _this3.emit('error', error);
       });
 
       this.server.listen(this.app.get('port'), function () {
-        _this4.emit('message', 'Server is listening', {
-          port: _this4.app.get('port'),
-          env: _this4.app.get('env')
+        _this3.emit('message', 'Server is listening', {
+          port: _this3.app.get('port'),
+          env: _this3.app.get('env')
         });
 
-        _this4.emit('listening');
+        _this3.emit('listening');
 
-        new _api2['default'](_this4).on('error', function (error) {
-          return _this4.emit('error', error);
+        new _api2['default'](_this3).on('error', function (error) {
+          return _this3.emit('error', error);
         });
 
         setTimeout(function () {

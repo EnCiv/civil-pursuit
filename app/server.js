@@ -16,7 +16,6 @@ import FacebookPassport         from './routes/facebook';
 import initPipeLine             from './routes/init-pipeline';
 import renderPage               from './routes/render-page';
 import itemRoute                from './routes/item';
-import signInRoute              from './routes/sign-in';
 import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
 import User                     from './models/user';
@@ -24,13 +23,14 @@ import config                   from '../secret.json';
 import getTime                  from './lib/util/print-time';
 import API                      from './api';
 import DiscussionModel          from './models/discussion';
+import * as Routes              from './routes';
 
 class HttpServer extends EventEmitter {
 
-  constructor () {
+  constructor (props) {
     super();
 
-    console.log('new server')
+    this.props = props;
 
     this
 
@@ -125,11 +125,12 @@ class HttpServer extends EventEmitter {
   }
 
   signers () {
-    this.app.all('/sign/in',
-      signInRoute,
-      this.setUserCookie,
+    this.app.post('/sign/in',
+      Routes.signIn,
+      Routes.setUserCookie,
       function (req, res) {
-        res.json({
+        console.log(req.user);
+        res.send({
           in: true,
           id: req.user._id
         });
@@ -137,7 +138,7 @@ class HttpServer extends EventEmitter {
 
     this.app.all('/sign/up',
       signUpRoute,
-      this.setUserCookie,
+      Routes.setUserCookie,
       function (req, res) {
         res.json({
           up: true,
@@ -146,15 +147,6 @@ class HttpServer extends EventEmitter {
       });
 
     this.app.all('/sign/out', signOutRoute);
-  }
-
-  setUserCookie (req, res, next) {
-    res.cookie('synuser',
-      { email: req.user.email, id: req.user._id },
-      config.cookie
-    );
-
-    next();
   }
 
   facebookMiddleware () {
@@ -173,8 +165,8 @@ class HttpServer extends EventEmitter {
     this.timeout();
     this.getLandingPage();
     this.getTermsOfServicePage();
-    this.getItemPage();
-    this.getPage();
+    // this.getItemPage();
+    // this.getPage();
 
     this.app.get('/error', (req, res, next) => {
       next(new Error('Test error > next with error'));
@@ -207,54 +199,17 @@ class HttpServer extends EventEmitter {
   }
 
   getLandingPage () {
-    this.app.get('/',
-      (req, res, next) => {
-        try {
-          let isAuthorized = false;
-
-          if ( req.cookies && req.cookies.synuser ) {
-
-            if ( req.cookies.synuser.email === 'francoisrvespa@gmail.com'  ||
-              req.cookies.synuser.email === 'ddfridley@yahoo.com' ) {
-                  isAuthorized = true;
-              }
-          }
-
-          if ( isAuthorized ) {
-
-            console.log('User is authorized'.bgBlue.bold, req.cookies.synuser.email);
-
-            return this.renderPage(req, res, next);
-          }
-
-          console.log('User is **NOT** authorized'.bgBlue.bold);
-
-          DiscussionModel
-            .findOne()
-            .exec()
-            .then(
-              discussion => {
-
-                console.log('DISCUSSION', discussion);
-
-                res.locals.discussion = discussion;
-                this.renderPage(req, res, next);
-              },
-              console.log.bind(console)
-            );
-
-
-        }
-        catch ( error ) {
-          next(error);
-        }
-      }
-    );
+    try {
+      this.app.get('/', Routes.homePage.bind(this));
+      this.app.get('/page/:page', Routes.homePage.bind(this));
+    }
+    catch ( error ) {
+      this.emit('error', error);
+    }
   }
 
   getTermsOfServicePage () {
-    this.app.get('/page/terms-of-service', (req, res, next) => {
-      req.page = 'terms of service';
+    this.app.get('/doc/terms-of-service.md', (req, res, next) => {
       fs
         .createReadStream('TOS.md')
         .on('error', next)
@@ -265,10 +220,10 @@ class HttpServer extends EventEmitter {
           this.data += data.toString();
         })
         .on('end', function () {
-          res.locals.TOS = this.data;
-          next();
+          res.header({ 'Content-Type': 'text/markdown; charset=UTF-8'});
+          res.send(this.data);
         });
-    }, this.renderPage.bind(this));
+    });
   }
 
 
@@ -281,37 +236,19 @@ class HttpServer extends EventEmitter {
 
   static () {
     this.app.use('/assets/',      express.static('assets'));
-    this.app.use('/css/',         express.static('dist/css'));
-    this.app.use('/js/pages/',    express.static('dist/pages/'));
   }
 
   notFound () {
-    this.app.use(
-      function notFound (req, res, next) {
-        res.status(404);
-        req.page = 'not-found';
-        next();
-      },
-
-      this.renderPage.bind(this));
+    this.app.use((req, res, next) => res.send('Page not found'));
   }
 
   error () {
     this.app.use((err, req, res, next) => {
 
-      if ( ! err.stack ) {
-        console.log('bug', err);
-      }
-
-      console.log('error', err.stack.split(/\n/));
       this.emit('error', err);
+      res.send(err);
 
-      res.locals.error = err.stack.split(/\n/);
-      req.page = 'error';
-
-      next();
-
-    }, this.renderPage.bind(this));
+    });
   }
 
   start () {

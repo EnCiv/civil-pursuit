@@ -10,28 +10,34 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _libAppPage = require('../../../lib/app/page');
+var _should = require('should');
 
-var _libAppPage2 = _interopRequireDefault(_libAppPage);
+var _should2 = _interopRequireDefault(_should);
 
 var PageTitleAtomicTest = (function () {
-  function PageTitleAtomicTest(page, pageAttributes, title) {
+  function PageTitleAtomicTest() {
+    var title = arguments[0] === undefined ? {} : arguments[0];
+
     _classCallCheck(this, PageTitleAtomicTest);
 
-    this.page = page;
-    this.pageAttributes = pageAttributes;
-    this.title = this.title;
+    this.title = title;
   }
 
   _createClass(PageTitleAtomicTest, [{
     key: 'test',
-    value: function test() {
+    value: function test(driver) {
       var _this = this;
 
       return new Promise(function (ok, ko) {
         try {
-          var page = (0, _libAppPage2['default'])(_this.page, _this.pageAttributes);
-          ok(page);
+          driver.getTitle().then(function (title) {
+            try {
+              title.should.be.exactly(_this.title);
+              ok();
+            } catch (error) {
+              ko(error);
+            }
+          });
         } catch (error) {
           ko(error);
         }
@@ -44,5 +50,6 @@ var PageTitleAtomicTest = (function () {
 
 exports['default'] = PageTitleAtomicTest;
 
-new PageTitleAtomicTest('Error', {}, { prefix: true, title: 'Error' }).test().then(console.log.bind(console, 'ok'), console.log.bind(console, 'ko'));
+// new PageTitleAtomicTest('Error', {}, { prefix : true, title : 'Error' })
+//   .test().then(console.log.bind(console, 'ok'), console.log.bind(console, 'ko'));
 module.exports = exports['default'];
