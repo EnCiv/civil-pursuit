@@ -115,7 +115,7 @@ var Creator = (function (_React$Component) {
         _react2['default'].findDOMNode(_this2.refs.reference).value = '';
         _react2['default'].findDOMNode(_this2.refs.title).value = '';
 
-        window.socket.emit('get items', { type: _this2.props.type });
+        window.Dispatcher.emit('new item', item, { type: _this2.props.type });
       });
     }
   }, {

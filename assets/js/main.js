@@ -19,7 +19,7 @@ var props = {
   user: null,
   ready: false,
   intro: window.synapp.intro,
-  reloads: 0
+  newItem: null
 };
 
 function render() {
@@ -29,9 +29,9 @@ function render() {
 
 window.Dispatcher = new _events.EventEmitter();
 
-window.Dispatcher.on('reload', function () {
-  props.reloads++;
-  console.log('reload', props.reloads);
+window.Dispatcher.on('new item', function (item, panel) {
+  console.log('new item', { item: item, panel: panel });
+  props.newItem = { item: item, panel: panel };
   render();
 });
 
@@ -536,7 +536,7 @@ var Creator = (function (_React$Component) {
         _react2['default'].findDOMNode(_this2.refs.reference).value = '';
         _react2['default'].findDOMNode(_this2.refs.title).value = '';
 
-        window.socket.emit('get items', { type: _this2.props.type });
+        window.Dispatcher.emit('new item', item, { type: _this2.props.type });
       });
     }
   }, {
@@ -1115,7 +1115,7 @@ var Home = (function (_React$Component) {
         if (now < deadline) {
           content = _react2['default'].createElement(_countdown2['default'], _extends({ discussion: this.state.discussion }, this.props));
         } else {
-          content = _react2['default'].createElement(_topLevelPanel2['default'], null);
+          content = _react2['default'].createElement(_topLevelPanel2['default'], this.props);
         }
       }
 
@@ -2917,6 +2917,10 @@ var _creator = require('./creator');
 
 var _creator2 = _interopRequireDefault(_creator);
 
+var _item = require('./item');
+
+var _item2 = _interopRequireDefault(_item);
+
 var Panel = (function (_React$Component) {
   function Panel(props) {
     _classCallCheck(this, Panel);
@@ -2942,7 +2946,8 @@ var Panel = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var creator = undefined,
-          creatorIcon = undefined;
+          creatorIcon = undefined,
+          newItem = undefined;
 
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
@@ -2951,6 +2956,18 @@ var Panel = (function (_React$Component) {
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this) });
+      }
+
+      if (this.props.newItem) {
+        var relevant = false;
+
+        if (this.props.newItem.panel.type === this.props.type) {
+          relevant = true;
+        }
+
+        if (relevant) {
+          newItem = _react2['default'].createElement(_item2['default'], { item: this.props.newItem.item });
+        }
       }
 
       return _react2['default'].createElement(
@@ -2970,6 +2987,7 @@ var Panel = (function (_React$Component) {
           'section',
           { className: 'syn-panel-body' },
           creator,
+          newItem,
           this.props.children
         )
       );
@@ -2983,7 +3001,7 @@ exports['default'] = Panel;
 module.exports = exports['default'];
 
 // console.warn('panel', props);
-},{"../lib/app/component":46,"./creator":4,"./util/accordion":25,"./util/icon":34,"react":206}],17:[function(require,module,exports){
+},{"../lib/app/component":46,"./creator":4,"./item":11,"./util/accordion":25,"./util/icon":34,"react":206}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3904,6 +3922,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -3985,7 +4005,7 @@ var TopLevelPanel = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        { title: panelTitle, type: type },
+        _extends({ title: panelTitle, type: type }, this.props),
         items
       );
     }

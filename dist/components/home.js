@@ -80,7 +80,7 @@ var Home = (function (_React$Component) {
         if (now < deadline) {
           content = _react2['default'].createElement(_countdown2['default'], _extends({ discussion: this.state.discussion }, this.props));
         } else {
-          content = _react2['default'].createElement(_topLevelPanel2['default'], null);
+          content = _react2['default'].createElement(_topLevelPanel2['default'], this.props);
         }
       }
 

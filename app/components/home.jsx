@@ -39,7 +39,7 @@ class Home extends React.Component {
       }
 
       else {
-        content = ( <TopLevelPanel /> );
+        content = ( <TopLevelPanel { ...this.props } /> );
       }
     }
 

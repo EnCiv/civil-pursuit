@@ -50,7 +50,7 @@ class TopLevelPanel extends React.Component {
     ));
 
     return (
-      <Panel title={ panelTitle } type={ type }>
+      <Panel title={ panelTitle } type={ type } { ...this.props }>
         { items }
       </Panel>
     );

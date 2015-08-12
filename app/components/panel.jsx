@@ -24,7 +24,7 @@ class Panel extends React.Component {
   }
 
   render() {
-    let creator, creatorIcon;
+    let creator, creatorIcon, newItem;
 
     if ( this.props.creator !== false ) {
       creator = (
@@ -35,6 +35,18 @@ class Panel extends React.Component {
       creatorIcon = ( <Icon icon="plus" onClick={ this.toggleCreator.bind(this) } /> );
     }
 
+    if ( this.props.newItem ) {
+      let relevant = false;
+
+      if ( this.props.newItem.panel.type === this.props.type ) {
+        relevant = true;
+      }
+
+      if ( relevant ) {
+        newItem = ( <Item item={ this.props.newItem.item } /> );
+      }
+    }
+
     return (
       <section className={ Component.classList(this, "syn-panel") }>
         <section className="syn-panel-heading">
@@ -43,6 +55,7 @@ class Panel extends React.Component {
         </section>
         <section className="syn-panel-body">
           { creator }
+          { newItem }
           { this.props.children }
         </section>
       </section>
@@ -51,3 +64,5 @@ class Panel extends React.Component {
 }
 
 export default Panel;
+
+import Item from './item';

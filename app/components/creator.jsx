@@ -64,7 +64,7 @@ class Creator extends React.Component {
         React.findDOMNode(this.refs.reference).value = '';
         React.findDOMNode(this.refs.title).value = '';
 
-        window.socket.emit('get items', { type: this.props.type  })
+        window.Dispatcher.emit('new item', item, { type: this.props.type });
       });
   }
 

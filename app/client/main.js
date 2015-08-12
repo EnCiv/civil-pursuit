@@ -10,7 +10,7 @@ let props         =   {
   user            :   null,
   ready           :   false,
   intro           :   window.synapp.intro,
-  reloads         :   0
+  newItem         :   null
 };
 
 function render () {
@@ -22,9 +22,9 @@ window.Dispatcher = new EventEmitter();
 
 window.Dispatcher
 
-  .on('reload', () => {
-    props.reloads ++;
-    console.log('reload', props.reloads);
+  .on('new item', (item, panel) => {
+    console.log('new item', { item, panel });
+    props.newItem = { item, panel };
     render();
   })
 

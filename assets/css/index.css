@@ -1178,6 +1178,7 @@ body {
 .syn-accordion-content {
   transition: all ease-in 0.5s;
   opacity: 0;
+  background: #fff;
 }
 .item-inputs {
   left: 0;

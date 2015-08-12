@@ -34,6 +34,10 @@ var _creator = require('./creator');
 
 var _creator2 = _interopRequireDefault(_creator);
 
+var _item = require('./item');
+
+var _item2 = _interopRequireDefault(_item);
+
 var Panel = (function (_React$Component) {
   function Panel(props) {
     _classCallCheck(this, Panel);
@@ -59,7 +63,8 @@ var Panel = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var creator = undefined,
-          creatorIcon = undefined;
+          creatorIcon = undefined,
+          newItem = undefined;
 
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
@@ -68,6 +73,18 @@ var Panel = (function (_React$Component) {
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this) });
+      }
+
+      if (this.props.newItem) {
+        var relevant = false;
+
+        if (this.props.newItem.panel.type === this.props.type) {
+          relevant = true;
+        }
+
+        if (relevant) {
+          newItem = _react2['default'].createElement(_item2['default'], { item: this.props.newItem.item });
+        }
       }
 
       return _react2['default'].createElement(
@@ -87,6 +104,7 @@ var Panel = (function (_React$Component) {
           'section',
           { className: 'syn-panel-body' },
           creator,
+          newItem,
           this.props.children
         )
       );
