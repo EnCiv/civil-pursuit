@@ -72,7 +72,7 @@ var Creator = (function (_React$Component) {
       var mediaHeight = media.offsetHeight;
       var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-      description.style.height = mediaHeight - inputHeight + 'px';
+      // description.style.height = ( mediaHeight - inputHeight ) + 'px';
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {

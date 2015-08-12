@@ -41,7 +41,7 @@ var Intro = (function (_React$Component) {
       return _react2['default'].createElement(
         _panel2['default'],
         { title: this.props.intro.subject, creator: false },
-        _react2['default'].createElement(_item2['default'], { item: this.props.intro, buttons: false })
+        _react2['default'].createElement(_item2['default'], { item: this.props.intro, buttons: false, promote: false, details: false, subtype: false, harmony: false })
       );
     }
   }]);

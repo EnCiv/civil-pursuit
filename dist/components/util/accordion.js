@@ -41,10 +41,15 @@ var Accordion = (function (_React$Component) {
           var content = _react2['default'].findDOMNode(_this.refs.content);
 
           if (props.show) {
+
+            var visibleAccordions = document.querySelectorAll('.syn-accordion.visible');
+
+            view.classList.add('visible');
             var height = content.offsetHeight;
             view.style.height = height + 'px';
             // content.style.marginTop = `-${height}px`;
             setTimeout(function () {
+              view.classList.remove('visible');
               content.style.position = 'relative';
               content.style.top = 0;
               // content.style.display = block;

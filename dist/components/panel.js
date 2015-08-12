@@ -83,7 +83,7 @@ var Panel = (function (_React$Component) {
         }
 
         if (relevant) {
-          newItem = _react2['default'].createElement(_item2['default'], { item: this.props.newItem.item });
+          newItem = _react2['default'].createElement(_item2['default'], { item: this.props.newItem.item, 'new': true });
         }
       }
 

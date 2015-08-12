@@ -75,7 +75,7 @@ class Item extends React.Component {
     this.expanded = false;
 
     this.state = {
-      showPromote : false,
+      showPromote : !! this.props.new,
       showDetails : false,
       showSubtype : false,
       showHarmony : false
@@ -152,6 +152,10 @@ class Item extends React.Component {
       if ( ! item.querySelector('.word.hide') ) {
         more.style.display = 'none';
       }
+
+      if ( this.props.new ) {
+        this.setState({ showPromote: true });
+      }
     });
   }
 
@@ -183,7 +187,11 @@ class Item extends React.Component {
     let buttons,
       referenceLink,
       referenceTitle,
-      textSpan = 50;
+      textSpan = 50,
+      promote,
+      details,
+      subtype,
+      harmony;
 
     if ( this.props.buttons !== false ) {
       buttons = (
@@ -220,6 +228,38 @@ class Item extends React.Component {
       textSpan = 75;
     }
 
+    if ( this.props.promote !== false ) {
+      promote = (
+        <Accordion show={ this.state.showPromote }>
+          <Promote />
+        </Accordion>
+      );
+    }
+
+    if ( this.props.details !== false ) {
+      details =(
+        <Accordion show={ this.state.showDetails }>
+          <Details />
+        </Accordion>
+      );
+    }
+
+    if ( this.props.subtype !== false ) {
+      subtype = (
+        <Accordion show={ this.state.showSubtype }>
+          <Subtype />
+        </Accordion>
+      );
+    }
+
+    if ( this.props.harmony !== false ) {
+      harmony = (
+        <Accordion show={ this.state.showHarmony }>
+          <Harmony />
+        </Accordion>
+      );
+    }
+
     if ( item.references.length ) {
       referenceLink = item.references[0].url;
       referenceTitle = item.references[0].title;
@@ -247,21 +287,13 @@ class Item extends React.Component {
         <section style={ { clear : 'both' }}></section>
 
         <section>
-          <Accordion show={ this.state.showPromote }>
-            <Promote />
-          </Accordion>
+          { promote }
 
-          <Accordion show={ this.state.showDetails }>
-            <Details />
-          </Accordion>
+          { details }
 
-          <Accordion show={ this.state.showSubtype }>
-            <Subtype />
-          </Accordion>
+          { subtype }
 
-          <Accordion show={ this.state.showHarmony }>
-            <Harmony />
-          </Accordion>
+          { harmony }
         </section>
       </article>
     );

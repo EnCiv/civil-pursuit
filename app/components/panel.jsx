@@ -43,7 +43,7 @@ class Panel extends React.Component {
       }
 
       if ( relevant ) {
-        newItem = ( <Item item={ this.props.newItem.item } /> );
+        newItem = ( <Item item={ this.props.newItem.item } new={ true } /> );
       }
     }
 

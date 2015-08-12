@@ -76,7 +76,7 @@ var Item = (function (_React$Component) {
     this.expanded = false;
 
     this.state = {
-      showPromote: false,
+      showPromote: !!this.props['new'],
       showDetails: false,
       showSubtype: false,
       showHarmony: false
@@ -123,6 +123,8 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function componentDidMount() {
+      var _this = this;
+
       var media = _react2['default'].findDOMNode(this.refs.media).querySelector('img, iframe');
 
       var item = _react2['default'].findDOMNode(this.refs.item);
@@ -159,6 +161,10 @@ var Item = (function (_React$Component) {
         if (!item.querySelector('.word.hide')) {
           more.style.display = 'none';
         }
+
+        if (_this.props['new']) {
+          _this.setState({ showPromote: true });
+        }
       });
     }
   }, {
@@ -192,7 +198,11 @@ var Item = (function (_React$Component) {
       var buttons = undefined,
           referenceLink = undefined,
           referenceTitle = undefined,
-          textSpan = 50;
+          textSpan = 50,
+          promote = undefined,
+          details = undefined,
+          subtype = undefined,
+          harmony = undefined;
 
       if (this.props.buttons !== false) {
         buttons = _react2['default'].createElement(
@@ -259,6 +269,38 @@ var Item = (function (_React$Component) {
         textSpan = 75;
       }
 
+      if (this.props.promote !== false) {
+        promote = _react2['default'].createElement(
+          _utilAccordion2['default'],
+          { show: this.state.showPromote },
+          _react2['default'].createElement(_promote2['default'], null)
+        );
+      }
+
+      if (this.props.details !== false) {
+        details = _react2['default'].createElement(
+          _utilAccordion2['default'],
+          { show: this.state.showDetails },
+          _react2['default'].createElement(_details2['default'], null)
+        );
+      }
+
+      if (this.props.subtype !== false) {
+        subtype = _react2['default'].createElement(
+          _utilAccordion2['default'],
+          { show: this.state.showSubtype },
+          _react2['default'].createElement(_subtype2['default'], null)
+        );
+      }
+
+      if (this.props.harmony !== false) {
+        harmony = _react2['default'].createElement(
+          _utilAccordion2['default'],
+          { show: this.state.showHarmony },
+          _react2['default'].createElement(_harmony2['default'], null)
+        );
+      }
+
       if (item.references.length) {
         referenceLink = item.references[0].url;
         referenceTitle = item.references[0].title;
@@ -314,26 +356,10 @@ var Item = (function (_React$Component) {
         _react2['default'].createElement(
           'section',
           null,
-          _react2['default'].createElement(
-            _utilAccordion2['default'],
-            { show: this.state.showPromote },
-            _react2['default'].createElement(_promote2['default'], null)
-          ),
-          _react2['default'].createElement(
-            _utilAccordion2['default'],
-            { show: this.state.showDetails },
-            _react2['default'].createElement(_details2['default'], null)
-          ),
-          _react2['default'].createElement(
-            _utilAccordion2['default'],
-            { show: this.state.showSubtype },
-            _react2['default'].createElement(_subtype2['default'], null)
-          ),
-          _react2['default'].createElement(
-            _utilAccordion2['default'],
-            { show: this.state.showHarmony },
-            _react2['default'].createElement(_harmony2['default'], null)
-          )
+          promote,
+          details,
+          subtype,
+          harmony
         )
       );
     }
