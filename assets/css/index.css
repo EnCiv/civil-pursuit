@@ -1209,4 +1209,13 @@ body {
 .syn-creator [name="description"] {
   border-radius: 0 0 4px 4px;
 }
+.promote {
+  border: 1px solid #666;
+}
+.details {
+  border: 1px solid #666;
+}
+.subtype {
+  border: 1px solid #666;
+}
 /**-------------------------------------------------------------// index      */

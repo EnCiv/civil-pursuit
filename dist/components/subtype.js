@@ -24,15 +24,26 @@ var Subtype = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Subtype.prototype), 'constructor', this).call(this, props);
 
-    this.state = {
-      cursor: 1,
-      limit: 5
-    };
+    this.get();
   }
 
   _inherits(Subtype, _React$Component);
 
   _createClass(Subtype, [{
+    key: 'get',
+    value: function get() {
+      var _this = this;
+
+      if (typeof window !== 'undefined') {
+        window.socket.emit('get items', { type: this.props.item.subtype._id, parent: this.props.item._id }).on('OK get items', function (panel, items) {
+          if (panel.type._id === _this.props.item.subtype._id) {
+            console.log({ subtype: { panel: panel, items: items } });
+          }
+          // if ( evaluation.items)
+        });
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(

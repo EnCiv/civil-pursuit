@@ -24,15 +24,27 @@ var Harmony = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Harmony.prototype), 'constructor', this).call(this, props);
 
-    this.state = {
-      cursor: 1,
-      limit: 5
-    };
+    this.get();
   }
 
   _inherits(Harmony, _React$Component);
 
   _createClass(Harmony, [{
+    key: 'get',
+    value: function get() {
+      if (typeof window !== 'undefined') {
+        var harmony = this.props.item.type.harmony;
+
+        // window.socket.emit('get items', { type : this.props.item.subtype._id, parent : this.props.item._id })
+        //   .on('OK get items', (panel, items) => {
+        //     if ( panel.type._id === this.props.item.subtype._id ) {
+        //       console.log({ subtype: { panel, items} })
+        //     }
+        //     // if ( evaluation.items)
+        //   })
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(

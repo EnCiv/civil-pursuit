@@ -6,10 +6,17 @@ class Details extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = {
-      cursor: 1,
-      limit: 5
-    };
+    this.get();
+  }
+
+  get () {
+    if ( typeof window !== 'undefined' ) {
+      window.socket.emit('get item details', this.props.item)
+        .on('OK get item details', details => {
+          console.log({ details })
+          // if ( evaluation.items)
+        })
+    }
   }
 
   render () {

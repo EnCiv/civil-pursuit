@@ -32,8 +32,6 @@ class Item extends React.Component {
       return line;
     });
 
-    console.log({ lines })
-
     return lines;
   }
 
@@ -231,7 +229,7 @@ class Item extends React.Component {
     if ( this.props.promote !== false ) {
       promote = (
         <Accordion show={ this.state.showPromote }>
-          <Promote />
+          <Promote item={ this.props.item } />
         </Accordion>
       );
     }
@@ -239,7 +237,7 @@ class Item extends React.Component {
     if ( this.props.details !== false ) {
       details =(
         <Accordion show={ this.state.showDetails }>
-          <Details />
+          <Details item={ this.props.item } />
         </Accordion>
       );
     }
@@ -247,7 +245,7 @@ class Item extends React.Component {
     if ( this.props.subtype !== false ) {
       subtype = (
         <Accordion show={ this.state.showSubtype }>
-          <Subtype />
+          <Subtype item={ this.props.item } />
         </Accordion>
       );
     }
@@ -255,7 +253,7 @@ class Item extends React.Component {
     if ( this.props.harmony !== false ) {
       harmony = (
         <Accordion show={ this.state.showHarmony }>
-          <Harmony />
+          <Harmony item={ this.props.item } />
         </Accordion>
       );
     }

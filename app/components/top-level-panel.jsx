@@ -30,8 +30,10 @@ class TopLevelPanel extends React.Component {
   getItems (type) {
     window.socket.emit('get items', { type })
       .on('OK get items', (panel, items) => {
-        console.log(panel, items);
-        this.setState({ type, items });
+        if ( panel.type._id === type._id ) {
+          console.log(panel, items);
+          this.setState({ type, items });
+        }
       })
   }
 

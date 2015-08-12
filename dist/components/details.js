@@ -24,15 +24,21 @@ var Details = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this, props);
 
-    this.state = {
-      cursor: 1,
-      limit: 5
-    };
+    this.get();
   }
 
   _inherits(Details, _React$Component);
 
   _createClass(Details, [{
+    key: 'get',
+    value: function get() {
+      if (typeof window !== 'undefined') {
+        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {
+          console.log({ details: details });
+        });
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(
@@ -52,3 +58,4 @@ var Details = (function (_React$Component) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
+// if ( evaluation.items)

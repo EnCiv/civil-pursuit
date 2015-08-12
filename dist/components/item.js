@@ -273,7 +273,7 @@ var Item = (function (_React$Component) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
           { show: this.state.showPromote },
-          _react2['default'].createElement(_promote2['default'], null)
+          _react2['default'].createElement(_promote2['default'], { item: this.props.item })
         );
       }
 
@@ -281,7 +281,7 @@ var Item = (function (_React$Component) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
           { show: this.state.showDetails },
-          _react2['default'].createElement(_details2['default'], null)
+          _react2['default'].createElement(_details2['default'], { item: this.props.item })
         );
       }
 
@@ -289,7 +289,7 @@ var Item = (function (_React$Component) {
         subtype = _react2['default'].createElement(
           _utilAccordion2['default'],
           { show: this.state.showSubtype },
-          _react2['default'].createElement(_subtype2['default'], null)
+          _react2['default'].createElement(_subtype2['default'], { item: this.props.item })
         );
       }
 
@@ -297,7 +297,7 @@ var Item = (function (_React$Component) {
         harmony = _react2['default'].createElement(
           _utilAccordion2['default'],
           { show: this.state.showHarmony },
-          _react2['default'].createElement(_harmony2['default'], null)
+          _react2['default'].createElement(_harmony2['default'], { item: this.props.item })
         );
       }
 
@@ -384,8 +384,6 @@ var Item = (function (_React$Component) {
         }
         return line;
       });
-
-      console.log({ lines: lines });
 
       return lines;
     }
