@@ -11,11 +11,16 @@ import TextInput        from './util/text-input';
 import Select           from './util/select';
 
 class Residence extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 
     this.state = { user : this.props.user };
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   validateGPS () {
     navigator.geolocation.watchPosition(position => {
@@ -26,6 +31,8 @@ class Residence extends React.Component {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   setCity () {
     let city = React.findDOMNode(this.refs.city).value;
 
@@ -33,6 +40,18 @@ class Residence extends React.Component {
       window.socket.emit('set city', city);
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  setState () {
+    let state = React.findDOMNode(this.refs.state).value;
+
+    if ( state ) {
+      window.socket.emit('set state', state);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     let { user } = this.props;
@@ -83,7 +102,7 @@ class Residence extends React.Component {
 
         <InputGroup block className="gutter">
           <TextInput placeholder="City" defaultValue={ user.city } onChange={ this.setCity.bind(this) } ref="city" />
-          <Select style={{ flexBasis: '30%'}}>{ states }</Select>
+          <Select style={{ flexBasis: '30%'}} ref="state"  onChange={ this.setState.bind(this) } defaultValue={ user.state }>{ states }</Select>
         </InputGroup>
 
         <InputGroup block className="gutter">

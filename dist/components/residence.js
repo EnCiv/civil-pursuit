@@ -51,6 +51,9 @@ var _utilSelect = require('./util/select');
 var _utilSelect2 = _interopRequireDefault(_utilSelect);
 
 var Residence = (function (_React$Component) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Residence(props) {
     _classCallCheck(this, Residence);
 
@@ -63,6 +66,9 @@ var Residence = (function (_React$Component) {
 
   _createClass(Residence, [{
     key: 'validateGPS',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function validateGPS() {
       var _this = this;
 
@@ -78,6 +84,9 @@ var Residence = (function (_React$Component) {
     }
   }, {
     key: 'setCity',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function setCity() {
       var city = _react2['default'].findDOMNode(this.refs.city).value;
 
@@ -86,7 +95,22 @@ var Residence = (function (_React$Component) {
       }
     }
   }, {
+    key: 'setState',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function setState() {
+      var state = _react2['default'].findDOMNode(this.refs.state).value;
+
+      if (state) {
+        window.socket.emit('set state', state);
+      }
+    }
+  }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
       var user = this.props.user;
 
@@ -168,7 +192,7 @@ var Residence = (function (_React$Component) {
           _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'City', defaultValue: user.city, onChange: this.setCity.bind(this), ref: 'city' }),
           _react2['default'].createElement(
             _utilSelect2['default'],
-            { style: { flexBasis: '30%' } },
+            { style: { flexBasis: '30%' }, ref: 'state', onChange: this.setState.bind(this), defaultValue: user.state },
             states
           )
         ),
