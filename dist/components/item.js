@@ -48,6 +48,18 @@ var _promote = require('./promote');
 
 var _promote2 = _interopRequireDefault(_promote);
 
+var _details = require('./details');
+
+var _details2 = _interopRequireDefault(_details);
+
+var _subtype = require('./subtype');
+
+var _subtype2 = _interopRequireDefault(_subtype);
+
+var _harmony = require('./harmony');
+
+var _harmony2 = _interopRequireDefault(_harmony);
+
 var _utilButtonGroup = require('./util/button-group');
 
 var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
@@ -64,7 +76,10 @@ var Item = (function (_React$Component) {
     this.expanded = false;
 
     this.state = {
-      showPromote: false
+      showPromote: false,
+      showDetails: false,
+      showSubtype: false,
+      showHarmony: false
     };
   }
 
@@ -77,6 +92,30 @@ var Item = (function (_React$Component) {
 
     value: function togglePromote() {
       this.setState({ showPromote: !this.state.showPromote });
+    }
+  }, {
+    key: 'toggleDetails',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function toggleDetails() {
+      this.setState({ showDetails: !this.state.showDetails });
+    }
+  }, {
+    key: 'toggleSubtype',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function toggleSubtype() {
+      this.setState({ showSubtype: !this.state.showSubtype });
+    }
+  }, {
+    key: 'toggleHarmony',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function toggleHarmony() {
+      this.setState({ showHarmony: !this.state.showHarmony });
     }
   }, {
     key: 'componentDidMount',
@@ -179,7 +218,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true },
+              { small: true, shy: true, onClick: this.toggleDetails.bind(this) },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -194,7 +233,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true },
+              { small: true, shy: true, onClick: this.toggleSubtype.bind(this) },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -205,7 +244,7 @@ var Item = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true },
+              { small: true, shy: true, onClick: this.toggleHarmony.bind(this) },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -279,6 +318,21 @@ var Item = (function (_React$Component) {
             _utilAccordion2['default'],
             { show: this.state.showPromote },
             _react2['default'].createElement(_promote2['default'], null)
+          ),
+          _react2['default'].createElement(
+            _utilAccordion2['default'],
+            { show: this.state.showDetails },
+            _react2['default'].createElement(_details2['default'], null)
+          ),
+          _react2['default'].createElement(
+            _utilAccordion2['default'],
+            { show: this.state.showSubtype },
+            _react2['default'].createElement(_subtype2['default'], null)
+          ),
+          _react2['default'].createElement(
+            _utilAccordion2['default'],
+            { show: this.state.showHarmony },
+            _react2['default'].createElement(_harmony2['default'], null)
           )
         )
       );

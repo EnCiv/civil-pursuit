@@ -9,6 +9,9 @@ import Icon             from './util/icon';
 import ItemMedia        from './item-media';
 // import ItemButtons      from './item-buttons';
 import Promote          from './promote';
+import Details          from './details';
+import Subtype          from './subtype';
+import Harmony          from './harmony';
 import ButtonGroup      from './util/button-group';
 
 class Item extends React.Component {
@@ -72,7 +75,10 @@ class Item extends React.Component {
     this.expanded = false;
 
     this.state = {
-      showPromote : false
+      showPromote : false,
+      showDetails : false,
+      showSubtype : false,
+      showHarmony : false
     };
   }
 
@@ -80,6 +86,24 @@ class Item extends React.Component {
 
   togglePromote () {
     this.setState({ showPromote : ! this.state.showPromote });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  toggleDetails () {
+    this.setState({ showDetails : ! this.state.showDetails });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  toggleSubtype () {
+    this.setState({ showSubtype : ! this.state.showSubtype });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  toggleHarmony () {
+    this.setState({ showHarmony : ! this.state.showHarmony });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,19 +196,19 @@ class Item extends React.Component {
           </ButtonGroup>
 
           <ButtonGroup>
-            <Button small shy>
+            <Button small shy onClick={ this.toggleDetails.bind(this) }>
               <span>{ item.popularity.number + '%' } </span>
               <Icon icon="signal" />
             </Button>
           </ButtonGroup>
 
           <ButtonGroup>
-            <Button small shy>
+            <Button small shy onClick={ this.toggleSubtype.bind(this) }>
               <span>{ item.promotions } </span>
               <Icon icon="fire" />
             </Button>
 
-            <Button small shy>
+            <Button small shy onClick={ this.toggleHarmony.bind(this) }>
               <span>{ item.popularity.number + '%' } </span>
               <Icon icon="music" />
             </Button>
@@ -225,6 +249,18 @@ class Item extends React.Component {
         <section>
           <Accordion show={ this.state.showPromote }>
             <Promote />
+          </Accordion>
+
+          <Accordion show={ this.state.showDetails }>
+            <Details />
+          </Accordion>
+
+          <Accordion show={ this.state.showSubtype }>
+            <Subtype />
+          </Accordion>
+
+          <Accordion show={ this.state.showHarmony }>
+            <Harmony />
           </Accordion>
         </section>
       </article>
