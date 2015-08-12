@@ -10,4 +10,5 @@
 npm run transpile &&
 npm run build &&
 npm run less &&
-npm run min-css
+npm run min-css &&
+npm run uglify

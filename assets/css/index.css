@@ -476,6 +476,9 @@ a.button {
 .syn-row-space-around {
   justify-content: space-around;
 }
+.syn-row-center-items {
+  align-items: center;
+}
 /**-------------------------------------------------------------// row        */
 /** ____________________________________________________________________________
 
@@ -1174,5 +1177,12 @@ body {
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
+}
+.syn-creator .--looking-up:not(.--visible),
+.syn-creator .--error:not(.--visible),
+.syn-creator .url-title:not(.--visible),
+.syn-creator .syn-edit-url:not(.--visible),
+.syn-creator .url-editor.--hide {
+  display: none;
 }
 /**-------------------------------------------------------------// index      */

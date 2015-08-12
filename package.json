@@ -15,7 +15,7 @@
     "less": "lessc assets/less/index.less assets/css/index.css",
     "watch-less": "npm run less && node dist/bin/watch-less",
     "min-css": "bash bin/min-css.sh",
-    "uglify": "node dist/lib/build/uglify-pages.js",
+    "uglify": "uglifyjs assets/js/main.js -o assets/js/main.min.js",
     "uglify-assets": "bash bin/uglify-assets.sh",
     "deploy-no-test": "bash bin/deploy-no-test.sh",
     "deploy": "bash bin/deploy.sh"

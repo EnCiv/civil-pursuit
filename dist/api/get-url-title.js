@@ -21,9 +21,15 @@ function socketGetUrlTitle(event, url) {
     (0, _libAppGetUrlTitle2['default'])(url).then(function (title) {
       return _this.ok(event, title);
     }, function (error) {
-      return _this.error(error);
+      if (error.code === 'ETIMEDOUT') {
+        _this.ok(event, { error: 'time out' });
+      } else {
+        _this.error(error);
+      }
     });
-  }, this.error.bind(this));
+  }, function (error) {
+    return _this.emit('error', error);
+  });
 }
 
 exports['default'] = socketGetUrlTitle;

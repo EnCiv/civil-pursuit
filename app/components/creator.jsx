@@ -7,8 +7,11 @@ import TextArea         from './util/text-area';
 import Submit           from './util/submit';
 import Icon             from './util/icon';
 import Form             from './util/form';
+import Row              from './util/row';
 
 class Creator extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
     let subject       =   React.findDOMNode(this.refs.subject);
@@ -21,8 +24,23 @@ class Creator extends React.Component {
     let inputHeight = subject.offsetHeight + reference.offsetHeight;
 
     description.style.height = ( mediaHeight - inputHeight ) + 'px';
+
+    subject.addEventListener('keydown', (e) => {
+      if ( e.keyCode === 13 ) {
+        e.preventDefault();
+      }
+    }, false);
+
+    reference.addEventListener('keydown', (e) => {
+      if ( e.keyCode === 13 ) {
+        e.preventDefault();
+        this.getUrlTitle();
+      }
+    }, false);
   }
 
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   create () {
     let subject       =   React.findDOMNode(this.refs.subject);
     let description   =   React.findDOMNode(this.refs.description);
@@ -33,9 +51,55 @@ class Creator extends React.Component {
       });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  getUrlTitle () {
+    let url = React.findDOMNode(this.refs.reference).value;
+    let loading = React.findDOMNode(this.refs.lookingUp);
+    let error = React.findDOMNode(this.refs.errorLookingUp);
+    let reference = React.findDOMNode(this.refs.reference);
+    let editURL = React.findDOMNode(this.refs.editURL);
+    let titleHolder = React.findDOMNode(this.refs.title);
+
+    if ( url && /^http/.test(url) ) {
+      loading.classList.add('--visible');
+
+      error.classList.remove('--visible');
+
+      window.socket.emit('get url title', url)
+        .on('OK get url title', title => {
+          loading.classList.remove('--visible');
+          if ( title.error ) {
+            error.classList.add('--visible');
+          }
+          else if ( title ) {
+            reference.classList.add('--hide');
+            titleHolder.classList.add('--visible');
+            titleHolder.value = title;
+            editURL.classList.add('--visible');
+          }
+        });
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  editURL () {
+    let reference = React.findDOMNode(this.refs.reference);
+    let editURL = React.findDOMNode(this.refs.editURL);
+    let titleHolder = React.findDOMNode(this.refs.title);
+
+    reference.classList.remove('--hide');
+    reference.select();
+    titleHolder.classList.remove('--visible');
+    editURL.classList.remove('--visible');
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     return (
-      <Form handler={ this.create.bind(this) }>
+      <Form handler={ this.create.bind(this) } className="syn-creator" ref="form">
         <article className="item" ref="creator">
           <section className="item-media-wrapper">
             <section className="item-media">
@@ -52,7 +116,19 @@ class Creator extends React.Component {
           <section className="item-text">
             <div className="item-inputs">
               <TextInput block placeholder="Subject" ref="subject" required />
-              <TextInput block placeholder="http://" ref="reference" />
+
+              <Row center-items>
+                <Icon icon="globe" spin={ true } text-muted className="--looking-up" ref="lookingUp" />
+
+                <Icon icon="exclamation" text-warning className="--error" ref="errorLookingUp" />
+
+                <TextInput block placeholder="http://" ref="reference" onBlur={ this.getUrlTitle.bind(this) } className="url-editor" />
+
+                <TextInput disabled value="This is the title" className="url-title" ref="title" />
+
+                <Icon icon="pencil" mute className="syn-edit-url" ref="editURL"  onClick={ this.editURL.bind(this) }/>
+              </Row>
+
               <TextArea block placeholder="Description" ref="description" required></TextArea>
             </div>
           </section>

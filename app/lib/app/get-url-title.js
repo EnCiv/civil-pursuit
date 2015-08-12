@@ -9,7 +9,7 @@ function getUrlTitle (url) {
   return new Promise((ok, ko) => {
     let req = {
       url             :   url,
-      timeout         :   1000 * 5,
+      timeout         :   1000 * 8,
       headers         :   {
         'User-Agent'  :   config['user agent']
       }

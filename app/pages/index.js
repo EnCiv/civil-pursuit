@@ -60,6 +60,14 @@ class Layout extends Document {
         new Script('/assets/js/socket.io-stream.js')
       );
     }
+
+    else {
+      this.add(
+        new Script('/socket.io/socket.io.js'),
+        new Script('/assets/js/main.min.js'),
+        new Script('/assets/js/socket.io-stream.js')
+      );
+    }
   }
 
   uACompatible () {

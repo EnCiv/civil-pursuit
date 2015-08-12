@@ -22,6 +22,10 @@ class Row extends React.Component {
       classes.push('syn-row-space-around');
     }
 
+    if ( this.props['center-items'] ) {
+      classes.push('syn-row-center-items');
+    }
+
 
     return (
       <section { ...this.props } className={ Component.classList(this, ...classes) }>

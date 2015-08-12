@@ -9,10 +9,17 @@ function socketGetUrlTitle (event, url) {
       getUrlTitle(url)
         .then(
           title => this.ok(event, title),
-          error => this.error(error)
+          error => {
+            if ( error.code === 'ETIMEDOUT' ) {
+              this.ok(event,{ error : 'time out' });
+            }
+            else {
+              this.error(error);
+            }
+          }
         );
     },
-    this.error.bind(this)
+    error => this.emit('error', error)
   );
 }
 

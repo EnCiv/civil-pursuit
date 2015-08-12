@@ -26,7 +26,7 @@ function getUrlTitle(url) {
   return new Promise(function (ok, ko) {
     var req = {
       url: url,
-      timeout: 1000 * 5,
+      timeout: 1000 * 8,
       headers: {
         'User-Agent': _secretJson2['default']['user agent']
       }

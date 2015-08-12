@@ -51,6 +51,10 @@ var Row = (function (_React$Component) {
         classes.push('syn-row-space-around');
       }
 
+      if (this.props['center-items']) {
+        classes.push('syn-row-center-items');
+      }
+
       return _react2['default'].createElement(
         'section',
         _extends({}, this.props, { className: _libAppComponent2['default'].classList.apply(_libAppComponent2['default'], [this].concat(classes)) }),

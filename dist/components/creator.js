@@ -40,6 +40,10 @@ var _utilForm = require('./util/form');
 
 var _utilForm2 = _interopRequireDefault(_utilForm);
 
+var _utilRow = require('./util/row');
+
+var _utilRow2 = _interopRequireDefault(_utilRow);
+
 var Creator = (function (_React$Component) {
   function Creator() {
     _classCallCheck(this, Creator);
@@ -53,7 +57,12 @@ var Creator = (function (_React$Component) {
 
   _createClass(Creator, [{
     key: 'componentDidMount',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function componentDidMount() {
+      var _this = this;
+
       var subject = _react2['default'].findDOMNode(this.refs.subject);
       var reference = _react2['default'].findDOMNode(this.refs.reference);
       var description = _react2['default'].findDOMNode(this.refs.description);
@@ -64,9 +73,24 @@ var Creator = (function (_React$Component) {
       var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
       description.style.height = mediaHeight - inputHeight + 'px';
+
+      subject.addEventListener('keydown', function (e) {
+        if (e.keyCode === 13) {
+          e.preventDefault();
+        }
+      }, false);
+
+      reference.addEventListener('keydown', function (e) {
+        if (e.keyCode === 13) {
+          e.preventDefault();
+          _this.getUrlTitle();
+        }
+      }, false);
     }
   }, {
     key: 'create',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     value: function create() {
       var subject = _react2['default'].findDOMNode(this.refs.subject);
       var description = _react2['default'].findDOMNode(this.refs.description);
@@ -76,11 +100,60 @@ var Creator = (function (_React$Component) {
       });
     }
   }, {
+    key: 'getUrlTitle',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function getUrlTitle() {
+      var url = _react2['default'].findDOMNode(this.refs.reference).value;
+      var loading = _react2['default'].findDOMNode(this.refs.lookingUp);
+      var error = _react2['default'].findDOMNode(this.refs.errorLookingUp);
+      var reference = _react2['default'].findDOMNode(this.refs.reference);
+      var editURL = _react2['default'].findDOMNode(this.refs.editURL);
+      var titleHolder = _react2['default'].findDOMNode(this.refs.title);
+
+      if (url && /^http/.test(url)) {
+        loading.classList.add('--visible');
+
+        error.classList.remove('--visible');
+
+        window.socket.emit('get url title', url).on('OK get url title', function (title) {
+          loading.classList.remove('--visible');
+          if (title.error) {
+            error.classList.add('--visible');
+          } else if (title) {
+            reference.classList.add('--hide');
+            titleHolder.classList.add('--visible');
+            titleHolder.value = title;
+            editURL.classList.add('--visible');
+          }
+        });
+      }
+    }
+  }, {
+    key: 'editURL',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function editURL() {
+      var reference = _react2['default'].findDOMNode(this.refs.reference);
+      var editURL = _react2['default'].findDOMNode(this.refs.editURL);
+      var titleHolder = _react2['default'].findDOMNode(this.refs.title);
+
+      reference.classList.remove('--hide');
+      reference.select();
+      titleHolder.classList.remove('--visible');
+      editURL.classList.remove('--visible');
+    }
+  }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
       return _react2['default'].createElement(
         _utilForm2['default'],
-        { handler: this.create.bind(this) },
+        { handler: this.create.bind(this), className: 'syn-creator', ref: 'form' },
         _react2['default'].createElement(
           'article',
           { className: 'item', ref: 'creator' },
@@ -109,7 +182,15 @@ var Creator = (function (_React$Component) {
               'div',
               { className: 'item-inputs' },
               _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true }),
-              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference' }),
+              _react2['default'].createElement(
+                _utilRow2['default'],
+                { 'center-items': true },
+                _react2['default'].createElement(_utilIcon2['default'], { icon: 'globe', spin: true, 'text-muted': true, className: '--looking-up', ref: 'lookingUp' }),
+                _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation', 'text-warning': true, className: '--error', ref: 'errorLookingUp' }),
+                _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor' }),
+                _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, value: 'This is the title', className: 'url-title', ref: 'title' }),
+                _react2['default'].createElement(_utilIcon2['default'], { icon: 'pencil', mute: true, className: 'syn-edit-url', ref: 'editURL', onClick: this.editURL.bind(this) })
+              ),
               _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true })
             )
           ),
