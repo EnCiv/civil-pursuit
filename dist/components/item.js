@@ -43,6 +43,9 @@ var _itemButtons = require('./item-buttons');
 var _itemButtons2 = _interopRequireDefault(_itemButtons);
 
 var Item = (function (_React$Component) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Item(props) {
     _classCallCheck(this, Item);
 
@@ -55,6 +58,9 @@ var Item = (function (_React$Component) {
 
   _createClass(Item, [{
     key: 'componentDidMount',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function componentDidMount() {
       var media = _react2['default'].findDOMNode(this.refs.media).querySelector('img, iframe');
 
@@ -79,6 +85,9 @@ var Item = (function (_React$Component) {
     }
   }, {
     key: 'readMore',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function readMore() {
       var truncatable = _react2['default'].findDOMNode(this.refs.item).querySelector('.item-truncatable');
 
@@ -96,6 +105,9 @@ var Item = (function (_React$Component) {
     }
   }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
       var item = this.props.item;
 
@@ -168,8 +180,14 @@ var Item = (function (_React$Component) {
         _react2['default'].createElement('section', { style: { clear: 'both' } })
       );
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   }], [{
     key: 'spanify',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function spanify(text) {
       var lines = [];
 
@@ -190,6 +208,9 @@ var Item = (function (_React$Component) {
     }
   }, {
     key: 'paint',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function paint(container, limit) {
       var lines = Item.spanify(container.textContent);
       container.innerHTML = '';

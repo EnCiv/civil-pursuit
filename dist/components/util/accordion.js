@@ -16,38 +16,34 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _panel = require('./panel');
-
-var _panel2 = _interopRequireDefault(_panel);
-
-var _item = require('./item');
-
-var _item2 = _interopRequireDefault(_item);
-
-var Intro = (function (_React$Component) {
-  function Intro() {
-    _classCallCheck(this, Intro);
+var Accordion = (function (_React$Component) {
+  function Accordion() {
+    _classCallCheck(this, Accordion);
 
     if (_React$Component != null) {
       _React$Component.apply(this, arguments);
     }
   }
 
-  _inherits(Intro, _React$Component);
+  _inherits(Accordion, _React$Component);
 
-  _createClass(Intro, [{
+  _createClass(Accordion, [{
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(
-        _panel2['default'],
-        { title: this.props.intro.subject, creator: false },
-        _react2['default'].createElement(_item2['default'], { item: this.props.intro, buttons: false })
+        'section',
+        { className: 'syn--acordion' },
+        _react2['default'].createElement(
+          'section',
+          null,
+          this.props.children
+        )
       );
     }
   }]);
 
-  return Intro;
+  return Accordion;
 })(_react2['default'].Component);
 
-exports['default'] = Intro;
+exports['default'] = Accordion;
 module.exports = exports['default'];

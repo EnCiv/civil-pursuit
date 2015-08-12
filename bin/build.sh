@@ -7,4 +7,5 @@
 # npm run uglify &&
 # npm run uglify-assets
 
-npm run transpile
+npm run transpile &&
+npm run build

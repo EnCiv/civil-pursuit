@@ -16,73 +16,73 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _libAppComponent = require('../lib/app/component');
-
-var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
-
-var _utilIcon = require('./util/icon');
-
-var _utilIcon2 = _interopRequireDefault(_utilIcon);
-
-var _utilAccordion = require('./util/accordion');
-
-var _utilAccordion2 = _interopRequireDefault(_utilAccordion);
-
-var _creator = require('./creator');
-
-var _creator2 = _interopRequireDefault(_creator);
-
-var Panel = (function (_React$Component) {
-  function Panel() {
-    _classCallCheck(this, Panel);
+var ItemLayout = (function (_React$Component) {
+  function ItemLayout() {
+    _classCallCheck(this, ItemLayout);
 
     if (_React$Component != null) {
       _React$Component.apply(this, arguments);
     }
   }
 
-  _inherits(Panel, _React$Component);
+  _inherits(ItemLayout, _React$Component);
 
-  _createClass(Panel, [{
+  _createClass(ItemLayout, [{
     key: 'render',
     value: function render() {
-      var creator = undefined,
-          creatorIcon = undefined;
-
-      if (this.props.creator !== false) {
-        creator = _react2['default'].createElement(
-          _utilAccordion2['default'],
-          null,
-          _react2['default'].createElement(_creator2['default'], null)
-        );
-        creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus' });
-      }
-
       return _react2['default'].createElement(
-        'section',
-        { className: _libAppComponent2['default'].classList(this, 'syn-panel') },
+        'article',
+        { id: this.props.id, className: 'item', ref: 'item' },
+        _react2['default'].createElement(ItemMedia, { item: item, ref: 'media' }),
         _react2['default'].createElement(
           'section',
-          { className: 'syn-panel-heading' },
+          { className: 'item-text' },
           _react2['default'].createElement(
-            'h4',
-            null,
-            this.props.title
-          ),
-          creatorIcon
+            'div',
+            { className: 'item-truncatable' },
+            _react2['default'].createElement(
+              'h4',
+              { className: 'item-subject' },
+              this.props.subject
+            ),
+            _react2['default'].createElement(
+              'h5',
+              { className: 'item-reference' },
+              _react2['default'].createElement(
+                'a',
+                { href: this.props.referenceLink, target: '_blank', rel: 'nofollow' },
+                this.props.referenceTitle
+              )
+            ),
+            _react2['default'].createElement(
+              'div',
+              { className: 'item-description pre-text' },
+              this.props.description
+            ),
+            _react2['default'].createElement(
+              'div',
+              { className: 'item-read-more' },
+              _react2['default'].createElement(
+                'a',
+                { href: '#', onClick: this.readMore.bind(this) },
+                'Read ',
+                _react2['default'].createElement(
+                  'span',
+                  { ref: 'readMoreText' },
+                  'more'
+                )
+              )
+            )
+          )
         ),
-        _react2['default'].createElement(
-          'section',
-          { className: 'syn-panel-body' },
-          creator,
-          this.props.children
-        )
+        buttons,
+        _react2['default'].createElement('section', { style: { clear: 'both' } })
       );
     }
   }]);
 
-  return Panel;
+  return ItemLayout;
 })(_react2['default'].Component);
 
-exports['default'] = Panel;
+exports['default'] = ItemLayout;
 module.exports = exports['default'];

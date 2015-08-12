@@ -113,7 +113,7 @@ var Profile = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        { title: 'Profile' },
+        { title: 'Profile', creator: false },
         _react2['default'].createElement('hr', null),
         _react2['default'].createElement(
           'h4',

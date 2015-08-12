@@ -7,7 +7,7 @@ import Item from './item';
 class Intro extends React.Component {
   render () {
     return (
-      <Panel title={ this.props.intro.subject }>
+      <Panel title={ this.props.intro.subject } creator={ false }>
         <Item item={ this.props.intro } buttons={ false } />
       </Panel>
     );

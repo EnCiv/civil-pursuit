@@ -24,6 +24,10 @@ var _utilColumn = require('./util/column');
 
 var _utilColumn2 = _interopRequireDefault(_utilColumn);
 
+var _utilImage = require('./util/image');
+
+var _utilImage2 = _interopRequireDefault(_utilImage);
+
 var Residence = (function (_React$Component) {
   function Residence() {
     _classCallCheck(this, Residence);
@@ -38,17 +42,39 @@ var Residence = (function (_React$Component) {
   _createClass(Residence, [{
     key: 'render',
     value: function render() {
+      // return (
+      //   <Row>
+      //     <Column span="50">
+      //       <Image src="http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png" responsive />
+      //     </Column>
+      //
+      //     <Column span="50">
+      //       <h2>Residence</h2>
+      //       <p>This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.</p>
+      //     </Column>
+      //   </Row>
+      // );
+
       return _react2['default'].createElement(
-        _utilRow2['default'],
+        'section',
         null,
-        _react2['default'].createElement(_utilColumn2['default'], { span: '50' }),
         _react2['default'].createElement(
-          _utilColumn2['default'],
-          { span: '50' },
+          'section',
+          { style: { width: '50%', float: 'left' } },
+          _react2['default'].createElement(_utilImage2['default'], { src: 'http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png', responsive: true })
+        ),
+        _react2['default'].createElement(
+          'section',
+          null,
           _react2['default'].createElement(
             'h2',
             null,
             'Residence'
+          ),
+          _react2['default'].createElement(
+            'p',
+            null,
+            'This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.'
           )
         )
       );

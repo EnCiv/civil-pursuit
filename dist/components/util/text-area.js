@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -16,38 +18,61 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _panel = require('./panel');
-
-var _panel2 = _interopRequireDefault(_panel);
-
-var _item = require('./item');
-
-var _item2 = _interopRequireDefault(_item);
-
-var Intro = (function (_React$Component) {
-  function Intro() {
-    _classCallCheck(this, Intro);
+var Textarea = (function (_React$Component) {
+  function Textarea() {
+    _classCallCheck(this, Textarea);
 
     if (_React$Component != null) {
       _React$Component.apply(this, arguments);
     }
   }
 
-  _inherits(Intro, _React$Component);
+  _inherits(Textarea, _React$Component);
 
-  _createClass(Intro, [{
+  _createClass(Textarea, [{
     key: 'render',
     value: function render() {
+      var classes = [];
+
+      var props = ['block', 'primary', 'info', 'large', 'medium', 'radius', 'cursor-pointer', 'shy', 'success', 'error', 'warning'];
+
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = props[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var prop = _step.value;
+
+          if (this.props[prop]) {
+            classes.push(prop);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator['return']) {
+            _iterator['return']();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
       return _react2['default'].createElement(
-        _panel2['default'],
-        { title: this.props.intro.subject, creator: false },
-        _react2['default'].createElement(_item2['default'], { item: this.props.intro, buttons: false })
+        'textarea',
+        _extends({ className: classes.join(' ') }, this.props),
+        this.props.children
       );
     }
   }]);
 
-  return Intro;
+  return Textarea;
 })(_react2['default'].Component);
 
-exports['default'] = Intro;
+exports['default'] = Textarea;
 module.exports = exports['default'];

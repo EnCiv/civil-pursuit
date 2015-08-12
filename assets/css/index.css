@@ -1066,6 +1066,10 @@ body {
   border-radius: 6px;
 }
 .syn-panel-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   background: #39683c;
   background-color: rgba(0, 0, 0, 0.6);
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.6)), to(#000000));
@@ -1078,6 +1082,16 @@ body {
   vertical-align: baseline;
   border-radius: 3px 3px 0 0;
   padding: 1px;
+}
+.syn-panel-heading h4,
+.syn-panel-heading i.fa-plus {
+  padding: 0 10px;
+}
+.syn-panel-heading i.fa-plus {
+  cursor: pointer;
+}
+.syn-panel + .syn-panel {
+  margin-top: 10px;
 }
 /**-------------------------------------------------------------// panel       */
 .item-media {
@@ -1107,6 +1121,12 @@ body {
   white-space: pre-line;
   text-align: justify;
 }
+.item-buttons {
+  float: right;
+  padding-left: 1em;
+  text-align: right;
+  padding: 10px;
+}
 .syn-uploader .syn-uploader-dropbox {
   background: #F8F8F8;
   border: 5px dashed #DDD;
@@ -1131,5 +1151,21 @@ body {
 }
 .syn-uploader .syn-uploader-replace:not(.--show) {
   display: none;
+}
+.syn--expandable {
+  border: 2px solid red;
+  height: 0;
+}
+.item-inputs {
+  left: 0;
+  position: relative;
+  overflow: hidden;
+}
+.item-inputs input[type="text"],
+.item-inputs input[type="url"],
+.item-inputs textarea {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 /**-------------------------------------------------------------// index      */

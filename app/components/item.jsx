@@ -9,6 +9,9 @@ import ItemMedia        from './item-media';
 import ItemButtons      from './item-buttons';
 
 class Item extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static spanify (text) {
     let lines = [];
 
@@ -27,6 +30,8 @@ class Item extends React.Component {
 
     return lines;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static paint (container, limit) {
     let lines = Item.spanify(container.textContent)
@@ -56,11 +61,15 @@ class Item extends React.Component {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props)
 
     this.expanded = false;
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
     let media = React
@@ -89,6 +98,8 @@ class Item extends React.Component {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   readMore () {
     let truncatable =  React.findDOMNode(this.refs.item)
       .querySelector('.item-truncatable');
@@ -106,6 +117,8 @@ class Item extends React.Component {
       text.innerText = 'more';
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     let { item } = this.props;
@@ -154,6 +167,8 @@ class Item extends React.Component {
       </article>
     );
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 
 export default Item;
