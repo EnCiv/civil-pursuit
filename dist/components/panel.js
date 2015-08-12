@@ -44,6 +44,9 @@ var Panel = (function (_React$Component) {
   _inherits(Panel, _React$Component);
 
   _createClass(Panel, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {}
+  }, {
     key: 'render',
     value: function render() {
       var creator = undefined,
@@ -53,7 +56,7 @@ var Panel = (function (_React$Component) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
           null,
-          _react2['default'].createElement(_creator2['default'], null)
+          _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus' });
       }
@@ -86,3 +89,5 @@ var Panel = (function (_React$Component) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
+
+// console.warn('panel', props);

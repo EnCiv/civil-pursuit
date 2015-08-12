@@ -75,7 +75,7 @@ var TopLevelPanel = (function (_React$Component) {
         panelTitle = type.name;
       }
 
-      return _react2['default'].createElement(_panel2['default'], { title: panelTitle });
+      return _react2['default'].createElement(_panel2['default'], { title: panelTitle, type: type });
     }
   }]);
 

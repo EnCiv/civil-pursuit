@@ -46,6 +46,7 @@ class Layout extends Document {
     }
     else {
       this.add(
+        new Stylesheet('/assets/css/assets.min.css'),
         new Stylesheet('/assets/css/index.min.css'),
         new Stylesheet(publicConfig['font awesome'].cdn)
       );

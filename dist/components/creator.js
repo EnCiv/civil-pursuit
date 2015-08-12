@@ -92,10 +92,14 @@ var Creator = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     value: function create() {
-      var subject = _react2['default'].findDOMNode(this.refs.subject);
-      var description = _react2['default'].findDOMNode(this.refs.description);
+      var subject = _react2['default'].findDOMNode(this.refs.subject).value;
+      var description = _react2['default'].findDOMNode(this.refs.description).value;
 
-      window.socket.emit('create item').on('OK create item', function (item) {
+      var item = { subject: subject, description: description, type: this.props.type };
+
+      console.log({ item: item });
+
+      window.socket.emit('create item', item).on('OK create item', function (item) {
         console.log(item);
       });
     }

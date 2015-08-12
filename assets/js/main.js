@@ -502,10 +502,14 @@ var Creator = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     value: function create() {
-      var subject = _react2['default'].findDOMNode(this.refs.subject);
-      var description = _react2['default'].findDOMNode(this.refs.description);
+      var subject = _react2['default'].findDOMNode(this.refs.subject).value;
+      var description = _react2['default'].findDOMNode(this.refs.description).value;
 
-      window.socket.emit('create item').on('OK create item', function (item) {
+      var item = { subject: subject, description: description, type: this.props.type };
+
+      console.log({ item: item });
+
+      window.socket.emit('create item', item).on('OK create item', function (item) {
         console.log(item);
       });
     }
@@ -2529,6 +2533,9 @@ var Panel = (function (_React$Component) {
   _inherits(Panel, _React$Component);
 
   _createClass(Panel, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {}
+  }, {
     key: 'render',
     value: function render() {
       var creator = undefined,
@@ -2538,7 +2545,7 @@ var Panel = (function (_React$Component) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
           null,
-          _react2['default'].createElement(_creator2['default'], null)
+          _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus' });
       }
@@ -2571,6 +2578,8 @@ var Panel = (function (_React$Component) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
+
+// console.warn('panel', props);
 },{"../lib/app/component":45,"./creator":4,"./util/accordion":24,"./util/icon":33,"react":205}],17:[function(require,module,exports){
 'use strict';
 
@@ -2788,8 +2797,19 @@ var Residence = (function (_React$Component) {
       });
     }
   }, {
+    key: 'setCity',
+    value: function setCity() {
+      var city = _react2['default'].findDOMNode(this.refs.city).value;
+
+      if (city) {
+        window.socket.emit('set city', city);
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var user = this.props.user;
+
       var gps = undefined;
 
       if (!this.state.user['gps validated']) {
@@ -2865,7 +2885,7 @@ var Residence = (function (_React$Component) {
         _react2['default'].createElement(
           _utilInputGroup2['default'],
           { block: true, className: 'gutter' },
-          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'City' }),
+          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'City', defaultValue: user.city, onChange: this.setCity.bind(this), ref: 'city' }),
           _react2['default'].createElement(
             _utilSelect2['default'],
             { style: { flexBasis: '30%' } },
@@ -3440,7 +3460,7 @@ var TopLevelPanel = (function (_React$Component) {
         panelTitle = type.name;
       }
 
-      return _react2['default'].createElement(_panel2['default'], { title: panelTitle });
+      return _react2['default'].createElement(_panel2['default'], { title: panelTitle, type: type });
     }
   }]);
 

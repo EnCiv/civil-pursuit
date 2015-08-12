@@ -7,13 +7,17 @@ import Accordion            from './util/accordion';
 import Creator              from './creator';
 
 class Panel extends React.Component {
+  componentWillReceiveProps (props) {
+    // console.warn('panel', props);
+  }
+
   render() {
     let creator, creatorIcon;
 
     if ( this.props.creator !== false ) {
       creator = (
         <Accordion>
-          <Creator />
+          <Creator { ...this.props } />
         </Accordion>
       );
       creatorIcon = ( <Icon icon="plus" /> );

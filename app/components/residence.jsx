@@ -26,7 +26,17 @@ class Residence extends React.Component {
     });
   }
 
+  setCity () {
+    let city = React.findDOMNode(this.refs.city).value;
+
+    if ( city ) {
+      window.socket.emit('set city', city);
+    }
+  }
+
   render () {
+    let { user } = this.props;
+
     let gps;
 
     if ( ! this.state.user['gps validated'] ) {
@@ -72,7 +82,7 @@ class Residence extends React.Component {
         { gps }
 
         <InputGroup block className="gutter">
-          <TextInput placeholder="City" />
+          <TextInput placeholder="City" defaultValue={ user.city } onChange={ this.setCity.bind(this) } ref="city" />
           <Select style={{ flexBasis: '30%'}}>{ states }</Select>
         </InputGroup>
 

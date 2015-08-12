@@ -77,8 +77,19 @@ var Residence = (function (_React$Component) {
       });
     }
   }, {
+    key: 'setCity',
+    value: function setCity() {
+      var city = _react2['default'].findDOMNode(this.refs.city).value;
+
+      if (city) {
+        window.socket.emit('set city', city);
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var user = this.props.user;
+
       var gps = undefined;
 
       if (!this.state.user['gps validated']) {
@@ -154,7 +165,7 @@ var Residence = (function (_React$Component) {
         _react2['default'].createElement(
           _utilInputGroup2['default'],
           { block: true, className: 'gutter' },
-          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'City' }),
+          _react2['default'].createElement(_utilTextInput2['default'], { placeholder: 'City', defaultValue: user.city, onChange: this.setCity.bind(this), ref: 'city' }),
           _react2['default'].createElement(
             _utilSelect2['default'],
             { style: { flexBasis: '30%' } },
