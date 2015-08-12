@@ -8,4 +8,5 @@
 # npm run uglify-assets
 
 npm run transpile &&
-npm run build
+npm run build &&
+npm run less

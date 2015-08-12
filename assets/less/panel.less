@@ -1,0 +1,56 @@
+/** ____________________________________________________________________________
+
+
+                                                       /$$
+                                                      | $$
+                /$$$$$$   /$$$$$$  /$$$$$$$   /$$$$$$ | $$
+               /$$__  $$ |____  $$| $$__  $$ /$$__  $$| $$
+              | $$  \ $$  /$$$$$$$| $$  \ $$| $$$$$$$$| $$
+              | $$  | $$ /$$__  $$| $$  | $$| $$_____/| $$
+              | $$$$$$$/|  $$$$$$$| $$  | $$|  $$$$$$$| $$
+              | $$____/  \_______/|__/  |__/ \_______/|__/
+              | $$
+              | $$
+              |__/
+
+
+    ____________________________________________________________________________
+**/
+
+@import "lib/mixins";
+@import "elements/row";
+
+@panel-heading-bg: #39683C;
+@panel-border-color: #666;
+
+.syn-panel {
+  border: 1px solid @panel-border-color;
+  box-shadow: -2px 2px 3px 3px rgba(0, 0, 0, 0.14);
+  border-radius:      6px;
+}
+
+.syn-panel-heading {
+  .syn-row();
+  align-items: center;
+  background:         @panel-heading-bg;
+  .gradient           (rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 1));
+  color:              #fff;
+  text-align:         center;
+  vertical-align:     baseline;
+  border-radius:      3px 3px 0 0;
+  padding:            1px;
+
+  h4, i.fa-plus {
+    padding: 0 10px
+  }
+
+  i.fa-plus {
+    cursor: pointer
+  }
+}
+
+.syn-panel + .syn-panel {
+  margin-top: 10px
+}
+
+/**-------------------------------------------------------------// panel       */

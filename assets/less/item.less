@@ -1,0 +1,75 @@
+@import "lib/mixins";
+@import "lib/colors";
+@import "lib/typo";
+@import "elements/row";
+
+.item-media {
+  margin: 10px;
+  float                 :     left;
+  width                 :     25%;
+  max-width             :     250px;
+}
+
+.item-text {
+  padding: 10px;
+}
+
+.item-truncatable {
+  .word.--hide {
+    display: none
+  }
+}
+
+.item-truncatable.--expand {
+  .word.--hide {
+    display: inline
+  }
+
+  div:empty {
+    height: 1.5em;
+  }
+}
+
+.item-subject {
+  margin: 0;
+  margin-top: -6.5px;
+}
+
+.item-description {
+  .pre-text();
+}
+
+.item-buttons           {
+  float                 :     right;
+  text-align            :     right;
+  padding-left          :     1em;
+  text-align            :     right;
+  padding: 10px;
+
+  // button, .button       {
+  //   padding             :     0.3em !important;
+  //   text-align          :     right;
+  //   display             :     inline-block;
+  // }
+  //
+  // .item-toggle-promote,
+  // .item-toggle-details  {
+  //   display             :     block;
+  //   margin              :     @syn-gap / 2 0;
+  //   float               :     right;
+  //   clear               :     both;
+  // }
+  //
+  // .item-toggle-promote  {
+  //   margin-top          :     0;
+  // }
+  //
+  // .related              {
+  //   margin-top          :     6rem;
+  //   clear               :     both;
+  //
+  //   button:first-child  {
+  //     margin-right      :     @syn-gap;
+  //   }
+  // }
+}

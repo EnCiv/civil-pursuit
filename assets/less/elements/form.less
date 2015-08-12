@@ -1,0 +1,165 @@
+/** ____________________________________________________________________________
+
+
+                  /$$$$$$
+                 /$$__  $$
+                | $$  \__//$$$$$$   /$$$$$$  /$$$$$$/$$$$
+                | $$$$   /$$__  $$ /$$__  $$| $$_  $$_  $$
+                | $$_/  | $$  \ $$| $$  \__/| $$ \ $$ \ $$
+                | $$    | $$  | $$| $$      | $$ | $$ | $$
+                | $$    |  $$$$$$/| $$      | $$ | $$ | $$
+                |__/     \______/ |__/      |__/ |__/ |__/
+
+
+
+    ____________________________________________________________________________
+**/
+
+@import (reference) "row";
+@import (reference) "../lib/screens";
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: .5em;
+  box-sizing: border-box;
+
+  &:hover {
+    background: #eee;
+  }
+
+  &.block {
+    width: 100%;
+
+    &.gutter {
+      width: calc(100% - 12.5em) !important;
+    }
+  }
+
+  &.error {
+    border-color: red;
+    background: yellow
+  }
+
+  &.medium {
+
+    &.block {
+
+    }
+  }
+}
+
+select {
+  box-sizing: border-box;
+
+  &.gutter {
+    padding: .62em .5em;
+  }
+
+  &.medium {
+    padding: 10px;
+
+    &.block {
+      width: 100%;
+      // padding: 1em .5em
+    }
+  }
+
+  &.block {
+    width: 100%;
+
+    &.gutter {
+      width: calc(100% - 7em) !important;
+    }
+  }
+}
+
+.form-group {
+  label {
+    font-weight: bold
+  }
+
+  input {
+    width: calc(100% - 1px);
+  }
+}
+
+label {
+  font-weight: bold
+}
+
+.input-group {
+  .syn-row();
+
+  input:not(:first-child) {
+    border-left: none
+  }
+}
+
+.input-group-tablet {
+  @media (min-width: @screenTablet) {
+    // .row();
+
+    input:not(:first-child) {
+      border-left: none
+    }
+  }
+}
+
+.syn-form-center {
+  .syn-form-group {
+    text-align: center;
+    margin: 10px 0;
+
+    label {
+      font-size: 125%;
+      margin: 10px;
+      display: block;
+    }
+  }
+
+  .syn-form-submit {
+    margin: 20px 0;
+  }
+}
+
+.syn-input-group {
+  input {
+    border-radius: 0
+  }
+
+  input:first-child {
+    border-radius: 6px 0 0 6px;
+  }
+
+  input:last-child {
+    border-radius:0 6px 6px 0;
+  }
+
+  &.syn--block {
+    .syn-row();
+    input {
+      width: 100%
+    }
+  }
+}
+
+form h2:empty {
+  display: none
+}
+
+/**-------------------------------------------------------------// form       */

@@ -28,6 +28,14 @@ var _utilImage = require('./util/image');
 
 var _utilImage2 = _interopRequireDefault(_utilImage);
 
+var _utilIcon = require('./util/icon');
+
+var _utilIcon2 = _interopRequireDefault(_utilIcon);
+
+var _utilButton = require('./util/button');
+
+var _utilButton2 = _interopRequireDefault(_utilButton);
+
 var Residence = (function (_React$Component) {
   function Residence() {
     _classCallCheck(this, Residence);
@@ -42,19 +50,6 @@ var Residence = (function (_React$Component) {
   _createClass(Residence, [{
     key: 'render',
     value: function render() {
-      // return (
-      //   <Row>
-      //     <Column span="50">
-      //       <Image src="http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png" responsive />
-      //     </Column>
-      //
-      //     <Column span="50">
-      //       <h2>Residence</h2>
-      //       <p>This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.</p>
-      //     </Column>
-      //   </Row>
-      // );
-
       return _react2['default'].createElement(
         'section',
         null,
@@ -75,6 +70,25 @@ var Residence = (function (_React$Component) {
             'p',
             null,
             'This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.'
+          )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation-circle' }),
+            ' Not yet validated!'
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              null,
+              'Validate GPS'
+            )
           )
         )
       );

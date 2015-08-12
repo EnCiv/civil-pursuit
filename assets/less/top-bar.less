@@ -1,0 +1,96 @@
+/** ____________________________________________________________________________
+
+
+         /$$                               /$$
+        | $$                              | $$
+       /$$$$$$    /$$$$$$   /$$$$$$       | $$$$$$$   /$$$$$$   /$$$$$$
+      |_  $$_/   /$$__  $$ /$$__  $$      | $$__  $$ |____  $$ /$$__  $$
+        | $$    | $$  \ $$| $$  \ $$      | $$  \ $$  /$$$$$$$| $$  \__/
+        | $$ /$$| $$  | $$| $$  | $$      | $$  | $$ /$$__  $$| $$
+        |  $$$$/|  $$$$$$/| $$$$$$$/      | $$$$$$$/|  $$$$$$$| $$
+         \___/   \______/ | $$____/       |_______/  \_______/|__/
+                          | $$
+                          | $$
+                          |__/
+
+    ____________________________________________________________________________
+**/
+
+@import (reference) "lib/mixins";
+@import "lib/var";
+@import "elements/button";
+
+@syn-topbar-height: 60px;
+
+.syn-top_bar {
+  .flex();
+  .flex.row();
+  .flex.space-between();
+  position                    :       fixed;
+  top                         :       0;
+  left                        :       0;
+  right: 0;
+  z-index                     :       9999;
+  width:                      100%;
+  border-bottom:              1px solid #444;
+  margin:                     0;
+  padding:                    0;
+  height:                     @syn-topbar-height;
+  line-height:                1.45em;
+  -webkit-transform-style:    preserve-3d;
+  -moz-transform-style:       preserve-3d;
+  transform-style:            preserve-3d;
+
+  /** Appearance */
+
+  background:                 rgba(255, 255, 255, 0.9);
+  box-shadow:                -2px 4px 3px 3px rgba(0, 0, 0, 0.14);
+}
+
+.syn-top_bar-left {
+  .flex();
+  .flex.row();
+  .flex.align-items(flex-start);
+  .flex.align-content(stretch);
+}
+
+.syn-top_bar-right {
+  .flex();
+  .flex.row();
+  .flex.align-items();
+  .flex.align-content(stretch);
+  border-left: 1px solid #ccc;
+
+  button {
+    .button.shy();
+    .cursor-pointer();
+    height: @syn-topbar-height;
+    font-weight: bold;
+    padding-left: @syn-gutter * 2;
+    padding-right: @syn-gutter * 2;
+    border-left: 1px solid #ccc;
+  }
+
+  // .syn-top_bar-online_now {
+  //   border-left: 1px solid #ccc;
+  //   padding: @syn-gutter;
+  //   vertical-align: middle;
+  // }
+}
+
+.syn-top_bar-beta {
+  .button;
+  background: #333;
+  color: #fff;
+  padding: @syn-gutter;
+  margin-top: @syn-gutter;
+  margin-left: @syn-gutter;
+  border-radius: 6px;
+}
+
+.syn-top_bar-online_now {
+  padding-left: @syn-gutter;
+  padding-right: @syn-gutter;
+}
+
+/**-------------------------------------------------------------// top-bar    */

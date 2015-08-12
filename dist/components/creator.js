@@ -28,13 +28,17 @@ var _utilTextArea = require('./util/text-area');
 
 var _utilTextArea2 = _interopRequireDefault(_utilTextArea);
 
-var _utilButton = require('./util/button');
+var _utilSubmit = require('./util/submit');
 
-var _utilButton2 = _interopRequireDefault(_utilButton);
+var _utilSubmit2 = _interopRequireDefault(_utilSubmit);
 
 var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
+
+var _utilForm = require('./util/form');
+
+var _utilForm2 = _interopRequireDefault(_utilForm);
 
 var Creator = (function (_React$Component) {
   function Creator() {
@@ -65,38 +69,42 @@ var Creator = (function (_React$Component) {
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(
-        'article',
-        { className: 'item', ref: 'creator' },
+        _utilForm2['default'],
+        null,
         _react2['default'].createElement(
-          'section',
-          { className: 'item-media-wrapper' },
+          'article',
+          { className: 'item', ref: 'creator' },
           _react2['default'].createElement(
             'section',
-            { className: 'item-media' },
-            _react2['default'].createElement(_uploader2['default'], { ref: 'media' })
-          )
-        ),
-        _react2['default'].createElement(
-          'section',
-          { className: 'item-buttons' },
+            { className: 'item-media-wrapper' },
+            _react2['default'].createElement(
+              'section',
+              { className: 'item-media' },
+              _react2['default'].createElement(_uploader2['default'], { ref: 'media' })
+            )
+          ),
           _react2['default'].createElement(
-            _utilButton2['default'],
-            { radius: true },
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
-          )
-        ),
-        _react2['default'].createElement(
-          'section',
-          { className: 'item-text' },
+            'section',
+            { className: 'item-buttons' },
+            _react2['default'].createElement(
+              _utilSubmit2['default'],
+              { radius: true },
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+            )
+          ),
           _react2['default'].createElement(
-            'div',
-            { className: 'item-inputs' },
-            _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject' }),
-            _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference' }),
-            _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description' })
-          )
-        ),
-        _react2['default'].createElement('section', { style: { clear: 'both' } })
+            'section',
+            { className: 'item-text' },
+            _react2['default'].createElement(
+              'div',
+              { className: 'item-inputs' },
+              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true }),
+              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference' }),
+              _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true })
+            )
+          ),
+          _react2['default'].createElement('section', { style: { clear: 'both' } })
+        )
       );
     }
   }]);

@@ -4,8 +4,9 @@ import React            from 'react';
 import Uploader         from './uploader';
 import TextInput        from './util/text-input';
 import TextArea         from './util/text-area';
-import Button           from './util/button';
+import Submit           from './util/submit';
 import Icon             from './util/icon';
+import Form             from './util/form';
 
 class Creator extends React.Component {
 
@@ -24,30 +25,32 @@ class Creator extends React.Component {
 
   render () {
     return (
-      <article className="item" ref="creator">
-        <section className="item-media-wrapper">
-          <section className="item-media">
-            <Uploader ref="media" />
+      <Form>
+        <article className="item" ref="creator">
+          <section className="item-media-wrapper">
+            <section className="item-media">
+              <Uploader ref="media" />
+            </section>
           </section>
-        </section>
 
-        <section className="item-buttons">
-          <Button radius>
-            <Icon icon="bullhorn" />
-          </Button>
-        </section>
+          <section className="item-buttons">
+            <Submit radius>
+              <Icon icon="bullhorn" />
+            </Submit>
+          </section>
 
-        <section className="item-text">
-          <div className="item-inputs">
-            <TextInput block placeholder="Subject" ref="subject" />
-            <TextInput block placeholder="http://" ref="reference" />
-            <TextArea block placeholder="Description" ref="description"></TextArea>
-          </div>
-        </section>
+          <section className="item-text">
+            <div className="item-inputs">
+              <TextInput block placeholder="Subject" ref="subject" required />
+              <TextInput block placeholder="http://" ref="reference" />
+              <TextArea block placeholder="Description" ref="description" required></TextArea>
+            </div>
+          </section>
 
 
-        <section style={ { clear : 'both' }}></section>
-      </article>
+          <section style={ { clear : 'both' }}></section>
+        </article>
+      </Form>
     );
   }
 }

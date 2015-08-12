@@ -1,0 +1,86 @@
+/** ____________________________________________________________________________
+
+
+
+                                             /$$           /$$
+                                            | $$          | $$
+               /$$$$$$/$$$$   /$$$$$$   /$$$$$$$  /$$$$$$ | $$
+              | $$_  $$_  $$ /$$__  $$ /$$__  $$ |____  $$| $$
+              | $$ \ $$ \ $$| $$  \ $$| $$  | $$  /$$$$$$$| $$
+              | $$ | $$ | $$| $$  | $$| $$  | $$ /$$__  $$| $$
+              | $$ | $$ | $$|  $$$$$$/|  $$$$$$$|  $$$$$$$| $$
+              |__/ |__/ |__/ \______/  \_______/ \_______/|__/
+
+
+
+    ____________________________________________________________________________
+**/
+
+@import "lib/mixins";
+@import "lib/screens";
+@import "top-bar";
+
+.syn-modal {
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  transition: all ease-out .5s;
+  z-index: 1000;
+}
+
+.syn-modal-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(155, 155, 155, 0.5);
+}
+
+.syn-modal.syn--visible {
+  top: @syn-topbar-height;
+}
+
+.syn-modal-container {
+  position: absolute;
+  background: #fff;
+  top: 5%;
+  left: 10%;
+  right: 10%;
+  border-radius: 8px;
+  box-shadow: 0 0 10px 8px rgba(100, 100, 100, 0.5);
+  padding: 10px;
+
+  header {
+    text-align: center;
+  }
+
+  footer {
+    text-align: right;
+    padding: 10px;
+    padding-right: 0;
+    margin-top: 20px;
+
+    a {
+      text-transform: uppercase;
+      letter-spacing: .6em;
+      color: #999;
+      padding: 10px;
+      border: 1px solid transparent;
+      border-width: 1px 0 0 1px;
+    }
+
+    a:hover {
+      text-decoration: none
+    }
+
+    a:active {
+      border-color: #999;
+      background: #eee
+    }
+  }
+}
+
+/**-------------------------------------------------------------// modal      */
