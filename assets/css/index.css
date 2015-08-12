@@ -1108,6 +1108,9 @@ body {
   margin-top: 10px;
 }
 /**-------------------------------------------------------------// panel       */
+.item {
+  border: 1px solid #666;
+}
 .item-media {
   margin: 10px;
   float: left;
@@ -1168,6 +1171,7 @@ body {
 }
 .syn-accordion {
   transition: all ease-in 1s;
+  border: 5px solid black;
 }
 .syn-accordion-content {
   top: -9000px;

@@ -130,9 +130,7 @@ class Item extends React.Component {
 
     if ( this.props.buttons !== false ) {
       buttons = (
-        <Column span="25">
-          <ItemButtons item={ item } />
-        </Column>
+        <ItemButtons item={ item } />
       );
     }
     else {
@@ -148,6 +146,8 @@ class Item extends React.Component {
       <article id={ `item-${item._id}` } className="item" ref="item">
         <ItemMedia item={ item } ref="media" />
 
+        { buttons }
+
         <section className="item-text">
           <div className="item-truncatable">
             <h4 className="item-subject">{ item.subject }</h4>
@@ -160,8 +160,6 @@ class Item extends React.Component {
             </div>
           </div>
         </section>
-
-        { buttons }
 
         <section style={ { clear : 'both' }}></section>
       </article>

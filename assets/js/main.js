@@ -1265,7 +1265,7 @@ var ItemButtons = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        null,
+        { className: 'item-buttons' },
         _react2['default'].createElement(
           _utilButton2['default'],
           null,
@@ -1461,11 +1461,7 @@ var Item = (function (_React$Component) {
           textSpan = 50;
 
       if (this.props.buttons !== false) {
-        buttons = _react2['default'].createElement(
-          _utilColumn2['default'],
-          { span: '25' },
-          _react2['default'].createElement(_itemButtons2['default'], { item: item })
-        );
+        buttons = _react2['default'].createElement(_itemButtons2['default'], { item: item });
       } else {
         textSpan = 75;
       }
@@ -1479,6 +1475,7 @@ var Item = (function (_React$Component) {
         'article',
         { id: 'item-' + item._id, className: 'item', ref: 'item' },
         _react2['default'].createElement(_itemMedia2['default'], { item: item, ref: 'media' }),
+        buttons,
         _react2['default'].createElement(
           'section',
           { className: 'item-text' },
@@ -1520,7 +1517,6 @@ var Item = (function (_React$Component) {
             )
           )
         ),
-        buttons,
         _react2['default'].createElement('section', { style: { clear: 'both' } })
       );
     }

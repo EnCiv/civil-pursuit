@@ -42,7 +42,7 @@ var ItemButtons = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        null,
+        { className: 'item-buttons' },
         _react2['default'].createElement(
           _utilButton2['default'],
           null,

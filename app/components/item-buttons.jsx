@@ -9,7 +9,7 @@ class ItemButtons extends React.Component {
     let { item } = this.props;
 
     return (
-      <section>
+      <section className="item-buttons">
         <Button>
           {  item.promoted }
           <Icon icon="bullhorn" />
