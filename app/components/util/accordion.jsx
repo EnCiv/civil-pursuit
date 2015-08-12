@@ -20,16 +20,20 @@ class Accordion extends React.Component {
         view.style.height = height + 'px';
         // content.style.marginTop = `-${height}px`;
         setTimeout(() => {
-          // content.style.position = 'relative';
-          content.style.marginTop = 0;
-          content.style.opacity = 1;
-          content.style.transform = 'rotateY(0deg)'
+          content.style.position = 'relative';
+          content.style.top = 0;
+          // content.style.display = block;
+          // content.style.marginTop = 0;
+          // content.style.opacity = 1;
+          // content.style.transform = 'rotateY(0deg)'
         }, 1000)
       }
       else {
         view.style.height = 0;
-        content.style.transform = 'rotateY(90deg)'
-        content.style.opacity = 0;
+        content.style.position = 'absolute';
+        content.style.top = '-9000px';
+        // content.style.opacity = 0;
+        // content.style.display = 'none';
       }
     }
   }

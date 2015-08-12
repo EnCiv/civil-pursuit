@@ -1173,12 +1173,11 @@ body {
   display: none;
 }
 .syn-accordion {
-  transition: all ease-in 1s;
+  transition: height ease-in 1s;
 }
 .syn-accordion-content {
-  transition: all ease-in 0.5s;
-  opacity: 0;
-  background: #fff;
+  position: absolute;
+  top: -9000px;
 }
 .item-inputs {
   left: 0;
