@@ -91,7 +91,7 @@ var Item = (function (_React$Component) {
     value: function readMore() {
       var truncatable = _react2['default'].findDOMNode(this.refs.item).querySelector('.item-truncatable');
 
-      truncatable.classList.toggle('--expand');
+      truncatable.classList.toggle('expand');
 
       this.expanded = !this.expanded;
 
@@ -229,7 +229,7 @@ var Item = (function (_React$Component) {
           var offset = span.offsetTop;
 
           if (offset > limit) {
-            span.classList.add('--hide');
+            span.classList.add('hide');
           }
         });
       });

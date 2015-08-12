@@ -48,6 +48,10 @@ var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
 
+var _demographics = require('./demographics');
+
+var _demographics2 = _interopRequireDefault(_demographics);
+
 var Profile = (function (_React$Component) {
   function Profile(props) {
     _classCallCheck(this, Profile);
@@ -99,17 +103,31 @@ var Profile = (function (_React$Component) {
 
       if (this.state.ready) {
         content = _react2['default'].createElement(
-          _utilRow2['default'],
+          'section',
           null,
           _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50' },
-            _react2['default'].createElement(_identity2['default'], { user: this.state.user, countries: this.state.countries, config: this.state.config })
+            _utilRow2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50' },
+              _react2['default'].createElement(_identity2['default'], { user: this.state.user, countries: this.state.countries, config: this.state.config })
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50' },
+              _react2['default'].createElement(_residence2['default'], { user: this.state.user, states: this.state.states })
+            )
           ),
           _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50' },
-            _react2['default'].createElement(_residence2['default'], { user: this.state.user, states: this.state.states })
+            _utilRow2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50' },
+              _react2['default'].createElement(_demographics2['default'], { user: this.state.user, config: this.state.config })
+            ),
+            _react2['default'].createElement(_utilColumn2['default'], { span: '50' })
           )
         );
       }

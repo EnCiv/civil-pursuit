@@ -55,7 +55,7 @@ class Item extends React.Component {
         let offset = span.offsetTop;
 
         if ( offset > limit ) {
-          span.classList.add('--hide');
+          span.classList.add('hide');
         }
       });
     });
@@ -104,7 +104,7 @@ class Item extends React.Component {
     let truncatable =  React.findDOMNode(this.refs.item)
       .querySelector('.item-truncatable');
 
-    truncatable.classList.toggle('--expand');
+    truncatable.classList.toggle('expand');
 
     this.expanded = ! this.expanded;
 

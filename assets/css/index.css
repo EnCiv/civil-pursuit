@@ -1120,13 +1120,13 @@ body {
 .item-text {
   padding: 10px;
 }
-.item-truncatable .word.--hide {
+.item-truncatable .word.hide {
   display: none;
 }
-.item-truncatable.--expand .word.--hide {
+.item-truncatable.expand .word.hide {
   display: inline;
 }
-.item-truncatable.--expand div:empty {
+.item-truncatable.expand div:empty {
   height: 1.5em;
 }
 .item-subject {

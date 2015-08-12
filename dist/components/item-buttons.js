@@ -40,14 +40,22 @@ var ItemButtons = (function (_React$Component) {
     value: function render() {
       var item = this.props.item;
 
+      console.log({ item: item });
+
       return _react2['default'].createElement(
         'section',
         { className: 'item-buttons' },
         _react2['default'].createElement(
           _utilButton2['default'],
           null,
-          item.promoted,
+          item.promotions,
           _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+        ),
+        _react2['default'].createElement(
+          _utilButton2['default'],
+          null,
+          item.popularity.number + '%',
+          _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
         )
       );
     }

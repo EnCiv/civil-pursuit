@@ -8,6 +8,7 @@ import Column           from './util/column';
 import Identity         from './identity';
 import Residence        from './residence';
 import Icon             from './util/icon';
+import Demographics     from './demographics';
 
 class Profile extends React.Component {
   constructor (props) {
@@ -58,15 +59,26 @@ class Profile extends React.Component {
 
     if ( this.state.ready ) {
       content = (
-        <Row>
-          <Column span="50">
-            <Identity user={ this.state.user } countries={ this.state.countries } config={ this.state.config } />
-          </Column>
+        <section>
+          <Row>
+            <Column span="50">
+              <Identity user={ this.state.user } countries={ this.state.countries } config={ this.state.config } />
+            </Column>
 
-          <Column span="50">
-            <Residence user={ this.state.user } states={ this.state.states } />
-          </Column>
-        </Row>
+            <Column span="50">
+              <Residence user={ this.state.user } states={ this.state.states } />
+            </Column>
+          </Row>
+
+          <Row>
+            <Column span="50">
+              <Demographics user={ this.state.user } config={ this.state.config } />
+            </Column>
+
+            <Column span="50">
+            </Column>
+          </Row>
+        </section>
       );
     }
 
