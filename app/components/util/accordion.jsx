@@ -21,14 +21,14 @@ class Accordion extends React.Component {
         // content.style.marginTop = `-${height}px`;
         setTimeout(() => {
           // content.style.position = 'relative';
-          content.style.top = 0;
+          content.style.marginTop = 0;
           content.style.opacity = 1;
+          content.style.transform = 'rotateY(0deg)'
         }, 1000)
       }
       else {
-        // content.style.position = 'absolute';
-        content.style.top = '-9000px';
         view.style.height = 0;
+        content.style.transform = 'rotateY(90deg)'
         content.style.opacity = 0;
       }
     }
@@ -37,8 +37,10 @@ class Accordion extends React.Component {
   render () {
     return (
       <section className="syn-accordion" ref="view">
-        <section className="syn-accordion-content" ref="content">
-          { this.props.children }
+        <section>
+          <section className="syn-accordion-content" ref="content">
+            { this.props.children }
+          </section>
         </section>
       </section>
     );

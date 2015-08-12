@@ -4013,13 +4013,13 @@ var Accordion = (function (_React$Component) {
             // content.style.marginTop = `-${height}px`;
             setTimeout(function () {
               // content.style.position = 'relative';
-              content.style.top = 0;
+              content.style.marginTop = 0;
               content.style.opacity = 1;
+              content.style.transform = 'rotateY(0deg)';
             }, 1000);
           } else {
-            // content.style.position = 'absolute';
-            content.style.top = '-9000px';
             view.style.height = 0;
+            content.style.transform = 'rotateY(90deg)';
             content.style.opacity = 0;
           }
         })();
@@ -4033,8 +4033,12 @@ var Accordion = (function (_React$Component) {
         { className: 'syn-accordion', ref: 'view' },
         _react2['default'].createElement(
           'section',
-          { className: 'syn-accordion-content', ref: 'content' },
-          this.props.children
+          null,
+          _react2['default'].createElement(
+            'section',
+            { className: 'syn-accordion-content', ref: 'content' },
+            this.props.children
+          )
         )
       );
     }

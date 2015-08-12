@@ -1171,10 +1171,8 @@ body {
 }
 .syn-accordion {
   transition: all ease-in 1s;
-  border: 5px solid black;
 }
 .syn-accordion-content {
-  top: -9000px;
   transition: all ease-in 0.5s;
   opacity: 0;
 }
