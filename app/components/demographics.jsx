@@ -73,6 +73,16 @@ class Demographics extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  setEducation () {
+    let education = React.findDOMNode(this.refs.education).value;
+
+    if ( education ) {
+      window.socket.emit('set education', education);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     let { user, config } = this.props;
 
@@ -85,6 +95,10 @@ class Demographics extends React.Component {
           <input type="checkbox" />
         </Column>
       </Row>
+    ));
+
+    let education = config.education.map(educ => (
+      <option value={ educ._id }>{ educ.name }</option>
     ));
 
     return (
@@ -113,11 +127,9 @@ class Demographics extends React.Component {
               Education
             </Column>
             <Column span="75">
-              <Select block medium ref="gender" defaultValue={ user.gender }>
-                <option value="">Choose one</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-                <option value="O">Other</option>
+              <Select block medium ref="education" defaultValue={ user.education } onChange={ this.setEducation.bind(this) }>
+                <option value=''>Choose one</option>
+                { education }
               </Select>
             </Column>
           </Row>
