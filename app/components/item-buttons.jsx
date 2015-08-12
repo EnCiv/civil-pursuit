@@ -2,6 +2,7 @@
 
 import React            from 'react';
 import Button           from './util/button';
+import ButtonGroup      from './util/button-group';
 import Icon             from './util/icon';
 
 class ItemButtons extends React.Component {
@@ -12,15 +13,29 @@ class ItemButtons extends React.Component {
 
     return (
       <section className="item-buttons">
-        <Button>
-          { item.promotions }
-          <Icon icon="bullhorn" />
-        </Button>
+        <ButtonGroup>
+          <Button>
+            <span>{ item.promotions } </span>
+            <Icon icon="bullhorn" />
+          </Button>
 
-        <Button>
-          { item.popularity.number + '%' }
-          <Icon icon="signal" />
-        </Button>
+          <Button>
+            <span>{ item.popularity.number + '%' } </span>
+            <Icon icon="signal" />
+          </Button>
+        </ButtonGroup>
+
+        <ButtonGroup>
+          <Button>
+            <span>{ item.promotions } </span>
+            <Icon icon="fire" />
+          </Button>
+
+          <Button>
+            <span>{ item.popularity.number + '%' } </span>
+            <Icon icon="music" />
+          </Button>
+        </ButtonGroup>
       </section>
     );
   }

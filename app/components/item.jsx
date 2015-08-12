@@ -79,8 +79,7 @@ class Item extends React.Component {
     let item = React
       .findDOMNode(this.refs.item);
 
-    let more = item
-      .querySelector('.more');
+    let more = React.findDOMNode(this.refs.more);
 
     let truncatable = item.querySelector('.item-truncatable');
     let subject = item.querySelector('.item-subject');
@@ -88,12 +87,14 @@ class Item extends React.Component {
     let reference = item.querySelector('.item-reference a');
 
     media.addEventListener('load', () => {
-      if ( ! more ) {
-        let limit = ( media.offsetTop + media.offsetHeight - 40 );
+      let limit = ( media.offsetTop + media.offsetHeight - 40 );
 
-        Item.paint(subject, limit);
-        Item.paint(reference, limit);
-        Item.paint(description, limit);
+      Item.paint(subject, limit);
+      Item.paint(reference, limit);
+      Item.paint(description, limit);
+
+      if ( ! item.querySelector('.word.hide') ) {
+        more.style.display = 'none';
       }
     });
   }
@@ -155,7 +156,7 @@ class Item extends React.Component {
               <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
             </h5>
             <div className="item-description pre-text">{ item.description }</div>
-            <div className="item-read-more">
+            <div className="item-read-more" ref="more">
               <a href="#" onClick={ this.readMore.bind(this) }>Read <span ref="readMoreText">more</span></a>
             </div>
           </div>

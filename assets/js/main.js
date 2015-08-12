@@ -764,7 +764,17 @@ var Demographics = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var user = this.props.user;
+      var _props = this.props;
+      var user = _props.user;
+      var config = _props.config;
+
+      var races = config.race.map(function (race) {
+        return _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(_utilColumn2['default'], null)
+        );
+      });
 
       return _react2['default'].createElement(
         'section',
@@ -787,6 +797,16 @@ var Demographics = (function (_React$Component) {
             null,
             'We use this information to make sure that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there'
           )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            null,
+            'Race:'
+          ),
+          _react2['default'].createElement(_utilColumn2['default'], null)
         )
       );
     }
@@ -1415,6 +1435,10 @@ var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
 
+var _utilButtonGroup = require('./util/button-group');
+
+var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
+
 var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
@@ -1441,16 +1465,56 @@ var ItemButtons = (function (_React$Component) {
         'section',
         { className: 'item-buttons' },
         _react2['default'].createElement(
-          _utilButton2['default'],
+          _utilButtonGroup2['default'],
           null,
-          item.promotions,
-          _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.promotions,
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.popularity.number + '%',
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
+          )
         ),
         _react2['default'].createElement(
-          _utilButton2['default'],
+          _utilButtonGroup2['default'],
           null,
-          item.popularity.number + '%',
-          _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.promotions,
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.popularity.number + '%',
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
+          )
         )
       );
     }
@@ -1461,7 +1525,7 @@ var ItemButtons = (function (_React$Component) {
 
 exports['default'] = ItemButtons;
 module.exports = exports['default'];
-},{"./util/button":27,"./util/icon":34,"react":206}],11:[function(require,module,exports){
+},{"./util/button":27,"./util/button-group":26,"./util/icon":34,"react":206}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1590,7 +1654,7 @@ var Item = (function (_React$Component) {
 
       var item = _react2['default'].findDOMNode(this.refs.item);
 
-      var more = item.querySelector('.more');
+      var more = _react2['default'].findDOMNode(this.refs.more);
 
       var truncatable = item.querySelector('.item-truncatable');
       var subject = item.querySelector('.item-subject');
@@ -1598,12 +1662,14 @@ var Item = (function (_React$Component) {
       var reference = item.querySelector('.item-reference a');
 
       media.addEventListener('load', function () {
-        if (!more) {
-          var limit = media.offsetTop + media.offsetHeight - 40;
+        var limit = media.offsetTop + media.offsetHeight - 40;
 
-          Item.paint(subject, limit);
-          Item.paint(reference, limit);
-          Item.paint(description, limit);
+        Item.paint(subject, limit);
+        Item.paint(reference, limit);
+        Item.paint(description, limit);
+
+        if (!item.querySelector('.word.hide')) {
+          more.style.display = 'none';
         }
       });
     }
@@ -1683,7 +1749,7 @@ var Item = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               'div',
-              { className: 'item-read-more' },
+              { className: 'item-read-more', ref: 'more' },
               _react2['default'].createElement(
                 'a',
                 { href: '#', onClick: this.readMore.bind(this) },

@@ -136,7 +136,17 @@ var Demographics = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var user = this.props.user;
+      var _props = this.props;
+      var user = _props.user;
+      var config = _props.config;
+
+      var races = config.race.map(function (race) {
+        return _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(_utilColumn2['default'], null)
+        );
+      });
 
       return _react2['default'].createElement(
         'section',
@@ -159,6 +169,16 @@ var Demographics = (function (_React$Component) {
             null,
             'We use this information to make sure that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there'
           )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            null,
+            'Race:'
+          ),
+          _react2['default'].createElement(_utilColumn2['default'], null)
         )
       );
     }

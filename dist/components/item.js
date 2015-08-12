@@ -66,7 +66,7 @@ var Item = (function (_React$Component) {
 
       var item = _react2['default'].findDOMNode(this.refs.item);
 
-      var more = item.querySelector('.more');
+      var more = _react2['default'].findDOMNode(this.refs.more);
 
       var truncatable = item.querySelector('.item-truncatable');
       var subject = item.querySelector('.item-subject');
@@ -74,12 +74,14 @@ var Item = (function (_React$Component) {
       var reference = item.querySelector('.item-reference a');
 
       media.addEventListener('load', function () {
-        if (!more) {
-          var limit = media.offsetTop + media.offsetHeight - 40;
+        var limit = media.offsetTop + media.offsetHeight - 40;
 
-          Item.paint(subject, limit);
-          Item.paint(reference, limit);
-          Item.paint(description, limit);
+        Item.paint(subject, limit);
+        Item.paint(reference, limit);
+        Item.paint(description, limit);
+
+        if (!item.querySelector('.word.hide')) {
+          more.style.display = 'none';
         }
       });
     }
@@ -159,7 +161,7 @@ var Item = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               'div',
-              { className: 'item-read-more' },
+              { className: 'item-read-more', ref: 'more' },
               _react2['default'].createElement(
                 'a',
                 { href: '#', onClick: this.readMore.bind(this) },

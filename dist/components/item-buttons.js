@@ -20,6 +20,10 @@ var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
 
+var _utilButtonGroup = require('./util/button-group');
+
+var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
+
 var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
@@ -46,16 +50,56 @@ var ItemButtons = (function (_React$Component) {
         'section',
         { className: 'item-buttons' },
         _react2['default'].createElement(
-          _utilButton2['default'],
+          _utilButtonGroup2['default'],
           null,
-          item.promotions,
-          _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.promotions,
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.popularity.number + '%',
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
+          )
         ),
         _react2['default'].createElement(
-          _utilButton2['default'],
+          _utilButtonGroup2['default'],
           null,
-          item.popularity.number + '%',
-          _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.promotions,
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            null,
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.popularity.number + '%',
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
+          )
         )
       );
     }

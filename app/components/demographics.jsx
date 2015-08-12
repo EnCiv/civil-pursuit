@@ -74,8 +74,15 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { user } = this.props;
+    let { user, config } = this.props;
 
+    let races = config.race.map(race => (
+      <Row>
+        <Column>
+
+        </Column>
+      </Row>
+    ));
 
     return (
       <section>
@@ -87,6 +94,15 @@ class Demographics extends React.Component {
           <h2>Demographics</h2>
           <p>We use this information to make sure that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there</p>
         </section>
+
+        <Row>
+          <Column>
+            Race:
+          </Column>
+          <Column>
+
+          </Column>
+        </Row>
       </section>
     );
   }
