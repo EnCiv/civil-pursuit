@@ -16,52 +16,52 @@ function insertItem (candidate, socket) {
       delete candidate.image;
     }
 
-    this.create(candidate, (error, item) => {
-      if ( error ) {
-        return ko(error);
-      }
+    this.create(candidate)
+      .then(
+        (item, a, b, c) => {
+          console.log('--created', item, a, b, c, "\n\n")
 
-      console.log('--created', item, "\n\n")
+          ok(item);
 
-      ok(item);
+          if ( image ) {
+            console.log('--uploading image to cloudinary', item, "\n\n")
+            cloudinary.uploader.upload(
 
-      if ( image ) {
-        console.log('--uploading image to cloudinary', item, "\n\n")
-        cloudinary.uploader.upload(
+              path.join(config.tmp, image),
 
-          path.join(config.tmp, image),
+              result => {
+                console.log('--got response from cloudinary', result, "\n\n")
 
-          result => {
-            console.log('--got response from cloudinary', result, "\n\n")
+                item.image = result.url;
+                item.save(error => {
+                  if ( error ) {
+                    return ko(error);
+                  }
+                  item
+                    .toPanelItem()
+                    .then(
+                      item => socket.emit('item image uploaded ' + item._id, item),
+                      error => socket.error(error)
+                    );
+                });
+              },
 
-            item.image = result.url;
-            item.save(error => {
-              if ( error ) {
-                return ko(error);
-              }
-              item
-                .toPanelItem()
-                .then(
-                  item => socket.emit('item image uploaded ' + item._id, item),
-                  error => socket.error(error)
-                );
-            });
-          },
-
-          {
-            transformation : [
               {
-                width         :   240,
-                height        :   135,
-                crop          :   'thumb',
-                gravity       :   'face'
+                transformation : [
+                  {
+                    width         :   240,
+                    height        :   135,
+                    crop          :   'thumb',
+                    gravity       :   'face'
+                  }
+                ]
               }
-            ]
+            );
           }
-        );
-      }
 
-    });
+        },
+        ko
+      );
   });
 }
 

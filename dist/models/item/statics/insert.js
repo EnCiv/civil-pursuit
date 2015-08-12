@@ -32,12 +32,8 @@ function insertItem(candidate, socket) {
       delete candidate.image;
     }
 
-    _this.create(candidate, function (error, item) {
-      if (error) {
-        return ko(error);
-      }
-
-      console.log('--created', item, '\n\n');
+    _this.create(candidate).then(function (item, a, b, c) {
+      console.log('--created', item, a, b, c, '\n\n');
 
       ok(item);
 
@@ -66,7 +62,7 @@ function insertItem(candidate, socket) {
           }]
         });
       }
-    });
+    }, ko);
   });
 }
 

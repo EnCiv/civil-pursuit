@@ -7,11 +7,14 @@ function preSaveItem (next, done) {
   try {
     let ItemModel = this.constructor;
 
+    console.log('pre saving item', this);
+
     let d = new Domain().on('error', done);
 
     let packageItem = item => {
+      console.log('go to next', this);
       next();
-      
+
       fetchUrlTitle(item)
         .then(
           title => {
@@ -31,11 +34,13 @@ function preSaveItem (next, done) {
     };
 
     if ( this.isNew ) {
+      console.log('--generating short id --');
       ItemModel
         .generateShortId()
         .then(
           id => {
             try {
+              console.log('--short id--', id);
               this.id = id;
               packageItem(this);
             }

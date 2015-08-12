@@ -7,8 +7,6 @@ function createItem (event, item) {
     item.type = item.type._id;
     item.user = this.synuser.id;
 
-    console.log('Creating item', item)
-
     ItemModel.insert(item, this).then(
       item => {
         try {

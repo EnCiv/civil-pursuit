@@ -22,6 +22,10 @@ var _panel = require('./panel');
 
 var _panel2 = _interopRequireDefault(_panel);
 
+var _item = require('./item');
+
+var _item2 = _interopRequireDefault(_item);
+
 var TopLevelPanel = (function (_React$Component) {
   function TopLevelPanel(props) {
     _classCallCheck(this, TopLevelPanel);
@@ -61,7 +65,7 @@ var TopLevelPanel = (function (_React$Component) {
 
       window.socket.emit('get items', { type: type }).on('OK get items', function (panel, items) {
         console.log(panel, items);
-        _this2.setState({ type: type });
+        _this2.setState({ type: type, items: items });
       });
     }
   }, {
@@ -75,7 +79,15 @@ var TopLevelPanel = (function (_React$Component) {
         panelTitle = type.name;
       }
 
-      return _react2['default'].createElement(_panel2['default'], { title: panelTitle, type: type });
+      var items = this.state.items.map(function (item) {
+        return _react2['default'].createElement(_item2['default'], { item: item });
+      });
+
+      return _react2['default'].createElement(
+        _panel2['default'],
+        { title: panelTitle, type: type },
+        items
+      );
     }
   }]);
 

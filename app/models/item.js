@@ -18,7 +18,7 @@ itemSchema
 
   .pre('validate', preValidate)
 
-  .pre('save', preSave)
+  .pre('save', true, preSave)
 
   .post('init', postInit);
 

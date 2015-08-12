@@ -40,7 +40,7 @@ var _libUtilToSlug2 = _interopRequireDefault(_libUtilToSlug);
 
 var itemSchema = new _mongoose.Schema(_itemSchema2['default']);
 
-itemSchema.plugin(_mongooseSimpleRandom2['default']).pre('validate', _itemPreValidate2['default']).pre('save', _itemPreSave2['default']).post('init', _itemPostInit2['default']);
+itemSchema.plugin(_mongooseSimpleRandom2['default']).pre('validate', _itemPreValidate2['default']).pre('save', true, _itemPreSave2['default']).post('init', _itemPostInit2['default']);
 
 // STATIC METHODS
 // ==============

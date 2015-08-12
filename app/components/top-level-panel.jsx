@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Panel from './panel';
+import Item  from './item';
 
 class TopLevelPanel extends React.Component {
   constructor (props) {
@@ -30,7 +31,7 @@ class TopLevelPanel extends React.Component {
     window.socket.emit('get items', { type })
       .on('OK get items', (panel, items) => {
         console.log(panel, items);
-        this.setState({ type });
+        this.setState({ type, items });
       })
   }
 
@@ -44,9 +45,13 @@ class TopLevelPanel extends React.Component {
       panelTitle = type.name;
     }
 
+    let items = this.state.items.map(item => (
+      <Item item={ item } />
+    ));
+
     return (
       <Panel title={ panelTitle } type={ type }>
-
+        { items }
       </Panel>
     );
   }

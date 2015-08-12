@@ -21,9 +21,12 @@ function preSaveItem(next, done) {
     (function () {
       var ItemModel = _this.constructor;
 
+      console.log('pre saving item', _this);
+
       var d = new _domain.Domain().on('error', done);
 
       var packageItem = function packageItem(item) {
+        console.log('go to next', _this);
         next();
 
         fetchUrlTitle(item).then(function (title) {
@@ -41,8 +44,10 @@ function preSaveItem(next, done) {
       };
 
       if (_this.isNew) {
+        console.log('--generating short id --');
         ItemModel.generateShortId().then(function (id) {
           try {
+            console.log('--short id--', id);
             _this.id = id;
             packageItem(_this);
           } catch (error) {

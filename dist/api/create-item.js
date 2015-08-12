@@ -17,8 +17,6 @@ function createItem(event, item) {
     item.type = item.type._id;
     item.user = this.synuser.id;
 
-    console.log('Creating item', item);
-
     _modelsItem2['default'].insert(item, this).then(function (item) {
       try {
         item.toPanelItem().then(function (item) {
