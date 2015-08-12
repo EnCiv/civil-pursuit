@@ -72,21 +72,21 @@ class Creator extends React.Component {
     let titleHolder = React.findDOMNode(this.refs.title);
 
     if ( url && /^http/.test(url) ) {
-      loading.classList.add('--visible');
+      loading.classList.add('visible');
 
-      error.classList.remove('--visible');
+      error.classList.remove('visible');
 
       window.socket.emit('get url title', url)
         .on('OK get url title', title => {
-          loading.classList.remove('--visible');
+          loading.classList.remove('visible');
           if ( title.error ) {
-            error.classList.add('--visible');
+            error.classList.add('visible');
           }
           else if ( title ) {
-            reference.classList.add('--hide');
-            titleHolder.classList.add('--visible');
+            reference.classList.add('hide');
+            titleHolder.classList.add('visible');
             titleHolder.value = title;
-            editURL.classList.add('--visible');
+            editURL.classList.add('visible');
           }
         });
     }
@@ -99,10 +99,10 @@ class Creator extends React.Component {
     let editURL = React.findDOMNode(this.refs.editURL);
     let titleHolder = React.findDOMNode(this.refs.title);
 
-    reference.classList.remove('--hide');
+    reference.classList.remove('hide');
     reference.select();
-    titleHolder.classList.remove('--visible');
-    editURL.classList.remove('--visible');
+    titleHolder.classList.remove('visible');
+    editURL.classList.remove('visible');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,9 +128,9 @@ class Creator extends React.Component {
               <TextInput block placeholder="Subject" ref="subject" required name="subject" />
 
               <Row center-items>
-                <Icon icon="globe" spin={ true } text-muted className="--looking-up" ref="lookingUp" />
+                <Icon icon="globe" spin={ true } text-muted className="looking-up" ref="lookingUp" />
 
-                <Icon icon="exclamation" text-warning className="--error" ref="errorLookingUp" />
+                <Icon icon="exclamation" text-warning className="error" ref="errorLookingUp" />
 
                 <TextInput block placeholder="http://" ref="reference" onBlur={ this.getUrlTitle.bind(this) } className="url-editor" name="reference" />
 

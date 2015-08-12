@@ -436,6 +436,9 @@ a.button {
 .syn-button-group button:last-child {
   border-radius: 0 6px 6px 0;
 }
+.syn-button-group button:first-child:last-child {
+  border-radius: 6px;
+}
 .syn-button-group.syn--block {
   display: flex;
   flex-direction: row;
@@ -1188,11 +1191,11 @@ body {
   overflow: hidden;
   box-sizing: border-box;
 }
-.syn-creator .--looking-up:not(.--visible),
-.syn-creator .--error:not(.--visible),
-.syn-creator .url-title:not(.--visible),
-.syn-creator .syn-edit-url:not(.--visible),
-.syn-creator .url-editor.--hide {
+.syn-creator .looking-up:not(.visible),
+.syn-creator .error:not(.visible),
+.syn-creator .url-title:not(.visible),
+.syn-creator .syn-edit-url:not(.visible),
+.syn-creator .url-editor.hide {
   display: none;
 }
 .syn-creator [name="subject"] {

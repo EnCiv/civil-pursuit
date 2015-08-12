@@ -54,7 +54,7 @@ var ItemButtons = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilButton2['default'],
-            null,
+            { small: true, shy: true },
             _react2['default'].createElement(
               'span',
               null,
@@ -62,10 +62,14 @@ var ItemButtons = (function (_React$Component) {
               ' '
             ),
             _react2['default'].createElement(_utilIcon2['default'], { icon: 'bullhorn' })
-          ),
+          )
+        ),
+        _react2['default'].createElement(
+          _utilButtonGroup2['default'],
+          null,
           _react2['default'].createElement(
             _utilButton2['default'],
-            null,
+            { small: true, shy: true },
             _react2['default'].createElement(
               'span',
               null,
@@ -80,7 +84,7 @@ var ItemButtons = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilButton2['default'],
-            null,
+            { small: true, shy: true },
             _react2['default'].createElement(
               'span',
               null,
@@ -91,7 +95,7 @@ var ItemButtons = (function (_React$Component) {
           ),
           _react2['default'].createElement(
             _utilButton2['default'],
-            null,
+            { small: true, shy: true },
             _react2['default'].createElement(
               'span',
               null,

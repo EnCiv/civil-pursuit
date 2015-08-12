@@ -35,7 +35,7 @@ var Button = (function (_React$Component) {
 
       var classes = [];
 
-      var props = ['block', 'primary', 'info', 'large', 'medium', 'radius', 'cursor-pointer', 'shy', 'success', 'error', 'warning'];
+      var props = ['block', 'primary', 'info', 'large', 'medium', 'radius', 'cursor-pointer', 'shy', 'success', 'error', 'warning', 'small'];
 
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;

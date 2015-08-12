@@ -123,19 +123,19 @@ var Creator = (function (_React$Component) {
       var titleHolder = _react2['default'].findDOMNode(this.refs.title);
 
       if (url && /^http/.test(url)) {
-        loading.classList.add('--visible');
+        loading.classList.add('visible');
 
-        error.classList.remove('--visible');
+        error.classList.remove('visible');
 
         window.socket.emit('get url title', url).on('OK get url title', function (title) {
-          loading.classList.remove('--visible');
+          loading.classList.remove('visible');
           if (title.error) {
-            error.classList.add('--visible');
+            error.classList.add('visible');
           } else if (title) {
-            reference.classList.add('--hide');
-            titleHolder.classList.add('--visible');
+            reference.classList.add('hide');
+            titleHolder.classList.add('visible');
             titleHolder.value = title;
-            editURL.classList.add('--visible');
+            editURL.classList.add('visible');
           }
         });
       }
@@ -150,10 +150,10 @@ var Creator = (function (_React$Component) {
       var editURL = _react2['default'].findDOMNode(this.refs.editURL);
       var titleHolder = _react2['default'].findDOMNode(this.refs.title);
 
-      reference.classList.remove('--hide');
+      reference.classList.remove('hide');
       reference.select();
-      titleHolder.classList.remove('--visible');
-      editURL.classList.remove('--visible');
+      titleHolder.classList.remove('visible');
+      editURL.classList.remove('visible');
     }
   }, {
     key: 'render',
@@ -195,8 +195,8 @@ var Creator = (function (_React$Component) {
               _react2['default'].createElement(
                 _utilRow2['default'],
                 { 'center-items': true },
-                _react2['default'].createElement(_utilIcon2['default'], { icon: 'globe', spin: true, 'text-muted': true, className: '--looking-up', ref: 'lookingUp' }),
-                _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation', 'text-warning': true, className: '--error', ref: 'errorLookingUp' }),
+                _react2['default'].createElement(_utilIcon2['default'], { icon: 'globe', spin: true, 'text-muted': true, className: 'looking-up', ref: 'lookingUp' }),
+                _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation', 'text-warning': true, className: 'error', ref: 'errorLookingUp' }),
                 _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor', name: 'reference' }),
                 _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, value: 'This is the title', className: 'url-title', ref: 'title' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'pencil', mute: true, className: 'syn-edit-url', ref: 'editURL', onClick: this.editURL.bind(this) })

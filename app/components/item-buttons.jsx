@@ -14,24 +14,26 @@ class ItemButtons extends React.Component {
     return (
       <section className="item-buttons">
         <ButtonGroup>
-          <Button>
+          <Button small shy>
             <span>{ item.promotions } </span>
             <Icon icon="bullhorn" />
           </Button>
+        </ButtonGroup>
 
-          <Button>
+        <ButtonGroup>
+          <Button small shy>
             <span>{ item.popularity.number + '%' } </span>
             <Icon icon="signal" />
           </Button>
         </ButtonGroup>
 
         <ButtonGroup>
-          <Button>
+          <Button small shy>
             <span>{ item.promotions } </span>
             <Icon icon="fire" />
           </Button>
 
-          <Button>
+          <Button small shy>
             <span>{ item.popularity.number + '%' } </span>
             <Icon icon="music" />
           </Button>

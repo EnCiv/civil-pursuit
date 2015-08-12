@@ -144,7 +144,16 @@ var Demographics = (function (_React$Component) {
         return _react2['default'].createElement(
           _utilRow2['default'],
           null,
-          _react2['default'].createElement(_utilColumn2['default'], null)
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            null,
+            race.name
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            null,
+            _react2['default'].createElement('input', { type: 'checkbox' })
+          )
         );
       });
 
@@ -178,7 +187,11 @@ var Demographics = (function (_React$Component) {
             null,
             'Race:'
           ),
-          _react2['default'].createElement(_utilColumn2['default'], null)
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            null,
+            races
+          )
         )
       );
     }

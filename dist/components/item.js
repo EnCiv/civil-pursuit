@@ -72,9 +72,24 @@ var Item = (function (_React$Component) {
       var subject = item.querySelector('.item-subject');
       var description = item.querySelector('.item-description');
       var reference = item.querySelector('.item-reference a');
+      var buttons = item.querySelector('.item-buttons');
 
       media.addEventListener('load', function () {
-        var limit = media.offsetTop + media.offsetHeight - 40;
+        var mediaHeight = media.offsetTop + media.offsetHeight - 40;
+
+        var limit = undefined;
+
+        if (!buttons) {
+          limit = mediaHeight;
+        } else {
+          var buttonsHeight = buttons.offsetTop + buttons.offsetHeight - 40;
+
+          if (mediaHeight >= buttonsHeight) {
+            limit = mediaHeight;
+          } else {
+            limit = buttonsHeight;
+          }
+        }
 
         Item.paint(subject, limit);
         Item.paint(reference, limit);

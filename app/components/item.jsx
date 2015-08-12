@@ -85,9 +85,28 @@ class Item extends React.Component {
     let subject = item.querySelector('.item-subject');
     let description = item.querySelector('.item-description');
     let reference = item.querySelector('.item-reference a');
+    let buttons = item.querySelector('.item-buttons')
 
     media.addEventListener('load', () => {
-      let limit = ( media.offsetTop + media.offsetHeight - 40 );
+      let mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
+
+      let limit;
+
+      if ( ! buttons ) {
+        limit = mediaHeight;
+      }
+
+      else {
+        let buttonsHeight = ( buttons.offsetTop + buttons.offsetHeight - 40 );
+
+        if ( mediaHeight >= buttonsHeight  ) {
+          limit = mediaHeight;
+        }
+
+        else {
+          limit = buttonsHeight;
+        }
+      }
 
       Item.paint(subject, limit);
       Item.paint(reference, limit);

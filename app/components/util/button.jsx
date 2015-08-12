@@ -18,7 +18,8 @@ class Button extends React.Component {
       'shy',
       'success',
       'error',
-      'warning'
+      'warning',
+      'small'
     ];
 
     for ( let prop of props ) {

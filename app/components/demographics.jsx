@@ -79,7 +79,10 @@ class Demographics extends React.Component {
     let races = config.race.map(race => (
       <Row>
         <Column>
-
+          { race.name }
+        </Column>
+        <Column>
+          <input type="checkbox" />
         </Column>
       </Row>
     ));
@@ -100,7 +103,7 @@ class Demographics extends React.Component {
             Race:
           </Column>
           <Column>
-
+            { races }
           </Column>
         </Row>
       </section>
