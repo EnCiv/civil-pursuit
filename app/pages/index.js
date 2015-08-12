@@ -43,6 +43,11 @@ class Layout extends Document {
         new Stylesheet('/assets/bower_components/goalProgress/goalProgress.css')
       );
     }
+    else {
+      this.add(
+        new Stylesheet('/assets/css/index.min.css')
+      );
+    }
 
     this.add(this.container());
 

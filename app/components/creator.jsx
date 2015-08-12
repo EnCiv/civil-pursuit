@@ -23,9 +23,19 @@ class Creator extends React.Component {
     description.style.height = ( mediaHeight - inputHeight ) + 'px';
   }
 
+  create () {
+    let subject       =   React.findDOMNode(this.refs.subject);
+    let description   =   React.findDOMNode(this.refs.description);
+
+    window.socket.emit('create item')
+      .on('OK create item', item => {
+        console.log(item);
+      });
+  }
+
   render () {
     return (
-      <Form>
+      <Form handler={ this.create.bind(this) }>
         <article className="item" ref="creator">
           <section className="item-media-wrapper">
             <section className="item-media">

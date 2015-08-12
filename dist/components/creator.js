@@ -66,11 +66,21 @@ var Creator = (function (_React$Component) {
       description.style.height = mediaHeight - inputHeight + 'px';
     }
   }, {
+    key: 'create',
+    value: function create() {
+      var subject = _react2['default'].findDOMNode(this.refs.subject);
+      var description = _react2['default'].findDOMNode(this.refs.description);
+
+      window.socket.emit('create item').on('OK create item', function (item) {
+        console.log(item);
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(
         _utilForm2['default'],
-        null,
+        { handler: this.create.bind(this) },
         _react2['default'].createElement(
           'article',
           { className: 'item', ref: 'creator' },

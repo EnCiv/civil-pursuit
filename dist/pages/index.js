@@ -60,6 +60,8 @@ var Layout = (function (_Document) {
 
     if (props.env === 'development') {
       this.add(new Stylesheet('/assets/css/normalize.css'), new Stylesheet('/assets/css/index.css'), new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'), new Stylesheet('/assets/bower_components/c3/c3.css'), new Stylesheet('/assets/bower_components/goalProgress/goalProgress.css'));
+    } else {
+      this.add(new Stylesheet('/assets/css/index.min.css'));
     }
 
     this.add(this.container());

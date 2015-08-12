@@ -60,7 +60,7 @@ class Profile extends React.Component {
           </Column>
 
           <Column span="50">
-            <Residence />
+            <Residence user={ this.state.user } />
           </Column>
         </Row>
       );

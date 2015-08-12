@@ -106,7 +106,7 @@ var Profile = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50' },
-            _react2['default'].createElement(_residence2['default'], null)
+            _react2['default'].createElement(_residence2['default'], { user: this.state.user })
           )
         );
       }

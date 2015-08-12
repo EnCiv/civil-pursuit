@@ -6,6 +6,8 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -37,19 +39,75 @@ var _utilButton = require('./util/button');
 var _utilButton2 = _interopRequireDefault(_utilButton);
 
 var Residence = (function (_React$Component) {
-  function Residence() {
+  function Residence(props) {
     _classCallCheck(this, Residence);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Residence.prototype), 'constructor', this).call(this, props);
+
+    this.state = { user: this.props.user };
   }
 
   _inherits(Residence, _React$Component);
 
   _createClass(Residence, [{
+    key: 'validateGPS',
+    value: function validateGPS() {
+      var _this = this;
+
+      navigator.geolocation.watchPosition(function (position) {
+        var _position$coords = position.coords;
+        var longitude = _position$coords.longitude;
+        var latitude = _position$coords.latitude;
+
+        window.socket.emit('validate gps', longitude, latitude).on('OK validate gps', function (user) {
+          return _this.setState({ user: user });
+        });
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var gps = undefined;
+
+      if (!this.state.user['gps validated']) {
+        gps = _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation-circle' }),
+            ' Not yet validated!'
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { onClick: this.validateGPS.bind(this) },
+              'Validate GPS'
+            )
+          )
+        );
+      } else {
+        gps = _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'check' }),
+            ' GPS validated!'
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            'GPS validated ',
+            this.state.user['gps validated']
+          )
+        );
+      }
+
       return _react2['default'].createElement(
         'section',
         null,
@@ -72,25 +130,7 @@ var Residence = (function (_React$Component) {
             'This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.'
           )
         ),
-        _react2['default'].createElement(
-          _utilRow2['default'],
-          null,
-          _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50' },
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation-circle' }),
-            ' Not yet validated!'
-          ),
-          _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50' },
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              null,
-              'Validate GPS'
-            )
-          )
-        )
+        gps
       );
     }
   }]);
