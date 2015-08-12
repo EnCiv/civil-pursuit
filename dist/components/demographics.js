@@ -143,6 +143,18 @@ var Demographics = (function (_React$Component) {
       }
     }
   }, {
+    key: 'setRelationship',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function setRelationship() {
+      var relationship = _react2['default'].findDOMNode(this.refs.relationship).value;
+
+      if (relationship) {
+        window.socket.emit('set marital status', relationship);
+      }
+    }
+  }, {
     key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -174,6 +186,14 @@ var Demographics = (function (_React$Component) {
           'option',
           { value: educ._id },
           educ.name
+        );
+      });
+
+      var relationships = config.married.map(function (status) {
+        return _react2['default'].createElement(
+          'option',
+          { value: status._id },
+          status.name
         );
       });
 
@@ -252,27 +272,13 @@ var Demographics = (function (_React$Component) {
               { span: '75' },
               _react2['default'].createElement(
                 _utilSelect2['default'],
-                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                { block: true, medium: true, ref: 'relationship', defaultValue: user.married, onChange: this.setRelationship.bind(this) },
                 _react2['default'].createElement(
                   'option',
                   { value: '' },
                   'Choose one'
                 ),
-                _react2['default'].createElement(
-                  'option',
-                  { value: 'M' },
-                  'Male'
-                ),
-                _react2['default'].createElement(
-                  'option',
-                  { value: 'F' },
-                  'Female'
-                ),
-                _react2['default'].createElement(
-                  'option',
-                  { value: 'O' },
-                  'Other'
-                )
+                relationships
               )
             )
           ),

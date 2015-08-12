@@ -83,6 +83,16 @@ class Demographics extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  setRelationship () {
+    let relationship = React.findDOMNode(this.refs.relationship).value;
+
+    if ( relationship ) {
+      window.socket.emit('set marital status', relationship);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     let { user, config } = this.props;
 
@@ -99,6 +109,10 @@ class Demographics extends React.Component {
 
     let education = config.education.map(educ => (
       <option value={ educ._id }>{ educ.name }</option>
+    ));
+
+    let relationships = config.married.map(status => (
+      <option value={ status._id }>{ status.name }</option>
     ));
 
     return (
@@ -139,11 +153,9 @@ class Demographics extends React.Component {
               Relationship
             </Column>
             <Column span="75">
-              <Select block medium ref="gender" defaultValue={ user.gender }>
-                <option value="">Choose one</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-                <option value="O">Other</option>
+              <Select block medium ref="relationship" defaultValue={ user.married } onChange={ this.setRelationship.bind(this) }>
+                <option value=''>Choose one</option>
+                { relationships }
               </Select>
             </Column>
           </Row>
