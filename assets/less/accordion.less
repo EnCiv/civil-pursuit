@@ -1,4 +1,14 @@
-.syn--expandable {
-  border: 2px solid red;
-  height: 0;
+.syn-accordion {
+  transition: all ease-in 1s
+}
+
+.syn-accordion-content {
+  // position: absolute;
+  top: -9000px;
+  transition: all ease-in 0.5s;
+  opacity: 0
+}
+
+.syn-accordion.visible .syn-accordion-content {
+
 }

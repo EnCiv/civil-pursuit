@@ -1166,9 +1166,13 @@ body {
 .syn-uploader .syn-uploader-replace:not(.--show) {
   display: none;
 }
-.syn--expandable {
-  border: 2px solid red;
-  height: 0;
+.syn-accordion {
+  transition: all ease-in 1s;
+}
+.syn-accordion-content {
+  top: -9000px;
+  transition: all ease-in 0.5s;
+  opacity: 0;
 }
 .item-inputs {
   left: 0;

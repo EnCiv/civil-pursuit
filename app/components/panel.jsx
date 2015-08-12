@@ -7,8 +7,20 @@ import Accordion            from './util/accordion';
 import Creator              from './creator';
 
 class Panel extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      showCreator : false
+    };
+  }
+
   componentWillReceiveProps (props) {
     // console.warn('panel', props);
+  }
+
+  toggleCreator () {
+    this.setState({ showCreator : ! this.state.showCreator });
   }
 
   render() {
@@ -16,11 +28,11 @@ class Panel extends React.Component {
 
     if ( this.props.creator !== false ) {
       creator = (
-        <Accordion>
+        <Accordion show={ this.state.showCreator }>
           <Creator { ...this.props } />
         </Accordion>
       );
-      creatorIcon = ( <Icon icon="plus" /> );
+      creatorIcon = ( <Icon icon="plus" onClick={ this.toggleCreator.bind(this) } /> );
     }
 
     return (
