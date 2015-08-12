@@ -44,8 +44,14 @@ class Creator extends React.Component {
   create () {
     let subject       =   React.findDOMNode(this.refs.subject).value;
     let description   =   React.findDOMNode(this.refs.description).value;
+    let url           =   React.findDOMNode(this.refs.reference).value;
+    let title         =   React.findDOMNode(this.refs.title).value;
 
     let item = { subject, description, type: this.props.type };
+
+    if ( url ) {
+      item.references = [{ url, title }];
+    }
 
     console.log({ item });
 

@@ -94,8 +94,14 @@ var Creator = (function (_React$Component) {
     value: function create() {
       var subject = _react2['default'].findDOMNode(this.refs.subject).value;
       var description = _react2['default'].findDOMNode(this.refs.description).value;
+      var url = _react2['default'].findDOMNode(this.refs.reference).value;
+      var title = _react2['default'].findDOMNode(this.refs.title).value;
 
       var item = { subject: subject, description: description, type: this.props.type };
+
+      if (url) {
+        item.references = [{ url: url, title: title }];
+      }
 
       console.log({ item: item });
 
