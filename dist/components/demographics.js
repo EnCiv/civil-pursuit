@@ -155,6 +155,18 @@ var Demographics = (function (_React$Component) {
       }
     }
   }, {
+    key: 'setEmployment',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function setEmployment() {
+      var employment = _react2['default'].findDOMNode(this.refs.employment).value;
+
+      if (employment) {
+        window.socket.emit('set employment', employment);
+      }
+    }
+  }, {
     key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,6 +206,14 @@ var Demographics = (function (_React$Component) {
           'option',
           { value: status._id },
           status.name
+        );
+      });
+
+      var employments = config.employment.map(function (employment) {
+        return _react2['default'].createElement(
+          'option',
+          { value: employment._id },
+          employment.name
         );
       });
 
@@ -295,27 +315,13 @@ var Demographics = (function (_React$Component) {
               { span: '75' },
               _react2['default'].createElement(
                 _utilSelect2['default'],
-                { block: true, medium: true, ref: 'gender', defaultValue: user.gender },
+                { block: true, medium: true, ref: 'employment', defaultValue: user.employment, onChange: this.setEmployment.bind(this) },
                 _react2['default'].createElement(
                   'option',
                   { value: '' },
                   'Choose one'
                 ),
-                _react2['default'].createElement(
-                  'option',
-                  { value: 'M' },
-                  'Male'
-                ),
-                _react2['default'].createElement(
-                  'option',
-                  { value: 'F' },
-                  'Female'
-                ),
-                _react2['default'].createElement(
-                  'option',
-                  { value: 'O' },
-                  'Other'
-                )
+                employments
               )
             )
           )
