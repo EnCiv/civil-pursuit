@@ -55,17 +55,38 @@ class Creator extends React.Component {
 
     console.log({ item });
 
-    window.socket.emit('create item', item)
-      .on('OK create item', item => {
-        console.log(item);
+    let insert = () => {
+      window.socket.emit('create item', item)
+        .on('OK create item', item => {
+          console.log(item);
 
-        React.findDOMNode(this.refs.subject).value = '';
-        React.findDOMNode(this.refs.description).value = '';
-        React.findDOMNode(this.refs.reference).value = '';
-        React.findDOMNode(this.refs.title).value = '';
+          React.findDOMNode(this.refs.subject).value = '';
+          React.findDOMNode(this.refs.description).value = '';
+          React.findDOMNode(this.refs.reference).value = '';
+          React.findDOMNode(this.refs.title).value = '';
 
-        window.Dispatcher.emit('new item', item, { type: this.props.type });
+          window.Dispatcher.emit('new item', item, { type: this.props.type });
+        });
+
+    };
+
+    if ( this.file ) {
+      let stream = ss.createStream();
+
+      ss(window.socket).emit('upload image', stream,
+        { size: this.file.size, name: this.file.name });
+
+      ss.createBlobReadStream(this.file).pipe(stream);
+
+      stream.on('end', () => {
+        item.image = this.file.name;
+
+        insert();
       });
+    }
+    else {
+      insert();
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,13 +135,19 @@ class Creator extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  saveImage (file) {
+    this.file = file;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     return (
       <Form handler={ this.create.bind(this) } className="syn-creator" ref="form">
         <article className="item" ref="creator">
           <section className="item-media-wrapper">
             <section className="item-media">
-              <Uploader ref="media" />
+              <Uploader ref="media" handler={ this.saveImage.bind(this) } />
             </section>
           </section>
 

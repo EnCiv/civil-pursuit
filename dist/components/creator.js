@@ -107,16 +107,34 @@ var Creator = (function (_React$Component) {
 
       console.log({ item: item });
 
-      window.socket.emit('create item', item).on('OK create item', function (item) {
-        console.log(item);
+      var insert = function insert() {
+        window.socket.emit('create item', item).on('OK create item', function (item) {
+          console.log(item);
 
-        _react2['default'].findDOMNode(_this2.refs.subject).value = '';
-        _react2['default'].findDOMNode(_this2.refs.description).value = '';
-        _react2['default'].findDOMNode(_this2.refs.reference).value = '';
-        _react2['default'].findDOMNode(_this2.refs.title).value = '';
+          _react2['default'].findDOMNode(_this2.refs.subject).value = '';
+          _react2['default'].findDOMNode(_this2.refs.description).value = '';
+          _react2['default'].findDOMNode(_this2.refs.reference).value = '';
+          _react2['default'].findDOMNode(_this2.refs.title).value = '';
 
-        window.Dispatcher.emit('new item', item, { type: _this2.props.type });
-      });
+          window.Dispatcher.emit('new item', item, { type: _this2.props.type });
+        });
+      };
+
+      if (this.file) {
+        var stream = ss.createStream();
+
+        ss(window.socket).emit('upload image', stream, { size: this.file.size, name: this.file.name });
+
+        ss.createBlobReadStream(this.file).pipe(stream);
+
+        stream.on('end', function () {
+          item.image = _this2.file.name;
+
+          insert();
+        });
+      } else {
+        insert();
+      }
     }
   }, {
     key: 'getUrlTitle',
@@ -165,6 +183,14 @@ var Creator = (function (_React$Component) {
       editURL.classList.remove('visible');
     }
   }, {
+    key: 'saveImage',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function saveImage(file) {
+      this.file = file;
+    }
+  }, {
     key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +208,7 @@ var Creator = (function (_React$Component) {
             _react2['default'].createElement(
               'section',
               { className: 'item-media' },
-              _react2['default'].createElement(_uploader2['default'], { ref: 'media' })
+              _react2['default'].createElement(_uploader2['default'], { ref: 'media', handler: this.saveImage.bind(this) })
             )
           ),
           _react2['default'].createElement(

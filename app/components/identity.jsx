@@ -161,8 +161,6 @@ class Identity extends React.Component {
       dobValue = [dob_year, dob_month, dob_day].join('-');
     }
 
-
-
     return (
       <section>
         <Row>
