@@ -103,30 +103,43 @@ class Demographics extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  checkRace (e) {
+    let checkbox = e.target;
+
+    if ( checkbox.checked ) {
+      window.socket.emit('add race', checkbox.value);
+    }
+    else {
+      window.socket.emit('remove race', checkbox.value);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     let { user, config } = this.props;
 
     let races = config.race.map(race => (
-      <Row>
+      <Row key={ race._id }>
         <Column className="gutter">
           { race.name }
         </Column>
         <Column className="gutter">
-          <input type="checkbox" />
+          <input type="checkbox" onClick={ this.checkRace.bind(this) } value={ race._id } checked={ user.race.some(r => r === race._id) } />
         </Column>
       </Row>
     ));
 
     let education = config.education.map(educ => (
-      <option value={ educ._id }>{ educ.name }</option>
+      <option value={ educ._id } key={ educ._id }>{ educ.name }</option>
     ));
 
     let relationships = config.married.map(status => (
-      <option value={ status._id }>{ status.name }</option>
+      <option value={ status._id } key={ status._id }>{ status.name }</option>
     ));
 
     let employments = config.employment.map(employment => (
-      <option value={ employment._id }>{ employment.name }</option>
+      <option value={ employment._id } key={ employment._id }>{ employment.name }</option>
     ));
 
     return (

@@ -167,11 +167,27 @@ var Demographics = (function (_React$Component) {
       }
     }
   }, {
+    key: 'checkRace',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function checkRace(e) {
+      var checkbox = e.target;
+
+      if (checkbox.checked) {
+        window.socket.emit('add race', checkbox.value);
+      } else {
+        window.socket.emit('remove race', checkbox.value);
+      }
+    }
+  }, {
     key: 'render',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
+      var _this2 = this;
+
       var _props = this.props;
       var user = _props.user;
       var config = _props.config;
@@ -179,7 +195,7 @@ var Demographics = (function (_React$Component) {
       var races = config.race.map(function (race) {
         return _react2['default'].createElement(
           _utilRow2['default'],
-          null,
+          { key: race._id },
           _react2['default'].createElement(
             _utilColumn2['default'],
             { className: 'gutter' },
@@ -188,7 +204,9 @@ var Demographics = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { className: 'gutter' },
-            _react2['default'].createElement('input', { type: 'checkbox' })
+            _react2['default'].createElement('input', { type: 'checkbox', onClick: _this2.checkRace.bind(_this2), value: race._id, checked: user.race.some(function (r) {
+                return r === race._id;
+              }) })
           )
         );
       });
@@ -196,7 +214,7 @@ var Demographics = (function (_React$Component) {
       var education = config.education.map(function (educ) {
         return _react2['default'].createElement(
           'option',
-          { value: educ._id },
+          { value: educ._id, key: educ._id },
           educ.name
         );
       });
@@ -204,7 +222,7 @@ var Demographics = (function (_React$Component) {
       var relationships = config.married.map(function (status) {
         return _react2['default'].createElement(
           'option',
-          { value: status._id },
+          { value: status._id, key: status._id },
           status.name
         );
       });
@@ -212,7 +230,7 @@ var Demographics = (function (_React$Component) {
       var employments = config.employment.map(function (employment) {
         return _react2['default'].createElement(
           'option',
-          { value: employment._id },
+          { value: employment._id, key: employment._id },
           employment.name
         );
       });
