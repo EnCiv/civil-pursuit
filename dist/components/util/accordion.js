@@ -65,31 +65,21 @@ var Accordion = (function (_React$Component) {
       var view = _react2['default'].findDOMNode(this.refs.view);
       var content = _react2['default'].findDOMNode(this.refs.content);
 
-      view.classList.add('visible');
-      var height = content.offsetHeight;
-      view.style.height = height + 'px';
+      view.style.display = 'block';
+
       setTimeout(function () {
-        view.classList.remove('visible');
-        content.style.position = 'relative';
-        content.style.top = 0;
-        setTimeout(function () {
-          return _this.status = 'OPENED';
-        }, 100);
-      }, 1000);
+        return _this.status = 'OPENED';
+      }, 500);
     }
   }, {
     key: 'hide',
     value: function hide() {
-      var _this2 = this;
-
       var view = _react2['default'].findDOMNode(this.refs.view);
       var content = _react2['default'].findDOMNode(this.refs.content);
-      view.style.height = 0;
-      content.style.position = 'absolute';
-      content.style.top = '-9000px';
-      setTimeout(function () {
-        return _this2.status = 'CLOSED';
-      }, 1000);
+
+      view.style.display = 'none';
+
+      this.status = 'CLOSED';
     }
   }, {
     key: 'render',

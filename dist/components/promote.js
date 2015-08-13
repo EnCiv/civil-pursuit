@@ -54,9 +54,9 @@ var Header = (function (_React$Component) {
         _react2['default'].createElement(
           'h2',
           null,
-          this.state.cursor,
+          this.props.cursor,
           ' of ',
-          this.state.limit
+          this.props.limit
         ),
         _react2['default'].createElement(
           'h4',
@@ -77,9 +77,7 @@ var Promote = (function (_React$Component2) {
     _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this, props);
 
     this.state = {
-      cursor: 1,
-      limit: 5,
-      evaluation: null
+      cursor: 1
     };
 
     this.get();
@@ -90,8 +88,19 @@ var Promote = (function (_React$Component2) {
   _createClass(Promote, [{
     key: 'get',
     value: function get() {
+      var _this = this;
+
       if (typeof window !== 'undefined') {
-        window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {});
+        window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {
+
+          var limit = 5;
+
+          _this.setState({
+            limit: limit,
+            left: evaluation.items[0],
+            right: evaluation.items[1]
+          });
+        });
       }
     }
   }, {
@@ -99,6 +108,25 @@ var Promote = (function (_React$Component2) {
     value: function render() {
 
       var content = _react2['default'].createElement(_utilLoading2['default'], null);
+
+      if (this.state.limit) {
+        content = [];
+
+        content.push(_react2['default'].createElement(Header, this.state), _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            null,
+            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left })
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            null,
+            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right })
+          )
+        ));
+      }
 
       return _react2['default'].createElement(
         'section',
@@ -113,6 +141,3 @@ var Promote = (function (_React$Component2) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-
-// console.log({ evaluation })
-// if ( evaluation.items)

@@ -40,24 +40,18 @@ class Accordion extends React.Component {
     let view = React.findDOMNode(this.refs.view);
     let content = React.findDOMNode(this.refs.content);
 
-    view.classList.add('visible');
-    let height = content.offsetHeight;
-    view.style.height = height + 'px';
-    setTimeout(() => {
-      view.classList.remove('visible');
-      content.style.position = 'relative';
-      content.style.top = 0;
-      setTimeout(() => this.status = 'OPENED', 100);
-    }, 1000)
+    view.style.display = 'block';
+
+    setTimeout(() => this.status = 'OPENED', 500);
   }
 
   hide () {
     let view = React.findDOMNode(this.refs.view);
     let content = React.findDOMNode(this.refs.content);
-    view.style.height = 0;
-    content.style.position = 'absolute';
-    content.style.top = '-9000px';
-    setTimeout(() => this.status = 'CLOSED', 1000);
+
+    view.style.display = 'none';
+
+    this.status = 'CLOSED';
   }
 
   render () {

@@ -10,7 +10,7 @@ class Header extends React.Component {
   render () {
     return (
       <header className="promote-steps">
-        <h2>{ this.state.cursor } of { this.state.limit }</h2>
+        <h2>{ this.props.cursor } of { this.props.limit }</h2>
         <h4>Evaluate each item below</h4>
       </header>
     );
@@ -22,9 +22,7 @@ class Promote extends React.Component {
     super(props);
 
     this.state = {
-      cursor: 1,
-      limit: 5,
-      evaluation: null
+      cursor: 1
     };
 
     this.get();
@@ -34,8 +32,14 @@ class Promote extends React.Component {
     if ( typeof window !== 'undefined' ) {
       window.socket.emit('get evaluation', this.props.item)
         .on('OK get evaluation', evaluation => {
-          // console.log({ evaluation })
-          // if ( evaluation.items)
+
+          let limit = 5;
+
+          this.setState({
+            limit   :   limit,
+            left    :   evaluation.items[0],
+            right   :   evaluation.items[1]
+          });
         })
     }
   }
@@ -43,6 +47,25 @@ class Promote extends React.Component {
   render () {
 
     let content = ( <Loading /> );
+
+    if ( this.state.limit ) {
+      content = [];
+
+      content.push(
+        ( <Header { ...this.state } /> ),
+        (
+          <Row>
+            <Column>
+              <ItemMedia item={ this.state.left } />
+            </Column>
+
+            <Column>
+              <ItemMedia item={ this.state.right } />
+            </Column>
+          </Row>
+        )
+      );
+    }
 
     return (
       <section className="promote text-center">

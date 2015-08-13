@@ -1173,11 +1173,7 @@ body {
   display: none;
 }
 .syn-accordion {
-  transition: height ease-in 1s;
-}
-.syn-accordion-content {
-  position: absolute;
-  top: -9000px;
+  display: none;
 }
 .item-inputs {
   left: 0;
@@ -1208,9 +1204,6 @@ body {
 }
 .syn-creator [name="description"] {
   border-radius: 0 0 4px 4px;
-}
-.promote {
-  border: 1px solid #666;
 }
 .details {
   border: 1px solid #666;
