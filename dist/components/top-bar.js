@@ -184,7 +184,7 @@ var TopBar = (function (_React$Component) {
             { className: '' + comp + '-right' },
             _react2['default'].createElement(
               'section',
-              { className: _libAppComponent2['default'].classList(this, '' + comp + '-online_now'), screen: 'phone-and-up' },
+              { className: _libAppComponent2['default'].classList(this, '' + comp + '-online_now', 'syn-screen-phone_and_up') },
               'Online now: ',
               onlineNow
             ),

@@ -108,7 +108,7 @@ class TopBar extends React.Component {
           </section>
 
           <section className={ `${comp}-right` }>
-            <section className={ Component.classList(this, `${comp}-online_now`) } screen="phone-and-up">
+            <section className={ Component.classList(this, `${comp}-online_now`, 'syn-screen-phone_and_up') }>
               Online now: { onlineNow }
             </section>
 
