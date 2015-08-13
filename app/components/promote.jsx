@@ -17,6 +17,32 @@ class Header extends React.Component {
   }
 }
 
+class Subject extends React.Component {
+  render () {
+    return (
+      <h4>{ this.props.subject }</h4>
+    );
+  }
+}
+
+class Description extends React.Component {
+  render () {
+    return (
+      <section>{ this.props.description }</section>
+    );
+  }
+}
+
+class Reference extends React.Component {
+  render () {
+    return (
+      <h5>
+        <a href={ this.props.url } rel="nofollow" target="_blank">{ this.props.title || this.props.url }</a>
+      </h5>
+    );
+  }
+}
+
 class Promote extends React.Component {
   constructor (props) {
     super(props);
@@ -57,10 +83,16 @@ class Promote extends React.Component {
           <Row>
             <Column>
               <ItemMedia item={ this.state.left } />
+              <Subject subject={ this.state.left.subject } />
+              <Reference { ...this.state.left.references[0] } />
+              <Description description={ this.state.left.description } />
             </Column>
 
             <Column>
               <ItemMedia item={ this.state.right } />
+              <Subject subject={ this.state.right.subject } />
+              <Reference { ...this.state.right.references[0] } />
+              <Description description={ this.state.left.description } />
             </Column>
           </Row>
         )

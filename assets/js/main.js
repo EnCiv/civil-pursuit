@@ -3507,7 +3507,86 @@ var Header = (function (_React$Component) {
   return Header;
 })(_react2['default'].Component);
 
-var Promote = (function (_React$Component2) {
+var Subject = (function (_React$Component2) {
+  function Subject() {
+    _classCallCheck(this, Subject);
+
+    if (_React$Component2 != null) {
+      _React$Component2.apply(this, arguments);
+    }
+  }
+
+  _inherits(Subject, _React$Component2);
+
+  _createClass(Subject, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'h4',
+        null,
+        this.props.subject
+      );
+    }
+  }]);
+
+  return Subject;
+})(_react2['default'].Component);
+
+var Description = (function (_React$Component3) {
+  function Description() {
+    _classCallCheck(this, Description);
+
+    if (_React$Component3 != null) {
+      _React$Component3.apply(this, arguments);
+    }
+  }
+
+  _inherits(Description, _React$Component3);
+
+  _createClass(Description, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'section',
+        null,
+        this.props.description
+      );
+    }
+  }]);
+
+  return Description;
+})(_react2['default'].Component);
+
+var Reference = (function (_React$Component4) {
+  function Reference() {
+    _classCallCheck(this, Reference);
+
+    if (_React$Component4 != null) {
+      _React$Component4.apply(this, arguments);
+    }
+  }
+
+  _inherits(Reference, _React$Component4);
+
+  _createClass(Reference, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'h5',
+        null,
+        _react2['default'].createElement(
+          'a',
+          { href: this.props.url, rel: 'nofollow', target: '_blank' },
+          this.props.title || this.props.url
+        )
+      );
+    }
+  }]);
+
+  return Reference;
+})(_react2['default'].Component);
+
+var Promote = (function (_React$Component5) {
   function Promote(props) {
     _classCallCheck(this, Promote);
 
@@ -3520,7 +3599,7 @@ var Promote = (function (_React$Component2) {
     this.get();
   }
 
-  _inherits(Promote, _React$Component2);
+  _inherits(Promote, _React$Component5);
 
   _createClass(Promote, [{
     key: 'get',
@@ -3555,12 +3634,18 @@ var Promote = (function (_React$Component2) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             null,
-            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left })
+            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
+            _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
+            _react2['default'].createElement(Reference, this.state.left.references[0]),
+            _react2['default'].createElement(Description, { description: this.state.left.description })
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
             null,
-            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right })
+            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
+            _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
+            _react2['default'].createElement(Reference, this.state.right.references[0]),
+            _react2['default'].createElement(Description, { description: this.state.left.description })
           )
         ));
       }
