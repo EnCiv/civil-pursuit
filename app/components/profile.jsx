@@ -9,6 +9,7 @@ import Identity         from './identity';
 import Residence        from './residence';
 import Icon             from './util/icon';
 import Demographics     from './demographics';
+import Voter            from './voter';
 
 class Profile extends React.Component {
   constructor (props) {
@@ -76,6 +77,7 @@ class Profile extends React.Component {
             </Column>
 
             <Column span="50">
+              <Voter user={ this.state.user } config={ this.state.config } />
             </Column>
           </Row>
         </section>

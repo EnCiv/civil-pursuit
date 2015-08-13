@@ -52,6 +52,10 @@ var _demographics = require('./demographics');
 
 var _demographics2 = _interopRequireDefault(_demographics);
 
+var _voter = require('./voter');
+
+var _voter2 = _interopRequireDefault(_voter);
+
 var Profile = (function (_React$Component) {
   function Profile(props) {
     _classCallCheck(this, Profile);
@@ -127,7 +131,11 @@ var Profile = (function (_React$Component) {
               { span: '50' },
               _react2['default'].createElement(_demographics2['default'], { user: this.state.user, config: this.state.config })
             ),
-            _react2['default'].createElement(_utilColumn2['default'], { span: '50' })
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50' },
+              _react2['default'].createElement(_voter2['default'], { user: this.state.user, config: this.state.config })
+            )
           )
         );
       }
