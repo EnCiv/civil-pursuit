@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import Loading from './util/loading';
 
 class Harmony extends React.Component {
   constructor (props) {
@@ -26,7 +27,7 @@ class Harmony extends React.Component {
   render () {
     return (
       <section className="harmony text-center">
-        <h1>Harmony</h1>
+        <Loading />
       </section>
     );
   }

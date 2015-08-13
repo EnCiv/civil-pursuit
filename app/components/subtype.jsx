@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import Loading from './util/loading';
 
 class Subtype extends React.Component {
   constructor (props) {
@@ -24,7 +25,7 @@ class Subtype extends React.Component {
   render () {
     return (
       <section className="subtype text-center">
-        <h1>Subtype</h1>
+        <Loading />
       </section>
     );
   }

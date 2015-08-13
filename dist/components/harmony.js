@@ -18,6 +18,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var Harmony = (function (_React$Component) {
   function Harmony(props) {
     _classCallCheck(this, Harmony);
@@ -50,11 +54,7 @@ var Harmony = (function (_React$Component) {
       return _react2['default'].createElement(
         'section',
         { className: 'harmony text-center' },
-        _react2['default'].createElement(
-          'h1',
-          null,
-          'Harmony'
-        )
+        _react2['default'].createElement(_utilLoading2['default'], null)
       );
     }
   }]);

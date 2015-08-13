@@ -1,6 +1,21 @@
 'use strict';
 
 import React from 'react';
+import Row from './util/row';
+import Column from './util/column';
+import ItemMedia from './item-media';
+import Loading from './util/loading';
+
+class Header extends React.Component {
+  render () {
+    return (
+      <header className="promote-steps">
+        <h2>{ this.state.cursor } of { this.state.limit }</h2>
+        <h4>Evaluate each item below</h4>
+      </header>
+    );
+  }
+}
 
 class Promote extends React.Component {
   constructor (props) {
@@ -26,16 +41,12 @@ class Promote extends React.Component {
   }
 
   render () {
+
+    let content = ( <Loading /> );
+
     return (
       <section className="promote text-center">
-        <header className="promote-steps">
-          <h2>{ this.state.cursor } of { this.state.limit }</h2>
-          <h4>Evaluate each item below</h4>
-        </header>
-
-        <div className="items-side-by-side">
-
-        </div>
+        { content }
       </section>
     );
   }

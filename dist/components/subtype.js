@@ -18,6 +18,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var Subtype = (function (_React$Component) {
   function Subtype(props) {
     _classCallCheck(this, Subtype);
@@ -49,11 +53,7 @@ var Subtype = (function (_React$Component) {
       return _react2['default'].createElement(
         'section',
         { className: 'subtype text-center' },
-        _react2['default'].createElement(
-          'h1',
-          null,
-          'Subtype'
-        )
+        _react2['default'].createElement(_utilLoading2['default'], null)
       );
     }
   }]);

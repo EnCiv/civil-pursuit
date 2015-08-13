@@ -73,7 +73,7 @@ class Item extends React.Component {
     this.expanded = false;
 
     this.state = {
-      showPromote : 0,
+      showPromote : this.props.new ? 1 : 0,
       showDetails : 0,
       showSubtype : 0,
       showHarmony : 0
@@ -97,13 +97,13 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleSubtype () {
-    // this.setState({ showSubtype : ! this.state.showSubtype });
+    this.setState({ showSubtype : this.state.showSubtype + 1 });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleHarmony () {
-    // this.setState({ showHarmony : ! this.state.showHarmony });
+    this.setState({ showHarmony : this.state.showHarmony + 1 });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -244,21 +244,21 @@ class Item extends React.Component {
       );
     }
 
-    // if ( this.props.subtype !== false ) {
-    //   subtype = (
-    //     <Accordion show={ this.state.showSubtype } name="subtype">
-    //       <Subtype item={ this.props.item } />
-    //     </Accordion>
-    //   );
-    // }
-    //
-    // if ( this.props.harmony !== false ) {
-    //   harmony = (
-    //     <Accordion show={ this.state.showHarmony } name="harmony">
-    //       <Harmony item={ this.props.item } />
-    //     </Accordion>
-    //   );
-    // }
+    if ( this.props.subtype !== false ) {
+      subtype = (
+        <Accordion show={ this.state.showSubtype } name="subtype" { ...this.props }>
+          <Subtype item={ this.props.item } />
+        </Accordion>
+      );
+    }
+
+    if ( this.props.harmony !== false ) {
+      harmony = (
+        <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props }>
+          <Harmony item={ this.props.item } />
+        </Accordion>
+      );
+    }
 
     if ( item.references.length ) {
       referenceLink = item.references[0].url;

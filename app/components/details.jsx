@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import Loading from './util/loading';
 
 class Details extends React.Component {
   constructor (props) {
@@ -22,7 +23,7 @@ class Details extends React.Component {
   render () {
     return (
       <section className="details text-center">
-        <h1>Details</h1>
+        <Loading />
       </section>
     );
   }

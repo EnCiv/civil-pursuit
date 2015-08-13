@@ -78,7 +78,7 @@ var Item = (function (_React$Component) {
     this.expanded = false;
 
     this.state = {
-      showPromote: 0,
+      showPromote: this.props['new'] ? 1 : 0,
       showDetails: 0,
       showSubtype: 0,
       showHarmony: 0
@@ -110,13 +110,17 @@ var Item = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function toggleSubtype() {}
+    value: function toggleSubtype() {
+      this.setState({ showSubtype: this.state.showSubtype + 1 });
+    }
   }, {
     key: 'toggleHarmony',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function toggleHarmony() {}
+    value: function toggleHarmony() {
+      this.setState({ showHarmony: this.state.showHarmony + 1 });
+    }
   }, {
     key: 'componentDidMount',
 
@@ -285,21 +289,21 @@ var Item = (function (_React$Component) {
         );
       }
 
-      // if ( this.props.subtype !== false ) {
-      //   subtype = (
-      //     <Accordion show={ this.state.showSubtype } name="subtype">
-      //       <Subtype item={ this.props.item } />
-      //     </Accordion>
-      //   );
-      // }
-      //
-      // if ( this.props.harmony !== false ) {
-      //   harmony = (
-      //     <Accordion show={ this.state.showHarmony } name="harmony">
-      //       <Harmony item={ this.props.item } />
-      //     </Accordion>
-      //   );
-      // }
+      if (this.props.subtype !== false) {
+        subtype = _react2['default'].createElement(
+          _utilAccordion2['default'],
+          _extends({ show: this.state.showSubtype, name: 'subtype' }, this.props),
+          _react2['default'].createElement(_subtype2['default'], { item: this.props.item })
+        );
+      }
+
+      if (this.props.harmony !== false) {
+        harmony = _react2['default'].createElement(
+          _utilAccordion2['default'],
+          _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props),
+          _react2['default'].createElement(_harmony2['default'], { item: this.props.item })
+        );
+      }
 
       if (item.references.length) {
         referenceLink = item.references[0].url;
@@ -426,7 +430,3 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-
-// this.setState({ showSubtype : ! this.state.showSubtype });
-
-// this.setState({ showHarmony : ! this.state.showHarmony });
