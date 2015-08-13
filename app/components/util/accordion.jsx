@@ -3,44 +3,61 @@
 import React from 'react';
 
 class Accordion extends React.Component {
+  // C(losed) O(pen) B(usy)
+
   constructor ( props ) {
     super(props);
-    this.state = { visibility : false };
+    this.status = 'CLOSED';
+    this.counter = 0;
   }
 
   componentWillReceiveProps (props) {
-    if ( 'show' in props ) {
-      // this.setState({ visibility : props.show });
+    console.info('-- update accordion --', { name : props.name, status : this.status, request : props.show, counter : this.counter, close: props.close });
 
-      let view = React.findDOMNode(this.refs.view);
-      let content = React.findDOMNode(this.refs.content);
+    if ( props.close && ( this.status === 'OPENED' ) ) {
+      console.warn('Closing upon request');
+      return this.hide();
+    }
 
-      if ( props.show ) {
+    if ( props.show > this.counter ) {
+      this.counter = props.show;
 
-        let visibleAccordions = document.querySelectorAll('.syn-accordion.visible');
-
-        view.classList.add('visible');
-        let height = content.offsetHeight;
-        view.style.height = height + 'px';
-        // content.style.marginTop = `-${height}px`;
-        setTimeout(() => {
-          view.classList.remove('visible');
-          content.style.position = 'relative';
-          content.style.top = 0;
-          // content.style.display = block;
-          // content.style.marginTop = 0;
-          // content.style.opacity = 1;
-          // content.style.transform = 'rotateY(0deg)'
-        }, 1000)
-      }
-      else {
-        view.style.height = 0;
-        content.style.position = 'absolute';
-        content.style.top = '-9000px';
-        // content.style.opacity = 0;
-        // content.style.display = 'none';
+      switch ( this.status ) {
+        case 'CLOSED':
+          this.status = 'OPENING';
+          window.Dispatcher.emit('open request');
+          this.show();
+          break;
+        case 'OPENED':
+          this.status = 'CLOSING';
+          this.hide();
+          break;
       }
     }
+  }
+
+  show () {
+    let view = React.findDOMNode(this.refs.view);
+    let content = React.findDOMNode(this.refs.content);
+
+    view.classList.add('visible');
+    let height = content.offsetHeight;
+    view.style.height = height + 'px';
+    setTimeout(() => {
+      view.classList.remove('visible');
+      content.style.position = 'relative';
+      content.style.top = 0;
+      setTimeout(() => this.status = 'OPENED', 100);
+    }, 1000)
+  }
+
+  hide () {
+    let view = React.findDOMNode(this.refs.view);
+    let content = React.findDOMNode(this.refs.content);
+    view.style.height = 0;
+    content.style.position = 'absolute';
+    content.style.top = '-9000px';
+    setTimeout(() => this.status = 'CLOSED', 1000);
   }
 
   render () {

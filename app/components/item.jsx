@@ -73,35 +73,37 @@ class Item extends React.Component {
     this.expanded = false;
 
     this.state = {
-      showPromote : !! this.props.new,
-      showDetails : false,
-      showSubtype : false,
-      showHarmony : false
+      showPromote : 0,
+      showDetails : 0,
+      showSubtype : 0,
+      showHarmony : 0
     };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   togglePromote () {
-    this.setState({ showPromote : ! this.state.showPromote });
+    console.info('toggle promote');
+    this.setState({ showPromote : this.state.showPromote + 1 });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleDetails () {
-    this.setState({ showDetails : ! this.state.showDetails });
+    console.info('toggle details');
+    this.setState({ showDetails : this.state.showDetails + 1 });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleSubtype () {
-    this.setState({ showSubtype : ! this.state.showSubtype });
+    // this.setState({ showSubtype : ! this.state.showSubtype });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleHarmony () {
-    this.setState({ showHarmony : ! this.state.showHarmony });
+    // this.setState({ showHarmony : ! this.state.showHarmony });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -228,7 +230,7 @@ class Item extends React.Component {
 
     if ( this.props.promote !== false ) {
       promote = (
-        <Accordion show={ this.state.showPromote }>
+        <Accordion show={ this.state.showPromote } name="promote" { ...this.props }>
           <Promote item={ this.props.item } />
         </Accordion>
       );
@@ -236,27 +238,27 @@ class Item extends React.Component {
 
     if ( this.props.details !== false ) {
       details =(
-        <Accordion show={ this.state.showDetails }>
+        <Accordion show={ this.state.showDetails } name="details" { ...this.props }>
           <Details item={ this.props.item } />
         </Accordion>
       );
     }
 
-    if ( this.props.subtype !== false ) {
-      subtype = (
-        <Accordion show={ this.state.showSubtype }>
-          <Subtype item={ this.props.item } />
-        </Accordion>
-      );
-    }
-
-    if ( this.props.harmony !== false ) {
-      harmony = (
-        <Accordion show={ this.state.showHarmony }>
-          <Harmony item={ this.props.item } />
-        </Accordion>
-      );
-    }
+    // if ( this.props.subtype !== false ) {
+    //   subtype = (
+    //     <Accordion show={ this.state.showSubtype } name="subtype">
+    //       <Subtype item={ this.props.item } />
+    //     </Accordion>
+    //   );
+    // }
+    //
+    // if ( this.props.harmony !== false ) {
+    //   harmony = (
+    //     <Accordion show={ this.state.showHarmony } name="harmony">
+    //       <Harmony item={ this.props.item } />
+    //     </Accordion>
+    //   );
+    // }
 
     if ( item.references.length ) {
       referenceLink = item.references[0].url;

@@ -10,7 +10,8 @@ let props         =   {
   user            :   null,
   ready           :   false,
   intro           :   window.synapp.intro,
-  newItem         :   null
+  newItem         :   null,
+  close           :   false
 };
 
 function render () {
@@ -26,6 +27,13 @@ window.Dispatcher
     console.log('new item', { item, panel });
     props.newItem = { item, panel };
     render();
+  })
+
+  .on('open request', () => {
+    console.info('open request');
+    props.close = true;
+    render();
+    props.close = false;
   })
 
 window.socket = io();

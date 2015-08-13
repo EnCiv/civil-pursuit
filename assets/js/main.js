@@ -19,7 +19,8 @@ var props = {
   user: null,
   ready: false,
   intro: window.synapp.intro,
-  newItem: null
+  newItem: null,
+  close: false
 };
 
 function render() {
@@ -33,6 +34,11 @@ window.Dispatcher.on('new item', function (item, panel) {
   console.log('new item', { item: item, panel: panel });
   props.newItem = { item: item, panel: panel };
   render();
+}).on('open request', function () {
+  console.info('open request');
+  props.close = true;
+  render();
+  props.close = false;
 });
 
 window.socket = io();
@@ -1019,9 +1025,7 @@ var Details = (function (_React$Component) {
     key: 'get',
     value: function get() {
       if (typeof window !== 'undefined') {
-        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {
-          console.log({ details: details });
-        });
+        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {});
       }
     }
   }, {
@@ -1044,6 +1048,8 @@ var Details = (function (_React$Component) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
+
+// console.log({ details })
 // if ( evaluation.items)
 },{"react":209}],7:[function(require,module,exports){
 'use strict';
@@ -1774,6 +1780,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -1846,10 +1854,10 @@ var Item = (function (_React$Component) {
     this.expanded = false;
 
     this.state = {
-      showPromote: !!this.props['new'],
-      showDetails: false,
-      showSubtype: false,
-      showHarmony: false
+      showPromote: 0,
+      showDetails: 0,
+      showSubtype: 0,
+      showHarmony: 0
     };
   }
 
@@ -1861,7 +1869,8 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function togglePromote() {
-      this.setState({ showPromote: !this.state.showPromote });
+      console.info('toggle promote');
+      this.setState({ showPromote: this.state.showPromote + 1 });
     }
   }, {
     key: 'toggleDetails',
@@ -1869,24 +1878,21 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function toggleDetails() {
-      this.setState({ showDetails: !this.state.showDetails });
+      console.info('toggle details');
+      this.setState({ showDetails: this.state.showDetails + 1 });
     }
   }, {
     key: 'toggleSubtype',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function toggleSubtype() {
-      this.setState({ showSubtype: !this.state.showSubtype });
-    }
+    value: function toggleSubtype() {}
   }, {
     key: 'toggleHarmony',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function toggleHarmony() {
-      this.setState({ showHarmony: !this.state.showHarmony });
-    }
+    value: function toggleHarmony() {}
   }, {
     key: 'componentDidMount',
 
@@ -2042,7 +2048,7 @@ var Item = (function (_React$Component) {
       if (this.props.promote !== false) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
-          { show: this.state.showPromote },
+          _extends({ show: this.state.showPromote, name: 'promote' }, this.props),
           _react2['default'].createElement(_promote2['default'], { item: this.props.item })
         );
       }
@@ -2050,26 +2056,26 @@ var Item = (function (_React$Component) {
       if (this.props.details !== false) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
-          { show: this.state.showDetails },
+          _extends({ show: this.state.showDetails, name: 'details' }, this.props),
           _react2['default'].createElement(_details2['default'], { item: this.props.item })
         );
       }
 
-      if (this.props.subtype !== false) {
-        subtype = _react2['default'].createElement(
-          _utilAccordion2['default'],
-          { show: this.state.showSubtype },
-          _react2['default'].createElement(_subtype2['default'], { item: this.props.item })
-        );
-      }
-
-      if (this.props.harmony !== false) {
-        harmony = _react2['default'].createElement(
-          _utilAccordion2['default'],
-          { show: this.state.showHarmony },
-          _react2['default'].createElement(_harmony2['default'], { item: this.props.item })
-        );
-      }
+      // if ( this.props.subtype !== false ) {
+      //   subtype = (
+      //     <Accordion show={ this.state.showSubtype } name="subtype">
+      //       <Subtype item={ this.props.item } />
+      //     </Accordion>
+      //   );
+      // }
+      //
+      // if ( this.props.harmony !== false ) {
+      //   harmony = (
+      //     <Accordion show={ this.state.showHarmony } name="harmony">
+      //       <Harmony item={ this.props.item } />
+      //     </Accordion>
+      //   );
+      // }
 
       if (item.references.length) {
         referenceLink = item.references[0].url;
@@ -2196,6 +2202,10 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
+
+// this.setState({ showSubtype : ! this.state.showSubtype });
+
+// this.setState({ showHarmony : ! this.state.showHarmony });
 },{"./details":6,"./harmony":8,"./item-media":12,"./promote":20,"./subtype":23,"./util/accordion":28,"./util/button":30,"./util/button-group":29,"./util/column":32,"./util/icon":37,"./util/row":44,"react":209}],14:[function(require,module,exports){
 'use strict';
 
@@ -3106,6 +3116,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -3147,19 +3159,16 @@ var Panel = (function (_React$Component) {
     _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, props);
 
     this.state = {
-      showCreator: false
+      showCreator: 0
     };
   }
 
   _inherits(Panel, _React$Component);
 
   _createClass(Panel, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(props) {}
-  }, {
     key: 'toggleCreator',
     value: function toggleCreator() {
-      this.setState({ showCreator: !this.state.showCreator });
+      this.setState({ showCreator: this.state.showCreator + 1 });
     }
   }, {
     key: 'render',
@@ -3171,7 +3180,7 @@ var Panel = (function (_React$Component) {
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
-          { show: this.state.showCreator },
+          _extends({ show: this.state.showCreator }, this.props),
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this) });
@@ -3185,7 +3194,7 @@ var Panel = (function (_React$Component) {
         }
 
         if (relevant) {
-          newItem = _react2['default'].createElement(_item2['default'], { item: this.props.newItem.item, 'new': true });
+          newItem = _react2['default'].createElement(_item2['default'], _extends({ item: this.props.newItem.item, 'new': true }, this.props));
         }
       }
 
@@ -3218,8 +3227,6 @@ var Panel = (function (_React$Component) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-
-// console.warn('panel', props);
 },{"../lib/app/component":49,"./creator":4,"./item":13,"./util/accordion":28,"./util/icon":37,"react":209}],19:[function(require,module,exports){
 'use strict';
 
@@ -3417,9 +3424,7 @@ var Promote = (function (_React$Component) {
     key: 'get',
     value: function get() {
       if (typeof window !== 'undefined') {
-        window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {
-          console.log({ evaluation: evaluation });
-        });
+        window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {});
       }
     }
   }, {
@@ -3454,6 +3459,8 @@ var Promote = (function (_React$Component) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
+
+// console.log({ evaluation })
 // if ( evaluation.items)
 },{"react":209}],21:[function(require,module,exports){
 'use strict';
@@ -4312,6 +4319,8 @@ var TopLevelPanel = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
       var type = this.state.type;
 
       var panelTitle = undefined;
@@ -4321,7 +4330,7 @@ var TopLevelPanel = (function (_React$Component) {
       }
 
       var items = this.state.items.map(function (item) {
-        return _react2['default'].createElement(_item2['default'], { item: item });
+        return _react2['default'].createElement(_item2['default'], _extends({ item: item }, _this3.props));
       });
 
       return _react2['default'].createElement(
@@ -4585,11 +4594,14 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var Accordion = (function (_React$Component) {
+  // C(losed) O(pen) B(usy)
+
   function Accordion(props) {
     _classCallCheck(this, Accordion);
 
     _get(Object.getPrototypeOf(Accordion.prototype), 'constructor', this).call(this, props);
-    this.state = { visibility: false };
+    this.status = 'CLOSED';
+    this.counter = 0;
   }
 
   _inherits(Accordion, _React$Component);
@@ -4597,41 +4609,62 @@ var Accordion = (function (_React$Component) {
   _createClass(Accordion, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
+      console.info('-- update accordion --', { name: props.name, status: this.status, request: props.show, counter: this.counter, close: props.close });
+
+      if (props.close && this.status === 'OPENED') {
+        console.warn('Closing upon request');
+        return this.hide();
+      }
+
+      if (props.show > this.counter) {
+        this.counter = props.show;
+
+        switch (this.status) {
+          case 'CLOSED':
+            this.status = 'OPENING';
+            window.Dispatcher.emit('open request');
+            this.show();
+            break;
+          case 'OPENED':
+            this.status = 'CLOSING';
+            this.hide();
+            break;
+        }
+      }
+    }
+  }, {
+    key: 'show',
+    value: function show() {
       var _this = this;
 
-      if ('show' in props) {
-        (function () {
-          // this.setState({ visibility : props.show });
+      var view = _react2['default'].findDOMNode(this.refs.view);
+      var content = _react2['default'].findDOMNode(this.refs.content);
 
-          var view = _react2['default'].findDOMNode(_this.refs.view);
-          var content = _react2['default'].findDOMNode(_this.refs.content);
+      view.classList.add('visible');
+      var height = content.offsetHeight;
+      view.style.height = height + 'px';
+      setTimeout(function () {
+        view.classList.remove('visible');
+        content.style.position = 'relative';
+        content.style.top = 0;
+        setTimeout(function () {
+          return _this.status = 'OPENED';
+        }, 100);
+      }, 1000);
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      var _this2 = this;
 
-          if (props.show) {
-
-            var visibleAccordions = document.querySelectorAll('.syn-accordion.visible');
-
-            view.classList.add('visible');
-            var height = content.offsetHeight;
-            view.style.height = height + 'px';
-            // content.style.marginTop = `-${height}px`;
-            setTimeout(function () {
-              view.classList.remove('visible');
-              content.style.position = 'relative';
-              content.style.top = 0;
-              // content.style.display = block;
-              // content.style.marginTop = 0;
-              // content.style.opacity = 1;
-              // content.style.transform = 'rotateY(0deg)'
-            }, 1000);
-          } else {
-            view.style.height = 0;
-            content.style.position = 'absolute';
-            content.style.top = '-9000px';
-            // content.style.opacity = 0;
-            // content.style.display = 'none';
-          }
-        })();
-      }
+      var view = _react2['default'].findDOMNode(this.refs.view);
+      var content = _react2['default'].findDOMNode(this.refs.content);
+      view.style.height = 0;
+      content.style.position = 'absolute';
+      content.style.top = '-9000px';
+      setTimeout(function () {
+        return _this2.status = 'CLOSED';
+      }, 1000);
     }
   }, {
     key: 'render',

@@ -19,11 +19,14 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var Accordion = (function (_React$Component) {
+  // C(losed) O(pen) B(usy)
+
   function Accordion(props) {
     _classCallCheck(this, Accordion);
 
     _get(Object.getPrototypeOf(Accordion.prototype), 'constructor', this).call(this, props);
-    this.state = { visibility: false };
+    this.status = 'CLOSED';
+    this.counter = 0;
   }
 
   _inherits(Accordion, _React$Component);
@@ -31,41 +34,62 @@ var Accordion = (function (_React$Component) {
   _createClass(Accordion, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
+      console.info('-- update accordion --', { name: props.name, status: this.status, request: props.show, counter: this.counter, close: props.close });
+
+      if (props.close && this.status === 'OPENED') {
+        console.warn('Closing upon request');
+        return this.hide();
+      }
+
+      if (props.show > this.counter) {
+        this.counter = props.show;
+
+        switch (this.status) {
+          case 'CLOSED':
+            this.status = 'OPENING';
+            window.Dispatcher.emit('open request');
+            this.show();
+            break;
+          case 'OPENED':
+            this.status = 'CLOSING';
+            this.hide();
+            break;
+        }
+      }
+    }
+  }, {
+    key: 'show',
+    value: function show() {
       var _this = this;
 
-      if ('show' in props) {
-        (function () {
-          // this.setState({ visibility : props.show });
+      var view = _react2['default'].findDOMNode(this.refs.view);
+      var content = _react2['default'].findDOMNode(this.refs.content);
 
-          var view = _react2['default'].findDOMNode(_this.refs.view);
-          var content = _react2['default'].findDOMNode(_this.refs.content);
+      view.classList.add('visible');
+      var height = content.offsetHeight;
+      view.style.height = height + 'px';
+      setTimeout(function () {
+        view.classList.remove('visible');
+        content.style.position = 'relative';
+        content.style.top = 0;
+        setTimeout(function () {
+          return _this.status = 'OPENED';
+        }, 100);
+      }, 1000);
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      var _this2 = this;
 
-          if (props.show) {
-
-            var visibleAccordions = document.querySelectorAll('.syn-accordion.visible');
-
-            view.classList.add('visible');
-            var height = content.offsetHeight;
-            view.style.height = height + 'px';
-            // content.style.marginTop = `-${height}px`;
-            setTimeout(function () {
-              view.classList.remove('visible');
-              content.style.position = 'relative';
-              content.style.top = 0;
-              // content.style.display = block;
-              // content.style.marginTop = 0;
-              // content.style.opacity = 1;
-              // content.style.transform = 'rotateY(0deg)'
-            }, 1000);
-          } else {
-            view.style.height = 0;
-            content.style.position = 'absolute';
-            content.style.top = '-9000px';
-            // content.style.opacity = 0;
-            // content.style.display = 'none';
-          }
-        })();
-      }
+      var view = _react2['default'].findDOMNode(this.refs.view);
+      var content = _react2['default'].findDOMNode(this.refs.content);
+      view.style.height = 0;
+      content.style.position = 'absolute';
+      content.style.top = '-9000px';
+      setTimeout(function () {
+        return _this2.status = 'CLOSED';
+      }, 1000);
     }
   }, {
     key: 'render',

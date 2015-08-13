@@ -33,9 +33,7 @@ var Details = (function (_React$Component) {
     key: 'get',
     value: function get() {
       if (typeof window !== 'undefined') {
-        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {
-          console.log({ details: details });
-        });
+        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {});
       }
     }
   }, {
@@ -58,4 +56,6 @@ var Details = (function (_React$Component) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
+
+// console.log({ details })
 // if ( evaluation.items)

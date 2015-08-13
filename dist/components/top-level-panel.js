@@ -75,6 +75,8 @@ var TopLevelPanel = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this3 = this;
+
       var type = this.state.type;
 
       var panelTitle = undefined;
@@ -84,7 +86,7 @@ var TopLevelPanel = (function (_React$Component) {
       }
 
       var items = this.state.items.map(function (item) {
-        return _react2['default'].createElement(_item2['default'], { item: item });
+        return _react2['default'].createElement(_item2['default'], _extends({ item: item }, _this3.props));
       });
 
       return _react2['default'].createElement(

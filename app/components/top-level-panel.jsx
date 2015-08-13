@@ -48,7 +48,7 @@ class TopLevelPanel extends React.Component {
     }
 
     let items = this.state.items.map(item => (
-      <Item item={ item } />
+      <Item item={ item } { ...this.props } />
     ));
 
     return (

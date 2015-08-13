@@ -13,7 +13,7 @@ class Details extends React.Component {
     if ( typeof window !== 'undefined' ) {
       window.socket.emit('get item details', this.props.item)
         .on('OK get item details', details => {
-          console.log({ details })
+          // console.log({ details })
           // if ( evaluation.items)
         })
     }

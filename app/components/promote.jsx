@@ -19,7 +19,7 @@ class Promote extends React.Component {
     if ( typeof window !== 'undefined' ) {
       window.socket.emit('get evaluation', this.props.item)
         .on('OK get evaluation', evaluation => {
-          console.log({ evaluation })
+          // console.log({ evaluation })
           // if ( evaluation.items)
         })
     }

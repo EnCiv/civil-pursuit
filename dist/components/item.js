@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -76,10 +78,10 @@ var Item = (function (_React$Component) {
     this.expanded = false;
 
     this.state = {
-      showPromote: !!this.props['new'],
-      showDetails: false,
-      showSubtype: false,
-      showHarmony: false
+      showPromote: 0,
+      showDetails: 0,
+      showSubtype: 0,
+      showHarmony: 0
     };
   }
 
@@ -91,7 +93,8 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function togglePromote() {
-      this.setState({ showPromote: !this.state.showPromote });
+      console.info('toggle promote');
+      this.setState({ showPromote: this.state.showPromote + 1 });
     }
   }, {
     key: 'toggleDetails',
@@ -99,24 +102,21 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function toggleDetails() {
-      this.setState({ showDetails: !this.state.showDetails });
+      console.info('toggle details');
+      this.setState({ showDetails: this.state.showDetails + 1 });
     }
   }, {
     key: 'toggleSubtype',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function toggleSubtype() {
-      this.setState({ showSubtype: !this.state.showSubtype });
-    }
+    value: function toggleSubtype() {}
   }, {
     key: 'toggleHarmony',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function toggleHarmony() {
-      this.setState({ showHarmony: !this.state.showHarmony });
-    }
+    value: function toggleHarmony() {}
   }, {
     key: 'componentDidMount',
 
@@ -272,7 +272,7 @@ var Item = (function (_React$Component) {
       if (this.props.promote !== false) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
-          { show: this.state.showPromote },
+          _extends({ show: this.state.showPromote, name: 'promote' }, this.props),
           _react2['default'].createElement(_promote2['default'], { item: this.props.item })
         );
       }
@@ -280,26 +280,26 @@ var Item = (function (_React$Component) {
       if (this.props.details !== false) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
-          { show: this.state.showDetails },
+          _extends({ show: this.state.showDetails, name: 'details' }, this.props),
           _react2['default'].createElement(_details2['default'], { item: this.props.item })
         );
       }
 
-      if (this.props.subtype !== false) {
-        subtype = _react2['default'].createElement(
-          _utilAccordion2['default'],
-          { show: this.state.showSubtype },
-          _react2['default'].createElement(_subtype2['default'], { item: this.props.item })
-        );
-      }
-
-      if (this.props.harmony !== false) {
-        harmony = _react2['default'].createElement(
-          _utilAccordion2['default'],
-          { show: this.state.showHarmony },
-          _react2['default'].createElement(_harmony2['default'], { item: this.props.item })
-        );
-      }
+      // if ( this.props.subtype !== false ) {
+      //   subtype = (
+      //     <Accordion show={ this.state.showSubtype } name="subtype">
+      //       <Subtype item={ this.props.item } />
+      //     </Accordion>
+      //   );
+      // }
+      //
+      // if ( this.props.harmony !== false ) {
+      //   harmony = (
+      //     <Accordion show={ this.state.showHarmony } name="harmony">
+      //       <Harmony item={ this.props.item } />
+      //     </Accordion>
+      //   );
+      // }
 
       if (item.references.length) {
         referenceLink = item.references[0].url;
@@ -426,3 +426,7 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
+
+// this.setState({ showSubtype : ! this.state.showSubtype });
+
+// this.setState({ showHarmony : ! this.state.showHarmony });

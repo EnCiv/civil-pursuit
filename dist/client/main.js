@@ -18,7 +18,8 @@ var props = {
   user: null,
   ready: false,
   intro: window.synapp.intro,
-  newItem: null
+  newItem: null,
+  close: false
 };
 
 function render() {
@@ -32,6 +33,11 @@ window.Dispatcher.on('new item', function (item, panel) {
   console.log('new item', { item: item, panel: panel });
   props.newItem = { item: item, panel: panel };
   render();
+}).on('open request', function () {
+  console.info('open request');
+  props.close = true;
+  render();
+  props.close = false;
 });
 
 window.socket = io();

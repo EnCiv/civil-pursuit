@@ -39,9 +39,7 @@ var Promote = (function (_React$Component) {
     key: 'get',
     value: function get() {
       if (typeof window !== 'undefined') {
-        window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {
-          console.log({ evaluation: evaluation });
-        });
+        window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {});
       }
     }
   }, {
@@ -76,4 +74,6 @@ var Promote = (function (_React$Component) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
+
+// console.log({ evaluation })
 // if ( evaluation.items)

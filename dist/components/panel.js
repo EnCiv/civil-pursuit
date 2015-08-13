@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -45,19 +47,16 @@ var Panel = (function (_React$Component) {
     _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, props);
 
     this.state = {
-      showCreator: false
+      showCreator: 0
     };
   }
 
   _inherits(Panel, _React$Component);
 
   _createClass(Panel, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(props) {}
-  }, {
     key: 'toggleCreator',
     value: function toggleCreator() {
-      this.setState({ showCreator: !this.state.showCreator });
+      this.setState({ showCreator: this.state.showCreator + 1 });
     }
   }, {
     key: 'render',
@@ -69,7 +68,7 @@ var Panel = (function (_React$Component) {
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
-          { show: this.state.showCreator },
+          _extends({ show: this.state.showCreator }, this.props),
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this) });
@@ -83,7 +82,7 @@ var Panel = (function (_React$Component) {
         }
 
         if (relevant) {
-          newItem = _react2['default'].createElement(_item2['default'], { item: this.props.newItem.item, 'new': true });
+          newItem = _react2['default'].createElement(_item2['default'], _extends({ item: this.props.newItem.item, 'new': true }, this.props));
         }
       }
 
@@ -116,5 +115,3 @@ var Panel = (function (_React$Component) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-
-// console.warn('panel', props);

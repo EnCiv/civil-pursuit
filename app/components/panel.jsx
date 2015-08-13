@@ -11,16 +11,12 @@ class Panel extends React.Component {
     super(props);
 
     this.state = {
-      showCreator : false
+      showCreator : 0
     };
   }
 
-  componentWillReceiveProps (props) {
-    // console.warn('panel', props);
-  }
-
   toggleCreator () {
-    this.setState({ showCreator : ! this.state.showCreator });
+    this.setState({ showCreator : this.state.showCreator + 1 });
   }
 
   render() {
@@ -28,7 +24,7 @@ class Panel extends React.Component {
 
     if ( this.props.creator !== false ) {
       creator = (
-        <Accordion show={ this.state.showCreator }>
+        <Accordion show={ this.state.showCreator } { ...this.props }>
           <Creator { ...this.props } />
         </Accordion>
       );
@@ -43,7 +39,7 @@ class Panel extends React.Component {
       }
 
       if ( relevant ) {
-        newItem = ( <Item item={ this.props.newItem.item } new={ true } /> );
+        newItem = ( <Item item={ this.props.newItem.item } new={ true } { ...this.props } /> );
       }
     }
 
