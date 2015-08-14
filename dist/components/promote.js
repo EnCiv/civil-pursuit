@@ -167,6 +167,8 @@ var Promote = (function (_React$Component5) {
   _createClass(Promote, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
+
+      console.log('promote', { props: props, status: this.status });
       if (props.show && this.status === 'iddle') {
         this.status = 'ready';
         this.get();

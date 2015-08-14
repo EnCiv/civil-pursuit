@@ -55,6 +55,8 @@ class Promote extends React.Component {
   }
 
   componentWillReceiveProps (props) {
+
+    console.log('promote', { props, status: this.status })
     if ( props.show && this.status === 'iddle' ) {
       this.status = 'ready';
       this.get();
