@@ -138,9 +138,24 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
-    let media = React
+    let media;
+    
+    let image = React
       .findDOMNode(this.refs.media)
-      .querySelector('img, iframe');
+      .querySelector('img');
+
+    let video = React
+      .findDOMNode(this.refs.media)
+      .querySelector('iframe');
+
+    if ( video ) {
+      media = React
+       .findDOMNode(this.refs.media)
+       .querySelector('.video-container');
+    }
+    else {
+      media = image;
+    }
 
     let item = React
       .findDOMNode(this.refs.item);
@@ -151,10 +166,12 @@ class Item extends React.Component {
     let subject = item.querySelector('.item-subject');
     let description = item.querySelector('.item-description');
     let reference = item.querySelector('.item-reference a');
-    let buttons = item.querySelector('.item-buttons')
+    let buttons = item.querySelector('.item-buttons');
 
-    media.addEventListener('load', () => {
+    let onLoad = () => {
       let mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
+
+      console.log({ mediaHeight, media, item: this.props.item.subject })
 
       let limit;
 
@@ -185,7 +202,14 @@ class Item extends React.Component {
       if ( this.props.new ) {
         this.setState({ showPromote: true });
       }
-    });
+    };
+
+    if ( image ) {
+      image.addEventListener('load', onLoad);
+    }
+    else {
+      video.addEventListener('load', onLoad);
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

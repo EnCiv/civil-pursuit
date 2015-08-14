@@ -2144,7 +2144,17 @@ var Item = (function (_React$Component) {
     value: function componentDidMount() {
       var _this = this;
 
-      var media = _react2['default'].findDOMNode(this.refs.media).querySelector('img, iframe');
+      var media = undefined;
+
+      var image = _react2['default'].findDOMNode(this.refs.media).querySelector('img');
+
+      var video = _react2['default'].findDOMNode(this.refs.media).querySelector('iframe');
+
+      if (video) {
+        media = _react2['default'].findDOMNode(this.refs.media).querySelector('.video-container');
+      } else {
+        media = image;
+      }
 
       var item = _react2['default'].findDOMNode(this.refs.item);
 
@@ -2156,8 +2166,10 @@ var Item = (function (_React$Component) {
       var reference = item.querySelector('.item-reference a');
       var buttons = item.querySelector('.item-buttons');
 
-      media.addEventListener('load', function () {
+      var onLoad = function onLoad() {
         var mediaHeight = media.offsetTop + media.offsetHeight - 40;
+
+        console.log({ mediaHeight: mediaHeight, media: media, item: _this.props.item.subject });
 
         var limit = undefined;
 
@@ -2184,7 +2196,13 @@ var Item = (function (_React$Component) {
         if (_this.props['new']) {
           _this.setState({ showPromote: true });
         }
-      });
+      };
+
+      if (image) {
+        image.addEventListener('load', onLoad);
+      } else {
+        video.addEventListener('load', onLoad);
+      }
     }
   }, {
     key: 'readMore',
