@@ -3794,8 +3794,6 @@ var Promote = (function (_React$Component5) {
   _createClass(Promote, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-
-      console.log('promote', { props: props, status: this.status });
       if (props.show && this.status === 'iddle') {
         this.status = 'ready';
         this.get();
@@ -3807,6 +3805,7 @@ var Promote = (function (_React$Component5) {
       var _this = this;
 
       if (typeof window !== 'undefined') {
+        console.log('will now get evaluation', this.props.item);
         window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {
 
           var limit = 5;
