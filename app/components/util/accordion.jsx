@@ -12,12 +12,12 @@ class Accordion extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    console.info('-- update accordion --', { name : props.name, status : this.status, request : props.show, counter : this.counter, close: props.close });
+    // console.info('-- update accordion --', { name : props.name, status : this.status, request : props.show, counter : this.counter, close: props.close });
 
-    if ( props.close && ( this.status === 'OPENED' ) ) {
-      console.warn('Closing upon request');
-      return this.hide();
-    }
+    // if ( props.close && ( this.status === 'OPENED' ) ) {
+    //   console.warn('Closing upon request');
+    //   return this.hide();
+    // }
 
     if ( props.show > this.counter ) {
       this.counter = props.show;
@@ -37,19 +37,31 @@ class Accordion extends React.Component {
   }
 
   show () {
-    let view = React.findDOMNode(this.refs.view);
+    let view    = React.findDOMNode(this.refs.view);
+    let wrapper = React.findDOMNode(this.refs.wrapper);
     let content = React.findDOMNode(this.refs.content);
 
-    view.style.display = 'block';
+    if ( this.props.poa ) {
+      let poa     = React.findDOMNode(this.props.poa);
+      window.scrollTo(0, ( poa.offsetTop  - 60 ));
+    }
 
-    setTimeout(() => this.status = 'OPENED', 500);
+    wrapper.style.marginTop = 0;
+
+    this.status = 'OPENED';
   }
 
   hide () {
-    let view = React.findDOMNode(this.refs.view);
+    let view    = React.findDOMNode(this.refs.view);
+    let wrapper = React.findDOMNode(this.refs.wrapper);
     let content = React.findDOMNode(this.refs.content);
 
-    view.style.display = 'none';
+    if ( this.props.poa ) {
+      let poa     = React.findDOMNode(this.props.poa);
+      window.scrollTo(0, ( poa.offsetTop  - 60 ));
+    }
+
+    wrapper.style.marginTop = '-100%';
 
     this.status = 'CLOSED';
   }
@@ -57,7 +69,7 @@ class Accordion extends React.Component {
   render () {
     return (
       <section className="syn-accordion" ref="view">
-        <section>
+        <section className="syn-accordion-wrapper" ref="wrapper">
           <section className="syn-accordion-content" ref="content">
             { this.props.children }
           </section>

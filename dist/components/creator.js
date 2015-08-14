@@ -69,10 +69,12 @@ var Creator = (function (_React$Component) {
       var media = _react2['default'].findDOMNode(this.refs.media);
       var creator = _react2['default'].findDOMNode(this.refs.creator);
 
-      var mediaHeight = media.offsetHeight;
-      var inputHeight = subject.offsetHeight + reference.offsetHeight;
+      setTimeout(function () {
+        var mediaHeight = media.offsetHeight;
+        var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-      // description.style.height = ( mediaHeight - inputHeight ) + 'px';
+        description.style.height = mediaHeight - inputHeight + 'px';
+      }, 1000);
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {

@@ -71,8 +71,6 @@ class Uploader extends React.Component {
   render() {
     let { image } = this.props;
 
-    console.log('upload', this.props);
-
     let content = (
       <section className="syn-uploader" ref="view">
         <section className="syn-uploader-dropbox" ref="dropbox">

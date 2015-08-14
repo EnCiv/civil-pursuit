@@ -496,10 +496,12 @@ var Creator = (function (_React$Component) {
       var media = _react2['default'].findDOMNode(this.refs.media);
       var creator = _react2['default'].findDOMNode(this.refs.creator);
 
-      var mediaHeight = media.offsetHeight;
-      var inputHeight = subject.offsetHeight + reference.offsetHeight;
+      setTimeout(function () {
+        var mediaHeight = media.offsetHeight;
+        var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-      // description.style.height = ( mediaHeight - inputHeight ) + 'px';
+        description.style.height = mediaHeight - inputHeight + 'px';
+      }, 1000);
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
@@ -1040,9 +1042,9 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -1058,31 +1060,82 @@ var _utilLoading = require('./util/loading');
 
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
-var Details = (function (_React$Component) {
+var Popularity = (function (_React$Component) {
+  function Popularity() {
+    _classCallCheck(this, Popularity);
+
+    if (_React$Component != null) {
+      _React$Component.apply(this, arguments);
+    }
+  }
+
+  _inherits(Popularity, _React$Component);
+
+  _createClass(Popularity, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          'div',
+          null,
+          this.props.number
+        )
+      );
+    }
+  }]);
+
+  return Popularity;
+})(_react2['default'].Component);
+
+var Details = (function (_React$Component2) {
   function Details(props) {
     _classCallCheck(this, Details);
 
     _get(Object.getPrototypeOf(Details.prototype), 'constructor', this).call(this, props);
 
-    this.get();
+    this.status = 'iddle';
+
+    this.state = {};
   }
 
-  _inherits(Details, _React$Component);
+  _inherits(Details, _React$Component2);
 
   _createClass(Details, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      if (props.show && this.status === 'iddle') {
+        this.status = 'ready';
+        this.get();
+      }
+    }
+  }, {
     key: 'get',
     value: function get() {
+      var _this = this;
+
       if (typeof window !== 'undefined') {
-        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {});
+        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {
+          _this.setState({ details: details });
+        });
       }
     }
   }, {
     key: 'render',
     value: function render() {
+      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+
+      if (this.state.details) {
+        content = [];
+
+        content.push(_react2['default'].createElement(Popularity, this.props.item.popularity));
+      }
+
       return _react2['default'].createElement(
         'section',
         { className: 'details text-center' },
-        _react2['default'].createElement(_utilLoading2['default'], null)
+        content
       );
     }
   }]);
@@ -1092,9 +1145,6 @@ var Details = (function (_React$Component) {
 
 exports['default'] = Details;
 module.exports = exports['default'];
-
-// console.log({ details })
-// if ( evaluation.items)
 },{"./util/loading":42,"react":211}],7:[function(require,module,exports){
 'use strict';
 
@@ -1163,11 +1213,15 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
@@ -1181,39 +1235,136 @@ var _utilLoading = require('./util/loading');
 
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
+var _utilRow = require('./util/row');
+
+var _utilRow2 = _interopRequireDefault(_utilRow);
+
+var _utilColumn = require('./util/column');
+
+var _utilColumn2 = _interopRequireDefault(_utilColumn);
+
+var _panel = require('./panel');
+
+var _panel2 = _interopRequireDefault(_panel);
+
 var Harmony = (function (_React$Component) {
   function Harmony(props) {
     _classCallCheck(this, Harmony);
 
     _get(Object.getPrototypeOf(Harmony.prototype), 'constructor', this).call(this, props);
 
-    this.get();
+    this.status = 'iddle';
+
+    this.state = { left: null, right: null, irrelevant: false, loaded: false };
   }
 
   _inherits(Harmony, _React$Component);
 
   _createClass(Harmony, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      if (props.show && this.status === 'iddle') {
+        this.status = 'ready';
+        this.get();
+      }
+    }
+  }, {
     key: 'get',
     value: function get() {
-      if (typeof window !== 'undefined') {
-        var harmony = this.props.item.type.harmony;
+      var _this = this;
 
-        // window.socket.emit('get items', { type : this.props.item.subtype._id, parent : this.props.item._id })
-        //   .on('OK get items', (panel, items) => {
-        //     if ( panel.type._id === this.props.item.subtype._id ) {
-        //       console.log({ subtype: { panel, items} })
-        //     }
-        //     // if ( evaluation.items)
-        //   })
+      if (typeof window !== 'undefined') {
+        (function () {
+          var harmony = _this.props.item.type.harmony;
+
+          if (!harmony.length) {
+            _this.setState({ irrelevant: true });
+          } else {
+            Promise.all([new Promise(function (ok, ko) {
+              window.socket.emit('get items', { type: harmony[0]._id, parent: _this.props.item._id }).on('OK get items', function (panel, items) {
+                if (panel.type === harmony[0]._id) {
+                  ok({ panel: panel, items: items });
+                }
+              });
+            }), new Promise(function (ok, ko) {
+              window.socket.emit('get items', { type: harmony[1]._id, parent: _this.props.item._id }).on('OK get items', function (panel, items) {
+                if (panel.type === harmony[1]._id) {
+                  ok({ panel: panel, items: items });
+                }
+              });
+            })]).then(function (results) {
+              var _results = _slicedToArray(results, 2);
+
+              var left = _results[0];
+              var right = _results[1];
+
+              _this.setState({ left: left, right: right, loaded: true });
+            });
+          }
+        })();
       }
     }
   }, {
     key: 'render',
     value: function render() {
+      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+
+      var _state = this.state;
+      var irrelevant = _state.irrelevant;
+      var left = _state.left;
+      var right = _state.right;
+      var loaded = _state.loaded;
+      var type = this.props.item.type;
+
+      if (loaded) {
+        if (irrelevant) {
+          content = _react2['default'].createElement('hr', null);
+        } else if (left || right) {
+          var panels = [];
+
+          if (left) {
+            panels.push(_react2['default'].createElement(
+              _panel2['default'],
+              _extends({}, left.panel, { title: type.harmony[0].name }),
+              left.items
+            ));
+          }
+
+          if (right) {
+            panels.push(_react2['default'].createElement(
+              _panel2['default'],
+              _extends({}, right.panel, { title: type.harmony[1].name }),
+              right.items
+            ));
+          }
+
+          content = _react2['default'].createElement(
+            _utilRow2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50' },
+              panels[0]
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50' },
+              panels[1]
+            )
+          );
+        } else {
+          content = _react2['default'].createElement(
+            'div',
+            null,
+            '...'
+          );
+        }
+      }
+
       return _react2['default'].createElement(
         'section',
-        { className: 'harmony text-center' },
-        _react2['default'].createElement(_utilLoading2['default'], null)
+        { className: 'subtype text-center' },
+        content
       );
     }
   }]);
@@ -1223,7 +1374,7 @@ var Harmony = (function (_React$Component) {
 
 exports['default'] = Harmony;
 module.exports = exports['default'];
-},{"./util/loading":42,"react":211}],9:[function(require,module,exports){
+},{"./panel":18,"./util/column":32,"./util/loading":42,"./util/row":45,"react":211}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1901,13 +2052,44 @@ var Item = (function (_React$Component) {
       showPromote: this.props['new'] ? 1 : 0,
       showDetails: 0,
       showSubtype: 0,
-      showHarmony: 0
+      showHarmony: 0,
+      item: this.props.item
     };
+
+    this.listeners();
   }
 
   _inherits(Item, _React$Component);
 
   _createClass(Item, [{
+    key: 'listeners',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function listeners() {
+      if (typeof window !== 'undefined') {
+        if (this.state.item) {
+          window.socket.on('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
+        }
+      }
+    }
+  }, {
+    key: 'updateItem',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function updateItem(item) {
+      this.setState({ item: item });
+    }
+  }, {
+    key: 'componentWillUnmount',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function componentWillUnmount() {
+      window.socket.removeListener('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
+    }
+  }, {
     key: 'togglePromote',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2017,7 +2199,7 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var item = this.props.item;
+      var item = this.state.item;
 
       var buttons = undefined,
           referenceLink = undefined,
@@ -2097,7 +2279,7 @@ var Item = (function (_React$Component) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showPromote, name: 'promote' }, this.props),
-          _react2['default'].createElement(_promote2['default'], { item: this.props.item })
+          _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote })
         );
       }
 
@@ -2105,7 +2287,7 @@ var Item = (function (_React$Component) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showDetails, name: 'details' }, this.props),
-          _react2['default'].createElement(_details2['default'], { item: this.props.item })
+          _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
         );
       }
 
@@ -2113,7 +2295,7 @@ var Item = (function (_React$Component) {
         subtype = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showSubtype, name: 'subtype' }, this.props),
-          _react2['default'].createElement(_subtype2['default'], { item: this.props.item })
+          _react2['default'].createElement(_subtype2['default'], { item: this.props.item, show: this.state.showSubtype })
         );
       }
 
@@ -2121,7 +2303,7 @@ var Item = (function (_React$Component) {
         harmony = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props),
-          _react2['default'].createElement(_harmony2['default'], { item: this.props.item })
+          _react2['default'].createElement(_harmony2['default'], { item: this.props.item, show: this.state.showHarmony })
         );
       }
 
@@ -3224,7 +3406,7 @@ var Panel = (function (_React$Component) {
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showCreator }, this.props),
+          _extends({ show: this.state.showCreator, poa: this.refs.panel }, this.props),
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this) });
@@ -3244,7 +3426,7 @@ var Panel = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: _libAppComponent2['default'].classList(this, 'syn-panel') },
+        { className: _libAppComponent2['default'].classList(this, 'syn-panel'), ref: 'panel' },
         _react2['default'].createElement(
           'section',
           { className: 'syn-panel-heading' },
@@ -3592,16 +3774,24 @@ var Promote = (function (_React$Component5) {
 
     _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this, props);
 
+    this.status = 'iddle';
+
     this.state = {
       cursor: 1
     };
-
-    this.get();
   }
 
   _inherits(Promote, _React$Component5);
 
   _createClass(Promote, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      if (props.show && this.status === 'iddle') {
+        this.status = 'ready';
+        this.get();
+      }
+    }
+  }, {
     key: 'get',
     value: function get() {
       var _this = this;
@@ -4109,6 +4299,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
@@ -4127,38 +4319,67 @@ var _utilLoading = require('./util/loading');
 
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
+var _panel = require('./panel');
+
+var _panel2 = _interopRequireDefault(_panel);
+
 var Subtype = (function (_React$Component) {
   function Subtype(props) {
     _classCallCheck(this, Subtype);
 
     _get(Object.getPrototypeOf(Subtype.prototype), 'constructor', this).call(this, props);
 
-    this.get();
+    this.status = 'iddle';
+
+    this.state = { panel: null, items: null };
   }
 
   _inherits(Subtype, _React$Component);
 
   _createClass(Subtype, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      if (props.show && this.status === 'iddle') {
+        this.status = 'ready';
+        this.get();
+      }
+    }
+  }, {
     key: 'get',
     value: function get() {
       var _this = this;
 
       if (typeof window !== 'undefined') {
         window.socket.emit('get items', { type: this.props.item.subtype._id, parent: this.props.item._id }).on('OK get items', function (panel, items) {
-          if (panel.type._id === _this.props.item.subtype._id) {
-            console.log({ subtype: { panel: panel, items: items } });
+          if (panel.type === _this.props.item.subtype._id) {
+            _this.setState({ panel: panel, items: items });
           }
-          // if ( evaluation.items)
         });
       }
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
+      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+
+      if (this.state.panel) {
+        var items = this.state.items.map(function (item) {
+          return _react2['default'].createElement(Item, _extends({ item: item }, _this2.props));
+        });
+
+        content = [_react2['default'].createElement(
+          _panel2['default'],
+          _extends({}, this.state.panel, { title: this.props.item.subtype.name }),
+          items
+        )];
+      }
+
       return _react2['default'].createElement(
         'section',
         { className: 'subtype text-center' },
-        _react2['default'].createElement(_utilLoading2['default'], null)
+        content
       );
     }
   }]);
@@ -4168,7 +4389,7 @@ var Subtype = (function (_React$Component) {
 
 exports['default'] = Subtype;
 module.exports = exports['default'];
-},{"./util/loading":42,"react":211}],24:[function(require,module,exports){
+},{"./panel":18,"./util/loading":42,"react":211}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4531,7 +4752,7 @@ var TopLevelPanel = (function (_React$Component) {
       }
 
       var items = this.state.items.map(function (item) {
-        return _react2['default'].createElement(_item2['default'], _extends({ item: item }, _this3.props));
+        return _react2['default'].createElement(_item2['default'], _extends({ key: item._id, item: item }, _this3.props));
       });
 
       return _react2['default'].createElement(
@@ -4667,8 +4888,6 @@ var Uploader = (function (_React$Component) {
     key: 'render',
     value: function render() {
       var image = this.props.image;
-
-      console.log('upload', this.props);
 
       var content = _react2['default'].createElement(
         'section',
@@ -4810,12 +5029,12 @@ var Accordion = (function (_React$Component) {
   _createClass(Accordion, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      console.info('-- update accordion --', { name: props.name, status: this.status, request: props.show, counter: this.counter, close: props.close });
+      // console.info('-- update accordion --', { name : props.name, status : this.status, request : props.show, counter : this.counter, close: props.close });
 
-      if (props.close && this.status === 'OPENED') {
-        console.warn('Closing upon request');
-        return this.hide();
-      }
+      // if ( props.close && ( this.status === 'OPENED' ) ) {
+      //   console.warn('Closing upon request');
+      //   return this.hide();
+      // }
 
       if (props.show > this.counter) {
         this.counter = props.show;
@@ -4836,24 +5055,32 @@ var Accordion = (function (_React$Component) {
   }, {
     key: 'show',
     value: function show() {
-      var _this = this;
-
       var view = _react2['default'].findDOMNode(this.refs.view);
+      var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
       var content = _react2['default'].findDOMNode(this.refs.content);
 
-      view.style.display = 'block';
+      if (this.props.poa) {
+        var poa = _react2['default'].findDOMNode(this.props.poa);
+        window.scrollTo(0, poa.offsetTop - 60);
+      }
 
-      setTimeout(function () {
-        return _this.status = 'OPENED';
-      }, 500);
+      wrapper.style.marginTop = 0;
+
+      this.status = 'OPENED';
     }
   }, {
     key: 'hide',
     value: function hide() {
       var view = _react2['default'].findDOMNode(this.refs.view);
+      var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
       var content = _react2['default'].findDOMNode(this.refs.content);
 
-      view.style.display = 'none';
+      if (this.props.poa) {
+        var poa = _react2['default'].findDOMNode(this.props.poa);
+        window.scrollTo(0, poa.offsetTop - 60);
+      }
+
+      wrapper.style.marginTop = '-100%';
 
       this.status = 'CLOSED';
     }
@@ -4865,7 +5092,7 @@ var Accordion = (function (_React$Component) {
         { className: 'syn-accordion', ref: 'view' },
         _react2['default'].createElement(
           'section',
-          null,
+          { className: 'syn-accordion-wrapper', ref: 'wrapper' },
           _react2['default'].createElement(
             'section',
             { className: 'syn-accordion-content', ref: 'content' },
@@ -6621,7 +6848,6 @@ var Upload = (function (_EventEmitter) {
     value: function init() {
       if (window.File) {
         if (this.dropzone) {
-          console.log('Upload', 'enable dropzone');
           this.dropzone.addEventListener('dragover', this.hover.bind(this), false);
           this.dropzone.addEventListener('dragleave', this.hover.bind(this), false);
           this.dropzone.addEventListener('drop', this.handler.bind(this), false);

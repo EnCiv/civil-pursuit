@@ -86,7 +86,7 @@ var TopLevelPanel = (function (_React$Component) {
       }
 
       var items = this.state.items.map(function (item) {
-        return _react2['default'].createElement(_item2['default'], _extends({ item: item }, _this3.props));
+        return _react2['default'].createElement(_item2['default'], _extends({ key: item._id, item: item }, _this3.props));
       });
 
       return _react2['default'].createElement(

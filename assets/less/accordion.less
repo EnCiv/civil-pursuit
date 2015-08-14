@@ -1,6 +1,11 @@
-.syn-accordion {
-  // transition: height ease-in 1s;
-  display: none;
+.syn-accordion:not(.show) {
+  overflow: hidden;
+  // opacity: 0;
+}
+
+.syn-accordion-wrapper {
+  margin-top: -100%;
+  transition: all 1s;
 }
 
 .syn-accordion-content {

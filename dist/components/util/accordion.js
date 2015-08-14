@@ -34,12 +34,12 @@ var Accordion = (function (_React$Component) {
   _createClass(Accordion, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      console.info('-- update accordion --', { name: props.name, status: this.status, request: props.show, counter: this.counter, close: props.close });
+      // console.info('-- update accordion --', { name : props.name, status : this.status, request : props.show, counter : this.counter, close: props.close });
 
-      if (props.close && this.status === 'OPENED') {
-        console.warn('Closing upon request');
-        return this.hide();
-      }
+      // if ( props.close && ( this.status === 'OPENED' ) ) {
+      //   console.warn('Closing upon request');
+      //   return this.hide();
+      // }
 
       if (props.show > this.counter) {
         this.counter = props.show;
@@ -60,24 +60,32 @@ var Accordion = (function (_React$Component) {
   }, {
     key: 'show',
     value: function show() {
-      var _this = this;
-
       var view = _react2['default'].findDOMNode(this.refs.view);
+      var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
       var content = _react2['default'].findDOMNode(this.refs.content);
 
-      view.style.display = 'block';
+      if (this.props.poa) {
+        var poa = _react2['default'].findDOMNode(this.props.poa);
+        window.scrollTo(0, poa.offsetTop - 60);
+      }
 
-      setTimeout(function () {
-        return _this.status = 'OPENED';
-      }, 500);
+      wrapper.style.marginTop = 0;
+
+      this.status = 'OPENED';
     }
   }, {
     key: 'hide',
     value: function hide() {
       var view = _react2['default'].findDOMNode(this.refs.view);
+      var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
       var content = _react2['default'].findDOMNode(this.refs.content);
 
-      view.style.display = 'none';
+      if (this.props.poa) {
+        var poa = _react2['default'].findDOMNode(this.props.poa);
+        window.scrollTo(0, poa.offsetTop - 60);
+      }
+
+      wrapper.style.marginTop = '-100%';
 
       this.status = 'CLOSED';
     }
@@ -89,7 +97,7 @@ var Accordion = (function (_React$Component) {
         { className: 'syn-accordion', ref: 'view' },
         _react2['default'].createElement(
           'section',
-          null,
+          { className: 'syn-accordion-wrapper', ref: 'wrapper' },
           _react2['default'].createElement(
             'section',
             { className: 'syn-accordion-content', ref: 'content' },

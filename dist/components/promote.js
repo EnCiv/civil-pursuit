@@ -155,16 +155,24 @@ var Promote = (function (_React$Component5) {
 
     _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this, props);
 
+    this.status = 'iddle';
+
     this.state = {
       cursor: 1
     };
-
-    this.get();
   }
 
   _inherits(Promote, _React$Component5);
 
   _createClass(Promote, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(props) {
+      if (props.show && this.status === 'iddle') {
+        this.status = 'ready';
+        this.get();
+      }
+    }
+  }, {
     key: 'get',
     value: function get() {
       var _this = this;

@@ -1172,8 +1172,12 @@ body {
 .syn-uploader .syn-uploader-replace:not(.--show) {
   display: none;
 }
-.syn-accordion {
-  display: none;
+.syn-accordion:not(.show) {
+  overflow: hidden;
+}
+.syn-accordion-wrapper {
+  margin-top: -100%;
+  transition: all 1s;
 }
 .item-inputs {
   left: 0;
@@ -1204,9 +1208,6 @@ body {
 }
 .syn-creator [name="description"] {
   border-radius: 0 0 4px 4px;
-}
-.details {
-  border: 1px solid #666;
 }
 .subtype {
   border: 1px solid #666;

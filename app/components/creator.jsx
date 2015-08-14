@@ -20,10 +20,12 @@ class Creator extends React.Component {
     let media         =   React.findDOMNode(this.refs.media);
     let creator       =   React.findDOMNode(this.refs.creator);
 
-    let mediaHeight = media.offsetHeight;
-    let inputHeight = subject.offsetHeight + reference.offsetHeight;
+    setTimeout(() => {
+      let mediaHeight = media.offsetHeight;
+      let inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-    // description.style.height = ( mediaHeight - inputHeight ) + 'px';
+      description.style.height = ( mediaHeight - inputHeight ) + 'px';
+    }, 1000);
 
     subject.addEventListener('keydown', (e) => {
       if ( e.keyCode === 13 ) {

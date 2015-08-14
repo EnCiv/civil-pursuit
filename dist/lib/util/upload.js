@@ -33,7 +33,6 @@ var Upload = (function (_EventEmitter) {
     value: function init() {
       if (window.File) {
         if (this.dropzone) {
-          console.log('Upload', 'enable dropzone');
           this.dropzone.addEventListener('dragover', this.hover.bind(this), false);
           this.dropzone.addEventListener('dragleave', this.hover.bind(this), false);
           this.dropzone.addEventListener('drop', this.handler.bind(this), false);

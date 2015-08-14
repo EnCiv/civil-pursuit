@@ -81,13 +81,44 @@ var Item = (function (_React$Component) {
       showPromote: this.props['new'] ? 1 : 0,
       showDetails: 0,
       showSubtype: 0,
-      showHarmony: 0
+      showHarmony: 0,
+      item: this.props.item
     };
+
+    this.listeners();
   }
 
   _inherits(Item, _React$Component);
 
   _createClass(Item, [{
+    key: 'listeners',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function listeners() {
+      if (typeof window !== 'undefined') {
+        if (this.state.item) {
+          window.socket.on('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
+        }
+      }
+    }
+  }, {
+    key: 'updateItem',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function updateItem(item) {
+      this.setState({ item: item });
+    }
+  }, {
+    key: 'componentWillUnmount',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function componentWillUnmount() {
+      window.socket.removeListener('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
+    }
+  }, {
     key: 'togglePromote',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -197,7 +228,7 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var item = this.props.item;
+      var item = this.state.item;
 
       var buttons = undefined,
           referenceLink = undefined,
@@ -277,7 +308,7 @@ var Item = (function (_React$Component) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showPromote, name: 'promote' }, this.props),
-          _react2['default'].createElement(_promote2['default'], { item: this.props.item })
+          _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote })
         );
       }
 
@@ -285,7 +316,7 @@ var Item = (function (_React$Component) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showDetails, name: 'details' }, this.props),
-          _react2['default'].createElement(_details2['default'], { item: this.props.item })
+          _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
         );
       }
 
@@ -293,7 +324,7 @@ var Item = (function (_React$Component) {
         subtype = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showSubtype, name: 'subtype' }, this.props),
-          _react2['default'].createElement(_subtype2['default'], { item: this.props.item })
+          _react2['default'].createElement(_subtype2['default'], { item: this.props.item, show: this.state.showSubtype })
         );
       }
 
@@ -301,7 +332,7 @@ var Item = (function (_React$Component) {
         harmony = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props),
-          _react2['default'].createElement(_harmony2['default'], { item: this.props.item })
+          _react2['default'].createElement(_harmony2['default'], { item: this.props.item, show: this.state.showHarmony })
         );
       }
 

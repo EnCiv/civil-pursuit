@@ -118,8 +118,6 @@ var Uploader = (function (_React$Component) {
     value: function render() {
       var image = this.props.image;
 
-      console.log('upload', this.props);
-
       var content = _react2['default'].createElement(
         'section',
         { className: 'syn-uploader', ref: 'view' },

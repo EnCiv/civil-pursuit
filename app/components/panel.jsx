@@ -24,7 +24,7 @@ class Panel extends React.Component {
 
     if ( this.props.creator !== false ) {
       creator = (
-        <Accordion show={ this.state.showCreator } { ...this.props }>
+        <Accordion show={ this.state.showCreator } poa={ this.refs.panel } { ...this.props }>
           <Creator { ...this.props } />
         </Accordion>
       );
@@ -44,7 +44,7 @@ class Panel extends React.Component {
     }
 
     return (
-      <section className={ Component.classList(this, "syn-panel") }>
+      <section className={ Component.classList(this, "syn-panel") } ref="panel">
         <section className="syn-panel-heading">
           <h4>{ this.props.title }</h4>
           { creatorIcon }

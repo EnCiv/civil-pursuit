@@ -76,8 +76,33 @@ class Item extends React.Component {
       showPromote : this.props.new ? 1 : 0,
       showDetails : 0,
       showSubtype : 0,
-      showHarmony : 0
+      showHarmony : 0,
+      item        : this.props.item
     };
+
+    this.listeners();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  listeners () {
+    if ( typeof window !== 'undefined' ) {
+      if ( this.state.item ) {
+        window.socket.on(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
+      }
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  updateItem (item) {
+    this.setState({ item });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentWillUnmount () {
+    window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +207,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { item } = this.props;
+    let { item } = this.state;
 
     let buttons,
       referenceLink,
@@ -231,7 +256,7 @@ class Item extends React.Component {
     if ( this.props.promote !== false ) {
       promote = (
         <Accordion show={ this.state.showPromote } name="promote" { ...this.props }>
-          <Promote item={ this.props.item } />
+          <Promote item={ this.props.item } show={ this.state.showPromote } />
         </Accordion>
       );
     }
@@ -239,7 +264,7 @@ class Item extends React.Component {
     if ( this.props.details !== false ) {
       details =(
         <Accordion show={ this.state.showDetails } name="details" { ...this.props }>
-          <Details item={ this.props.item } />
+          <Details item={ this.props.item } show={ this.state.showDetails } />
         </Accordion>
       );
     }
@@ -247,7 +272,7 @@ class Item extends React.Component {
     if ( this.props.subtype !== false ) {
       subtype = (
         <Accordion show={ this.state.showSubtype } name="subtype" { ...this.props }>
-          <Subtype item={ this.props.item } />
+          <Subtype item={ this.props.item } show={ this.state.showSubtype } />
         </Accordion>
       );
     }
@@ -255,7 +280,7 @@ class Item extends React.Component {
     if ( this.props.harmony !== false ) {
       harmony = (
         <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props }>
-          <Harmony item={ this.props.item } />
+          <Harmony item={ this.props.item } show={ this.state.showHarmony } />
         </Accordion>
       );
     }

@@ -47,11 +47,18 @@ class Promote extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = {
-      cursor: 1
-    };
+    this.status = 'iddle';
 
-    this.get();
+    this.state = {
+      cursor    :   1
+    };
+  }
+
+  componentWillReceiveProps (props) {
+    if ( props.show && this.status === 'iddle' ) {
+      this.status = 'ready';
+      this.get();
+    }
   }
 
   get () {

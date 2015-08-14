@@ -68,7 +68,7 @@ var Panel = (function (_React$Component) {
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showCreator }, this.props),
+          _extends({ show: this.state.showCreator, poa: this.refs.panel }, this.props),
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this) });
@@ -88,7 +88,7 @@ var Panel = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: _libAppComponent2['default'].classList(this, 'syn-panel') },
+        { className: _libAppComponent2['default'].classList(this, 'syn-panel'), ref: 'panel' },
         _react2['default'].createElement(
           'section',
           { className: 'syn-panel-heading' },
