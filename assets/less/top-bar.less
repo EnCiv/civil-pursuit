@@ -17,6 +17,7 @@
 **/
 
 @import (reference) "lib/mixins";
+@import (reference) "lib/screens";
 @import "lib/var";
 @import "elements/button";
 
@@ -60,6 +61,9 @@
   .flex.align-items();
   .flex.align-content(stretch);
   border-left: 1px solid #ccc;
+  @media (max-width: @screen-phone) {
+    border-left: none;
+  }
 
   button {
     .button.shy();

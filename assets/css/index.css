@@ -850,6 +850,11 @@ body {
 .syn-top_bar-right .space-between {
   justify-content: space-between;
 }
+@media (max-width: 440px) {
+  .syn-top_bar-right {
+    border-left: none;
+  }
+}
 .syn-top_bar-right button {
   background: transparent;
   border-color: transparent;
