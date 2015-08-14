@@ -178,9 +178,8 @@ var Promote = (function (_React$Component5) {
       var _this = this;
 
       if (typeof window !== 'undefined') {
-        console.log('will now get evaluation', this.props.item);
         window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {
-
+          console.log('GOT EVALUATION', evaluation);
           var limit = 5;
 
           _this.setState({

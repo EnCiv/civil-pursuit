@@ -63,10 +63,9 @@ class Promote extends React.Component {
 
   get () {
     if ( typeof window !== 'undefined' ) {
-      console.log('will now get evaluation', this.props.item);
       window.socket.emit('get evaluation', this.props.item)
         .on('OK get evaluation', evaluation => {
-
+          console.log('GOT EVALUATION', evaluation);
           let limit = 5;
 
           this.setState({
