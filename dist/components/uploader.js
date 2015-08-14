@@ -44,6 +44,10 @@ var _utilImage = require('./util/image');
 
 var _utilImage2 = _interopRequireDefault(_utilImage);
 
+var _youtube = require('./youtube');
+
+var _youtube2 = _interopRequireDefault(_youtube);
+
 var Uploader = (function (_React$Component) {
   function Uploader() {
     _classCallCheck(this, Uploader);
@@ -116,7 +120,9 @@ var Uploader = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var image = this.props.image;
+      var _props = this.props;
+      var image = _props.image;
+      var video = _props.video;
 
       var content = _react2['default'].createElement(
         'section',
@@ -162,7 +168,15 @@ var Uploader = (function (_React$Component) {
         )
       );
 
-      if (image) {
+      if (image || video) {
+        var media = undefined;
+
+        if (image) {
+          media = _react2['default'].createElement(_utilImage2['default'], { src: image, responsive: true });
+        } else if (video) {
+          media = _react2['default'].createElement(_youtube2['default'], { item: video });
+        }
+
         content = _react2['default'].createElement(
           'section',
           { className: 'syn-uploader', ref: 'view' },
@@ -197,7 +211,7 @@ var Uploader = (function (_React$Component) {
           _react2['default'].createElement(
             'section',
             { className: 'syn-uploader-uploaded --show', ref: 'bucket' },
-            _react2['default'].createElement(_utilImage2['default'], { src: image, responsive: true })
+            media
           ),
           _react2['default'].createElement(
             'section',

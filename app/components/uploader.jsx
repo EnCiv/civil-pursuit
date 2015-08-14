@@ -8,6 +8,7 @@ import Button           from './util/button';
 import Icon             from './util/icon';
 import Input            from './util/input';
 import Image            from './util/image';
+import Youtube          from './youtube';
 
 class Uploader extends React.Component {
   componentDidMount () {
@@ -69,7 +70,7 @@ class Uploader extends React.Component {
   }
 
   render() {
-    let { image } = this.props;
+    let { image, video } = this.props;
 
     let content = (
       <section className="syn-uploader" ref="view">
@@ -94,7 +95,16 @@ class Uploader extends React.Component {
       </section>
     )
 
-    if ( image ) {
+    if ( image || video ) {
+      let media;
+
+      if ( image ) {
+        media = ( <Image src={ image } responsive /> );
+      }
+      else if ( video ) {
+        media = ( <Youtube item={ video } /> );
+      }
+
       content = (
         <section className="syn-uploader" ref="view">
           <section className="syn-uploader-dropbox" ref="dropbox" style={{ display : 'none' }}>
@@ -110,7 +120,7 @@ class Uploader extends React.Component {
           </section>
 
           <section className="syn-uploader-uploaded --show" ref="bucket">
-            <Image src={ image } responsive />
+            { media }
           </section>
 
           <section className="syn-uploader-replace --show" ref="replace" onClick= { this.chooseAnotherFile.bind(this) }>

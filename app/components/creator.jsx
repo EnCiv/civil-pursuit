@@ -8,8 +8,15 @@ import Submit           from './util/submit';
 import Icon             from './util/icon';
 import Form             from './util/form';
 import Row              from './util/row';
+import YouTube          from './youtube';
 
 class Creator extends React.Component {
+
+  constructor (props) {
+    super(props);
+
+    this.state = {};
+  }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -117,6 +124,12 @@ class Creator extends React.Component {
             titleHolder.classList.add('visible');
             titleHolder.value = title;
             editURL.classList.add('visible');
+
+            let item = { references: [{ url }] };
+
+            if ( YouTube.isYouTube(item) ) {
+              this.setState({ video : item });
+            }
           }
         });
     }
@@ -149,7 +162,7 @@ class Creator extends React.Component {
         <article className="item" ref="creator">
           <section className="item-media-wrapper">
             <section className="item-media">
-              <Uploader ref="media" handler={ this.saveImage.bind(this) } />
+              <Uploader ref="media" handler={ this.saveImage.bind(this) } video={ this.state.video } />
             </section>
           </section>
 

@@ -433,6 +433,8 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -471,13 +473,17 @@ var _utilRow = require('./util/row');
 
 var _utilRow2 = _interopRequireDefault(_utilRow);
 
+var _youtube = require('./youtube');
+
+var _youtube2 = _interopRequireDefault(_youtube);
+
 var Creator = (function (_React$Component) {
-  function Creator() {
+  function Creator(props) {
     _classCallCheck(this, Creator);
 
-    if (_React$Component != null) {
-      _React$Component.apply(this, arguments);
-    }
+    _get(Object.getPrototypeOf(Creator.prototype), 'constructor', this).call(this, props);
+
+    this.state = {};
   }
 
   _inherits(Creator, _React$Component);
@@ -571,6 +577,8 @@ var Creator = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function getUrlTitle() {
+      var _this3 = this;
+
       var url = _react2['default'].findDOMNode(this.refs.reference).value;
       var loading = _react2['default'].findDOMNode(this.refs.lookingUp);
       var error = _react2['default'].findDOMNode(this.refs.errorLookingUp);
@@ -592,6 +600,12 @@ var Creator = (function (_React$Component) {
             titleHolder.classList.add('visible');
             titleHolder.value = title;
             editURL.classList.add('visible');
+
+            var item = { references: [{ url: url }] };
+
+            if (_youtube2['default'].isYouTube(item)) {
+              _this3.setState({ video: item });
+            }
           }
         });
       }
@@ -637,7 +651,7 @@ var Creator = (function (_React$Component) {
             _react2['default'].createElement(
               'section',
               { className: 'item-media' },
-              _react2['default'].createElement(_uploader2['default'], { ref: 'media', handler: this.saveImage.bind(this) })
+              _react2['default'].createElement(_uploader2['default'], { ref: 'media', handler: this.saveImage.bind(this), video: this.state.video })
             )
           ),
           _react2['default'].createElement(
@@ -679,7 +693,7 @@ var Creator = (function (_React$Component) {
 
 exports['default'] = Creator;
 module.exports = exports['default'];
-},{"./uploader":27,"./util/form":36,"./util/icon":37,"./util/row":45,"./util/submit":47,"./util/text-area":48,"./util/text-input":49,"react":212}],5:[function(require,module,exports){
+},{"./uploader":27,"./util/form":36,"./util/icon":37,"./util/row":45,"./util/submit":47,"./util/text-area":48,"./util/text-input":49,"./youtube":51,"react":212}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4859,6 +4873,10 @@ var _utilImage = require('./util/image');
 
 var _utilImage2 = _interopRequireDefault(_utilImage);
 
+var _youtube = require('./youtube');
+
+var _youtube2 = _interopRequireDefault(_youtube);
+
 var Uploader = (function (_React$Component) {
   function Uploader() {
     _classCallCheck(this, Uploader);
@@ -4931,7 +4949,9 @@ var Uploader = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var image = this.props.image;
+      var _props = this.props;
+      var image = _props.image;
+      var video = _props.video;
 
       var content = _react2['default'].createElement(
         'section',
@@ -4977,7 +4997,15 @@ var Uploader = (function (_React$Component) {
         )
       );
 
-      if (image) {
+      if (image || video) {
+        var media = undefined;
+
+        if (image) {
+          media = _react2['default'].createElement(_utilImage2['default'], { src: image, responsive: true });
+        } else if (video) {
+          media = _react2['default'].createElement(_youtube2['default'], { item: video });
+        }
+
         content = _react2['default'].createElement(
           'section',
           { className: 'syn-uploader', ref: 'view' },
@@ -5012,7 +5040,7 @@ var Uploader = (function (_React$Component) {
           _react2['default'].createElement(
             'section',
             { className: 'syn-uploader-uploaded --show', ref: 'bucket' },
-            _react2['default'].createElement(_utilImage2['default'], { src: image, responsive: true })
+            media
           ),
           _react2['default'].createElement(
             'section',
@@ -5036,7 +5064,7 @@ var Uploader = (function (_React$Component) {
 
 exports['default'] = Uploader;
 module.exports = exports['default'];
-},{"../lib/util/upload":53,"./util/button":30,"./util/column":32,"./util/icon":37,"./util/image":38,"./util/input":40,"./util/row":45,"react":212}],28:[function(require,module,exports){
+},{"../lib/util/upload":53,"./util/button":30,"./util/column":32,"./util/icon":37,"./util/image":38,"./util/input":40,"./util/row":45,"./youtube":51,"react":212}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

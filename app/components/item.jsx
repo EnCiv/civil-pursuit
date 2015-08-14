@@ -139,7 +139,7 @@ class Item extends React.Component {
 
   componentDidMount () {
     let media;
-    
+
     let image = React
       .findDOMNode(this.refs.media)
       .querySelector('img');
@@ -162,11 +162,11 @@ class Item extends React.Component {
 
     let more = React.findDOMNode(this.refs.more);
 
-    let truncatable = item.querySelector('.item-truncatable');
-    let subject = item.querySelector('.item-subject');
-    let description = item.querySelector('.item-description');
-    let reference = item.querySelector('.item-reference a');
-    let buttons = item.querySelector('.item-buttons');
+    let truncatable   =   item.querySelector('.item-truncatable');
+    let subject       =   item.querySelector('.item-subject');
+    let description   =   item.querySelector('.item-description');
+    let reference     =   item.querySelector('.item-reference a');
+    let buttons       =   item.querySelector('.item-buttons');
 
     let onLoad = () => {
       let mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
