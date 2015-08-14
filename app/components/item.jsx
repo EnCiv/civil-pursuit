@@ -7,12 +7,12 @@ import Button           from './util/button';
 import Accordion        from './util/accordion';
 import Icon             from './util/icon';
 import ItemMedia        from './item-media';
-// import ItemButtons      from './item-buttons';
 import Promote          from './promote';
 import Details          from './details';
 import Subtype          from './subtype';
 import Harmony          from './harmony';
 import ButtonGroup      from './util/button-group';
+import Join             from './join';
 
 class Item extends React.Component {
 
@@ -108,8 +108,12 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   togglePromote () {
-    console.info('toggle promote');
-    this.setState({ showPromote : this.state.showPromote + 1 });
+    if ( this.props.user ) {
+      this.setState({ showPromote : this.state.showPromote + 1 });
+    }
+    else {
+      Join.click();
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

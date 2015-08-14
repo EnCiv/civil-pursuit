@@ -159,7 +159,7 @@ var Join = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var classes = ['syn-login'];
+      var classes = ['syn-join'];
 
       if (this.props.show) {
         classes.push('syn--visible');
@@ -289,6 +289,11 @@ var Join = (function (_React$Component) {
           )
         )
       );
+    }
+  }], [{
+    key: 'click',
+    value: function click() {
+      document.querySelector('.syn-top_bar-join_button button').click();
     }
   }]);
 

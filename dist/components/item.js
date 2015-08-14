@@ -44,8 +44,6 @@ var _itemMedia = require('./item-media');
 
 var _itemMedia2 = _interopRequireDefault(_itemMedia);
 
-// import ItemButtons      from './item-buttons';
-
 var _promote = require('./promote');
 
 var _promote2 = _interopRequireDefault(_promote);
@@ -65,6 +63,10 @@ var _harmony2 = _interopRequireDefault(_harmony);
 var _utilButtonGroup = require('./util/button-group');
 
 var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
+
+var _join = require('./join');
+
+var _join2 = _interopRequireDefault(_join);
 
 var Item = (function (_React$Component) {
 
@@ -124,8 +126,11 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function togglePromote() {
-      console.info('toggle promote');
-      this.setState({ showPromote: this.state.showPromote + 1 });
+      if (this.props.user) {
+        this.setState({ showPromote: this.state.showPromote + 1 });
+      } else {
+        _join2['default'].click();
+      }
     }
   }, {
     key: 'toggleDetails',

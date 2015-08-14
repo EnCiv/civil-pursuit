@@ -2023,8 +2023,6 @@ var _itemMedia = require('./item-media');
 
 var _itemMedia2 = _interopRequireDefault(_itemMedia);
 
-// import ItemButtons      from './item-buttons';
-
 var _promote = require('./promote');
 
 var _promote2 = _interopRequireDefault(_promote);
@@ -2044,6 +2042,10 @@ var _harmony2 = _interopRequireDefault(_harmony);
 var _utilButtonGroup = require('./util/button-group');
 
 var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
+
+var _join = require('./join');
+
+var _join2 = _interopRequireDefault(_join);
 
 var Item = (function (_React$Component) {
 
@@ -2103,8 +2105,11 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function togglePromote() {
-      console.info('toggle promote');
-      this.setState({ showPromote: this.state.showPromote + 1 });
+      if (this.props.user) {
+        this.setState({ showPromote: this.state.showPromote + 1 });
+      } else {
+        _join2['default'].click();
+      }
     }
   }, {
     key: 'toggleDetails',
@@ -2440,7 +2445,7 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-},{"./details":6,"./harmony":8,"./item-media":12,"./promote":20,"./subtype":23,"./util/accordion":28,"./util/button":30,"./util/button-group":29,"./util/column":32,"./util/icon":37,"./util/row":45,"react":212}],14:[function(require,module,exports){
+},{"./details":6,"./harmony":8,"./item-media":12,"./join":14,"./promote":20,"./subtype":23,"./util/accordion":28,"./util/button":30,"./util/button-group":29,"./util/column":32,"./util/icon":37,"./util/row":45,"react":212}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2602,7 +2607,7 @@ var Join = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var classes = ['syn-login'];
+      var classes = ['syn-join'];
 
       if (this.props.show) {
         classes.push('syn--visible');
@@ -2732,6 +2737,11 @@ var Join = (function (_React$Component) {
           )
         )
       );
+    }
+  }], [{
+    key: 'click',
+    value: function click() {
+      document.querySelector('.syn-top_bar-join_button button').click();
     }
   }]);
 

@@ -91,8 +91,12 @@ class Join extends React.Component {
     }
   }
 
+  static click () {
+    document.querySelector('.syn-top_bar-join_button button').click();
+  }
+
   render () {
-    let classes = [ 'syn-login' ];
+    let classes = [ 'syn-join' ];
 
     if ( this.props.show ) {
       classes.push('syn--visible');
