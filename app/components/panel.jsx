@@ -5,6 +5,7 @@ import Component            from '../lib/app/component';
 import Icon                 from './util/icon';
 import Accordion            from './util/accordion';
 import Creator              from './creator';
+import Join                 from './join';
 
 class Panel extends React.Component {
   constructor (props) {
@@ -16,7 +17,12 @@ class Panel extends React.Component {
   }
 
   toggleCreator () {
-    this.setState({ showCreator : this.state.showCreator + 1 });
+    if ( this.props.user ) {
+      this.setState({ showCreator : this.state.showCreator + 1 });
+    }
+    else {
+      Join.click();
+    }
   }
 
   render() {

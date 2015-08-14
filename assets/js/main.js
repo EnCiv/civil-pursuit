@@ -3392,6 +3392,10 @@ var _creator = require('./creator');
 
 var _creator2 = _interopRequireDefault(_creator);
 
+var _join = require('./join');
+
+var _join2 = _interopRequireDefault(_join);
+
 var _item = require('./item');
 
 var _item2 = _interopRequireDefault(_item);
@@ -3412,7 +3416,11 @@ var Panel = (function (_React$Component) {
   _createClass(Panel, [{
     key: 'toggleCreator',
     value: function toggleCreator() {
-      this.setState({ showCreator: this.state.showCreator + 1 });
+      if (this.props.user) {
+        this.setState({ showCreator: this.state.showCreator + 1 });
+      } else {
+        _join2['default'].click();
+      }
     }
   }, {
     key: 'render',
@@ -3471,7 +3479,7 @@ var Panel = (function (_React$Component) {
 
 exports['default'] = Panel;
 module.exports = exports['default'];
-},{"../lib/app/component":52,"./creator":4,"./item":13,"./util/accordion":28,"./util/icon":37,"react":212}],19:[function(require,module,exports){
+},{"../lib/app/component":52,"./creator":4,"./item":13,"./join":14,"./util/accordion":28,"./util/icon":37,"react":212}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

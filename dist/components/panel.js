@@ -36,6 +36,10 @@ var _creator = require('./creator');
 
 var _creator2 = _interopRequireDefault(_creator);
 
+var _join = require('./join');
+
+var _join2 = _interopRequireDefault(_join);
+
 var _item = require('./item');
 
 var _item2 = _interopRequireDefault(_item);
@@ -56,7 +60,11 @@ var Panel = (function (_React$Component) {
   _createClass(Panel, [{
     key: 'toggleCreator',
     value: function toggleCreator() {
-      this.setState({ showCreator: this.state.showCreator + 1 });
+      if (this.props.user) {
+        this.setState({ showCreator: this.state.showCreator + 1 });
+      } else {
+        _join2['default'].click();
+      }
     }
   }, {
     key: 'render',
