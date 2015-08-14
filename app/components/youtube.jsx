@@ -43,7 +43,7 @@ class YouTube extends React.Component {
 
     return (
       <div className="video-container">
-        <iframe allowfullscreen frameborder="0" width="300" height="175" src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` }>
+        <iframe allowFullScreen frameBorder="0" width="300" height="175" src={ `http://www.youtube.com/embed/${youTubeId}?autoplay=0` }>
         </iframe>
       </div>
     );

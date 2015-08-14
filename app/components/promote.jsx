@@ -5,6 +5,7 @@ import Row from './util/row';
 import Column from './util/column';
 import ItemMedia from './item-media';
 import Loading from './util/loading';
+import Sliders from './sliders';
 
 class Header extends React.Component {
   render () {
@@ -69,9 +70,10 @@ class Promote extends React.Component {
           let limit = 5;
 
           this.setState({
-            limit   :   limit,
-            left    :   evaluation.items[0],
-            right   :   evaluation.items[1]
+            limit       :   limit,
+            left        :   evaluation.items[0],
+            right       :   evaluation.items[1],
+            criterias   :   evaluation.criterias
           });
         })
     }
@@ -85,21 +87,25 @@ class Promote extends React.Component {
       content = [];
 
       content.push(
-        ( <Header { ...this.state } /> ),
+        ( <Header { ...this.state } className="text-center" /> ),
         (
           <Row>
-            <Column>
+            <Column span="50" key="left">
               <ItemMedia item={ this.state.left } />
               <Subject subject={ this.state.left.subject } />
               <Reference { ...this.state.left.references[0] } />
               <Description description={ this.state.left.description } />
+              <div style={{ clear: 'both' }} />
+              <Sliders criterias={ this.state.criterias } />
             </Column>
 
-            <Column>
+            <Column span="50" key="right">
               <ItemMedia item={ this.state.right } />
               <Subject subject={ this.state.right.subject } />
               <Reference { ...this.state.right.references[0] } />
               <Description description={ this.state.left.description } />
+              <div style={{ clear: 'both' }} />
+              <Sliders criterias={ this.state.criterias } />
             </Column>
           </Row>
         )
@@ -107,7 +113,7 @@ class Promote extends React.Component {
     }
 
     return (
-      <section className="promote text-center">
+      <section className="promote">
         { content }
       </section>
     );

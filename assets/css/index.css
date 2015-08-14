@@ -1240,4 +1240,7 @@ body {
 .subtype {
   border: 1px solid #666;
 }
+.syn-sliders-criteria-description:not(.syn-visible) {
+  display: none;
+}
 /**-------------------------------------------------------------// index      */

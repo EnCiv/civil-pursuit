@@ -41,7 +41,7 @@ var YouTube = (function (_React$Component) {
       return _react2['default'].createElement(
         'div',
         { className: 'video-container' },
-        _react2['default'].createElement('iframe', { allowfullscreen: true, frameborder: '0', width: '300', height: '175', src: 'http://www.youtube.com/embed/' + youTubeId + '?autoplay=0' })
+        _react2['default'].createElement('iframe', { allowFullScreen: true, frameBorder: '0', width: '300', height: '175', src: 'http://www.youtube.com/embed/' + youTubeId + '?autoplay=0' })
       );
     }
 
