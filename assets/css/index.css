@@ -1237,6 +1237,12 @@ body {
 .syn-creator [name="description"] {
   border-radius: 0 0 4px 4px;
 }
+.syn-popularity-bar {
+  background: green;
+  color: white;
+  padding: 8px;
+  transition: all 1s;
+}
 .subtype {
   border: 1px solid #666;
 }

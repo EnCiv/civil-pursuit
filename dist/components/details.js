@@ -34,15 +34,31 @@ var Popularity = (function (_React$Component) {
   _inherits(Popularity, _React$Component);
 
   _createClass(Popularity, [{
+    key: 'animate',
+    value: function animate() {
+      var number = this.props.number;
+
+      number = 75;
+
+      var bar = _react2['default'].findDOMNode(this.refs.bar);
+      bar.style.width = '' + number + '%';
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var number = this.props.number;
+
+      number = 75;
+
+      setTimeout(this.animate.bind(this), 2000);
+
       return _react2['default'].createElement(
         'div',
-        null,
+        { className: 'syn-popularity' },
         _react2['default'].createElement(
           'div',
-          null,
-          this.props.number
+          { className: 'syn-popularity-bar', style: { width: 0 }, ref: 'bar' },
+          '' + number + '%'
         )
       );
     }

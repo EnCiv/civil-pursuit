@@ -4,10 +4,25 @@ import React from 'react';
 import Loading from './util/loading';
 
 class Popularity extends React.Component {
+  animate () {
+    let { number } = this.props;
+
+    number =  75;
+
+    let bar = React.findDOMNode(this.refs.bar);
+    bar.style.width = `${number}%`;
+  }
+
   render () {
+    let { number } = this.props;
+
+    number =  75;
+
+    setTimeout(this.animate.bind(this), 2000);
+
     return (
-      <div>
-        <div>{ this.props.number }</div>
+      <div className="syn-popularity">
+        <div className="syn-popularity-bar" style={{ width : 0 }} ref="bar">{ `${number}%` }</div>
       </div>
     );
   }
