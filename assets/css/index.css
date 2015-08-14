@@ -186,6 +186,11 @@ button,
 
     ____________________________________________________________________________
 **/
+html {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overflow-x: scroll;
+}
 .clear {
   zoom: 1;
 }
@@ -285,16 +290,32 @@ a:hover {
   display: block;
   margin: auto;
 }
-img.syn-img-responsive {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
 .gutter {
   margin: 10px;
 }
 .gutter-y {
   margin: 10px 0;
+}
+img.syn-img-responsive {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  height: 0;
+  overflow: hidden;
+}
+.video-container iframe,
+.video-container object,
+.video-container embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 /**-------------------------------------------------------------// main       */
 /** ____________________________________________________________________________

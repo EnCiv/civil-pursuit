@@ -16,52 +16,77 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utilImage = require('./util/image');
-
-var _utilImage2 = _interopRequireDefault(_utilImage);
-
-var _youtube = require('./youtube');
-
-var _youtube2 = _interopRequireDefault(_youtube);
-
-var ItemMedia = (function (_React$Component) {
-  function ItemMedia() {
-    _classCallCheck(this, ItemMedia);
+var YouTube = (function (_React$Component) {
+  function YouTube() {
+    _classCallCheck(this, YouTube);
 
     if (_React$Component != null) {
       _React$Component.apply(this, arguments);
     }
   }
 
-  _inherits(ItemMedia, _React$Component);
+  _inherits(YouTube, _React$Component);
 
-  _createClass(ItemMedia, [{
+  _createClass(YouTube, [{
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
       var item = this.props.item;
+      var url = item.references[0].url;
 
-      var media = undefined;
-
-      if (_youtube2['default'].isYouTube(item)) {
-        media = _react2['default'].createElement(_youtube2['default'], { item: item });
-      } else {
-        media = _react2['default'].createElement(_utilImage2['default'], { src: item.image, responsive: true });
-      }
+      var youTubeId = YouTube.getId(url);
 
       return _react2['default'].createElement(
-        'section',
-        { className: 'item-media-wrapper' },
-        _react2['default'].createElement(
-          'section',
-          { className: 'item-media' },
-          media
-        )
+        'div',
+        { className: 'video-container' },
+        _react2['default'].createElement('iframe', { allowfullscreen: true, frameborder: '0', width: '300', height: '175', src: 'http://www.youtube.com/embed/' + youTubeId + '?autoplay=0' })
       );
+    }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  }], [{
+    key: 'isYouTube',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function isYouTube(item) {
+      var is = false;
+
+      var references = item.references || [];
+
+      if (references.length) {
+        var url = references[0].url;
+
+        if (YouTube.regex.test(url)) {
+          is = true;
+        }
+      }
+
+      return is;
+    }
+  }, {
+    key: 'getId',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function getId(url) {
+      var youTubeId = undefined;
+
+      url.replace(YouTube.regex, function (m, v) {
+        return youTubeId = v;
+      });
+
+      return youTubeId;
     }
   }]);
 
-  return ItemMedia;
+  return YouTube;
 })(_react2['default'].Component);
 
-exports['default'] = ItemMedia;
+YouTube.regex = /youtu\.?be.+v=([^&]+)/;
+
+exports['default'] = YouTube;
 module.exports = exports['default'];

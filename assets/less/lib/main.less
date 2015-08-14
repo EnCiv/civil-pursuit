@@ -16,6 +16,12 @@
 
 @import "var";
 
+html {
+  -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth; // Added in from the answer above
+    overflow-x: scroll;
+}
+
 .clear {
   zoom: 1;
   &:after {
@@ -142,12 +148,6 @@ a {
   margin: auto
 }
 
-img.syn-img-responsive {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
 .gutter {
   margin: 10px
 }
@@ -155,5 +155,7 @@ img.syn-img-responsive {
 .gutter-y {
   margin: 10px 0
 }
+
+@import "media";
 
 /**-------------------------------------------------------------// main       */

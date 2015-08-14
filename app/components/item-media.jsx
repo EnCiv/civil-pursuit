@@ -1,7 +1,8 @@
 'use strict';
 
-import React from 'react';
-import Image from './util/image';
+import React      from 'react';
+import Image      from './util/image';
+import YouTube    from './youtube';
 
 class ItemMedia extends React.Component {
   render () {
@@ -9,7 +10,13 @@ class ItemMedia extends React.Component {
 
     let media;
 
-    media = ( <Image src={ item.image } responsive /> );
+    if ( YouTube.isYouTube(item) ) {
+      media = ( <YouTube item={ item } /> );
+    }
+
+    else {
+      media = ( <Image src={ item.image } responsive /> );
+    }
 
     return (
       <section className="item-media-wrapper">
