@@ -8,6 +8,9 @@ import Creator              from './creator';
 import Join                 from './join';
 
 class Panel extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 
@@ -16,14 +19,27 @@ class Panel extends React.Component {
     };
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   toggleCreator () {
     if ( this.props.user ) {
+      let panel = React.findDOMNode(this.refs.panel);
+      let itemAccordions = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+
+      for ( let i = 0; i < itemAccordions.length; i ++ ) {
+        itemAccordions[i].classList.remove('show');
+      }
+
+      console.log(itemAccordions.length)
+
       this.setState({ showCreator : this.state.showCreator + 1 });
     }
     else {
       Join.click();
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
     let creator, creatorIcon, newItem;

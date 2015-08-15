@@ -48,8 +48,8 @@ class Creator extends React.Component {
     }, false);
   }
 
-
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   create () {
     let subject       =   React.findDOMNode(this.refs.subject).value;
     let description   =   React.findDOMNode(this.refs.description).value;

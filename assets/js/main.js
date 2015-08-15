@@ -526,6 +526,7 @@ var Creator = (function (_React$Component) {
     key: 'create',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function create() {
       var _this2 = this;
 
@@ -3467,6 +3468,9 @@ var _item = require('./item');
 var _item2 = _interopRequireDefault(_item);
 
 var Panel = (function (_React$Component) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Panel(props) {
     _classCallCheck(this, Panel);
 
@@ -3481,8 +3485,20 @@ var Panel = (function (_React$Component) {
 
   _createClass(Panel, [{
     key: 'toggleCreator',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function toggleCreator() {
       if (this.props.user) {
+        var panel = _react2['default'].findDOMNode(this.refs.panel);
+        var itemAccordions = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+
+        for (var i = 0; i < itemAccordions.length; i++) {
+          itemAccordions[i].classList.remove('show');
+        }
+
+        console.log(itemAccordions.length);
+
         this.setState({ showCreator: this.state.showCreator + 1 });
       } else {
         _join2['default'].click();
@@ -3490,6 +3506,9 @@ var Panel = (function (_React$Component) {
     }
   }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
       var creator = undefined,
           creatorIcon = undefined,
@@ -5274,7 +5293,7 @@ var Accordion = (function (_React$Component) {
         switch (this.status) {
           case 'CLOSED':
             this.status = 'OPENING';
-            window.Dispatcher.emit('open request');
+            // window.Dispatcher.emit('open request');
             this.show();
             break;
           case 'OPENED':
@@ -5296,7 +5315,8 @@ var Accordion = (function (_React$Component) {
         window.scrollTo(0, poa.offsetTop - 60);
       }
 
-      wrapper.style.marginTop = 0;
+      // wrapper.style.marginTop = 0;
+      wrapper.classList.add('show');
 
       this.status = 'OPENED';
     }
@@ -5312,7 +5332,8 @@ var Accordion = (function (_React$Component) {
         window.scrollTo(0, poa.offsetTop - 60);
       }
 
-      wrapper.style.marginTop = '-100%';
+      // wrapper.style.marginTop = '-100%';
+      wrapper.classList.remove('show');
 
       this.status = 'CLOSED';
     }

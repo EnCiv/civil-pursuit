@@ -47,7 +47,7 @@ var Accordion = (function (_React$Component) {
         switch (this.status) {
           case 'CLOSED':
             this.status = 'OPENING';
-            window.Dispatcher.emit('open request');
+            // window.Dispatcher.emit('open request');
             this.show();
             break;
           case 'OPENED':
@@ -69,7 +69,8 @@ var Accordion = (function (_React$Component) {
         window.scrollTo(0, poa.offsetTop - 60);
       }
 
-      wrapper.style.marginTop = 0;
+      // wrapper.style.marginTop = 0;
+      wrapper.classList.add('show');
 
       this.status = 'OPENED';
     }
@@ -85,7 +86,8 @@ var Accordion = (function (_React$Component) {
         window.scrollTo(0, poa.offsetTop - 60);
       }
 
-      wrapper.style.marginTop = '-100%';
+      // wrapper.style.marginTop = '-100%';
+      wrapper.classList.remove('show');
 
       this.status = 'CLOSED';
     }

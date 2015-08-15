@@ -1230,6 +1230,9 @@ body {
   margin-top: -100%;
   transition: all 1s;
 }
+.syn-accordion-wrapper.show {
+  margin-top: 0;
+}
 .item-inputs {
   left: 0;
   position: relative;
