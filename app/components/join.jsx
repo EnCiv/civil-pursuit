@@ -106,12 +106,12 @@ class Join extends React.Component {
       <Modal className={ Component.classList(this, ...classes) } title="Join">
         <Form handler={ this.signup.bind(this) } flash={ this.state } form-center>
           <ButtonGroup block>
-            <Button primary onClick={ this.loginWithFacebook }>
+            <Button primary onClick={ this.loginWithFacebook } medium>
               <Icon icon="facebook" />
               <span className={ Component.classList(this) } inline> Facebook</span>
             </Button>
 
-            <Button info onClick={ this.loginWithTwitter }>
+            <Button info onClick={ this.loginWithTwitter } medium>
               <Icon icon="twitter" />
               <span> Twitter</span>
             </Button>
@@ -119,7 +119,7 @@ class Join extends React.Component {
 
           <div className="syn-form-group">
             <label>Email</label>
-            <EmailInput block autoFocus required placeholder="Email" ref="email" />
+            <EmailInput block autoFocus medium required placeholder="Email" ref="email" />
           </div>
 
           <Row>
@@ -140,28 +140,21 @@ class Join extends React.Component {
           </Row>
 
           <InputGroup block>
-            <Password required placeholder="Password" ref="password" />
-            <Password required placeholder="Confirm password" ref="confirm" />
+            <Password required placeholder="Password" ref="password" medium />
+            <Password required placeholder="Confirm password" ref="confirm" medium />
           </InputGroup>
 
           <div className="syn-form-group syn-form-submit">
-            <Submit block>Join</Submit>
+            <Submit block large success radius>Join</Submit>
           </div>
 
-          <Row>
-            <Column span="50">
+          <Row data-stack="phone-and-down">
+            <Column span="50" gutter>
               Already a user? <a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
             </Column>
 
-            <Column span="50" text-right>
-              <Row baseline end space-around>
-                <div>
-                  <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" />
-                </div>
-                <div>
-                  I agree to the <a href="/page/terms-of-service">Terms of Service</a>
-                </div>
-              </Row>
+            <Column span="50" text-right gutter>
+              <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" /> I agree to the <a href="/page/terms-of-service">Terms of Service</a>
             </Column>
           </Row>
         </Form>

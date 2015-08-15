@@ -2738,7 +2738,7 @@ var Join = (function (_React$Component) {
             { block: true },
             _react2['default'].createElement(
               _utilButton2['default'],
-              { primary: true, onClick: this.loginWithFacebook },
+              { primary: true, onClick: this.loginWithFacebook, medium: true },
               _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
               _react2['default'].createElement(
                 'span',
@@ -2748,7 +2748,7 @@ var Join = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               _utilButton2['default'],
-              { info: true, onClick: this.loginWithTwitter },
+              { info: true, onClick: this.loginWithTwitter, medium: true },
               _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
               _react2['default'].createElement(
                 'span',
@@ -2765,7 +2765,7 @@ var Join = (function (_React$Component) {
               null,
               'Email'
             ),
-            _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, required: true, placeholder: 'Email', ref: 'email' })
+            _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, medium: true, required: true, placeholder: 'Email', ref: 'email' })
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
@@ -2800,24 +2800,24 @@ var Join = (function (_React$Component) {
           _react2['default'].createElement(
             _utilInputGroup2['default'],
             { block: true },
-            _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Password', ref: 'password' }),
-            _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Confirm password', ref: 'confirm' })
+            _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Password', ref: 'password', medium: true }),
+            _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Confirm password', ref: 'confirm', medium: true })
           ),
           _react2['default'].createElement(
             'div',
             { className: 'syn-form-group syn-form-submit' },
             _react2['default'].createElement(
               _utilSubmit2['default'],
-              { block: true },
+              { block: true, large: true, success: true, radius: true },
               'Join'
             )
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
-            null,
+            { 'data-stack': 'phone-and-down' },
             _react2['default'].createElement(
               _utilColumn2['default'],
-              { span: '50' },
+              { span: '50', gutter: true },
               'Already a user? ',
               _react2['default'].createElement(
                 'a',
@@ -2827,25 +2827,13 @@ var Join = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               _utilColumn2['default'],
-              { span: '50', 'text-right': true },
+              { span: '50', 'text-right': true, gutter: true },
+              _react2['default'].createElement(_utilIcon2['default'], { icon: 'square-o', size: '2', onClick: this.agree.bind(this), ref: 'agree' }),
+              ' I agree to the ',
               _react2['default'].createElement(
-                _utilRow2['default'],
-                { baseline: true, end: true, 'space-around': true },
-                _react2['default'].createElement(
-                  'div',
-                  null,
-                  _react2['default'].createElement(_utilIcon2['default'], { icon: 'square-o', size: '2', onClick: this.agree.bind(this), ref: 'agree' })
-                ),
-                _react2['default'].createElement(
-                  'div',
-                  null,
-                  'I agree to the ',
-                  _react2['default'].createElement(
-                    'a',
-                    { href: '/page/terms-of-service' },
-                    'Terms of Service'
-                  )
-                )
+                'a',
+                { href: '/page/terms-of-service' },
+                'Terms of Service'
               )
             )
           )

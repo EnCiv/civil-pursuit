@@ -682,9 +682,11 @@ label {
 }
 .syn-input-group input {
   border-radius: 0;
+  border-left: none;
 }
 .syn-input-group input:first-child {
   border-radius: 6px 0 0 6px;
+  border-left: 2px solid #999;
 }
 .syn-input-group input:last-child {
   border-radius: 0 6px 6px 0;
