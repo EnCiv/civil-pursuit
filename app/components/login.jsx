@@ -22,12 +22,15 @@ class Login extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = { validationError : null, successMessage : null };
+    this.state = { validationError : null, successMessage : null, info : null };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   login () {
+
+    this.setState({ validationError : null, info : 'Logging you in...' });
+
     let email = React.findDOMNode(this.refs.email).value,
       password = React.findDOMNode(this.refs.password).value;
 
@@ -87,44 +90,54 @@ class Login extends React.Component {
       classes.push('syn--visible');
     }
 
+    let content = (
+      <div>
+      <ButtonGroup block>
+        <Button medium primary onClick={ this.loginWithFacebook }>
+          <Icon icon="facebook" />
+          <span className={ Component.classList(this) } inline> Facebook</span>
+        </Button>
+
+        <Button medium info onClick={ this.loginWithTwitter }>
+          <Icon icon="twitter" />
+          <span> Twitter</span>
+        </Button>
+      </ButtonGroup>
+
+      <div className="syn-form-group">
+        <label>Email</label>
+        <EmailInput block autoFocus required medium placeholder="Email" ref="email" />
+      </div>
+
+      <div className="syn-form-group">
+        <label>Password</label>
+        <Password block required placeholder="Password" ref="password" medium />
+      </div>
+
+      <div className="syn-form-group syn-form-submit">
+        <Submit block large success radius>Login</Submit>
+      </div>
+
+      <Row data-stack="phone-and-down">
+        <Column span="50" gutter>
+          Not yet a user? <a href="" onClick={ this.signUp.bind(this) }>Sign up</a>
+        </Column>
+
+        <Column span="50" text-right gutter>
+          Forgot password? <a href="">Click here</a>
+        </Column>
+      </Row>
+      </div>
+    );
+
+    if ( this.state.info ) {
+      content = null;
+    }
+
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Login">
         <Form handler={ this.login.bind(this) } flash={ this.state } form-center>
-          <ButtonGroup block>
-            <Button medium primary onClick={ this.loginWithFacebook }>
-              <Icon icon="facebook" />
-              <span className={ Component.classList(this) } inline> Facebook</span>
-            </Button>
-
-            <Button medium info onClick={ this.loginWithTwitter }>
-              <Icon icon="twitter" />
-              <span> Twitter</span>
-            </Button>
-          </ButtonGroup>
-
-          <div className="syn-form-group">
-            <label>Email</label>
-            <EmailInput block autoFocus required medium placeholder="Email" ref="email" />
-          </div>
-
-          <div className="syn-form-group">
-            <label>Password</label>
-            <Password block required placeholder="Password" ref="password" medium />
-          </div>
-
-          <div className="syn-form-group syn-form-submit">
-            <Submit block large success radius>Login</Submit>
-          </div>
-
-          <Row data-stack="phone-and-down">
-            <Column span="50" gutter>
-              Not yet a user? <a href="" onClick={ this.signUp.bind(this) }>Sign up</a>
-            </Column>
-
-            <Column span="50" text-right gutter>
-              Forgot password? <a href="">Click here</a>
-            </Column>
-          </Row>
+          { content }
         </Form>
       </Modal>
     );

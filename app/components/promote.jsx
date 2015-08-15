@@ -8,6 +8,7 @@ import Loading          from './util/loading';
 import Sliders          from './sliders';
 import TextArea         from './util/text-area';
 import Button           from './util/button';
+import Component        from '../lib/app/component';
 
 class Header extends React.Component {
   render () {
@@ -49,7 +50,7 @@ class Reference extends React.Component {
 class Feedback extends React.Component {
   render () {
     return (
-      <TextArea block placeholder="Can you provide feedback that would encourage the author to create a statement that more people would unite around?"></TextArea>
+      <TextArea block placeholder="Can you provide feedback that would encourage the author to create a statement that more people would unite around?" { ...this.props }></TextArea>
     );
   }
 }
@@ -125,15 +126,15 @@ class Promote extends React.Component {
           <Header { ...this.state } />
         ),
         (
-          <Row data-stack="phone-and-down">
-            <Column span="50" key="left">
+          <Row data-stack="phone-and-down" style={{ border: '1px solid black'}}>
+            <Column span="50" key="left" style={{ border: '1px solid black'}}>
               <ItemMedia item={ this.state.left } />
               <Subject subject={ this.state.left.subject } />
               <Reference { ...this.state.left.references[0] } />
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
-              <Sliders criterias={ this.state.criterias } />
-              <Feedback />
+              <Sliders criterias={ this.state.criterias } className="gutter-top gutter-right-adjust" />
+              <Feedback className="gutter-top gutter-right-adjust" />
             </Column>
 
             <Column span="50" key="right">
@@ -142,7 +143,7 @@ class Promote extends React.Component {
               <Reference { ...this.state.right.references[0] } />
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
-              <Sliders criterias={ this.state.criterias } />
+              <Sliders criterias={ this.state.criterias } className="gutter-top gutter-left-adjust" />
               <Feedback />
             </Column>
           </Row>
@@ -170,7 +171,7 @@ class Promote extends React.Component {
     }
 
     return (
-      <section className="gutter">
+      <section className="gutter" style={{ border: '1px solid black'}}>
         { content }
       </section>
     );

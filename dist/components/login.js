@@ -79,7 +79,7 @@ var Login = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this, props);
 
-    this.state = { validationError: null, successMessage: null };
+    this.state = { validationError: null, successMessage: null, info: null };
   }
 
   _inherits(Login, _React$Component);
@@ -91,6 +91,8 @@ var Login = (function (_React$Component) {
 
     value: function login() {
       var _this = this;
+
+      this.setState({ validationError: null, info: 'Logging you in...' });
 
       var email = _react2['default'].findDOMNode(this.refs.email).value,
           password = _react2['default'].findDOMNode(this.refs.password).value;
@@ -156,89 +158,99 @@ var Login = (function (_React$Component) {
         classes.push('syn--visible');
       }
 
+      var content = _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          _utilButtonGroup2['default'],
+          { block: true },
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            { medium: true, primary: true, onClick: this.loginWithFacebook },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
+            _react2['default'].createElement(
+              'span',
+              { className: _libAppComponent2['default'].classList(this), inline: true },
+              ' Facebook'
+            )
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            { medium: true, info: true, onClick: this.loginWithTwitter },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
+            _react2['default'].createElement(
+              'span',
+              null,
+              ' Twitter'
+            )
+          )
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group' },
+          _react2['default'].createElement(
+            'label',
+            null,
+            'Email'
+          ),
+          _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, required: true, medium: true, placeholder: 'Email', ref: 'email' })
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group' },
+          _react2['default'].createElement(
+            'label',
+            null,
+            'Password'
+          ),
+          _react2['default'].createElement(_utilPassword2['default'], { block: true, required: true, placeholder: 'Password', ref: 'password', medium: true })
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group syn-form-submit' },
+          _react2['default'].createElement(
+            _utilSubmit2['default'],
+            { block: true, large: true, success: true, radius: true },
+            'Login'
+          )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          { 'data-stack': 'phone-and-down' },
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', gutter: true },
+            'Not yet a user? ',
+            _react2['default'].createElement(
+              'a',
+              { href: '', onClick: this.signUp.bind(this) },
+              'Sign up'
+            )
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', 'text-right': true, gutter: true },
+            'Forgot password? ',
+            _react2['default'].createElement(
+              'a',
+              { href: '' },
+              'Click here'
+            )
+          )
+        )
+      );
+
+      if (this.state.info) {
+        content = null;
+      }
+
       return _react2['default'].createElement(
         _utilModal2['default'],
         { className: _libAppComponent2['default'].classList.apply(_libAppComponent2['default'], [this].concat(classes)), title: 'Login' },
         _react2['default'].createElement(
           _utilForm2['default'],
           { handler: this.login.bind(this), flash: this.state, 'form-center': true },
-          _react2['default'].createElement(
-            _utilButtonGroup2['default'],
-            { block: true },
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { medium: true, primary: true, onClick: this.loginWithFacebook },
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
-              _react2['default'].createElement(
-                'span',
-                { className: _libAppComponent2['default'].classList(this), inline: true },
-                ' Facebook'
-              )
-            ),
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { medium: true, info: true, onClick: this.loginWithTwitter },
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' Twitter'
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group' },
-            _react2['default'].createElement(
-              'label',
-              null,
-              'Email'
-            ),
-            _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, required: true, medium: true, placeholder: 'Email', ref: 'email' })
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group' },
-            _react2['default'].createElement(
-              'label',
-              null,
-              'Password'
-            ),
-            _react2['default'].createElement(_utilPassword2['default'], { block: true, required: true, placeholder: 'Password', ref: 'password', medium: true })
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group syn-form-submit' },
-            _react2['default'].createElement(
-              _utilSubmit2['default'],
-              { block: true, large: true, success: true, radius: true },
-              'Login'
-            )
-          ),
-          _react2['default'].createElement(
-            _utilRow2['default'],
-            { 'data-stack': 'phone-and-down' },
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', gutter: true },
-              'Not yet a user? ',
-              _react2['default'].createElement(
-                'a',
-                { href: '', onClick: this.signUp.bind(this) },
-                'Sign up'
-              )
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', 'text-right': true, gutter: true },
-              'Forgot password? ',
-              _react2['default'].createElement(
-                'a',
-                { href: '' },
-                'Click here'
-              )
-            )
-          )
+          content
         )
       );
     }

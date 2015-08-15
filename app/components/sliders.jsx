@@ -3,6 +3,7 @@
 import React from 'react';
 import Row from './util/row';
 import Column from './util/column';
+import Component from '../lib/app/component';
 
 class Slider extends React.Component {
   toggleDescription (e) {
@@ -14,7 +15,7 @@ class Slider extends React.Component {
     let { criteria } = this.props;
 
     return (
-      <div className="syn-sliders-criteria">
+      <div>
         <Row>
           <Column span="40">
             <h5 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h5>
@@ -39,7 +40,7 @@ class Sliders extends React.Component {
     ));
 
     return (
-      <div className="syn-sliders">
+      <div className={ Component.classList(this) }>
         { sliders }
       </div>
     );

@@ -14,6 +14,10 @@ class Flash extends React.Component {
       classes.push('syn-flash--success');
     }
 
+    if ( this.props.info ) {
+      classes.push('syn-flash--info');
+    }
+
     return (
       <div className={ classes.join(' ') }>
         { this.props.message }

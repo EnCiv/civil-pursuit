@@ -114,6 +114,10 @@ class Form extends React.Component {
       flash = ( <Flash success message={ this.state.successMessage } /> );
     }
 
+    else if ( this.state.info ) {
+      flash = ( <Flash success message={ this.state.info } /> );
+    }
+
     let classes = [];
 
     if ( this.props['form-center'] ) {

@@ -40,6 +40,10 @@ var Flash = (function (_React$Component) {
         classes.push('syn-flash--success');
       }
 
+      if (this.props.info) {
+        classes.push('syn-flash--info');
+      }
+
       return _react2['default'].createElement(
         'div',
         { className: classes.join(' ') },

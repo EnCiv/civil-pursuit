@@ -3327,7 +3327,7 @@ var Login = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this, props);
 
-    this.state = { validationError: null, successMessage: null };
+    this.state = { validationError: null, successMessage: null, info: null };
   }
 
   _inherits(Login, _React$Component);
@@ -3339,6 +3339,8 @@ var Login = (function (_React$Component) {
 
     value: function login() {
       var _this = this;
+
+      this.setState({ validationError: null, info: 'Logging you in...' });
 
       var email = _react2['default'].findDOMNode(this.refs.email).value,
           password = _react2['default'].findDOMNode(this.refs.password).value;
@@ -3404,89 +3406,99 @@ var Login = (function (_React$Component) {
         classes.push('syn--visible');
       }
 
+      var content = _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          _utilButtonGroup2['default'],
+          { block: true },
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            { medium: true, primary: true, onClick: this.loginWithFacebook },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
+            _react2['default'].createElement(
+              'span',
+              { className: _libAppComponent2['default'].classList(this), inline: true },
+              ' Facebook'
+            )
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            { medium: true, info: true, onClick: this.loginWithTwitter },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
+            _react2['default'].createElement(
+              'span',
+              null,
+              ' Twitter'
+            )
+          )
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group' },
+          _react2['default'].createElement(
+            'label',
+            null,
+            'Email'
+          ),
+          _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, required: true, medium: true, placeholder: 'Email', ref: 'email' })
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group' },
+          _react2['default'].createElement(
+            'label',
+            null,
+            'Password'
+          ),
+          _react2['default'].createElement(_utilPassword2['default'], { block: true, required: true, placeholder: 'Password', ref: 'password', medium: true })
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group syn-form-submit' },
+          _react2['default'].createElement(
+            _utilSubmit2['default'],
+            { block: true, large: true, success: true, radius: true },
+            'Login'
+          )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          { 'data-stack': 'phone-and-down' },
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', gutter: true },
+            'Not yet a user? ',
+            _react2['default'].createElement(
+              'a',
+              { href: '', onClick: this.signUp.bind(this) },
+              'Sign up'
+            )
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', 'text-right': true, gutter: true },
+            'Forgot password? ',
+            _react2['default'].createElement(
+              'a',
+              { href: '' },
+              'Click here'
+            )
+          )
+        )
+      );
+
+      if (this.state.info) {
+        content = null;
+      }
+
       return _react2['default'].createElement(
         _utilModal2['default'],
         { className: _libAppComponent2['default'].classList.apply(_libAppComponent2['default'], [this].concat(classes)), title: 'Login' },
         _react2['default'].createElement(
           _utilForm2['default'],
           { handler: this.login.bind(this), flash: this.state, 'form-center': true },
-          _react2['default'].createElement(
-            _utilButtonGroup2['default'],
-            { block: true },
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { medium: true, primary: true, onClick: this.loginWithFacebook },
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
-              _react2['default'].createElement(
-                'span',
-                { className: _libAppComponent2['default'].classList(this), inline: true },
-                ' Facebook'
-              )
-            ),
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { medium: true, info: true, onClick: this.loginWithTwitter },
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' Twitter'
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group' },
-            _react2['default'].createElement(
-              'label',
-              null,
-              'Email'
-            ),
-            _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, required: true, medium: true, placeholder: 'Email', ref: 'email' })
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group' },
-            _react2['default'].createElement(
-              'label',
-              null,
-              'Password'
-            ),
-            _react2['default'].createElement(_utilPassword2['default'], { block: true, required: true, placeholder: 'Password', ref: 'password', medium: true })
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group syn-form-submit' },
-            _react2['default'].createElement(
-              _utilSubmit2['default'],
-              { block: true, large: true, success: true, radius: true },
-              'Login'
-            )
-          ),
-          _react2['default'].createElement(
-            _utilRow2['default'],
-            { 'data-stack': 'phone-and-down' },
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', gutter: true },
-              'Not yet a user? ',
-              _react2['default'].createElement(
-                'a',
-                { href: '', onClick: this.signUp.bind(this) },
-                'Sign up'
-              )
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', 'text-right': true, gutter: true },
-              'Forgot password? ',
-              _react2['default'].createElement(
-                'a',
-                { href: '' },
-                'Click here'
-              )
-            )
-          )
+          content
         )
       );
     }
@@ -3809,6 +3821,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3850,6 +3864,10 @@ var _utilTextArea2 = _interopRequireDefault(_utilTextArea);
 var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
+
+var _libAppComponent = require('../lib/app/component');
+
+var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
 var Header = (function (_React$Component) {
   function Header() {
@@ -3980,7 +3998,7 @@ var Feedback = (function (_React$Component5) {
   _createClass(Feedback, [{
     key: 'render',
     value: function render() {
-      return _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?' });
+      return _react2['default'].createElement(_utilTextArea2['default'], _extends({ block: true, placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?' }, this.props));
     }
   }]);
 
@@ -4123,17 +4141,17 @@ var Promote = (function (_React$Component9) {
 
         content.push(_react2['default'].createElement(Header, this.state), _react2['default'].createElement(
           _utilRow2['default'],
-          { 'data-stack': 'phone-and-down' },
+          { 'data-stack': 'phone-and-down', style: { border: '1px solid black' } },
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', key: 'left' },
+            { span: '50', key: 'left', style: { border: '1px solid black' } },
             _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
             _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
             _react2['default'].createElement(Reference, this.state.left.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias }),
-            _react2['default'].createElement(Feedback, null)
+            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'gutter-top gutter-right-adjust' }),
+            _react2['default'].createElement(Feedback, { className: 'gutter-top gutter-right-adjust' })
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
@@ -4143,7 +4161,7 @@ var Promote = (function (_React$Component9) {
             _react2['default'].createElement(Reference, this.state.right.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias }),
+            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'gutter-top gutter-left-adjust' }),
             _react2['default'].createElement(Feedback, null)
           )
         ), _react2['default'].createElement(
@@ -4170,7 +4188,7 @@ var Promote = (function (_React$Component9) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'gutter' },
+        { className: 'gutter', style: { border: '1px solid black' } },
         content
       );
     }
@@ -4181,7 +4199,7 @@ var Promote = (function (_React$Component9) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
-},{"./item-media":12,"./sliders":22,"./util/button":31,"./util/column":33,"./util/loading":43,"./util/row":46,"./util/text-area":49,"react":214}],21:[function(require,module,exports){
+},{"../lib/app/component":54,"./item-media":12,"./sliders":22,"./util/button":31,"./util/column":33,"./util/loading":43,"./util/row":46,"./util/text-area":49,"react":214}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4446,6 +4464,10 @@ var _utilColumn = require('./util/column');
 
 var _utilColumn2 = _interopRequireDefault(_utilColumn);
 
+var _libAppComponent = require('../lib/app/component');
+
+var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
+
 var Slider = (function (_React$Component) {
   function Slider() {
     _classCallCheck(this, Slider);
@@ -4470,7 +4492,7 @@ var Slider = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'div',
-        { className: 'syn-sliders-criteria' },
+        null,
         _react2['default'].createElement(
           _utilRow2['default'],
           null,
@@ -4523,7 +4545,7 @@ var Sliders = (function (_React$Component2) {
 
       return _react2['default'].createElement(
         'div',
-        { className: 'syn-sliders' },
+        { className: _libAppComponent2['default'].classList(this) },
         sliders
       );
     }
@@ -4534,7 +4556,7 @@ var Sliders = (function (_React$Component2) {
 
 exports['default'] = Sliders;
 module.exports = exports['default'];
-},{"./util/column":33,"./util/row":46,"react":214}],23:[function(require,module,exports){
+},{"../lib/app/component":54,"./util/column":33,"./util/row":46,"react":214}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5952,6 +5974,10 @@ var Flash = (function (_React$Component) {
         classes.push('syn-flash--success');
       }
 
+      if (this.props.info) {
+        classes.push('syn-flash--info');
+      }
+
       return _react2['default'].createElement(
         'div',
         { className: classes.join(' ') },
@@ -6120,6 +6146,8 @@ var Form = (function (_React$Component) {
         flash = _react2['default'].createElement(_flash2['default'], { error: true, message: this.state.validationError });
       } else if (this.state.successMessage) {
         flash = _react2['default'].createElement(_flash2['default'], { success: true, message: this.state.successMessage });
+      } else if (this.state.info) {
+        flash = _react2['default'].createElement(_flash2['default'], { success: true, message: this.state.info });
       }
 
       var classes = [];

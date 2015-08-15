@@ -24,6 +24,10 @@ var _utilColumn = require('./util/column');
 
 var _utilColumn2 = _interopRequireDefault(_utilColumn);
 
+var _libAppComponent = require('../lib/app/component');
+
+var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
+
 var Slider = (function (_React$Component) {
   function Slider() {
     _classCallCheck(this, Slider);
@@ -48,7 +52,7 @@ var Slider = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'div',
-        { className: 'syn-sliders-criteria' },
+        null,
         _react2['default'].createElement(
           _utilRow2['default'],
           null,
@@ -101,7 +105,7 @@ var Sliders = (function (_React$Component2) {
 
       return _react2['default'].createElement(
         'div',
-        { className: 'syn-sliders' },
+        { className: _libAppComponent2['default'].classList(this) },
         sliders
       );
     }

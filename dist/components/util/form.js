@@ -152,6 +152,8 @@ var Form = (function (_React$Component) {
         flash = _react2['default'].createElement(_flash2['default'], { error: true, message: this.state.validationError });
       } else if (this.state.successMessage) {
         flash = _react2['default'].createElement(_flash2['default'], { success: true, message: this.state.successMessage });
+      } else if (this.state.info) {
+        flash = _react2['default'].createElement(_flash2['default'], { success: true, message: this.state.info });
       }
 
       var classes = [];
