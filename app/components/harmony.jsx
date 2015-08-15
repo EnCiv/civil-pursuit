@@ -59,6 +59,30 @@ class Harmony extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  toggleLeftCreator (e) {
+    e.preventDefault();
+
+    let panel = React.findDOMNode(this.refs.leftPanel);
+    let toggle = panel.querySelector('.toggle-creator');
+
+    toggle.click();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  toggleLRightCreator (e) {
+    e.preventDefault();
+
+    let panel = React.findDOMNode(this.refs.rightPanel);
+    let toggle = panel.querySelector('.toggle-creator');
+
+    toggle.click();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
     let content = ( <Loading /> );
 
@@ -72,18 +96,42 @@ class Harmony extends React.Component {
       else if ( left || right ) {
         let panels = [];
 
+        //~~~~~   LEFT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         if ( left ) {
+          let leftItems = [];
+
+          if ( ! left.items.length ) {
+            leftItems = (
+              <h5>
+                <a href="#" onClick={ this.toggleLeftCreator.bind(this) }>Click the + to be the first to add something here</a>
+              </h5>
+            );
+          }
+
           panels.push(
-            <Panel { ...left.panel } title={ type.harmony[0].name }>
-              { left.items }
+            <Panel { ...this.props } { ...left.panel } title={ type.harmony[0].name } ref="leftPanel">
+              { leftItems }
             </Panel>
           );
         }
 
+        //~~~~~   RIGHT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         if ( right ) {
+          let rightItems = [];
+
+          if ( ! right.items.length ) {
+            rightItems = (
+              <h5>
+                <a href="#" onClick={ this.toggleLRightCreator.bind(this) }>Click the + to be the first to add something here</a>
+              </h5>
+            );
+          }
+
           panels.push(
-            <Panel { ...right.panel } title={ type.harmony[1].name }>
-              { right.items }
+            <Panel { ...this.props } { ...right.panel } title={ type.harmony[1].name } ref="rightPanel">
+              { rightItems }
             </Panel>
           );
         }

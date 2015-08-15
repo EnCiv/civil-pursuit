@@ -96,7 +96,36 @@ var Harmony = (function (_React$Component) {
       }
     }
   }, {
+    key: 'toggleLeftCreator',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function toggleLeftCreator(e) {
+      e.preventDefault();
+
+      var panel = _react2['default'].findDOMNode(this.refs.leftPanel);
+      var toggle = panel.querySelector('.toggle-creator');
+
+      toggle.click();
+    }
+  }, {
+    key: 'toggleLRightCreator',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function toggleLRightCreator(e) {
+      e.preventDefault();
+
+      var panel = _react2['default'].findDOMNode(this.refs.rightPanel);
+      var toggle = panel.querySelector('.toggle-creator');
+
+      toggle.click();
+    }
+  }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
       var content = _react2['default'].createElement(_utilLoading2['default'], null);
 
@@ -113,19 +142,51 @@ var Harmony = (function (_React$Component) {
         } else if (left || right) {
           var panels = [];
 
+          //~~~~~   LEFT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
           if (left) {
+            var leftItems = [];
+
+            if (!left.items.length) {
+              leftItems = _react2['default'].createElement(
+                'h5',
+                null,
+                _react2['default'].createElement(
+                  'a',
+                  { href: '#', onClick: this.toggleLeftCreator.bind(this) },
+                  'Click the + to be the first to add something here'
+                )
+              );
+            }
+
             panels.push(_react2['default'].createElement(
               _panel2['default'],
-              _extends({}, left.panel, { title: type.harmony[0].name }),
-              left.items
+              _extends({}, this.props, left.panel, { title: type.harmony[0].name, ref: 'leftPanel' }),
+              leftItems
             ));
           }
 
+          //~~~~~   RIGHT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
           if (right) {
+            var rightItems = [];
+
+            if (!right.items.length) {
+              rightItems = _react2['default'].createElement(
+                'h5',
+                null,
+                _react2['default'].createElement(
+                  'a',
+                  { href: '#', onClick: this.toggleLRightCreator.bind(this) },
+                  'Click the + to be the first to add something here'
+                )
+              );
+            }
+
             panels.push(_react2['default'].createElement(
               _panel2['default'],
-              _extends({}, right.panel, { title: type.harmony[1].name }),
-              right.items
+              _extends({}, this.props, right.panel, { title: type.harmony[1].name, ref: 'rightPanel' }),
+              rightItems
             ));
           }
 

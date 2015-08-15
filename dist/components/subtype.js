@@ -63,6 +63,16 @@ var Subtype = (function (_React$Component) {
       }
     }
   }, {
+    key: 'toggleCreator',
+    value: function toggleCreator(e) {
+      e.preventDefault();
+
+      var panel = _react2['default'].findDOMNode(this.refs.panel);
+      var toggle = panel.querySelector('.toggle-creator');
+
+      toggle.click();
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
@@ -70,13 +80,27 @@ var Subtype = (function (_React$Component) {
       var content = _react2['default'].createElement(_utilLoading2['default'], null);
 
       if (this.state.panel) {
-        var items = this.state.items.map(function (item) {
-          return _react2['default'].createElement(Item, _extends({ item: item }, _this2.props));
-        });
+        var items = [];
+
+        if (this.state.items.length) {
+          items = this.state.items.map(function (item) {
+            return _react2['default'].createElement(Item, _extends({ key: item._id, item: item }, _this2.props));
+          });
+        } else {
+          items = _react2['default'].createElement(
+            'h5',
+            null,
+            _react2['default'].createElement(
+              'a',
+              { href: '#', onClick: this.toggleCreator.bind(this) },
+              'Click the + to be the first to add something here'
+            )
+          );
+        }
 
         content = [_react2['default'].createElement(
           _panel2['default'],
-          _extends({}, this.state.panel, { title: this.props.item.subtype.name }),
+          _extends({}, this.props, this.state.panel, { title: this.props.item.subtype.name, ref: 'panel' }),
           items
         )];
       }

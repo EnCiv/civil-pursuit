@@ -347,7 +347,7 @@ var Item = (function (_React$Component) {
         subtype = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showSubtype, name: 'subtype' }, this.props),
-          _react2['default'].createElement(_subtype2['default'], { item: this.props.item, show: this.state.showSubtype })
+          _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype }))
         );
       }
 
@@ -355,7 +355,7 @@ var Item = (function (_React$Component) {
         harmony = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props),
-          _react2['default'].createElement(_harmony2['default'], { item: this.props.item, show: this.state.showHarmony })
+          _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
         );
       }
 

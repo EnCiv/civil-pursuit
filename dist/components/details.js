@@ -22,6 +22,10 @@ var _utilLoading = require('./util/loading');
 
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
+var _votes = require('./votes');
+
+var _votes2 = _interopRequireDefault(_votes);
+
 var Popularity = (function (_React$Component) {
   function Popularity() {
     _classCallCheck(this, Popularity);
@@ -107,7 +111,7 @@ var Details = (function (_React$Component2) {
       if (this.state.details) {
         content = [];
 
-        content.push(_react2['default'].createElement(Popularity, this.props.item.popularity));
+        content.push(_react2['default'].createElement(Popularity, this.props.item.popularity), _react2['default'].createElement(_votes2['default'], this.state.details));
       }
 
       return _react2['default'].createElement(

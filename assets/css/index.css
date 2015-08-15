@@ -795,6 +795,12 @@ body {
     margin: auto;
   }
 }
+@media (max-width: 440px) {
+  body {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+}
 /** ____________________________________________________________________________
 
 

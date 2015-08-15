@@ -50,7 +50,7 @@ class Panel extends React.Component {
           <Creator { ...this.props } />
         </Accordion>
       );
-      creatorIcon = ( <Icon icon="plus" onClick={ this.toggleCreator.bind(this) } /> );
+      creatorIcon = ( <Icon icon="plus" onClick={ this.toggleCreator.bind(this) } className="toggle-creator" /> );
     }
 
     if ( this.props.newItem ) {

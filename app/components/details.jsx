@@ -1,7 +1,8 @@
 'use strict';
 
-import React from 'react';
-import Loading from './util/loading';
+import React            from 'react';
+import Loading          from './util/loading';
+import Votes            from './votes';
 
 class Popularity extends React.Component {
   animate () {
@@ -59,7 +60,10 @@ class Details extends React.Component {
     if ( this.state.details ) {
       content = [];
 
-      content.push(<Popularity { ...this.props.item.popularity } />);
+      content.push(
+        ( <Popularity { ...this.props.item.popularity } /> ),
+        ( <Votes { ...this.state.details } /> )
+      );
     }
 
     return (

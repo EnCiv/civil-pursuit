@@ -300,7 +300,7 @@ class Item extends React.Component {
     if ( this.props.subtype !== false ) {
       subtype = (
         <Accordion show={ this.state.showSubtype } name="subtype" { ...this.props }>
-          <Subtype item={ this.props.item } show={ this.state.showSubtype } />
+          <Subtype { ...this.props } item={ this.props.item } show={ this.state.showSubtype } />
         </Accordion>
       );
     }
@@ -308,7 +308,7 @@ class Item extends React.Component {
     if ( this.props.harmony !== false ) {
       harmony = (
         <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props }>
-          <Harmony item={ this.props.item } show={ this.state.showHarmony } />
+          <Harmony { ...this.props } item={ this.props.item } show={ this.state.showHarmony } />
         </Accordion>
       );
     }
