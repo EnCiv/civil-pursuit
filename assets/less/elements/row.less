@@ -16,6 +16,8 @@
     ____________________________________________________________________________
 **/
 
+@import "../lib/screens";
+
 .syn-row {
   display: flex;
   flex-direction: row;
@@ -38,7 +40,10 @@
   align-items: center;
 }
 
-.syn-column {
+.syn-row[data-stack="phone-and-down"] {
+  @media (max-width: @screen-phone) {
+    flex-direction: column;
+  }
 }
 
 /**-------------------------------------------------------------// row        */

@@ -3241,6 +3241,9 @@ var _utilPassword = require('./util/password');
 var _utilPassword2 = _interopRequireDefault(_utilPassword);
 
 var Login = (function (_React$Component) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Login(props) {
     _classCallCheck(this, Login);
 
@@ -3253,6 +3256,9 @@ var Login = (function (_React$Component) {
 
   _createClass(Login, [{
     key: 'login',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function login() {
       var _this = this;
 
@@ -3284,6 +3290,9 @@ var Login = (function (_React$Component) {
     }
   }, {
     key: 'signUp',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function signUp(e) {
       e.preventDefault();
 
@@ -3291,16 +3300,25 @@ var Login = (function (_React$Component) {
     }
   }, {
     key: 'loginWithFacebook',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function loginWithFacebook() {
       location.href = '/sign/facebook';
     }
   }, {
     key: 'loginWithTwitter',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function loginWithTwitter() {
       location.href = '/sign/twitter';
     }
   }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
       var classes = ['syn-login'];
 
@@ -3319,7 +3337,7 @@ var Login = (function (_React$Component) {
             { block: true },
             _react2['default'].createElement(
               _utilButton2['default'],
-              { primary: true, onClick: this.loginWithFacebook },
+              { medium: true, primary: true, onClick: this.loginWithFacebook },
               _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
               _react2['default'].createElement(
                 'span',
@@ -3329,7 +3347,7 @@ var Login = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               _utilButton2['default'],
-              { info: true, onClick: this.loginWithTwitter },
+              { medium: true, info: true, onClick: this.loginWithTwitter },
               _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
               _react2['default'].createElement(
                 'span',
@@ -3346,7 +3364,7 @@ var Login = (function (_React$Component) {
               null,
               'Email'
             ),
-            _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, required: true, placeholder: 'Email', ref: 'email' })
+            _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, required: true, medium: true, placeholder: 'Email', ref: 'email' })
           ),
           _react2['default'].createElement(
             'div',
@@ -3356,23 +3374,23 @@ var Login = (function (_React$Component) {
               null,
               'Password'
             ),
-            _react2['default'].createElement(_utilPassword2['default'], { block: true, required: true, placeholder: 'Password', ref: 'password' })
+            _react2['default'].createElement(_utilPassword2['default'], { block: true, required: true, placeholder: 'Password', ref: 'password', medium: true })
           ),
           _react2['default'].createElement(
             'div',
             { className: 'syn-form-group syn-form-submit' },
             _react2['default'].createElement(
               _utilSubmit2['default'],
-              { block: true },
+              { block: true, large: true, success: true, radius: true },
               'Login'
             )
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
-            null,
+            { 'data-stack': 'phone-and-down' },
             _react2['default'].createElement(
               _utilColumn2['default'],
-              { span: '50' },
+              { span: '50', gutter: true },
               'Not yet a user? ',
               _react2['default'].createElement(
                 'a',
@@ -3382,7 +3400,7 @@ var Login = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               _utilColumn2['default'],
-              { span: '50', 'text-right': true },
+              { span: '50', 'text-right': true, gutter: true },
               'Forgot password? ',
               _react2['default'].createElement(
                 'a',
@@ -6635,7 +6653,7 @@ var Submit = (function (_React$Component) {
     value: function render() {
       return _react2['default'].createElement(
         _button2['default'],
-        _extends({ type: 'submit', primary: true }, this.props),
+        _extends({ type: 'submit' }, this.props),
         this.props.children
       );
     }
@@ -7077,7 +7095,7 @@ var Component = (function () {
         }
       }
 
-      var props = ['text-right', 'text-center'];
+      var props = ['text-right', 'text-center', 'gutter'];
 
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;

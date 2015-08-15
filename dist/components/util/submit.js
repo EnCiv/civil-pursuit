@@ -38,7 +38,7 @@ var Submit = (function (_React$Component) {
     value: function render() {
       return _react2['default'].createElement(
         _button2['default'],
-        _extends({ type: 'submit', primary: true }, this.props),
+        _extends({ type: 'submit' }, this.props),
         this.props.children
       );
     }

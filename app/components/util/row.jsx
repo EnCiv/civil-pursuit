@@ -7,7 +7,6 @@ class Row extends React.Component {
 
   render () {
 
-
     let classes = ['syn-row'];
 
     if ( this.props.baseline ) {

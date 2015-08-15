@@ -16,7 +16,7 @@ class Component {
       }
     }
 
-    let props = ['text-right', 'text-center'];
+    let props = ['text-right', 'text-center', 'gutter'];
 
     for ( let prop of props ) {
       if ( component.props[prop] ) {

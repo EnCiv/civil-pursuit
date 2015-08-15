@@ -16,11 +16,16 @@ import EmailInput     from './util/email-input';
 import Password       from './util/password';
 
 class Login extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 
     this.state = { validationError : null, successMessage : null };
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   login () {
     let email = React.findDOMNode(this.refs.email).value,
@@ -53,19 +58,27 @@ class Login extends React.Component {
       });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   signUp (e) {
     e.preventDefault();
 
     this.props.join();
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   loginWithFacebook () {
     location.href = '/sign/facebook';
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   loginWithTwitter () {
     location.href = '/sign/twitter';
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     let classes = [ 'syn-login' ];
@@ -78,12 +91,12 @@ class Login extends React.Component {
       <Modal className={ Component.classList(this, ...classes) } title="Login">
         <Form handler={ this.login.bind(this) } flash={ this.state } form-center>
           <ButtonGroup block>
-            <Button primary onClick={ this.loginWithFacebook }>
+            <Button medium primary onClick={ this.loginWithFacebook }>
               <Icon icon="facebook" />
               <span className={ Component.classList(this) } inline> Facebook</span>
             </Button>
 
-            <Button info onClick={ this.loginWithTwitter }>
+            <Button medium info onClick={ this.loginWithTwitter }>
               <Icon icon="twitter" />
               <span> Twitter</span>
             </Button>
@@ -91,24 +104,24 @@ class Login extends React.Component {
 
           <div className="syn-form-group">
             <label>Email</label>
-            <EmailInput block autoFocus required placeholder="Email" ref="email" />
+            <EmailInput block autoFocus required medium placeholder="Email" ref="email" />
           </div>
 
           <div className="syn-form-group">
             <label>Password</label>
-            <Password block required placeholder="Password" ref="password" />
+            <Password block required placeholder="Password" ref="password" medium />
           </div>
 
           <div className="syn-form-group syn-form-submit">
-            <Submit block>Login</Submit>
+            <Submit block large success radius>Login</Submit>
           </div>
 
-          <Row>
-            <Column span="50">
+          <Row data-stack="phone-and-down">
+            <Column span="50" gutter>
               Not yet a user? <a href="" onClick={ this.signUp.bind(this) }>Sign up</a>
             </Column>
 
-            <Column span="50" text-right>
+            <Column span="50" text-right gutter>
               Forgot password? <a href="">Click here</a>
             </Column>
           </Row>

@@ -36,7 +36,7 @@ var Component = (function () {
         }
       }
 
-      var props = ['text-right', 'text-center'];
+      var props = ['text-right', 'text-center', 'gutter'];
 
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;

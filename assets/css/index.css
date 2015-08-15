@@ -503,6 +503,11 @@ a.button {
 .syn-row-center-items {
   align-items: center;
 }
+@media (max-width: 440px) {
+  .syn-row[data-stack="phone-and-down"] {
+    flex-direction: column;
+  }
+}
 /**-------------------------------------------------------------// row        */
 /** ____________________________________________________________________________
 
@@ -603,6 +608,24 @@ input[type="url"].error,
 textarea.error {
   border-color: red;
   background: yellow;
+}
+input[type="text"].medium,
+input[type="password"].medium,
+input[type="date"].medium,
+input[type="datetime"].medium,
+input[type="datetime-local"].medium,
+input[type="month"].medium,
+input[type="week"].medium,
+input[type="email"].medium,
+input[type="number"].medium,
+input[type="search"].medium,
+input[type="tel"].medium,
+input[type="time"].medium,
+input[type="url"].medium,
+textarea.medium {
+  font-size: 125%;
+  border-width: 2px;
+  padding: 1em;
 }
 select {
   box-sizing: border-box;
