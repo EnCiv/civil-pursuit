@@ -112,7 +112,7 @@ var Details = (function (_React$Component2) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'details text-center' },
+        { className: 'gutter' },
         content
       );
     }

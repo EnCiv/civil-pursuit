@@ -1,16 +1,18 @@
 'use strict';
 
-import React from 'react';
-import Row from './util/row';
-import Column from './util/column';
-import ItemMedia from './item-media';
-import Loading from './util/loading';
-import Sliders from './sliders';
+import React            from 'react';
+import Row              from './util/row';
+import Column           from './util/column';
+import ItemMedia        from './item-media';
+import Loading          from './util/loading';
+import Sliders          from './sliders';
+import TextArea         from './util/text-area';
+import Button           from './util/button';
 
 class Header extends React.Component {
   render () {
     return (
-      <header className="promote-steps">
+      <header className="text-center">
         <h2>{ this.props.cursor } of { this.props.limit }</h2>
         <h4>Evaluate each item below</h4>
       </header>
@@ -40,6 +42,38 @@ class Reference extends React.Component {
       <h5>
         <a href={ this.props.url } rel="nofollow" target="_blank">{ this.props.title || this.props.url }</a>
       </h5>
+    );
+  }
+}
+
+class Feedback extends React.Component {
+  render () {
+    return (
+      <TextArea block placeholder="Can you provide feedback that would encourage the author to create a statement that more people would unite around?"></TextArea>
+    );
+  }
+}
+
+class PromoteButton extends React.Component {
+  render () {
+    return (
+      <Button block>{ this.props.subject }</Button>
+    );
+  }
+}
+
+class EditAndGoAgain extends React.Component {
+  render () {
+    return (
+      <Button block><i>Edit and go again</i></Button>
+    );
+  }
+}
+
+class Finish extends React.Component {
+  render () {
+    return (
+      <Button block><b>Neither</b></Button>
     );
   }
 }
@@ -87,9 +121,11 @@ class Promote extends React.Component {
       content = [];
 
       content.push(
-        ( <Header { ...this.state } className="text-center" /> ),
         (
-          <Row>
+          <Header { ...this.state } />
+        ),
+        (
+          <Row data-stack="phone-and-down">
             <Column span="50" key="left">
               <ItemMedia item={ this.state.left } />
               <Subject subject={ this.state.left.subject } />
@@ -97,6 +133,7 @@ class Promote extends React.Component {
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
               <Sliders criterias={ this.state.criterias } />
+              <Feedback />
             </Column>
 
             <Column span="50" key="right">
@@ -106,14 +143,34 @@ class Promote extends React.Component {
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
               <Sliders criterias={ this.state.criterias } />
+              <Feedback />
             </Column>
           </Row>
+        ),
+        (
+          <h5 data-screen="phone-and-up" className="text-center gutter">Which of these is most important for the community to consider?</h5>
+        ),
+        (
+          <Row data-stack="phone-and-down">
+            <Column span="50" key="left">
+              <PromoteButton { ...this.state.left } />
+              <EditAndGoAgain />
+            </Column>
+
+            <Column span="50" key="right">
+              <PromoteButton { ...this.state.right } />
+              <EditAndGoAgain />
+            </Column>
+          </Row>
+        ),
+        (
+          <Finish />
         )
       );
     }
 
     return (
-      <section className="promote">
+      <section className="gutter">
         { content }
       </section>
     );

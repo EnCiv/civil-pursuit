@@ -4,8 +4,6 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -40,6 +38,14 @@ var _sliders = require('./sliders');
 
 var _sliders2 = _interopRequireDefault(_sliders);
 
+var _utilTextArea = require('./util/text-area');
+
+var _utilTextArea2 = _interopRequireDefault(_utilTextArea);
+
+var _utilButton = require('./util/button');
+
+var _utilButton2 = _interopRequireDefault(_utilButton);
+
 var Header = (function (_React$Component) {
   function Header() {
     _classCallCheck(this, Header);
@@ -56,7 +62,7 @@ var Header = (function (_React$Component) {
     value: function render() {
       return _react2['default'].createElement(
         'header',
-        { className: 'promote-steps' },
+        { className: 'text-center' },
         _react2['default'].createElement(
           'h2',
           null,
@@ -155,7 +161,111 @@ var Reference = (function (_React$Component4) {
   return Reference;
 })(_react2['default'].Component);
 
-var Promote = (function (_React$Component5) {
+var Feedback = (function (_React$Component5) {
+  function Feedback() {
+    _classCallCheck(this, Feedback);
+
+    if (_React$Component5 != null) {
+      _React$Component5.apply(this, arguments);
+    }
+  }
+
+  _inherits(Feedback, _React$Component5);
+
+  _createClass(Feedback, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?' });
+    }
+  }]);
+
+  return Feedback;
+})(_react2['default'].Component);
+
+var PromoteButton = (function (_React$Component6) {
+  function PromoteButton() {
+    _classCallCheck(this, PromoteButton);
+
+    if (_React$Component6 != null) {
+      _React$Component6.apply(this, arguments);
+    }
+  }
+
+  _inherits(PromoteButton, _React$Component6);
+
+  _createClass(PromoteButton, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        _utilButton2['default'],
+        { block: true },
+        this.props.subject
+      );
+    }
+  }]);
+
+  return PromoteButton;
+})(_react2['default'].Component);
+
+var EditAndGoAgain = (function (_React$Component7) {
+  function EditAndGoAgain() {
+    _classCallCheck(this, EditAndGoAgain);
+
+    if (_React$Component7 != null) {
+      _React$Component7.apply(this, arguments);
+    }
+  }
+
+  _inherits(EditAndGoAgain, _React$Component7);
+
+  _createClass(EditAndGoAgain, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        _utilButton2['default'],
+        { block: true },
+        _react2['default'].createElement(
+          'i',
+          null,
+          'Edit and go again'
+        )
+      );
+    }
+  }]);
+
+  return EditAndGoAgain;
+})(_react2['default'].Component);
+
+var Finish = (function (_React$Component8) {
+  function Finish() {
+    _classCallCheck(this, Finish);
+
+    if (_React$Component8 != null) {
+      _React$Component8.apply(this, arguments);
+    }
+  }
+
+  _inherits(Finish, _React$Component8);
+
+  _createClass(Finish, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        _utilButton2['default'],
+        { block: true },
+        _react2['default'].createElement(
+          'b',
+          null,
+          'Neither'
+        )
+      );
+    }
+  }]);
+
+  return Finish;
+})(_react2['default'].Component);
+
+var Promote = (function (_React$Component9) {
   function Promote(props) {
     _classCallCheck(this, Promote);
 
@@ -168,7 +278,7 @@ var Promote = (function (_React$Component5) {
     };
   }
 
-  _inherits(Promote, _React$Component5);
+  _inherits(Promote, _React$Component9);
 
   _createClass(Promote, [{
     key: 'componentWillReceiveProps',
@@ -206,9 +316,9 @@ var Promote = (function (_React$Component5) {
       if (this.state.limit) {
         content = [];
 
-        content.push(_react2['default'].createElement(Header, _extends({}, this.state, { className: 'text-center' })), _react2['default'].createElement(
+        content.push(_react2['default'].createElement(Header, this.state), _react2['default'].createElement(
           _utilRow2['default'],
-          null,
+          { 'data-stack': 'phone-and-down' },
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50', key: 'left' },
@@ -217,7 +327,8 @@ var Promote = (function (_React$Component5) {
             _react2['default'].createElement(Reference, this.state.left.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias })
+            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias }),
+            _react2['default'].createElement(Feedback, null)
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
@@ -227,14 +338,34 @@ var Promote = (function (_React$Component5) {
             _react2['default'].createElement(Reference, this.state.right.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias })
+            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias }),
+            _react2['default'].createElement(Feedback, null)
           )
-        ));
+        ), _react2['default'].createElement(
+          'h5',
+          { 'data-screen': 'phone-and-up', className: 'text-center gutter' },
+          'Which of these is most important for the community to consider?'
+        ), _react2['default'].createElement(
+          _utilRow2['default'],
+          { 'data-stack': 'phone-and-down' },
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', key: 'left' },
+            _react2['default'].createElement(PromoteButton, this.state.left),
+            _react2['default'].createElement(EditAndGoAgain, null)
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', key: 'right' },
+            _react2['default'].createElement(PromoteButton, this.state.right),
+            _react2['default'].createElement(EditAndGoAgain, null)
+          )
+        ), _react2['default'].createElement(Finish, null));
       }
 
       return _react2['default'].createElement(
         'section',
-        { className: 'promote' },
+        { className: 'gutter' },
         content
       );
     }

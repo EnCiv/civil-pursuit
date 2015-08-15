@@ -63,7 +63,7 @@ class Details extends React.Component {
     }
 
     return (
-      <section className="details text-center">
+      <section className="gutter">
         { content }
       </section>
     );

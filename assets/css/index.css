@@ -161,7 +161,8 @@ button,
   }
 }
 @media (max-width: 440px) {
-  .syn-screen-phone_and_up {
+  .syn-screen-phone_and_up,
+  [data-screen="phone-and-up"] {
     display: none;
   }
 }
