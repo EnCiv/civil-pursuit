@@ -7,65 +7,22 @@ class Accordion extends React.Component {
 
   constructor ( props ) {
     super(props);
-    this.status = 'CLOSED';
     this.counter = 0;
   }
 
   componentWillReceiveProps (props) {
-    // console.info('-- update accordion --', { name : props.name, status : this.status, request : props.show, counter : this.counter, close: props.close });
-
-    // if ( props.close && ( this.status === 'OPENED' ) ) {
-    //   console.warn('Closing upon request');
-    //   return this.hide();
-    // }
-
     if ( props.show > this.counter ) {
       this.counter = props.show;
 
-      switch ( this.status ) {
-        case 'CLOSED':
-          this.status = 'OPENING';
-          // window.Dispatcher.emit('open request');
-          this.show();
-          break;
-        case 'OPENED':
-          this.status = 'CLOSING';
-          this.hide();
-          break;
+      let wrapper   =   React.findDOMNode(this.refs.wrapper);
+
+      if ( this.props.poa ) {
+        let poa     = React.findDOMNode(this.props.poa);
+        window.scrollTo(0, ( poa.offsetTop  - 60 ));
       }
+
+      wrapper.classList.toggle('show');
     }
-  }
-
-  show () {
-    let view    = React.findDOMNode(this.refs.view);
-    let wrapper = React.findDOMNode(this.refs.wrapper);
-    let content = React.findDOMNode(this.refs.content);
-
-    if ( this.props.poa ) {
-      let poa     = React.findDOMNode(this.props.poa);
-      window.scrollTo(0, ( poa.offsetTop  - 60 ));
-    }
-
-    // wrapper.style.marginTop = 0;
-    wrapper.classList.add('show');
-
-    this.status = 'OPENED';
-  }
-
-  hide () {
-    let view    = React.findDOMNode(this.refs.view);
-    let wrapper = React.findDOMNode(this.refs.wrapper);
-    let content = React.findDOMNode(this.refs.content);
-
-    if ( this.props.poa ) {
-      let poa     = React.findDOMNode(this.props.poa);
-      window.scrollTo(0, ( poa.offsetTop  - 60 ));
-    }
-
-    // wrapper.style.marginTop = '-100%';
-    wrapper.classList.remove('show');
-
-    this.status = 'CLOSED';
   }
 
   render () {

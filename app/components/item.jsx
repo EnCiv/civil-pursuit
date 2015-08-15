@@ -107,8 +107,28 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  hideOthers () {
+    let item = React.findDOMNode(this.refs.item);
+    let itemAccordions = item.querySelectorAll('.syn-accordion-wrapper.show');
+
+    for ( let i = 0; i < itemAccordions.length; i ++ ) {
+      itemAccordions[i].classList.remove('show');
+    }
+
+    let panel = item.closest('.syn-panel');
+
+    let creator = panel.querySelector('.syn-panel-body > .syn-accordion .syn-accordion-wrapper.show');
+
+    if ( creator ) {
+      creator.classList.remove('show');
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   togglePromote () {
     if ( this.props.user ) {
+      this.hideOthers();
       this.setState({ showPromote : this.state.showPromote + 1 });
     }
     else {
@@ -119,19 +139,21 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleDetails () {
-    console.info('toggle details');
+    this.hideOthers();
     this.setState({ showDetails : this.state.showDetails + 1 });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleSubtype () {
+    this.hideOthers();
     this.setState({ showSubtype : this.state.showSubtype + 1 });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleHarmony () {
+    this.hideOthers();
     this.setState({ showHarmony : this.state.showHarmony + 1 });
   }
 
@@ -283,7 +305,7 @@ class Item extends React.Component {
 
     if ( this.props.promote !== false ) {
       promote = (
-        <Accordion show={ this.state.showPromote } name="promote" { ...this.props }>
+        <Accordion poa={ this.refs.item } show={ this.state.showPromote } name="promote" { ...this.props }>
           <Promote item={ this.props.item } show={ this.state.showPromote } />
         </Accordion>
       );
@@ -291,7 +313,7 @@ class Item extends React.Component {
 
     if ( this.props.details !== false ) {
       details =(
-        <Accordion show={ this.state.showDetails } name="details" { ...this.props }>
+        <Accordion poa={ this.refs.item } show={ this.state.showDetails } name="details" { ...this.props }>
           <Details item={ this.props.item } show={ this.state.showDetails } />
         </Accordion>
       );
@@ -299,7 +321,7 @@ class Item extends React.Component {
 
     if ( this.props.subtype !== false ) {
       subtype = (
-        <Accordion show={ this.state.showSubtype } name="subtype" { ...this.props }>
+        <Accordion show={ this.state.showSubtype } name="subtype" poa={ this.refs.item } { ...this.props }>
           <Subtype { ...this.props } item={ this.props.item } show={ this.state.showSubtype } />
         </Accordion>
       );
@@ -307,7 +329,7 @@ class Item extends React.Component {
 
     if ( this.props.harmony !== false ) {
       harmony = (
-        <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props }>
+        <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props } poa={ this.refs.item }>
           <Harmony { ...this.props } item={ this.props.item } show={ this.state.showHarmony } />
         </Accordion>
       );

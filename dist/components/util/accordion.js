@@ -25,7 +25,6 @@ var Accordion = (function (_React$Component) {
     _classCallCheck(this, Accordion);
 
     _get(Object.getPrototypeOf(Accordion.prototype), 'constructor', this).call(this, props);
-    this.status = 'CLOSED';
     this.counter = 0;
   }
 
@@ -34,62 +33,18 @@ var Accordion = (function (_React$Component) {
   _createClass(Accordion, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      // console.info('-- update accordion --', { name : props.name, status : this.status, request : props.show, counter : this.counter, close: props.close });
-
-      // if ( props.close && ( this.status === 'OPENED' ) ) {
-      //   console.warn('Closing upon request');
-      //   return this.hide();
-      // }
-
       if (props.show > this.counter) {
         this.counter = props.show;
 
-        switch (this.status) {
-          case 'CLOSED':
-            this.status = 'OPENING';
-            // window.Dispatcher.emit('open request');
-            this.show();
-            break;
-          case 'OPENED':
-            this.status = 'CLOSING';
-            this.hide();
-            break;
+        var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
+
+        if (this.props.poa) {
+          var poa = _react2['default'].findDOMNode(this.props.poa);
+          window.scrollTo(0, poa.offsetTop - 60);
         }
+
+        wrapper.classList.toggle('show');
       }
-    }
-  }, {
-    key: 'show',
-    value: function show() {
-      var view = _react2['default'].findDOMNode(this.refs.view);
-      var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
-      var content = _react2['default'].findDOMNode(this.refs.content);
-
-      if (this.props.poa) {
-        var poa = _react2['default'].findDOMNode(this.props.poa);
-        window.scrollTo(0, poa.offsetTop - 60);
-      }
-
-      // wrapper.style.marginTop = 0;
-      wrapper.classList.add('show');
-
-      this.status = 'OPENED';
-    }
-  }, {
-    key: 'hide',
-    value: function hide() {
-      var view = _react2['default'].findDOMNode(this.refs.view);
-      var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
-      var content = _react2['default'].findDOMNode(this.refs.content);
-
-      if (this.props.poa) {
-        var poa = _react2['default'].findDOMNode(this.props.poa);
-        window.scrollTo(0, poa.offsetTop - 60);
-      }
-
-      // wrapper.style.marginTop = '-100%';
-      wrapper.classList.remove('show');
-
-      this.status = 'CLOSED';
     }
   }, {
     key: 'render',

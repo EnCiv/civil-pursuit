@@ -121,12 +121,34 @@ var Item = (function (_React$Component) {
       window.socket.removeListener('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
     }
   }, {
+    key: 'hideOthers',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function hideOthers() {
+      var item = _react2['default'].findDOMNode(this.refs.item);
+      var itemAccordions = item.querySelectorAll('.syn-accordion-wrapper.show');
+
+      for (var i = 0; i < itemAccordions.length; i++) {
+        itemAccordions[i].classList.remove('show');
+      }
+
+      var panel = item.closest('.syn-panel');
+
+      var creator = panel.querySelector('.syn-panel-body > .syn-accordion .syn-accordion-wrapper.show');
+
+      if (creator) {
+        creator.classList.remove('show');
+      }
+    }
+  }, {
     key: 'togglePromote',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function togglePromote() {
       if (this.props.user) {
+        this.hideOthers();
         this.setState({ showPromote: this.state.showPromote + 1 });
       } else {
         _join2['default'].click();
@@ -138,7 +160,7 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function toggleDetails() {
-      console.info('toggle details');
+      this.hideOthers();
       this.setState({ showDetails: this.state.showDetails + 1 });
     }
   }, {
@@ -147,6 +169,7 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function toggleSubtype() {
+      this.hideOthers();
       this.setState({ showSubtype: this.state.showSubtype + 1 });
     }
   }, {
@@ -155,6 +178,7 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function toggleHarmony() {
+      this.hideOthers();
       this.setState({ showHarmony: this.state.showHarmony + 1 });
     }
   }, {
@@ -330,7 +354,7 @@ var Item = (function (_React$Component) {
       if (this.props.promote !== false) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showPromote, name: 'promote' }, this.props),
+          _extends({ poa: this.refs.item, show: this.state.showPromote, name: 'promote' }, this.props),
           _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote })
         );
       }
@@ -338,7 +362,7 @@ var Item = (function (_React$Component) {
       if (this.props.details !== false) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showDetails, name: 'details' }, this.props),
+          _extends({ poa: this.refs.item, show: this.state.showDetails, name: 'details' }, this.props),
           _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
         );
       }
@@ -346,7 +370,7 @@ var Item = (function (_React$Component) {
       if (this.props.subtype !== false) {
         subtype = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showSubtype, name: 'subtype' }, this.props),
+          _extends({ show: this.state.showSubtype, name: 'subtype', poa: this.refs.item }, this.props),
           _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype }))
         );
       }
@@ -354,7 +378,7 @@ var Item = (function (_React$Component) {
       if (this.props.harmony !== false) {
         harmony = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props),
+          _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props, { poa: this.refs.item }),
           _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
         );
       }

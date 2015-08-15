@@ -30,8 +30,6 @@ class Panel extends React.Component {
         itemAccordions[i].classList.remove('show');
       }
 
-      console.log(itemAccordions.length)
-
       this.setState({ showCreator : this.state.showCreator + 1 });
     }
     else {
