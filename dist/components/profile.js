@@ -48,6 +48,10 @@ var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
 
+var _utilButton = require('./util/button');
+
+var _utilButton2 = _interopRequireDefault(_utilButton);
+
 var _demographics = require('./demographics');
 
 var _demographics2 = _interopRequireDefault(_demographics);
@@ -70,6 +74,11 @@ var Profile = (function (_React$Component) {
   _inherits(Profile, _React$Component);
 
   _createClass(Profile, [{
+    key: 'done',
+    value: function done() {
+      location.href = '/';
+    }
+  }, {
     key: 'get',
     value: function get() {
       var _this = this;
@@ -135,6 +144,15 @@ var Profile = (function (_React$Component) {
               _utilColumn2['default'],
               { span: '50' },
               _react2['default'].createElement(_voter2['default'], { user: this.state.user, config: this.state.config })
+            )
+          ),
+          _react2['default'].createElement(
+            'div',
+            { className: 'text-center gutter-y' },
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { center: true, medium: true, primary: true, radius: true, onClick: this.done },
+              'Done'
             )
           )
         );

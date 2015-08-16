@@ -8,6 +8,7 @@ import Column           from './util/column';
 import Identity         from './identity';
 import Residence        from './residence';
 import Icon             from './util/icon';
+import Button           from './util/button';
 import Demographics     from './demographics';
 import Voter            from './voter';
 
@@ -18,6 +19,10 @@ class Profile extends React.Component {
     this.state = { user : null, ready : false, config: null, countries: [], states: [] };
 
     this.get();
+  }
+
+  done () {
+    location.href = '/';
   }
 
   get () {
@@ -80,6 +85,10 @@ class Profile extends React.Component {
               <Voter user={ this.state.user } config={ this.state.config } />
             </Column>
           </Row>
+
+          <div className="text-center gutter-y">
+            <Button center medium primary radius onClick={ this.done }>Done</Button>
+          </div>
         </section>
       );
     }

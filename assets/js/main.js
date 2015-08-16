@@ -901,7 +901,7 @@ var Demographics = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { className: 'gutter' },
-            _react2['default'].createElement('input', { type: 'checkbox', onClick: _this2.checkRace.bind(_this2), value: race._id, checked: user.race.some(function (r) {
+            _react2['default'].createElement('input', { type: 'checkbox', onChange: _this2.checkRace.bind(_this2), value: race._id, defaultChecked: user.race.some(function (r) {
                 return r === race._id;
               }) })
           )
@@ -1769,7 +1769,7 @@ var Identity = (function (_React$Component) {
       }).map(function (country) {
         return _react2['default'].createElement(
           'option',
-          { value: country._id },
+          { value: country._id, key: country._id },
           country.name
         );
       });
@@ -1779,7 +1779,7 @@ var Identity = (function (_React$Component) {
       }).map(function (country) {
         return _react2['default'].createElement(
           'option',
-          { value: country._id },
+          { value: country._id, key: country._id },
           country.name
         );
       });
@@ -3726,6 +3726,10 @@ var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
 
+var _utilButton = require('./util/button');
+
+var _utilButton2 = _interopRequireDefault(_utilButton);
+
 var _demographics = require('./demographics');
 
 var _demographics2 = _interopRequireDefault(_demographics);
@@ -3748,6 +3752,11 @@ var Profile = (function (_React$Component) {
   _inherits(Profile, _React$Component);
 
   _createClass(Profile, [{
+    key: 'done',
+    value: function done() {
+      location.href = '/';
+    }
+  }, {
     key: 'get',
     value: function get() {
       var _this = this;
@@ -3814,6 +3823,15 @@ var Profile = (function (_React$Component) {
               { span: '50' },
               _react2['default'].createElement(_voter2['default'], { user: this.state.user, config: this.state.config })
             )
+          ),
+          _react2['default'].createElement(
+            'div',
+            { className: 'text-center gutter-y' },
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              { center: true, medium: true, primary: true, radius: true, onClick: this.done },
+              'Done'
+            )
           )
         );
       }
@@ -3838,7 +3856,7 @@ var Profile = (function (_React$Component) {
 
 exports['default'] = Profile;
 module.exports = exports['default'];
-},{"../lib/app/component":54,"./demographics":5,"./identity":10,"./panel":18,"./residence":21,"./util/column":33,"./util/icon":38,"./util/row":46,"./voter":51,"react":214}],20:[function(require,module,exports){
+},{"../lib/app/component":54,"./demographics":5,"./identity":10,"./panel":18,"./residence":21,"./util/button":31,"./util/column":33,"./util/icon":38,"./util/row":46,"./voter":51,"react":214}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -4410,7 +4428,7 @@ var Residence = (function (_React$Component) {
       var states = this.props.states.map(function (state) {
         return _react2['default'].createElement(
           'option',
-          { value: state._id },
+          { value: state._id, key: state._id },
           state.name
         );
       });

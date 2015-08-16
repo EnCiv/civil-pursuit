@@ -104,7 +104,7 @@ class Residence extends React.Component {
     }
 
     let states = this.props.states.map(state => (
-      <option value={ state._id }>{ state.name }</option>
+      <option value={ state._id } key={ state._id }>{ state.name }</option>
     ));
 
     return (

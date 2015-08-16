@@ -130,7 +130,7 @@ class Identity extends React.Component {
       .filter(country => country._id !== dualCitizenship)
 
       .map(country => (
-        <option value={ country._id }>{ country.name }</option>
+        <option value={ country._id } key={ country._id }>{ country.name }</option>
       ));
 
     let countryOptions2 = countries
@@ -138,7 +138,7 @@ class Identity extends React.Component {
       .filter(country => country._id !== citizenship)
 
       .map(country => (
-        <option value={ country._id }>{ country.name }</option>
+        <option value={ country._id } key={ country._id }>{ country.name }</option>
       ));
 
     let dobValue;

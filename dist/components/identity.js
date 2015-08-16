@@ -200,7 +200,7 @@ var Identity = (function (_React$Component) {
       }).map(function (country) {
         return _react2['default'].createElement(
           'option',
-          { value: country._id },
+          { value: country._id, key: country._id },
           country.name
         );
       });
@@ -210,7 +210,7 @@ var Identity = (function (_React$Component) {
       }).map(function (country) {
         return _react2['default'].createElement(
           'option',
-          { value: country._id },
+          { value: country._id, key: country._id },
           country.name
         );
       });

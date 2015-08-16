@@ -204,7 +204,7 @@ var Demographics = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { className: 'gutter' },
-            _react2['default'].createElement('input', { type: 'checkbox', onClick: _this2.checkRace.bind(_this2), value: race._id, checked: user.race.some(function (r) {
+            _react2['default'].createElement('input', { type: 'checkbox', onChange: _this2.checkRace.bind(_this2), value: race._id, defaultChecked: user.race.some(function (r) {
                 return r === race._id;
               }) })
           )

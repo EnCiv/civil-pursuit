@@ -182,7 +182,7 @@ var Residence = (function (_React$Component) {
       var states = this.props.states.map(function (state) {
         return _react2['default'].createElement(
           'option',
-          { value: state._id },
+          { value: state._id, key: state._id },
           state.name
         );
       });
