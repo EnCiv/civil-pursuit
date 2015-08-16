@@ -282,6 +282,8 @@ var Join = (function (_React$Component) {
 
       if (this.state.info) {
         content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Signing you in ...' });
+      } else if (this.state.successMessage) {
+        content = _react2['default'].createElement('div', null);
       }
 
       return _react2['default'].createElement(

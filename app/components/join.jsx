@@ -166,6 +166,10 @@ class Join extends React.Component {
       content = ( <Loading message="Signing you in ..." /> );
     }
 
+    else if ( this.state.successMessage ) {
+      content = ( <div></div> );
+    }
+
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Join">
         <Form handler={ this.signup.bind(this) } flash={ this.state } form-center>

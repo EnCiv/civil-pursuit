@@ -135,6 +135,10 @@ class Login extends React.Component {
       content = ( <Loading message="Loggin you in..." /> );
     }
 
+    else if ( this.state.successMessage ) {
+      content = ( <div></div> );
+    }
+
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Login">
         <Form handler={ this.login.bind(this) } flash={ this.state } form-center>
