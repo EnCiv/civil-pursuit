@@ -54,7 +54,7 @@ class Join extends React.Component {
             break;
 
           case 200:
-            this.setState({ validationError : null, successMessage : 'Welcome back', info: null });
+            this.setState({ validationError : null, successMessage : 'Welcome aboard!', info: null });
             location.href = '/page/profile';
             break;
 

@@ -2706,7 +2706,7 @@ var Join = (function (_React$Component) {
             break;
 
           case 200:
-            _this.setState({ validationError: null, successMessage: 'Welcome back', info: null });
+            _this.setState({ validationError: null, successMessage: 'Welcome aboard!', info: null });
             location.href = '/page/profile';
             break;
 
