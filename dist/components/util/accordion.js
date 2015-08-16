@@ -26,16 +26,22 @@ var Accordion = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Accordion.prototype), 'constructor', this).call(this, props);
     this.counter = 0;
+    // this.height = 0;
+    this.visibility = false;
   }
 
   _inherits(Accordion, _React$Component);
 
   _createClass(Accordion, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {}
+  }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
       if (props.show > this.counter) {
         this.counter = props.show;
 
+        var content = _react2['default'].findDOMNode(this.refs.content);
         var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
 
         if (this.props.poa) {
@@ -70,3 +76,8 @@ var Accordion = (function (_React$Component) {
 
 exports['default'] = Accordion;
 module.exports = exports['default'];
+
+// let content = React.findDOMNode(this.refs.content);
+// let wrapper = React.findDOMNode(this.refs.wrapper);
+// let height = content.offsetTop + 99999;
+// wrapper.style.marginTop = `-${height}px`;

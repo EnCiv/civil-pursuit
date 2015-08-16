@@ -122,6 +122,12 @@ class Item extends React.Component {
     if ( creator ) {
       creator.classList.remove('show');
     }
+
+    let otherItems = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+
+    for ( let i = 0; i < otherItems.length; i ++ ) {
+      otherItems[i].classList.remove('show');
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

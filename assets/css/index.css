@@ -1292,11 +1292,10 @@ body {
   overflow: hidden;
 }
 .syn-accordion-wrapper {
-  margin-top: -100%;
-  transition: all 1s;
+  display: none;
 }
 .syn-accordion-wrapper.show {
-  margin-top: 0;
+  display: block;
 }
 .item-inputs {
   left: 0;

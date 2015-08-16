@@ -140,6 +140,12 @@ var Item = (function (_React$Component) {
       if (creator) {
         creator.classList.remove('show');
       }
+
+      var otherItems = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+
+      for (var i = 0; i < otherItems.length; i++) {
+        otherItems[i].classList.remove('show');
+      }
     }
   }, {
     key: 'togglePromote',

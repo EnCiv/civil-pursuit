@@ -8,13 +8,23 @@ class Accordion extends React.Component {
   constructor ( props ) {
     super(props);
     this.counter = 0;
+    // this.height = 0;
+    this.visibility = false;
+  }
+
+  componentDidMount () {
+    // let content = React.findDOMNode(this.refs.content);
+    // let wrapper = React.findDOMNode(this.refs.wrapper);
+    // let height = content.offsetTop + 99999;
+    // wrapper.style.marginTop = `-${height}px`;
   }
 
   componentWillReceiveProps (props) {
     if ( props.show > this.counter ) {
       this.counter = props.show;
 
-      let wrapper   =   React.findDOMNode(this.refs.wrapper);
+      let content = React.findDOMNode(this.refs.content);
+      let wrapper = React.findDOMNode(this.refs.wrapper);
 
       if ( this.props.poa ) {
         let poa     = React.findDOMNode(this.props.poa);
@@ -22,6 +32,8 @@ class Accordion extends React.Component {
       }
 
       wrapper.classList.toggle('show');
+
+
     }
   }
 
