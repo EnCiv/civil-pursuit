@@ -111,7 +111,7 @@ var Profile = (function (_React$Component) {
           null,
           _react2['default'].createElement(
             _utilRow2['default'],
-            null,
+            { 'data-stack': 'tablet-and-down' },
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50' },
@@ -125,7 +125,7 @@ var Profile = (function (_React$Component) {
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
-            null,
+            { 'data-stack': 'tablet-and-down' },
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50' },

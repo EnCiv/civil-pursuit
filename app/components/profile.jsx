@@ -61,7 +61,7 @@ class Profile extends React.Component {
     if ( this.state.ready ) {
       content = (
         <section>
-          <Row>
+          <Row data-stack="tablet-and-down">
             <Column span="50">
               <Identity user={ this.state.user } countries={ this.state.countries } config={ this.state.config } />
             </Column>
@@ -71,7 +71,7 @@ class Profile extends React.Component {
             </Column>
           </Row>
 
-          <Row>
+          <Row data-stack="tablet-and-down">
             <Column span="50">
               <Demographics user={ this.state.user } config={ this.state.config } />
             </Column>

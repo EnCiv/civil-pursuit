@@ -171,6 +171,11 @@ button,
     display: none;
   }
 }
+@media (min-width: 992px) {
+  .syn-screen-tablet_and_down {
+    display: none;
+  }
+}
 /**-------------------------------------------------------------// screens    */
 /** ____________________________________________________________________________
 
@@ -536,6 +541,11 @@ a.button {
 }
 @media (max-width: 440px) {
   .syn-row[data-stack="phone-and-down"] {
+    flex-direction: column;
+  }
+}
+@media (max-width: 768px) {
+  .syn-row[data-stack="tablet-and-down"] {
     flex-direction: column;
   }
 }
