@@ -4,8 +4,17 @@ import { Document, Element, Elements } from 'cinco/dist';
 import publicConfig from '../../public.json';
 
 class Stylesheet extends Element {
-  constructor(href) {
-    super('link', { rel : 'stylesheet', href });
+  constructor(href, attrs) {
+    let attr = { rel : 'stylesheet', href };
+
+    if ( attrs ) {
+      for ( let k in attrs ) {
+        attr[k] = attrs[k];
+      }
+    }
+
+    super('link', attr);
+
     this.close();
   }
 }
@@ -37,7 +46,7 @@ class Layout extends Document {
 
     if ( props.env === 'development' ) {
       this.add(
-        new Stylesheet('/assets/css/normalize.css'),
+        new Stylesheet('/assets/css/normalize.css', { name : 'stylesheet' }),
         new Stylesheet('/assets/css/index.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
         new Stylesheet('/assets/bower_components/c3/c3.css'),

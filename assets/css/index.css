@@ -1301,6 +1301,7 @@ body {
   left: 0;
   position: relative;
   overflow: hidden;
+  margin-top: -10px;
 }
 .item-inputs input[type="text"],
 .item-inputs input[type="url"],

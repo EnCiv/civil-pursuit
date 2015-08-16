@@ -51,6 +51,9 @@ var _youtube = require('./youtube');
 var _youtube2 = _interopRequireDefault(_youtube);
 
 var Creator = (function (_React$Component) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Creator(props) {
     _classCallCheck(this, Creator);
 
