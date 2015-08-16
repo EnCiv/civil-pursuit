@@ -2660,6 +2660,10 @@ var _utilInputGroup = require('./util/input-group');
 
 var _utilInputGroup2 = _interopRequireDefault(_utilInputGroup);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var Join = (function (_React$Component) {
   function Join(props) {
     _classCallCheck(this, Join);
@@ -2684,13 +2688,13 @@ var Join = (function (_React$Component) {
       this.setState({ validationError: null, info: 'Logging you in...' });
 
       if (password !== confirm) {
-        this.setState({ validationError: 'Passwords do not match' });
+        this.setState({ validationError: 'Passwords do not match', info: null });
 
         return;
       }
 
       if (!agree.classList.contains('fa-check-square-o')) {
-        this.setState({ validationError: 'Please agree to our terms of service' });
+        this.setState({ validationError: 'Please agree to our terms of service', info: null });
 
         return;
       }
@@ -2698,16 +2702,16 @@ var Join = (function (_React$Component) {
       _superagent2['default'].post('/sign/up').send({ email: email, password: password }).end(function (err, res) {
         switch (res.status) {
           case 401:
-            _this.setState({ validationError: 'This email address is already taken' });
+            _this.setState({ validationError: 'This email address is already taken', info: null });
             break;
 
           case 200:
-            _this.setState({ validationError: null, successMessage: 'Welcome back' });
+            _this.setState({ validationError: null, successMessage: 'Welcome back', info: null });
             location.href = '/page/profile';
             break;
 
           default:
-            _this.setState({ validationError: 'Unknown error' });
+            _this.setState({ validationError: 'Unknown error', info: null });
             break;
         }
 
@@ -2753,116 +2757,126 @@ var Join = (function (_React$Component) {
         classes.push('syn--visible');
       }
 
+      var content = _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          _utilButtonGroup2['default'],
+          { block: true },
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            { primary: true, onClick: this.loginWithFacebook, medium: true },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
+            _react2['default'].createElement(
+              'span',
+              { className: _libAppComponent2['default'].classList(this), inline: true },
+              ' Facebook'
+            )
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            { info: true, onClick: this.loginWithTwitter, medium: true },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
+            _react2['default'].createElement(
+              'span',
+              null,
+              ' Twitter'
+            )
+          )
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group' },
+          _react2['default'].createElement(
+            'label',
+            null,
+            'Email'
+          ),
+          _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, medium: true, required: true, placeholder: 'Email', ref: 'email' })
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            _react2['default'].createElement(
+              'div',
+              { className: 'syn-form-group' },
+              _react2['default'].createElement(
+                'label',
+                null,
+                'Password'
+              )
+            )
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            _react2['default'].createElement(
+              'div',
+              { className: 'syn-form-group' },
+              _react2['default'].createElement(
+                'label',
+                null,
+                'Confirm password'
+              )
+            )
+          )
+        ),
+        _react2['default'].createElement(
+          _utilInputGroup2['default'],
+          { block: true },
+          _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Password', ref: 'password', medium: true }),
+          _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Confirm password', ref: 'confirm', medium: true })
+        ),
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-form-group syn-form-submit' },
+          _react2['default'].createElement(
+            _utilSubmit2['default'],
+            { block: true, large: true, success: true, radius: true },
+            'Join'
+          )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          { 'data-stack': 'phone-and-down' },
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', gutter: true },
+            'Already a user? ',
+            _react2['default'].createElement(
+              'a',
+              { href: '', onClick: this.signIn.bind(this) },
+              'Sign in'
+            )
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50', 'text-right': true, gutter: true },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'square-o', size: '2', onClick: this.agree.bind(this), ref: 'agree' }),
+            ' I agree to the ',
+            _react2['default'].createElement(
+              'a',
+              { href: '/page/terms-of-service' },
+              'Terms of Service'
+            )
+          )
+        )
+      );
+
+      if (this.state.info) {
+        content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Signing you in ...' });
+      }
+
       return _react2['default'].createElement(
         _utilModal2['default'],
         { className: _libAppComponent2['default'].classList.apply(_libAppComponent2['default'], [this].concat(classes)), title: 'Join' },
         _react2['default'].createElement(
           _utilForm2['default'],
           { handler: this.signup.bind(this), flash: this.state, 'form-center': true },
-          _react2['default'].createElement(
-            _utilButtonGroup2['default'],
-            { block: true },
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { primary: true, onClick: this.loginWithFacebook, medium: true },
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
-              _react2['default'].createElement(
-                'span',
-                { className: _libAppComponent2['default'].classList(this), inline: true },
-                ' Facebook'
-              )
-            ),
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { info: true, onClick: this.loginWithTwitter, medium: true },
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
-              _react2['default'].createElement(
-                'span',
-                null,
-                ' Twitter'
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group' },
-            _react2['default'].createElement(
-              'label',
-              null,
-              'Email'
-            ),
-            _react2['default'].createElement(_utilEmailInput2['default'], { block: true, autoFocus: true, medium: true, required: true, placeholder: 'Email', ref: 'email' })
-          ),
-          _react2['default'].createElement(
-            _utilRow2['default'],
-            null,
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50' },
-              _react2['default'].createElement(
-                'div',
-                { className: 'syn-form-group' },
-                _react2['default'].createElement(
-                  'label',
-                  null,
-                  'Password'
-                )
-              )
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50' },
-              _react2['default'].createElement(
-                'div',
-                { className: 'syn-form-group' },
-                _react2['default'].createElement(
-                  'label',
-                  null,
-                  'Confirm password'
-                )
-              )
-            )
-          ),
-          _react2['default'].createElement(
-            _utilInputGroup2['default'],
-            { block: true },
-            _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Password', ref: 'password', medium: true }),
-            _react2['default'].createElement(_utilPassword2['default'], { required: true, placeholder: 'Confirm password', ref: 'confirm', medium: true })
-          ),
-          _react2['default'].createElement(
-            'div',
-            { className: 'syn-form-group syn-form-submit' },
-            _react2['default'].createElement(
-              _utilSubmit2['default'],
-              { block: true, large: true, success: true, radius: true },
-              'Join'
-            )
-          ),
-          _react2['default'].createElement(
-            _utilRow2['default'],
-            { 'data-stack': 'phone-and-down' },
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', gutter: true },
-              'Already a user? ',
-              _react2['default'].createElement(
-                'a',
-                { href: '', onClick: this.signIn.bind(this) },
-                'Sign in'
-              )
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', 'text-right': true, gutter: true },
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'square-o', size: '2', onClick: this.agree.bind(this), ref: 'agree' }),
-              ' I agree to the ',
-              _react2['default'].createElement(
-                'a',
-                { href: '/page/terms-of-service' },
-                'Terms of Service'
-              )
-            )
-          )
+          content
         )
       );
     }
@@ -2878,7 +2892,7 @@ var Join = (function (_React$Component) {
 
 exports['default'] = Join;
 module.exports = exports['default'];
-},{"../lib/app/component":54,"./util/button":31,"./util/button-group":30,"./util/column":33,"./util/email-input":35,"./util/form":37,"./util/icon":38,"./util/input-group":40,"./util/link":42,"./util/modal":44,"./util/password":45,"./util/row":46,"./util/submit":48,"react":214,"superagent":215}],15:[function(require,module,exports){
+},{"../lib/app/component":54,"./util/button":31,"./util/button-group":30,"./util/column":33,"./util/email-input":35,"./util/form":37,"./util/icon":38,"./util/input-group":40,"./util/link":42,"./util/loading":43,"./util/modal":44,"./util/password":45,"./util/row":46,"./util/submit":48,"react":214,"superagent":215}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3320,6 +3334,10 @@ var _utilPassword = require('./util/password');
 
 var _utilPassword2 = _interopRequireDefault(_utilPassword);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var Login = (function (_React$Component) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3350,20 +3368,20 @@ var Login = (function (_React$Component) {
       _superagent2['default'].post('/sign/in').send({ email: email, password: password }).end(function (err, res) {
         switch (res.status) {
           case 404:
-            _this.setState({ validationError: 'Wrong email' });
+            _this.setState({ validationError: 'Wrong email', info: null });
             break;
 
           case 401:
-            _this.setState({ validationError: 'Wrong password' });
+            _this.setState({ validationError: 'Wrong password', info: null });
             break;
 
           case 200:
-            _this.setState({ validationError: null, successMessage: 'Welcome back' });
+            _this.setState({ validationError: null, info: null, successMessage: 'Welcome back' });
             location.href = '/page/profile';
             break;
 
           default:
-            _this.setState({ validationError: 'Unknown error' });
+            _this.setState({ validationError: 'Unknown error', info: null });
             break;
         }
 
@@ -3491,7 +3509,7 @@ var Login = (function (_React$Component) {
       );
 
       if (this.state.info) {
-        content = null;
+        content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loggin you in...' });
       }
 
       return _react2['default'].createElement(
@@ -3511,7 +3529,7 @@ var Login = (function (_React$Component) {
 
 exports['default'] = Login;
 module.exports = exports['default'];
-},{"../lib/app/component":54,"./util/button":31,"./util/button-group":30,"./util/column":33,"./util/email-input":35,"./util/form":37,"./util/icon":38,"./util/link":42,"./util/modal":44,"./util/password":45,"./util/row":46,"./util/submit":48,"react":214,"superagent":215}],18:[function(require,module,exports){
+},{"../lib/app/component":54,"./util/button":31,"./util/button-group":30,"./util/column":33,"./util/email-input":35,"./util/form":37,"./util/icon":38,"./util/link":42,"./util/loading":43,"./util/modal":44,"./util/password":45,"./util/row":46,"./util/submit":48,"react":214,"superagent":215}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6544,7 +6562,12 @@ var Loading = (function (_React$Component) {
       return _react2['default'].createElement(
         'div',
         { className: _libAppComponent2['default'].classList(this, 'text-center', 'gutter', 'muted') },
-        _react2['default'].createElement(_icon2['default'], { icon: 'circle-o-notch', spin: true, size: 4 })
+        _react2['default'].createElement(_icon2['default'], { icon: 'circle-o-notch', spin: true, size: 4 }),
+        _react2['default'].createElement(
+          'h5',
+          { className: 'text-info' },
+          this.props.message
+        )
       );
     }
   }]);

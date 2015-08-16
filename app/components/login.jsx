@@ -14,6 +14,7 @@ import Row            from './util/row';
 import Column         from './util/column';
 import EmailInput     from './util/email-input';
 import Password       from './util/password';
+import Loading        from './util/loading';
 
 class Login extends React.Component {
 
@@ -40,20 +41,20 @@ class Login extends React.Component {
       .end((err, res) => {
         switch ( res.status ) {
           case 404:
-            this.setState({ validationError : 'Wrong email' });
+            this.setState({ validationError : 'Wrong email', info: null });
             break;
 
             case 401:
-              this.setState({ validationError : 'Wrong password' });
+              this.setState({ validationError : 'Wrong password', info: null });
               break;
 
             case 200:
-              this.setState({ validationError : null, successMessage : 'Welcome back' });
+              this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
               location.href = '/page/profile';
               break;
 
             default:
-              this.setState({ validationError : 'Unknown error' });
+              this.setState({ validationError : 'Unknown error', info: null });
               break;
         }
 
@@ -131,7 +132,7 @@ class Login extends React.Component {
     );
 
     if ( this.state.info ) {
-      content = null;
+      content = ( <Loading message="Loggin you in..." /> );
     }
 
     return (

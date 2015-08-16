@@ -15,6 +15,7 @@ import Column         from './util/column';
 import EmailInput     from './util/email-input';
 import Password       from './util/password';
 import InputGroup     from './util/input-group';
+import Loading        from './util/loading';
 
 class Join extends React.Component {
   constructor (props) {
@@ -32,13 +33,13 @@ class Join extends React.Component {
     this.setState({ validationError : null, info : 'Logging you in...' });
 
     if ( password !== confirm ) {
-      this.setState({ validationError : 'Passwords do not match' });
+      this.setState({ validationError : 'Passwords do not match', info: null });
 
       return;
     }
 
     if ( ! agree.classList.contains('fa-check-square-o') ) {
-      this.setState({ validationError : 'Please agree to our terms of service' });
+      this.setState({ validationError : 'Please agree to our terms of service', info: null });
 
       return;
     }
@@ -49,16 +50,16 @@ class Join extends React.Component {
       .end((err, res) => {
         switch ( res.status ) {
           case 401:
-            this.setState({ validationError : 'This email address is already taken' });
+            this.setState({ validationError : 'This email address is already taken', info: null });
             break;
 
           case 200:
-            this.setState({ validationError : null, successMessage : 'Welcome back' });
+            this.setState({ validationError : null, successMessage : 'Welcome back', info: null });
             location.href = '/page/profile';
             break;
 
           default:
-            this.setState({ validationError : 'Unknown error' });
+            this.setState({ validationError : 'Unknown error', info: null });
             break;
         }
 
@@ -104,61 +105,71 @@ class Join extends React.Component {
       classes.push('syn--visible');
     }
 
+    let content = (
+      <div>
+        <ButtonGroup block>
+          <Button primary onClick={ this.loginWithFacebook } medium>
+            <Icon icon="facebook" />
+            <span className={ Component.classList(this) } inline> Facebook</span>
+          </Button>
+
+          <Button info onClick={ this.loginWithTwitter } medium>
+            <Icon icon="twitter" />
+            <span> Twitter</span>
+          </Button>
+        </ButtonGroup>
+
+        <div className="syn-form-group">
+          <label>Email</label>
+          <EmailInput block autoFocus medium required placeholder="Email" ref="email" />
+        </div>
+
+        <Row>
+          <Column span="50">
+            <div className="syn-form-group">
+              <label>Password</label>
+
+            </div>
+          </Column>
+
+          <Column span="50">
+            <div className="syn-form-group">
+              <label>Confirm password</label>
+
+            </div>
+          </Column>
+
+        </Row>
+
+        <InputGroup block>
+          <Password required placeholder="Password" ref="password" medium />
+          <Password required placeholder="Confirm password" ref="confirm" medium />
+        </InputGroup>
+
+        <div className="syn-form-group syn-form-submit">
+          <Submit block large success radius>Join</Submit>
+        </div>
+
+        <Row data-stack="phone-and-down">
+          <Column span="50" gutter>
+            Already a user? <a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
+          </Column>
+
+          <Column span="50" text-right gutter>
+            <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" /> I agree to the <a href="/page/terms-of-service">Terms of Service</a>
+          </Column>
+        </Row>
+      </div>
+    );
+
+    if ( this.state.info ) {
+      content = ( <Loading message="Signing you in ..." /> );
+    }
+
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Join">
         <Form handler={ this.signup.bind(this) } flash={ this.state } form-center>
-          <ButtonGroup block>
-            <Button primary onClick={ this.loginWithFacebook } medium>
-              <Icon icon="facebook" />
-              <span className={ Component.classList(this) } inline> Facebook</span>
-            </Button>
-
-            <Button info onClick={ this.loginWithTwitter } medium>
-              <Icon icon="twitter" />
-              <span> Twitter</span>
-            </Button>
-          </ButtonGroup>
-
-          <div className="syn-form-group">
-            <label>Email</label>
-            <EmailInput block autoFocus medium required placeholder="Email" ref="email" />
-          </div>
-
-          <Row>
-            <Column span="50">
-              <div className="syn-form-group">
-                <label>Password</label>
-
-              </div>
-            </Column>
-
-            <Column span="50">
-              <div className="syn-form-group">
-                <label>Confirm password</label>
-
-              </div>
-            </Column>
-
-          </Row>
-
-          <InputGroup block>
-            <Password required placeholder="Password" ref="password" medium />
-            <Password required placeholder="Confirm password" ref="confirm" medium />
-          </InputGroup>
-
-          <div className="syn-form-group syn-form-submit">
-            <Submit block large success radius>Join</Submit>
-          </div>
-
-          <Row data-stack="phone-and-down">
-            <Column span="50" gutter>
-              Already a user? <a href="" onClick={ this.signIn.bind(this) }>Sign in</a>
-            </Column>
-
-            <Column span="50" text-right gutter>
-              <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" /> I agree to the <a href="/page/terms-of-service">Terms of Service</a>
-            </Column>
-          </Row>
+          { content }
         </Form>
       </Modal>
     );

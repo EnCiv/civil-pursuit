@@ -9,6 +9,7 @@ class Loading extends React.Component {
     return (
       <div className={ Component.classList(this, 'text-center', 'gutter', 'muted') }>
         <Icon icon="circle-o-notch" spin={ true } size={ 4 } />
+        <h5 className="text-info">{ this.props.message }</h5>
       </div>
     );
   }

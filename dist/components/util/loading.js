@@ -41,7 +41,12 @@ var Loading = (function (_React$Component) {
       return _react2['default'].createElement(
         'div',
         { className: _libAppComponent2['default'].classList(this, 'text-center', 'gutter', 'muted') },
-        _react2['default'].createElement(_icon2['default'], { icon: 'circle-o-notch', spin: true, size: 4 })
+        _react2['default'].createElement(_icon2['default'], { icon: 'circle-o-notch', spin: true, size: 4 }),
+        _react2['default'].createElement(
+          'h5',
+          { className: 'text-info' },
+          this.props.message
+        )
       );
     }
   }]);

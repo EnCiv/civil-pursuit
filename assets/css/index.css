@@ -248,6 +248,9 @@ a:hover {
   border-color: #5bc0de;
   color: #ffffff;
 }
+.text-info {
+  color: #5bc0de;
+}
 .success-bg {
   background: #5cb85c;
   border-color: #5cb85c;

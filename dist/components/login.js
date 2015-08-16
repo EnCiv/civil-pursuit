@@ -70,6 +70,10 @@ var _utilPassword = require('./util/password');
 
 var _utilPassword2 = _interopRequireDefault(_utilPassword);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var Login = (function (_React$Component) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,20 +104,20 @@ var Login = (function (_React$Component) {
       _superagent2['default'].post('/sign/in').send({ email: email, password: password }).end(function (err, res) {
         switch (res.status) {
           case 404:
-            _this.setState({ validationError: 'Wrong email' });
+            _this.setState({ validationError: 'Wrong email', info: null });
             break;
 
           case 401:
-            _this.setState({ validationError: 'Wrong password' });
+            _this.setState({ validationError: 'Wrong password', info: null });
             break;
 
           case 200:
-            _this.setState({ validationError: null, successMessage: 'Welcome back' });
+            _this.setState({ validationError: null, info: null, successMessage: 'Welcome back' });
             location.href = '/page/profile';
             break;
 
           default:
-            _this.setState({ validationError: 'Unknown error' });
+            _this.setState({ validationError: 'Unknown error', info: null });
             break;
         }
 
@@ -241,7 +245,7 @@ var Login = (function (_React$Component) {
       );
 
       if (this.state.info) {
-        content = null;
+        content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loggin you in...' });
       }
 
       return _react2['default'].createElement(
