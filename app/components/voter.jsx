@@ -14,67 +14,32 @@ class Voter extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (props) {
-    super(props);
+  setRegisteredVoter () {
+    let registered = React.findDOMNode(this.refs.registered).value;
 
-    this.state = { user : this.props.user };
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  validateGPS () {
-    navigator.geolocation.watchPosition(position => {
-      let { longitude, latitude } = position.coords;
-
-      window.socket.emit('validate gps', longitude, latitude)
-        .on('OK validate gps', user => this.setState({ user }));
-    });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setCity () {
-    let city = React.findDOMNode(this.refs.city).value;
-
-    if ( city ) {
-      window.socket.emit('set city', city);
+    if ( registered ) {
+      window.socket.emit('set registered voter', registered);
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  setState () {
-    let state = React.findDOMNode(this.refs.state).value;
+  setParty () {
+    let party = React.findDOMNode(this.refs.party).value;
 
-    if ( state ) {
-      window.socket.emit('set state', state);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setZip () {
-    let zip = React.findDOMNode(this.refs.zip).value;
-
-    if ( zip ) {
-      window.socket.emit('set zip', zip);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setZip4 () {
-    let zip4 = React.findDOMNode(this.refs.zip4).value;
-
-    if ( zip4 ) {
-      window.socket.emit('set zip4', zip4);
+    if ( party ) {
+      window.socket.emit('set party', party);
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { user } = this.props;
+    let { user, config } = this.props;
+
+    let parties = config.party.map(party => (
+      <option value={ party._id } key={ party._id }>{ party.name }</option>
+    ));
 
     return (
       <section>
@@ -86,6 +51,31 @@ class Voter extends React.Component {
           <h2>Voter</h2>
           <p>We use this information to make sure that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.</p>
         </section>
+
+        <Row baseline className="gutter">
+          <Column span="25">
+            Registered voter
+          </Column>
+          <Column span="75">
+            <Select block medium ref="registered" defaultValue={ user.registered_voter } onChange={ this.setRegisteredVoter.bind(this) }>
+              <option value=''>Choose one</option>
+              <option value={ true }>Yes</option>
+              <option value={ false }>No</option>
+            </Select>
+          </Column>
+        </Row>
+
+        <Row baseline className="gutter">
+          <Column span="25">
+            Political Party
+          </Column>
+          <Column span="75">
+            <Select block medium ref="party" defaultValue={ user.party } onChange={ this.setParty.bind(this) }>
+              <option value=''>Choose one</option>
+              { parties }
+            </Select>
+          </Column>
+        </Row>
       </section>
     );
   }

@@ -328,7 +328,7 @@ var Identity = (function (_React$Component) {
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '75' },
-              _react2['default'].createElement(_utilDateInput2['default'], { block: true, medium: true, ref: 'birthdate', onChange: this.saveBirthdate.bind(this), defaultValue: dobValue })
+              _react2['default'].createElement(_utilDateInput2['default'], { block: true, ref: 'birthdate', onChange: this.saveBirthdate.bind(this), defaultValue: dobValue })
             )
           ),
           _react2['default'].createElement(

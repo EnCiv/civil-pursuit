@@ -211,7 +211,7 @@ class Identity extends React.Component {
               Birthdate
             </Column>
             <Column span="75">
-              <DateInput block medium ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } />
+              <DateInput block ref="birthdate" onChange={ this.saveBirthdate.bind(this) } defaultValue={ dobValue } />
             </Column>
           </Row>
 

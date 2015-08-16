@@ -1897,7 +1897,7 @@ var Identity = (function (_React$Component) {
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '75' },
-              _react2['default'].createElement(_utilDateInput2['default'], { block: true, medium: true, ref: 'birthdate', onChange: this.saveBirthdate.bind(this), defaultValue: dobValue })
+              _react2['default'].createElement(_utilDateInput2['default'], { block: true, ref: 'birthdate', onChange: this.saveBirthdate.bind(this), defaultValue: dobValue })
             )
           ),
           _react2['default'].createElement(
@@ -7083,8 +7083,6 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -7128,83 +7126,38 @@ var _utilSelect = require('./util/select');
 var _utilSelect2 = _interopRequireDefault(_utilSelect);
 
 var Voter = (function (_React$Component) {
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  function Voter(props) {
+  function Voter() {
     _classCallCheck(this, Voter);
 
-    _get(Object.getPrototypeOf(Voter.prototype), 'constructor', this).call(this, props);
-
-    this.state = { user: this.props.user };
+    if (_React$Component != null) {
+      _React$Component.apply(this, arguments);
+    }
   }
 
   _inherits(Voter, _React$Component);
 
   _createClass(Voter, [{
-    key: 'validateGPS',
+    key: 'setRegisteredVoter',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function validateGPS() {
-      var _this = this;
+    value: function setRegisteredVoter() {
+      var registered = _react2['default'].findDOMNode(this.refs.registered).value;
 
-      navigator.geolocation.watchPosition(function (position) {
-        var _position$coords = position.coords;
-        var longitude = _position$coords.longitude;
-        var latitude = _position$coords.latitude;
-
-        window.socket.emit('validate gps', longitude, latitude).on('OK validate gps', function (user) {
-          return _this.setState({ user: user });
-        });
-      });
-    }
-  }, {
-    key: 'setCity',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function setCity() {
-      var city = _react2['default'].findDOMNode(this.refs.city).value;
-
-      if (city) {
-        window.socket.emit('set city', city);
+      if (registered) {
+        window.socket.emit('set registered voter', registered);
       }
     }
   }, {
-    key: 'setState',
+    key: 'setParty',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function setState() {
-      var state = _react2['default'].findDOMNode(this.refs.state).value;
+    value: function setParty() {
+      var party = _react2['default'].findDOMNode(this.refs.party).value;
 
-      if (state) {
-        window.socket.emit('set state', state);
-      }
-    }
-  }, {
-    key: 'setZip',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function setZip() {
-      var zip = _react2['default'].findDOMNode(this.refs.zip).value;
-
-      if (zip) {
-        window.socket.emit('set zip', zip);
-      }
-    }
-  }, {
-    key: 'setZip4',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function setZip4() {
-      var zip4 = _react2['default'].findDOMNode(this.refs.zip4).value;
-
-      if (zip4) {
-        window.socket.emit('set zip4', zip4);
+      if (party) {
+        window.socket.emit('set party', party);
       }
     }
   }, {
@@ -7213,7 +7166,17 @@ var Voter = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var user = this.props.user;
+      var _props = this.props;
+      var user = _props.user;
+      var config = _props.config;
+
+      var parties = config.party.map(function (party) {
+        return _react2['default'].createElement(
+          'option',
+          { value: party._id, key: party._id },
+          party.name
+        );
+      });
 
       return _react2['default'].createElement(
         'section',
@@ -7235,6 +7198,61 @@ var Voter = (function (_React$Component) {
             'p',
             null,
             'We use this information to make sure that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.'
+          )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          { baseline: true, className: 'gutter' },
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '25' },
+            'Registered voter'
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '75' },
+            _react2['default'].createElement(
+              _utilSelect2['default'],
+              { block: true, medium: true, ref: 'registered', defaultValue: user.registered_voter, onChange: this.setRegisteredVoter.bind(this) },
+              _react2['default'].createElement(
+                'option',
+                { value: '' },
+                'Choose one'
+              ),
+              _react2['default'].createElement(
+                'option',
+                { value: true },
+                'Yes'
+              ),
+              _react2['default'].createElement(
+                'option',
+                { value: false },
+                'No'
+              )
+            )
+          )
+        ),
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          { baseline: true, className: 'gutter' },
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '25' },
+            'Political Party'
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '75' },
+            _react2['default'].createElement(
+              _utilSelect2['default'],
+              { block: true, medium: true, ref: 'party', defaultValue: user.party, onChange: this.setParty.bind(this) },
+              _react2['default'].createElement(
+                'option',
+                { value: '' },
+                'Choose one'
+              ),
+              parties
+            )
           )
         )
       );
