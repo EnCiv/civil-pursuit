@@ -451,7 +451,7 @@ button.small,
 .button.small {
   font-size: 80% !important;
   border-width: 2px;
-  padding: 0.8em;
+  padding: 0.4em;
 }
 button.medium,
 .button.medium {
@@ -785,6 +785,11 @@ form h2:empty {
   background: yellow;
   border-color: #5cb85c;
 }
+.syn-flash.syn-flash--info {
+  color: #5bc0de;
+  background: yellow;
+  border-color: #5bc0de;
+}
 .syn-flash:empty {
   margin: 0;
   padding: 0;
@@ -1008,7 +1013,7 @@ body {
 .syn-top_bar-beta.small {
   font-size: 80% !important;
   border-width: 2px;
-  padding: 0.8em;
+  padding: 0.4em;
 }
 .syn-top_bar-beta.medium {
   font-size: 125%;
@@ -1200,14 +1205,24 @@ body {
 /**-------------------------------------------------------------// panel       */
 .item {
   border: 1px solid #666;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px 0 0 6px;
+  border-right: none;
 }
 .item-media {
   float: left;
   width: 25%;
   max-width: 250px;
+  margin-right: 10px;
 }
 .item-text {
   padding: 10px;
+  padding-bottom: 0;
+}
+.item-truncatable {
+  margin-top: -15.5px;
+  margin-left: -10px;
 }
 .item-truncatable .word.hide {
   display: none;
@@ -1220,7 +1235,7 @@ body {
 }
 .item-subject {
   margin: 0;
-  margin-top: -6.5px;
+  margin-left: 10px;
 }
 .item-description {
   /** Parse \n into line breaks */
@@ -1232,6 +1247,8 @@ body {
   padding-left: 1em;
   text-align: right;
   padding: 10px;
+  margin-top: -10px;
+  padding-right: 0;
 }
 .syn-uploader .syn-uploader-dropbox {
   background: #F8F8F8;

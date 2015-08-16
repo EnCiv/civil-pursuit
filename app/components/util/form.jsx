@@ -115,7 +115,7 @@ class Form extends React.Component {
     }
 
     else if ( this.state.info ) {
-      flash = ( <Flash success message={ this.state.info } /> );
+      flash = ( <Flash info message={ this.state.info } /> );
     }
 
     let classes = [];

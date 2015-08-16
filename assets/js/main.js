@@ -2666,7 +2666,7 @@ var Join = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Join.prototype), 'constructor', this).call(this, props);
 
-    this.state = { validationError: null, successMessage: null };
+    this.state = { validationError: null, successMessage: null, info: null };
   }
 
   _inherits(Join, _React$Component);
@@ -2680,6 +2680,8 @@ var Join = (function (_React$Component) {
           password = _react2['default'].findDOMNode(this.refs.password).value,
           confirm = _react2['default'].findDOMNode(this.refs.confirm).value,
           agree = _react2['default'].findDOMNode(this.refs.agree);
+
+      this.setState({ validationError: null, info: 'Logging you in...' });
 
       if (password !== confirm) {
         this.setState({ validationError: 'Passwords do not match' });
@@ -3821,8 +3823,6 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -3998,7 +3998,11 @@ var Feedback = (function (_React$Component5) {
   _createClass(Feedback, [{
     key: 'render',
     value: function render() {
-      return _react2['default'].createElement(_utilTextArea2['default'], _extends({ block: true, placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?' }, this.props));
+      return _react2['default'].createElement(
+        'div',
+        this.props,
+        _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?' })
+      );
     }
   }]);
 
@@ -4141,28 +4145,28 @@ var Promote = (function (_React$Component9) {
 
         content.push(_react2['default'].createElement(Header, this.state), _react2['default'].createElement(
           _utilRow2['default'],
-          { 'data-stack': 'phone-and-down', style: { border: '1px solid black' } },
+          { 'data-stack': 'phone-and-down' },
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', key: 'left', style: { border: '1px solid black' } },
+            { span: '50', key: 'left', className: 'gutter-right-adjust gutter-left' },
             _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
             _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
             _react2['default'].createElement(Reference, this.state.left.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
             _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'gutter-top gutter-right-adjust' }),
-            _react2['default'].createElement(Feedback, { className: 'gutter-top gutter-right-adjust' })
+            _react2['default'].createElement(Feedback, { className: 'gutter-top' })
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', key: 'right' },
+            { span: '50', key: 'right', className: 'gutter-left-adjust gutter-right' },
             _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
             _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
             _react2['default'].createElement(Reference, this.state.right.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
             _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'gutter-top gutter-left-adjust' }),
-            _react2['default'].createElement(Feedback, null)
+            _react2['default'].createElement(Feedback, { className: 'gutter-top' })
           )
         ), _react2['default'].createElement(
           'h5',
@@ -4188,7 +4192,7 @@ var Promote = (function (_React$Component9) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'gutter', style: { border: '1px solid black' } },
+        { style: { border: '1px solid #666', borderRadius: '6px 0 0 6px' } },
         content
       );
     }
@@ -6147,7 +6151,7 @@ var Form = (function (_React$Component) {
       } else if (this.state.successMessage) {
         flash = _react2['default'].createElement(_flash2['default'], { success: true, message: this.state.successMessage });
       } else if (this.state.info) {
-        flash = _react2['default'].createElement(_flash2['default'], { success: true, message: this.state.info });
+        flash = _react2['default'].createElement(_flash2['default'], { info: true, message: this.state.info });
       }
 
       var classes = [];

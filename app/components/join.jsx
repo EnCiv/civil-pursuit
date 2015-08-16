@@ -20,7 +20,7 @@ class Join extends React.Component {
   constructor (props) {
     super(props);
 
-    this.state = { validationError : null, successMessage : null };
+    this.state = { validationError : null, successMessage : null, info : null };
   }
 
   signup () {
@@ -28,6 +28,8 @@ class Join extends React.Component {
       password = React.findDOMNode(this.refs.password).value,
       confirm = React.findDOMNode(this.refs.confirm).value,
       agree = React.findDOMNode(this.refs.agree);
+
+    this.setState({ validationError : null, info : 'Logging you in...' });
 
     if ( password !== confirm ) {
       this.setState({ validationError : 'Passwords do not match' });

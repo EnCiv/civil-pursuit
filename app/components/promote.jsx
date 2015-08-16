@@ -50,7 +50,9 @@ class Reference extends React.Component {
 class Feedback extends React.Component {
   render () {
     return (
-      <TextArea block placeholder="Can you provide feedback that would encourage the author to create a statement that more people would unite around?" { ...this.props }></TextArea>
+      <div { ...this.props }>
+        <TextArea block placeholder="Can you provide feedback that would encourage the author to create a statement that more people would unite around?"></TextArea>
+      </div>
     );
   }
 }
@@ -126,25 +128,25 @@ class Promote extends React.Component {
           <Header { ...this.state } />
         ),
         (
-          <Row data-stack="phone-and-down" style={{ border: '1px solid black'}}>
-            <Column span="50" key="left" style={{ border: '1px solid black'}}>
+          <Row data-stack="phone-and-down">
+            <Column span="50" key="left" className="gutter-right-adjust gutter-left">
               <ItemMedia item={ this.state.left } />
               <Subject subject={ this.state.left.subject } />
               <Reference { ...this.state.left.references[0] } />
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
               <Sliders criterias={ this.state.criterias } className="gutter-top gutter-right-adjust" />
-              <Feedback className="gutter-top gutter-right-adjust" />
+              <Feedback className="gutter-top" />
             </Column>
 
-            <Column span="50" key="right">
+            <Column span="50" key="right" className="gutter-left-adjust gutter-right">
               <ItemMedia item={ this.state.right } />
               <Subject subject={ this.state.right.subject } />
               <Reference { ...this.state.right.references[0] } />
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
               <Sliders criterias={ this.state.criterias } className="gutter-top gutter-left-adjust" />
-              <Feedback />
+              <Feedback className="gutter-top" />
             </Column>
           </Row>
         ),
@@ -171,7 +173,7 @@ class Promote extends React.Component {
     }
 
     return (
-      <section className="gutter" style={{ border: '1px solid black'}}>
+      <section style={{ border: '1px solid #666', borderRadius: '6px 0 0 6px' }}>
         { content }
       </section>
     );

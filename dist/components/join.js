@@ -80,7 +80,7 @@ var Join = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Join.prototype), 'constructor', this).call(this, props);
 
-    this.state = { validationError: null, successMessage: null };
+    this.state = { validationError: null, successMessage: null, info: null };
   }
 
   _inherits(Join, _React$Component);
@@ -94,6 +94,8 @@ var Join = (function (_React$Component) {
           password = _react2['default'].findDOMNode(this.refs.password).value,
           confirm = _react2['default'].findDOMNode(this.refs.confirm).value,
           agree = _react2['default'].findDOMNode(this.refs.agree);
+
+      this.setState({ validationError: null, info: 'Logging you in...' });
 
       if (password !== confirm) {
         this.setState({ validationError: 'Passwords do not match' });
