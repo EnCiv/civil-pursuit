@@ -4246,6 +4246,8 @@ var Promote = (function (_React$Component9) {
       var _state = this.state;
       var cursor = _state.cursor;
       var limit = _state.limit;
+      var left = _state.left;
+      var right = _state.right;
 
       if (cursor < limit) {
         if (!position) {
@@ -4254,9 +4256,16 @@ var Promote = (function (_React$Component9) {
           cursor += 1;
         }
 
-        var left = this.items[cursor];
+        switch (position) {
+          case 'left':
+            left = this.items[cursor];
+            break;
+          case 'right':
+            right = this.items[cursor];
+            break;
+        }
 
-        this.setState({ cursor: cursor, left: left });
+        this.setState({ cursor: cursor, left: left, right: right });
       }
     }
   }, {
@@ -4304,7 +4313,7 @@ var Promote = (function (_React$Component9) {
             _react2['default'].createElement(
               'div',
               { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-              _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { position: 'right' })),
+              _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right') })),
               _react2['default'].createElement(EditAndGoAgain, null)
             )
           )
@@ -4324,7 +4333,7 @@ var Promote = (function (_React$Component9) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50', key: 'right', className: 'promote-right' },
-            _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { position: 'right' })),
+            _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right') })),
             _react2['default'].createElement(EditAndGoAgain, { className: 'gutter-top' })
           )
         ), _react2['default'].createElement(

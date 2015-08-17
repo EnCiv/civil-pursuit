@@ -148,7 +148,7 @@ class Promote extends React.Component {
   next (position) {
     console.log('next', position);
 
-    let { cursor, limit } = this.state;
+    let { cursor, limit, left, right } = this.state;
 
     if ( cursor < limit ) {
       if ( ! position ) {
@@ -159,9 +159,16 @@ class Promote extends React.Component {
         cursor += 1;
       }
 
-      let left = this.items[cursor];
+      switch ( position ) {
+        case 'left' :
+          left = this.items[cursor];
+          break;
+        case 'right':
+          right = this.items[cursor];
+          break;
+      }
 
-      this.setState({ cursor, left });
+      this.setState({ cursor, left, right });
     }
   }
 
@@ -203,7 +210,7 @@ class Promote extends React.Component {
               <Sliders criterias={ this.state.criterias } className="promote-sliders" />
               <Feedback className="gutter-top" />
               <div data-screen="phone-and-down" className="gutter-top">
-                <PromoteButton { ...this.state.right } position="right" />
+                <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } />
                 <EditAndGoAgain />
               </div>
             </Column>
@@ -220,7 +227,7 @@ class Promote extends React.Component {
             </Column>
 
             <Column span="50" key="right" className="promote-right">
-              <PromoteButton { ...this.state.right } position="right" />
+              <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } />
               <EditAndGoAgain className="gutter-top" />
             </Column>
           </Row>
