@@ -177,10 +177,18 @@ class ColumnButtons extends React.Component {
 
 class SideColumn extends React.Component {
   render () {
-    let { item, position, criterias } = this.props;
+    let { item, position, criterias, other } = this.props;
 
     if ( ! item ) {
       return ( <div></div> );
+    }
+
+    let promoteMe = (
+      <PromoteButton { ...item } onClick={ this.props.next.bind(this.props.parent, position) } className="gutter-bottom" />
+    );
+
+    if ( ! other ) {
+      promoteMe = ( <div></div> );
     }
 
     return (
@@ -193,7 +201,7 @@ class SideColumn extends React.Component {
         <Sliders criterias={ criterias } className="promote-sliders" />
         <Feedback className="gutter-top" />
         <div data-screen="phone-and-down" className="gutter-top">
-          <PromoteButton { ...item } onClick={ this.props.next.bind(this.props.parent, position) } className="gutter-bottom" />
+          { promoteMe }
           <EditAndGoAgain />
         </div>
       </Column>
@@ -339,6 +347,20 @@ class Promote extends React.Component {
     if ( this.state.limit ) {
       content = [];
 
+      let foo = <h5 className="text-center gutter">Which of these is most important for the community to consider?</h5>;
+
+      if ( ! this.state.left || ! this.state.right ) {
+        foo = ( <div></div> );
+      }
+
+      let promoteMe = (
+        <ColumnButtons key="left-buttons" item={ this.state.left } position='left' next={ this.next.bind(this) } parent={ this } />
+      );
+
+      if ( ! this.state.left || ! this.state.right ) {
+        promoteMe = ( <div></div> );
+      }
+
       content.push(
         (
           <Header { ...this.state } />
@@ -367,10 +389,10 @@ class Promote extends React.Component {
 
             </Row>
 
-            <h5 data-screen="phone-and-up" className="text-center gutter">Which of these is most important for the community to consider?</h5>
+            { foo }
 
             <Row>
-              <ColumnButtons key="left-buttons" item={ this.state.left } position='left' next={ this.next.bind(this) } parent={ this } />
+              { promoteMe }
 
               <ColumnButtons key="right-buttons" item={ this.state.right } position='right' next={ this.next.bind(this) } parent={ this } />
 
@@ -383,9 +405,9 @@ class Promote extends React.Component {
         (
           <div data-screen="up-to-phone">
             <Row data-stack>
-              <SideColumn key="left" position="left" item={ this.state.left } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } />
+              <SideColumn key="left" position="left" item={ this.state.left } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } other={ this.state.right } />
 
-              <SideColumn key="right" position="right" item={ this.state.right } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } />
+              <SideColumn key="right" position="right" item={ this.state.right } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } other={ this.state.left } />
             </Row>
           </div>
         ),

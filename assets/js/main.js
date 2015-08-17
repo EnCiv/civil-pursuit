@@ -4349,9 +4349,16 @@ var SideColumn = (function (_React$Component13) {
       var item = _props5.item;
       var position = _props5.position;
       var criterias = _props5.criterias;
+      var other = _props5.other;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
+      }
+
+      var promoteMe = _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.props.next.bind(this.props.parent, position), className: 'gutter-bottom' }));
+
+      if (!other) {
+        promoteMe = _react2['default'].createElement('div', null);
       }
 
       return _react2['default'].createElement(
@@ -4367,7 +4374,7 @@ var SideColumn = (function (_React$Component13) {
         _react2['default'].createElement(
           'div',
           { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-          _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.props.next.bind(this.props.parent, position), className: 'gutter-bottom' })),
+          promoteMe,
           _react2['default'].createElement(EditAndGoAgain, null)
         )
       );
@@ -4528,6 +4535,22 @@ var Promote = (function (_React$Component14) {
       if (this.state.limit) {
         content = [];
 
+        var foo = _react2['default'].createElement(
+          'h5',
+          { className: 'text-center gutter' },
+          'Which of these is most important for the community to consider?'
+        );
+
+        if (!this.state.left || !this.state.right) {
+          foo = _react2['default'].createElement('div', null);
+        }
+
+        var promoteMe = _react2['default'].createElement(ColumnButtons, { key: 'left-buttons', item: this.state.left, position: 'left', next: this.next.bind(this), parent: this });
+
+        if (!this.state.left || !this.state.right) {
+          promoteMe = _react2['default'].createElement('div', null);
+        }
+
         content.push(_react2['default'].createElement(Header, this.state), _react2['default'].createElement(
           'div',
           { 'data-screen': 'phone-and-up' },
@@ -4549,15 +4572,11 @@ var Promote = (function (_React$Component14) {
             _react2['default'].createElement(ColumnSliders, { key: 'left-sliders', item: this.state.left, position: 'left', criterias: this.state.criterias }),
             _react2['default'].createElement(ColumnSliders, { key: 'right-sliders', item: this.state.right, position: 'right', criterias: this.state.criterias })
           ),
-          _react2['default'].createElement(
-            'h5',
-            { 'data-screen': 'phone-and-up', className: 'text-center gutter' },
-            'Which of these is most important for the community to consider?'
-          ),
+          foo,
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(ColumnButtons, { key: 'left-buttons', item: this.state.left, position: 'left', next: this.next.bind(this), parent: this }),
+            promoteMe,
             _react2['default'].createElement(ColumnButtons, { key: 'right-buttons', item: this.state.right, position: 'right', next: this.next.bind(this), parent: this })
           )
         ), _react2['default'].createElement(
@@ -4566,8 +4585,8 @@ var Promote = (function (_React$Component14) {
           _react2['default'].createElement(
             _utilRow2['default'],
             { 'data-stack': true },
-            _react2['default'].createElement(SideColumn, { key: 'left', position: 'left', item: this.state.left, criterias: this.state.criterias, next: this.next.bind(this), parent: this }),
-            _react2['default'].createElement(SideColumn, { key: 'right', position: 'right', item: this.state.right, criterias: this.state.criterias, next: this.next.bind(this), parent: this })
+            _react2['default'].createElement(SideColumn, { key: 'left', position: 'left', item: this.state.left, criterias: this.state.criterias, next: this.next.bind(this), parent: this, other: this.state.right }),
+            _react2['default'].createElement(SideColumn, { key: 'right', position: 'right', item: this.state.right, criterias: this.state.criterias, next: this.next.bind(this), parent: this, other: this.state.left })
           )
         ), _react2['default'].createElement(
           'div',
