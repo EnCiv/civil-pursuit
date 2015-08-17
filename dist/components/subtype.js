@@ -104,7 +104,7 @@ var Subtype = (function (_React$Component) {
 
         content = [_react2['default'].createElement(
           _panel2['default'],
-          _extends({}, this.props, this.state.panel, { title: this.props.item.subtype.name, ref: 'panel' }),
+          _extends({}, this.props, this.state.panel, { title: this.props.item.subtype.name, ref: 'panel', parent: this.props.item }),
           items
         )];
       }

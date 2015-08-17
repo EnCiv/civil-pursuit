@@ -4,8 +4,10 @@ import ItemModel from '../models/item';
 
 function createItem (event, item) {
   try {
-    item.type = item.type._id;
+    item.type = item.type._id || item.type;
     item.user = this.synuser.id;
+
+    console.log('socket create item', item);
 
     ItemModel.insert(item, this).then(
       item => {

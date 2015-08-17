@@ -14,8 +14,10 @@ function createItem(event, item) {
   var _this = this;
 
   try {
-    item.type = item.type._id;
+    item.type = item.type._id || item.type;
     item.user = this.synuser.id;
+
+    console.log('socket create item', item);
 
     _modelsItem2['default'].insert(item, this).then(function (item) {
       try {

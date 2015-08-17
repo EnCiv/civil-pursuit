@@ -61,7 +61,7 @@ class Subtype extends React.Component {
       }
 
       content = [
-        <Panel { ...this.props } { ...this.state.panel } title={ this.props.item.subtype.name } ref="panel">
+        <Panel { ...this.props } { ...this.state.panel } title={ this.props.item.subtype.name } ref="panel" parent={ this.props.item }>
           { items }
         </Panel>
       ];

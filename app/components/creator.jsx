@@ -58,11 +58,15 @@ class Creator extends React.Component {
 
     let item = { subject, description, type: this.props.type };
 
+    if ( this.props.parent ) {
+      item.parent = this.props.parent._id;
+    }
+
     if ( url ) {
       item.references = [{ url, title }];
     }
 
-    console.log({ item });
+    console.log({ creating:item });
 
     let insert = () => {
       window.socket.emit('create item', item)

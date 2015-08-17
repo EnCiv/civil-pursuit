@@ -538,11 +538,15 @@ var Creator = (function (_React$Component) {
 
       var item = { subject: subject, description: description, type: this.props.type };
 
+      if (this.props.parent) {
+        item.parent = this.props.parent._id;
+      }
+
       if (url) {
         item.references = [{ url: url, title: title }];
       }
 
-      console.log({ item: item });
+      console.log({ creating: item });
 
       var insert = function insert() {
         window.socket.emit('create item', item).on('OK create item', function (item) {
@@ -5510,7 +5514,7 @@ var Subtype = (function (_React$Component) {
 
         content = [_react2['default'].createElement(
           _panel2['default'],
-          _extends({}, this.props, this.state.panel, { title: this.props.item.subtype.name, ref: 'panel' }),
+          _extends({}, this.props, this.state.panel, { title: this.props.item.subtype.name, ref: 'panel', parent: this.props.item }),
           items
         )];
       }
