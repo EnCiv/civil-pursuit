@@ -67,7 +67,54 @@ var Popularity = (function (_React$Component) {
   return Popularity;
 })(_react2['default'].Component);
 
-var Details = (function (_React$Component2) {
+var Feedback = (function (_React$Component2) {
+  function Feedback() {
+    _classCallCheck(this, Feedback);
+
+    if (_React$Component2 != null) {
+      _React$Component2.apply(this, arguments);
+    }
+  }
+
+  _inherits(Feedback, _React$Component2);
+
+  _createClass(Feedback, [{
+    key: 'render',
+    value: function render() {
+      var entries = this.props.entries;
+
+      console.log({ entries: entries });
+
+      if (!entries.length) {
+        return _react2['default'].createElement('div', null);
+      }
+
+      var comments = entries.map(function (entry) {
+        return _react2['default'].createElement(
+          'div',
+          { key: entry._id },
+          entry.feedback
+        );
+      });
+
+      return _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          'h4',
+          null,
+          entries.length,
+          ' feedback'
+        ),
+        comments
+      );
+    }
+  }]);
+
+  return Feedback;
+})(_react2['default'].Component);
+
+var Details = (function (_React$Component3) {
   function Details(props) {
     _classCallCheck(this, Details);
 
@@ -78,7 +125,7 @@ var Details = (function (_React$Component2) {
     this.state = {};
   }
 
-  _inherits(Details, _React$Component2);
+  _inherits(Details, _React$Component3);
 
   _createClass(Details, [{
     key: 'componentWillReceiveProps',
@@ -107,7 +154,7 @@ var Details = (function (_React$Component2) {
       if (this.state.details) {
         content = [];
 
-        content.push(_react2['default'].createElement(Popularity, this.props.item.popularity), _react2['default'].createElement(_votes2['default'], this.state.details));
+        content.push(_react2['default'].createElement(Popularity, this.props.item.popularity), _react2['default'].createElement(_votes2['default'], this.state.details), _react2['default'].createElement(Feedback, { entries: this.state.details.feedback }));
       }
 
       return _react2['default'].createElement(

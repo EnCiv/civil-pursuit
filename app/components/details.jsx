@@ -25,6 +25,31 @@ class Popularity extends React.Component {
   }
 }
 
+class Feedback extends React.Component {
+  render () {
+    let { entries } = this.props;
+
+    console.log({ entries });
+
+    if ( ! entries.length ) {
+      return (<div></div>);
+    }
+
+    let comments = entries.map(entry => (
+      <div key={ entry._id }>
+        { entry.feedback }
+      </div>
+    ));
+
+    return (
+      <div>
+        <h4>{ entries.length } feedback</h4>
+        { comments }
+      </div>
+    );
+  }
+}
+
 class Details extends React.Component {
   constructor (props) {
     super(props);
@@ -58,7 +83,8 @@ class Details extends React.Component {
 
       content.push(
         ( <Popularity { ...this.props.item.popularity } /> ),
-        ( <Votes { ...this.state.details } /> )
+        ( <Votes { ...this.state.details } /> ),
+        ( <Feedback entries={ this.state.details.feedback } /> )
       );
     }
 
