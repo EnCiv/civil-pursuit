@@ -4109,7 +4109,7 @@ var PromoteButton = (function (_React$Component6) {
     value: function render() {
       return _react2['default'].createElement(
         _utilButton2['default'],
-        { block: true },
+        _extends({ block: true }, this.props),
         this.props.subject
       );
     }
@@ -4167,7 +4167,7 @@ var Finish = (function (_React$Component8) {
     value: function render() {
       return _react2['default'].createElement(
         _utilButton2['default'],
-        { block: true },
+        _extends({ block: true }, this.props),
         _react2['default'].createElement(
           'b',
           null,
@@ -4183,6 +4183,9 @@ var Finish = (function (_React$Component8) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var Promote = (function (_React$Component9) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Promote(props) {
     _classCallCheck(this, Promote);
 
@@ -4199,6 +4202,9 @@ var Promote = (function (_React$Component9) {
 
   _createClass(Promote, [{
     key: 'componentWillReceiveProps',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function componentWillReceiveProps(props) {
       if (props.show && this.status === 'iddle') {
         this.status = 'ready';
@@ -4207,6 +4213,9 @@ var Promote = (function (_React$Component9) {
     }
   }, {
     key: 'get',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function get() {
       var _this = this;
 
@@ -4214,6 +4223,8 @@ var Promote = (function (_React$Component9) {
         window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {
           console.log('GOT EVALUATION', evaluation);
           var limit = 5;
+
+          _this.items = evaluation.items;
 
           _this.setState({
             limit: limit,
@@ -4225,7 +4236,34 @@ var Promote = (function (_React$Component9) {
       }
     }
   }, {
+    key: 'next',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function next(position) {
+      console.log('next', position);
+
+      var _state = this.state;
+      var cursor = _state.cursor;
+      var limit = _state.limit;
+
+      if (cursor < limit) {
+        if (!position) {
+          cursor += 2;
+        } else {
+          cursor += 1;
+        }
+
+        var left = this.items[cursor];
+
+        this.setState({ cursor: cursor, left: left });
+      }
+    }
+  }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
 
       var content = _react2['default'].createElement(_utilLoading2['default'], null);
@@ -4249,7 +4287,7 @@ var Promote = (function (_React$Component9) {
             _react2['default'].createElement(
               'div',
               { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-              _react2['default'].createElement(PromoteButton, this.state.left),
+              _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
               _react2['default'].createElement(EditAndGoAgain, null)
             )
           ),
@@ -4259,14 +4297,14 @@ var Promote = (function (_React$Component9) {
             _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
             _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
             _react2['default'].createElement(Reference, this.state.right.references[0]),
-            _react2['default'].createElement(Description, { description: this.state.left.description }),
+            _react2['default'].createElement(Description, { description: this.state.right.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
             _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
             _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
             _react2['default'].createElement(
               'div',
               { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-              _react2['default'].createElement(PromoteButton, this.state.right),
+              _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { position: 'right' })),
               _react2['default'].createElement(EditAndGoAgain, null)
             )
           )
@@ -4280,19 +4318,19 @@ var Promote = (function (_React$Component9) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50', key: 'left', className: 'promote-left' },
-            _react2['default'].createElement(PromoteButton, this.state.left),
+            _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
             _react2['default'].createElement(EditAndGoAgain, { className: 'gutter-top' })
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50', key: 'right', className: 'promote-right' },
-            _react2['default'].createElement(PromoteButton, this.state.right),
+            _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { position: 'right' })),
             _react2['default'].createElement(EditAndGoAgain, { className: 'gutter-top' })
           )
         ), _react2['default'].createElement(
           'div',
           { className: 'gutter' },
-          _react2['default'].createElement(Finish, null)
+          _react2['default'].createElement(Finish, _extends({}, this.state, { onClick: this.next.bind(this, null) }))
         ));
       }
 

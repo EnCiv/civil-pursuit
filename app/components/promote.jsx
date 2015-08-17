@@ -72,7 +72,7 @@ class Feedback extends React.Component {
 class PromoteButton extends React.Component {
   render () {
     return (
-      <Button block>{ this.props.subject }</Button>
+      <Button block { ...this.props }>{ this.props.subject }</Button>
     );
   }
 }
@@ -92,7 +92,7 @@ class EditAndGoAgain extends React.Component {
 class Finish extends React.Component {
   render () {
     return (
-      <Button block><b>Neither</b></Button>
+      <Button block { ...this.props }><b>Neither</b></Button>
     );
   }
 }
@@ -100,6 +100,9 @@ class Finish extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Promote extends React.Component {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 
@@ -110,6 +113,8 @@ class Promote extends React.Component {
     };
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   componentWillReceiveProps (props) {
     if ( props.show && this.status === 'iddle' ) {
       this.status = 'ready';
@@ -117,12 +122,16 @@ class Promote extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   get () {
     if ( typeof window !== 'undefined' ) {
       window.socket.emit('get evaluation', this.props.item)
         .on('OK get evaluation', evaluation => {
           console.log('GOT EVALUATION', evaluation);
           let limit = 5;
+
+          this.items = evaluation.items;
 
           this.setState({
             limit       :   limit,
@@ -133,6 +142,30 @@ class Promote extends React.Component {
         })
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  next (position) {
+    console.log('next', position);
+
+    let { cursor, limit } = this.state;
+
+    if ( cursor < limit ) {
+      if ( ! position ) {
+        cursor += 2;
+      }
+
+      else {
+        cursor += 1;
+      }
+
+      let left = this.items[cursor];
+
+      this.setState({ cursor, left });
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
 
@@ -156,7 +189,7 @@ class Promote extends React.Component {
               <Sliders criterias={ this.state.criterias } className="promote-sliders" />
               <Feedback className="gutter-top" />
               <div data-screen="phone-and-down" className="gutter-top">
-                <PromoteButton { ...this.state.left } />
+                <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } />
                 <EditAndGoAgain />
               </div>
             </Column>
@@ -165,12 +198,12 @@ class Promote extends React.Component {
               <ItemMedia item={ this.state.right } />
               <Subject subject={ this.state.right.subject } />
               <Reference { ...this.state.right.references[0] } />
-              <Description description={ this.state.left.description } />
+              <Description description={ this.state.right.description } />
               <div style={{ clear: 'both' }} />
               <Sliders criterias={ this.state.criterias } className="promote-sliders" />
               <Feedback className="gutter-top" />
               <div data-screen="phone-and-down" className="gutter-top">
-                <PromoteButton { ...this.state.right } />
+                <PromoteButton { ...this.state.right } position="right" />
                 <EditAndGoAgain />
               </div>
             </Column>
@@ -182,19 +215,19 @@ class Promote extends React.Component {
         (
           <Row data-stack="phone-and-down" data-screen="phone-and-up">
             <Column span="50" key="left" className="promote-left">
-              <PromoteButton { ...this.state.left } />
+              <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } />
               <EditAndGoAgain className="gutter-top" />
             </Column>
 
             <Column span="50" key="right" className="promote-right">
-              <PromoteButton { ...this.state.right } />
+              <PromoteButton { ...this.state.right } position="right" />
               <EditAndGoAgain className="gutter-top" />
             </Column>
           </Row>
         ),
         (
           <div className="gutter">
-            <Finish />
+            <Finish { ...this.state } onClick={ this.next.bind(this, null) } />
           </div>
         )
       );
