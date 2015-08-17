@@ -42,9 +42,80 @@ var Vote = (function (_React$Component) {
       description.classList.toggle('syn-visible');
     }
   }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _props = this.props;
+      var criteria = _props.criteria;
+      var vote = _props.vote;
+      var item = _props.item;
+
+      var svg = _react2['default'].findDOMNode(this.refs.svg);
+
+      svg.id = 'chart-' + item._id + '-' + criteria._id;
+
+      var data = [];
+
+      if (!vote) {
+        vote = {
+          values: {
+            '-1': 0,
+            '0': 0,
+            '1': 0
+          },
+          total: 0
+        };
+      }
+
+      for (var number in vote.values) {
+        data.push({
+          label: 'number',
+          value: vote.values[number] * 100 / vote.total
+        });
+      }
+
+      var columns = ['' + vote.total + ' vote(s)'];
+
+      data.forEach(function (d) {
+        columns.push(d.value);
+      });
+
+      var chart = c3.generate({
+        bindto: '#' + svg.id,
+        data: {
+          x: 'x',
+          columns: [['x', -1, 0, 1], columns],
+          type: 'bar'
+        },
+        grid: {
+          x: {
+            lines: 3
+          }
+        },
+        axis: {
+          x: {},
+          y: {
+            max: 90,
+            show: false,
+            tick: {
+              count: 5,
+              format: function format(y) {
+                return y;
+              }
+            }
+          }
+        },
+        size: {
+          height: 80
+        },
+        bar: {}
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var criteria = this.props.criteria;
+      var _props2 = this.props;
+      var criteria = _props2.criteria;
+      var vote = _props2.vote;
 
       return _react2['default'].createElement(
         'div',
@@ -56,7 +127,7 @@ var Vote = (function (_React$Component) {
             _utilColumn2['default'],
             { span: '40' },
             _react2['default'].createElement(
-              'h5',
+              'h4',
               { onClick: this.toggleDescription.bind(this) },
               criteria.name
             ),
@@ -66,7 +137,11 @@ var Vote = (function (_React$Component) {
               criteria.description
             )
           ),
-          _react2['default'].createElement(_utilColumn2['default'], { span: '60' })
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '60' },
+            _react2['default'].createElement('svg', { className: 'chart', ref: 'svg' })
+          )
         )
       );
     }
@@ -89,10 +164,16 @@ var Votes = (function (_React$Component2) {
   _createClass(Votes, [{
     key: 'render',
     value: function render() {
-      var criterias = this.props.criterias;
+      var _props3 = this.props;
+      var criterias = _props3.criterias;
+      var votes = _props3.votes;
+      var feedback = _props3.feedback;
+      var item = _props3.item;
+
+      console.log('props', this.props);
 
       var sliders = criterias.map(function (criteria) {
-        return _react2['default'].createElement(Vote, { criteria: criteria });
+        return _react2['default'].createElement(Vote, { criteria: criteria, vote: votes[criteria._id], key: criteria._id, item: item });
       });
 
       return _react2['default'].createElement(
@@ -108,3 +189,5 @@ var Votes = (function (_React$Component2) {
 
 exports['default'] = Votes;
 module.exports = exports['default'];
+
+// width       :   $(window).width() / 5

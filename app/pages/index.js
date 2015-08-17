@@ -49,8 +49,7 @@ class Layout extends Document {
         new Stylesheet('/assets/css/normalize.css', { name : 'stylesheet' }),
         new Stylesheet('/assets/css/index.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
-        new Stylesheet('/assets/bower_components/c3/c3.css'),
-        new Stylesheet('/assets/bower_components/goalProgress/goalProgress.css')
+        new Stylesheet('/assets/bower_components/c3/c3.css')
       );
     }
     else {
@@ -69,7 +68,9 @@ class Layout extends Document {
       this.add(
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.js'),
-        new Script('/assets/js/socket.io-stream.js')
+        new Script('/assets/js/socket.io-stream.js'),
+        new Script('/assets/bower_components/d3/d3.js'),
+        new Script('/assets/bower_components/c3/c3.js')
       );
     }
 
@@ -77,7 +78,7 @@ class Layout extends Document {
       this.add(
         new Script('/socket.io/socket.io.js'),
         new Script('/assets/js/main.min.js'),
-        new Script('/assets/js/socket.io-stream.js')
+        new Script('/assets/js/assets.min.js')
       );
     }
   }

@@ -74,7 +74,7 @@ var Layout = (function (_Document) {
     this.add(this.uACompatible(), this.viewport());
 
     if (props.env === 'development') {
-      this.add(new Stylesheet('/assets/css/normalize.css', { name: 'stylesheet' }), new Stylesheet('/assets/css/index.css'), new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'), new Stylesheet('/assets/bower_components/c3/c3.css'), new Stylesheet('/assets/bower_components/goalProgress/goalProgress.css'));
+      this.add(new Stylesheet('/assets/css/normalize.css', { name: 'stylesheet' }), new Stylesheet('/assets/css/index.css'), new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'), new Stylesheet('/assets/bower_components/c3/c3.css'));
     } else {
       this.add(new Stylesheet('/assets/css/assets.min.css'), new Stylesheet('/assets/css/index.min.css'), new Stylesheet(_publicJson2['default']['font awesome'].cdn));
     }
@@ -84,9 +84,9 @@ var Layout = (function (_Document) {
     this.add(new Script().text('window.synapp = { "intro" : ' + intro + '}'));
 
     if (props.env === 'development') {
-      this.add(new Script('/socket.io/socket.io.js'), new Script('/assets/js/main.js'), new Script('/assets/js/socket.io-stream.js'));
+      this.add(new Script('/socket.io/socket.io.js'), new Script('/assets/js/main.js'), new Script('/assets/js/socket.io-stream.js'), new Script('/assets/bower_components/d3/d3.js'), new Script('/assets/bower_components/c3/c3.js'));
     } else {
-      this.add(new Script('/socket.io/socket.io.js'), new Script('/assets/js/main.min.js'), new Script('/assets/js/socket.io-stream.js'));
+      this.add(new Script('/socket.io/socket.io.js'), new Script('/assets/js/main.min.js'), new Script('/assets/js/assets.min.js'));
     }
   }
 
