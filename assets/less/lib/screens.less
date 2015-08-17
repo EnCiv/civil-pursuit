@@ -29,13 +29,19 @@
 
 .syn-screen-phone_and_up, [data-screen="phone-and-up"] {
   @media (max-width: @screen-phone) {
-    display: none !important
+    display: none !important;
   }
 }
 
 .syn-screen-phone_and_down, [data-screen="phone-and-down"] {
   @media (min-width: @screen-tablet) {
-    display: none;
+    display: none !important;
+  }
+}
+
+[data-screen="up-to-phone"] {
+  @media (min-width: @screen-phone) {
+    display: none !important;
   }
 }
 

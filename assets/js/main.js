@@ -4294,60 +4294,117 @@ var Promote = (function (_React$Component9) {
         content = [];
 
         content.push(_react2['default'].createElement(Header, this.state), _react2['default'].createElement(
-          _utilRow2['default'],
-          { 'data-stack': 'phone-and-down' },
+          'div',
+          { 'data-screen': 'phone-and-up' },
           _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50', key: 'left', className: 'promote-left' },
-            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
-            _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
-            _react2['default'].createElement(Reference, this.state.left.references[0]),
-            _react2['default'].createElement(Description, { description: this.state.left.description }),
-            _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
-            _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
+            _utilRow2['default'],
+            null,
             _react2['default'].createElement(
-              'div',
-              { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-              _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
-              _react2['default'].createElement(EditAndGoAgain, null)
+              _utilColumn2['default'],
+              { span: '50', key: 'left-item', className: 'promote-left' },
+              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
+              _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
+              _react2['default'].createElement(Reference, this.state.left.references[0]),
+              _react2['default'].createElement(Description, { description: this.state.left.description })
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'right-item', className: 'promote-right' },
+              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
+              _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
+              _react2['default'].createElement(Reference, this.state.right.references[0]),
+              _react2['default'].createElement(Description, { description: this.state.right.description })
             )
           ),
           _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50', key: 'right', className: 'promote-right' },
-            _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
-            _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
-            _react2['default'].createElement(Reference, this.state.right.references[0]),
-            _react2['default'].createElement(Description, { description: this.state.right.description }),
-            _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
-            _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
+            _utilRow2['default'],
+            null,
             _react2['default'].createElement(
-              'div',
-              { 'data-screen': 'phone-and-down', className: 'gutter-top' },
+              _utilColumn2['default'],
+              { span: '50', key: 'left-feedback', className: 'promote-left' },
+              _react2['default'].createElement(Feedback, { className: 'gutter-top' })
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'right-feedback', className: 'promote-right' },
+              _react2['default'].createElement(Feedback, { className: 'gutter-top' })
+            )
+          ),
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'left-sliders', className: 'promote-left' },
+              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' })
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'right-sliders', className: 'promote-right' },
+              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' })
+            )
+          ),
+          _react2['default'].createElement(
+            'h5',
+            { 'data-screen': 'phone-and-up', className: 'text-center gutter' },
+            'Which of these is most important for the community to consider?'
+          ),
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            null,
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'left-buttons', className: 'promote-left' },
+              _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
+              _react2['default'].createElement(EditAndGoAgain, null)
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'right-buttons', className: 'promote-right' },
               _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right') })),
               _react2['default'].createElement(EditAndGoAgain, null)
             )
           )
         ), _react2['default'].createElement(
-          'h5',
-          { 'data-screen': 'phone-and-up', className: 'text-center gutter' },
-          'Which of these is most important for the community to consider?'
-        ), _react2['default'].createElement(
-          _utilRow2['default'],
-          { 'data-stack': 'phone-and-down', 'data-screen': 'phone-and-up' },
+          'div',
+          { 'data-screen': 'up-to-phone' },
           _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50', key: 'left', className: 'promote-left' },
-            _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
-            _react2['default'].createElement(EditAndGoAgain, { className: 'gutter-top' })
-          ),
-          _react2['default'].createElement(
-            _utilColumn2['default'],
-            { span: '50', key: 'right', className: 'promote-right' },
-            _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right') })),
-            _react2['default'].createElement(EditAndGoAgain, { className: 'gutter-top' })
+            _utilRow2['default'],
+            { 'data-stack': true },
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'left', className: 'promote-left' },
+              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
+              _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
+              _react2['default'].createElement(Reference, this.state.left.references[0]),
+              _react2['default'].createElement(Description, { description: this.state.left.description }),
+              _react2['default'].createElement('div', { style: { clear: 'both' } }),
+              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
+              _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
+              _react2['default'].createElement(
+                'div',
+                { 'data-screen': 'phone-and-down', className: 'gutter-top' },
+                _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
+                _react2['default'].createElement(EditAndGoAgain, null)
+              )
+            ),
+            _react2['default'].createElement(
+              _utilColumn2['default'],
+              { span: '50', key: 'right', className: 'promote-right' },
+              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
+              _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
+              _react2['default'].createElement(Reference, this.state.right.references[0]),
+              _react2['default'].createElement(Description, { description: this.state.right.description }),
+              _react2['default'].createElement('div', { style: { clear: 'both' } }),
+              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
+              _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
+              _react2['default'].createElement(
+                'div',
+                { 'data-screen': 'phone-and-down', className: 'gutter-top' },
+                _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right') })),
+                _react2['default'].createElement(EditAndGoAgain, null)
+              )
+            )
           )
         ), _react2['default'].createElement(
           'div',
@@ -4371,6 +4428,8 @@ var Promote = (function (_React$Component9) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
+
+// big screens
 },{"../lib/app/component":55,"./item-media":12,"./sliders":22,"./util/button":31,"./util/column":33,"./util/loading":43,"./util/row":47,"./util/text-area":50,"react":215}],21:[function(require,module,exports){
 'use strict';
 

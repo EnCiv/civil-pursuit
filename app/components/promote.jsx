@@ -198,52 +198,97 @@ class Promote extends React.Component {
         (
           <Header { ...this.state } />
         ),
+
+        // big screens
+
         (
-          <Row data-stack="phone-and-down">
-            <Column span="50" key="left" className="promote-left">
-              <ItemMedia item={ this.state.left } />
-              <Subject subject={ this.state.left.subject } />
-              <Reference { ...this.state.left.references[0] } />
-              <Description description={ this.state.left.description } />
-              <div style={{ clear: 'both' }} />
-              <Sliders criterias={ this.state.criterias } className="promote-sliders" />
-              <Feedback className="gutter-top" />
-              <div data-screen="phone-and-down" className="gutter-top">
+          <div data-screen="phone-and-up">
+            <Row>
+              <Column span="50" key="left-item" className="promote-left">
+                <ItemMedia item={ this.state.left } />
+                <Subject subject={ this.state.left.subject } />
+                <Reference { ...this.state.left.references[0] } />
+                <Description description={ this.state.left.description } />
+              </Column>
+
+              <Column span="50" key="right-item" className="promote-right">
+                <ItemMedia item={ this.state.right } />
+                <Subject subject={ this.state.right.subject } />
+                <Reference { ...this.state.right.references[0] } />
+                <Description description={ this.state.right.description } />
+              </Column>
+            </Row>
+
+            <Row>
+              <Column span="50" key="left-feedback" className="promote-left">
+                <Feedback className="gutter-top" />
+              </Column>
+
+              <Column span="50" key="right-feedback" className="promote-right">
+                <Feedback className="gutter-top" />
+              </Column>
+            </Row>
+
+            <Row>
+              <Column span="50" key="left-sliders" className="promote-left">
+                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
+              </Column>
+
+              <Column span="50" key="right-sliders" className="promote-right">
+                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
+              </Column>
+
+            </Row>
+
+            <h5 data-screen="phone-and-up" className="text-center gutter">Which of these is most important for the community to consider?</h5>
+
+            <Row>
+              <Column span="50" key="left-buttons" className="promote-left">
                 <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } />
                 <EditAndGoAgain />
-              </div>
-            </Column>
+              </Column>
 
-            <Column span="50" key="right" className="promote-right">
-              <ItemMedia item={ this.state.right } />
-              <Subject subject={ this.state.right.subject } />
-              <Reference { ...this.state.right.references[0] } />
-              <Description description={ this.state.right.description } />
-              <div style={{ clear: 'both' }} />
-              <Sliders criterias={ this.state.criterias } className="promote-sliders" />
-              <Feedback className="gutter-top" />
-              <div data-screen="phone-and-down" className="gutter-top">
+              <Column span="50" key="right-buttons" className="promote-right">
                 <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } />
                 <EditAndGoAgain />
-              </div>
-            </Column>
-          </Row>
-        ),
-        (
-          <h5 data-screen="phone-and-up" className="text-center gutter">Which of these is most important for the community to consider?</h5>
-        ),
-        (
-          <Row data-stack="phone-and-down" data-screen="phone-and-up">
-            <Column span="50" key="left" className="promote-left">
-              <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } />
-              <EditAndGoAgain className="gutter-top" />
-            </Column>
+              </Column>
 
-            <Column span="50" key="right" className="promote-right">
-              <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } />
-              <EditAndGoAgain className="gutter-top" />
-            </Column>
-          </Row>
+            </Row>
+          </div>
+        ),
+
+        (
+          <div data-screen="up-to-phone">
+            <Row data-stack>
+              <Column span="50" key="left" className="promote-left">
+                <ItemMedia item={ this.state.left } />
+                <Subject subject={ this.state.left.subject } />
+                <Reference { ...this.state.left.references[0] } />
+                <Description description={ this.state.left.description } />
+                <div style={{ clear: 'both' }} />
+                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
+                <Feedback className="gutter-top" />
+                <div data-screen="phone-and-down" className="gutter-top">
+                  <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } />
+                  <EditAndGoAgain />
+                </div>
+              </Column>
+
+              <Column span="50" key="right" className="promote-right">
+                <ItemMedia item={ this.state.right } />
+                <Subject subject={ this.state.right.subject } />
+                <Reference { ...this.state.right.references[0] } />
+                <Description description={ this.state.right.description } />
+                <div style={{ clear: 'both' }} />
+                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
+                <Feedback className="gutter-top" />
+                <div data-screen="phone-and-down" className="gutter-top">
+                  <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } />
+                  <EditAndGoAgain />
+                </div>
+              </Column>
+            </Row>
+          </div>
         ),
         (
           <div className="gutter">

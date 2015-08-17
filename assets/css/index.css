@@ -169,7 +169,12 @@ button,
 @media (min-width: 768px) {
   .syn-screen-phone_and_down,
   [data-screen="phone-and-down"] {
-    display: none;
+    display: none !important;
+  }
+}
+@media (min-width: 440px) {
+  [data-screen="up-to-phone"] {
+    display: none !important;
   }
 }
 @media (min-width: 992px) {
@@ -502,6 +507,9 @@ a.button {
   flex-direction: row;
   justify-content: space-between;
 }
+.syn-button-group.syn--block[data-stack] {
+  flex-direction: column;
+}
 .syn-button-group.syn--block button {
   width: 100%;
 }
@@ -527,6 +535,9 @@ a.button {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+.syn-row[data-stack] {
+  flex-direction: column;
 }
 .syn-row-baseline-items {
   align-items: baseline;
@@ -707,6 +718,9 @@ label {
   flex-direction: row;
   justify-content: space-between;
 }
+.input-group[data-stack] {
+  flex-direction: column;
+}
 .input-group input:not(:first-child) {
   border-left: none;
 }
@@ -742,6 +756,9 @@ label {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+.syn-input-group.syn--block[data-stack] {
+  flex-direction: column;
 }
 .syn-input-group.syn--block input {
   width: 100%;
@@ -1207,6 +1224,9 @@ body {
   vertical-align: baseline;
   border-radius: 3px 3px 0 0;
   padding: 1px;
+}
+.syn-panel-heading[data-stack] {
+  flex-direction: column;
 }
 .syn-panel-heading h4 {
   text-align: center;
