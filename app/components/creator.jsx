@@ -32,7 +32,7 @@ class Creator extends React.Component {
     let mediaHeight = media.offsetHeight;
     let inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-    description.style.height = ( mediaHeight -  inputHeight ) + 'px';
+    // description.style.height = ( mediaHeight -  inputHeight ) + 'px';
 
     subject.addEventListener('keydown', (e) => {
       if ( e.keyCode === 13 ) {
@@ -78,7 +78,13 @@ class Creator extends React.Component {
           React.findDOMNode(this.refs.reference).value = '';
           React.findDOMNode(this.refs.title).value = '';
 
-          window.Dispatcher.emit('new item', item, { type: this.props.type });
+          let newItemPanel = { type: this.props.type };
+
+          if ( this.props.parent ) {
+            newItemPanel.parent = this.props.parent._id;
+          }
+
+          window.Dispatcher.emit('new item', item, newItemPanel);
         });
 
     };

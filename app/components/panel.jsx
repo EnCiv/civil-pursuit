@@ -15,7 +15,8 @@ class Panel extends React.Component {
     super(props);
 
     this.state = {
-      showCreator : 0
+      showCreator : 0,
+      active : false
     };
   }
 
@@ -23,14 +24,16 @@ class Panel extends React.Component {
 
   toggleCreator () {
     if ( this.props.user ) {
-      let panel = React.findDOMNode(this.refs.panel);
-      let itemAccordions = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+      let active = null;
 
-      for ( let i = 0; i < itemAccordions.length; i ++ ) {
-        itemAccordions[i].classList.remove('show');
+      if ( this.state.active !== 'creator' ) {
+        active = 'creator';
       }
 
-      this.setState({ showCreator : this.state.showCreator + 1 });
+      this.setState({ active });
+
+
+
     }
     else {
       Join.click();
@@ -44,7 +47,7 @@ class Panel extends React.Component {
 
     if ( this.props.creator !== false ) {
       creator = (
-        <Accordion show={ this.state.showCreator } poa={ this.refs.panel } { ...this.props }>
+        <Accordion active={ this.state.active === 'creator' } poa={ this.refs.panel } { ...this.props }>
           <Creator { ...this.props } />
         </Accordion>
       );
@@ -63,6 +66,10 @@ class Panel extends React.Component {
       }
     }
 
+    let child = React.Children.map(this.props.children, child =>
+      React.cloneElement(child, { panel : this })
+    );
+
     return (
       <section className={ Component.classList(this, "syn-panel") } ref="panel">
         <section className="syn-panel-heading">
@@ -72,7 +79,7 @@ class Panel extends React.Component {
         <section className="syn-panel-body">
           { creator }
           { newItem }
-          { this.props.children }
+          { child }
         </section>
       </section>
     );

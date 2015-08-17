@@ -80,10 +80,7 @@ var Item = (function (_React$Component) {
     this.expanded = false;
 
     this.state = {
-      showPromote: this.props['new'] ? 1 : 0,
-      showDetails: 0,
-      showSubtype: 0,
-      showHarmony: 0,
+      active: null,
       item: this.props.item
     };
 
@@ -125,78 +122,44 @@ var Item = (function (_React$Component) {
       window.socket.removeListener('item changed ' + this.props.item._id, this.updateItem.bind(this));
     }
   }, {
-    key: 'hideOthers',
+    key: 'toggle',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function hideOthers(except) {
-      var item = _react2['default'].findDOMNode(this.refs.item);
+    value: function toggle(toggler) {
+      if (toggler === 'promote' && !this.props.user) {
+        _join2['default'].click();
 
-      var itemAccordions = item.querySelectorAll('.toggler:not(.' + except + ') .syn-accordion-wrapper.show');
-
-      console.log('other accordions', itemAccordions.length, '.toggler:not(.' + except + ') .syn-accordion-wrapper.show', item.id);
-
-      for (var i = 0; i < itemAccordions.length; i++) {
-        console.log(itemAccordions[i]);
-        itemAccordions[i].classList.remove('show');
+        return;
       }
 
-      var panel = item.closest('.syn-panel');
-
-      var creator = panel.querySelector('.syn-panel-body > .syn-accordion .syn-accordion-wrapper.show');
-
-      if (creator) {
-        creator.classList.remove('show');
+      if (this.props.item) {
+        this.props.panel.setState({ active: this.props.item._id });
       }
 
-      if (item.id) {
-        var otherItems = panel.querySelectorAll('.item:not(#item-' + item.id + ') .toggler .syn-accordion-wrapper.show');
+      var active = null;
 
-        for (var i = 0; i < otherItems.length; i++) {
-          otherItems[i].classList.remove('show');
+      if (this.state.active !== toggler) {
+        active = toggler;
+      }
+
+      this.setState({ active: active });
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function componentWillReceiveProps(props) {
+      if ('panel' in props) {
+        if (props.panel.state.active === 'creator') {
+          this.setState({ active: null });
+        } else if (props.panel.state.active && this.props.item) {
+          if (props.panel.state.active !== this.props.item._id) {
+            this.setState({ active: null });
+          }
         }
       }
-    }
-  }, {
-    key: 'togglePromote',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function togglePromote() {
-      if (this.props.user) {
-        this.hideOthers('promote');
-
-        this.setState({ showPromote: this.state.showPromote + 1 });
-      } else {
-        _join2['default'].click();
-      }
-    }
-  }, {
-    key: 'toggleDetails',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleDetails() {
-      this.hideOthers('details');
-      this.setState({ showDetails: this.state.showDetails + 1 });
-    }
-  }, {
-    key: 'toggleSubtype',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleSubtype() {
-      this.hideOthers();
-      this.setState({ showSubtype: this.state.showSubtype + 1 });
-    }
-  }, {
-    key: 'toggleHarmony',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleHarmony() {
-      this.hideOthers();
-      this.setState({ showHarmony: this.state.showHarmony + 1 });
     }
   }, {
     key: 'componentDidMount',
@@ -314,7 +277,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.togglePromote.bind(this) },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'promote') },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -329,7 +292,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggleDetails.bind(this), className: 'toggle-details' },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'details'), className: 'toggle-details' },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -344,7 +307,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggleSubtype.bind(this) },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype') },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -355,7 +318,7 @@ var Item = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggleHarmony.bind(this) },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'harmony') },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -376,7 +339,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler promote' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ poa: this.refs.item, show: this.state.showPromote, name: 'promote' }, this.props),
+            _extends({ poa: this.refs.item, active: this.state.active === 'promote', name: 'promote' }, this.props),
             _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote, ref: 'promote' })
           )
         );
@@ -388,7 +351,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler details' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ poa: this.refs.item, show: this.state.showDetails, name: 'details' }, this.props),
+            _extends({ poa: this.refs.item, active: this.state.active === 'details', name: 'details' }, this.props),
             _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
           )
         );
@@ -400,7 +363,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler subtype' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ show: this.state.showSubtype, name: 'subtype', poa: this.refs.item }, this.props),
+            _extends({ active: this.state.active === 'subtype', name: 'subtype', poa: this.refs.item }, this.props),
             _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype }))
           )
         );
@@ -412,7 +375,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler harmony' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props, { poa: this.refs.item }),
+            _extends({ active: this.state.active === 'harmony', name: 'harmony' }, this.props, { poa: this.refs.item }),
             _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
           )
         );

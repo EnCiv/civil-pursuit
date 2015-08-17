@@ -112,7 +112,7 @@ var Subtype = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'item-subtype ' + this.props.className },
+        { className: 'item-subtype gutter-top ' + this.props.className },
         content
       );
     }

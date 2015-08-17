@@ -508,7 +508,7 @@ var Creator = (function (_React$Component) {
       var mediaHeight = media.offsetHeight;
       var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-      description.style.height = mediaHeight - inputHeight + 'px';
+      // description.style.height = ( mediaHeight -  inputHeight ) + 'px';
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
@@ -557,7 +557,13 @@ var Creator = (function (_React$Component) {
           _react2['default'].findDOMNode(_this2.refs.reference).value = '';
           _react2['default'].findDOMNode(_this2.refs.title).value = '';
 
-          window.Dispatcher.emit('new item', item, { type: _this2.props.type });
+          var newItemPanel = { type: _this2.props.type };
+
+          if (_this2.props.parent) {
+            newItemPanel.parent = _this2.props.parent._id;
+          }
+
+          window.Dispatcher.emit('new item', item, newItemPanel);
         });
       };
 
@@ -2207,10 +2213,7 @@ var Item = (function (_React$Component) {
     this.expanded = false;
 
     this.state = {
-      showPromote: this.props['new'] ? 1 : 0,
-      showDetails: 0,
-      showSubtype: 0,
-      showHarmony: 0,
+      active: null,
       item: this.props.item
     };
 
@@ -2252,78 +2255,44 @@ var Item = (function (_React$Component) {
       window.socket.removeListener('item changed ' + this.props.item._id, this.updateItem.bind(this));
     }
   }, {
-    key: 'hideOthers',
+    key: 'toggle',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function hideOthers(except) {
-      var item = _react2['default'].findDOMNode(this.refs.item);
+    value: function toggle(toggler) {
+      if (toggler === 'promote' && !this.props.user) {
+        _join2['default'].click();
 
-      var itemAccordions = item.querySelectorAll('.toggler:not(.' + except + ') .syn-accordion-wrapper.show');
-
-      console.log('other accordions', itemAccordions.length, '.toggler:not(.' + except + ') .syn-accordion-wrapper.show', item.id);
-
-      for (var i = 0; i < itemAccordions.length; i++) {
-        console.log(itemAccordions[i]);
-        itemAccordions[i].classList.remove('show');
+        return;
       }
 
-      var panel = item.closest('.syn-panel');
-
-      var creator = panel.querySelector('.syn-panel-body > .syn-accordion .syn-accordion-wrapper.show');
-
-      if (creator) {
-        creator.classList.remove('show');
+      if (this.props.item) {
+        this.props.panel.setState({ active: this.props.item._id });
       }
 
-      if (item.id) {
-        var otherItems = panel.querySelectorAll('.item:not(#item-' + item.id + ') .toggler .syn-accordion-wrapper.show');
+      var active = null;
 
-        for (var i = 0; i < otherItems.length; i++) {
-          otherItems[i].classList.remove('show');
+      if (this.state.active !== toggler) {
+        active = toggler;
+      }
+
+      this.setState({ active: active });
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function componentWillReceiveProps(props) {
+      if ('panel' in props) {
+        if (props.panel.state.active === 'creator') {
+          this.setState({ active: null });
+        } else if (props.panel.state.active && this.props.item) {
+          if (props.panel.state.active !== this.props.item._id) {
+            this.setState({ active: null });
+          }
         }
       }
-    }
-  }, {
-    key: 'togglePromote',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function togglePromote() {
-      if (this.props.user) {
-        this.hideOthers('promote');
-
-        this.setState({ showPromote: this.state.showPromote + 1 });
-      } else {
-        _join2['default'].click();
-      }
-    }
-  }, {
-    key: 'toggleDetails',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleDetails() {
-      this.hideOthers('details');
-      this.setState({ showDetails: this.state.showDetails + 1 });
-    }
-  }, {
-    key: 'toggleSubtype',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleSubtype() {
-      this.hideOthers();
-      this.setState({ showSubtype: this.state.showSubtype + 1 });
-    }
-  }, {
-    key: 'toggleHarmony',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleHarmony() {
-      this.hideOthers();
-      this.setState({ showHarmony: this.state.showHarmony + 1 });
     }
   }, {
     key: 'componentDidMount',
@@ -2441,7 +2410,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.togglePromote.bind(this) },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'promote') },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -2456,7 +2425,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggleDetails.bind(this), className: 'toggle-details' },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'details'), className: 'toggle-details' },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -2471,7 +2440,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggleSubtype.bind(this) },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype') },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -2482,7 +2451,7 @@ var Item = (function (_React$Component) {
             ),
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggleHarmony.bind(this) },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'harmony') },
               _react2['default'].createElement(
                 'span',
                 null,
@@ -2503,7 +2472,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler promote' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ poa: this.refs.item, show: this.state.showPromote, name: 'promote' }, this.props),
+            _extends({ poa: this.refs.item, active: this.state.active === 'promote', name: 'promote' }, this.props),
             _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote, ref: 'promote' })
           )
         );
@@ -2515,7 +2484,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler details' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ poa: this.refs.item, show: this.state.showDetails, name: 'details' }, this.props),
+            _extends({ poa: this.refs.item, active: this.state.active === 'details', name: 'details' }, this.props),
             _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
           )
         );
@@ -2527,7 +2496,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler subtype' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ show: this.state.showSubtype, name: 'subtype', poa: this.refs.item }, this.props),
+            _extends({ active: this.state.active === 'subtype', name: 'subtype', poa: this.refs.item }, this.props),
             _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype }))
           )
         );
@@ -2539,7 +2508,7 @@ var Item = (function (_React$Component) {
           { className: 'toggler harmony' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props, { poa: this.refs.item }),
+            _extends({ active: this.state.active === 'harmony', name: 'harmony' }, this.props, { poa: this.refs.item }),
             _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
           )
         );
@@ -3677,7 +3646,8 @@ var Panel = (function (_React$Component) {
     _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, props);
 
     this.state = {
-      showCreator: 0
+      showCreator: 0,
+      active: false
     };
   }
 
@@ -3690,14 +3660,13 @@ var Panel = (function (_React$Component) {
 
     value: function toggleCreator() {
       if (this.props.user) {
-        var panel = _react2['default'].findDOMNode(this.refs.panel);
-        var itemAccordions = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+        var active = null;
 
-        for (var i = 0; i < itemAccordions.length; i++) {
-          itemAccordions[i].classList.remove('show');
+        if (this.state.active !== 'creator') {
+          active = 'creator';
         }
 
-        this.setState({ showCreator: this.state.showCreator + 1 });
+        this.setState({ active: active });
       } else {
         _join2['default'].click();
       }
@@ -3708,6 +3677,8 @@ var Panel = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
+      var _this = this;
+
       var creator = undefined,
           creatorIcon = undefined,
           newItem = undefined;
@@ -3715,7 +3686,7 @@ var Panel = (function (_React$Component) {
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showCreator, poa: this.refs.panel }, this.props),
+          _extends({ active: this.state.active === 'creator', poa: this.refs.panel }, this.props),
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this), className: 'toggle-creator' });
@@ -3732,6 +3703,10 @@ var Panel = (function (_React$Component) {
           newItem = _react2['default'].createElement(_item2['default'], _extends({ item: this.props.newItem.item, 'new': true }, this.props));
         }
       }
+
+      var child = _react2['default'].Children.map(this.props.children, function (child) {
+        return _react2['default'].cloneElement(child, { panel: _this });
+      });
 
       return _react2['default'].createElement(
         'section',
@@ -3751,7 +3726,7 @@ var Panel = (function (_React$Component) {
           { className: 'syn-panel-body' },
           creator,
           newItem,
-          this.props.children
+          child
         )
       );
     }
@@ -5522,7 +5497,7 @@ var Subtype = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'item-subtype ' + this.props.className },
+        { className: 'item-subtype gutter-top ' + this.props.className },
         content
       );
     }
@@ -5876,9 +5851,18 @@ var TopLevelPanel = (function (_React$Component) {
       var _this2 = this;
 
       window.socket.emit('get items', { type: type }).on('OK get items', function (panel, items) {
+        var relevant = false;
         if (panel.type._id === type._id) {
-          console.log(panel, items);
-          _this2.setState({ type: type, items: items });
+
+          relevant = true;
+
+          if (panel.parent) {
+            relevant = panel.parent === panel.parent;
+          }
+
+          if (relevant) {
+            _this2.setState({ type: type, items: items });
+          }
         }
       });
     }
@@ -6159,7 +6143,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -6182,6 +6166,8 @@ var Accordion = (function (_React$Component) {
     this.height = null;
     this.visibility = false;
     this.id = null;
+
+    this.state = { attr: 'hide' };
   }
 
   _inherits(Accordion, _React$Component);
@@ -6197,21 +6183,27 @@ var Accordion = (function (_React$Component) {
     value: function componentDidMount() {}
   }, {
     key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(props) {
+    value: function componentWillReceiveProps() {
+      var props = arguments[0] === undefined ? {} : arguments[0];
 
-      if (props.show > this.counter) {
-        this.counter = props.show;
-
-        var content = _react2['default'].findDOMNode(this.refs.content);
-        var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
-
-        if (this.props.poa) {
-          var poa = _react2['default'].findDOMNode(this.props.poa);
-          window.scrollTo(0, poa.offsetTop - 60);
-        }
-
-        wrapper.classList.toggle('show');
+      if (props.active === true) {
+        this.setState({ attr: 'show' });
+      } else if (props.active === false) {
+        this.setState({ attr: 'hide' });
       }
+      // if ( props.show > this.counter ) {
+      //   this.counter = props.show;
+      //
+      //   let content = React.findDOMNode(this.refs.content);
+      //   let wrapper = React.findDOMNode(this.refs.wrapper);
+      //
+      //   if ( this.props.poa ) {
+      //     let poa     = React.findDOMNode(this.props.poa);
+      //     window.scrollTo(0, ( poa.offsetTop  - 60 ));
+      //   }
+      //
+      //   wrapper.classList.toggle('show');
+      // }
     }
   }, {
     key: 'render',
@@ -6221,7 +6213,7 @@ var Accordion = (function (_React$Component) {
         { className: 'syn-accordion', ref: 'view' },
         _react2['default'].createElement(
           'section',
-          { className: 'syn-accordion-wrapper', ref: 'wrapper' },
+          { className: 'syn-accordion-wrapper ' + this.state.attr, ref: 'wrapper' },
           _react2['default'].createElement(
             'section',
             { className: 'syn-accordion-content', ref: 'content' },

@@ -73,10 +73,7 @@ class Item extends React.Component {
     this.expanded = false;
 
     this.state = {
-      showPromote : this.props.new ? 1 : 0,
-      showDetails : 0,
-      showSubtype : 0,
-      showHarmony : 0,
+      active      : null,
       item        : this.props.item
     };
 
@@ -111,67 +108,39 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  hideOthers (except) {
-    let item = React.findDOMNode(this.refs.item);
+  toggle (toggler) {
+    if ( toggler === 'promote' && ! this.props.user ) {
+      Join.click();
 
-    let itemAccordions = item.querySelectorAll(`.toggler:not(.${except}) .syn-accordion-wrapper.show`);
-
-    console.log('other accordions', itemAccordions.length, `.toggler:not(.${except}) .syn-accordion-wrapper.show`, item.id)
-
-    for ( let i = 0; i < itemAccordions.length; i ++ ) {
-      console.log(itemAccordions[i]);
-      itemAccordions[i].classList.remove('show');
+      return;
     }
 
-    let panel = item.closest('.syn-panel');
-
-    let creator = panel.querySelector('.syn-panel-body > .syn-accordion .syn-accordion-wrapper.show');
-
-    if ( creator ) {
-      creator.classList.remove('show');
+    if ( this.props.item ) {
+      this.props.panel.setState({ active : this.props.item._id });
     }
 
-    if ( item.id ) {
-      let otherItems = panel.querySelectorAll(`.item:not(#item-${item.id}) .toggler .syn-accordion-wrapper.show`);
+    let active = null;
 
-      for ( let i = 0; i < otherItems.length; i ++ ) {
-        otherItems[i].classList.remove('show');
+    if ( this.state.active !== toggler ) {
+      active = toggler;
+    }
+
+    this.setState({ active });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  componentWillReceiveProps (props) {
+    if ( 'panel' in props ) {
+      if ( props.panel.state.active === 'creator' ) {
+        this.setState({ active : null });
+      }
+      else if ( props.panel.state.active && this.props.item ) {
+        if ( props.panel.state.active !== this.props.item._id ) {
+          this.setState({ active : null });
+        }
       }
     }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  togglePromote () {
-    if ( this.props.user ) {
-      this.hideOthers('promote');
-
-      this.setState({ showPromote : this.state.showPromote + 1 });
-    }
-    else {
-      Join.click();
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  toggleDetails () {
-    this.hideOthers('details');
-    this.setState({ showDetails : this.state.showDetails + 1 });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  toggleSubtype () {
-    this.hideOthers();
-    this.setState({ showSubtype : this.state.showSubtype + 1 });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  toggleHarmony () {
-    this.hideOthers();
-    this.setState({ showHarmony : this.state.showHarmony + 1 });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -291,26 +260,26 @@ class Item extends React.Component {
       buttons = (
         <section className="item-buttons">
           <ButtonGroup>
-            <Button small shy onClick={ this.togglePromote.bind(this) }>
+            <Button small shy onClick={ this.toggle.bind(this, 'promote') }>
               <span>{ item.promotions } </span>
               <Icon icon="bullhorn" />
             </Button>
           </ButtonGroup>
 
           <ButtonGroup>
-            <Button small shy onClick={ this.toggleDetails.bind(this) } className="toggle-details">
+            <Button small shy onClick={ this.toggle.bind(this, 'details') } className="toggle-details">
               <span>{ item.popularity.number + '%' } </span>
               <Icon icon="signal" />
             </Button>
           </ButtonGroup>
 
           <ButtonGroup>
-            <Button small shy onClick={ this.toggleSubtype.bind(this) }>
+            <Button small shy onClick={ this.toggle.bind(this, 'subtype') }>
               <span>{ item.children } </span>
               <Icon icon="fire" />
             </Button>
 
-            <Button small shy onClick={ this.toggleHarmony.bind(this) }>
+            <Button small shy onClick={ this.toggle.bind(this, 'harmony') }>
               <span>{ item.popularity.number + '%' } </span>
               <Icon icon="music" />
             </Button>
@@ -325,7 +294,7 @@ class Item extends React.Component {
     if ( this.props.promote !== false ) {
       promote = (
         <div className="toggler promote">
-          <Accordion poa={ this.refs.item } show={ this.state.showPromote } name="promote" { ...this.props }>
+          <Accordion poa={ this.refs.item } active={ this.state.active === 'promote' } name="promote" { ...this.props }>
             <Promote item={ this.props.item } show={ this.state.showPromote } ref="promote" />
           </Accordion>
         </div>
@@ -335,7 +304,7 @@ class Item extends React.Component {
     if ( this.props.details !== false ) {
       details =(
         <div className="toggler details">
-          <Accordion poa={ this.refs.item } show={ this.state.showDetails } name="details" { ...this.props }>
+          <Accordion poa={ this.refs.item } active={ this.state.active === 'details' } name="details" { ...this.props }>
             <Details item={ this.props.item } show={ this.state.showDetails } />
           </Accordion>
         </div>
@@ -345,7 +314,7 @@ class Item extends React.Component {
     if ( this.props.subtype !== false ) {
       subtype = (
         <div className="toggler subtype">
-          <Accordion show={ this.state.showSubtype } name="subtype" poa={ this.refs.item } { ...this.props }>
+          <Accordion active={ this.state.active === 'subtype' } name="subtype" poa={ this.refs.item } { ...this.props }>
             <Subtype { ...this.props } item={ this.props.item } show={ this.state.showSubtype } />
           </Accordion>
         </div>
@@ -355,7 +324,7 @@ class Item extends React.Component {
     if ( this.props.harmony !== false ) {
       harmony = (
         <div className="toggler harmony">
-          <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props } poa={ this.refs.item }>
+          <Accordion active={ this.state.active === 'harmony' } name="harmony" { ...this.props } poa={ this.refs.item }>
             <Harmony { ...this.props } item={ this.props.item } show={ this.state.showHarmony } />
           </Accordion>
         </div>

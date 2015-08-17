@@ -66,9 +66,18 @@ var TopLevelPanel = (function (_React$Component) {
       var _this2 = this;
 
       window.socket.emit('get items', { type: type }).on('OK get items', function (panel, items) {
+        var relevant = false;
         if (panel.type._id === type._id) {
-          console.log(panel, items);
-          _this2.setState({ type: type, items: items });
+
+          relevant = true;
+
+          if (panel.parent) {
+            relevant = panel.parent === panel.parent;
+          }
+
+          if (relevant) {
+            _this2.setState({ type: type, items: items });
+          }
         }
       });
     }

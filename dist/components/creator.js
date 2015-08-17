@@ -81,7 +81,7 @@ var Creator = (function (_React$Component) {
       var mediaHeight = media.offsetHeight;
       var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-      description.style.height = mediaHeight - inputHeight + 'px';
+      // description.style.height = ( mediaHeight -  inputHeight ) + 'px';
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
@@ -130,7 +130,13 @@ var Creator = (function (_React$Component) {
           _react2['default'].findDOMNode(_this2.refs.reference).value = '';
           _react2['default'].findDOMNode(_this2.refs.title).value = '';
 
-          window.Dispatcher.emit('new item', item, { type: _this2.props.type });
+          var newItemPanel = { type: _this2.props.type };
+
+          if (_this2.props.parent) {
+            newItemPanel.parent = _this2.props.parent._id;
+          }
+
+          window.Dispatcher.emit('new item', item, newItemPanel);
         });
       };
 

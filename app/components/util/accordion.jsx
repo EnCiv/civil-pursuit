@@ -11,6 +11,8 @@ class Accordion extends React.Component {
     this.height = null;
     this.visibility = false;
     this.id = null;
+
+    this.state = { attr : 'hide' };
   }
 
   // Set id
@@ -61,27 +63,32 @@ class Accordion extends React.Component {
     // }
   }
 
-  componentWillReceiveProps (props) {
-
-    if ( props.show > this.counter ) {
-      this.counter = props.show;
-
-      let content = React.findDOMNode(this.refs.content);
-      let wrapper = React.findDOMNode(this.refs.wrapper);
-
-      if ( this.props.poa ) {
-        let poa     = React.findDOMNode(this.props.poa);
-        window.scrollTo(0, ( poa.offsetTop  - 60 ));
-      }
-
-      wrapper.classList.toggle('show');
+  componentWillReceiveProps (props = {}) {
+    if ( props.active === true ) {
+      this.setState({ attr : 'show' });
     }
+    else if ( props.active === false ) {
+      this.setState({ attr : 'hide' });
+    }
+    // if ( props.show > this.counter ) {
+    //   this.counter = props.show;
+    //
+    //   let content = React.findDOMNode(this.refs.content);
+    //   let wrapper = React.findDOMNode(this.refs.wrapper);
+    //
+    //   if ( this.props.poa ) {
+    //     let poa     = React.findDOMNode(this.props.poa);
+    //     window.scrollTo(0, ( poa.offsetTop  - 60 ));
+    //   }
+    //
+    //   wrapper.classList.toggle('show');
+    // }
   }
 
   render () {
     return (
       <section className="syn-accordion" ref="view">
-        <section className="syn-accordion-wrapper" ref="wrapper">
+        <section className={ `syn-accordion-wrapper ${this.state.attr}` } ref="wrapper">
           <section className="syn-accordion-content" ref="content">
             { this.props.children }
           </section>

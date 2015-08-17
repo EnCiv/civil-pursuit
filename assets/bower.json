@@ -11,13 +11,8 @@
   ],
   "dependencies": {
     "font-awesome": "~4.2.0",
-    "jquery": "~2.1.1",
     "d3": "~3.5.2",
-    "c3": "~0.4.8",
-    "rangeslider.js": "~0.3.7",
-    "bootstrap": "~3.3.2",
-    "toolkit": "~2.0.2",
-    "goalProgress": "*"
+    "c3": "~0.4.8"
   },
   "resolutions": {
     "d3": "~3.5.2"

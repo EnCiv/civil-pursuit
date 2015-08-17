@@ -54,7 +54,8 @@ var Panel = (function (_React$Component) {
     _get(Object.getPrototypeOf(Panel.prototype), 'constructor', this).call(this, props);
 
     this.state = {
-      showCreator: 0
+      showCreator: 0,
+      active: false
     };
   }
 
@@ -67,14 +68,13 @@ var Panel = (function (_React$Component) {
 
     value: function toggleCreator() {
       if (this.props.user) {
-        var panel = _react2['default'].findDOMNode(this.refs.panel);
-        var itemAccordions = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+        var active = null;
 
-        for (var i = 0; i < itemAccordions.length; i++) {
-          itemAccordions[i].classList.remove('show');
+        if (this.state.active !== 'creator') {
+          active = 'creator';
         }
 
-        this.setState({ showCreator: this.state.showCreator + 1 });
+        this.setState({ active: active });
       } else {
         _join2['default'].click();
       }
@@ -85,6 +85,8 @@ var Panel = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
+      var _this = this;
+
       var creator = undefined,
           creatorIcon = undefined,
           newItem = undefined;
@@ -92,7 +94,7 @@ var Panel = (function (_React$Component) {
       if (this.props.creator !== false) {
         creator = _react2['default'].createElement(
           _utilAccordion2['default'],
-          _extends({ show: this.state.showCreator, poa: this.refs.panel }, this.props),
+          _extends({ active: this.state.active === 'creator', poa: this.refs.panel }, this.props),
           _react2['default'].createElement(_creator2['default'], this.props)
         );
         creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this), className: 'toggle-creator' });
@@ -109,6 +111,10 @@ var Panel = (function (_React$Component) {
           newItem = _react2['default'].createElement(_item2['default'], _extends({ item: this.props.newItem.item, 'new': true }, this.props));
         }
       }
+
+      var child = _react2['default'].Children.map(this.props.children, function (child) {
+        return _react2['default'].cloneElement(child, { panel: _this });
+      });
 
       return _react2['default'].createElement(
         'section',
@@ -128,7 +134,7 @@ var Panel = (function (_React$Component) {
           { className: 'syn-panel-body' },
           creator,
           newItem,
-          this.props.children
+          child
         )
       );
     }

@@ -6,7 +6,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -29,6 +29,8 @@ var Accordion = (function (_React$Component) {
     this.height = null;
     this.visibility = false;
     this.id = null;
+
+    this.state = { attr: 'hide' };
   }
 
   _inherits(Accordion, _React$Component);
@@ -44,21 +46,27 @@ var Accordion = (function (_React$Component) {
     value: function componentDidMount() {}
   }, {
     key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(props) {
+    value: function componentWillReceiveProps() {
+      var props = arguments[0] === undefined ? {} : arguments[0];
 
-      if (props.show > this.counter) {
-        this.counter = props.show;
-
-        var content = _react2['default'].findDOMNode(this.refs.content);
-        var wrapper = _react2['default'].findDOMNode(this.refs.wrapper);
-
-        if (this.props.poa) {
-          var poa = _react2['default'].findDOMNode(this.props.poa);
-          window.scrollTo(0, poa.offsetTop - 60);
-        }
-
-        wrapper.classList.toggle('show');
+      if (props.active === true) {
+        this.setState({ attr: 'show' });
+      } else if (props.active === false) {
+        this.setState({ attr: 'hide' });
       }
+      // if ( props.show > this.counter ) {
+      //   this.counter = props.show;
+      //
+      //   let content = React.findDOMNode(this.refs.content);
+      //   let wrapper = React.findDOMNode(this.refs.wrapper);
+      //
+      //   if ( this.props.poa ) {
+      //     let poa     = React.findDOMNode(this.props.poa);
+      //     window.scrollTo(0, ( poa.offsetTop  - 60 ));
+      //   }
+      //
+      //   wrapper.classList.toggle('show');
+      // }
     }
   }, {
     key: 'render',
@@ -68,7 +76,7 @@ var Accordion = (function (_React$Component) {
         { className: 'syn-accordion', ref: 'view' },
         _react2['default'].createElement(
           'section',
-          { className: 'syn-accordion-wrapper', ref: 'wrapper' },
+          { className: 'syn-accordion-wrapper ' + this.state.attr, ref: 'wrapper' },
           _react2['default'].createElement(
             'section',
             { className: 'syn-accordion-content', ref: 'content' },
