@@ -17,14 +17,11 @@ function addView(event, itemId) {
     _modelsItem2['default'].incrementView(itemId).then(function (item) {
       _this.ok(event, item.views);
 
-      var changed = {
-        views: item.views,
-        popularity: item.getPopularity()
-      };
-
-      _this.emit('Item changed', item._id, changed);
-
-      _this.broadcast.emit('Item changed', item._id, changed);
+      item.toPanelItem().then(function (item) {
+        console.log('item changed', item);
+        _this.emit('item changed ' + item._id, item);
+        _this.broadcast.emit('item changed ' + item._id, item);
+      });
     }, function (error) {
       _this.error(error);
     });

@@ -89,6 +89,8 @@ class Item extends React.Component {
     if ( typeof window !== 'undefined' ) {
       if ( this.state.item ) {
         window.socket.on(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
+
+        window.socket.on(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
       }
     }
   }
@@ -103,6 +105,8 @@ class Item extends React.Component {
 
   componentWillUnmount () {
     window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
+
+    window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -10,14 +10,15 @@ function addView (event, itemId) {
         item => {
           this.ok(event, item.views);
 
-          let changed = {
-            views       :   item.views,
-            popularity  :   item.getPopularity()
-          };
-
-          this.emit('Item changed', item._id, changed);
-
-          this.broadcast.emit('Item changed', item._id, changed);
+          item
+            .toPanelItem()
+            .then(
+              item => {
+                console.log('item changed', item)
+                this.emit(`item changed ${item._id}`, item);
+                this.broadcast.emit(`item changed ${item._id}`, item);
+              }
+            );
         },
         error => { this.error(error) }
       );

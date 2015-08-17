@@ -2177,6 +2177,8 @@ var Item = (function (_React$Component) {
       if (typeof window !== 'undefined') {
         if (this.state.item) {
           window.socket.on('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
+
+          window.socket.on('item changed ' + this.props.item._id, this.updateItem.bind(this));
         }
       }
     }
@@ -2195,6 +2197,8 @@ var Item = (function (_React$Component) {
 
     value: function componentWillUnmount() {
       window.socket.removeListener('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
+
+      window.socket.removeListener('item changed ' + this.props.item._id, this.updateItem.bind(this));
     }
   }, {
     key: 'hideOthers',

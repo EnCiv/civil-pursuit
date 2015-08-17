@@ -285,7 +285,6 @@ class Promote extends React.Component {
           window.socket.emit('add view', left._id);
           break;
 
-
         default:
           left = this.items[cursor-1];
 
