@@ -380,6 +380,15 @@ var Promote = (function (_React$Component9) {
             break;
         }
 
+        var view = _react2['default'].findDOMNode(this.refs.view);
+
+        var _top = view.getBoundingClientRect().top;
+        var _pageYOffset = window.pageYOffset;
+
+        // console.log('boom', top, window.);
+
+        window.scrollTo(0, _pageYOffset + _top - 60);
+
         this.setState({ cursor: cursor, left: left, right: right });
       }
     }
@@ -460,7 +469,7 @@ var Promote = (function (_React$Component9) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'item-promote ' + this.props.className },
+        { className: 'item-promote ' + this.props.className, ref: 'view' },
         content
       );
     }

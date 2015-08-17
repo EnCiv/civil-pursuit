@@ -172,6 +172,15 @@ class Promote extends React.Component {
           break;
       }
 
+      let view = React.findDOMNode(this.refs.view);
+
+      let top = view.getBoundingClientRect().top;
+      let { pageYOffset } = window;
+
+      // console.log('boom', top, window.);
+
+      window.scrollTo(0, pageYOffset + top - 60);
+
       this.setState({ cursor, left, right });
     }
   }
@@ -245,7 +254,7 @@ class Promote extends React.Component {
     }
 
     return (
-      <section className={`item-promote ${this.props.className}`}>
+      <section className={`item-promote ${this.props.className}`} ref="view">
         { content }
       </section>
     );
