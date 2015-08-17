@@ -135,7 +135,7 @@ var Description = (function (_React$Component3) {
     value: function render() {
       return _react2['default'].createElement(
         'section',
-        null,
+        { className: 'promote-description' },
         this.props.description
       );
     }

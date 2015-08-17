@@ -1388,6 +1388,11 @@ body {
     margin-left: 5px;
   }
 }
+.promote-description {
+  /** Parse \n into line breaks */
+  white-space: pre-line;
+  text-align: justify;
+}
 .syn-popularity-bar {
   background: green;
   color: white;
