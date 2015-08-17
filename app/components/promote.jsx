@@ -236,10 +236,9 @@ class Promote extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
-    console.log('receiving props', props.show, this.status)
-    if ( props.show && this.status === 'iddle' ) {
-      this.status = 'ready';
-      this.get();
+    if ( this.status === 'iddle' ) {
+      // this.status = 'ready';
+      // this.get();
     }
   }
 

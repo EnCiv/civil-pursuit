@@ -58,7 +58,7 @@ var Harmony = (function (_React$Component) {
   _createClass(Harmony, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      if (props.show && this.status === 'iddle') {
+      if (this.status === 'iddle') {
         this.status = 'ready';
         this.get();
       }

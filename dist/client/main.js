@@ -19,7 +19,9 @@ var props = {
   ready: false,
   intro: window.synapp.intro,
   newItem: null,
-  close: false
+  close: false,
+  panel: {},
+  topLevelType: null
 };
 
 function render() {
@@ -48,7 +50,14 @@ window.socket.on('welcome', function (user) {
   props.ready = true;
   props.user = user;
   render();
+
+  window.socket.emit('get top level type');
 }).on('online users', function (users) {
   props.online = users;
   render();
-});
+}).on('OK get top level type', function (type) {
+  props.topLevelType = type;
+  render();
+
+  window.socket.emit('get items', { type: type });
+}).on('OK get panel items', function () {});

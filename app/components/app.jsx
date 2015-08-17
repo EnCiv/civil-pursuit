@@ -10,13 +10,12 @@ import Home               from './home';
 
 class App extends React.Component {
   render () {
-
     let page = ( <div></div> );
 
     let showIntro = true;
 
     if ( this.props.path === '/' ) {
-      page = ( <Home { ...this.props } /> );
+      page = <Home { ...this.props } />;
     }
 
     let paths = this.props.path.split(/\//);

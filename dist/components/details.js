@@ -130,7 +130,7 @@ var Details = (function (_React$Component3) {
   _createClass(Details, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      if (props.show && this.status === 'iddle') {
+      if (this.status === 'iddle') {
         this.status = 'ready';
         this.get();
       }

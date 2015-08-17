@@ -527,11 +527,7 @@ var Promote = (function (_React$Component14) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function componentWillReceiveProps(props) {
-      console.log('receiving props', props.show, this.status);
-      if (props.show && this.status === 'iddle') {
-        this.status = 'ready';
-        this.get();
-      }
+      if (this.status === 'iddle') {}
     }
   }, {
     key: 'get',
@@ -895,6 +891,9 @@ var Promote = (function (_React$Component14) {
 
 exports['default'] = Promote;
 module.exports = exports['default'];
+
+// this.status = 'ready';
+// this.get();
 
 // big screens
 

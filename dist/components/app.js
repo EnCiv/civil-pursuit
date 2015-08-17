@@ -56,7 +56,6 @@ var App = (function (_React$Component) {
   _createClass(App, [{
     key: 'render',
     value: function render() {
-
       var page = _react2['default'].createElement('div', null);
 
       var showIntro = true;

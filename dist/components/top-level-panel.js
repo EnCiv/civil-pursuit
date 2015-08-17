@@ -28,6 +28,10 @@ var _item = require('./item');
 
 var _item2 = _interopRequireDefault(_item);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var TopLevelPanel = (function (_React$Component) {
   function TopLevelPanel(props) {
     _classCallCheck(this, TopLevelPanel);
@@ -51,56 +55,42 @@ var TopLevelPanel = (function (_React$Component) {
     }
   }, {
     key: 'getType',
-    value: function getType() {
-      var _this = this;
-
-      if (typeof window !== 'undefined') {
-        window.socket.emit('get top level type').on('OK get top level type', function (type) {
-          return _this.getItems(type);
-        });
-      }
-    }
+    value: function getType() {}
   }, {
     key: 'getItems',
-    value: function getItems(type) {
-      var _this2 = this;
-
-      window.socket.emit('get items', { type: type }).on('OK get items', function (panel, items) {
-        var relevant = false;
-        if (panel.type._id === type._id) {
-
-          relevant = true;
-
-          if (panel.parent) {
-            relevant = panel.parent === panel.parent;
-          }
-
-          if (relevant) {
-            _this2.setState({ type: type, items: items });
-          }
-        }
-      });
-    }
+    value: function getItems(type) {}
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
 
-      var type = this.state.type;
+      // let { type } = this.state;
+      //
+      // let panelTitle;
+      //
+      // if ( type ) {
+      //   panelTitle = type.name;
+      // }
+      //
+      // panelTitle = this.props.topLevelType.name;
+      //
+      // let items = this.state.items.map(item => (
+      //   <Item key={ item._id } item={ item } { ...this.props } />
+      // ));
 
-      var panelTitle = undefined;
+      var items = _react2['default'].createElement(_utilLoading2['default'], null);
 
-      if (type) {
-        panelTitle = type.name;
+      var title = 'Loading items';
+
+      var type = null;
+
+      if (this.props.topLevelType) {
+        type = this.props.topLevelType;
+        title = type.name;
       }
-
-      var items = this.state.items.map(function (item) {
-        return _react2['default'].createElement(_item2['default'], _extends({ key: item._id, item: item }, _this3.props));
-      });
 
       return _react2['default'].createElement(
         _panel2['default'],
-        _extends({ title: panelTitle, type: type }, this.props),
+        _extends({ title: title, type: type }, this.props),
         items
       );
     }
@@ -111,3 +101,25 @@ var TopLevelPanel = (function (_React$Component) {
 
 exports['default'] = TopLevelPanel;
 module.exports = exports['default'];
+
+// if ( typeof window !== 'undefined' ) {
+//   window.socket.emit('get top level type')
+//     .on('OK get top level type', type => this.getItems(type));
+// }
+
+// window.socket.emit('get items', { type })
+//   .on('OK get items', (panel, items) => {
+//     let relevant = false;
+//     if ( panel.type._id === type._id ) {
+//
+//       relevant = true;
+//
+//       if ( panel.parent ) {
+//         relevant = panel.parent === panel.parent;
+//       }
+//
+//       if ( relevant ) {
+//         this.setState({ type, items });
+//       }
+//     }
+//   })

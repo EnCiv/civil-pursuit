@@ -48,7 +48,7 @@ var Subtype = (function (_React$Component) {
   _createClass(Subtype, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      if (props.show && this.status === 'iddle') {
+      if (this.status === 'iddle') {
         this.status = 'ready';
         this.get();
       }

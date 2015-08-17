@@ -151,6 +151,7 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function componentWillReceiveProps(props) {
+      console.info('item is receiving props', props);
       if ('panel' in props) {
         if (props.panel.state.active === 'creator') {
           this.setState({ active: null });
