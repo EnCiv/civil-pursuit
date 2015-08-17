@@ -99,6 +99,110 @@ class Finish extends React.Component {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+class ColumnItem extends React.Component {
+  render () {
+    let { item, position } = this.props;
+
+    if ( ! item ) {
+      return ( <div></div> );
+    }
+
+    return (
+      <Column span="50" className={ `promote-${position}` }>
+        <ItemMedia item={ item } />
+        <Subject subject={ item.subject } />
+        <Reference { ...item.references[0] } />
+        <Description description={ item.description } />
+      </Column>
+    );
+  }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class ColumnFeedback extends React.Component {
+  render () {
+    let { item, position } = this.props;
+
+    if ( ! item ) {
+      return ( <div></div> );
+    }
+
+    return (
+      <Column span="50" className={ `promote-${position}` }>
+        <Feedback className="gutter-top" />
+      </Column>
+    );
+  }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class ColumnSliders extends React.Component {
+  render () {
+    let { item, position, criterias } = this.props;
+
+    if ( ! item ) {
+      return ( <div></div> );
+    }
+
+    return (
+      <Column span="50" className={ `promote-${position}` }>
+        <Sliders criterias={ criterias } className="promote-sliders" />
+      </Column>
+    );
+  }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class ColumnButtons extends React.Component {
+  render () {
+    let { item, position } = this.props;
+
+    if ( ! item ) {
+      return ( <div></div> );
+    }
+
+    return (
+      <Column span="50" className={ `promote-${position}` }>
+        <PromoteButton { ...item } onClick={ this.props.next.bind(this.props.parent, position) } className="gutter-bottom" />
+        <EditAndGoAgain />
+      </Column>
+    );
+  }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class SideColumn extends React.Component {
+  render () {
+    let { item, position, criterias } = this.props;
+
+    if ( ! item ) {
+      return ( <div></div> );
+    }
+
+    return (
+      <Column span="50" className={ `promote-${position}` }>
+        <ItemMedia item={ item } />
+        <Subject subject={ item.subject } />
+        <Reference { ...item.references[0] } />
+        <Description description={ item.description } />
+        <div style={{ clear: 'both' }} />
+        <Sliders criterias={ criterias } className="promote-sliders" />
+        <Feedback className="gutter-top" />
+        <div data-screen="phone-and-down" className="gutter-top">
+          <PromoteButton { ...item } onClick={ this.props.next.bind(this.props.parent, position) } className="gutter-bottom" />
+          <EditAndGoAgain />
+        </div>
+      </Column>
+    );
+  }
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Promote extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,12 +250,6 @@ class Promote extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  reset () {
-
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   next (position) {
     console.log('next', position);
 
@@ -177,7 +275,14 @@ class Promote extends React.Component {
           break;
         default:
           left = this.items[cursor-1];
-          right = this.items[cursor];
+          if ( cursor > limit ) {
+            cursor = limit;
+            right = null;
+          }
+          else {
+            right = this.items[cursor];
+          }
+
           break;
       }
 
@@ -225,54 +330,30 @@ class Promote extends React.Component {
         (
           <div data-screen="phone-and-up">
             <Row>
-              <Column span="50" key="left-item" className="promote-left">
-                <ItemMedia item={ this.state.left } />
-                <Subject subject={ this.state.left.subject } />
-                <Reference { ...this.state.left.references[0] } />
-                <Description description={ this.state.left.description } />
-              </Column>
+              <ColumnItem item={ this.state.left } position='left' key='item-left' />
 
-              <Column span="50" key="right-item" className="promote-right">
-                <ItemMedia item={ this.state.right } />
-                <Subject subject={ this.state.right.subject } />
-                <Reference { ...this.state.right.references[0] } />
-                <Description description={ this.state.right.description } />
-              </Column>
+              <ColumnItem item={ this.state.right } position='right' key='item-right' />
             </Row>
 
             <Row>
-              <Column span="50" key="left-feedback" className="promote-left">
-                <Feedback className="gutter-top" />
-              </Column>
+              <ColumnFeedback key="left-feedback" item={ this.state.left } position='left' />
 
-              <Column span="50" key="right-feedback" className="promote-right">
-                <Feedback className="gutter-top" />
-              </Column>
+              <ColumnFeedback key="right-feedback" item={ this.state.right } position='right' />
             </Row>
 
             <Row>
-              <Column span="50" key="left-sliders" className="promote-left">
-                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
-              </Column>
+              <ColumnSliders key="left-sliders"  item={ this.state.left } position='left' criterias={ this.state.criterias } />
 
-              <Column span="50" key="right-sliders" className="promote-right">
-                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
-              </Column>
+              <ColumnSliders key="right-sliders" item={ this.state.right } position='right' criterias={ this.state.criterias } />
 
             </Row>
 
             <h5 data-screen="phone-and-up" className="text-center gutter">Which of these is most important for the community to consider?</h5>
 
             <Row>
-              <Column span="50" key="left-buttons" className="promote-left">
-                <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } className="gutter-bottom" />
-                <EditAndGoAgain />
-              </Column>
+              <ColumnButtons key="left-buttons" item={ this.state.left } position='left' next={ this.next.bind(this) } parent={ this } />
 
-              <Column span="50" key="right-buttons" className="promote-right">
-                <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } className="gutter-bottom" />
-                <EditAndGoAgain />
-              </Column>
+              <ColumnButtons key="right-buttons" item={ this.state.right } position='right' next={ this.next.bind(this) } parent={ this } />
 
             </Row>
           </div>
@@ -283,33 +364,9 @@ class Promote extends React.Component {
         (
           <div data-screen="up-to-phone">
             <Row data-stack>
-              <Column span="50" key="left" className="promote-left">
-                <ItemMedia item={ this.state.left } />
-                <Subject subject={ this.state.left.subject } />
-                <Reference { ...this.state.left.references[0] } />
-                <Description description={ this.state.left.description } />
-                <div style={{ clear: 'both' }} />
-                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
-                <Feedback className="gutter-top" />
-                <div data-screen="phone-and-down" className="gutter-top">
-                  <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } className="gutter-bottom" />
-                  <EditAndGoAgain />
-                </div>
-              </Column>
+              <SideColumn key="left" position="left" item={ this.state.left } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } />
 
-              <Column span="50" key="right" className="promote-right">
-                <ItemMedia item={ this.state.right } />
-                <Subject subject={ this.state.right.subject } />
-                <Reference { ...this.state.right.references[0] } />
-                <Description description={ this.state.right.description } />
-                <div style={{ clear: 'both' }} />
-                <Sliders criterias={ this.state.criterias } className="promote-sliders" />
-                <Feedback className="gutter-top" />
-                <div data-screen="phone-and-down" className="gutter-top">
-                  <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } className="gutter-bottom" />
-                  <EditAndGoAgain />
-                </div>
-              </Column>
+              <SideColumn key="right" position="right" item={ this.state.right } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } />
             </Row>
           </div>
         ),

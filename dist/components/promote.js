@@ -293,7 +293,200 @@ var Finish = (function (_React$Component8) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var Promote = (function (_React$Component9) {
+var ColumnItem = (function (_React$Component9) {
+  function ColumnItem() {
+    _classCallCheck(this, ColumnItem);
+
+    if (_React$Component9 != null) {
+      _React$Component9.apply(this, arguments);
+    }
+  }
+
+  _inherits(ColumnItem, _React$Component9);
+
+  _createClass(ColumnItem, [{
+    key: 'render',
+    value: function render() {
+      var _props = this.props;
+      var item = _props.item;
+      var position = _props.position;
+
+      if (!item) {
+        return _react2['default'].createElement('div', null);
+      }
+
+      return _react2['default'].createElement(
+        _utilColumn2['default'],
+        { span: '50', className: 'promote-' + position },
+        _react2['default'].createElement(_itemMedia2['default'], { item: item }),
+        _react2['default'].createElement(Subject, { subject: item.subject }),
+        _react2['default'].createElement(Reference, item.references[0]),
+        _react2['default'].createElement(Description, { description: item.description })
+      );
+    }
+  }]);
+
+  return ColumnItem;
+})(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var ColumnFeedback = (function (_React$Component10) {
+  function ColumnFeedback() {
+    _classCallCheck(this, ColumnFeedback);
+
+    if (_React$Component10 != null) {
+      _React$Component10.apply(this, arguments);
+    }
+  }
+
+  _inherits(ColumnFeedback, _React$Component10);
+
+  _createClass(ColumnFeedback, [{
+    key: 'render',
+    value: function render() {
+      var _props2 = this.props;
+      var item = _props2.item;
+      var position = _props2.position;
+
+      if (!item) {
+        return _react2['default'].createElement('div', null);
+      }
+
+      return _react2['default'].createElement(
+        _utilColumn2['default'],
+        { span: '50', className: 'promote-' + position },
+        _react2['default'].createElement(Feedback, { className: 'gutter-top' })
+      );
+    }
+  }]);
+
+  return ColumnFeedback;
+})(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var ColumnSliders = (function (_React$Component11) {
+  function ColumnSliders() {
+    _classCallCheck(this, ColumnSliders);
+
+    if (_React$Component11 != null) {
+      _React$Component11.apply(this, arguments);
+    }
+  }
+
+  _inherits(ColumnSliders, _React$Component11);
+
+  _createClass(ColumnSliders, [{
+    key: 'render',
+    value: function render() {
+      var _props3 = this.props;
+      var item = _props3.item;
+      var position = _props3.position;
+      var criterias = _props3.criterias;
+
+      if (!item) {
+        return _react2['default'].createElement('div', null);
+      }
+
+      return _react2['default'].createElement(
+        _utilColumn2['default'],
+        { span: '50', className: 'promote-' + position },
+        _react2['default'].createElement(_sliders2['default'], { criterias: criterias, className: 'promote-sliders' })
+      );
+    }
+  }]);
+
+  return ColumnSliders;
+})(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var ColumnButtons = (function (_React$Component12) {
+  function ColumnButtons() {
+    _classCallCheck(this, ColumnButtons);
+
+    if (_React$Component12 != null) {
+      _React$Component12.apply(this, arguments);
+    }
+  }
+
+  _inherits(ColumnButtons, _React$Component12);
+
+  _createClass(ColumnButtons, [{
+    key: 'render',
+    value: function render() {
+      var _props4 = this.props;
+      var item = _props4.item;
+      var position = _props4.position;
+
+      if (!item) {
+        return _react2['default'].createElement('div', null);
+      }
+
+      return _react2['default'].createElement(
+        _utilColumn2['default'],
+        { span: '50', className: 'promote-' + position },
+        _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.props.next.bind(this.props.parent, position), className: 'gutter-bottom' })),
+        _react2['default'].createElement(EditAndGoAgain, null)
+      );
+    }
+  }]);
+
+  return ColumnButtons;
+})(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var SideColumn = (function (_React$Component13) {
+  function SideColumn() {
+    _classCallCheck(this, SideColumn);
+
+    if (_React$Component13 != null) {
+      _React$Component13.apply(this, arguments);
+    }
+  }
+
+  _inherits(SideColumn, _React$Component13);
+
+  _createClass(SideColumn, [{
+    key: 'render',
+    value: function render() {
+      var _props5 = this.props;
+      var item = _props5.item;
+      var position = _props5.position;
+      var criterias = _props5.criterias;
+
+      if (!item) {
+        return _react2['default'].createElement('div', null);
+      }
+
+      return _react2['default'].createElement(
+        _utilColumn2['default'],
+        { span: '50', className: 'promote-' + position },
+        _react2['default'].createElement(_itemMedia2['default'], { item: item }),
+        _react2['default'].createElement(Subject, { subject: item.subject }),
+        _react2['default'].createElement(Reference, item.references[0]),
+        _react2['default'].createElement(Description, { description: item.description }),
+        _react2['default'].createElement('div', { style: { clear: 'both' } }),
+        _react2['default'].createElement(_sliders2['default'], { criterias: criterias, className: 'promote-sliders' }),
+        _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
+        _react2['default'].createElement(
+          'div',
+          { 'data-screen': 'phone-and-down', className: 'gutter-top' },
+          _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.props.next.bind(this.props.parent, position), className: 'gutter-bottom' })),
+          _react2['default'].createElement(EditAndGoAgain, null)
+        )
+      );
+    }
+  }]);
+
+  return SideColumn;
+})(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var Promote = (function (_React$Component14) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -309,7 +502,7 @@ var Promote = (function (_React$Component9) {
     };
   }
 
-  _inherits(Promote, _React$Component9);
+  _inherits(Promote, _React$Component14);
 
   _createClass(Promote, [{
     key: 'componentWillReceiveProps',
@@ -348,12 +541,6 @@ var Promote = (function (_React$Component9) {
       }
     }
   }, {
-    key: 'reset',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function reset() {}
-  }, {
     key: 'next',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -385,7 +572,13 @@ var Promote = (function (_React$Component9) {
             break;
           default:
             left = this.items[cursor - 1];
-            right = this.items[cursor];
+            if (cursor > limit) {
+              cursor = limit;
+              right = null;
+            } else {
+              right = this.items[cursor];
+            }
+
             break;
         }
 
@@ -429,50 +622,20 @@ var Promote = (function (_React$Component9) {
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'left-item', className: 'promote-left' },
-              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
-              _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
-              _react2['default'].createElement(Reference, this.state.left.references[0]),
-              _react2['default'].createElement(Description, { description: this.state.left.description })
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'right-item', className: 'promote-right' },
-              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
-              _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
-              _react2['default'].createElement(Reference, this.state.right.references[0]),
-              _react2['default'].createElement(Description, { description: this.state.right.description })
-            )
+            _react2['default'].createElement(ColumnItem, { item: this.state.left, position: 'left', key: 'item-left' }),
+            _react2['default'].createElement(ColumnItem, { item: this.state.right, position: 'right', key: 'item-right' })
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'left-feedback', className: 'promote-left' },
-              _react2['default'].createElement(Feedback, { className: 'gutter-top' })
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'right-feedback', className: 'promote-right' },
-              _react2['default'].createElement(Feedback, { className: 'gutter-top' })
-            )
+            _react2['default'].createElement(ColumnFeedback, { key: 'left-feedback', item: this.state.left, position: 'left' }),
+            _react2['default'].createElement(ColumnFeedback, { key: 'right-feedback', item: this.state.right, position: 'right' })
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'left-sliders', className: 'promote-left' },
-              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' })
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'right-sliders', className: 'promote-right' },
-              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' })
-            )
+            _react2['default'].createElement(ColumnSliders, { key: 'left-sliders', item: this.state.left, position: 'left', criterias: this.state.criterias }),
+            _react2['default'].createElement(ColumnSliders, { key: 'right-sliders', item: this.state.right, position: 'right', criterias: this.state.criterias })
           ),
           _react2['default'].createElement(
             'h5',
@@ -482,18 +645,8 @@ var Promote = (function (_React$Component9) {
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'left-buttons', className: 'promote-left' },
-              _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left'), className: 'gutter-bottom' })),
-              _react2['default'].createElement(EditAndGoAgain, null)
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'right-buttons', className: 'promote-right' },
-              _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right'), className: 'gutter-bottom' })),
-              _react2['default'].createElement(EditAndGoAgain, null)
-            )
+            _react2['default'].createElement(ColumnButtons, { key: 'left-buttons', item: this.state.left, position: 'left', next: this.next.bind(this), parent: this }),
+            _react2['default'].createElement(ColumnButtons, { key: 'right-buttons', item: this.state.right, position: 'right', next: this.next.bind(this), parent: this })
           )
         ), _react2['default'].createElement(
           'div',
@@ -501,40 +654,8 @@ var Promote = (function (_React$Component9) {
           _react2['default'].createElement(
             _utilRow2['default'],
             { 'data-stack': true },
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'left', className: 'promote-left' },
-              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
-              _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
-              _react2['default'].createElement(Reference, this.state.left.references[0]),
-              _react2['default'].createElement(Description, { description: this.state.left.description }),
-              _react2['default'].createElement('div', { style: { clear: 'both' } }),
-              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
-              _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
-              _react2['default'].createElement(
-                'div',
-                { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-                _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left'), className: 'gutter-bottom' })),
-                _react2['default'].createElement(EditAndGoAgain, null)
-              )
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50', key: 'right', className: 'promote-right' },
-              _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
-              _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
-              _react2['default'].createElement(Reference, this.state.right.references[0]),
-              _react2['default'].createElement(Description, { description: this.state.right.description }),
-              _react2['default'].createElement('div', { style: { clear: 'both' } }),
-              _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
-              _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
-              _react2['default'].createElement(
-                'div',
-                { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-                _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right'), className: 'gutter-bottom' })),
-                _react2['default'].createElement(EditAndGoAgain, null)
-              )
-            )
+            _react2['default'].createElement(SideColumn, { key: 'left', position: 'left', item: this.state.left, criterias: this.state.criterias, next: this.next.bind(this), parent: this }),
+            _react2['default'].createElement(SideColumn, { key: 'right', position: 'right', item: this.state.right, criterias: this.state.criterias, next: this.next.bind(this), parent: this })
           )
         ), _react2['default'].createElement(
           'div',
