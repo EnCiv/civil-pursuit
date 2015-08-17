@@ -4420,6 +4420,14 @@ var Promote = (function (_React$Component14) {
 
           _this.items = evaluation.items;
 
+          if (evaluation.items[0]) {
+            window.socket.emit('add view', evaluation.items[0]._id);
+          }
+
+          if (evaluation.items[1]) {
+            window.socket.emit('add view', evaluation.items[1]._id);
+          }
+
           _this.setState({
             limit: limit,
             left: evaluation.items[0],
@@ -4455,12 +4463,17 @@ var Promote = (function (_React$Component14) {
         switch (position) {
           case 'left':
             right = this.items[cursor];
+            window.socket.emit('add view', right._id);
             break;
+
           case 'right':
             left = this.items[cursor];
+            window.socket.emit('add view', left._id);
             break;
+
           default:
             left = this.items[cursor - 1];
+
             if (cursor > limit) {
               cursor = limit;
               right = null;
@@ -4468,13 +4481,19 @@ var Promote = (function (_React$Component14) {
               right = this.items[cursor];
             }
 
+            if (left) {
+              window.socket.emit('add view', left._id);
+            }
+
+            if (right) {
+              window.socket.emit('add view', right._id);
+            }
+
             break;
         }
 
         var _top = view.getBoundingClientRect().top;
         var _pageYOffset = window.pageYOffset;
-
-        // console.log('boom', top, window.);
 
         window.scrollTo(0, _pageYOffset + _top - 60);
 

@@ -8,19 +8,45 @@ function incrementView(itemId) {
 
   return new Promise(function (ok, ko) {
     try {
-      _this.findByIdAndUpdate(itemId, { $inc: { 'views': 1 } }, function (error, item) {
+
+      _this.findById(itemId).exec().then(function (item) {
         try {
-          if (error) {
-            throw error;
-          }
           if (!item) {
-            throw new Error('Item not found: ' + itemId);
+            throw new Error('No such item');
           }
-          ok(item);
+
+          item.views++;
+
+          item.save(function (error) {
+            if (error) {
+              ko(error);
+            }
+            ok(item);
+          });
         } catch (error) {
           ko(error);
         }
-      });
+      }, ko);
+
+      // this
+      //   .findByIdAndUpdate(
+      //     itemId,
+      //     { $inc: { "views": 1 } },
+      //     (error, item) => {
+      //       console.log('------------------------', item)
+      //       try {
+      //         if ( error ) {
+      //           throw error;
+      //         }
+      //         if ( ! item ) {
+      //           throw new Error('Item not found: ' + itemId);
+      //         }
+      //         ok(item);
+      //       }
+      //       catch ( error ) {
+      //         ko(error);
+      //       }
+      //     });
     } catch (error) {
       ko(error);
     }

@@ -238,6 +238,14 @@ class Promote extends React.Component {
 
           this.items = evaluation.items;
 
+          if ( evaluation.items[0] ) {
+            window.socket.emit('add view', evaluation.items[0]._id);
+          }
+
+          if ( evaluation.items[1] ) {
+            window.socket.emit('add view', evaluation.items[1]._id);
+          }
+
           this.setState({
             limit       :   limit,
             left        :   evaluation.items[0],
@@ -269,12 +277,18 @@ class Promote extends React.Component {
       switch ( position ) {
         case 'left' :
           right = this.items[cursor];
+          window.socket.emit('add view', right._id);
           break;
+
         case 'right':
           left = this.items[cursor];
+          window.socket.emit('add view', left._id);
           break;
+
+
         default:
           left = this.items[cursor-1];
+
           if ( cursor > limit ) {
             cursor = limit;
             right = null;
@@ -283,13 +297,19 @@ class Promote extends React.Component {
             right = this.items[cursor];
           }
 
+          if ( left ) {
+            window.socket.emit('add view', left._id);
+          }
+
+          if ( right ) {
+            window.socket.emit('add view', right._id);
+          }
+
           break;
       }
 
       let top = view.getBoundingClientRect().top;
       let { pageYOffset } = window;
-
-      // console.log('boom', top, window.);
 
       window.scrollTo(0, pageYOffset + top - 60);
 
