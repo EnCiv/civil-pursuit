@@ -26,6 +26,7 @@ class Subtype extends React.Component {
       window.socket.emit('get items', { type : this.props.item.subtype._id, parent : this.props.item._id })
         .on('OK get items', (panel, items) => {
           if ( panel.type === this.props.item.subtype._id ) {
+            console.log('subtype', panel ,items);
             this.setState({ panel, items });
           }
         })
@@ -49,7 +50,7 @@ class Subtype extends React.Component {
 
       if ( this.state.items.length ) {
         items = this.state.items.map(item => (
-          <Item key={ item._id } item={ item } { ...this.props } />
+          <Item key={ item._id } { ...this.props } item={ item } />
         ));
       }
       else {

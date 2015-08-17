@@ -61,6 +61,7 @@ var Subtype = (function (_React$Component) {
       if (typeof window !== 'undefined') {
         window.socket.emit('get items', { type: this.props.item.subtype._id, parent: this.props.item._id }).on('OK get items', function (panel, items) {
           if (panel.type === _this.props.item.subtype._id) {
+            console.log('subtype', panel, items);
             _this.setState({ panel: panel, items: items });
           }
         });
@@ -88,7 +89,7 @@ var Subtype = (function (_React$Component) {
 
         if (this.state.items.length) {
           items = this.state.items.map(function (item) {
-            return _react2['default'].createElement(_item2['default'], _extends({ key: item._id, item: item }, _this2.props));
+            return _react2['default'].createElement(_item2['default'], _extends({ key: item._id }, _this2.props, { item: item }));
           });
         } else {
           items = _react2['default'].createElement(
