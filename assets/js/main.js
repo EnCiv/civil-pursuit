@@ -4169,13 +4169,23 @@ var Finish = (function (_React$Component8) {
   _createClass(Finish, [{
     key: 'render',
     value: function render() {
+      var text = 'Neither';
+
+      var _props = this.props;
+      var cursor = _props.cursor;
+      var limit = _props.limit;
+
+      if (cursor === limit) {
+        text = 'Finish';
+      }
+
       return _react2['default'].createElement(
         _utilButton2['default'],
         _extends({ block: true }, this.props),
         _react2['default'].createElement(
           'b',
           null,
-          'Neither'
+          text
         )
       );
     }
@@ -4200,9 +4210,9 @@ var ColumnItem = (function (_React$Component9) {
   _createClass(ColumnItem, [{
     key: 'render',
     value: function render() {
-      var _props = this.props;
-      var item = _props.item;
-      var position = _props.position;
+      var _props2 = this.props;
+      var item = _props2.item;
+      var position = _props2.position;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -4238,9 +4248,9 @@ var ColumnFeedback = (function (_React$Component10) {
   _createClass(ColumnFeedback, [{
     key: 'render',
     value: function render() {
-      var _props2 = this.props;
-      var item = _props2.item;
-      var position = _props2.position;
+      var _props3 = this.props;
+      var item = _props3.item;
+      var position = _props3.position;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -4273,10 +4283,10 @@ var ColumnSliders = (function (_React$Component11) {
   _createClass(ColumnSliders, [{
     key: 'render',
     value: function render() {
-      var _props3 = this.props;
-      var item = _props3.item;
-      var position = _props3.position;
-      var criterias = _props3.criterias;
+      var _props4 = this.props;
+      var item = _props4.item;
+      var position = _props4.position;
+      var criterias = _props4.criterias;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -4309,9 +4319,9 @@ var ColumnButtons = (function (_React$Component12) {
   _createClass(ColumnButtons, [{
     key: 'render',
     value: function render() {
-      var _props4 = this.props;
-      var item = _props4.item;
-      var position = _props4.position;
+      var _props5 = this.props;
+      var item = _props5.item;
+      var position = _props5.position;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -4345,11 +4355,11 @@ var SideColumn = (function (_React$Component13) {
   _createClass(SideColumn, [{
     key: 'render',
     value: function render() {
-      var _props5 = this.props;
-      var item = _props5.item;
-      var position = _props5.position;
-      var criterias = _props5.criterias;
-      var other = _props5.other;
+      var _props6 = this.props;
+      var item = _props6.item;
+      var position = _props6.position;
+      var criterias = _props6.criterias;
+      var other = _props6.other;
 
       if (!item) {
         return _react2['default'].createElement('div', null);

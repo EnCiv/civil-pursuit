@@ -91,8 +91,16 @@ class EditAndGoAgain extends React.Component {
 
 class Finish extends React.Component {
   render () {
+    let text = 'Neither';
+
+    let { cursor, limit } = this.props;
+
+    if ( cursor === limit ) {
+      text = 'Finish';
+    }
+
     return (
-      <Button block { ...this.props }><b>Neither</b></Button>
+      <Button block { ...this.props }><b>{ text }</b></Button>
     );
   }
 }
