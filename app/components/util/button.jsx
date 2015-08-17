@@ -5,7 +5,7 @@ import React from 'react';
 class Button extends React.Component {
   render () {
 
-    let classes = [];
+    let classes = [this.props.className || ''];
 
     let props = [
       'block',

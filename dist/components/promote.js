@@ -4,6 +4,8 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -50,6 +52,8 @@ var _libAppComponent = require('../lib/app/component');
 
 var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var Header = (function (_React$Component) {
   function Header() {
     _classCallCheck(this, Header);
@@ -86,6 +90,8 @@ var Header = (function (_React$Component) {
   return Header;
 })(_react2['default'].Component);
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var Subject = (function (_React$Component2) {
   function Subject() {
     _classCallCheck(this, Subject);
@@ -111,6 +117,8 @@ var Subject = (function (_React$Component2) {
   return Subject;
 })(_react2['default'].Component);
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var Description = (function (_React$Component3) {
   function Description() {
     _classCallCheck(this, Description);
@@ -135,6 +143,8 @@ var Description = (function (_React$Component3) {
 
   return Description;
 })(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var Reference = (function (_React$Component4) {
   function Reference() {
@@ -165,6 +175,8 @@ var Reference = (function (_React$Component4) {
   return Reference;
 })(_react2['default'].Component);
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var Feedback = (function (_React$Component5) {
   function Feedback() {
     _classCallCheck(this, Feedback);
@@ -189,6 +201,8 @@ var Feedback = (function (_React$Component5) {
 
   return Feedback;
 })(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var PromoteButton = (function (_React$Component6) {
   function PromoteButton() {
@@ -215,6 +229,8 @@ var PromoteButton = (function (_React$Component6) {
   return PromoteButton;
 })(_react2['default'].Component);
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var EditAndGoAgain = (function (_React$Component7) {
   function EditAndGoAgain() {
     _classCallCheck(this, EditAndGoAgain);
@@ -231,7 +247,7 @@ var EditAndGoAgain = (function (_React$Component7) {
     value: function render() {
       return _react2['default'].createElement(
         _utilButton2['default'],
-        { block: true },
+        _extends({ block: true }, this.props),
         _react2['default'].createElement(
           'i',
           null,
@@ -243,6 +259,8 @@ var EditAndGoAgain = (function (_React$Component7) {
 
   return EditAndGoAgain;
 })(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var Finish = (function (_React$Component8) {
   function Finish() {
@@ -272,6 +290,8 @@ var Finish = (function (_React$Component8) {
 
   return Finish;
 })(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var Promote = (function (_React$Component9) {
   function Promote(props) {
@@ -329,25 +349,37 @@ var Promote = (function (_React$Component9) {
           { 'data-stack': 'phone-and-down' },
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', key: 'left', className: 'gutter-right-adjust gutter-left' },
+            { span: '50', key: 'left', className: 'promote-left' },
             _react2['default'].createElement(_itemMedia2['default'], { item: this.state.left }),
             _react2['default'].createElement(Subject, { subject: this.state.left.subject }),
             _react2['default'].createElement(Reference, this.state.left.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'gutter-top gutter-right-adjust' }),
-            _react2['default'].createElement(Feedback, { className: 'gutter-top' })
+            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
+            _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
+            _react2['default'].createElement(
+              'div',
+              { 'data-screen': 'phone-and-down', className: 'gutter-top' },
+              _react2['default'].createElement(PromoteButton, this.state.left),
+              _react2['default'].createElement(EditAndGoAgain, null)
+            )
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', key: 'right', className: 'gutter-left-adjust gutter-right' },
+            { span: '50', key: 'right', className: 'promote-right' },
             _react2['default'].createElement(_itemMedia2['default'], { item: this.state.right }),
             _react2['default'].createElement(Subject, { subject: this.state.right.subject }),
             _react2['default'].createElement(Reference, this.state.right.references[0]),
             _react2['default'].createElement(Description, { description: this.state.left.description }),
             _react2['default'].createElement('div', { style: { clear: 'both' } }),
-            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'gutter-top gutter-left-adjust' }),
-            _react2['default'].createElement(Feedback, { className: 'gutter-top' })
+            _react2['default'].createElement(_sliders2['default'], { criterias: this.state.criterias, className: 'promote-sliders' }),
+            _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
+            _react2['default'].createElement(
+              'div',
+              { 'data-screen': 'phone-and-down', className: 'gutter-top' },
+              _react2['default'].createElement(PromoteButton, this.state.right),
+              _react2['default'].createElement(EditAndGoAgain, null)
+            )
           )
         ), _react2['default'].createElement(
           'h5',
@@ -355,25 +387,29 @@ var Promote = (function (_React$Component9) {
           'Which of these is most important for the community to consider?'
         ), _react2['default'].createElement(
           _utilRow2['default'],
-          { 'data-stack': 'phone-and-down' },
+          { 'data-stack': 'phone-and-down', 'data-screen': 'phone-and-up' },
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', key: 'left' },
+            { span: '50', key: 'left', className: 'promote-left' },
             _react2['default'].createElement(PromoteButton, this.state.left),
-            _react2['default'].createElement(EditAndGoAgain, null)
+            _react2['default'].createElement(EditAndGoAgain, { className: 'gutter-top' })
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
-            { span: '50', key: 'right' },
+            { span: '50', key: 'right', className: 'promote-right' },
             _react2['default'].createElement(PromoteButton, this.state.right),
-            _react2['default'].createElement(EditAndGoAgain, null)
+            _react2['default'].createElement(EditAndGoAgain, { className: 'gutter-top' })
           )
-        ), _react2['default'].createElement(Finish, null));
+        ), _react2['default'].createElement(
+          'div',
+          { className: 'gutter' },
+          _react2['default'].createElement(Finish, null)
+        ));
       }
 
       return _react2['default'].createElement(
         'section',
-        { style: { border: '1px solid #666', borderRadius: '6px 0 0 6px', borderRight: 'none' } },
+        { className: 'item-promote' },
         content
       );
     }
@@ -381,6 +417,8 @@ var Promote = (function (_React$Component9) {
 
   return Promote;
 })(_react2['default'].Component);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 exports['default'] = Promote;
 module.exports = exports['default'];

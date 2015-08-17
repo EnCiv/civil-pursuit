@@ -28,6 +28,10 @@ var _libAppComponent = require('../lib/app/component');
 
 var _libAppComponent2 = _interopRequireDefault(_libAppComponent);
 
+var _utilRange = require('./util/range');
+
+var _utilRange2 = _interopRequireDefault(_utilRange);
+
 var Slider = (function (_React$Component) {
   function Slider() {
     _classCallCheck(this, Slider);
@@ -73,7 +77,7 @@ var Slider = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '60' },
-            _react2['default'].createElement('input', { type: 'range' })
+            _react2['default'].createElement(_utilRange2['default'], { block: true, step: '1', min: '-1', max: '1', defaultValue: '0' })
           )
         )
       );

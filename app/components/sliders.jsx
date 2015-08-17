@@ -4,6 +4,7 @@ import React from 'react';
 import Row from './util/row';
 import Column from './util/column';
 import Component from '../lib/app/component';
+import Range from './util/range';
 
 class Slider extends React.Component {
   toggleDescription (e) {
@@ -23,7 +24,7 @@ class Slider extends React.Component {
           </Column>
 
           <Column span="60">
-            <input type="range" />
+            <Range block step="1" min="-1" max="1" defaultValue="0" />
           </Column>
         </Row>
       </div>

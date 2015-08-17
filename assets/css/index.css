@@ -163,11 +163,12 @@ button,
 @media (max-width: 440px) {
   .syn-screen-phone_and_up,
   [data-screen="phone-and-up"] {
-    display: none;
+    display: none !important;
   }
 }
 @media (min-width: 768px) {
-  .syn-screen-phone_and_down {
+  .syn-screen-phone_and_down,
+  [data-screen="phone-and-down"] {
     display: none;
   }
 }
@@ -579,6 +580,7 @@ input[type="search"],
 input[type="tel"],
 input[type="time"],
 input[type="url"],
+input[type="range"],
 textarea {
   border: 1px solid #999;
   border-radius: 3px;
@@ -598,6 +600,7 @@ input[type="search"]:hover,
 input[type="tel"]:hover,
 input[type="time"]:hover,
 input[type="url"]:hover,
+input[type="range"]:hover,
 textarea:hover {
   background: #eee;
 }
@@ -614,6 +617,7 @@ input[type="search"].block,
 input[type="tel"].block,
 input[type="time"].block,
 input[type="url"].block,
+input[type="range"].block,
 textarea.block {
   width: 100%;
 }
@@ -630,6 +634,7 @@ input[type="search"].block.gutter,
 input[type="tel"].block.gutter,
 input[type="time"].block.gutter,
 input[type="url"].block.gutter,
+input[type="range"].block.gutter,
 textarea.block.gutter {
   width: calc(87.5%) !important;
 }
@@ -646,6 +651,7 @@ input[type="search"].error,
 input[type="tel"].error,
 input[type="time"].error,
 input[type="url"].error,
+input[type="range"].error,
 textarea.error {
   border-color: red;
   background: yellow;
@@ -663,6 +669,7 @@ input[type="search"].medium,
 input[type="tel"].medium,
 input[type="time"].medium,
 input[type="url"].medium,
+input[type="range"].medium,
 textarea.medium {
   font-size: 125%;
   border-width: 2px;
@@ -1329,6 +1336,56 @@ body {
 }
 .syn-creator [name="description"] {
   border-radius: 0 0 4px 4px;
+}
+.item-promote {
+  border: 1px solid #666;
+  border-radius: 6px 0 0 6px;
+  border-right: none;
+}
+.item-promote textarea {
+  height: 120px;
+}
+.promote-sliders {
+  margin-top: 10px;
+}
+.promote-left {
+  margin-left: 10px;
+}
+@media (max-width: 440px) {
+  .promote-left {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+}
+@media (min-width: 440px) {
+  .promote-left {
+    margin-right: 5px;
+  }
+}
+.promote-left .promote-sliders {
+  margin-right: 5px;
+}
+.promote-right {
+  margin-right: 10px;
+}
+@media (max-width: 440px) {
+  .promote-right {
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+}
+@media (min-width: 440px) {
+  .promote-right {
+    margin-left: 5px;
+  }
+}
+.promote-right .promote-sliders {
+  margin-right: 10px;
+}
+@media (min-width: 440px) {
+  .promote-right .promote-sliders {
+    margin-left: 5px;
+  }
 }
 .syn-popularity-bar {
   background: green;

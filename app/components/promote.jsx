@@ -10,6 +10,8 @@ import TextArea         from './util/text-area';
 import Button           from './util/button';
 import Component        from '../lib/app/component';
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Header extends React.Component {
   render () {
     return (
@@ -21,6 +23,8 @@ class Header extends React.Component {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Subject extends React.Component {
   render () {
     return (
@@ -29,6 +33,8 @@ class Subject extends React.Component {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Description extends React.Component {
   render () {
     return (
@@ -36,6 +42,8 @@ class Description extends React.Component {
     );
   }
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Reference extends React.Component {
   render () {
@@ -47,6 +55,8 @@ class Reference extends React.Component {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Feedback extends React.Component {
   render () {
     return (
@@ -57,6 +67,8 @@ class Feedback extends React.Component {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class PromoteButton extends React.Component {
   render () {
     return (
@@ -65,13 +77,17 @@ class PromoteButton extends React.Component {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class EditAndGoAgain extends React.Component {
   render () {
     return (
-      <Button block><i>Edit and go again</i></Button>
+      <Button block { ...this.props }><i>Edit and go again</i></Button>
     );
   }
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Finish extends React.Component {
   render () {
@@ -80,6 +96,8 @@ class Finish extends React.Component {
     );
   }
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Promote extends React.Component {
   constructor (props) {
@@ -129,24 +147,32 @@ class Promote extends React.Component {
         ),
         (
           <Row data-stack="phone-and-down">
-            <Column span="50" key="left" className="gutter-right-adjust gutter-left">
+            <Column span="50" key="left" className="promote-left">
               <ItemMedia item={ this.state.left } />
               <Subject subject={ this.state.left.subject } />
               <Reference { ...this.state.left.references[0] } />
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
-              <Sliders criterias={ this.state.criterias } className="gutter-top gutter-right-adjust" />
+              <Sliders criterias={ this.state.criterias } className="promote-sliders" />
               <Feedback className="gutter-top" />
+              <div data-screen="phone-and-down" className="gutter-top">
+                <PromoteButton { ...this.state.left } />
+                <EditAndGoAgain />
+              </div>
             </Column>
 
-            <Column span="50" key="right" className="gutter-left-adjust gutter-right">
+            <Column span="50" key="right" className="promote-right">
               <ItemMedia item={ this.state.right } />
               <Subject subject={ this.state.right.subject } />
               <Reference { ...this.state.right.references[0] } />
               <Description description={ this.state.left.description } />
               <div style={{ clear: 'both' }} />
-              <Sliders criterias={ this.state.criterias } className="gutter-top gutter-left-adjust" />
+              <Sliders criterias={ this.state.criterias } className="promote-sliders" />
               <Feedback className="gutter-top" />
+              <div data-screen="phone-and-down" className="gutter-top">
+                <PromoteButton { ...this.state.right } />
+                <EditAndGoAgain />
+              </div>
             </Column>
           </Row>
         ),
@@ -154,30 +180,34 @@ class Promote extends React.Component {
           <h5 data-screen="phone-and-up" className="text-center gutter">Which of these is most important for the community to consider?</h5>
         ),
         (
-          <Row data-stack="phone-and-down">
-            <Column span="50" key="left">
+          <Row data-stack="phone-and-down" data-screen="phone-and-up">
+            <Column span="50" key="left" className="promote-left">
               <PromoteButton { ...this.state.left } />
-              <EditAndGoAgain />
+              <EditAndGoAgain className="gutter-top" />
             </Column>
 
-            <Column span="50" key="right">
+            <Column span="50" key="right" className="promote-right">
               <PromoteButton { ...this.state.right } />
-              <EditAndGoAgain />
+              <EditAndGoAgain className="gutter-top" />
             </Column>
           </Row>
         ),
         (
-          <Finish />
+          <div className="gutter">
+            <Finish />
+          </div>
         )
       );
     }
 
     return (
-      <section style={{ border: '1px solid #666', borderRadius: '6px 0 0 6px', borderRight : 'none' }}>
+      <section className="item-promote">
         { content }
       </section>
     );
   }
 }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 export default Promote;

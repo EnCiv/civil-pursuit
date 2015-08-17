@@ -18,62 +18,30 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var Button = (function (_React$Component) {
-  function Button() {
-    _classCallCheck(this, Button);
+var _input = require('./input');
+
+var _input2 = _interopRequireDefault(_input);
+
+var Range = (function (_React$Component) {
+  function Range() {
+    _classCallCheck(this, Range);
 
     if (_React$Component != null) {
       _React$Component.apply(this, arguments);
     }
   }
 
-  _inherits(Button, _React$Component);
+  _inherits(Range, _React$Component);
 
-  _createClass(Button, [{
+  _createClass(Range, [{
     key: 'render',
     value: function render() {
-
-      var classes = [this.props.className || ''];
-
-      var props = ['block', 'primary', 'info', 'large', 'medium', 'radius', 'cursor-pointer', 'shy', 'success', 'error', 'warning', 'small'];
-
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = props[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var prop = _step.value;
-
-          if (this.props[prop]) {
-            classes.push(prop);
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator['return']) {
-            _iterator['return']();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      return _react2['default'].createElement(
-        'button',
-        _extends({ type: 'button' }, this.props, { className: classes.join(' ') }),
-        this.props.children
-      );
+      return _react2['default'].createElement(_input2['default'], _extends({}, this.props, { type: 'range' }));
     }
   }]);
 
-  return Button;
+  return Range;
 })(_react2['default'].Component);
 
-exports['default'] = Button;
+exports['default'] = Range;
 module.exports = exports['default'];
