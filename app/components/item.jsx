@@ -109,9 +109,13 @@ class Item extends React.Component {
 
   hideOthers (except) {
     let item = React.findDOMNode(this.refs.item);
-    let itemAccordions = item.querySelectorAll(`.toggler:not(${except}) .syn-accordion-wrapper.show`);
+
+    let itemAccordions = item.querySelectorAll(`.toggler:not(.${except}) .syn-accordion-wrapper.show`);
+
+    console.log('other accordions', itemAccordions.length, `.toggler:not(.${except}) .syn-accordion-wrapper.show`, item.id)
 
     for ( let i = 0; i < itemAccordions.length; i ++ ) {
+      console.log(itemAccordions[i]);
       itemAccordions[i].classList.remove('show');
     }
 
@@ -123,10 +127,12 @@ class Item extends React.Component {
       creator.classList.remove('show');
     }
 
-    let otherItems = panel.querySelectorAll('.item .syn-accordion-wrapper.show');
+    if ( item.id ) {
+      let otherItems = panel.querySelectorAll(`.item:not(#item-${item.id}) .toggler .syn-accordion-wrapper.show`);
 
-    for ( let i = 0; i < otherItems.length; i ++ ) {
-      otherItems[i].classList.remove('show');
+      for ( let i = 0; i < otherItems.length; i ++ ) {
+        otherItems[i].classList.remove('show');
+      }
     }
   }
 
@@ -146,7 +152,7 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   toggleDetails () {
-    this.hideOthers();
+    this.hideOthers('details');
     this.setState({ showDetails : this.state.showDetails + 1 });
   }
 
@@ -312,33 +318,41 @@ class Item extends React.Component {
 
     if ( this.props.promote !== false ) {
       promote = (
-        <Accordion poa={ this.refs.item } show={ this.state.showPromote } name="promote" { ...this.props }>
-          <Promote item={ this.props.item } show={ this.state.showPromote } ref="promote" className="toggler promote" />
-        </Accordion>
+        <div className="toggler promote">
+          <Accordion poa={ this.refs.item } show={ this.state.showPromote } name="promote" { ...this.props }>
+            <Promote item={ this.props.item } show={ this.state.showPromote } ref="promote" />
+          </Accordion>
+        </div>
       );
     }
 
     if ( this.props.details !== false ) {
       details =(
-        <Accordion poa={ this.refs.item } show={ this.state.showDetails } name="details" { ...this.props }>
-          <Details item={ this.props.item } show={ this.state.showDetails } className="toggler details" />
-        </Accordion>
+        <div className="toggler details">
+          <Accordion poa={ this.refs.item } show={ this.state.showDetails } name="details" { ...this.props }>
+            <Details item={ this.props.item } show={ this.state.showDetails } />
+          </Accordion>
+        </div>
       );
     }
 
     if ( this.props.subtype !== false ) {
       subtype = (
-        <Accordion show={ this.state.showSubtype } name="subtype" poa={ this.refs.item } { ...this.props }>
-          <Subtype { ...this.props } item={ this.props.item } show={ this.state.showSubtype } className="toggler subtype" />
-        </Accordion>
+        <div className="toggler subtype">
+          <Accordion show={ this.state.showSubtype } name="subtype" poa={ this.refs.item } { ...this.props }>
+            <Subtype { ...this.props } item={ this.props.item } show={ this.state.showSubtype } />
+          </Accordion>
+        </div>
       );
     }
 
     if ( this.props.harmony !== false ) {
       harmony = (
-        <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props } poa={ this.refs.item }>
-          <Harmony { ...this.props } item={ this.props.item } show={ this.state.showHarmony } className="toggler harmony" />
-        </Accordion>
+        <div className="toggler harmony">
+          <Accordion show={ this.state.showHarmony } name="harmony" { ...this.props } poa={ this.refs.item }>
+            <Harmony { ...this.props } item={ this.props.item } show={ this.state.showHarmony } />
+          </Accordion>
+        </div>
       );
     }
 
@@ -368,7 +382,7 @@ class Item extends React.Component {
 
         <section style={ { clear : 'both' }}></section>
 
-        <section className="gutter-top" style={{ marginRight : '-10px' }}>
+        <section style={{ marginRight : '-10px' }}>
           { promote }
 
           { details }

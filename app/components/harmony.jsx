@@ -154,7 +154,7 @@ class Harmony extends React.Component {
     }
 
     return (
-      <section className="subtype text-center">
+      <section className={`item-harmony ${this.props.className}`}>
         { content }
       </section>
     );

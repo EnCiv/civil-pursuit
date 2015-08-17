@@ -15,7 +15,7 @@ import Component        from '../lib/app/component';
 class Header extends React.Component {
   render () {
     return (
-      <header className="text-center">
+      <header className="text-center gutter-bottom">
         <h2>{ this.props.cursor } of { this.props.limit }</h2>
         <h4>Evaluate each item below</h4>
       </header>
@@ -201,7 +201,7 @@ class Promote extends React.Component {
     }
 
     return (
-      <section className="item-promote">
+      <section className={`item-promote ${this.props.className}`}>
         { content }
       </section>
     );

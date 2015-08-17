@@ -116,7 +116,7 @@ var Details = (function (_React$Component2) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'gutter' },
+        { className: 'item-details ' + this.props.className },
         content
       );
     }

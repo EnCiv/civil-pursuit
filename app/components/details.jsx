@@ -67,7 +67,7 @@ class Details extends React.Component {
     }
 
     return (
-      <section className="gutter">
+      <section className={`item-details ${this.props.className}`}>
         { content }
       </section>
     );

@@ -215,7 +215,7 @@ var Harmony = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'subtype text-center' },
+        { className: 'item-harmony ' + this.props.className },
         content
       );
     }

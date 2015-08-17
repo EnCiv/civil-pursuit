@@ -107,7 +107,7 @@ var Subtype = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'subtype text-center' },
+        { className: 'item-subtype ' + this.props.className },
         content
       );
     }

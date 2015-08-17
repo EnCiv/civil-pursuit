@@ -70,7 +70,7 @@ var Header = (function (_React$Component) {
     value: function render() {
       return _react2['default'].createElement(
         'header',
-        { className: 'text-center' },
+        { className: 'text-center gutter-bottom' },
         _react2['default'].createElement(
           'h2',
           null,
@@ -409,7 +409,7 @@ var Promote = (function (_React$Component9) {
 
       return _react2['default'].createElement(
         'section',
-        { className: 'item-promote' },
+        { className: 'item-promote ' + this.props.className },
         content
       );
     }

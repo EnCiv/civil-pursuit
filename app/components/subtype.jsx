@@ -67,7 +67,7 @@ class Subtype extends React.Component {
     }
 
     return (
-      <section className="subtype text-center">
+      <section className={`item-subtype ${this.props.className}`}>
         { content }
       </section>
     );

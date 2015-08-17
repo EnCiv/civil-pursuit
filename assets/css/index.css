@@ -1341,6 +1341,7 @@ body {
   border: 1px solid #666;
   border-radius: 6px 0 0 6px;
   border-right: none;
+  margin-top: 10px;
 }
 .item-promote textarea {
   height: 120px;
@@ -1392,9 +1393,6 @@ body {
   color: white;
   padding: 8px;
   transition: all 1s;
-}
-.subtype {
-  border: 1px solid #666;
 }
 .syn-sliders-criteria-description:not(.syn-visible) {
   display: none;
