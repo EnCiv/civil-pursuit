@@ -161,9 +161,13 @@ class Promote extends React.Component {
 
       switch ( position ) {
         case 'left' :
-          left = this.items[cursor];
+          right = this.items[cursor];
           break;
         case 'right':
+          left = this.items[cursor];
+          break;
+        default:
+          left = this.items[cursor-1];
           right = this.items[cursor];
           break;
       }
