@@ -2,11 +2,13 @@
 
 import FeedbackModel from '../models/feedback';
 
-function insertFeedback (event, feedback) {
+function insertFeedback (event, itemId, value) {
   try {
-    if ( ! ( 'user' in feedback ) ) {
-      feedback.user = this.synuser.id;
-    }
+    let feedback = {
+      item : itemId,
+      user : this.synuser.id,
+      feedback : value
+    };
 
     FeedbackModel
       .create(feedback)

@@ -194,7 +194,7 @@ var Feedback = (function (_React$Component5) {
       return _react2['default'].createElement(
         'div',
         this.props,
-        _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?' })
+        _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Can you provide feedback that would encourage the author to create a statement that more people would unite around?', className: 'user-feedback' })
       );
     }
   }]);
@@ -591,6 +591,7 @@ var Promote = (function (_React$Component14) {
         switch (position) {
           case 'left':
             window.socket.emit('promote', left._id);
+
             right = this.items[cursor];
             window.socket.emit('add view', right._id);
             break;
@@ -602,6 +603,42 @@ var Promote = (function (_React$Component14) {
             break;
 
           default:
+            if (left) {
+              var feedback = view.querySelectorAll('.promote-left .user-feedback');
+
+              for (var _i = 0; _i < feedback.length; _i++) {
+                var value = feedback[_i].value;
+
+                if (value) {
+                  var id = feedback[_i].closest('.item').id.split('-')[1];
+
+                  console.log({ id: id });
+
+                  window.socket.emit('insert feedback', id, value);
+
+                  feedback[_i].value = '';
+                }
+              }
+            }
+
+            if (right) {
+              var feedback = view.querySelectorAll('.promote-right .user-feedback');
+
+              for (var _i2 = 0; _i2 < feedback.length; _i2++) {
+                var value = feedback[_i2].value;
+
+                if (value) {
+                  var id = feedback[_i2].closest('.item').id.split('-')[1];
+
+                  console.log({ id: id });
+
+                  window.socket.emit('insert feedback', id, value);
+
+                  feedback[_i2].value = '';
+                }
+              }
+            }
+
             left = this.items[cursor - 1];
 
             if (cursor > limit) {

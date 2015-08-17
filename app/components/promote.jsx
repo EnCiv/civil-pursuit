@@ -61,7 +61,7 @@ class Feedback extends React.Component {
   render () {
     return (
       <div { ...this.props }>
-        <TextArea block placeholder="Can you provide feedback that would encourage the author to create a statement that more people would unite around?"></TextArea>
+        <TextArea block placeholder="Can you provide feedback that would encourage the author to create a statement that more people would unite around?" className="user-feedback"></TextArea>
       </div>
     );
   }
@@ -293,6 +293,7 @@ class Promote extends React.Component {
       switch ( position ) {
         case 'left' :
           window.socket.emit('promote', left._id);
+
           right = this.items[cursor];
           window.socket.emit('add view', right._id);
           break;
@@ -304,6 +305,42 @@ class Promote extends React.Component {
           break;
 
         default:
+          if ( left ) {
+            let feedback = view.querySelectorAll('.promote-left .user-feedback');
+
+            for ( let i = 0; i < feedback.length; i ++ ) {
+              let value = feedback[i].value;
+
+              if ( value ) {
+                let id = feedback[i].closest('.item').id.split('-')[1];
+
+                console.log({ id });
+
+                window.socket.emit('insert feedback', id, value);
+
+                feedback[i].value = '';
+              }
+            }
+          }
+
+          if ( right ) {
+            let feedback = view.querySelectorAll('.promote-right .user-feedback');
+
+            for ( let i = 0; i < feedback.length; i ++ ) {
+              let value = feedback[i].value;
+
+              if ( value ) {
+                let id = feedback[i].closest('.item').id.split('-')[1];
+
+                console.log({ id });
+
+                window.socket.emit('insert feedback', id, value);
+
+                feedback[i].value = '';
+              }
+            }
+          }
+
           left = this.items[cursor-1];
 
           if ( cursor > limit ) {

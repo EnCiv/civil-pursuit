@@ -10,13 +10,15 @@ var _modelsFeedback = require('../models/feedback');
 
 var _modelsFeedback2 = _interopRequireDefault(_modelsFeedback);
 
-function insertFeedback(event, feedback) {
+function insertFeedback(event, itemId, value) {
   var _this = this;
 
   try {
-    if (!('user' in feedback)) {
-      feedback.user = this.synuser.id;
-    }
+    var feedback = {
+      item: itemId,
+      user: this.synuser.id,
+      feedback: value
+    };
 
     _modelsFeedback2['default'].create(feedback).then(function (inserted) {
       return _this.ok(event, inserted);
