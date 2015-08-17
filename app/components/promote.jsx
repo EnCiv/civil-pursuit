@@ -148,6 +148,8 @@ class Promote extends React.Component {
   next (position) {
     console.log('next', position);
 
+    let view = React.findDOMNode(this.refs.view);
+
     let { cursor, limit, left, right } = this.state;
 
     if ( cursor < limit ) {
@@ -172,8 +174,6 @@ class Promote extends React.Component {
           break;
       }
 
-      let view = React.findDOMNode(this.refs.view);
-
       let top = view.getBoundingClientRect().top;
       let { pageYOffset } = window;
 
@@ -182,6 +182,10 @@ class Promote extends React.Component {
       window.scrollTo(0, pageYOffset + top - 60);
 
       this.setState({ cursor, left, right });
+    }
+
+    else {
+      view.closest('.item').querySelector('.toggle-details').click();
     }
   }
 

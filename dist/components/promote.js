@@ -354,6 +354,8 @@ var Promote = (function (_React$Component9) {
     value: function next(position) {
       console.log('next', position);
 
+      var view = _react2['default'].findDOMNode(this.refs.view);
+
       var _state = this.state;
       var cursor = _state.cursor;
       var limit = _state.limit;
@@ -380,8 +382,6 @@ var Promote = (function (_React$Component9) {
             break;
         }
 
-        var view = _react2['default'].findDOMNode(this.refs.view);
-
         var _top = view.getBoundingClientRect().top;
         var _pageYOffset = window.pageYOffset;
 
@@ -390,6 +390,8 @@ var Promote = (function (_React$Component9) {
         window.scrollTo(0, _pageYOffset + _top - 60);
 
         this.setState({ cursor: cursor, left: left, right: right });
+      } else {
+        view.closest('.item').querySelector('.toggle-details').click();
       }
     }
   }, {

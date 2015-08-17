@@ -323,7 +323,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggleDetails.bind(this) },
+              { small: true, shy: true, onClick: this.toggleDetails.bind(this), className: 'toggle-details' },
               _react2['default'].createElement(
                 'span',
                 null,

@@ -292,7 +292,7 @@ class Item extends React.Component {
           </ButtonGroup>
 
           <ButtonGroup>
-            <Button small shy onClick={ this.toggleDetails.bind(this) }>
+            <Button small shy onClick={ this.toggleDetails.bind(this) } className="toggle-details">
               <span>{ item.popularity.number + '%' } </span>
               <Icon icon="signal" />
             </Button>
