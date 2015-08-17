@@ -116,6 +116,7 @@ class Promote extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
+    console.log('receiving props', props.show, this.status)
     if ( props.show && this.status === 'iddle' ) {
       this.status = 'ready';
       this.get();
@@ -141,6 +142,12 @@ class Promote extends React.Component {
           });
         })
     }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  reset () {
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -185,6 +192,16 @@ class Promote extends React.Component {
     }
 
     else {
+      this.setState({
+        limit       :   0,
+        left        :   {},
+        right       :   {},
+        criterias   :   [],
+        cursor      :   1
+      });
+
+      this.status = 'iddle';
+
       view.closest('.item').querySelector('.toggle-details').click();
     }
   }

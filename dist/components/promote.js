@@ -317,6 +317,7 @@ var Promote = (function (_React$Component9) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function componentWillReceiveProps(props) {
+      console.log('receiving props', props.show, this.status);
       if (props.show && this.status === 'iddle') {
         this.status = 'ready';
         this.get();
@@ -346,6 +347,12 @@ var Promote = (function (_React$Component9) {
         });
       }
     }
+  }, {
+    key: 'reset',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function reset() {}
   }, {
     key: 'next',
 
@@ -391,6 +398,16 @@ var Promote = (function (_React$Component9) {
 
         this.setState({ cursor: cursor, left: left, right: right });
       } else {
+        this.setState({
+          limit: 0,
+          left: {},
+          right: {},
+          criterias: [],
+          cursor: 1
+        });
+
+        this.status = 'iddle';
+
         view.closest('.item').querySelector('.toggle-details').click();
       }
     }
