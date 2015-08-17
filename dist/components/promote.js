@@ -466,13 +466,13 @@ var Promote = (function (_React$Component9) {
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50', key: 'left-buttons', className: 'promote-left' },
-              _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
+              _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left'), className: 'gutter-bottom' })),
               _react2['default'].createElement(EditAndGoAgain, null)
             ),
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50', key: 'right-buttons', className: 'promote-right' },
-              _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right') })),
+              _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right'), className: 'gutter-bottom' })),
               _react2['default'].createElement(EditAndGoAgain, null)
             )
           )
@@ -495,7 +495,7 @@ var Promote = (function (_React$Component9) {
               _react2['default'].createElement(
                 'div',
                 { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-                _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left') })),
+                _react2['default'].createElement(PromoteButton, _extends({}, this.state.left, { onClick: this.next.bind(this, 'left'), className: 'gutter-bottom' })),
                 _react2['default'].createElement(EditAndGoAgain, null)
               )
             ),
@@ -512,7 +512,7 @@ var Promote = (function (_React$Component9) {
               _react2['default'].createElement(
                 'div',
                 { 'data-screen': 'phone-and-down', className: 'gutter-top' },
-                _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right') })),
+                _react2['default'].createElement(PromoteButton, _extends({}, this.state.right, { onClick: this.next.bind(this, 'right'), className: 'gutter-bottom' })),
                 _react2['default'].createElement(EditAndGoAgain, null)
               )
             )
@@ -541,3 +541,5 @@ exports['default'] = Promote;
 module.exports = exports['default'];
 
 // big screens
+
+// SMALL SCREENS

@@ -244,18 +244,20 @@ class Promote extends React.Component {
 
             <Row>
               <Column span="50" key="left-buttons" className="promote-left">
-                <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } />
+                <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } className="gutter-bottom" />
                 <EditAndGoAgain />
               </Column>
 
               <Column span="50" key="right-buttons" className="promote-right">
-                <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } />
+                <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } className="gutter-bottom" />
                 <EditAndGoAgain />
               </Column>
 
             </Row>
           </div>
         ),
+
+        // SMALL SCREENS
 
         (
           <div data-screen="up-to-phone">
@@ -269,7 +271,7 @@ class Promote extends React.Component {
                 <Sliders criterias={ this.state.criterias } className="promote-sliders" />
                 <Feedback className="gutter-top" />
                 <div data-screen="phone-and-down" className="gutter-top">
-                  <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } />
+                  <PromoteButton { ...this.state.left } onClick={ this.next.bind(this, 'left') } className="gutter-bottom" />
                   <EditAndGoAgain />
                 </div>
               </Column>
@@ -283,7 +285,7 @@ class Promote extends React.Component {
                 <Sliders criterias={ this.state.criterias } className="promote-sliders" />
                 <Feedback className="gutter-top" />
                 <div data-screen="phone-and-down" className="gutter-top">
-                  <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } />
+                  <PromoteButton { ...this.state.right } onClick={ this.next.bind(this, 'right') } className="gutter-bottom" />
                   <EditAndGoAgain />
                 </div>
               </Column>
