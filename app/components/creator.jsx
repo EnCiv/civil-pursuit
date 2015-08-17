@@ -26,15 +26,13 @@ class Creator extends React.Component {
     let subject       =   React.findDOMNode(this.refs.subject);
     let reference     =   React.findDOMNode(this.refs.reference);
     let description   =   React.findDOMNode(this.refs.description);
-    let media         =   React.findDOMNode(this.refs.media);
+    let media         =   React.findDOMNode(this.refs.uploader).querySelector('.syn-uploader-dropbox');
     let creator       =   React.findDOMNode(this.refs.creator);
 
-    setTimeout(() => {
-      let mediaHeight = media.offsetHeight;
-      let inputHeight = subject.offsetHeight + reference.offsetHeight;
+    let mediaHeight = media.offsetHeight;
+    let inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-      description.style.height = ( mediaHeight - inputHeight ) + 'px';
-    }, 1000);
+    description.style.height = ( mediaHeight -  inputHeight ) + 'px';
 
     subject.addEventListener('keydown', (e) => {
       if ( e.keyCode === 13 ) {
@@ -163,8 +161,8 @@ class Creator extends React.Component {
       <Form handler={ this.create.bind(this) } className="syn-creator" ref="form">
         <article className="item" ref="creator">
           <section className="item-media-wrapper">
-            <section className="item-media">
-              <Uploader ref="media" handler={ this.saveImage.bind(this) } video={ this.state.video } />
+            <section className="item-media" ref="media">
+              <Uploader ref="uploader" handler={ this.saveImage.bind(this) } video={ this.state.video } />
             </section>
           </section>
 

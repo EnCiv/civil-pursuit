@@ -502,15 +502,13 @@ var Creator = (function (_React$Component) {
       var subject = _react2['default'].findDOMNode(this.refs.subject);
       var reference = _react2['default'].findDOMNode(this.refs.reference);
       var description = _react2['default'].findDOMNode(this.refs.description);
-      var media = _react2['default'].findDOMNode(this.refs.media);
+      var media = _react2['default'].findDOMNode(this.refs.uploader).querySelector('.syn-uploader-dropbox');
       var creator = _react2['default'].findDOMNode(this.refs.creator);
 
-      setTimeout(function () {
-        var mediaHeight = media.offsetHeight;
-        var inputHeight = subject.offsetHeight + reference.offsetHeight;
+      var mediaHeight = media.offsetHeight;
+      var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-        description.style.height = mediaHeight - inputHeight + 'px';
-      }, 1000);
+      description.style.height = mediaHeight - inputHeight + 'px';
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
@@ -654,8 +652,8 @@ var Creator = (function (_React$Component) {
             { className: 'item-media-wrapper' },
             _react2['default'].createElement(
               'section',
-              { className: 'item-media' },
-              _react2['default'].createElement(_uploader2['default'], { ref: 'media', handler: this.saveImage.bind(this), video: this.state.video })
+              { className: 'item-media', ref: 'media' },
+              _react2['default'].createElement(_uploader2['default'], { ref: 'uploader', handler: this.saveImage.bind(this), video: this.state.video })
             )
           ),
           _react2['default'].createElement(
@@ -2203,9 +2201,9 @@ var Item = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function hideOthers() {
+    value: function hideOthers(except) {
       var item = _react2['default'].findDOMNode(this.refs.item);
-      var itemAccordions = item.querySelectorAll('.syn-accordion-wrapper.show');
+      var itemAccordions = item.querySelectorAll('.toggler:not(' + except + ') .syn-accordion-wrapper.show');
 
       for (var i = 0; i < itemAccordions.length; i++) {
         itemAccordions[i].classList.remove('show');
@@ -2232,7 +2230,8 @@ var Item = (function (_React$Component) {
 
     value: function togglePromote() {
       if (this.props.user) {
-        this.hideOthers();
+        this.hideOthers('promote');
+
         this.setState({ showPromote: this.state.showPromote + 1 });
       } else {
         _join2['default'].click();
@@ -2439,7 +2438,7 @@ var Item = (function (_React$Component) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ poa: this.refs.item, show: this.state.showPromote, name: 'promote' }, this.props),
-          _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote })
+          _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote, ref: 'promote', className: 'toggler promote' })
         );
       }
 
@@ -2447,7 +2446,7 @@ var Item = (function (_React$Component) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ poa: this.refs.item, show: this.state.showDetails, name: 'details' }, this.props),
-          _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
+          _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails, className: 'toggler details' })
         );
       }
 
@@ -2455,7 +2454,7 @@ var Item = (function (_React$Component) {
         subtype = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showSubtype, name: 'subtype', poa: this.refs.item }, this.props),
-          _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype }))
+          _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype, className: 'toggler subtype' }))
         );
       }
 
@@ -2463,7 +2462,7 @@ var Item = (function (_React$Component) {
         harmony = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props, { poa: this.refs.item }),
-          _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
+          _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony, className: 'toggler harmony' }))
         );
       }
 
@@ -2521,7 +2520,7 @@ var Item = (function (_React$Component) {
         _react2['default'].createElement('section', { style: { clear: 'both' } }),
         _react2['default'].createElement(
           'section',
-          null,
+          { className: 'gutter-top', style: { marginRight: '-10px' } },
           promote,
           details,
           subtype,
@@ -4241,7 +4240,7 @@ var Promote = (function (_React$Component9) {
 
       return _react2['default'].createElement(
         'section',
-        { style: { border: '1px solid #666', borderRadius: '6px 0 0 6px' } },
+        { style: { border: '1px solid #666', borderRadius: '6px 0 0 6px', borderRight: 'none' } },
         content
       );
     }
@@ -5596,6 +5595,7 @@ var Accordion = (function (_React$Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
+
       if (props.show > this.counter) {
         this.counter = props.show;
 

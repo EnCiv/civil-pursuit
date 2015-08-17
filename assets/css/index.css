@@ -1283,7 +1283,7 @@ body {
   height: 1px;
   width: 1px;
   background: #fff;
-  border: 0px solid #fff;
+  border: none;
 }
 .syn-uploader .syn-uploader-replace:not(.--show) {
   display: none;
@@ -1292,10 +1292,12 @@ body {
   overflow: hidden;
 }
 .syn-accordion-wrapper {
-  display: none;
+  position: absolute;
+  top: -9999px;
 }
 .syn-accordion-wrapper.show {
-  display: block;
+  position: relative;
+  top: 0;
 }
 .item-inputs {
   left: 0;

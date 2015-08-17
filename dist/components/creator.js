@@ -75,15 +75,13 @@ var Creator = (function (_React$Component) {
       var subject = _react2['default'].findDOMNode(this.refs.subject);
       var reference = _react2['default'].findDOMNode(this.refs.reference);
       var description = _react2['default'].findDOMNode(this.refs.description);
-      var media = _react2['default'].findDOMNode(this.refs.media);
+      var media = _react2['default'].findDOMNode(this.refs.uploader).querySelector('.syn-uploader-dropbox');
       var creator = _react2['default'].findDOMNode(this.refs.creator);
 
-      setTimeout(function () {
-        var mediaHeight = media.offsetHeight;
-        var inputHeight = subject.offsetHeight + reference.offsetHeight;
+      var mediaHeight = media.offsetHeight;
+      var inputHeight = subject.offsetHeight + reference.offsetHeight;
 
-        description.style.height = mediaHeight - inputHeight + 'px';
-      }, 1000);
+      description.style.height = mediaHeight - inputHeight + 'px';
 
       subject.addEventListener('keydown', function (e) {
         if (e.keyCode === 13) {
@@ -227,8 +225,8 @@ var Creator = (function (_React$Component) {
             { className: 'item-media-wrapper' },
             _react2['default'].createElement(
               'section',
-              { className: 'item-media' },
-              _react2['default'].createElement(_uploader2['default'], { ref: 'media', handler: this.saveImage.bind(this), video: this.state.video })
+              { className: 'item-media', ref: 'media' },
+              _react2['default'].createElement(_uploader2['default'], { ref: 'uploader', handler: this.saveImage.bind(this), video: this.state.video })
             )
           ),
           _react2['default'].createElement(

@@ -45,6 +45,7 @@ var Accordion = (function (_React$Component) {
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
+
       if (props.show > this.counter) {
         this.counter = props.show;
 

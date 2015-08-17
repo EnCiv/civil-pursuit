@@ -173,7 +173,7 @@ class Promote extends React.Component {
     }
 
     return (
-      <section style={{ border: '1px solid #666', borderRadius: '6px 0 0 6px' }}>
+      <section style={{ border: '1px solid #666', borderRadius: '6px 0 0 6px', borderRight : 'none' }}>
         { content }
       </section>
     );

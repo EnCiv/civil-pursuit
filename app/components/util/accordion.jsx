@@ -62,6 +62,7 @@ class Accordion extends React.Component {
   }
 
   componentWillReceiveProps (props) {
+
     if ( props.show > this.counter ) {
       this.counter = props.show;
 

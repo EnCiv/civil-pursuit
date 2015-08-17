@@ -373,7 +373,7 @@ var Promote = (function (_React$Component9) {
 
       return _react2['default'].createElement(
         'section',
-        { style: { border: '1px solid #666', borderRadius: '6px 0 0 6px' } },
+        { style: { border: '1px solid #666', borderRadius: '6px 0 0 6px', borderRight: 'none' } },
         content
       );
     }

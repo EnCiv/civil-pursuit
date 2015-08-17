@@ -125,9 +125,9 @@ var Item = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function hideOthers() {
+    value: function hideOthers(except) {
       var item = _react2['default'].findDOMNode(this.refs.item);
-      var itemAccordions = item.querySelectorAll('.syn-accordion-wrapper.show');
+      var itemAccordions = item.querySelectorAll('.toggler:not(' + except + ') .syn-accordion-wrapper.show');
 
       for (var i = 0; i < itemAccordions.length; i++) {
         itemAccordions[i].classList.remove('show');
@@ -154,7 +154,8 @@ var Item = (function (_React$Component) {
 
     value: function togglePromote() {
       if (this.props.user) {
-        this.hideOthers();
+        this.hideOthers('promote');
+
         this.setState({ showPromote: this.state.showPromote + 1 });
       } else {
         _join2['default'].click();
@@ -361,7 +362,7 @@ var Item = (function (_React$Component) {
         promote = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ poa: this.refs.item, show: this.state.showPromote, name: 'promote' }, this.props),
-          _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote })
+          _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote, ref: 'promote', className: 'toggler promote' })
         );
       }
 
@@ -369,7 +370,7 @@ var Item = (function (_React$Component) {
         details = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ poa: this.refs.item, show: this.state.showDetails, name: 'details' }, this.props),
-          _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
+          _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails, className: 'toggler details' })
         );
       }
 
@@ -377,7 +378,7 @@ var Item = (function (_React$Component) {
         subtype = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showSubtype, name: 'subtype', poa: this.refs.item }, this.props),
-          _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype }))
+          _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype, className: 'toggler subtype' }))
         );
       }
 
@@ -385,7 +386,7 @@ var Item = (function (_React$Component) {
         harmony = _react2['default'].createElement(
           _utilAccordion2['default'],
           _extends({ show: this.state.showHarmony, name: 'harmony' }, this.props, { poa: this.refs.item }),
-          _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
+          _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony, className: 'toggler harmony' }))
         );
       }
 
@@ -443,7 +444,7 @@ var Item = (function (_React$Component) {
         _react2['default'].createElement('section', { style: { clear: 'both' } }),
         _react2['default'].createElement(
           'section',
-          null,
+          { className: 'gutter-top', style: { marginRight: '-10px' } },
           promote,
           details,
           subtype,
