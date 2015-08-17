@@ -27,26 +27,6 @@ function incrementView(itemId) {
           ko(error);
         }
       }, ko);
-
-      // this
-      //   .findByIdAndUpdate(
-      //     itemId,
-      //     { $inc: { "views": 1 } },
-      //     (error, item) => {
-      //       console.log('------------------------', item)
-      //       try {
-      //         if ( error ) {
-      //           throw error;
-      //         }
-      //         if ( ! item ) {
-      //           throw new Error('Item not found: ' + itemId);
-      //         }
-      //         ok(item);
-      //       }
-      //       catch ( error ) {
-      //         ko(error);
-      //       }
-      //     });
     } catch (error) {
       ko(error);
     }

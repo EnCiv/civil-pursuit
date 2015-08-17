@@ -292,11 +292,13 @@ class Promote extends React.Component {
 
       switch ( position ) {
         case 'left' :
+          window.socket.emit('promote', left._id);
           right = this.items[cursor];
           window.socket.emit('add view', right._id);
           break;
 
         case 'right':
+          window.socket.emit('promote', right._id);
           left = this.items[cursor];
           window.socket.emit('add view', left._id);
           break;
@@ -332,6 +334,16 @@ class Promote extends React.Component {
     }
 
     else {
+      switch ( position ) {
+        case 'left' :
+          window.socket.emit('promote', left._id);
+          break;
+
+        case 'right':
+          window.socket.emit('promote', right._id);
+          break;
+      }
+
       this.setState({
         limit       :   0,
         left        :   {},

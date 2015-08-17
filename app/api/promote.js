@@ -1,26 +1,31 @@
-! function () {
+'use strict';
 
-  'use strict';
+import ItemModel from '../models/item';
 
-  function promote (event, item_id) {
+function promoteItem (event, itemId) {
+  try {
+    ItemModel
+      .incrementPromotion(itemId)
+      .then(
+        item => {
+          this.ok(event, item.promotions);
 
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      require('../models/item')
-        .incrementPromotion(item_id, domain.intercept(function (item) {
-          socket.ok(event, item);  
-        }));
-    });
-
+          item
+            .toPanelItem()
+            .then(
+              item => {
+                console.log('item changed', item)
+                this.emit(`item changed ${item._id}`, item);
+                this.broadcast.emit(`item changed ${item._id}`, item);
+              }
+            );
+        },
+        error => { this.error(error) }
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = promote;
-
-} ();
+export default promoteItem;

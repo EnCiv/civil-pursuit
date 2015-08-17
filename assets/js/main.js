@@ -4483,11 +4483,13 @@ var Promote = (function (_React$Component14) {
 
         switch (position) {
           case 'left':
+            window.socket.emit('promote', left._id);
             right = this.items[cursor];
             window.socket.emit('add view', right._id);
             break;
 
           case 'right':
+            window.socket.emit('promote', right._id);
             left = this.items[cursor];
             window.socket.emit('add view', left._id);
             break;
@@ -4520,6 +4522,16 @@ var Promote = (function (_React$Component14) {
 
         this.setState({ cursor: cursor, left: left, right: right });
       } else {
+        switch (position) {
+          case 'left':
+            window.socket.emit('promote', left._id);
+            break;
+
+          case 'right':
+            window.socket.emit('promote', right._id);
+            break;
+        }
+
         this.setState({
           limit: 0,
           left: {},

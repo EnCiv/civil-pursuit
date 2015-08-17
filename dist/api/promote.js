@@ -1,25 +1,34 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  function promote(event, item_id) {
+var _modelsItem = require('../models/item');
 
-    var socket = this;
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-    var domain = require('domain').create();
+function promoteItem(event, itemId) {
+  var _this = this;
 
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
+  try {
+    _modelsItem2['default'].incrementPromotion(itemId).then(function (item) {
+      _this.ok(event, item.promotions);
+
+      item.toPanelItem().then(function (item) {
+        console.log('item changed', item);
+        _this.emit('item changed ' + item._id, item);
+        _this.broadcast.emit('item changed ' + item._id, item);
+      });
+    }, function (error) {
+      _this.error(error);
     });
-
-    domain.run(function () {
-      require('../models/item').incrementPromotion(item_id, domain.intercept(function (item) {
-        socket.ok(event, item);
-      }));
-    });
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = promote;
-})();
+exports['default'] = promoteItem;
+module.exports = exports['default'];
