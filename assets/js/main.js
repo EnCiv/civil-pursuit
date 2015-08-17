@@ -1326,6 +1326,10 @@ var _panel = require('./panel');
 
 var _panel2 = _interopRequireDefault(_panel);
 
+var _item = require('./item');
+
+var _item2 = _interopRequireDefault(_item);
+
 var Harmony = (function (_React$Component) {
   function Harmony(props) {
     _classCallCheck(this, Harmony);
@@ -1514,7 +1518,7 @@ var Harmony = (function (_React$Component) {
 
 exports['default'] = Harmony;
 module.exports = exports['default'];
-},{"./panel":18,"./util/column":33,"./util/loading":43,"./util/row":47,"react":215}],9:[function(require,module,exports){
+},{"./item":13,"./panel":18,"./util/column":33,"./util/loading":43,"./util/row":47,"react":215}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -5430,6 +5434,10 @@ var _panel = require('./panel');
 
 var _panel2 = _interopRequireDefault(_panel);
 
+var _item = require('./item');
+
+var _item2 = _interopRequireDefault(_item);
+
 var Subtype = (function (_React$Component) {
   function Subtype(props) {
     _classCallCheck(this, Subtype);
@@ -5486,7 +5494,7 @@ var Subtype = (function (_React$Component) {
 
         if (this.state.items.length) {
           items = this.state.items.map(function (item) {
-            return _react2['default'].createElement(Item, _extends({ key: item._id, item: item }, _this2.props));
+            return _react2['default'].createElement(_item2['default'], _extends({ key: item._id, item: item }, _this2.props));
           });
         } else {
           items = _react2['default'].createElement(
@@ -5520,7 +5528,7 @@ var Subtype = (function (_React$Component) {
 
 exports['default'] = Subtype;
 module.exports = exports['default'];
-},{"./panel":18,"./util/loading":43,"react":215}],25:[function(require,module,exports){
+},{"./item":13,"./panel":18,"./util/loading":43,"react":215}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

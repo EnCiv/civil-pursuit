@@ -5,6 +5,7 @@ import Loading from './util/loading';
 import Row from './util/row';
 import Column from './util/column';
 import Panel from './panel';
+import Item from './item';
 
 class Harmony extends React.Component {
   constructor (props) {

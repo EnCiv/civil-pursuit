@@ -3,6 +3,7 @@
 import React from 'react';
 import Loading from './util/loading';
 import Panel from './panel';
+import Item from './item';
 
 class Subtype extends React.Component {
   constructor (props) {

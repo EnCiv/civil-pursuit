@@ -38,6 +38,10 @@ var _panel = require('./panel');
 
 var _panel2 = _interopRequireDefault(_panel);
 
+var _item = require('./item');
+
+var _item2 = _interopRequireDefault(_item);
+
 var Harmony = (function (_React$Component) {
   function Harmony(props) {
     _classCallCheck(this, Harmony);
