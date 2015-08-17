@@ -24,7 +24,7 @@ class Slider extends React.Component {
           </Column>
 
           <Column span="60">
-            <Range block step="1" min="-1" max="1" defaultValue="0" />
+            <Range block step="1" min="-1" max="1" defaultValue="0" data-criteria={ criteria._id } />
           </Column>
         </Row>
       </div>

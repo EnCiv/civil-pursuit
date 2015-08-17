@@ -42,8 +42,6 @@ var Popularity = (function (_React$Component) {
     value: function animate() {
       var number = this.props.number;
 
-      number = 75;
-
       var bar = _react2['default'].findDOMNode(this.refs.bar);
       bar.style.width = '' + number + '%';
     }
@@ -52,9 +50,7 @@ var Popularity = (function (_React$Component) {
     value: function render() {
       var number = this.props.number;
 
-      number = 75;
-
-      setTimeout(this.animate.bind(this), 2000);
+      setTimeout(this.animate.bind(this), 1000);
 
       return _react2['default'].createElement(
         'div',

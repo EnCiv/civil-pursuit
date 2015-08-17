@@ -310,6 +310,26 @@ class Promote extends React.Component {
             }
           }
 
+          let votes = view.querySelectorAll('.promote-right [type="range"]');
+
+          let visibleVotes = [];
+
+          for ( let i = 0; i < votes.length; i ++ ) {
+            if ( votes[i].offsetHeight ) {
+              let id = votes[i].closest('.item').id.split('-')[1];
+
+              let vote = {
+                criteria : votes[i].dataset.criteria,
+                value: votes[i].value,
+                item : id
+              };
+
+              visibleVotes.push(vote);
+            }
+          }
+
+          window.socket.emit('insert votes', visibleVotes);
+
           right = this.items[cursor];
           window.socket.emit('add view', right._id);
           break;
@@ -333,6 +353,26 @@ class Promote extends React.Component {
             }
           }
 
+          let votes = view.querySelectorAll('.promote-right [type="range"]');
+
+          let visibleVotes = [];
+
+          for ( let i = 0; i < votes.length; i ++ ) {
+            if ( votes[i].offsetHeight ) {
+              let id = votes[i].closest('.item').id.split('-')[1];
+
+              let vote = {
+                criteria : votes[i].dataset.criteria,
+                value: votes[i].value,
+                item : id
+              };
+
+              visibleVotes.push(vote);
+            }
+          }
+
+          window.socket.emit('insert votes', visibleVotes);
+
           left = this.items[cursor];
           window.socket.emit('add view', left._id);
           break;
@@ -354,6 +394,26 @@ class Promote extends React.Component {
                 feedback[i].value = '';
               }
             }
+
+            let votes = view.querySelectorAll('.promote-left [type="range"]');
+
+            let visibleVotes = [];
+
+            for ( let i = 0; i < votes.length; i ++ ) {
+              if ( votes[i].offsetHeight ) {
+                let id = votes[i].closest('.item').id.split('-')[1];
+
+                let vote = {
+                  criteria : votes[i].dataset.criteria,
+                  value: votes[i].value,
+                  item : id
+                };
+
+                visibleVotes.push(vote);
+              }
+            }
+
+            window.socket.emit('insert votes', visibleVotes);
           }
 
           if ( right ) {
@@ -372,6 +432,26 @@ class Promote extends React.Component {
                 feedback[i].value = '';
               }
             }
+
+            let votes = view.querySelectorAll('.promote-right [type="range"]');
+
+            let visibleVotes = [];
+
+            for ( let i = 0; i < votes.length; i ++ ) {
+              if ( votes[i].offsetHeight ) {
+                let id = votes[i].closest('.item').id.split('-')[1];
+
+                let vote = {
+                  criteria : votes[i].dataset.criteria,
+                  value: votes[i].value,
+                  item : id
+                };
+
+                visibleVotes.push(vote);
+              }
+            }
+
+            window.socket.emit('insert votes', visibleVotes);
           }
 
           left = this.items[cursor-1];

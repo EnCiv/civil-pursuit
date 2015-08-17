@@ -1096,8 +1096,6 @@ var Popularity = (function (_React$Component) {
     value: function animate() {
       var number = this.props.number;
 
-      number = 75;
-
       var bar = _react2['default'].findDOMNode(this.refs.bar);
       bar.style.width = '' + number + '%';
     }
@@ -1106,9 +1104,7 @@ var Popularity = (function (_React$Component) {
     value: function render() {
       var number = this.props.number;
 
-      number = 75;
-
-      setTimeout(this.animate.bind(this), 2000);
+      setTimeout(this.animate.bind(this), 1000);
 
       return _react2['default'].createElement(
         'div',
@@ -4501,6 +4497,26 @@ var Promote = (function (_React$Component14) {
               }
             }
 
+            var votes = view.querySelectorAll('.promote-right [type="range"]');
+
+            var visibleVotes = [];
+
+            for (var _i2 = 0; _i2 < votes.length; _i2++) {
+              if (votes[_i2].offsetHeight) {
+                var id = votes[_i2].closest('.item').id.split('-')[1];
+
+                var vote = {
+                  criteria: votes[_i2].dataset.criteria,
+                  value: votes[_i2].value,
+                  item: id
+                };
+
+                visibleVotes.push(vote);
+              }
+            }
+
+            window.socket.emit('insert votes', visibleVotes);
+
             right = this.items[cursor];
             window.socket.emit('add view', right._id);
             break;
@@ -4510,19 +4526,39 @@ var Promote = (function (_React$Component14) {
 
             var feedback = view.querySelectorAll('.promote-left .user-feedback');
 
-            for (var _i2 = 0; _i2 < feedback.length; _i2++) {
-              var value = feedback[_i2].value;
+            for (var _i3 = 0; _i3 < feedback.length; _i3++) {
+              var value = feedback[_i3].value;
 
               if (value) {
-                var id = feedback[_i2].closest('.item').id.split('-')[1];
+                var id = feedback[_i3].closest('.item').id.split('-')[1];
 
                 console.log({ id: id });
 
                 window.socket.emit('insert feedback', id, value);
 
-                feedback[_i2].value = '';
+                feedback[_i3].value = '';
               }
             }
+
+            var votes = view.querySelectorAll('.promote-right [type="range"]');
+
+            var visibleVotes = [];
+
+            for (var _i4 = 0; _i4 < votes.length; _i4++) {
+              if (votes[_i4].offsetHeight) {
+                var id = votes[_i4].closest('.item').id.split('-')[1];
+
+                var vote = {
+                  criteria: votes[_i4].dataset.criteria,
+                  value: votes[_i4].value,
+                  item: id
+                };
+
+                visibleVotes.push(vote);
+              }
+            }
+
+            window.socket.emit('insert votes', visibleVotes);
 
             left = this.items[cursor];
             window.socket.emit('add view', left._id);
@@ -4532,37 +4568,77 @@ var Promote = (function (_React$Component14) {
             if (left) {
               var _feedback = view.querySelectorAll('.promote-left .user-feedback');
 
-              for (var _i3 = 0; _i3 < _feedback.length; _i3++) {
-                var value = _feedback[_i3].value;
+              for (var _i5 = 0; _i5 < _feedback.length; _i5++) {
+                var value = _feedback[_i5].value;
 
                 if (value) {
-                  var id = _feedback[_i3].closest('.item').id.split('-')[1];
+                  var id = _feedback[_i5].closest('.item').id.split('-')[1];
 
                   console.log({ id: id });
 
                   window.socket.emit('insert feedback', id, value);
 
-                  _feedback[_i3].value = '';
+                  _feedback[_i5].value = '';
                 }
               }
+
+              var _votes = view.querySelectorAll('.promote-left [type="range"]');
+
+              var _visibleVotes = [];
+
+              for (var _i6 = 0; _i6 < _votes.length; _i6++) {
+                if (_votes[_i6].offsetHeight) {
+                  var id = _votes[_i6].closest('.item').id.split('-')[1];
+
+                  var vote = {
+                    criteria: _votes[_i6].dataset.criteria,
+                    value: _votes[_i6].value,
+                    item: id
+                  };
+
+                  _visibleVotes.push(vote);
+                }
+              }
+
+              window.socket.emit('insert votes', _visibleVotes);
             }
 
             if (right) {
               var _feedback2 = view.querySelectorAll('.promote-right .user-feedback');
 
-              for (var _i4 = 0; _i4 < _feedback2.length; _i4++) {
-                var value = _feedback2[_i4].value;
+              for (var _i7 = 0; _i7 < _feedback2.length; _i7++) {
+                var value = _feedback2[_i7].value;
 
                 if (value) {
-                  var id = _feedback2[_i4].closest('.item').id.split('-')[1];
+                  var id = _feedback2[_i7].closest('.item').id.split('-')[1];
 
                   console.log({ id: id });
 
                   window.socket.emit('insert feedback', id, value);
 
-                  _feedback2[_i4].value = '';
+                  _feedback2[_i7].value = '';
                 }
               }
+
+              var _votes2 = view.querySelectorAll('.promote-right [type="range"]');
+
+              var _visibleVotes2 = [];
+
+              for (var _i8 = 0; _i8 < _votes2.length; _i8++) {
+                if (_votes2[_i8].offsetHeight) {
+                  var id = _votes2[_i8].closest('.item').id.split('-')[1];
+
+                  var vote = {
+                    criteria: _votes2[_i8].dataset.criteria,
+                    value: _votes2[_i8].value,
+                    item: id
+                  };
+
+                  _visibleVotes2.push(vote);
+                }
+              }
+
+              window.socket.emit('insert votes', _visibleVotes2);
             }
 
             left = this.items[cursor - 1];
@@ -5024,7 +5100,7 @@ var Slider = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '60' },
-            _react2['default'].createElement(_utilRange2['default'], { block: true, step: '1', min: '-1', max: '1', defaultValue: '0' })
+            _react2['default'].createElement(_utilRange2['default'], { block: true, step: '1', min: '-1', max: '1', defaultValue: '0', 'data-criteria': criteria._id })
           )
         )
       );
