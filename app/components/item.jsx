@@ -276,6 +276,8 @@ class Item extends React.Component {
   render () {
     let { item } = this.state;
 
+    console.log({ item });
+
     let buttons,
       referenceLink,
       referenceTitle,
@@ -304,7 +306,7 @@ class Item extends React.Component {
 
           <ButtonGroup>
             <Button small shy onClick={ this.toggleSubtype.bind(this) }>
-              <span>{ item.promotions } </span>
+              <span>{ item.children } </span>
               <Icon icon="fire" />
             </Button>
 

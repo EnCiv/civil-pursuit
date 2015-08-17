@@ -623,6 +623,8 @@ var Promote = (function (_React$Component14) {
                 };
 
                 visibleVotes.push(vote);
+
+                votes[_i2].value = 0;
               }
             }
 
@@ -651,7 +653,7 @@ var Promote = (function (_React$Component14) {
               }
             }
 
-            var votes = view.querySelectorAll('.promote-right [type="range"]');
+            var votes = view.querySelectorAll('.promote-left [type="range"]');
 
             var visibleVotes = [];
 
@@ -666,6 +668,8 @@ var Promote = (function (_React$Component14) {
                 };
 
                 visibleVotes.push(vote);
+
+                votes[_i4].value = 0;
               }
             }
 
@@ -693,7 +697,7 @@ var Promote = (function (_React$Component14) {
                 }
               }
 
-              var _votes = view.querySelectorAll('.promote-left [type="range"]');
+              var _votes = view.querySelectorAll('[type="range"]');
 
               var _visibleVotes = [];
 
@@ -708,6 +712,8 @@ var Promote = (function (_React$Component14) {
                   };
 
                   _visibleVotes.push(vote);
+
+                  _votes[_i6].value = 0;
                 }
               }
 

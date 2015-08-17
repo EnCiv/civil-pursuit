@@ -294,6 +294,8 @@ var Item = (function (_React$Component) {
     value: function render() {
       var item = this.state.item;
 
+      console.log({ item: item });
+
       var buttons = undefined,
           referenceLink = undefined,
           referenceTitle = undefined,
@@ -346,7 +348,7 @@ var Item = (function (_React$Component) {
               _react2['default'].createElement(
                 'span',
                 null,
-                item.promotions,
+                item.children,
                 ' '
               ),
               _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })

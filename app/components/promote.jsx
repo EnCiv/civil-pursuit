@@ -325,6 +325,8 @@ class Promote extends React.Component {
               };
 
               visibleVotes.push(vote);
+
+              votes[i].value = 0;
             }
           }
 
@@ -353,7 +355,7 @@ class Promote extends React.Component {
             }
           }
 
-          let votes = view.querySelectorAll('.promote-right [type="range"]');
+          let votes = view.querySelectorAll('.promote-left [type="range"]');
 
           let visibleVotes = [];
 
@@ -368,6 +370,8 @@ class Promote extends React.Component {
               };
 
               visibleVotes.push(vote);
+
+              votes[i].value = 0;
             }
           }
 
@@ -395,7 +399,7 @@ class Promote extends React.Component {
               }
             }
 
-            let votes = view.querySelectorAll('.promote-left [type="range"]');
+            let votes = view.querySelectorAll('[type="range"]');
 
             let visibleVotes = [];
 
@@ -410,6 +414,8 @@ class Promote extends React.Component {
                 };
 
                 visibleVotes.push(vote);
+
+                votes[i].value = 0;
               }
             }
 
