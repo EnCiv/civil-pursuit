@@ -1422,4 +1422,13 @@ body {
 .syn-sliders-criteria-description:not(.syn-visible) {
   display: none;
 }
+.item-harmony {
+  margin-top: 10px;
+}
+.item-harmony .syn-panel {
+  margin-right: 5px;
+}
+.item-harmony .syn-column + .syn-column .syn-panel {
+  margin-right: 0;
+}
 /**-------------------------------------------------------------// index      */

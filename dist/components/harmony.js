@@ -12,8 +12,6 @@ var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_ag
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-function _slicedToArray(arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
@@ -34,13 +32,9 @@ var _utilColumn = require('./util/column');
 
 var _utilColumn2 = _interopRequireDefault(_utilColumn);
 
-var _panel = require('./panel');
+var _panelItems = require('./panel-items');
 
-var _panel2 = _interopRequireDefault(_panel);
-
-var _item = require('./item');
-
-var _item2 = _interopRequireDefault(_item);
+var _panelItems2 = _interopRequireDefault(_panelItems);
 
 var Harmony = (function (_React$Component) {
   function Harmony(props) {
@@ -50,7 +44,17 @@ var Harmony = (function (_React$Component) {
 
     this.status = 'iddle';
 
-    this.state = { left: null, right: null, irrelevant: false, loaded: false };
+    var type = this.props.item.type;
+    var harmony = type.harmony;
+
+    this.leftId = null;
+    this.rightId = null;
+
+    if (harmony.length) {
+      this.leftId = makePanelId({ type: harmony[0], parent: this.props.item._id });
+
+      this.rightId = makePanelId({ type: harmony[1], parent: this.props.item._id });
+    }
   }
 
   _inherits(Harmony, _React$Component);
@@ -58,72 +62,23 @@ var Harmony = (function (_React$Component) {
   _createClass(Harmony, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      if (this.status === 'iddle') {
+      if (this.status === 'iddle' && props.active) {
         this.status = 'ready';
-        // this.get();
+
+        if (!props.panels[this.leftId]) {
+          window.Dispatcher.emit('get items', {
+            type: props.item.type.harmony[0],
+            parent: props.item._id
+          });
+        }
+
+        if (!props.panels[this.rightId]) {
+          window.Dispatcher.emit('get items', {
+            type: props.item.type.harmony[1],
+            parent: props.item._id
+          });
+        }
       }
-    }
-  }, {
-    key: 'get',
-    value: function get() {
-      var _this = this;
-
-      if (typeof window !== 'undefined') {
-        (function () {
-          var harmony = _this.props.item.type.harmony;
-
-          if (!harmony.length) {
-            _this.setState({ irrelevant: true });
-          } else {
-            Promise.all([new Promise(function (ok, ko) {
-              window.socket.emit('get items', { type: harmony[0]._id, parent: _this.props.item._id }).on('OK get items', function (panel, items) {
-                if (panel.type === harmony[0]._id) {
-                  ok({ panel: panel, items: items });
-                }
-              });
-            }), new Promise(function (ok, ko) {
-              window.socket.emit('get items', { type: harmony[1]._id, parent: _this.props.item._id }).on('OK get items', function (panel, items) {
-                if (panel.type === harmony[1]._id) {
-                  ok({ panel: panel, items: items });
-                }
-              });
-            })]).then(function (results) {
-              var _results = _slicedToArray(results, 2);
-
-              var left = _results[0];
-              var right = _results[1];
-
-              _this.setState({ left: left, right: right, loaded: true });
-            });
-          }
-        })();
-      }
-    }
-  }, {
-    key: 'toggleLeftCreator',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleLeftCreator(e) {
-      e.preventDefault();
-
-      var panel = _react2['default'].findDOMNode(this.refs.leftPanel);
-      var toggle = panel.querySelector('.toggle-creator');
-
-      toggle.click();
-    }
-  }, {
-    key: 'toggleLRightCreator',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggleLRightCreator(e) {
-      e.preventDefault();
-
-      var panel = _react2['default'].findDOMNode(this.refs.rightPanel);
-      var toggle = panel.querySelector('.toggle-creator');
-
-      toggle.click();
     }
   }, {
     key: 'render',
@@ -131,96 +86,43 @@ var Harmony = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading harmony' });
+      var contentLeft = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading' });
 
-      var _state = this.state;
-      var irrelevant = _state.irrelevant;
-      var left = _state.left;
-      var right = _state.right;
-      var loaded = _state.loaded;
-      var type = this.props.item.type;
+      var contentRight = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading' });
 
-      if (loaded) {
-        if (irrelevant) {
-          content = _react2['default'].createElement('hr', null);
-        } else if (left || right) {
-          var panels = [];
+      if (this.props.panels[this.leftId] && this.status === 'ready') {
+        contentLeft = _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: this.props.panels[this.leftId] }))
+        );
+      }
 
-          //~~~~~   LEFT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-          if (left) {
-            var leftItems = [];
-
-            if (!left.items.length) {
-              leftItems = _react2['default'].createElement(
-                'h5',
-                null,
-                _react2['default'].createElement(
-                  'a',
-                  { href: '#', onClick: this.toggleLeftCreator.bind(this) },
-                  'Click the + to be the first to add something here'
-                )
-              );
-            }
-
-            panels.push(_react2['default'].createElement(
-              _panel2['default'],
-              _extends({}, this.props, left.panel, { title: type.harmony[0].name, ref: 'leftPanel' }),
-              leftItems
-            ));
-          }
-
-          //~~~~~   RIGHT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-          if (right) {
-            var rightItems = [];
-
-            if (!right.items.length) {
-              rightItems = _react2['default'].createElement(
-                'h5',
-                null,
-                _react2['default'].createElement(
-                  'a',
-                  { href: '#', onClick: this.toggleLRightCreator.bind(this) },
-                  'Click the + to be the first to add something here'
-                )
-              );
-            }
-
-            panels.push(_react2['default'].createElement(
-              _panel2['default'],
-              _extends({}, this.props, right.panel, { title: type.harmony[1].name, ref: 'rightPanel' }),
-              rightItems
-            ));
-          }
-
-          content = _react2['default'].createElement(
-            _utilRow2['default'],
-            null,
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50' },
-              panels[0]
-            ),
-            _react2['default'].createElement(
-              _utilColumn2['default'],
-              { span: '50' },
-              panels[1]
-            )
-          );
-        } else {
-          content = _react2['default'].createElement(
-            'div',
-            null,
-            '...'
-          );
-        }
+      if (this.props.panels[this.rightId] && this.status === 'ready') {
+        contentRight = _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: this.props.panels[this.rightId] }))
+        );
       }
 
       return _react2['default'].createElement(
         'section',
         { className: 'item-harmony ' + this.props.className },
-        content
+        _react2['default'].createElement(
+          _utilRow2['default'],
+          null,
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            contentLeft
+          ),
+          _react2['default'].createElement(
+            _utilColumn2['default'],
+            { span: '50' },
+            contentRight
+          )
+        )
       );
     }
   }]);

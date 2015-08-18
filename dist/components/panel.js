@@ -93,7 +93,9 @@ var Panel = (function (_React$Component) {
           this.id = makePanelId(this.props);
           creator = _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ active: this.props.panels[this.id].active === 'creator', poa: this.refs.panel }, this.props),
+            _extends({}, this.props, {
+              active: this.props.panels[this.id].active === 'creator', poa: this.refs.panel
+            }),
             _react2['default'].createElement(_creator2['default'], _extends({}, this.props, { 'panel-id': this.id }))
           );
           creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this), className: 'toggle-creator' });

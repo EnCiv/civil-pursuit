@@ -1,11 +1,10 @@
 'use strict';
 
-import React from 'react';
-import Loading from './util/loading';
-import Row from './util/row';
-import Column from './util/column';
-import Panel from './panel';
-import Item from './item';
+import React          from 'react';
+import Loading        from './util/loading';
+import Row            from './util/row';
+import Column         from './util/column';
+import PanelItems     from './panel-items';
 
 class Harmony extends React.Component {
   constructor (props) {
@@ -13,150 +12,69 @@ class Harmony extends React.Component {
 
     this.status = 'iddle';
 
-    this.state = { left: null, right: null, irrelevant : false, loaded : false };
+    let { type } = this.props.item;
+
+    let { harmony } = type;
+
+    this.leftId = null;
+    this.rightId = null;
+
+    if ( harmony.length ) {
+      this.leftId = makePanelId( { type : harmony[0], parent : this.props.item._id });
+
+      this.rightId = makePanelId( { type : harmony[1], parent : this.props.item._id });
+    }
   }
 
   componentWillReceiveProps (props) {
-    if ( this.status === 'iddle' ) {
+    if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
-      // this.get();
-    }
-  }
 
-  get () {
-    if ( typeof window !== 'undefined' ) {
-
-      let { harmony } = this.props.item.type;
-
-      if ( ! harmony.length ) {
-        this.setState({ irrelevant : true });
+      if ( ! props.panels[this.leftId] ) {
+        window.Dispatcher.emit('get items', {
+          type        :   props.item.type.harmony[0],
+          parent      :   props.item._id
+        });
       }
-      else {
-        Promise.all([
-          new Promise((ok, ko) => {
-            window.socket.emit('get items', { type : harmony[0]._id, parent : this.props.item._id })
-              .on('OK get items', (panel, items) => {
-                if ( panel.type === harmony[0]._id ) {
-                  ok({ panel, items });
-                }
-              })
-          }),
-          new Promise((ok, ko) => {
-            window.socket.emit('get items', { type : harmony[1]._id, parent : this.props.item._id })
-              .on('OK get items', (panel, items) => {
-                if ( panel.type === harmony[1]._id ) {
-                  ok({ panel, items });
-                }
-              })
-          })
-        ])
-        .then(
-          results => {
-            let [ left, right ] = results;
-            this.setState({ left, right, loaded : true });
-          }
-        );
+
+      if ( ! props.panels[this.rightId] ) {
+        window.Dispatcher.emit('get items', {
+          type        :   props.item.type.harmony[1],
+          parent      :   props.item._id
+        });
       }
     }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  toggleLeftCreator (e) {
-    e.preventDefault();
-
-    let panel = React.findDOMNode(this.refs.leftPanel);
-    let toggle = panel.querySelector('.toggle-creator');
-
-    toggle.click();
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  toggleLRightCreator (e) {
-    e.preventDefault();
-
-    let panel = React.findDOMNode(this.refs.rightPanel);
-    let toggle = panel.querySelector('.toggle-creator');
-
-    toggle.click();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let content = ( <Loading message="Loading harmony" /> );
+    let contentLeft = ( <Loading message="Loading" /> );
 
-    let { irrelevant, left, right, loaded } = this.state;
-    let { type } = this.props.item;
+    let contentRight = ( <Loading message="Loading" /> );
 
-    if ( loaded ) {
-      if ( irrelevant ) {
-        content = ( <hr/> );
-      }
-      else if ( left || right ) {
-        let panels = [];
+    if ( this.props.panels[this.leftId] && this.status === 'ready' ) {
+      contentLeft = <div>
+        <PanelItems { ...this.props } panel={ this.props.panels[this.leftId] } />
+      </div>;
+    }
 
-        //~~~~~   LEFT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        if ( left ) {
-          let leftItems = [];
-
-          if ( ! left.items.length ) {
-            leftItems = (
-              <h5>
-                <a href="#" onClick={ this.toggleLeftCreator.bind(this) }>Click the + to be the first to add something here</a>
-              </h5>
-            );
-          }
-
-          panels.push(
-            <Panel { ...this.props } { ...left.panel } title={ type.harmony[0].name } ref="leftPanel">
-              { leftItems }
-            </Panel>
-          );
-        }
-
-        //~~~~~   RIGHT    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        if ( right ) {
-          let rightItems = [];
-
-          if ( ! right.items.length ) {
-            rightItems = (
-              <h5>
-                <a href="#" onClick={ this.toggleLRightCreator.bind(this) }>Click the + to be the first to add something here</a>
-              </h5>
-            );
-          }
-
-          panels.push(
-            <Panel { ...this.props } { ...right.panel } title={ type.harmony[1].name } ref="rightPanel">
-              { rightItems }
-            </Panel>
-          );
-        }
-
-        content = (
-          <Row>
-            <Column span="50">
-              { panels[0] }
-            </Column>
-
-            <Column span="50">
-              { panels[1] }
-            </Column>
-          </Row>
-        );
-      }
-      else {
-        content = ( <div>...</div> );
-      }
+    if ( this.props.panels[this.rightId] && this.status === 'ready' ) {
+      contentRight = <div>
+        <PanelItems { ...this.props } panel={ this.props.panels[this.rightId] } />
+      </div>;
     }
 
     return (
       <section className={`item-harmony ${this.props.className}`}>
-        { content }
+        <Row>
+          <Column span="50">
+            { contentLeft }
+          </Column>
+          <Column span="50">
+            { contentRight }
+          </Column>
+        </Row>
       </section>
     );
   }

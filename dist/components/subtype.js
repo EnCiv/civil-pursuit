@@ -63,7 +63,6 @@ var Subtype = (function (_React$Component) {
           null,
           _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: this.props.panels[this.id] }))
         );
-        // content = <hr/>
       }
 
       return _react2['default'].createElement(

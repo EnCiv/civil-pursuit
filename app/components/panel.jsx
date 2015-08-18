@@ -42,7 +42,10 @@ class Panel extends React.Component {
       if ( this.props.creator !== false ) {
         this.id = makePanelId(this.props);
         creator = (
-          <Accordion active={ this.props.panels[this.id].active === 'creator' } poa={ this.refs.panel } { ...this.props }>
+          <Accordion
+            { ...this.props }
+            active    =   { this.props.panels[this.id].active === 'creator' } poa       =   { this.refs.panel }
+            >
             <Creator { ...this.props } panel-id={ this.id } />
           </Accordion>
         );

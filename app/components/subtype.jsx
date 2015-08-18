@@ -30,7 +30,6 @@ class Subtype extends React.Component {
       content = <div>
         <PanelItems { ...this.props } panel={ this.props.panels[this.id] } />
       </div>;
-      // content = <hr/>
     }
 
     return (

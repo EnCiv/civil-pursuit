@@ -272,7 +272,7 @@ class Item extends React.Component {
             </Button>
 
             <Button small shy onClick={ this.toggle.bind(this, 'harmony') }>
-              <span>{ item.popularity.number + '%' } </span>
+              <span>{ item.harmony } </span>
               <Icon icon="music" />
             </Button>
           </ButtonGroup>
@@ -285,8 +285,6 @@ class Item extends React.Component {
 
     if ( this.props.promote !== false && this.panelId ) {
       let promoteIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-promote`;
-
-      console.log('promote is active', this.panelId, promoteIsActive);
 
       promote = (
         <div className="toggler promote">
@@ -351,14 +349,19 @@ class Item extends React.Component {
     }
 
     if ( this.props.harmony !== false ) {
+      let harmonyIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-harmony`;
+
       harmony = (
         <div className="toggler harmony">
           <Accordion
-            { ...this.props } 
-            active    =   { this.state.active === 'harmony' }
+            { ...this.props }
+            active    =   { harmonyIsActive }
             name      =   "harmony"
             poa       =   { this.refs.item }>
-            <Harmony { ...this.props } item={ this.props.item } show={ this.state.showHarmony } />
+            <Harmony
+              { ...this.props }
+              item    =   { this.props.item }
+              active  =   { harmonyIsActive } />
           </Accordion>
         </div>
       );

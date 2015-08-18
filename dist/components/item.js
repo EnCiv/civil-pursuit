@@ -310,7 +310,7 @@ var Item = (function (_React$Component) {
               _react2['default'].createElement(
                 'span',
                 null,
-                item.popularity.number + '%',
+                item.harmony,
                 ' '
               ),
               _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
@@ -323,8 +323,6 @@ var Item = (function (_React$Component) {
 
       if (this.props.promote !== false && this.panelId) {
         var promoteIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-promote';
-
-        console.log('promote is active', this.panelId, promoteIsActive);
 
         promote = _react2['default'].createElement(
           'div',
@@ -392,16 +390,20 @@ var Item = (function (_React$Component) {
       }
 
       if (this.props.harmony !== false) {
+        var harmonyIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-harmony';
+
         harmony = _react2['default'].createElement(
           'div',
           { className: 'toggler harmony' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
             _extends({}, this.props, {
-              active: this.state.active === 'harmony',
+              active: harmonyIsActive,
               name: 'harmony',
               poa: this.refs.item }),
-            _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
+            _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, {
+              item: this.props.item,
+              active: harmonyIsActive }))
           )
         );
       }
