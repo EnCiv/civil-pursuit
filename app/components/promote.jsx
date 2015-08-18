@@ -208,15 +208,25 @@ class ColumnButtons extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class SideColumn extends React.Component {
+  next () {
+    let { item, position, evaluated } = this.props;
+
+    let view = React.findDOMNode(this.refs.view);
+
+    let parent = view.closest('.item-promote');
+
+    window.Dispatcher.emit('promote item', item, position, evaluated, parent);
+  }
+
   render () {
-    let { item, position, criterias, other } = this.props;
+    let { item, criterias, position, other } = this.props;
 
     if ( ! item ) {
       return ( <div></div> );
     }
 
     let promoteMe = (
-      <PromoteButton { ...item } className="gutter-bottom" />
+      <PromoteButton { ...item } onClick={ this.next.bind(this) } className="gutter-bottom" />
     );
 
     if ( ! other ) {
@@ -224,7 +234,7 @@ class SideColumn extends React.Component {
     }
 
     return (
-      <Column span="50" className={ `promote-${position}` }>
+      <Column span="50" className={ `promote-${position}` } ref="view">
         <ItemMedia item={ item } />
         <Subject subject={ item.subject } />
         <Reference { ...item.references[0] } />
@@ -232,7 +242,7 @@ class SideColumn extends React.Component {
         <div style={{ clear: 'both' }} />
         <Sliders criterias={ criterias } className="promote-sliders" />
         <Feedback className="gutter-top" />
-        <div data-screen="phone-and-down" className="gutter-top">
+        <div className="gutter-top">
           { promoteMe }
           <EditAndGoAgain />
         </div>
@@ -335,15 +345,29 @@ class Promote extends React.Component {
 
         // SMALL SCREENS
 
-        // (
-        //   <div data-screen="up-to-phone">
-        //     <Row data-stack>
-        //       <SideColumn key="left" position="left" item={ left } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ right } />
-        //
-        //       <SideColumn key="right" position="right" item={ right } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ left } />
-        //     </Row>
-        //   </div>
-        // ),
+        (
+          <div data-screen="up-to-phone">
+            <Row data-stack>
+              <SideColumn
+                key         =   "left"
+                position    =   "left"
+                item        =   { left }
+                criterias   =   { criterias }
+                evaluated   =   { item }
+                other       =   { right }
+                />
+
+                <SideColumn
+                  key         =   "right"
+                  position    =   "right"
+                  item        =   { right }
+                  criterias   =   { criterias }
+                  evaluated   =   { item }
+                  other       =   { left }
+                  />
+            </Row>
+          </div>
+        ),
 
         (
           <div className="gutter">

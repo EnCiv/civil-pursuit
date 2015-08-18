@@ -489,19 +489,33 @@ var SideColumn = (function (_React$Component13) {
   _inherits(SideColumn, _React$Component13);
 
   _createClass(SideColumn, [{
-    key: 'render',
-    value: function render() {
+    key: 'next',
+    value: function next() {
       var _props8 = this.props;
       var item = _props8.item;
       var position = _props8.position;
-      var criterias = _props8.criterias;
-      var other = _props8.other;
+      var evaluated = _props8.evaluated;
+
+      var view = _react2['default'].findDOMNode(this.refs.view);
+
+      var parent = view.closest('.item-promote');
+
+      window.Dispatcher.emit('promote item', item, position, evaluated, parent);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props9 = this.props;
+      var item = _props9.item;
+      var criterias = _props9.criterias;
+      var position = _props9.position;
+      var other = _props9.other;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
       }
 
-      var promoteMe = _react2['default'].createElement(PromoteButton, _extends({}, item, { className: 'gutter-bottom' }));
+      var promoteMe = _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.next.bind(this), className: 'gutter-bottom' }));
 
       if (!other) {
         promoteMe = _react2['default'].createElement('div', null);
@@ -509,7 +523,7 @@ var SideColumn = (function (_React$Component13) {
 
       return _react2['default'].createElement(
         _utilColumn2['default'],
-        { span: '50', className: 'promote-' + position },
+        { span: '50', className: 'promote-' + position, ref: 'view' },
         _react2['default'].createElement(_itemMedia2['default'], { item: item }),
         _react2['default'].createElement(Subject, { subject: item.subject }),
         _react2['default'].createElement(Reference, item.references[0]),
@@ -519,7 +533,7 @@ var SideColumn = (function (_React$Component13) {
         _react2['default'].createElement(Feedback, { className: 'gutter-top' }),
         _react2['default'].createElement(
           'div',
-          { 'data-screen': 'phone-and-down', className: 'gutter-top' },
+          { className: 'gutter-top' },
           promoteMe,
           _react2['default'].createElement(EditAndGoAgain, null)
         )
@@ -624,6 +638,29 @@ var Promote = (function (_React$Component14) {
           )
         ), _react2['default'].createElement(
           'div',
+          { 'data-screen': 'up-to-phone' },
+          _react2['default'].createElement(
+            _utilRow2['default'],
+            { 'data-stack': true },
+            _react2['default'].createElement(SideColumn, {
+              key: 'left',
+              position: 'left',
+              item: left,
+              criterias: criterias,
+              evaluated: item,
+              other: right
+            }),
+            _react2['default'].createElement(SideColumn, {
+              key: 'right',
+              position: 'right',
+              item: right,
+              criterias: criterias,
+              evaluated: item,
+              other: left
+            })
+          )
+        ), _react2['default'].createElement(
+          'div',
           { className: 'gutter' },
           _react2['default'].createElement(Finish, { cursor: evaluation.cursor, limit: evaluation.limit, evaluated: item })
         ));
@@ -648,13 +685,3 @@ module.exports = exports['default'];
 // big screens
 
 // SMALL SCREENS
-
-// (
-//   <div data-screen="up-to-phone">
-//     <Row data-stack>
-//       <SideColumn key="left" position="left" item={ left } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ right } />
-//
-//       <SideColumn key="right" position="right" item={ right } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ left } />
-//     </Row>
-//   </div>
-// ),
