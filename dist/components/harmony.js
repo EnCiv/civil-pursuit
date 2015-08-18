@@ -131,7 +131,7 @@ var Harmony = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading harmony' });
 
       var _state = this.state;
       var irrelevant = _state.irrelevant;

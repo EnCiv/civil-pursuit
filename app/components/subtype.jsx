@@ -24,7 +24,7 @@ class Subtype extends React.Component {
   }
 
   render () {
-    let content = ( <Loading /> );
+    let content = ( <Loading message="Loading related" /> );
 
     if ( this.props.panels[this.id] && this.status === 'ready' ) {
       content = <div>

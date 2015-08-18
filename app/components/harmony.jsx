@@ -85,7 +85,7 @@ class Harmony extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let content = ( <Loading /> );
+    let content = ( <Loading message="Loading harmony" /> );
 
     let { irrelevant, left, right, loaded } = this.state;
     let { type } = this.props.item;

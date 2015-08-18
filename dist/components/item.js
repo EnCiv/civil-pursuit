@@ -148,12 +148,6 @@ var Item = (function (_React$Component) {
       }
     }
   }, {
-    key: 'componentWillReceiveProps',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function componentWillReceiveProps(props) {}
-  }, {
     key: 'componentDidMount',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -253,8 +247,6 @@ var Item = (function (_React$Component) {
     value: function render() {
       var item = this.props.item;
 
-      // console.warn(item.subject);
-
       var buttons = undefined,
           referenceLink = undefined,
           referenceTitle = undefined,
@@ -332,16 +324,18 @@ var Item = (function (_React$Component) {
       if (this.props.promote !== false && this.panelId) {
         var promoteIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-promote';
 
+        console.log('promote is active', this.panelId, promoteIsActive);
+
         promote = _react2['default'].createElement(
           'div',
           { className: 'toggler promote' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({
+            _extends({}, this.props, {
               poa: this.refs.item,
               active: promoteIsActive,
               name: 'promote'
-            }, this.props),
+            }),
             _react2['default'].createElement(_promote2['default'], _extends({
               item: this.props.item
             }, this.props, {
@@ -361,11 +355,11 @@ var Item = (function (_React$Component) {
           { className: 'toggler details' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({
+            _extends({}, this.props, {
               poa: this.refs.item,
               active: detailsIsActive,
               name: 'details'
-            }, this.props),
+            }),
             _react2['default'].createElement(_details2['default'], _extends({
               item: this.props.item
             }, this.props, {
@@ -383,11 +377,11 @@ var Item = (function (_React$Component) {
           { className: 'toggler subtype' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({
+            _extends({}, this.props, {
               poa: this.refs.item,
               active: subtypeIsActive,
               name: 'subtype'
-            }, this.props),
+            }),
             _react2['default'].createElement(_subtype2['default'], _extends({
               item: this.props.item
             }, this.props, {
@@ -403,7 +397,10 @@ var Item = (function (_React$Component) {
           { className: 'toggler harmony' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ active: this.state.active === 'harmony', name: 'harmony' }, this.props, { poa: this.refs.item }),
+            _extends({}, this.props, {
+              active: this.state.active === 'harmony',
+              name: 'harmony',
+              poa: this.refs.item }),
             _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
           )
         );
@@ -538,16 +535,3 @@ module.exports = exports['default'];
 // window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
 //
 // window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
-
-// this.setState({ ping : this.state.ping + 1 });
-// console.info('item is receiving props', props);
-// if ( 'panel' in props ) {
-//   if ( props.panel.state.active === 'creator' ) {
-//     this.setState({ active : null });
-//   }
-//   else if ( props.panel.state.active && this.props.item ) {
-//     if ( props.panel.state.active !== this.props.item._id ) {
-//       this.setState({ active : null });
-//     }
-//   }
-// }

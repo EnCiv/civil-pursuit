@@ -114,6 +114,8 @@ window.Dispatcher.on('set active', function (panel, section) {
 
   var id = typeof panel === 'string' ? panel : makePanelId(panel);
 
+  console.log('set active', id);
+
   if (props.panels[id].active === section) {
     props.panels[id].active = null;
   } else {
@@ -1809,7 +1811,7 @@ var Harmony = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading harmony' });
 
       var _state = this.state;
       var irrelevant = _state.irrelevant;
@@ -2663,12 +2665,6 @@ var Item = (function (_React$Component) {
       }
     }
   }, {
-    key: 'componentWillReceiveProps',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function componentWillReceiveProps(props) {}
-  }, {
     key: 'componentDidMount',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2768,8 +2764,6 @@ var Item = (function (_React$Component) {
     value: function render() {
       var item = this.props.item;
 
-      // console.warn(item.subject);
-
       var buttons = undefined,
           referenceLink = undefined,
           referenceTitle = undefined,
@@ -2847,16 +2841,18 @@ var Item = (function (_React$Component) {
       if (this.props.promote !== false && this.panelId) {
         var promoteIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-promote';
 
+        console.log('promote is active', this.panelId, promoteIsActive);
+
         promote = _react2['default'].createElement(
           'div',
           { className: 'toggler promote' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({
+            _extends({}, this.props, {
               poa: this.refs.item,
               active: promoteIsActive,
               name: 'promote'
-            }, this.props),
+            }),
             _react2['default'].createElement(_promote2['default'], _extends({
               item: this.props.item
             }, this.props, {
@@ -2876,11 +2872,11 @@ var Item = (function (_React$Component) {
           { className: 'toggler details' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({
+            _extends({}, this.props, {
               poa: this.refs.item,
               active: detailsIsActive,
               name: 'details'
-            }, this.props),
+            }),
             _react2['default'].createElement(_details2['default'], _extends({
               item: this.props.item
             }, this.props, {
@@ -2898,11 +2894,11 @@ var Item = (function (_React$Component) {
           { className: 'toggler subtype' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({
+            _extends({}, this.props, {
               poa: this.refs.item,
               active: subtypeIsActive,
               name: 'subtype'
-            }, this.props),
+            }),
             _react2['default'].createElement(_subtype2['default'], _extends({
               item: this.props.item
             }, this.props, {
@@ -2918,7 +2914,10 @@ var Item = (function (_React$Component) {
           { className: 'toggler harmony' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ active: this.state.active === 'harmony', name: 'harmony' }, this.props, { poa: this.refs.item }),
+            _extends({}, this.props, {
+              active: this.state.active === 'harmony',
+              name: 'harmony',
+              poa: this.refs.item }),
             _react2['default'].createElement(_harmony2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showHarmony }))
           )
         );
@@ -3053,19 +3052,6 @@ module.exports = exports['default'];
 // window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
 //
 // window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
-
-// this.setState({ ping : this.state.ping + 1 });
-// console.info('item is receiving props', props);
-// if ( 'panel' in props ) {
-//   if ( props.panel.state.active === 'creator' ) {
-//     this.setState({ active : null });
-//   }
-//   else if ( props.panel.state.active && this.props.item ) {
-//     if ( props.panel.state.active !== this.props.item._id ) {
-//       this.setState({ active : null });
-//     }
-//   }
-// }
 },{"./details":6,"./harmony":8,"./item-media":12,"./join":14,"./promote":21,"./subtype":25,"./util/accordion":29,"./util/button":31,"./util/button-group":30,"./util/column":33,"./util/icon":38,"./util/row":47,"react":215}],14:[function(require,module,exports){
 'use strict';
 
@@ -5733,7 +5719,7 @@ var Subtype = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading related' });
 
       if (this.props.panels[this.id] && this.status === 'ready') {
         content = _react2['default'].createElement(
@@ -6308,15 +6294,6 @@ var Accordion = (function (_React$Component) {
   _inherits(Accordion, _React$Component);
 
   _createClass(Accordion, [{
-    key: 'componentWillMount',
-
-    // Set id
-
-    value: function componentWillMount() {}
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps() {
       var props = arguments[0] === undefined ? {} : arguments[0];
@@ -6326,19 +6303,6 @@ var Accordion = (function (_React$Component) {
       } else if (props.active === false) {
         this.setState({ attr: 'hide' });
       }
-      // if ( props.show > this.counter ) {
-      //   this.counter = props.show;
-      //
-      //   let content = React.findDOMNode(this.refs.content);
-      //   let wrapper = React.findDOMNode(this.refs.wrapper);
-      //
-      //   if ( this.props.poa ) {
-      //     let poa     = React.findDOMNode(this.props.poa);
-      //     window.scrollTo(0, ( poa.offsetTop  - 60 ));
-      //   }
-      //
-      //   wrapper.classList.toggle('show');
-      // }
     }
   }, {
     key: 'render',
@@ -6364,48 +6328,6 @@ var Accordion = (function (_React$Component) {
 
 exports['default'] = Accordion;
 module.exports = exports['default'];
-
-// if ( typeof window !== 'undefined' ) {
-//   if ( ! this.id ) {
-//     if ( ! window.accordion_id ) {
-//       window.accordion_id = 0;
-//     }
-//     this.id = window.accordion_id ++;
-//   }
-//   console.log('accordion id', accordion_id);
-// }
-
-// let view = React.findDOMNode(this.refs.view);
-// let content = React.findDOMNode(this.refs.content);
-// let wrapper = React.findDOMNode(this.refs.wrapper);
-//
-// if ( ! view.id ) {
-//   view.id = `accordion-${this.id}`;
-// }
-//
-// if ( ! this.height ) {
-//   let content = React.findDOMNode(this.refs.content);
-//   let wrapper = React.findDOMNode(this.refs.wrapper);
-//   let view = React.findDOMNode(this.refs.view);
-//
-//   // this.height = content.offsetTop + 99999 + view.offsetTop;
-//
-//   this.height = 1000;
-//
-//   console.log('accordion height', this.props.name, { view: {
-//     offsetTop: view.offsetTop
-//   }, wrapper : {
-//     offsetTop : wrapper.offsetTop
-//   }, content: {
-//     offsetTop : content.offsetTop,
-//     height: content.offsetHeight
-//   }});
-//
-//   let stylesheet = document.querySelector('[rel="stylesheet"][name="stylesheet"]');
-//   let sheet = stylesheet.sheet;
-//   let rules = sheet.cssRules;
-//   sheet.insertRule(`#accordion-${this.id}.syn-accordion-wrapper { margin-top: -${this.height}px }`, rules.length);
-// }
 },{"react":215}],30:[function(require,module,exports){
 'use strict';
 

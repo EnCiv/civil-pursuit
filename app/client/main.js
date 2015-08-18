@@ -97,6 +97,8 @@ window.Dispatcher
 
     let id = typeof panel === 'string' ? panel : makePanelId(panel);
 
+    console.log('set active', id)
+
     if ( props.panels[id].active === section ) {
       props.panels[id].active = null;
     }

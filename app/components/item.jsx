@@ -136,23 +136,6 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  componentWillReceiveProps (props) {
-    // this.setState({ ping : this.state.ping + 1 });
-    // console.info('item is receiving props', props);
-    // if ( 'panel' in props ) {
-    //   if ( props.panel.state.active === 'creator' ) {
-    //     this.setState({ active : null });
-    //   }
-    //   else if ( props.panel.state.active && this.props.item ) {
-    //     if ( props.panel.state.active !== this.props.item._id ) {
-    //       this.setState({ active : null });
-    //     }
-    //   }
-    // }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   componentDidMount () {
 
     let media;
@@ -256,8 +239,6 @@ class Item extends React.Component {
   render () {
     let { item } = this.props;
 
-    // console.warn(item.subject);
-
     let buttons,
       referenceLink,
       referenceTitle,
@@ -305,13 +286,15 @@ class Item extends React.Component {
     if ( this.props.promote !== false && this.panelId ) {
       let promoteIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-promote`;
 
+      console.log('promote is active', this.panelId, promoteIsActive);
+
       promote = (
         <div className="toggler promote">
           <Accordion
+            { ...this.props }
             poa     = { this.refs.item }
             active  = { promoteIsActive }
             name    = "promote"
-            { ...this.props }
             >
             <Promote
               item      =   { this.props.item }
@@ -331,10 +314,10 @@ class Item extends React.Component {
       details =(
         <div className="toggler details">
           <Accordion
+            { ...this.props }
             poa       =   { this.refs.item }
             active    =   { detailsIsActive }
             name      =   "details"
-            { ...this.props }
             >
             <Details
               item    = { this.props.item }
@@ -352,10 +335,10 @@ class Item extends React.Component {
       subtype = (
         <div className="toggler subtype">
         <Accordion
+          { ...this.props }
           poa       =   { this.refs.item }
           active    =   { subtypeIsActive }
           name      =   "subtype"
-          { ...this.props }
           >
           <Subtype
             item    = { this.props.item }
@@ -370,7 +353,11 @@ class Item extends React.Component {
     if ( this.props.harmony !== false ) {
       harmony = (
         <div className="toggler harmony">
-          <Accordion active={ this.state.active === 'harmony' } name="harmony" { ...this.props } poa={ this.refs.item }>
+          <Accordion
+            { ...this.props } 
+            active    =   { this.state.active === 'harmony' }
+            name      =   "harmony"
+            poa       =   { this.refs.item }>
             <Harmony { ...this.props } item={ this.props.item } show={ this.state.showHarmony } />
           </Accordion>
         </div>

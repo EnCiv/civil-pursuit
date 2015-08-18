@@ -55,7 +55,7 @@ var Subtype = (function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading related' });
 
       if (this.props.panels[this.id] && this.status === 'ready') {
         content = _react2['default'].createElement(
