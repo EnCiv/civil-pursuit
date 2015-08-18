@@ -68,15 +68,17 @@ var Header = (function (_React$Component) {
   _createClass(Header, [{
     key: 'render',
     value: function render() {
+      var evaluation = this.props.evaluation;
+
       return _react2['default'].createElement(
         'header',
         { className: 'text-center gutter-bottom' },
         _react2['default'].createElement(
           'h2',
           null,
-          this.props.cursor,
+          evaluation.cursor,
           ' of ',
-          this.props.limit
+          evaluation.limit
         ),
         _react2['default'].createElement(
           'h4',
@@ -274,13 +276,26 @@ var Finish = (function (_React$Component8) {
   _inherits(Finish, _React$Component8);
 
   _createClass(Finish, [{
+    key: 'next',
+    value: function next() {
+      var _props = this.props;
+      var position = _props.position;
+      var evaluated = _props.evaluated;
+
+      var view = _react2['default'].findDOMNode(this.refs.view);
+
+      var parent = view.closest('.item-promote');
+
+      window.Dispatcher.emit('promote item', null, null, evaluated, parent);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var text = 'Neither';
 
-      var _props = this.props;
-      var cursor = _props.cursor;
-      var limit = _props.limit;
+      var _props2 = this.props;
+      var cursor = _props2.cursor;
+      var limit = _props2.limit;
 
       if (cursor === limit) {
         text = 'Finish';
@@ -288,7 +303,7 @@ var Finish = (function (_React$Component8) {
 
       return _react2['default'].createElement(
         _utilButton2['default'],
-        _extends({ block: true }, this.props),
+        _extends({ block: true }, this.props, { onClick: this.next.bind(this), ref: 'view' }),
         _react2['default'].createElement(
           'b',
           null,
@@ -317,9 +332,9 @@ var ColumnItem = (function (_React$Component9) {
   _createClass(ColumnItem, [{
     key: 'render',
     value: function render() {
-      var _props2 = this.props;
-      var item = _props2.item;
-      var position = _props2.position;
+      var _props3 = this.props;
+      var item = _props3.item;
+      var position = _props3.position;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -355,9 +370,9 @@ var ColumnFeedback = (function (_React$Component10) {
   _createClass(ColumnFeedback, [{
     key: 'render',
     value: function render() {
-      var _props3 = this.props;
-      var item = _props3.item;
-      var position = _props3.position;
+      var _props4 = this.props;
+      var item = _props4.item;
+      var position = _props4.position;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -390,10 +405,10 @@ var ColumnSliders = (function (_React$Component11) {
   _createClass(ColumnSliders, [{
     key: 'render',
     value: function render() {
-      var _props4 = this.props;
-      var item = _props4.item;
-      var position = _props4.position;
-      var criterias = _props4.criterias;
+      var _props5 = this.props;
+      var item = _props5.item;
+      var position = _props5.position;
+      var criterias = _props5.criterias;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -424,11 +439,25 @@ var ColumnButtons = (function (_React$Component12) {
   _inherits(ColumnButtons, _React$Component12);
 
   _createClass(ColumnButtons, [{
+    key: 'next',
+    value: function next() {
+      var _props6 = this.props;
+      var item = _props6.item;
+      var position = _props6.position;
+      var evaluated = _props6.evaluated;
+
+      var view = _react2['default'].findDOMNode(this.refs.view);
+
+      var parent = view.closest('.item-promote');
+
+      window.Dispatcher.emit('promote item', item, position, evaluated, parent);
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _props5 = this.props;
-      var item = _props5.item;
-      var position = _props5.position;
+      var _props7 = this.props;
+      var item = _props7.item;
+      var position = _props7.position;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
@@ -436,8 +465,8 @@ var ColumnButtons = (function (_React$Component12) {
 
       return _react2['default'].createElement(
         _utilColumn2['default'],
-        { span: '50', className: 'promote-' + position },
-        _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.props.next.bind(this.props.parent, position), className: 'gutter-bottom' })),
+        { span: '50', className: 'promote-' + position, ref: 'view' },
+        _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.next.bind(this), className: 'gutter-bottom' })),
         _react2['default'].createElement(EditAndGoAgain, null)
       );
     }
@@ -462,17 +491,17 @@ var SideColumn = (function (_React$Component13) {
   _createClass(SideColumn, [{
     key: 'render',
     value: function render() {
-      var _props6 = this.props;
-      var item = _props6.item;
-      var position = _props6.position;
-      var criterias = _props6.criterias;
-      var other = _props6.other;
+      var _props8 = this.props;
+      var item = _props8.item;
+      var position = _props8.position;
+      var criterias = _props8.criterias;
+      var other = _props8.other;
 
       if (!item) {
         return _react2['default'].createElement('div', null);
       }
 
-      var promoteMe = _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.props.next.bind(this.props.parent, position), className: 'gutter-bottom' }));
+      var promoteMe = _react2['default'].createElement(PromoteButton, _extends({}, item, { className: 'gutter-bottom' }));
 
       if (!other) {
         promoteMe = _react2['default'].createElement('div', null);
@@ -513,10 +542,6 @@ var Promote = (function (_React$Component14) {
     _get(Object.getPrototypeOf(Promote.prototype), 'constructor', this).call(this, props);
 
     this.status = 'iddle';
-
-    this.state = {
-      cursor: 1
-    };
   }
 
   _inherits(Promote, _React$Component14);
@@ -527,281 +552,12 @@ var Promote = (function (_React$Component14) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function componentWillReceiveProps(props) {
-      if (this.status === 'iddle') {}
-    }
-  }, {
-    key: 'get',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function get() {
-      var _this = this;
-
-      if (typeof window !== 'undefined') {
-        window.socket.emit('get evaluation', this.props.item).on('OK get evaluation', function (evaluation) {
-          console.log('GOT EVALUATION', evaluation);
-          var limit = 5;
-
-          _this.items = evaluation.items;
-
-          if (evaluation.items[0]) {
-            window.socket.emit('add view', evaluation.items[0]._id);
-          }
-
-          if (evaluation.items[1]) {
-            window.socket.emit('add view', evaluation.items[1]._id);
-          }
-
-          _this.setState({
-            limit: limit,
-            left: evaluation.items[0],
-            right: evaluation.items[1],
-            criterias: evaluation.criterias
-          });
-        });
-      }
-    }
-  }, {
-    key: 'next',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function next(position) {
-      console.log('next', position);
-
-      var view = _react2['default'].findDOMNode(this.refs.view);
-
-      var _state = this.state;
-      var cursor = _state.cursor;
-      var limit = _state.limit;
-      var left = _state.left;
-      var right = _state.right;
-
-      if (cursor < limit) {
-        if (!position) {
-          cursor += 2;
-        } else {
-          cursor += 1;
-        }
-
-        switch (position) {
-          case 'left':
-            window.socket.emit('promote', left._id);
-
-            var feedback = view.querySelectorAll('.promote-right .user-feedback');
-
-            for (var _i = 0; _i < feedback.length; _i++) {
-              var value = feedback[_i].value;
-
-              if (value) {
-                var id = feedback[_i].closest('.item').id.split('-')[1];
-
-                console.log({ id: id });
-
-                window.socket.emit('insert feedback', id, value);
-
-                feedback[_i].value = '';
-              }
-            }
-
-            var votes = view.querySelectorAll('.promote-right [type="range"]');
-
-            var visibleVotes = [];
-
-            for (var _i2 = 0; _i2 < votes.length; _i2++) {
-              if (votes[_i2].offsetHeight) {
-                var id = votes[_i2].closest('.item').id.split('-')[1];
-
-                var vote = {
-                  criteria: votes[_i2].dataset.criteria,
-                  value: votes[_i2].value,
-                  item: id
-                };
-
-                visibleVotes.push(vote);
-
-                votes[_i2].value = 0;
-              }
-            }
-
-            window.socket.emit('insert votes', visibleVotes);
-
-            right = this.items[cursor];
-            window.socket.emit('add view', right._id);
-            break;
-
-          case 'right':
-            window.socket.emit('promote', right._id);
-
-            var feedback = view.querySelectorAll('.promote-left .user-feedback');
-
-            for (var _i3 = 0; _i3 < feedback.length; _i3++) {
-              var value = feedback[_i3].value;
-
-              if (value) {
-                var id = feedback[_i3].closest('.item').id.split('-')[1];
-
-                console.log({ id: id });
-
-                window.socket.emit('insert feedback', id, value);
-
-                feedback[_i3].value = '';
-              }
-            }
-
-            var votes = view.querySelectorAll('.promote-left [type="range"]');
-
-            var visibleVotes = [];
-
-            for (var _i4 = 0; _i4 < votes.length; _i4++) {
-              if (votes[_i4].offsetHeight) {
-                var id = votes[_i4].closest('.item').id.split('-')[1];
-
-                var vote = {
-                  criteria: votes[_i4].dataset.criteria,
-                  value: votes[_i4].value,
-                  item: id
-                };
-
-                visibleVotes.push(vote);
-
-                votes[_i4].value = 0;
-              }
-            }
-
-            window.socket.emit('insert votes', visibleVotes);
-
-            left = this.items[cursor];
-            window.socket.emit('add view', left._id);
-            break;
-
-          default:
-            if (left) {
-              var _feedback = view.querySelectorAll('.promote-left .user-feedback');
-
-              for (var _i5 = 0; _i5 < _feedback.length; _i5++) {
-                var value = _feedback[_i5].value;
-
-                if (value) {
-                  var id = _feedback[_i5].closest('.item').id.split('-')[1];
-
-                  console.log({ id: id });
-
-                  window.socket.emit('insert feedback', id, value);
-
-                  _feedback[_i5].value = '';
-                }
-              }
-
-              var _votes = view.querySelectorAll('[type="range"]');
-
-              var _visibleVotes = [];
-
-              for (var _i6 = 0; _i6 < _votes.length; _i6++) {
-                if (_votes[_i6].offsetHeight) {
-                  var id = _votes[_i6].closest('.item').id.split('-')[1];
-
-                  var vote = {
-                    criteria: _votes[_i6].dataset.criteria,
-                    value: _votes[_i6].value,
-                    item: id
-                  };
-
-                  _visibleVotes.push(vote);
-
-                  _votes[_i6].value = 0;
-                }
-              }
-
-              window.socket.emit('insert votes', _visibleVotes);
-            }
-
-            if (right) {
-              var _feedback2 = view.querySelectorAll('.promote-right .user-feedback');
-
-              for (var _i7 = 0; _i7 < _feedback2.length; _i7++) {
-                var value = _feedback2[_i7].value;
-
-                if (value) {
-                  var id = _feedback2[_i7].closest('.item').id.split('-')[1];
-
-                  console.log({ id: id });
-
-                  window.socket.emit('insert feedback', id, value);
-
-                  _feedback2[_i7].value = '';
-                }
-              }
-
-              var _votes2 = view.querySelectorAll('.promote-right [type="range"]');
-
-              var _visibleVotes2 = [];
-
-              for (var _i8 = 0; _i8 < _votes2.length; _i8++) {
-                if (_votes2[_i8].offsetHeight) {
-                  var id = _votes2[_i8].closest('.item').id.split('-')[1];
-
-                  var vote = {
-                    criteria: _votes2[_i8].dataset.criteria,
-                    value: _votes2[_i8].value,
-                    item: id
-                  };
-
-                  _visibleVotes2.push(vote);
-                }
-              }
-
-              window.socket.emit('insert votes', _visibleVotes2);
-            }
-
-            left = this.items[cursor - 1];
-
-            if (cursor > limit) {
-              cursor = limit;
-              right = null;
-            } else {
-              right = this.items[cursor];
-            }
-
-            if (left) {
-              window.socket.emit('add view', left._id);
-            }
-
-            if (right) {
-              window.socket.emit('add view', right._id);
-            }
-
-            break;
-        }
-
-        var _top = view.getBoundingClientRect().top;
-        var _pageYOffset = window.pageYOffset;
-
-        window.scrollTo(0, _pageYOffset + _top - 60);
-
-        this.setState({ cursor: cursor, left: left, right: right });
-      } else {
-        switch (position) {
-          case 'left':
-            window.socket.emit('promote', left._id);
-            break;
-
-          case 'right':
-            window.socket.emit('promote', right._id);
-            break;
-        }
-
-        this.setState({
-          limit: 0,
-          left: {},
-          right: {},
-          criterias: [],
-          cursor: 1
-        });
-
+      if (this.status === 'iddle' && props.active) {
+        this.status = 'ready';
+        window.Dispatcher.emit('get evaluation', this.props.item);
+      } else if (this.props.items[this.props.item._id] && !this.props.items[this.props.item._id].evaluation && this.status === 'ready') {
         this.status = 'iddle';
-
-        view.closest('.item').querySelector('.toggle-details').click();
+        window.Dispatcher.emit('set active', props['panel-id'], '' + this.props.item._id + '-details');
       }
     }
   }, {
@@ -811,9 +567,15 @@ var Promote = (function (_React$Component14) {
 
     value: function render() {
 
-      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading evaluation' });
 
-      if (this.state.limit) {
+      if (this.props.items[this.props.item._id] && this.props.items[this.props.item._id].evaluation) {
+        var evaluation = this.props.items[this.props.item._id].evaluation;
+        var left = evaluation.left;
+        var right = evaluation.right;
+        var criterias = evaluation.criterias;
+        var item = evaluation.item;
+
         content = [];
 
         var foo = _react2['default'].createElement(
@@ -822,57 +584,48 @@ var Promote = (function (_React$Component14) {
           'Which of these is most important for the community to consider?'
         );
 
-        if (!this.state.left || !this.state.right) {
+        if (!left || !right) {
           foo = _react2['default'].createElement('div', null);
         }
 
-        var promoteMe = _react2['default'].createElement(ColumnButtons, { key: 'left-buttons', item: this.state.left, position: 'left', next: this.next.bind(this), parent: this });
+        var promoteMe = _react2['default'].createElement(ColumnButtons, { key: 'left-buttons', item: left, position: 'left', evaluated: item });
 
-        if (!this.state.left || !this.state.right) {
+        if (!left || !right) {
           promoteMe = _react2['default'].createElement('div', null);
         }
 
-        content.push(_react2['default'].createElement(Header, this.state), _react2['default'].createElement(
+        content.push(_react2['default'].createElement(Header, { evaluation: evaluation }), _react2['default'].createElement(
           'div',
           { 'data-screen': 'phone-and-up' },
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(ColumnItem, { item: this.state.left, position: 'left', key: 'item-left' }),
-            _react2['default'].createElement(ColumnItem, { item: this.state.right, position: 'right', key: 'item-right' })
+            _react2['default'].createElement(ColumnItem, { item: left, position: 'left', key: 'item-left' }),
+            _react2['default'].createElement(ColumnItem, { item: right, position: 'right', key: 'item-right' })
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(ColumnFeedback, { key: 'left-feedback', item: this.state.left, position: 'left' }),
-            _react2['default'].createElement(ColumnFeedback, { key: 'right-feedback', item: this.state.right, position: 'right' })
+            _react2['default'].createElement(ColumnFeedback, { key: 'left-feedback', item: left, position: 'left' }),
+            _react2['default'].createElement(ColumnFeedback, { key: 'right-feedback', item: right, position: 'right' })
           ),
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
-            _react2['default'].createElement(ColumnSliders, { key: 'left-sliders', item: this.state.left, position: 'left', criterias: this.state.criterias }),
-            _react2['default'].createElement(ColumnSliders, { key: 'right-sliders', item: this.state.right, position: 'right', criterias: this.state.criterias })
+            _react2['default'].createElement(ColumnSliders, { key: 'left-sliders', item: left, position: 'left', criterias: criterias }),
+            _react2['default'].createElement(ColumnSliders, { key: 'right-sliders', item: right, position: 'right', criterias: criterias })
           ),
           foo,
           _react2['default'].createElement(
             _utilRow2['default'],
             null,
             promoteMe,
-            _react2['default'].createElement(ColumnButtons, { key: 'right-buttons', item: this.state.right, position: 'right', next: this.next.bind(this), parent: this })
-          )
-        ), _react2['default'].createElement(
-          'div',
-          { 'data-screen': 'up-to-phone' },
-          _react2['default'].createElement(
-            _utilRow2['default'],
-            { 'data-stack': true },
-            _react2['default'].createElement(SideColumn, { key: 'left', position: 'left', item: this.state.left, criterias: this.state.criterias, next: this.next.bind(this), parent: this, other: this.state.right }),
-            _react2['default'].createElement(SideColumn, { key: 'right', position: 'right', item: this.state.right, criterias: this.state.criterias, next: this.next.bind(this), parent: this, other: this.state.left })
+            _react2['default'].createElement(ColumnButtons, { key: 'right-buttons', item: right, position: 'right', evaluated: item })
           )
         ), _react2['default'].createElement(
           'div',
           { className: 'gutter' },
-          _react2['default'].createElement(Finish, _extends({}, this.state, { onClick: this.next.bind(this, null) }))
+          _react2['default'].createElement(Finish, { cursor: evaluation.cursor, limit: evaluation.limit, evaluated: item })
         ));
       }
 
@@ -892,9 +645,16 @@ var Promote = (function (_React$Component14) {
 exports['default'] = Promote;
 module.exports = exports['default'];
 
-// this.status = 'ready';
-// this.get();
-
 // big screens
 
 // SMALL SCREENS
+
+// (
+//   <div data-screen="up-to-phone">
+//     <Row data-stack>
+//       <SideColumn key="left" position="left" item={ left } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ right } />
+//
+//       <SideColumn key="right" position="right" item={ right } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ left } />
+//     </Row>
+//   </div>
+// ),

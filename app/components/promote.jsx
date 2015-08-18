@@ -14,9 +14,11 @@ import Component        from '../lib/app/component';
 
 class Header extends React.Component {
   render () {
+    let { evaluation } = this.props;
+
     return (
       <header className="text-center gutter-bottom">
-        <h2>{ this.props.cursor } of { this.props.limit }</h2>
+        <h2>{ evaluation.cursor } of { evaluation.limit }</h2>
         <h4>Evaluate each item below</h4>
       </header>
     );
@@ -90,6 +92,16 @@ class EditAndGoAgain extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Finish extends React.Component {
+  next () {
+    let { position, evaluated } = this.props;
+
+    let view = React.findDOMNode(this.refs.view);
+
+    let parent = view.closest('.item-promote');
+
+    window.Dispatcher.emit('promote item', null, null, evaluated, parent);
+  }
+
   render () {
     let text = 'Neither';
 
@@ -100,7 +112,9 @@ class Finish extends React.Component {
     }
 
     return (
-      <Button block { ...this.props }><b>{ text }</b></Button>
+      <Button block { ...this.props } onClick={ this.next.bind(this) } ref="view">
+        <b>{ text }</b>
+      </Button>
     );
   }
 }
@@ -165,6 +179,16 @@ class ColumnSliders extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ColumnButtons extends React.Component {
+  next () {
+    let { item, position, evaluated } = this.props;
+
+    let view = React.findDOMNode(this.refs.view);
+
+    let parent = view.closest('.item-promote');
+
+    window.Dispatcher.emit('promote item', item, position, evaluated, parent);
+  }
+
   render () {
     let { item, position } = this.props;
 
@@ -173,8 +197,8 @@ class ColumnButtons extends React.Component {
     }
 
     return (
-      <Column span="50" className={ `promote-${position}` }>
-        <PromoteButton { ...item } onClick={ this.props.next.bind(this.props.parent, position) } className="gutter-bottom" />
+      <Column span="50" className={ `promote-${position}` } ref="view">
+        <PromoteButton { ...item } onClick={ this.next.bind(this) } className="gutter-bottom" />
         <EditAndGoAgain />
       </Column>
     );
@@ -192,7 +216,7 @@ class SideColumn extends React.Component {
     }
 
     let promoteMe = (
-      <PromoteButton { ...item } onClick={ this.props.next.bind(this.props.parent, position) } className="gutter-bottom" />
+      <PromoteButton { ...item } className="gutter-bottom" />
     );
 
     if ( ! other ) {
@@ -227,289 +251,18 @@ class Promote extends React.Component {
     super(props);
 
     this.status = 'iddle';
-
-    this.state = {
-      cursor    :   1
-    };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
-    if ( this.status === 'iddle' ) {
-      // this.status = 'ready';
-      // this.get();
+    if ( this.status === 'iddle' && props.active ) {
+      this.status = 'ready';
+      window.Dispatcher.emit('get evaluation', this.props.item);
     }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  get () {
-    if ( typeof window !== 'undefined' ) {
-      window.socket.emit('get evaluation', this.props.item)
-        .on('OK get evaluation', evaluation => {
-          console.log('GOT EVALUATION', evaluation);
-          let limit = 5;
-
-          this.items = evaluation.items;
-
-          if ( evaluation.items[0] ) {
-            window.socket.emit('add view', evaluation.items[0]._id);
-          }
-
-          if ( evaluation.items[1] ) {
-            window.socket.emit('add view', evaluation.items[1]._id);
-          }
-
-          this.setState({
-            limit       :   limit,
-            left        :   evaluation.items[0],
-            right       :   evaluation.items[1],
-            criterias   :   evaluation.criterias
-          });
-        })
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  next (position) {
-    console.log('next', position);
-
-    let view = React.findDOMNode(this.refs.view);
-
-    let { cursor, limit, left, right } = this.state;
-
-    if ( cursor < limit ) {
-      if ( ! position ) {
-        cursor += 2;
-      }
-
-      else {
-        cursor += 1;
-      }
-
-      switch ( position ) {
-        case 'left' :
-          window.socket.emit('promote', left._id);
-
-          let feedback = view.querySelectorAll('.promote-right .user-feedback');
-
-          for ( let i = 0; i < feedback.length; i ++ ) {
-            let value = feedback[i].value;
-
-            if ( value ) {
-              let id = feedback[i].closest('.item').id.split('-')[1];
-
-              console.log({ id });
-
-              window.socket.emit('insert feedback', id, value);
-
-              feedback[i].value = '';
-            }
-          }
-
-          let votes = view.querySelectorAll('.promote-right [type="range"]');
-
-          let visibleVotes = [];
-
-          for ( let i = 0; i < votes.length; i ++ ) {
-            if ( votes[i].offsetHeight ) {
-              let id = votes[i].closest('.item').id.split('-')[1];
-
-              let vote = {
-                criteria : votes[i].dataset.criteria,
-                value: votes[i].value,
-                item : id
-              };
-
-              visibleVotes.push(vote);
-
-              votes[i].value = 0;
-            }
-          }
-
-          window.socket.emit('insert votes', visibleVotes);
-
-          right = this.items[cursor];
-          window.socket.emit('add view', right._id);
-          break;
-
-        case 'right':
-          window.socket.emit('promote', right._id);
-
-          let feedback = view.querySelectorAll('.promote-left .user-feedback');
-
-          for ( let i = 0; i < feedback.length; i ++ ) {
-            let value = feedback[i].value;
-
-            if ( value ) {
-              let id = feedback[i].closest('.item').id.split('-')[1];
-
-              console.log({ id });
-
-              window.socket.emit('insert feedback', id, value);
-
-              feedback[i].value = '';
-            }
-          }
-
-          let votes = view.querySelectorAll('.promote-left [type="range"]');
-
-          let visibleVotes = [];
-
-          for ( let i = 0; i < votes.length; i ++ ) {
-            if ( votes[i].offsetHeight ) {
-              let id = votes[i].closest('.item').id.split('-')[1];
-
-              let vote = {
-                criteria : votes[i].dataset.criteria,
-                value: votes[i].value,
-                item : id
-              };
-
-              visibleVotes.push(vote);
-
-              votes[i].value = 0;
-            }
-          }
-
-          window.socket.emit('insert votes', visibleVotes);
-
-          left = this.items[cursor];
-          window.socket.emit('add view', left._id);
-          break;
-
-        default:
-          if ( left ) {
-            let feedback = view.querySelectorAll('.promote-left .user-feedback');
-
-            for ( let i = 0; i < feedback.length; i ++ ) {
-              let value = feedback[i].value;
-
-              if ( value ) {
-                let id = feedback[i].closest('.item').id.split('-')[1];
-
-                console.log({ id });
-
-                window.socket.emit('insert feedback', id, value);
-
-                feedback[i].value = '';
-              }
-            }
-
-            let votes = view.querySelectorAll('[type="range"]');
-
-            let visibleVotes = [];
-
-            for ( let i = 0; i < votes.length; i ++ ) {
-              if ( votes[i].offsetHeight ) {
-                let id = votes[i].closest('.item').id.split('-')[1];
-
-                let vote = {
-                  criteria : votes[i].dataset.criteria,
-                  value: votes[i].value,
-                  item : id
-                };
-
-                visibleVotes.push(vote);
-
-                votes[i].value = 0;
-              }
-            }
-
-            window.socket.emit('insert votes', visibleVotes);
-          }
-
-          if ( right ) {
-            let feedback = view.querySelectorAll('.promote-right .user-feedback');
-
-            for ( let i = 0; i < feedback.length; i ++ ) {
-              let value = feedback[i].value;
-
-              if ( value ) {
-                let id = feedback[i].closest('.item').id.split('-')[1];
-
-                console.log({ id });
-
-                window.socket.emit('insert feedback', id, value);
-
-                feedback[i].value = '';
-              }
-            }
-
-            let votes = view.querySelectorAll('.promote-right [type="range"]');
-
-            let visibleVotes = [];
-
-            for ( let i = 0; i < votes.length; i ++ ) {
-              if ( votes[i].offsetHeight ) {
-                let id = votes[i].closest('.item').id.split('-')[1];
-
-                let vote = {
-                  criteria : votes[i].dataset.criteria,
-                  value: votes[i].value,
-                  item : id
-                };
-
-                visibleVotes.push(vote);
-              }
-            }
-
-            window.socket.emit('insert votes', visibleVotes);
-          }
-
-          left = this.items[cursor-1];
-
-          if ( cursor > limit ) {
-            cursor = limit;
-            right = null;
-          }
-          else {
-            right = this.items[cursor];
-          }
-
-          if ( left ) {
-            window.socket.emit('add view', left._id);
-          }
-
-          if ( right ) {
-            window.socket.emit('add view', right._id);
-          }
-
-          break;
-      }
-
-      let top = view.getBoundingClientRect().top;
-      let { pageYOffset } = window;
-
-      window.scrollTo(0, pageYOffset + top - 60);
-
-      this.setState({ cursor, left, right });
-    }
-
-    else {
-      switch ( position ) {
-        case 'left' :
-          window.socket.emit('promote', left._id);
-          break;
-
-        case 'right':
-          window.socket.emit('promote', right._id);
-          break;
-      }
-
-      this.setState({
-        limit       :   0,
-        left        :   {},
-        right       :   {},
-        criterias   :   [],
-        cursor      :   1
-      });
-
+    else if ( this.props.items[this.props.item._id] && ! this.props.items[this.props.item._id].evaluation && this.status === 'ready' ) {
       this.status = 'iddle';
-
-      view.closest('.item').querySelector('.toggle-details').click();
+      window.Dispatcher.emit('set active', props['panel-id'], `${this.props.item._id}-details`);
     }
   }
 
@@ -517,28 +270,33 @@ class Promote extends React.Component {
 
   render () {
 
-    let content = ( <Loading /> );
+    let content = ( <Loading message="Loading evaluation" /> );
 
-    if ( this.state.limit ) {
+    if ( this.props.items[this.props.item._id] && this.props.items[this.props.item._id].evaluation ) {
+
+      let { evaluation } = this.props.items[this.props.item._id];
+
+      let { left, right, criterias, item } = evaluation;
+
       content = [];
 
       let foo = <h5 className="text-center gutter">Which of these is most important for the community to consider?</h5>;
 
-      if ( ! this.state.left || ! this.state.right ) {
+      if ( ! left || ! right ) {
         foo = ( <div></div> );
       }
 
       let promoteMe = (
-        <ColumnButtons key="left-buttons" item={ this.state.left } position='left' next={ this.next.bind(this) } parent={ this } />
+        <ColumnButtons key="left-buttons" item={ left } position='left' evaluated={ item } />
       );
 
-      if ( ! this.state.left || ! this.state.right ) {
+      if ( ! left || ! right ) {
         promoteMe = ( <div></div> );
       }
 
       content.push(
         (
-          <Header { ...this.state } />
+          <Header evaluation={ evaluation } />
         ),
 
         // big screens
@@ -546,21 +304,21 @@ class Promote extends React.Component {
         (
           <div data-screen="phone-and-up">
             <Row>
-              <ColumnItem item={ this.state.left } position='left' key='item-left' />
+              <ColumnItem item={ left } position='left' key='item-left' />
 
-              <ColumnItem item={ this.state.right } position='right' key='item-right' />
+              <ColumnItem item={ right } position='right' key='item-right' />
             </Row>
 
             <Row>
-              <ColumnFeedback key="left-feedback" item={ this.state.left } position='left' />
+              <ColumnFeedback key="left-feedback" item={ left } position='left' />
 
-              <ColumnFeedback key="right-feedback" item={ this.state.right } position='right' />
+              <ColumnFeedback key="right-feedback" item={ right } position='right' />
             </Row>
 
             <Row>
-              <ColumnSliders key="left-sliders"  item={ this.state.left } position='left' criterias={ this.state.criterias } />
+              <ColumnSliders key="left-sliders"  item={ left } position='left' criterias={ criterias } />
 
-              <ColumnSliders key="right-sliders" item={ this.state.right } position='right' criterias={ this.state.criterias } />
+              <ColumnSliders key="right-sliders" item={ right } position='right' criterias={ criterias } />
 
             </Row>
 
@@ -569,7 +327,7 @@ class Promote extends React.Component {
             <Row>
               { promoteMe }
 
-              <ColumnButtons key="right-buttons" item={ this.state.right } position='right' next={ this.next.bind(this) } parent={ this } />
+              <ColumnButtons key="right-buttons" item={ right } position='right' evaluated={ item } />
 
             </Row>
           </div>
@@ -577,18 +335,19 @@ class Promote extends React.Component {
 
         // SMALL SCREENS
 
-        (
-          <div data-screen="up-to-phone">
-            <Row data-stack>
-              <SideColumn key="left" position="left" item={ this.state.left } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } other={ this.state.right } />
+        // (
+        //   <div data-screen="up-to-phone">
+        //     <Row data-stack>
+        //       <SideColumn key="left" position="left" item={ left } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ right } />
+        //
+        //       <SideColumn key="right" position="right" item={ right } criterias={ criterias } next={ this.next.bind(this) } parent={ this } other={ left } />
+        //     </Row>
+        //   </div>
+        // ),
 
-              <SideColumn key="right" position="right" item={ this.state.right } criterias={ this.state.criterias } next={ this.next.bind(this) } parent={ this } other={ this.state.left } />
-            </Row>
-          </div>
-        ),
         (
           <div className="gutter">
-            <Finish { ...this.state } onClick={ this.next.bind(this, null) } />
+            <Finish cursor={ evaluation.cursor } limit={ evaluation.limit } evaluated={ item } />
           </div>
         )
       );

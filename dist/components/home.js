@@ -32,9 +32,9 @@ var _countdown = require('./countdown');
 
 var _countdown2 = _interopRequireDefault(_countdown);
 
-var _topLevelPanel = require('./top-level-panel');
+var _panelItems = require('./panel-items');
 
-var _topLevelPanel2 = _interopRequireDefault(_topLevelPanel);
+var _panelItems2 = _interopRequireDefault(_panelItems);
 
 var Home = (function (_React$Component) {
   function Home(props) {
@@ -79,8 +79,10 @@ var Home = (function (_React$Component) {
 
         if (now < deadline) {
           content = _react2['default'].createElement(_countdown2['default'], _extends({ discussion: this.state.discussion }, this.props));
-        } else {
-          content = _react2['default'].createElement(_topLevelPanel2['default'], this.props);
+        } else if (this.props.topLevelType) {
+          var panel = this.props.panels[this.props.topLevelType];
+
+          content = _react2['default'].createElement(_panelItems2['default'], _extends({ panel: panel }, this.props));
         }
       }
 

@@ -21,7 +21,12 @@ function getItems (event, panel, item) {
 
       .getPanelItems(query)
 
-      .then(this.ok.bind(this, event, panel), this.error.bind(this));
+      .then(
+        results => {
+          this.ok(event, panel, results.count, results.items);
+        },
+        this.error.bind(this)
+      );
   }
 
   catch ( error ) {

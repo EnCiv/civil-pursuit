@@ -18,9 +18,8 @@ function promoteItem(event, itemId) {
       _this.ok(event, item.promotions);
 
       item.toPanelItem().then(function (item) {
-        console.log('item changed', item);
-        _this.emit('item changed ' + item._id, item);
-        _this.broadcast.emit('item changed ' + item._id, item);
+        _this.emit('item changed', item);
+        _this.broadcast.emit('item changed', item);
       });
     }, function (error) {
       _this.error(error);

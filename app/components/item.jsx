@@ -72,12 +72,26 @@ class Item extends React.Component {
 
     this.expanded = false;
 
+    this.truncated = false;
+
+    if ( typeof window !== 'undefined' && this.props.item ) {
+
+      let parent = this.props.item.lineage[0];
+
+      if ( parent ) {
+        parent = parent._id;
+      }
+
+      this.panelId = makePanelId({ type : this.props.item.type, parent });
+    }
+
     this.state = {
       active      : null,
-      item        : this.props.item
+      item        : this.props.item,
+      ping : 0
     };
 
-    this.listeners();
+    // this.listeners();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,9 +115,9 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillUnmount () {
-    window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
-
-    window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
+    // window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
+    //
+    // window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,37 +130,31 @@ class Item extends React.Component {
     }
 
     if ( this.props.item ) {
-      this.props.panel.setState({ active : this.props.item._id });
+      window.Dispatcher.emit('set active', this.panelId, `${this.props.item._id}-${toggler}`);
     }
-
-    let active = null;
-
-    if ( this.state.active !== toggler ) {
-      active = toggler;
-    }
-
-    this.setState({ active });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentWillReceiveProps (props) {
-    console.info('item is receiving props', props);
-    if ( 'panel' in props ) {
-      if ( props.panel.state.active === 'creator' ) {
-        this.setState({ active : null });
-      }
-      else if ( props.panel.state.active && this.props.item ) {
-        if ( props.panel.state.active !== this.props.item._id ) {
-          this.setState({ active : null });
-        }
-      }
-    }
+    // this.setState({ ping : this.state.ping + 1 });
+    // console.info('item is receiving props', props);
+    // if ( 'panel' in props ) {
+    //   if ( props.panel.state.active === 'creator' ) {
+    //     this.setState({ active : null });
+    //   }
+    //   else if ( props.panel.state.active && this.props.item ) {
+    //     if ( props.panel.state.active !== this.props.item._id ) {
+    //       this.setState({ active : null });
+    //     }
+    //   }
+    // }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidMount () {
+
     let media;
 
     let image = React
@@ -169,55 +177,57 @@ class Item extends React.Component {
     let item = React
       .findDOMNode(this.refs.item);
 
-    let more = React.findDOMNode(this.refs.more);
+    if ( ! this.truncated ) {
+      let more = React.findDOMNode(this.refs.more);
 
-    let truncatable   =   item.querySelector('.item-truncatable');
-    let subject       =   item.querySelector('.item-subject');
-    let description   =   item.querySelector('.item-description');
-    let reference     =   item.querySelector('.item-reference a');
-    let buttons       =   item.querySelector('.item-buttons');
+      let truncatable   =   item.querySelector('.item-truncatable');
+      let subject       =   item.querySelector('.item-subject');
+      let description   =   item.querySelector('.item-description');
+      let reference     =   item.querySelector('.item-reference a');
+      let buttons       =   item.querySelector('.item-buttons');
 
-    let onLoad = () => {
-      let mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
+      let onLoad = () => {
+        let mediaHeight = ( media.offsetTop + media.offsetHeight - 40 );
 
-      console.log({ mediaHeight, media, item: this.props.item.subject })
+        let limit;
 
-      let limit;
-
-      if ( ! buttons ) {
-        limit = mediaHeight;
-      }
-
-      else {
-        let buttonsHeight = ( buttons.offsetTop + buttons.offsetHeight - 40 );
-
-        if ( mediaHeight >= buttonsHeight  ) {
+        if ( ! buttons ) {
           limit = mediaHeight;
         }
 
         else {
-          limit = buttonsHeight;
+          let buttonsHeight = ( buttons.offsetTop + buttons.offsetHeight - 40 );
+
+          if ( mediaHeight >= buttonsHeight  ) {
+            limit = mediaHeight;
+          }
+
+          else {
+            limit = buttonsHeight;
+          }
         }
+
+        Item.paint(subject, limit);
+        Item.paint(reference, limit);
+        Item.paint(description, limit);
+
+        if ( ! item.querySelector('.word.hide') ) {
+          more.style.display = 'none';
+        }
+
+        if ( this.props.new ) {
+          this.setState({ showPromote: true });
+        }
+      };
+
+      if ( image ) {
+        image.addEventListener('load', onLoad);
+      }
+      else {
+        video.addEventListener('load', onLoad);
       }
 
-      Item.paint(subject, limit);
-      Item.paint(reference, limit);
-      Item.paint(description, limit);
-
-      if ( ! item.querySelector('.word.hide') ) {
-        more.style.display = 'none';
-      }
-
-      if ( this.props.new ) {
-        this.setState({ showPromote: true });
-      }
-    };
-
-    if ( image ) {
-      image.addEventListener('load', onLoad);
-    }
-    else {
-      video.addEventListener('load', onLoad);
+      this.truncated = true;
     }
   }
 
@@ -244,9 +254,9 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { item } = this.state;
+    let { item } = this.props;
 
-    console.log({ item });
+    // console.warn(item.subject);
 
     let buttons,
       referenceLink,
@@ -292,32 +302,67 @@ class Item extends React.Component {
       textSpan = 75;
     }
 
-    if ( this.props.promote !== false ) {
+    if ( this.props.promote !== false && this.panelId ) {
+      let promoteIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-promote`;
+
       promote = (
         <div className="toggler promote">
-          <Accordion poa={ this.refs.item } active={ this.state.active === 'promote' } name="promote" { ...this.props }>
-            <Promote item={ this.props.item } show={ this.state.showPromote } ref="promote" />
+          <Accordion
+            poa     = { this.refs.item }
+            active  = { promoteIsActive }
+            name    = "promote"
+            { ...this.props }
+            >
+            <Promote
+              item      =   { this.props.item }
+              { ...this.props }
+              active    =   { promoteIsActive }
+              ref       =   "promote"
+              panel-id  =   { this.panelId }
+              />
           </Accordion>
         </div>
       );
     }
 
-    if ( this.props.details !== false ) {
+    if ( this.props.details !== false && this.panelId ) {
+      let detailsIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-details`;
+
       details =(
         <div className="toggler details">
-          <Accordion poa={ this.refs.item } active={ this.state.active === 'details' } name="details" { ...this.props }>
-            <Details item={ this.props.item } show={ this.state.showDetails } />
+          <Accordion
+            poa       =   { this.refs.item }
+            active    =   { detailsIsActive }
+            name      =   "details"
+            { ...this.props }
+            >
+            <Details
+              item    = { this.props.item }
+              { ...this.props }
+              active  = { detailsIsActive }
+              ref     = "details" />
           </Accordion>
         </div>
       );
     }
 
-    if ( this.props.subtype !== false ) {
+    if ( this.props.subtype !== false && this.panelId ) {
+      let subtypeIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-subtype`;
+
       subtype = (
         <div className="toggler subtype">
-          <Accordion active={ this.state.active === 'subtype' } name="subtype" poa={ this.refs.item } { ...this.props }>
-            <Subtype { ...this.props } item={ this.props.item } show={ this.state.showSubtype } />
-          </Accordion>
+        <Accordion
+          poa       =   { this.refs.item }
+          active    =   { subtypeIsActive }
+          name      =   "subtype"
+          { ...this.props }
+          >
+          <Subtype
+            item    = { this.props.item }
+            { ...this.props }
+            active  = { subtypeIsActive }
+            ref     = "subtype" />
+        </Accordion>
         </div>
       );
     }

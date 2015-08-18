@@ -97,12 +97,31 @@ var Creator = (function (_React$Component) {
       }, false);
     }
   }, {
+    key: 'componentWillReceiveProps',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function componentWillReceiveProps(props) {
+      var _this2 = this;
+
+      if (props.created && props.created.panel === this.props['panel-id']) {
+        _react2['default'].findDOMNode(this.refs.subject).value = '';
+        _react2['default'].findDOMNode(this.refs.description).value = '';
+        _react2['default'].findDOMNode(this.refs.reference).value = '';
+        _react2['default'].findDOMNode(this.refs.title).value = '';
+
+        setTimeout(function () {
+          window.Dispatcher.emit('set active', _this2.props['panel-id'], '' + props.created.item + '-promote');
+        });
+      }
+    }
+  }, {
     key: 'create',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function create() {
-      var _this2 = this;
+      var _this3 = this;
 
       var subject = _react2['default'].findDOMNode(this.refs.subject).value;
       var description = _react2['default'].findDOMNode(this.refs.description).value;
@@ -119,25 +138,23 @@ var Creator = (function (_React$Component) {
         item.references = [{ url: url, title: title }];
       }
 
-      console.log({ creating: item });
-
       var insert = function insert() {
-        window.socket.emit('create item', item).on('OK create item', function (item) {
-          console.log(item);
+        window, Dispatcher.emit('create item', item);
 
-          _react2['default'].findDOMNode(_this2.refs.subject).value = '';
-          _react2['default'].findDOMNode(_this2.refs.description).value = '';
-          _react2['default'].findDOMNode(_this2.refs.reference).value = '';
-          _react2['default'].findDOMNode(_this2.refs.title).value = '';
+        // window.socket.emit('create item', item)
+        //   .on('OK create item', item => {
+        //     console.log(item);
+        //
 
-          var newItemPanel = { type: _this2.props.type };
-
-          if (_this2.props.parent) {
-            newItemPanel.parent = _this2.props.parent._id;
-          }
-
-          window.Dispatcher.emit('new item', item, newItemPanel);
-        });
+        //
+        //     let newItemPanel = { type: this.props.type };
+        //
+        //     if ( this.props.parent ) {
+        //       newItemPanel.parent = this.props.parent._id;
+        //     }
+        //
+        //     window.Dispatcher.emit('new item', item, newItemPanel);
+        //   });
       };
 
       if (this.file) {
@@ -148,7 +165,7 @@ var Creator = (function (_React$Component) {
         ss.createBlobReadStream(this.file).pipe(stream);
 
         stream.on('end', function () {
-          item.image = _this2.file.name;
+          item.image = _this3.file.name;
 
           insert();
         });
@@ -162,7 +179,7 @@ var Creator = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function getUrlTitle() {
-      var _this3 = this;
+      var _this4 = this;
 
       var url = _react2['default'].findDOMNode(this.refs.reference).value;
       var loading = _react2['default'].findDOMNode(this.refs.lookingUp);
@@ -189,7 +206,7 @@ var Creator = (function (_React$Component) {
             var item = { references: [{ url: url }] };
 
             if (_youtube2['default'].isYouTube(item)) {
-              _this3.setState({ video: item });
+              _this4.setState({ video: item });
             }
           }
         });

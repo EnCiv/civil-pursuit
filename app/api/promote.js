@@ -14,9 +14,8 @@ function promoteItem (event, itemId) {
             .toPanelItem()
             .then(
               item => {
-                console.log('item changed', item)
-                this.emit(`item changed ${item._id}`, item);
-                this.broadcast.emit(`item changed ${item._id}`, item);
+                this.emit('item changed', item);
+                this.broadcast.emit('item changed', item);
               }
             );
         },

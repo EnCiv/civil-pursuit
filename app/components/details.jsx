@@ -60,31 +60,25 @@ class Details extends React.Component {
   }
 
   componentWillReceiveProps (props) {
-    if ( this.status === 'iddle' ) {
+    if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
-      this.get();
-    }
-  }
-
-  get () {
-    if ( typeof window !== 'undefined' ) {
-      window.socket.emit('get item details', this.props.item)
-        .on('OK get item details', details => {
-          this.setState({ details });
-        })
+      window.Dispatcher.emit('get details', this.props.item);
     }
   }
 
   render () {
-    let content = ( <Loading /> );
+    let content = ( <Loading message="Loading details" /> );
 
-    if ( this.state.details ) {
+    if ( this.props.items[this.props.item._id] && this.props.items[this.props.item._id].details ) {
+
+      let { details } = this.props.items[this.props.item._id];
+
       content = [];
 
       content.push(
         ( <Popularity { ...this.props.item.popularity } /> ),
-        ( <Votes { ...this.state.details } /> ),
-        ( <Feedback entries={ this.state.details.feedback } /> )
+        ( <Votes { ...details } /> ),
+        ( <Feedback entries={ details.feedback } /> )
       );
     }
 

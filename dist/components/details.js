@@ -130,31 +130,22 @@ var Details = (function (_React$Component3) {
   _createClass(Details, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      if (this.status === 'iddle') {
+      if (this.status === 'iddle' && props.active) {
         this.status = 'ready';
-        this.get();
-      }
-    }
-  }, {
-    key: 'get',
-    value: function get() {
-      var _this = this;
-
-      if (typeof window !== 'undefined') {
-        window.socket.emit('get item details', this.props.item).on('OK get item details', function (details) {
-          _this.setState({ details: details });
-        });
+        window.Dispatcher.emit('get details', this.props.item);
       }
     }
   }, {
     key: 'render',
     value: function render() {
-      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading details' });
 
-      if (this.state.details) {
+      if (this.props.items[this.props.item._id] && this.props.items[this.props.item._id].details) {
+        var details = this.props.items[this.props.item._id].details;
+
         content = [];
 
-        content.push(_react2['default'].createElement(Popularity, this.props.item.popularity), _react2['default'].createElement(_votes2['default'], this.state.details), _react2['default'].createElement(Feedback, { entries: this.state.details.feedback }));
+        content.push(_react2['default'].createElement(Popularity, this.props.item.popularity), _react2['default'].createElement(_votes2['default'], details), _react2['default'].createElement(Feedback, { entries: details.feedback }));
       }
 
       return _react2['default'].createElement(

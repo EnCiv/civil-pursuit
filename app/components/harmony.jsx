@@ -19,7 +19,7 @@ class Harmony extends React.Component {
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' ) {
       this.status = 'ready';
-      this.get();
+      // this.get();
     }
   }
 

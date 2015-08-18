@@ -4,7 +4,7 @@ import React                        from 'react';
 import Component                    from '../lib/app/component';
 import Icon                         from './util/icon';
 import Countdown                    from './countdown';
-import TopLevelPanel                from './top-level-panel';
+import PanelItems                   from './panel-items';
 
 class Home extends React.Component {
   constructor (props) {
@@ -38,8 +38,10 @@ class Home extends React.Component {
         content = ( <Countdown discussion={ this.state.discussion } { ...this.props } /> );
       }
 
-      else {
-        content = <TopLevelPanel { ...this.props} />
+      else if ( this.props.topLevelType ) {
+        let panel = this.props.panels[this.props.topLevelType];
+
+        content = <PanelItems panel={ panel } { ...this.props } />
       }
     }
 

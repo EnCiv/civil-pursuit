@@ -24,13 +24,9 @@ var _utilLoading = require('./util/loading');
 
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
-var _panel = require('./panel');
+var _panelItems = require('./panel-items');
 
-var _panel2 = _interopRequireDefault(_panel);
-
-var _item = require('./item');
-
-var _item2 = _interopRequireDefault(_item);
+var _panelItems2 = _interopRequireDefault(_panelItems);
 
 var Subtype = (function (_React$Component) {
   function Subtype(props) {
@@ -40,7 +36,7 @@ var Subtype = (function (_React$Component) {
 
     this.status = 'iddle';
 
-    this.state = { panel: null, items: null };
+    this.id = makePanelId({ type: this.props.item.subtype, parent: this.props.item._id });
   }
 
   _inherits(Subtype, _React$Component);
@@ -48,66 +44,26 @@ var Subtype = (function (_React$Component) {
   _createClass(Subtype, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      if (this.status === 'iddle') {
+      if (this.status === 'iddle' && props.active) {
         this.status = 'ready';
-        this.get();
+
+        if (!props.panels[this.id]) {
+          window.Dispatcher.emit('get items', { type: props.item.subtype, parent: props.item._id });
+        }
       }
-    }
-  }, {
-    key: 'get',
-    value: function get() {
-      var _this = this;
-
-      if (typeof window !== 'undefined') {
-        window.socket.emit('get items', { type: this.props.item.subtype._id, parent: this.props.item._id }).on('OK get items', function (panel, items) {
-          if (panel.type === _this.props.item.subtype._id) {
-            console.log('subtype', panel, items);
-            _this.setState({ panel: panel, items: items });
-          }
-        });
-      }
-    }
-  }, {
-    key: 'toggleCreator',
-    value: function toggleCreator(e) {
-      e.preventDefault();
-
-      var panel = _react2['default'].findDOMNode(this.refs.panel);
-      var toggle = panel.querySelector('.toggle-creator');
-
-      toggle.click();
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
-
       var content = _react2['default'].createElement(_utilLoading2['default'], null);
 
-      if (this.state.panel) {
-        var items = [];
-
-        if (this.state.items.length) {
-          items = this.state.items.map(function (item) {
-            return _react2['default'].createElement(_item2['default'], _extends({ key: item._id }, _this2.props, { item: item }));
-          });
-        } else {
-          items = _react2['default'].createElement(
-            'h5',
-            null,
-            _react2['default'].createElement(
-              'a',
-              { href: '#', onClick: this.toggleCreator.bind(this) },
-              'Click the + to be the first to add something here'
-            )
-          );
-        }
-
-        content = [_react2['default'].createElement(
-          _panel2['default'],
-          _extends({}, this.props, this.state.panel, { title: this.props.item.subtype.name, ref: 'panel', parent: this.props.item }),
-          items
-        )];
+      if (this.props.panels[this.id] && this.status === 'ready') {
+        content = _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: this.props.panels[this.id] }))
+        );
+        // content = <hr/>
       }
 
       return _react2['default'].createElement(

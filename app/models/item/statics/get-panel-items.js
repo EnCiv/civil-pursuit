@@ -17,24 +17,33 @@ function getPanelItems (panel) {
 
       if ( ! panel.item ) {
         ItemModel
-          .find(query)
-          .skip(panel.skip || 0)
-          .limit(panel.size || publicConfig['navigator batch size'])
-          .sort({ promotions: -1 })
-          .exec()
-          .then(
-            items => {
-              try {
-                Promise
-                  .all(items.map(item => item.toPanelItem()))
-                  .then(ok, ko);
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+          .count(query, (error, count) => {
+            if ( error ) {
+              return ko(error);
+            }
+            ItemModel
+              .find(query)
+              .skip(panel.skip || 0)
+              .limit(panel.size || publicConfig['navigator batch size'])
+              .sort({ promotions: -1 })
+              .exec()
+              .then(
+                items => {
+                  try {
+                    Promise
+                      .all(items.map(item => item.toPanelItem()))
+                      .then(
+                        items => ok({count, items}),
+                        ko
+                      );
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                },
+                ko
+              );
+          });
       }
     }
     catch ( error ) {

@@ -4,6 +4,7 @@ import React                from 'react';
 import Component            from '../lib/app/component';
 import Icon                 from './util/icon';
 import Accordion            from './util/accordion';
+import Loading              from './util/loading';
 import Creator              from './creator';
 import Join                 from './join';
 
@@ -24,16 +25,7 @@ class Panel extends React.Component {
 
   toggleCreator () {
     if ( this.props.user ) {
-      let active = null;
-
-      if ( this.state.active !== 'creator' ) {
-        active = 'creator';
-      }
-
-      this.setState({ active });
-
-
-
+      window.Dispatcher.emit('set active', this.props, 'creator');
     }
     else {
       Join.click();
@@ -43,32 +35,20 @@ class Panel extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render() {
+
     let creator, creatorIcon, newItem;
 
-    if ( this.props.creator !== false ) {
-      creator = (
-        <Accordion active={ this.state.active === 'creator' } poa={ this.refs.panel } { ...this.props }>
-          <Creator { ...this.props } />
-        </Accordion>
-      );
-      creatorIcon = ( <Icon icon="plus" onClick={ this.toggleCreator.bind(this) } className="toggle-creator" /> );
-    }
-
-    if ( this.props.newItem ) {
-      let relevant = false;
-
-      if ( this.props.newItem.panel.type === this.props.type ) {
-        relevant = true;
-      }
-
-      if ( relevant ) {
-        newItem = ( <Item item={ this.props.newItem.item } new={ true } { ...this.props } /> );
+    if ( this.props.loaded ) {
+      if ( this.props.creator !== false ) {
+        this.id = makePanelId(this.props);
+        creator = (
+          <Accordion active={ this.props.panels[this.id].active === 'creator' } poa={ this.refs.panel } { ...this.props }>
+            <Creator { ...this.props } panel-id={ this.id } />
+          </Accordion>
+        );
+        creatorIcon = ( <Icon icon="plus" onClick={ this.toggleCreator.bind(this) } className="toggle-creator" /> );
       }
     }
-
-    let child = React.Children.map(this.props.children, child =>
-      React.cloneElement(child, { panel : this })
-    );
 
     return (
       <section className={ Component.classList(this, "syn-panel") } ref="panel">
@@ -79,7 +59,7 @@ class Panel extends React.Component {
         <section className="syn-panel-body">
           { creator }
           { newItem }
-          { child }
+          { this.props.children }
         </section>
       </section>
     );

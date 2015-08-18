@@ -22,40 +22,36 @@ var _panel = require('./panel');
 
 var _panel2 = _interopRequireDefault(_panel);
 
-var _item = require('./item');
-
-var _item2 = _interopRequireDefault(_item);
-
 var _utilLoading = require('./util/loading');
 
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
-var TopLevelPanel = (function (_React$Component) {
-  function TopLevelPanel() {
-    _classCallCheck(this, TopLevelPanel);
+var _item = require('./item');
+
+var _item2 = _interopRequireDefault(_item);
+
+var PanelItems = (function (_React$Component) {
+  function PanelItems() {
+    _classCallCheck(this, PanelItems);
 
     if (_React$Component != null) {
       _React$Component.apply(this, arguments);
     }
   }
 
-  _inherits(TopLevelPanel, _React$Component);
+  _inherits(PanelItems, _React$Component);
 
-  _createClass(TopLevelPanel, [{
+  _createClass(PanelItems, [{
     key: 'loadMore',
     value: function loadMore(e) {
       e.preventDefault();
 
-      window.Dispatcher.emit('get more items', this.props.topLevelType._id);
+      window.Dispatcher.emit('get more items', this.props.panel.panel);
     }
   }, {
     key: 'render',
     value: function render() {
       var _this = this;
-
-      var items = _react2['default'].createElement(_utilLoading2['default'], null);
-
-      var loadMore = _react2['default'].createElement('div', { className: 'gutter-top' });
 
       var title = 'Loading items';
 
@@ -63,21 +59,36 @@ var TopLevelPanel = (function (_React$Component) {
 
       var loaded = false;
 
-      if (this.props.topLevelType) {
-        type = this.props.topLevelType;
-        title = type.name;
+      var content = _react2['default'].createElement(_utilLoading2['default'], null);
+
+      var loadMore = _react2['default'].createElement('div', { className: 'gutter-top' });
+
+      if (this.props.panel) {
+        var panel = this.props.panel;
+
+        type = panel.panel.type;
+
+        title = panel.panel.type.name;
 
         loaded = true;
 
-        if (this.props.panels[type._id]) {
-          items = this.props.panels[type._id].items.map(function (item) {
-            return _react2['default'].createElement(_item2['default'], _extends({ item: item, key: item._id }, _this.props));
+        if (!panel.items.length) {
+          content = _react2['default'].createElement(
+            'div',
+            null,
+            'No items for the moment'
+          );
+        } else {
+          content = [];
+
+          panel.items.forEach(function (item) {
+            return content.push(_react2['default'].createElement(_item2['default'], _extends({ key: item._id }, _this.props, { item: item })));
           });
 
-          var _props$panels$type$_id = this.props.panels[type._id];
-          var skip = _props$panels$type$_id.skip;
-          var limit = _props$panels$type$_id.limit;
-          var count = _props$panels$type$_id.count;
+          var count = panel.count;
+          var _panel$panel = panel.panel;
+          var skip = _panel$panel.skip;
+          var limit = _panel$panel.limit;
 
           var end = skip + limit;
 
@@ -97,15 +108,15 @@ var TopLevelPanel = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        _extends({ title: title, type: type }, this.props, { loaded: loaded }),
-        items,
+        _extends({ title: title, type: type, loaded: loaded }, this.props),
+        content,
         loadMore
       );
     }
   }]);
 
-  return TopLevelPanel;
+  return PanelItems;
 })(_react2['default'].Component);
 
-exports['default'] = TopLevelPanel;
+exports['default'] = PanelItems;
 module.exports = exports['default'];

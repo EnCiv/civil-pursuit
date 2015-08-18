@@ -79,12 +79,26 @@ var Item = (function (_React$Component) {
 
     this.expanded = false;
 
+    this.truncated = false;
+
+    if (typeof window !== 'undefined' && this.props.item) {
+
+      var _parent = this.props.item.lineage[0];
+
+      if (_parent) {
+        _parent = _parent._id;
+      }
+
+      this.panelId = makePanelId({ type: this.props.item.type, parent: _parent });
+    }
+
     this.state = {
       active: null,
-      item: this.props.item
+      item: this.props.item,
+      ping: 0
     };
 
-    this.listeners();
+    // this.listeners();
   }
 
   _inherits(Item, _React$Component);
@@ -116,11 +130,7 @@ var Item = (function (_React$Component) {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function componentWillUnmount() {
-      window.socket.removeListener('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
-
-      window.socket.removeListener('item changed ' + this.props.item._id, this.updateItem.bind(this));
-    }
+    value: function componentWillUnmount() {}
   }, {
     key: 'toggle',
 
@@ -134,34 +144,15 @@ var Item = (function (_React$Component) {
       }
 
       if (this.props.item) {
-        this.props.panel.setState({ active: this.props.item._id });
+        window.Dispatcher.emit('set active', this.panelId, '' + this.props.item._id + '-' + toggler);
       }
-
-      var active = null;
-
-      if (this.state.active !== toggler) {
-        active = toggler;
-      }
-
-      this.setState({ active: active });
     }
   }, {
     key: 'componentWillReceiveProps',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function componentWillReceiveProps(props) {
-      console.info('item is receiving props', props);
-      if ('panel' in props) {
-        if (props.panel.state.active === 'creator') {
-          this.setState({ active: null });
-        } else if (props.panel.state.active && this.props.item) {
-          if (props.panel.state.active !== this.props.item._id) {
-            this.setState({ active: null });
-          }
-        }
-      }
-    }
+    value: function componentWillReceiveProps(props) {}
   }, {
     key: 'componentDidMount',
 
@@ -184,50 +175,54 @@ var Item = (function (_React$Component) {
 
       var item = _react2['default'].findDOMNode(this.refs.item);
 
-      var more = _react2['default'].findDOMNode(this.refs.more);
+      if (!this.truncated) {
+        (function () {
+          var more = _react2['default'].findDOMNode(_this.refs.more);
 
-      var truncatable = item.querySelector('.item-truncatable');
-      var subject = item.querySelector('.item-subject');
-      var description = item.querySelector('.item-description');
-      var reference = item.querySelector('.item-reference a');
-      var buttons = item.querySelector('.item-buttons');
+          var truncatable = item.querySelector('.item-truncatable');
+          var subject = item.querySelector('.item-subject');
+          var description = item.querySelector('.item-description');
+          var reference = item.querySelector('.item-reference a');
+          var buttons = item.querySelector('.item-buttons');
 
-      var onLoad = function onLoad() {
-        var mediaHeight = media.offsetTop + media.offsetHeight - 40;
+          var onLoad = function onLoad() {
+            var mediaHeight = media.offsetTop + media.offsetHeight - 40;
 
-        console.log({ mediaHeight: mediaHeight, media: media, item: _this.props.item.subject });
+            var limit = undefined;
 
-        var limit = undefined;
+            if (!buttons) {
+              limit = mediaHeight;
+            } else {
+              var buttonsHeight = buttons.offsetTop + buttons.offsetHeight - 40;
 
-        if (!buttons) {
-          limit = mediaHeight;
-        } else {
-          var buttonsHeight = buttons.offsetTop + buttons.offsetHeight - 40;
+              if (mediaHeight >= buttonsHeight) {
+                limit = mediaHeight;
+              } else {
+                limit = buttonsHeight;
+              }
+            }
 
-          if (mediaHeight >= buttonsHeight) {
-            limit = mediaHeight;
+            Item.paint(subject, limit);
+            Item.paint(reference, limit);
+            Item.paint(description, limit);
+
+            if (!item.querySelector('.word.hide')) {
+              more.style.display = 'none';
+            }
+
+            if (_this.props['new']) {
+              _this.setState({ showPromote: true });
+            }
+          };
+
+          if (image) {
+            image.addEventListener('load', onLoad);
           } else {
-            limit = buttonsHeight;
+            video.addEventListener('load', onLoad);
           }
-        }
 
-        Item.paint(subject, limit);
-        Item.paint(reference, limit);
-        Item.paint(description, limit);
-
-        if (!item.querySelector('.word.hide')) {
-          more.style.display = 'none';
-        }
-
-        if (_this.props['new']) {
-          _this.setState({ showPromote: true });
-        }
-      };
-
-      if (image) {
-        image.addEventListener('load', onLoad);
-      } else {
-        video.addEventListener('load', onLoad);
+          _this.truncated = true;
+        })();
       }
     }
   }, {
@@ -256,9 +251,9 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var item = this.state.item;
+      var item = this.props.item;
 
-      console.log({ item: item });
+      // console.warn(item.subject);
 
       var buttons = undefined,
           referenceLink = undefined,
@@ -334,38 +329,70 @@ var Item = (function (_React$Component) {
         textSpan = 75;
       }
 
-      if (this.props.promote !== false) {
+      if (this.props.promote !== false && this.panelId) {
+        var promoteIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-promote';
+
         promote = _react2['default'].createElement(
           'div',
           { className: 'toggler promote' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ poa: this.refs.item, active: this.state.active === 'promote', name: 'promote' }, this.props),
-            _react2['default'].createElement(_promote2['default'], { item: this.props.item, show: this.state.showPromote, ref: 'promote' })
+            _extends({
+              poa: this.refs.item,
+              active: promoteIsActive,
+              name: 'promote'
+            }, this.props),
+            _react2['default'].createElement(_promote2['default'], _extends({
+              item: this.props.item
+            }, this.props, {
+              active: promoteIsActive,
+              ref: 'promote',
+              'panel-id': this.panelId
+            }))
           )
         );
       }
 
-      if (this.props.details !== false) {
+      if (this.props.details !== false && this.panelId) {
+        var detailsIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-details';
+
         details = _react2['default'].createElement(
           'div',
           { className: 'toggler details' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ poa: this.refs.item, active: this.state.active === 'details', name: 'details' }, this.props),
-            _react2['default'].createElement(_details2['default'], { item: this.props.item, show: this.state.showDetails })
+            _extends({
+              poa: this.refs.item,
+              active: detailsIsActive,
+              name: 'details'
+            }, this.props),
+            _react2['default'].createElement(_details2['default'], _extends({
+              item: this.props.item
+            }, this.props, {
+              active: detailsIsActive,
+              ref: 'details' }))
           )
         );
       }
 
-      if (this.props.subtype !== false) {
+      if (this.props.subtype !== false && this.panelId) {
+        var subtypeIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-subtype';
+
         subtype = _react2['default'].createElement(
           'div',
           { className: 'toggler subtype' },
           _react2['default'].createElement(
             _utilAccordion2['default'],
-            _extends({ active: this.state.active === 'subtype', name: 'subtype', poa: this.refs.item }, this.props),
-            _react2['default'].createElement(_subtype2['default'], _extends({}, this.props, { item: this.props.item, show: this.state.showSubtype }))
+            _extends({
+              poa: this.refs.item,
+              active: subtypeIsActive,
+              name: 'subtype'
+            }, this.props),
+            _react2['default'].createElement(_subtype2['default'], _extends({
+              item: this.props.item
+            }, this.props, {
+              active: subtypeIsActive,
+              ref: 'subtype' }))
           )
         );
       }
@@ -507,3 +534,20 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
+
+// window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
+//
+// window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
+
+// this.setState({ ping : this.state.ping + 1 });
+// console.info('item is receiving props', props);
+// if ( 'panel' in props ) {
+//   if ( props.panel.state.active === 'creator' ) {
+//     this.setState({ active : null });
+//   }
+//   else if ( props.panel.state.active && this.props.item ) {
+//     if ( props.panel.state.active !== this.props.item._id ) {
+//       this.setState({ active : null });
+//     }
+//   }
+// }

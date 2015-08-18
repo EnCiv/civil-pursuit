@@ -32,6 +32,10 @@ var _utilAccordion = require('./util/accordion');
 
 var _utilAccordion2 = _interopRequireDefault(_utilAccordion);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var _creator = require('./creator');
 
 var _creator2 = _interopRequireDefault(_creator);
@@ -68,13 +72,7 @@ var Panel = (function (_React$Component) {
 
     value: function toggleCreator() {
       if (this.props.user) {
-        var active = null;
-
-        if (this.state.active !== 'creator') {
-          active = 'creator';
-        }
-
-        this.setState({ active: active });
+        window.Dispatcher.emit('set active', this.props, 'creator');
       } else {
         _join2['default'].click();
       }
@@ -85,36 +83,22 @@ var Panel = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
-      var _this = this;
 
       var creator = undefined,
           creatorIcon = undefined,
           newItem = undefined;
 
-      if (this.props.creator !== false) {
-        creator = _react2['default'].createElement(
-          _utilAccordion2['default'],
-          _extends({ active: this.state.active === 'creator', poa: this.refs.panel }, this.props),
-          _react2['default'].createElement(_creator2['default'], this.props)
-        );
-        creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this), className: 'toggle-creator' });
-      }
-
-      if (this.props.newItem) {
-        var relevant = false;
-
-        if (this.props.newItem.panel.type === this.props.type) {
-          relevant = true;
-        }
-
-        if (relevant) {
-          newItem = _react2['default'].createElement(_item2['default'], _extends({ item: this.props.newItem.item, 'new': true }, this.props));
+      if (this.props.loaded) {
+        if (this.props.creator !== false) {
+          this.id = makePanelId(this.props);
+          creator = _react2['default'].createElement(
+            _utilAccordion2['default'],
+            _extends({ active: this.props.panels[this.id].active === 'creator', poa: this.refs.panel }, this.props),
+            _react2['default'].createElement(_creator2['default'], _extends({}, this.props, { 'panel-id': this.id }))
+          );
+          creatorIcon = _react2['default'].createElement(_utilIcon2['default'], { icon: 'plus', onClick: this.toggleCreator.bind(this), className: 'toggle-creator' });
         }
       }
-
-      var child = _react2['default'].Children.map(this.props.children, function (child) {
-        return _react2['default'].cloneElement(child, { panel: _this });
-      });
 
       return _react2['default'].createElement(
         'section',
@@ -134,7 +118,7 @@ var Panel = (function (_React$Component) {
           { className: 'syn-panel-body' },
           creator,
           newItem,
-          child
+          this.props.children
         )
       );
     }

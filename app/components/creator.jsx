@@ -50,6 +50,21 @@ class Creator extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  componentWillReceiveProps (props) {
+    if ( props.created && props.created.panel === this.props['panel-id'] ) {
+      React.findDOMNode(this.refs.subject).value = '';
+      React.findDOMNode(this.refs.description).value = '';
+      React.findDOMNode(this.refs.reference).value = '';
+      React.findDOMNode(this.refs.title).value = '';
+
+      setTimeout(() => {
+        window.Dispatcher.emit('set active', this.props['panel-id'], `${props.created.item}-promote`);
+      });
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   create () {
     let subject       =   React.findDOMNode(this.refs.subject).value;
     let description   =   React.findDOMNode(this.refs.description).value;
@@ -66,26 +81,26 @@ class Creator extends React.Component {
       item.references = [{ url, title }];
     }
 
-    console.log({ creating:item });
-
     let insert = () => {
-      window.socket.emit('create item', item)
-        .on('OK create item', item => {
-          console.log(item);
+      window,Dispatcher.emit('create item', item);
 
-          React.findDOMNode(this.refs.subject).value = '';
-          React.findDOMNode(this.refs.description).value = '';
-          React.findDOMNode(this.refs.reference).value = '';
-          React.findDOMNode(this.refs.title).value = '';
 
-          let newItemPanel = { type: this.props.type };
 
-          if ( this.props.parent ) {
-            newItemPanel.parent = this.props.parent._id;
-          }
 
-          window.Dispatcher.emit('new item', item, newItemPanel);
-        });
+      // window.socket.emit('create item', item)
+      //   .on('OK create item', item => {
+      //     console.log(item);
+      //
+
+      //
+      //     let newItemPanel = { type: this.props.type };
+      //
+      //     if ( this.props.parent ) {
+      //       newItemPanel.parent = this.props.parent._id;
+      //     }
+      //
+      //     window.Dispatcher.emit('new item', item, newItemPanel);
+      //   });
 
     };
 

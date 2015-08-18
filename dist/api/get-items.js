@@ -11,6 +11,7 @@ var _modelsItem = require('../models/item');
 var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
 function getItems(event, panel, item) {
+  var _this = this;
 
   try {
     var id = 'panel-' + panel.type._id || panel.type;
@@ -25,7 +26,9 @@ function getItems(event, panel, item) {
       query.skip = panel.skip;
     }
 
-    _modelsItem2['default'].getPanelItems(query).then(this.ok.bind(this, event, panel), this.error.bind(this));
+    _modelsItem2['default'].getPanelItems(query).then(function (results) {
+      _this.ok(event, panel, results.count, results.items);
+    }, this.error.bind(this));
   } catch (error) {
     this.error(error);
   }
