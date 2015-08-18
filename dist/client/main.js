@@ -15,6 +15,7 @@ var _componentsApp2 = _interopRequireDefault(_componentsApp);
 var _events = require('events');
 
 window.makePanelId = function (panel) {
+  console.log('make panel id', panel);
   var id = panel.type._id;
 
   if (panel.parent) {
@@ -357,8 +358,21 @@ window.socket.on('welcome', function (user) {
 }).on('OK create item', function (item) {
   logC('created item', item);
 
-  var panelId = makePanelId(item);
-  props.panels[panelId].items.unshift(item);
+  var parent = item.lineage[0];
+
+  if (parent) {
+    parent = parent._id;
+  }
+
+  var panelId = makePanelId({ type: item.type, parent: parent });
+
+  console.log({ panelId: panelId });
+
+  if (Array.isArray(props.panels[panelId].items)) {
+    props.panels[panelId].items.unshift(item);
+  } else {
+    props.panels[panelId].items.push(item);
+  }
 
   props.items[item._id] = { panel: panelId };
 

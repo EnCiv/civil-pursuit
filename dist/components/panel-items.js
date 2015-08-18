@@ -70,10 +70,14 @@ var PanelItems = (function (_React$Component) {
 
       var loadMore = _react2['default'].createElement('div', { className: 'gutter-top' });
 
+      var parent = null;
+
       if (this.props.panel) {
         var panel = this.props.panel;
 
         type = panel.panel.type;
+
+        parent = panel.panel.parent;
 
         title = panel.panel.type.name;
 
@@ -119,7 +123,7 @@ var PanelItems = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        _extends({ title: title, type: type, loaded: loaded }, this.props),
+        _extends({ title: title, type: type, parent: parent, loaded: loaded }, this.props),
         content,
         loadMore
       );

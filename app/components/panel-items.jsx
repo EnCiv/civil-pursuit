@@ -28,10 +28,14 @@ class PanelItems extends React.Component {
 
     let loadMore = ( <div className="gutter-top"></div> );
 
+    let parent = null;
+
     if ( this.props.panel ) {
       let { panel } = this.props;
 
       type = panel.panel.type;
+
+      parent = panel.panel.parent;
 
       title = panel.panel.type.name;
 
@@ -65,7 +69,7 @@ class PanelItems extends React.Component {
     }
 
     return (
-      <Panel title={ title } type={ type } loaded={ loaded } { ...this.props }>
+      <Panel title={ title } type={ type } parent={ parent } loaded={ loaded } { ...this.props }>
         { content }
         { loadMore }
       </Panel>

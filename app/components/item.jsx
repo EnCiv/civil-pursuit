@@ -249,6 +249,28 @@ class Item extends React.Component {
       harmony;
 
     if ( this.props.buttons !== false ) {
+
+      let subtypeGroup, harmonyGroup;
+
+      if ( this.props.item.subtype ) {
+        subtypeGroup = <Button small shy onClick={ this.toggle.bind(this, 'subtype') }>
+          <span>{ item.children } </span>
+          <Icon icon="fire" />
+        </Button>;
+      }
+
+      if ( this.props.item.type.harmony.length ) {
+        harmonyGroup = <Button small shy onClick={ this.toggle.bind(this, 'harmony') }>
+          <span>{ item.harmony } </span>
+          <Icon icon="music" />
+        </Button>;
+      }
+
+      let childrenGroup = <ButtonGroup>
+        { subtypeGroup }
+        { harmonyGroup }
+      </ButtonGroup>;
+
       buttons = (
         <section className="item-buttons">
           <ButtonGroup>
@@ -265,17 +287,7 @@ class Item extends React.Component {
             </Button>
           </ButtonGroup>
 
-          <ButtonGroup>
-            <Button small shy onClick={ this.toggle.bind(this, 'subtype') }>
-              <span>{ item.children } </span>
-              <Icon icon="fire" />
-            </Button>
-
-            <Button small shy onClick={ this.toggle.bind(this, 'harmony') }>
-              <span>{ item.harmony } </span>
-              <Icon icon="music" />
-            </Button>
-          </ButtonGroup>
+          { childrenGroup }
         </section>
       );
     }
@@ -327,7 +339,7 @@ class Item extends React.Component {
       );
     }
 
-    if ( this.props.subtype !== false && this.panelId ) {
+    if ( this.props.subtype !== false && this.panelId && this.props.item.subtype ) {
       let subtypeIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-subtype`;
 
       subtype = (

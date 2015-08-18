@@ -16,6 +16,7 @@ var _componentsApp2 = _interopRequireDefault(_componentsApp);
 var _events = require('events');
 
 window.makePanelId = function (panel) {
+  console.log('make panel id', panel);
   var id = panel.type._id;
 
   if (panel.parent) {
@@ -358,8 +359,21 @@ window.socket.on('welcome', function (user) {
 }).on('OK create item', function (item) {
   logC('created item', item);
 
-  var panelId = makePanelId(item);
-  props.panels[panelId].items.unshift(item);
+  var parent = item.lineage[0];
+
+  if (parent) {
+    parent = parent._id;
+  }
+
+  var panelId = makePanelId({ type: item.type, parent: parent });
+
+  console.log({ panelId: panelId });
+
+  if (Array.isArray(props.panels[panelId].items)) {
+    props.panels[panelId].items.unshift(item);
+  } else {
+    props.panels[panelId].items.push(item);
+  }
 
   props.items[item._id] = { panel: panelId };
 
@@ -930,7 +944,7 @@ var Creator = (function (_React$Component) {
       var item = { subject: subject, description: description, type: this.props.type };
 
       if (this.props.parent) {
-        item.parent = this.props.parent._id;
+        item.parent = this.props.parent._id || this.props.parent;
       }
 
       if (url) {
@@ -939,21 +953,6 @@ var Creator = (function (_React$Component) {
 
       var insert = function insert() {
         window, Dispatcher.emit('create item', item);
-
-        // window.socket.emit('create item', item)
-        //   .on('OK create item', item => {
-        //     console.log(item);
-        //
-
-        //
-        //     let newItemPanel = { type: this.props.type };
-        //
-        //     if ( this.props.parent ) {
-        //       newItemPanel.parent = this.props.parent._id;
-        //     }
-        //
-        //     window.Dispatcher.emit('new item', item, newItemPanel);
-        //   });
       };
 
       if (this.file) {
@@ -2674,6 +2673,45 @@ var Item = (function (_React$Component) {
           harmony = undefined;
 
       if (this.props.buttons !== false) {
+
+        var subtypeGroup = undefined,
+            harmonyGroup = undefined;
+
+        if (this.props.item.subtype) {
+          subtypeGroup = _react2['default'].createElement(
+            _utilButton2['default'],
+            { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype') },
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.children,
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })
+          );
+        }
+
+        if (this.props.item.type.harmony.length) {
+          harmonyGroup = _react2['default'].createElement(
+            _utilButton2['default'],
+            { small: true, shy: true, onClick: this.toggle.bind(this, 'harmony') },
+            _react2['default'].createElement(
+              'span',
+              null,
+              item.harmony,
+              ' '
+            ),
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
+          );
+        }
+
+        var childrenGroup = _react2['default'].createElement(
+          _utilButtonGroup2['default'],
+          null,
+          subtypeGroup,
+          harmonyGroup
+        );
+
         buttons = _react2['default'].createElement(
           'section',
           { className: 'item-buttons' },
@@ -2707,32 +2745,7 @@ var Item = (function (_React$Component) {
               _react2['default'].createElement(_utilIcon2['default'], { icon: 'signal' })
             )
           ),
-          _react2['default'].createElement(
-            _utilButtonGroup2['default'],
-            null,
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype') },
-              _react2['default'].createElement(
-                'span',
-                null,
-                item.children,
-                ' '
-              ),
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'fire' })
-            ),
-            _react2['default'].createElement(
-              _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggle.bind(this, 'harmony') },
-              _react2['default'].createElement(
-                'span',
-                null,
-                item.harmony,
-                ' '
-              ),
-              _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
-            )
-          )
+          childrenGroup
         );
       } else {
         textSpan = 75;
@@ -2784,7 +2797,7 @@ var Item = (function (_React$Component) {
         );
       }
 
-      if (this.props.subtype !== false && this.panelId) {
+      if (this.props.subtype !== false && this.panelId && this.props.item.subtype) {
         var subtypeIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-subtype';
 
         subtype = _react2['default'].createElement(
@@ -3977,10 +3990,14 @@ var PanelItems = (function (_React$Component) {
 
       var loadMore = _react2['default'].createElement('div', { className: 'gutter-top' });
 
+      var parent = null;
+
       if (this.props.panel) {
         var panel = this.props.panel;
 
         type = panel.panel.type;
+
+        parent = panel.panel.parent;
 
         title = panel.panel.type.name;
 
@@ -4026,7 +4043,7 @@ var PanelItems = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        _extends({ title: title, type: type, loaded: loaded }, this.props),
+        _extends({ title: title, type: type, parent: parent, loaded: loaded }, this.props),
         content,
         loadMore
       );

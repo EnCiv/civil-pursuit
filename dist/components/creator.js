@@ -131,7 +131,7 @@ var Creator = (function (_React$Component) {
       var item = { subject: subject, description: description, type: this.props.type };
 
       if (this.props.parent) {
-        item.parent = this.props.parent._id;
+        item.parent = this.props.parent._id || this.props.parent;
       }
 
       if (url) {
@@ -140,21 +140,6 @@ var Creator = (function (_React$Component) {
 
       var insert = function insert() {
         window, Dispatcher.emit('create item', item);
-
-        // window.socket.emit('create item', item)
-        //   .on('OK create item', item => {
-        //     console.log(item);
-        //
-
-        //
-        //     let newItemPanel = { type: this.props.type };
-        //
-        //     if ( this.props.parent ) {
-        //       newItemPanel.parent = this.props.parent._id;
-        //     }
-        //
-        //     window.Dispatcher.emit('new item', item, newItemPanel);
-        //   });
       };
 
       if (this.file) {

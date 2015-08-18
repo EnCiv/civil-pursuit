@@ -5,6 +5,7 @@ import App from '../components/app';
 import { EventEmitter } from 'events';
 
 window.makePanelId = function (panel) {
+  console.log('make panel id', panel);
   let id = panel.type._id;
 
   if ( panel.parent ) {
@@ -378,8 +379,22 @@ window.socket
   .on('OK create item', item => {
     logC('created item', item);
 
-    let panelId = makePanelId(item);
-    props.panels[panelId].items.unshift(item);
+    let parent = item.lineage[0];
+
+    if ( parent ) {
+      parent = parent._id;
+    }
+
+    let panelId = makePanelId({ type : item.type, parent });
+
+    console.log({ panelId })
+
+    if ( Array.isArray(props.panels[panelId].items) ) {
+      props.panels[panelId].items.unshift(item);
+    }
+    else {
+      props.panels[panelId].items.push(item);
+    }
 
     props.items[item._id] = { panel : panelId };
 
