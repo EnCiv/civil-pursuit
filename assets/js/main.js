@@ -3956,6 +3956,13 @@ var PanelItems = (function (_React$Component) {
       window.Dispatcher.emit('get more items', this.props.panel.panel);
     }
   }, {
+    key: 'toggleCreator',
+    value: function toggleCreator(e) {
+      e.preventDefault();
+
+      window.Dispatcher.emit('set active', this.props.panel.panel, 'creator');
+    }
+  }, {
     key: 'render',
     value: function render() {
       var _this = this;
@@ -3982,8 +3989,12 @@ var PanelItems = (function (_React$Component) {
         if (!panel.items.length) {
           content = _react2['default'].createElement(
             'div',
-            null,
-            'No items for the moment'
+            { className: 'gutter text-center' },
+            _react2['default'].createElement(
+              'a',
+              { href: '#', onClick: this.toggleCreator.bind(this) },
+              'Click the + to be the first to add something here'
+            )
           );
         } else {
           content = [];

@@ -11,6 +11,12 @@ class PanelItems extends React.Component {
     window.Dispatcher.emit('get more items', this.props.panel.panel);
   }
 
+  toggleCreator (e) {
+    e.preventDefault();
+
+    window.Dispatcher.emit('set active', this.props.panel.panel, 'creator');
+  }
+
   render () {
     let title = 'Loading items';
 
@@ -32,7 +38,9 @@ class PanelItems extends React.Component {
       loaded = true;
 
       if ( ! panel.items.length ) {
-        content = (<div>No items for the moment</div>);
+        content = (<div className="gutter text-center">
+          <a href="#" onClick={ this.toggleCreator.bind(this) }>Click the + to be the first to add something here</a>
+        </div>);
       }
 
       else {
