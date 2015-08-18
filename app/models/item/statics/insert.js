@@ -40,7 +40,7 @@ function insertItem (candidate, socket) {
                   item
                     .toPanelItem()
                     .then(
-                      item => socket.emit('item image uploaded ' + item._id, item),
+                      item => socket.emit('item changed', item),
                       error => socket.error(error)
                     );
                 });

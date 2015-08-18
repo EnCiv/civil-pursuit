@@ -48,7 +48,7 @@ function insertItem(candidate, socket) {
               return ko(error);
             }
             item.toPanelItem().then(function (item) {
-              return socket.emit('item image uploaded ' + item._id, item);
+              return socket.emit('item changed', item);
             }, function (error) {
               return socket.error(error);
             });
