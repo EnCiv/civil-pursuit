@@ -67,7 +67,7 @@ class Harmony extends React.Component {
 
     return (
       <section className={`item-harmony ${this.props.className}`}>
-        <Row>
+        <Row data-stack="phone-and-down">
           <Column span="50">
             { contentLeft }
           </Column>

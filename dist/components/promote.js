@@ -641,7 +641,7 @@ var Promote = (function (_React$Component14) {
           { 'data-screen': 'up-to-phone' },
           _react2['default'].createElement(
             _utilRow2['default'],
-            { 'data-stack': true },
+            { 'data-stack': 'phone-and-down' },
             _react2['default'].createElement(SideColumn, {
               key: 'left',
               position: 'left',

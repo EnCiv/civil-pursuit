@@ -1789,7 +1789,7 @@ var Harmony = (function (_React$Component) {
         { className: 'item-harmony ' + this.props.className },
         _react2['default'].createElement(
           _utilRow2['default'],
-          null,
+          { 'data-stack': 'phone-and-down' },
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50' },
@@ -4986,7 +4986,7 @@ var Promote = (function (_React$Component14) {
           { 'data-screen': 'up-to-phone' },
           _react2['default'].createElement(
             _utilRow2['default'],
-            { 'data-stack': true },
+            { 'data-stack': 'phone-and-down' },
             _react2['default'].createElement(SideColumn, {
               key: 'left',
               position: 'left',

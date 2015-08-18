@@ -507,9 +507,6 @@ a.button {
   flex-direction: row;
   justify-content: space-between;
 }
-.syn-button-group.syn--block[data-stack] {
-  flex-direction: column;
-}
 .syn-button-group.syn--block button {
   width: 100%;
 }
@@ -535,9 +532,6 @@ a.button {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
-.syn-row[data-stack] {
-  flex-direction: column;
 }
 .syn-row-baseline-items {
   align-items: baseline;
@@ -718,9 +712,6 @@ label {
   flex-direction: row;
   justify-content: space-between;
 }
-.input-group[data-stack] {
-  flex-direction: column;
-}
 .input-group input:not(:first-child) {
   border-left: none;
 }
@@ -756,9 +747,6 @@ label {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
-.syn-input-group.syn--block[data-stack] {
-  flex-direction: column;
 }
 .syn-input-group.syn--block input {
   width: 100%;
@@ -1225,9 +1213,6 @@ body {
   border-radius: 3px 3px 0 0;
   padding: 1px;
 }
-.syn-panel-heading[data-stack] {
-  flex-direction: column;
-}
 .syn-panel-heading h4 {
   text-align: center;
   flex-grow: 3;
@@ -1428,7 +1413,14 @@ body {
 .item-harmony .syn-panel {
   margin-right: 5px;
 }
-.item-harmony .syn-column + .syn-column .syn-panel {
-  margin-right: 0;
+@media (min-width: 440px) {
+  .item-harmony .syn-column + .syn-column .syn-panel {
+    margin-right: 0;
+  }
+}
+@media (max-width: 440px) {
+  .item-harmony .syn-column + .syn-column .syn-panel {
+    margin-top: 10px;
+  }
 }
 /**-------------------------------------------------------------// index      */

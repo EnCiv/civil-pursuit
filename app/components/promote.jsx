@@ -347,7 +347,7 @@ class Promote extends React.Component {
 
         (
           <div data-screen="up-to-phone">
-            <Row data-stack>
+            <Row data-stack="phone-and-down">
               <SideColumn
                 key         =   "left"
                 position    =   "left"

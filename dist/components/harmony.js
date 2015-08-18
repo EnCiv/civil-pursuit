@@ -111,7 +111,7 @@ var Harmony = (function (_React$Component) {
         { className: 'item-harmony ' + this.props.className },
         _react2['default'].createElement(
           _utilRow2['default'],
-          null,
+          { 'data-stack': 'phone-and-down' },
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50' },

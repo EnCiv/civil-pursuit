@@ -1,11 +1,18 @@
+@import "lib/screens";
+
 .item-harmony {
   margin-top: 10px;
 
   .syn-panel {
-    margin-right: 5px
+    margin-right: 5px;
   }
 
   .syn-column + .syn-column .syn-panel {
-    margin-right: 0;
+    @media (min-width: @screen-phone) {
+      margin-right: 0;
+    }
+    @media (max-width: @screen-phone) {
+      margin-top: 10px;
+    }
   }
 }
