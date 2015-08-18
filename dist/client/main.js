@@ -358,7 +358,7 @@ window.socket.on('welcome', function (user) {
 }).on('OK create item', function (item) {
   logC('created item', item);
 
-  var parent = item.lineage[0];
+  var parent = item.lineage[item.lineage.length - 1];
 
   if (parent) {
     parent = parent._id;

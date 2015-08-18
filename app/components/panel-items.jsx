@@ -69,7 +69,7 @@ class PanelItems extends React.Component {
     }
 
     return (
-      <Panel title={ title } type={ type } parent={ parent } loaded={ loaded } { ...this.props }>
+      <Panel { ...this.props } title={ title } type={ type } parent={ parent } loaded={ loaded }>
         { content }
         { loadMore }
       </Panel>

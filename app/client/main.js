@@ -379,7 +379,7 @@ window.socket
   .on('OK create item', item => {
     logC('created item', item);
 
-    let parent = item.lineage[0];
+    let parent = item.lineage[item.lineage.length -1];
 
     if ( parent ) {
       parent = parent._id;

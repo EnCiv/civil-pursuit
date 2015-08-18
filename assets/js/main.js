@@ -359,7 +359,7 @@ window.socket.on('welcome', function (user) {
 }).on('OK create item', function (item) {
   logC('created item', item);
 
-  var parent = item.lineage[0];
+  var parent = item.lineage[item.lineage.length - 1];
 
   if (parent) {
     parent = parent._id;
@@ -2499,13 +2499,17 @@ var Item = (function (_React$Component) {
 
     if (typeof window !== 'undefined' && this.props.item) {
 
-      var _parent = this.props.item.lineage[0];
+      var _parent = this.props.item.lineage[this.props.item.lineage.length - 1];
 
       if (_parent) {
         _parent = _parent._id;
       }
 
       this.panelId = makePanelId({ type: this.props.item.type, parent: _parent });
+
+      if (this.props.panels && !this.props.panels[this.panelId]) {
+        console.error('Panel not found', this.panelId, this.props.item);
+      }
     }
 
     this.state = {
@@ -4043,7 +4047,7 @@ var PanelItems = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        _extends({ title: title, type: type, parent: parent, loaded: loaded }, this.props),
+        _extends({}, this.props, { title: title, type: type, parent: parent, loaded: loaded }),
         content,
         loadMore
       );

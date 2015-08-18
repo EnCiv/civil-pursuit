@@ -123,7 +123,7 @@ var PanelItems = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        _extends({ title: title, type: type, parent: parent, loaded: loaded }, this.props),
+        _extends({}, this.props, { title: title, type: type, parent: parent, loaded: loaded }),
         content,
         loadMore
       );

@@ -76,13 +76,17 @@ class Item extends React.Component {
 
     if ( typeof window !== 'undefined' && this.props.item ) {
 
-      let parent = this.props.item.lineage[0];
+      let parent = this.props.item.lineage[this.props.item.lineage.length - 1];
 
       if ( parent ) {
         parent = parent._id;
       }
 
       this.panelId = makePanelId({ type : this.props.item.type, parent });
+
+      if ( this.props.panels && ! this.props.panels[this.panelId] ) {
+        console.error('Panel not found', this.panelId, this.props.item);
+      }
     }
 
     this.state = {
