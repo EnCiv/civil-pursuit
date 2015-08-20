@@ -171,10 +171,10 @@ var Uploader = (function (_React$Component) {
       if (image || video) {
         var media = undefined;
 
-        if (image) {
-          media = _react2['default'].createElement(_utilImage2['default'], { src: image, responsive: true });
-        } else if (video) {
+        if (video) {
           media = _react2['default'].createElement(_youtube2['default'], { item: video });
+        } else if (image) {
+          media = _react2['default'].createElement(_utilImage2['default'], { src: image, responsive: true });
         }
 
         content = _react2['default'].createElement(

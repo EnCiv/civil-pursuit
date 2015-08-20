@@ -5,7 +5,7 @@ import App from '../components/app';
 import { EventEmitter } from 'events';
 
 window.makePanelId = function (panel) {
-  console.log('make panel id', panel);
+  // console.log('make panel id', panel);
   let id = panel.type._id;
 
   if ( panel.parent ) {
@@ -52,15 +52,15 @@ function makePanel (panel) {
   return p;
 }
 
-function logA (message, ...messages) {
+function INFO (message, ...messages) {
   console.info(`%c${message}`, 'color: magenta; font-weight: bold', ...messages);
 }
 
-function logB (message, ...messages) {
+function INCOMING (message, ...messages) {
   console.info(`%c${message}`, 'color: blue; font-weight: bold', ...messages);
 }
 
-function logC (message, ...messages) {
+function OUTCOMING (message, ...messages) {
   console.info(`%c${message}`, 'color: green; font-weight: bold', ...messages);
 }
 
@@ -79,7 +79,7 @@ let props         =   {
 };
 
 function render () {
-  logA('Rendering app', props);
+  INFO('Rendering app', props);
   React.render(<App { ...props } />, document.getElementById('synapp'));
 }
 
@@ -94,7 +94,7 @@ window.Dispatcher = new EventEmitter();
 window.Dispatcher
 
   .on('set active', (panel, section) => {
-    logB('set active', panel, section);
+    INCOMING('set active', panel, section);
 
     let id = typeof panel === 'string' ? panel : makePanelId(panel);
 
@@ -110,19 +110,19 @@ window.Dispatcher
   })
 
   .on('get evaluation', item => {
-    logB('get evaluation', item);
+    INCOMING('get evaluation', item);
     window.socket.emit('get evaluation', item);
   })
 
   .on('create item', item => {
-    logB('create item', item);
+    INCOMING('create item', item);
     window.socket.emit('create item', item);
   })
 
   .on('get more items', panel => {
     let id = typeof panel === 'string' ? panel : makePanelId(panel);
 
-    logB('get more items', props.panels[id]);
+    INCOMING('get more items', props.panels[id]);
 
     let Panel = props.panels[id].panel;
 
@@ -132,12 +132,12 @@ window.Dispatcher
   })
 
   .on('add view', item => {
-    logB('add view', item);
+    INCOMING('add view', item);
     window.socket.emit('add view', item);
   })
 
   .on('promote item', (item, position, evaluatedItem, view) => {
-    logB('promote item', item, position, evaluatedItem, view);
+    INCOMING('promote item', item, position, evaluatedItem, view);
 
     let saveFeedback = (position) => {
       let feedback = view.querySelectorAll(`.promote-${position} .user-feedback`);
@@ -253,14 +253,14 @@ window.Dispatcher
   })
 
   .on('get details', item => {
-    logB('get details', item);
+    INCOMING('get details', item);
     window.socket.emit('get item details', item);
   })
 
   .on('get items', panel => {
     let id = typeof panel === 'string' ? panel : makePanelId(panel);
 
-    logB('get items', id);
+    INCOMING('get items', id);
 
     let Panel = props.panels[id];
 
@@ -276,13 +276,18 @@ window.Dispatcher
     window.socket.emit('get items', panel);
   })
 
+  .on('get item', item => {
+    INCOMING('get item', item);
+    window.socket.emit('get item', item);
+  })
+
   .on('insert feedback', (item, value) => {
-    logB('leave feedback', item, value);
+    INCOMING('leave feedback', item, value);
     window.socket.emit('insert feedback', item, value);
   })
 
   .on('insert votes', votes => {
-    logB('insert votes', votes);
+    INCOMING('insert votes', votes);
     window.socket.emit('insert votes', votes);
   });
 
@@ -302,7 +307,7 @@ window.socket
     props.user = user;
     render();
 
-    logB('get top level type');
+    INCOMING('get top level type');
 
     window.socket.emit('get top level type');
   })
@@ -313,7 +318,7 @@ window.socket
   })
 
   .on('OK get top level type', type => {
-    logC('got top level type', type);
+    OUTCOMING('got top level type', type);
 
     props.topLevelType = makePanelId({ type });
 
@@ -321,13 +326,13 @@ window.socket
 
     render ();
 
-    logB('getting top level items');
+    INCOMING('getting top level items');
 
     window.socket.emit('get items', { type });
   })
 
   .on('OK get items', (panel, count, items) => {
-    logC('got items', panel, count, items);
+    OUTCOMING('got items', panel, count, items);
     let id = makePanelId(panel);
 
     if ( ! props.panels[id] ) {
@@ -356,7 +361,7 @@ window.socket
   })
 
   .on('OK get evaluation', evaluation => {
-    logC('got evaluation', evaluation);
+    OUTCOMING('got evaluation', evaluation);
 
     evaluation.cursor = 1;
 
@@ -377,7 +382,7 @@ window.socket
   })
 
   .on('OK create item', item => {
-    logC('created item', item);
+    OUTCOMING('created item', item);
 
     let parent = item.lineage[item.lineage.length -1];
 
@@ -406,7 +411,7 @@ window.socket
   })
 
   .on('item changed', item => {
-    logC('item changed', item);
+    OUTCOMING('item changed', item);
 
     let id = makePanelId(item);
 
@@ -422,7 +427,7 @@ window.socket
   })
 
   .on('OK get item details', details => {
-    logC('got details', details);
+    OUTCOMING('got details', details);
 
     props.items[details.item._id].details = details;
 
@@ -430,7 +435,7 @@ window.socket
   })
 
   .on('OK insert feedback', feedback => {
-    logC('feedback inserted', feedback);
+    OUTCOMING('feedback inserted', feedback);
 
     let item = props.items[feedback.item];
 
@@ -442,7 +447,7 @@ window.socket
   })
 
   .on('OK insert votes', votes => {
-    logC('votes saved', votes);
+    OUTCOMING('votes saved', votes);
 
     let item = props.items[votes[0].item];
 
@@ -469,4 +474,22 @@ window.socket
 
       render();
     }
+  })
+
+  .on('OK get item', item => {
+    OUTCOMING('got item', item);
+    let panelId = makePanelId({ type : item.type, parent : item.parent });
+    props.panels[panelId].items.unshift(item);
+    render();
+    setTimeout(() => {
+      let view = document.querySelector(`#item-${item._id}`);
+      let top = view.getBoundingClientRect().top;
+      let { pageYOffset } = window;
+
+      window.scrollTo(0, pageYOffset + top - 60);
+
+      props.panels[panelId].active = `${item._id}-edit-and-go-again`;
+
+      render();
+    }, 500);
   });

@@ -60,6 +60,10 @@ var _harmony = require('./harmony');
 
 var _harmony2 = _interopRequireDefault(_harmony);
 
+var _editAndGoAgain = require('./edit-and-go-again');
+
+var _editAndGoAgain2 = _interopRequireDefault(_editAndGoAgain);
+
 var _utilButtonGroup = require('./util/button-group');
 
 var _utilButtonGroup2 = _interopRequireDefault(_utilButtonGroup);
@@ -129,12 +133,6 @@ var Item = (function (_React$Component) {
     value: function updateItem(item) {
       this.setState({ item: item });
     }
-  }, {
-    key: 'componentWillUnmount',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function componentWillUnmount() {}
   }, {
     key: 'toggle',
 
@@ -258,7 +256,8 @@ var Item = (function (_React$Component) {
           promote = undefined,
           details = undefined,
           subtype = undefined,
-          harmony = undefined;
+          harmony = undefined,
+          editAndGoAgain = undefined;
 
       if (this.props.buttons !== false) {
 
@@ -426,6 +425,25 @@ var Item = (function (_React$Component) {
         );
       }
 
+      if (this.props['edit-and-go-again'] !== false) {
+        var editAndGoAgainIsActive = this.props.panels[this.panelId].active === '' + this.props.item._id + '-edit-and-go-again';
+
+        editAndGoAgain = _react2['default'].createElement(
+          'div',
+          { className: 'toggler editAndGoAgain' },
+          _react2['default'].createElement(
+            _utilAccordion2['default'],
+            _extends({}, this.props, {
+              active: editAndGoAgainIsActive,
+              name: 'editAndGoAgain',
+              poa: this.refs.item }),
+            _react2['default'].createElement(_editAndGoAgain2['default'], _extends({}, this.props, {
+              item: this.props.item,
+              active: editAndGoAgainIsActive }))
+          )
+        );
+      }
+
       if (item.references.length) {
         referenceLink = item.references[0].url;
         referenceTitle = item.references[0].title;
@@ -484,7 +502,8 @@ var Item = (function (_React$Component) {
           promote,
           details,
           subtype,
-          harmony
+          harmony,
+          editAndGoAgain
         )
       );
     }
@@ -551,7 +570,3 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
-
-// window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
-//
-// window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));

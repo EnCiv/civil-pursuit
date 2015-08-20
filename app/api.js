@@ -41,9 +41,10 @@ class API extends EventEmitter {
             .humanize()
             .s
             .toLowerCase();
+
           let handler   =   require('./api/' + file);
 
-          this.emit('message', 'Add handler', [name, handler]);
+          this.emit('message', 'Add handler', [name, handler, S(file.replace(/\.js$/, '')).humanize().s]);
 
           this.handlers[name] = handler;
         });

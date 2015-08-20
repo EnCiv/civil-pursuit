@@ -16,38 +16,46 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _panel = require('./panel');
+var _creator = require('./creator');
 
-var _panel2 = _interopRequireDefault(_panel);
+var _creator2 = _interopRequireDefault(_creator);
 
-var _item = require('./item');
+var _youtube = require('./youtube');
 
-var _item2 = _interopRequireDefault(_item);
+var _youtube2 = _interopRequireDefault(_youtube);
 
-var Intro = (function (_React$Component) {
-  function Intro() {
-    _classCallCheck(this, Intro);
+var EditAndGoAgain = (function (_React$Component) {
+  function EditAndGoAgain() {
+    _classCallCheck(this, EditAndGoAgain);
 
     if (_React$Component != null) {
       _React$Component.apply(this, arguments);
     }
   }
 
-  _inherits(Intro, _React$Component);
+  _inherits(EditAndGoAgain, _React$Component);
 
-  _createClass(Intro, [{
+  _createClass(EditAndGoAgain, [{
     key: 'render',
     value: function render() {
+      var item = this.props.item;
+
+      var video = undefined;
+
+      if (_youtube2['default'].isYouTube(item)) {
+        video = item.references[0].url;
+      }
+
       return _react2['default'].createElement(
-        _panel2['default'],
-        { title: this.props.intro.subject, creator: false },
-        _react2['default'].createElement(_item2['default'], { item: this.props.intro, buttons: false, promote: false, details: false, subtype: false, harmony: false, 'edit-and-go-again': false })
+        'section',
+        null,
+        _react2['default'].createElement(_creator2['default'], { item: item, image: item.image, video: video, type: item.type })
       );
     }
   }]);
 
-  return Intro;
+  return EditAndGoAgain;
 })(_react2['default'].Component);
 
-exports['default'] = Intro;
+exports['default'] = EditAndGoAgain;
 module.exports = exports['default'];

@@ -1,34 +1,34 @@
-! function () {
+'use strict';
 
-  'use strict';
+import ItemModel from '../models/item';
 
-  
+function EditAndGoAgain (event, item) {
+  try {
+    item.type = item.type._id || item.type;
+    item.user = this.synuser.id;
 
-  function editAndGoAgain (item_id) {
-
-    var socket = this;
-
-    var domainRun = require('../lib/util/domain-run');
-
-    domainRun(
-
-      function (domain) {
-
-        require('../models/item')
-          .editAndGoAgain(item_id, domain.intercept(function (item) {
-            socket.emit('edited item', item);
-          }));
-
+    ItemModel.insert(item, this).then(
+      item => {
+        try {
+          item
+            .toPanelItem()
+            .then(
+              item => {
+                this.ok(event, item);
+              },
+              error => this.error(error)
+            )
+        }
+        catch ( error ) {
+          this.error(error);
+        }
       },
-
-      function (error) {
-        socket.app.arte.emit('error', error);
-      }
-
+      this.error.bind(this)
     );
-  
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = editAndGoAgain;
-
-} ();
+export default EditAndGoAgain;

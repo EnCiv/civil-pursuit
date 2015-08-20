@@ -15,7 +15,7 @@ var _componentsApp2 = _interopRequireDefault(_componentsApp);
 var _events = require('events');
 
 window.makePanelId = function (panel) {
-  console.log('make panel id', panel);
+  // console.log('make panel id', panel);
   var id = panel.type._id;
 
   if (panel.parent) {
@@ -58,7 +58,7 @@ function makePanel(panel) {
   return p;
 }
 
-function logA(message) {
+function INFO(message) {
   for (var _len = arguments.length, messages = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
     messages[_key - 1] = arguments[_key];
   }
@@ -66,7 +66,7 @@ function logA(message) {
   console.info.apply(console, ['%c' + message, 'color: magenta; font-weight: bold'].concat(messages));
 }
 
-function logB(message) {
+function INCOMING(message) {
   for (var _len2 = arguments.length, messages = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
     messages[_key2 - 1] = arguments[_key2];
   }
@@ -74,7 +74,7 @@ function logB(message) {
   console.info.apply(console, ['%c' + message, 'color: blue; font-weight: bold'].concat(messages));
 }
 
-function logC(message) {
+function OUTCOMING(message) {
   for (var _len3 = arguments.length, messages = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
     messages[_key3 - 1] = arguments[_key3];
   }
@@ -97,7 +97,7 @@ var props = {
 };
 
 function render() {
-  logA('Rendering app', props);
+  INFO('Rendering app', props);
   _react2['default'].render(_react2['default'].createElement(_componentsApp2['default'], props), document.getElementById('synapp'));
 }
 
@@ -110,7 +110,7 @@ function render() {
 window.Dispatcher = new _events.EventEmitter();
 
 window.Dispatcher.on('set active', function (panel, section) {
-  logB('set active', panel, section);
+  INCOMING('set active', panel, section);
 
   var id = typeof panel === 'string' ? panel : makePanelId(panel);
 
@@ -122,15 +122,15 @@ window.Dispatcher.on('set active', function (panel, section) {
 
   render();
 }).on('get evaluation', function (item) {
-  logB('get evaluation', item);
+  INCOMING('get evaluation', item);
   window.socket.emit('get evaluation', item);
 }).on('create item', function (item) {
-  logB('create item', item);
+  INCOMING('create item', item);
   window.socket.emit('create item', item);
 }).on('get more items', function (panel) {
   var id = typeof panel === 'string' ? panel : makePanelId(panel);
 
-  logB('get more items', props.panels[id]);
+  INCOMING('get more items', props.panels[id]);
 
   var Panel = props.panels[id].panel;
 
@@ -138,10 +138,10 @@ window.Dispatcher.on('set active', function (panel, section) {
 
   window.socket.emit('get items', Panel);
 }).on('add view', function (item) {
-  logB('add view', item);
+  INCOMING('add view', item);
   window.socket.emit('add view', item);
 }).on('promote item', function (item, position, evaluatedItem, view) {
-  logB('promote item', item, position, evaluatedItem, view);
+  INCOMING('promote item', item, position, evaluatedItem, view);
 
   var saveFeedback = function saveFeedback(position) {
     var feedback = view.querySelectorAll('.promote-' + position + ' .user-feedback');
@@ -251,12 +251,12 @@ window.Dispatcher.on('set active', function (panel, section) {
 
   render();
 }).on('get details', function (item) {
-  logB('get details', item);
+  INCOMING('get details', item);
   window.socket.emit('get item details', item);
 }).on('get items', function (panel) {
   var id = typeof panel === 'string' ? panel : makePanelId(panel);
 
-  logB('get items', id);
+  INCOMING('get items', id);
 
   var Panel = props.panels[id];
 
@@ -270,11 +270,14 @@ window.Dispatcher.on('set active', function (panel, section) {
   panel.limit = Panel.limit;
 
   window.socket.emit('get items', panel);
+}).on('get item', function (item) {
+  INCOMING('get item', item);
+  window.socket.emit('get item', item);
 }).on('insert feedback', function (item, value) {
-  logB('leave feedback', item, value);
+  INCOMING('leave feedback', item, value);
   window.socket.emit('insert feedback', item, value);
 }).on('insert votes', function (votes) {
-  logB('insert votes', votes);
+  INCOMING('insert votes', votes);
   window.socket.emit('insert votes', votes);
 });
 
@@ -291,14 +294,14 @@ window.socket.on('welcome', function (user) {
   props.user = user;
   render();
 
-  logB('get top level type');
+  INCOMING('get top level type');
 
   window.socket.emit('get top level type');
 }).on('online users', function (users) {
   props.online = users;
   render();
 }).on('OK get top level type', function (type) {
-  logC('got top level type', type);
+  OUTCOMING('got top level type', type);
 
   props.topLevelType = makePanelId({ type: type });
 
@@ -306,11 +309,11 @@ window.socket.on('welcome', function (user) {
 
   render();
 
-  logB('getting top level items');
+  INCOMING('getting top level items');
 
   window.socket.emit('get items', { type: type });
 }).on('OK get items', function (panel, count, items) {
-  logC('got items', panel, count, items);
+  OUTCOMING('got items', panel, count, items);
   var id = makePanelId(panel);
 
   if (!props.panels[id]) {
@@ -337,7 +340,7 @@ window.socket.on('welcome', function (user) {
 
   render();
 }).on('OK get evaluation', function (evaluation) {
-  logC('got evaluation', evaluation);
+  OUTCOMING('got evaluation', evaluation);
 
   evaluation.cursor = 1;
 
@@ -356,7 +359,7 @@ window.socket.on('welcome', function (user) {
   props.items[evaluation.item._id].evaluation = evaluation;
   render();
 }).on('OK create item', function (item) {
-  logC('created item', item);
+  OUTCOMING('created item', item);
 
   var parent = item.lineage[item.lineage.length - 1];
 
@@ -382,7 +385,7 @@ window.socket.on('welcome', function (user) {
 
   props.created = {};
 }).on('item changed', function (item) {
-  logC('item changed', item);
+  OUTCOMING('item changed', item);
 
   var id = makePanelId(item);
 
@@ -396,13 +399,13 @@ window.socket.on('welcome', function (user) {
 
   render();
 }).on('OK get item details', function (details) {
-  logC('got details', details);
+  OUTCOMING('got details', details);
 
   props.items[details.item._id].details = details;
 
   render();
 }).on('OK insert feedback', function (feedback) {
-  logC('feedback inserted', feedback);
+  OUTCOMING('feedback inserted', feedback);
 
   var item = props.items[feedback.item];
 
@@ -412,7 +415,7 @@ window.socket.on('welcome', function (user) {
     render();
   }
 }).on('OK insert votes', function (votes) {
-  logC('votes saved', votes);
+  OUTCOMING('votes saved', votes);
 
   var item = props.items[votes[0].item];
 
@@ -438,4 +441,20 @@ window.socket.on('welcome', function (user) {
 
     render();
   }
+}).on('OK get item', function (item) {
+  OUTCOMING('got item', item);
+  var panelId = makePanelId({ type: item.type, parent: item.parent });
+  props.panels[panelId].items.unshift(item);
+  render();
+  setTimeout(function () {
+    var view = document.querySelector('#item-' + item._id);
+    var top = view.getBoundingClientRect().top;
+    var pageYOffset = window.pageYOffset;
+
+    window.scrollTo(0, pageYOffset + top - 60);
+
+    props.panels[panelId].active = '' + item._id + '-edit-and-go-again';
+
+    render();
+  }, 500);
 });

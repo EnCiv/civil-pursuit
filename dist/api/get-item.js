@@ -10,20 +10,15 @@ var _modelsItem = require('../models/item');
 
 var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-function EditAndGoAgain(event, item) {
+function getItemById(event, id) {
   var _this = this;
 
   try {
-    item.type = item.type._id || item.type;
-    item.user = this.synuser.id;
-
-    _modelsItem2['default'].insert(item, this).then(function (item) {
+    _modelsItem2['default'].findById(id).exec().then(function (item) {
       try {
         item.toPanelItem().then(function (item) {
           _this.ok(event, item);
-        }, function (error) {
-          return _this.error(error);
-        });
+        }, _this.error.bind(_this));
       } catch (error) {
         _this.error(error);
       }
@@ -33,5 +28,5 @@ function EditAndGoAgain(event, item) {
   }
 }
 
-exports['default'] = EditAndGoAgain;
+exports['default'] = getItemById;
 module.exports = exports['default'];

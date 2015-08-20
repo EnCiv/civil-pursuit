@@ -85,9 +85,10 @@ var API = (function (_EventEmitter) {
 
           files.forEach(function (file) {
             var name = (0, _string2['default'])(file.replace(/\.js$/, '')).humanize().s.toLowerCase();
+
             var handler = require('./api/' + file);
 
-            _this2.emit('message', 'Add handler', [name, handler]);
+            _this2.emit('message', 'Add handler', [name, handler, (0, _string2['default'])(file.replace(/\.js$/, '')).humanize().s]);
 
             _this2.handlers[name] = handler;
           });

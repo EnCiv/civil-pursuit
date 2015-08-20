@@ -11,6 +11,7 @@ import Promote          from './promote';
 import Details          from './details';
 import Subtype          from './subtype';
 import Harmony          from './harmony';
+import EditAndGoAgain   from './edit-and-go-again';
 import ButtonGroup      from './util/button-group';
 import Join             from './join';
 
@@ -114,14 +115,6 @@ class Item extends React.Component {
 
   updateItem (item) {
     this.setState({ item });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  componentWillUnmount () {
-    // window.socket.removeListener(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
-    //
-    // window.socket.removeListener(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -250,7 +243,8 @@ class Item extends React.Component {
       promote,
       details,
       subtype,
-      harmony;
+      harmony,
+      editAndGoAgain;
 
     if ( this.props.buttons !== false ) {
 
@@ -383,6 +377,25 @@ class Item extends React.Component {
       );
     }
 
+    if ( this.props['edit-and-go-again'] !== false ) {
+      let editAndGoAgainIsActive = this.props.panels[this.panelId].active === `${this.props.item._id}-edit-and-go-again`;
+
+      editAndGoAgain = (
+        <div className="toggler editAndGoAgain">
+          <Accordion
+            { ...this.props }
+            active    =   { editAndGoAgainIsActive }
+            name      =   "editAndGoAgain"
+            poa       =   { this.refs.item }>
+            <EditAndGoAgain
+              { ...this.props }
+              item    =   { this.props.item }
+              active  =   { editAndGoAgainIsActive } />
+          </Accordion>
+        </div>
+      );
+    }
+
     if ( item.references.length ) {
       referenceLink = item.references[0].url;
       referenceTitle = item.references[0].title;
@@ -417,6 +430,8 @@ class Item extends React.Component {
           { subtype }
 
           { harmony }
+
+          { editAndGoAgain }
         </section>
       </article>
     );

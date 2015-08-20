@@ -98,11 +98,11 @@ class Uploader extends React.Component {
     if ( image || video ) {
       let media;
 
-      if ( image ) {
-        media = ( <Image src={ image } responsive /> );
-      }
-      else if ( video ) {
+      if ( video ) {
         media = ( <Youtube item={ video } /> );
+      }
+      else if ( image ) {
+        media = ( <Image src={ image } responsive /> );
       }
 
       content = (

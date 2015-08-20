@@ -82,9 +82,18 @@ class PromoteButton extends React.Component {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class EditAndGoAgain extends React.Component {
+  editAndGoAgain (e) {
+    if ( this.props.items[this.props.item._id] ) {
+      window.Dispatcher.emit('set active', this.props['panel-id'], `${this.props.item._id}-edit-and-go-again`);
+    }
+    else {
+      window.Dispatcher.emit('get item', this.props.item._id);
+    }
+  }
+
   render () {
     return (
-      <Button block { ...this.props }><i>Edit and go again</i></Button>
+      <Button block { ...this.props } onClick={ this.editAndGoAgain.bind(this) }><i>Edit and go again</i></Button>
     );
   }
 }
@@ -199,7 +208,7 @@ class ColumnButtons extends React.Component {
     return (
       <Column span="50" className={ `promote-${position}` } ref="view">
         <PromoteButton { ...item } onClick={ this.next.bind(this) } className="gutter-bottom" />
-        <EditAndGoAgain />
+        <EditAndGoAgain { ...this.props } panel-id={ this.props['panel-id'] } item={ item } />
       </Column>
     );
   }
@@ -244,7 +253,7 @@ class SideColumn extends React.Component {
         <Feedback className="gutter-top" />
         <div className="gutter-top">
           { promoteMe }
-          <EditAndGoAgain />
+          <EditAndGoAgain { ...this.props } panel-id={ this.props['panel-id'] } item={ item } />
         </div>
       </Column>
     );
@@ -297,7 +306,7 @@ class Promote extends React.Component {
       }
 
       let promoteMe = (
-        <ColumnButtons key="left-buttons" item={ left } position='left' evaluated={ item } />
+        <ColumnButtons { ...this.props } key="left-buttons" item={ left } position='left' evaluated={ item } panel-id={ this.props['panel-id'] } />
       );
 
       if ( ! left || ! right ) {
@@ -337,7 +346,7 @@ class Promote extends React.Component {
             <Row>
               { promoteMe }
 
-              <ColumnButtons key="right-buttons" item={ right } position='right' evaluated={ item } />
+              <ColumnButtons { ...this.props } key="right-buttons" item={ right } position='right' evaluated={ item } panel-id={ this.props['panel-id'] } />
 
             </Row>
           </div>
@@ -349,19 +358,23 @@ class Promote extends React.Component {
           <div data-screen="up-to-phone">
             <Row data-stack="phone-and-down">
               <SideColumn
+                { ...this.props }
                 key         =   "left"
                 position    =   "left"
                 item        =   { left }
                 criterias   =   { criterias }
+                panel-id    =   { this.props['panel-id'] }
                 evaluated   =   { item }
                 other       =   { right }
                 />
 
                 <SideColumn
+                  { ...this.props }
                   key         =   "right"
                   position    =   "right"
                   item        =   { right }
                   criterias   =   { criterias }
+                  panel-id    =   { this.props['panel-id'] }
                   evaluated   =   { item }
                   other       =   { left }
                   />

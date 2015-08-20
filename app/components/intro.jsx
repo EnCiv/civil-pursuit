@@ -8,7 +8,7 @@ class Intro extends React.Component {
   render () {
     return (
       <Panel title={ this.props.intro.subject } creator={ false }>
-        <Item item={ this.props.intro } buttons={ false } promote={ false } details={ false } subtype={ false } harmony={ false } />
+        <Item item={ this.props.intro } buttons={ false } promote={ false } details={ false } subtype={ false } harmony={ false } edit-and-go-again={ false } />
       </Panel>
     );
   }

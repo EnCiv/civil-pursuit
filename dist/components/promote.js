@@ -245,11 +245,20 @@ var EditAndGoAgain = (function (_React$Component7) {
   _inherits(EditAndGoAgain, _React$Component7);
 
   _createClass(EditAndGoAgain, [{
+    key: 'editAndGoAgain',
+    value: function editAndGoAgain(e) {
+      if (this.props.items[this.props.item._id]) {
+        window.Dispatcher.emit('set active', this.props['panel-id'], '' + this.props.item._id + '-edit-and-go-again');
+      } else {
+        window.Dispatcher.emit('get item', this.props.item._id);
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(
         _utilButton2['default'],
-        _extends({ block: true }, this.props),
+        _extends({ block: true }, this.props, { onClick: this.editAndGoAgain.bind(this) }),
         _react2['default'].createElement(
           'i',
           null,
@@ -467,7 +476,7 @@ var ColumnButtons = (function (_React$Component12) {
         _utilColumn2['default'],
         { span: '50', className: 'promote-' + position, ref: 'view' },
         _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.next.bind(this), className: 'gutter-bottom' })),
-        _react2['default'].createElement(EditAndGoAgain, null)
+        _react2['default'].createElement(EditAndGoAgain, _extends({}, this.props, { 'panel-id': this.props['panel-id'], item: item }))
       );
     }
   }]);
@@ -535,7 +544,7 @@ var SideColumn = (function (_React$Component13) {
           'div',
           { className: 'gutter-top' },
           promoteMe,
-          _react2['default'].createElement(EditAndGoAgain, null)
+          _react2['default'].createElement(EditAndGoAgain, _extends({}, this.props, { 'panel-id': this.props['panel-id'], item: item }))
         )
       );
     }
@@ -602,7 +611,7 @@ var Promote = (function (_React$Component14) {
           foo = _react2['default'].createElement('div', null);
         }
 
-        var promoteMe = _react2['default'].createElement(ColumnButtons, { key: 'left-buttons', item: left, position: 'left', evaluated: item });
+        var promoteMe = _react2['default'].createElement(ColumnButtons, _extends({}, this.props, { key: 'left-buttons', item: left, position: 'left', evaluated: item, 'panel-id': this.props['panel-id'] }));
 
         if (!left || !right) {
           promoteMe = _react2['default'].createElement('div', null);
@@ -634,7 +643,7 @@ var Promote = (function (_React$Component14) {
             _utilRow2['default'],
             null,
             promoteMe,
-            _react2['default'].createElement(ColumnButtons, { key: 'right-buttons', item: right, position: 'right', evaluated: item })
+            _react2['default'].createElement(ColumnButtons, _extends({}, this.props, { key: 'right-buttons', item: right, position: 'right', evaluated: item, 'panel-id': this.props['panel-id'] }))
           )
         ), _react2['default'].createElement(
           'div',
@@ -642,22 +651,24 @@ var Promote = (function (_React$Component14) {
           _react2['default'].createElement(
             _utilRow2['default'],
             { 'data-stack': 'phone-and-down' },
-            _react2['default'].createElement(SideColumn, {
+            _react2['default'].createElement(SideColumn, _extends({}, this.props, {
               key: 'left',
               position: 'left',
               item: left,
               criterias: criterias,
+              'panel-id': this.props['panel-id'],
               evaluated: item,
               other: right
-            }),
-            _react2['default'].createElement(SideColumn, {
+            })),
+            _react2['default'].createElement(SideColumn, _extends({}, this.props, {
               key: 'right',
               position: 'right',
               item: right,
               criterias: criterias,
+              'panel-id': this.props['panel-id'],
               evaluated: item,
               other: left
-            })
+            }))
           )
         ), _react2['default'].createElement(
           'div',

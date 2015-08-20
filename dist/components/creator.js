@@ -95,6 +95,12 @@ var Creator = (function (_React$Component) {
           _this.getUrlTitle();
         }
       }, false);
+
+      if (reference.value && this.props.item) {
+        var references = this.props.item.references;
+
+        this.applyTitle(references[0].title, references[0].url);
+      }
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -138,8 +144,12 @@ var Creator = (function (_React$Component) {
         item.references = [{ url: url, title: title }];
       }
 
+      if (this.props.item) {
+        item.from = this.props.item._id;
+      }
+
       var insert = function insert() {
-        window, Dispatcher.emit('create item', item);
+        window.Dispatcher.emit('create item', item);
       };
 
       if (this.file) {
@@ -169,9 +179,6 @@ var Creator = (function (_React$Component) {
       var url = _react2['default'].findDOMNode(this.refs.reference).value;
       var loading = _react2['default'].findDOMNode(this.refs.lookingUp);
       var error = _react2['default'].findDOMNode(this.refs.errorLookingUp);
-      var reference = _react2['default'].findDOMNode(this.refs.reference);
-      var editURL = _react2['default'].findDOMNode(this.refs.editURL);
-      var titleHolder = _react2['default'].findDOMNode(this.refs.title);
 
       if (url && /^http/.test(url)) {
         loading.classList.add('visible');
@@ -179,22 +186,37 @@ var Creator = (function (_React$Component) {
         error.classList.remove('visible');
 
         window.socket.emit('get url title', url).on('OK get url title', function (title) {
-          loading.classList.remove('visible');
-          if (title.error) {
-            error.classList.add('visible');
-          } else if (title) {
-            reference.classList.add('hide');
-            titleHolder.classList.add('visible');
-            titleHolder.value = title;
-            editURL.classList.add('visible');
-
-            var item = { references: [{ url: url }] };
-
-            if (_youtube2['default'].isYouTube(item)) {
-              _this4.setState({ video: item });
-            }
-          }
+          _this4.applyTitle(title, url);
         });
+      }
+    }
+  }, {
+    key: 'applyTitle',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function applyTitle(title, url) {
+      var loading = _react2['default'].findDOMNode(this.refs.lookingUp);
+      var error = _react2['default'].findDOMNode(this.refs.errorLookingUp);
+      var reference = _react2['default'].findDOMNode(this.refs.reference);
+      var editURL = _react2['default'].findDOMNode(this.refs.editURL);
+      var titleHolder = _react2['default'].findDOMNode(this.refs.title);
+
+      loading.classList.remove('visible');
+
+      if (!title || title.error) {
+        error.classList.add('visible');
+      } else if (title) {
+        reference.classList.add('hide');
+        titleHolder.classList.add('visible');
+        titleHolder.value = title;
+        editURL.classList.add('visible');
+
+        var item = { references: [{ url: url }] };
+
+        if (_youtube2['default'].isYouTube(item)) {
+          this.setState({ video: item });
+        }
       }
     }
   }, {
@@ -226,6 +248,25 @@ var Creator = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
+      var item = this.props.item;
+
+      var subject = undefined,
+          description = undefined,
+          image = undefined,
+          url = undefined,
+          title = undefined;
+
+      if (item) {
+        subject = item.subject;
+        description = item.description;
+        image = item.image;
+
+        if (item.references.length) {
+          url = item.references[0].url;
+          title = item.references[0].title;
+        }
+      }
+
       return _react2['default'].createElement(
         _utilForm2['default'],
         { handler: this.create.bind(this), className: 'syn-creator', ref: 'form' },
@@ -238,7 +279,11 @@ var Creator = (function (_React$Component) {
             _react2['default'].createElement(
               'section',
               { className: 'item-media', ref: 'media' },
-              _react2['default'].createElement(_uploader2['default'], { ref: 'uploader', handler: this.saveImage.bind(this), video: this.state.video })
+              _react2['default'].createElement(_uploader2['default'], {
+                ref: 'uploader',
+                handler: this.saveImage.bind(this),
+                image: image,
+                video: this.props.video ? item : null })
             )
           ),
           _react2['default'].createElement(
@@ -256,17 +301,17 @@ var Creator = (function (_React$Component) {
             _react2['default'].createElement(
               'div',
               { className: 'item-inputs' },
-              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true, name: 'subject' }),
+              _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'Subject', ref: 'subject', required: true, name: 'subject', defaultValue: subject }),
               _react2['default'].createElement(
                 _utilRow2['default'],
                 { 'center-items': true },
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'globe', spin: true, 'text-muted': true, className: 'looking-up', ref: 'lookingUp' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation', 'text-warning': true, className: 'error', ref: 'errorLookingUp' }),
-                _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor', name: 'reference' }),
-                _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, value: 'This is the title', className: 'url-title', ref: 'title' }),
+                _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor', name: 'reference', defaultValue: url }),
+                _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, defaultValue: 'This is the title', className: 'url-title', ref: 'title' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'pencil', mute: true, className: 'syn-edit-url', ref: 'editURL', onClick: this.editURL.bind(this) })
               ),
-              _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true, name: 'description' })
+              _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true, name: 'description', defaultValue: description })
             )
           ),
           _react2['default'].createElement('section', { style: { clear: 'both' } })
