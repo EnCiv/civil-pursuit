@@ -146,6 +146,10 @@ var Creator = (function (_React$Component) {
 
       if (this.props.item) {
         item.from = this.props.item._id;
+
+        if (this.props.item.lineage.length) {
+          item.parent = this.props.item.lineage[this.props.item.lineage.length - 1];
+        }
       }
 
       var insert = function insert() {

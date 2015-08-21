@@ -1,80 +1,41 @@
-! function () {
+'use strict';
 
-  'use strict';
+import UserModel from '../models/user';
+import sendEmail from '../lib/app/send-email';
+import secret from '../../secret.json';
 
-  // var config      =   require('../../config.json');
-
-  var User        =   require('../models/user');
-
-  var sendEmail   =   require('../lib/app/send-email');
-
-  /**
-   *  @function sendPassword
-   *  @arg {string} email
-   *  @this {Socket}
-   */
-
-  function sendPassword (email) {
-    var socket = this;
-
-    process.nextTick(function () {
-
-      socket.pronto.emit('message', {
-        'forgot password': email
-      });
-
-      socket.domain.run(function () {
-
-        if ( typeof email !== 'string' ) {
-          throw new Error('Email should be a string');
-        }
-
-        User.makePasswordResettable(email, socket.domain.bind(function (error, keys) {
-
-          if ( error && error.code === 'DOCUMENT_NOT_FOUND' ) {
-            socket.pronto.emit('message', {
-              'forgot password': {
-                'no such email': email
-              }
-            });
-
-            return socket.emit('no such email', email);
+function sendPassword (email) {
+  try {
+    UserModel
+      .makePasswordResettable(email)
+      .then(
+        keys => {
+          try {
+            let $email  =   {
+              from      :   secret.email.user,
+              to        :   email,
+              subject   :   'Reset password',
+              text      :   secret['forgot password email']
+                .replace(/\{key\}/g, keys.key)
+                .replace(/\{url\}/g, 'http://' +
+                  this.handshake.headers.host + '/page/reset-password?token=' + keys.token)
+            };
+            sendEmail($email)
+              .then(
+                results => {},
+                this.error.bind(this)
+              );
           }
-
-          if ( error ) {
-            throw error;
+          catch ( error ) {
+            this.error(error);
           }
-
-          socket.emit('password is resettable', email);
-
-          var $email = {
-            from:       config.email.user,
-            to:         email,
-            subject:    'Reset password',
-            text:       config['forgot password email']
-              .replace(/\{key\}/g, keys.key)
-              .replace(/\{url\}/g, 'http://' +
-                socket.handshake.headers.host + '/page/reset-password?token=' + keys.token)
-          };
-
-          function intercept (stats) {
-            socket.pronto.emit('message', {
-              'forgot password': {
-                'reset email sent': email
-              }
-            });
-
-            socket.emit('sent password reset email', email);
-          }
-
-          sendEmail.apply(socket, [$email, socket.domain.intercept(intercept)]);
-
-        }));
-
-      });
-    });
+        },
+        this.error.bind(this)
+      );
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = sendPassword;
-
-} ();
+export default sendPassword;

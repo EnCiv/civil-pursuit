@@ -9,7 +9,7 @@ window.makePanelId = function (panel) {
   let id = panel.type._id;
 
   if ( panel.parent ) {
-    id += `-${panel.parent}`;
+    id += `-${(panel.parent._id || panel.parent)}`;
   }
 
   else if ( panel.item ) {
@@ -413,7 +413,18 @@ window.socket
   .on('item changed', item => {
     OUTCOMING('item changed', item);
 
-    let id = makePanelId(item);
+    let panel = { type : item.type };
+
+    if ( item.lineage.length ) {
+      panel.parent = item.lineage[item.lineage.length - 1];
+    }
+
+    let id = makePanelId(panel);
+
+    if ( ! props.panels[id] ) {
+      props.panels[id] = makePanel(id);
+      props.panels[id].items.push(item);
+    }
 
     props.panels[id].items = props.panels[id].items.map(panelItem => {
       if ( panelItem._id === item._id ) {

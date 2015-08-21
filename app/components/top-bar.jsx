@@ -8,6 +8,7 @@ import Icon                     from './util/icon';
 import Link                     from './util/link';
 import Login                    from './login';
 import Join                     from './join';
+import ForgotPassword           from './forgot-password';
 
 class TopBar extends React.Component {
 
@@ -15,8 +16,9 @@ class TopBar extends React.Component {
     super(props);
 
     this.state = {
-      showLogin : false,
-      showJoin : false
+      showLogin           :   false,
+      showJoin            :   false,
+      showForgotPassword  :   false
     };
   }
 
@@ -30,6 +32,10 @@ class TopBar extends React.Component {
     if ( this.state.showJoin ) {
       this.setState({ showJoin : false });
     }
+
+    if ( this.state.showForgotPassword ) {
+      this.setState({ showForgotPassword : false });
+    }
   }
 
   toggleJoin (e) {
@@ -38,6 +44,26 @@ class TopBar extends React.Component {
     }
 
     this.setState({ showJoin : ! this.state.showJoin });
+
+    if ( this.state.showLogin ) {
+      this.setState({ showLogin : false });
+    }
+
+    if ( this.state.showForgotPassword ) {
+      this.setState({ showForgotPassword : false });
+    }
+  }
+
+  toggleForgotPassword (e) {
+    if ( e ) {
+      e.preventDefault();
+    }
+
+    this.setState({ showForgotPassword : ! this.state.showForgotPassword });
+
+    if ( this.state.showJoin ) {
+      this.setState({ showJoin : false });
+    }
 
     if ( this.state.showLogin ) {
       this.setState({ showLogin : false });
@@ -118,8 +144,9 @@ class TopBar extends React.Component {
           </section>
         </header>
 
-        <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } />
+        <Login show={ this.state.showLogin } join={ this.toggleJoin.bind(this) } forgot-password={ this.toggleForgotPassword.bind(this) } />
         <Join show={ this.state.showJoin } login={ this.toggleLogin.bind(this) } />
+        <ForgotPassword show={ this.state.showForgotPassword } login={ this.toggleLogin.bind(this) } join={ this.toggleJoin.bind(this) } />
       </section>
     );
   }

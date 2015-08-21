@@ -1,76 +1,44 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  // var config      =   require('../../config.json');
+var _modelsUser = require('../models/user');
 
-  var User = require('../models/user');
+var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-  var sendEmail = require('../lib/app/send-email');
+var _libAppSendEmail = require('../lib/app/send-email');
 
-  /**
-   *  @function sendPassword
-   *  @arg {string} email
-   *  @this {Socket}
-   */
+var _libAppSendEmail2 = _interopRequireDefault(_libAppSendEmail);
 
-  function sendPassword(email) {
-    var socket = this;
+var _secretJson = require('../../secret.json');
 
-    process.nextTick(function () {
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
-      socket.pronto.emit('message', {
-        'forgot password': email
-      });
+function sendPassword(email) {
+  var _this = this;
 
-      socket.domain.run(function () {
-
-        if (typeof email !== 'string') {
-          throw new Error('Email should be a string');
-        }
-
-        User.makePasswordResettable(email, socket.domain.bind(function (error, keys) {
-
-          if (error && error.code === 'DOCUMENT_NOT_FOUND') {
-            socket.pronto.emit('message', {
-              'forgot password': {
-                'no such email': email
-              }
-            });
-
-            return socket.emit('no such email', email);
-          }
-
-          if (error) {
-            throw error;
-          }
-
-          socket.emit('password is resettable', email);
-
-          var $email = {
-            from: config.email.user,
-            to: email,
-            subject: 'Reset password',
-            text: config['forgot password email'].replace(/\{key\}/g, keys.key).replace(/\{url\}/g, 'http://' + socket.handshake.headers.host + '/page/reset-password?token=' + keys.token)
-          };
-
-          function intercept(stats) {
-            socket.pronto.emit('message', {
-              'forgot password': {
-                'reset email sent': email
-              }
-            });
-
-            socket.emit('sent password reset email', email);
-          }
-
-          sendEmail.apply(socket, [$email, socket.domain.intercept(intercept)]);
-        }));
-      });
-    });
+  try {
+    _modelsUser2['default'].makePasswordResettable(email).then(function (keys) {
+      try {
+        var $email = {
+          from: _secretJson2['default'].email.user,
+          to: email,
+          subject: 'Reset password',
+          text: _secretJson2['default']['forgot password email'].replace(/\{key\}/g, keys.key).replace(/\{url\}/g, 'http://' + _this.handshake.headers.host + '/page/reset-password?token=' + keys.token)
+        };
+        (0, _libAppSendEmail2['default'])($email).then(function (results) {}, _this.error.bind(_this));
+      } catch (error) {
+        _this.error(error);
+      }
+    }, this.error.bind(this));
+  } catch (error) {
+    this.error(error);
   }
+}
 
-  module.exports = sendPassword;
-})();
+exports['default'] = sendPassword;
+module.exports = exports['default'];

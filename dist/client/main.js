@@ -19,7 +19,7 @@ window.makePanelId = function (panel) {
   var id = panel.type._id;
 
   if (panel.parent) {
-    id += '-' + panel.parent;
+    id += '-' + (panel.parent._id || panel.parent);
   } else if (panel.item) {
     id += '-' + panel.item._id;
   }
@@ -387,7 +387,18 @@ window.socket.on('welcome', function (user) {
 }).on('item changed', function (item) {
   OUTCOMING('item changed', item);
 
-  var id = makePanelId(item);
+  var panel = { type: item.type };
+
+  if (item.lineage.length) {
+    panel.parent = item.lineage[item.lineage.length - 1];
+  }
+
+  var id = makePanelId(panel);
+
+  if (!props.panels[id]) {
+    props.panels[id] = makePanel(id);
+    props.panels[id].items.push(item);
+  }
 
   props.panels[id].items = props.panels[id].items.map(function (panelItem) {
     if (panelItem._id === item._id) {

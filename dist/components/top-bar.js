@@ -46,6 +46,10 @@ var _join = require('./join');
 
 var _join2 = _interopRequireDefault(_join);
 
+var _forgotPassword = require('./forgot-password');
+
+var _forgotPassword2 = _interopRequireDefault(_forgotPassword);
+
 var TopBar = (function (_React$Component) {
   function TopBar(props) {
     _classCallCheck(this, TopBar);
@@ -54,7 +58,8 @@ var TopBar = (function (_React$Component) {
 
     this.state = {
       showLogin: false,
-      showJoin: false
+      showJoin: false,
+      showForgotPassword: false
     };
   }
 
@@ -72,6 +77,10 @@ var TopBar = (function (_React$Component) {
       if (this.state.showJoin) {
         this.setState({ showJoin: false });
       }
+
+      if (this.state.showForgotPassword) {
+        this.setState({ showForgotPassword: false });
+      }
     }
   }, {
     key: 'toggleJoin',
@@ -81,6 +90,27 @@ var TopBar = (function (_React$Component) {
       }
 
       this.setState({ showJoin: !this.state.showJoin });
+
+      if (this.state.showLogin) {
+        this.setState({ showLogin: false });
+      }
+
+      if (this.state.showForgotPassword) {
+        this.setState({ showForgotPassword: false });
+      }
+    }
+  }, {
+    key: 'toggleForgotPassword',
+    value: function toggleForgotPassword(e) {
+      if (e) {
+        e.preventDefault();
+      }
+
+      this.setState({ showForgotPassword: !this.state.showForgotPassword });
+
+      if (this.state.showJoin) {
+        this.setState({ showJoin: false });
+      }
 
       if (this.state.showLogin) {
         this.setState({ showLogin: false });
@@ -192,8 +222,9 @@ var TopBar = (function (_React$Component) {
             right2
           )
         ),
-        _react2['default'].createElement(_login2['default'], { show: this.state.showLogin, join: this.toggleJoin.bind(this) }),
-        _react2['default'].createElement(_join2['default'], { show: this.state.showJoin, login: this.toggleLogin.bind(this) })
+        _react2['default'].createElement(_login2['default'], { show: this.state.showLogin, join: this.toggleJoin.bind(this), 'forgot-password': this.toggleForgotPassword.bind(this) }),
+        _react2['default'].createElement(_join2['default'], { show: this.state.showJoin, login: this.toggleLogin.bind(this) }),
+        _react2['default'].createElement(_forgotPassword2['default'], { show: this.state.showForgotPassword, login: this.toggleLogin.bind(this), join: this.toggleJoin.bind(this) })
       );
     }
   }]);

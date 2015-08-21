@@ -74,55 +74,32 @@ var _utilLoading = require('./util/loading');
 
 var _utilLoading2 = _interopRequireDefault(_utilLoading);
 
-var Login = (function (_React$Component) {
+var ForgotPassword = (function (_React$Component) {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  function Login(props) {
-    _classCallCheck(this, Login);
+  function ForgotPassword(props) {
+    _classCallCheck(this, ForgotPassword);
 
-    _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this, props);
+    _get(Object.getPrototypeOf(ForgotPassword.prototype), 'constructor', this).call(this, props);
 
     this.state = { validationError: null, successMessage: null, info: null };
   }
 
-  _inherits(Login, _React$Component);
+  _inherits(ForgotPassword, _React$Component);
 
-  _createClass(Login, [{
-    key: 'login',
+  _createClass(ForgotPassword, [{
+    key: 'sendResetPassword',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function login() {
-      var _this = this;
+    value: function sendResetPassword() {
 
-      this.setState({ validationError: null, info: 'Logging you in...' });
+      this.setState({ validationError: null, info: 'One moment...' });
 
-      var email = _react2['default'].findDOMNode(this.refs.email).value,
-          password = _react2['default'].findDOMNode(this.refs.password).value;
+      var email = _react2['default'].findDOMNode(this.refs.email).value;
 
-      _superagent2['default'].post('/sign/in').send({ email: email, password: password }).end(function (err, res) {
-        switch (res.status) {
-          case 404:
-            _this.setState({ validationError: 'Wrong email', info: null });
-            break;
-
-          case 401:
-            _this.setState({ validationError: 'Wrong password', info: null });
-            break;
-
-          case 200:
-            _this.setState({ validationError: null, info: null, successMessage: 'Welcome back' });
-            location.href = '/page/profile';
-            break;
-
-          default:
-            _this.setState({ validationError: 'Unknown error', info: null });
-            break;
-        }
-
-        // location.href = '/';
-      });
+      window.socket.emit('send password', email);
     }
   }, {
     key: 'signUp',
@@ -135,30 +112,14 @@ var Login = (function (_React$Component) {
       this.props.join();
     }
   }, {
-    key: 'forgotPassword',
+    key: 'signIn',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function forgotPassword(e) {
+    value: function signIn(e) {
       e.preventDefault();
 
-      this.props['forgot-password']();
-    }
-  }, {
-    key: 'loginWithFacebook',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function loginWithFacebook() {
-      location.href = '/sign/facebook';
-    }
-  }, {
-    key: 'loginWithTwitter',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function loginWithTwitter() {
-      location.href = '/sign/twitter';
+      this.props.login();
     }
   }, {
     key: 'render',
@@ -176,30 +137,6 @@ var Login = (function (_React$Component) {
         'div',
         null,
         _react2['default'].createElement(
-          _utilButtonGroup2['default'],
-          { block: true },
-          _react2['default'].createElement(
-            _utilButton2['default'],
-            { medium: true, primary: true, onClick: this.loginWithFacebook },
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'facebook' }),
-            _react2['default'].createElement(
-              'span',
-              { className: _libAppComponent2['default'].classList(this), inline: true },
-              ' Facebook'
-            )
-          ),
-          _react2['default'].createElement(
-            _utilButton2['default'],
-            { medium: true, info: true, onClick: this.loginWithTwitter },
-            _react2['default'].createElement(_utilIcon2['default'], { icon: 'twitter' }),
-            _react2['default'].createElement(
-              'span',
-              null,
-              ' Twitter'
-            )
-          )
-        ),
-        _react2['default'].createElement(
           'div',
           { className: 'syn-form-group' },
           _react2['default'].createElement(
@@ -211,21 +148,11 @@ var Login = (function (_React$Component) {
         ),
         _react2['default'].createElement(
           'div',
-          { className: 'syn-form-group' },
-          _react2['default'].createElement(
-            'label',
-            null,
-            'Password'
-          ),
-          _react2['default'].createElement(_utilPassword2['default'], { block: true, required: true, placeholder: 'Password', ref: 'password', medium: true })
-        ),
-        _react2['default'].createElement(
-          'div',
           { className: 'syn-form-group syn-form-submit' },
           _react2['default'].createElement(
             _utilSubmit2['default'],
             { block: true, large: true, success: true, radius: true },
-            'Login'
+            'Send me reset password email'
           )
         ),
         _react2['default'].createElement(
@@ -234,46 +161,44 @@ var Login = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50', gutter: true },
-            'Not yet a user? ',
             _react2['default'].createElement(
               'a',
-              { href: '#', onClick: this.signUp.bind(this) },
+              { href: '', onClick: this.signUp.bind(this) },
               'Sign up'
             )
           ),
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '50', 'text-right': true, gutter: true },
-            'Forgot password? ',
             _react2['default'].createElement(
               'a',
-              { href: '#', onClick: this.forgotPassword.bind(this) },
-              'Click here'
+              { href: '', onClick: this.signIn.bind(this) },
+              'Sign in'
             )
           )
         )
       );
 
       if (this.state.info) {
-        content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loggin you in...' });
+        content = _react2['default'].createElement(_utilLoading2['default'], { message: this.state.info });
       } else if (this.state.successMessage) {
         content = _react2['default'].createElement('div', null);
       }
 
       return _react2['default'].createElement(
         _utilModal2['default'],
-        { className: _libAppComponent2['default'].classList.apply(_libAppComponent2['default'], [this].concat(classes)), title: 'Login' },
+        { className: _libAppComponent2['default'].classList.apply(_libAppComponent2['default'], [this].concat(classes)), title: 'Forgot password?' },
         _react2['default'].createElement(
           _utilForm2['default'],
-          { handler: this.login.bind(this), flash: this.state, 'form-center': true },
+          { handler: this.sendResetPassword.bind(this), flash: this.state, 'form-center': true },
           content
         )
       );
     }
   }]);
 
-  return Login;
+  return ForgotPassword;
 })(_react2['default'].Component);
 
-exports['default'] = Login;
+exports['default'] = ForgotPassword;
 module.exports = exports['default'];

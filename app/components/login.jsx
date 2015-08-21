@@ -72,6 +72,14 @@ class Login extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  forgotPassword (e) {
+    e.preventDefault();
+
+    this.props['forgot-password']();
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   loginWithFacebook () {
     location.href = '/sign/facebook';
   }
@@ -121,11 +129,11 @@ class Login extends React.Component {
 
       <Row data-stack="phone-and-down">
         <Column span="50" gutter>
-          Not yet a user? <a href="" onClick={ this.signUp.bind(this) }>Sign up</a>
+          Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
         </Column>
 
         <Column span="50" text-right gutter>
-          Forgot password? <a href="">Click here</a>
+          Forgot password? <a href="#" onClick={ this.forgotPassword.bind(this) }>Click here</a>
         </Column>
       </Row>
       </div>
