@@ -4,7 +4,7 @@ import UserModel from '../models/user';
 import sendEmail from '../lib/app/send-email';
 import secret from '../../secret.json';
 
-function sendPassword (email) {
+function sendPassword (event, email) {
   try {
     UserModel
       .makePasswordResettable(email)
@@ -22,7 +22,9 @@ function sendPassword (email) {
             };
             sendEmail($email)
               .then(
-                results => {},
+                () => {
+                  this.ok(event);
+                },
                 this.error.bind(this)
               );
           }

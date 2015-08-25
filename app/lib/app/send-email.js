@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import secret from '../../../secret.json';
 
 function sendEmail (options = {}) {
+  console.log('sending password', options);
   return new Promise((ok, ko) => {
     try {
       let transporter = nodemailer.createTransport({
@@ -14,11 +15,16 @@ function sendEmail (options = {}) {
         }
       });
 
-      transporter.sendEmail(options, (error, results) => {
+      transporter.sendMail(options, (error, results) => {
         if ( error ) {
           return ko(error);
         }
-        console.log(results);
+        if ( results.response === '250 Message received' ) {
+          ok();
+        }
+        else {
+          ko(new Error(results.response));
+        }
       });
     }
     catch ( error ) {

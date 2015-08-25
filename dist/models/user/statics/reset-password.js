@@ -16,15 +16,13 @@ function resetPassword(key, token, password) {
   var _this = this;
 
   return new Promise(function (ok, ko) {
-    var d = new _domain.Domain().on('error', ko);
-
-    (0, _libUtilEncrypt2['default'])(password).then(function (hash) {
-      return _this.update({ activation_key: key, activation_token: token }, { password: hash }).exec(d.intercept(function (number) {
-        if (!number) {
-          throw new Error('No such key/token');
-        }
-      }));
-    }, ko);
+    try {
+      (0, _libUtilEncrypt2['default'])(password).then(function (hash) {
+        return _this.update({ activation_key: key, activation_token: token }, { password: hash, activation_key: null, activation_token: null }).exec().then(ok, ko);
+      }, ko);
+    } catch (error) {
+      ko(error);
+    }
   });
 }
 

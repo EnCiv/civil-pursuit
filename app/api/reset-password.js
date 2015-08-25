@@ -1,39 +1,19 @@
-! function () {
-  
-  'use strict';
+'use strict';
 
-  
+import UserModel from '../models/user';
 
-  var User        =   require('../models/user');
-
-  function resetPassword (key, token, password) {
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.emit('reset password ko', {
-        message: error.message,
-        name: error.name,
-        code: error.code,
-        stack: error.stack.split(/\n/)
-      });
-    });
-
-    process.nextTick(function () {
-      domain.run(function () {
-
-        User.resetPassword(key, token, password,
-          domain.intercept(function () {
-            
-            socket.emit('reset password ok');
-
-          }));
-
-      });
-    });
+function resetPassword (event, key, token, password) {
+  try {
+    UserModel
+      .resetPassword(key, token, password)
+      .then(
+        () => this.ok(event),
+        error => this.error(error)
+      )
   }
+  catch ( error ) {
+    this.error(error);
+  }
+}
 
-  module.exports = resetPassword;
-
-} ();
+export default resetPassword;

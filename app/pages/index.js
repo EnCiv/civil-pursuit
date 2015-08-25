@@ -40,6 +40,7 @@ class Layout extends Document {
     let intro = JSON.stringify(this.props.intro);
 
     this.add(
+      new Element('title').text('Synaccord | Bring synergy to democracy'),
       this.uACompatible(),
       this.viewport()
     );

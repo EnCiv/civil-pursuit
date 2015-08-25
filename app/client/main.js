@@ -75,8 +75,14 @@ let props         =   {
   topLevelType    :   null,
   panels          :   {},
   items           :   {},
-  created         :   {}
+  created         :   {},
+  urlParams       :   {},
+  userToReset     :   null
 };
+
+window.location.search.replace(
+  /([^?=&]+)(=([^&]*))?/g, ($0, $1, $2, $3) => { props.urlParams[$1] = $3 }
+);
 
 function render () {
   INFO('Rendering app', props);
@@ -277,6 +283,10 @@ window.Dispatcher
   })
 
   .on('get item', item => {
+    if ( typeof item === 'string' ) {
+      item = { _id : item };
+    }
+
     INCOMING('get item', item);
     window.socket.emit('get item', item);
   })
@@ -289,6 +299,16 @@ window.Dispatcher
   .on('insert votes', votes => {
     INCOMING('insert votes', votes);
     window.socket.emit('insert votes', votes);
+  })
+
+  .on('get user', query => {
+    INCOMING('get user', query);
+    window.socket.emit('get user', query);
+  })
+
+  .on('reset password', (user, password) => {
+    INCOMING('reset password', user, password);
+    window.socket.emit('reset password', user.activation_key, user.activation_token, password);
   });
 
 
@@ -503,4 +523,16 @@ window.socket
 
       render();
     }, 500);
-  });
+  })
+
+  .on('OK get user', user => {
+    OUTCOMING('OK get user', user);
+    props.userToReset = user;
+    render();
+  })
+
+  .on('OK reset password', () => {
+    OUTCOMING('OK reset password');
+    window.Dispatcher.emit('password reset');
+  })
+;

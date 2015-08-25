@@ -35,6 +35,8 @@ class ForgotPassword extends React.Component {
     let email = React.findDOMNode(this.refs.email).value;
 
     window.socket.emit('send password', email);
+
+    this.setState({ info : null, successMessage : 'Message sent! Please check your inbox' });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -10,11 +10,11 @@ var _modelsItem = require('../models/item');
 
 var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
-function getItemById(event, id) {
+function getItemById(event, query) {
   var _this = this;
 
   try {
-    _modelsItem2['default'].findById(id).exec().then(function (item) {
+    _modelsItem2['default'].findOne(query).exec().then(function (item) {
       try {
         item.toPanelItem().then(function (item) {
           _this.ok(event, item);

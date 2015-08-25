@@ -93,8 +93,14 @@ var props = {
   topLevelType: null,
   panels: {},
   items: {},
-  created: {}
+  created: {},
+  urlParams: {},
+  userToReset: null
 };
+
+window.location.search.replace(/([^?=&]+)(=([^&]*))?/g, function ($0, $1, $2, $3) {
+  props.urlParams[$1] = $3;
+});
 
 function render() {
   INFO('Rendering app', props);
@@ -271,6 +277,10 @@ window.Dispatcher.on('set active', function (panel, section) {
 
   window.socket.emit('get items', panel);
 }).on('get item', function (item) {
+  if (typeof item === 'string') {
+    item = { _id: item };
+  }
+
   INCOMING('get item', item);
   window.socket.emit('get item', item);
 }).on('insert feedback', function (item, value) {
@@ -279,6 +289,12 @@ window.Dispatcher.on('set active', function (panel, section) {
 }).on('insert votes', function (votes) {
   INCOMING('insert votes', votes);
   window.socket.emit('insert votes', votes);
+}).on('get user', function (query) {
+  INCOMING('get user', query);
+  window.socket.emit('get user', query);
+}).on('reset password', function (user, password) {
+  INCOMING('reset password', user, password);
+  window.socket.emit('reset password', user.activation_key, user.activation_token, password);
 });
 
 /*******************************************************************************
@@ -468,4 +484,11 @@ window.socket.on('welcome', function (user) {
 
     render();
   }, 500);
+}).on('OK get user', function (user) {
+  OUTCOMING('OK get user', user);
+  props.userToReset = user;
+  render();
+}).on('OK reset password', function () {
+  OUTCOMING('OK reset password');
+  window.Dispatcher.emit('password reset');
 });

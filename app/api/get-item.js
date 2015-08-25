@@ -2,10 +2,10 @@
 
 import ItemModel from '../models/item';
 
-function getItemById (event, id) {
+function getItemById (event, query) {
   try {
     ItemModel
-      .findById(id)
+      .findOne(query)
       .exec()
       .then(
         item => {

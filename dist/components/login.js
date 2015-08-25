@@ -101,27 +101,13 @@ var Login = (function (_React$Component) {
       var email = _react2['default'].findDOMNode(this.refs.email).value,
           password = _react2['default'].findDOMNode(this.refs.password).value;
 
-      _superagent2['default'].post('/sign/in').send({ email: email, password: password }).end(function (err, res) {
-        switch (res.status) {
-          case 404:
-            _this.setState({ validationError: 'Wrong email', info: null });
-            break;
-
-          case 401:
-            _this.setState({ validationError: 'Wrong password', info: null });
-            break;
-
-          case 200:
-            _this.setState({ validationError: null, info: null, successMessage: 'Welcome back' });
-            location.href = '/page/profile';
-            break;
-
-          default:
-            _this.setState({ validationError: 'Unknown error', info: null });
-            break;
-        }
-
-        // location.href = '/';
+      Login.signIn(email, password).then(function () {
+        _this.setState({ validationError: null, info: null, successMessage: 'Welcome back' });
+        setTimeout(function () {
+          return location.href = '/page/profile';
+        }, 800);
+      }, function (ko) {
+        return _this.setState({ validationError: 'Wrong email', info: null });
       });
     }
   }, {
@@ -269,6 +255,42 @@ var Login = (function (_React$Component) {
           content
         )
       );
+    }
+  }], [{
+    key: 'signIn',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function signIn(email, password) {
+      return new Promise(function (ok, ko) {
+        try {
+          _superagent2['default'].post('/sign/in').send({ email: email, password: password }).end(function (err, res) {
+            if (err) {
+              return ko(err);
+            }
+            switch (res.status) {
+              case 404:
+                ko(new Error('Wrong email'));
+                break;
+
+              case 401:
+                ko(new Error('Wrong password'));
+                break;
+
+              case 200:
+                ok();
+                // location.href = '/page/profile';
+                break;
+
+              default:
+                ko(new Error('Unknown error'));
+                break;
+            }
+          });
+        } catch (error) {
+          ko(error);
+        }
+      });
     }
   }]);
 

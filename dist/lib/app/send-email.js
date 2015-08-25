@@ -17,6 +17,7 @@ var _secretJson2 = _interopRequireDefault(_secretJson);
 function sendEmail() {
   var options = arguments[0] === undefined ? {} : arguments[0];
 
+  console.log('sending password', options);
   return new Promise(function (ok, ko) {
     try {
       var transporter = _nodemailer2['default'].createTransport({
@@ -27,11 +28,15 @@ function sendEmail() {
         }
       });
 
-      transporter.sendEmail(options, function (error, results) {
+      transporter.sendMail(options, function (error, results) {
         if (error) {
           return ko(error);
         }
-        console.log(results);
+        if (results.response === '250 Message received') {
+          ok();
+        } else {
+          ko(new Error(results.response));
+        }
       });
     } catch (error) {
       ko(error);

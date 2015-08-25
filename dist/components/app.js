@@ -42,6 +42,10 @@ var _home = require('./home');
 
 var _home2 = _interopRequireDefault(_home);
 
+var _resetPassword = require('./reset-password');
+
+var _resetPassword2 = _interopRequireDefault(_resetPassword);
+
 var App = (function (_React$Component) {
   function App() {
     _classCallCheck(this, App);
@@ -88,6 +92,11 @@ var App = (function (_React$Component) {
 
             case 'terms-of-service':
               page = _react2['default'].createElement(_termsOfService2['default'], null);
+              showIntro = false;
+              break;
+
+            case 'reset-password':
+              page = _react2['default'].createElement(_resetPassword2['default'], this.props);
               showIntro = false;
               break;
           }

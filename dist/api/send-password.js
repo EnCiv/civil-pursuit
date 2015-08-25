@@ -18,7 +18,7 @@ var _secretJson = require('../../secret.json');
 
 var _secretJson2 = _interopRequireDefault(_secretJson);
 
-function sendPassword(email) {
+function sendPassword(event, email) {
   var _this = this;
 
   try {
@@ -30,7 +30,9 @@ function sendPassword(email) {
           subject: 'Reset password',
           text: _secretJson2['default']['forgot password email'].replace(/\{key\}/g, keys.key).replace(/\{url\}/g, 'http://' + _this.handshake.headers.host + '/page/reset-password?token=' + keys.token)
         };
-        (0, _libAppSendEmail2['default'])($email).then(function (results) {}, _this.error.bind(_this));
+        (0, _libAppSendEmail2['default'])($email).then(function () {
+          _this.ok(event);
+        }, _this.error.bind(_this));
       } catch (error) {
         _this.error(error);
       }

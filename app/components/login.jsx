@@ -28,6 +28,44 @@ class Login extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static signIn (email, password) {
+    return new Promise((ok, ko) => {
+      try {
+        superagent
+          .post('/sign/in')
+          .send({ email, password })
+          .end((err, res) => {
+            if ( err ) {
+              return ko(err);
+            }
+            switch ( res.status ) {
+              case 404:
+                ko(new Error('Wrong email'));
+                break;
+
+                case 401:
+                  ko(new Error('Wrong password'));
+                  break;
+
+                case 200:
+                  ok();
+                  // location.href = '/page/profile';
+                  break;
+
+                default:
+                  ko(new Error('Unknown error'));
+                  break;
+            }
+          });
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   login () {
 
     this.setState({ validationError : null, info : 'Logging you in...' });
@@ -35,31 +73,15 @@ class Login extends React.Component {
     let email = React.findDOMNode(this.refs.email).value,
       password = React.findDOMNode(this.refs.password).value;
 
-    superagent
-      .post('/sign/in')
-      .send({ email, password })
-      .end((err, res) => {
-        switch ( res.status ) {
-          case 404:
-            this.setState({ validationError : 'Wrong email', info: null });
-            break;
-
-            case 401:
-              this.setState({ validationError : 'Wrong password', info: null });
-              break;
-
-            case 200:
-              this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
-              location.href = '/page/profile';
-              break;
-
-            default:
-              this.setState({ validationError : 'Unknown error', info: null });
-              break;
-        }
-
-        // location.href = '/';
-      });
+    Login
+      .signIn(email, password)
+      .then(
+        () => {
+          this.setState({ validationError : null, info: null, successMessage : 'Welcome back' });
+          setTimeout(() => location.href = '/page/profile', 800);
+        },
+        ko => this.setState({ validationError : 'Wrong email', info: null })
+      );
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,41 +123,41 @@ class Login extends React.Component {
 
     let content = (
       <div>
-      <ButtonGroup block>
-        <Button medium primary onClick={ this.loginWithFacebook }>
-          <Icon icon="facebook" />
-          <span className={ Component.classList(this) } inline> Facebook</span>
-        </Button>
+        <ButtonGroup block>
+          <Button medium primary onClick={ this.loginWithFacebook }>
+            <Icon icon="facebook" />
+            <span className={ Component.classList(this) } inline> Facebook</span>
+          </Button>
 
-        <Button medium info onClick={ this.loginWithTwitter }>
-          <Icon icon="twitter" />
-          <span> Twitter</span>
-        </Button>
-      </ButtonGroup>
+          <Button medium info onClick={ this.loginWithTwitter }>
+            <Icon icon="twitter" />
+            <span> Twitter</span>
+          </Button>
+        </ButtonGroup>
 
-      <div className="syn-form-group">
-        <label>Email</label>
-        <EmailInput block autoFocus required medium placeholder="Email" ref="email" />
-      </div>
+        <div className="syn-form-group">
+          <label>Email</label>
+          <EmailInput block autoFocus required medium placeholder="Email" ref="email" />
+        </div>
 
-      <div className="syn-form-group">
-        <label>Password</label>
-        <Password block required placeholder="Password" ref="password" medium />
-      </div>
+        <div className="syn-form-group">
+          <label>Password</label>
+          <Password block required placeholder="Password" ref="password" medium />
+        </div>
 
-      <div className="syn-form-group syn-form-submit">
-        <Submit block large success radius>Login</Submit>
-      </div>
+        <div className="syn-form-group syn-form-submit">
+          <Submit block large success radius>Login</Submit>
+        </div>
 
-      <Row data-stack="phone-and-down">
-        <Column span="50" gutter>
-          Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
-        </Column>
+        <Row data-stack="phone-and-down">
+          <Column span="50" gutter>
+            Not yet a user? <a href="#" onClick={ this.signUp.bind(this) }>Sign up</a>
+          </Column>
 
-        <Column span="50" text-right gutter>
-          Forgot password? <a href="#" onClick={ this.forgotPassword.bind(this) }>Click here</a>
-        </Column>
-      </Row>
+          <Column span="50" text-right gutter>
+            Forgot password? <a href="#" onClick={ this.forgotPassword.bind(this) }>Click here</a>
+          </Column>
+        </Row>
       </div>
     );
 

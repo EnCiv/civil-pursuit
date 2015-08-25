@@ -10,12 +10,17 @@ var _modelsUser = require('../models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-function resetPassword(event, key, token, password) {
+function getUser(event, query) {
   var _this = this;
 
   try {
-    _modelsUser2['default'].resetPassword(key, token, password).then(function () {
-      return _this.ok(event);
+    _modelsUser2['default'].findOne(query).lean().exec().then(function (user) {
+      try {
+        delete user.password;
+        _this.ok(event, user);
+      } catch (error) {
+        _this.error(error);
+      }
     }, function (error) {
       return _this.error(error);
     });
@@ -24,5 +29,5 @@ function resetPassword(event, key, token, password) {
   }
 }
 
-exports['default'] = resetPassword;
+exports['default'] = getUser;
 module.exports = exports['default'];

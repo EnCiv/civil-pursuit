@@ -7,6 +7,7 @@ import Profile            from './profile';
 import KitchenSink        from './kitchen-sink';
 import TermsOfService     from './terms-of-service';
 import Home               from './home';
+import ResetPassword      from './reset-password';
 
 class App extends React.Component {
   render () {
@@ -42,6 +43,11 @@ class App extends React.Component {
 
           case 'terms-of-service':
             page = ( <TermsOfService /> );
+            showIntro = false;
+            break;
+
+          case 'reset-password':
+            page = ( <ResetPassword { ...this.props } /> );
             showIntro = false;
             break;
         }
