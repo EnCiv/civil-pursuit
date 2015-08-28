@@ -57,7 +57,30 @@ class Layout extends Document {
       this.add(
         new Stylesheet('/assets/css/assets.min.css'),
         new Stylesheet('/assets/css/index.min.css'),
-        new Stylesheet(publicConfig['font awesome'].cdn)
+        new Stylesheet(publicConfig['font awesome'].cdn),
+        new Element('style').text(`#syn-training:after, #syn-training:before {
+        	left: 100%;
+        	top: 50%;
+        	border: solid transparent;
+        	content: " ";
+        	height: 0;
+        	width: 0;
+        	position: absolute;
+        	pointer-events: none;
+        }
+
+        #syn-training:after {
+        	border-color: rgba(0, 0, 0, 0);
+        	border-left-color: #000000;
+        	border-width: 10px;
+        	margin-top: -10px;
+        }
+        #syn-training:before {
+        	border-color: rgba(0, 0, 0, 0);
+        	border-left-color: #000000;
+        	border-width: 16px;
+        	margin-top: -16px;
+        }`)
       );
     }
 
