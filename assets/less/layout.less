@@ -29,9 +29,10 @@ body {
   padding: 10px;
   padding-top: calc(@syn-topbar-height + 10px);
   text-align: left;
+  box-sizing: border-box;
 
   @media (min-width: @screen-desktop) {
-    width: @screen-desktop;
+    width: @screen-desktop - 10px;
     margin: auto;
   }
 

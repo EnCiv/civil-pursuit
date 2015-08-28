@@ -36,6 +36,10 @@ var _panelItems = require('./panel-items');
 
 var _panelItems2 = _interopRequireDefault(_panelItems);
 
+var _training = require('./training');
+
+var _training2 = _interopRequireDefault(_training);
+
 var Home = (function (_React$Component) {
   function Home(props) {
     _classCallCheck(this, Home);
@@ -82,7 +86,12 @@ var Home = (function (_React$Component) {
         } else if (this.props.topLevelType) {
           var panel = this.props.panels[this.props.topLevelType];
 
-          content = _react2['default'].createElement(_panelItems2['default'], _extends({ panel: panel }, this.props));
+          content = _react2['default'].createElement(
+            'div',
+            null,
+            _react2['default'].createElement(_panelItems2['default'], _extends({ panel: panel }, this.props)),
+            _react2['default'].createElement(_training2['default'], null)
+          );
         }
       }
 

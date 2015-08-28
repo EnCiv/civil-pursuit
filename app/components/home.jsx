@@ -5,6 +5,7 @@ import Component                    from '../lib/app/component';
 import Icon                         from './util/icon';
 import Countdown                    from './countdown';
 import PanelItems                   from './panel-items';
+import Training                     from './training';
 
 class Home extends React.Component {
   constructor (props) {
@@ -41,7 +42,12 @@ class Home extends React.Component {
       else if ( this.props.topLevelType ) {
         let panel = this.props.panels[this.props.topLevelType];
 
-        content = <PanelItems panel={ panel } { ...this.props } />
+        content = (
+          <div>
+            <PanelItems panel={ panel } { ...this.props } />
+            <Training />
+          </div>
+        );
       }
     }
 

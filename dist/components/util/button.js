@@ -32,7 +32,6 @@ var Button = (function (_React$Component) {
   _createClass(Button, [{
     key: 'render',
     value: function render() {
-
       var classes = [this.props.className || ''];
 
       var props = ['block', 'primary', 'info', 'large', 'medium', 'radius', 'cursor-pointer', 'shy', 'success', 'error', 'warning', 'small'];

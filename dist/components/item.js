@@ -307,7 +307,7 @@ var Item = (function (_React$Component) {
             null,
             _react2['default'].createElement(
               _utilButton2['default'],
-              { small: true, shy: true, onClick: this.toggle.bind(this, 'promote') },
+              { small: true, shy: true, onClick: this.toggle.bind(this, 'promote'), className: 'item-promotions' },
               _react2['default'].createElement(
                 'span',
                 null,

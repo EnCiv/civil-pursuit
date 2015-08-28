@@ -272,7 +272,7 @@ class Item extends React.Component {
       buttons = (
         <section className="item-buttons">
           <ButtonGroup>
-            <Button small shy onClick={ this.toggle.bind(this, 'promote') }>
+            <Button small shy onClick={ this.toggle.bind(this, 'promote') } className="item-promotions">
               <span>{ item.promotions } </span>
               <Icon icon="bullhorn" />
             </Button>
