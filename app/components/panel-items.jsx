@@ -37,7 +37,7 @@ class PanelItems extends React.Component {
 
       type = panel.panel.type;
 
-      className = `syn-panel-${type}`;
+      className = `syn-panel-${type._id}`;
 
       parent = panel.panel.parent;
 
