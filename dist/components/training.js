@@ -22,24 +22,19 @@ var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
 
+var _utilIcon = require('./util/icon');
+
+var _utilIcon2 = _interopRequireDefault(_utilIcon);
+
 var Training = (function (_React$Component) {
   function Training(props) {
     _classCallCheck(this, Training);
 
     _get(Object.getPrototypeOf(Training.prototype), 'constructor', this).call(this, props);
 
-    this.state = {
-      training: [{
-        element: '.syn-panel .toggle-creator',
-        title: 'Create new topic',
-        description: 'Click here to create a new topic'
-      }, {
-        element: '.item-promotions',
-        title: 'Promote item',
-        description: 'Click here to promote item'
-      }],
-      cursor: 0
-    };
+    window.Dispatcher.emit('get instructions');
+
+    this.state = { cursor: 0 };
   }
 
   _inherits(Training, _React$Component);
@@ -48,7 +43,7 @@ var Training = (function (_React$Component) {
     key: 'go',
     value: function go() {
       var view = _react2['default'].findDOMNode(this.refs.view);
-      var training = this.state.training[this.state.cursor];
+      var training = this.props.instructions[this.state.cursor];
       var target = document.querySelector(training.element);
       var pos = target.getBoundingClientRect();
       var dim = view.getBoundingClientRect();
@@ -70,31 +65,42 @@ var Training = (function (_React$Component) {
       if (typeof window !== 'undefined') {
         setTimeout(function () {
           var view = _react2['default'].findDOMNode(_this.refs.view);
-          view.classList.add('show');
+          if (view) {
+            view.classList.add('show');
+          }
         }, 1000);
-        setTimeout(this.go.bind(this), 2000);
+        setTimeout(this.go.bind(this), 3000);
       }
     }
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       if (typeof window !== 'undefined') {
-        if (this.state.training[this.state.cursor]) {
+        if (this.props.instructions[this.state.cursor]) {
           this.go();
-        } else {
-          var view = _react2['default'].findDOMNode(this.refs.view);
-          view.classList.remove('show');
+        } else if (this.props.instructions.length) {
+          this.close();
         }
       }
     }
   }, {
+    key: 'close',
+    value: function close() {
+      var view = _react2['default'].findDOMNode(this.refs.view);
+      view.classList.remove('show');
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _state = this.state;
-      var training = _state.training;
-      var cursor = _state.cursor;
+      var cursor = this.state.cursor;
 
-      var current = training[cursor];
+      if (!this.props.instructions.length) {
+        return _react2['default'].createElement('div', null);
+      }
+
+      var instructions = this.props.instructions;
+
+      var current = instructions[cursor];
 
       if (!current) {
         return _react2['default'].createElement('div', { id: 'syn-training', ref: 'view' });
@@ -105,13 +111,18 @@ var Training = (function (_React$Component) {
 
       var text = 'Next';
 
-      if (!training[cursor + 1]) {
+      if (!instructions[cursor + 1]) {
         text = 'Finish';
       }
 
       return _react2['default'].createElement(
         'div',
         { id: 'syn-training', ref: 'view' },
+        _react2['default'].createElement(
+          'div',
+          { className: 'syn-training-close' },
+          _react2['default'].createElement(_utilIcon2['default'], { icon: 'times', onClick: this.close.bind(this) })
+        ),
         _react2['default'].createElement(
           'h4',
           null,

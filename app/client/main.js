@@ -77,7 +77,8 @@ let props         =   {
   items           :   {},
   created         :   {},
   urlParams       :   {},
-  userToReset     :   null
+  userToReset     :   null,
+  instructions    :   []
 };
 
 window.location.search.replace(
@@ -309,6 +310,11 @@ window.Dispatcher
   .on('reset password', (user, password) => {
     INCOMING('reset password', user, password);
     window.socket.emit('reset password', user.activation_key, user.activation_token, password);
+  })
+
+  .on('get instructions', () => {
+    INCOMING('Get instructions');
+    window.socket.emit('get training');
   });
 
 
@@ -534,5 +540,11 @@ window.socket
   .on('OK reset password', () => {
     OUTCOMING('OK reset password');
     window.Dispatcher.emit('password reset');
+  })
+
+  .on('OK get training', instructions => {
+    OUTCOMING('OK get training', instructions);
+    props.instructions = instructions;
+    render();
   })
 ;

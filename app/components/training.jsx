@@ -2,33 +2,21 @@
 
 import React from 'react';
 import Button from './util/button';
+import Icon from './util/icon';
 
 class Training extends React.Component {
 
   constructor (props) {
     super(props);
 
-    this.state = {
-      training: [
-        {
-          element : '.syn-panel .toggle-creator',
-          title : 'Create new topic',
-          description: 'Click here to create a new topic'
-        },
+    window.Dispatcher.emit('get instructions');
 
-        {
-          element : '.item-promotions',
-          title : 'Promote item',
-          description: 'Click here to promote item'
-        }
-      ],
-      cursor : 0
-    };
+    this.state = { cursor : 0 };
   }
 
   go () {
     let view = React.findDOMNode(this.refs.view);
-    let training = this.state.training[this.state.cursor];
+    let training = this.props.instructions[this.state.cursor];
     let target = document.querySelector(training.element);
     let pos = target.getBoundingClientRect();
     let dim = view.getBoundingClientRect();
@@ -46,28 +34,40 @@ class Training extends React.Component {
     if ( typeof window !== 'undefined' ) {
       setTimeout(() => {
         let view = React.findDOMNode(this.refs.view);
-        view.classList.add('show');
+        if ( view ) {
+          view.classList.add('show');
+        }
       }, 1000);
-      setTimeout(this.go.bind(this), 2000);
+      setTimeout(this.go.bind(this), 3000);
     }
   }
 
   componentDidUpdate () {
     if ( typeof window !== 'undefined' ) {
-      if ( this.state.training[this.state.cursor] ) {
+      if ( this.props.instructions[this.state.cursor] ) {
         this.go();
       }
-      else {
-        let view = React.findDOMNode(this.refs.view);
-        view.classList.remove('show');
+      else if ( this.props.instructions.length ) {
+        this.close();
       }
     }
   }
 
-  render () {
-    let { training, cursor } = this.state;
+  close () {
+    let view = React.findDOMNode(this.refs.view);
+    view.classList.remove('show');
+  }
 
-    let current = training[cursor];
+  render () {
+    let { cursor } = this.state;
+
+    if ( ! this.props.instructions.length ) {
+      return ( <div></div> );
+    }
+
+    let { instructions } = this.props;
+
+    let current = instructions[cursor];
 
     if ( ! current ) {
       return ( <div id="syn-training" ref="view"></div> );
@@ -77,12 +77,15 @@ class Training extends React.Component {
 
     let text = 'Next';
 
-    if ( ! training[cursor +1] ) {
+    if ( ! instructions[cursor +1] ) {
       text = 'Finish';
     }
 
     return (
       <div id="syn-training" ref="view">
+        <div className="syn-training-close">
+          <Icon icon="times" onClick={ this.close.bind(this) } />
+        </div>
         <h4>{ title }</h4>
         <div style={{ marginBottom : '10px' }}>{ description }</div>
         <Button info onClick={ this.next.bind(this) }>{ text }</Button>

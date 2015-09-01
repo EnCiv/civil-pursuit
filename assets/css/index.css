@@ -1457,4 +1457,12 @@ body {
   border-width: 16px;
   margin-top: -16px;
 }
+.syn-training-close {
+  float: right;
+  cursor: pointer;
+  opacity: .6;
+}
+.syn-training-close:hover {
+  opacity: 1;
+}
 /**-------------------------------------------------------------// index      */

@@ -45,7 +45,7 @@ class Home extends React.Component {
         content = (
           <div>
             <PanelItems panel={ panel } { ...this.props } />
-            <Training />
+            <Training { ...this.props } />
           </div>
         );
       }
