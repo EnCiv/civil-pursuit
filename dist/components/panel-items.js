@@ -72,12 +72,20 @@ var PanelItems = (function (_React$Component) {
 
       var parent = null;
 
+      var className = '';
+
       if (this.props.panel) {
         var panel = this.props.panel;
 
         type = panel.panel.type;
 
+        className = 'syn-panel-' + type;
+
         parent = panel.panel.parent;
+
+        if (parent) {
+          className += '-' + (parent._id || parent);
+        }
 
         title = panel.panel.type.name;
 
@@ -123,7 +131,7 @@ var PanelItems = (function (_React$Component) {
 
       return _react2['default'].createElement(
         _panel2['default'],
-        _extends({}, this.props, { title: title, type: type, parent: parent, loaded: loaded }),
+        _extends({}, this.props, { title: title, type: type, parent: parent, loaded: loaded, className: className }),
         content,
         loadMore
       );

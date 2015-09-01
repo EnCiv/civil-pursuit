@@ -14,7 +14,7 @@ function getTraining(event) {
   var _this = this;
 
   try {
-    _modelsTraining2['default'].find().exec().then(function (instructions) {
+    _modelsTraining2['default'].find().sort({ step: 1 }).exec().then(function (instructions) {
       _this.ok(event, instructions);
     }, this.error.bind(this));
   } catch (error) {

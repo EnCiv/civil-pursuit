@@ -30,12 +30,20 @@ class PanelItems extends React.Component {
 
     let parent = null;
 
+    let className = '';
+
     if ( this.props.panel ) {
       let { panel } = this.props;
 
       type = panel.panel.type;
 
+      className = `syn-panel-${type}`;
+
       parent = panel.panel.parent;
+
+      if ( parent ) {
+        className += `-${parent._id || parent}`;
+      }
 
       title = panel.panel.type.name;
 
@@ -69,7 +77,7 @@ class PanelItems extends React.Component {
     }
 
     return (
-      <Panel { ...this.props } title={ title } type={ type } parent={ parent } loaded={ loaded }>
+      <Panel { ...this.props } title={ title } type={ type } parent={ parent } loaded={ loaded } className={ className }>
         { content }
         { loadMore }
       </Panel>

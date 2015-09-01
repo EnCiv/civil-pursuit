@@ -1,25 +1,30 @@
 'use strict';
 
-!(function () {
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
 
-  'use strict';
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-  var Type = require('../models/type');
+var _secretJson = require('../../secret.json');
 
-  function getTopLevelTypes(event, user_id, country_id) {
+var _secretJson2 = _interopRequireDefault(_secretJson);
 
-    var socket = this;
+var _modelsType = require('../models/type');
 
-    var domain = require('domain').create();
+var _modelsType2 = _interopRequireDefault(_modelsType);
 
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
+function getTopLevelType(event) {
+  var _this = this;
 
-    domain.run(function () {
-      Type.findOne({ name: 'Topic' }).exec().then(socket.ok.bind(socket, event));
-    });
+  try {
+    _modelsType2['default'].findOne({ name: _secretJson2['default']['top level item'] }).exec().then(function (type) {
+      return _this.ok(event, type);
+    }, this.error.bind(this));
+  } catch (error) {
+    this.error('error');
   }
+}
 
-  module.exports = getTopLevelTypes;
-})();
+exports['default'] = getTopLevelType;
+module.exports = exports['default'];

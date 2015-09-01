@@ -1,31 +1,21 @@
-! function () {
+'use strict';
 
-  'use strict';
+import config from '../../secret.json';
+import TypeModel from '../models/type';
 
-  
-
-  var Type = require('../models/type');
-
-  function getTopLevelTypes (event, user_id, country_id) {
-
-    var socket = this;
-
-    var domain = require('domain').create();
-    
-    domain.on('error', function (error) {
-      socket.pronto.emit('error', error);
-    });
-    
-    domain.run(function () {
-      Type
-        
-        .findOne({ name: 'Topic' })
-        
-        .exec().then(socket.ok.bind(socket, event));
-    });
-
+function getTopLevelType (event) {
+  try {
+    TypeModel
+      .findOne({ name : config['top level item'] })
+      .exec()
+      .then(
+        type => this.ok(event, type),
+        this.error.bind(this)
+      )
   }
+  catch ( error ) {
+    this.error('error');
+  }
+}
 
-  module.exports = getTopLevelTypes;
-
-} ();
+export default getTopLevelType;

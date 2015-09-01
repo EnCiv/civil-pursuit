@@ -6,6 +6,7 @@ function getTraining (event) {
   try {
     TrainingModel
       .find()
+      .sort({ step : 1 })
       .exec()
       .then(
         instructions => {
