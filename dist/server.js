@@ -134,7 +134,7 @@ var HttpServer = (function (_EventEmitter) {
 
         _this.cookies();
 
-        _this.session();
+        // this.session();
 
         _this.passport();
 
@@ -197,13 +197,7 @@ var HttpServer = (function (_EventEmitter) {
     }
   }, {
     key: 'session',
-    value: function session() {
-      this.app.use((0, _expressSession2['default'])({
-        secret: _secretJson2['default'].secret,
-        resave: true,
-        saveUninitialized: true
-      }));
-    }
+    value: function session() {}
   }, {
     key: 'signers',
     value: function signers() {
@@ -370,3 +364,11 @@ HttpServer.prototype.itemRoute = _routesItem2['default'];
 
 exports['default'] = HttpServer;
 module.exports = exports['default'];
+
+// this.app.use(
+//   session({
+//     secret:             config.secret,
+//     resave:             true,
+//     saveUninitialized:  true
+//   })
+// );

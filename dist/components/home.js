@@ -93,8 +93,7 @@ var Home = (function (_React$Component) {
               'div',
               { id: 'top-level-panel' },
               _react2['default'].createElement(_panelItems2['default'], _extends({ panel: panel }, this.props))
-            ),
-            _react2['default'].createElement(_training2['default'], this.props)
+            )
           );
         }
       }

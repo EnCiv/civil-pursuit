@@ -47,7 +47,6 @@ class Home extends React.Component {
             <div id="top-level-panel">
               <PanelItems panel={ panel } { ...this.props } />
             </div>
-            <Training { ...this.props } />
           </div>
         );
       }

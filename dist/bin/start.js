@@ -74,7 +74,6 @@ function connectToMongoose() {
 readMe().then(function () {
   return connectToMongoose().then(function () {
     try {
-
       _modelsType2['default'].findOne({ name: 'Intro' }).exec().then(function (type) {
         try {
           if (!type) {

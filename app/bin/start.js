@@ -56,7 +56,6 @@ readMe().then(
   () => connectToMongoose().then(
     () => {
       try {
-
         TypeModel
           .findOne({ name : 'Intro' })
           .exec()

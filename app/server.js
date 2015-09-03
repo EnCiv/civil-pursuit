@@ -54,7 +54,7 @@ class HttpServer extends EventEmitter {
 
         this.cookies();
 
-        this.session();
+        // this.session();
 
         this.passport();
 
@@ -115,13 +115,13 @@ class HttpServer extends EventEmitter {
   }
 
   session () {
-    this.app.use(
-      session({
-        secret:             config.secret,
-        resave:             true,
-        saveUninitialized:  true
-      })
-    );
+    // this.app.use(
+    //   session({
+    //     secret:             config.secret,
+    //     resave:             true,
+    //     saveUninitialized:  true
+    //   })
+    // );
   }
 
   signers () {
