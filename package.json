@@ -12,7 +12,7 @@
     "watchify": "bash bin/watchify.sh",
     "transpile": "rm -rf dir && babel app/ --modules common --stage 1 --out-dir dist/",
     "hot-transpile": "babel app/ --watch --modules common --stage 1 --out-dir dist/",
-    "less": "lessc assets/less/index.less assets/css/index.css",
+    "less": "lessc assets/less/index.less assets/css/index.css; lessc assets/less/training.less assets/css/training.css",
     "watch-less": "npm run less && node dist/bin/watch-less",
     "min-css": "bash bin/min-css.sh",
     "uglify": "uglifyjs assets/js/main.js -o assets/js/main.min.js",

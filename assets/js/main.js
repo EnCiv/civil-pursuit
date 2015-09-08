@@ -6715,22 +6715,6 @@ var Training = (function (_React$Component) {
   _createClass(Training, [{
     key: 'go',
     value: function go() {
-      // let view = React.findDOMNode(this.refs.view);
-      // let training = this.props.instructions[this.state.cursor];
-      // let target = document.querySelector(training.element);
-      // let pos = target.getBoundingClientRect();
-      // let dim = view.getBoundingClientRect();
-      // console.log({ pos, dim });
-      // view.style.top = (target.offsetTop - (view.offsetHeight / 2)) + 'px';
-      // view.style.right = (window.innerWidth - pos.left) + 'px';
-      //
-      //
-      // if ( view.offsetWidth ) {
-      //   if ( (pos.right + view.offsetWidth) > window.innerWidth ) {
-      //     view.style.right = 'auto';
-      //     view.style.left = (pos.right + view.offsetWidth - window.innerWidth) + 'px';
-      //   }
-      // }
 
       var instruction = this.props.instructions[this.state.cursor];
 

@@ -50,6 +50,7 @@ class Layout extends Document {
       this.add(
         new Stylesheet('/assets/css/normalize.css', { name : 'stylesheet' }),
         new Stylesheet('/assets/css/index.css'),
+        new Stylesheet('/assets/css/training.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
         new Stylesheet('/assets/bower_components/c3/c3.css'),
       );
@@ -58,8 +59,8 @@ class Layout extends Document {
       this.add(
         new Stylesheet('/assets/css/assets.min.css'),
         new Stylesheet('/assets/css/index.min.css'),
-        new Stylesheet(publicConfig['font awesome'].cdn),
-        new Element('style').text(this.props.css)
+        new Stylesheet('/assets/css/training.min.css'),
+        new Stylesheet(publicConfig['font awesome'].cdn)
       );
     }
 

@@ -18,11 +18,7 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _child_process = require('child_process');
-
 function home(req, res, next) {
-  var _this = this;
-
   try {
     if (this.app.get('env') === 'development') {
       var dir = _path2['default'].resolve(__dirname, '../../dist');
@@ -40,32 +36,26 @@ function home(req, res, next) {
         }
       }
     }
+    var App = require('../components/app');
 
-    (0, _child_process.exec)('./node_modules/.bin/lessc assets/less/training.less', function (error, response) {
+    var AppFactory = _react2['default'].createFactory(App);
 
-      var App = require('../components/app');
+    var Index = require('../pages/index');
 
-      var AppFactory = _react2['default'].createFactory(App);
+    var props = {
+      env: this.app.get('env'),
+      path: req.path,
+      user: false,
+      intro: this.props.intro
+    };
 
-      var Index = require('../pages/index');
+    var source = new Index(props).render();
 
-      var props = {
-        env: _this.app.get('env'),
-        path: req.path,
-        user: false,
-        intro: _this.props.intro,
-        css: response,
-        error: error ? error.message : null
-      };
+    var app = AppFactory(props);
 
-      var source = new Index(props).render();
+    source = source.replace(/<!-- #synapp -->/, _react2['default'].renderToString(app));
 
-      var app = AppFactory(props);
-
-      source = source.replace(/<!-- #synapp -->/, _react2['default'].renderToString(app));
-
-      res.send(source);
-    });
+    res.send(source);
   } catch (error) {
     next(error);
   }

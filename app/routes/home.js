@@ -3,7 +3,6 @@
 import fs                       from 'fs';
 import path                     from 'path';
 import React                    from 'react';
-import { exec }                 from 'child_process';
 
 function home (req, res, next) {
   try {
@@ -23,33 +22,26 @@ function home (req, res, next) {
         }
       }
     }
+    let App = require('../components/app');
 
+    let AppFactory = React.createFactory(App);
 
-    exec(`./node_modules/.bin/lessc assets/less/training.less`, (error, response) => {
+    let Index = require('../pages/index');
 
-      let App = require('../components/app');
+    let props = {
+      env         :   this.app.get('env'),
+      path        :   req.path,
+      user        :   false,
+      intro       :   this.props.intro
+    }
 
-      let AppFactory = React.createFactory(App);
+    let source = new Index(props).render();
 
-      let Index = require('../pages/index');
+    let app = AppFactory(props);
 
-      let props = {
-        env         :   this.app.get('env'),
-        path        :   req.path,
-        user        :   false,
-        intro       :   this.props.intro,
-        css         :   response,
-        error       :   error ? error.message : null
-      }
+    source = source.replace(/<!-- #synapp -->/, React.renderToString(app));
 
-      let source = new Index(props).render();
-
-      let app = AppFactory(props);
-
-      source = source.replace(/<!-- #synapp -->/, React.renderToString(app));
-
-      res.send(source);
-    });
+    res.send(source);
   }
   catch ( error ) {
     next(error);
