@@ -27,6 +27,7 @@ function home (req, res, next) {
     const training = path.join(__dirname, '../../assets/less/training.less');
 
     exec(`lessc ${training}`, (error, response) => {
+
       let App = require('../components/app');
 
       let AppFactory = React.createFactory(App);
@@ -38,7 +39,8 @@ function home (req, res, next) {
         path        :   req.path,
         user        :   false,
         intro       :   this.props.intro,
-        css         :   response
+        css         :   response,
+        trainig, error : error.message
       }
 
       let source = new Index(props).render();

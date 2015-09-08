@@ -44,6 +44,7 @@ function home(req, res, next) {
     var training = _path2['default'].join(__dirname, '../../assets/less/training.less');
 
     (0, _child_process.exec)('lessc ' + training, function (error, response) {
+
       var App = require('../components/app');
 
       var AppFactory = _react2['default'].createFactory(App);
@@ -55,7 +56,8 @@ function home(req, res, next) {
         path: req.path,
         user: false,
         intro: _this.props.intro,
-        css: response
+        css: response,
+        trainig: trainig, error: error.message
       };
 
       var source = new Index(props).render();
