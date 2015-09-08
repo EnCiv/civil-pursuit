@@ -102,6 +102,7 @@ var Training = (function (_React$Component) {
     value: function componentDidMount() {
       var _this = this;
 
+      console.error('component did mount');
       if (typeof window !== 'undefined') {
         setTimeout(function () {
           var view = _react2['default'].findDOMNode(_this.refs.view);
