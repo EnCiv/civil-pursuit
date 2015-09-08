@@ -52,7 +52,6 @@ class Layout extends Document {
         new Stylesheet('/assets/css/index.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
         new Stylesheet('/assets/bower_components/c3/c3.css'),
-        new Element('style').text(JSON.stringify(this.props, null, 2))
       );
     }
     else {
@@ -60,7 +59,7 @@ class Layout extends Document {
         new Stylesheet('/assets/css/assets.min.css'),
         new Stylesheet('/assets/css/index.min.css'),
         new Stylesheet(publicConfig['font awesome'].cdn),
-        new Element('style').text(JSON.stringify(this.props, null, 2))
+        new Element('style').text(this.props.css)
       );
     }
 
