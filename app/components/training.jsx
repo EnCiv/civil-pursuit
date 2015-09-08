@@ -71,10 +71,10 @@ class Training extends React.Component {
   }
 
   componentDidMount () {
-    console.error('component did mount')
     if ( typeof window !== 'undefined' ) {
       setTimeout(() => {
         let view = React.findDOMNode(this.refs.view);
+        console.info({ view })
         if ( view ) {
           view.classList.add('show');
         }
