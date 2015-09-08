@@ -40,7 +40,7 @@ function home (req, res, next) {
         user        :   false,
         intro       :   this.props.intro,
         css         :   response,
-        trainig, error : error.message
+        training, error : error.message
       }
 
       let source = new Index(props).render();

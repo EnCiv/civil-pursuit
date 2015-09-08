@@ -24,50 +24,52 @@ function home(req, res, next) {
   var _this = this;
 
   try {
-    if (this.app.get('env') === 'development') {
-      var dir = _path2['default'].resolve(__dirname, '../../dist');
+    (function () {
+      if (_this.app.get('env') === 'development') {
+        var dir = _path2['default'].resolve(__dirname, '../../dist');
 
-      for (var cache in require.cache) {
-        var _dir = cache.substr(0, dir.length);
+        for (var cache in require.cache) {
+          var _dir = cache.substr(0, dir.length);
 
-        if (_dir === dir) {
+          if (_dir === dir) {
 
-          var _dir2 = cache.substr(dir.length);
+            var _dir2 = cache.substr(dir.length);
 
-          if (!/^\/((models))/.test(_dir2)) {
-            delete require.cache[cache];
+            if (!/^\/((models))/.test(_dir2)) {
+              delete require.cache[cache];
+            }
           }
         }
       }
-    }
 
-    var training = _path2['default'].join(__dirname, '../../assets/less/training.less');
+      var training = _path2['default'].join(__dirname, '../../assets/less/training.less');
 
-    (0, _child_process.exec)('lessc ' + training, function (error, response) {
+      (0, _child_process.exec)('lessc ' + training, function (error, response) {
 
-      var App = require('../components/app');
+        var App = require('../components/app');
 
-      var AppFactory = _react2['default'].createFactory(App);
+        var AppFactory = _react2['default'].createFactory(App);
 
-      var Index = require('../pages/index');
+        var Index = require('../pages/index');
 
-      var props = {
-        env: _this.app.get('env'),
-        path: req.path,
-        user: false,
-        intro: _this.props.intro,
-        css: response,
-        trainig: trainig, error: error.message
-      };
+        var props = {
+          env: _this.app.get('env'),
+          path: req.path,
+          user: false,
+          intro: _this.props.intro,
+          css: response,
+          training: training, error: error.message
+        };
 
-      var source = new Index(props).render();
+        var source = new Index(props).render();
 
-      var app = AppFactory(props);
+        var app = AppFactory(props);
 
-      source = source.replace(/<!-- #synapp -->/, _react2['default'].renderToString(app));
+        source = source.replace(/<!-- #synapp -->/, _react2['default'].renderToString(app));
 
-      res.send(source);
-    });
+        res.send(source);
+      });
+    })();
   } catch (error) {
     next(error);
   }
