@@ -2293,7 +2293,8 @@ var Home = (function (_React$Component) {
               'div',
               { id: 'top-level-panel' },
               _react2['default'].createElement(_panelItems2['default'], _extends({ panel: panel }, this.props))
-            )
+            ),
+            _react2['default'].createElement(_training2['default'], this.props)
           );
         }
       }
@@ -6714,15 +6715,71 @@ var Training = (function (_React$Component) {
   _createClass(Training, [{
     key: 'go',
     value: function go() {
-      var view = _react2['default'].findDOMNode(this.refs.view);
-      var training = this.props.instructions[this.state.cursor];
-      var target = document.querySelector(training.element);
-      var pos = target.getBoundingClientRect();
-      var dim = view.getBoundingClientRect();
-      console.log({ pos: pos, dim: dim });
-      view.style.top = target.offsetTop - view.offsetHeight / 2 + 'px';
-      view.style.right = window.innerWidth - pos.left + 'px';
-      console.log(window.innerWidth, pos.right);
+      // let view = React.findDOMNode(this.refs.view);
+      // let training = this.props.instructions[this.state.cursor];
+      // let target = document.querySelector(training.element);
+      // let pos = target.getBoundingClientRect();
+      // let dim = view.getBoundingClientRect();
+      // console.log({ pos, dim });
+      // view.style.top = (target.offsetTop - (view.offsetHeight / 2)) + 'px';
+      // view.style.right = (window.innerWidth - pos.left) + 'px';
+      //
+      //
+      // if ( view.offsetWidth ) {
+      //   if ( (pos.right + view.offsetWidth) > window.innerWidth ) {
+      //     view.style.right = 'auto';
+      //     view.style.left = (pos.right + view.offsetWidth - window.innerWidth) + 'px';
+      //   }
+      // }
+
+      var instruction = this.props.instructions[this.state.cursor];
+
+      var tooltip = {
+        element: _react2['default'].findDOMNode(this.refs.view),
+        offset: {},
+        target: {
+          element: document.querySelector(instruction.element),
+          offset: {}
+        },
+        position: {}
+      };
+
+      tooltip.rect = tooltip.element.getBoundingClientRect();
+      tooltip.offset.top = tooltip.element.offsetTop;
+      tooltip.offset.bottom = tooltip.element.offseBottom;
+      tooltip.offset.left = tooltip.element.offsetLeft;
+      tooltip.offset.right = tooltip.element.offsetRight;
+      tooltip.offset.height = tooltip.element.offsetHeight;
+      tooltip.offset.width = tooltip.element.offsetWidth;
+      tooltip.target.rect = tooltip.target.element.getBoundingClientRect();
+      tooltip.target.offset.top = tooltip.target.element.offsetTop;
+      tooltip.target.offset.bottom = tooltip.target.element.offseBottom;
+      tooltip.target.offset.left = tooltip.target.element.offsetLeft;
+      tooltip.target.offset.right = tooltip.target.element.offsetRight;
+      tooltip.target.offset.height = tooltip.target.element.offsetHeight;
+      tooltip.target.offset.width = tooltip.target.element.offsetWidth;
+      tooltip.arrow = 'bottom';
+
+      tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height;
+      tooltip.position.left = tooltip.target.rect.left + tooltip.target.rect.width / 2 - tooltip.rect.width / 2;
+
+      if (tooltip.position.top < 0) {
+        tooltip.position.top = tooltip.target.rect.top + tooltip.target.rect.height + 20;
+        tooltip.arrow = 'top';
+      }
+
+      setTimeout(function () {
+        console.log({ tooltip: tooltip });
+        tooltip.element.style.top = tooltip.position.top + 'px';
+        tooltip.element.style.left = tooltip.position.left + 'px';
+
+        tooltip.element.classList.remove('syn-training-arrow-right');
+        tooltip.element.classList.remove('syn-training-arrow-left');
+        tooltip.element.classList.remove('syn-training-arrow-top');
+        tooltip.element.classList.remove('syn-training-arrow-bottom');
+
+        tooltip.element.classList.add('syn-training-arrow-' + tooltip.arrow);
+      });
     }
   }, {
     key: 'next',
@@ -6740,7 +6797,7 @@ var Training = (function (_React$Component) {
           if (view) {
             view.classList.add('show');
           }
-        }, 1000);
+        }, 100);
         setTimeout(this.go.bind(this), 3000);
       }
     }
