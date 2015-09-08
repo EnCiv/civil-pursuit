@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 node dist/lib/build/minify.js assets/css/index.css assets/css/index.min.css &&
-node dist/lib/build/minify.js assets/css/assets.css assets/css/assets.min.css &&
+node dist/lib/build/minify.js assets/css/training.css assets/css/training.min.css &&
 
 #
 # node dist/lib/build/minify.js assets/bower_components/goalProgress/goalProgress.css assets/css/.goalProgress.min.css;
