@@ -42,7 +42,8 @@ class Layout extends Document {
     this.add(
       new Element('title').text('Synaccord | Bring synergy to democracy'),
       this.uACompatible(),
-      this.viewport()
+      this.viewport(),
+      new Element('meta', { 'blocking' : 'io' }).close()
     );
 
     if ( props.env === 'development' ) {
