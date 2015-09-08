@@ -194,10 +194,6 @@ class HttpServer extends EventEmitter {
     });
   }
 
-  getPage () {
-    this.app.get('/page/:page', this.renderPage.bind(this));
-  }
-
   getLandingPage () {
     try {
       this.app.get('/', Routes.homePage.bind(this));

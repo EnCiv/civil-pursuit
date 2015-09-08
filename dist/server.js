@@ -275,11 +275,6 @@ var HttpServer = (function (_EventEmitter) {
       });
     }
   }, {
-    key: 'getPage',
-    value: function getPage() {
-      this.app.get('/page/:page', this.renderPage.bind(this));
-    }
-  }, {
     key: 'getLandingPage',
     value: function getLandingPage() {
       try {

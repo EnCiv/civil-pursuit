@@ -76,7 +76,7 @@ var Layout = (function (_Document) {
     if (props.env === 'development') {
       this.add(new Stylesheet('/assets/css/normalize.css', { name: 'stylesheet' }), new Stylesheet('/assets/css/index.css'), new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'), new Stylesheet('/assets/bower_components/c3/c3.css'));
     } else {
-      this.add(new Stylesheet('/assets/css/assets.min.css'), new Stylesheet('/assets/css/index.min.css'), new Stylesheet(_publicJson2['default']['font awesome'].cdn), new _cincoDist.Element('style').text('#syn-training:after, #syn-training:before {\n        \tleft: 100%;\n        \ttop: 50%;\n        \tborder: solid transparent;\n        \tcontent: " ";\n        \theight: 0;\n        \twidth: 0;\n        \tposition: absolute;\n        \tpointer-events: none;\n        }\n\n        #syn-training:after {\n        \tborder-color: rgba(0, 0, 0, 0);\n        \tborder-left-color: #000000;\n        \tborder-width: 10px;\n        \tmargin-top: -10px;\n        }\n        #syn-training:before {\n        \tborder-color: rgba(0, 0, 0, 0);\n        \tborder-left-color: #000000;\n        \tborder-width: 16px;\n        \tmargin-top: -16px;\n        }'));
+      this.add(new Stylesheet('/assets/css/assets.min.css'), new Stylesheet('/assets/css/index.min.css'), new Stylesheet(_publicJson2['default']['font awesome'].cdn), new _cincoDist.Element('style').text(props.css));
     }
 
     this.add(this.container());
