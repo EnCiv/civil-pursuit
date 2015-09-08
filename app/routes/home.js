@@ -24,9 +24,8 @@ function home (req, res, next) {
       }
     }
 
-    const training = path.join(__dirname, '../../assets/less/training.less');
 
-    exec(`lessc ${training}`, (error, response) => {
+    exec(`./node_modules/.bin/lessc assets/less/training.less`, (error, response) => {
 
       let App = require('../components/app');
 
@@ -40,7 +39,7 @@ function home (req, res, next) {
         user        :   false,
         intro       :   this.props.intro,
         css         :   response,
-        training, error : error.message
+        error       :   error ? error.message : null
       }
 
       let source = new Index(props).render();
