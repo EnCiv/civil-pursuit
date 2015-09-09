@@ -12,6 +12,8 @@ class Training extends React.Component {
     window.Dispatcher.emit('get instructions');
 
     this.state = { cursor : 0 };
+
+    this.ready = false;
   }
 
   go () {
@@ -70,26 +72,46 @@ class Training extends React.Component {
     this.setState({ cursor : this.state.cursor + 1 });
   }
 
+  init () {
+    setTimeout(() => {
+      this.ready = true;
+      let view = React.findDOMNode(this.refs.view);
+      console.info({ view })
+      if ( view ) {
+        view.classList.add('show');
+      }
+    }, 100);
+    setTimeout(this.go.bind(this), 3000);
+  }
+
   componentDidMount () {
     if ( typeof window !== 'undefined' ) {
-      setTimeout(() => {
-        let view = React.findDOMNode(this.refs.view);
-        console.info({ view })
-        if ( view ) {
-          view.classList.add('show');
-        }
-      }, 100);
-      setTimeout(this.go.bind(this), 3000);
+      let view = React.findDOMNode(this.refs.view);
+
+      if ( view ) {
+        this.init();
+      }
     }
   }
 
   componentDidUpdate () {
     if ( typeof window !== 'undefined' ) {
-      if ( this.props.instructions[this.state.cursor] ) {
-        this.go();
+
+      if ( ! this.ready ) {
+        let view = React.findDOMNode(this.refs.view);
+
+        if ( view ) {
+          this.init();
+        }
       }
-      else if ( this.props.instructions.length ) {
-        this.close();
+
+      else {
+        if ( this.props.instructions[this.state.cursor] ) {
+          this.go();
+        }
+        else if ( this.props.instructions.length ) {
+          this.close();
+        }
       }
     }
   }

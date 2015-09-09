@@ -35,6 +35,8 @@ var Training = (function (_React$Component) {
     window.Dispatcher.emit('get instructions');
 
     this.state = { cursor: 0 };
+
+    this.ready = false;
   }
 
   _inherits(Training, _React$Component);
@@ -98,29 +100,48 @@ var Training = (function (_React$Component) {
       this.setState({ cursor: this.state.cursor + 1 });
     }
   }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
+    key: 'init',
+    value: function init() {
       var _this = this;
 
+      setTimeout(function () {
+        _this.ready = true;
+        var view = _react2['default'].findDOMNode(_this.refs.view);
+        console.info({ view: view });
+        if (view) {
+          view.classList.add('show');
+        }
+      }, 100);
+      setTimeout(this.go.bind(this), 3000);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
       if (typeof window !== 'undefined') {
-        setTimeout(function () {
-          var view = _react2['default'].findDOMNode(_this.refs.view);
-          console.info({ view: view });
-          if (view) {
-            view.classList.add('show');
-          }
-        }, 100);
-        setTimeout(this.go.bind(this), 3000);
+        var view = _react2['default'].findDOMNode(this.refs.view);
+
+        if (view) {
+          this.init();
+        }
       }
     }
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       if (typeof window !== 'undefined') {
-        if (this.props.instructions[this.state.cursor]) {
-          this.go();
-        } else if (this.props.instructions.length) {
-          this.close();
+
+        if (!this.ready) {
+          var view = _react2['default'].findDOMNode(this.refs.view);
+
+          if (view) {
+            this.init();
+          }
+        } else {
+          if (this.props.instructions[this.state.cursor]) {
+            this.go();
+          } else if (this.props.instructions.length) {
+            this.close();
+          }
         }
       }
     }
