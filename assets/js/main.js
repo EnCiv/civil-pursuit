@@ -6746,7 +6746,7 @@ var Training = (function (_React$Component) {
       tooltip.target.offset.width = tooltip.target.element.offsetWidth;
       tooltip.arrow = 'bottom';
 
-      tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height;
+      tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height - 20;
       tooltip.position.left = tooltip.target.rect.left + tooltip.target.rect.width / 2 - tooltip.rect.width / 2;
 
       if (tooltip.position.top < 0) {
@@ -6758,6 +6758,18 @@ var Training = (function (_React$Component) {
         console.log({ tooltip: tooltip });
         tooltip.element.style.top = tooltip.position.top + 'px';
         tooltip.element.style.left = tooltip.position.left + 'px';
+
+        tooltip.rect = tooltip.element.getBoundingClientRect();
+
+        if (window.innerWidth - tooltip.rect.right < 50) {
+          tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height + tooltip.rect.height / 2 + 20;
+          tooltip.position.right = window.innerWidth - tooltip.target.rect.right + 40;
+          tooltip.arrow = 'right';
+
+          tooltip.element.style.top = tooltip.position.top + 'px';
+          tooltip.element.style.left = 'auto';
+          tooltip.element.style.right = tooltip.position.right + 'px';
+        }
 
         tooltip.element.classList.remove('syn-training-arrow-right');
         tooltip.element.classList.remove('syn-training-arrow-left');
