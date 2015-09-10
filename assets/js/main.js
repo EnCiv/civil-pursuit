@@ -6752,6 +6752,7 @@ var Training = (function (_React$Component) {
       if (tooltip.position.top < 0) {
         tooltip.position.top = tooltip.target.rect.top + tooltip.target.rect.height + 20;
         tooltip.arrow = 'top';
+        tooltip.rect = tooltip.element.getBoundingClientRect();
       }
 
       setTimeout(function () {
@@ -6761,7 +6762,10 @@ var Training = (function (_React$Component) {
 
         tooltip.rect = tooltip.element.getBoundingClientRect();
 
-        if (window.innerWidth - tooltip.rect.right < 50) {
+        var isTooCloseToRightMargin = window.innerWidth - tooltip.rect.right < 50;
+        var bottomShouldBeRight = tooltip.arrow === 'bottom' && tooltip.rect.right < tooltip.target.rect.left;
+
+        if (isTooCloseToRightMargin || bottomShouldBeRight) {
           tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height + tooltip.rect.height / 2 + 20;
           tooltip.position.right = window.innerWidth - tooltip.target.rect.right + 40;
           tooltip.arrow = 'right';
