@@ -6765,7 +6765,7 @@ var Training = (function (_React$Component) {
 
       var pageYOffset = window.pageYOffset;
 
-      tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height - 20;
+      tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height - 20 + +pageYOffset;
       tooltip.position.left = tooltip.target.rect.left + tooltip.target.rect.width / 2 - tooltip.rect.width / 2;
 
       if (tooltip.position.top < 0) {
