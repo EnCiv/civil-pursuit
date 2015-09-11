@@ -206,7 +206,7 @@ class ColumnButtons extends React.Component {
     }
 
     return (
-      <Column span="50" className={ `promote-${position}` } ref="view">
+      <Column span="50" className={ `promote-${position} promote-item-${position}` } ref="view">
         <PromoteButton { ...item } onClick={ this.next.bind(this) } className="gutter-bottom" />
         <EditAndGoAgain { ...this.props } panel-id={ this.props['panel-id'] } item={ item } />
       </Column>
@@ -252,7 +252,9 @@ class SideColumn extends React.Component {
         <Sliders criterias={ criterias } className="promote-sliders" />
         <Feedback className="gutter-top" />
         <div className="gutter-top">
-          { promoteMe }
+          <div className={`promote-item-${position}`}>
+            { promoteMe }
+          </div>
           <EditAndGoAgain { ...this.props } panel-id={ this.props['panel-id'] } item={ item } />
         </div>
       </Column>

@@ -65,7 +65,7 @@ var Button = (function (_React$Component) {
 
       return _react2['default'].createElement(
         'button',
-        _extends({ type: 'button' }, this.props, { className: classes.join(' ') }),
+        _extends({}, this.props, { type: 'button', className: classes.join(' ') }),
         this.props.children
       );
     }

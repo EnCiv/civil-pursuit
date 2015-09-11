@@ -77,7 +77,7 @@ var Slider = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { span: '60' },
-            _react2['default'].createElement(_utilRange2['default'], { block: true, step: '1', min: '-1', max: '1', defaultValue: '0', 'data-criteria': criteria._id })
+            _react2['default'].createElement(_utilRange2['default'], { block: true, step: '1', min: '-1', max: '1', defaultValue: '0', 'data-criteria': criteria._id, className: 'syn-sliders-slider' })
           )
         )
       );

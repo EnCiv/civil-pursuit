@@ -28,7 +28,7 @@ class Button extends React.Component {
     }
 
     return (
-      <button type="button" { ...this.props } className={ classes.join(' ') }>
+      <button { ...this.props } type="button" className={ classes.join(' ') }>
         { this.props.children }
       </button>
     );

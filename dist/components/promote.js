@@ -474,7 +474,7 @@ var ColumnButtons = (function (_React$Component12) {
 
       return _react2['default'].createElement(
         _utilColumn2['default'],
-        { span: '50', className: 'promote-' + position, ref: 'view' },
+        { span: '50', className: 'promote-' + position + ' promote-item-' + position, ref: 'view' },
         _react2['default'].createElement(PromoteButton, _extends({}, item, { onClick: this.next.bind(this), className: 'gutter-bottom' })),
         _react2['default'].createElement(EditAndGoAgain, _extends({}, this.props, { 'panel-id': this.props['panel-id'], item: item }))
       );
@@ -543,7 +543,11 @@ var SideColumn = (function (_React$Component13) {
         _react2['default'].createElement(
           'div',
           { className: 'gutter-top' },
-          promoteMe,
+          _react2['default'].createElement(
+            'div',
+            { className: 'promote-item-' + position },
+            promoteMe
+          ),
           _react2['default'].createElement(EditAndGoAgain, _extends({}, this.props, { 'panel-id': this.props['panel-id'], item: item }))
         )
       );
