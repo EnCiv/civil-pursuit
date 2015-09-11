@@ -5149,7 +5149,7 @@ var Finish = (function (_React$Component8) {
 
       return _react2['default'].createElement(
         _utilButton2['default'],
-        _extends({ block: true }, this.props, { onClick: this.next.bind(this), ref: 'view' }),
+        _extends({ block: true }, this.props, { onClick: this.next.bind(this), ref: 'view', className: 'finish-evaluate' }),
         _react2['default'].createElement(
           'b',
           null,

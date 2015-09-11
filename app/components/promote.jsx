@@ -121,7 +121,7 @@ class Finish extends React.Component {
     }
 
     return (
-      <Button block { ...this.props } onClick={ this.next.bind(this) } ref="view">
+      <Button block { ...this.props } onClick={ this.next.bind(this) } ref="view" className="finish-evaluate">
         <b>{ text }</b>
       </Button>
     );
