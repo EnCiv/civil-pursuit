@@ -45,6 +45,19 @@
   border-left-color: #000000;
   margin-top: -16px;
 }
+#syn-training.syn-training-arrow-left:after,
+#syn-training.syn-training-arrow-left:before {
+  right: 100%;
+  top: 50%;
+}
+#syn-training.syn-training-arrow-left:after {
+  border-right-color: #000000;
+  margin-top: -10px;
+}
+#syn-training.syn-training-arrow-left:before {
+  border-right-color: #000000;
+  margin-top: -16px;
+}
 #syn-training.syn-training-arrow-bottom:after,
 #syn-training.syn-training-arrow-bottom:before {
   top: 100%;

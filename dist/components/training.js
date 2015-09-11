@@ -90,6 +90,8 @@ var Training = (function (_React$Component) {
       tooltip.target.offset.width = tooltip.target.element.offsetWidth;
       tooltip.arrow = 'bottom';
 
+      var pageYOffset = window.pageYOffset;
+
       tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height - 20;
       tooltip.position.left = tooltip.target.rect.left + tooltip.target.rect.width / 2 - tooltip.rect.width / 2;
 
@@ -108,6 +110,7 @@ var Training = (function (_React$Component) {
 
         var isTooCloseToRightMargin = window.innerWidth - tooltip.rect.right < 50;
         var bottomShouldBeRight = tooltip.arrow === 'bottom' && tooltip.rect.right < tooltip.target.rect.left;
+        var isBehindLeftMargin = tooltip.rect.left < 0;
 
         if (isTooCloseToRightMargin || bottomShouldBeRight) {
           tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height + tooltip.rect.height / 2 + 20;
@@ -117,6 +120,16 @@ var Training = (function (_React$Component) {
           tooltip.element.style.top = tooltip.position.top + 'px';
           tooltip.element.style.left = 'auto';
           tooltip.element.style.right = tooltip.position.right + 'px';
+
+          tooltip.rect = tooltip.element.getBoundingClientRect();
+        } else if (isBehindLeftMargin) {
+          tooltip.position.left = tooltip.target.rect.right;
+          tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height / 2 + pageYOffset;
+          tooltip.element.style.left = tooltip.position.left + 'px';
+          tooltip.element.style.top = tooltip.position.top + 'px';
+          tooltip.arrow = 'left';
+
+          tooltip.rect = tooltip.element.getBoundingClientRect();
         }
 
         tooltip.element.classList.remove('syn-training-arrow-right');
@@ -125,6 +138,11 @@ var Training = (function (_React$Component) {
         tooltip.element.classList.remove('syn-training-arrow-bottom');
 
         tooltip.element.classList.add('syn-training-arrow-' + tooltip.arrow);
+
+        // let {top} = tooltip.rect;
+        // let { pageYOffset } = window;
+        //
+        // window.scrollTo(0, pageYOffset + top - 60);
       });
     }
   }, {

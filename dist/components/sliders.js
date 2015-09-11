@@ -65,7 +65,7 @@ var Slider = (function (_React$Component) {
             { span: '40' },
             _react2['default'].createElement(
               'h5',
-              { onClick: this.toggleDescription.bind(this) },
+              { className: 'syn-sliders-criteria-name', onClick: this.toggleDescription.bind(this) },
               criteria.name
             ),
             _react2['default'].createElement(

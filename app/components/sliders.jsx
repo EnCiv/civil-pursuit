@@ -19,7 +19,7 @@ class Slider extends React.Component {
       <div>
         <Row>
           <Column span="40">
-            <h5 onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h5>
+            <h5 className="syn-sliders-criteria-name" onClick={ this.toggleDescription.bind(this) }>{ criteria.name }</h5>
             <h5 className="syn-sliders-criteria-description" ref="description">{ criteria.description }</h5>
           </Column>
 
