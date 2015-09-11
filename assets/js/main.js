@@ -6700,6 +6700,9 @@ var _utilIcon = require('./util/icon');
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
 
 var Training = (function (_React$Component) {
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Training(props) {
     _classCallCheck(this, Training);
 
@@ -6716,9 +6719,23 @@ var Training = (function (_React$Component) {
 
   _createClass(Training, [{
     key: 'go',
-    value: function go() {
 
-      var instruction = this.props.instructions[this.state.cursor];
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function go() {
+      var _this = this;
+
+      var instructions = this.props.instructions;
+
+      var relevantInstructions = instructions.filter(function (instruction) {
+        if (!_this.props.user) {
+          return !instruction['in'];
+        } else {
+          return true;
+        }
+      });
+
+      var instruction = relevantInstructions[this.state.cursor];
 
       var tooltip = {
         element: _react2['default'].findDOMNode(this.refs.view),
@@ -6785,11 +6802,22 @@ var Training = (function (_React$Component) {
     }
   }, {
     key: 'next',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function next() {
-      var _this = this;
+      var _this2 = this;
 
       var cursor = this.state.cursor;
       var instructions = this.props.instructions;
+
+      var relevantInstructions = instructions.filter(function (instruction) {
+        if (!_this2.props.user) {
+          return !instruction['in'];
+        } else {
+          return true;
+        }
+      });
 
       var current = instructions[cursor];
 
@@ -6799,7 +6827,7 @@ var Training = (function (_React$Component) {
         var target = document.querySelector(click);
         target.click();
         setTimeout(function () {
-          return _this.setState({ cursor: _this.state.cursor + 1 });
+          return _this2.setState({ cursor: _this2.state.cursor + 1 });
         }, 1500);
       } else {
         this.setState({ cursor: this.state.cursor + 1 });
@@ -6807,12 +6835,15 @@ var Training = (function (_React$Component) {
     }
   }, {
     key: 'init',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function init() {
-      var _this2 = this;
+      var _this3 = this;
 
       setTimeout(function () {
-        _this2.ready = true;
-        var view = _react2['default'].findDOMNode(_this2.refs.view);
+        _this3.ready = true;
+        var view = _react2['default'].findDOMNode(_this3.refs.view);
         console.info({ view: view });
         if (view) {
           view.classList.add('show');
@@ -6822,6 +6853,9 @@ var Training = (function (_React$Component) {
     }
   }, {
     key: 'componentDidMount',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function componentDidMount() {
       if (typeof window !== 'undefined') {
         var view = _react2['default'].findDOMNode(this.refs.view);
@@ -6833,7 +6867,12 @@ var Training = (function (_React$Component) {
     }
   }, {
     key: 'componentDidUpdate',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function componentDidUpdate() {
+      var _this4 = this;
+
       if (typeof window !== 'undefined') {
 
         if (!this.ready) {
@@ -6843,9 +6882,19 @@ var Training = (function (_React$Component) {
             this.init();
           }
         } else {
-          if (this.props.instructions[this.state.cursor]) {
+          var instructions = this.props.instructions;
+
+          var relevantInstructions = instructions.filter(function (instruction) {
+            if (!_this4.props.user) {
+              return !instruction['in'];
+            } else {
+              return true;
+            }
+          });
+
+          if (relevantInstructions[this.state.cursor]) {
             this.go();
-          } else if (this.props.instructions.length) {
+          } else if (relevantInstructions.length) {
             this.close();
           }
         }
@@ -6853,13 +6902,21 @@ var Training = (function (_React$Component) {
     }
   }, {
     key: 'close',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function close() {
       var view = _react2['default'].findDOMNode(this.refs.view);
       view.classList.remove('show');
     }
   }, {
     key: 'render',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     value: function render() {
+      var _this5 = this;
+
       var cursor = this.state.cursor;
 
       if (!this.props.instructions.length) {
@@ -6868,7 +6925,15 @@ var Training = (function (_React$Component) {
 
       var instructions = this.props.instructions;
 
-      var current = instructions[cursor];
+      var relevantInstructions = instructions.filter(function (instruction) {
+        if (!_this5.props.user) {
+          return !instruction['in'];
+        } else {
+          return true;
+        }
+      });
+
+      var current = relevantInstructions[cursor];
 
       if (!current) {
         return _react2['default'].createElement('div', { id: 'syn-training', ref: 'view' });
@@ -6879,7 +6944,7 @@ var Training = (function (_React$Component) {
 
       var text = 'Next';
 
-      if (!instructions[cursor + 1]) {
+      if (!relevantInstructions[cursor + 1]) {
         text = 'Finish';
       }
 

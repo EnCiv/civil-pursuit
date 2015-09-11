@@ -6,6 +6,8 @@ import Icon from './util/icon';
 
 class Training extends React.Component {
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props);
 
@@ -16,9 +18,22 @@ class Training extends React.Component {
     this.ready = false;
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   go () {
 
-    const instruction = this.props.instructions[this.state.cursor];
+    const { instructions } = this.props;
+
+    const relevantInstructions = instructions.filter(instruction => {
+      if ( ! this.props.user ) {
+        return ! instruction.in;
+      }
+      else {
+        return true;
+      }
+    });
+
+    const instruction = relevantInstructions[this.state.cursor];
 
     let tooltip = {
       element : React.findDOMNode(this.refs.view),
@@ -84,10 +99,21 @@ class Training extends React.Component {
     });
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   next () {
     const { cursor } = this.state;
 
     const { instructions } = this.props;
+
+    const relevantInstructions = instructions.filter(instruction => {
+      if ( ! this.props.user ) {
+        return ! instruction.in;
+      }
+      else {
+        return true;
+      }
+    });
 
     const current = instructions[cursor];
 
@@ -103,6 +129,8 @@ class Training extends React.Component {
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   init () {
     setTimeout(() => {
       this.ready = true;
@@ -115,6 +143,8 @@ class Training extends React.Component {
     setTimeout(this.go.bind(this), 3000);
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   componentDidMount () {
     if ( typeof window !== 'undefined' ) {
       let view = React.findDOMNode(this.refs.view);
@@ -124,6 +154,8 @@ class Training extends React.Component {
       }
     }
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   componentDidUpdate () {
     if ( typeof window !== 'undefined' ) {
@@ -137,20 +169,35 @@ class Training extends React.Component {
       }
 
       else {
-        if ( this.props.instructions[this.state.cursor] ) {
+        const { instructions } = this.props;
+
+        const relevantInstructions = instructions.filter(instruction => {
+          if ( ! this.props.user ) {
+            return ! instruction.in;
+          }
+          else {
+            return true;
+          }
+        });
+
+        if ( relevantInstructions[this.state.cursor] ) {
           this.go();
         }
-        else if ( this.props.instructions.length ) {
+        else if ( relevantInstructions.length ) {
           this.close();
         }
       }
     }
   }
 
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   close () {
     let view = React.findDOMNode(this.refs.view);
     view.classList.remove('show');
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
     let { cursor } = this.state;
@@ -159,9 +206,18 @@ class Training extends React.Component {
       return ( <div></div> );
     }
 
-    let { instructions } = this.props;
+    const { instructions } = this.props;
 
-    let current = instructions[cursor];
+    const relevantInstructions = instructions.filter(instruction => {
+      if ( ! this.props.user ) {
+        return ! instruction.in;
+      }
+      else {
+        return true;
+      }
+    });
+
+    let current = relevantInstructions[cursor];
 
     if ( ! current ) {
       return ( <div id="syn-training" ref="view"></div> );
@@ -171,7 +227,7 @@ class Training extends React.Component {
 
     let text = 'Next';
 
-    if ( ! instructions[cursor +1] ) {
+    if ( ! relevantInstructions[cursor +1] ) {
       text = 'Finish';
     }
 
