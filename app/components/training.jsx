@@ -85,7 +85,22 @@ class Training extends React.Component {
   }
 
   next () {
-    this.setState({ cursor : this.state.cursor + 1 });
+    const { cursor } = this.state;
+
+    const { instructions } = this.props;
+
+    const current = instructions[cursor];
+
+    if ( current.click ) {
+      const { click } = current;
+      const target = document.querySelector(click);
+      target.click();
+      setTimeout(() => this.setState({ cursor : this.state.cursor + 1 }), 1500);
+    }
+
+    else {
+      this.setState({ cursor : this.state.cursor + 1 });
+    }
   }
 
   init () {

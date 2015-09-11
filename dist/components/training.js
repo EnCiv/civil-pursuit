@@ -113,16 +113,33 @@ var Training = (function (_React$Component) {
   }, {
     key: 'next',
     value: function next() {
-      this.setState({ cursor: this.state.cursor + 1 });
+      var _this = this;
+
+      var cursor = this.state.cursor;
+      var instructions = this.props.instructions;
+
+      var current = instructions[cursor];
+
+      if (current.click) {
+        var click = current.click;
+
+        var target = document.querySelector(click);
+        target.click();
+        setTimeout(function () {
+          return _this.setState({ cursor: _this.state.cursor + 1 });
+        }, 1500);
+      } else {
+        this.setState({ cursor: this.state.cursor + 1 });
+      }
     }
   }, {
     key: 'init',
     value: function init() {
-      var _this = this;
+      var _this2 = this;
 
       setTimeout(function () {
-        _this.ready = true;
-        var view = _react2['default'].findDOMNode(_this.refs.view);
+        _this2.ready = true;
+        var view = _react2['default'].findDOMNode(_this2.refs.view);
         console.info({ view: view });
         if (view) {
           view.classList.add('show');
