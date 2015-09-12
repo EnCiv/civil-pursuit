@@ -13,7 +13,7 @@ class Training extends React.Component {
 
     window.Dispatcher.emit('get instructions');
 
-    this.state = { cursor : 0 };
+    this.state = { cursor : 0, loader : false };
 
     this.ready = false;
   }
@@ -112,10 +112,14 @@ class Training extends React.Component {
 
       tooltip.element.classList.add(`syn-training-arrow-${tooltip.arrow}`);
 
-      // let {top} = tooltip.rect;
-      // let { pageYOffset } = window;
-      //
-      // window.scrollTo(0, pageYOffset + top - 60);
+      let {top, height} = tooltip.rect;
+      let { pageYOffset } = window;
+
+      if ( (top + height) > window.innerHeight ) {
+        window.scrollTo(0, (top - 100));
+      }
+
+
     });
   }
 
@@ -141,7 +145,10 @@ class Training extends React.Component {
       const { click } = current;
       const target = document.querySelector(click);
       target.click();
-      setTimeout(() => this.setState({ cursor : this.state.cursor + 1 }), 1500);
+
+      this.setState({ loader : true });
+
+      setTimeout(() => this.setState({ cursor : this.state.cursor + 1, loader : false }), 1500);
     }
 
     else {
@@ -220,7 +227,8 @@ class Training extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { cursor } = this.state;
+    console.warn('Render', this.state);
+    let { cursor, loader } = this.state;
 
     if ( ! this.props.instructions.length ) {
       return ( <div></div> );
@@ -251,14 +259,36 @@ class Training extends React.Component {
       text = 'Finish';
     }
 
+    let content ;
+
+    if ( loader ) {
+      content = (
+        <Icon icon="spinner" spin={ true } size={ 3 } ref="loader" />
+      );
+    }
+
+    else {
+      content = (
+        <div>
+          <div style={{ marginBottom : '10px' }}>{ description }</div>
+          <Button
+            info
+            onClick   =   { this.next.bind(this) }
+            ref       =   "button"
+            >{ text }</Button>
+        </div>
+      )
+    }
+
     return (
       <div id="syn-training" ref="view">
         <div className="syn-training-close">
           <Icon icon="times" onClick={ this.close.bind(this) } />
         </div>
         <h4>{ title }</h4>
-        <div style={{ marginBottom : '10px' }}>{ description }</div>
-        <Button info onClick={ this.next.bind(this) }>{ text }</Button>
+        
+        { content }
+
       </div>
     );
   }

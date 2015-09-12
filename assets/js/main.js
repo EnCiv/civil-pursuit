@@ -6714,7 +6714,7 @@ var Training = (function (_React$Component) {
 
     window.Dispatcher.emit('get instructions');
 
-    this.state = { cursor: 0 };
+    this.state = { cursor: 0, loader: false };
 
     this.ready = false;
   }
@@ -6816,10 +6816,14 @@ var Training = (function (_React$Component) {
 
         tooltip.element.classList.add('syn-training-arrow-' + tooltip.arrow);
 
-        // let {top} = tooltip.rect;
-        // let { pageYOffset } = window;
-        //
-        // window.scrollTo(0, pageYOffset + top - 60);
+        var _tooltip$rect = tooltip.rect;
+        var top = _tooltip$rect.top;
+        var height = _tooltip$rect.height;
+        var pageYOffset = window.pageYOffset;
+
+        if (top + height > window.innerHeight) {
+          window.scrollTo(0, top - 100);
+        }
       });
     }
   }, {
@@ -6848,8 +6852,11 @@ var Training = (function (_React$Component) {
 
         var target = document.querySelector(click);
         target.click();
+
+        this.setState({ loader: true });
+
         setTimeout(function () {
-          return _this2.setState({ cursor: _this2.state.cursor + 1 });
+          return _this2.setState({ cursor: _this2.state.cursor + 1, loader: false });
         }, 1500);
       } else {
         this.setState({ cursor: this.state.cursor + 1 });
@@ -6939,7 +6946,10 @@ var Training = (function (_React$Component) {
     value: function render() {
       var _this5 = this;
 
-      var cursor = this.state.cursor;
+      console.warn('Render', this.state);
+      var _state = this.state;
+      var cursor = _state.cursor;
+      var loader = _state.loader;
 
       if (!this.props.instructions.length) {
         return _react2['default'].createElement('div', null);
@@ -6970,6 +6980,31 @@ var Training = (function (_React$Component) {
         text = 'Finish';
       }
 
+      var content = undefined;
+
+      if (loader) {
+        content = _react2['default'].createElement(_utilIcon2['default'], { icon: 'spinner', spin: true, size: 3, ref: 'loader' });
+      } else {
+        content = _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(
+            'div',
+            { style: { marginBottom: '10px' } },
+            description
+          ),
+          _react2['default'].createElement(
+            _utilButton2['default'],
+            {
+              info: true,
+              onClick: this.next.bind(this),
+              ref: 'button'
+            },
+            text
+          )
+        );
+      }
+
       return _react2['default'].createElement(
         'div',
         { id: 'syn-training', ref: 'view' },
@@ -6983,16 +7018,7 @@ var Training = (function (_React$Component) {
           null,
           title
         ),
-        _react2['default'].createElement(
-          'div',
-          { style: { marginBottom: '10px' } },
-          description
-        ),
-        _react2['default'].createElement(
-          _utilButton2['default'],
-          { info: true, onClick: this.next.bind(this) },
-          text
-        )
+        content
       );
     }
   }]);
