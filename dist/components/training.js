@@ -147,6 +147,10 @@ var Training = (function (_React$Component) {
         if (top + height > window.innerHeight) {
           window.scrollTo(0, top - 100);
         }
+
+        if (top + height < pageYOffset) {
+          window.scrollTo(0, top - 100);
+        }
       });
     }
   }, {

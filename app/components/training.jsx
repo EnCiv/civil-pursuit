@@ -119,6 +119,10 @@ class Training extends React.Component {
         window.scrollTo(0, (top - 100));
       }
 
+      if ( (top + height) < pageYOffset ) {
+        window.scrollTo(0, (top - 100));
+      }
+
 
     });
   }
@@ -286,7 +290,7 @@ class Training extends React.Component {
           <Icon icon="times" onClick={ this.close.bind(this) } />
         </div>
         <h4>{ title }</h4>
-        
+
         { content }
 
       </div>
