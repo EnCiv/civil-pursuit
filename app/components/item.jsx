@@ -258,7 +258,7 @@ class Item extends React.Component {
       }
 
       if ( this.props.item.type.harmony.length ) {
-        harmonyGroup = <Button small shy onClick={ this.toggle.bind(this, 'harmony') }>
+        harmonyGroup = <Button small shy onClick={ this.toggle.bind(this, 'harmony') } className="harmony-button">
           <span>{ item.harmony } </span>
           <Icon icon="music" />
         </Button>;
