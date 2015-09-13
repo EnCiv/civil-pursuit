@@ -251,7 +251,7 @@ class Item extends React.Component {
       let subtypeGroup, harmonyGroup;
 
       if ( this.props.item.subtype ) {
-        subtypeGroup = <Button small shy onClick={ this.toggle.bind(this, 'subtype') }>
+        subtypeGroup = <Button small shy onClick={ this.toggle.bind(this, 'subtype') } className="subtype-button">
           <span>{ item.children } </span>
           <Icon icon="fire" />
         </Button>;

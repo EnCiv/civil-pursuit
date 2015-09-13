@@ -267,7 +267,7 @@ var Item = (function (_React$Component) {
         if (this.props.item.subtype) {
           subtypeGroup = _react2['default'].createElement(
             _utilButton2['default'],
-            { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype') },
+            { small: true, shy: true, onClick: this.toggle.bind(this, 'subtype'), className: 'subtype-button' },
             _react2['default'].createElement(
               'span',
               null,
