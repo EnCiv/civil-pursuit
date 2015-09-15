@@ -2228,6 +2228,10 @@ var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var _countdown = require('./countdown');
 
 var _countdown2 = _interopRequireDefault(_countdown);
@@ -2268,11 +2272,7 @@ var Home = (function (_React$Component) {
     key: 'render',
     value: function render() {
 
-      var content = _react2['default'].createElement(
-        'div',
-        { className: _libAppComponent2['default'].classList(this, 'text-center', 'gutter', 'muted') },
-        _react2['default'].createElement(_utilIcon2['default'], { icon: 'circle-o-notch', spin: true, size: 4 })
-      );
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading issues...' });
 
       if (this.state.discussion) {
         var _ref = new Date(this.state.discussion);
@@ -2308,7 +2308,7 @@ var Home = (function (_React$Component) {
 
 exports['default'] = Home;
 module.exports = exports['default'];
-},{"../lib/app/component":59,"./countdown":3,"./panel-items":20,"./training":31,"./util/icon":42,"react":219}],12:[function(require,module,exports){
+},{"../lib/app/component":59,"./countdown":3,"./panel-items":20,"./training":31,"./util/icon":42,"./util/loading":47,"react":219}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -6821,11 +6821,21 @@ var Training = (function (_React$Component) {
         var height = _tooltip$rect.height;
         var pageYOffset = window.pageYOffset;
 
+        var targetIsVisible = tooltip.target.rect.top + tooltip.target.rect.height + pageYOffset;
+
+        console.info({ targetIsVisible: targetIsVisible });
+
+        // scroll down
+
         if (top + height > window.innerHeight) {
+          console.log('scroll down');
           window.scrollTo(0, top - 100);
         }
 
-        if (top + height < pageYOffset) {
+        // scroll up
+
+        if (targetIsVisible > pageYOffset + window.innerHeight || targetIsVisible < pageYOffset) {
+          console.log('scroll up', top - 100);
           window.scrollTo(0, top - 100);
         }
       });
@@ -6855,13 +6865,16 @@ var Training = (function (_React$Component) {
         var click = current.click;
 
         var target = document.querySelector(click);
+
+        var next = function next() {
+          _this2.setState({ cursor: _this2.state.cursor + 1, loader: false });
+        };
+
+        setTimeout(next.bind(this), current.wait || 1500);
+
         target.click();
 
         this.setState({ loader: true });
-
-        setTimeout(function () {
-          return _this2.setState({ cursor: _this2.state.cursor + 1, loader: false });
-        }, 1500);
       } else {
         this.setState({ cursor: this.state.cursor + 1 });
       }

@@ -3,6 +3,7 @@
 import React                        from 'react';
 import Component                    from '../lib/app/component';
 import Icon                         from './util/icon';
+import Loading                      from './util/loading';
 import Countdown                    from './countdown';
 import PanelItems                   from './panel-items';
 import Training                     from './training';
@@ -26,9 +27,7 @@ class Home extends React.Component {
   render () {
 
     let content = (
-      <div className={ Component.classList(this, 'text-center', 'gutter', 'muted') }>
-        <Icon icon="circle-o-notch" spin={ true } size={ 4 } />
-      </div>
+      <Loading message="Loading issues..." />
     );
 
     if ( this.state.discussion ) {

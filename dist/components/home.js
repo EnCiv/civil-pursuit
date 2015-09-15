@@ -28,6 +28,10 @@ var _utilIcon = require('./util/icon');
 
 var _utilIcon2 = _interopRequireDefault(_utilIcon);
 
+var _utilLoading = require('./util/loading');
+
+var _utilLoading2 = _interopRequireDefault(_utilLoading);
+
 var _countdown = require('./countdown');
 
 var _countdown2 = _interopRequireDefault(_countdown);
@@ -68,11 +72,7 @@ var Home = (function (_React$Component) {
     key: 'render',
     value: function render() {
 
-      var content = _react2['default'].createElement(
-        'div',
-        { className: _libAppComponent2['default'].classList(this, 'text-center', 'gutter', 'muted') },
-        _react2['default'].createElement(_utilIcon2['default'], { icon: 'circle-o-notch', spin: true, size: 4 })
-      );
+      var content = _react2['default'].createElement(_utilLoading2['default'], { message: 'Loading issues...' });
 
       if (this.state.discussion) {
         var _ref = new Date(this.state.discussion);

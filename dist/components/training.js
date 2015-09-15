@@ -144,11 +144,21 @@ var Training = (function (_React$Component) {
         var height = _tooltip$rect.height;
         var pageYOffset = window.pageYOffset;
 
+        var targetIsVisible = tooltip.target.rect.top + tooltip.target.rect.height + pageYOffset;
+
+        console.info({ targetIsVisible: targetIsVisible });
+
+        // scroll down
+
         if (top + height > window.innerHeight) {
+          console.log('scroll down');
           window.scrollTo(0, top - 100);
         }
 
-        if (top + height < pageYOffset) {
+        // scroll up
+
+        if (targetIsVisible > pageYOffset + window.innerHeight || targetIsVisible < pageYOffset) {
+          console.log('scroll up', top - 100);
           window.scrollTo(0, top - 100);
         }
       });
@@ -178,13 +188,16 @@ var Training = (function (_React$Component) {
         var click = current.click;
 
         var target = document.querySelector(click);
+
+        var next = function next() {
+          _this2.setState({ cursor: _this2.state.cursor + 1, loader: false });
+        };
+
+        setTimeout(next.bind(this), current.wait || 1500);
+
         target.click();
 
         this.setState({ loader: true });
-
-        setTimeout(function () {
-          return _this2.setState({ cursor: _this2.state.cursor + 1, loader: false });
-        }, 1500);
       } else {
         this.setState({ cursor: this.state.cursor + 1 });
       }

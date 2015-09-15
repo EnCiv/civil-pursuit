@@ -115,11 +115,21 @@ class Training extends React.Component {
       let {top, height} = tooltip.rect;
       let { pageYOffset } = window;
 
+      const targetIsVisible = (tooltip.target.rect.top + tooltip.target.rect.height + pageYOffset);
+
+      console.info({targetIsVisible});
+
+      // scroll down
+
       if ( (top + height) > window.innerHeight ) {
+        console.log('scroll down')
         window.scrollTo(0, (top - 100));
       }
 
-      if ( (top + height) < pageYOffset ) {
+      // scroll up
+
+      if ( targetIsVisible > pageYOffset + window.innerHeight || targetIsVisible < pageYOffset ) {
+        console.log('scroll up', (top - 100))
         window.scrollTo(0, (top - 100));
       }
 
@@ -148,11 +158,16 @@ class Training extends React.Component {
     if ( current.click ) {
       const { click } = current;
       const target = document.querySelector(click);
+
+      const next = () => {
+        this.setState({ cursor : this.state.cursor + 1, loader : false });
+      };
+
+      setTimeout(next.bind(this), current.wait || 1500);
+
       target.click();
 
       this.setState({ loader : true });
-
-      setTimeout(() => this.setState({ cursor : this.state.cursor + 1, loader : false }), 1500);
     }
 
     else {
