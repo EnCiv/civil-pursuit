@@ -6785,7 +6785,7 @@ var Training = (function (_React$Component) {
           top: window.pageYOffset + _target_.top + _target_.height / 2 - _tooltip_.height / 2
         },
         right: {
-          left: _target_.right,
+          left: _target_.right + 30,
           top: window.pageYOffset + _target_.top + _target_.height / 2 - _tooltip_.height / 2
         }
       };
@@ -6840,6 +6840,12 @@ var Training = (function (_React$Component) {
           arrow.classList.add('fa-caret-right');
           arrow.style.top = rectangles[position].top + _tooltip_.height / 2 - 30 + 'px';
           arrow.style.left = rectangles[position].left + _tooltip_.width - 1 + 'px';
+          break;
+
+        case 'right':
+          arrow.classList.add('fa-caret-left');
+          arrow.style.top = rectangles[position].top + _tooltip_.height / 2 - 30 + 'px';
+          arrow.style.left = rectangles[position].left - 23 + 'px';
           break;
       }
     }
@@ -6927,7 +6933,11 @@ var Training = (function (_React$Component) {
       };
 
       if (image) {
-        image.addEventListener('load', onLoad);
+        if (image.complete) {
+          onLoad();
+        } else {
+          image.addEventListener('load', onLoad);
+        }
       } else {
         video.addEventListener('load', onLoad);
       }
