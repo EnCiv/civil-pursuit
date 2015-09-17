@@ -6764,7 +6764,6 @@ var Training = (function (_React$Component) {
       var target = document.querySelector(instruction.element);
 
       var arrow = document.querySelector('#syn-training-arrow');
-      var small = document.querySelector('#syn-training-arrow-small');
 
       target.classList.add('syn-training-active-target');
 
@@ -6799,11 +6798,11 @@ var Training = (function (_React$Component) {
         position = 'bottom';
       }
 
-      if (rectangles.top.left + _tooltip_.width > window.innerWidth) {
+      if (rectangles.top.left + _tooltip_.width > window.innerWidth && _tooltip_.width + 100 < window.innerWidth) {
         position = 'left';
       }
 
-      if (rectangles.top.left < 0) {
+      if (rectangles.top.left < 0 && _tooltip_.width + 100 < window.innerWidth) {
         position = 'right';
       }
 
@@ -6999,6 +6998,14 @@ var Training = (function (_React$Component) {
     value: function close() {
       var view = _react2['default'].findDOMNode(this.refs.view);
       view.classList.remove('show');
+      var active = document.querySelectorAll('.syn-training-active-target');
+
+      for (var i = 0; i < active.length; i++) {
+        active[i].classList.remove('syn-training-active-target');
+      }
+
+      var arrow = document.querySelector('#syn-training-arrow');
+      arrow.style.left = '-1000vh';
     }
   }, {
     key: 'render',

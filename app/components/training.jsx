@@ -47,7 +47,6 @@ class Training extends React.Component {
     const target = document.querySelector(instruction.element);
 
     const arrow = document.querySelector('#syn-training-arrow');
-    const small = document.querySelector('#syn-training-arrow-small');
 
     target.classList.add('syn-training-active-target');
 
@@ -81,11 +80,11 @@ class Training extends React.Component {
       position = 'bottom';
     }
 
-    if ( (rectangles.top.left + _tooltip_.width ) > window.innerWidth ) {
+    if ( (rectangles.top.left + _tooltip_.width ) > window.innerWidth && (_tooltip_.width + 100) < window.innerWidth ) {
       position = 'left';
     }
 
-    if ( rectangles.top.left < 0 ) {
+    if ( rectangles.top.left < 0 && (_tooltip_.width + 100) < window.innerWidth ) {
       position = 'right';
     }
 
@@ -280,6 +279,14 @@ class Training extends React.Component {
   close () {
     let view = React.findDOMNode(this.refs.view);
     view.classList.remove('show');
+    const active = document.querySelectorAll('.syn-training-active-target');
+
+    for ( let i = 0; i < active.length ; i ++ ) {
+      active[i].classList.remove('syn-training-active-target');
+    }
+
+    const arrow = document.querySelector('#syn-training-arrow');
+    arrow.style.left = '-1000vh';
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
