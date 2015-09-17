@@ -173,15 +173,40 @@ class Training extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   init () {
-    setTimeout(() => {
-      this.ready = true;
-      let view = React.findDOMNode(this.refs.view);
-      console.info({ view })
-      if ( view ) {
+
+    let media;
+
+    const intro = document.querySelector('#syn-intro');
+
+    const view = React.findDOMNode(this.refs.view);
+
+    const image = intro.querySelector('img');
+
+    const video = intro.querySelector('iframe');
+
+    if ( video ) {
+      media = intro.querySelector('.video-container');
+    }
+    else {
+      media = image;
+    }
+
+    const onLoad = () => {
+      setTimeout(() => {
+        this.ready = true;
         view.classList.add('show');
-      }
-    }, 100);
-    setTimeout(this.go.bind(this), 3000);
+        this.go();
+      }, 1000);
+    }
+
+    if ( image ) {
+      image.addEventListener('load', onLoad);
+    }
+    else {
+      video.addEventListener('load', onLoad);
+    }
+
+
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

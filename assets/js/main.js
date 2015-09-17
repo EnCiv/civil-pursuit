@@ -6884,15 +6884,35 @@ var Training = (function (_React$Component) {
     value: function init() {
       var _this3 = this;
 
-      setTimeout(function () {
-        _this3.ready = true;
-        var view = _react2['default'].findDOMNode(_this3.refs.view);
-        console.info({ view: view });
-        if (view) {
+      var media = undefined;
+
+      var intro = document.querySelector('#syn-intro');
+
+      var view = _react2['default'].findDOMNode(this.refs.view);
+
+      var image = intro.querySelector('img');
+
+      var video = intro.querySelector('iframe');
+
+      if (video) {
+        media = intro.querySelector('.video-container');
+      } else {
+        media = image;
+      }
+
+      var onLoad = function onLoad() {
+        setTimeout(function () {
+          _this3.ready = true;
           view.classList.add('show');
-        }
-      }, 100);
-      setTimeout(this.go.bind(this), 3000);
+          _this3.go();
+        }, 1000);
+      };
+
+      if (image) {
+        image.addEventListener('load', onLoad);
+      } else {
+        video.addEventListener('load', onLoad);
+      }
     }
   }, {
     key: 'componentDidMount',
