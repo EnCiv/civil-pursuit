@@ -364,7 +364,7 @@ window.socket.on('welcome', function (user) {
 
   render();
 
-  window.Emitter('get items');
+  window.Emitter.emit('get items');
 }).on('OK get evaluation', function (evaluation) {
   OUTCOMING('got evaluation', evaluation);
 

@@ -389,7 +389,7 @@ window.socket
 
     render();
 
-    window.Emitter('get items');
+    window.Emitter.emit('get items');
   })
 
   .on('OK get evaluation', evaluation => {
