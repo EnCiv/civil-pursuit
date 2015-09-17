@@ -6996,35 +6996,12 @@ var Training = (function (_React$Component) {
 
       var content = undefined;
 
-      if (loader) {
-        content = _react2['default'].createElement(_utilIcon2['default'], { icon: 'spinner', spin: true, size: 3, ref: 'loader' });
-      } else {
-        content = _react2['default'].createElement(
-          'div',
-          null,
-          _react2['default'].createElement(
-            'div',
-            { style: { marginBottom: '10px' } },
-            description
-          ),
-          _react2['default'].createElement(
-            _utilButton2['default'],
-            {
-              info: true,
-              onClick: this.next.bind(this),
-              ref: 'button'
-            },
-            text
-          )
-        );
-      }
-
       return _react2['default'].createElement(
         'section',
         null,
         _react2['default'].createElement(
           'div',
-          { id: 'syn-training', ref: 'view' },
+          { id: 'syn-training', 'data-loading': this.state.loader ? '1' : '0', ref: 'view' },
           _react2['default'].createElement(
             'div',
             { className: 'syn-training-close' },
@@ -7035,7 +7012,25 @@ var Training = (function (_React$Component) {
             null,
             title
           ),
-          content
+          _react2['default'].createElement(
+            'div',
+            null,
+            _react2['default'].createElement(
+              'div',
+              { style: { marginBottom: '10px' } },
+              description
+            ),
+            _react2['default'].createElement(
+              _utilButton2['default'],
+              {
+                info: true,
+                onClick: this.next.bind(this),
+                ref: 'button',
+                disabled: this.state.loader
+              },
+              text
+            )
+          )
         ),
         _react2['default'].createElement(_utilIcon2['default'], { icon: 'caret-up', id: 'syn-training-arrow', size: '4' })
       );

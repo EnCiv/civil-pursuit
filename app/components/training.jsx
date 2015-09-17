@@ -275,34 +275,23 @@ class Training extends React.Component {
 
     let content ;
 
-    if ( loader ) {
-      content = (
-        <Icon icon="spinner" spin={ true } size={ 3 } ref="loader" />
-      );
-    }
-
-    else {
-      content = (
-        <div>
-          <div style={{ marginBottom : '10px' }}>{ description }</div>
-          <Button
-            info
-            onClick   =   { this.next.bind(this) }
-            ref       =   "button"
-            >{ text }</Button>
-        </div>
-      )
-    }
-
     return (
       <section>
-        <div id="syn-training" ref="view">
+        <div id="syn-training" data-loading={ this.state.loader ? '1' : '0' } ref="view">
           <div className="syn-training-close">
             <Icon icon="times" onClick={ this.close.bind(this) } />
           </div>
           <h4>{ title }</h4>
 
-          { content }
+          <div>
+            <div style={{ marginBottom : '10px' }}>{ description }</div>
+            <Button
+              info
+              onClick   =   { this.next.bind(this) }
+              ref       =   "button"
+              disabled  =   { this.state.loader }
+              >{ text }</Button>
+          </div>
 
         </div>
         <Icon icon="caret-up" id="syn-training-arrow" size="4" />

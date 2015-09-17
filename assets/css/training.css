@@ -13,6 +13,9 @@
     max-width: 500px;
   }
 }
+#syn-training[data-loading="1"] {
+  opacity: 0.5;
+}
 .syn-training-active-target {
   outline: 4px solid white;
   box-shadow: 0 0 10px 15px rgba(0, 0, 0, 0.3);
