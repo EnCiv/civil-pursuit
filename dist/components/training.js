@@ -85,7 +85,7 @@ var Training = (function (_React$Component) {
 
       var rectangles = {
         top: {
-          left: _target_.left + _target_.width / 2 - _tooltip_.width / 2,
+          left: _target_.left + _target_.width / 2 - _tooltip_.width / 2 - 20,
           top: window.pageYOffset + _target_.top - _tooltip_.height - 20
         },
         bottom: {
@@ -190,7 +190,7 @@ var Training = (function (_React$Component) {
           _this2.setState({ cursor: _this2.state.cursor + 1, loader: false });
         };
 
-        setTimeout(next.bind(this), current.wait || 1500);
+        setTimeout(next.bind(this), 'wait' in current ? current.wait : 1500);
 
         target.click();
 

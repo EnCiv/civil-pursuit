@@ -56,7 +56,7 @@ class Training extends React.Component {
 
     const rectangles = {
       top : {
-        left : _target_.left + ( _target_.width / 2 ) - ( _tooltip_.width / 2 ),
+        left : _target_.left + ( _target_.width / 2 ) - ( _tooltip_.width / 2 ) - 20,
         top : window.pageYOffset + _target_.top - ( _tooltip_.height ) - 20
       },
       bottom : {
@@ -158,7 +158,7 @@ class Training extends React.Component {
         this.setState({ cursor : this.state.cursor + 1, loader : false });
       };
 
-      setTimeout(next.bind(this), current.wait || 1500);
+      setTimeout(next.bind(this), ( 'wait' in current ) ? current.wait : 1500);
 
       target.click();
 
