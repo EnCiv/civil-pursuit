@@ -73,7 +73,7 @@ class Training extends React.Component {
       }
     };
 
-    console.log({rectangles, _tooltip_});
+    // console.log({rectangles, _tooltip_});
 
     let position = 'top', adjust = {};
 
@@ -89,20 +89,21 @@ class Training extends React.Component {
       position = 'right';
     }
 
-    console.warn({ position });
+    // console.warn({ position });
 
     tooltip.style.left = rectangles[position].left + 'px';
     tooltip.style.top = rectangles[position].top + 'px';
+
+    tooltip.querySelector('button').blur();
+
+    setTimeout(() => {
+      tooltip.querySelector('button').focus();
+    });
 
     arrow.classList.remove('fa-caret-up');
     arrow.classList.remove('fa-caret-down');
     arrow.classList.remove('fa-caret-left');
     arrow.classList.remove('fa-caret-right');
-
-    // small.classList.remove('fa-caret-up');
-    // small.classList.remove('fa-caret-down');
-    // small.classList.remove('fa-caret-left');
-    // small.classList.remove('fa-caret-right');
 
     switch ( position ) {
       case 'bottom':
@@ -266,7 +267,6 @@ class Training extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    console.warn('Render', this.state);
     let { cursor, loader } = this.state;
 
     if ( ! this.props.instructions.length ) {

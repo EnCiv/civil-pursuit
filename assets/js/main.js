@@ -6779,7 +6779,7 @@ var Training = (function (_React$Component) {
         }
       };
 
-      console.log({ rectangles: rectangles, _tooltip_: _tooltip_ });
+      // console.log({rectangles, _tooltip_});
 
       var position = 'top',
           adjust = {};
@@ -6796,20 +6796,21 @@ var Training = (function (_React$Component) {
         position = 'right';
       }
 
-      console.warn({ position: position });
+      // console.warn({ position });
 
       tooltip.style.left = rectangles[position].left + 'px';
       tooltip.style.top = rectangles[position].top + 'px';
+
+      tooltip.querySelector('button').blur();
+
+      setTimeout(function () {
+        tooltip.querySelector('button').focus();
+      });
 
       arrow.classList.remove('fa-caret-up');
       arrow.classList.remove('fa-caret-down');
       arrow.classList.remove('fa-caret-left');
       arrow.classList.remove('fa-caret-right');
-
-      // small.classList.remove('fa-caret-up');
-      // small.classList.remove('fa-caret-down');
-      // small.classList.remove('fa-caret-left');
-      // small.classList.remove('fa-caret-right');
 
       switch (position) {
         case 'bottom':
@@ -6980,7 +6981,6 @@ var Training = (function (_React$Component) {
     value: function render() {
       var _this5 = this;
 
-      console.warn('Render', this.state);
       var _state = this.state;
       var cursor = _state.cursor;
       var loader = _state.loader;
