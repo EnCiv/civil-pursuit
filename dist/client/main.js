@@ -114,6 +114,8 @@ function render() {
 
 *******************************************************************************/
 
+window.Emitter = new _events.EventEmitter();
+
 window.Dispatcher = new _events.EventEmitter();
 
 window.Dispatcher.on('set active', function (panel, section) {
@@ -257,6 +259,8 @@ window.Dispatcher.on('set active', function (panel, section) {
   window.scrollTo(0, pageYOffset + top - 60);
 
   render();
+
+  window.Emitter.emit('promote');
 }).on('get details', function (item) {
   INCOMING('get details', item);
   window.socket.emit('get item details', item);
@@ -359,6 +363,8 @@ window.socket.on('welcome', function (user) {
   });
 
   render();
+
+  window.Emitter('get items');
 }).on('OK get evaluation', function (evaluation) {
   OUTCOMING('got evaluation', evaluation);
 
@@ -377,7 +383,10 @@ window.socket.on('welcome', function (user) {
   }
 
   props.items[evaluation.item._id].evaluation = evaluation;
+
   render();
+
+  window.Emitter.emit('get evaluation');
 }).on('OK create item', function (item) {
   OUTCOMING('created item', item);
 
@@ -435,6 +444,8 @@ window.socket.on('welcome', function (user) {
   props.items[details.item._id].details = details;
 
   render();
+
+  window.Emitter.emit('details');
 }).on('OK insert feedback', function (feedback) {
   OUTCOMING('feedback inserted', feedback);
 

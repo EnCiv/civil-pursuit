@@ -96,6 +96,8 @@ function render () {
 
 *******************************************************************************/
 
+window.Emitter = new EventEmitter();
+
 window.Dispatcher = new EventEmitter();
 
 window.Dispatcher
@@ -257,6 +259,8 @@ window.Dispatcher
     window.scrollTo(0, pageYOffset + top - 60);
 
     render();
+
+    window.Emitter.emit('promote');
   })
 
   .on('get details', item => {
@@ -384,6 +388,8 @@ window.socket
     });
 
     render();
+
+    window.Emitter('get items');
   })
 
   .on('OK get evaluation', evaluation => {
@@ -404,7 +410,10 @@ window.socket
     }
 
     props.items[evaluation.item._id].evaluation = evaluation;
+
     render();
+
+    window.Emitter.emit('get evaluation');
   })
 
   .on('OK create item', item => {
@@ -469,6 +478,8 @@ window.socket
     props.items[details.item._id].details = details;
 
     render();
+
+    window.Emitter.emit('details');
   })
 
   .on('OK insert feedback', feedback => {

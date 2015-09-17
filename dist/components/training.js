@@ -182,6 +182,8 @@ var Training = (function (_React$Component) {
 
       var current = instructions[cursor];
 
+      console.log({ current: current });
+
       if (current.click) {
         var click = current.click;
 
@@ -191,7 +193,11 @@ var Training = (function (_React$Component) {
           _this2.setState({ cursor: _this2.state.cursor + 1, loader: false });
         };
 
-        setTimeout(next.bind(this), 'wait' in current ? current.wait : 1500);
+        if (current.listen) {
+          window.Emitter.once(current.listen, next.bind(this));
+        } else {
+          setTimeout(next.bind(this), 'wait' in current ? current.wait : 1500);
+        }
 
         target.click();
 

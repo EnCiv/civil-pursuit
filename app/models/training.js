@@ -24,7 +24,11 @@
     description       :   {
       type            :   String,
       required        :   true
-    }
+    },
+    in                :   Boolean,
+    click             :   String,
+    wait              :   Number,
+    listen            :   String
   });
 
   TrainingSchema.plugin(findRandom);

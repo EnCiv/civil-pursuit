@@ -151,6 +151,8 @@ class Training extends React.Component {
 
     const current = instructions[cursor];
 
+    console.log({ current })
+
     if ( current.click ) {
       const { click } = current;
       const target = document.querySelector(click);
@@ -159,7 +161,12 @@ class Training extends React.Component {
         this.setState({ cursor : this.state.cursor + 1, loader : false });
       };
 
-      setTimeout(next.bind(this), ( 'wait' in current ) ? current.wait : 1500);
+      if ( current.listen ) {
+        window.Emitter.once(current.listen, next.bind(this));
+      }
+      else {
+        setTimeout(next.bind(this), ( 'wait' in current ) ? current.wait : 1500);
+      }
 
       target.click();
 
