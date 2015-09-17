@@ -2,9 +2,9 @@
   position : absolute;
   background: rgba(0, 0, 0, .9);
   color: white;
-  border: 2px solid black;
+  border: 1px solid white;
   padding: 10px;
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, .3);
+  box-shadow: 0 0 10px 15px rgba(0, 0, 0, .3);
   display :none;
   min-width: 200px;
 
@@ -13,78 +13,27 @@
   }
 }
 
+.syn-training-active-target {
+  outline : 4px solid white;
+  box-shadow: 0 0 10px 15px rgba(0, 0, 0, .3);
+}
+
 #syn-training.show {
   display: block
 }
 
-#syn-training:after, #syn-training:before {
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
+#syn-training-arrow {
+  position : absolute;
+  top : 400px;
+  left : -100vh;
+  color: white;
 }
 
-#syn-training:after {
-	border-color: rgba(0, 0, 0, 0);
-	border-width: 10px;
-}
-#syn-training:before {
-	border-color: rgba(0, 0, 0, 0);
-	border-width: 16px;
-}
-
-#syn-training.syn-training-arrow-right:after, #syn-training.syn-training-arrow-right:before {
-	left: 100%;
-	top: 50%;
-}
-#syn-training.syn-training-arrow-right:after {
-	border-left-color: #000000;
-	margin-top: -10px;
-}
-#syn-training.syn-training-arrow-right:before {
-	border-left-color: #000000;
-	margin-top: -16px;
-}
-
-#syn-training.syn-training-arrow-left:after, #syn-training.syn-training-arrow-left:before {
-	right: 100%;
-	top: 50%;
-}
-#syn-training.syn-training-arrow-left:after {
-	border-right-color: #000000;
-	margin-top: -10px;
-}
-#syn-training.syn-training-arrow-left:before {
-	border-right-color: #000000;
-	margin-top: -16px;
-}
-
-#syn-training.syn-training-arrow-bottom:after, #syn-training.syn-training-arrow-bottom:before {
-	top: 100%;
-	left: 50%;
-}
-#syn-training.syn-training-arrow-bottom:after {
-	border-top-color: #000000;
-	margin-left: -10px;
-}
-#syn-training.syn-training-arrow-bottom:before {
-	border-top-color: #000000;
-	margin-left: -16px;
-}
-
-#syn-training.syn-training-arrow-top:after, #syn-training.syn-training-arrow-top:before {
-	bottom: 100%;
-	left: 50%;
-}
-#syn-training.syn-training-arrow-top:after {
-	border-bottom-color: #000000;
-	margin-left: -10px;
-}
-#syn-training.syn-training-arrow-top:before {
-	border-bottom-color: #000000;
-	margin-left: -16px;
+#syn-training-arrow-small {
+  position : absolute;
+  top : 400px;
+  left : -100vh;
+  color: rgb(0, 0, 0);
 }
 
 .syn-training-close {
@@ -94,6 +43,7 @@
   background : rgba(155, 155, 155, .3);
   padding: 5px;
   border-radius: 4px;
+  color : #5BC0DE;
 
   &:hover{
     opacity: 1;

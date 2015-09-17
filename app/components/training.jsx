@@ -1,8 +1,8 @@
 'use strict';
 
-import React from 'react';
-import Button from './util/button';
-import Icon from './util/icon';
+import React                from 'react';
+import Button               from './util/button';
+import Icon                 from './util/icon';
 
 class Training extends React.Component {
 
@@ -16,11 +16,19 @@ class Training extends React.Component {
     this.state = { cursor : 0, loader : false };
 
     this.ready = false;
+
+    this.cursor = -1;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   go () {
+
+    if ( this.cursor === this.state.cursor ) {
+      return;
+    }
+
+    this.cursor = this.state.cursor;
 
     const { instructions } = this.props;
 
@@ -35,111 +43,98 @@ class Training extends React.Component {
 
     const instruction = relevantInstructions[this.state.cursor];
 
-    let tooltip = {
-      element : React.findDOMNode(this.refs.view),
-      offset : {},
-      target : {
-        element : document.querySelector(instruction.element),
-        offset : {}
+    const tooltip = React.findDOMNode(this.refs.view);
+    const target = document.querySelector(instruction.element);
+
+    const arrow = document.querySelector('#syn-training-arrow');
+    const small = document.querySelector('#syn-training-arrow-small');
+
+    target.classList.add('syn-training-active-target');
+
+    const _target_ = target.getBoundingClientRect();
+    const _tooltip_ = tooltip.getBoundingClientRect();
+
+    const rectangles = {
+      top : {
+        left : _target_.left + ( _target_.width / 2 ) - ( _tooltip_.width / 2 ),
+        top : window.pageYOffset + _target_.top - ( _tooltip_.height ) - 20
       },
-      position : {}
+      bottom : {
+        left : _target_.left + ( _target_.width / 2 ) - ( _tooltip_.width / 2 ),
+        top : window.pageYOffset + _target_.top + ( _target_.height ) + 20
+      },
+      left : {
+        left : _target_.left - _tooltip_.width - 30,
+        top : window.pageYOffset + _target_.top + ( _target_.height / 2 ) - ( _tooltip_.height / 2 )
+      },
+      right : {
+        left : _target_.right,
+        top : window.pageYOffset + _target_.top + ( _target_.height / 2 ) - ( _tooltip_.height / 2 )
+      }
     };
 
-    tooltip.rect                    =   tooltip.element.getBoundingClientRect();
-    tooltip.offset.top              =   tooltip.element.offsetTop;
-    tooltip.offset.bottom           =   tooltip.element.offseBottom;
-    tooltip.offset.left             =   tooltip.element.offsetLeft;
-    tooltip.offset.right            =   tooltip.element.offsetRight;
-    tooltip.offset.height           =   tooltip.element.offsetHeight;
-    tooltip.offset.width            =   tooltip.element.offsetWidth;
-    tooltip.target.rect             =   tooltip.target.element.getBoundingClientRect();
-    tooltip.target.offset.top       =   tooltip.target.element.offsetTop;
-    tooltip.target.offset.bottom    =   tooltip.target.element.offseBottom;
-    tooltip.target.offset.left      =   tooltip.target.element.offsetLeft;
-    tooltip.target.offset.right     =   tooltip.target.element.offsetRight;
-    tooltip.target.offset.height    =   tooltip.target.element.offsetHeight;
-    tooltip.target.offset.width     =   tooltip.target.element.offsetWidth;
-    tooltip.arrow                   =   'bottom';
+    console.log({rectangles, _tooltip_});
 
-    const { pageYOffset } = window;
+    let position = 'top', adjust = {};
 
-    tooltip.position.top = (tooltip.target.rect.top - tooltip.rect.height - 20 +  + pageYOffset);
-    tooltip.position.left = (tooltip.target.rect.left + (tooltip.target.rect.width / 2) - (tooltip.rect.width / 2));
-
-    if ( tooltip.position.top < 0 ) {
-      tooltip.position.top = tooltip.target.rect.top + tooltip.target.rect.height + 20;
-      tooltip.arrow = 'top';
-      tooltip.rect  = tooltip.element.getBoundingClientRect();
+    if ( rectangles.top.top < 0 ) {
+      position = 'bottom';
     }
 
-    setTimeout(() => {
-      console.log({tooltip});
-      tooltip.element.style.top = (tooltip.position.top) + 'px';
-      tooltip.element.style.left = (tooltip.position.left) + 'px';
+    if ( (rectangles.top.left + _tooltip_.width ) > window.innerWidth ) {
+      position = 'left';
+    }
 
-      tooltip.rect = tooltip.element.getBoundingClientRect();
+    if ( rectangles.top.left < 0 ) {
+      position = 'right';
+    }
 
-      const isTooCloseToRightMargin = ( window.innerWidth - tooltip.rect.right < 50 );
-      const bottomShouldBeRight = ( tooltip.arrow === 'bottom' && tooltip.rect.right < tooltip.target.rect.left )
-      const isBehindLeftMargin = ( tooltip.rect.left < 0 );
+    console.warn({ position });
 
-      if ( isTooCloseToRightMargin || bottomShouldBeRight ) {
-        tooltip.position.top = (tooltip.target.rect.top - tooltip.rect.height + (tooltip.rect.height / 2) + 20);
-        tooltip.position.right = (window.innerWidth - tooltip.target.rect.right + 40);
-        tooltip.arrow = 'right';
+    tooltip.style.left = rectangles[position].left + 'px';
+    tooltip.style.top = rectangles[position].top + 'px';
 
-        tooltip.element.style.top = (tooltip.position.top) + 'px';
-        tooltip.element.style.left = 'auto';
-        tooltip.element.style.right = (tooltip.position.right) + 'px';
+    arrow.classList.remove('fa-caret-up');
+    arrow.classList.remove('fa-caret-down');
+    arrow.classList.remove('fa-caret-left');
+    arrow.classList.remove('fa-caret-right');
 
-        tooltip.rect = tooltip.element.getBoundingClientRect();
-      }
+    // small.classList.remove('fa-caret-up');
+    // small.classList.remove('fa-caret-down');
+    // small.classList.remove('fa-caret-left');
+    // small.classList.remove('fa-caret-right');
 
-      else if ( isBehindLeftMargin ) {
-        tooltip.position.left = tooltip.target.rect.right;
-        tooltip.position.top = tooltip.target.rect.top - (tooltip.rect.height / 2) + pageYOffset;
-        tooltip.element.style.left = tooltip.position.left + 'px';
-        tooltip.element.style.top = tooltip.position.top + 'px';
-        tooltip.arrow = 'left';
+    switch ( position ) {
+      case 'bottom':
+        arrow.classList.add('fa-caret-up');
+        arrow.style.top = (rectangles[position].top - 43) + 'px';
+        arrow.style.left = ( rectangles[position].left + ( _tooltip_.width / 2 ) ) + 'px';
+        break;
 
-        tooltip.rect = tooltip.element.getBoundingClientRect();
-      }
+      case 'top':
+        arrow.classList.add('fa-caret-down');
+        arrow.style.top = (rectangles[position].top + _tooltip_.height - 23) + 'px';
+        arrow.style.left = ( rectangles[position].left + ( _tooltip_.width / 2 ) ) + 'px';
+        break;
 
-      tooltip.element.classList.remove('syn-training-arrow-right');
-      tooltip.element.classList.remove('syn-training-arrow-left');
-      tooltip.element.classList.remove('syn-training-arrow-top');
-      tooltip.element.classList.remove('syn-training-arrow-bottom');
-
-      tooltip.element.classList.add(`syn-training-arrow-${tooltip.arrow}`);
-
-      let {top, height} = tooltip.rect;
-      let { pageYOffset } = window;
-
-      const targetIsVisible = (tooltip.target.rect.top + tooltip.target.rect.height + pageYOffset);
-
-      console.info({targetIsVisible});
-
-      // scroll down
-
-      if ( (top + height) > window.innerHeight ) {
-        console.log('scroll down')
-        window.scrollTo(0, (top - 100));
-      }
-
-      // scroll up
-
-      if ( targetIsVisible > pageYOffset + window.innerHeight || targetIsVisible < pageYOffset ) {
-        console.log('scroll up', (top - 100))
-        window.scrollTo(0, (top - 100));
-      }
-
-
-    });
+      case 'left':
+        arrow.classList.add('fa-caret-right');
+        arrow.style.top = ( rectangles[position].top + ( _tooltip_.height / 2 ) - 30 ) + 'px';
+        arrow.style.left = ( rectangles[position].left + _tooltip_.width - 1) + 'px';
+        break;
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   next () {
+
+    const active = document.querySelectorAll('.syn-training-active-target');
+
+    for ( let i = 0; i < active.length ; i ++ ) {
+      active[i].classList.remove('syn-training-active-target');
+    }
+
     const { cursor } = this.state;
 
     const { instructions } = this.props;
@@ -300,15 +295,18 @@ class Training extends React.Component {
     }
 
     return (
-      <div id="syn-training" ref="view">
-        <div className="syn-training-close">
-          <Icon icon="times" onClick={ this.close.bind(this) } />
+      <section>
+        <div id="syn-training" ref="view">
+          <div className="syn-training-close">
+            <Icon icon="times" onClick={ this.close.bind(this) } />
+          </div>
+          <h4>{ title }</h4>
+
+          { content }
+
         </div>
-        <h4>{ title }</h4>
-
-        { content }
-
-      </div>
+        <Icon icon="caret-up" id="syn-training-arrow" size="4" />
+      </section>
     );
   }
 }

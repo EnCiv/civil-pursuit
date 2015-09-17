@@ -40,6 +40,8 @@ var Training = (function (_React$Component) {
     this.state = { cursor: 0, loader: false };
 
     this.ready = false;
+
+    this.cursor = -1;
   }
 
   _inherits(Training, _React$Component);
@@ -51,6 +53,12 @@ var Training = (function (_React$Component) {
 
     value: function go() {
       var _this = this;
+
+      if (this.cursor === this.state.cursor) {
+        return;
+      }
+
+      this.cursor = this.state.cursor;
 
       var instructions = this.props.instructions;
 
@@ -64,104 +72,87 @@ var Training = (function (_React$Component) {
 
       var instruction = relevantInstructions[this.state.cursor];
 
-      var tooltip = {
-        element: _react2['default'].findDOMNode(this.refs.view),
-        offset: {},
-        target: {
-          element: document.querySelector(instruction.element),
-          offset: {}
+      var tooltip = _react2['default'].findDOMNode(this.refs.view);
+      var target = document.querySelector(instruction.element);
+
+      var arrow = document.querySelector('#syn-training-arrow');
+      var small = document.querySelector('#syn-training-arrow-small');
+
+      target.classList.add('syn-training-active-target');
+
+      var _target_ = target.getBoundingClientRect();
+      var _tooltip_ = tooltip.getBoundingClientRect();
+
+      var rectangles = {
+        top: {
+          left: _target_.left + _target_.width / 2 - _tooltip_.width / 2,
+          top: window.pageYOffset + _target_.top - _tooltip_.height - 20
         },
-        position: {}
+        bottom: {
+          left: _target_.left + _target_.width / 2 - _tooltip_.width / 2,
+          top: window.pageYOffset + _target_.top + _target_.height + 20
+        },
+        left: {
+          left: _target_.left - _tooltip_.width - 30,
+          top: window.pageYOffset + _target_.top + _target_.height / 2 - _tooltip_.height / 2
+        },
+        right: {
+          left: _target_.right,
+          top: window.pageYOffset + _target_.top + _target_.height / 2 - _tooltip_.height / 2
+        }
       };
 
-      tooltip.rect = tooltip.element.getBoundingClientRect();
-      tooltip.offset.top = tooltip.element.offsetTop;
-      tooltip.offset.bottom = tooltip.element.offseBottom;
-      tooltip.offset.left = tooltip.element.offsetLeft;
-      tooltip.offset.right = tooltip.element.offsetRight;
-      tooltip.offset.height = tooltip.element.offsetHeight;
-      tooltip.offset.width = tooltip.element.offsetWidth;
-      tooltip.target.rect = tooltip.target.element.getBoundingClientRect();
-      tooltip.target.offset.top = tooltip.target.element.offsetTop;
-      tooltip.target.offset.bottom = tooltip.target.element.offseBottom;
-      tooltip.target.offset.left = tooltip.target.element.offsetLeft;
-      tooltip.target.offset.right = tooltip.target.element.offsetRight;
-      tooltip.target.offset.height = tooltip.target.element.offsetHeight;
-      tooltip.target.offset.width = tooltip.target.element.offsetWidth;
-      tooltip.arrow = 'bottom';
+      console.log({ rectangles: rectangles, _tooltip_: _tooltip_ });
 
-      var pageYOffset = window.pageYOffset;
+      var position = 'top',
+          adjust = {};
 
-      tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height - 20 + +pageYOffset;
-      tooltip.position.left = tooltip.target.rect.left + tooltip.target.rect.width / 2 - tooltip.rect.width / 2;
-
-      if (tooltip.position.top < 0) {
-        tooltip.position.top = tooltip.target.rect.top + tooltip.target.rect.height + 20;
-        tooltip.arrow = 'top';
-        tooltip.rect = tooltip.element.getBoundingClientRect();
+      if (rectangles.top.top < 0) {
+        position = 'bottom';
       }
 
-      setTimeout(function () {
-        console.log({ tooltip: tooltip });
-        tooltip.element.style.top = tooltip.position.top + 'px';
-        tooltip.element.style.left = tooltip.position.left + 'px';
+      if (rectangles.top.left + _tooltip_.width > window.innerWidth) {
+        position = 'left';
+      }
 
-        tooltip.rect = tooltip.element.getBoundingClientRect();
+      if (rectangles.top.left < 0) {
+        position = 'right';
+      }
 
-        var isTooCloseToRightMargin = window.innerWidth - tooltip.rect.right < 50;
-        var bottomShouldBeRight = tooltip.arrow === 'bottom' && tooltip.rect.right < tooltip.target.rect.left;
-        var isBehindLeftMargin = tooltip.rect.left < 0;
+      console.warn({ position: position });
 
-        if (isTooCloseToRightMargin || bottomShouldBeRight) {
-          tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height + tooltip.rect.height / 2 + 20;
-          tooltip.position.right = window.innerWidth - tooltip.target.rect.right + 40;
-          tooltip.arrow = 'right';
+      tooltip.style.left = rectangles[position].left + 'px';
+      tooltip.style.top = rectangles[position].top + 'px';
 
-          tooltip.element.style.top = tooltip.position.top + 'px';
-          tooltip.element.style.left = 'auto';
-          tooltip.element.style.right = tooltip.position.right + 'px';
+      arrow.classList.remove('fa-caret-up');
+      arrow.classList.remove('fa-caret-down');
+      arrow.classList.remove('fa-caret-left');
+      arrow.classList.remove('fa-caret-right');
 
-          tooltip.rect = tooltip.element.getBoundingClientRect();
-        } else if (isBehindLeftMargin) {
-          tooltip.position.left = tooltip.target.rect.right;
-          tooltip.position.top = tooltip.target.rect.top - tooltip.rect.height / 2 + pageYOffset;
-          tooltip.element.style.left = tooltip.position.left + 'px';
-          tooltip.element.style.top = tooltip.position.top + 'px';
-          tooltip.arrow = 'left';
+      // small.classList.remove('fa-caret-up');
+      // small.classList.remove('fa-caret-down');
+      // small.classList.remove('fa-caret-left');
+      // small.classList.remove('fa-caret-right');
 
-          tooltip.rect = tooltip.element.getBoundingClientRect();
-        }
+      switch (position) {
+        case 'bottom':
+          arrow.classList.add('fa-caret-up');
+          arrow.style.top = rectangles[position].top - 43 + 'px';
+          arrow.style.left = rectangles[position].left + _tooltip_.width / 2 + 'px';
+          break;
 
-        tooltip.element.classList.remove('syn-training-arrow-right');
-        tooltip.element.classList.remove('syn-training-arrow-left');
-        tooltip.element.classList.remove('syn-training-arrow-top');
-        tooltip.element.classList.remove('syn-training-arrow-bottom');
+        case 'top':
+          arrow.classList.add('fa-caret-down');
+          arrow.style.top = rectangles[position].top + _tooltip_.height - 23 + 'px';
+          arrow.style.left = rectangles[position].left + _tooltip_.width / 2 + 'px';
+          break;
 
-        tooltip.element.classList.add('syn-training-arrow-' + tooltip.arrow);
-
-        var _tooltip$rect = tooltip.rect;
-        var top = _tooltip$rect.top;
-        var height = _tooltip$rect.height;
-        var pageYOffset = window.pageYOffset;
-
-        var targetIsVisible = tooltip.target.rect.top + tooltip.target.rect.height + pageYOffset;
-
-        console.info({ targetIsVisible: targetIsVisible });
-
-        // scroll down
-
-        if (top + height > window.innerHeight) {
-          console.log('scroll down');
-          window.scrollTo(0, top - 100);
-        }
-
-        // scroll up
-
-        if (targetIsVisible > pageYOffset + window.innerHeight || targetIsVisible < pageYOffset) {
-          console.log('scroll up', top - 100);
-          window.scrollTo(0, top - 100);
-        }
-      });
+        case 'left':
+          arrow.classList.add('fa-caret-right');
+          arrow.style.top = rectangles[position].top + _tooltip_.height / 2 - 30 + 'px';
+          arrow.style.left = rectangles[position].left + _tooltip_.width - 1 + 'px';
+          break;
+      }
     }
   }, {
     key: 'next',
@@ -170,6 +161,12 @@ var Training = (function (_React$Component) {
 
     value: function next() {
       var _this2 = this;
+
+      var active = document.querySelectorAll('.syn-training-active-target');
+
+      for (var i = 0; i < active.length; i++) {
+        active[i].classList.remove('syn-training-active-target');
+      }
 
       var cursor = this.state.cursor;
       var instructions = this.props.instructions;
@@ -346,19 +343,24 @@ var Training = (function (_React$Component) {
       }
 
       return _react2['default'].createElement(
-        'div',
-        { id: 'syn-training', ref: 'view' },
+        'section',
+        null,
         _react2['default'].createElement(
           'div',
-          { className: 'syn-training-close' },
-          _react2['default'].createElement(_utilIcon2['default'], { icon: 'times', onClick: this.close.bind(this) })
+          { id: 'syn-training', ref: 'view' },
+          _react2['default'].createElement(
+            'div',
+            { className: 'syn-training-close' },
+            _react2['default'].createElement(_utilIcon2['default'], { icon: 'times', onClick: this.close.bind(this) })
+          ),
+          _react2['default'].createElement(
+            'h4',
+            null,
+            title
+          ),
+          content
         ),
-        _react2['default'].createElement(
-          'h4',
-          null,
-          title
-        ),
-        content
+        _react2['default'].createElement(_utilIcon2['default'], { icon: 'caret-up', id: 'syn-training-arrow', size: '4' })
       );
     }
   }]);
