@@ -72,25 +72,29 @@ class Training extends React.Component {
       }
     };
 
-    // console.log({rectangles, _tooltip_});
+    let position = 'top';
 
-    let position = 'top', adjust = {};
-
-    if ( rectangles.top.top < 0 ) {
+    if ( rectangles.top.top < 60 ) {
       position = 'bottom';
     }
 
-    if ( (rectangles.top.left + _tooltip_.width ) > window.innerWidth && (_tooltip_.width + 100) < window.innerWidth ) {
-      position = 'left';
+    if ( window.innerWidth > 400 ) {
+      if ( (rectangles.top.left + _tooltip_.width ) > window.innerWidth && (_tooltip_.width + 100) < window.innerWidth ) {
+        position = 'left';
+      }
+
+      if ( rectangles.top.left < 0 && (_tooltip_.width + 100) < window.innerWidth ) {
+        position = 'right';
+      }
+
+      tooltip.style.left = rectangles[position].left + 'px';
     }
 
-    if ( rectangles.top.left < 0 && (_tooltip_.width + 100) < window.innerWidth ) {
-      position = 'right';
+    else {
+      tooltip.style.left = '0px';
+      tooltip.style.width = '91%';
     }
 
-    // console.warn({ position });
-
-    tooltip.style.left = rectangles[position].left + 'px';
     tooltip.style.top = rectangles[position].top + 'px';
 
     tooltip.querySelector('button').blur();
@@ -154,7 +158,8 @@ class Training extends React.Component {
       }
     });
 
-    const current = instructions[cursor];
+    const current = relevantInstructions[cursor];
+
 
     console.log({ current })
 
