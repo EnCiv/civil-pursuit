@@ -9,6 +9,11 @@
   min-width: 200px;
   max-width: 95%;
 }
+@media (min-width: 500px) {
+  #syn-training {
+    max-width: 500px;
+  }
+}
 #syn-training[data-loading="1"] {
   opacity: 0.5;
 }
