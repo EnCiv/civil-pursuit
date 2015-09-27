@@ -30,6 +30,12 @@
   top: 400px;
   left: -100vh;
   color: white;
+  padding: 0;
+  line-height: 0;
+  height: 20px;
+}
+#syn-training-arrow::before {
+  height: 0;
 }
 #syn-training-arrow-small {
   position: absolute;

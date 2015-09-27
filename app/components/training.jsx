@@ -110,21 +110,21 @@ class Training extends React.Component {
 
     switch ( position ) {
       case 'bottom':
-        arrow.classList.add('fa-caret-up');
-        arrow.style.top = (rectangles[position].top - 43) + 'px';
+        arrow.src='/assets/images/caret-top-white.png';
+        arrow.style.top = (rectangles[position].top - 15) + 'px';
         arrow.style.left = ( rectangles[position].left + ( _tooltip_.width / 2 ) ) + 'px';
         break;
 
       case 'top':
-        arrow.classList.add('fa-caret-down');
-        arrow.style.top = (rectangles[position].top + _tooltip_.height - 23) + 'px';
+        arrow.src='/assets/images/caret-bottom-white.png';
+        arrow.style.top = (rectangles[position].top + _tooltip_.height - 5) + 'px';
         arrow.style.left = ( rectangles[position].left + ( _tooltip_.width / 2 ) ) + 'px';
         break;
 
       case 'left':
-        arrow.classList.add('fa-caret-right');
-        arrow.style.top = ( rectangles[position].top + ( _tooltip_.height / 2 ) - 30 ) + 'px';
-        arrow.style.left = ( rectangles[position].left + _tooltip_.width - 1) + 'px';
+        arrow.src='/assets/images/caret-right-white.png';
+        arrow.style.top = ( rectangles[position].top + ( _tooltip_.height / 2 ) - 7 ) + 'px';
+        arrow.style.left = ( rectangles[position].left + _tooltip_.width - 5) + 'px';
         break;
 
       case 'right':
@@ -349,7 +349,7 @@ class Training extends React.Component {
           </div>
 
         </div>
-        <Icon icon="caret-up" id="syn-training-arrow" size="4" />
+        <img src="/assets/images/caret-bottom-white.png" id="syn-training-arrow" />
       </section>
     );
   }

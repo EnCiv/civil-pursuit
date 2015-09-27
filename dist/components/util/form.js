@@ -133,6 +133,8 @@ var Form = (function (_React$Component) {
     value: function submitHandler(e) {
       e.preventDefault();
 
+      console.log('hello');
+
       if (this.validateRequired() && this.validateEmail()) {
         this.setState({ validationError: null });
         if (this.props.handler) {
@@ -146,6 +148,7 @@ var Form = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function render() {
+
       var flash = undefined;
 
       if (this.state.validationError) {

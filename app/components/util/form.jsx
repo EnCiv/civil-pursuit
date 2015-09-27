@@ -93,6 +93,8 @@ class Form extends React.Component {
   submitHandler (e) {
     e.preventDefault();
 
+    console.log('hello')
+
     if ( this.validateRequired() && this.validateEmail() ) {
       this.setState({ validationError : null });
       if ( this.props.handler ) {
@@ -104,6 +106,7 @@ class Form extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
+
     let flash;
 
     if ( this.state.validationError ) {
