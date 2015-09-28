@@ -128,9 +128,9 @@ class Training extends React.Component {
         break;
 
       case 'right':
-        arrow.classList.add('fa-caret-left');
-        arrow.style.top = ( rectangles[position].top + ( _tooltip_.height / 2 ) - 30 ) + 'px';
-        arrow.style.left = ( rectangles[position].left - 23 ) + 'px';
+        arrow.src='/assets/images/caret-left-white.png';
+        arrow.style.top = ( rectangles[position].top + ( _tooltip_.height / 2 ) - 7 ) + 'px';
+        arrow.style.left = ( rectangles[position].left - 14 ) + 'px';
         break;
     }
   }
