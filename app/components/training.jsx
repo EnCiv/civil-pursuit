@@ -44,7 +44,19 @@ class Training extends React.Component {
     const instruction = relevantInstructions[this.state.cursor];
 
     const tooltip = React.findDOMNode(this.refs.view);
-    const target = document.querySelector(instruction.element);
+    let target = document.querySelector(instruction.element);
+    const rect = target.getBoundingClientRect();
+    const { width, height } = rect;
+
+    if ( ! width && ! height ) {
+      const targets = document.querySelectorAll(instruction.element);
+      if ( targets % 2 === 0 ) {
+        target = targets[targets.length / 2];
+      }
+      else {
+        target = targets[targets.length - 1];
+      }
+    }
 
     const arrow = document.querySelector('#syn-training-arrow');
 

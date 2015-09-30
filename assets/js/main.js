@@ -6762,6 +6762,18 @@ var Training = (function (_React$Component) {
 
       var tooltip = _react2['default'].findDOMNode(this.refs.view);
       var target = document.querySelector(instruction.element);
+      var rect = target.getBoundingClientRect();
+      var width = rect.width;
+      var height = rect.height;
+
+      if (!width && !height) {
+        var targets = document.querySelectorAll(instruction.element);
+        if (targets % 2 === 0) {
+          target = targets[targets.length / 2];
+        } else {
+          target = targets[targets.length - 1];
+        }
+      }
 
       var arrow = document.querySelector('#syn-training-arrow');
 
