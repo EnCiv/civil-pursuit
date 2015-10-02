@@ -154,8 +154,6 @@ var API = (function (_EventEmitter) {
 
         var cookie = req.cookies.synuser;
 
-        console.log('cookie', cookie);
-
         if (cookie) {
 
           if (!_this4.findUserById(cookie.id)) {

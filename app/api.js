@@ -100,8 +100,6 @@ class API extends EventEmitter {
 
       let cookie = req.cookies.synuser;
 
-      console.log('cookie', cookie);
-
       if ( cookie ) {
 
         if ( ! this.findUserById(cookie.id) ) {

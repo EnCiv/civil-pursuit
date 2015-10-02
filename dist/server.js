@@ -278,7 +278,25 @@ var HttpServer = (function (_EventEmitter) {
     key: 'getLandingPage',
     value: function getLandingPage() {
       try {
-        this.app.get('/', Routes.homePage.bind(this));
+
+        this.app.get('/', function (req, res, next) {
+          if (!req.cookies.synapp) {
+            res.cookie('synapp', { training: false }, {
+              'path': '/',
+              'signed': false,
+              'maxAge': 604800000,
+              'httpOnly': true
+            });
+          } else {
+            res.cookie('synapp', { training: true }, {
+              'path': '/',
+              'signed': false,
+              'maxAge': 604800000,
+              'httpOnly': true
+            });
+          }
+          next();
+        }, Routes.homePage.bind(this));
         this.app.get('/page/:page', Routes.homePage.bind(this));
       } catch (error) {
         this.emit('error', error);
