@@ -245,7 +245,7 @@ var HttpServer = (function (_EventEmitter) {
       this.timeout();
       this.getLandingPage();
       this.getTermsOfServicePage();
-      // this.getItemPage();
+      this.getSettings();
       // this.getPage();
 
       this.app.get('/error', function (req, res, next) {
@@ -278,16 +278,8 @@ var HttpServer = (function (_EventEmitter) {
     key: 'getLandingPage',
     value: function getLandingPage() {
       try {
-
         this.app.get('/', function (req, res, next) {
           if (!req.cookies.synapp) {
-            res.cookie('synapp', { training: false }, {
-              'path': '/',
-              'signed': false,
-              'maxAge': 604800000,
-              'httpOnly': true
-            });
-          } else {
             res.cookie('synapp', { training: true }, {
               'path': '/',
               'signed': false,
@@ -295,9 +287,36 @@ var HttpServer = (function (_EventEmitter) {
               'httpOnly': true
             });
           }
+          // else {
+
+          // }
           next();
         }, Routes.homePage.bind(this));
         this.app.get('/page/:page', Routes.homePage.bind(this));
+      } catch (error) {
+        this.emit('error', error);
+      }
+    }
+  }, {
+    key: 'getSettings',
+    value: function getSettings() {
+      try {
+        this.app.get('/settings', function (req, res, next) {
+          try {
+            console.log('settings');
+            if ('showtraining' in req.query) {
+              res.cookie('synapp', { training: !! +req.query.showtraining }, {
+                'path': '/',
+                'signed': false,
+                'maxAge': 604800000,
+                'httpOnly': true
+              });
+              res.send({ training: !! +req.query.showtraining });
+            }
+          } catch (error) {
+            next(error);
+          }
+        });
       } catch (error) {
         this.emit('error', error);
       }

@@ -6706,6 +6706,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _superagent = require('superagent');
+
+var _superagent2 = _interopRequireDefault(_superagent);
+
 var _utilButton = require('./util/button');
 
 var _utilButton2 = _interopRequireDefault(_utilButton);
@@ -6725,7 +6729,7 @@ var Training = (function (_React$Component) {
 
     window.Dispatcher.emit('get instructions');
 
-    this.state = { cursor: 0, loader: false };
+    this.state = { cursor: 0, loader: false, dontShowNextTime: false };
 
     this.ready = false;
 
@@ -6888,8 +6892,6 @@ var Training = (function (_React$Component) {
 
       var current = relevantInstructions[cursor];
 
-      console.log({ current: current });
-
       if (current.click) {
         var click = current.click;
 
@@ -7018,7 +7020,22 @@ var Training = (function (_React$Component) {
       }
 
       var arrow = document.querySelector('#syn-training-arrow');
-      arrow.style.left = '-1000vh';
+
+      if (arrow) {
+        arrow.style.left = '-1000vh';
+      }
+
+      if (this.state.dontShowNextTime) {
+        _superagent2['default'].get('/settings?showtraining=0').end(function (err, res) {});
+      }
+    }
+  }, {
+    key: 'showNextTime',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function showNextTime(e) {
+      this.setState({ dontShowNextTime: e.target.value });
     }
   }, {
     key: 'render',
@@ -7088,6 +7105,17 @@ var Training = (function (_React$Component) {
               description
             ),
             _react2['default'].createElement(
+              'div',
+              { style: { float: 'right', marginTop: '15px' } },
+              _react2['default'].createElement('input', { type: 'checkbox', defaultChecked: this.state.dontShowNextTime, onChange: this.showNextTime.bind(this) }),
+              ' ',
+              _react2['default'].createElement(
+                'em',
+                null,
+                'Do not show next time'
+              )
+            ),
+            _react2['default'].createElement(
               _utilButton2['default'],
               {
                 info: true,
@@ -7109,7 +7137,7 @@ var Training = (function (_React$Component) {
 
 exports['default'] = Training;
 module.exports = exports['default'];
-},{"./util/button":35,"./util/icon":42,"react":219}],32:[function(require,module,exports){
+},{"./util/button":35,"./util/icon":42,"react":219,"superagent":220}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

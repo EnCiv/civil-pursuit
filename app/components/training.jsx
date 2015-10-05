@@ -1,6 +1,7 @@
 'use strict';
 
 import React                from 'react';
+import superagent           from 'superagent';
 import Button               from './util/button';
 import Icon                 from './util/icon';
 
@@ -13,7 +14,7 @@ class Training extends React.Component {
 
     window.Dispatcher.emit('get instructions');
 
-    this.state = { cursor : 0, loader : false };
+    this.state = { cursor : 0, loader : false, dontShowNextTime : false };
 
     this.ready = false;
 
@@ -172,9 +173,6 @@ class Training extends React.Component {
 
     const current = relevantInstructions[cursor];
 
-
-    console.log({ current })
-
     if ( current.click ) {
       const { click } = current;
       const target = document.querySelector(click);
@@ -303,7 +301,20 @@ class Training extends React.Component {
     }
 
     const arrow = document.querySelector('#syn-training-arrow');
-    arrow.style.left = '-1000vh';
+
+    if ( arrow ) {
+      arrow.style.left = '-1000vh';
+    }
+
+    if ( this.state.dontShowNextTime ) {
+      superagent.get('/settings?showtraining=0').end((err, res) => {});
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  showNextTime (e) {
+    this.setState({ dontShowNextTime : e.target.value });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -352,6 +363,9 @@ class Training extends React.Component {
 
           <div>
             <div style={{ marginBottom : '10px' }}>{ description }</div>
+            <div style={{ float : 'right', marginTop : '15px' }}>
+              <input type="checkbox" defaultChecked={ this.state.dontShowNextTime } onChange={ this.showNextTime.bind(this) } /> <em>Do not show next time</em>
+            </div>
             <Button
               info
               onClick   =   { this.next.bind(this) }

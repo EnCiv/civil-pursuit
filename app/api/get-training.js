@@ -16,10 +16,6 @@ function getTraining (event) {
     const cookie = req.cookies.synapp;
 
     if ( cookie.training ) {
-      this.ok(event, []);
-    }
-
-    else {
       TrainingModel
         .find()
         .sort({ step : 1 })
@@ -30,6 +26,10 @@ function getTraining (event) {
           },
           this.error.bind(this)
         );
+    }
+
+    else {
+      this.ok(event, []);
     }
   }
   catch ( error ) {

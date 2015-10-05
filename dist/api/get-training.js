@@ -29,11 +29,11 @@ function getTraining(event) {
     var cookie = req.cookies.synapp;
 
     if (cookie.training) {
-      this.ok(event, []);
-    } else {
       _modelsTraining2['default'].find().sort({ step: 1 }).exec().then(function (instructions) {
         _this.ok(event, instructions);
       }, this.error.bind(this));
+    } else {
+      this.ok(event, []);
     }
   } catch (error) {
     this.error(error);
