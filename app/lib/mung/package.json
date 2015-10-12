@@ -1,0 +1,19 @@
+{
+  "name": "mung",
+  "version": "1.0.0",
+  "description": "Mung ===",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --compilers js:babel/register test/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "mocha": "^2.3.3",
+    "should": "^7.1.0"
+  }
+}
