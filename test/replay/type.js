@@ -101,6 +101,54 @@ describe ( 'Type' , function () {
 
     });
 
+    describe ( 'name is unique' , function () {
+
+      const candidate = { name : 'Intro' };
+
+      let dbError;
+
+      it ( 'should throw an error' , function (done) {
+
+        Type
+          .create(candidate)
+          .then(
+            () => done(new Error('Should have thrown error')),
+            error => {
+              dbError = error;
+              done();
+            }
+          );
+
+      });
+
+      describe ( 'Error' , function () {
+
+        it ( 'should be a MongoDB Error', function () {
+
+          dbError.name.should.be.exactly('MongoError');
+
+        });
+
+        it ( 'should have a code' , function () {
+
+          dbError.should.have.property('code')
+
+        });
+
+        describe ( 'code' , function () {
+
+          it ( `should be 11000`, function () {
+
+            dbError.code.should.be.exactly(11000);
+
+          });
+
+        });
+
+      });
+
+    });
   });
+
 
 });
