@@ -8,10 +8,21 @@ class AppError extends Mung.Model {
       name        :   String,
       message     :   String,
       code        :   String,
-      stack       :   [String],
+      stack       :   String,
       debug       :   Object,
       repair      :   [Mung.Mixed]
     };
+  }
+
+  static throwError (error) {
+    return this.create({
+      name      :   error.name,
+      message   :   error.message,
+      code      :   error.code,
+      stack     :   error.stack,
+      debug     :   error.debug,
+      repair    :   error.repair
+    });
   }
 }
 

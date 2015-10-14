@@ -6,53 +6,67 @@ import { exec }       from 'child_process';
 import colors         from 'colors';
 import Mung           from '../lib/mung';
 
-console.log('Migrating database...');
 
-Mung.connect(process.env.MONGOHQ_URL).on('connected', () => {
+function migrate () {
+  return new Promise((ok, ko) => {
+    try {
 
-  console.log('Getting all models...');
+      Mung.connect(process.env.MONGOHQ_URL).on('connected', () => {
 
-  fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
-    if ( error ) {
-      throw error;
+
+        fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
+          if ( error ) {
+            throw error;
+          }
+
+
+          let promises = files
+            .map(file => new Promise((ok, ko) => {
+              try {
+                let model = require(path.resolve(__dirname, `../models/${file}`));
+
+
+
+                model.migrate().then(() => {
+                  ok();
+                }, ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+          }));
+
+          Promise
+            .all(promises)
+            .then(
+              results => {
+
+                 ok();
+              },
+              ko
+            );
+
+        });
+
+      });
     }
-
-    console.log('Got all models', files);
-
-    let promises = files
-      .map(file => new Promise((ok, ko) => {
-        try {
-          let model = require(path.resolve(__dirname, `../models/${file}`));
-
-          console.log(model);
-
-          if ( model.migrations ) {
-            console.log('Migrating', model.name);
-            model.migrate().then(() => {
-              console.log('Migration OK', model.name);
-              ok();
-            }, ko);
-          }
-          else {
-            ok();
-          }
-        }
-        catch ( error ) {
-          ko(error);
-        }
-    }));
-
-    Promise
-      .all(promises)
-      .then(
-        results => { Mung.disconnect()  },
-        error => {
-          console.log(error.stack);
-          // throw error;
-          process.exit(8);
-        }
-      );
-
+    catch ( error ) {
+      ko(error);
+    }
   });
+}
 
-});
+export default migrate;
+
+if ( process.argv[1] === __filename || process.argv[1] === __filename.replace(/\.js$/, '') ) {
+  migrate()
+    .then(
+      () => {
+        Mung.disconnect();
+      },
+      error => {
+        console.log(error.stack);
+        process.exit(8);
+      }
+    );
+}

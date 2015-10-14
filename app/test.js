@@ -1,4 +1,9 @@
-let foo = 1;
-let barz = 2;
+'use strict';
 
-console.log({ foo, barz })
+class Foo extends Promise {
+  constructor (fn) {
+    super(fn);
+  }
+}
+
+new Foo((ok, ko) => ok()).then(() => console.log('hola'));

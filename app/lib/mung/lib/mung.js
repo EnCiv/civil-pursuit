@@ -48,6 +48,103 @@ function validate (value, type) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+function validate2 (value, type, convert = false) {
+
+  if ( Array.isArray(type) ) {
+    if ( ! Array.isArray(value) ) {
+      return false;
+    }
+
+    if ( type.length === 1 ) {
+      return value
+        .map(value => validate(value, type[0], convert))
+        .every(value => value);
+    }
+
+    else if ( value.length !== type.length ) {
+      return false;
+    }
+
+    else {
+      return value
+        .map((value, index) => validate(value, type[index], convert))
+        .every(value => value);
+    }
+  }
+
+  if ( type === String ) {
+    type = _String;
+  }
+
+  else if ( type === Number ) {
+    type = _Number;
+  }
+
+  else if ( type === Boolean ) {
+    type = _Boolean;
+  }
+
+  else if ( type === Object ) {
+    type = _Object;
+  }
+
+  if ( convert && type.convert ) {
+    value = type.convert(value);
+  }
+
+  return type.validate(value);
+}
+
+Mung.validate2 = validate2;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+function convert (value, type) {
+
+  if ( Array.isArray(type) ) {
+    if ( ! Array.isArray(value) ) {
+      throw new Error('Can not convert a non-array to an array of types');
+    }
+
+    if ( type.length === 1 ) {
+      return value
+        .map(value => convert(value, type[0]));
+    }
+
+    else {
+      return value
+        .filter((value, index) => type[index])
+        .map((value, index) => convert(value, type[index]));
+    }
+  }
+
+  if ( type === String ) {
+    type = _String;
+  }
+
+  else if ( type === Number ) {
+    type = _Number;
+  }
+
+  else if ( type === Boolean ) {
+    type = _Boolean;
+  }
+
+  else if ( type === Object ) {
+    type = _Object;
+  }
+
+  if ( ! type.convert ) {
+    return value;
+  }
+
+  return type.convert(value);
+}
+
+Mung.convert = convert;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 function forceType (value, type) {
   switch ( type ) {
     case String :

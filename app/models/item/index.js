@@ -1,8 +1,13 @@
 'use strict';
 
-import Mung from '../../lib/mung';
-import User from '../user';
-import Type from '../type';
+import Mung             from '../../lib/mung';
+import User             from '../user';
+import Type             from '../type';
+import getPopularity    from './methods/get-popularity';
+import isUrl            from '../../lib/util/is/url';
+import isLesserThan     from '../../lib/util/is/lesser-than';
+import toPanelItem      from './methods/to-panel-item';
+import getLineage       from './methods/get-lineage';
 
 class Item extends Mung.Model {
   static schema () {
@@ -88,6 +93,18 @@ class Item extends Mung.Model {
         "default"         :   0
       }
     };
+  }
+
+  toPanelItem (...args) {
+    return toPanelItem.apply(this, args);
+  }
+
+  getPopularity (...args) {
+    return getPopularity.apply(this, args);
+  }
+
+  getLineage (...args) {
+    return getLineage.apply(this, args);
   }
 }
 

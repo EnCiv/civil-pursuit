@@ -7,7 +7,7 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (document = {}) {
+  constructor (document = {}, options = {}) {
     Object.defineProperty(this, 'document', {
       enumerable : false,
       writable : true,
@@ -15,6 +15,12 @@ class Model {
     });
 
     const schema = this.constructor.getSchema();
+
+    Object.defineProperty(this, '__schema', {
+      enumerable : false,
+      writable : false,
+      value : schema
+    });
 
     Object.defineProperty(this, '__types', {
       enumerable : false,
@@ -28,11 +34,15 @@ class Model {
       value : this.parseFields(this.__types, schema)
     });
 
-    Object.defineProperty(this, 'indexes', {
+    Object.defineProperty(this, '__indexes', {
       enumerable : false,
       writable : false,
       value : this.parseIndexes(this.__types, schema)
     });
+
+    if ( options._id && ! document._id ) {
+      document._id = Mung.ObjectID();
+    }
 
     let original = {};
 
@@ -268,7 +278,13 @@ class Model {
       return this.push(array, value[array]);
     }
 
-    this.document = Mung.set(this.document, field, value, this.__types);
+    // this.document = Mung.set(this.document, field, value, this.__types);
+
+    if ( ! ( field in this.__schema ) ) {
+      return this;
+    }
+
+    this.document[field] = Mung.convert(value, this.__schema[field].type);
 
     for ( let field in this.document ) {
       if ( ! ( field in this ) ) {
@@ -371,6 +387,8 @@ class Model {
 
     return new Promise((ok, ko) => {
       try {
+        const started = Date.now();
+
         this.verifyRequired();
 
         this.document.__v = 0;
@@ -416,6 +434,12 @@ class Model {
                         try {
                           this.document._id = created.insertedId;
 
+                          Object.defineProperty(this, '__queryTime', {
+                            enumerable : false,
+                            writable : false,
+                            value : created.__queryTime
+                          });
+
                           if ( ! ( '__timeStamp' in this ) ) {
                             Object.defineProperty(this, '__timeStamp', {
                               enumerable : false,
@@ -437,13 +461,27 @@ class Model {
 
                             if ( Array.isArray(pipe) ) {
                               Mung.runSequence(pipe, this).then(
-                                () => ok(this),
+                                () => {
+                                  Object.defineProperty(this, '__totalQueryTime', {
+                                    enumerable : false,
+                                    writable : false,
+                                    value : Date.now() - started
+                                  });
+
+                                  ok(this)
+                                },
                                 ko
                               );
 
                             }
                           }
                           else {
+                            Object.defineProperty(this, '__totalQueryTime', {
+                              enumerable : false,
+                              writable : false,
+                              value : Date.now() - started
+                            });
+
                             ok(this);
                           }
                         }
@@ -611,10 +649,6 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /**
-   *  @arg        {Object={}} Set of options
-   */
-
   toJSON (options = {}) {
     let json = {};
 
@@ -680,6 +714,24 @@ class Model {
         ko(error);
       }
     });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static convert (value) {
+    if ( value instanceof Mung.ObjectID ) {
+      return value;
+    }
+
+    if ( value._id ) {
+      return Mung.ObjectID(value._id);
+    }
+
+    if ( typeof value === 'String' ) {
+      return Mung.ObjectID(value);
+    }
+
+    throw new Error('Can not convert value to Model');
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -790,7 +842,10 @@ class Model {
             docs => {
               try {
                 let promises = docs.map(doc => doc.remove());
-                Promise.all(promises).then(ok, ko);
+                Promise.all(promises).then(
+                  () => ok(docs),
+                  ko
+                );
               }
               catch ( error ) {
                 ko(error);
@@ -963,53 +1018,87 @@ class Model {
       try {
         let { migrations } = this;
 
-        if ( ! migrations ) {
-          throw new Error('Migrations not found');
+        if ( migrations ) {
+          let migrate = cb => {
+            let version = versions[cursor];
+
+            if ( migrations[version] ) {
+
+              migrations[version].do.apply(this)
+                .then(
+                  () => {
+                    this
+                      .find({ __V : { $lt : version } }, { limit : 0 })
+                      .then(
+                        documents => {
+                          Promise
+                            .all(
+                              documents.map(document => new Promise((ok, ko) => {
+                                document.set('__V', version).save().then(ok, ko)
+                              }))
+                            )
+                            .then(
+                              () => {
+                                cursor ++;
+                                migrate(cb);
+                              },
+                              ko
+                            );
+                        },
+                        ko
+                      );
+                  },
+                  ko
+                );
+            }
+            else {
+              cb();
+            }
+          };
+
+          let versions = Object.keys(migrations);
+
+          let cursor = 0;
+
+          migrate(() => {
+            this.buildIndexes().then(ok, ko);
+          });
         }
+        else {
+          this.buildIndexes().then(ok, ko);
+        }
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
 
-        let migrate = () => {
-          let version = versions[cursor];
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-          if ( migrations[version] ) {
+  static buildIndexes () {
+    return new Promise((ok, ko) => {
+      try {
+        const { Query } = Mung;
 
-            migrations[version].do.apply(this)
-              .then(
-                () => {
-                  this
-                    .find({ __V : { $lt : version } }, { limit : 0 })
-                    .then(
-                      documents => {
-                        console.log(`Found ${documents.length} documents older than ${version}`)
-                        Promise
-                          .all(
-                            documents.map(document => new Promise((ok, ko) => {
-                              document.set('__V', version).save().then(ok, ko)
-                            }))
-                          )
-                          .then(
-                            () => {
-                              cursor ++;
-                              migrate();
-                            },
-                            ko
-                          );
-                      },
-                      ko
-                    );
-                },
-                ko
-              );
-          }
-          else {
-            ok();
-          }
-        };
+        const query = new Query({ model : this });
 
-        let versions = Object.keys(migrations);
 
-        let cursor = 0;
-
-        migrate();
+        query
+          .collection()
+          .then(
+            collection => {
+              try {
+                query
+                  .ensureIndexes(collection, this.getSchema())
+                  .then(ok, ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
       }
       catch ( error ) {
         ko(error);

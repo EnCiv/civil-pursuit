@@ -47,10 +47,6 @@ class Query {
           else {
             const { model } = this.options;
 
-            if ( ! model ) {
-              throw new Error('No model');
-            }
-
             collection = db.collection(model.toCollectionName());
           }
         }
@@ -70,8 +66,11 @@ class Query {
   ensureIndexes (collection, schema) {
     return new Promise((ok, ko) => {
       try {
-        this.buildIndexes(this.options.model.indexes, collection)
-          .then(ok,
+        this.buildIndexes(new (this.options.model)().__indexes, collection)
+          .then(
+            () => {
+              ok();
+            },
             error => {
               if ( error.code === 26 ) { /** No collection **/
                 ok();
@@ -90,12 +89,13 @@ class Query {
   buildIndexes (indexes = [], collection) {
     return new Promise((ok, ko) => {
       try {
-        collection
-          .indexes()
-          .then(
+
+        const fn = collection
+          .indexes();
+
+        fn.then(
             keys => {
               try {
-
                 indexes = indexes.map(index => {
                   index.exists = keys.some(key => key.name === index.name);
 
@@ -120,21 +120,20 @@ class Query {
 
                 Promise.all(promises).then(
                   results => {
-                    results.forEach(indexName => {
-                      indexes = indexes.map(index => {
-                        if ( index.name === indexName ) {
-                          index.created = true;
-                        }
-                        return index;
+                    try {
+                      results.forEach(indexName => {
+                        indexes = indexes.map(index => {
+                          if ( index.name === indexName ) {
+                            index.created = true;
+                          }
+                          return index;
+                        });
                       });
-                    });
-                    ok(indexes);
-
-                    Mongol.events.emit('log', {
-                      Index : {
-                        toDB : indexes
-                      }
-                    });
+                      ok(indexes);
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
                   },
                   ko
                 );
@@ -207,43 +206,48 @@ class Query {
           schema = schema();
         }
 
-        this.collection()
-          .then(
-            collection => {
-              try {
-                this.ensureIndexes(collection, schema)
-                  .then(
-                    () => {
-                      try {
-                        if ( id ) {
-                          collection
-                            .replaceOne({ _id : id }, document)
-                            .then(
-                              () => {
-                                ok();
-                              },
-                              ko
-                            );
-                        }
-                        else {
-                          collection
-                            .insertOne(document)
-                            .then(ok, ko);
-                        }
+        this.collection().then(collection => {
+          try {
+
+            const started = Date.now();
+
+            if ( id ) {
+              collection
+                .replaceOne({ _id : id }, document)
+                .then(
+                  () => {
+                    ok();
+                  },
+                  ko
+                );
+            }
+            else {
+              collection
+                .insertOne(document)
+                .then(
+                  document => {
+                    try {
+                      if ( document ) {
+                        Object.defineProperty(document, '__queryTime', {
+                          enumerable : false,
+                          writable : false,
+                          value : Date.now() - started
+                        });
                       }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+                      ok(document);
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  },
+                  ko
+                );
+            }
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        });
       }
       catch ( error ) {
         ko(error);
@@ -262,89 +266,74 @@ class Query {
           schema = schema();
         }
 
-        this.collection()
-          .then(
-            collection => {
-              try {
-                this.ensureIndexes(collection, schema)
-                  .then(
-                    () => {
-                      try {
-                        let limit = 'limit' in options ? options.limit : 100;
-                        let skip = options.skip || 0;
-                        let sort = options.sort || { _id : 1 };
+        this.collection().then(collection => {
+          try {
+            let limit = 'limit' in options ? options.limit : 100;
+            let skip = options.skip || 0;
+            let sort = options.sort || { _id : 1 };
 
-                        if ( options.reverse ) {
-                          sort = { _id : -1 };
+            if ( options.reverse ) {
+              sort = { _id : -1 };
+            }
+
+            const parsed = this.parse(document);
+
+            collection
+              .find(parsed)
+              .limit(limit)
+              .skip(skip)
+              .sort(sort)
+              .toArray()
+              .then(
+                documents => {
+                  try {
+                    documents = documents.map(doc => new model(doc));
+
+                    if ( options.one ) {
+                      documents = documents[0];
+                    }
+
+                    if ( documents ) {
+                      Object.defineProperties(documents, {
+                        __query : {
+                          numerable : false,
+                          writable : false,
+                          value : parsed
+                        },
+
+                        __limit : {
+                          numerable : false,
+                          writable : false,
+                          value : limit
+                        },
+
+                        __skip : {
+                          numerable : false,
+                          writable : false,
+                          value : skip
+                        },
+
+                        __sort : {
+                          numerable : false,
+                          writable : false,
+                          value : sort
                         }
+                      });
+                    }
 
-                        const parsed = this.parse(document);
-
-                        collection
-                          .find(parsed)
-                          .limit(limit)
-                          .skip(skip)
-                          .sort(sort)
-                          .toArray()
-                          .then(
-                            documents => {
-                              try {
-                                documents = documents.map(doc => new model(doc));
-
-                                if ( options.one ) {
-                                  documents = documents[0];
-                                }
-
-                                if ( documents ) {
-                                  Object.defineProperties(document, {
-                                    __query : {
-                                      numerable : false,
-                                      writable : false,
-                                      value : parsed
-                                    },
-
-                                    __limit : {
-                                      numerable : false,
-                                      writable : false,
-                                      value : limit
-                                    },
-
-                                    __skip : {
-                                      numerable : false,
-                                      writable : false,
-                                      value : skip
-                                    },
-
-                                    __sort : {
-                                      numerable : false,
-                                      writable : false,
-                                      value : sort
-                                    }
-                                  });
-                                }
-
-                                ok(documents);
-                              }
-                              catch ( error ) {
-                                ko(error);
-                              }
-                            },
-                            ko
-                          );
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+                    ok(documents);
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                },
+                ko
+              );
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        });
       }
       catch ( error ) {
         ko(error);
@@ -363,41 +352,26 @@ class Query {
           schema = schema();
         }
 
-        this.collection()
-          .then(
-            collection => {
-              try {
-                this.ensureIndexes(collection, schema)
-                  .then(
-                    () => {
-                      try {
-                        collection
-                          .count(this.parse(document))
-                          .then(
-                            count => {
-                              try {
-                                ok(count);
-                              }
-                              catch ( error ) {
-                                ko(error);
-                              }
-                            },
-                            ko
-                          );
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+        this.collection().then(collection => {
+          try {
+            collection
+              .count(this.parse(document))
+              .then(
+                count => {
+                  try {
+                    ok(count);
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                },
+                ko
+              );
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        });
       }
       catch ( error ) {
         ko(error);

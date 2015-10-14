@@ -3,34 +3,230 @@
 import should from 'should';
 import Mung from '../';
 
-class Foo extends Mung.Model {
-
+class Bar extends Mung.Model {
+  static schema () {
+    return {
+      string : String
+    }
+  }
 }
+
+class Foo extends Mung.Model {}
 
 describe ( 'Mung', function () {
 
   describe ('Schema', function () {
 
-    it ( 'should have a version' , function () {
+    const schema = Foo.getSchema();
 
-      const schema = Foo.getSchema();
+    it ( 'should be an object', function () {
 
       schema.should.be.an.Object();
 
-      schema.should.have.property('_id')
-        .which.is.a.Function();
+    });
 
-      schema._id.name.should.be.exactly('ObjectID');
+    describe ( '_id', function () {
 
-      schema.should.have.property('__v')
-        .which.is.a.Function();
+      it ( 'should exist' , function () {
 
-      schema.__v.name.should.be.exactly('Number');
+        schema.should.have.property('_id');
 
-      schema.should.have.property('__V')
-        .which.is.a.Function();
+      });
 
-      schema.__V.name.should.be.exactly('Number');
+      it ( 'should be an object' , function () {
+
+        schema._id.should.be.an.Object();
+
+      });
+
+      describe ( 'Type' , function () {
+
+        it ( 'should exist' , function () {
+
+          schema._id.should.have.property('type');
+
+        });
+
+        it ( 'should be an ObjectID', function () {
+
+          schema._id.type.should.be.a.Function()
+            .which.is.exactly(Mung.ObjectID);
+
+        });
+
+      });
+
+    });
+
+    describe ( '__v (document version)', function () {
+
+      it ( 'should exist' , function () {
+
+        schema.should.have.property('__v');
+
+      });
+
+      it ( 'should be an object' , function () {
+
+        schema.__v.should.be.an.Object();
+
+      });
+
+      describe ( 'Type' , function () {
+
+        it ( 'should exist' , function () {
+
+          schema.__v.should.have.property('type');
+
+        });
+
+        it ( 'should be a Number', function () {
+
+          schema.__v.type.should.be.a.Function()
+            .which.is.exactly(Number);
+
+        });
+
+      });
+
+    });
+
+    describe ( '__V (model version)', function () {
+
+      it ( 'should exist' , function () {
+
+        schema.should.have.property('__V');
+
+      });
+
+      it ( 'should be an object' , function () {
+
+        schema.__V.should.be.an.Object();
+
+      });
+
+      describe ( 'Type' , function () {
+
+        it ( 'should exist' , function () {
+
+          schema.__V.should.have.property('type');
+
+        });
+
+        it ( 'should be a Number', function () {
+
+          schema.__V.type.should.be.a.Function()
+            .which.is.exactly(Number);
+
+        });
+
+      });
+
+    });
+
+  });
+
+  describe ( 'Type validations' , function () {
+
+    describe( 'Validate String' , function () {
+
+      const string = 'abc';
+
+      const numericString = '1';
+
+      describe ( 'As a String' , function () {
+
+        const validated = Mung.validate2(string, String);
+
+        it ( 'should be true' , function () {
+
+          validated.should.be.true;
+
+        });
+
+      });
+
+      describe ( 'As a Number' , function () {
+
+        const validated = Mung.validate2(string, Number);
+
+        it ( 'should be false' , function () {
+
+          validated.should.be.false;
+
+        });
+
+      });
+
+      describe ( 'As a forced Number' , function () {
+
+        describe ( 'With non-numeric string' , function () {
+
+          const validated = Mung.validate2(string, Number, true);
+
+          it ( 'should be false' , function () {
+
+            validated.should.be.false;
+
+          });
+
+        });
+
+        describe ( 'With a numeric string' , function () {
+
+          const validated = Mung.validate2(numericString, Number, true);
+
+          it ( 'should be true' , function () {
+
+            validated.should.be.true;
+
+          });
+
+        });
+
+      });
+
+    });
+
+    describe( 'Validate Number' , function () {
+
+      const number = 1;
+
+      describe ( 'As a Number' , function () {
+
+        const validated = Mung.validate2(number, Number);
+
+        it ( 'should be true' , function () {
+
+          validated.should.be.true;
+
+        });
+
+      });
+
+      describe ( 'As a String' , function () {
+
+        const validated = Mung.validate2(number, String);
+
+        it ( 'should be false' , function () {
+
+          validated.should.be.false;
+
+        });
+
+      });
+
+      describe ( 'As a forced String' , function () {
+
+        const validated = Mung.validate2(number, String, true);
+
+        it ( 'should be true' , function () {
+
+          validated.should.be.true;
+
+        });
+
+      });
 
     });
 
@@ -38,15 +234,95 @@ describe ( 'Mung', function () {
 
   describe ('Parsers', function () {
 
-    it ('should parse Version', function () {
+    describe ( 'Parse model version' , function () {
 
-      const parsed = Mung.parse({ __V : 2 }, Foo.getSchema());
+      // const parsed = Mung.parse2({ __V : 2 }, Foo.getSchema());
+      //
+      // it ( 'should be an object', function () {
+      //
+      //   parsed.should.be.an.Object();
+      //
+      // });
 
-      parsed
-        .should.be.an.Object()
-        .which.have.property('__V')
-        .which.is.a.Number()
-        .and.which.is.exactly(2);
+    });
+
+    // it ('should parse Version', function () {
+    //
+    //   const parsed = Mung.parse({ __V : 2 }, Foo.getSchema());
+    //
+    //   parsed
+    //     .should.be.an.Object()
+    //     .which.have.property('__V')
+    //     .which.is.a.Number()
+    //     .and.which.is.exactly(2);
+    //
+    // });
+
+  });
+
+  describe ( 'Convert' , function () {
+
+    describe ( 'Number' , function () {
+
+      describe ( 'to Number' , function () {
+
+        const converted = Mung.convert(123, Number);
+
+        it ( 'should be a number' , function () {
+
+          converted.should.be.a.Number;
+
+        });
+
+      });
+
+      describe ( 'to String' , function () {
+
+        const converted = Mung.convert(123, String);
+
+        it ( 'should be a string' , function () {
+
+          converted.should.be.a.String;
+
+        });
+
+      });
+
+      describe ( 'to Boolean' , function () {
+
+        const converted = Mung.convert(123, Boolean);
+
+        it ( 'should be a boolean' , function () {
+
+          converted.should.be.a.Boolean;
+
+        });
+
+      });
+
+    });
+
+    describe ( 'Array' , function () {
+
+      describe ( 'of full models' , function () {
+
+        const converted = Mung.convert([new Bar({}, { _id : true })], [Bar]);
+
+        console.log(converted);
+
+        it ( 'should be an Array' , function () {
+
+          converted.should.be.an.Array();
+
+        });
+
+        it ( 'should be an Array of ObjectIDs' , function () {
+
+          converted[0].should.be.an.instanceof(Mung.ObjectID);
+
+        });
+
+      });
 
     });
 

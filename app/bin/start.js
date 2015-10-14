@@ -2,14 +2,17 @@
 
 'use strict';
 
-import colors         from   'colors';
-import fs             from   'fs';
-import path           from   'path';
-import { Domain }     from   'domain';
-import mongoose       from   'mongoose';
-import Server         from   '../server';
-import ItemModel      from '../models/item';
-import TypeModel      from '../models/type';
+import colors         from    'colors';
+import fs             from    'fs';
+import path           from    'path';
+import { Domain }     from    'domain';
+import Mung           from    '../lib/mung';
+import Server         from    '../server';
+import Item           from    '../models/item';
+import Type           from    '../models/type';
+import sequencer      from    '../lib/util/sequencer';
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if ( process.env.NODE_ENV === 'production' ) {
   process.title = 'synappprod';
@@ -19,90 +22,112 @@ else {
   process.title = 'synappdev';
 }
 
-function parseError(error) {
-  console.log(error.stack.split(/\n/));
-}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function readMe () {
-  return new Promise((ok, ko) => {
-    let README$path = path.resolve(__dirname, '../..', 'README.md');
-
-    fs.createReadStream(README$path)
+const connectToDB = props => new Promise((ok, ko) => {
+  try {
+    console.log('connect to mongodb');
+    Mung.connect(process.env.MONGOHQ_URL)
       .on('error', ko)
-      .on('data', data => {
-        let bits = data.toString().split(/---/);
-        console.log(bits[1].yellow);
-      })
-      .on('end', ok);
-  });
-}
+      .on('connected', ok);
+  }
+  catch ( error ) {
+    ko(error);
+  }
+});
 
-function connectToMongoose () {
-  return new Promise(function(ok, ko) {
-    if ( ! process.env.MONGOHQ_URL ) {
-      return ko(new Error('Missing MongoDB URL'));
-    }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    mongoose.connect(process.env.MONGOHQ_URL);
+const getIntroType = props => new Promise((ok, ko) => {
+  try {
+    console.log('get intro type');
+    Type
+      .findOne({ name : 'Intro' })
+      .then(
+        type => {
+          try {
+            if ( ! type ) {
+              throw new Error('Intro type not found');
+            }
+            props.intro = { type };
+            ok();
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        },
+        ko
+      );
+  }
+  catch ( error ) {
+    ko(error);
+  }
+});
 
-    mongoose.connection.on('connected', function () {
-      console.log('Connected to MongoDB ' + process.env.MONGOHQ_URL);
-      ok();
-    });
-  });
-}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-readMe().then(
-  () => connectToMongoose().then(
-    () => {
-      try {
-        TypeModel
-          .findOne({ name : 'Intro' })
-          .exec()
-          .then(
-            type => {
-              try {
-                if ( ! type ) {
-                  throw new Error('Intro type not found');
-                }
-                ItemModel
-                  .findOne({ type })
-                  .exec()
-                  .then(
-                    intro => {
-                      try {
-                        if ( ! intro ) {
-                          throw new Error('Intro not found');
-                        }
-                        intro
-                          .toPanelItem()
-                          .then(
-                            intro => new Server({ intro })
-                              .on('error', parseError)
-                              .on('message', message => console.log('message', message)),
-                            error => parseError(error)
-                          )
-                      }
-                      catch ( error ) {
-                        parseError(error);
-                      }
-                    },
-                    error => parseError(error)
-                  );
-              }
-              catch ( error ) {
-                parseError(error);
-              }
-            },
-            error => parseError(error)
-          )
+const getIntroItem = props => new Promise((ok, ko) => {
+  try {
+    console.log('get intro item');
+    Item
+      .findOne({ type : props.intro.type })
+      .then(
+        item => {
+          try {
+            if ( ! item ) {
+              throw new Error('Intro item not found');
+            }
+            console.log('get intro panel item');
+            item
+              .toPanelItem()
+              .then(
+                item => {
+                  try {
+                    props.intro.item = item;
+                    ok()
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                },
+                ko
+              );
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        },
+        ko
+      );
+  }
+  catch ( error ) {
+    ko(error);
+  }
+});
 
-      }
-      catch ( error ) {
-        parseError(error);
-      }
-    },
-    parseError
-  ),
-  parseError
-);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+const startServer = props => new Promise((ok, ko) => {
+  try {
+    console.log('start server');
+    new Server({ intro : props.intro.item })
+      .on('error', error => console.log(error.stack.red))
+      .on('message', message => console.log(message));
+  }
+  catch ( error ) {
+    ko(error);
+  }
+});
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+sequencer([
+  connectToDB,
+  getIntroType,
+  getIntroItem,
+  startServer
+])
+  .then(
+    () => console.log('started'),
+    error => console.log(error.stack)
+  );
