@@ -8,7 +8,7 @@ function getLineage () {
       let lineage = [];
 
       const _getLineage = itemId => {
-        ItemModel
+        Item
           .findById(itemId)
           .then(
             item => {

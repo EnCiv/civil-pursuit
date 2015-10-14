@@ -118,9 +118,7 @@ var HttpServer = (function (_EventEmitter) {
 
     this.props = props;
 
-    this.on('message', function (message, info) {
-      console.log(message, info);
-    }).on('request', _libUtilExpressPretty2['default']).on('response', function (res) {
+    this.on('message', function (message, info) {}).on('request', _libUtilExpressPretty2['default']).on('response', function (res) {
       (0, _libUtilExpressPretty2['default'])(res.req, res);
     });
 
@@ -386,10 +384,6 @@ var HttpServer = (function (_EventEmitter) {
         new _api2['default'](_this3).on('error', function (error) {
           return _this3.emit('error', error);
         });
-
-        setTimeout(function () {
-          return console.log('SERVER IS LISTENING');
-        }, 2000);
       });
     }
   }]);
@@ -402,3 +396,5 @@ HttpServer.prototype.itemRoute = _routesItem2['default'];
 
 exports['default'] = HttpServer;
 module.exports = exports['default'];
+
+// console.log(message, info);

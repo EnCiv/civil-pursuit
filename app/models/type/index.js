@@ -7,7 +7,8 @@ class Type extends Mung.Model {
     return {
       "name"        :     {
         type        :     String,
-        unique      :     true
+        unique      :     true,
+        required    :     true
       },
 
       "harmony"     :     [Type],

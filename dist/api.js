@@ -51,13 +51,13 @@ var API = (function (_EventEmitter) {
     _get(Object.getPrototypeOf(API.prototype), 'constructor', this).call(this);
 
     process.nextTick(function () {
-      _this.on('error', _this.server.emit.bind(server, 'error'));
-      _this.on('message', _this.server.emit.bind(server, 'message'));
-
       try {
         _this.server = server;
         _this.users = [];
         _this.handlers = [];
+
+        _this.on('error', _this.server.emit.bind(server, 'error'));
+        _this.on('message', _this.server.emit.bind(server, 'message'));
 
         _this.fetchHandlers();
       } catch (error) {
@@ -180,6 +180,7 @@ var API = (function (_EventEmitter) {
       var _this3 = this;
 
       try {
+        console.log('connected');
         socket.on('error', function (error) {
           return _this3.emit('error', error);
         });

@@ -208,7 +208,6 @@ describe ( 'User' , function () {
 
     });
 
-
     describe ( 'valid user' , function () {
 
       const email = 'foo@foo.com';

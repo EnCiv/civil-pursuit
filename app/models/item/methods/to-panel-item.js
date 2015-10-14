@@ -53,8 +53,7 @@ function toPanelItem () {
         try {
           console.log('get type');
           Type
-            .findById(this.type)
-            .populate('harmony')
+            .findById(this.type, { populate : 'harmony' })
             .then(ok, ko);
         }
         catch ( error ) {
