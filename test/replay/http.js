@@ -18,6 +18,8 @@ describe ( 'HTTP server' , function () {
 
     });
 
+    global.syn_httpServer = server;
+
   });
 
 });

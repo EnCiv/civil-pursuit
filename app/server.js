@@ -35,7 +35,7 @@ class HttpServer extends EventEmitter {
     this
 
       .on('message', function (message, info) {
-        console.log(message, info);
+        // console.log(message, info);
       })
 
       .on('request', printIt)
@@ -308,8 +308,6 @@ class HttpServer extends EventEmitter {
 
       new API(this)
         .on('error', error => this.emit('error', error));
-
-      setTimeout(() => console.log('SERVER IS LISTENING'), 2000);
     });
   }
 
