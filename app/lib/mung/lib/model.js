@@ -8,36 +8,40 @@ class Model {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   constructor (document = {}, options = {}) {
-    Object.defineProperty(this, 'document', {
-      enumerable : false,
-      writable : true,
-      value : {}
-    });
-
     const schema = this.constructor.getSchema();
 
-    Object.defineProperty(this, '__schema', {
-      enumerable : false,
-      writable : false,
-      value : schema
-    });
+    Object.defineProperties(this, {
+      __document    :   {
+        value       :   {}
+      },
 
-    Object.defineProperty(this, '__types', {
-      enumerable : false,
-      writable : false,
-      value : this.parseTypes(schema)
-    });
+      __schema      :   {
+        value       :   schema
+      },
 
-    Object.defineProperty(this, 'fields', {
-      enumerable : false,
-      writable : false,
-      value : this.parseFields(this.__types, schema)
-    });
+      __types       :   {
+        value       :   this.parseTypes(schema)
+      },
 
-    Object.defineProperty(this, '__indexes', {
-      enumerable : false,
-      writable : false,
-      value : this.parseIndexes(this.__types, schema)
+      __indexes     :   {
+        value       :   this.parseIndexes(schema)
+      },
+
+      __defaults    :   {
+        value       :   this.parseDefaults(schema)
+      },
+
+      __required    :   {
+        value       :   this.parseRequired(schema)
+      },
+
+      __private     :   {
+        value       :   this.parsePrivate(schema)
+      },
+
+      __distinct    :   {
+        value       :   this.parseDistinct(schema)
+      }
     });
 
     if ( options._id && ! document._id ) {
@@ -52,15 +56,11 @@ class Model {
     }
 
     Object.defineProperty(this, '__original', {
-      enumerable : false,
-      writable : false,
       value : original
     });
 
     if ( this._id ) {
       Object.defineProperty(this, '__timeStamp', {
-        enumerable : false,
-        writable : false,
         value : this._id.getTimestamp()
       });
     }
@@ -69,156 +69,265 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  parseFields (types, schema) {
-    let fields = {};
+  parseIndexes (schema, ns = '') {
 
-    for ( let type in types ) {
-      fields[type] = {};
-
-      if ( typeof types[type] === 'function' ) {
-        if ( schema[type].required ) {
-          fields[type].required = true;
-        }
-
-        if ( schema[type].private ) {
-          fields[type].private = true;
-        }
-
-        if ( schema[type].default ) {
-          fields[type].default = schema[type].default;
-        }
-      }
-
-      else if ( Array.isArray(types[type]) ) {
-        let _schema = {};
-
-        if ( schema[type].type ) {
-          _schema = schema[type].type[0];
-
-          if ( schema[type].required ) {
-            fields[type].required = true;
-          }
-
-          if ( schema[type].private ) {
-            fields[type].private = true;
-          }
-
-          if ( schema[type].default ) {
-            fields[type].default = schema[type].default;
-          }
-        }
-        else {
-          _schema = schema[type][0];
-        }
-
-        if ( typeof types[type][0] === 'object' ) {
-          let _fields = this.parseFields(types[type][0], _schema);
-          for ( let _type in _fields ) {
-            fields[`${type}.$.${_type}`] = _fields[_type];
-          }
-        }
-
-      }
-    }
-
-    return fields;
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static buildIndex (field, schema, isUnique = false, ns = '') {
-    let index = {
-      v         :   1,
-      unique    :   !! isUnique
-    };
-
-    let name = typeof schema === 'string' ? schema : 1;
-
-    if ( Array.isArray(schema) ) {
-      let fields = [field].concat(schema);
-      index.name = fields.map(field => `${field}_1`).join('_');
-      index.key = fields.map(field => {
-        let name = '';
-        if ( ns ) {
-          name = `${ns}.`;
-        }
-        name += field;
-        return { [name] : 1 };
-      });
-    }
-
-    else if ( typeof schema === 'object' ) {
-      let fields = [field].concat(schema.compound);
-      index.name = fields.map(field => `${field}_1`).join('_');
-      index.key = fields.map(field => {
-        let name = '';
-        if ( ns ) {
-          name = `${ns}.`;
-        }
-        name += field;
-        return { [name] : 1 };
-      });
-
-      if ( schema.force ) {
-        index.force = true;
-      }
-    }
-
-    else if ( ns ) {
-      index.name  =   `${ns}.${field}_${name}`;
-      index.key   =   { [`${ns}.${field}`] : name };
-    }
-
-    else {
-      index.name  =   `${field}_${name}`;
-      index.key   =   { [field] : name };
-    }
-
-    return index;
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  parseIndexes (types, schema, ns='') {
     let indexes = [];
 
-    for ( let type in types ) {
-      if ( typeof types[type] === 'function' ) {
-        if ( schema[type].index ) {
-          indexes.push(this.constructor.buildIndex(type, schema[type].index, false, ns));
+    for ( let field in schema ) {
+
+      let fields = {};
+
+      let options = {};
+
+      let fieldName = ns ? `${ns}.${field}` : field;
+
+      if ( Array.isArray(schema[field]) ) {
+        let subindexes = this.parseIndexes(schema[field][0], fieldName);
+        indexes.push(...subindexes);
+      }
+
+      else if ( typeof schema[field] === 'object' ) {
+        if ( schema[field].index || schema[field].unique ) {
+          let index = schema[field].index || schema[field].unique;
+
+          if ( index === true ) {
+            fields[fieldName] = 1;
+
+            options.name = `${fieldName}_1`;
+          }
+
+          else if ( typeof index === 'string' ) {
+            fields[fieldName] = index;
+
+            options.name = `${fieldName}_${index}`;
+          }
+
+          else if ( Array.isArray(index) ) {
+            fields[fieldName] = 1;
+
+            let names = [`${fieldName}_1`];
+
+            index.forEach(field => {
+              fields[field] = 1;
+              names.push(`${field}_1`);
+            });
+
+            options.name = names.join('_');
+          }
+
+          else if ( typeof index === 'object' ) {
+            fields[fieldName] = index.sort || 1;
+
+            let names = [`${fieldName}_1`];
+
+            if ( Array.isArray(index.fields) ) {
+              index.fields.forEach(field => {
+                fields[field] = 1;
+                names.push(`${field}_1`);
+              });
+            }
+
+            else if ( typeof index.fields === 'object' ) {
+              for ( let f in index.fields ) {
+                fields[f] = index.fields[f];
+                names.push(`${f}_${index.fields[f]}`);
+              }
+            }
+
+            for ( let option in index ) {
+              if ( option !== 'sort' && option !== 'fields' ) {
+                options[option] = index[option];
+              }
+            }
+
+            if ( ! options.name ) {
+              options.name = names.join('_');
+            }
+          }
+
+          indexes.push([ fields, options ]);
         }
 
-        if ( schema[type].unique ) {
-          indexes.push(this.constructor.buildIndex(type, schema[type].unique, true, ns));
+        if ( typeof schema[field].type === 'object' ) {
+          let subindexes = this.parseIndexes(schema[field].type, fieldName);
+          indexes.push(...subindexes);
         }
       }
 
-      else if ( Array.isArray(types[type]) ) {
-        let _schema = {};
-
-        if ( schema[type].type ) {
-          _schema = schema[type].type[0];
-
-          if ( schema[type].index ) {
-            indexes.push(this.constructor.buildIndex(type, schema[type].index, false, ns));
-          }
-
-          if ( schema[type].unique ) {
-            indexes.push(this.constructor.buildIndex(type, schema[type].unique, true, ns));
-          }
-        }
-        else {
-          _schema = schema[type][0];
-        }
-
-        if ( typeof types[type][0] === 'object' ) {
-          let _indexes = this.parseIndexes(types[type][0], _schema, type);
-          indexes.push(..._indexes);
-        }
-      }
     }
 
     return indexes;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  parseDefaults (schema, ns = '') {
+    let defaults = {};
+
+    for ( let field in schema ) {
+
+      let fieldName = ns ? `${ns}.${field}` : field;
+
+      if ( Array.isArray(schema[field]) ) {
+
+        let subdefaults = this.parseDefaults(schema[field][0], fieldName);
+
+        if ( Object.keys(subdefaults).length ) {
+          defaults[field] = {};
+
+          for ( let subdefault in subdefaults ) {
+            defaults[field][subdefault] = subdefaults[subdefault];
+          }
+        }
+      }
+
+      else if ( typeof schema[field] === 'object' ) {
+        if ( 'default' in schema[field] ) {
+          defaults[field] = schema[field].default;
+        }
+
+        if ( typeof schema[field].type === 'object' ) {
+          let subdefaults = this.parseDefaults(schema[field].type, fieldName);
+
+          if ( Object.keys(subdefaults).length ) {
+            defaults[field] = {};
+
+            for ( let subdefault in subdefaults ) {
+              defaults[field][subdefault] = subdefaults[subdefault];
+            }
+          }
+        }
+      }
+
+    }
+
+    return defaults;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  parseRequired (schema) {
+    let required = {};
+
+    for ( let field in schema ) {
+
+      if ( Array.isArray(schema[field]) ) {
+        let subrequired = this.parseRequired(schema[field][0]);
+
+        if ( Object.keys(subrequired).length ) {
+          required[field] = {};
+
+          for ( let subreq in subrequired ) {
+            required[field][subreq] = subrequired[subreq];
+          }
+        }
+      }
+
+      else if ( typeof schema[field] === 'object' ) {
+        if ( schema[field].required ) {
+          required[field] = true;
+        }
+
+        if ( typeof schema[field].type === 'object' ) {
+          let subrequired = this.parseRequired(schema[field].type);
+
+          if ( Object.keys(subrequired).length ) {
+            required[field] = {};
+
+            for ( let subreq in subrequired ) {
+              required[field][subreq] = subrequired[subreq];
+            }
+          }
+        }
+      }
+
+    }
+
+    return required;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  parsePrivate (schema) {
+    let _private = {};
+
+    for ( let field in schema ) {
+
+      if ( Array.isArray(schema[field]) ) {
+        let subprivate = this.parsePrivate(schema[field][0]);
+
+        if ( Object.keys(subprivate).length ) {
+          _private[field] = {};
+
+          for ( let subpriv in subprivate ) {
+            _private[field][subpriv] = subprivate[subpriv];
+          }
+        }
+      }
+
+      else if ( typeof schema[field] === 'object' ) {
+        if ( schema[field].private ) {
+          _private[field] = true;
+        }
+
+        if ( typeof schema[field].type === 'object' ) {
+          let subprivate = this.parsePrivate(schema[field].type);
+
+          if ( Object.keys(subprivate).length ) {
+            _private[field] = {};
+
+            for ( let subpriv in subprivate ) {
+              _private[field][subpriv] = subprivate[subpriv];
+            }
+          }
+        }
+      }
+
+    }
+
+    return _private;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  parseDistinct (schema) {
+    let distinct = {};
+
+    for ( let field in schema ) {
+
+      if ( Array.isArray(schema[field]) ) {
+        let subdistinct = this.parseDistinct(schema[field][0]);
+
+        if ( Object.keys(subdistinct).length ) {
+          distinct[field] = {};
+
+          for ( let sub in subdistinct ) {
+            distinct[field][sub] = subdistinct[sub];
+          }
+        }
+      }
+
+      else if ( typeof schema[field] === 'object' ) {
+        if ( schema[field].distinct ) {
+          distinct[field] = true;
+        }
+
+        if ( typeof schema[field].type === 'object' ) {
+          let subdistinct = this.parseDistinct(schema[field].type);
+
+          if ( Object.keys(subdistinct).length ) {
+            distinct[field] = {};
+
+            for ( let sub in subdistinct ) {
+              distinct[field][sub] = subdistinct[subpriv];
+            }
+          }
+        }
+      }
+
+    }
+
+    return distinct;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -278,21 +387,26 @@ class Model {
       return this.push(array, value[array]);
     }
 
-    // this.document = Mung.set(this.document, field, value, this.__types);
+    // this.__document = Mung.set(this.__document, field, value, this.__types);
 
     if ( ! ( field in this.__schema ) ) {
       return this;
     }
 
-    this.document[field] = Mung.convert(value, this.__schema[field].type);
+    if ( value === null ) {
+      this.__document[field] = null;
+    }
+    else {
+      this.__document[field] = Mung.convert(value, this.__types[field]);
+    }
 
-    for ( let field in this.document ) {
+    for ( let field in this.__document ) {
       if ( ! ( field in this ) ) {
         Object.defineProperty(this, field, {
           enumerable : true,
           configurable : true,
           get : () => {
-            return this.document[field];
+            return this.__document[field];
           }
         });
       }
@@ -304,36 +418,9 @@ class Model {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   verifyRequired () {
-    for ( let field in this.fields ) {
-      if ( this.fields[field].required ) {
-        let value = field.split(/\./).reduce((doc, bit, i, bits) => {
-
-          if ( typeof doc === 'undefined' ) {
-            return undefined;
-          }
-
-          if ( bit === '$' ) {
-            return doc;
-          }
-
-          else if ( Array.isArray(doc) ) {
-            if ( ! doc.length ) {
-              return undefined;
-            }
-
-            if ( ! doc.every((item, index) => !!(bit in item)) ) {
-              return undefined;
-            }
-
-            return true;
-          }
-
-          return doc[bit];
-        }, this.document);
-
-        if ( typeof value === 'undefined' ) {
-          throw new (Mung.Error)(`Missing field ${field}`, { code : Mung.Error.MISSING_REQUIRED_FIELD });
-        }
+    for ( let field in this.__required ) {
+      if ( ! ( field in this.__document ) ) {
+        throw new (Mung.Error)(`Missing field ${field}`, { code : Mung.Error.MISSING_REQUIRED_FIELD });
       }
     }
   }
@@ -341,11 +428,26 @@ class Model {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   applyDefault () {
-    for ( let field in this.fields ) {
-      if ( 'default' in this.fields[field] ) {
-        if ( ! ( field in this.document ) ) {
-          this.set(field, this.fields[field].default);
+    for ( let field in this.__defaults ) {
+      if ( ! ( field in this.__document ) ) {
+        let _default;
+
+        if ( typeof this.__defaults[field] === 'function' ) {
+          _default = this.__defaults[field]();
         }
+        else {
+          _default = this.__defaults[field];
+        }
+
+        this.__document[field] = _default;
+
+        Object.defineProperty(this, field, {
+          enumerable : true,
+          configurable : true,
+          get : () => {
+            return this.__document[field];
+          }
+        });
       }
     }
   }
@@ -353,32 +455,121 @@ class Model {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   push (field, value) {
-    if ( ! ( field in this.document  ) ) {
-      this.document[field] = [];
+    if ( ! ( field in this  ) ) {
+      this.set(field, []);
     }
 
-    const casted = Mung.cast(value, this.__types[field][0]);
+    if ( ! Array.isArray(this[field]) ) {
+      throw new Error(`${this.constructor.name}.${field} is not an array`);
+    }
+
+    const type = this.__types[field][0];
+
+    const casted = Mung.convert(value, type);
 
     if ( typeof casted !== 'undefined' ) {
-      this.document[field].push(casted);
+
+      if ( this.__distinct[field] ) {
+        const exists = this[field].some(item => {
+          if ( type.equal ) {
+            return type.equal(item, casted);
+          }
+          return item === casted;
+        });
+
+        if ( exists ) {
+          throw new (Mung.Error)('Array only accepts distinct values', {
+            code : Mung.Error.DISTINCT_ARRAY_CONSTRAINT,
+            rejected : casted
+          });
+        }
+      }
+
+      this.__document[field].push(casted);
     }
 
+    return this;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   filter (field, filter) {
-    if ( Array.isArray(this.document[field]) ) {
-      this.document[field] = this.document[field].filter(filter);
+    if ( Array.isArray(this.__document[field]) ) {
+      this.__document[field] = this.__document[field].filter(filter);
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   unset (field) {
-    delete this.document[field];
+    delete this.__document[field];
 
     return this;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  prepare (operation, options = {}) {
+    return new Promise((ok, ko) => {
+      try {
+        if ( ! ( '__v' in this ) ) {
+          this.__document.__v = 0;
+
+          Object.defineProperty(this, '__v', {
+            enumerable : true,
+            configurable : true,
+            get : () => {
+              return this.__document.__v;
+            }
+          });
+        }
+
+        if ( ! ( '__V' in this ) ) {
+          this.__document.__V = this.constructor.version || 0;
+
+          Object.defineProperty(this, '__V', {
+            enumerable : true,
+            configurable : true,
+            get : () => {
+              return this.__document.__V;
+            }
+          });
+        }
+
+        let beforeValidation = [];
+
+        if ( typeof this.constructor.validating === 'function' ) {
+          beforeValidation = this.constructor.validating();
+        }
+
+        Mung.runSequence(beforeValidation, this)
+          .then(
+            () => {
+              try {
+                this.applyDefault();
+
+                this.verifyRequired();
+
+                let before = [];
+
+                if ( operation === 'insert' && typeof this.constructor.inserting === 'function' ) {
+                  before = this.constructor.inserting();
+                }
+
+                Mung.runSequence(before, this)
+                  .then(ok, ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -389,50 +580,18 @@ class Model {
       try {
         const started = Date.now();
 
-        this.verifyRequired();
-
-        this.document.__v = 0;
-
-        Object.defineProperty(this, '__v', {
-          enumerable : true,
-          configurable : true,
-          get : () => {
-            return this.document.__v;
-          }
-        });
-
-        if ( ! ( '__V' in this.document ) ) {
-          this.document.__V = this.constructor.version || 0;
-        }
-
-        Object.defineProperty(this, '__V', {
-          enumerable : true,
-          configurable : true,
-          get : () => {
-            return this.document.__V;
-          }
-        });
-
-        if ( ! this.document._id || options.create ) {
-          this.applyDefault();
-
-          let inserting = [];
-
-          if ( typeof this.constructor.inserting === 'function' ) {
-            inserting = inserting.concat(this.constructor.inserting());
-          }
-
-          Mung.runSequence(inserting, this)
+        if ( ! this.__document._id || options.create ) {
+          this.prepare('insert', options)
             .then(
               () => {
                 try {
                   const { Query } = Mung;
                   new Query({ model : this.constructor })
-                    .insert(this.document)
+                    .insert(this.__document)
                     .then(
                       created => {
                         try {
-                          this.document._id = created.insertedId;
+                          this.__document._id = created.insertedId;
 
                           Object.defineProperty(this, '__queryTime', {
                             enumerable : false,
@@ -452,7 +611,7 @@ class Model {
                             Object.defineProperty(this, '_id', {
                               enumerable : true,
                               writable : false,
-                              value : this.document._id
+                              value : this.__document._id
                             });
                           }
 
@@ -500,28 +659,28 @@ class Model {
             );
         }
         else {
-          if ( ! ( '__v' in this.document ) ) {
-            this.document.__v = 0;
+          if ( ! ( '__v' in this.__document ) ) {
+            this.__document.__v = 0;
 
             Object.defineProperty(this, '__v', {
               enumerable : true,
               configurable : true,
               get : () => {
-                return this.document.__v;
+                return this.__document.__v;
               }
             });
           }
 
-          this.document.__v ++;
+          this.__document.__v ++;
 
-          if ( ! ( '__V' in this.document ) ) {
-            this.document.__V = this.constructor.version || 0;
+          if ( ! ( '__V' in this.__document ) ) {
+            this.__document.__V = this.constructor.version || 0;
 
             Object.defineProperty(this, '__V', {
               enumerable : true,
               configurable : true,
               get : () => {
-                return this.document.__V;
+                return this.__document.__V;
               }
             });
           }
@@ -540,7 +699,7 @@ class Model {
                 try {
                   const { Query } = Mung;
                   new Query({ model : this.constructor })
-                    .insert(this.document, this.document._id)
+                    .insert(this.__document, this.__document._id)
                     .then(
                       created => {
                         try {
@@ -616,7 +775,7 @@ class Model {
                 .then(
                   () => {
                     try {
-                      ok(this.document);
+                      ok(this.__document);
 
                       if ( typeof model.removed === 'function' ) {
                         const pipe = model.removed();
@@ -652,12 +811,12 @@ class Model {
   toJSON (options = {}) {
     let json = {};
 
-    for ( let key in this.document ) {
-      if ( this.document[key] instanceof mongodb.ObjectID ) {
-        json[key] = this.document[key].toString();
+    for ( let key in this.__document ) {
+      if ( this.__document[key] instanceof mongodb.ObjectID ) {
+        json[key] = this.__document[key].toString();
       }
-      else if ( ! this.fields[key].private ) {
-        json[key] = this.document[key];
+      else if ( ! this.__private[key] ) {
+        json[key] = this.__document[key];
       }
     }
 
@@ -676,14 +835,24 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  populate () {
+  populate (...foreigns) {
     return new Promise((ok, ko) => {
       try {
         let refs = [];
 
-        for ( let field in this.__types ) {
-          if ( new (this.__types[field])() instanceof Model ) {
-            refs.push({ field, model : this.__types[field] });
+        if ( foreigns.length ) {
+          for ( let field in this.__types ) {
+            if ( foreigns.indexOf(field) > -1 && new (this.__types[field])() instanceof Model ) {
+              refs.push({ field, model : this.__types[field] });
+            }
+          }
+        }
+
+        else {
+          for ( let field in this.__types ) {
+            if ( new (this.__types[field])() instanceof Model ) {
+              refs.push({ field, model : this.__types[field] });
+            }
           }
         }
 
@@ -719,19 +888,31 @@ class Model {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static convert (value) {
-    if ( value instanceof Mung.ObjectID ) {
-      return value;
-    }
+    if ( value ) {
+      if ( value instanceof Mung.ObjectID ) {
+        return value;
+      }
 
-    if ( value._id ) {
-      return Mung.ObjectID(value._id);
-    }
+      if ( value._id ) {
+        return Mung.ObjectID(value._id);
+      }
 
-    if ( typeof value === 'String' ) {
-      return Mung.ObjectID(value);
+      if ( typeof value === 'String' ) {
+        return Mung.ObjectID(value);
+      }
     }
 
     throw new Error('Can not convert value to Model');
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static equal (a, b) {
+    if ( a instanceof Mung.ObjectID ) {
+      if ( b instanceof Mung.ObjectID ) {
+        return a.equals(b);
+      }
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -745,17 +926,11 @@ class Model {
   static getSchema () {
     let schema = this.schema();
 
-    schema._id = mongodb.ObjectID;
+    schema._id = Mung.ObjectID;
 
     schema.__v = Number;
 
     schema.__V = Number;
-
-    for ( let field in schema ) {
-      if ( typeof schema[field] === 'function' || Array.isArray(schema[field]) ) {
-        schema[field] = { type : schema[field] };
-      }
-    }
 
     return schema;
   }
@@ -790,7 +965,7 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static findOne (where) {
+  static findOne (where = {}) {
     return this.find(where, { one : true });
   }
 
@@ -1083,14 +1258,13 @@ class Model {
 
         const query = new Query({ model : this });
 
-
         query
           .collection()
           .then(
             collection => {
               try {
                 query
-                  .ensureIndexes(collection, this.getSchema())
+                  .ensureIndexes(collection)
                   .then(ok, ko);
               }
               catch ( error ) {

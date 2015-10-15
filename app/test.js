@@ -1,9 +1,15 @@
 'use strict';
 
-class Foo extends Promise {
-  constructor (fn) {
-    super(fn);
-  }
-}
+import Mung from './lib/mung';
+import User from './models/user';
 
-new Foo((ok, ko) => ok()).then(() => console.log('hola'));
+Mung.connect(process.env.MONGO_TEST)
+  .on('connected', () => {
+    console.log('cool');
+
+    User.create({ email : Date.now().toString(), password : '1234' })
+      .then(
+        user => console.log(user.preferences),
+        error => console.log(error.stack)
+      );
+  });

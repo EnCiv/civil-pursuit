@@ -2,7 +2,6 @@
 
 import config             from '../../../../public.json';
 import toSlug             from '../../../lib/util/to-slug';
-import calcHarmony        from '../../../lib/get-harmony';
 import Type               from '../../type';
 import User               from '../../user';
 import Vote               from '../../vote';
@@ -10,7 +9,6 @@ import Vote               from '../../vote';
 function toPanelItem () {
   return new Promise((ok, ko) => {
     try {
-      console.log('to panel item');
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       const Item = this.constructor;
@@ -51,7 +49,6 @@ function toPanelItem () {
 
       const getType     =   () => new Promise((ok, ko) => {
         try {
-          console.log('get type');
           Type
             .findById(this.type, { populate : 'harmony' })
             .then(ok, ko);
@@ -139,49 +136,7 @@ function toPanelItem () {
       const countChildren   =   () => new Promise((ok, ko) => {
         try {
           Item
-            .count({ parent : _id })
-            .then(ok, ko);
-        }
-        catch ( error ) {
-          ko(error);
-        }
-      });
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      const countSubType    =   subtype => new Promise((ok, ko) => {
-        try {
-          let query = {
-            parent    :   this._id,
-            type      :   subtype
-          };
-
-          Item
-            .count(query)
-            .then(ok, ko);
-        }
-        catch ( error ) {
-          ko(error);
-        }
-      });
-
-      //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-      const countHarmony    =   harmony => new Promise((ok, ko) => {
-        try {
-          if ( ! harmony.length ) {
-            return ok(0);
-          }
-
-          const query = {
-            parent    :   this._id,
-            type      :   {
-              $in     :   harmony.map(h => h._id)
-            }
-          };
-
-          Item
-            .count(query)
+            .count({ parent : this })
             .then(ok, ko);
         }
         catch ( error ) {
@@ -194,7 +149,7 @@ function toPanelItem () {
       const countVotes      =   () => new Promise((ok, ko) => {
         try {
           Vote
-            .count({ item : this._id })
+            .count({ item })
             .then(ok, ko);
         }
         catch ( error ) {
@@ -204,37 +159,6 @@ function toPanelItem () {
 
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      const getHarmony      =   item => new Promise((ok, ko) => {
-        try {
-          let { harmony } = item.type;
-
-
-          let promises = harmony.map(side =>
-            new Promise((ok, ko) => {
-              Item
-                .count({
-                  parent    :   item._id,
-                  type      :   side._id
-                })
-                .then(ok, ko);
-            })
-          );
-
-          Promise
-            .all(promises)
-            .then(
-              results => {
-                let [ pro, con ] = results;
-                ok(calcHarmony(pro, con));
-              },
-              ko
-            );
-        }
-        catch ( error ) {
-          ko(error);
-        }
-      });
-
       //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       Promise
@@ -243,44 +167,22 @@ function toPanelItem () {
           getType(),
           getUser(),
           getSubtype(),
-          countVotes()
+          countVotes(),
+          countChildren(),
+          this.countHarmony()
         ])
         .then(
           results => {
             try {
-              [
-                item.lineage,
-                item.type,
-                item.user,
-                item.subtype,
-                item.votes
-              ] = results;
+              item.lineage    =   results[0];
+              item.type       =   results[1];
+              item.user       =   results[2];
+              item.subtype    =   results[3];
+              item.votes      =   results[4];
+              item.children   =   results[5];
+              item.harmony    =   results[6];
 
-              countSubType(item.subtype)
-                .then(
-                  count => {
-                    try {
-                      item.children = count;
-
-                      if ( ! item.type.harmony.length ) {
-                        return ok(item);
-                      }
-
-                      getHarmony(item)
-                        .then(
-                          harmony => {
-                            item.harmony = harmony;
-                            ok(item);
-                          },
-                          ko
-                        );
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  },
-                  ko
-                );
+              ok(item);
             }
             catch ( error ) {
               ko(error);

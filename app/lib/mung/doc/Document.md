@@ -47,6 +47,37 @@ Player.create({ name : 'Joe' }).then(
 
 # Modify
 
+## Set
+
+## Array modifiers
+
+### Push
+
+```js
+class Foo extends Mung.Model {
+  static schema () {
+    return {
+      numbers : [Number],
+      arrayInSubdocument : {
+        type : {
+          strings : [Strings]
+        }
+      }
+    };
+  }
+}
+
+const foo = new Foo();
+
+foo.push('numbers', 1, 2, 3);
+
+console.log(foo.numbers); // [ 1, 2, 3 ]
+
+foo.push('arrayInSubdocument.strings', 'hello');
+
+console.log(foo.arrayInSubdocument.strings); // ['hello']
+```
+
 # Save
 
 ## Insert

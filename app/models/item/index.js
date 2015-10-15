@@ -1,13 +1,15 @@
 'use strict';
 
 import Mung             from '../../lib/mung';
+import isUrl            from '../../lib/util/is/url';
+import isLesserThan     from '../../lib/util/is/lesser-than';
 import User             from '../user';
 import Type             from '../type';
 import getPopularity    from './methods/get-popularity';
-import isUrl            from '../../lib/util/is/url';
-import isLesserThan     from '../../lib/util/is/lesser-than';
 import toPanelItem      from './methods/to-panel-item';
 import getLineage       from './methods/get-lineage';
+import countHarmony     from './methods/count-harmony';
+import generateId       from './statics/id';
 
 class Item extends Mung.Model {
   static schema () {
@@ -22,13 +24,12 @@ class Item extends Mung.Model {
       },
 
       "references"        :   [{
-          "url"           :   {
-            "type"        :   String,
-            "validate"    :   isUrl
-          },
-          "title"         :   String
-        }
-      ],
+        "url"             :   {
+          "type"          :   String,
+          "validate"      :   isUrl
+        },
+        "title"           :   String
+      }],
 
       "subject"           :   {
         "type"            :   String,
@@ -93,6 +94,20 @@ class Item extends Mung.Model {
 
   getLineage (...args) {
     return getLineage.apply(this, args);
+  }
+
+  countHarmony (...args) {
+    return countHarmony.apply(this, args);
+  }
+
+  static inserting () {
+    return [
+      this.generateId.bind(this)
+    ];
+  }
+
+  static generateId (...args) {
+    return generateId.apply(this, args);
   }
 }
 

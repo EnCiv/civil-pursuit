@@ -1,8 +1,8 @@
 'use strict';
 
 import should from 'should';
-import mongodb from 'mongodb';
 import User from '../../../app/models/user';
+import Mung from '../../../app/lib/mung';
 
 should.Assertion.add('user', function (candidate) {
   this.params = { operator: 'to be a User', expected: User };
@@ -12,7 +12,7 @@ should.Assertion.add('user', function (candidate) {
   this.obj.should.be.an.instanceof(User);
 
   this.obj.should.have.property('_id')
-    .which.is.an.instanceof(mongodb.ObjectID);
+    .which.is.an.instanceof(Mung.ObjectID);
 
   this.obj.should.have.property('email').which.is.a.String();
 
@@ -106,7 +106,7 @@ should.Assertion.add('user', function (candidate) {
   if ( 'race' in this.obj ) {
     this.obj.race.should.be.an.Array();
 
-    this.obj.race.forEach(race => race.should.be.an.instanceof(mongodb.ObjectID));
+    this.obj.race.forEach(race => race.should.be.an.instanceof(Mung.ObjectID));
   }
 
   if ( 'race' in candidate ) {

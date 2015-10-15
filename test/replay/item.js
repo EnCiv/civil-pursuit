@@ -1,11 +1,13 @@
 'use strict';
 
-import Item from '../../app/models/item';
-import should from 'should';
-import Mung from '../../app/lib/mung';
-import isItem from './assertions/item';
-import Type from '../../app/models/type';
-import User from '../../app/models/user';
+import Item               from '../../app/models/item';
+import should             from 'should';
+import Mung               from '../../app/lib/mung';
+import isItem             from './assertions/item';
+import isPanelItem        from './assertions/panel-item';
+import Type               from '../../app/models/type';
+import User               from '../../app/models/user';
+import Vote               from '../../app/models/vote';
 
 describe ( 'Item' , function () {
 
@@ -369,5 +371,178 @@ describe ( 'Item' , function () {
 
   });
 
+  describe ( 'Panelify' , function () {
 
+    let item, panelified;
+
+    describe ( 'Fecth item' , function () {
+
+      it ( 'should fetch item' , function (done) {
+
+        Item
+          .findOne()
+          .then(
+            document => {
+              item = document;
+              done();
+            },
+            done
+          );
+
+      });
+
+      it ( 'should be an item' , function () {
+
+        item.should.be.an.item();
+
+      });
+
+      it ( 'should panelify', function (done) {
+
+        this.timeout(5000);
+
+        try {
+          item
+            .toPanelItem()
+            .then(
+              item => {
+                panelified = item;
+                done();
+              },
+              done
+            );
+        }
+        catch ( error ) {
+          done(error);
+        }
+
+      });
+
+    });
+
+    describe ( 'Panelified item' , function () {
+
+      it ( 'should be an object' , function () {
+
+        panelified.should.be.an.Object();
+
+      });
+
+      it ( 'should be a panel item' , function (done) {
+
+        this.timeout(5000);
+
+        Promise
+          .all([
+            item.getLineage(),
+            Type.findById(item.type, { populate : 'harmony' }),
+            new Promise((ok, ko) => {
+              User
+                .findById(item.user)
+                .then(
+                  user => {
+                    try {
+                      if ( ! user ) {
+                        throw new Error('User not found: ' + item.user);
+                      }
+                      const { gps, _id } = user;
+                      ok({ 'full name' : user.fullName, gps, _id });
+                    }
+                    catch ( error ) {
+                      ko(error);
+                    }
+                  },
+                  ko
+                );
+            }),
+            new Promise((ok, ko) => {
+              try {
+                Type
+                  .find({ parent : item.type })
+                  .then(
+                    types => {
+                      try {
+                        if ( ! types.length ) {
+                          return ok(null);
+                        }
+                        const promises = types.map(type => type.isHarmony());
+                        Promise
+                          .all(promises)
+                          .then(
+                            results => {
+                              try {
+                                const subtype = results.reduce(
+                                  (subtype, isHarmony, index) => {
+                                    if ( ! isHarmony ) {
+                                      subtype = types[index];
+                                    }
+                                    return subtype;
+                                  }, null);
+
+                                ok(subtype);
+                              }
+                              catch ( error ) {
+                                ko(error);
+                              }
+                            },
+                            ko
+                          );
+                      }
+                      catch ( error ) {
+                        ko(error);
+                      }
+                    },
+                    ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            }),
+            new Promise((ok, ko) => {
+              try {
+                Vote
+                  .count({ item })
+                  .then(ok, ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            }),
+            new Promise((ok, ko) => {
+              try {
+                Item
+                  .count({ parent : this })
+                  .then(ok, ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            }),
+            item.countHarmony()
+          ])
+          .then(
+            results => {
+              try {
+
+                const extra = {};
+
+                [ extra.lineage, extra.type, extra.user, extra.subtype, extra.votes, extra.children, extra.harmony ] = results;
+
+                panelified.should.be.a.panelItem(item, extra);
+
+                done();
+
+              }
+              catch ( error ) {
+                done(error);
+              }
+            },
+            done
+          );
+
+      });
+
+    });
+
+  });
 });

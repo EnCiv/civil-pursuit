@@ -63,7 +63,7 @@ class Query {
     });
   }
 
-  ensureIndexes (collection, schema) {
+  ensureIndexes (collection) {
     return new Promise((ok, ko) => {
       try {
         this.buildIndexes(new (this.options.model)().__indexes, collection)
@@ -97,26 +97,14 @@ class Query {
             keys => {
               try {
                 indexes = indexes.map(index => {
-                  index.exists = keys.some(key => key.name === index.name);
+                  index[2] = keys.some(key => key.name === index[1].name);
 
                   return index;
                 });
 
                 let promises = indexes
-                  .filter(index => ! index.exists)
-                  .map(index => {
-                    let options = { v : 1, name : index.name };
-
-                    if ( index.unique ) {
-                      options.unique = true;
-                    }
-
-                    if ( index.force ) {
-                      options.dropDups = true;
-                    }
-
-                    return collection.createIndex(index.key, options);
-                  });
+                  .filter(index => ! index[2])
+                  .map(index => collection.createIndex(index[0], index[1]));
 
                 Promise.all(promises).then(
                   results => {
@@ -155,7 +143,7 @@ class Query {
     const { Model, Util } = Mung;
     const { model } = this.options;
 
-    return Mung.parse(query, new model().__types) || {};
+    return Mung.parse(query, new (this.options.model)().__types);
   }
 
   remove (document, options = {}) {
@@ -278,57 +266,118 @@ class Query {
 
             const parsed = this.parse(document);
 
-            collection
-              .find(parsed)
-              .limit(limit)
-              .skip(skip)
-              .sort(sort)
-              .toArray()
-              .then(
-                documents => {
-                  try {
+            let query;
+
+            if ( options.one ) {
+              if ( collection.findOne ) {
+                query = collection
+                  .findOne(parsed, { skip, sort });
+              }
+              else {
+                query = collection
+                  .find(parsed)
+                  .limit(1)
+                  .skip(skip)
+                  .sort(sort);
+              }
+            }
+
+            else {
+              query = collection
+                .find(parsed)
+                .limit(limit)
+                .skip(skip)
+                .sort(sort)
+                .toArray();
+            }
+
+            query.then(
+              documents => {
+                try {
+                  if ( options.one ) {
+                    if ( collection.findOne ) {
+                      if ( documents ) {
+                        documents = new model(documents);
+                      }
+                    }
+                    else if ( documents.length ) {
+                      documents = new model(documents[0]);
+                    }
+                  }
+                  else {
                     documents = documents.map(doc => new model(doc));
+                  }
 
-                    if ( options.one ) {
-                      documents = documents[0];
+                  if ( documents ) {
+
+                    const packAndGo = () => {
+
+                      if ( documents ) {
+                        Object.defineProperties(documents, {
+                          __query : {
+                            numerable : false,
+                            writable : false,
+                            value : parsed
+                          },
+
+                          __limit : {
+                            numerable : false,
+                            writable : false,
+                            value : limit
+                          },
+
+                          __skip : {
+                            numerable : false,
+                            writable : false,
+                            value : skip
+                          },
+
+                          __sort : {
+                            numerable : false,
+                            writable : false,
+                            value : sort
+                          }
+                        });
+                      }
+
+                      ok(documents);
+                    };
+
+                    if ( options.populate ) {
+                      if ( options.one && documents ) {
+                        documents
+                          .populate(options.populate)
+                          .then(
+                            () => packAndGo,
+                            ko
+                          );
+                      }
+                      else {
+                        Promise
+                          .all(
+                            documents.map(document => document.populate(options.populate))
+                          )
+                          .then(
+                            () => packAndGo,
+                            ko
+                          );
+                      }
                     }
-
-                    if ( documents ) {
-                      Object.defineProperties(documents, {
-                        __query : {
-                          numerable : false,
-                          writable : false,
-                          value : parsed
-                        },
-
-                        __limit : {
-                          numerable : false,
-                          writable : false,
-                          value : limit
-                        },
-
-                        __skip : {
-                          numerable : false,
-                          writable : false,
-                          value : skip
-                        },
-
-                        __sort : {
-                          numerable : false,
-                          writable : false,
-                          value : sort
-                        }
-                      });
+                    else {
+                      packAndGo();
                     }
+                  }
 
+                  else {
                     ok(documents);
                   }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                },
-                ko
-              );
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
           }
           catch ( error ) {
             ko(error);
@@ -352,10 +401,20 @@ class Query {
           schema = schema();
         }
 
+        let parsed;
+
+        try {
+          parsed = this.parse(document);
+        }
+        catch ( error ) {
+          console.log(document);
+          throw new (Mung.Error)(`Could not count from ${model.name}: parse error`);
+        }
+
         this.collection().then(collection => {
           try {
             collection
-              .count(this.parse(document))
+              .count(parsed)
               .then(
                 count => {
                   try {
