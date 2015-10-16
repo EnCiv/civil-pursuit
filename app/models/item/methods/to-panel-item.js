@@ -175,7 +175,8 @@ function toPanelItem () {
           results => {
             try {
               item.lineage    =   results[0];
-              item.type       =   results[1];
+              // item.type       =   results[1];
+              item.type       =   this.__populated.type;
               item.user       =   results[2];
               item.subtype    =   results[3];
               item.votes      =   results[4];

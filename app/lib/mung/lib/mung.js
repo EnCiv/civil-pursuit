@@ -59,7 +59,7 @@ class Mung {
 
     if ( Array.isArray(type) ) {
       if ( ! Array.isArray(value) ) {
-        throw new Error('Can not convert a non-array to an array of types');
+        throw new MungError('Can not convert a non-array to an array of types', { value, type });
       }
 
       if ( type.length === 1 ) {
@@ -198,7 +198,7 @@ class Mung {
     return parsed;
   }
 
-  static parse3(query, schema) {
+  static process(query, schema) {
 
 
     for ( let field in query ) {
@@ -402,11 +402,23 @@ class ExtendableError extends Error {
 
 class MungError extends ExtendableError {
   constructor (message, options = {}) {
-    super(message);
+    let msg;
 
-    for ( let option in options ) {
-      this[option] = options[option];
+    try {
+      msg = JSON.stringify({ message , options }, null, 2);
+    } catch (e) {
+      msg = message;
+    } finally {
+      super(msg);
     }
+
+    this._message = message;
+
+    if ( 'code' in options ) {
+      this.code = options.code;
+    }
+
+    this.options = options;
   }
 }
 

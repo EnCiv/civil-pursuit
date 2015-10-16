@@ -504,7 +504,7 @@ describe ('Document', function () {
               function () {
                 document1.push('uniqueNumbers', 1);
               }
-            ).should.throw('Array only accepts distinct values');
+            ).should.throw(/Array only accepts distinct values/);
 
           });
 

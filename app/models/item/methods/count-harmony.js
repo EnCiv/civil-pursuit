@@ -1,12 +1,11 @@
 'use strict';
 
-import sequencer from '../../../lib/util/sequencer';
+import sequencer          from '../../../lib/util/sequencer';
 import calcHarmony        from '../../../lib/get-harmony';
 
 function countHarmony () {
   return new Promise((ok, ko) => {
     try {
-
 
       const populateType = () => new Promise((ok, ko) => {
         try {
@@ -21,17 +20,22 @@ function countHarmony () {
 
       const getChildren = props => new Promise((ok, ko) => {
         try {
-
           const { harmony } = this.__populated.type;
+
 
           const promises = harmony.map(side =>
             new Promise((ok, ko) => {
-              Item
-                .count({
-                  parent    :   this,
-                  type      :   side
-                })
-                .then(ok, ko);
+              if ( side ) {
+                Item
+                  .count({
+                    parent    :   this,
+                    type      :   side
+                  })
+                  .then(ok, ko);
+              }
+              else {
+                ok(0);
+              }
             })
           );
 

@@ -81,7 +81,7 @@ var Mung = (function () {
 
       if (Array.isArray(type)) {
         if (!Array.isArray(value)) {
-          throw new Error('Can not convert a non-array to an array of types');
+          throw new MungError('Can not convert a non-array to an array of types', { value: value, type: type });
         }
 
         if (type.length === 1) {
@@ -218,8 +218,8 @@ var Mung = (function () {
       return parsed;
     }
   }, {
-    key: 'parse3',
-    value: function parse3(query, schema) {
+    key: 'process',
+    value: function process(query, schema) {
       var _loop2 = function (field) {
 
         if (query[field] instanceof RegExp) {} else if (field === '$or' || field === '$and') {
@@ -467,11 +467,23 @@ var MungError = (function (_ExtendableError) {
 
     _classCallCheck(this, MungError);
 
-    _get(Object.getPrototypeOf(MungError.prototype), 'constructor', this).call(this, message);
+    var msg = undefined;
 
-    for (var option in options) {
-      this[option] = options[option];
+    try {
+      msg = JSON.stringify({ message: message, options: options }, null, 2);
+    } catch (e) {
+      msg = message;
+    } finally {
+      _get(Object.getPrototypeOf(MungError.prototype), 'constructor', this).call(this, msg);
     }
+
+    this._message = message;
+
+    if ('code' in options) {
+      this.code = options.code;
+    }
+
+    this.options = options;
   }
 
   _inherits(MungError, _ExtendableError);

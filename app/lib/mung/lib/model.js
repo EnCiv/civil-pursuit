@@ -838,6 +838,7 @@ class Model {
   populate (...foreigns) {
     return new Promise((ok, ko) => {
       try {
+
         let refs = [];
 
         if ( foreigns.length ) {

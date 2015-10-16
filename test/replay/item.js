@@ -59,7 +59,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('message');
+          dbError.should.have.property('_message');
 
         });
 
@@ -67,7 +67,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field subject"' , function () {
 
-            dbError.message.should.be.exactly('Missing field subject');
+            dbError._message.should.be.exactly('Missing field subject');
 
           });
 
@@ -125,7 +125,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('message');
+          dbError.should.have.property('_message');
 
         });
 
@@ -133,7 +133,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field description"' , function () {
 
-            dbError.message.should.be.exactly('Missing field description');
+            dbError._message.should.be.exactly('Missing field description');
 
           });
 
@@ -191,7 +191,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('message');
+          dbError.should.have.property('_message');
 
         });
 
@@ -199,7 +199,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field type"' , function () {
 
-            dbError.message.should.be.exactly('Missing field type');
+            dbError._message.should.be.exactly('Missing field type');
 
           });
 
@@ -257,7 +257,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('message');
+          dbError.should.have.property('_message');
 
         });
 
@@ -265,7 +265,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field user"' , function () {
 
-            dbError.message.should.be.exactly('Missing field user');
+            dbError._message.should.be.exactly('Missing field user');
 
           });
 

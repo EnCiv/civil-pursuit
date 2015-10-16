@@ -856,6 +856,7 @@ var Model = (function () {
       return new Promise(function (ok, ko) {
         try {
           (function () {
+
             var refs = [];
 
             if (foreigns.length) {

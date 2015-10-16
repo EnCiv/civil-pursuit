@@ -26,7 +26,6 @@ else {
 
 const connectToDB = props => new Promise((ok, ko) => {
   try {
-    console.log('connect to mongodb');
     Mung.connect(process.env.MONGOHQ_URL)
       .on('error', ko)
       .on('connected', ok);
@@ -40,7 +39,6 @@ const connectToDB = props => new Promise((ok, ko) => {
 
 const getIntroType = props => new Promise((ok, ko) => {
   try {
-    console.log('get intro type');
     Type
       .findOne({ name : 'Intro' })
       .then(
@@ -68,7 +66,6 @@ const getIntroType = props => new Promise((ok, ko) => {
 
 const getIntroItem = props => new Promise((ok, ko) => {
   try {
-    console.log('get intro item');
     Item
       .findOne({ type : props.intro.type })
       .then(
@@ -77,7 +74,6 @@ const getIntroItem = props => new Promise((ok, ko) => {
             if ( ! item ) {
               throw new Error('Intro item not found');
             }
-            console.log('get intro panel item');
             item
               .toPanelItem()
               .then(
@@ -109,10 +105,7 @@ const getIntroItem = props => new Promise((ok, ko) => {
 
 const startServer = props => new Promise((ok, ko) => {
   try {
-    console.log('start server');
     new Server({ intro : props.intro.item })
-      .on('error', error => console.log(error.stack.red))
-      .on('message', message => console.log(message));
   }
   catch ( error ) {
     ko(error);
@@ -128,6 +121,4 @@ sequencer([
   startServer
 ])
   .then(
-    () => console.log('started'),
-    error => console.log(error.stack)
   );
