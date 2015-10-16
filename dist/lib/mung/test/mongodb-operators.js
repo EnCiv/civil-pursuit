@@ -103,6 +103,137 @@ describe('MongoDB Operators', function () {
           });
         });
       });
+
+      describe('$lt', function () {
+
+        var parsed = _2['default'].parse({ number: { $lt: 2 } }, { number: Number });
+
+        it('should be an object', function () {
+
+          parsed.should.be.an.Object();
+        });
+
+        it('should have property "number"', function () {
+
+          parsed.should.have.property('number');
+        });
+
+        describe('number', function () {
+
+          it('should be an object', function () {
+
+            parsed.number.should.be.an.Object();
+          });
+
+          it('should have property "$lt"', function () {
+
+            parsed.number.should.have.property('$lt');
+          });
+
+          describe('$lt', function () {
+
+            it('should be an number', function () {
+
+              parsed.number.$lt.should.be.a.Number();
+            });
+
+            it('should be 2 ', function () {
+
+              parsed.number.$lt.should.be.exactly(2);
+            });
+          });
+        });
+      });
+
+      describe('$size', function () {
+
+        var parsed = _2['default'].parse({ numbers: { $size: 2 } }, { numbers: [Number] });
+
+        it('should be an object', function () {
+
+          parsed.should.be.an.Object();
+        });
+
+        it('should have property "numbers"', function () {
+
+          parsed.should.have.property('numbers');
+        });
+
+        describe('numbers', function () {
+
+          it('should be an object', function () {
+
+            parsed.numbers.should.be.an.Object();
+          });
+
+          it('should have property "$size"', function () {
+
+            parsed.numbers.should.have.property('$size');
+          });
+
+          describe('$size', function () {
+
+            it('should be an numbers', function () {
+
+              parsed.numbers.$size.should.be.a.Number();
+            });
+
+            it('should be 2 ', function () {
+
+              parsed.numbers.$size.should.be.exactly(2);
+            });
+          });
+        });
+      });
+
+      describe('$not', function () {
+
+        var parsed = _2['default'].parse({ number: { $not: { $exists: true } } }, { number: Number });
+
+        it('should be an object', function () {
+
+          parsed.should.be.an.Object();
+        });
+
+        it('should have property number', function () {
+
+          parsed.should.have.property('number');
+        });
+
+        describe('number', function () {
+
+          it('should be an object', function () {
+
+            parsed.number.should.be.an.Object();
+          });
+
+          it('should have property $not', function () {
+
+            parsed.number.should.have.property('$not');
+          });
+
+          describe('$not', function () {
+
+            it('should be an object', function () {
+
+              parsed.number.$not.should.be.an.Object();
+            });
+
+            it('should have property $exists', function () {
+
+              parsed.number.$not.should.have.property('$exists');
+            });
+
+            describe('$exists', function () {
+
+              it('should be true', function () {
+
+                parsed.number.$not.$exists.should.be['true'];
+              });
+            });
+          });
+        });
+      });
     });
   });
 });

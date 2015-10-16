@@ -499,6 +499,25 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  increment (field, step = 1 ) {
+    if ( typeof field === 'object' ) {
+      for ( let _field in field ) {
+        this.increment(_field, field[_field]);
+      }
+      return this;
+    }
+
+    if ( ! this[field] ) {
+      this[field] = 0;
+    }
+
+    this[field] += step;
+
+    return this.set(field, this[field]);
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   unset (field) {
     delete this.__document[field];
 
@@ -1094,6 +1113,86 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static increment (where, set, options = {}) {
+    return new Promise((ok, ko) => {
+      try {
+        if ( where instanceof Mung.ObjectID || typeof where === 'string' ) {
+          where = { _id : where };
+        }
+        this
+          .find(where, options)
+          .then(
+            docs => {
+              try {
+                let promises = docs.map(doc => new Promise((ok, ko) => {
+                  try {
+                    doc
+                      .increment(set)
+                      .save()
+                      .then(ok, ko);
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                }));
+                Promise.all(promises).then(ok, ko);
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static incrementOne (where, set, options = {}) {
+    return new Promise((ok,  ko) => {
+      try {
+        if ( where instanceof Mung.ObjectID || typeof where === 'string' ) {
+          where = { _id : where };
+        }
+        this
+          .findOne(where, options)
+          .then(
+            doc => {
+              try {
+                if ( ! doc ) {
+                  return ok(doc);
+                }
+                doc = new Promise((ok, ko) => {
+                  try {
+                    doc
+                      .increment(set)
+                      .save()
+                      .then(ok, ko);
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                });
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   static updateOne (where, set, options = {}) {
     return new Promise((ok,  ko) => {
       try {
@@ -1147,8 +1246,8 @@ class Model {
                 let promises = docs.map(doc => new Promise((ok, ko) => {
                   try {
                     doc
-                      .set(set);
-                    doc.save()
+                      .set(set)
+                      .save()
                       .then(ok, ko);
                   }
                   catch ( error ) {

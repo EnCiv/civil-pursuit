@@ -52,7 +52,7 @@ class Layout extends Document {
         new Stylesheet('/assets/css/index.css'),
         new Stylesheet('/assets/css/training.css'),
         new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.css'),
-        new Stylesheet('/assets/bower_components/c3/c3.css'),
+        new Stylesheet('/assets/bower_components/c3/c3.css')
       );
     }
     else {

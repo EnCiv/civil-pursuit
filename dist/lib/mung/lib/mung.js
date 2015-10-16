@@ -12,6 +12,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
+function _defineProperty(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _events = require('events');
@@ -32,53 +34,57 @@ var Mung = (function () {
 
       var convert = arguments[2] === undefined ? false : arguments[2];
 
-      if (Array.isArray(type)) {
-        if (!Array.isArray(value)) {
-          return false;
+      try {
+        if (Array.isArray(type)) {
+          if (!Array.isArray(value)) {
+            return false;
+          }
+
+          if (type.length === 1) {
+            return value.map(function (value) {
+              return _this.validate(value, type[0], convert);
+            }).every(function (value) {
+              return value;
+            });
+          } else if (value.length !== type.length) {
+            return false;
+          } else {
+            return value.map(function (value, index) {
+              return _this.validate(value, type[index], convert);
+            }).every(function (value) {
+              return value;
+            });
+          }
         }
 
-        if (type.length === 1) {
-          return value.map(function (value) {
-            return _this.validate(value, type[0], convert);
-          }).every(function (value) {
-            return value;
-          });
-        } else if (value.length !== type.length) {
-          return false;
-        } else {
-          return value.map(function (value, index) {
-            return _this.validate(value, type[index], convert);
-          }).every(function (value) {
-            return value;
-          });
+        if (type === String) {
+          type = _String;
+        } else if (type === Number) {
+          type = _Number;
+        } else if (type === Boolean) {
+          type = _Boolean;
+        } else if (type === Object) {
+          type = _Object;
+        } else if (type === Date) {
+          type = _Date;
         }
-      }
 
-      if (type === String) {
-        type = _String;
-      } else if (type === Number) {
-        type = _Number;
-      } else if (type === Boolean) {
-        type = _Boolean;
-      } else if (type === Object) {
-        type = _Object;
-      } else if (type === Date) {
-        type = _Date;
-      }
+        if (!type) {
+          throw new Error('Type not found');
+        }
 
-      if (!type) {
-        throw new Error('Type not found');
-      }
+        if (convert && type.convert) {
+          value = type.convert(value);
+        }
 
-      if (convert && type.convert) {
-        value = type.convert(value);
-      }
+        if (typeof type.validate !== 'function') {
+          throw new Error('Missing type validation for type ' + type);
+        }
 
-      if (typeof type.validate !== 'function') {
-        throw new Error('Missing type validation for type ' + type);
+        return type.validate(value);
+      } catch (error) {
+        return false;
       }
-
-      return type.validate(value);
     }
   }, {
     key: 'convert',
@@ -228,8 +234,6 @@ var Mung = (function () {
           parsed[field] = query[field].map(function (value) {
             return _this3.parse(value, schema);
           });
-        } else if (Array.isArray(schema[field])) {
-          parsed[field] = Mung.convert(query[field], schema[field][0]);
         }
 
         // query[field] is an object
@@ -252,9 +256,35 @@ var Mung = (function () {
             parsed[field] = {
               $exists: query[field].$exists
             };
-          } else {
+          }
+
+          // query[field].$size
+
+          else if ('$size' in query[field]) {
+            parsed[field] = {
+              $size: query[field].$size
+            };
+          }
+
+          // query[field].$lt
+
+          else if ('$lt' in query[field]) {
+            parsed[field] = {
+              $lt: Mung.convert(query[field].$lt, schema[field])
+            };
+          }
+
+          // query[field].$not
+
+          else if ('$not' in query[field]) {
+            parsed[field] = {
+              $not: _this3.parse(_defineProperty({}, field, query[field].$not), schema[field])[field]
+            };
+          } else if (!Array.isArray(schema[field])) {
             parsed[field] = Mung.convert(query[field], schema[field]);
           }
+        } else if (Array.isArray(schema[field])) {
+          parsed[field] = Mung.convert(query[field], schema[field][0]);
         } else {
           parsed[field] = Mung.convert(query[field], schema[field]);
         }
@@ -398,7 +428,13 @@ var _Number = (function () {
   }, {
     key: 'convert',
     value: function convert(value) {
-      return +value;
+      var converted = +value;
+
+      if (!this.validate(converted)) {
+        throw new Mung.Error('Can not convert value to Number', { value: value });
+      }
+
+      return converted;
     }
   }]);
 
@@ -476,7 +512,13 @@ var _Date = (function () {
   }, {
     key: 'convert',
     value: function convert(value) {
-      return new Date(value);
+      var converted = new Date(value);
+
+      if (!this.validate(converted)) {
+        throw new Mung.Error('Can not convert value to Date', { value: value });
+      }
+
+      return converted;
     }
   }]);
 

@@ -14,7 +14,7 @@ function getItemById(event, query) {
   var _this = this;
 
   try {
-    _modelsItem2['default'].findOne(query).exec().then(function (item) {
+    _modelsItem2['default'].findOne(query).then(function (item) {
       try {
         item.toPanelItem().then(function (item) {
           _this.ok(event, item);

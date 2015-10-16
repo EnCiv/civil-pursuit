@@ -1,12 +1,11 @@
 'use strict';
 
-import ItemModel from '../models/item';
+import Item from '../models/item';
 
 function getItemById (event, query) {
   try {
-    ItemModel
+    Item
       .findOne(query)
-      .exec()
       .then(
         item => {
           try {

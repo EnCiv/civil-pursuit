@@ -6,61 +6,66 @@ import mongodb from 'mongodb';
 class Mung {
 
   static validate (value, type, convert = false ) {
-    if ( Array.isArray(type) ) {
-      if ( ! Array.isArray(value) ) {
-        return false;
+    try {
+      if ( Array.isArray(type) ) {
+        if ( ! Array.isArray(value) ) {
+          return false;
+        }
+
+        if ( type.length === 1 ) {
+          return value
+            .map(value => this.validate(value, type[0], convert))
+            .every(value => value);
+        }
+
+        else if ( value.length !== type.length ) {
+          return false;
+        }
+
+        else {
+          return value
+            .map((value, index) => this.validate(value, type[index], convert))
+            .every(value => value);
+        }
       }
 
-      if ( type.length === 1 ) {
-        return value
-          .map(value => this.validate(value, type[0], convert))
-          .every(value => value);
+      if ( type === String ) {
+        type = _String;
       }
 
-      else if ( value.length !== type.length ) {
-        return false;
+      else if ( type === Number ) {
+        type = _Number;
       }
 
-      else {
-        return value
-          .map((value, index) => this.validate(value, type[index], convert))
-          .every(value => value);
+      else if ( type === Boolean ) {
+        type = _Boolean;
       }
-    }
 
-    if ( type === String ) {
-      type = _String;
-    }
+      else if ( type === Object ) {
+        type = _Object;
+      }
 
-    else if ( type === Number ) {
-      type = _Number;
-    }
+      else if ( type === Date ) {
+        type = _Date;
+      }
 
-    else if ( type === Boolean ) {
-      type = _Boolean;
-    }
+      if ( ! type ) {
+        throw new Error('Type not found');
+      }
 
-    else if ( type === Object ) {
-      type = _Object;
-    }
+      if ( convert && type.convert ) {
+        value = type.convert(value);
+      }
 
-    else if ( type === Date ) {
-      type = _Date;
-    }
+      if ( typeof type.validate !== 'function' ) {
+        throw new Error(`Missing type validation for type ${type}`);
+      }
 
-    if ( ! type ) {
-      throw new Error('Type not found');
+      return type.validate(value);
     }
-
-    if ( convert && type.convert ) {
-      value = type.convert(value);
+    catch ( error ) {
+      return false;
     }
-
-    if ( typeof type.validate !== 'function' ) {
-      throw new Error(`Missing type validation for type ${type}`);
-    }
-
-    return type.validate(value);
   }
 
   static convert (value, type) {
@@ -212,10 +217,6 @@ class Mung {
         parsed[field] = query[field].map(value => this.parse(value, schema));
       }
 
-      else if ( Array.isArray(schema[field]) ) {
-        parsed[field] = Mung.convert(query[field], schema[field][0]);
-      }
-
       // query[field] is an object
 
       else if ( typeof query[field] === 'object' && schema[field] !== Object ) {
@@ -238,9 +239,37 @@ class Mung {
           };
         }
 
-        else {
+        // query[field].$size
+
+        else if ( '$size' in query[field] ) {
+          parsed[field] = {
+            $size : query[field].$size
+          };
+        }
+
+        // query[field].$lt
+
+        else if ( '$lt' in query[field] ) {
+          parsed[field] = {
+            $lt : Mung.convert(query[field].$lt, schema[field])
+          };
+        }
+
+        // query[field].$not
+
+        else if ( '$not' in query[field] ) {
+          parsed[field] = {
+            $not : this.parse({ [field] : query[field].$not }, schema[field])[field]
+          };
+        }
+
+        else if ( ! Array.isArray(schema[field]) ) {
           parsed[field] = Mung.convert(query[field], schema[field]);
         }
+      }
+
+      else if ( Array.isArray(schema[field]) ) {
+        parsed[field] = Mung.convert(query[field], schema[field][0]);
       }
 
       else {
@@ -392,7 +421,13 @@ class _Number {
   }
 
   static convert (value) {
-    return +value;
+    const converted = +value;
+
+    if ( ! this.validate(converted) ) {
+      throw new (Mung.Error)('Can not convert value to Number', { value });
+    }
+
+    return converted;
   }
 }
 
@@ -432,7 +467,13 @@ class _Date {
   }
 
   static convert (value) {
-    return new Date(value);
+    const converted = new Date(value);
+
+    if ( ! this.validate(converted) ) {
+      throw new (Mung.Error)('Can not convert value to Date', { value });
+    }
+
+    return converted;
   }
 }
 

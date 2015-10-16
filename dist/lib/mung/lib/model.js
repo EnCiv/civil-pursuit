@@ -531,6 +531,29 @@ var Model = (function () {
       }
     }
   }, {
+    key: 'increment',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function increment(field) {
+      var step = arguments[1] === undefined ? 1 : arguments[1];
+
+      if (typeof field === 'object') {
+        for (var _field in field) {
+          this.increment(_field, field[_field]);
+        }
+        return this;
+      }
+
+      if (!this[field]) {
+        this[field] = 0;
+      }
+
+      this[field] += step;
+
+      return this.set(field, this[field]);
+    }
+  }, {
     key: 'unset',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1124,18 +1147,90 @@ var Model = (function () {
       });
     }
   }, {
-    key: 'updateOne',
+    key: 'increment',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function updateOne(where, set) {
+    value: function increment(where, set) {
       var _this12 = this;
 
       var options = arguments[2] === undefined ? {} : arguments[2];
 
       return new Promise(function (ok, ko) {
         try {
-          _this12.findOne(where, options).then(function (doc) {
+          if (where instanceof _mung2['default'].ObjectID || typeof where === 'string') {
+            where = { _id: where };
+          }
+          _this12.find(where, options).then(function (docs) {
+            try {
+              var promises = docs.map(function (doc) {
+                return new Promise(function (ok, ko) {
+                  try {
+                    doc.increment(set).save().then(ok, ko);
+                  } catch (error) {
+                    ko(error);
+                  }
+                });
+              });
+              Promise.all(promises).then(ok, ko);
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        } catch (error) {
+          ko(error);
+        }
+      });
+    }
+  }, {
+    key: 'incrementOne',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function incrementOne(where, set) {
+      var _this13 = this;
+
+      var options = arguments[2] === undefined ? {} : arguments[2];
+
+      return new Promise(function (ok, ko) {
+        try {
+          if (where instanceof _mung2['default'].ObjectID || typeof where === 'string') {
+            where = { _id: where };
+          }
+          _this13.findOne(where, options).then(function (doc) {
+            try {
+              if (!doc) {
+                return ok(doc);
+              }
+              doc = new Promise(function (ok, ko) {
+                try {
+                  doc.increment(set).save().then(ok, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              });
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        } catch (error) {
+          ko(error);
+        }
+      });
+    }
+  }, {
+    key: 'updateOne',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function updateOne(where, set) {
+      var _this14 = this;
+
+      var options = arguments[2] === undefined ? {} : arguments[2];
+
+      return new Promise(function (ok, ko) {
+        try {
+          _this14.findOne(where, options).then(function (doc) {
             try {
               if (!doc) {
                 return ok(doc);
@@ -1162,7 +1257,7 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function update(where, set) {
-      var _this13 = this;
+      var _this15 = this;
 
       var options = arguments[2] === undefined ? {} : arguments[2];
 
@@ -1172,13 +1267,12 @@ var Model = (function () {
             return updateOne(where, set, options = {});
           }
 
-          _this13.find(where, options).then(function (docs) {
+          _this15.find(where, options).then(function (docs) {
             try {
               var promises = docs.map(function (doc) {
                 return new Promise(function (ok, ko) {
                   try {
-                    doc.set(set);
-                    doc.save().then(ok, ko);
+                    doc.set(set).save().then(ok, ko);
                   } catch (error) {
                     ko(error);
                   }
@@ -1212,7 +1306,7 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function stream() {
-      var _this14 = this;
+      var _this16 = this;
 
       var rows = arguments[0] === undefined ? 100 : arguments[0];
       var filter = arguments[1] === undefined ? {} : arguments[1];
@@ -1221,7 +1315,7 @@ var Model = (function () {
       var stream = new Streamable();
 
       process.nextTick(function () {
-        _this14.count(filter).then(function (count) {
+        _this16.count(filter).then(function (count) {
           if (!count) {
             stream.add();
             stream.end();
@@ -1235,7 +1329,7 @@ var Model = (function () {
           for (var i = 0; i < pages; i++) {
             var page = i + 1;
 
-            _this14.find(filter, { limit: rows, skip: page * rows - rows }).then(function (docs) {
+            _this16.find(filter, { limit: rows, skip: page * rows - rows }).then(function (docs) {
               stream.add.apply(stream, _toConsumableArray(docs));
 
               done++;
@@ -1260,12 +1354,12 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function migrate() {
-      var _this15 = this;
+      var _this17 = this;
 
       return new Promise(function (ok, ko) {
         try {
           (function () {
-            var migrations = _this15.migrations;
+            var migrations = _this17.migrations;
 
             if (migrations) {
               (function () {
@@ -1274,8 +1368,8 @@ var Model = (function () {
 
                   if (migrations[version]) {
 
-                    migrations[version]['do'].apply(_this15).then(function () {
-                      _this15.find({ __V: { $lt: version } }, { limit: 0 }).then(function (documents) {
+                    migrations[version]['do'].apply(_this17).then(function () {
+                      _this17.find({ __V: { $lt: version } }, { limit: 0 }).then(function (documents) {
                         Promise.all(documents.map(function (document) {
                           return new Promise(function (ok, ko) {
                             document.set('__V', version).save().then(ok, ko);
@@ -1296,11 +1390,11 @@ var Model = (function () {
                 var cursor = 0;
 
                 migrate(function () {
-                  _this15.buildIndexes().then(ok, ko);
+                  _this17.buildIndexes().then(ok, ko);
                 });
               })();
             } else {
-              _this15.buildIndexes().then(ok, ko);
+              _this17.buildIndexes().then(ok, ko);
             }
           })();
         } catch (error) {
@@ -1314,14 +1408,14 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function buildIndexes() {
-      var _this16 = this;
+      var _this18 = this;
 
       return new Promise(function (ok, ko) {
         try {
           (function () {
             var Query = _mung2['default'].Query;
 
-            var query = new Query({ model: _this16 });
+            var query = new Query({ model: _this18 });
 
             query.collection().then(function (collection) {
               try {
