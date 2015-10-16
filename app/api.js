@@ -33,6 +33,7 @@ class API extends EventEmitter {
 
   fetchHandlers () {
     try {
+      console.log({ scan : path.join(__dirname, 'api') })
       fs.readdir(path.join(__dirname, 'api'), (error, files) => {
         try {
           if ( error ) {
