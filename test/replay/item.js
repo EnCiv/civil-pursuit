@@ -59,7 +59,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -67,7 +67,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field subject"' , function () {
 
-            dbError._message.should.be.exactly('Missing field subject');
+            dbError.originalMessage.should.be.exactly('Missing field subject');
 
           });
 
@@ -125,7 +125,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -133,7 +133,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field description"' , function () {
 
-            dbError._message.should.be.exactly('Missing field description');
+            dbError.originalMessage.should.be.exactly('Missing field description');
 
           });
 
@@ -191,7 +191,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -199,7 +199,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field type"' , function () {
 
-            dbError._message.should.be.exactly('Missing field type');
+            dbError.originalMessage.should.be.exactly('Missing field type');
 
           });
 
@@ -257,7 +257,7 @@ describe ( 'Item' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -265,7 +265,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be "Missing field user"' , function () {
 
-            dbError._message.should.be.exactly('Missing field user');
+            dbError.originalMessage.should.be.exactly('Missing field user');
 
           });
 
@@ -511,7 +511,7 @@ describe ( 'Item' , function () {
             new Promise((ok, ko) => {
               try {
                 Item
-                  .count({ parent : this })
+                  .count({ parent : item })
                   .then(ok, ko);
               }
               catch ( error ) {

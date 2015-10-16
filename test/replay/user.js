@@ -58,7 +58,7 @@ describe ( 'User' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -66,7 +66,7 @@ describe ( 'User' , function () {
 
           it ( 'should be "Missing field email"' , function () {
 
-            dbError._message.should.be.exactly('Missing field email');
+            dbError.originalMessage.should.be.exactly('Missing field email');
 
           });
 
@@ -124,7 +124,7 @@ describe ( 'User' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -132,7 +132,7 @@ describe ( 'User' , function () {
 
           it ( 'should be "Missing field password"' , function () {
 
-            dbError._message.should.be.exactly('Missing field password');
+            dbError.originalMessage.should.be.exactly('Missing field password');
 
           });
 
@@ -190,7 +190,7 @@ describe ( 'User' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -198,7 +198,7 @@ describe ( 'User' , function () {
 
           it ( 'should be "Missing field email"' , function () {
 
-            dbError._message.should.be.exactly('Missing field email');
+            dbError.originalMessage.should.be.exactly('Missing field email');
 
           });
 

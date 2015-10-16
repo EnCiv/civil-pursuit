@@ -16,10 +16,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -29,8 +25,6 @@ var _http = require('http');
 var _http2 = _interopRequireDefault(_http);
 
 var _events = require('events');
-
-var _domain = require('domain');
 
 var _express = require('express');
 
@@ -63,10 +57,6 @@ var _routesTwitter2 = _interopRequireDefault(_routesTwitter);
 var _routesFacebook = require('./routes/facebook');
 
 var _routesFacebook2 = _interopRequireDefault(_routesFacebook);
-
-var _routesInitPipeline = require('./routes/init-pipeline');
-
-var _routesInitPipeline2 = _interopRequireDefault(_routesInitPipeline);
 
 var _routesRenderPage = require('./routes/render-page');
 
@@ -140,8 +130,6 @@ var HttpServer = (function (_EventEmitter) {
 
         _this.facebookMiddleware();
 
-        _this.initPipeLine();
-
         _this.signers();
 
         _this.router();
@@ -165,10 +153,6 @@ var HttpServer = (function (_EventEmitter) {
     key: 'set',
     value: function set() {
       this.app.set('port', process.env.PORT || 3012);
-
-      if (this.app.get('env') === 'development') {
-        this.app.locals.pretty = true;
-      }
     }
   }, {
     key: 'passport',
@@ -178,7 +162,7 @@ var HttpServer = (function (_EventEmitter) {
       });
 
       _passport3['default'].deserializeUser(function (id, done) {
-        _modelsUser2['default'].findById(id, done);
+        _modelsUser2['default'].findById(id).then(done, done);
       });
 
       this.app.use(_passport3['default'].initialize());
@@ -233,11 +217,6 @@ var HttpServer = (function (_EventEmitter) {
       new _routesTwitter2['default'](this.app);
     }
   }, {
-    key: 'initPipeLine',
-    value: function initPipeLine() {
-      this.app.use(_routesInitPipeline2['default'].bind(this));
-    }
-  }, {
     key: 'router',
     value: function router() {
       this.timeout();
@@ -290,6 +269,7 @@ var HttpServer = (function (_EventEmitter) {
           // }
           next();
         }, Routes.homePage.bind(this));
+
         this.app.get('/page/:page', Routes.homePage.bind(this));
       } catch (error) {
         this.emit('error', error);

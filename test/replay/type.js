@@ -55,7 +55,7 @@ describe ( 'Type' , function () {
 
         it ( 'should have a message' , function () {
 
-          dbError.should.have.property('_message');
+          dbError.should.have.property('originalMessage');
 
         });
 
@@ -63,7 +63,7 @@ describe ( 'Type' , function () {
 
           it ( 'should be "Missing field name"' , function () {
 
-            dbError._message.should.be.exactly('Missing field name');
+            dbError.originalMessage.should.be.exactly('Missing field name');
 
           });
 

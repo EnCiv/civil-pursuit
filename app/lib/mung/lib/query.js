@@ -407,8 +407,9 @@ class Query {
           parsed = this.parse(document);
         }
         catch ( error ) {
-          console.log(document);
-          throw new (Mung.Error)(`Could not count from ${model.name}: parse error`);
+          throw new (Mung.Error)(`Could not count from ${model.name}: parse error`, { query : document, error : {
+            message : error.message, stack : error.stack, name : error.name, code : error.code
+          }});
         }
 
         this.collection().then(collection => {

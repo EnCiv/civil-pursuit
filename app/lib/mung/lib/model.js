@@ -387,8 +387,6 @@ class Model {
       return this.push(array, value[array]);
     }
 
-    // this.__document = Mung.set(this.__document, field, value, this.__types);
-
     if ( ! ( field in this.__schema ) ) {
       return this;
     }
@@ -835,15 +833,15 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  populate (...foreigns) {
+  populate (...foreignKeys) {
     return new Promise((ok, ko) => {
       try {
 
         let refs = [];
 
-        if ( foreigns.length ) {
+        if ( foreignKeys.length ) {
           for ( let field in this.__types ) {
-            if ( foreigns.indexOf(field) > -1 && new (this.__types[field])() instanceof Model ) {
+            if ( foreignKeys.indexOf(field) > -1 && new (this.__types[field])() instanceof Model ) {
               refs.push({ field, model : this.__types[field] });
             }
           }
@@ -1096,11 +1094,53 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static update(where, set) {
-    return new Promise((ok, ko) => {
+  static updateOne (where, set, options = {}) {
+    return new Promise((ok,  ko) => {
       try {
         this
-          .find(where)
+          .findOne(where, options)
+          .then(
+            doc => {
+              try {
+                if ( ! doc ) {
+                  return ok(doc);
+                }
+                doc = new Promise((ok, ko) => {
+                  try {
+                    doc
+                      .set(set)
+                      .save()
+                      .then(ok, ko);
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                });
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  static update(where, set, options = {}) {
+    return new Promise((ok, ko) => {
+      try {
+        if ( options.one ) {
+          return updateOne(where, set, options = {});
+        }
+
+        this
+          .find(where, options)
           .then(
             docs => {
               try {

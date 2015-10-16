@@ -405,8 +405,6 @@ var Model = (function () {
         return this.push(array, value[array]);
       }
 
-      // this.__document = Mung.set(this.__document, field, value, this.__types);
-
       if (!(field in this.__schema)) {
         return this;
       }
@@ -849,8 +847,8 @@ var Model = (function () {
     value: function populate() {
       var _this7 = this;
 
-      for (var _len = arguments.length, foreigns = Array(_len), _key = 0; _key < _len; _key++) {
-        foreigns[_key] = arguments[_key];
+      for (var _len = arguments.length, foreignKeys = Array(_len), _key = 0; _key < _len; _key++) {
+        foreignKeys[_key] = arguments[_key];
       }
 
       return new Promise(function (ok, ko) {
@@ -859,9 +857,9 @@ var Model = (function () {
 
             var refs = [];
 
-            if (foreigns.length) {
+            if (foreignKeys.length) {
               for (var field in _this7.__types) {
-                if (foreigns.indexOf(field) > -1 && new _this7.__types[field]() instanceof Model) {
+                if (foreignKeys.indexOf(field) > -1 && new _this7.__types[field]() instanceof Model) {
                   refs.push({ field: field, model: _this7.__types[field] });
                 }
               }
@@ -1126,16 +1124,55 @@ var Model = (function () {
       });
     }
   }, {
+    key: 'updateOne',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function updateOne(where, set) {
+      var _this12 = this;
+
+      var options = arguments[2] === undefined ? {} : arguments[2];
+
+      return new Promise(function (ok, ko) {
+        try {
+          _this12.findOne(where, options).then(function (doc) {
+            try {
+              if (!doc) {
+                return ok(doc);
+              }
+              doc = new Promise(function (ok, ko) {
+                try {
+                  doc.set(set).save().then(ok, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              });
+            } catch (error) {
+              ko(error);
+            }
+          }, ko);
+        } catch (error) {
+          ko(error);
+        }
+      });
+    }
+  }, {
     key: 'update',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function update(where, set) {
-      var _this12 = this;
+      var _this13 = this;
+
+      var options = arguments[2] === undefined ? {} : arguments[2];
 
       return new Promise(function (ok, ko) {
         try {
-          _this12.find(where).then(function (docs) {
+          if (options.one) {
+            return updateOne(where, set, options = {});
+          }
+
+          _this13.find(where, options).then(function (docs) {
             try {
               var promises = docs.map(function (doc) {
                 return new Promise(function (ok, ko) {
@@ -1175,7 +1212,7 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function stream() {
-      var _this13 = this;
+      var _this14 = this;
 
       var rows = arguments[0] === undefined ? 100 : arguments[0];
       var filter = arguments[1] === undefined ? {} : arguments[1];
@@ -1184,7 +1221,7 @@ var Model = (function () {
       var stream = new Streamable();
 
       process.nextTick(function () {
-        _this13.count(filter).then(function (count) {
+        _this14.count(filter).then(function (count) {
           if (!count) {
             stream.add();
             stream.end();
@@ -1198,7 +1235,7 @@ var Model = (function () {
           for (var i = 0; i < pages; i++) {
             var page = i + 1;
 
-            _this13.find(filter, { limit: rows, skip: page * rows - rows }).then(function (docs) {
+            _this14.find(filter, { limit: rows, skip: page * rows - rows }).then(function (docs) {
               stream.add.apply(stream, _toConsumableArray(docs));
 
               done++;
@@ -1223,12 +1260,12 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function migrate() {
-      var _this14 = this;
+      var _this15 = this;
 
       return new Promise(function (ok, ko) {
         try {
           (function () {
-            var migrations = _this14.migrations;
+            var migrations = _this15.migrations;
 
             if (migrations) {
               (function () {
@@ -1237,8 +1274,8 @@ var Model = (function () {
 
                   if (migrations[version]) {
 
-                    migrations[version]['do'].apply(_this14).then(function () {
-                      _this14.find({ __V: { $lt: version } }, { limit: 0 }).then(function (documents) {
+                    migrations[version]['do'].apply(_this15).then(function () {
+                      _this15.find({ __V: { $lt: version } }, { limit: 0 }).then(function (documents) {
                         Promise.all(documents.map(function (document) {
                           return new Promise(function (ok, ko) {
                             document.set('__V', version).save().then(ok, ko);
@@ -1259,11 +1296,11 @@ var Model = (function () {
                 var cursor = 0;
 
                 migrate(function () {
-                  _this14.buildIndexes().then(ok, ko);
+                  _this15.buildIndexes().then(ok, ko);
                 });
               })();
             } else {
-              _this14.buildIndexes().then(ok, ko);
+              _this15.buildIndexes().then(ok, ko);
             }
           })();
         } catch (error) {
@@ -1277,14 +1314,14 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function buildIndexes() {
-      var _this15 = this;
+      var _this16 = this;
 
       return new Promise(function (ok, ko) {
         try {
           (function () {
             var Query = _mung2['default'].Query;
 
-            var query = new Query({ model: _this15 });
+            var query = new Query({ model: _this16 });
 
             query.collection().then(function (collection) {
               try {

@@ -1,10 +1,8 @@
 'use strict'
 
-import path                     from 'path';
 import fs                       from 'fs';
 import http                     from 'http';
 import { EventEmitter }         from 'events';
-import { Domain }               from 'domain';
 import express                  from 'express';
 import session                  from 'express-session';
 import bodyParser               from 'body-parser';
@@ -13,7 +11,6 @@ import passport                 from 'passport';
 import printIt                  from './lib/util/express-pretty';
 import TwitterPassport          from './routes/twitter';
 import FacebookPassport         from './routes/facebook';
-import initPipeLine             from './routes/init-pipeline';
 import renderPage               from './routes/render-page';
 import itemRoute                from './routes/item';
 import signUpRoute              from './routes/sign-up';
@@ -62,8 +59,6 @@ class HttpServer extends EventEmitter {
 
         this.facebookMiddleware();
 
-        this.initPipeLine();
-
         this.signers();
 
         this.router();
@@ -84,10 +79,6 @@ class HttpServer extends EventEmitter {
 
   set () {
     this.app.set('port', process.env.PORT || 3012);
-
-    if (this.app.get('env') === 'development') {
-      this.app.locals.pretty = true;
-    }
   }
 
   passport () {
@@ -96,7 +87,7 @@ class HttpServer extends EventEmitter {
     });
 
     passport.deserializeUser((id, done) => {
-      User.findById(id, done);
+      User.findById(id).then(done, done);
     });
 
     this.app.use(passport.initialize());
@@ -157,10 +148,6 @@ class HttpServer extends EventEmitter {
     new TwitterPassport(this.app);
   }
 
-  initPipeLine () {
-    this.app.use(initPipeLine.bind(this));
-  }
-
   router () {
     this.timeout();
     this.getLandingPage();
@@ -214,6 +201,7 @@ class HttpServer extends EventEmitter {
           next();
         },
         Routes.homePage.bind(this));
+
       this.app.get('/page/:page', Routes.homePage.bind(this));
     }
     catch ( error ) {
@@ -265,7 +253,6 @@ class HttpServer extends EventEmitter {
         });
     });
   }
-
 
   getItemPage () {
     this.app.get('/item/:item_short_id/:item_slug',

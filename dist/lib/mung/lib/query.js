@@ -393,8 +393,9 @@ var Query = (function () {
             try {
               parsed = _this6.parse(document);
             } catch (error) {
-              console.log(document);
-              throw new _mung2['default'].Error('Could not count from ' + model.name + ': parse error');
+              throw new _mung2['default'].Error('Could not count from ' + model.name + ': parse error', { query: document, error: {
+                  message: error.message, stack: error.stack, name: error.name, code: error.code
+                } });
             }
 
             _this6.collection().then(function (collection) {

@@ -111,11 +111,16 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}) {
   this.obj.user._id.equals(item.user).should.be.true;
   this.obj.user._id.equals(extra.user._id).should.be.true;
 
-  this.obj.should.have.property('subtype')
-    .which.is.an.instanceof(Type);
+  if ( this.obj.subtype ) {
+    this.obj.should.have.property('subtype')
+      .which.is.an.instanceof(Type);
 
-  this.obj.subtype._id.equals(item.subtype).should.be.true;
-  this.obj.subtype._id.equals(extra.subtype._id).should.be.true;
+    this.obj.subtype._id.equals(extra.subtype._id).should.be.true;
+  }
+
+  if ( extra.subtype ) {
+    this.obj.subtype._id.equals(extra.subtype._id).should.be.true;
+  }
 
   this.obj.should.have.property('votes')
     .which.is.a.Number();

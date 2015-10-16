@@ -16,94 +16,40 @@ var _ = require('../');
 
 var _2 = _interopRequireDefault(_);
 
-var Bar = (function (_Mung$Model) {
-  function Bar() {
-    _classCallCheck(this, Bar);
+var Foo = (function (_Mung$Model) {
+  function Foo() {
+    _classCallCheck(this, Foo);
 
     if (_Mung$Model != null) {
       _Mung$Model.apply(this, arguments);
     }
   }
 
-  _inherits(Bar, _Mung$Model);
+  _inherits(Foo, _Mung$Model);
 
-  _createClass(Bar, null, [{
+  _createClass(Foo, null, [{
     key: 'schema',
     value: function schema() {
       return {
-        string: String
+        date: Date
       };
     }
   }]);
 
-  return Bar;
+  return Foo;
 })(_2['default'].Model);
 
-describe('Convert', function () {
+describe('Setters', function () {
 
-  describe('Number', function () {
+  describe('Set date', function () {
 
-    describe('to Number', function () {
+    var doc = new Foo();
 
-      var converted = _2['default'].convert(123, Number);
+    it('should set date to now', function () {
 
-      it('should be a number', function () {
+      doc.set('date', Date.now());
 
-        converted.should.be.a.Number;
-      });
-    });
-
-    describe('to String', function () {
-
-      var converted = _2['default'].convert(123, String);
-
-      it('should be a string', function () {
-
-        converted.should.be.a.String;
-      });
-    });
-
-    describe('to Boolean', function () {
-
-      var converted = _2['default'].convert(123, Boolean);
-
-      it('should be a boolean', function () {
-
-        converted.should.be.a.Boolean;
-      });
-    });
-  });
-
-  describe('Date', function () {
-
-    describe('Timestamp', function () {
-
-      var converted = _2['default'].convert(Date.now(), Date);
-
-      it('should be a date', function () {
-
-        converted.should.be.an['instanceof'](Date);
-      });
-    });
-  });
-
-  describe('Array', function () {
-
-    describe('of full models', function () {
-
-      var converted = _2['default'].convert([new Bar({}, { _id: true })], [Bar]);
-
-      console.log(converted);
-
-      it('should be an Array', function () {
-
-        converted.should.be.an.Array();
-      });
-
-      it('should be an Array of ObjectIDs', function () {
-
-        converted[0].should.be.an['instanceof'](_2['default'].ObjectID);
-      });
+      console.log(doc.date);
     });
   });
 });

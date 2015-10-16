@@ -62,10 +62,20 @@ var Mung = (function () {
         type = _Boolean;
       } else if (type === Object) {
         type = _Object;
+      } else if (type === Date) {
+        type = _Date;
+      }
+
+      if (!type) {
+        throw new Error('Type not found');
       }
 
       if (convert && type.convert) {
         value = type.convert(value);
+      }
+
+      if (typeof type.validate !== 'function') {
+        throw new Error('Missing type validation for type ' + type);
       }
 
       return type.validate(value);
@@ -105,6 +115,8 @@ var Mung = (function () {
         type = _Boolean;
       } else if (type === Object) {
         type = _Object;
+      } else if (type === Date) {
+        type = _Date;
       }
 
       if (!type.convert) {
@@ -188,9 +200,17 @@ var Mung = (function () {
   }, {
     key: 'parse',
     value: function parse(query, schema) {
+      var _this3 = this;
+
       var parsed = {};
 
+      if (Array.isArray(query)) {
+        return this.parse({ $or: query }, schema);
+      }
+
       var _loop = function (field) {
+
+        // field has dot notation
 
         if (/\./.test(field)) {
           var primaryField = field.split(/\./)[0];
@@ -200,11 +220,40 @@ var Mung = (function () {
           if (Array.isArray(type)) {
             parsed[field] = Mung.convert([query[field]], type)[0];
           }
-        } else if (typeof query[field] === 'object' && schema[field] !== Object) {
+        }
+
+        // If operator to an array ($or, $and, etc.)
+
+        else if (['$or', '$and'].indexOf(field) > -1) {
+          parsed[field] = query[field].map(function (value) {
+            return _this3.parse(value, schema);
+          });
+        } else if (Array.isArray(schema[field])) {
+          parsed[field] = Mung.convert(query[field], schema[field][0]);
+        }
+
+        // query[field] is an object
+
+        else if (typeof query[field] === 'object' && schema[field] !== Object) {
+
+          // query[field].$in
+
           if ('$in' in query[field]) {
-            query[field].$in = query[field].$in.map(function (value) {
-              return Mung.convert(value, schema[field]);
-            });
+            parsed[field] = {
+              $in: query[field].$in.map(function (value) {
+                return Mung.convert(value, schema[field]);
+              })
+            };
+          }
+
+          // query[field].$exists
+
+          else if ('$exists' in query[field]) {
+            parsed[field] = {
+              $exists: query[field].$exists
+            };
+          } else {
+            parsed[field] = Mung.convert(query[field], schema[field]);
           }
         } else {
           parsed[field] = Mung.convert(query[field], schema[field]);
@@ -421,7 +470,14 @@ var _Date = (function () {
 
   _createClass(_Date, null, [{
     key: 'validate',
-    value: function validate(value) {}
+    value: function validate(value) {
+      return value instanceof Date;
+    }
+  }, {
+    key: 'convert',
+    value: function convert(value) {
+      return new Date(value);
+    }
   }]);
 
   return _Date;
@@ -477,7 +533,7 @@ var MungError = (function (_ExtendableError) {
       _get(Object.getPrototypeOf(MungError.prototype), 'constructor', this).call(this, msg);
     }
 
-    this._message = message;
+    this.originalMessage = message;
 
     if ('code' in options) {
       this.code = options.code;

@@ -49,14 +49,14 @@ class Item extends Mung.Model {
       },
 
       "parent"            :   {
-        "type"            :   Item,
+        "type"            :   this,
         "index"           :   true
       },
 
       // When created from another item
 
       "from"              :   {
-        "type"            :   Item,
+        "type"            :   this,
         "index"           :   true
       },
 

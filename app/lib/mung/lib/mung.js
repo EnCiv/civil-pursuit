@@ -44,8 +44,20 @@ class Mung {
       type = _Object;
     }
 
+    else if ( type === Date ) {
+      type = _Date;
+    }
+
+    if ( ! type ) {
+      throw new Error('Type not found');
+    }
+
     if ( convert && type.convert ) {
       value = type.convert(value);
+    }
+
+    if ( typeof type.validate !== 'function' ) {
+      throw new Error(`Missing type validation for type ${type}`);
     }
 
     return type.validate(value);
@@ -88,6 +100,10 @@ class Mung {
 
     else if ( type === Object ) {
       type = _Object;
+    }
+
+    else if ( type === Date ) {
+      type = _Date;
     }
 
     if ( ! type.convert ) {
@@ -172,7 +188,13 @@ class Mung {
   static parse (query, schema) {
     let parsed = {};
 
+    if ( Array.isArray(query) ) {
+      return this.parse({ $or : query }, schema);
+    }
+
     for ( let field in query ) {
+
+      // field has dot notation
 
       if ( /\./.test(field) ) {
         const primaryField = field.split(/\./)[0];
@@ -184,9 +206,40 @@ class Mung {
         }
       }
 
+      // If operator to an array ($or, $and, etc.)
+
+      else if ( [ '$or', '$and' ].indexOf(field) > -1 ) {
+        parsed[field] = query[field].map(value => this.parse(value, schema));
+      }
+
+      else if ( Array.isArray(schema[field]) ) {
+        parsed[field] = Mung.convert(query[field], schema[field][0]);
+      }
+
+      // query[field] is an object
+
       else if ( typeof query[field] === 'object' && schema[field] !== Object ) {
+
+        // query[field].$in
+
         if ( '$in' in query[field] ) {
-          query[field].$in = query[field].$in.map(value => Mung.convert(value, schema[field]));
+          parsed[field] = {
+            $in : query[field].$in.map(value =>
+              Mung.convert(value, schema[field])
+            )
+          };
+        }
+
+        // query[field].$exists
+
+        else if ( '$exists' in query[field] ) {
+          parsed[field] = {
+            $exists : query[field].$exists
+          };
+        }
+
+        else {
+          parsed[field] = Mung.convert(query[field], schema[field]);
         }
       }
 
@@ -375,7 +428,11 @@ Mung.Mixed = _Mixed;
 
 class _Date {
   static validate (value) {
+    return value instanceof Date;
+  }
 
+  static convert (value) {
+    return new Date(value);
   }
 }
 
@@ -412,7 +469,7 @@ class MungError extends ExtendableError {
       super(msg);
     }
 
-    this._message = message;
+    this.originalMessage = message;
 
     if ( 'code' in options ) {
       this.code = options.code;

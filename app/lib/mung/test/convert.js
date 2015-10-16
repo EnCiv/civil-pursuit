@@ -53,6 +53,22 @@ describe ( 'Convert' , function () {
 
   });
 
+  describe ( 'Date', function () {
+
+    describe ( 'Timestamp', function () {
+
+      const converted = Mung.convert(Date.now(), Date);
+
+      it ( 'should be a date', function () {
+
+        converted.should.be.an.instanceof(Date);
+
+      });
+
+    });
+
+  });
+
   describe ( 'Array' , function () {
 
     describe ( 'of full models' , function () {

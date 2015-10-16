@@ -9,16 +9,6 @@ var _colors = require('colors');
 
 var _colors2 = _interopRequireDefault(_colors);
 
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _domain = require('domain');
-
 var _libMung = require('../lib/mung');
 
 var _libMung2 = _interopRequireDefault(_libMung);
