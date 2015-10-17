@@ -8,19 +8,20 @@ import session                  from 'express-session';
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
 import passport                 from 'passport';
+import config                   from '../secret.json';
 import printIt                  from './lib/util/express-pretty';
+import getTime                  from './lib/util/print-time';
 import TwitterPassport          from './routes/twitter';
 import FacebookPassport         from './routes/facebook';
 import renderPage               from './routes/render-page';
 import itemRoute                from './routes/item';
 import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
-import User                     from './models/user';
-import config                   from '../secret.json';
-import getTime                  from './lib/util/print-time';
-import API                      from './api';
-import DiscussionModel          from './models/discussion';
 import * as Routes              from './routes';
+import User                     from './models/user';
+import Item                     from './models/item';
+import DiscussionModel          from './models/discussion';
+import API                      from './api';
 
 class HttpServer extends EventEmitter {
 
@@ -41,40 +42,45 @@ class HttpServer extends EventEmitter {
         printIt(res.req, res);
       });
 
-    try {
       process.nextTick(() => {
-        this.app = express();
+        try {
+          if ( ! this.props.intro || ! ( this.props.intro instanceof Item ) ) {
+            throw new Error('Missing intro');
+          }
 
-        this.set();
+          this.app = express();
 
-        this.parsers();
+          this.set();
 
-        this.cookies();
+          this.parsers();
 
-        this.session();
+          this.cookies();
 
-        this.passport();
+          this.session();
 
-        this.twitterMiddleware();
+          this.passport();
 
-        this.facebookMiddleware();
+          this.twitterMiddleware();
 
-        this.signers();
+          this.facebookMiddleware();
 
-        this.router();
+          this.signers();
 
-        this.static();
+          this.router();
 
-        this.notFound();
+          this.static();
 
-        this.error();
+          this.notFound();
 
-        this.start();
+          this.error();
+
+          this.start();
+        }
+        catch ( error ) {
+          this.emit('error', error);
+        }
       });
-    }
-    catch ( error ) {
-      this.emit('error', error);
-    }
+
   }
 
   set () {

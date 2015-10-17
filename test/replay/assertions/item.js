@@ -21,7 +21,10 @@ should.Assertion.add('item', function (candidate = {}) {
 
   if ( 'type' in candidate ) {
     if ( candidate.type instanceof Type ) {
-      candidate.type._id.should.be.exactly(this.obj.type);
+      candidate.type._id.equals(this.obj.type).should.be.true;
+    }
+    else if ( candidate.type instanceof Mung.ObjectID ) {
+      this.obj.type.equals(candidate.type).should.be.true;
     }
     else {
       throw new Error('Type mismatch');
@@ -83,20 +86,18 @@ should.Assertion.add('item', function (candidate = {}) {
     this.obj.image.should.be.exactly(candidate.image);
   }
 
-  if ( 'references' in this.obj ) {
-    this.obj.references.should.be.an.Array();
+  this.obj.references.should.be.an.Array();
 
-    this.obj.references.forEach(reference => {
-      reference.should.be.an.Object();
+  this.obj.references.forEach(reference => {
+    reference.should.be.an.Object();
 
-      reference.should.have.property('url')
-        .which.is.a.String();
+    reference.should.have.property('url')
+      .which.is.a.String();
 
-      if ( 'title' in reference ) {
-        reference.title.should.be.a.String();
-      }
-    });
-  }
+    if ( 'title' in reference ) {
+      reference.title.should.be.a.String();
+    }
+  });
 
   if ( 'references' in candidate ) {
     this.obj.references.should.be.exactly(candidate.references);

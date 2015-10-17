@@ -8,6 +8,7 @@ import isPanelItem        from './assertions/panel-item';
 import Type               from '../../app/models/type';
 import User               from '../../app/models/user';
 import Vote               from '../../app/models/vote';
+import config             from '../../secret.json';
 
 describe ( 'Item' , function () {
 
@@ -286,7 +287,7 @@ describe ( 'Item' , function () {
         it ( 'should get intro' , function (done) {
 
           Type
-            .findOne({ name : 'Intro' })
+            .findOne({ name : config['top level item'] })
             .then(
               document => {
                 intro = document;
@@ -302,7 +303,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be a type' , function () {
 
-            intro.should.be.a.typeDocument({ name : 'Intro' });
+            intro.should.be.a.typeDocument({ name : config['top level item'] });
 
           });
 

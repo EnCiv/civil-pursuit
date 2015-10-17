@@ -23,13 +23,16 @@ class Item extends Mung.Model {
         "type"            :   String
       },
 
-      "references"        :   [{
-        "url"             :   {
-          "type"          :   String,
-          "validate"      :   isUrl
-        },
-        "title"           :   String
-      }],
+      "references"        :   {
+        "type"            :   [{
+          "url"           :   {
+            "type"        :   String,
+            "validate"    :   isUrl
+          },
+          "title"         :   String
+        }],
+        "default"         :   []
+      },
 
       "subject"           :   {
         "type"            :   String,

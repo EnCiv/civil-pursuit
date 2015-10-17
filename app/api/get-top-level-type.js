@@ -8,7 +8,7 @@ function getTopLevelType (event) {
     Type
       .findOne({ name : config['top level item'] })
       .then(
-        type => this.ok(event, type),
+        type => this.ok(event, type.toJSON()),
         this.error.bind(this)
       )
   }

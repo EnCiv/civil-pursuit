@@ -19,7 +19,7 @@ function getTopLevelType(event) {
 
   try {
     _modelsType2['default'].findOne({ name: _secretJson2['default']['top level item'] }).then(function (type) {
-      return _this.ok(event, type);
+      return _this.ok(event, type.toJSON());
     }, this.error.bind(this));
   } catch (error) {
     this.error('error');

@@ -46,9 +46,17 @@ var _passport2 = require('passport');
 
 var _passport3 = _interopRequireDefault(_passport2);
 
+var _secretJson = require('../secret.json');
+
+var _secretJson2 = _interopRequireDefault(_secretJson);
+
 var _libUtilExpressPretty = require('./lib/util/express-pretty');
 
 var _libUtilExpressPretty2 = _interopRequireDefault(_libUtilExpressPretty);
+
+var _libUtilPrintTime = require('./lib/util/print-time');
+
+var _libUtilPrintTime2 = _interopRequireDefault(_libUtilPrintTime);
 
 var _routesTwitter = require('./routes/twitter');
 
@@ -74,29 +82,25 @@ var _routesSignOut = require('./routes/sign-out');
 
 var _routesSignOut2 = _interopRequireDefault(_routesSignOut);
 
+var _routes = require('./routes');
+
+var Routes = _interopRequireWildcard(_routes);
+
 var _modelsUser = require('./models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-var _secretJson = require('../secret.json');
+var _modelsItem = require('./models/item');
 
-var _secretJson2 = _interopRequireDefault(_secretJson);
-
-var _libUtilPrintTime = require('./lib/util/print-time');
-
-var _libUtilPrintTime2 = _interopRequireDefault(_libUtilPrintTime);
-
-var _api = require('./api');
-
-var _api2 = _interopRequireDefault(_api);
+var _modelsItem2 = _interopRequireDefault(_modelsItem);
 
 var _modelsDiscussion = require('./models/discussion');
 
 var _modelsDiscussion2 = _interopRequireDefault(_modelsDiscussion);
 
-var _routes = require('./routes');
+var _api = require('./api');
 
-var Routes = _interopRequireWildcard(_routes);
+var _api2 = _interopRequireDefault(_api);
 
 var HttpServer = (function (_EventEmitter) {
   function HttpServer(props) {
@@ -112,8 +116,12 @@ var HttpServer = (function (_EventEmitter) {
       (0, _libUtilExpressPretty2['default'])(res.req, res);
     });
 
-    try {
-      process.nextTick(function () {
+    process.nextTick(function () {
+      try {
+        if (!_this.props.intro || !(_this.props.intro instanceof _modelsItem2['default'])) {
+          throw new Error('Missing intro');
+        }
+
         _this.app = (0, _express2['default'])();
 
         _this.set();
@@ -141,10 +149,10 @@ var HttpServer = (function (_EventEmitter) {
         _this.error();
 
         _this.start();
-      });
-    } catch (error) {
-      this.emit('error', error);
-    }
+      } catch (error) {
+        _this.emit('error', error);
+      }
+    });
   }
 
   _inherits(HttpServer, _EventEmitter);

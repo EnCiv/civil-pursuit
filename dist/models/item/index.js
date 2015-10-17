@@ -112,13 +112,16 @@ var Item = (function (_Mung$Model) {
           'type': String
         },
 
-        'references': [{
-          'url': {
-            'type': String,
-            'validate': _libUtilIsUrl2['default']
-          },
-          'title': String
-        }],
+        'references': {
+          'type': [{
+            'url': {
+              'type': String,
+              'validate': _libUtilIsUrl2['default']
+            },
+            'title': String
+          }],
+          'default': []
+        },
 
         'subject': {
           'type': String,

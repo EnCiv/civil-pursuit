@@ -396,7 +396,7 @@ class Item extends React.Component {
       );
     }
 
-    if ( item.references.length ) {
+    if ( item.references && item.references.length ) {
       referenceLink = item.references[0].url;
       referenceTitle = item.references[0].title;
     }
