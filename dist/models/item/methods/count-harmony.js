@@ -41,7 +41,7 @@ function countHarmony() {
               var promises = harmony.map(function (side) {
                 return new Promise(function (ok, ko) {
                   if (side) {
-                    _this.count({
+                    _this.constructor.count({
                       parent: _this,
                       type: side
                     }).then(ok, ko);

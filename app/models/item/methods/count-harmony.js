@@ -27,6 +27,7 @@ function countHarmony () {
             new Promise((ok, ko) => {
               if ( side ) {
                 this
+                  .constructor
                   .count({
                     parent    :   this,
                     type      :   side
