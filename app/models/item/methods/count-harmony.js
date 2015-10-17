@@ -26,7 +26,7 @@ function countHarmony () {
           const promises = harmony.map(side =>
             new Promise((ok, ko) => {
               if ( side ) {
-                Item
+                this
                   .count({
                     parent    :   this,
                     type      :   side
