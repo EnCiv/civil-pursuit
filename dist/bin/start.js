@@ -83,6 +83,7 @@ var getIntroType = function getIntroType(props) {
 var getIntroItem = function getIntroItem(props) {
   return new Promise(function (ok, ko) {
     try {
+      console.log('get intro item', props.intro);
       _modelsItem2['default'].findOne(props.intro).then(function (item) {
         try {
           if (!item) {

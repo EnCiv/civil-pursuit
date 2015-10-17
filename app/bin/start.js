@@ -67,6 +67,7 @@ const getIntroType = props => new Promise((ok, ko) => {
 
 const getIntroItem = props => new Promise((ok, ko) => {
   try {
+    console.log('get intro item', props.intro)
     Item
       .findOne( props.intro )
       .then(
