@@ -82,7 +82,7 @@ const getIntroItem = props => new Promise((ok, ko) => {
               .then(
                 item => {
                   try {
-                    consoe.log('got panel item' , item)
+                    console.log('got panel item' , item)
                     props.intro.item = item;
                     ok()
                   }

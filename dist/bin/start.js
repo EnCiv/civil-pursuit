@@ -92,7 +92,7 @@ var getIntroItem = function getIntroItem(props) {
           }
           item.toPanelItem().then(function (item) {
             try {
-              consoe.log('got panel item', item);
+              console.log('got panel item', item);
               props.intro.item = item;
               ok();
             } catch (error) {
