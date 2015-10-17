@@ -9,7 +9,7 @@ var _colors = require('colors');
 
 var _colors2 = _interopRequireDefault(_colors);
 
-var _secretJson = require('../secret.json');
+var _secretJson = require('../../secret.json');
 
 var _secretJson2 = _interopRequireDefault(_secretJson);
 

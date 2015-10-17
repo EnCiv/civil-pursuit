@@ -3,7 +3,7 @@
 'use strict';
 
 import colors         from    'colors';
-import config         from    '../secret.json';
+import config         from    '../../secret.json';
 import Mung           from    '../lib/mung';
 import Server         from    '../server';
 import Item           from    '../models/item';
