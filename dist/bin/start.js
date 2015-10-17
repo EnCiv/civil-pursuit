@@ -9,6 +9,10 @@ var _colors = require('colors');
 
 var _colors2 = _interopRequireDefault(_colors);
 
+var _secretJson = require('../secret.json');
+
+var _secretJson2 = _interopRequireDefault(_secretJson);
+
 var _libMung = require('../lib/mung');
 
 var _libMung2 = _interopRequireDefault(_libMung);
@@ -42,6 +46,7 @@ if (process.env.NODE_ENV === 'production') {
 var connectToDB = function connectToDB(props) {
   return new Promise(function (ok, ko) {
     try {
+      console.log('connect to DB', process.env.MONGOHQ_URL);
       _libMung2['default'].connect(process.env.MONGOHQ_URL).on('error', ko).on('connected', ok);
     } catch (error) {
       ko(error);
@@ -54,7 +59,8 @@ var connectToDB = function connectToDB(props) {
 var getIntroType = function getIntroType(props) {
   return new Promise(function (ok, ko) {
     try {
-      _modelsType2['default'].findOne({ name: 'Intro' }).then(function (type) {
+      console.log('Get intro trype');;
+      _modelsType2['default'].findOne({ name: _secretJson2['default']['top level item'] }).then(function (type) {
         try {
           if (!type) {
             throw new Error('Intro type not found');

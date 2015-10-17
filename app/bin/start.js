@@ -3,6 +3,7 @@
 'use strict';
 
 import colors         from    'colors';
+import config         from    '../secret.json';
 import Mung           from    '../lib/mung';
 import Server         from    '../server';
 import Item           from    '../models/item';
@@ -23,6 +24,7 @@ else {
 
 const connectToDB = props => new Promise((ok, ko) => {
   try {
+    console.log('connect to DB', process.env.MONGOHQ_URL)
     Mung.connect(process.env.MONGOHQ_URL)
       .on('error', ko)
       .on('connected', ok);
@@ -36,8 +38,9 @@ const connectToDB = props => new Promise((ok, ko) => {
 
 const getIntroType = props => new Promise((ok, ko) => {
   try {
+    console.log('Get intro trype');;
     Type
-      .findOne({ name : 'Intro' })
+      .findOne({ name : config['top level item'] })
       .then(
         type => {
           try {
