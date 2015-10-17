@@ -73,6 +73,7 @@ const getIntroItem = props => new Promise((ok, ko) => {
       .then(
         item => {
           try {
+            console.log('got intro item', item)
             if ( ! item ) {
               throw new Error('Intro item not found');
             }
@@ -81,6 +82,7 @@ const getIntroItem = props => new Promise((ok, ko) => {
               .then(
                 item => {
                   try {
+                    consoe.log('got panel item' , item)
                     props.intro.item = item;
                     ok()
                   }
@@ -107,6 +109,7 @@ const getIntroItem = props => new Promise((ok, ko) => {
 
 const startServer = props => new Promise((ok, ko) => {
   try {
+    console.log('connecting server', props.intro.item)
     new Server({ intro : props.intro.item })
   }
   catch ( error ) {

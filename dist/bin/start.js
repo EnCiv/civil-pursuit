@@ -86,11 +86,13 @@ var getIntroItem = function getIntroItem(props) {
       console.log('get intro item', props.intro);
       _modelsItem2['default'].findOne(props.intro).then(function (item) {
         try {
+          console.log('got intro item', item);
           if (!item) {
             throw new Error('Intro item not found');
           }
           item.toPanelItem().then(function (item) {
             try {
+              consoe.log('got panel item', item);
               props.intro.item = item;
               ok();
             } catch (error) {
@@ -112,6 +114,7 @@ var getIntroItem = function getIntroItem(props) {
 var startServer = function startServer(props) {
   return new Promise(function (ok, ko) {
     try {
+      console.log('connecting server', props.intro.item);
       new _server2['default']({ intro: props.intro.item });
     } catch (error) {
       ko(error);
