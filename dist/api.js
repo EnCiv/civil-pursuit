@@ -74,7 +74,7 @@ var API = (function (_EventEmitter) {
       var _this2 = this;
 
       try {
-        console.log({ scan: _path2['default'].join(__dirname, 'api') });
+        console.log({ scan: _path2['default'].join(__dirname, 'api2222222222222222222222222222222222222222222222222') });
         _fs2['default'].readdir(_path2['default'].join(__dirname, 'api'), function (error, files) {
           try {
             if (error) {
