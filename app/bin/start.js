@@ -44,6 +44,7 @@ const getIntroType = props => new Promise((ok, ko) => {
       .then(
         type => {
           try {
+            console.log('got intro type', type)
             if ( ! type ) {
               throw new Error('Intro type not found');
             }
@@ -67,7 +68,7 @@ const getIntroType = props => new Promise((ok, ko) => {
 const getIntroItem = props => new Promise((ok, ko) => {
   try {
     Item
-      .findOne({ type : props.intro.type })
+      .findOne( props.intro )
       .then(
         item => {
           try {

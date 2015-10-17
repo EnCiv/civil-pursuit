@@ -62,6 +62,7 @@ var getIntroType = function getIntroType(props) {
       console.log('Get intro trype');;
       _modelsType2['default'].findOne({ name: _secretJson2['default']['top level item'] }).then(function (type) {
         try {
+          console.log('got intro type', type);
           if (!type) {
             throw new Error('Intro type not found');
           }
@@ -82,7 +83,7 @@ var getIntroType = function getIntroType(props) {
 var getIntroItem = function getIntroItem(props) {
   return new Promise(function (ok, ko) {
     try {
-      _modelsItem2['default'].findOne({ type: props.intro.type }).then(function (item) {
+      _modelsItem2['default'].findOne(props.intro).then(function (item) {
         try {
           if (!item) {
             throw new Error('Intro item not found');
