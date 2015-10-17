@@ -1087,23 +1087,32 @@ class Model {
     return new Promise((ok, ko) => {
       try {
         this
-          .findById(id)
+          .updateOne({ _id : id }, { $set : set })
           .then(
-            doc => {
-              try {
-                if ( ! doc ) {
-                  throw new Error(`No ${this.name} found with id ${id}`);
-                }
-                doc.set(set);
-                doc.save()
-                  .then(ok, ko);
-              }
-              catch ( error ) {
-                ko(error);
-              }
+            res => {
+
             },
             ko
           );
+
+        // this
+        //   .findById(id)
+        //   .then(
+        //     doc => {
+        //       try {
+        //         if ( ! doc ) {
+        //           throw new Error(`No ${this.name} found with id ${id}`);
+        //         }
+        //         doc.set(set);
+        //         doc.save()
+        //           .then(ok, ko);
+        //       }
+        //       catch ( error ) {
+        //         ko(error);
+        //       }
+        //     },
+        //     ko
+        //   );
       }
       catch ( error ) {
         ko(error);

@@ -1130,17 +1130,26 @@ var Model = (function () {
 
       return new Promise(function (ok, ko) {
         try {
-          _this11.findById(id).then(function (doc) {
-            try {
-              if (!doc) {
-                throw new Error('No ' + _this11.name + ' found with id ' + id);
-              }
-              doc.set(set);
-              doc.save().then(ok, ko);
-            } catch (error) {
-              ko(error);
-            }
-          }, ko);
+          _this11.updateOne({ _id: id }, { $set: set }).then(function (res) {}, ko);
+
+          // this
+          //   .findById(id)
+          //   .then(
+          //     doc => {
+          //       try {
+          //         if ( ! doc ) {
+          //           throw new Error(`No ${this.name} found with id ${id}`);
+          //         }
+          //         doc.set(set);
+          //         doc.save()
+          //           .then(ok, ko);
+          //       }
+          //       catch ( error ) {
+          //         ko(error);
+          //       }
+          //     },
+          //     ko
+          //   );
         } catch (error) {
           ko(error);
         }

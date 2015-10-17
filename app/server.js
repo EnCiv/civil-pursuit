@@ -44,7 +44,7 @@ class HttpServer extends EventEmitter {
 
       process.nextTick(() => {
         try {
-          if ( ! this.props.intro || ! ( this.props.intro instanceof Item ) ) {
+          if ( ! this.props.intro ) {
             throw new Error('Missing intro');
           }
 

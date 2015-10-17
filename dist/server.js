@@ -118,7 +118,7 @@ var HttpServer = (function (_EventEmitter) {
 
     process.nextTick(function () {
       try {
-        if (!_this.props.intro || !(_this.props.intro instanceof _modelsItem2['default'])) {
+        if (!_this.props.intro) {
           throw new Error('Missing intro');
         }
 

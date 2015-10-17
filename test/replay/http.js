@@ -74,6 +74,30 @@ describe ( 'HTTP server' , function () {
 
     });
 
+    describe ( 'Panelify intro' , function () {
+
+      it ( 'should panelify', function (done) {
+
+        intro
+          .toPanelItem()
+          .then(
+            item => {
+              intro = item;
+              done();
+            },
+            done
+          );
+
+      });
+
+      it ( 'should be be a panel item', function (done) {
+
+        intro.should.be.a.panelItem();
+
+      });
+
+    });
+
     describe ( 'Start HTTP daemon' , function () {
 
       it ( 'should start a new HTTP server', function (done) {
