@@ -121,4 +121,8 @@ sequencer([
   startServer
 ])
   .then(
+    () => console.log('Started!'),
+    error => {
+      console.log(error.stack);
+    }
   );

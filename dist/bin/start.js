@@ -119,4 +119,8 @@ var startServer = function startServer(props) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-(0, _libUtilSequencer2['default'])([connectToDB, getIntroType, getIntroItem, startServer]).then();
+(0, _libUtilSequencer2['default'])([connectToDB, getIntroType, getIntroItem, startServer]).then(function () {
+  return console.log('Started!');
+}, function (error) {
+  console.log(error.stack);
+});
