@@ -20,11 +20,11 @@ class Model {
       },
 
       __types       :   {
-        value       :   this.parseTypes(schema)
+        value       :   this.constructor.parseTypes(schema)
       },
 
       __indexes     :   {
-        value       :   this.parseIndexes(schema)
+        value       :   this.constructor.parseIndexes(schema)
       },
 
       __defaults    :   {
@@ -69,7 +69,7 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  parseIndexes (schema, ns = '') {
+  static parseIndexes (schema, ns = '') {
 
     let indexes = [];
 
@@ -89,6 +89,10 @@ class Model {
       else if ( typeof schema[field] === 'object' ) {
         if ( schema[field].index || schema[field].unique ) {
           let index = schema[field].index || schema[field].unique;
+
+          if ( 'unique' in schema[field] ) {
+            options.unique = true;
+          }
 
           if ( index === true ) {
             fields[fieldName] = 1;
@@ -332,7 +336,7 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  parseTypes (schema) {
+  static parseTypes (schema) {
     let types = {};
 
     for ( let field in schema ) {
@@ -370,47 +374,89 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static parseRefs (schema, ns = '') {
+    let refs = [];
+
+    for ( let field in schema ) {
+
+      let fieldName = ns ? `${ns}.${field}` : field;
+
+      if ( typeof schema[field] === 'function' && new (schema[field]) instanceof Model ) {
+        refs[fieldName] = schema[field];
+      }
+      else if ( Array.isArray(schema[field]) ) {
+        const subRefs = this.parseRefs({ [fieldName] : schema[field][0] });
+        for ( let ref in subRefs ) {
+          refs[ref] = subRefs[ref];
+        }
+      }
+      else if ( typeof schema[field] === 'object' ) {
+        const subRefs = this.parseRefs(schema[field], fieldName);
+        for ( let ref in subRefs ) {
+          refs[ref] = subRefs[ref];
+        }
+      }
+    }
+
+    return refs;
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   set (field, value) {
-    if ( typeof field === 'object' ) {
-      for ( let _field in field ) {
-        this.set(_field, field[_field]);
+    try {
+      if ( typeof field === 'object' ) {
+        for ( let _field in field ) {
+          this.set(_field, field[_field]);
+        }
+        return this;
       }
+
+      if ( typeof value === 'function' ) {
+        value = value();
+      }
+
+      if ( field === '$push' ) {
+        const array = Object.keys(value)[0];
+        return this.push(array, value[array]);
+      }
+
+      if ( ! ( field in this.__schema ) ) {
+        return this;
+      }
+
+      if ( value === null ) {
+        this.__document[field] = null;
+      }
+      else {
+        this.__document[field] = Mung.convert(value, this.__types[field]);
+      }
+
+      for ( let field in this.__document ) {
+        if ( ! ( field in this ) ) {
+          Object.defineProperty(this, field, {
+            enumerable : true,
+            configurable : true,
+            get : () => {
+              return this.__document[field];
+            }
+          });
+        }
+      }
+
       return this;
     }
-
-    if ( typeof value === 'function' ) {
-      value = value();
+    catch ( error ) {
+      throw new (Mung.Error)('Could not set field', {
+        model : this.constructor.name,
+        field,
+        value,
+        error : {
+          message : error.message,
+          code : error.code
+        }
+      })
     }
-
-    if ( field === '$push' ) {
-      const array = Object.keys(value)[0];
-      return this.push(array, value[array]);
-    }
-
-    if ( ! ( field in this.__schema ) ) {
-      return this;
-    }
-
-    if ( value === null ) {
-      this.__document[field] = null;
-    }
-    else {
-      this.__document[field] = Mung.convert(value, this.__types[field]);
-    }
-
-    for ( let field in this.__document ) {
-      if ( ! ( field in this ) ) {
-        Object.defineProperty(this, field, {
-          enumerable : true,
-          configurable : true,
-          get : () => {
-            return this.__document[field];
-          }
-        });
-      }
-    }
-
-    return this;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -529,6 +575,8 @@ class Model {
   prepare (operation, options = {}) {
     return new Promise((ok, ko) => {
       try {
+        const model = options.version ? this.constructor.migrations[options.version] : this.constructor;
+
         if ( ! ( '__v' in this ) ) {
           this.__document.__v = 0;
 
@@ -542,7 +590,7 @@ class Model {
         }
 
         if ( ! ( '__V' in this ) ) {
-          this.__document.__V = this.constructor.version || 0;
+          this.__document.__V = options.version ? options.version : ( this.constructor.version || 0 );
 
           Object.defineProperty(this, '__V', {
             enumerable : true,
@@ -555,8 +603,8 @@ class Model {
 
         let beforeValidation = [];
 
-        if ( typeof this.constructor.validating === 'function' ) {
-          beforeValidation = this.constructor.validating();
+        if ( typeof model.validating === 'function' ) {
+          beforeValidation = model.validating();
         }
 
         Mung.runSequence(beforeValidation, this)
@@ -569,8 +617,8 @@ class Model {
 
                 let before = [];
 
-                if ( operation === 'insert' && typeof this.constructor.inserting === 'function' ) {
-                  before = this.constructor.inserting();
+                if ( operation === 'insert' && typeof model.inserting === 'function' ) {
+                  before = model.inserting();
                 }
 
                 Mung.runSequence(before, this)
@@ -597,13 +645,15 @@ class Model {
       try {
         const started = Date.now();
 
+        const model = options.version ? this.constructor.migrations[options.version] : this.constructor;
+
         if ( ! this.__document._id || options.create ) {
           this.prepare('insert', options)
             .then(
               () => {
                 try {
                   const { Query } = Mung;
-                  new Query({ model : this.constructor })
+                  new Query({ model })
                     .insert(this.__document)
                     .then(
                       created => {
@@ -632,33 +682,20 @@ class Model {
                             });
                           }
 
-                          if ( typeof this.constructor.inserted === 'function' ) {
-                            const pipe = this.constructor.inserted();
+                          Object.defineProperty(this, '__totalQueryTime', {
+                            enumerable : false,
+                            writable : false,
+                            value : Date.now() - started
+                          });
+
+                          ok(this);
+
+                          if ( typeof model.inserted === 'function' ) {
+                            const pipe = model.inserted();
 
                             if ( Array.isArray(pipe) ) {
-                              Mung.runSequence(pipe, this).then(
-                                () => {
-                                  Object.defineProperty(this, '__totalQueryTime', {
-                                    enumerable : false,
-                                    writable : false,
-                                    value : Date.now() - started
-                                  });
-
-                                  ok(this)
-                                },
-                                ko
-                              );
-
+                              Mung.runSequence(pipe, this);
                             }
-                          }
-                          else {
-                            Object.defineProperty(this, '__totalQueryTime', {
-                              enumerable : false,
-                              writable : false,
-                              value : Date.now() - started
-                            });
-
-                            ok(this);
                           }
                         }
                         catch ( error ) {
@@ -855,47 +892,43 @@ class Model {
   populate (...foreignKeys) {
     return new Promise((ok, ko) => {
       try {
+        const promises = [];
 
-        let refs = [];
+        this.__populated = {};
 
-        if ( foreignKeys.length ) {
-          for ( let field in this.__types ) {
-            if ( foreignKeys.indexOf(field) > -1 && new (this.__types[field])() instanceof Model ) {
-              refs.push({ field, model : this.__types[field] });
+        let refs = this.constructor.parseRefs(this.__types);
+
+        const flatten = Mung.flatten(this.toJSON({ private : true }));
+
+        for ( let ref in refs ) {
+          if ( foreignKeys.length && foreignKeys.indexOf(ref) === - 1 ) {
+            continue;
+          }
+
+          if ( /\./.test(ref) ) {
+
+          }
+          else if ( Array.isArray(this.__types[ref]) ) {
+
+          }
+          else {
+            if ( ref in flatten ) {
+              promises.push(new Promise((ok, ko) => {
+                refs[ref]
+                  .findById(Mung.resolve(ref, flatten))
+                  .then(
+                    document => {
+                      this.__populated[ref] = document;
+                      ok();
+                    },
+                    ko
+                  );
+              }));
             }
           }
         }
 
-        else {
-          for ( let field in this.__types ) {
-            if ( new (this.__types[field])() instanceof Model ) {
-              refs.push({ field, model : this.__types[field] });
-            }
-          }
-        }
-
-        Promise
-          .all(refs.map(ref => ref.model.findById(this[ref.field])))
-          .then(
-            populated => {
-              Object.defineProperty(this, '__populated', {
-                enumerable : false,
-                writable : false,
-                value : refs
-                  .map((ref, index) => {
-                    ref.document = populated[index];
-                    return ref;
-                  })
-                  .reduce((populated, ref) => {
-                    populated[ref.field] = ref.document;
-                    return populated;
-                  }, {})
-              });
-
-              ok();
-            },
-            ko
-          );
+        Promise.all(promises).then(ok, ko);
       }
       catch ( error ) {
         ko(error);
@@ -915,12 +948,14 @@ class Model {
         return Mung.ObjectID(value._id);
       }
 
-      if ( typeof value === 'String' ) {
+      if ( typeof value === 'string' ) {
         return Mung.ObjectID(value);
       }
     }
 
-    throw new Error('Can not convert value to Model');
+    throw new (Mung.Error)('Can not convert value to Model', {
+      value, model : this.name
+    });
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1010,9 +1045,9 @@ class Model {
         if ( Array.isArray(document) ) {
           return Promise.all(document.map(document => this.create(document, options))).then(ok, ko);
         }
-
-        let doc = new this(document);
-        doc.save(options).then(ok, ko);
+        new this(document)
+          .save(options)
+          .then(ok, ko);
       }
       catch ( error ) {
         ko(error);
@@ -1083,121 +1118,8 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static updateById (id, set) {
-    return new Promise((ok, ko) => {
-      try {
-        this
-          .updateOne({ _id : id }, { $set : set })
-          .then(
-            res => {
-
-            },
-            ko
-          );
-
-        // this
-        //   .findById(id)
-        //   .then(
-        //     doc => {
-        //       try {
-        //         if ( ! doc ) {
-        //           throw new Error(`No ${this.name} found with id ${id}`);
-        //         }
-        //         doc.set(set);
-        //         doc.save()
-        //           .then(ok, ko);
-        //       }
-        //       catch ( error ) {
-        //         ko(error);
-        //       }
-        //     },
-        //     ko
-        //   );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static increment (where, set, options = {}) {
-    return new Promise((ok, ko) => {
-      try {
-        if ( where instanceof Mung.ObjectID || typeof where === 'string' ) {
-          where = { _id : where };
-        }
-        this
-          .find(where, options)
-          .then(
-            docs => {
-              try {
-                let promises = docs.map(doc => new Promise((ok, ko) => {
-                  try {
-                    doc
-                      .increment(set)
-                      .save()
-                      .then(ok, ko);
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                }));
-                Promise.all(promises).then(ok, ko);
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  static incrementOne (where, set, options = {}) {
-    return new Promise((ok,  ko) => {
-      try {
-        if ( where instanceof Mung.ObjectID || typeof where === 'string' ) {
-          where = { _id : where };
-        }
-        this
-          .findOne(where, options)
-          .then(
-            doc => {
-              try {
-                if ( ! doc ) {
-                  return ok(doc);
-                }
-                doc = new Promise((ok, ko) => {
-                  try {
-                    doc
-                      .increment(set)
-                      .save()
-                      .then(ok, ko);
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                });
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
-      }
-      catch ( error ) {
-        ko(error);
-      }
-    });
+  static updateById (id, set, options = {}) {
+    return this.updateOne({ _id : id }, set, options);
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1213,17 +1135,10 @@ class Model {
                 if ( ! doc ) {
                   return ok(doc);
                 }
-                doc = new Promise((ok, ko) => {
-                  try {
-                    doc
-                      .set(set)
-                      .save()
-                      .then(ok, ko);
-                  }
-                  catch ( error ) {
-                    ko(error);
-                  }
-                });
+                doc
+                  .set(set)
+                  .save()
+                  .then(ok, ko);
               }
               catch ( error ) {
                 ko(error);
@@ -1340,57 +1255,66 @@ class Model {
   static migrate () {
     return new Promise((ok, ko) => {
       try {
-        let { migrations } = this;
+        this.buildIndexes()
+          .then(
+            () => {
+              try {
+                let { migrations } = this;
 
-        if ( migrations ) {
-          let migrate = cb => {
-            let version = versions[cursor];
+                if ( migrations ) {
+                  let migrate = () => {
+                    let version = versions[cursor];
 
-            if ( migrations[version] ) {
+                    if ( migrations[version] && migrations[version].do ) {
 
-              migrations[version].do.apply(this)
-                .then(
-                  () => {
-                    this
-                      .find({ __V : { $lt : version } }, { limit : 0 })
-                      .then(
-                        documents => {
-                          Promise
-                            .all(
-                              documents.map(document => new Promise((ok, ko) => {
-                                document.set('__V', version).save().then(ok, ko)
-                              }))
-                            )
-                            .then(
-                              () => {
-                                cursor ++;
-                                migrate(cb);
-                              },
-                              ko
-                            );
-                        },
-                        ko
-                      );
-                  },
-                  ko
-                );
-            }
-            else {
-              cb();
-            }
-          };
+                      migrations[version].do.apply(this)
+                        .then(
+                          () => {
+                            this
+                              .find({ __V : { $lt : version } }, { limit : 0 })
+                              .then(
+                                documents => {
+                                  Promise
+                                    .all(
+                                      documents.map(document => new Promise((ok, ko) => {
+                                        document.set('__V', version).save().then(ok, ko)
+                                      }))
+                                    )
+                                    .then(
+                                      () => {
+                                        cursor ++;
+                                        migrate();
+                                      },
+                                      ko
+                                    );
+                                },
+                                ko
+                              );
+                          },
+                          ko
+                        );
+                    }
+                    else {
+                      ok();
+                    }
+                  };
 
-          let versions = Object.keys(migrations);
+                  let versions = Object.keys(migrations);
 
-          let cursor = 0;
+                  let cursor = 0;
 
-          migrate(() => {
-            this.buildIndexes().then(ok, ko);
-          });
-        }
-        else {
-          this.buildIndexes().then(ok, ko);
-        }
+                  migrate();
+                }
+                else {
+                  ok();
+                }
+              }
+              catch ( error ) {
+                ko(error);
+              }
+            },
+            ko
+          );
       }
       catch ( error ) {
         ko(error);
@@ -1413,7 +1337,7 @@ class Model {
             collection => {
               try {
                 query
-                  .ensureIndexes(collection)
+                  .buildIndexes(new this().__indexes, collection)
                   .then(ok, ko);
               }
               catch ( error ) {

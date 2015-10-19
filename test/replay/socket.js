@@ -8,6 +8,7 @@ import path                       from 'path';
 import S                          from 'string';
 import socketClient               from 'socket.io-client';
 import config                     from '../../secret.json';
+import Item                       from '../../app/models/item';
 
 const http = global.syn_httpServer;
 
@@ -69,6 +70,19 @@ describe ( 'Socket' , function () {
 
     });
 
+    describe ( 'get items' , function () {
+
+      let expected, actual;
+
+      describe ( 'Get expected panel items', function () {
+
+        it ( 'should get panel items', function () {
+
+        });
+
+      });
+
+    });
   });
 
 });

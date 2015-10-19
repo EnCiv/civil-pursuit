@@ -121,22 +121,32 @@ var Query = (function () {
               });
 
               var promises = indexes.filter(function (index) {
-                return !index[2];
+                return index[2];
               }).map(function (index) {
-                return collection.createIndex(index[0], index[1]);
+                return collection.dropIndex(index[0]);
               });
 
-              Promise.all(promises).then(function (results) {
+              Promise.all(promises).then(function () {
                 try {
-                  results.forEach(function (indexName) {
-                    indexes = indexes.map(function (index) {
-                      if (index.name === indexName) {
-                        index.created = true;
-                      }
-                      return index;
-                    });
+                  var _promises = indexes.map(function (index) {
+                    return collection.createIndex(index[0], index[1]);
                   });
-                  ok(indexes);
+
+                  Promise.all(_promises).then(function (results) {
+                    try {
+                      results.forEach(function (indexName) {
+                        indexes = indexes.map(function (index) {
+                          if (index.name === indexName) {
+                            index.created = true;
+                          }
+                          return index;
+                        });
+                      });
+                      ok(indexes);
+                    } catch (error) {
+                      ko(error);
+                    }
+                  }, ko);
                 } catch (error) {
                   ko(error);
                 }
@@ -157,7 +167,7 @@ var Query = (function () {
       var Util = _mung2['default'].Util;
       var model = this.options.model;
 
-      return _mung2['default'].parse(query, new this.options.model().__types);
+      return _mung2['default'].parseFindQuery(query, new this.options.model().__types);
     }
   }, {
     key: 'remove',
@@ -246,7 +256,7 @@ var Query = (function () {
     value: function find(document) {
       var _this5 = this;
 
-      var options = arguments[1] === undefined ? { limit: 100 } : arguments[1];
+      var options = arguments[1] === undefined ? {} : arguments[1];
 
       return new Promise(function (ok, ko) {
         try {
@@ -262,13 +272,7 @@ var Query = (function () {
             _this5.collection().then(function (collection) {
               try {
                 (function () {
-                  var limit = 'limit' in options ? options.limit : 100;
-                  var skip = options.skip || 0;
-                  var sort = options.sort || { _id: 1 };
-
-                  if (options.reverse) {
-                    sort = { _id: -1 };
-                  }
+                  var projection = Query.project(options);
 
                   var parsed = _this5.parse(document);
 
@@ -276,12 +280,12 @@ var Query = (function () {
 
                   if (options.one) {
                     if (collection.findOne) {
-                      query = collection.findOne(parsed, { skip: skip, sort: sort });
+                      query = collection.findOne(parsed, projection);
                     } else {
-                      query = collection.find(parsed).limit(1).skip(skip).sort(sort);
+                      query = collection.find(parsed).limit(1).skip(projection.skip).sort(projection.sort);
                     }
                   } else {
-                    query = collection.find(parsed).limit(limit).skip(skip).sort(sort).toArray();
+                    query = collection.find(parsed).limit(projection.limit).skip(projection.skip).sort(projection.sort).toArray();
                   }
 
                   query.then(function (documents) {
@@ -316,19 +320,19 @@ var Query = (function () {
                                 __limit: {
                                   numerable: false,
                                   writable: false,
-                                  value: limit
+                                  value: projection.limit
                                 },
 
                                 __skip: {
                                   numerable: false,
                                   writable: false,
-                                  value: skip
+                                  value: projection.skip
                                 },
 
                                 __sort: {
                                   numerable: false,
                                   writable: false,
-                                  value: sort
+                                  value: projection.sort
                                 }
                               });
                             }
@@ -416,6 +420,35 @@ var Query = (function () {
           ko(error);
         }
       });
+    }
+  }], [{
+    key: 'project',
+    value: function project() {
+      var options = arguments[0] === undefined ? {} : arguments[0];
+
+      var projection = {};
+
+      if ('limit' in options) {
+        if (options.limit === false) {
+          projection.limit = 0;
+        } else {
+          projection.limit = options.limit;
+        }
+      } else {
+        projection.limit = 100;
+      }
+
+      projection.skip = options.skip || 0;
+
+      projection.sort = options.sort || { _id: 1 };
+
+      if (options.reverse) {
+        for (var field in projection.sort) {
+          projection.sort[field] = -1;
+        }
+      }
+
+      return projection;
     }
   }]);
 

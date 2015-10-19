@@ -69,53 +69,70 @@ class Mung {
   }
 
   static convert (value, type) {
+    try {
+      if ( Array.isArray(type) ) {
+        if ( ! Array.isArray(value) ) {
+          throw new MungError('Can not convert a non-array to an array of types', { value, type });
+        }
 
-    // console.log('------------------')
-    // console.log('converting', value, type);
-    // console.log('------------------')
+        if ( type.length === 1 ) {
+          return value
+            .map(value => this.convert(value, type[0]));
+        }
 
-    if ( Array.isArray(type) ) {
-      if ( ! Array.isArray(value) ) {
-        throw new MungError('Can not convert a non-array to an array of types', { value, type });
+        else {
+          return value
+            .filter((value, index) => type[index])
+            .map((value, index) => this.convert(value, type[index]));
+        }
       }
 
-      if ( type.length === 1 ) {
-        return value
-          .map(value => this.convert(value, type[0]));
+      if ( type === String ) {
+        type = _String;
       }
 
+      else if ( type === Number ) {
+        type = _Number;
+      }
+
+      else if ( type === Boolean ) {
+        type = _Boolean;
+      }
+
+      else if ( type === Object ) {
+        type = _Object;
+      }
+
+      else if ( type === Date ) {
+        type = _Date;
+      }
+
+      if ( ! type.convert ) {
+        return value;
+      }
+
+      return type.convert(value);
+    }
+    catch ( error ) {
+      const debug = {
+        value,
+        type : type ? type.name : typeof type
+      };
+      if ( error instanceof (Mung.Error) ) {
+        debug.error = {
+          name : error.name,
+          message : JSON.parse(error.message),
+          stack : error.stack
+        };
+      }
       else {
-        return value
-          .filter((value, index) => type[index])
-          .map((value, index) => this.convert(value, type[index]));
+        debug.error = {
+          message : error.message,
+          stack : error.stack
+        }
       }
+      throw new (Mung.Error)('Could not convert value to type', debug);
     }
-
-    if ( type === String ) {
-      type = _String;
-    }
-
-    else if ( type === Number ) {
-      type = _Number;
-    }
-
-    else if ( type === Boolean ) {
-      type = _Boolean;
-    }
-
-    else if ( type === Object ) {
-      type = _Object;
-    }
-
-    else if ( type === Date ) {
-      type = _Date;
-    }
-
-    if ( ! type.convert ) {
-      return value;
-    }
-
-    return type.convert(value);
   }
 
   static set (document, key, value, type) {
@@ -188,6 +205,151 @@ class Mung {
         ko(error);
       }
     });
+  }
+
+  static parseFindQuery (query, schema) {
+    try {
+      let parsed = {};
+
+      if ( Array.isArray(query) ) {
+        return this.parseFindQuery({ $or : query }, schema);
+      }
+
+      for ( let field in query ) {
+
+        // field has dot notation
+
+        if ( /\./.test(field) ) {
+          const primaryField = field.split(/\./)[0];
+
+          const type = schema[primaryField];
+
+          if ( Array.isArray(type) ) {
+            parsed[field] = Mung.convert([query[field]], type)[0];
+          }
+        }
+
+        // If operator to an array ($or, $and, $nor)
+
+        else if ( [ '$or', '$and', '$nor' ].indexOf(field) > -1 ) {
+          parsed[field] = query[field].map(value => this.parseFindQuery(value, schema));
+        }
+
+        // query[field] is an object
+
+        else if ( typeof query[field] === 'object' && schema[field] !== Object ) {
+
+          // query[field].$in
+
+          if ( '$in' in query[field] ) {
+            parsed[field] = {
+              $in : query[field].$in.map(value =>
+                Mung.convert(value, schema[field])
+              )
+            };
+          }
+
+          // query[field].$nin
+
+          else if ( '$nin' in query[field] ) {
+            parsed[field] = {
+              $nin : query[field].$nin.map(value =>
+                Mung.convert(value, schema[field])
+              )
+            };
+          }
+
+          // query[field].$exists
+
+          else if ( '$exists' in query[field] ) {
+            parsed[field] = {
+              $exists : query[field].$exists
+            };
+          }
+
+          // query[field].$size
+
+          else if ( '$size' in query[field] ) {
+            parsed[field] = {
+              $size : query[field].$size
+            };
+          }
+
+          // query[field].$lt
+
+          else if ( '$lt' in query[field] ) {
+            parsed[field] = {
+              $lt : Mung.convert(query[field].$lt, schema[field])
+            };
+          }
+
+          // query[field].$gt
+
+          else if ( '$gt' in query[field] ) {
+            parsed[field] = {
+              $gt : Mung.convert(query[field].$gt, schema[field])
+            };
+          }
+
+          // query[field].$gte
+
+          else if ( '$gte' in query[field] ) {
+            parsed[field] = {
+              $gte : Mung.convert(query[field].$gte, schema[field])
+            };
+          }
+
+          // query[field].$lte
+
+          else if ( '$lte' in query[field] ) {
+            parsed[field] = {
+              $lte : Mung.convert(query[field].$lte, schema[field])
+            };
+          }
+
+          // query[field].$not
+
+          else if ( '$not' in query[field] ) {
+            parsed[field] = {
+              $not : this.parseFindQuery({ [field] : query[field].$not }, schema)[field]
+            };
+          }
+
+          // query[field].$eq
+
+          else if ( '$eq' in query[field] ) {
+            parsed[field] = {
+              $eq : this.parseFindQuery({ [field] : query[field].$eq }, schema)[field]
+            };
+          }
+
+          // query[field].$ne
+
+          else if ( '$ne' in query[field] ) {
+            parsed[field] = {
+              $ne : this.parseFindQuery({ [field] : query[field].$ne }, schema)[field]
+            };
+          }
+
+          else if ( ! Array.isArray(schema[field]) ) {
+            parsed[field] = Mung.convert(query[field], schema[field]);
+          }
+        }
+
+        else if ( Array.isArray(schema[field]) ) {
+          parsed[field] = Mung.convert(query[field], schema[field][0]);
+        }
+
+        else {
+          parsed[field] = Mung.convert(query[field], schema[field]);
+        }
+      }
+
+      return parsed;
+    }
+    catch ( error ) {
+      Mung.Error.rethrow(error, 'Could not parse find query', { query });
+    }
   }
 
   static parse (query, schema) {
@@ -280,91 +442,32 @@ class Mung {
     return parsed;
   }
 
-  static process(query, schema) {
+  static flatten (object, ns = '') {
+    let flatten = {};
 
+    for ( let key in object ) {
+      const fieldName = ns ? `${ns}.${key}` : key;
 
-    for ( let field in query ) {
-
-      if ( query[field] instanceof RegExp ) {
+      if ( Array.isArray(object[key]) ) {
+        flatten[fieldName] = object[key];
       }
 
-      else if ( field === '$or' || field === '$and' ) {
-        query[field] = query[field].map(value => parse(value, schema));
-      }
-
-      else if ( field === '$size'  || field === '$exists' ) {
-      }
-
-      else if ( field === '$push' ) {
-        query[field] = parse(query.$push, schema);
-      }
-
-      else if ( /\./.test(field) ) {
-        schema = field.split(/\./).reduce((schema, bit, i, bits) => {
-          schema = schema[bit];
-
-          if ( Array.isArray(schema) ) {
-            schema = schema[0];
-          }
-          return schema
-        }, schema);
-
-        query[field] = cast(query[field], schema);
-      }
-
-      else if ( Array.isArray(schema[field]) && ! Array.isArray(query[field]) ) {
-        if ( query[field] instanceof RegExp ) {
-
-        }
-        else if ( typeof query[field] === 'object' && query[field].constructor === Object ) {
-          if ( '$ne' in query[field] ) {
-            query[field].$ne = parse(query[field].$ne, schema[field]);
-          }
-          else {
-            query[field] = parse(query[field], schema[field][0]);
-          }
-        }
-        else {
-          query[field] = cast([query[field]], schema[field])[0];
-        }
-      }
-
-      else if ( query[field] instanceof RegExp ) {
-      }
-
-      else if ( typeof query[field] === 'object' ) {
-        if ( '$in' in query[field] ) {
-          query[field].$in = query[field].$in.map(value => cast(value, schema[field]));
-        }
-        else if ( '$lt' in query[field] ) {
-          query[field].$lt = cast(query[field].$lt, schema[field]);
-        }
-        else if ( '$lte' in query[field] ) {
-          query[field].$lte = cast(query[field].$lte, schema[field]);
-        }
-        else if ( '$gt' in query[field] ) {
-          query[field].$gt = cast(query[field].$gt, schema[field]);
-        }
-        else if ( '$gte' in query[field] ) {
-          query[field].$gte = cast(query[field].$gte, schema[field]);
-        }
-        else if ( '$exists' in query[field] ) {
-          // query[field].$exists
-        }
-
-        else if ( '$ne' in query[field] ) {
-
-        }
-
-        else {
-          query[field] = cast(query[field], schema[field]);
+      else if ( typeof object[key] === 'object' ) {
+        let sub = Mung.flatten(object[key], fieldName);
+        for ( let subKey in sub ) {
+          flatten[subKey] = sub[subKey];
         }
       }
       else {
-        query[field] = cast(query[field], schema[field]);
+        flatten[fieldName] = object[key];
       }
     }
-    return query;
+
+    return flatten;
+  }
+
+  static resolve (dotNotation, object) {
+    return Mung.flatten(object)[dotNotation];
   }
 }
 
@@ -398,22 +501,7 @@ Mung.ObjectID.equal = function (a, b) {
   return a.equals(b);
 }
 
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-class _String {
-  static validate (value) {
-    return typeof value === 'string';
-  }
-
-  static convert (value) {
-    return String(value);
-  }
-}
-
-Mung.String = _String;
 
 class _Number {
   static validate (value) {
@@ -433,6 +521,22 @@ class _Number {
 
 Mung.Number = _Number;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class _String {
+  static validate (value) {
+    return typeof value === 'string';
+  }
+
+  static convert (value) {
+    return String(value);
+  }
+}
+
+Mung.String = _String;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class _Boolean {
   static validate (value) {
     return typeof value === 'boolean';
@@ -445,6 +549,8 @@ class _Boolean {
 
 Mung.Boolean = _Boolean;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class _Object {
   static validate (value) {
     return typeof value === 'object' && value !== null && ! Array.isArray(value);
@@ -453,6 +559,8 @@ class _Object {
 
 Mung.Object = _Object;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class _Mixed {
   static validate (value) {
     return true;
@@ -460,6 +568,58 @@ class _Mixed {
 }
 
 Mung.Mixed = _Mixed;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class _Hex {
+  static validate (value) {
+    return true;
+  }
+}
+
+Mung.Hex = _Hex;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class _Octal {
+  static validate (value) {
+    return true;
+  }
+}
+
+Mung.Octal = _Octal;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class _Binary {
+  static validate (value) {
+    return true;
+  }
+}
+
+Mung.Binary = _Binary;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class _Error {
+  static validate (value) {
+    return true;
+  }
+}
+
+Mung.ErrorType = _Error;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class _RegExp {
+  static validate (value) {
+    return true;
+  }
+}
+
+Mung.RegExp = _RegExp;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class _Date {
   static validate (value) {
@@ -478,14 +638,6 @@ class _Date {
 }
 
 Mung.Date = _Date;
-
-class _Geo {
-  static validate (value) {
-
-  }
-}
-
-Mung.Geo = _Geo;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -517,6 +669,25 @@ class MungError extends ExtendableError {
     }
 
     this.options = options;
+  }
+
+  static rethrow (error, message, options = {}) {
+    options.error = {};
+
+    if ( error instanceof this ) {
+      options.error.message = error.originalMessage;
+      options.error.code = error.code;
+      options.error.options = error.options;
+      options.error.stack = error.stack.split(/\n/);
+    }
+    else {
+      options.error.name = error.name;
+      options.error.message = error.message;
+      options.error.code = error.code;
+      options.error.stack = error.stack.split(/\n/);
+    }
+
+    return new this(message, options);
   }
 }
 

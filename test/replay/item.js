@@ -9,6 +9,7 @@ import Type               from '../../app/models/type';
 import User               from '../../app/models/user';
 import Vote               from '../../app/models/vote';
 import config             from '../../secret.json';
+import publicConfig       from '../../public.json';
 
 describe ( 'Item' , function () {
 
@@ -278,7 +279,7 @@ describe ( 'Item' , function () {
 
     describe ( 'valid type' , function () {
 
-      const candidate = { subject : 'I am Intro', description : 'I am the intro :)' };
+      const candidate = { subject : 'I am a test item', description : 'I am a tets item :)' };
 
       let item, intro, user;
 
@@ -287,7 +288,7 @@ describe ( 'Item' , function () {
         it ( 'should get intro' , function (done) {
 
           Type
-            .findOne({ name : config['top level item'] })
+            .findOne({ name : 'Test' })
             .then(
               document => {
                 intro = document;
@@ -303,7 +304,7 @@ describe ( 'Item' , function () {
 
           it ( 'should be a type' , function () {
 
-            intro.should.be.a.typeDocument({ name : config['top level item'] });
+            intro.should.be.a.typeDocument({ name : 'Test' });
 
           });
 
@@ -381,7 +382,7 @@ describe ( 'Item' , function () {
       it ( 'should fetch item' , function (done) {
 
         Item
-          .findOne()
+          .findOne({ subject : 'I am a test item' })
           .then(
             document => {
               item = document;
@@ -543,6 +544,170 @@ describe ( 'Item' , function () {
 
       });
 
+      it ( 'should have default image' , function () {
+
+        panelified.image.should.be.exactly(publicConfig['default item image']);
+
+      });
+    });
+
+  });
+
+  describe ( 'Get panel items' , function () {
+
+    let topLevelType;
+
+    describe ( 'Get top level panel items', function () {
+
+      let topLevelPanelItems;
+
+      describe ( 'Top level type', function () {
+
+        it ( 'should get top level type' , function (done) {
+          Type
+            .findOne({ name : config['top level item'] })
+            .then(
+              type => {
+                topLevelType = type;
+                done();
+              },
+              done
+            );
+
+        });
+
+        it ( 'should be a type', function () {
+
+          topLevelType.should.be.a.typeDocument({ name : config['top level item'] });
+
+        });
+
+      });
+
+      describe ( 'Top level items' ,function () {
+
+        let items;
+
+        it ( 'should get panel items the normal way' , function (done) {
+
+          Item
+            .find({ type : topLevelType }, { limit : publicConfig['navigator batch size'] })
+            .then(
+              documents => {
+                items = documents;
+                done()
+              },
+              done
+            );
+
+        });
+
+        it ( 'should get panel items' , function (done) {
+
+          Item
+            .getPanelItems({ type : topLevelType })
+            .then(
+              items => {
+                topLevelPanelItems = items;
+                done();
+              },
+              done
+            );
+
+        });
+
+        it ( 'should be an object', function () {
+
+          topLevelPanelItems.should.be.an.Object();
+
+        });
+
+        describe ( 'Count', function () {
+
+          it ( 'should have a count' , function () {
+
+            topLevelPanelItems.should.have.property('count');
+
+          });
+
+          it ( 'should have the right number' , function () {
+
+            topLevelPanelItems.count.should.be.exactly(items.length);
+
+          });
+
+        });
+
+        describe ( 'items' , function () {
+
+          it ( 'should have items' , function () {
+
+            topLevelPanelItems.should.have.property('items');
+
+          });
+
+          it ( 'should be an array' , function () {
+
+            topLevelPanelItems.items.should.be.an.Array();
+
+          });
+
+          it ( 'should be all panel items', function () {
+
+            topLevelPanelItems.items.forEach(item => item.should.be.a.panelItem());
+
+          });
+
+          it ( 'should be the same items than the ones fetched regularly', function () {
+
+            items.forEach((item, index) => {
+              topLevelPanelItems.items[index].should.be.a.panelItem(item);
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
+    describe ( 'Get panel items from a parent' , function () {
+
+      let topLevelItem;
+
+      describe ( 'Get a top level item' , function () {
+
+        it ( 'should get it', function (done) {
+
+          Item
+            .findOne({ type : topLevelType })
+            .then(
+              item => {
+                topLevelItem = item;
+                done();
+              },
+              done
+            );
+        });
+
+        it ( 'should be an item' , function () {
+
+          topLevelItem.should.be.an.item({ type : topLevelType });
+
+        });
+
+      });
+
+      describe ( 'Get subtype' , function () {
+
+      });
+
+      describe ( 'Create a child item' , function () {
+
+        // it ( 'should create it' , func)
+
+      });
     });
 
   });

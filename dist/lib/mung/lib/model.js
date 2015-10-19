@@ -4,6 +4,8 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
+function _defineProperty(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); }
+
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -38,11 +40,11 @@ var Model = (function () {
       },
 
       __types: {
-        value: this.parseTypes(schema)
+        value: this.constructor.parseTypes(schema)
       },
 
       __indexes: {
-        value: this.parseIndexes(schema)
+        value: this.constructor.parseIndexes(schema)
       },
 
       __defaults: {
@@ -85,100 +87,6 @@ var Model = (function () {
   }
 
   _createClass(Model, [{
-    key: 'parseIndexes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function parseIndexes(schema) {
-      var _this = this;
-
-      var ns = arguments[1] === undefined ? '' : arguments[1];
-
-      var indexes = [];
-
-      var _loop = function (field) {
-
-        var fields = {};
-
-        var options = {};
-
-        var fieldName = ns ? '' + ns + '.' + field : field;
-
-        if (Array.isArray(schema[field])) {
-          var subindexes = _this.parseIndexes(schema[field][0], fieldName);
-          indexes.push.apply(indexes, _toConsumableArray(subindexes));
-        } else if (typeof schema[field] === 'object') {
-          if (schema[field].index || schema[field].unique) {
-            var index = schema[field].index || schema[field].unique;
-
-            if (index === true) {
-              fields[fieldName] = 1;
-
-              options.name = '' + fieldName + '_1';
-            } else if (typeof index === 'string') {
-              fields[fieldName] = index;
-
-              options.name = '' + fieldName + '_' + index;
-            } else if (Array.isArray(index)) {
-              (function () {
-                fields[fieldName] = 1;
-
-                var names = ['' + fieldName + '_1'];
-
-                index.forEach(function (field) {
-                  fields[field] = 1;
-                  names.push('' + field + '_1');
-                });
-
-                options.name = names.join('_');
-              })();
-            } else if (typeof index === 'object') {
-              (function () {
-                fields[fieldName] = index.sort || 1;
-
-                var names = ['' + fieldName + '_1'];
-
-                if (Array.isArray(index.fields)) {
-                  index.fields.forEach(function (field) {
-                    fields[field] = 1;
-                    names.push('' + field + '_1');
-                  });
-                } else if (typeof index.fields === 'object') {
-                  for (var f in index.fields) {
-                    fields[f] = index.fields[f];
-                    names.push('' + f + '_' + index.fields[f]);
-                  }
-                }
-
-                for (var option in index) {
-                  if (option !== 'sort' && option !== 'fields') {
-                    options[option] = index[option];
-                  }
-                }
-
-                if (!options.name) {
-                  options.name = names.join('_');
-                }
-              })();
-            }
-
-            indexes.push([fields, options]);
-          }
-
-          if (typeof schema[field].type === 'object') {
-            var subindexes = _this.parseIndexes(schema[field].type, fieldName);
-            indexes.push.apply(indexes, _toConsumableArray(subindexes));
-          }
-        }
-      };
-
-      for (var field in schema) {
-        _loop(field);
-      }
-
-      return indexes;
-    }
-  }, {
     key: 'parseDefaults',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -348,90 +256,68 @@ var Model = (function () {
       return distinct;
     }
   }, {
-    key: 'parseTypes',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function parseTypes(schema) {
-      var types = {};
-
-      for (var field in schema) {
-        if (typeof schema[field] === 'function') {
-          types[field] = schema[field];
-        } else if (Array.isArray(schema[field])) {
-          if (typeof schema[field][0] === 'function') {
-            types[field] = [schema[field][0]];
-          } else {
-            types[field] = [this.parseTypes(schema[field][0])];
-          }
-        } else if (typeof schema[field] === 'object') {
-          if (typeof schema[field].type === 'function') {
-            types[field] = schema[field].type;
-          } else if (Array.isArray(schema[field].type)) {
-            if (typeof schema[field].type[0] === 'function') {
-              types[field] = [schema[field].type[0]];
-            } else {
-              types[field] = [this.parseTypes(schema[field].type[0])];
-            }
-          } else if (typeof schema[field].type === 'object') {
-            types[field] = this.parseTypes(schema[field].type);
-          }
-        }
-      }
-
-      return types;
-    }
-  }, {
     key: 'set',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function set(field, value) {
-      var _this2 = this;
+      var _this = this;
 
-      if (typeof field === 'object') {
-        for (var _field in field) {
-          this.set(_field, field[_field]);
+      try {
+        if (typeof field === 'object') {
+          for (var _field in field) {
+            this.set(_field, field[_field]);
+          }
+          return this;
         }
-        return this;
-      }
 
-      if (typeof value === 'function') {
-        value = value();
-      }
-
-      if (field === '$push') {
-        var array = Object.keys(value)[0];
-        return this.push(array, value[array]);
-      }
-
-      if (!(field in this.__schema)) {
-        return this;
-      }
-
-      if (value === null) {
-        this.__document[field] = null;
-      } else {
-        this.__document[field] = _mung2['default'].convert(value, this.__types[field]);
-      }
-
-      var _loop2 = function (_field2) {
-        if (!(_field2 in _this2)) {
-          Object.defineProperty(_this2, _field2, {
-            enumerable: true,
-            configurable: true,
-            get: function get() {
-              return _this2.__document[_field2];
-            }
-          });
+        if (typeof value === 'function') {
+          value = value();
         }
-      };
 
-      for (var _field2 in this.__document) {
-        _loop2(_field2);
+        if (field === '$push') {
+          var array = Object.keys(value)[0];
+          return this.push(array, value[array]);
+        }
+
+        if (!(field in this.__schema)) {
+          return this;
+        }
+
+        if (value === null) {
+          this.__document[field] = null;
+        } else {
+          this.__document[field] = _mung2['default'].convert(value, this.__types[field]);
+        }
+
+        var _loop = function (_field2) {
+          if (!(_field2 in _this)) {
+            Object.defineProperty(_this, _field2, {
+              enumerable: true,
+              configurable: true,
+              get: function get() {
+                return _this.__document[_field2];
+              }
+            });
+          }
+        };
+
+        for (var _field2 in this.__document) {
+          _loop(_field2);
+        }
+
+        return this;
+      } catch (error) {
+        throw new _mung2['default'].Error('Could not set field', {
+          model: this.constructor.name,
+          field: field,
+          value: value,
+          error: {
+            message: error.message,
+            code: error.code
+          }
+        });
       }
-
-      return this;
     }
   }, {
     key: 'verifyRequired',
@@ -451,32 +337,32 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function applyDefault() {
-      var _this3 = this;
+      var _this2 = this;
 
-      var _loop3 = function (field) {
-        if (!(field in _this3.__document)) {
+      var _loop2 = function (field) {
+        if (!(field in _this2.__document)) {
           var _default = undefined;
 
-          if (typeof _this3.__defaults[field] === 'function') {
-            _default = _this3.__defaults[field]();
+          if (typeof _this2.__defaults[field] === 'function') {
+            _default = _this2.__defaults[field]();
           } else {
-            _default = _this3.__defaults[field];
+            _default = _this2.__defaults[field];
           }
 
-          _this3.__document[field] = _default;
+          _this2.__document[field] = _default;
 
-          Object.defineProperty(_this3, field, {
+          Object.defineProperty(_this2, field, {
             enumerable: true,
             configurable: true,
             get: function get() {
-              return _this3.__document[field];
+              return _this2.__document[field];
             }
           });
         }
       };
 
       for (var field in this.__defaults) {
-        _loop3(field);
+        _loop2(field);
       }
     }
   }, {
@@ -569,59 +455,63 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function prepare(operation) {
-      var _this4 = this;
+      var _this3 = this;
 
       var options = arguments[1] === undefined ? {} : arguments[1];
 
       return new Promise(function (ok, ko) {
         try {
-          if (!('__v' in _this4)) {
-            _this4.__document.__v = 0;
+          (function () {
+            var model = options.version ? _this3.constructor.migrations[options.version] : _this3.constructor;
 
-            Object.defineProperty(_this4, '__v', {
-              enumerable: true,
-              configurable: true,
-              get: function get() {
-                return _this4.__document.__v;
-              }
-            });
-          }
+            if (!('__v' in _this3)) {
+              _this3.__document.__v = 0;
 
-          if (!('__V' in _this4)) {
-            _this4.__document.__V = _this4.constructor.version || 0;
-
-            Object.defineProperty(_this4, '__V', {
-              enumerable: true,
-              configurable: true,
-              get: function get() {
-                return _this4.__document.__V;
-              }
-            });
-          }
-
-          var beforeValidation = [];
-
-          if (typeof _this4.constructor.validating === 'function') {
-            beforeValidation = _this4.constructor.validating();
-          }
-
-          _mung2['default'].runSequence(beforeValidation, _this4).then(function () {
-            try {
-              _this4.applyDefault();
-
-              _this4.verifyRequired();
-
-              var before = [];
-
-              if (operation === 'insert' && typeof _this4.constructor.inserting === 'function') {
-                before = _this4.constructor.inserting();
-              }
-
-              _mung2['default'].runSequence(before, _this4).then(ok, ko);
-            } catch (error) {
-              ko(error);
+              Object.defineProperty(_this3, '__v', {
+                enumerable: true,
+                configurable: true,
+                get: function get() {
+                  return _this3.__document.__v;
+                }
+              });
             }
-          }, ko);
+
+            if (!('__V' in _this3)) {
+              _this3.__document.__V = options.version ? options.version : _this3.constructor.version || 0;
+
+              Object.defineProperty(_this3, '__V', {
+                enumerable: true,
+                configurable: true,
+                get: function get() {
+                  return _this3.__document.__V;
+                }
+              });
+            }
+
+            var beforeValidation = [];
+
+            if (typeof model.validating === 'function') {
+              beforeValidation = model.validating();
+            }
+
+            _mung2['default'].runSequence(beforeValidation, _this3).then(function () {
+              try {
+                _this3.applyDefault();
+
+                _this3.verifyRequired();
+
+                var before = [];
+
+                if (operation === 'insert' && typeof model.inserting === 'function') {
+                  before = model.inserting();
+                }
+
+                _mung2['default'].runSequence(before, _this3).then(ok, ko);
+              } catch (error) {
+                ko(error);
+              }
+            }, ko);
+          })();
         } catch (error) {
           ko(error);
         }
@@ -633,7 +523,7 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function save() {
-      var _this5 = this;
+      var _this4 = this;
 
       var options = arguments[0] === undefined ? {} : arguments[0];
 
@@ -642,59 +532,53 @@ var Model = (function () {
           (function () {
             var started = Date.now();
 
-            if (!_this5.__document._id || options.create) {
-              _this5.prepare('insert', options).then(function () {
+            var model = options.version ? _this4.constructor.migrations[options.version] : _this4.constructor;
+
+            if (!_this4.__document._id || options.create) {
+              _this4.prepare('insert', options).then(function () {
                 try {
                   var Query = _mung2['default'].Query;
 
-                  new Query({ model: _this5.constructor }).insert(_this5.__document).then(function (created) {
+                  new Query({ model: model }).insert(_this4.__document).then(function (created) {
                     try {
-                      _this5.__document._id = created.insertedId;
+                      _this4.__document._id = created.insertedId;
 
-                      Object.defineProperty(_this5, '__queryTime', {
+                      Object.defineProperty(_this4, '__queryTime', {
                         enumerable: false,
                         writable: false,
                         value: created.__queryTime
                       });
 
-                      if (!('__timeStamp' in _this5)) {
-                        Object.defineProperty(_this5, '__timeStamp', {
+                      if (!('__timeStamp' in _this4)) {
+                        Object.defineProperty(_this4, '__timeStamp', {
                           enumerable: false,
                           writable: false,
                           value: created.insertedId.getTimestamp()
                         });
                       }
 
-                      if (!('_id' in _this5)) {
-                        Object.defineProperty(_this5, '_id', {
+                      if (!('_id' in _this4)) {
+                        Object.defineProperty(_this4, '_id', {
                           enumerable: true,
                           writable: false,
-                          value: _this5.__document._id
+                          value: _this4.__document._id
                         });
                       }
 
-                      if (typeof _this5.constructor.inserted === 'function') {
-                        var pipe = _this5.constructor.inserted();
+                      Object.defineProperty(_this4, '__totalQueryTime', {
+                        enumerable: false,
+                        writable: false,
+                        value: Date.now() - started
+                      });
+
+                      ok(_this4);
+
+                      if (typeof model.inserted === 'function') {
+                        var pipe = model.inserted();
 
                         if (Array.isArray(pipe)) {
-                          _mung2['default'].runSequence(pipe, _this5).then(function () {
-                            Object.defineProperty(_this5, '__totalQueryTime', {
-                              enumerable: false,
-                              writable: false,
-                              value: Date.now() - started
-                            });
-
-                            ok(_this5);
-                          }, ko);
+                          _mung2['default'].runSequence(pipe, _this4);
                         }
-                      } else {
-                        Object.defineProperty(_this5, '__totalQueryTime', {
-                          enumerable: false,
-                          writable: false,
-                          value: Date.now() - started
-                        });
-
-                        ok(_this5);
                       }
                     } catch (error) {
                       ko(error);
@@ -705,60 +589,60 @@ var Model = (function () {
                 }
               }, ko);
             } else {
-              if (!('__v' in _this5.__document)) {
-                _this5.__document.__v = 0;
+              if (!('__v' in _this4.__document)) {
+                _this4.__document.__v = 0;
 
-                Object.defineProperty(_this5, '__v', {
+                Object.defineProperty(_this4, '__v', {
                   enumerable: true,
                   configurable: true,
                   get: function get() {
-                    return _this5.__document.__v;
+                    return _this4.__document.__v;
                   }
                 });
               }
 
-              _this5.__document.__v++;
+              _this4.__document.__v++;
 
-              if (!('__V' in _this5.__document)) {
-                _this5.__document.__V = _this5.constructor.version || 0;
+              if (!('__V' in _this4.__document)) {
+                _this4.__document.__V = _this4.constructor.version || 0;
 
-                Object.defineProperty(_this5, '__V', {
+                Object.defineProperty(_this4, '__V', {
                   enumerable: true,
                   configurable: true,
                   get: function get() {
-                    return _this5.__document.__V;
+                    return _this4.__document.__V;
                   }
                 });
               }
 
               var updating = [];
 
-              if (typeof _this5.constructor.updating === 'function') {
-                updating = updating.concat(_this5.constructor.updating());
+              if (typeof _this4.constructor.updating === 'function') {
+                updating = updating.concat(_this4.constructor.updating());
               }
 
-              _this5.applyDefault();
+              _this4.applyDefault();
 
-              _mung2['default'].runSequence(updating, _this5).then(function () {
+              _mung2['default'].runSequence(updating, _this4).then(function () {
                 try {
                   var Query = _mung2['default'].Query;
 
-                  new Query({ model: _this5.constructor }).insert(_this5.__document, _this5.__document._id).then(function (created) {
+                  new Query({ model: _this4.constructor }).insert(_this4.__document, _this4.__document._id).then(function (created) {
                     try {
 
-                      if (typeof _this5.constructor.updated === 'function') {
-                        var pipe = _this5.constructor.updated();
+                      if (typeof _this4.constructor.updated === 'function') {
+                        var pipe = _this4.constructor.updated();
 
                         if (Array.isArray(pipe)) {
 
-                          _mung2['default'].runSequence(pipe, _this5).then(function () {
-                            return ok(_this5);
+                          _mung2['default'].runSequence(pipe, _this4).then(function () {
+                            return ok(_this4);
                           }, ko);
                         } else {
-                          ok(_this5);
+                          ok(_this4);
                         }
                       } else {
-                        ok(_this5);
+                        ok(_this4);
                       }
                     } catch (error) {
                       ko(error);
@@ -781,12 +665,12 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function remove() {
-      var _this6 = this;
+      var _this5 = this;
 
       return new Promise(function (ok, ko) {
         try {
           (function () {
-            var model = _this6.constructor;
+            var model = _this5.constructor;
             var schema = model.schema;
 
             if (typeof schema === 'function') {
@@ -803,19 +687,19 @@ var Model = (function () {
               }
             }
 
-            _mung2['default'].runSequence(removing, _this6).then(function () {
+            _mung2['default'].runSequence(removing, _this5).then(function () {
               try {
                 var Query = _mung2['default'].Query;
 
-                new Query({ model: model }).remove({ _id: _this6._id }, { one: true }).then(function () {
+                new Query({ model: model }).remove({ _id: _this5._id }, { one: true }).then(function () {
                   try {
-                    ok(_this6.__document);
+                    ok(_this5.__document);
 
                     if (typeof model.removed === 'function') {
                       var pipe = model.removed();
 
                       if (Array.isArray(pipe)) {
-                        _mung2['default'].runSequence(pipe, _this6);
+                        _mung2['default'].runSequence(pipe, _this5);
                       }
                     }
                   } catch (error) {
@@ -868,7 +752,7 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function populate() {
-      var _this7 = this;
+      var _this6 = this;
 
       for (var _len = arguments.length, foreignKeys = Array(_len), _key = 0; _key < _len; _key++) {
         foreignKeys[_key] = arguments[_key];
@@ -877,40 +761,38 @@ var Model = (function () {
       return new Promise(function (ok, ko) {
         try {
           (function () {
+            var promises = [];
 
-            var refs = [];
+            _this6.__populated = {};
 
-            if (foreignKeys.length) {
-              for (var field in _this7.__types) {
-                if (foreignKeys.indexOf(field) > -1 && new _this7.__types[field]() instanceof Model) {
-                  refs.push({ field: field, model: _this7.__types[field] });
+            var refs = _this6.constructor.parseRefs(_this6.__types);
+
+            var flatten = _mung2['default'].flatten(_this6.toJSON({ 'private': true }));
+
+            var _loop3 = function (ref) {
+              if (foreignKeys.length && foreignKeys.indexOf(ref) === -1) {
+                return 'continue';
+              }
+
+              if (/\./.test(ref)) {} else if (Array.isArray(_this6.__types[ref])) {} else {
+                if (ref in flatten) {
+                  promises.push(new Promise(function (ok, ko) {
+                    refs[ref].findById(_mung2['default'].resolve(ref, flatten)).then(function (document) {
+                      _this6.__populated[ref] = document;
+                      ok();
+                    }, ko);
+                  }));
                 }
               }
-            } else {
-              for (var field in _this7.__types) {
-                if (new _this7.__types[field]() instanceof Model) {
-                  refs.push({ field: field, model: _this7.__types[field] });
-                }
-              }
+            };
+
+            for (var ref in refs) {
+              var _ret7 = _loop3(ref);
+
+              if (_ret7 === 'continue') continue;
             }
 
-            Promise.all(refs.map(function (ref) {
-              return ref.model.findById(_this7[ref.field]);
-            })).then(function (populated) {
-              Object.defineProperty(_this7, '__populated', {
-                enumerable: false,
-                writable: false,
-                value: refs.map(function (ref, index) {
-                  ref.document = populated[index];
-                  return ref;
-                }).reduce(function (populated, ref) {
-                  populated[ref.field] = ref.document;
-                  return populated;
-                }, {})
-              });
-
-              ok();
-            }, ko);
+            Promise.all(promises).then(ok, ko);
           })();
         } catch (error) {
           ko(error);
@@ -918,6 +800,169 @@ var Model = (function () {
       });
     }
   }], [{
+    key: 'parseIndexes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function parseIndexes(schema) {
+      var _this7 = this;
+
+      var ns = arguments[1] === undefined ? '' : arguments[1];
+
+      var indexes = [];
+
+      var _loop4 = function (field) {
+
+        var fields = {};
+
+        var options = {};
+
+        var fieldName = ns ? '' + ns + '.' + field : field;
+
+        if (Array.isArray(schema[field])) {
+          var subindexes = _this7.parseIndexes(schema[field][0], fieldName);
+          indexes.push.apply(indexes, _toConsumableArray(subindexes));
+        } else if (typeof schema[field] === 'object') {
+          if (schema[field].index || schema[field].unique) {
+            var index = schema[field].index || schema[field].unique;
+
+            if ('unique' in schema[field]) {
+              options.unique = true;
+            }
+
+            if (index === true) {
+              fields[fieldName] = 1;
+
+              options.name = '' + fieldName + '_1';
+            } else if (typeof index === 'string') {
+              fields[fieldName] = index;
+
+              options.name = '' + fieldName + '_' + index;
+            } else if (Array.isArray(index)) {
+              (function () {
+                fields[fieldName] = 1;
+
+                var names = ['' + fieldName + '_1'];
+
+                index.forEach(function (field) {
+                  fields[field] = 1;
+                  names.push('' + field + '_1');
+                });
+
+                options.name = names.join('_');
+              })();
+            } else if (typeof index === 'object') {
+              (function () {
+                fields[fieldName] = index.sort || 1;
+
+                var names = ['' + fieldName + '_1'];
+
+                if (Array.isArray(index.fields)) {
+                  index.fields.forEach(function (field) {
+                    fields[field] = 1;
+                    names.push('' + field + '_1');
+                  });
+                } else if (typeof index.fields === 'object') {
+                  for (var f in index.fields) {
+                    fields[f] = index.fields[f];
+                    names.push('' + f + '_' + index.fields[f]);
+                  }
+                }
+
+                for (var option in index) {
+                  if (option !== 'sort' && option !== 'fields') {
+                    options[option] = index[option];
+                  }
+                }
+
+                if (!options.name) {
+                  options.name = names.join('_');
+                }
+              })();
+            }
+
+            indexes.push([fields, options]);
+          }
+
+          if (typeof schema[field].type === 'object') {
+            var subindexes = _this7.parseIndexes(schema[field].type, fieldName);
+            indexes.push.apply(indexes, _toConsumableArray(subindexes));
+          }
+        }
+      };
+
+      for (var field in schema) {
+        _loop4(field);
+      }
+
+      return indexes;
+    }
+  }, {
+    key: 'parseTypes',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function parseTypes(schema) {
+      var types = {};
+
+      for (var field in schema) {
+        if (typeof schema[field] === 'function') {
+          types[field] = schema[field];
+        } else if (Array.isArray(schema[field])) {
+          if (typeof schema[field][0] === 'function') {
+            types[field] = [schema[field][0]];
+          } else {
+            types[field] = [this.parseTypes(schema[field][0])];
+          }
+        } else if (typeof schema[field] === 'object') {
+          if (typeof schema[field].type === 'function') {
+            types[field] = schema[field].type;
+          } else if (Array.isArray(schema[field].type)) {
+            if (typeof schema[field].type[0] === 'function') {
+              types[field] = [schema[field].type[0]];
+            } else {
+              types[field] = [this.parseTypes(schema[field].type[0])];
+            }
+          } else if (typeof schema[field].type === 'object') {
+            types[field] = this.parseTypes(schema[field].type);
+          }
+        }
+      }
+
+      return types;
+    }
+  }, {
+    key: 'parseRefs',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function parseRefs(schema) {
+      var ns = arguments[1] === undefined ? '' : arguments[1];
+
+      var refs = [];
+
+      for (var field in schema) {
+
+        var fieldName = ns ? '' + ns + '.' + field : field;
+
+        if (typeof schema[field] === 'function' && new schema[field]() instanceof Model) {
+          refs[fieldName] = schema[field];
+        } else if (Array.isArray(schema[field])) {
+          var subRefs = this.parseRefs(_defineProperty({}, fieldName, schema[field][0]));
+          for (var ref in subRefs) {
+            refs[ref] = subRefs[ref];
+          }
+        } else if (typeof schema[field] === 'object') {
+          var subRefs = this.parseRefs(schema[field], fieldName);
+          for (var ref in subRefs) {
+            refs[ref] = subRefs[ref];
+          }
+        }
+      }
+
+      return refs;
+    }
+  }, {
     key: 'convert',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -932,12 +977,14 @@ var Model = (function () {
           return _mung2['default'].ObjectID(value._id);
         }
 
-        if (typeof value === 'String') {
+        if (typeof value === 'string') {
           return _mung2['default'].ObjectID(value);
         }
       }
 
-      throw new Error('Can not convert value to Model');
+      throw new _mung2['default'].Error('Can not convert value to Model', {
+        value: value, model: this.name
+      });
     }
   }, {
     key: 'equal',
@@ -1053,9 +1100,7 @@ var Model = (function () {
               return _this8.create(document, options);
             })).then(ok, ko);
           }
-
-          var doc = new _this8(document);
-          doc.save(options).then(ok, ko);
+          new _this8(document).save(options).then(ok, ko);
         } catch (error) {
           ko(error);
         }
@@ -1126,106 +1171,9 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function updateById(id, set) {
-      var _this11 = this;
-
-      return new Promise(function (ok, ko) {
-        try {
-          _this11.updateOne({ _id: id }, { $set: set }).then(function (res) {}, ko);
-
-          // this
-          //   .findById(id)
-          //   .then(
-          //     doc => {
-          //       try {
-          //         if ( ! doc ) {
-          //           throw new Error(`No ${this.name} found with id ${id}`);
-          //         }
-          //         doc.set(set);
-          //         doc.save()
-          //           .then(ok, ko);
-          //       }
-          //       catch ( error ) {
-          //         ko(error);
-          //       }
-          //     },
-          //     ko
-          //   );
-        } catch (error) {
-          ko(error);
-        }
-      });
-    }
-  }, {
-    key: 'increment',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function increment(where, set) {
-      var _this12 = this;
-
       var options = arguments[2] === undefined ? {} : arguments[2];
 
-      return new Promise(function (ok, ko) {
-        try {
-          if (where instanceof _mung2['default'].ObjectID || typeof where === 'string') {
-            where = { _id: where };
-          }
-          _this12.find(where, options).then(function (docs) {
-            try {
-              var promises = docs.map(function (doc) {
-                return new Promise(function (ok, ko) {
-                  try {
-                    doc.increment(set).save().then(ok, ko);
-                  } catch (error) {
-                    ko(error);
-                  }
-                });
-              });
-              Promise.all(promises).then(ok, ko);
-            } catch (error) {
-              ko(error);
-            }
-          }, ko);
-        } catch (error) {
-          ko(error);
-        }
-      });
-    }
-  }, {
-    key: 'incrementOne',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function incrementOne(where, set) {
-      var _this13 = this;
-
-      var options = arguments[2] === undefined ? {} : arguments[2];
-
-      return new Promise(function (ok, ko) {
-        try {
-          if (where instanceof _mung2['default'].ObjectID || typeof where === 'string') {
-            where = { _id: where };
-          }
-          _this13.findOne(where, options).then(function (doc) {
-            try {
-              if (!doc) {
-                return ok(doc);
-              }
-              doc = new Promise(function (ok, ko) {
-                try {
-                  doc.increment(set).save().then(ok, ko);
-                } catch (error) {
-                  ko(error);
-                }
-              });
-            } catch (error) {
-              ko(error);
-            }
-          }, ko);
-        } catch (error) {
-          ko(error);
-        }
-      });
+      return this.updateOne({ _id: id }, set, options);
     }
   }, {
     key: 'updateOne',
@@ -1233,24 +1181,18 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function updateOne(where, set) {
-      var _this14 = this;
+      var _this11 = this;
 
       var options = arguments[2] === undefined ? {} : arguments[2];
 
       return new Promise(function (ok, ko) {
         try {
-          _this14.findOne(where, options).then(function (doc) {
+          _this11.findOne(where, options).then(function (doc) {
             try {
               if (!doc) {
                 return ok(doc);
               }
-              doc = new Promise(function (ok, ko) {
-                try {
-                  doc.set(set).save().then(ok, ko);
-                } catch (error) {
-                  ko(error);
-                }
-              });
+              doc.set(set).save().then(ok, ko);
             } catch (error) {
               ko(error);
             }
@@ -1266,7 +1208,7 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function update(where, set) {
-      var _this15 = this;
+      var _this12 = this;
 
       var options = arguments[2] === undefined ? {} : arguments[2];
 
@@ -1276,7 +1218,7 @@ var Model = (function () {
             return updateOne(where, set, options = {});
           }
 
-          _this15.find(where, options).then(function (docs) {
+          _this12.find(where, options).then(function (docs) {
             try {
               var promises = docs.map(function (doc) {
                 return new Promise(function (ok, ko) {
@@ -1315,7 +1257,7 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function stream() {
-      var _this16 = this;
+      var _this13 = this;
 
       var rows = arguments[0] === undefined ? 100 : arguments[0];
       var filter = arguments[1] === undefined ? {} : arguments[1];
@@ -1324,7 +1266,7 @@ var Model = (function () {
       var stream = new Streamable();
 
       process.nextTick(function () {
-        _this16.count(filter).then(function (count) {
+        _this13.count(filter).then(function (count) {
           if (!count) {
             stream.add();
             stream.end();
@@ -1338,7 +1280,7 @@ var Model = (function () {
           for (var i = 0; i < pages; i++) {
             var page = i + 1;
 
-            _this16.find(filter, { limit: rows, skip: page * rows - rows }).then(function (docs) {
+            _this13.find(filter, { limit: rows, skip: page * rows - rows }).then(function (docs) {
               stream.add.apply(stream, _toConsumableArray(docs));
 
               done++;
@@ -1363,49 +1305,53 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function migrate() {
-      var _this17 = this;
+      var _this14 = this;
 
       return new Promise(function (ok, ko) {
         try {
-          (function () {
-            var migrations = _this17.migrations;
-
-            if (migrations) {
+          _this14.buildIndexes().then(function () {
+            try {
               (function () {
-                var migrate = function migrate(cb) {
-                  var version = versions[cursor];
+                var migrations = _this14.migrations;
 
-                  if (migrations[version]) {
+                if (migrations) {
+                  (function () {
+                    var migrate = function migrate() {
+                      var version = versions[cursor];
 
-                    migrations[version]['do'].apply(_this17).then(function () {
-                      _this17.find({ __V: { $lt: version } }, { limit: 0 }).then(function (documents) {
-                        Promise.all(documents.map(function (document) {
-                          return new Promise(function (ok, ko) {
-                            document.set('__V', version).save().then(ok, ko);
-                          });
-                        })).then(function () {
-                          cursor++;
-                          migrate(cb);
+                      if (migrations[version] && migrations[version]['do']) {
+
+                        migrations[version]['do'].apply(_this14).then(function () {
+                          _this14.find({ __V: { $lt: version } }, { limit: 0 }).then(function (documents) {
+                            Promise.all(documents.map(function (document) {
+                              return new Promise(function (ok, ko) {
+                                document.set('__V', version).save().then(ok, ko);
+                              });
+                            })).then(function () {
+                              cursor++;
+                              migrate();
+                            }, ko);
+                          }, ko);
                         }, ko);
-                      }, ko);
-                    }, ko);
-                  } else {
-                    cb();
-                  }
-                };
+                      } else {
+                        ok();
+                      }
+                    };
 
-                var versions = Object.keys(migrations);
+                    var versions = Object.keys(migrations);
 
-                var cursor = 0;
+                    var cursor = 0;
 
-                migrate(function () {
-                  _this17.buildIndexes().then(ok, ko);
-                });
+                    migrate();
+                  })();
+                } else {
+                  ok();
+                }
               })();
-            } else {
-              _this17.buildIndexes().then(ok, ko);
+            } catch (error) {
+              ko(error);
             }
-          })();
+          }, ko);
         } catch (error) {
           ko(error);
         }
@@ -1417,18 +1363,18 @@ var Model = (function () {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function buildIndexes() {
-      var _this18 = this;
+      var _this15 = this;
 
       return new Promise(function (ok, ko) {
         try {
           (function () {
             var Query = _mung2['default'].Query;
 
-            var query = new Query({ model: _this18 });
+            var query = new Query({ model: _this15 });
 
             query.collection().then(function (collection) {
               try {
-                query.ensureIndexes(collection).then(ok, ko);
+                query.buildIndexes(new _this15().__indexes, collection).then(ok, ko);
               } catch (error) {
                 ko(error);
               }

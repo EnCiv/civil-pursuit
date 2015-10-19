@@ -90,7 +90,7 @@ describe ( 'HTTP server' , function () {
 
       });
 
-      it ( 'should be be a panel item', function (done) {
+      it ( 'should be be a panel item', function () {
 
         intro.should.be.a.panelItem();
 

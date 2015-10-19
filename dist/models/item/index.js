@@ -48,9 +48,25 @@ var _methodsCountHarmony = require('./methods/count-harmony');
 
 var _methodsCountHarmony2 = _interopRequireDefault(_methodsCountHarmony);
 
+var _methodsCountVotes = require('./methods/count-votes');
+
+var _methodsCountVotes2 = _interopRequireDefault(_methodsCountVotes);
+
+var _methodsCountChildren = require('./methods/count-children');
+
+var _methodsCountChildren2 = _interopRequireDefault(_methodsCountChildren);
+
 var _staticsId = require('./statics/id');
 
 var _staticsId2 = _interopRequireDefault(_staticsId);
+
+var _staticsGetPanelItems = require('./statics/get-panel-items');
+
+var _staticsGetPanelItems2 = _interopRequireDefault(_staticsGetPanelItems);
+
+var _migrations2 = require('./migrations/2');
+
+var _migrations22 = _interopRequireDefault(_migrations2);
 
 var Item = (function (_Mung$Model) {
   function Item() {
@@ -98,6 +114,24 @@ var Item = (function (_Mung$Model) {
       }
 
       return _methodsCountHarmony2['default'].apply(this, args);
+    }
+  }, {
+    key: 'countVotes',
+    value: function countVotes() {
+      for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+        args[_key5] = arguments[_key5];
+      }
+
+      return _methodsCountVotes2['default'].apply(this, args);
+    }
+  }, {
+    key: 'countChildren',
+    value: function countChildren() {
+      for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+        args[_key6] = arguments[_key6];
+      }
+
+      return _methodsCountChildren2['default'].apply(this, args);
     }
   }], [{
     key: 'schema',
@@ -183,16 +217,29 @@ var Item = (function (_Mung$Model) {
   }, {
     key: 'generateId',
     value: function generateId() {
-      for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
-        args[_key5] = arguments[_key5];
+      for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+        args[_key7] = arguments[_key7];
       }
 
       return _staticsId2['default'].apply(this, args);
+    }
+  }, {
+    key: 'getPanelItems',
+    value: function getPanelItems() {
+      for (var _len8 = arguments.length, args = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+        args[_key8] = arguments[_key8];
+      }
+
+      return _staticsGetPanelItems2['default'].apply(this, args);
     }
   }]);
 
   return Item;
 })(_libMung2['default'].Model);
+
+Item.migrations = {
+  2: _migrations22['default']
+};
 
 exports['default'] = Item;
 module.exports = exports['default'];

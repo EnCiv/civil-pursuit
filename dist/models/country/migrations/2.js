@@ -10,9 +10,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var _fixturesCountry1Json = require('../../../../fixtures/country/1.json');
+var _configCountriesJson = require('../../../../config/countries.json');
 
-var _fixturesCountry1Json2 = _interopRequireDefault(_fixturesCountry1Json);
+var _configCountriesJson2 = _interopRequireDefault(_configCountriesJson);
+
+var _libMung = require('../../../lib/mung');
+
+var _libMung2 = _interopRequireDefault(_libMung);
+
+var collection = 'countries';
 
 var V2 = (function () {
   function V2() {
@@ -26,15 +32,24 @@ var V2 = (function () {
 
       return new Promise(function (ok, ko) {
         try {
-          _this.find({ __V: 2 }).then(function (countries) {
+          _this.find({ __V: 2 }, { limit: false }).then(function (documents) {
             try {
-              if (countries.length) {
+              if (documents.length) {
                 return ok();
               }
-              _this.create(_fixturesCountry1Json2['default'].map(function (country) {
-                country.__V = 2;
-                return country;
-              })).then(ok, ko);
+              _this.create(_configCountriesJson2['default'].data).then(function (created) {
+                try {
+                  _libMung2['default'].Migration.create({
+                    collection: collection,
+                    version: 2,
+                    created: created.map(function (doc) {
+                      return doc._id;
+                    })
+                  }).then(ok, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              }, ko);
             } catch (error) {
               ko(error);
             }
@@ -47,7 +62,7 @@ var V2 = (function () {
   }, {
     key: 'undo',
     value: function undo() {
-      return this.remove({ __V: 2 });
+      return _libMung2['default'].Migration.undo(this, 2, collection);
     }
   }]);
 

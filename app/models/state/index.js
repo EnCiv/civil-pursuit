@@ -12,8 +12,6 @@ class State extends Mung.Model {
   }
 }
 
-State.collection = 'countries';
-
 State.migrations = {
   1 : V1,
   2 : V2

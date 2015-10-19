@@ -20,6 +20,14 @@ var _user = require('../user');
 
 var _user2 = _interopRequireDefault(_user);
 
+var _migrations1 = require('./migrations/1');
+
+var _migrations12 = _interopRequireDefault(_migrations1);
+
+var _migrations2 = require('./migrations/2');
+
+var _migrations22 = _interopRequireDefault(_migrations2);
+
 var Discussion = (function (_Mung$Model) {
   function Discussion() {
     _classCallCheck(this, Discussion);
@@ -61,6 +69,13 @@ var Discussion = (function (_Mung$Model) {
 
   return Discussion;
 })(_libMung2['default'].Model);
+
+Discussion.version = 2;
+
+Discussion.migrations = {
+  1: _migrations12['default'],
+  2: _migrations22['default']
+};
 
 exports['default'] = Discussion;
 module.exports = exports['default'];

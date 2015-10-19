@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _get = function get(_x5, _x6, _x7) { var _again = true; _function: while (_again) { var object = _x5, property = _x6, receiver = _x7; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x5 = parent; _x6 = property; _x7 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x7, _x8, _x9) { var _again = true; _function: while (_again) { var object = _x7, property = _x8, receiver = _x9; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x7 = parent; _x8 = property; _x9 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -91,45 +91,61 @@ var Mung = (function () {
     value: function convert(value, type) {
       var _this2 = this;
 
-      // console.log('------------------')
-      // console.log('converting', value, type);
-      // console.log('------------------')
+      try {
+        if (Array.isArray(type)) {
+          if (!Array.isArray(value)) {
+            throw new MungError('Can not convert a non-array to an array of types', { value: value, type: type });
+          }
 
-      if (Array.isArray(type)) {
-        if (!Array.isArray(value)) {
-          throw new MungError('Can not convert a non-array to an array of types', { value: value, type: type });
+          if (type.length === 1) {
+            return value.map(function (value) {
+              return _this2.convert(value, type[0]);
+            });
+          } else {
+            return value.filter(function (value, index) {
+              return type[index];
+            }).map(function (value, index) {
+              return _this2.convert(value, type[index]);
+            });
+          }
         }
 
-        if (type.length === 1) {
-          return value.map(function (value) {
-            return _this2.convert(value, type[0]);
-          });
+        if (type === String) {
+          type = _String;
+        } else if (type === Number) {
+          type = _Number;
+        } else if (type === Boolean) {
+          type = _Boolean;
+        } else if (type === Object) {
+          type = _Object;
+        } else if (type === Date) {
+          type = _Date;
+        }
+
+        if (!type.convert) {
+          return value;
+        }
+
+        return type.convert(value);
+      } catch (error) {
+        var debug = {
+          value: value,
+          type: type ? type.name : typeof type
+        };
+        if (error instanceof Mung.Error) {
+          debug.error = {
+            name: error.name,
+            message: JSON.parse(error.message),
+            stack: error.stack
+          };
         } else {
-          return value.filter(function (value, index) {
-            return type[index];
-          }).map(function (value, index) {
-            return _this2.convert(value, type[index]);
-          });
+          debug.error = {
+            message: error.message,
+            stack: error.stack
+          };
         }
+        throw new Mung.Error('Could not convert value to type', debug);
       }
-
-      if (type === String) {
-        type = _String;
-      } else if (type === Number) {
-        type = _Number;
-      } else if (type === Boolean) {
-        type = _Boolean;
-      } else if (type === Object) {
-        type = _Object;
-      } else if (type === Date) {
-        type = _Date;
-      }
-
-      if (!type.convert) {
-        return value;
-      }
-
-      return type.convert(value);
     }
   }, {
     key: 'set',
@@ -204,9 +220,156 @@ var Mung = (function () {
       });
     }
   }, {
+    key: 'parseFindQuery',
+    value: function parseFindQuery(query, schema) {
+      var _this3 = this;
+
+      try {
+        var parsed = {};
+
+        if (Array.isArray(query)) {
+          return this.parseFindQuery({ $or: query }, schema);
+        }
+
+        var _loop = function (field) {
+
+          // field has dot notation
+
+          if (/\./.test(field)) {
+            var primaryField = field.split(/\./)[0];
+
+            var type = schema[primaryField];
+
+            if (Array.isArray(type)) {
+              parsed[field] = Mung.convert([query[field]], type)[0];
+            }
+          }
+
+          // If operator to an array ($or, $and, $nor)
+
+          else if (['$or', '$and', '$nor'].indexOf(field) > -1) {
+            parsed[field] = query[field].map(function (value) {
+              return _this3.parseFindQuery(value, schema);
+            });
+          }
+
+          // query[field] is an object
+
+          else if (typeof query[field] === 'object' && schema[field] !== Object) {
+
+            // query[field].$in
+
+            if ('$in' in query[field]) {
+              parsed[field] = {
+                $in: query[field].$in.map(function (value) {
+                  return Mung.convert(value, schema[field]);
+                })
+              };
+            }
+
+            // query[field].$nin
+
+            else if ('$nin' in query[field]) {
+              parsed[field] = {
+                $nin: query[field].$nin.map(function (value) {
+                  return Mung.convert(value, schema[field]);
+                })
+              };
+            }
+
+            // query[field].$exists
+
+            else if ('$exists' in query[field]) {
+              parsed[field] = {
+                $exists: query[field].$exists
+              };
+            }
+
+            // query[field].$size
+
+            else if ('$size' in query[field]) {
+              parsed[field] = {
+                $size: query[field].$size
+              };
+            }
+
+            // query[field].$lt
+
+            else if ('$lt' in query[field]) {
+              parsed[field] = {
+                $lt: Mung.convert(query[field].$lt, schema[field])
+              };
+            }
+
+            // query[field].$gt
+
+            else if ('$gt' in query[field]) {
+              parsed[field] = {
+                $gt: Mung.convert(query[field].$gt, schema[field])
+              };
+            }
+
+            // query[field].$gte
+
+            else if ('$gte' in query[field]) {
+              parsed[field] = {
+                $gte: Mung.convert(query[field].$gte, schema[field])
+              };
+            }
+
+            // query[field].$lte
+
+            else if ('$lte' in query[field]) {
+              parsed[field] = {
+                $lte: Mung.convert(query[field].$lte, schema[field])
+              };
+            }
+
+            // query[field].$not
+
+            else if ('$not' in query[field]) {
+              parsed[field] = {
+                $not: _this3.parseFindQuery(_defineProperty({}, field, query[field].$not), schema)[field]
+              };
+            }
+
+            // query[field].$eq
+
+            else if ('$eq' in query[field]) {
+              parsed[field] = {
+                $eq: _this3.parseFindQuery(_defineProperty({}, field, query[field].$eq), schema)[field]
+              };
+            }
+
+            // query[field].$ne
+
+            else if ('$ne' in query[field]) {
+              parsed[field] = {
+                $ne: _this3.parseFindQuery(_defineProperty({}, field, query[field].$ne), schema)[field]
+              };
+            } else if (!Array.isArray(schema[field])) {
+              parsed[field] = Mung.convert(query[field], schema[field]);
+            }
+          } else if (Array.isArray(schema[field])) {
+            parsed[field] = Mung.convert(query[field], schema[field][0]);
+          } else {
+            parsed[field] = Mung.convert(query[field], schema[field]);
+          }
+        };
+
+        for (var field in query) {
+          _loop(field);
+        }
+
+        return parsed;
+      } catch (error) {
+        Mung.Error.rethrow(error, 'Could not parse find query', { query: query });
+      }
+    }
+  }, {
     key: 'parse',
     value: function parse(query, schema) {
-      var _this3 = this;
+      var _this4 = this;
 
       var parsed = {};
 
@@ -214,7 +377,7 @@ var Mung = (function () {
         return this.parse({ $or: query }, schema);
       }
 
-      var _loop = function (field) {
+      var _loop2 = function (field) {
 
         // field has dot notation
 
@@ -232,7 +395,7 @@ var Mung = (function () {
 
         else if (['$or', '$and'].indexOf(field) > -1) {
           parsed[field] = query[field].map(function (value) {
-            return _this3.parse(value, schema);
+            return _this4.parse(value, schema);
           });
         }
 
@@ -278,7 +441,7 @@ var Mung = (function () {
 
           else if ('$not' in query[field]) {
             parsed[field] = {
-              $not: _this3.parse(_defineProperty({}, field, query[field].$not), schema[field])[field]
+              $not: _this4.parse(_defineProperty({}, field, query[field].$not), schema[field])[field]
             };
           } else if (!Array.isArray(schema[field])) {
             parsed[field] = Mung.convert(query[field], schema[field]);
@@ -291,68 +454,39 @@ var Mung = (function () {
       };
 
       for (var field in query) {
-        _loop(field);
+        _loop2(field);
       }
 
       return parsed;
     }
   }, {
-    key: 'process',
-    value: function process(query, schema) {
-      var _loop2 = function (field) {
+    key: 'flatten',
+    value: function flatten(object) {
+      var ns = arguments[1] === undefined ? '' : arguments[1];
 
-        if (query[field] instanceof RegExp) {} else if (field === '$or' || field === '$and') {
-          query[field] = query[field].map(function (value) {
-            return parse(value, schema);
-          });
-        } else if (field === '$size' || field === '$exists') {} else if (field === '$push') {
-          query[field] = parse(query.$push, schema);
-        } else if (/\./.test(field)) {
-          schema = field.split(/\./).reduce(function (schema, bit, i, bits) {
-            schema = schema[bit];
+      var flatten = {};
 
-            if (Array.isArray(schema)) {
-              schema = schema[0];
-            }
-            return schema;
-          }, schema);
+      for (var key in object) {
+        var fieldName = ns ? '' + ns + '.' + key : key;
 
-          query[field] = cast(query[field], schema);
-        } else if (Array.isArray(schema[field]) && !Array.isArray(query[field])) {
-          if (query[field] instanceof RegExp) {} else if (typeof query[field] === 'object' && query[field].constructor === Object) {
-            if ('$ne' in query[field]) {
-              query[field].$ne = parse(query[field].$ne, schema[field]);
-            } else {
-              query[field] = parse(query[field], schema[field][0]);
-            }
-          } else {
-            query[field] = cast([query[field]], schema[field])[0];
-          }
-        } else if (query[field] instanceof RegExp) {} else if (typeof query[field] === 'object') {
-          if ('$in' in query[field]) {
-            query[field].$in = query[field].$in.map(function (value) {
-              return cast(value, schema[field]);
-            });
-          } else if ('$lt' in query[field]) {
-            query[field].$lt = cast(query[field].$lt, schema[field]);
-          } else if ('$lte' in query[field]) {
-            query[field].$lte = cast(query[field].$lte, schema[field]);
-          } else if ('$gt' in query[field]) {
-            query[field].$gt = cast(query[field].$gt, schema[field]);
-          } else if ('$gte' in query[field]) {
-            query[field].$gte = cast(query[field].$gte, schema[field]);
-          } else if ('$exists' in query[field]) {} else if ('$ne' in query[field]) {} else {
-            query[field] = cast(query[field], schema[field]);
+        if (Array.isArray(object[key])) {
+          flatten[fieldName] = object[key];
+        } else if (typeof object[key] === 'object') {
+          var sub = Mung.flatten(object[key], fieldName);
+          for (var subKey in sub) {
+            flatten[subKey] = sub[subKey];
           }
         } else {
-          query[field] = cast(query[field], schema[field]);
+          flatten[fieldName] = object[key];
         }
-      };
-
-      for (var field in query) {
-        _loop2(field);
       }
-      return query;
+
+      return flatten;
+    }
+  }, {
+    key: 'resolve',
+    value: function resolve(dotNotation, object) {
+      return Mung.flatten(object)[dotNotation];
     }
   }]);
 
@@ -393,28 +527,6 @@ Mung.ObjectID.equal = function (a, b) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var _String = (function () {
-  function _String() {
-    _classCallCheck(this, _String);
-  }
-
-  _createClass(_String, null, [{
-    key: 'validate',
-    value: function validate(value) {
-      return typeof value === 'string';
-    }
-  }, {
-    key: 'convert',
-    value: function convert(value) {
-      return String(value);
-    }
-  }]);
-
-  return _String;
-})();
-
-Mung.String = _String;
-
 var _Number = (function () {
   function _Number() {
     _classCallCheck(this, _Number);
@@ -443,6 +555,32 @@ var _Number = (function () {
 
 Mung.Number = _Number;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var _String = (function () {
+  function _String() {
+    _classCallCheck(this, _String);
+  }
+
+  _createClass(_String, null, [{
+    key: 'validate',
+    value: function validate(value) {
+      return typeof value === 'string';
+    }
+  }, {
+    key: 'convert',
+    value: function convert(value) {
+      return String(value);
+    }
+  }]);
+
+  return _String;
+})();
+
+Mung.String = _String;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var _Boolean = (function () {
   function _Boolean() {
     _classCallCheck(this, _Boolean);
@@ -465,6 +603,8 @@ var _Boolean = (function () {
 
 Mung.Boolean = _Boolean;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var _Object = (function () {
   function _Object() {
     _classCallCheck(this, _Object);
@@ -482,6 +622,8 @@ var _Object = (function () {
 
 Mung.Object = _Object;
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var _Mixed = (function () {
   function _Mixed() {
     _classCallCheck(this, _Mixed);
@@ -498,6 +640,103 @@ var _Mixed = (function () {
 })();
 
 Mung.Mixed = _Mixed;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var _Hex = (function () {
+  function _Hex() {
+    _classCallCheck(this, _Hex);
+  }
+
+  _createClass(_Hex, null, [{
+    key: 'validate',
+    value: function validate(value) {
+      return true;
+    }
+  }]);
+
+  return _Hex;
+})();
+
+Mung.Hex = _Hex;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var _Octal = (function () {
+  function _Octal() {
+    _classCallCheck(this, _Octal);
+  }
+
+  _createClass(_Octal, null, [{
+    key: 'validate',
+    value: function validate(value) {
+      return true;
+    }
+  }]);
+
+  return _Octal;
+})();
+
+Mung.Octal = _Octal;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var _Binary = (function () {
+  function _Binary() {
+    _classCallCheck(this, _Binary);
+  }
+
+  _createClass(_Binary, null, [{
+    key: 'validate',
+    value: function validate(value) {
+      return true;
+    }
+  }]);
+
+  return _Binary;
+})();
+
+Mung.Binary = _Binary;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var _Error = (function () {
+  function _Error() {
+    _classCallCheck(this, _Error);
+  }
+
+  _createClass(_Error, null, [{
+    key: 'validate',
+    value: function validate(value) {
+      return true;
+    }
+  }]);
+
+  return _Error;
+})();
+
+Mung.ErrorType = _Error;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var _RegExp = (function () {
+  function _RegExp() {
+    _classCallCheck(this, _RegExp);
+  }
+
+  _createClass(_RegExp, null, [{
+    key: 'validate',
+    value: function validate(value) {
+      return true;
+    }
+  }]);
+
+  return _RegExp;
+})();
+
+Mung.RegExp = _RegExp;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 var _Date = (function () {
   function _Date() {
@@ -527,24 +766,9 @@ var _Date = (function () {
 
 Mung.Date = _Date;
 
-var _Geo = (function () {
-  function _Geo() {
-    _classCallCheck(this, _Geo);
-  }
-
-  _createClass(_Geo, null, [{
-    key: 'validate',
-    value: function validate(value) {}
-  }]);
-
-  return _Geo;
-})();
-
-Mung.Geo = _Geo;
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var ExtendableError = (function (_Error) {
+var ExtendableError = (function (_Error2) {
   function ExtendableError(message) {
     _classCallCheck(this, ExtendableError);
 
@@ -554,7 +778,7 @@ var ExtendableError = (function (_Error) {
     Error.captureStackTrace(this, this.constructor.name);
   }
 
-  _inherits(ExtendableError, _Error);
+  _inherits(ExtendableError, _Error2);
 
   return ExtendableError;
 })(Error);
@@ -585,6 +809,29 @@ var MungError = (function (_ExtendableError) {
   }
 
   _inherits(MungError, _ExtendableError);
+
+  _createClass(MungError, null, [{
+    key: 'rethrow',
+    value: function rethrow(error, message) {
+      var options = arguments[2] === undefined ? {} : arguments[2];
+
+      options.error = {};
+
+      if (error instanceof this) {
+        options.error.message = error.originalMessage;
+        options.error.code = error.code;
+        options.error.options = error.options;
+        options.error.stack = error.stack.split(/\n/);
+      } else {
+        options.error.name = error.name;
+        options.error.message = error.message;
+        options.error.code = error.code;
+        options.error.stack = error.stack.split(/\n/);
+      }
+
+      return new this(message, options);
+    }
+  }]);
 
   return MungError;
 })(ExtendableError);
@@ -620,5 +867,3 @@ exports['default'] = Mung;
 // ,
 // { depth: 15 }));
 module.exports = exports['default'];
-
-// query[field].$exists

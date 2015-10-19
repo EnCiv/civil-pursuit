@@ -47,8 +47,6 @@ var State = (function (_Mung$Model) {
   return State;
 })(_libMung2['default'].Model);
 
-State.collection = 'countries';
-
 State.migrations = {
   1: _migrations12['default'],
   2: _migrations22['default']

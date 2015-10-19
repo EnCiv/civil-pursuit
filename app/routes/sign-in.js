@@ -17,7 +17,6 @@ function signIn (req, res, next) {
 
           DiscussionModel
             .findOne()
-            .exec()
             .then(
               discussion => {
                 try {

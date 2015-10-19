@@ -1,25 +1,38 @@
 'use strict';
 
 import fixtures from '../../../../fixtures/employment/1.json';
+import Mung from '../../../lib/mung';
+
+const collection = 'employments';
 
 class V2 {
   static do () {
     return new Promise((ok, ko) => {
       try {
-        this.find({ __V : 2 })
+        this.find({ __V : 2 }, { limit : false })
           .then(
-            employments => {
+            documents => {
               try {
-                if ( employments.length ) {
+                if ( documents.length ) {
                   return ok();
                 }
                 this
-                  .create(fixtures.map(employment => {
-                    employment.__V = 2;
-                    return employment;
-                  }))
+                  .create(fixtures)
                   .then(
-                    ok,
+                    created => {
+                      try {
+                        Mung.Migration
+                          .create({
+                            collection,
+                            version : 2,
+                            created : created.map(doc => doc._id)
+                          })
+                          .then(ok, ko);
+                      }
+                      catch ( error ) {
+                        ko(error);
+                      }
+                    },
                     ko
                   );
               }
@@ -37,7 +50,7 @@ class V2 {
   }
 
   static undo () {
-    return this.remove({ __V : 2 });
+    return Mung.Migration.undo(this, 2, collection);
   }
 }
 

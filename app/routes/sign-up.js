@@ -8,9 +8,7 @@ function signUp (req, res, next) {
 
   try {
 
-    let { email, password } = req.body;
-
-    let d = new Domain().on('error', next);
+    const { email, password } = req.body;
 
     let cb = (error, user) => {
       if ( error ) {
@@ -31,31 +29,31 @@ function signUp (req, res, next) {
     }
 
     UserModel
-      .create({ email, password }, d.bind((error, user) => {
-        if ( error ) {
-          return cb(error);
-        }
-        DiscussionModel
-          .findOne()
-          .exec()
-          .then(
-            discussion => {
-              try {
-                discussion.registered.push(user._id);
-                discussion.save(error => {
-                  if ( error ) {
-                    cb(error);
-                  }
-                  cb(null, user);
-                });
-              }
-              catch ( error ) {
-                cb(error);
-              }
-            },
-            cb
-          );
-      }));
+      .create({ email, password })
+      .then(
+        user => {
+          DiscussionModel
+            .findOne()
+            .then(
+              discussion => {
+                try {
+                  discussion.registered.push(user._id);
+                  discussion.save(error => {
+                    if ( error ) {
+                      cb(error);
+                    }
+                    cb(null, user);
+                  });
+                }
+                catch ( error ) {
+                  cb(error);
+                }
+              },
+              cb
+            );
+        },
+        cb
+      );
   }
 
   catch ( error ) {

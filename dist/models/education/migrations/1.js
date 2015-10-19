@@ -18,6 +18,8 @@ var _libMung = require('../../../lib/mung');
 
 var _libMung2 = _interopRequireDefault(_libMung);
 
+var collection = 'educations';
+
 var V2 = (function () {
   function V2() {
     _classCallCheck(this, V2);
@@ -30,7 +32,6 @@ var V2 = (function () {
 
       return new Promise(function (ok, ko) {
         try {
-
           _this.count().then(function (count) {
             try {
               var _ret = (function () {
@@ -49,11 +50,19 @@ var V2 = (function () {
                     })) {
                       db.collection('configs').find().toArray().then(function (configs) {
                         try {
-                          _this.create(configs[0].education.map(function (education) {
-                            education.__V = 2;
-
-                            return education;
-                          }), { create: true }).then(ok, ko);
+                          _this.create(configs[0].education, { create: true }).then(function (created) {
+                            try {
+                              _libMung2['default'].Migration.create({
+                                collection: collection,
+                                version: 1,
+                                created: created.map(function (doc) {
+                                  return doc._id;
+                                })
+                              }).then(ok, ko);
+                            } catch (error) {
+                              ko(error);
+                            }
+                          }, ko);
                         } catch (error) {
                           ko(error);
                         }
@@ -80,7 +89,7 @@ var V2 = (function () {
   }, {
     key: 'undo',
     value: function undo() {
-      return this.remove({ __V: 2 });
+      return _libMung2['default'].Migration.undo(this, 1, collection);
     }
   }]);
 

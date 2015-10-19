@@ -363,6 +363,7 @@ window.socket
 
   .on('OK get items', (panel, count, items) => {
     OUTCOMING('got items', panel, count, items);
+
     let id = makePanelId(panel);
 
     if ( ! props.panels[id] ) {

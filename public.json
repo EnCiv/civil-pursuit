@@ -69,7 +69,5 @@
     "cdn": "//code.jquery.com/jquery-2.1.1.min.js"
   },
 
-  "evaluation context item position": "last",
-
-  "top level type" : "Topic"
+  "evaluation context item position": "last"
 }

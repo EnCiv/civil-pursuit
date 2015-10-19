@@ -9,271 +9,277 @@ describe ('MongoDB Operators', function () {
 
     describe ('Comparison operators', function () {
 
-      describe ('$in', function () {
+      describe ( '$eq' , function () {
 
-        let parsed = Mung.parse({ foo : { $in : [1 , '2'] }}, { foo : Number });
+        const parsed = Mung.parseFindQuery(
+          { number : { $eq : '2' } },
+          { number : Number }
+        );
 
-        it ( 'should be an object' , function () {
+        it ( 'should have parsed $eq', function () {
 
-          parsed.should.be.an.Object();
-
-        });
-
-        it ( 'should have property "foo"', function () {
-
-          parsed.should.have.property('foo');
-
-        });
-
-        describe ( 'foo' , function  () {
-
-          it ( 'should be an object' , function () {
-
-            parsed.foo.should.be.an.Object();
-
-          });
-
-          it ( 'should have property "$in"', function () {
-
-            parsed.foo.should.have.property('$in');
-
-          });
-
-          describe ( '$in' , function  () {
-
-            it ( 'should be an array' , function () {
-
-              parsed.foo.$in.should.be.an.Array();
-
-            });
-
-            it ( 'should have the right length', function () {
-
-              parsed.foo.$in.should.have.length(2);
-
-            });
-
-            it ( 'should have the right item', function () {
-
-              parsed.foo.$in[0].should.be.a.Number().and.is.exactly(1);
-              parsed.foo.$in[1].should.be.a.Number().and.is.exactly(2);
-
-            });
-
-          });
+          parsed
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.an.Object()
+            .and.have.property('$eq')
+            .which.is.exactly(2);
 
         });
 
       });
 
-      describe ('$exists', function () {
+      describe ( '$gt' , function () {
 
-        let parsed = Mung.parse({ foo : { $exists : true }}, { foo : Number });
+        const parsed = Mung.parseFindQuery(
+          { number : { $gte : '2' } },
+          { number : Number }
+        );
 
-        it ( 'should be an object' , function () {
+        it ( 'should have parsed $gte', function () {
 
-          parsed.should.be.an.Object();
-
-        });
-
-        it ( 'should have property "foo"', function () {
-
-          parsed.should.have.property('foo');
-
-        });
-
-        describe ( 'foo' , function  () {
-
-          it ( 'should be an object' , function () {
-
-            parsed.foo.should.be.an.Object();
-
-          });
-
-          it ( 'should have property "$exists"', function () {
-
-            parsed.foo.should.have.property('$exists');
-
-          });
-
-          describe ( '$exists' , function  () {
-
-            it ( 'should be an boolean' , function () {
-
-              parsed.foo.$exists.should.be.a.Boolean();
-
-            });
-
-            it ( 'should have the right value', function () {
-
-              parsed.foo.$exists.should.be.true;
-
-            });
-
-          });
+          parsed
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.an.Object()
+            .and.have.property('$gte')
+            .which.is.exactly(2);
 
         });
 
       });
 
-      describe ('$lt', function () {
+      describe ( '$lt' , function () {
 
-        let parsed = Mung.parse({ number : { $lt : 2 } }, { number : Number });
+        const parsed = Mung.parseFindQuery(
+          { number : { $lt : '2' } },
+          { number : Number }
+        );
 
-        it ( 'should be an object' , function () {
+        it ( 'should have parsed $lt', function () {
 
-          parsed.should.be.an.Object();
-
-        });
-
-        it ( 'should have property "number"', function () {
-
-          parsed.should.have.property('number');
-
-        });
-
-        describe ( 'number' , function  () {
-
-          it ( 'should be an object' , function () {
-
-            parsed.number.should.be.an.Object();
-
-          });
-
-          it ( 'should have property "$lt"', function () {
-
-            parsed.number.should.have.property('$lt');
-
-          });
-
-          describe ( '$lt' , function  () {
-
-            it ( 'should be an number' , function () {
-
-              parsed.number.$lt.should.be.a.Number();
-
-            });
-
-            it ( 'should be 2 ', function () {
-
-              parsed.number.$lt.should.be.exactly(2);
-
-            });
-
-          });
+          parsed
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.an.Object()
+            .and.have.property('$lt')
+            .which.is.exactly(2);
 
         });
 
       });
 
-      describe ('$size', function () {
+      describe ( '$lte', function () {
 
-        let parsed = Mung.parse({ numbers : { $size : 2 } }, { numbers : [Number] });
+        const parsed = Mung.parseFindQuery(
+          { date : { $lte : Date.now() } },
+          { date : Date }
+        );
 
-        it ( 'should be an object' , function () {
+        it ( 'should have parsed $lte', function () {
 
-          parsed.should.be.an.Object();
-
-        });
-
-        it ( 'should have property "numbers"', function () {
-
-          parsed.should.have.property('numbers');
-
-        });
-
-        describe ( 'numbers' , function  () {
-
-          it ( 'should be an object' , function () {
-
-            parsed.numbers.should.be.an.Object();
-
-          });
-
-          it ( 'should have property "$size"', function () {
-
-            parsed.numbers.should.have.property('$size');
-
-          });
-
-          describe ( '$size' , function  () {
-
-            it ( 'should be an numbers' , function () {
-
-              parsed.numbers.$size.should.be.a.Number();
-
-            });
-
-            it ( 'should be 2 ', function () {
-
-              parsed.numbers.$size.should.be.exactly(2);
-
-            });
-
-          });
+          parsed
+            .should.be.an.Object()
+            .and.have.property('date')
+            .which.is.an.Object()
+            .and.have.property('$lte')
+            .which.is.an.instanceof(Date);
 
         });
 
       });
 
+      describe ( '$ne' , function () {
 
-      describe ( '$not' , function () {
+        const parsed = Mung.parseFindQuery(
+          { number : { $ne : '2' } },
+          { number : Number }
+        );
 
-        let parsed = Mung.parse({ number : { $not : { $exists : true } } },
-          { number : Number });
+        it ( 'should have parsed $ne', function () {
 
-
-        it ( 'should be an object', function () {
-
-          parsed.should.be.an.Object();
+          parsed
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.an.Object()
+            .and.have.property('$ne')
+            .which.is.exactly(2);
 
         });
 
-        it ( 'should have property number', function () {
+      });
 
-          parsed.should.have.property('number');
+      describe ( '$in' , function () {
+
+        const parsed = Mung.parseFindQuery(
+          { number : { $in : ['2', true] } },
+          { number : Number }
+        );
+
+        it ( 'should have parsed $in', function () {
+
+          parsed
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.an.Object()
+            .and.have.property('$in')
+            .which.is.an.Array()
+            .and.have.length(2);
+
+          parsed
+            .number
+            .$in[0]
+            .should.be.exactly(2);
+
+            parsed
+              .number
+              .$in[1]
+              .should.be.exactly(1);
 
         });
 
-        describe ( 'number' , function () {
+      });
 
-          it ( 'should be an object' , function () {
+      describe ( '$nin' , function () {
 
-            parsed.number.should.be.an.Object();
+        const parsed = Mung.parseFindQuery(
+          { number : { $nin : ['2', true] } },
+          { number : Number }
+        );
 
-          });
+        it ( 'should have parsed $nin', function () {
 
-          it ( 'should have property $not', function () {
+          parsed
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.an.Object()
+            .and.have.property('$nin')
+            .which.is.an.Array()
+            .and.have.length(2);
 
-            parsed.number.should.have.property('$not');
+          parsed
+            .number
+            .$nin[0]
+            .should.be.exactly(2);
 
-          });
+            parsed
+              .number
+              .$nin[1]
+              .should.be.exactly(1);
 
-          describe ( '$not' , function () {
+        });
 
-            it ( 'should be an object' , function () {
+      });
 
-              parsed.number.$not.should.be.an.Object();
+      describe ( '$or' , function () {
 
-            });
+        const parsed = Mung.parseFindQuery(
+          { $or : [ { number : 1 } , { number : false } ] },
+          { number : Number }
+        );
 
-            it ( 'should have property $exists', function () {
+        it ( 'should have parsed $or', function () {
 
-              parsed.number.$not.should.have.property('$exists');
+          parsed
+            .should.be.an.Object()
+            .and.have.property('$or')
+            .which.is.an.Array()
+            .and.have.length(2);
 
-            });
+          parsed
+            .$or[0]
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.exactly(1);
 
-            describe ( '$exists' , function () {
+            parsed
+              .$or[1]
+              .should.be.an.Object()
+              .and.have.property('number')
+              .which.is.exactly(0);
 
-              it ( 'should be true' , function () {
+        });
 
-                parsed.number.$not.$exists.should.be.true;
+      });
 
-              });
+      describe ( '$and' , function () {
 
-            });
+        const parsed = Mung.parseFindQuery(
+          { $and : [ { number : 1 } , { number : false } ] },
+          { number : Number }
+        );
 
-          });
+        it ( 'should have parsed $and', function () {
+
+          parsed
+            .should.be.an.Object()
+            .and.have.property('$and')
+            .which.is.an.Array()
+            .and.have.length(2);
+
+          parsed
+            .$and[0]
+            .should.be.an.Object()
+            .and.have.property('number')
+            .which.is.exactly(1);
+
+            parsed
+              .$and[1]
+              .should.be.an.Object()
+              .and.have.property('number')
+              .which.is.exactly(0);
+
+        });
+
+      });
+
+      describe ( '$not', function () {
+
+        const parsed = Mung.parseFindQuery(
+          { price: { $not: { $gt: 1.99 } } },
+          { price : Number }
+        );
+
+        it ( 'should have parsed $not', function () {
+
+          parsed
+            .should.be.an.Object()
+            .and.have.property('price')
+            .which.is.an.Object()
+            .and.have.property('$not')
+            .which.is.an.Object()
+            .and.have.property('$gt')
+            .which.is.exactly(1.99);
+
+        });
+
+      });
+
+      describe ( '$nor' , function () {
+
+        const parsed = Mung.parseFindQuery(
+          { $nor: [ { price: 1.99 }, { sale: 1 } ] },
+          { price : Number, sale : Boolean }
+        );
+
+        it ( 'should have parsed $nor' , function () {
+
+          parsed
+            .should.be.an.Object()
+            .which.have.property('$nor')
+            .which.is.an.Array();
+
+          parsed
+            .$nor[0]
+            .should.be.an.Object()
+            .and.have.property('price')
+            .which.is.exactly(1.99);
+
+            parsed
+              .$nor[1]
+              .should.be.an.Object()
+              .and.have.property('sale')
+              .which.is.exactly(true);
 
         });
 

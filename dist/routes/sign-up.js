@@ -24,8 +24,6 @@ function signUp(req, res, next) {
       var email = _req$body.email;
       var password = _req$body.password;
 
-      var d = new _domain.Domain().on('error', next);
-
       var cb = function cb(error, user) {
         if (error) {
           if (/duplicate key/.test(error.message)) {
@@ -41,11 +39,8 @@ function signUp(req, res, next) {
         }
       };
 
-      _modelsUser2['default'].create({ email: email, password: password }, d.bind(function (error, user) {
-        if (error) {
-          return cb(error);
-        }
-        _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+      _modelsUser2['default'].create({ email: email, password: password }).then(function (user) {
+        _modelsDiscussion2['default'].findOne().then(function (discussion) {
           try {
             discussion.registered.push(user._id);
             discussion.save(function (error) {
@@ -58,7 +53,7 @@ function signUp(req, res, next) {
             cb(error);
           }
         }, cb);
-      }));
+      }, cb);
     })();
   } catch (error) {
     next(error);

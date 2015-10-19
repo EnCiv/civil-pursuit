@@ -2,17 +2,26 @@
 
 import should               from 'should';
 import mongodb              from 'mongodb';
+import url                  from 'url';
 import sequencer            from '../../app/lib/util/sequencer';
 import Mung                 from '../../app/lib/mung';
 import User                 from '../../app/models/user';
 import migrate              from '../../app/bin/migrate';
 
+let dbURL = process.env.MONGOHQ_URL;
+
+let parsed = url.parse(dbURL);
+
+parsed.pathname = '/syn_replaytest';
+
+dbURL = url.format(parsed);
+
 describe ( 'Connect' , function () {
 
-  it ( 'should connect' , function (done) {
+  it ( `should connect to ${dbURL}` , function (done) {
 
     try {
-      Mung.connect(process.env.MONGO_TEST)
+      Mung.connect(dbURL)
         .on('error', done)
         .on('connected', () => done());
     }
@@ -45,7 +54,8 @@ describe ( 'Clear DB' , function () {
           'states',
           'trainings',
           'types',
-          'votes'
+          'votes',
+          'mung_migrations'
         ].map(collection => () => new Promise((ok, ko) => {
           try {
             const { db } = Mung.connections[0];

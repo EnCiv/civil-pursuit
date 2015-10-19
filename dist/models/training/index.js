@@ -16,6 +16,14 @@ var _libMung = require('../../lib/mung');
 
 var _libMung2 = _interopRequireDefault(_libMung);
 
+var _migrations1 = require('./migrations/1');
+
+var _migrations12 = _interopRequireDefault(_migrations1);
+
+var _migrations2 = require('./migrations/2');
+
+var _migrations22 = _interopRequireDefault(_migrations2);
+
 var Training = (function (_Mung$Model) {
   function Training() {
     _classCallCheck(this, Training);
@@ -49,7 +57,18 @@ var Training = (function (_Mung$Model) {
         },
         'in': Boolean,
         click: String,
-        wait: Number,
+        wait: {
+          type: _libMung2['default'].Mixed,
+          validate: function validate(value) {
+            var validated = _libMung2['default'].validate(value, Number);
+
+            if (validated) {
+              return true;
+            }
+
+            return _libMung2['default'].validate(value, String);
+          }
+        },
         listen: String
       };
     }
@@ -57,6 +76,13 @@ var Training = (function (_Mung$Model) {
 
   return Training;
 })(_libMung2['default'].Model);
+
+Training.version = 2;
+
+Training.migrations = {
+  1: _migrations12['default'],
+  2: _migrations22['default']
+};
 
 exports['default'] = Training;
 module.exports = exports['default'];

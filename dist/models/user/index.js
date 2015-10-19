@@ -68,6 +68,10 @@ var _methodsAddRace = require('./methods/add-race');
 
 var _methodsAddRace2 = _interopRequireDefault(_methodsAddRace);
 
+var _migrations2 = require('./migrations/2');
+
+var _migrations22 = _interopRequireDefault(_migrations2);
+
 var User = (function (_Mung$Model) {
   function User() {
     _classCallCheck(this, User);
@@ -129,7 +133,10 @@ var User = (function (_Mung$Model) {
 
         'last_name': String,
 
-        'gps': _libMung2['default'].Geo,
+        'gps': {
+          type: [Number],
+          index: '2d'
+        },
 
         'gps validated': Date,
 
@@ -185,6 +192,10 @@ User.identify = _staticsIdentify2['default'].bind(User);
 User.isPasswordValid = _staticsIsPasswordValid2['default'].bind(User);
 
 User.version = 2;
+
+User.migrations = {
+  2: _migrations22['default']
+};
 
 exports['default'] = User;
 module.exports = exports['default'];

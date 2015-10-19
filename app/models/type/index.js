@@ -1,7 +1,10 @@
 'use strict';
 
-import Mung from '../../lib/mung';
-import isHarmony from './methods/is-harmony';
+import Mung         from '../../lib/mung';
+import toSlug       from '../../lib/util/to-slug';
+import isHarmony    from './methods/is-harmony';
+import getSubtype   from './methods/get-subtype';
+import V2           from './migrations/2';
 
 class Type extends Mung.Model {
   static schema () {
@@ -24,6 +27,18 @@ class Type extends Mung.Model {
   isHarmony (...args) {
     return isHarmony.apply(this, args);
   }
+
+  getSubtype (...args) {
+    return getSubtype.apply(this, args);
+  }
+
+  get link () {
+    return `/item/${this.id}/${toSlug(this.subject)}`;
+  }
 }
+
+Type.migrations = {
+  2 : V2
+};
 
 export default Type;

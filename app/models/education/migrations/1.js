@@ -3,69 +3,78 @@
 import mongodb from 'mongodb';
 import Mung from '../../../lib/mung';
 
+const collection = 'educations';
+
 class V2 {
   static do () {
     return new Promise((ok, ko) => {
       try {
-
-        this
-          .count()
-          .then(
-            count => {
-              try {
-                if ( count ) {
-                  return ok();
-                }
-
-                const { db } = Mung.connections[0];
-
-                db
-                  .collections()
-                  .then(
-                    collections => {
-                      try {
-                        if ( collections.some(collection =>
-                          collection.s.namespace.split(/\./)[1] === 'configs'
-                        )) {
-                          db.collection('configs')
-                            .find()
-                            .toArray()
-                            .then(
-                              configs => {
-                                try {
-                                  this
-                                    .create(configs[0].education.map(education => {
-                                      education.__V = 2;
-
-                                      return education;
-                                    }), { create : true })
-                                    .then(ok, ko);
-                                }
-                                catch ( error ) {
-                                  ko(error);
-                                }
-                              },
-                              ko
-                            );
-                        }
-                        else {
-                          ok();
-                        }
-                      }
-                      catch ( error ) {
-                        ko(error);
-                      }
-                    },
-                    ko
-                  );
-
+        this.count().then(
+          count => {
+            try {
+              if ( count ) {
+                return ok();
               }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+
+              const { db } = Mung.connections[0];
+
+              db.collections().then(
+                collections => {
+                  try {
+                    if ( collections.some(collection =>
+                      collection.s.namespace.split(/\./)[1] === 'configs'
+                    )) {
+                      db.collection('configs')
+                        .find()
+                        .toArray()
+                        .then(
+                          configs => {
+                            try {
+                              this
+                                .create(configs[0].education, { create : true })
+                                .then(
+                                  created => {
+                                    try {
+                                      Mung.Migration
+                                        .create({
+                                          collection,
+                                          version : 1,
+                                          created : created.map(doc => doc._id)
+                                        })
+                                        .then(ok, ko);
+                                    }
+                                    catch ( error ) {
+                                      ko(error);
+                                    }
+                                  },
+                                  ko
+                                );
+                            }
+                            catch ( error ) {
+                              ko(error);
+                            }
+                          },
+                          ko
+                        );
+                    }
+                    else {
+                      ok();
+                    }
+                  }
+                  catch ( error ) {
+                    ko(error);
+                  }
+                },
+                ko
+              );
+
+            }
+            catch ( error ) {
+              ko(error);
+            }
+          },
+          ko
+        );
       }
       catch ( error ) {
         ko(error);
@@ -74,7 +83,7 @@ class V2 {
   }
 
   static undo () {
-    return this.remove({ __V : 2 });
+    return Mung.Migration.undo(this, 1, collection);
   }
 }
 

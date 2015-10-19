@@ -338,6 +338,7 @@ window.socket.on('welcome', function (user) {
   window.socket.emit('get items', { type: type });
 }).on('OK get items', function (panel, count, items) {
   OUTCOMING('got items', panel, count, items);
+
   var id = makePanelId(panel);
 
   if (!props.panels[id]) {

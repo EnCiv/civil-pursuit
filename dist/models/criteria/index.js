@@ -16,6 +16,10 @@ var _libMung = require('../../lib/mung');
 
 var _libMung2 = _interopRequireDefault(_libMung);
 
+var _migrations1 = require('./migrations/1');
+
+var _migrations12 = _interopRequireDefault(_migrations1);
+
 var Criteria = (function (_Mung$Model) {
   function Criteria() {
     _classCallCheck(this, Criteria);
@@ -45,6 +49,12 @@ var Criteria = (function (_Mung$Model) {
 
   return Criteria;
 })(_libMung2['default'].Model);
+
+Criteria.migrations = {
+  1: _migrations12['default']
+};
+
+Criteria.version = 2;
 
 exports['default'] = Criteria;
 module.exports = exports['default'];

@@ -3,6 +3,8 @@
 import mongodb from 'mongodb';
 import Mung from '../../../lib/mung';
 
+const collection = 'political_parties';
+
 class V2 {
   static do () {
     return new Promise((ok, ko) => {
@@ -34,12 +36,24 @@ class V2 {
                               configs => {
                                 try {
                                   this
-                                    .create(configs[0].party.map(party => {
-                                      party.__V = 2;
-
-                                      return party;
-                                    }), { create : true })
-                                    .then(ok, ko);
+                                    .create(configs[0].party, { create : true })
+                                    .then(
+                                      created => {
+                                        try {
+                                          Mung.Migration
+                                            .create({
+                                              collection,
+                                              version : 1,
+                                              created : created.map(doc => doc._id)
+                                            })
+                                            .then(ok, ko);
+                                        }
+                                        catch ( error ) {
+                                          ko(error);
+                                        }
+                                      },
+                                      ko
+                                    );
                                 }
                                 catch ( error ) {
                                   ko(error);
@@ -74,7 +88,7 @@ class V2 {
   }
 
   static undo () {
-    return this.remove({ __V : 2 });
+    return Mung.Migration.undo(this, 1, collection);
   }
 }
 

@@ -16,9 +16,21 @@ var _libMung = require('../../lib/mung');
 
 var _libMung2 = _interopRequireDefault(_libMung);
 
+var _libUtilToSlug = require('../../lib/util/to-slug');
+
+var _libUtilToSlug2 = _interopRequireDefault(_libUtilToSlug);
+
 var _methodsIsHarmony = require('./methods/is-harmony');
 
 var _methodsIsHarmony2 = _interopRequireDefault(_methodsIsHarmony);
+
+var _methodsGetSubtype = require('./methods/get-subtype');
+
+var _methodsGetSubtype2 = _interopRequireDefault(_methodsGetSubtype);
+
+var _migrations2 = require('./migrations/2');
+
+var _migrations22 = _interopRequireDefault(_migrations2);
 
 var Type = (function (_Mung$Model) {
   function Type() {
@@ -39,6 +51,20 @@ var Type = (function (_Mung$Model) {
       }
 
       return _methodsIsHarmony2['default'].apply(this, args);
+    }
+  }, {
+    key: 'getSubtype',
+    value: function getSubtype() {
+      for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      return _methodsGetSubtype2['default'].apply(this, args);
+    }
+  }, {
+    key: 'link',
+    get: function () {
+      return '/item/' + this.id + '/' + (0, _libUtilToSlug2['default'])(this.subject);
     }
   }], [{
     key: 'schema',
@@ -62,6 +88,10 @@ var Type = (function (_Mung$Model) {
 
   return Type;
 })(_libMung2['default'].Model);
+
+Type.migrations = {
+  2: _migrations22['default']
+};
 
 exports['default'] = Type;
 module.exports = exports['default'];

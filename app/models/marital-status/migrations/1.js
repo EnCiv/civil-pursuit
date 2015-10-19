@@ -3,6 +3,8 @@
 import mongodb from 'mongodb';
 import Mung from '../../../lib/mung';
 
+const collection = 'marital_statuses';
+
 class V2 {
   static do () {
     return new Promise((ok, ko) => {
@@ -39,7 +41,23 @@ class V2 {
 
                                       return married;
                                     }), { create : true })
-                                    .then(ok, ko);
+                                    .then(
+                                      created => {
+                                        try {
+                                          Mung.Migration
+                                            .create({
+                                              collection,
+                                              version : 1,
+                                              created : created.map(doc => doc._id)
+                                            })
+                                            .then(ok, ko);
+                                        }
+                                        catch ( error ) {
+                                          ko(error);
+                                        }
+                                      },
+                                      ko
+                                    );
                                 }
                                 catch ( error ) {
                                   ko(error);
@@ -74,7 +92,7 @@ class V2 {
   }
 
   static undo () {
-    return this.remove({ __V : 2 });
+    return Mung.Migration.undo(this, 1, collection);
   }
 }
 

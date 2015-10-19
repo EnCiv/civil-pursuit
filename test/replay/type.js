@@ -4,7 +4,6 @@ import Type               from '../../app/models/type';
 import should             from 'should';
 import Mung               from '../../app/lib/mung';
 import isType             from './assertions/type';
-import config             from '../../secret.json';
 
 describe ( 'Type' , function () {
 
@@ -76,7 +75,7 @@ describe ( 'Type' , function () {
 
     describe ( 'valid type' , function () {
 
-      const candidate = { name : config['top level item'] };
+      const candidate = { name : 'Test' };
 
       let type;
 
@@ -104,7 +103,7 @@ describe ( 'Type' , function () {
 
     describe ( 'name is unique' , function () {
 
-      const candidate = { name : config['top level item'] };
+      const candidate = { name : 'Test' };
 
       let dbError;
 

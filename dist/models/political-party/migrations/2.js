@@ -14,6 +14,12 @@ var _fixturesPoliticalParty1Json = require('../../../../fixtures/political-party
 
 var _fixturesPoliticalParty1Json2 = _interopRequireDefault(_fixturesPoliticalParty1Json);
 
+var _libMung = require('../../../lib/mung');
+
+var _libMung2 = _interopRequireDefault(_libMung);
+
+var collection = 'political_parties';
+
 var V2 = (function () {
   function V2() {
     _classCallCheck(this, V2);
@@ -26,15 +32,24 @@ var V2 = (function () {
 
       return new Promise(function (ok, ko) {
         try {
-          _this.find({ __V: 2 }).then(function (parties) {
+          _this.find({ __V: 2 }, { limit: false }).then(function (documents) {
             try {
-              if (parties.length) {
+              if (documents.length) {
                 return ok();
               }
-              _this.create(_fixturesPoliticalParty1Json2['default'].map(function (party) {
-                party.__V = 2;
-                return party;
-              })).then(ok, ko);
+              _this.create(_fixturesPoliticalParty1Json2['default']).then(function (created) {
+                try {
+                  _libMung2['default'].Migration.create({
+                    collection: collection,
+                    version: 2,
+                    created: created.map(function (doc) {
+                      return doc._id;
+                    })
+                  }).then(ok, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              }, ko);
             } catch (error) {
               ko(error);
             }
@@ -47,7 +62,7 @@ var V2 = (function () {
   }, {
     key: 'undo',
     value: function undo() {
-      return this.remove({ __V: 2 });
+      return _libMung2['default'].Migration.undo(this, 2, collection);
     }
   }]);
 

@@ -14,6 +14,7 @@ import identify                         from './statics/identify';
 import isPasswordValid                  from './statics/is-password-valid';
 import reactivate                       from './methods/reactivate';
 import addRace                          from './methods/add-race';
+import V2                               from './migrations/2';
 
 class User extends Mung.Model {
   static schema () {
@@ -46,7 +47,10 @@ class User extends Mung.Model {
 
       "last_name"         :     String,
 
-      "gps"               :     Mung.Geo,
+      "gps"               :     {
+        type              :     [Number],
+        index             :     '2d'
+      },
 
       "gps validated"     :     Date,
 
@@ -107,5 +111,9 @@ User.identify                 =     identify.bind(User);
 User.isPasswordValid          =     isPasswordValid.bind(User);
 
 User.version = 2;
+
+User.migrations = {
+  2 : V2
+};
 
 export default User;

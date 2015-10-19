@@ -12,25 +12,71 @@ var _2 = _interopRequireDefault(_);
 
 describe('Validate', function () {
 
-  describe('Date', function () {
+  describe('Function', function () {
 
-    describe('Date', function () {
+    describe('String', function () {
 
-      var validated = _2['default'].validate(new Date(), Date);
+      describe('Validate string', function () {
 
-      it('should be true', function () {
+        var validated = _2['default'].validate('abc', String);
 
-        validated.should.be['true'];
+        it('should be true', function () {
+
+          validated.should.be['true'];
+        });
+      });
+
+      describe('Validate converted string', function () {
+
+        var validated = _2['default'].validate('abc', String, true);
+
+        it('should be true', function () {
+
+          validated.should.be['true'];
+        });
+      });
+
+      describe('Validate number', function () {
+
+        var validated = _2['default'].validate(1, String);
+
+        it('should be false', function () {
+
+          validated.should.be['false'];
+        });
+      });
+
+      describe('Validate converted number', function () {
+
+        var validated = _2['default'].validate(1, String, true);
+
+        it('should be true', function () {
+
+          validated.should.be['true'];
+        });
       });
     });
 
-    describe('Timestamp', function () {
+    describe('Date', function () {
 
-      var validated = _2['default'].validate(Date.now(), Date);
+      describe('Date', function () {
 
-      it('should be false', function () {
+        var validated = _2['default'].validate(new Date(), Date);
 
-        validated.should.be['false'];
+        it('should be true', function () {
+
+          validated.should.be['true'];
+        });
+      });
+
+      describe('Timestamp', function () {
+
+        var validated = _2['default'].validate(Date.now(), Date);
+
+        it('should be false', function () {
+
+          validated.should.be['false'];
+        });
       });
     });
   });

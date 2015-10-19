@@ -25,7 +25,7 @@ function signIn(req, res, next) {
       _modelsUser2['default'].identify(email, password).then(function (user) {
         req.user = user;
 
-        _modelsDiscussion2['default'].findOne().exec().then(function (discussion) {
+        _modelsDiscussion2['default'].findOne().then(function (discussion) {
           try {
             if (discussion.registered.some(function (registered) {
               return registered.toString() === user._id.toString();

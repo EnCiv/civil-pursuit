@@ -9,7 +9,11 @@ import getPopularity    from './methods/get-popularity';
 import toPanelItem      from './methods/to-panel-item';
 import getLineage       from './methods/get-lineage';
 import countHarmony     from './methods/count-harmony';
+import countVotes       from './methods/count-votes';
+import countChildren    from './methods/count-children';
 import generateId       from './statics/id';
+import getPanelItems    from './statics/get-panel-items';
+import V2               from './migrations/2';
 
 class Item extends Mung.Model {
   static schema () {
@@ -103,6 +107,14 @@ class Item extends Mung.Model {
     return countHarmony.apply(this, args);
   }
 
+  countVotes (...args) {
+    return countVotes.apply(this, args);
+  }
+
+  countChildren (...args) {
+    return countChildren.apply(this, args);
+  }
+
   static inserting () {
     return [
       this.generateId.bind(this)
@@ -112,6 +124,14 @@ class Item extends Mung.Model {
   static generateId (...args) {
     return generateId.apply(this, args);
   }
+
+  static getPanelItems (...args) {
+    return getPanelItems.apply(this, args);
+  }
 }
+
+Item.migrations = {
+  2 : V2
+};
 
 export default Item;

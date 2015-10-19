@@ -13,19 +13,15 @@ function migrate () {
 
       Mung.connect(process.env.MONGOHQ_URL).on('connected', () => {
 
-
         fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
           if ( error ) {
             throw error;
           }
 
-
           let promises = files
             .map(file => new Promise((ok, ko) => {
               try {
                 let model = require(path.resolve(__dirname, `../models/${file}`));
-
-
 
                 model.migrate().then(() => {
                   ok();

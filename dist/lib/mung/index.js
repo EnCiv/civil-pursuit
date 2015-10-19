@@ -26,5 +26,9 @@ var _libStream = require('./lib/stream');
 
 var _libStream2 = _interopRequireDefault(_libStream);
 
+var _libMigration = require('./lib/migration');
+
+var _libMigration2 = _interopRequireDefault(_libMigration);
+
 exports['default'] = _libMung2['default'];
 module.exports = exports['default'];

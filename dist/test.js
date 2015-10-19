@@ -10,12 +10,9 @@ var _modelsUser = require('./models/user');
 
 var _modelsUser2 = _interopRequireDefault(_modelsUser);
 
-_libMung2['default'].connect(process.env.MONGO_TEST).on('connected', function () {
+// Mung.connect(process.env.MONGO_TEST)
+_libMung2['default'].connect(process.env.MONGOHQ_URL).on('connected', function () {
   console.log('cool');
 
-  _modelsUser2['default'].create({ email: Date.now().toString(), password: '1234' }).then(function (user) {
-    return console.log(user.preferences);
-  }, function (error) {
-    return console.log(error.stack);
-  });
+  _modelsUser2['default'].findOne({ email: 'foo@foo.com' });
 });

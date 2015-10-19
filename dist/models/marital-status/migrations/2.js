@@ -14,6 +14,12 @@ var _fixturesMaritalStatus1Json = require('../../../../fixtures/marital-status/1
 
 var _fixturesMaritalStatus1Json2 = _interopRequireDefault(_fixturesMaritalStatus1Json);
 
+var _libMung = require('../../../lib/mung');
+
+var _libMung2 = _interopRequireDefault(_libMung);
+
+var collection = 'marital_statuses';
+
 var V2 = (function () {
   function V2() {
     _classCallCheck(this, V2);
@@ -26,15 +32,24 @@ var V2 = (function () {
 
       return new Promise(function (ok, ko) {
         try {
-          _this.find({ __V: 2 }).then(function (statuses) {
+          _this.find({ __V: 2 }, { limit: false }).then(function (documents) {
             try {
-              if (statuses.length) {
+              if (documents.length) {
                 return ok();
               }
-              _this.create(_fixturesMaritalStatus1Json2['default'].map(function (status) {
-                status.__V = 2;
-                return status;
-              })).then(ok, ko);
+              _this.create(_fixturesMaritalStatus1Json2['default']).then(function (created) {
+                try {
+                  _libMung2['default'].Migration.create({
+                    collection: collection,
+                    version: 2,
+                    created: created.map(function (doc) {
+                      return doc._id;
+                    })
+                  }).then(ok, ko);
+                } catch (error) {
+                  ko(error);
+                }
+              }, ko);
             } catch (error) {
               ko(error);
             }
@@ -47,7 +62,7 @@ var V2 = (function () {
   }, {
     key: 'undo',
     value: function undo() {
-      return this.remove({ __V: 2 });
+      return _libMung2['default'].Migration.undo(this, 2, collection);
     }
   }]);
 

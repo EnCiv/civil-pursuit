@@ -3,6 +3,34 @@
 import Mung from './mung';
 
 class Query {
+  static project (options = {}) {
+    const projection = {};
+
+    if ( 'limit' in options ) {
+      if ( options.limit === false ) {
+        projection.limit = 0;
+      }
+      else {
+        projection.limit = options.limit;
+      }
+    }
+    else {
+      projection.limit = 100;
+    }
+
+    projection.skip = options.skip || 0;
+
+    projection.sort = options.sort || { _id : 1 };
+
+    if ( options.reverse ) {
+      for ( let field in projection.sort ) {
+        projection.sort[field] = -1;
+      }
+    }
+
+    return projection;
+  }
+
   constructor (options = {}) {
     this.options = options;
 
@@ -103,28 +131,42 @@ class Query {
                 });
 
                 let promises = indexes
-                  .filter(index => ! index[2])
-                  .map(index => collection.createIndex(index[0], index[1]));
+                  .filter(index => index[2])
+                  .map(index => collection.dropIndex(index[0]));
 
-                Promise.all(promises).then(
-                  results => {
-                    try {
-                      results.forEach(indexName => {
-                        indexes = indexes.map(index => {
-                          if ( index.name === indexName ) {
-                            index.created = true;
-                          }
-                          return index;
-                        });
-                      });
-                      ok(indexes);
-                    }
-                    catch ( error ) {
-                      ko(error);
-                    }
-                  },
-                  ko
-                );
+                Promise.all(promises)
+                  .then(
+                    () => {
+                      try {
+                        let promises = indexes
+                          .map(index => collection.createIndex(index[0], index[1]));
+
+                        Promise.all(promises).then(
+                          results => {
+                            try {
+                              results.forEach(indexName => {
+                                indexes = indexes.map(index => {
+                                  if ( index.name === indexName ) {
+                                    index.created = true;
+                                  }
+                                  return index;
+                                });
+                              });
+                              ok(indexes);
+                            }
+                            catch ( error ) {
+                              ko(error);
+                            }
+                          },
+                          ko
+                        );
+                      }
+                      catch ( error ) {
+                        ko(error);
+                      }
+                    },
+                    ko
+                  );
               }
               catch ( error ) {
                 ko(error);
@@ -143,7 +185,7 @@ class Query {
     const { Model, Util } = Mung;
     const { model } = this.options;
 
-    return Mung.parse(query, new (this.options.model)().__types);
+    return Mung.parseFindQuery(query, new (this.options.model)().__types);
   }
 
   remove (document, options = {}) {
@@ -243,7 +285,7 @@ class Query {
     });
   }
 
-  find (document, options = { limit : 100 }) {
+  find (document, options = {}) {
     return new Promise((ok, ko) => {
       try {
         const { Document } = Mung;
@@ -256,13 +298,7 @@ class Query {
 
         this.collection().then(collection => {
           try {
-            let limit = 'limit' in options ? options.limit : 100;
-            let skip = options.skip || 0;
-            let sort = options.sort || { _id : 1 };
-
-            if ( options.reverse ) {
-              sort = { _id : -1 };
-            }
+            const projection = Query.project(options);
 
             const parsed = this.parse(document);
 
@@ -271,23 +307,23 @@ class Query {
             if ( options.one ) {
               if ( collection.findOne ) {
                 query = collection
-                  .findOne(parsed, { skip, sort });
+                  .findOne(parsed, projection);
               }
               else {
                 query = collection
                   .find(parsed)
                   .limit(1)
-                  .skip(skip)
-                  .sort(sort);
+                  .skip(projection.skip)
+                  .sort(projection.sort);
               }
             }
 
             else {
               query = collection
                 .find(parsed)
-                .limit(limit)
-                .skip(skip)
-                .sort(sort)
+                .limit(projection.limit)
+                .skip(projection.skip)
+                .sort(projection.sort)
                 .toArray();
             }
 
@@ -323,19 +359,19 @@ class Query {
                           __limit : {
                             numerable : false,
                             writable : false,
-                            value : limit
+                            value : projection.limit
                           },
 
                           __skip : {
                             numerable : false,
                             writable : false,
-                            value : skip
+                            value : projection.skip
                           },
 
                           __sort : {
                             numerable : false,
                             writable : false,
-                            value : sort
+                            value : projection.sort
                           }
                         });
                       }

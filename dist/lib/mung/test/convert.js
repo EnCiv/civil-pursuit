@@ -41,35 +41,390 @@ var Bar = (function (_Mung$Model) {
 
 describe('Convert', function () {
 
-  describe('Number', function () {
+  describe('<Number>', function () {
 
-    describe('to Number', function () {
+    describe('{Number}', function () {
 
-      var converted = _2['default'].convert(123, Number);
+      describe('Integer', function () {
+
+        describe('Positive', function () {
+
+          var converted = _2['default'].convert(123, Number);
+
+          it('should be a number', function () {
+
+            converted.should.be.a.Number();
+          });
+
+          it('should be a 123', function () {
+
+            converted.should.be.exactly(123);
+          });
+        });
+
+        describe('Negative', function () {
+
+          var converted = _2['default'].convert(-123, Number);
+
+          it('should be a number', function () {
+
+            converted.should.be.a.Number();
+          });
+
+          it('should be a -123', function () {
+
+            converted.should.be.exactly(-123);
+          });
+        });
+      });
+
+      describe('Float', function () {
+
+        describe('Positive', function () {
+
+          var converted = _2['default'].convert(1.99, Number);
+
+          it('should be a number', function () {
+
+            converted.should.be.a.Number();
+          });
+
+          it('should be a 1.99', function () {
+
+            converted.should.be.exactly(1.99);
+          });
+        });
+
+        describe('Negative', function () {
+
+          var converted = _2['default'].convert(-1.99, Number);
+
+          it('should be a number', function () {
+
+            converted.should.be.a.Number();
+          });
+
+          it('should be a -1.99', function () {
+
+            converted.should.be.exactly(-1.99);
+          });
+        });
+      });
+
+      describe('Big number', function () {
+
+        describe('Big', function () {
+
+          var converted = _2['default'].convert(4200000000000000000, Number);
+
+          it('should be a number', function () {
+
+            converted.should.be.a.Number();
+          });
+
+          it('should be a 42e17', function () {
+
+            converted.should.be.exactly(4200000000000000000);
+          });
+        });
+
+        describe('Small', function () {
+
+          var converted = _2['default'].convert(0.000042, Number);
+
+          it('should be a number', function () {
+
+            converted.should.be.a.Number();
+          });
+
+          it('should be a 42e-6', function () {
+
+            converted.should.be.exactly(0.000042);
+          });
+        });
+      });
+
+      describe('Precision', function () {
+
+        var converted = _2['default'].convert(1.023616785, Number);
+
+        it('should be a number', function () {
+
+          converted.should.be.a.Number();
+        });
+
+        it('should be a 1.023616785', function () {
+
+          converted.should.be.exactly(1.023616785);
+        });
+      });
+    });
+
+    describe('{String}', function () {
+
+      describe('numeric string', function () {
+
+        var converted = _2['default'].convert('123', Number);
+
+        it('should be a number', function () {
+
+          converted.should.be.a.Number();
+        });
+
+        it('should be a 123', function () {
+
+          converted.should.be.exactly(123);
+        });
+      });
+
+      describe('non-numeric string', function () {
+
+        it('should be throw an error', function () {
+
+          (function () {
+            _2['default'].convert('hello', Number);
+          }).should['throw'](_2['default'].Error);
+        });
+      });
+    });
+
+    describe('{Boolean}', function () {
+
+      describe('true', function () {
+
+        var converted = _2['default'].convert(true, Number);
+
+        it('should be a boolean', function () {
+
+          converted.should.be.a.Number();
+        });
+
+        it('should be a 1', function () {
+
+          converted.should.be.exactly(1);
+        });
+      });
+
+      describe('false', function () {
+
+        var converted = _2['default'].convert(false, Number);
+
+        it('should be a boolean', function () {
+
+          converted.should.be.a.Number();
+        });
+
+        it('should be a 0', function () {
+
+          converted.should.be.exactly(0);
+        });
+      });
+    });
+
+    describe('{Date}', function () {
+
+      var converted = _2['default'].convert(new Date(), Number);
 
       it('should be a number', function () {
 
-        converted.should.be.a.Number;
+        converted.should.be.a.Number();
+      });
+
+      it('should be a timestamp', function () {
+
+        (Date.now() - converted < 10).should.be['true'];
       });
     });
 
-    describe('to String', function () {
+    describe('{null}', function () {
 
-      var converted = _2['default'].convert(123, String);
+      var converted = _2['default'].convert(null, Number);
 
-      it('should be a string', function () {
+      it('should be a number', function () {
 
-        converted.should.be.a.String;
+        converted.should.be.a.Number();
+      });
+
+      it('should be 0', function () {
+
+        converted.should.be.exactly(0);
       });
     });
 
-    describe('to Boolean', function () {
+    describe('{undefined}', function () {
 
-      var converted = _2['default'].convert(123, Boolean);
+      it('should throw error', function () {
 
-      it('should be a boolean', function () {
+        (function () {
+          _2['default'].convert(undefined, Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
 
-        converted.should.be.a.Boolean;
+    describe('{Array}', function () {
+
+      var converted = _2['default'].convert([], Number);
+
+      it('should be a number', function () {
+
+        converted.should.be.a.Number();
+      });
+
+      it('should be 0', function () {
+
+        converted.should.be.exactly(0);
+      });
+    });
+
+    describe('{Object}', function () {
+
+      it('should throw error', function () {
+
+        (function () {
+          _2['default'].convert({}, Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
+
+    describe('{Infinity}', function () {
+
+      describe('Infinity', function () {
+
+        it('should throw error', function () {
+
+          (function () {
+            _2['default'].convert(Infinity, Number);
+          }).should['throw'](_2['default'].Error);
+        });
+      });
+
+      describe('-Infinity', function () {
+
+        it('should throw error', function () {
+
+          (function () {
+            _2['default'].convert(-Infinity, Number);
+          }).should['throw'](_2['default'].Error);
+        });
+      });
+    });
+
+    describe('{Octal}', function () {
+
+      var converted = _2['default'].convert(420, Number);
+
+      it('should be a number', function () {
+        converted.should.be.a.Number();
+      });
+
+      it('should be 420', function () {
+        converted.should.be.exactly(420);
+      });
+    });
+
+    describe('{Decimal}', function () {
+
+      var converted = _2['default'].convert(15985, Number);
+
+      it('should be a number', function () {
+        converted.should.be.a.Number();
+      });
+
+      it('should be 15985', function () {
+        converted.should.be.exactly(15985);
+      });
+    });
+
+    describe('{Symbol}', function () {
+
+      it('should throw an eror', function () {
+        (function () {
+          _2['default'].convert(Symbol(1), Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
+
+    describe('{Function}', function () {
+
+      it('should throw an eror', function () {
+        (function () {
+          _2['default'].convert(Function, Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
+
+    describe('{Buffer}', function () {
+
+      it('should throw an eror', function () {
+        (function () {
+          _2['default'].convert(new Buffer(123), Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
+
+    describe('{Binary}', function () {
+
+      var converted = _2['default'].convert(3, Number);
+
+      it('should be a number', function () {
+
+        converted.should.be.a.Number();
+      });
+
+      it('should be 3', function () {
+
+        converted.should.be.exactly(3);
+      });
+
+      describe('base 2', function () {
+
+        var base2 = _2['default'].convert(3, Number);
+
+        it('should be a number', function () {
+
+          base2.should.be.a.Number();
+        });
+
+        it('should be 3', function () {
+
+          converted.should.be.exactly(3);
+        });
+      });
+    });
+
+    describe('{Model}', function () {
+
+      it('should throw an eror', function () {
+        (function () {
+          _2['default'].convert(new _2['default'].Model(), Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
+
+    describe('{ObjectID}', function () {
+
+      it('should throw an eror', function () {
+        (function () {
+          _2['default'].convert(_2['default'].ObjectID(), Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
+
+    describe('{Regex}', function () {
+
+      it('should throw an eror', function () {
+        (function () {
+          _2['default'].convert(/abc/, Number);
+        }).should['throw'](_2['default'].Error);
+      });
+    });
+
+    describe('{Error}', function () {
+
+      it('should throw an eror', function () {
+        (function () {
+          _2['default'].convert(new Error('foo'), Number);
+        }).should['throw'](_2['default'].Error);
       });
     });
   });
@@ -80,7 +435,7 @@ describe('Convert', function () {
 
       var converted = _2['default'].convert(Date.now(), Date);
 
-      it('should be a date', function () {
+      it('should be a number', function () {
 
         converted.should.be.an['instanceof'](Date);
       });
