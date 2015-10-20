@@ -1,6 +1,6 @@
 'use strict';
 
-import fixtures from '../../../../config/countries.json';
+import fixtures from '../../../../fixtures/country/1.json';
 import Mung from '../../../lib/mung';
 
 const collection = 'countries';
