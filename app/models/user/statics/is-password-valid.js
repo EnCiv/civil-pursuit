@@ -1,6 +1,7 @@
 'use strict';
 
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 function isPasswordValid (requestPassword, realPassword) {
   return new Promise((ok, ko) => {

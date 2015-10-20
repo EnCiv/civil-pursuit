@@ -31,10 +31,6 @@ class Model {
         value       :   this.parseDefaults(schema)
       },
 
-      __required    :   {
-        value       :   this.parseRequired(schema)
-      },
-
       __private     :   {
         value       :   this.parsePrivate(schema)
       },
@@ -210,7 +206,7 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  parseRequired (schema) {
+  static parseRequired (schema) {
     let required = {};
 
     for ( let field in schema ) {
@@ -461,8 +457,13 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  verifyRequired () {
-    for ( let field in this.__required ) {
+  verifyRequired (options = {}) {
+
+    const schema = this.constructor.getSchema(options);
+
+    const requiredFields = this.constructor.parseRequired(schema);
+
+    for ( let field in requiredFields ) {
       if ( ! ( field in this.__document ) ) {
         throw new (Mung.Error)(`Missing field ${field}`, { code : Mung.Error.MISSING_REQUIRED_FIELD });
       }
@@ -613,7 +614,7 @@ class Model {
               try {
                 this.applyDefault();
 
-                this.verifyRequired();
+                this.verifyRequired(options);
 
                 let before = [];
 
@@ -645,7 +646,7 @@ class Model {
       try {
         const started = Date.now();
 
-        const model = options.version ? this.constructor.migrations[options.version] : this.constructor;
+        const model = this.constructor;
 
         if ( ! this.__document._id || options.create ) {
           this.prepare('insert', options)
@@ -976,8 +977,16 @@ class Model {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static getSchema () {
-    let schema = this.schema();
+  static getSchema (options = {}) {
+
+    let schema;
+
+    if ( options.version && this.migrations && this.migrations[options.version] && typeof this.migrations[options.version] === 'function' ) {
+      schema = this.migrations[options.version].schema();
+    }
+    else {
+      schema = this.schema();
+    }
 
     schema._id = Mung.ObjectID;
 

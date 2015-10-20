@@ -1,7 +1,7 @@
 'use strict';
 
-import UserModel        from '../models/user';
-import DiscussionModel  from '../models/discussion';
+import User        from '../models/user';
+import Discussion  from '../models/discussion';
 
 function signIn (req, res, next) {
 
@@ -9,29 +9,35 @@ function signIn (req, res, next) {
 
     let { email, password } = req.body;
 
-    UserModel
+    User
       .identify(email, password)
       .then(
         user => {
           req.user = user;
 
-          DiscussionModel
-            .findOne()
+          Discussion
+            .findCurrent()
             .then(
               discussion => {
                 try {
-                  if ( discussion.registered.some(registered => registered.toString() === user._id.toString() ) ) {
-                    return next();
-                  }
+                  if ( discussion ) {
+                    const alreadyRegistered = discussion.registered.some(registered => registered.equals(user._id))
 
-                  discussion.registered.push(user._id);
-
-                  discussion.save(error => {
-                    if ( error ) {
-                      return next(error);
+                    if ( alreadyRegistered ) {
+                      return next();
                     }
+
+                    discussion
+                      .push('registered', user._id)
+                      .save()
+                      .then(
+                        () => next(),
+                        next
+                      );
+                  }
+                  else {
                     next();
-                  });
+                  }
                 }
                 catch (error) {
                   next(error);

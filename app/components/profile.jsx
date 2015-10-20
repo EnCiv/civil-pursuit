@@ -38,18 +38,35 @@ class Profile extends React.Component {
               .on('OK get countries', ok)
           }),
           new Promise((ok, ko) => {
-            window.socket.emit('get config')
-              .on('OK get config', ok)
-          }),
-          new Promise((ok, ko) => {
             window.socket.emit('get states')
               .on('OK get states', ok)
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get races')
+              .on('OK get races', ok)
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get educations')
+              .on('OK get educations', ok)
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get marital statuses')
+              .on('OK get marital statuses', ok)
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get employments')
+              .on('OK get employments', ok)
+          }),
+          new Promise((ok, ko) => {
+            window.socket.emit('get political parties')
+              .on('OK get political parties', ok)
           })
         ])
         .then(
           results => {
-            let [ user, countries, config, states ] = results;
-            this.setState({ ready : true, user, countries, config, states });
+            console.log('results', results);
+            let [ user, countries, states, races, educations, maritalStatuses, employments, politicalParties ] = results;
+            this.setState({ ready : true, user, countries, states, races, educations, maritalStatuses, employments, politicalParties });
           }
         );
     }
@@ -68,21 +85,21 @@ class Profile extends React.Component {
         <section>
           <Row data-stack="tablet-and-down">
             <Column span="50">
-              <Identity user={ this.state.user } countries={ this.state.countries } config={ this.state.config } />
+              <Identity { ...this.state } />
             </Column>
 
             <Column span="50">
-              <Residence user={ this.state.user } states={ this.state.states } />
+              <Residence { ...this.state } />
             </Column>
           </Row>
 
           <Row data-stack="tablet-and-down">
             <Column span="50">
-              <Demographics user={ this.state.user } config={ this.state.config } />
+              <Demographics { ...this.state } />
             </Column>
 
             <Column span="50">
-              <Voter user={ this.state.user } config={ this.state.config } />
+              <Voter { ...this.state } />
             </Column>
           </Row>
 

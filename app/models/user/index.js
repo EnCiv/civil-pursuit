@@ -27,7 +27,8 @@ class User extends Mung.Model {
 
       "password"          :     {
         "type"            :     String,
-        "required"        :     true
+        "required"        :     true,
+        "private"         :     true
       },
 
       "image"             :     String,

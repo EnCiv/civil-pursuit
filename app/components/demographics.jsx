@@ -117,9 +117,9 @@ class Demographics extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { user, config } = this.props;
+    let { user, races, educations, maritalStatuses, employments } = this.props;
 
-    let races = config.race.map(race => (
+    let racesList = races.map(race => (
       <Row key={ race._id }>
         <Column className="gutter">
           { race.name }
@@ -130,15 +130,15 @@ class Demographics extends React.Component {
       </Row>
     ));
 
-    let education = config.education.map(educ => (
+    let education = educations.map(educ => (
       <option value={ educ._id } key={ educ._id }>{ educ.name }</option>
     ));
 
-    let relationships = config.married.map(status => (
+    let relationships = maritalStatuses.map(status => (
       <option value={ status._id } key={ status._id }>{ status.name }</option>
     ));
 
-    let employments = config.employment.map(employment => (
+    let employmentsList = employments.map(employment => (
       <option value={ employment._id } key={ employment._id }>{ employment.name }</option>
     ));
 
@@ -158,7 +158,7 @@ class Demographics extends React.Component {
             Race:
           </Column>
           <Column>
-            { races }
+            { racesList }
           </Column>
         </Row>
 
@@ -194,7 +194,7 @@ class Demographics extends React.Component {
             <Column span="75">
               <Select block medium ref="employment" defaultValue={ user.employment } onChange={ this.setEmployment.bind(this) }>
               <option value=''>Choose one</option>
-              { employments }
+              { employmentsList }
               </Select>
             </Column>
           </Row>

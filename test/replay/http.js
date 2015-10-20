@@ -139,32 +139,145 @@ describe ( 'HTTP server' , function () {
       superagent
         .get('http://localhost:13012/')
         .end((error, res) => {
-          if ( error ) {
-            return done(error);
+          try {
+            if ( error ) {
+              throw error;
+            }
+            res.status.should.be.exactly(200);
+            done();
           }
-          done();
+          catch ( error ) {
+            done(error);
+          }
         });
 
     });
 
   });
 
-  // describe ( 'Sign up', function () {
-  //
-  //   it ( 'should post sign up' , function (done) {
-  //
-  //     this.timeout(5000);
-  //
-  //     superagent
-  //       .post('http://localhost:13012/sign/up')
-  //       .send({ email : 'signup@foo.com' , 'password' : 1234 })
-  //       .end((err, res) => {
-  //         console.log(err, res);
-  //         done();
-  //       });
-  //
-  //   });
-  //
-  // });
+  describe ( 'Sign up', function () {
+
+    it ( 'should post sign up' , function (done) {
+
+      this.timeout(5000);
+
+      superagent
+        .post('http://localhost:13012/sign/up')
+        .send({ email : 'signup@foo.com' , 'password' : '1234' })
+        .end((error, res) => {
+          try {
+            if ( error ) {
+              throw error;
+            }
+            res.status.should.be.exactly(200);
+            done();
+          }
+          catch ( error ) {
+            done(error);
+          }
+        });
+
+    });
+
+    describe ( 'Sign up as an existing user' , function () {
+
+      it ( 'should throw a 401 error' , function (done) {
+
+        this.timeout(5000);
+
+        superagent
+          .post('http://localhost:13012/sign/up')
+          .send({ email : 'signup@foo.com' , 'password' : '1234' })
+          .end((error, res) => {
+            try {
+              if ( ! error ) {
+                throw new Error('It should have thrown error');
+              }
+              error.message.should.be.exactly('Unauthorized');
+              res.status.should.be.exactly(401);
+              done();
+            }
+            catch ( error ) {
+              done(error);
+            }
+          });
+
+      });
+
+    });
+
+  });
+
+  describe ( 'Sign in' , function () {
+
+    it ( 'should throw an 404 error for email not found', function (done) {
+
+      this.timeout(5000);
+
+      superagent
+        .post('http://localhost:13012/sign/in')
+        .send({ email : 'idontexist@fake.com' , 'password' : '1234' })
+        .end((error, res) => {
+          try {
+            if ( ! error ) {
+              throw new Error('It should have thrown error');
+            }
+            error.message.should.be.exactly('Not Found');
+            res.status.should.be.exactly(404);
+            done();
+          }
+          catch ( error ) {
+            done(error);
+          }
+        });
+
+    });
+
+    it ( 'should throw an 401 error for wrong password', function (done) {
+
+      this.timeout(5000);
+
+      superagent
+        .post('http://localhost:13012/sign/in')
+        .send({ email : 'signup@foo.com' , 'password' : '12345' })
+        .end((error, res) => {
+          try {
+            if ( ! error ) {
+              throw new Error('It should have thrown error');
+            }
+            error.message.should.be.exactly('Unauthorized');
+            res.status.should.be.exactly(401);
+            done();
+          }
+          catch ( error ) {
+            done(error);
+          }
+        });
+
+    });
+
+    it ( 'should login', function (done) {
+
+      this.timeout(5000);
+
+      superagent
+        .post('http://localhost:13012/sign/in')
+        .send({ email : 'signup@foo.com' , 'password' : '1234' })
+        .end((error, res) => {
+          try {
+            if ( error ) {
+              throw error;
+            }
+            res.status.should.be.exactly(200);
+            done();
+          }
+          catch ( error ) {
+            done(error);
+          }
+        });
+
+    });
+
+  });
 
 });

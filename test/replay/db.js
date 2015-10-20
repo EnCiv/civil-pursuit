@@ -86,6 +86,8 @@ describe ( 'Migrate' , function () {
 
   it ( 'should migrate' , function (done) {
 
+    this.timeout(10000);
+
     try {
       migrate().then(() => done(), done);
     }

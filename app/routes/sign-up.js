@@ -1,8 +1,7 @@
 'use strict';
 
-import { Domain }           from 'domain';
-import UserModel            from '../models/user';
-import DiscussionModel      from '../models/discussion';
+import User            from '../models/user';
+import Discussion      from '../models/discussion';
 
 function signUp (req, res, next) {
 
@@ -10,49 +9,48 @@ function signUp (req, res, next) {
 
     const { email, password } = req.body;
 
-    let cb = (error, user) => {
-      if ( error ) {
-        if ( /duplicate key/.test(error.message) ) {
-          res.statusCode = 401;
-          res.json({ error: 'username exists' });
-        }
-        else {
-          next(error);
-        }
-      }
-
-      else {
-        req.user = user;
-
-        next();
-      }
-    }
-
-    UserModel
+    User
       .create({ email, password })
       .then(
         user => {
-          DiscussionModel
-            .findOne()
-            .then(
-              discussion => {
-                try {
-                  discussion.registered.push(user._id);
-                  discussion.save(error => {
-                    if ( error ) {
-                      cb(error);
+          try {
+            req.user = user;
+
+            Discussion
+              .findCurrent()
+              .then(
+                discussion => {
+                  try {
+                    if ( ! discussion ) {
+                      return next();
                     }
-                    cb(null, user);
-                  });
-                }
-                catch ( error ) {
-                  cb(error);
-                }
-              },
-              cb
-            );
+
+                    discussion
+                      .push('registered', user)
+                      .save()
+                      .then(() => next(), next);
+                  }
+                  catch ( error ) {
+                    next(error);
+                  }
+                },
+                next
+              );
+
+          }
+          catch ( error ) {
+            next(error);
+          }
         },
-        cb
+        error => {
+          if ( /duplicate key/.test(error.message) ) {
+            res.statusCode = 401;
+            res.json({ error: 'username exists' });
+          }
+          else {
+            next(error);
+          }
+        }
       );
   }
 

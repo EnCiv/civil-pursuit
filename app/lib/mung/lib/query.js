@@ -124,6 +124,7 @@ class Query {
         fn.then(
             keys => {
               try {
+
                 indexes = indexes.map(index => {
                   index[2] = keys.some(key => key.name === index[1].name);
 
@@ -172,7 +173,25 @@ class Query {
                 ko(error);
               }
             },
-            ko
+            error => {
+              if ( error.code === 26 ) { /* No collection */
+                this.connection().db.createCollection(collection.collectionName)
+                  .then(
+                    () => {
+                      try {
+                        this.buildIndexes(indexes, this.connection().db.collection(collection.collectionName)).then(ok, ko);
+                      }
+                      catch ( error ) {
+                        ko(error);
+                      }
+                    },
+                    ko
+                  );
+              }
+              else {
+                ko(error);
+              }
+            }
           );
       }
       catch ( error ) {

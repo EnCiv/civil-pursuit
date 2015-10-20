@@ -8,14 +8,20 @@ import { Popularity }     from '../../../app/models/item/methods/get-popularity'
 import Type               from '../../../app/models/type';
 import User               from '../../../app/models/user';
 
-should.Assertion.add('panelItem', function (item = {}, extra = {}) {
+should.Assertion.add('panelItem', function (item = {}, extra = {}, serialized = false) {
   this.params = { operator: 'to be a panel Item', expected: Object };
 
   this.obj.should.be.an.Object();
 
-  this.obj.should.have.property('_id').which.is.an.instanceof(Mung.ObjectID);
+  this.obj.should.have.property('_id');
 
-  this.obj._id.equals(item._id).should.be.true;
+  if ( serialized ) {
+    Mung.ObjectID.convert(this.obj._id).should.be.an.instanceof(Mung.ObjectID);
+  }
+  else {
+    this.obj._id.should.be.an.instanceof(Mung.ObjectID);
+    this.obj._id.equals(item._id).should.be.true;
+  }
 
   this.obj.should.have.property('id')
     .which.is.a.String();
@@ -78,8 +84,14 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}) {
     this.obj.views.should.be.exactly(item.views);
   }
 
-  this.obj.should.have.property('popularity')
-    .which.is.an.instanceof(Popularity);
+  this.obj.should.have.property('popularity');
+
+  if ( serialized ) {
+    this.obj.popularity.should.be.an.Object();
+  }
+  else {
+    this.obj.popularity.should.be.an.instanceof(Popularity);
+  }
 
   this.obj.popularity.should.have.property('number')
     .which.is.a.Number();
@@ -118,8 +130,15 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}) {
     });
   }
 
-  this.obj.should.have.property('type')
-    .which.is.an.instanceof(Type);
+  this.obj.should.have.property('type');
+
+  if ( serialized ) {
+    this.obj.type.should.be.an.Object()
+      .and.have.property('_id');
+  }
+  else {
+    this.obj.type.should.be.an.instanceof(Type);
+  }
 
   if ( 'type' in item ) {
     this.obj.type._id.equals(item.type).should.be.true;
@@ -141,8 +160,15 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}) {
   }
 
   if ( this.obj.subtype ) {
-    this.obj.should.have.property('subtype')
-      .which.is.an.instanceof(Type);
+    this.obj.should.have.property('subtype');
+
+    if ( serialized ) {
+      this.obj.subtype.should.be.an.Object()
+        .and.have.property('_id');
+    }
+    else {
+      this.obj.subtype.should.be.an.instanceof(Type);
+    }
   }
 
   if ( extra.subtype ) {
@@ -167,13 +193,17 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}) {
   this.obj.should.have.property('harmony')
     .which.is.an.Object();
 
-  this.obj.harmony.should.have.property('pro');
+  if ( ! serialized ) {
+    this.obj.harmony.should.have.property('pro');
+  }
 
   if ( extra.harmony && 'pro' in extra.harmony ) {
     should(this.obj.harmony.pro).be.exactly(extra.harmony.pro);
   }
 
-  this.obj.harmony.should.have.property('con');
+  if ( ! serialized ) {
+    this.obj.harmony.should.have.property('con');
+  }
 
   if ( extra.harmony && 'con' in extra.harmony ) {
     should(this.obj.harmony.con).be.exactly(extra.harmony.con);

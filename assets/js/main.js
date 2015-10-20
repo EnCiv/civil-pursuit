@@ -1417,9 +1417,12 @@ var Demographics = (function (_React$Component) {
 
       var _props = this.props;
       var user = _props.user;
-      var config = _props.config;
+      var races = _props.races;
+      var educations = _props.educations;
+      var maritalStatuses = _props.maritalStatuses;
+      var employments = _props.employments;
 
-      var races = config.race.map(function (race) {
+      var racesList = races.map(function (race) {
         return _react2['default'].createElement(
           _utilRow2['default'],
           { key: race._id },
@@ -1438,7 +1441,7 @@ var Demographics = (function (_React$Component) {
         );
       });
 
-      var education = config.education.map(function (educ) {
+      var education = educations.map(function (educ) {
         return _react2['default'].createElement(
           'option',
           { value: educ._id, key: educ._id },
@@ -1446,7 +1449,7 @@ var Demographics = (function (_React$Component) {
         );
       });
 
-      var relationships = config.married.map(function (status) {
+      var relationships = maritalStatuses.map(function (status) {
         return _react2['default'].createElement(
           'option',
           { value: status._id, key: status._id },
@@ -1454,7 +1457,7 @@ var Demographics = (function (_React$Component) {
         );
       });
 
-      var employments = config.employment.map(function (employment) {
+      var employmentsList = employments.map(function (employment) {
         return _react2['default'].createElement(
           'option',
           { value: employment._id, key: employment._id },
@@ -1495,7 +1498,7 @@ var Demographics = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             null,
-            races
+            racesList
           )
         ),
         _react2['default'].createElement(
@@ -1566,7 +1569,7 @@ var Demographics = (function (_React$Component) {
                   { value: '' },
                   'Choose one'
                 ),
-                employments
+                employmentsList
               )
             )
           )
@@ -2381,9 +2384,8 @@ var Identity = (function (_React$Component) {
     var _props = this.props;
     var user = _props.user;
     var countries = _props.countries;
-    var config = _props.config;
 
-    this.state = { user: user, countries: countries, config: config };
+    this.state = { user: user, countries: countries };
   }
 
   _inherits(Identity, _React$Component);
@@ -2502,7 +2504,6 @@ var Identity = (function (_React$Component) {
       var _state = this.state;
       var user = _state.user;
       var countries = _state.countries;
-      var config = _state.config;
 
       var citizenship = '',
           dualCitizenship = '';
@@ -4757,18 +4758,32 @@ var Profile = (function (_React$Component) {
         }), new Promise(function (ok, ko) {
           window.socket.emit('get countries').on('OK get countries', ok);
         }), new Promise(function (ok, ko) {
-          window.socket.emit('get config').on('OK get config', ok);
-        }), new Promise(function (ok, ko) {
           window.socket.emit('get states').on('OK get states', ok);
+        }), new Promise(function (ok, ko) {
+          window.socket.emit('get races').on('OK get races', ok);
+        }), new Promise(function (ok, ko) {
+          window.socket.emit('get educations').on('OK get educations', ok);
+        }), new Promise(function (ok, ko) {
+          window.socket.emit('get marital statuses').on('OK get marital statuses', ok);
+        }), new Promise(function (ok, ko) {
+          window.socket.emit('get employments').on('OK get employments', ok);
+        }), new Promise(function (ok, ko) {
+          window.socket.emit('get political parties').on('OK get political parties', ok);
         })]).then(function (results) {
-          var _results = _slicedToArray(results, 4);
+          console.log('results', results);
+
+          var _results = _slicedToArray(results, 8);
 
           var user = _results[0];
           var countries = _results[1];
-          var config = _results[2];
-          var states = _results[3];
+          var states = _results[2];
+          var races = _results[3];
+          var educations = _results[4];
+          var maritalStatuses = _results[5];
+          var employments = _results[6];
+          var politicalParties = _results[7];
 
-          _this.setState({ ready: true, user: user, countries: countries, config: config, states: states });
+          _this.setState({ ready: true, user: user, countries: countries, states: states, races: races, educations: educations, maritalStatuses: maritalStatuses, employments: employments, politicalParties: politicalParties });
         });
       }
     }
@@ -4792,12 +4807,12 @@ var Profile = (function (_React$Component) {
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50' },
-              _react2['default'].createElement(_identity2['default'], { user: this.state.user, countries: this.state.countries, config: this.state.config })
+              _react2['default'].createElement(_identity2['default'], this.state)
             ),
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50' },
-              _react2['default'].createElement(_residence2['default'], { user: this.state.user, states: this.state.states })
+              _react2['default'].createElement(_residence2['default'], this.state)
             )
           ),
           _react2['default'].createElement(
@@ -4806,12 +4821,12 @@ var Profile = (function (_React$Component) {
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50' },
-              _react2['default'].createElement(_demographics2['default'], { user: this.state.user, config: this.state.config })
+              _react2['default'].createElement(_demographics2['default'], this.state)
             ),
             _react2['default'].createElement(
               _utilColumn2['default'],
               { span: '50' },
-              _react2['default'].createElement(_voter2['default'], { user: this.state.user, config: this.state.config })
+              _react2['default'].createElement(_voter2['default'], this.state)
             )
           ),
           _react2['default'].createElement(
@@ -9055,9 +9070,9 @@ var Voter = (function (_React$Component) {
     value: function render() {
       var _props = this.props;
       var user = _props.user;
-      var config = _props.config;
+      var politicalParties = _props.politicalParties;
 
-      var parties = config.party.map(function (party) {
+      var parties = politicalParties.map(function (party) {
         return _react2['default'].createElement(
           'option',
           { value: party._id, key: party._id },

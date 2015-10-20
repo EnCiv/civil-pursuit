@@ -35,9 +35,9 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let { user, config } = this.props;
+    let { user, politicalParties } = this.props;
 
-    let parties = config.party.map(party => (
+    let parties = politicalParties.map(party => (
       <option value={ party._id } key={ party._id }>{ party.name }</option>
     ));
 

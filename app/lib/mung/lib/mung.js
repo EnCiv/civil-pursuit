@@ -442,6 +442,8 @@ class Mung {
     return parsed;
   }
 
+  // Converts { a : { b : { c : true } } } to { 'a.b.c' : true }
+
   static flatten (object, ns = '') {
     let flatten = {};
 
@@ -465,6 +467,8 @@ class Mung {
 
     return flatten;
   }
+
+  // Converts { 'a.b.c' : true } to { a : { b : { c : true } } }
 
   static resolve (dotNotation, object) {
     return Mung.flatten(object)[dotNotation];

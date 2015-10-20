@@ -17,9 +17,9 @@ class Identity extends React.Component {
   constructor (props) {
     super(props);
 
-    let { user, countries, config } = this.props;
+    let { user, countries } = this.props;
 
-    this.state = { user, countries, config };
+    this.state = { user, countries };
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,7 +109,7 @@ class Identity extends React.Component {
 
   render() {
 
-    let { user, countries, config } = this.state;
+    let { user, countries } = this.state;
 
     let citizenship = '', dualCitizenship = '';
 

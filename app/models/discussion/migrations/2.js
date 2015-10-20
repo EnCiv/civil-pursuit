@@ -2,10 +2,36 @@
 
 import fixtures from '../../../../fixtures/discussion/1.json';
 import Mung from '../../../lib/mung';
+import User from '../../../models/user';
 
 const collection = 'discussions';
 
 class V2 {
+  static schema () {
+    return {
+      "subject"       :   {
+        "type"        :   String,
+        "required"    :   true
+      },
+      "description"   :   {
+        "type"        :   String,
+        "required"    :   true
+      },
+      "deadline"      :   {
+        "type"        :   Date,
+        "required"    :   true
+      },
+      "goal"          :   {
+        "type"        :   Number,
+        "required"    :   true
+      },
+      "registered"    :   [{
+        "type"        :   User,
+        "required"    :   true
+      }]
+    };
+  }
+
   static do () {
     return new Promise((ok, ko) => {
       try {
@@ -18,7 +44,7 @@ class V2 {
                 }
                 const discussion = fixtures[0];
                 this
-                  .create(discussion)
+                  .create(discussion, { version : 2 })
                   .then(
                     created => {
                       try {

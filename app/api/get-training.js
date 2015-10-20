@@ -15,7 +15,7 @@ function getTraining (event) {
 
     const cookie = req.cookies.synapp;
 
-    if ( cookie.training ) {
+    if ( cookie && cookie.training ) {
       Training
         .find({}, { sort : { step : 1 } })
         .then(

@@ -2,3 +2,4 @@
 /.env.sh
 /.start.sh
 /.vagrant/*
+/dist/*

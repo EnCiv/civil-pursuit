@@ -1,6 +1,7 @@
 'use strict';
 
-import bcrypt       from 'bcrypt';
+// import bcrypt       from 'bcrypt';
+import bcrypt       from 'bcryptjs';
 import { Domain }   from 'domain';
 
 function encrypt (str) {
