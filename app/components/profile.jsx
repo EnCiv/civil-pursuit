@@ -64,7 +64,6 @@ class Profile extends React.Component {
         ])
         .then(
           results => {
-            console.log('results', results);
             let [ user, countries, states, races, educations, maritalStatuses, employments, politicalParties ] = results;
             this.setState({ ready : true, user, countries, states, races, educations, maritalStatuses, employments, politicalParties });
           }

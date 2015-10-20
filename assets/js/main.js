@@ -4770,8 +4770,6 @@ var Profile = (function (_React$Component) {
         }), new Promise(function (ok, ko) {
           window.socket.emit('get political parties').on('OK get political parties', ok);
         })]).then(function (results) {
-          console.log('results', results);
-
           var _results = _slicedToArray(results, 8);
 
           var user = _results[0];
