@@ -17,7 +17,7 @@ class V2 {
                   return ok();
                 }
                 this
-                  .create(fixtures.data)
+                  .create(fixtures)
                   .then(
                     created => {
                       try {
