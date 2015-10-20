@@ -18,7 +18,8 @@
     "uglify": "uglifyjs assets/js/main.js -o assets/js/main.min.js",
     "uglify-assets": "bash bin/uglify-assets.sh",
     "deploy-no-test": "bash bin/deploy-no-test.sh",
-    "deploy": "bash bin/deploy.sh"
+    "deploy": "bash bin/deploy.sh",
+    "migrate" : "node dist/bin/migrate"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
   "license": "BSD-2-Clause",
