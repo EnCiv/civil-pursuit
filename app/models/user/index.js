@@ -116,7 +116,7 @@ User.lowerEmail               =     lowerEmail.bind(User);
 User.identify                 =     identify.bind(User);
 User.isPasswordValid          =     isPasswordValid.bind(User);
 
-User.version = 2;
+User.version = 3;
 
 User.migrations = {
   2 : V2
