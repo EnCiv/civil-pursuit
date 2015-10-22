@@ -31,7 +31,7 @@ function getPanelItems (panel) {
           .then(
             count => {
               try {
-                consold.log({ count })
+                console.log({ count })
                 this
                   .find(query, {
                     skip : panel.skip || 0,
