@@ -1,7 +1,7 @@
 'use strict';
 
 import fixtures from '../../../../fixtures/state/1.json';
-import Mung from '../../../lib/mung';
+import Mung from 'mung';
 
 class V2 {
   static do () {

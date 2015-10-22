@@ -2,7 +2,7 @@
 
 import should from 'should';
 import User from '../../../app/models/user';
-import Mung from '../../../app/lib/mung';
+import Mung from 'mung';
 
 should.Assertion.add('user', function (candidate) {
   this.params = { operator: 'to be a User', expected: User };

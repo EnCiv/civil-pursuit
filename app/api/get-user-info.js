@@ -1,10 +1,10 @@
 'use strict';
 
-import UserModel from '../models/user';
+import User from '../models/user';
 
 function getUserInfo (event) {
   try {
-    UserModel
+    User
       .findById(this.synuser.id)
       .then(
         user => {

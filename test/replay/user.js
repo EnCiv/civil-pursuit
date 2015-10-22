@@ -1,7 +1,7 @@
 'use strict';
 
 import should               from 'should';
-import Mung                 from '../../app/lib/mung';
+import Mung                 from 'mung';
 import User                 from '../../app/models/user';
 import encrypt              from '../../app/lib/util/encrypt';
 import Race                 from '../../app/models/race';

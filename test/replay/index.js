@@ -3,7 +3,7 @@
 import should               from 'should';
 import mongodb              from 'mongodb';
 import sequencer            from '../../app/lib/util/sequencer';
-import Mung                 from '../../app/lib/mung';
+import Mung                 from 'mung';
 import User                 from '../../app/models/user';
 import migrate              from '../../app/bin/migrate';
 

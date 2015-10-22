@@ -1,7 +1,7 @@
 'use strict';
 
 import fixtures from '../../../../fixtures/training/1.json';
-import Mung from '../../../lib/mung';
+import Mung from 'mung';
 
 const collection = 'trainings';
 

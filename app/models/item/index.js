@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung             from '../../lib/mung';
+import Mung             from 'mung';
 import isUrl            from '../../lib/util/is/url';
 import isLesserThan     from '../../lib/util/is/lesser-than';
 import User             from '../user';

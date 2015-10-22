@@ -2,7 +2,7 @@
 
 import should from 'should';
 import Type from '../../../app/models/type';
-import Mung from '../../../app/lib/mung';
+import Mung from 'mung';
 
 should.Assertion.add('typeDocument', function (candidate = {}, extra = {}) {
   this.params = { operator: 'to be a Type', expected: Type };

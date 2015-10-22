@@ -1,7 +1,7 @@
 'use strict';
 
 import should             from 'should';
-import Mung               from '../../../app/lib/mung';
+import Mung               from 'mung';
 import toSlug             from '../../../app/lib/util/to-slug';
 import Item               from '../../../app/models/item';
 import { Popularity }     from '../../../app/models/item/methods/get-popularity';

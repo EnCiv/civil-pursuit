@@ -4,7 +4,7 @@
 
 import colors         from    'colors';
 import config         from    '../../secret.json';
-import Mung           from    '../lib/mung';
+import Mung           from 'mung';
 import Server         from    '../server';
 import Item           from    '../models/item';
 import Type           from    '../models/type';
@@ -109,8 +109,13 @@ const getIntroItem = props => new Promise((ok, ko) => {
 
 const startServer = props => new Promise((ok, ko) => {
   try {
-    console.log('connecting server', props.intro.item)
     new Server({ intro : props.intro.item })
+      .on('listening', status => {
+        console.log('HTTP server is listening'.green, status);
+      })
+      .on('error', error => {
+        console.log('HTTP error'.red.bold, error.stack.yellow);
+      });
   }
   catch ( error ) {
     ko(error);

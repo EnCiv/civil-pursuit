@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung from '../../lib/mung';
+import Mung from 'mung';
 import Item from '../item';
 import User from '../user';
 

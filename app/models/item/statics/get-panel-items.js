@@ -23,12 +23,15 @@ function getPanelItems (panel) {
         }
       }
 
+      console.log({ panel, query })
+
       if ( ! panel.item ) {
         this
           .count(query)
           .then(
             count => {
               try {
+                consold.log({ count })
                 this
                   .find(query, {
                     skip : panel.skip || 0,
@@ -38,6 +41,7 @@ function getPanelItems (panel) {
                   .then(
                     items => {
                       try {
+                        console.log({ items });
                         Promise
                           .all(items.map(item => item.toPanelItem()))
                           .then(

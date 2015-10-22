@@ -68,6 +68,8 @@ class HttpServer extends EventEmitter {
 
           this.router();
 
+          this.api();
+
           this.static();
 
           this.notFound();
@@ -84,7 +86,7 @@ class HttpServer extends EventEmitter {
   }
 
   set () {
-    this.app.set('port', process.env.PORT || 3012);
+    this.app.set('port', +(process.env.PORT || 3012));
   }
 
   passport () {
@@ -284,6 +286,27 @@ class HttpServer extends EventEmitter {
     });
   }
 
+  api () {
+    this.app.all('/api/:handler', (req, res, next) => {
+      let apiHandler;
+
+      for ( let handler in this.socketAPI.handlers ) {
+        if ( this.socketAPI.handlers[handler].slugName === req.params.handler ) {
+          apiHandler = {
+            name : handler,
+            method : this.socketAPI.handlers[handler]
+          };
+        }
+      }
+
+      if ( ! apiHandler ) {
+        return next();
+      }
+
+      
+    });
+  }
+
   start () {
     this.server = http.createServer(this.app);
 
@@ -297,9 +320,9 @@ class HttpServer extends EventEmitter {
         env     :   this.app.get('env')
       });
 
-      this.emit('listening');
+      this.emit('listening', { port : this.app.get('port') });
 
-      new API(this)
+      this.socketAPI = new API(this)
         .on('error', error => this.emit('error', error));
     });
   }

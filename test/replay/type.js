@@ -2,7 +2,7 @@
 
 import Type               from '../../app/models/type';
 import should             from 'should';
-import Mung               from '../../app/lib/mung';
+import Mung               from 'mung';
 import isType             from './assertions/type';
 
 describe ( 'Type' , function () {

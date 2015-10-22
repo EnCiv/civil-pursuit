@@ -4,7 +4,7 @@ import fs             from 'fs';
 import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
-import Mung           from '../lib/mung';
+import Mung           from 'mung';
 
 
 function migrate () {

@@ -1,7 +1,7 @@
 'use strict';
 
 import config         from    '../../../../secret.json';
-import Mung           from '../../../lib/mung';
+import Mung           from 'mung';
 
 const collection = 'types';
 

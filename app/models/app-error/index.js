@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung from '../../lib/mung';
+import Mung from 'mung';
 
 class AppError extends Mung.Model {
   static schema () {

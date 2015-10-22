@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung                             from '../../lib/mung';
+import Mung                             from 'mung';
 import Race                             from '../race';
 import MaritalStatus                    from '../marital-status';
 import Employment                       from '../employment';
@@ -12,6 +12,7 @@ import encryptPassword                  from './statics/encrypt-password';
 import lowerEmail                       from './statics/lower-email';
 import identify                         from './statics/identify';
 import isPasswordValid                  from './statics/is-password-valid';
+import saveImage                        from './statics/save-image';
 import reactivate                       from './methods/reactivate';
 import addRace                          from './methods/add-race';
 import V2                               from './migrations/2';
@@ -103,6 +104,10 @@ class User extends Mung.Model {
 
   addRace (...args) {
     return addRace.apply(this, args);
+  }
+
+  static saveImage (...args) {
+    return saveImage.apply(this, args);
   }
 }
 

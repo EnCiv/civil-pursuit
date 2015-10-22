@@ -14,55 +14,66 @@ class API extends EventEmitter {
   constructor (server) {
     super();
 
-    process.nextTick(() => {
-      try {
-        this.server = server;
-        this.users = [];
-        this.handlers = [];
-
-        this.on('error', this.server.emit.bind(server, 'error'));
-        this.on('message', this.server.emit.bind(server, 'message'));
-
-        this.fetchHandlers();
-      }
-      catch ( error ) {
-        this.emit('error', error);
-      }
-    });
-  }
-
-  fetchHandlers () {
-    try {
-      console.log({ scan : path.join(__dirname, 'api') })
-      fs.readdir(path.join(__dirname, 'api'), (error, files) => {
+    if ( server ) {
+      process.nextTick(() => {
         try {
-          if ( error ) {
-            throw error;
-          }
+          this.server = server;
+          this.users = [];
+          this.handlers = {};
 
-          files.forEach(file => {
-            const name      =   S(file.replace(/\.js$/, ''))
-              .humanize()
-              .s
-              .toLowerCase();
+          this.on('error', this.server.emit.bind(server, 'error'));
+          this.on('message', this.server.emit.bind(server, 'message'));
 
-            const handler   =   require('./api/' + file);
-
-            this.emit('message', 'Add handler', [name, handler, S(file.replace(/\.js$/, '')).humanize().s]);
-
-            this.handlers[name] = handler;
-          });
-
-          this.start();
+          this.fetchHandlers()
+            .then(
+              () => this.start(),
+              this.emit.bind(this, 'error')
+            );
         }
         catch ( error ) {
           this.emit('error', error);
         }
       });
     }
-    catch ( error ) {
-      this.emit('error', error);
-    }
+  }
+
+  fetchHandlers () {
+    return new Promise((ok, ko) => {
+      try {
+        fs.readdir(path.join(__dirname, 'api'), (error, files) => {
+          try {
+            if ( error ) {
+              throw error;
+            }
+
+            files.forEach(file => {
+              const name      =   S(file.replace(/\.js$/, ''))
+                .humanize()
+                .s
+                .toLowerCase();
+
+              const handler   =   require('./api/' + file);
+
+              if ( typeof handler !== 'function' ) {
+                throw new Error(`API handler ${name} (${file}) is not a function`);
+              }
+
+              this.handlers[name] = handler;
+
+              this.handlers[name].slugName = file.replace(/\.js$/, '');
+            });
+
+            ok();
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        });
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
   }
 
   start () {

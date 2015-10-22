@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung         from '../../lib/mung';
+import Mung         from 'mung';
 import toSlug       from '../../lib/util/to-slug';
 import isHarmony    from './methods/is-harmony';
 import getSubtype   from './methods/get-subtype';

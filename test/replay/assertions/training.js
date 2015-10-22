@@ -2,7 +2,7 @@
 
 import should from 'should';
 import Training from '../../../app/models/training';
-import Mung from '../../../app/lib/mung';
+import Mung from 'mung';
 
 should.Assertion.add('instruction', function (candidate = {}, serialized = false) {
   this.params = { operator: 'to be a Training', expected: Training };

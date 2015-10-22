@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung from '../../lib/mung';
+import Mung from 'mung';
 import User from '../user';
 import findCurrent from './statics/find-current';
 import V1 from './migrations/1';

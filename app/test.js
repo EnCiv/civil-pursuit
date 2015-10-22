@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung from './lib/mung';
+import Mung from 'mung';
 import User from './models/user';
 
 // Mung.connect(process.env.MONGO_TEST)

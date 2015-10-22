@@ -5,7 +5,7 @@ import Type           from    '../../type';
 import User           from    '../../user';
 import fixtures       from '../../../../fixtures/item/1.json';
 import systemUser     from '../../../../fixtures/user/1.json';
-import Mung           from '../../../lib/mung';
+import Mung           from 'mung';
 
 const collection = 'items';
 

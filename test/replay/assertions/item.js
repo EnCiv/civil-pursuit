@@ -1,7 +1,7 @@
 'use strict';
 
 import should from 'should';
-import Mung from '../../../app/lib/mung';
+import Mung from 'mung';
 import Item from '../../../app/models/item';
 import Type from '../../../app/models/type';
 import User from '../../../app/models/user';

@@ -11,7 +11,7 @@ import config                     from '../../secret.json';
 import publicConfig               from '../../public.json';
 import Item                       from '../../app/models/item';
 import Type                       from '../../app/models/type';
-import Mung                       from '../../app/lib/mung';
+import Mung                       from 'mung';
 import { Popularity }             from '../../app/models/item/methods/get-popularity';
 import Training                   from '../../app/models/training';
 import isInstruction              from './assertions/training';
@@ -24,22 +24,31 @@ let server;
 
 let client1;
 
+let user1;
+
 describe ( 'Socket' , function () {
 
   describe ( 'Connect' , function () {
 
     describe ( 'Client' , function () {
 
-      it ( 'should connect', function (done) {
+      it ( 'should be welcome', function (done) {
 
         client1 = socketClient.connect(url, {
           transports: ['websocket'],
           'force new connection': true
         });
 
-        client1.on('connect', data => {
+        client1.on('welcome', user => {
+          user1 = user;
           done();
         });
+
+      });
+
+      it ( 'should be a user' , function () {
+
+        console.log({ user1 });
 
       });
 
@@ -215,6 +224,8 @@ describe ( 'Socket' , function () {
     });
 
     describe ( 'get user info' , function () {
+
+      let dbUser;
 
       describe ( 'get user', function () {
 

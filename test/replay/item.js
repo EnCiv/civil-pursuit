@@ -2,7 +2,7 @@
 
 import Item               from '../../app/models/item';
 import should             from 'should';
-import Mung               from '../../app/lib/mung';
+import Mung               from 'mung';
 import isItem             from './assertions/item';
 import isPanelItem        from './assertions/panel-item';
 import Type               from '../../app/models/type';

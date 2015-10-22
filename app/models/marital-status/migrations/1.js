@@ -1,7 +1,7 @@
 'use strict';
 
 import mongodb from 'mongodb';
-import Mung from '../../../lib/mung';
+import Mung from 'mung';
 
 const collection = 'marital_statuses';
 

@@ -1,7 +1,7 @@
 'use strict';
 
 import fixtures from '../../../../fixtures/discussion/1.json';
-import Mung from '../../../lib/mung';
+import Mung from 'mung';
 import User from '../../../models/user';
 
 const collection = 'discussions';

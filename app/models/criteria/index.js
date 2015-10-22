@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung from '../../lib/mung';
+import Mung from 'mung';
 import V1   from './migrations/1';
 
 class Criteria extends Mung.Model {
