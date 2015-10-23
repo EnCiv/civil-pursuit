@@ -18,11 +18,6 @@ import addRace                          from './methods/add-race';
 import V2                               from './migrations/2';
 import V3                               from './migrations/3';
 
-
-
-
-
-
 class User extends Mung.Model {
   static schema () {
     return {
