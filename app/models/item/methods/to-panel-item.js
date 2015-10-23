@@ -17,6 +17,7 @@ function toPanelItem () {
 
               const {
                 _id,              /** ObjectID **/
+                parent,              /** ObjectID **/
                 id,               /** String **/
                 subject,          /** String **/
                 description,      /** String **/
@@ -34,7 +35,8 @@ function toPanelItem () {
                 image,            /** String **/
                 references,       /** [{ title: String, url: String }] **/
                 views,            /** Number **/
-                promotions        /** Number **/
+                promotions        /** Number **/,
+                parent
               };
 
               //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
