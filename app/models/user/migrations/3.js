@@ -86,6 +86,8 @@ class V3 {
         Mung.connections[0]
           .db.collection(collection)
 
+
+
           // citizenship should be an array, but sometimes it is an object, bug
           .find({ citizenship : { $type : 3 } })
           .limit(0)
