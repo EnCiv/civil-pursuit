@@ -1,6 +1,6 @@
 'use strict';
 
-import mongodb from 'mongodb';
+import mongodb from 'mungo/node_modules/mongodb';
 import Mungo from 'mungo';
 
 const collection = 'educations';
