@@ -4,6 +4,7 @@
 
 cd assets
 ../node_modules/.bin/bower install  || exit 12;
+
 cd ..;
 
 npm run transpile &&
