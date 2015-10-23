@@ -20,8 +20,7 @@
     "uglify-assets": "bash bin/uglify-assets.sh",
     "deploy-no-test": "bash bin/deploy-no-test.sh",
     "deploy": "bash bin/deploy.sh",
-    "migrate": "node dist/bin/migrate",
-    "prepublish" : "npm run migrate"
+    "migrate": "node dist/bin/migrate"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
   "license": "BSD-2-Clause",
@@ -50,8 +49,7 @@
     "marked": "^0.3.3",
     "mocha": "^2.3.3",
     "moment": "^2.10.6",
-    "mung": "co2-git/mung",
-    "mungo": "co2-git/mung",
+    "mungo": "^1.0.1",
     "nodemailer": "~1.3.0",
     "passport": "^0.2.2",
     "passport-facebook": "^2.0.0",
