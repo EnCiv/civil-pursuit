@@ -1,7 +1,7 @@
 'use strict';
 
-import Mung from 'mung';
-import mongodb from 'mung/node_modules/mongodb';
+import Mungo from 'mungo';
+import mongodb from 'mungo/node_modules/mongodb';
 
 const collection = 'users';
 
@@ -24,7 +24,7 @@ class V3 {
 
       "preferences"       :     [{
         "name"            :     String,
-        "value"           :     Mung.Mixed
+        "value"           :     Mungo.Mixed
       }],
 
       "twitter"           :     String,
@@ -83,7 +83,7 @@ class V3 {
     return new Promise((ok, ko) => {
       try {
 
-        Mung.connections[0]
+        Mungo.connections[0]
           .db.collection(collection)
           // citizenship should be an array, but sometimes it is an object, bug
           .find({ citizenship : { $type : 3 } })
@@ -110,7 +110,7 @@ class V3 {
                   .then(
                     () => {
                       try {
-                        Mung.Migration
+                        Mungo.Migration
                           .create({
                             collection,
                             version : 3,
@@ -138,7 +138,7 @@ class V3 {
   }
 
   static undo () {
-    return Mung.Migration.undo(this, 3, collection);
+    return Mungo.Migration.undo(this, 3, collection);
   }
 }
 

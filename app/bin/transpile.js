@@ -3,7 +3,7 @@
 var child_process = require('child_process');
 var fs = require('fs');
 
-var options = '--modules common --stage 1 --ignore app/lib/mung/node_modules';
+var options = '--modules common --stage 1 --ignore app/lib/mungo/node_modules';
 
 function transpile (cb) {
   console.log('transpiling app directory');

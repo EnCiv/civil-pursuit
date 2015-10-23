@@ -4,7 +4,7 @@ import should               from 'should';
 import mongodb              from 'mongodb';
 import url                  from 'url';
 import sequencer            from '../../app/lib/util/sequencer';
-import Mung                 from 'mung';
+import Mungo                 from 'mungo';
 import User                 from '../../app/models/user';
 import migrate              from '../../app/bin/migrate';
 
@@ -21,7 +21,7 @@ describe ( 'Connect' , function () {
   it ( `should connect to ${dbURL}` , function (done) {
 
     try {
-      Mung.connect(dbURL)
+      Mungo.connect(dbURL)
         .on('error', done)
         .on('connected', () => done());
     }
@@ -55,10 +55,10 @@ describe ( 'Clear DB' , function () {
           'trainings',
           'types',
           'votes',
-          'mung_migrations'
+          'mungo_migrations'
         ].map(collection => () => new Promise((ok, ko) => {
           try {
-            const { db } = Mung.connections[0];
+            const { db } = Mungo.connections[0];
 
             db.collection(collection)
               .remove()

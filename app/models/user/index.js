@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung                             from 'mung';
+import Mungo                             from 'mungo';
 import Race                             from '../race';
 import MaritalStatus                    from '../marital-status';
 import Employment                       from '../employment';
@@ -19,7 +19,7 @@ import V2                               from './migrations/2';
 import V3                               from './migrations/3';
 
 
-class User extends Mung.Model {
+class User extends Mungo.Model {
   static schema () {
     return {
       "email"             :     {
@@ -38,7 +38,7 @@ class User extends Mung.Model {
 
       "preferences"       :     [{
         "name"            :     String,
-        "value"           :     Mung.Mixed
+        "value"           :     Mungo.Mixed
       }],
 
       "twitter"           :     String,

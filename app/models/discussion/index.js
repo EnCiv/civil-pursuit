@@ -1,12 +1,12 @@
 'use strict';
 
-import Mung from 'mung';
+import Mungo from 'mungo';
 import User from '../user';
 import findCurrent from './statics/find-current';
 import V1 from './migrations/1';
 import V2 from './migrations/2';
 
-class Discussion extends Mung.Model {
+class Discussion extends Mungo.Model {
   static schema () {
     return {
       "subject"       :   {

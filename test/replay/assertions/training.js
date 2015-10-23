@@ -2,7 +2,7 @@
 
 import should from 'should';
 import Training from '../../../app/models/training';
-import Mung from 'mung';
+import Mungo from 'mungo';
 
 should.Assertion.add('instruction', function (candidate = {}, serialized = false) {
   this.params = { operator: 'to be a Training', expected: Training };
@@ -19,7 +19,7 @@ should.Assertion.add('instruction', function (candidate = {}, serialized = false
     this.obj._id.should.be.a.String();
   }
   else {
-    this.obj._id.should.be.an.instanceof(Mung.ObjectID);
+    this.obj._id.should.be.an.instanceof(Mungo.ObjectID);
   }
 
   this.obj.should.have.property('element').which.is.a.String();

@@ -1,7 +1,7 @@
 'use strict';
 
 import mongodb from 'mongodb';
-import Mung from 'mung';
+import Mungo from 'mungo';
 
 const collection = 'races';
 
@@ -19,7 +19,7 @@ class V2 {
                   return ok();
                 }
 
-                const { db } = Mung.connections[0];
+                const { db } = Mungo.connections[0];
 
                 db
                   .collections()
@@ -44,7 +44,7 @@ class V2 {
                                     .then(
                                       created => {
                                         try {
-                                          Mung.Migration
+                                          Mungo.Migration
                                             .create({
                                               collection,
                                               version : 1,
@@ -92,7 +92,7 @@ class V2 {
   }
 
   static undo () {
-    return Mung.Migration.undo(this, 1, collection);
+    return Mungo.Migration.undo(this, 1, collection);
   }
 }
 

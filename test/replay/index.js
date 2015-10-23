@@ -3,7 +3,7 @@
 import should               from 'should';
 import mongodb              from 'mongodb';
 import sequencer            from '../../app/lib/util/sequencer';
-import Mung                 from 'mung';
+import Mungo                 from 'mungo';
 import User                 from '../../app/models/user';
 import migrate              from '../../app/bin/migrate';
 
@@ -12,7 +12,7 @@ describe ( 'Connect' , function () {
   it ( 'should connect' , function (done) {
 
     try {
-      Mung.connect(process.env.MONGO_TEST)
+      Mungo.connect(process.env.MONGO_TEST)
         .on('error', done)
         .on('connected', () => done());
     }
@@ -48,7 +48,7 @@ describe ( 'Clear DB' , function () {
           'votes'
         ].map(collection => () => new Promise((ok, ko) => {
           try {
-            const { db } = Mung.connections[0];
+            const { db } = Mungo.connections[0];
 
             db.collection(collection)
               .remove()

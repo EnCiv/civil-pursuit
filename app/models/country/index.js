@@ -1,10 +1,10 @@
 'use strict';
 
-import Mung               from 'mung';
+import Mungo               from 'mungo';
 import V1                 from './migrations/1';
 import V2                 from './migrations/2';
 
-class Country extends Mung.Model {
+class Country extends Mungo.Model {
   static schema () {
     return {
       "name" : String

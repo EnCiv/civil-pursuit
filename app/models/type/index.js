@@ -1,12 +1,12 @@
 'use strict';
 
-import Mung         from 'mung';
+import Mungo         from 'mungo';
 import toSlug       from '../../lib/util/to-slug';
 import isHarmony    from './methods/is-harmony';
 import getSubtype   from './methods/get-subtype';
 import V2           from './migrations/2';
 
-class Type extends Mung.Model {
+class Type extends Mungo.Model {
   static schema () {
     return {
       "name"        :     {

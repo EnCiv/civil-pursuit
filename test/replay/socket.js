@@ -11,7 +11,7 @@ import config                     from '../../secret.json';
 import publicConfig               from '../../public.json';
 import Item                       from '../../app/models/item';
 import Type                       from '../../app/models/type';
-import Mung                       from 'mung';
+import Mungo                       from 'mungo';
 import { Popularity }             from '../../app/models/item/methods/get-popularity';
 import Training                   from '../../app/models/training';
 import isInstruction              from './assertions/training';

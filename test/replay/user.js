@@ -1,7 +1,7 @@
 'use strict';
 
 import should               from 'should';
-import Mung                 from 'mung';
+import Mungo                 from 'mungo';
 import User                 from '../../app/models/user';
 import encrypt              from '../../app/lib/util/encrypt';
 import Race                 from '../../app/models/race';
@@ -34,9 +34,9 @@ describe ( 'User' , function () {
 
       describe ( 'Error' , function () {
 
-        it ( 'should be a Mung Error', function () {
+        it ( 'should be a Mungo Error', function () {
 
-          dbError.should.be.an.instanceof(Mung.Error);
+          dbError.should.be.an.instanceof(Mungo.Error);
 
         });
 
@@ -48,9 +48,9 @@ describe ( 'User' , function () {
 
         describe ( 'code' , function () {
 
-          it ( `should be ${Mung.Error.MISSING_REQUIRED_FIELD}`, function () {
+          it ( `should be ${Mungo.Error.MISSING_REQUIRED_FIELD}`, function () {
 
-            dbError.code.should.be.exactly(Mung.Error.MISSING_REQUIRED_FIELD);
+            dbError.code.should.be.exactly(Mungo.Error.MISSING_REQUIRED_FIELD);
 
           });
 
@@ -100,9 +100,9 @@ describe ( 'User' , function () {
 
       describe ( 'Error' , function () {
 
-        it ( 'should be a Mung Error', function () {
+        it ( 'should be a Mungo Error', function () {
 
-          dbError.should.be.an.instanceof(Mung.Error);
+          dbError.should.be.an.instanceof(Mungo.Error);
 
         });
 
@@ -114,9 +114,9 @@ describe ( 'User' , function () {
 
         describe ( 'code' , function () {
 
-          it ( `should be ${Mung.Error.MISSING_REQUIRED_FIELD}`, function () {
+          it ( `should be ${Mungo.Error.MISSING_REQUIRED_FIELD}`, function () {
 
-            dbError.code.should.be.exactly(Mung.Error.MISSING_REQUIRED_FIELD);
+            dbError.code.should.be.exactly(Mungo.Error.MISSING_REQUIRED_FIELD);
 
           });
 
@@ -166,9 +166,9 @@ describe ( 'User' , function () {
 
       describe ( 'Error' , function () {
 
-        it ( 'should be a Mung Error', function () {
+        it ( 'should be a Mungo Error', function () {
 
-          dbError.should.be.an.instanceof(Mung.Error);
+          dbError.should.be.an.instanceof(Mungo.Error);
 
         });
 
@@ -180,9 +180,9 @@ describe ( 'User' , function () {
 
         describe ( 'code' , function () {
 
-          it ( `should be ${Mung.Error.MISSING_REQUIRED_FIELD}`, function () {
+          it ( `should be ${Mungo.Error.MISSING_REQUIRED_FIELD}`, function () {
 
-            dbError.code.should.be.exactly(Mung.Error.MISSING_REQUIRED_FIELD);
+            dbError.code.should.be.exactly(Mungo.Error.MISSING_REQUIRED_FIELD);
 
           });
 

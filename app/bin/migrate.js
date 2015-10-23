@@ -4,14 +4,14 @@ import fs             from 'fs';
 import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
-import Mung           from 'mung';
+import Mungo           from 'mungo';
 
 
 function migrate () {
   return new Promise((ok, ko) => {
     try {
 
-      Mung.connect(process.env.MONGOHQ_URL).on('connected', () => {
+      Mungo.connect(process.env.MONGOHQ_URL).on('connected', () => {
 
         fs.readdir(path.resolve(__dirname, '../models'), (error, files) => {
           if ( error ) {
@@ -58,7 +58,7 @@ if ( process.argv[1] === __filename || process.argv[1] === __filename.replace(/\
   migrate()
     .then(
       () => {
-        Mung.disconnect();
+        Mungo.disconnect();
       },
       error => {
         console.log(error.stack);

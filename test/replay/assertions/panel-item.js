@@ -1,7 +1,7 @@
 'use strict';
 
 import should             from 'should';
-import Mung               from 'mung';
+import Mungo               from 'mungo';
 import toSlug             from '../../../app/lib/util/to-slug';
 import Item               from '../../../app/models/item';
 import { Popularity }     from '../../../app/models/item/methods/get-popularity';
@@ -16,10 +16,10 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}, serialized = 
   this.obj.should.have.property('_id');
 
   if ( serialized ) {
-    Mung.ObjectID.convert(this.obj._id).should.be.an.instanceof(Mung.ObjectID);
+    Mungo.ObjectID.convert(this.obj._id).should.be.an.instanceof(Mungo.ObjectID);
   }
   else {
-    this.obj._id.should.be.an.instanceof(Mung.ObjectID);
+    this.obj._id.should.be.an.instanceof(Mungo.ObjectID);
     this.obj._id.equals(item._id).should.be.true;
   }
 

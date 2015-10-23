@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel/register test/replay/db.js test/replay/user.js test/replay/type.js test/replay/item.js test/replay/http.js test/replay/socket.js",
-    "prestart" : "npm run migrate",
+    "prestart": "npm run migrate",
     "start": "node dist/bin/start.js",
     "magic-start": "npm install && npm start",
     "postinstall": "./post-install.sh",
@@ -50,6 +50,7 @@
     "mocha": "^2.3.3",
     "moment": "^2.10.6",
     "mung": "co2-git/mung",
+    "mungo": "co2-git/mung",
     "nodemailer": "~1.3.0",
     "passport": "^0.2.2",
     "passport-facebook": "^2.0.0",

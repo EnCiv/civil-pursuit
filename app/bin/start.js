@@ -4,7 +4,7 @@
 
 import colors         from    'colors';
 import config         from    '../../secret.json';
-import Mung           from 'mung';
+import Mungo           from 'mungo';
 import Server         from    '../server';
 import Item           from    '../models/item';
 import Type           from    '../models/type';
@@ -25,7 +25,7 @@ else {
 const connectToDB = props => new Promise((ok, ko) => {
   try {
     console.log('connect to DB', process.env.MONGOHQ_URL)
-    Mung.connect(process.env.MONGOHQ_URL)
+    Mungo.connect(process.env.MONGOHQ_URL)
       .on('error', ko)
       .on('connected', ok);
   }

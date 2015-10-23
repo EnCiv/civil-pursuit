@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung             from 'mung';
+import Mungo             from 'mungo';
 import isUrl            from '../../lib/util/is/url';
 import isLesserThan     from '../../lib/util/is/lesser-than';
 import User             from '../user';
@@ -15,7 +15,7 @@ import generateId       from './statics/id';
 import getPanelItems    from './statics/get-panel-items';
 import V2               from './migrations/2';
 
-class Item extends Mung.Model {
+class Item extends Mungo.Model {
   static schema () {
     return {
       "id"                :   {

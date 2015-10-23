@@ -1,10 +1,10 @@
 'use strict';
 
-import Mung from 'mung';
+import Mungo from 'mungo';
 import V1 from './migrations/1';
 import V2 from './migrations/2';
 
-class Training extends Mung.Model {
+class Training extends Mungo.Model {
   static schema () {
     return {
       element           :   {
@@ -26,15 +26,15 @@ class Training extends Mung.Model {
       in                :   Boolean,
       click             :   String,
       wait              :   {
-        type            :   Mung.Mixed,
+        type            :   Mungo.Mixed,
         validate        :   value => {
-          const validated = Mung.validate(value, Number);
+          const validated = Mungo.validate(value, Number);
 
           if ( validated ) {
             return true;
           }
 
-          return Mung.validate(value, String);
+          return Mungo.validate(value, String);
         }
       },
       listen            :   String

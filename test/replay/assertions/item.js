@@ -1,7 +1,7 @@
 'use strict';
 
 import should from 'should';
-import Mung from 'mung';
+import Mungo from 'mungo';
 import Item from '../../../app/models/item';
 import Type from '../../../app/models/type';
 import User from '../../../app/models/user';
@@ -14,16 +14,16 @@ should.Assertion.add('item', function (candidate = {}) {
   this.obj.should.be.an.instanceof(Item);
 
   this.obj.should.have.property('_id')
-    .which.is.an.instanceof(Mung.ObjectID);
+    .which.is.an.instanceof(Mungo.ObjectID);
 
   this.obj.should.have.property('type')
-    .which.is.an.instanceof(Mung.ObjectID);
+    .which.is.an.instanceof(Mungo.ObjectID);
 
   if ( 'type' in candidate ) {
     if ( candidate.type instanceof Type ) {
       candidate.type._id.equals(this.obj.type).should.be.true;
     }
-    else if ( candidate.type instanceof Mung.ObjectID ) {
+    else if ( candidate.type instanceof Mungo.ObjectID ) {
       this.obj.type.equals(candidate.type).should.be.true;
     }
     else {
@@ -53,7 +53,7 @@ should.Assertion.add('item', function (candidate = {}) {
   }
 
   this.obj.should.have.property('user')
-    .which.is.an.instanceof(Mung.ObjectID);
+    .which.is.an.instanceof(Mungo.ObjectID);
 
   if ( 'user' in candidate ) {
     if ( candidate.user instanceof User ) {

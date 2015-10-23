@@ -1,7 +1,7 @@
 'use strict';
 
 import fixtures from '../../../../fixtures/state/1.json';
-import Mung from 'mung';
+import Mungo from 'mungo';
 
 class V2 {
   static do () {
@@ -19,7 +19,7 @@ class V2 {
                   .then(
                     created => {
                       try {
-                        Mung.Migration
+                        Mungo.Migration
                           .create({
                             model : this.name,
                             collection : this.toCollectionName(),
@@ -53,7 +53,7 @@ class V2 {
       try {
         const getSavedDocuments = props => new Promise((ok, ko) => {
           try {
-            Mung.Migration
+            Mungo.Migration
               .findOne({
                 model : this.name,
                 collection : this.toCollectionName(),
@@ -74,7 +74,7 @@ class V2 {
 
             const deleteDocuments = props => this.removeByIds(...props.documents);
 
-            Mung
+            Mungo
               .runSequence([
                 getSavedDocuments,
                 deleteDocuments

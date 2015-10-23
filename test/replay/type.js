@@ -2,7 +2,7 @@
 
 import Type               from '../../app/models/type';
 import should             from 'should';
-import Mung               from 'mung';
+import Mungo               from 'mungo';
 import isType             from './assertions/type';
 
 describe ( 'Type' , function () {
@@ -31,9 +31,9 @@ describe ( 'Type' , function () {
 
       describe ( 'Error' , function () {
 
-        it ( 'should be a Mung Error', function () {
+        it ( 'should be a Mungo Error', function () {
 
-          dbError.should.be.an.instanceof(Mung.Error);
+          dbError.should.be.an.instanceof(Mungo.Error);
 
         });
 
@@ -45,9 +45,9 @@ describe ( 'Type' , function () {
 
         describe ( 'code' , function () {
 
-          it ( `should be ${Mung.Error.MISSING_REQUIRED_FIELD}`, function () {
+          it ( `should be ${Mungo.Error.MISSING_REQUIRED_FIELD}`, function () {
 
-            dbError.code.should.be.exactly(Mung.Error.MISSING_REQUIRED_FIELD);
+            dbError.code.should.be.exactly(Mungo.Error.MISSING_REQUIRED_FIELD);
 
           });
 

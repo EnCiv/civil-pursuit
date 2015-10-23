@@ -1,7 +1,7 @@
 'use strict';
 
 import fixtures from '../../../../fixtures/marital-status/1.json';
-import Mung from 'mung';
+import Mungo from 'mungo';
 
 const collection = 'marital_statuses';
 
@@ -21,7 +21,7 @@ class V2 {
                   .then(
                     created => {
                       try {
-                        Mung.Migration
+                        Mungo.Migration
                           .create({
                             collection,
                             version : 2,
@@ -50,7 +50,7 @@ class V2 {
   }
 
   static undo () {
-    return Mung.Migration.undo(this, 2, collection);
+    return Mungo.Migration.undo(this, 2, collection);
   }
 }
 

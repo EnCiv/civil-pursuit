@@ -1,9 +1,9 @@
 'use strict';
 
-import Mung from 'mung';
+import Mungo from 'mungo';
 import V1   from './migrations/1';
 
-class Criteria extends Mung.Model {
+class Criteria extends Mungo.Model {
   static schema () {
     return {
       "name"          : 	{

@@ -1,6 +1,6 @@
 'use strict';
 
-import Mung from 'mung';
+import Mungo from 'mungo';
 
 const collection = 'countries';
 
@@ -37,7 +37,7 @@ class V1 {
             if ( ! props.documentsWithNoVersion.length ) {
               return ok();
             }
-            Mung.Migration
+            Mungo.Migration
               .create({
                 collection,
                 version : 1,
@@ -67,7 +67,7 @@ class V1 {
           }
         });
 
-        Mung
+        Mungo
           .runSequence([
             findDocumentsWithNoVersion,
             saveDocumentsWithNoVersion,
@@ -82,7 +82,7 @@ class V1 {
   }
 
   static undo () {
-    return Mung.Migration.undo(this, 1, collection);
+    return Mungo.Migration.undo(this, 1, collection);
   }
 }
 

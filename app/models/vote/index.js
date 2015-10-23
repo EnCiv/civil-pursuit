@@ -1,11 +1,11 @@
 'use strict';
 
-import Mung from 'mung';
+import Mungo from 'mungo';
 import User from '../user';
 import Item from '../item';
 import Criteria from '../criteria';
 
-class Vote extends Mung.Model {
+class Vote extends Mungo.Model {
   static schema () {
     return {
       "item"             :   {

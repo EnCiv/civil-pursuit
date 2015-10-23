@@ -1,8 +1,8 @@
 'use strict';
 
-import Mung from 'mung';
+import Mungo from 'mungo';
 
-class AppError extends Mung.Model {
+class AppError extends Mungo.Model {
   static schema () {
     return {
       name        :   String,
@@ -10,7 +10,7 @@ class AppError extends Mung.Model {
       code        :   String,
       stack       :   String,
       debug       :   Object,
-      repair      :   [Mung.Mixed]
+      repair      :   [Mungo.Mixed]
     };
   }
 

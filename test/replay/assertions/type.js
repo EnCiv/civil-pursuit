@@ -2,7 +2,7 @@
 
 import should from 'should';
 import Type from '../../../app/models/type';
-import Mung from 'mung';
+import Mungo from 'mungo';
 
 should.Assertion.add('typeDocument', function (candidate = {}, extra = {}) {
   this.params = { operator: 'to be a Type', expected: Type };
@@ -19,7 +19,7 @@ should.Assertion.add('typeDocument', function (candidate = {}, extra = {}) {
     this.obj._id.should.be.a.String();
   }
   else {
-    this.obj._id.should.be.an.instanceof(Mung.ObjectID);
+    this.obj._id.should.be.an.instanceof(Mungo.ObjectID);
   }
 
   this.obj.should.have.property('name').which.is.a.String();
