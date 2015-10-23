@@ -20,7 +20,8 @@
     "uglify-assets": "bash bin/uglify-assets.sh",
     "deploy-no-test": "bash bin/deploy-no-test.sh",
     "deploy": "bash bin/deploy.sh",
-    "migrate": "node dist/bin/migrate"
+    "migrate": "node dist/bin/migrate",
+    "prepublish" : "npm run migrate"
   },
   "author": "francoisv <francoisrvespa@gmail.com>",
   "license": "BSD-2-Clause",
