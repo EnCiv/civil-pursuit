@@ -18,5 +18,5 @@ npm run uglify &&
 echo "uglify ok"
 npm run uglify-assets &&
 echo "uglify-assets ok"
-node dist/bin/migrate
+node dist/bin/migrate &&
 echo "migrate ok"
