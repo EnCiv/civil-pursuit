@@ -16,6 +16,7 @@ import saveImage                        from './statics/save-image';
 import reactivate                       from './methods/reactivate';
 import addRace                          from './methods/add-race';
 import V2                               from './migrations/2';
+import V3                               from './migrations/3';
 
 class User extends Mung.Model {
   static schema () {
@@ -119,7 +120,8 @@ User.isPasswordValid          =     isPasswordValid.bind(User);
 User.version = 3;
 
 User.migrations = {
-  2 : V2
+  2 : V2,
+  3 : V3
 };
 
 export default User;
