@@ -20,6 +20,9 @@ import V3                               from './migrations/3';
 
 
 
+
+
+
 class User extends Mung.Model {
   static schema () {
     return {
