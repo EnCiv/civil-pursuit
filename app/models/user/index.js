@@ -19,6 +19,10 @@ import V2                               from './migrations/2';
 import V3                               from './migrations/3';
 
 
+
+
+
+
 class User extends Mungo.Model {
   static schema () {
     return {
