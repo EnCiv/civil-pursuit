@@ -48,8 +48,6 @@
     "marked": "^0.3.3",
     "mocha": "^2.3.3",
     "moment": "^2.10.6",
-    "mongodb": "^2.0.45",
-    "mongoose": "^4.1.1",
     "mongoose-simple-random": "~0.3.0",
     "mung": "co2-git/mung",
     "nodemailer": "~1.3.0",
