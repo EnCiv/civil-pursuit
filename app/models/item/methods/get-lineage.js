@@ -8,32 +8,37 @@ function getLineage () {
       let lineage = [];
 
       const _getLineage = itemId => {
-        Item
-          .findById(itemId)
-          .then(
-            item => {
-              try {
-                if ( ! item ) {
-                  return ok(lineage);
-                }
+        if ( itemId ) {
+          Item
+            .findById(itemId)
+            .then(
+              item => {
+                try {
+                  if ( ! item ) {
+                    return ok(lineage);
+                  }
 
-                lineage.push(item);
+                  lineage.push(item);
 
-                if ( item.parent ) {
-                  _getLineage(item.parent);
-                }
+                  if ( item.parent ) {
+                    _getLineage(item.parent);
+                  }
 
-                else {
-                  lineage.reverse();
-                  ok(lineage);
+                  else {
+                    lineage.reverse();
+                    ok(lineage);
+                  }
                 }
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            },
-            ko
-          );
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              ko
+            );
+        }
+        else {
+          ok(lineage);
+        }
       };
 
       _getLineage(this.parent);
