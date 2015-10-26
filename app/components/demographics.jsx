@@ -22,62 +22,11 @@ class Demographics extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  validateGPS () {
-    navigator.geolocation.watchPosition(position => {
-      let { longitude, latitude } = position.coords;
-
-      window.socket.emit('validate gps', longitude, latitude)
-        .on('OK validate gps', user => this.setState({ user }));
-    });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setCity () {
-    let city = React.findDOMNode(this.refs.city).value;
-
-    if ( city ) {
-      window.socket.emit('set city', city);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setState () {
-    let state = React.findDOMNode(this.refs.state).value;
-
-    if ( state ) {
-      window.socket.emit('set state', state);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setZip () {
-    let zip = React.findDOMNode(this.refs.zip).value;
-
-    if ( zip ) {
-      window.socket.emit('set zip', zip);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  setZip4 () {
-    let zip4 = React.findDOMNode(this.refs.zip4).value;
-
-    if ( zip4 ) {
-      window.socket.emit('set zip4', zip4);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   setEducation () {
     let education = React.findDOMNode(this.refs.education).value;
 
     if ( education ) {
-      window.socket.emit('set education', education);
+      window.socket.emit('set user info', { education });
     }
   }
 
@@ -87,7 +36,7 @@ class Demographics extends React.Component {
     let relationship = React.findDOMNode(this.refs.relationship).value;
 
     if ( relationship ) {
-      window.socket.emit('set marital status', relationship);
+      window.socket.emit('set user info', { married : relationship });
     }
   }
 
@@ -97,7 +46,7 @@ class Demographics extends React.Component {
     let employment = React.findDOMNode(this.refs.employment).value;
 
     if ( employment ) {
-      window.socket.emit('set employment', employment);
+      window.socket.emit('set user info', { employment });
     }
   }
 

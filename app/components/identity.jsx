@@ -34,7 +34,7 @@ class Identity extends React.Component {
     let firstName = React.findDOMNode(this.refs.firstName).value;
 
     if ( firstName ) {
-      window.socket.emit('set first name', firstName);
+      window.socket.emit('set user info', { first_name : firstName });
     }
   }
 
@@ -44,7 +44,7 @@ class Identity extends React.Component {
     let middleName = React.findDOMNode(this.refs.middleName).value;
 
     if ( middleName ) {
-      window.socket.emit('set middle name', middleName);
+      window.socket.emit('set user info', { middle_name : middleName });
     }
   }
 
@@ -54,7 +54,7 @@ class Identity extends React.Component {
     let lastName = React.findDOMNode(this.refs.lastName).value;
 
     if ( lastName ) {
-      window.socket.emit('set last name', lastName);
+      window.socket.emit('set user info', { last_name : lastName });
     }
   }
 
@@ -64,7 +64,7 @@ class Identity extends React.Component {
     let gender = React.findDOMNode(this.refs.gender).value;
 
     if ( gender ) {
-      window.socket.emit('set gender', gender);
+      window.socket.emit('set user info', { gender });
     }
   }
 
@@ -78,7 +78,7 @@ class Identity extends React.Component {
       let now = Date.now();
 
       if ( now > dob ) {
-        window.socket.emit('set birthdate', dob);
+        window.socket.emit('set user info', { dob });
       }
     }
   }

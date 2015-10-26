@@ -15,20 +15,20 @@ class Voter extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setRegisteredVoter () {
-    let registered = React.findDOMNode(this.refs.registered).value;
+    const registered_voter = React.findDOMNode(this.refs.registered).value;
 
-    if ( registered ) {
-      window.socket.emit('set registered voter', registered);
+    if ( registered_voter ) {
+      window.socket.emit('set user info', { registered_voter });
     }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   setParty () {
-    let party = React.findDOMNode(this.refs.party).value;
+    const party = React.findDOMNode(this.refs.party).value;
 
     if ( party ) {
-      window.socket.emit('set party', party);
+      window.socket.emit('set user info', { party });
     }
   }
 

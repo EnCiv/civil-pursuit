@@ -26,8 +26,8 @@ class Residence extends React.Component {
     navigator.geolocation.watchPosition(position => {
       let { longitude, latitude } = position.coords;
 
-      window.socket.emit('validate gps', longitude, latitude)
-        .on('OK validate gps', user => this.setState({ user }));
+      window.socket.emit('set user info', { gps : [longitude, latitude] })
+        .on('OK set user info', user => this.setState({ user }));
     });
   }
 
@@ -37,7 +37,7 @@ class Residence extends React.Component {
     let city = React.findDOMNode(this.refs.city).value;
 
     if ( city ) {
-      window.socket.emit('set city', city);
+      window.socket.emit('set user info', { city });
     }
   }
 
@@ -47,7 +47,7 @@ class Residence extends React.Component {
     let state = React.findDOMNode(this.refs.state).value;
 
     if ( state ) {
-      window.socket.emit('set state', state);
+      window.socket.emit('set user info', { state });
     }
   }
 
@@ -57,7 +57,7 @@ class Residence extends React.Component {
     let zip = React.findDOMNode(this.refs.zip).value;
 
     if ( zip ) {
-      window.socket.emit('set zip', zip);
+      window.socket.emit('set user info', { zip });
     }
   }
 
@@ -67,7 +67,7 @@ class Residence extends React.Component {
     let zip4 = React.findDOMNode(this.refs.zip4).value;
 
     if ( zip4 ) {
-      window.socket.emit('set zip4', zip4);
+      window.socket.emit('set user info', { zip4 });
     }
   }
 

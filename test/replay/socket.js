@@ -11,10 +11,15 @@ import config                     from '../../secret.json';
 import publicConfig               from '../../public.json';
 import Item                       from '../../app/models/item';
 import Type                       from '../../app/models/type';
-import Mungo                       from 'mungo';
+import User                       from '../../app/models/user';
+import Mungo                      from 'mungo';
 import { Popularity }             from '../../app/models/item/methods/get-popularity';
 import Training                   from '../../app/models/training';
 import isInstruction              from './assertions/training';
+import getUserInfo                from '../../app/api/get-user-info';
+import getTraining                from '../../app/api/get-training';
+import Country                    from '../../app/models/country';
+import isCountry                  from './assertions/country';
 
 const http = global.syn_httpServer;
 
@@ -25,6 +30,55 @@ let server;
 let client1;
 
 let user1;
+
+function Socket () {
+
+  if ( ! Socket.socket ) {
+    Socket.socket = new EventEmitter();
+
+    // socket.handshake.headers.host
+
+    Socket.socket.request = {
+      headers: {
+        host  : 'localhost:13012',
+        cookie : 'synapp=j%3A%7B%22training%22%3Atrue%7D'
+      }
+    };
+
+    Socket.socket.error = function (error) {
+      Socket.socket.emit('error', error);
+    };
+
+    Socket.socket.ok = (event, ...responses) => {
+      Socket.socket.emit('OK ' + event, ...responses);
+    };
+  }
+
+  return Socket.socket;
+}
+
+const client2 = Socket();
+
+const mock = (method, event, ...messages) => new Promise((ok, ko) => {
+  try {
+    const onError = error => ko(error);
+
+    method.apply(client2, [event, ...messages]);
+
+    client2
+      .on('error', onError)
+      .on(`OK ${event}`, (...messages) => {
+
+        client2.removeListener('error', onError);
+
+        ok(...messages);
+
+      });
+  }
+  catch ( error ) {
+    ko(error);
+  }
+});
 
 describe ( 'Socket' , function () {
 
@@ -39,18 +93,35 @@ describe ( 'Socket' , function () {
           'force new connection': true
         });
 
-        client1.on('welcome', user => {
-          user1 = user;
-          done();
-        });
+        client1.on('connect', () => done());
 
       });
 
-      it ( 'should be a user' , function () {
+    });
 
-        console.log({ user1 });
+  });
 
-      });
+  describe ( 'Identify' , function () {
+
+    it ( 'should set synuser' , function (done) {
+
+      User
+        .findOne()
+        .then(
+          user => {
+            try {
+              const json = user.toJSON();
+              client2.synuser = {
+                id : json._id
+              };
+              done();
+            }
+            catch ( error ) {
+              done(error);
+            }
+          },
+          done
+        );
 
     });
 
@@ -178,7 +249,7 @@ describe ( 'Socket' , function () {
 
         it ( 'should get training' , function (done) {
 
-          Training.find().then(
+          Training.find({}, { sort : { step : 1 } }).then(
             documents => {
               instructions = documents;
               done();
@@ -202,20 +273,86 @@ describe ( 'Socket' , function () {
 
       describe ( 'get training from socket' , function () {
 
-        it ( 'should emit and receive' , function (done) {
+        it ( 'should return training', function (done) {
 
-          client1
-            .on('OK get training', instructions => {
-              $instructions = instructions;
-              done();
-            })
-            .emit('get training');
+          this.timeout(5000);
+
+          mock(getTraining, 'get training')
+            .then(
+              instructions => {
+                $instructions = instructions;
+                done();
+              },
+              done
+            );
 
         });
 
-        it ( 'should be an empty array' , function () {
+        it ( 'should be the same than from DB', function () {
 
-          $instructions.should.be.an.Array().and.have.length(0);
+          $instructions.should.be.an.Array()
+            .and.have.length(instructions.length);
+
+          instructions.forEach((instruction, index) => {
+            $instructions[index]._id.toString().should.be.exactly(instruction._id.toString());
+          });
+
+        });
+
+      });
+
+    });
+
+    describe ( 'get countries' , function () {
+
+      let countries, $countries;
+
+      describe ( 'Get countries from db' , function () {
+
+        it ( 'should get countries' , function (done) {
+
+          Country.find({}, { limit : false }).then(
+            documents => {
+              countries = documents;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be countries', function () {
+
+          countries.should.be.an.Array();
+
+          countries.length.should.be.above(0);
+
+          countries.forEach(country => country.should.be.a.country());
+
+        });
+
+      });
+
+      describe ( 'get countries from socket' , function () {
+
+        it ( 'should emit and receive' , function (done) {
+
+          client1
+            .on('OK get countries', countries => {
+              $countries = countries;
+              done();
+            })
+            .emit('get countries');
+
+        });
+
+        it ( 'should be an array of the same countries than from DB' , function () {
+
+          $countries.should.be.an.Array().and.have.length(countries.length);
+
+          countries.forEach((country, index) => {
+            $countries[index]._id.should.be.exactly(country._id.toString());
+          });
 
         });
 
@@ -229,9 +366,40 @@ describe ( 'Socket' , function () {
 
       describe ( 'get user', function () {
 
+        it ( 'should get user info' , function (done) {
+
+          const onError = error => done(error);
+
+          getUserInfo.apply(client2, ['get user info']);
+
+          client2
+            .on('error', onError)
+            .on('OK get user info', user => {
+
+              user.should.be.an.Object()
+                .and.have.property('_id')
+                .which.is.exactly(client2.synuser.id);
+
+              client2.removeListener('error', onError);
+
+              done();
+
+            });
+
+        });
+
       });
 
     });
+
+    describe ( 'get discussion' , function () {});
+    describe ( 'get education' , function () {});
+    describe ( 'get employment' , function () {});
+    describe ( 'get marital statuses' , function () {});
+    describe ( 'get political parties' , function () {});
+    describe ( 'get races' , function () {});
+    describe ( 'get states' , function () {});
+    describe ( 'save user image' , function () {});
 
   });
 

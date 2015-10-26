@@ -1,6 +1,5 @@
 #!/usr/bin/bash
 
-. .sync.sh &&
 npm run transpile &&
 npm run build &&
 npm run less &&

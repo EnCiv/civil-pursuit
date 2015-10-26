@@ -1,6 +1,6 @@
 'use strict';
 
-import Mungo                             from 'mungo';
+import Mungo                            from 'mungo';
 import Race                             from '../race';
 import MaritalStatus                    from '../marital-status';
 import Employment                       from '../employment';
@@ -13,15 +13,12 @@ import lowerEmail                       from './statics/lower-email';
 import identify                         from './statics/identify';
 import isPasswordValid                  from './statics/is-password-valid';
 import saveImage                        from './statics/save-image';
+import validateGPS                      from './statics/validate-gps';
 import reactivate                       from './methods/reactivate';
 import addRace                          from './methods/add-race';
+import setCitizenship                   from './methods/set-citizenship';
 import V2                               from './migrations/2';
 import V3                               from './migrations/3';
-
-
-
-
-
 
 class User extends Mungo.Model {
   static schema () {
@@ -66,7 +63,10 @@ class User extends Mungo.Model {
 
       "activation_token"  :     String,
 
-      "race"              :     [Race],
+      "race"              :     {
+        "type"            :     [Race],
+        "distinct"        :     true
+      },
 
       "gender"            :     {
         "type"            :     String,
@@ -104,6 +104,20 @@ class User extends Mungo.Model {
     ];
   }
 
+  static updating () {
+    return [
+      this.validateGPS.bind(this)
+    ];
+  }
+
+  static saveImage (...args) {
+    return saveImage.apply(this, args);
+  }
+
+  static validateGPS (...args) {
+    return validateGPS.apply(this, args);
+  }
+
   reactivate (...args) {
     return reactivate.apply(this, args);
   }
@@ -112,8 +126,8 @@ class User extends Mungo.Model {
     return addRace.apply(this, args);
   }
 
-  static saveImage (...args) {
-    return saveImage.apply(this, args);
+  setCitizenship (...args) {
+    return setCitizenship.apply(this, args);
   }
 }
 
