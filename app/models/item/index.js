@@ -12,7 +12,9 @@ import countHarmony     from './methods/count-harmony';
 import countVotes       from './methods/count-votes';
 import countChildren    from './methods/count-children';
 import generateId       from './statics/id';
+import evaluate         from './statics/evaluate';
 import getPanelItems    from './statics/get-panel-items';
+import getDetails       from './statics/get-details';
 import V2               from './migrations/2';
 
 class Item extends Mungo.Model {
@@ -127,6 +129,14 @@ class Item extends Mungo.Model {
 
   static getPanelItems (...args) {
     return getPanelItems.apply(this, args);
+  }
+
+  static evaluate (...args) {
+    return evaluate.apply(this, args);
+  }
+
+  static getDetails (...args) {
+    return getDetails.apply(this, args);
   }
 }
 

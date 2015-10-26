@@ -14,6 +14,7 @@ import identify                         from './statics/identify';
 import isPasswordValid                  from './statics/is-password-valid';
 import saveImage                        from './statics/save-image';
 import validateGPS                      from './statics/validate-gps';
+import resetPassword                    from './statics/reset-password';
 import reactivate                       from './methods/reactivate';
 import addRace                          from './methods/add-race';
 import setCitizenship                   from './methods/set-citizenship';
@@ -116,6 +117,10 @@ class User extends Mungo.Model {
 
   static validateGPS (...args) {
     return validateGPS.apply(this, args);
+  }
+
+  static resetPassword (...args) {
+    return resetPassword.apply(this, args);
   }
 
   reactivate (...args) {

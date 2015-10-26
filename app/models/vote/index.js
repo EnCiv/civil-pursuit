@@ -4,6 +4,7 @@ import Mungo from 'mungo';
 import User from '../user';
 import Item from '../item';
 import Criteria from '../criteria';
+import getAccumulation from './statics/get-accumulation';
 
 class Vote extends Mungo.Model {
   static schema () {
@@ -25,6 +26,10 @@ class Vote extends Mungo.Model {
       	"required"       :   true
       }
     };
+  }
+
+  static getAccumulation (...args) {
+    return getAccumulation.apply(this, args);
   }
 }
 
