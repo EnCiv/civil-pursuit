@@ -15,6 +15,7 @@ import generateId       from './statics/id';
 import evaluate         from './statics/evaluate';
 import getPanelItems    from './statics/get-panel-items';
 import getDetails       from './statics/get-details';
+import getUrlTitle      from './statics/get-url-title';
 import V2               from './migrations/2';
 
 class Item extends Mungo.Model {
@@ -123,6 +124,12 @@ class Item extends Mungo.Model {
     ];
   }
 
+  static inserted () {
+    return [
+      this.getUrlTitle.bind(this)
+    ];
+  }
+
   static generateId (...args) {
     return generateId.apply(this, args);
   }
@@ -137,6 +144,10 @@ class Item extends Mungo.Model {
 
   static getDetails (...args) {
     return getDetails.apply(this, args);
+  }
+
+  static getUrlTitle (...args) {
+    return getUrlTitle.apply(this, args);
   }
 }
 

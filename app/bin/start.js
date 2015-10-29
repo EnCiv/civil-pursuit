@@ -3,8 +3,7 @@
 'use strict';
 
 import colors         from    'colors';
-import config         from    '../../secret.json';
-import Mungo           from 'mungo';
+import Mungo          from 'mungo';
 import Server         from    '../server';
 import Item           from    '../models/item';
 import Type           from    '../models/type';
@@ -40,7 +39,7 @@ const getIntroType = props => new Promise((ok, ko) => {
   try {
     console.log('Get intro trype');;
     Type
-      .findOne({ name : config['top level item'] })
+      .findOne({ name : 'Intro' })
       .then(
         type => {
           try {

@@ -1,0 +1,11 @@
+[
+  {
+    "name" : "Solution",
+    "harmony": ["Pro" , "Con"]
+  },
+
+  {
+    "name" : "Problem",
+    "harmony" : ["Agree", "Disagree"]
+  }
+]

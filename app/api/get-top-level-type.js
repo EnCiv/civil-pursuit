@@ -2,15 +2,28 @@
 
 import config from '../../secret.json';
 import Type from '../models/type';
+import Config from '../models/config';
 
 function getTopLevelType (event) {
   try {
-    Type
-      .findOne({ name : config['top level item'] })
+    Config
+      .findValueByName('top level type')
       .then(
-        type => this.ok(event, type.toJSON()),
+        value => {
+          try {
+            Type
+              .findById(value)
+              .then(
+                type => this.ok(event, type.toJSON()),
+                this.error.bind(this)
+              )
+          }
+          catch ( error ) {
+            this.error('error');
+          }
+        },
         this.error.bind(this)
-      )
+      );
   }
   catch ( error ) {
     this.error('error');

@@ -233,7 +233,7 @@ class Creator extends React.Component {
 
                 <TextInput block placeholder="http://" ref="reference" onBlur={ this.getUrlTitle.bind(this) } className="url-editor" name="reference" defaultValue={ url } />
 
-                <TextInput disabled defaultValue="This is the title" className="url-title" ref="title" />
+                <TextInput disabled defaultValue="" className="url-title" ref="title" />
 
                 <Icon icon="pencil" mute className="syn-edit-url" ref="editURL"  onClick={ this.editURL.bind(this) }/>
               </Row>

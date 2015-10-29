@@ -4,10 +4,10 @@ import fs             from 'fs';
 import path           from 'path';
 import { exec }       from 'child_process';
 import colors         from 'colors';
-import Mungo           from 'mungo';
-import sequencer      from '../lib/util/sequencer';
+import Mungo          from 'mungo';
+import migrate        from './migrate';
 
-function migrate (...models) {
+function reset () {
   return new Promise((ok, ko) => {
     try {
 
@@ -18,18 +18,15 @@ function migrate (...models) {
             throw error;
           }
 
-          if ( models.length ) {
-            files = files.filter(file => models.indexOf(file) > -1);
-          }
-
           let promises = files
-            .map(file => () => new Promise((ok, ko) => {
+            .map(file => new Promise((ok, ko) => {
               try {
                 let model = require(path.resolve(__dirname, `../models/${file}`));
 
-                console.log('Migrating', file);
+                console.log('Removing', model.name);
 
-                model.migrate().then(() => {
+                model.remove({}, { limit  : false }).then(() => {
+                  console.log('Removed', model.name);
                   ok();
                 }, ko);
               }
@@ -38,11 +35,12 @@ function migrate (...models) {
               }
           }));
 
-          sequencer(promises)
+          Promise
+            .all(promises)
             .then(
               results => {
-
-                 ok();
+                console.log('Migrating');
+                migrate().then(ok, ko);
               },
               ko
             );
@@ -57,11 +55,10 @@ function migrate (...models) {
   });
 }
 
-export default migrate;
+export default reset;
 
 if ( process.argv[1] === __filename || process.argv[1] === __filename.replace(/\.js$/, '') ) {
-  const args = process.argv.filter((arg, index) => index >= 2);
-  migrate(...args)
+  reset()
     .then(
       () => {
         Mungo.disconnect();

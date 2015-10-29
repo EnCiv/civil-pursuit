@@ -1,6 +1,5 @@
 'use strict';
 
-import config         from    '../../../../secret.json';
 import Type           from    '../../type';
 import User           from    '../../user';
 import fixtures       from '../../../../fixtures/item/1.json';
@@ -31,7 +30,7 @@ class V2 {
                 }
 
                 if ( ! intro.type ) {
-                  promises.push(Type.findOne({ name : config['top level item']}));
+                  promises.push(Type.findOne({ name : 'Intro' }));
                 }
 
                 Promise

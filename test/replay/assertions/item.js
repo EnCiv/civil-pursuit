@@ -100,7 +100,7 @@ should.Assertion.add('item', function (candidate = {}) {
   });
 
   if ( 'references' in candidate ) {
-    this.obj.references.should.be.exactly(candidate.references);
+    this.obj.references[0].url.should.be.exactly(candidate.references[0].url);
   }
 
   if ( 'parent' in this.obj ) {

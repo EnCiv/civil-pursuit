@@ -372,7 +372,7 @@ window.socket.on('welcome', function (user) {
 
   evaluation.cursor = 1;
 
-  evaluation.limit = 5;
+  evaluation.limit = evaluation.items.length;
 
   if (evaluation.items[0]) {
     evaluation.left = evaluation.items[0];
@@ -1207,7 +1207,7 @@ var Creator = (function (_React$Component) {
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'globe', spin: true, 'text-muted': true, className: 'looking-up', ref: 'lookingUp' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'exclamation', 'text-warning': true, className: 'error', ref: 'errorLookingUp' }),
                 _react2['default'].createElement(_utilTextInput2['default'], { block: true, placeholder: 'http://', ref: 'reference', onBlur: this.getUrlTitle.bind(this), className: 'url-editor', name: 'reference', defaultValue: url }),
-                _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, defaultValue: 'This is the title', className: 'url-title', ref: 'title' }),
+                _react2['default'].createElement(_utilTextInput2['default'], { disabled: true, defaultValue: '', className: 'url-title', ref: 'title' }),
                 _react2['default'].createElement(_utilIcon2['default'], { icon: 'pencil', mute: true, className: 'syn-edit-url', ref: 'editURL', onClick: this.editURL.bind(this) })
               ),
               _react2['default'].createElement(_utilTextArea2['default'], { block: true, placeholder: 'Description', ref: 'description', required: true, name: 'description', defaultValue: description })
@@ -1368,7 +1368,7 @@ var Demographics = (function (_React$Component) {
           _react2['default'].createElement(
             _utilColumn2['default'],
             { className: 'gutter' },
-            _react2['default'].createElement('input', { type: 'checkbox', onChange: _this.checkRace.bind(_this), value: race._id, defaultChecked: user.race.some(function (r) {
+            _react2['default'].createElement('input', { type: 'checkbox', onChange: _this.checkRace.bind(_this), value: race._id, defaultChecked: (user.race || []).some(function (r) {
                 return r === race._id;
               }) })
           )
@@ -5473,7 +5473,10 @@ var Promote = (function (_React$Component14) {
         ), _react2['default'].createElement(
           'div',
           { className: 'gutter' },
-          _react2['default'].createElement(Finish, { cursor: evaluation.cursor, limit: evaluation.limit, evaluated: item })
+          _react2['default'].createElement(Finish, {
+            cursor: evaluation.cursor,
+            limit: evaluation.limit,
+            evaluated: item })
         ));
       }
 

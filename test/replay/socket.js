@@ -20,6 +20,7 @@ import getUserInfo                from '../../app/api/get-user-info';
 import getTraining                from '../../app/api/get-training';
 import Country                    from '../../app/models/country';
 import isCountry                  from './assertions/country';
+import Config                     from '../../app/models/config';
 
 const http = global.syn_httpServer;
 
@@ -131,7 +132,19 @@ describe ( 'Socket' , function () {
 
     describe ( 'get top level type' , function () {
 
-      let topLevelType;
+      let topLevelTypeId, topLevelType;
+
+      it ( 'should get top level type id from config' , function(done) {
+
+        Config.findValueByName('top level type').then(
+          value => {
+            topLevelTypeId = value;
+            done();
+          },
+          done
+        );
+
+      });
 
       it ( 'should emit and get answer' , function (done) {
 
@@ -148,7 +161,13 @@ describe ( 'Socket' , function () {
 
         it ( 'should be a type' , function () {
 
-          topLevelType.should.be.a.typeDocument({ name : config['top level item'] }, { json : true });
+          topLevelType.should.be.a.typeDocument({}, true);
+
+        });
+
+        it ( 'should be top level' , function () {
+
+          topLevelType._id.toString().should.be.exactly(topLevelTypeId.toString());
 
         });
 
@@ -166,7 +185,7 @@ describe ( 'Socket' , function () {
 
         it ( 'should get type', function (done) {
 
-          Type.findOne({ name : config['top level item'] })
+          Type.findOne({ name : 'Test' })
             .then(
               type => {
                 panel.type = type;
@@ -179,7 +198,7 @@ describe ( 'Socket' , function () {
 
         it ( 'should be a type', function () {
 
-          panel.type.should.be.a.typeDocument({ name : config['top level item'] });
+          panel.type.should.be.a.typeDocument({ name : 'Test' });
 
         });
 

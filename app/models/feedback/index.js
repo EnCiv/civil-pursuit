@@ -3,6 +3,7 @@
 import Mungo from 'mungo';
 import Item from '../item';
 import User from '../user';
+import V1 from './migrations/1';
 
 class Feedback extends Mungo.Model {
   static schema () {
@@ -28,5 +29,11 @@ class Feedback extends Mungo.Model {
 }
 
 Feedback.collection = 'feedback';
+
+Feedback.migrations = {
+  1 : V1
+};
+
+Feedback.version = 2;
 
 export default Feedback;

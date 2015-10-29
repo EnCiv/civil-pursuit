@@ -386,7 +386,10 @@ class Promote extends React.Component {
 
         (
           <div className="gutter">
-            <Finish cursor={ evaluation.cursor } limit={ evaluation.limit } evaluated={ item } />
+            <Finish
+              cursor={ evaluation.cursor }
+              limit={ evaluation.limit }
+              evaluated={ item } />
           </div>
         )
       );

@@ -17,7 +17,7 @@ function toPanelItem () {
 
               const {
                 _id,              /** ObjectID **/
-                parent,              /** ObjectID **/
+                parent,           /** ObjectID **/
                 id,               /** String **/
                 subject,          /** String **/
                 description,      /** String **/

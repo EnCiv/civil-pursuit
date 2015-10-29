@@ -1,0 +1,11 @@
+[
+  {
+    "name" : "Problem",
+    "parent" : "Issue"
+  },
+
+  {
+    "name" : "Solution",
+    "parent" : "Problem"
+  }
+]

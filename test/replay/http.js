@@ -4,7 +4,6 @@ import Server             from '../../app/server';
 import superagent         from 'superagent';
 import Type               from '../../app/models/type';
 import Item               from '../../app/models/item';
-import config             from '../../secret.json';
 
 process.env.PORT = 13012;
 
@@ -21,7 +20,7 @@ describe ( 'HTTP server' , function () {
         it ( 'should get intro type' , function (done) {
 
           Type
-            .findOne({ name : config['top level item'] })
+            .findOne({ name : 'Intro' })
             .then(
               document => {
                 Intro = document;
@@ -38,7 +37,7 @@ describe ( 'HTTP server' , function () {
 
         it ( 'should be a type', function () {
 
-          Intro.should.be.a.typeDocument({ name : config['top level item'] });
+          Intro.should.be.a.typeDocument({ name : 'Intro' });
 
         });
 

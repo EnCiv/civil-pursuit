@@ -55,7 +55,8 @@ describe ( 'Clear DB' , function () {
           'trainings',
           'types',
           'votes',
-          'mungo_migrations'
+          'mungo_migrations',
+          'config'
         ].map(collection => () => new Promise((ok, ko) => {
           try {
             const { db } = Mungo.connections[0];

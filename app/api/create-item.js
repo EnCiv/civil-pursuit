@@ -4,7 +4,7 @@ import Item from '../models/item';
 
 function createItem (event, item) {
   try {
-    item.type = item.type._id || item.type;
+    // item.type = item.type._id || item.type;
     item.user = this.synuser.id;
 
     Item.create(item).then(

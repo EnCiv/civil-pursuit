@@ -8,10 +8,12 @@ import isPanelItem        from './assertions/panel-item';
 import Type               from '../../app/models/type';
 import User               from '../../app/models/user';
 import Vote               from '../../app/models/vote';
+import Config             from '../../app/models/config';
 import config             from '../../secret.json';
 import publicConfig       from '../../public.json';
+import getUrlTitle        from '../../app/lib/app/get-url-title';
 
-describe ( 'Item' , function () {
+describe ( '<Item>' , function () {
 
   describe ( 'Create' , function () {
 
@@ -371,6 +373,127 @@ describe ( 'Item' , function () {
 
     });
 
+    describe ( 'item with reference:', function () {
+
+      const candidate = {
+        subject : 'I am a test item with a reference',
+        description : 'I am a test item with a reference I am a test item with a reference I am a test item with a reference',
+        references : [
+          {
+            url : 'http://example.com'
+          }
+        ]
+      };
+
+      let item, intro, user;
+
+      describe ( 'Get type' , function () {
+
+        it ( 'should get test type' , function (done) {
+
+          Type
+            .findOne({ name : 'Test' })
+            .then(
+              document => {
+                intro = document;
+                candidate.type = intro;
+                done();
+              },
+              done
+            );
+
+        });
+
+        describe ( 'Type', function () {
+
+          it ( 'should be a type' , function () {
+
+            intro.should.be.a.typeDocument({ name : 'Test' });
+
+          });
+
+        });
+
+      });
+
+      describe ( 'Get User' , function () {
+
+        it ( 'should get user' , function (done) {
+
+          User
+            .findOne({ email : 'foo@foo.com' })
+            .then(
+              document => {
+                user = document;
+                candidate.user = user;
+                done();
+              },
+              done
+            );
+
+        });
+
+        describe ( 'User', function () {
+
+          it ( 'should be a user' , function () {
+
+            user.should.be.a.user({ email : 'foo@foo.com' });
+
+          });
+
+        });
+
+      });
+
+      describe ( 'inserting item:' , function () {
+
+        it ( 'should insert item' , function (done) {
+
+          // this.timeout(25000);
+
+          Item
+            .create(candidate)
+            .then(
+              document => {
+                item = document;
+                done();
+              },
+              done
+            );
+
+        });
+
+        describe ( 'inserted item' , function () {
+
+          it ( 'should be an item' , function () {
+
+            item.should.be.an.item(candidate);
+
+          });
+
+        });
+
+      });
+
+      describe ( 'Fetch item again' , function () {
+
+        it ( 'should fetch item' , function (done) {
+
+          Item.findById(item._id)
+            .then(
+              document => {
+                item = document;
+                done();
+              },
+              done
+            );
+
+        });
+
+      });
+
+    });
+
   });
 
   describe ( 'Panelify' , function () {
@@ -564,8 +687,8 @@ describe ( 'Item' , function () {
       describe ( 'Top level type', function () {
 
         it ( 'should get top level type' , function (done) {
-          Type
-            .findOne({ name : config['top level item'] })
+          Config
+            .findValueByName('top level type')
             .then(
               type => {
                 topLevelType = type;
@@ -578,7 +701,7 @@ describe ( 'Item' , function () {
 
         it ( 'should be a type', function () {
 
-          topLevelType.should.be.a.typeDocument({ name : config['top level item'] });
+          topLevelType.should.be.an.instanceof(Mungo.ObjectID);
 
         });
 
@@ -672,23 +795,33 @@ describe ( 'Item' , function () {
 
     });
 
-    describe ( 'Get panel items from a parent' , function () {
+    describe ( 'from a parent item > ' , function () {
 
       let topLevelItem;
 
-      describe ( 'Get a top level item' , function () {
+      describe ( 'getting a top level item' , function () {
 
         it ( 'should get it', function (done) {
 
-          Item
-            .findOne({ type : topLevelType })
-            .then(
-              item => {
-                topLevelItem = item;
-                done();
-              },
-              done
-            );
+          User.findOne().then(
+            user => {
+              Item
+                .create({
+                  type : topLevelType,
+                  subject : 'Test get top level item',
+                  description : 'Blah blah',
+                  user
+                })
+                .then(
+                  item => {
+                    topLevelItem = item;
+                    done();
+                  },
+                  done
+                );
+            },
+            done
+          );
         });
 
         it ( 'should be an item' , function () {

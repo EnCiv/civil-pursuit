@@ -398,7 +398,7 @@ window.socket
 
     evaluation.cursor = 1;
 
-    evaluation.limit = 5;
+    evaluation.limit = evaluation.items.length;
 
     if ( evaluation.items[0] ) {
       evaluation.left = evaluation.items[0];

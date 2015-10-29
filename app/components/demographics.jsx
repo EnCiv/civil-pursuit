@@ -74,7 +74,7 @@ class Demographics extends React.Component {
           { race.name }
         </Column>
         <Column className="gutter">
-          <input type="checkbox" onChange={ this.checkRace.bind(this) } value={ race._id } defaultChecked={ user.race.some(r => r === race._id) } />
+          <input type="checkbox" onChange={ this.checkRace.bind(this) } value={ race._id } defaultChecked={ (user.race || []).some(r => r === race._id) } />
         </Column>
       </Row>
     ));
