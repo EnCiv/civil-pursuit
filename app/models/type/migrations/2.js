@@ -96,7 +96,7 @@ class V2 {
             created : props.created.map(doc => doc._id)
           });
 
-        this.find({ __V : 2 }, { limit : false })
+        this.find([{ __V : 2 }, { name : 'Intro' }], { limit : false })
           .then(
             documents => {
               try {
