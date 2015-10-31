@@ -431,8 +431,6 @@ window.socket.on('welcome', function (user) {
     props.panels[id].items.push(item);
   }
 
-  console.log('item changed', id);
-
   props.panels[id].items = props.panels[id].items.map(function (panelItem) {
     if (panelItem._id === item._id) {
       return item;
@@ -440,6 +438,26 @@ window.socket.on('welcome', function (user) {
 
     return panelItem;
   });
+
+  for (var _id in props.items) {
+    if (props.items[_id].evaluation) {
+      if (props.items[_id].evaluation.left && props.items[_id].evaluation.left._id === item._id) {
+        props.items[_id].evaluation.left = item;
+      }
+
+      if (props.items[_id].evaluation.right && props.items[_id].evaluation.right._id === item._id) {
+        props.items[_id].evaluation.right = item;
+      }
+
+      props.items[_id].evaluation.items = props.items[_id].evaluation.items.map(function (evaluatedItem) {
+        if (evaluatedItem._id === item._id) {
+          return item;
+        }
+
+        return evaluatedItem;
+      });
+    }
+  }
 
   render();
 }).on('OK get item details', function (details) {
@@ -2726,6 +2744,10 @@ var _youtube = require('./youtube');
 
 var _youtube2 = _interopRequireDefault(_youtube);
 
+var _publicJson = require('../../public.json');
+
+var _publicJson2 = _interopRequireDefault(_publicJson);
+
 var ItemMedia = (function (_React$Component) {
   function ItemMedia() {
     _classCallCheck(this, ItemMedia);
@@ -2746,8 +2768,10 @@ var ItemMedia = (function (_React$Component) {
 
       if (_youtube2['default'].isYouTube(item)) {
         media = _react2['default'].createElement(_youtube2['default'], { item: item });
-      } else {
+      } else if (item.image && /^http/.test(item.image)) {
         media = _react2['default'].createElement(_utilImage2['default'], { src: item.image, responsive: true });
+      } else {
+        media = _react2['default'].createElement(_utilImage2['default'], { src: _publicJson2['default']['default item image'], responsive: true });
       }
 
       return _react2['default'].createElement(
@@ -2767,7 +2791,7 @@ var ItemMedia = (function (_React$Component) {
 
 exports['default'] = ItemMedia;
 module.exports = exports['default'];
-},{"./util/image":43,"./youtube":58,"react":219}],15:[function(require,module,exports){
+},{"../../public.json":223,"./util/image":43,"./youtube":58,"react":219}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35503,4 +35527,79 @@ module.exports = function(arr, fn, initial){
   
   return curr;
 };
+},{}],223:[function(require,module,exports){
+module.exports={
+  "profile": {
+    "identity": {
+      "description": "This information is used to identify you and make sure that you are unique"
+    },
+    "residence": {
+      "description": "This information allows us to place you into the district, state, county, and city communities in which you belong. By using GPS validate - it provides a way to prevent people from impersonating a local resident.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262161/gvmv05rqke71uqsh3qzq.png"
+    },
+    "demographics": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain demographics then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423261951/y1qxy2fwmgiike5gx7ey.png"
+    },
+    "voter": {
+      "description": "We use this information to make sure  that we have balanced participation. When we see too little participation in certain categories then we increase our efforts to get more participation there.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423262642/p61hdtkkdks8rednknqo.png"
+    },
+    "public persona": {
+      "description": "This is the information shown about you that others can see when they are evaluating your postings.",
+      "image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1423268109/zrryvjdvrdc4nuvsm3cf.png"
+    }
+  },
+
+  "navigator batch size": 6,
+
+  "item media": {
+
+    "max-width": 180,
+
+    "max-height": 120
+  },
+
+  "google analytics": {
+    "key": "UA-55807209-1"
+  },
+
+  "default item image": "http://res.cloudinary.com/hscbexf6a/image/upload/e_grayscale,r_8/a_0/v1415921565/xommyldfefjjvetenviv.jpg",
+
+  "user image": "http://res.cloudinary.com/hscbexf6a/image/upload/v1422988238/rlvmd6e2yketthe66xmc.jpg",
+
+  "routes": {
+
+    "terms of service": "/page/terms-of-service",
+
+    "sign in with twitter": "/sign/twitter",
+
+    "sign in with twitter OK": "/sign/twitter/ok",
+
+    "sign in with facebook": "/sign/facebook",
+
+    "sign in with facebook OK": "/sign/facebook/ok"
+
+  },
+
+  "title"           :   {
+    "prefix"        :   "Synaccord | ",
+    "default"       :   "Bring Synergy To Democracy"
+  },
+
+  "entry image maximum width"       : 160,
+
+  "example image for test upload"   : "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
+
+  "font awesome": {
+    "cdn": "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+  },
+
+  "jquery":{
+    "cdn": "//code.jquery.com/jquery-2.1.1.min.js"
+  },
+
+  "evaluation context item position": "last"
+}
+
 },{}]},{},[1]);

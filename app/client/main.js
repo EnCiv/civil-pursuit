@@ -462,8 +462,6 @@ window.socket
       props.panels[id].items.push(item);
     }
 
-    console.log('item changed', id);
-
     props.panels[id].items = props.panels[id].items.map(panelItem => {
       if ( panelItem._id === item._id ) {
         return item;
@@ -471,6 +469,26 @@ window.socket
 
       return panelItem;
     });
+
+    for ( let id in props.items ) {
+      if ( props.items[id].evaluation ) {
+        if ( props.items[id].evaluation.left && props.items[id].evaluation.left._id === item._id ) {
+          props.items[id].evaluation.left = item;
+        }
+
+        if ( props.items[id].evaluation.right && props.items[id].evaluation.right._id === item._id ) {
+          props.items[id].evaluation.right = item;
+        }
+
+        props.items[id].evaluation.items = props.items[id].evaluation.items.map(evaluatedItem => {
+          if ( evaluatedItem._id === item._id ) {
+            return item;
+          }
+
+          return evaluatedItem;
+        });
+      }
+    }
 
     render();
   })
