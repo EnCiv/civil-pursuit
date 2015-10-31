@@ -31,7 +31,7 @@ class V1 {
   static do () {
     return new Promise((ok, ko) => {
       try {
-        this.find({ __V : 1 }).then(
+        this.find({ __V : { $lte : 2 } }).then(
           documents => {
             try {
               if ( documents.length ) {

@@ -150,5 +150,61 @@ describe ( 'Type' , function () {
     });
   });
 
+  describe ( 'subtype' , function () {
+
+    let parent, child;
+
+    it ( 'should create parent type' , function (done) {
+
+      Type.create({ name : 'Parent type' }).then(
+        type => {
+          parent = type;
+          done();
+        },
+        done
+      );
+
+    });
+
+    it ( 'should create child' , function (done) {
+
+      Type.create({ name : 'Child type', parent }).then(
+        type => {
+          child = type;
+          done();
+        },
+        done
+      );
+
+    });
+
+    it ( 'should be the right subtype' , function (done) {
+
+      Type.findOne({ name : 'Parent type' }).then(
+        type => {
+          try {
+            type.getSubtype().then(
+              subtype => {
+                try {
+                  subtype._id.equals(child._id).should.be.true;
+                  done();
+                }
+                catch ( error ) {
+                  ko(error);
+                }
+              },
+              done
+            );
+          }
+          catch ( error ) {
+            ko(error);
+          }
+        },
+        done
+      );
+
+    });
+
+  });
 
 });
