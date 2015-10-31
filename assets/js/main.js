@@ -431,6 +431,8 @@ window.socket.on('welcome', function (user) {
     props.panels[id].items.push(item);
   }
 
+  console.log('item changed', id);
+
   props.panels[id].items = props.panels[id].items.map(function (panelItem) {
     if (panelItem._id === item._id) {
       return item;

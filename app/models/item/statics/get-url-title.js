@@ -20,15 +20,18 @@ function fetchUrlTitle (item) {
       }
 
       if ( lookForTitle ) {
-        getUrlTitle(item.references[0].url)
+        getUrlTitle(ref.url)
           .then(
             title => {
               try {
                 if ( title ) {
-                  item.map('references', reference => {
-                    reference.title = title;
-                    return reference;
-                  });
+                  return item
+                    .map('references', reference => {
+                      reference.title = title;
+                      return reference;
+                    })
+                    .save()
+                    .then(ok, ko);
                 }
 
                 ok();
@@ -37,7 +40,9 @@ function fetchUrlTitle (item) {
                 ko(error);
               }
             },
-            ko
+            error => {
+              ko(error);
+            }
           );
       }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-import Mungo             from 'mungo';
+import Model            from '../../lib/app/model';
 import isUrl            from '../../lib/util/is/url';
 import isLesserThan     from '../../lib/util/is/lesser-than';
 import User             from '../user';
@@ -16,9 +16,11 @@ import evaluate         from './statics/evaluate';
 import getPanelItems    from './statics/get-panel-items';
 import getDetails       from './statics/get-details';
 import getUrlTitle      from './statics/get-url-title';
+import saveImage        from './statics/save-image';
+import lambda           from './statics/lambda';
 import V2               from './migrations/2';
 
-class Item extends Mungo.Model {
+class Item extends Model {
   static schema () {
     return {
       "id"                :   {
@@ -126,7 +128,15 @@ class Item extends Mungo.Model {
 
   static inserted () {
     return [
-      this.getUrlTitle.bind(this)
+      this.emit.bind(this, 'created'),
+      this.saveImage.bind(this),
+      this.getUrlTitle.bind(this),
+    ];
+  }
+
+  static updated () {
+    return [
+      this.emit.bind(this, 'updated')
     ];
   }
 
@@ -148,6 +158,14 @@ class Item extends Mungo.Model {
 
   static getUrlTitle (...args) {
     return getUrlTitle.apply(this, args);
+  }
+
+  static saveImage (...args) {
+    return saveImage.apply(this, args);
+  }
+
+  static lambda (...args) {
+    return lambda.apply(this, args);
   }
 }
 

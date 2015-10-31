@@ -10,15 +10,6 @@ function addView (event, itemId) {
         item => {
           try {
             this.ok(event, item.views);
-
-            item
-              .toPanelItem()
-              .then(
-                item => {
-                  this.emit('item changed', item);
-                  this.broadcast.emit('item changed', item);
-                }
-              );
           }
           catch ( error ) {
             ko(error);

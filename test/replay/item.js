@@ -2,7 +2,7 @@
 
 import Item               from '../../app/models/item';
 import should             from 'should';
-import Mungo               from 'mungo';
+import Mungo              from 'mungo';
 import isItem             from './assertions/item';
 import isPanelItem        from './assertions/panel-item';
 import Type               from '../../app/models/type';
@@ -12,6 +12,8 @@ import Config             from '../../app/models/config';
 import config             from '../../secret.json';
 import publicConfig       from '../../public.json';
 import getUrlTitle        from '../../app/lib/app/get-url-title';
+import emitter            from '../../app/lib/app/emitter';
+import Agent              from '../../app/lib/app/agent';
 
 describe ( '<Item>' , function () {
 
@@ -373,122 +375,168 @@ describe ( '<Item>' , function () {
 
     });
 
+    describe ( 'emit created event', function () {
+
+      it ( 'should emit created event' , function (done) {
+
+        const subject = 'test emit created event';
+
+        const onItemCreated = (collection, item) => {
+          if ( collection === 'items' && item.subject === subject ) {
+            try {
+              emitter.removeListener('create', onItemCreated);
+              done();
+            }
+            catch ( error ) {
+              done(error);
+            }
+          }
+        };
+
+        emitter.on('create', onItemCreated);
+
+        Item.lambda({ subject });
+
+      });
+
+    });
+
     describe ( 'item with reference:', function () {
 
-      const candidate = {
-        subject : 'I am a test item with a reference',
-        description : 'I am a test item with a reference I am a test item with a reference I am a test item with a reference',
-        references : [
-          {
-            url : 'http://example.com'
+      const url = 'http://example.com';
+      const title = 'Example Domain';
+
+      let item1, item2;
+
+      it ( 'should create an item' , function (done) {
+
+        Item.lambda({ reference : { url } }).then(
+          item => {
+            item1 = item;
+            done();
+          },
+          done
+        );
+
+      });
+
+      it ( 'should emit updated event' , function (done) {
+        this.timeout(1000 * 60);
+
+        const onItemUpdated = (collection, item) => {
+          if ( collection === 'items' && item._id.equals(item1._id) ) {
+            try {
+              emitter.removeListener('update', onItemUpdated);
+              item2 = item;
+              done();
+            }
+            catch ( error ) {
+              done(error);
+            }
           }
-        ]
-      };
+        };
 
-      let item, intro, user;
-
-      describe ( 'Get type' , function () {
-
-        it ( 'should get test type' , function (done) {
-
-          Type
-            .findOne({ name : 'Test' })
-            .then(
-              document => {
-                intro = document;
-                candidate.type = intro;
-                done();
-              },
-              done
-            );
-
-        });
-
-        describe ( 'Type', function () {
-
-          it ( 'should be a type' , function () {
-
-            intro.should.be.a.typeDocument({ name : 'Test' });
-
-          });
-
-        });
+        emitter.on('update', onItemUpdated);
 
       });
 
-      describe ( 'Get User' , function () {
+      it ( 'should have the correct title' , function () {
 
-        it ( 'should get user' , function (done) {
-
-          User
-            .findOne({ email : 'foo@foo.com' })
-            .then(
-              document => {
-                user = document;
-                candidate.user = user;
-                done();
-              },
-              done
-            );
-
-        });
-
-        describe ( 'User', function () {
-
-          it ( 'should be a user' , function () {
-
-            user.should.be.a.user({ email : 'foo@foo.com' });
-
-          });
-
-        });
+        item2.should.be.an.item()
+          .and.have.property('references')
+          .which.is.an.Array();
 
       });
 
-      describe ( 'inserting item:' , function () {
+    });
 
-        it ( 'should insert item' , function (done) {
+    describe ( 'item with image' , function () {
 
-          // this.timeout(25000);
+      let itemWithImage, updateItem;
 
-          Item
-            .create(candidate)
-            .then(
-              document => {
-                item = document;
-                done();
-              },
-              done
-            );
+      it ( 'should download an image in /tmp' , function (done) {
 
-        });
+        this.timeout(1000 * 60);
 
-        describe ( 'inserted item' , function () {
-
-          it ( 'should be an item' , function () {
-
-            item.should.be.an.item(candidate);
-
-          });
-
-        });
+        Agent
+          .download(publicConfig['default item image'], '/tmp/testimage.jpg')
+          .then(
+            () => done(),
+            done
+          );
 
       });
 
-      describe ( 'Fetch item again' , function () {
+      it ( 'should create item' , function (done) {
 
-        it ( 'should fetch item' , function (done) {
+        Item.lambda({ image : 'testimage.jpg' }).then(
+          created => {
+            itemWithImage = created;
+            done();
+          },
+          done
+        );
 
-          Item.findById(item._id)
-            .then(
-              document => {
-                item = document;
-                done();
-              },
-              done
-            );
+      });
 
-        });
+      it ( 'should be an item' , function () {
+
+        itemWithImage.should.be.an.item({ image : 'testimage.jpg' });
+
+      });
+
+      it ( 'should emit updated event' , function (done) {
+        this.timeout(1000 * 60);
+
+        const onItemUpdated = (collection, item) => {
+          if ( collection === 'items' && item._id.equals(itemWithImage._id) ) {
+            try {
+              emitter.removeListener('update', onItemUpdated);
+              updateItem = item;
+              done();
+            }
+            catch ( error ) {
+              done(error);
+            }
+          }
+        };
+
+        emitter.on('update', onItemUpdated);
+
+      });
+
+      it ( 'should have the correct image' , function () {
+
+        updateItem.should.be.an.item()
+          .and.have.property('image')
+          .which.is.not.exactly('testimage.jpg');
+
+      });
+
+    });
+  });
+
+  describe ( 'Lambda' , function () {
+
+    describe ( 'plain item' , function () {
+
+      let plainItem;
+
+      it ( 'should create a plain item' , function (done) {
+
+        Item.lambda().then(
+          item => {
+            plainItem = item;
+            done();
+          },
+          done
+        );
+
+      });
+
+      it ( 'should be an item', function () {
+
+        plainItem.should.be.an.item();
 
       });
 

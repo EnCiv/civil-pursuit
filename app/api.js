@@ -8,6 +8,7 @@ import SocketIO           from 'socket.io';
 import S                  from 'string';
 import cookieParser       from 'cookie-parser';
 import ss                 from 'socket.io-stream';
+import emitter            from './lib/app/emitter';
 
 class API extends EventEmitter {
 
@@ -177,6 +178,20 @@ class API extends EventEmitter {
       }
 
       this.stream(socket);
+
+      // Listen to emitters
+
+      emitter.on('update', (collection, document) => {
+        if ( collection === 'items' ) {
+          document.toPanelItem().then(
+            item => {
+              socket.broadcast.emit('item changed', item);
+              socket.emit('item changed', item);
+            },
+            this.emit.bind(this, 'error')
+          );
+        }
+      });
     }
     catch ( error ) {
       this.emit('error', error);

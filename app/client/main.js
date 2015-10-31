@@ -462,6 +462,8 @@ window.socket
       props.panels[id].items.push(item);
     }
 
+    console.log('item changed', id);
+
     props.panels[id].items = props.panels[id].items.map(panelItem => {
       if ( panelItem._id === item._id ) {
         return item;
