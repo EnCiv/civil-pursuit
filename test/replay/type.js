@@ -178,6 +178,15 @@ describe ( 'Type' , function () {
 
     });
 
+    it ( 'should create an extra item to make sure it is the last of the list' , function (done) {
+
+      Type.create({ name : 'Lambda' }).then(
+        () => done(),
+        done
+      );
+
+    });
+
     it ( 'should be the right subtype' , function (done) {
 
       Type.findOne({ name : 'Parent type' }).then(
