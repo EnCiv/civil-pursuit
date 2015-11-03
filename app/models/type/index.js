@@ -1,9 +1,10 @@
 'use strict';
 
-import Mungo         from 'mungo';
+import Mungo        from 'mungo';
 import toSlug       from '../../lib/util/to-slug';
 import isHarmony    from './methods/is-harmony';
 import getSubtype   from './methods/get-subtype';
+import group        from './statics/group';
 import V2           from './migrations/2';
 import V3           from './migrations/3';
 import V4           from './migrations/4';
@@ -34,8 +35,8 @@ class Type extends Mungo.Model {
     return getSubtype.apply(this, args);
   }
 
-  get link () {
-    return `/item/${this.id}/${toSlug(this.subject)}`;
+  static group (...args) {
+    return group.apply(this, args);
   }
 }
 

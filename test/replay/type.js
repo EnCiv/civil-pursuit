@@ -216,4 +216,62 @@ describe ( 'Type' , function () {
 
   });
 
+  describe ( 'Group' , function () {
+
+    let group;
+
+    it ( 'should be ok' , function (done) {
+
+      Type.group('I am a parent', 'I am a child', 'I am a pro', 'I am a con')
+        .then(
+          $group => {
+            group = $group;
+            done();
+          },
+          done
+        );
+
+    });
+
+    it ( 'should all be types', function () {
+
+      group.should.be.an.Object();
+
+      group.should.have.property('parent').which.is.a.typeDocument();
+      group.should.have.property('subtype').which.is.a.typeDocument();
+      group.should.have.property('pro').which.is.a.typeDocument();
+      group.should.have.property('con').which.is.a.typeDocument();
+
+    });
+
+    describe ( 'subtype' , function () {
+
+      it ( 'should be the child of parent', function () {
+
+        group.subtype.should.have.property('parent');
+        group.subtype.parent.equals(group.parent._id).should.be.true;
+
+      });
+
+    });
+
+    describe ( 'harmony' , function () {
+
+      it ( 'should be the pro of parent', function () {
+
+        group.parent.should.have.property('harmony').which.is.an.Array().and.have.length(2);
+        group.parent.harmony[0].equals(group.pro._id).should.be.true;
+
+      });
+
+      it ( 'should be the con of parent', function () {
+
+        group.parent.harmony[1].equals(group.con._id).should.be.true;
+
+      });
+
+    });
+
+  });
+
 });

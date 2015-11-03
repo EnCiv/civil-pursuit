@@ -120,6 +120,10 @@ class Item extends Model {
     return countChildren.apply(this, args);
   }
 
+  get link () {
+    return `/item/${this.id}/${toSlug(this.subject)}`;
+  }
+
   static inserting () {
     return [
       this.generateId.bind(this)
@@ -168,6 +172,8 @@ class Item extends Model {
     return lambda.apply(this, args);
   }
 }
+
+Item.version = 2;
 
 Item.migrations = {
   2 : V2

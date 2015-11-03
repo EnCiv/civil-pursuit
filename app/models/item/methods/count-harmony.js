@@ -22,7 +22,6 @@ function countHarmony () {
         try {
           const { harmony } = this.__populated.type;
 
-
           const promises = harmony.map(side =>
             new Promise((ok, ko) => {
               if ( side ) {
@@ -76,6 +75,7 @@ function countHarmony () {
       sequencer(sequence)
         .then(
           props => {
+            console.log('!', props);
             ok(calculateHarmony(props));
           },
           ko

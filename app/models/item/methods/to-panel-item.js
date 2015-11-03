@@ -24,18 +24,18 @@ function toPanelItem () {
                 image,            /** String **/
                 references,       /** [{ title: String, url: String }] **/
                 views,            /** Number **/
-                promotions        /** Number **/
+                promotions,       /** Number **/
               } = this;
 
               const item = {
-                _id,              /** ObjectID **/
-                id,               /** String **/
-                subject,          /** String **/
-                description,      /** String **/
-                image,            /** String **/
-                references,       /** [{ title: String, url: String }] **/
-                views,            /** Number **/
-                promotions        /** Number **/,
+                _id,
+                id,
+                subject,
+                description,
+                image,
+                references,
+                views,
+                promotions,
                 parent
               };
 

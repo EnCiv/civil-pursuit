@@ -1,19 +1,15 @@
-! function () {
-  
-  'use strict';
-  
-  function getHarmony (a, b) {
+'use strict';
 
-    var sum = a + b;
+function getHarmony (a, b) {
+  console.log({ a, b });
 
-    if ( ! sum ) {
-      return 0;
-    }
+  const sum = a + b;
 
-    return Math.ceil((a / sum) * 100);
-
+  if ( ! sum ) {
+    return 0;
   }
 
-  module.exports = getHarmony;
+  return Math.ceil((a / sum) * 100);
+}
 
-} ();
+export default getHarmony;

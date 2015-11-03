@@ -1,10 +1,11 @@
 'use strict';
 
-import Item               from '../../app/models/item';
 import should             from 'should';
 import Mungo              from 'mungo';
 import isItem             from './assertions/item';
 import isPanelItem        from './assertions/panel-item';
+import isEvaluation       from './assertions/evaluation';
+import Item               from '../../app/models/item';
 import Type               from '../../app/models/type';
 import User               from '../../app/models/user';
 import Vote               from '../../app/models/vote';
@@ -546,6 +547,262 @@ describe ( '<Item>' , function () {
 
   describe ( 'Panelify' , function () {
 
+    describe ( 'Panelify top panel item', function () {
+
+      let group, parent1, panelParent1, subtype1, panelSubtype1, pro1, panelPro1, con1, panelCon1;
+
+      it ( 'should create group' , function (done) {
+
+        Type.group('Panelify 1 parent', 'Panelify 1 subtype', 'Panelify 1 pro', 'Panelify 1 con').then(
+          results => {
+            group = results;
+            console.log({
+              parent : group.parent.toJSON(),
+              subtype : group.subtype.toJSON(),
+              pro : group.pro.toJSON(),
+              con : group.con.toJSON(),
+            })
+            done();
+          },
+          done
+        );
+
+      });
+
+      describe ( 'Parent item' , function () {
+
+        it ( 'should create a lambda parent item' , function (done) {
+
+          Item.lambda({ type : group.parent, subject : 'Panelify -- Top item' }).then(
+            item => {
+              parent1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panelified item' , function (done) {
+
+          parent1.toPanelItem().then(
+            item => {
+              panelParent1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panel item', function () {
+
+          panelParent1.should.be.a.panelItem(parent1);
+
+        });
+
+        it ( 'should have no harmony' , function () {
+
+          panelParent1.should.have.property('harmony').which.is.an.Object();
+          panelParent1.harmony.should.have.property('con').which.is.exactly(0);
+          panelParent1.harmony.should.have.property('pro').which.is.exactly(0);
+          panelParent1.harmony.should.have.property('harmony').which.is.exactly(0);
+
+        });
+
+      });
+
+      describe ( 'Subtype item' , function () {
+
+        it ( 'should create a lambda subtype item' , function (done) {
+
+          Item.lambda({ type : group.subtype, parent : parent1, subject : 'Panelify -- Subtype item' }).then(
+            item => {
+              subtype1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panelified item' , function (done) {
+
+          subtype1.toPanelItem().then(
+            item => {
+              panelSubtype1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panel item', function () {
+
+          panelSubtype1.should.be.a.panelItem(subtype1);
+
+        });
+
+        it ( 'should have no harmony' , function () {
+
+          panelSubtype1.should.have.property('harmony').which.is.an.Object();
+          panelSubtype1.harmony.should.have.property('con').which.is.undefined();
+          panelSubtype1.harmony.should.have.property('pro').which.is.undefined();
+          panelSubtype1.harmony.should.have.property('harmony').which.is.exactly(0);
+
+        });
+
+      });
+
+      describe ( 'Pro item' , function () {
+
+        it ( 'should create a lambda pro item' , function (done) {
+
+          Item.lambda({ type : group.pro, parent : parent1, subject : 'Panelify -- Pro item' }).then(
+            item => {
+              pro1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panelified item' , function (done) {
+
+          pro1.toPanelItem().then(
+            item => {
+              panelPro1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panel item', function () {
+
+          panelPro1.should.be.a.panelItem(pro1);
+
+        });
+
+        it ( 'should have no harmony' , function () {
+
+          panelPro1.should.have.property('harmony').which.is.an.Object();
+          panelPro1.harmony.should.have.property('con').which.is.undefined();
+          panelPro1.harmony.should.have.property('pro').which.is.undefined();
+          panelPro1.harmony.should.have.property('harmony').which.is.exactly(0);
+
+        });
+
+      });
+
+      describe ( 'Parent item' , function () {
+
+        it ( 'should be a panelified item' , function (done) {
+
+          parent1.toPanelItem().then(
+            item => {
+              panelParent1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panel item', function () {
+
+          panelParent1.should.be.a.panelItem(parent1);
+
+        });
+
+        it ( 'should have harmony' , function () {
+          panelParent1.should.have.property('harmony').which.is.an.Object();
+          panelParent1.harmony.should.have.property('con').which.is.exactly(0);
+          panelParent1.harmony.should.have.property('pro').which.is.exactly(1);
+          panelParent1.harmony.should.have.property('harmony').which.is.exactly(100);
+
+        });
+
+      });
+
+      describe ( 'Con item' , function () {
+
+        it ( 'should create a lambda con item' , function (done) {
+
+          Item.lambda({ type : group.con, parent : parent1, subject : 'Panelify -- Con item' }).then(
+            item => {
+              con1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panelified item' , function (done) {
+
+          con1.toPanelItem().then(
+            item => {
+              panelCon1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panel item', function () {
+
+          panelCon1.should.be.a.panelItem(con1);
+
+        });
+
+        it ( 'should have no harmony' , function () {
+
+          panelCon1.should.have.property('harmony').which.is.an.Object();
+          panelCon1.harmony.should.have.property('con').which.is.undefined();
+          panelCon1.harmony.should.have.property('pro').which.is.undefined();
+          panelCon1.harmony.should.have.property('harmony').which.is.exactly(0);
+
+        });
+
+      });
+
+      describe ( 'Parent item' , function () {
+
+        it ( 'should be a panelified item' , function (done) {
+
+          parent1.toPanelItem().then(
+            item => {
+              panelParent1 = item;
+              done();
+            },
+            done
+          );
+
+        });
+
+        it ( 'should be a panel item', function () {
+
+          panelParent1.should.be.a.panelItem(parent1);
+
+        });
+
+        it ( 'should have harmony' , function () {
+          panelParent1.should.have.property('harmony').which.is.an.Object();
+          panelParent1.harmony.should.have.property('con').which.is.exactly(1);
+          panelParent1.harmony.should.have.property('pro').which.is.exactly(1);
+          panelParent1.harmony.should.have.property('harmony').which.is.exactly(50);
+
+        });
+
+      });
+
+    });
+
     let item, panelified;
 
     describe ( 'Fecth item' , function () {
@@ -889,6 +1146,66 @@ describe ( '<Item>' , function () {
         // it ( 'should create it' , func)
 
       });
+    });
+
+  });
+
+  describe ( 'Evaluate' , function () {
+
+    let group1, item1, evaluation1;
+
+    describe ( 'Create group' , function () {
+
+      it ( 'should create group' , function (done) {
+
+        Type
+          .group('Evaluate parent', 'Evaluate subtype', 'Evaluate Pro', 'Evaluate Con')
+          .then(
+            group => {
+              group1 = group;
+              done();
+            },
+            done
+          );
+
+      });
+
+    });
+
+    describe ( 'Top level item' , function () {
+
+      it ( 'should create item' , function (done) {
+
+        Item.lambda({ type : group1.parent }).then(
+          item => {
+            item1 = item;
+            done();
+          },
+          done
+        );
+
+      });
+
+    });
+
+    describe ( 'Evaluate top level item' , function () {
+
+      it ( 'should evaluate' , function (done) {
+        Item.evaluate(item1.user, item1._id).then(
+          evaluation => {
+            evaluation1 = evaluation;
+            done();
+          },
+          done
+        );
+      });
+
+      it ( 'should be an evaluation' , function () {
+
+        evaluation1.should.be.an.evaluation({ split : false, type : group1.parent, item : item1._id });
+
+      });
+
     });
 
   });

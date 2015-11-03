@@ -8,12 +8,12 @@ class Emitter extends EventEmitter {
 
     this
       .on('created', (collection, document) => {
-        console.log(`created new document in ${collection.bold}`.blue, document);
+        // console.log(`created new document in ${collection.bold}`.blue, document);
         this.emit('create', collection, document);
       })
 
       .on('updated', (collection, document) => {
-        console.log(`updated document in ${collection.bold}`.blue, document.toJSON());
+        // console.log(`updated document in ${collection.bold}`.blue, document.toJSON());
         this.emit('update', collection, document);
       })
 

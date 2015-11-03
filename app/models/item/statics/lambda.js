@@ -19,6 +19,10 @@ function lambda (options = {}) {
         item.references = [{ url : options.reference.url }];
       }
 
+      if ( 'parent' in options ) {
+        item.parent = options.parent;
+      }
+
       Promise.all([
         new Promise((ok, ko) => {
           try {
