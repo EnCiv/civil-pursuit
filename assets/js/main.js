@@ -3079,7 +3079,7 @@ var Item = (function (_React$Component) {
             _react2['default'].createElement(
               'span',
               null,
-              item.harmony,
+              item.harmony.harmony,
               ' '
             ),
             _react2['default'].createElement(_utilIcon2['default'], { icon: 'music' })
