@@ -608,6 +608,9 @@ describe ( '<Item>' , function () {
           panelParent1.harmony.should.have.property('pro').which.is.exactly(0);
           panelParent1.harmony.should.have.property('harmony').which.is.exactly(0);
 
+          panelParent1.should.have.property('children')
+            .which.is.exactly(0);
+
         });
 
       });
@@ -723,6 +726,8 @@ describe ( '<Item>' , function () {
           panelParent1.harmony.should.have.property('con').which.is.exactly(0);
           panelParent1.harmony.should.have.property('pro').which.is.exactly(1);
           panelParent1.harmony.should.have.property('harmony').which.is.exactly(100);
+
+          panelParent1.should.have.property('children').which.is.exactly(1);
 
         });
 
@@ -938,16 +943,7 @@ describe ( '<Item>' , function () {
                 ko(error);
               }
             }),
-            new Promise((ok, ko) => {
-              try {
-                Item
-                  .count({ parent : item })
-                  .then(ok, ko);
-              }
-              catch ( error ) {
-                ko(error);
-              }
-            }),
+            item.countChildren(),
             item.countHarmony()
           ])
           .then(
