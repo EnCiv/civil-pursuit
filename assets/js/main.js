@@ -17,7 +17,7 @@ var _events = require('events');
 
 window.makePanelId = function (panel) {
   // console.log('make panel id', panel);
-  var id = panel.type._id;
+  var id = panel.type._id || panel.type;
 
   if (panel.parent) {
     id += '-' + (panel.parent._id || panel.parent);
@@ -2081,6 +2081,8 @@ var Harmony = (function (_React$Component) {
     var type = this.props.item.type;
     var harmony = type.harmony;
 
+    console.info({ harmony: harmony });
+
     this.leftId = null;
     this.rightId = null;
 
@@ -2088,6 +2090,8 @@ var Harmony = (function (_React$Component) {
       this.leftId = makePanelId({ type: harmony[0], parent: this.props.item._id });
 
       this.rightId = makePanelId({ type: harmony[1], parent: this.props.item._id });
+
+      console.log(this.leftId);
     }
   }
 

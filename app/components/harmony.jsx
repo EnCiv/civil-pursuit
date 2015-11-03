@@ -16,6 +16,8 @@ class Harmony extends React.Component {
 
     let { harmony } = type;
 
+    console.info({ harmony })
+
     this.leftId = null;
     this.rightId = null;
 
@@ -23,13 +25,15 @@ class Harmony extends React.Component {
       this.leftId = makePanelId( { type : harmony[0], parent : this.props.item._id });
 
       this.rightId = makePanelId( { type : harmony[1], parent : this.props.item._id });
+
+      console.log(this.leftId)
     }
   }
 
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
-
+      
       if ( ! props.panels[this.leftId] ) {
         window.Dispatcher.emit('get items', {
           type        :   props.item.type.harmony[0],

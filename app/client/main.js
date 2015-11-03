@@ -6,7 +6,7 @@ import { EventEmitter } from 'events';
 
 window.makePanelId = function (panel) {
   // console.log('make panel id', panel);
-  let id = panel.type._id;
+  let id = panel.type._id || panel.type;
 
   if ( panel.parent ) {
     id += `-${(panel.parent._id || panel.parent)}`;
