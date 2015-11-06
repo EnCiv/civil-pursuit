@@ -545,23 +545,17 @@ describe ( '<Item>' , function () {
 
   });
 
-  describe ( 'Panelify' , function () {
+  describe ( '> Panelify' , function () {
 
-    describe ( 'Panelify top panel item', function () {
+    describe ( '> Top panel item', function () {
 
       let group, parent1, panelParent1, subtype1, panelSubtype1, pro1, panelPro1, con1, panelCon1;
 
-      it ( 'should create group' , function (done) {
+      it ( '>> should create group' , function (done) {
 
         Type.group('Panelify 1 parent', 'Panelify 1 subtype', 'Panelify 1 pro', 'Panelify 1 con').then(
           results => {
             group = results;
-            console.log({
-              parent : group.parent.toJSON(),
-              subtype : group.subtype.toJSON(),
-              pro : group.pro.toJSON(),
-              con : group.con.toJSON(),
-            })
             done();
           },
           done
@@ -569,9 +563,9 @@ describe ( '<Item>' , function () {
 
       });
 
-      describe ( 'Parent item' , function () {
+      describe ( '> Parent item' , function () {
 
-        it ( 'should create a lambda parent item' , function (done) {
+        it ( '>> should create a lambda parent item' , function (done) {
 
           Item.lambda({ type : group.parent, subject : 'Panelify -- Top item' }).then(
             item => {
@@ -583,7 +577,7 @@ describe ( '<Item>' , function () {
 
         });
 
-        it ( 'should be a panelified item' , function (done) {
+        it ( '>> should be a panelified item' , function (done) {
 
           parent1.toPanelItem().then(
             item => {
@@ -595,7 +589,7 @@ describe ( '<Item>' , function () {
 
         });
 
-        it ( 'should be a panel item', function () {
+        it ( '>> should be a panel item', function () {
 
           panelParent1.should.be.a.panelItem(parent1);
 
@@ -615,7 +609,7 @@ describe ( '<Item>' , function () {
 
       });
 
-      describe ( 'Subtype item' , function () {
+      describe ( '> Subtype item' , function () {
 
         it ( 'should create a lambda subtype item' , function (done) {
 
@@ -629,7 +623,7 @@ describe ( '<Item>' , function () {
 
         });
 
-        it ( 'should be a panelified item' , function (done) {
+        it ( '>> should be a panelified item' , function (done) {
 
           subtype1.toPanelItem().then(
             item => {

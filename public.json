@@ -69,5 +69,30 @@
     "cdn": "//code.jquery.com/jquery-2.1.1.min.js"
   },
 
-  "evaluation context item position": "last"
+  "evaluation context item position": "last",
+
+  "selectors" : {
+    "login button" : ".syn-top_bar-login_button",
+    "login form" : {
+      "form" : "form[name=\"login\"]",
+      "email" : "form[name=\"login\"] input[name=\"email\"]",
+      "password" : "form[name=\"login\"] input[name=\"password\"]"
+    },
+    "join button" : ".syn-top_bar-join_button button",
+    "join form" : {
+      "form" : "form[name=\"join\"]",
+      "email" : "form[name=\"join\"] input[name=\"email\"]",
+      "password" : "form[name=\"join\"] input[name=\"password\"]",
+      "confirm" : "form[name=\"join\"] input[name=\"confirm\"]",
+      "agree" : "form[name=\"join\"] i[name=\"agree\"]",
+      "submit" : "form[name=\"join\"] button[type=\"submit\"]"
+    },
+    "create top level item toggler" : "#top-level-panel .toggle-creator",
+    "creator form" : {
+      "form" : "form[name=\"creator\"]",
+      "subject" : "form[name=\"creator\"] input[name=\"subject\"]",
+      "description" : "form[name=\"creator\"] textarea[name=\"description\"]",
+      "submit" : "form[name=\"creator\"] button[type=\"submit\"]"
+    }
+  }
 }

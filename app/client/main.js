@@ -400,6 +400,10 @@ window.socket
 
     evaluation.limit = evaluation.items.length;
 
+    // if ( evaluation.limit > 5 ) {
+    //   evaluation.limit = 5;
+    // }
+
     if ( evaluation.items[0] ) {
       evaluation.left = evaluation.items[0];
       window.Dispatcher.emit('add view', evaluation.items[0]);

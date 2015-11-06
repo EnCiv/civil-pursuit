@@ -1,6 +1,5 @@
 'use strict';
 
-import { Domain } from 'domain';
 import crypto from 'crypto';
 
 function randomString (size) {

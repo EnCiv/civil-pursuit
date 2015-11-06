@@ -121,7 +121,7 @@ class Join extends React.Component {
 
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput block autoFocus medium required placeholder="Email" ref="email" />
+          <EmailInput block autoFocus medium required placeholder="Email" ref="email" name="email" />
         </div>
 
         <Row>
@@ -142,8 +142,8 @@ class Join extends React.Component {
         </Row>
 
         <InputGroup block>
-          <Password required placeholder="Password" ref="password" medium />
-          <Password required placeholder="Confirm password" ref="confirm" medium />
+          <Password required placeholder="Password" ref="password" medium name="password" />
+          <Password required placeholder="Confirm password" ref="confirm" medium name="confirm" />
         </InputGroup>
 
         <div className="syn-form-group syn-form-submit">
@@ -156,7 +156,7 @@ class Join extends React.Component {
           </Column>
 
           <Column span="50" text-right gutter>
-            <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" /> I agree to the <a href="/page/terms-of-service">Terms of Service</a>
+            <Icon icon="square-o" size="2" onClick={ this.agree.bind(this) } ref="agree" name="agree" /> I agree to the <a href="/page/terms-of-service">Terms of Service</a>
           </Column>
         </Row>
       </div>
@@ -172,7 +172,7 @@ class Join extends React.Component {
 
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Join">
-        <Form handler={ this.signup.bind(this) } flash={ this.state } form-center>
+        <Form handler={ this.signup.bind(this) } flash={ this.state } form-center name="join">
           { content }
         </Form>
       </Modal>

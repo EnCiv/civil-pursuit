@@ -204,7 +204,7 @@ class Creator extends React.Component {
     }
 
     return (
-      <Form handler={ this.create.bind(this) } className="syn-creator" ref="form">
+      <Form handler={ this.create.bind(this) } className="syn-creator" ref="form" name="creator">
         <article className="item" ref="creator">
           <section className="item-media-wrapper">
             <section className="item-media" ref="media">

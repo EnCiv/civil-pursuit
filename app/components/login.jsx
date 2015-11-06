@@ -137,12 +137,12 @@ class Login extends React.Component {
 
         <div className="syn-form-group">
           <label>Email</label>
-          <EmailInput block autoFocus required medium placeholder="Email" ref="email" />
+          <EmailInput block autoFocus required medium placeholder="Email" ref="email" name="email" />
         </div>
 
         <div className="syn-form-group">
           <label>Password</label>
-          <Password block required placeholder="Password" ref="password" medium />
+          <Password block required placeholder="Password" ref="password" medium name="password" />
         </div>
 
         <div className="syn-form-group syn-form-submit">
@@ -171,7 +171,7 @@ class Login extends React.Component {
 
     return (
       <Modal className={ Component.classList(this, ...classes) } title="Login">
-        <Form handler={ this.login.bind(this) } flash={ this.state } form-center>
+        <Form handler={ this.login.bind(this) } flash={ this.state } form-center name="login">
           { content }
         </Form>
       </Modal>

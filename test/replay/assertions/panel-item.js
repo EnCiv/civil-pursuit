@@ -137,7 +137,7 @@ should.Assertion.add('panelItem', function (item = {}, extra = {}, serialized = 
       .and.have.property('_id');
   }
   else {
-    this.obj.type.should.be.an.instanceof(Type);
+    this.obj.type.should.be.a.typeDocument();
   }
 
   if ( 'type' in item ) {
