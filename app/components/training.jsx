@@ -4,8 +4,25 @@ import React                from 'react';
 import superagent           from 'superagent';
 import Button               from './util/button';
 import Icon                 from './util/icon';
+import __instructions       from '../lib/proptypes/instructions';
+import __user               from '../lib/proptypes/user';
 
 class Training extends React.Component {
+
+  static propTypes    =   {
+    instructions      :   __instructions,
+    user              :   __user
+  }
+
+  state               =   {
+    cursor            :   0,
+    loader            :   false,
+    dontShowNextTime  :   false
+  }
+
+  ready = false
+
+  cursor = -1
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -13,12 +30,6 @@ class Training extends React.Component {
     super(props);
 
     window.Dispatcher.emit('get instructions');
-
-    this.state = { cursor : 0, loader : false, dontShowNextTime : false };
-
-    this.ready = false;
-
-    this.cursor = -1;
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
