@@ -5,7 +5,7 @@ import Mungo                 from 'mungo';
 import User                 from '../../app/models/user';
 import encrypt              from '../../app/lib/util/encrypt';
 import Race                 from '../../app/models/race';
-import assertUser           from './assertions/user';
+import isUser               from '../../app/lib/assertions/user';
 import sequencer            from '../../app/lib/util/sequencer';
 
 describe ( 'User' , function () {

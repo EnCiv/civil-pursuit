@@ -1,12 +1,12 @@
 'use strict';
 
 import should             from 'should';
-import Mungo               from 'mungo';
-import toSlug             from '../../../app/lib/util/to-slug';
-import Item               from '../../../app/models/item';
-import { Popularity }     from '../../../app/models/item/methods/get-popularity';
-import Type               from '../../../app/models/type';
-import User               from '../../../app/models/user';
+import Mungo              from 'mungo';
+import toSlug             from '../util/to-slug';
+import Item               from '../../models/item';
+import { Popularity }     from '../../models/item/methods/get-popularity';
+import Type               from '../../models/type';
+import User               from '../../models/user';
 
 should.Assertion.add('panelItem', function (item = {}, extra = {}, serialized = false) {
   this.params = { operator: 'to be a panel Item', expected: Object };

@@ -221,7 +221,6 @@ class HttpServer extends EventEmitter {
     try {
       this.app.get('/settings', (req, res, next) => {
         try {
-          console.log('settings')
           if ( 'showtraining' in req.query ) {
             res.cookie('synapp',
               { training : !!+(req.query.showtraining) },
@@ -303,7 +302,7 @@ class HttpServer extends EventEmitter {
         return next();
       }
 
-      
+
     });
   }
 

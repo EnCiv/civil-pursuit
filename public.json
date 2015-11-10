@@ -93,6 +93,7 @@
       "subject" : "form[name=\"creator\"] input[name=\"subject\"]",
       "description" : "form[name=\"creator\"] textarea[name=\"description\"]",
       "submit" : "form[name=\"creator\"] button[type=\"submit\"]"
-    }
+    },
+    "evaluation cycle" : ".item-promote"
   }
 }

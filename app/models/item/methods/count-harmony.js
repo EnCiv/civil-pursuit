@@ -75,7 +75,6 @@ function countHarmony () {
       sequencer(sequence)
         .then(
           props => {
-            console.log('!', props);
             ok(calculateHarmony(props));
           },
           ko

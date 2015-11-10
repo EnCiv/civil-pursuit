@@ -1,8 +1,8 @@
 'use strict';
 
-import should from 'should';
-import Training from '../../../app/models/training';
-import Mungo from 'mungo';
+import should               from 'should';
+import Training             from '../../models/training';
+import Mungo                from 'mungo';
 
 should.Assertion.add('instruction', function (candidate = {}, serialized = false) {
   this.params = { operator: 'to be a Training', expected: Training };

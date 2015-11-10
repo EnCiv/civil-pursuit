@@ -1,25 +1,25 @@
 'use strict';
 
-import API                        from '../../app/api';
 import { EventEmitter }           from 'events';
-import should                     from 'should';
 import fs                         from 'fs';
 import path                       from 'path';
+import should                     from 'should';
 import S                          from 'string';
+import Mungo                      from 'mungo';
 import socketClient               from 'socket.io-client';
 import config                     from '../../secret.json';
 import publicConfig               from '../../public.json';
+import API                        from '../../app/api';
 import Item                       from '../../app/models/item';
 import Type                       from '../../app/models/type';
 import User                       from '../../app/models/user';
-import Mungo                      from 'mungo';
 import { Popularity }             from '../../app/models/item/methods/get-popularity';
 import Training                   from '../../app/models/training';
-import isInstruction              from './assertions/training';
+import isInstruction              from '../../app/lib/assertions/training';
+import isCountry                  from '../../app/lib/assertions/country';
 import getUserInfo                from '../../app/api/get-user-info';
 import getTraining                from '../../app/api/get-training';
 import Country                    from '../../app/models/country';
-import isCountry                  from './assertions/country';
 import Config                     from '../../app/models/config';
 
 const http = global.syn_httpServer;

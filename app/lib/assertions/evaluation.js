@@ -3,8 +3,8 @@
 import should               from 'should';
 import Mungo                from 'mungo';
 import isCriteria           from './criteria';
-import { Evaluation }       from '../../../app/lib/app/evaluate';
-import Type                 from '../../../app/models/type';
+import { Evaluation }       from '../app/evaluate';
+import Type                 from '../../models/type';
 
 should.Assertion.add('evaluation', function (candidate = {}, serialized = false) {
   this.params = { operator: 'to be an Evaluation', expected: Evaluation };

@@ -2,9 +2,9 @@
 
 import should             from 'should';
 import Mungo              from 'mungo';
-import isItem             from './assertions/item';
-import isPanelItem        from './assertions/panel-item';
-import isEvaluation       from './assertions/evaluation';
+import isItem             from '../../app/lib/assertions/item';
+import isPanelItem        from '../../app/lib/assertions/panel-item';
+import isEvaluation       from '../../app/lib/assertions/evaluation';
 import Item               from '../../app/models/item';
 import Type               from '../../app/models/type';
 import User               from '../../app/models/user';

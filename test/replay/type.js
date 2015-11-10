@@ -3,7 +3,7 @@
 import Type               from '../../app/models/type';
 import should             from 'should';
 import Mungo               from 'mungo';
-import isType             from './assertions/type';
+import isType             from '../../app/lib/assertions/type';
 
 describe ( 'Type' , function () {
 

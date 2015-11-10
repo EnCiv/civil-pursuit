@@ -113,22 +113,6 @@ describe ( 'HTTP server' , function () {
 
   });
 
-  // describe ( 'wait 2 minutes' , function () {
-  //
-  //   it ( 'should wait 2 minutes' , function (done) {
-  //
-  //     const twoMinutes = 1000 * 60 * 2;
-  //
-  //     this.timeout(twoMinutes + 5000);
-  //
-  //     setTimeout(() => {
-  //       done();
-  //     }, twoMinutes);
-  //
-  //   });
-  //
-  // });
-
   describe ( 'Home page', function () {
 
     it ( 'should get home page' , function (done) {
@@ -137,6 +121,31 @@ describe ( 'HTTP server' , function () {
 
       superagent
         .get('http://localhost:13012/')
+        .end((error, res) => {
+          try {
+            if ( error ) {
+              throw error;
+            }
+            res.status.should.be.exactly(200);
+            done();
+          }
+          catch ( error ) {
+            done(error);
+          }
+        });
+
+    });
+
+  });
+
+  describe ( 'Terms of service', function () {
+
+    it ( 'should get home page' , function (done) {
+
+      this.timeout(5000);
+
+      superagent
+        .get('http://localhost:13012/page/terms-of-service')
         .end((error, res) => {
           try {
             if ( error ) {

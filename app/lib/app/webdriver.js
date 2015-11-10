@@ -1,9 +1,10 @@
 'use strict';
 
-import colors from 'colors';
-import { EventEmitter } from 'events';
-import webdriverio from 'webdriverio';
-import User from '../../models/user';
+import { EventEmitter }       from 'events';
+import colors                 from 'colors';
+import webdriverio            from 'webdriverio';
+import FirefoxProfile         from 'firefox-profile';
+import User                   from '../../models/user';
 
 class WebDriver extends EventEmitter {
   constructor (options = {}) {
@@ -13,16 +14,27 @@ class WebDriver extends EventEmitter {
 
     process.nextTick(() => {
       try {
-        console.log('starting webdriver'.grey);
-        this.client = webdriverio
-          .remote(WebDriver.OPTIONS)
-          .init((error) => {
-            if ( error ) {
-              return this.emit('error', error);
-            }
-            console.log('starting webdriver'.green);
-            this.init();
-          });
+
+        const driverOptions = WebDriver.OPTIONS;
+
+        const fp = new FirefoxProfile();
+
+        fp.setPreference('startup.homepage_welcome_url.additional', '');
+
+        fp.encoded(prof => {
+          
+          driverOptions.desiredCapabilities.firefox_profile = prof;
+
+          this.client = webdriverio
+            .remote(driverOptions)
+            .init((error) => {
+              if ( error ) {
+                return this.emit('error', error);
+              }
+              console.log('starting webdriver'.green);
+              this.init();
+            });
+        });
       }
       catch ( error ) {
         this.emit('error', error);

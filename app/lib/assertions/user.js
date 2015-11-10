@@ -1,8 +1,8 @@
 'use strict';
 
-import should from 'should';
-import User from '../../../app/models/user';
-import Mungo from 'mungo';
+import should         from 'should';
+import User           from '../../models/user';
+import Mungo          from 'mungo';
 
 should.Assertion.add('user', function (candidate) {
   this.params = { operator: 'to be a User', expected: User };

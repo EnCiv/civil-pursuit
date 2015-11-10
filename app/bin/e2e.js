@@ -4,6 +4,10 @@ import path from 'path';
 import fs from 'fs';
 import Mungo from 'mungo';
 
+if ( process.title === 'node' ) {
+  process.title = 'syn-e2e';
+}
+
 const usage = `syn-e2e <name>|<special> <options...>
 
 name
@@ -31,7 +35,12 @@ const ERROR = error => {
   process.exit(8);
 }
 
-let name, special, options = {};
+let name, special;
+
+const options = {
+  end : true,
+  port : 3012
+}
 
 process.argv.forEach((argv, index) => {
   if ( index === 2 ) {
@@ -45,9 +54,9 @@ process.argv.forEach((argv, index) => {
 });
 
 if ( name ) {
-  const command = require(path.join(__dirname, `../lib/test/e2e/${name}`));
+  const E2E = require(path.join(__dirname, `../lib/test/e2e/${name}`));
   Mungo.connect(process.env.MONGOHQ_URL).on('connected', () => {
-    command(options).then(
+    E2E.run(options).then(
       props => {
         console.log(props);
         Mungo.disconnect();

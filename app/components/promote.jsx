@@ -18,7 +18,11 @@ class Header extends React.Component {
 
     return (
       <header className="text-center gutter-bottom">
-        <h2>{ evaluation.cursor } of { evaluation.limit }</h2>
+        <h2>
+          <span className="cursor">{ evaluation.cursor }</span>
+          <span> of </span>
+          <span className="limit">{ evaluation.limit }</span>
+        </h2>
         <h4>Evaluate each item below</h4>
       </header>
     );
@@ -396,7 +400,7 @@ class Promote extends React.Component {
     }
 
     return (
-      <section className={`item-promote ${this.props.className}`} ref="view">
+      <section className={`item-promote ${this.props.className}`} ref="view" id={`item-promote-${this.props.item._id}`}>
         { content }
       </section>
     );

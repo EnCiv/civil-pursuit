@@ -13,8 +13,6 @@ function getTraining (event) {
 
     cookieParser()(req, null, () => {});
 
-    console.log({ cookies : req.cookies })
-
     const cookie = req.cookies.synapp;
 
     if ( cookie && cookie.training ) {

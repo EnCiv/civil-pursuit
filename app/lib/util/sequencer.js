@@ -1,6 +1,6 @@
 'use strict';
 
-function sequencer (pipeline = [], locals = {}) {
+function sequencer (pipeline = [], locals = {}, afterEach) {
   return new Promise((ok, ko) => {
     try {
       let cursor = 0;
@@ -11,6 +11,9 @@ function sequencer (pipeline = [], locals = {}) {
             pipeline[cursor](locals).then(
               () => {
                 try {
+                  if ( afterEach ) {
+                    afterEach();
+                  }
                   cursor ++;
                   run();
                 }

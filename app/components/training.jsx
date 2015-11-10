@@ -306,15 +306,19 @@ class Training extends React.Component {
       arrow.style.left = '-1000vh';
     }
 
-    if ( this.state.dontShowNextTime ) {
-      superagent.get('/settings?showtraining=0').end((err, res) => {});
-    }
+    // if ( this.state.dontShowNextTime ) {
+    //   superagent.get('/settings?showtraining=0').end((err, res) => {});
+    // }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   showNextTime (e) {
     this.setState({ dontShowNextTime : e.target.value });
+
+    if ( e.target.value === 'on' ) {
+      superagent.get('/settings?showtraining=0').end((err, res) => {});
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -359,18 +363,24 @@ class Training extends React.Component {
           <div className="syn-training-close">
             <Icon icon="times" onClick={ this.close.bind(this) } />
           </div>
-          <h4>{ title }</h4>
+          <h4 className="syn-training-title">{ title }</h4>
 
           <div>
             <div style={{ marginBottom : '10px' }}>{ description }</div>
             <div style={{ float : 'right', marginTop : '15px' }}>
-              <input type="checkbox" defaultChecked={ this.state.dontShowNextTime } onChange={ this.showNextTime.bind(this) } /> <em>Do not show next time</em>
+              <input
+                type              =   "checkbox"
+                defaultChecked    =   { this.state.dontShowNextTime }
+                onChange          =   { this.showNextTime.bind(this) }
+                name              =   "do-not-show-next-time"
+                /> <em>Do not show next time</em>
             </div>
             <Button
               info
-              onClick   =   { this.next.bind(this) }
-              ref       =   "button"
-              disabled  =   { this.state.loader }
+              onClick     =   { this.next.bind(this) }
+              ref         =   "button"
+              disabled    =   { this.state.loader }
+              className   =   "syn-training-next"
               >{ text }</Button>
           </div>
 

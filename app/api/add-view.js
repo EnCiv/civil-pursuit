@@ -5,7 +5,7 @@ import Item from '../models/item';
 function addView (event, itemId) {
   try {
     Item
-      .updateById(itemId, { $inc : { views : 1 } })
+      .updateById(itemId, { $increment : { views : 1 } })
       .then(
         item => {
           try {

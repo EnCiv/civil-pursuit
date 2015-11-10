@@ -1,52 +1,131 @@
 'use strict';
 
-import WebDriver    from '../../app/webdriver';
-import sequencer    from '../../util/sequencer';
-import config       from '../../../../public.json';
-import should       from 'should';
+import WebDriver            from '../../app/webdriver';
+import sequencer            from '../../util/sequencer';
+import config               from '../../../../public.json';
+import should               from 'should';
+import Item                 from '../../../models/item';
+import Mungo                from 'mungo';
+import isItem               from '../../assertions/item';
 
 const toggler = config.selectors['create top level item toggler'];
 const form = config.selectors['creator form'];
 const { subject, description, submit } = form;
 
-function signUp (options = {}) {
-  return new Promise((ok, ko) => {
-    try {
-      sequencer([
+class CreateItem {
 
-        props => new Promise((ok, ko) => {
+  static startDriver (props) {
+    return new Promise((ok, ko) => {
 
-          if ( options.driver ) {
-            props.driver = options.driver;
-            return ok();
+      if ( props.options.driver ) {
+        props.driver = props.options.driver;
+        return ok();
+      }
+
+      else {
+        props.driver = new WebDriver();
+        props.driver.on('ready', ok);
+      }
+
+    });
+  }
+
+  static goHome (props) {
+    return props.driver.client.url('http://localhost:13012');
+  }
+
+  static clickToggle (props) {
+    return props.driver.client.click(toggler);
+  }
+
+  static setSubject (props) {
+    return props.driver.client.setValue(subject, 'Hey! This is a test top level item');
+  }
+
+  static setDescription (props) {
+    return props.driver.client.setValue(description, 'Hey! This is a test top level item\'s description');
+  }
+
+  static submit (props) {
+    return props.driver.client.click(submit);
+  }
+
+  static findItemDocument (props) {
+    return new Promise((ok, ko) => {
+
+      Item.findLastOne().then(
+        item => {
+          props.item = item;
+          try {
+            item.should.be.an.item();
           }
+          catch ( error ) {
+            return ko(error);
+          }
+          ok();
+        },
+        ko
+      );
 
+    });
+  }
+
+  static leave (props) {
+    return new Promise((ok, ko) => {
+
+      if ( props.options.end ) {
+        props.driver.client.end(error => {
+          if ( error ) {
+            ko(error);
+          }
           else {
-            props.driver = new WebDriver();
-            props.driver.on('ready', ok);
+            ok();
           }
+        });
+      }
+      else {
+        ok();
+      }
 
-        }),
+    });
+  }
 
-        props => props.driver.client.url('http://localhost:3012'),
+  static run (options = {}) {
+    return new Promise((ok, ko) => {
+      try {
 
-        props => props.driver.client.click(toggler),
+        const props = { options };
 
-        props => props.driver.client.pause(1000),
+        sequencer([
 
-        props => props.driver.client.setValue(subject, 'Hey! This is a test top level item'),
+          this.startDriver,
 
-        props => props.driver.client.setValue(description, 'Hey! This is a test top level item\'s description'),
+          this.goHome,
 
-        props => props.driver.client.click(submit)
+          this.clickToggle,
+
+          props => props.driver.client.pause(1000),
+
+          this.setSubject,
+
+          this.setDescription,
+
+          this.submit,
+
+          this.findItemDocument,
+
+          this.leave
 
 
-      ]).then(ok, ko);
-    }
-    catch ( error ) {
-      ko(error);
-    }
-  });
+        ], props).then(ok, ko);
+      }
+      catch ( error ) {
+        ko(error);
+      }
+    });
+  }
+
 }
 
-export default signUp;
+
+export default CreateItem;
