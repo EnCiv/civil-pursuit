@@ -88,11 +88,27 @@ class E2E_Training {
 
       props.cursor = 0;
 
+      props.elementsNotPresent = [];
+
       sequencer(props.instructions.map(instruction =>
         () => sequencer([
 
           () => new Promise((ok, ko) => {
 
+            props.driver.client.isExisting(props.instructions[props.cursor].element).then(
+              exists => {
+                props.elementsNotPresent[props.cursor] = exists;
+                ok();
+              },
+              ko
+            );
+
+          }),
+
+          () => new Promise((ok, ko) => {
+            if ( ! props.elementsNotPresent[props.cursor] ) {
+              return ok();
+            }
             props.driver.client.getText('.syn-training-title').then(
               text => {
                 try {
@@ -105,12 +121,21 @@ class E2E_Training {
               },
               ko
             );
-
           }),
 
-          () => props.driver.client.click('.syn-training-next'),
+          () => new Promise((ok, ko) => {
+            if ( ! props.elementsNotPresent[props.cursor] ) {
+              return ok();
+            }
+            props.driver.client.click('.syn-training-next').then(ok, ko);
+          }),
 
-          () => props.driver.client.pause(1000),
+          () => new Promise((ok, ko) => {
+            if ( ! props.elementsNotPresent[props.cursor] ) {
+              return ok();
+            }
+            props.driver.client.pause(1000).then(ok, ko);
+          }),
 
           () => new Promise((ok, ko) => {
             props.cursor ++;

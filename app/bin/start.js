@@ -47,7 +47,6 @@ function start (emitter = false) {
 
     const connectToDB = props => new Promise((ok, ko) => {
       try {
-        console.log('connect to DB', process.env.MONGOHQ_URL)
         Mungo.connect(process.env.MONGOHQ_URL)
           .on('error', ko)
           .on('connected', ok);
@@ -61,13 +60,11 @@ function start (emitter = false) {
 
     const getIntroType = props => new Promise((ok, ko) => {
       try {
-        console.log('Get intro trype');;
         Type
           .findOne({ name : 'Intro' })
           .then(
             type => {
               try {
-                console.log('got intro type', type)
                 if ( ! type ) {
                   throw new Error('Intro type not found');
                 }
@@ -90,13 +87,11 @@ function start (emitter = false) {
 
     const getIntroItem = props => new Promise((ok, ko) => {
       try {
-        console.log('get intro item', props.intro)
         Item
           .findOne( props.intro )
           .then(
             item => {
               try {
-                console.log('got intro item', item)
                 if ( ! item ) {
                   throw new Error('Intro item not found');
                 }
@@ -105,7 +100,6 @@ function start (emitter = false) {
                   .then(
                     item => {
                       try {
-                        console.log('got panel item' , item)
                         props.intro.item = item;
                         ok()
                       }
@@ -138,7 +132,8 @@ function start (emitter = false) {
           })
           .on('error', error => {
             console.log('HTTP error'.red.bold, error.stack.yellow);
-          });
+          })
+          .on('message', console.log.bind(console));
       }
       catch ( error ) {
         ko(error);

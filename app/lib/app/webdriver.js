@@ -22,7 +22,7 @@ class WebDriver extends EventEmitter {
         fp.setPreference('startup.homepage_welcome_url.additional', '');
 
         fp.encoded(prof => {
-          
+
           driverOptions.desiredCapabilities.firefox_profile = prof;
 
           this.client = webdriverio

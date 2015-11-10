@@ -137,7 +137,7 @@
 ,
 {
         "element" : ".subtype-button",
-    "click" : ".syn-panel-body .syn-panel-body .harmony-button",
+    "click" : ".syn-panel-body .harmony-button",
     "description" : "Click Here (go ahead) to dig deeper into the list of underlying problems within this use. We first identify and agree on the problems before talking about the solutions because it's easier to agree on the solutions after you agree on the problems.  It's also a lot easier to see if the solution is working if you know what it is intended to solve.",
     "title" : "Underlying problems",
     "step" : 170,

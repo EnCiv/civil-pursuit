@@ -53,10 +53,17 @@ class Training extends React.Component {
       }
     });
 
-    const instruction = relevantInstructions[this.state.cursor];
+    const instruction   =   relevantInstructions[this.state.cursor];
 
-    const tooltip = React.findDOMNode(this.refs.view);
-    let target = document.querySelector(instruction.element);
+    const tooltip       =   React.findDOMNode(this.refs.view);
+
+    let target          =   document.querySelector(instruction.element);
+
+    if ( ! target ) {
+      console.warn('Target not found', instruction.element);
+      return this.next();
+    }
+
     const rect = target.getBoundingClientRect();
     const { width, height } = rect;
 

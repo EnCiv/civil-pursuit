@@ -150,7 +150,6 @@ class API extends EventEmitter {
 
   connected (socket) {
     try {
-      console.log('connected');
       socket.on('error', error => this.emit('error', error));
 
       this.emit('message', 'new socket connexion');
@@ -159,10 +158,9 @@ class API extends EventEmitter {
 
       socket.broadcast.emit('online users', this.users.length);
       socket.emit('online users', this.users.length);
-      console.log('online users', this.users.length);
 
       socket.ok = (event, ...responses) => {
-        console.log('>>>'.green.bold, event.green.bold, ...responses);
+        this.emit('message', '>>>'.green.bold, event.green.bold, ...responses);
         socket.emit('OK ' + event, ...responses);
       };
 
@@ -172,7 +170,7 @@ class API extends EventEmitter {
 
       for ( let handler in this.handlers ) {
         socket.on(handler, (...messages) =>
-          console.log('<<<'.bold.cyan, handler.bold.cyan, ...messages)
+          this.emit('message', '<<<'.bold.cyan, handler.bold.cyan, ...messages)
         );
         socket.on(handler, this.handlers[handler].bind(socket, handler));
       }

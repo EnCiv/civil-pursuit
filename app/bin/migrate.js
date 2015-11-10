@@ -27,8 +27,6 @@ function migrate (...models) {
               try {
                 let model = require(path.resolve(__dirname, `../models/${file}`));
 
-                console.log('Migrating', file);
-
                 model.migrate().then(() => {
                   ok();
                 }, ko);

@@ -14,6 +14,8 @@ import Harmony          from './harmony';
 import EditAndGoAgain   from './edit-and-go-again';
 import ButtonGroup      from './util/button-group';
 import Join             from './join';
+import panelItemType    from '../lib/proptypes/panel-item';
+import userType         from '../lib/proptypes/user';
 
 class Item extends React.Component {
 
@@ -68,6 +70,14 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  static propTypes = {
+    item      :   panelItemType,
+    panels    :   React.PropTypes.arrayOf(React.PropTypes.object),
+    user      :   userType
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   constructor (props) {
     super(props)
 
@@ -90,13 +100,11 @@ class Item extends React.Component {
       }
     }
 
-    this.state = {
-      active      : null,
-      item        : this.props.item,
-      ping : 0
+    this.state    =   {
+      active      :   null,
+      item        :   this.props.item,
+      ping        :   0
     };
-
-    // this.listeners();
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -409,7 +417,9 @@ class Item extends React.Component {
 
         <section className="item-text">
           <div className="item-truncatable">
-            <h4 className="item-subject">{ item.subject }</h4>
+            <h4 className="item-subject">
+              <a href="">{ item.subject }</a>
+            </h4>
             <h5 className="item-reference">
               <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>
             </h5>

@@ -32,8 +32,6 @@ class Script extends Element {
 
 class Layout extends Document {
   constructor (props = {}) {
-    console.log(props);
-
     super(props);
     this.props = props;
 

@@ -40,7 +40,6 @@ class V1 {
                 () => {
                   getTopLevelType().then(
                     type => {
-                      console.log({ type });
                       applyFixtures(type).then(
                         created => {
                           try {

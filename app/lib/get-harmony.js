@@ -1,8 +1,6 @@
 'use strict';
 
 function getHarmony (a, b) {
-  console.log({ a, b });
-
   const sum = a + b;
 
   if ( ! sum ) {

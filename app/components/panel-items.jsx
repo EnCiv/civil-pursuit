@@ -1,8 +1,8 @@
 'use strict';
 
-import React from 'react';
-import Panel from './panel';
-import Loading from './util/loading';
+import React              from 'react';
+import Panel              from './panel';
+import Loading            from './util/loading';
 
 class PanelItems extends React.Component {
   loadMore (e) {

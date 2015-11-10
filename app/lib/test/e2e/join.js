@@ -25,7 +25,7 @@ class Join {
   }
 
   static goHome (props) {
-    return props.driver.client.url('http://localhost:3012');
+    return props.driver.client.url(`http://localhost:${props.options.port || 3012}`);
   }
 
   static clickJoinButton (props) {
@@ -80,7 +80,7 @@ class Join {
 
       props.driver.client.url().then(url => {
         try {
-          url.value.should.be.exactly('http://localhost:13012/page/profile');
+          url.value.should.be.a.String().and.endWith('/page/profile');
           ok();
         }
         catch ( error ) {

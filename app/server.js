@@ -32,8 +32,10 @@ class HttpServer extends EventEmitter {
 
     this
 
-      .on('message', function (message, info) {
-        // console.log(message, info);
+      .on('message', (...messages) => {
+        if ( this.props.verbose ) {
+          console.log(...messages);
+        }
       })
 
       .on('request', printIt)
@@ -322,7 +324,8 @@ class HttpServer extends EventEmitter {
       this.emit('listening', { port : this.app.get('port') });
 
       this.socketAPI = new API(this)
-        .on('error', error => this.emit('error', error));
+        .on('error', error => this.emit('error', error))
+        .on('message', this.emit.bind(this, 'message'));
     });
   }
 
