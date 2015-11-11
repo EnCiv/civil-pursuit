@@ -58,7 +58,8 @@ class Layout extends Document {
         new Stylesheet('/assets/css/assets.min.css'),
         new Stylesheet('/assets/css/index.min.css'),
         new Stylesheet('/assets/css/training.min.css'),
-        new Stylesheet(publicConfig['font awesome'].cdn)
+        // new Stylesheet(publicConfig['font awesome'].cdn)
+        new Stylesheet('/assets/bower_components/font-awesome/css/font-awesome.min.css')
       );
     }
 
