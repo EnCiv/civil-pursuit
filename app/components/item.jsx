@@ -4,18 +4,21 @@ import React            from 'react';
 import Row              from './util/row';
 import Column           from './util/column';
 import Button           from './util/button';
+import ButtonGroup      from './util/button-group';
 import Accordion        from './util/accordion';
 import Icon             from './util/icon';
+import Link             from './util/link';
 import ItemMedia        from './item-media';
 import Promote          from './promote';
 import Details          from './details';
 import Subtype          from './subtype';
 import Harmony          from './harmony';
 import EditAndGoAgain   from './edit-and-go-again';
-import ButtonGroup      from './util/button-group';
 import Join             from './join';
 import panelItemType    from '../lib/proptypes/panel-item';
+import itemType         from '../lib/proptypes/item';
 import userType         from '../lib/proptypes/user';
+import makePanelId      from '../lib/app/make-panel-id';
 
 class Item extends React.Component {
 
@@ -71,8 +74,8 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static propTypes = {
-    item      :   panelItemType,
-    panels    :   React.PropTypes.arrayOf(React.PropTypes.object),
+    item      :   React.PropTypes.oneOfType([panelItemType, itemType]),
+    panels    :   React.PropTypes.object,
     user      :   userType
   }
 
@@ -93,7 +96,7 @@ class Item extends React.Component {
         parent = parent._id;
       }
 
-      this.panelId = makePanelId({ type : this.props.item.type, parent });
+      this.panelId = require('../lib/app/make-panel-id')({ type : this.props.item.type, parent });
 
       if ( this.props.panels && ! this.props.panels[this.panelId] ) {
         console.error('Panel not found', this.panelId, this.props.item);
@@ -169,7 +172,7 @@ class Item extends React.Component {
       let more = React.findDOMNode(this.refs.more);
 
       let truncatable   =   item.querySelector('.item-truncatable');
-      let subject       =   item.querySelector('.item-subject');
+      let subject       =   item.querySelector('.item-subject a');
       let description   =   item.querySelector('.item-description');
       let reference     =   item.querySelector('.item-reference a');
       let buttons       =   item.querySelector('.item-buttons');
@@ -241,8 +244,25 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  selectItem () {
+    const
+      { item }      =   this.props,
+      $item         =   React.findDOMNode(this.refs.item),
+      $panel        =   $item.closest('.syn-panel'),
+      $otherItems   =   $panel.querySelectorAll(`:scope >.syn-panel-body > .item:not(#item-${item._id})`);
+
+    $panel.classList.add('focused');
+
+    for ( let i = 0; i < $otherItems.length; i ++ ) {
+      $otherItems[i].classList.add('item-hidden');
+    }
+
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   render () {
-    let { item } = this.props;
+    const { item } = this.props;
 
     let buttons,
       referenceLink,
@@ -410,15 +430,22 @@ class Item extends React.Component {
     }
 
     return (
-      <article id={ `item-${item._id}` } className="item" ref="item">
-        <ItemMedia item={ item } ref="media" />
+      <article
+        id          =   { `item-${item._id}` }
+        className   =   "item"
+        ref         =   "item"
+        >
+        <ItemMedia
+          item      =   { item }
+          ref       =   "media"
+          />
 
         { buttons }
 
         <section className="item-text">
           <div className="item-truncatable">
             <h4 className="item-subject">
-              <a href="">{ item.subject }</a>
+              <Link href={ item.link } then={ this.selectItem.bind(this) }>{ item.subject }</Link>
             </h4>
             <h5 className="item-reference">
               <a href={ referenceLink } target="_blank" rel="nofollow">{ referenceTitle }</a>

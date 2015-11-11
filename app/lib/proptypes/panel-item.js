@@ -3,6 +3,7 @@
 import React from 'react';
 import item from './item';
 import type from './type';
+import user from './user';
 
 const { PropTypes } =   React;
 
@@ -21,7 +22,7 @@ const panelItem     =   shape({
   type              :   type.isRequired,
   parent            :   string,
   from              :   string,
-  user              :   string.isRequired,
+  user              :   user.isRequired,
   promotions        :   number.isRequired,
   views             :   number.isRequired,
   popularity        :   shape({
@@ -35,7 +36,9 @@ const panelItem     =   shape({
   subtype           :   type,
   votes             :   number.isRequired,
   children          :   number.isRequired,
-  harmony           :   number.isRequired,
+  harmony           :   shape({
+    harmony         :   number
+  }).isRequired,
 });
 
 export default panelItem;

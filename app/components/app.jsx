@@ -8,9 +8,24 @@ import KitchenSink        from './kitchen-sink';
 import TermsOfService     from './terms-of-service';
 import Home               from './home';
 import ResetPassword      from './reset-password';
+import PanelItems         from './panel-items';
+import panelItemType      from '../lib/proptypes/panel-item';
 
 class App extends React.Component {
+
+  static propTypes = {
+    path : React.PropTypes.string,
+    item : panelItemType
+  }
+
   render () {
+
+    console.log('-------------------------------------------------------------')
+    console.log('app', { props : this.props })
+    console.log('-------------------------------------------------------------')
+
+    const { path, item } = this.props;
+
     let page = ( <div></div> );
 
     let showIntro = true;
@@ -19,7 +34,7 @@ class App extends React.Component {
       page = <Home { ...this.props } />;
     }
 
-    let paths = this.props.path.split(/\//);
+    let paths = path.split(/\//);
 
     paths.shift();
 
@@ -51,6 +66,26 @@ class App extends React.Component {
             showIntro = false;
             break;
         }
+        break;
+
+      case 'item':
+        const panel =   {
+          panel     :   {
+            type    :   item.type,
+            parent  :   item.parent
+          },
+          items     :   [item]
+        };
+
+        console.log('---------------------------------------------------------')
+
+        console.log({ panel });
+
+        console.log('---------------------------------------------------------')
+
+        page = (
+          <PanelItems { ...this.props } panel={ panel } />
+        );
         break;
     }
 

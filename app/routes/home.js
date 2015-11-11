@@ -3,6 +3,9 @@
 import fs                       from 'fs';
 import path                     from 'path';
 import React                    from 'react';
+import App                      from '../components/app';
+import Index                    from '../pages/index';
+import makeProps                from '../props';
 
 function home (req, res, next) {
   try {
@@ -22,22 +25,21 @@ function home (req, res, next) {
         }
       }
     }
-    let App = require('../components/app');
 
-    let AppFactory = React.createFactory(App);
+    const AppFactory = React.createFactory(App);
 
-    let Index = require('../pages/index');
-
-    let props = {
+    const props = makeProps({
       env         :   this.app.get('env'),
       path        :   req.path,
-      user        :   false,
-      intro       :   this.props.intro
-    }
+      intro       :   JSON.parse(JSON.stringify(this.props.intro)),
+      item        :   JSON.parse(JSON.stringify(req.item || null)),
+      panel       :   JSON.parse(JSON.stringify(req.panel || null)),
+      backEnd     :   true
+    });
 
     let source = new Index(props).render();
 
-    let app = AppFactory(props);
+    const app = AppFactory(props);
 
     source = source.replace(/<!-- #synapp -->/, React.renderToString(app));
 

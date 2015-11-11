@@ -21,9 +21,21 @@ class API extends EventEmitter {
           this.server = server;
           this.users = [];
           this.handlers = {};
+          this.sockets = [];
 
           this.on('error', this.server.emit.bind(server, 'error'));
           this.on('message', this.server.emit.bind(server, 'message'));
+
+          emitter.on('update', (collection, document) => {
+            if ( collection === 'items' ) {
+              document.toPanelItem().then(
+                item => {
+                  this.sockets.forEach(socket => socket.emit('item changed', item));
+                },
+                this.emit.bind(this, 'error')
+              );
+            }
+          });
 
           this.fetchHandlers()
             .then(
@@ -150,6 +162,9 @@ class API extends EventEmitter {
 
   connected (socket) {
     try {
+
+      this.sockets.push(socket);
+
       socket.on('error', error => this.emit('error', error));
 
       this.emit('message', 'new socket connexion');
@@ -176,20 +191,6 @@ class API extends EventEmitter {
       }
 
       this.stream(socket);
-
-      // Listen to emitters
-
-      emitter.on('update', (collection, document) => {
-        if ( collection === 'items' ) {
-          document.toPanelItem().then(
-            item => {
-              socket.broadcast.emit('item changed', item);
-              socket.emit('item changed', item);
-            },
-            this.emit.bind(this, 'error')
-          );
-        }
-      });
     }
     catch ( error ) {
       this.emit('error', error);

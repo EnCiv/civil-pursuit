@@ -1,10 +1,12 @@
 'use strict';
 
 import React from 'react';
+import type from './type';
+import user from './user';
 
 const { PropTypes } =   React;
 
-const { shape, string, arrayOf, any, number, instanceOf, object, oneOf, bool } = PropTypes;
+const { shape, string, arrayOf, any, number, instanceOf, object, oneOf, bool, oneOfType } = PropTypes;
 
 const item          =   shape({
   _id               :   string,
@@ -16,10 +18,10 @@ const item          =   shape({
   })],
   subject           :   string.isRequired,
   description       :   string.isRequired,
-  type              :   string.isRequired,
+  type              :   type.isRequired,
   parent            :   string,
   from              :   string,
-  user              :   string.isRequired,
+  user              :   user.isRequired,
   promotions        :   number.isRequired,
   views             :   number.isRequired
 });

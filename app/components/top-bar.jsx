@@ -5,7 +5,6 @@ import Component                from '../lib/app/component';
 import CloudinaryImage          from './util/cloudinary-image';
 import Button                   from './util/button';
 import Icon                     from './util/icon';
-import Link                     from './util/link';
 import Login                    from './login';
 import Join                     from './join';
 import ForgotPassword           from './forgot-password';
@@ -125,10 +124,10 @@ class TopBar extends React.Component {
         <header role="banner" className="syn-top_bar">
           <section className={ `${comp}-left` }>
             <section className={ `${comp}-image` }>
-              <Link href="/">
+              <a href="/">
                 <CloudinaryImage id="Synaccord_logo_64x61_znpxlc.png" screen="phone-and-down" transparent />
                 <CloudinaryImage id="Synaccord_logo_name_300x61_xyohja.png" screen="tablet-and-up" transparent />
-              </Link>
+              </a>
             </section>
             <section className={ `${comp}-beta` }>beta</section>
           </section>

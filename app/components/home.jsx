@@ -7,12 +7,21 @@ import Loading                      from './util/loading';
 import Countdown                    from './countdown';
 import PanelItems                   from './panel-items';
 import Training                     from './training';
+import panelType                    from '../lib/proptypes/panel';
 
 class Home extends React.Component {
+
+  static propTypes  =   {
+    topLevelType    :   React.PropTypes.string,
+    panels          :   React.PropTypes.object
+  }
+
+  state = {
+    discussion : null
+  }
+
   constructor (props) {
     super(props);
-
-    this.state = { discussion : null };
 
     this.get();
   }
@@ -31,15 +40,15 @@ class Home extends React.Component {
     );
 
     if ( this.state.discussion ) {
-      let { deadline } = new Date(this.state.discussion);
-      let now = Date.now();
+      const { deadline } = new Date(this.state.discussion);
+      const now = Date.now();
 
       if ( now < deadline ) {
         content = ( <Countdown discussion={ this.state.discussion } { ...this.props } /> );
       }
 
       else if ( this.props.topLevelType ) {
-        let panel = this.props.panels[this.props.topLevelType];
+        const panel = this.props.panels[this.props.topLevelType];
 
         content = (
           <div>

@@ -1,23 +1,12 @@
 'use strict';
 
-import React from 'react';
-import App from '../components/app';
-import { EventEmitter } from 'events';
+import { EventEmitter }   from 'events';
+import React              from 'react';
+import App                from '../components/app';
+import makePanelId        from '../lib/app/make-panel-id';
+import makeProps          from '../props';
 
-window.makePanelId = function (panel) {
-  // console.log('make panel id', panel);
-  let id = panel.type._id || panel.type;
-
-  if ( panel.parent ) {
-    id += `-${(panel.parent._id || panel.parent)}`;
-  }
-
-  else if ( panel.item ) {
-    id += `-${panel.item._id}`;
-  }
-
-  return id;
-}
+// window.makePanelId = makePanelId;
 
 function makePanel (panel) {
   let p = {
@@ -64,22 +53,10 @@ function OUTCOMING (message, ...messages) {
   console.info(`%c${message}`, 'color: green; font-weight: bold', ...messages);
 }
 
-let props         =   {
-  online          :   0,
+const props       =   makeProps({
   path            :   location.pathname,
-  user            :   null,
-  ready           :   false,
   intro           :   window.synapp.intro,
-  newItem         :   null,
-  close           :   false,
-  topLevelType    :   null,
-  panels          :   {},
-  items           :   {},
-  created         :   {},
-  urlParams       :   {},
-  userToReset     :   null,
-  instructions    :   []
-};
+});
 
 window.location.search.replace(
   /([^?=&]+)(=([^&]*))?/g, ($0, $1, $2, $3) => { props.urlParams[$1] = $3 }
@@ -398,11 +375,13 @@ window.socket
 
     evaluation.cursor = 1;
 
-    evaluation.limit = evaluation.items.length;
-
-    // if ( evaluation.limit > 5 ) {
-    //   evaluation.limit = 5;
-    // }
+    switch ( evaluation.items.length ) {
+      case 1: case 2: evaluation.limit = 1; break;
+      case 3: evaluation.limit = 2; break;
+      case 4: evaluation.limit = 3; break;
+      case 5: evaluation.limit = 4; break;
+      case 6: evaluation.limit = 5; break;
+    }
 
     if ( evaluation.items[0] ) {
       evaluation.left = evaluation.items[0];

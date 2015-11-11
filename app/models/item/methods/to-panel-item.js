@@ -27,7 +27,7 @@ function toPanelItem () {
                       image,            /** String **/
                       references,       /** [{ title: String, url: String }] **/
                       views,            /** Number **/
-                      promotions,       /** Number **/
+                      promotions       /** Number **/
                     } = this;
 
                     const item = {

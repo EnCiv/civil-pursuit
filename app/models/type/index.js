@@ -5,9 +5,11 @@ import toSlug       from '../../lib/util/to-slug';
 import isHarmony    from './methods/is-harmony';
 import getSubtype   from './methods/get-subtype';
 import group        from './statics/group';
+import generateId   from '../item/statics/id';
 import V2           from './migrations/2';
 import V3           from './migrations/3';
 import V4           from './migrations/4';
+import V5           from './migrations/5';
 
 class Type extends Mungo.Model {
   static schema () {
@@ -23,7 +25,9 @@ class Type extends Mungo.Model {
         default     :     []
       },
 
-      "parent"      :     Type
+      "parent"      :     Type,
+
+      "id"          :     String
     };
   }
 
@@ -35,17 +39,28 @@ class Type extends Mungo.Model {
     return getSubtype.apply(this, args);
   }
 
+  static inserting () {
+    return [
+      this.generateId.bind(this)
+    ];
+  }
+
   static group (...args) {
     return group.apply(this, args);
   }
+
+  static generateId (...args) {
+    return generateId.apply(this, args);
+  }
 }
 
-Type.version = 4;
+Type.version = 5;
 
 Type.migrations = {
   2 : V2,
   3 : V3,
-  4 : V4
+  4 : V4,
+  5 : V5
 };
 
 export default Type;

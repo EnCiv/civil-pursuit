@@ -1,10 +1,16 @@
 'use strict';
 
-import React from 'react';
-import Panel from './panel';
-import Item from './item';
+import React              from 'react';
+import Panel              from './panel';
+import Item               from './item';
+import panelItemType      from '../lib/proptypes/panel-item';
 
 class Intro extends React.Component {
+
+  static propTypes = {
+    intro : panelItemType
+  }
+
   render () {
     return (
       <section id="syn-intro">

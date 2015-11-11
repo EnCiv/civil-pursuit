@@ -5,6 +5,7 @@ import Loading        from './util/loading';
 import Row            from './util/row';
 import Column         from './util/column';
 import PanelItems     from './panel-items';
+import makePanelId    from '../lib/app/make-panel-id';
 
 class Harmony extends React.Component {
   constructor (props) {
@@ -33,7 +34,7 @@ class Harmony extends React.Component {
   componentWillReceiveProps (props) {
     if ( this.status === 'iddle' && props.active ) {
       this.status = 'ready';
-      
+
       if ( ! props.panels[this.leftId] ) {
         window.Dispatcher.emit('get items', {
           type        :   props.item.type.harmony[0],

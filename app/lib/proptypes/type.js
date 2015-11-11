@@ -10,9 +10,10 @@ let type;
 
 type                =   shape({
   _id               :   string.isRequired,
+  id                :   string.isRequired,
   name              :   string.isRequired,
-  harmony           :   arrayOf(type),
-  parent            :   type
+  harmony           :   arrayOf(string),
+  parent            :   string
 });
 
 export default type;

@@ -7,18 +7,31 @@ import Accordion            from './util/accordion';
 import Loading              from './util/loading';
 import Creator              from './creator';
 import Join                 from './join';
+import userType             from '../lib/proptypes/user';
+import panelType            from '../lib/proptypes/panel';
+import makePanelId          from '../lib/app/make-panel-id';
 
 class Panel extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  constructor (props) {
-    super(props);
+  static propTypes    =   {
+    user              :   userType,
+    loaded            :   React.PropTypes.bool,
+    creator           :   React.PropTypes.bool,
+    panels            :   React.PropTypes.object,
+    title             :   React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.element
+    ]),
+    parent            :   React.PropTypes.string
+  }
 
-    this.state = {
-      showCreator : 0,
-      active : false
-    };
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  state = {
+    showCreator   :   0,
+    active        :   false
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,15 +54,29 @@ class Panel extends React.Component {
     if ( this.props.loaded ) {
       if ( this.props.creator !== false ) {
         this.id = makePanelId(this.props);
-        creator = (
-          <Accordion
-            { ...this.props }
-            active    =   { this.props.panels[this.id].active === 'creator' } poa       =   { this.refs.panel }
-            >
-            <Creator { ...this.props } panel-id={ this.id } />
-          </Accordion>
-        );
-        creatorIcon = ( <Icon icon="plus" onClick={ this.toggleCreator.bind(this) } className="toggle-creator" /> );
+
+        if ( ! this.props.panels[this.id] ) {
+          console.warn('No such panel with this id', this.id);
+        }
+
+        else {
+          creator = (
+            <Accordion
+              { ...this.props }
+              active    =   { this.props.panels[this.id].active === 'creator' } poa       =   { this.refs.panel }
+              >
+              <Creator { ...this.props } panel-id={ this.id } />
+            </Accordion>
+          );
+
+          creatorIcon     =   (
+            <Icon
+              icon        =   "plus"
+              onClick     =   { this.toggleCreator.bind(this) }
+              className   =   "toggle-creator"
+              />
+          );
+        }
       }
     }
 

@@ -3,14 +3,19 @@
 import fs                       from 'fs';
 import http                     from 'http';
 import { EventEmitter }         from 'events';
+
 import express                  from 'express';
 import session                  from 'express-session';
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
 import passport                 from 'passport';
+
 import config                   from '../secret.json';
+
 import printIt                  from './lib/util/express-pretty';
 import getTime                  from './lib/util/print-time';
+import makePanelId              from './lib/app/make-panel-id';
+
 import TwitterPassport          from './routes/twitter';
 import FacebookPassport         from './routes/facebook';
 import renderPage               from './routes/render-page';
@@ -18,9 +23,11 @@ import itemRoute                from './routes/item';
 import signUpRoute              from './routes/sign-up';
 import signOutRoute             from './routes/sign-out';
 import * as Routes              from './routes';
+
 import User                     from './models/user';
 import Item                     from './models/item';
 import DiscussionModel          from './models/discussion';
+
 import API                      from './api';
 
 class HttpServer extends EventEmitter {
@@ -163,7 +170,8 @@ class HttpServer extends EventEmitter {
     this.getLandingPage();
     this.getTermsOfServicePage();
     this.getSettings();
-    // this.getPage();
+    this.getItemPage();
+    this.getPanelPage();
 
     this.app.get('/error', (req, res, next) => {
       next(new Error('Test error > next with error'));
@@ -264,10 +272,60 @@ class HttpServer extends EventEmitter {
   }
 
   getItemPage () {
-    this.app.get('/item/:item_short_id/:item_slug',
-      this.itemRoute.bind(this),
-      this.renderPage.bind(this)
-    );
+    this.app.get('/item/:item_short_id/:item_slug', (req, res, next) => {
+      try {
+        Item.findOne({ id : req.params.item_short_id }).then(
+          item => {
+            if ( ! item ) {
+              return next();
+            }
+            item.toPanelItem().then(
+              item => {
+                req.item = item;
+
+                const panelId   =   makePanelId({
+                  type          :   item.type,
+                  parent        :   item.parent,
+                  backEnd       :   true
+                });
+
+                req.panel = {
+                  [panelId] : {}
+                };
+
+                next();
+              },
+              next
+            );
+          },
+          next
+        );
+      }
+      catch ( error ) {
+        next(error);
+      }
+    }, Routes.homePage.bind(this));
+  }
+
+  getPanelPage () {
+    this.app.get('/items/:panelShortId/:panelParent?', (req, res, next) => {
+      try {
+        // Item.findOne({ id : req.params.item_short_id }).then(
+        //   item => {
+        //     if ( ! item ) {
+        //       return next();
+        //     }
+        //     req.item = item;
+        //     next();
+        //   },
+        //   next
+        // );
+        next();
+      }
+      catch ( error ) {
+        next(error);
+      }
+    }, Routes.homePage.bind(this));
   }
 
   static () {

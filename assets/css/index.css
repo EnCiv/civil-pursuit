@@ -1226,6 +1226,15 @@ body {
 .syn-panel-heading i.fa-plus {
   cursor: pointer;
 }
+.syn-panel-heading a {
+  color: #fff;
+}
+.syn-panel-heading a i.fa {
+  display: none;
+}
+.syn-panel.focused .syn-panel-heading a i.fa {
+  display: inline;
+}
 /**-------------------------------------------------------------// panel       */
 .item {
   border: 1px solid #666;
@@ -1273,6 +1282,9 @@ body {
   padding: 10px;
   margin-top: -10px;
   padding-right: 0;
+}
+.item-hidden {
+  display: none;
 }
 .syn-uploader .syn-uploader-dropbox {
   background: #F8F8F8;
