@@ -26,22 +26,23 @@ function home (req, res, next) {
       }
     }
 
-    const AppFactory = React.createFactory(App);
-
-    const props = makeProps({
-      env         :   this.app.get('env'),
-      path        :   req.path,
-      intro       :   JSON.parse(JSON.stringify(this.props.intro)),
-      item        :   JSON.parse(JSON.stringify(req.item || null)),
-      panel       :   JSON.parse(JSON.stringify(req.panel || null)),
-      backEnd     :   true
-    });
-
-    let source = new Index(props).render();
-
-    const app = AppFactory(props);
-
-    source = source.replace(/<!-- #synapp -->/, React.renderToString(app));
+    const
+      props           =   makeProps({
+        env           :   this.app.get('env'),
+        path          :   req.path,
+        intro         :   JSON.parse(JSON.stringify(this.props.intro)),
+        item          :   JSON.parse(JSON.stringify(req.item || null)),
+        panel         :   JSON.parse(JSON.stringify(req.panel || null)),
+        backEnd       :   true
+    }),
+      appFactory      =   React.createFactory(App),
+      app             =   appFactory(props),
+      source          =   new Index(props)
+                            .render()
+                            .replace(
+                              /<!-- #synapp -->/,
+                              React.renderToString(app)
+                            );
 
     res.send(source);
   }

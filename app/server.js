@@ -283,14 +283,8 @@ class HttpServer extends EventEmitter {
               item => {
                 req.item = item;
 
-                const panelId   =   makePanelId({
-                  type          :   item.type,
-                  parent        :   item.parent,
-                  backEnd       :   true
-                });
-
                 req.panel = {
-                  [panelId] : {}
+                  [makePanelId(item)] : {}
                 };
 
                 next();

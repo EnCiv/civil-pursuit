@@ -6,8 +6,6 @@ import App                from '../components/app';
 import makePanelId        from '../lib/app/make-panel-id';
 import makeProps          from '../props';
 
-// window.makePanelId = makePanelId;
-
 function makePanel (panel) {
   let p = {
     panel : {
@@ -53,10 +51,23 @@ function OUTCOMING (message, ...messages) {
   console.info(`%c${message}`, 'color: green; font-weight: bold', ...messages);
 }
 
+const item = JSON.parse(window.synapp.item);
+
+let panel;
+
+if ( item ) {
+  const panelId = makePanelId(item);
+  panel = { [panelId] : {} };
+}
+
 const props       =   makeProps({
   path            :   location.pathname,
-  intro           :   window.synapp.intro,
+  intro           :   JSON.parse(window.synapp.intro),
+  item,
+  panel
 });
+
+console.log({ props });
 
 window.location.search.replace(
   /([^?=&]+)(=([^&]*))?/g, ($0, $1, $2, $3) => { props.urlParams[$1] = $3 }

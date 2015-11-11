@@ -5,6 +5,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
 
+function _defineProperty(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); }
+
 var _events = require('events');
 
 var _react = require('react');
@@ -22,8 +24,6 @@ var _libAppMakePanelId2 = _interopRequireDefault(_libAppMakePanelId);
 var _props = require('../props');
 
 var _props2 = _interopRequireDefault(_props);
-
-// window.makePanelId = makePanelId;
 
 function makePanel(panel) {
   var p = {
@@ -80,9 +80,23 @@ function OUTCOMING(message) {
   console.info.apply(console, ['%c' + message, 'color: green; font-weight: bold'].concat(messages));
 }
 
+var item = JSON.parse(window.synapp.item);
+
+var panel = undefined;
+
+if (item) {
+  var panelId = (0, _libAppMakePanelId2['default'])(item);
+  panel = _defineProperty({}, panelId, {});
+}
+
 var props = (0, _props2['default'])({
   path: location.pathname,
-  intro: window.synapp.intro });
+  intro: JSON.parse(window.synapp.intro),
+  item: item,
+  panel: panel
+});
+
+console.log({ props: props });
 
 window.location.search.replace(/([^?=&]+)(=([^&]*))?/g, function ($0, $1, $2, $3) {
   props.urlParams[$1] = $3;
@@ -599,11 +613,6 @@ var App = (function (_React$Component) {
   _createClass(App, [{
     key: 'render',
     value: function render() {
-
-      console.log('-------------------------------------------------------------');
-      console.log('app', { props: this.props });
-      console.log('-------------------------------------------------------------');
-
       var _props = this.props;
       var path = _props.path;
       var item = _props.item;
@@ -658,12 +667,6 @@ var App = (function (_React$Component) {
             },
             items: [item]
           };
-
-          console.log('---------------------------------------------------------');
-
-          console.log({ panel: panel });
-
-          console.log('---------------------------------------------------------');
 
           page = _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: panel }));
           break;
@@ -2962,30 +2965,27 @@ var Item = (function (_React$Component) {
 
     _get(Object.getPrototypeOf(Item.prototype), 'constructor', this).call(this, props);
 
-    this.expanded = false;
-
-    this.truncated = false;
-
-    if (typeof window !== 'undefined' && this.props.item) {
-
-      var _parent = this.props.item.lineage[this.props.item.lineage.length - 1];
-
-      if (_parent) {
-        _parent = _parent._id;
-      }
-
-      this.panelId = require('../lib/app/make-panel-id')({ type: this.props.item.type, parent: _parent });
-
-      if (this.props.panels && !this.props.panels[this.panelId]) {
-        console.error('Panel not found', this.panelId, this.props.item);
-      }
-    }
-
     this.state = {
       active: null,
       item: this.props.item,
       ping: 0
     };
+    this.expanded = false;
+    this.truncated = false;
+    var _props = this.props;
+    var item = _props.item;
+    var panels = _props.panels;
+
+    if (item) {
+
+      this.panelId = (0, _libAppMakePanelId2['default'])(item);
+
+      console.log('panelId'.bgRed, this.panelId);
+
+      if (panels && !panels[this.panelId]) {
+        console.error('Panel not found', this.panelId, this.props.item);
+      }
+    }
   }
 
   _inherits(Item, _React$Component);
@@ -3418,15 +3418,21 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   }], [{
-    key: 'spanify',
+    key: 'wordify',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /**
+     *  @description      Break a given text into lines, themselves into words
+     *  @arg              {String} text
+     *  @return           [[String]]
+    */
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    value: function spanify(text) {
+    value: function wordify(text) {
       var lines = [];
 
       text.split(/\n/).forEach(function (line) {
-        lines.push(line.split(/\s+/));
+        return lines.push(line.split(/\s+/));
       });
 
       lines = lines.map(function (line) {
@@ -3442,26 +3448,42 @@ var Item = (function (_React$Component) {
     key: 'paint',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /**
+     *  @description      Put all words into spans, hidding the ones who are below limit
+     *  @arg              {HTMLElement} container
+     *  @arg              {Number} limit
+     *  @return           null
+    */
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function paint(container, limit) {
-      var lines = Item.spanify(container.textContent);
+      var lines = Item.wordify(container.textContent);
       container.innerHTML = '';
 
       var whiteSpace = function whiteSpace() {
         var span = document.createElement('span');
+
         span.appendChild(document.createTextNode(' '));
+
         return span;
       };
 
       lines.forEach(function (line) {
         var div = document.createElement('div');
+
         container.appendChild(div);
+
         line.forEach(function (word) {
           var span = document.createElement('span');
+
           span.appendChild(document.createTextNode(word));
+
           span.classList.add('word');
+
           div.appendChild(span);
+
           div.appendChild(whiteSpace());
+
           var offset = span.offsetTop;
 
           if (offset > limit) {
@@ -3488,6 +3510,16 @@ var Item = (function (_React$Component) {
 
 exports['default'] = Item;
 module.exports = exports['default'];
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// Whether or not truncated text has been expanded
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// Whether or not text is truncated
 },{"../lib/app/make-panel-id":60,"../lib/proptypes/item":63,"../lib/proptypes/panel-item":64,"../lib/proptypes/user":67,"./details":6,"./edit-and-go-again":7,"./harmony":10,"./item-media":14,"./join":16,"./promote":23,"./subtype":28,"./util/accordion":33,"./util/button":35,"./util/button-group":34,"./util/column":37,"./util/icon":42,"./util/link":46,"./util/row":51,"react":228}],16:[function(require,module,exports){
 'use strict';
 
@@ -9799,14 +9831,15 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 function makePanelId(panel) {
-  console.log('make panel id', panel);
   var id = panel.type._id || panel.type;
 
   if (panel.parent) {
     id += '-' + (panel.parent._id || panel.parent);
-  } else if (panel.item && !panel.backEnd) {
-    id += '-' + panel.item._id;
   }
+
+  // else if ( panel.item && ! panel.backEnd ) {
+  //   id += `-${panel.item._id}`;
+  // }
 
   return id;
 };
@@ -10250,7 +10283,6 @@ function makeProps() {
   var options = arguments[0] === undefined ? {} : arguments[0];
 
   var props = {
-    backEnd: options.backEnd,
     close: false,
     created: {},
     env: options.env || 'development',

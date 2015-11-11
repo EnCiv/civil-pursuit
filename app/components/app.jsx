@@ -20,10 +20,6 @@ class App extends React.Component {
 
   render () {
 
-    console.log('-------------------------------------------------------------')
-    console.log('app', { props : this.props })
-    console.log('-------------------------------------------------------------')
-
     const { path, item } = this.props;
 
     let page = ( <div></div> );
@@ -76,12 +72,6 @@ class App extends React.Component {
           },
           items     :   [item]
         };
-
-        console.log('---------------------------------------------------------')
-
-        console.log({ panel });
-
-        console.log('---------------------------------------------------------')
 
         page = (
           <PanelItems { ...this.props } panel={ panel } />

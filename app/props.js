@@ -2,7 +2,6 @@
 
 function makeProps (options = {}) {
   const props = {
-    backEnd         :   options.backEnd,
     close           :   false,
     created         :   {},
     env             :   options.env || 'development',

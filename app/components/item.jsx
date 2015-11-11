@@ -23,13 +23,17 @@ import makePanelId      from '../lib/app/make-panel-id';
 class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /**
+   *  @description      Break a given text into lines, themselves into words
+   *  @arg              {String} text
+   *  @return           [[String]]
+  */
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static spanify (text) {
+  static wordify (text) {
     let lines = [];
 
-    text.split(/\n/).forEach(line => {
-      lines.push(line.split(/\s+/));
-    });
+    text.split(/\n/).forEach(line => lines.push(line.split(/\s+/)));
 
     lines = lines.map(line => {
       if ( line.length === 1 && ! line[0] ) {
@@ -42,27 +46,43 @@ class Item extends React.Component {
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /**
+   *  @description      Put all words into spans, hidding the ones who are below limit
+   *  @arg              {HTMLElement} container
+   *  @arg              {Number} limit
+   *  @return           null
+  */
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   static paint (container, limit) {
-    let lines = Item.spanify(container.textContent)
-    container.innerHTML = '';
+    const lines           =   Item.wordify(container.textContent);
+    container.innerHTML   =   '';
 
-    let whiteSpace = () => {
-      let span = document.createElement('span');
+    const whiteSpace      =   () => {
+      const span          =   document.createElement('span');
+
       span.appendChild(document.createTextNode(' '));
+
       return span;
     }
 
     lines.forEach(line => {
-      let div = document.createElement('div');
+      const div = document.createElement('div');
+
       container.appendChild(div);
+
       line.forEach(word => {
-        let span = document.createElement('span');
+        const span = document.createElement('span');
+
         span.appendChild(document.createTextNode(word));
+
         span.classList.add('word');
+
         div.appendChild(span);
+
         div.appendChild(whiteSpace());
-        let offset = span.offsetTop;
+
+        const offset = span.offsetTop;
 
         if ( offset > limit ) {
           span.classList.add('hide');
@@ -73,10 +93,10 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  static propTypes = {
-    item      :   React.PropTypes.oneOfType([panelItemType, itemType]),
-    panels    :   React.PropTypes.object,
-    user      :   userType
+  static propTypes  =   {
+    item            :   React.PropTypes.oneOfType([panelItemType, itemType]),
+    panels          :   React.PropTypes.object,
+    user            :   userType
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,31 +104,39 @@ class Item extends React.Component {
   constructor (props) {
     super(props)
 
-    this.expanded = false;
+    const { item, panels } = this.props;
 
-    this.truncated = false;
+    if ( item ) {
 
-    if ( typeof window !== 'undefined' && this.props.item ) {
+      this.panelId = makePanelId(item);
 
-      let parent = this.props.item.lineage[this.props.item.lineage.length - 1];
+      console.log('panelId'.bgRed, this.panelId);
 
-      if ( parent ) {
-        parent = parent._id;
-      }
-
-      this.panelId = require('../lib/app/make-panel-id')({ type : this.props.item.type, parent });
-
-      if ( this.props.panels && ! this.props.panels[this.panelId] ) {
+      if ( panels && ! panels[this.panelId] ) {
         console.error('Panel not found', this.panelId, this.props.item);
       }
     }
-
-    this.state    =   {
-      active      :   null,
-      item        :   this.props.item,
-      ping        :   0
-    };
   }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  state         =   {
+    active      :   null,
+    item        :   this.props.item,
+    ping        :   0
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Whether or not truncated text has been expanded
+
+  expanded      =   false
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  // Whether or not text is truncated
+
+  truncated     =   false
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

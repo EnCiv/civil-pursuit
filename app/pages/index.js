@@ -1,7 +1,9 @@
 'use strict';
 
-import { Document, Element, Elements } from 'cinco/dist';
-import publicConfig from '../../public.json';
+import { Document, Element, Elements }  from 'cinco/dist';
+import publicConfig                     from '../../public.json';
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Stylesheet extends Element {
   constructor(href, attrs) {
@@ -19,6 +21,8 @@ class Stylesheet extends Element {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Script extends Element {
   constructor(src) {
     if ( src ) {
@@ -30,12 +34,17 @@ class Script extends Element {
   }
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Layout extends Document {
   constructor (props = {}) {
     super(props);
+
     this.props = props;
 
-    let intro = JSON.stringify(this.props.intro);
+    const
+      intro     =   JSON.stringify(this.props.intro),
+      item      =   JSON.stringify(this.props.item || null);
 
     this.add(
       new Element('title').text('Synaccord | Bring synergy to democracy'),
@@ -65,7 +74,9 @@ class Layout extends Document {
 
     this.add(this.container());
 
-    this.add(new Script().text(`window.synapp = { "intro" : ${intro}}`));
+    this.add(
+      new Script().text(`window.synapp = ${JSON.stringify({ intro, item })}`)
+    );
 
     if ( props.env === 'development' ) {
       this.add(
