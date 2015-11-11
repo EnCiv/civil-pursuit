@@ -62,11 +62,7 @@
   "example image for test upload"   : "http://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg",
 
   "font awesome": {
-    "cdn": "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
-  },
-
-  "jquery":{
-    "cdn": "//code.jquery.com/jquery-2.1.1.min.js"
+    "cdn": "http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
   },
 
   "evaluation context item position": "last",
