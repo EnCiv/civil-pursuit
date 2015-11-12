@@ -6,6 +6,7 @@ import Loading            from './util/loading';
 import Link               from './util/link';
 import Icon               from './util/icon';
 import panelType          from '../lib/proptypes/panel';
+import makePanelId        from '../lib/app/make-panel-id';
 
 class PanelItems extends React.Component {
 
@@ -33,36 +34,40 @@ class PanelItems extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   unFocus () {
-    window.Dispatcher.emit('set panel', this.props.panel);
+    const panelId = makePanelId(this.props.panel.panel);
+    const hidden = document.querySelectorAll(`.syn-panel-${panelId} > .syn-panel-body > .item-hidden`);
+
+    for ( let i = 0; i < hidden.length; i++ ) {
+      hidden[i].classList.remove('item-hidden');
+    }
   }
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   render () {
-    let title         =     'Loading items';
-    let type          =     null;
-    let loaded        =     false;
-    let content       =     <Loading />;
-    let loadMore      =     ( <div className="gutter-top"></div> );
-    let parent        =     null;
-    let className     =     '';
+    let title           =     'Loading items',
+      type              =     null,
+      loaded            =     false,
+      content           =     ( <Loading /> ),
+      loadMore          =     ( <div className="gutter-top"></div> ),
+      parent            =     null,
+      className         =     '';
 
-    console.log('panel items', this.props.panel);
+    const { panel }     =     this.props;
 
-    if ( this.props.panel ) {
-      const { panel } =     this.props;
-      type            =     panel.panel.type;
-      className       =     `syn-panel-${type._id}`;
-      parent          =     panel.panel.parent;
+    if ( panel ) {
+      type              =     panel.panel.type;
+      className         =     `syn-panel-${type._id}`;
+      parent            =     panel.panel.parent;
 
       if ( parent ) {
-        className     +=    `-${parent._id || parent}`;
+        className       +=    `-${parent._id || parent}`;
       }
 
-      title           =     (
+      title             =     (
         <Link
-          href      =   { `/items/${type.id}/${panel.panel.parent || ""}` }
-          then      =   { this.unFocus.bind(this) }
+          href        =   { `/items/${type.id}/${panel.panel.parent || ""}` }
+          then        =   { this.unFocus.bind(this) }
           >
           <Icon icon="angle-double-left" />
           <span> </span>
@@ -70,9 +75,11 @@ class PanelItems extends React.Component {
         </Link>
       );
 
-      loaded          =     true;
+      loaded            =     true;
 
-      if ( ! panel.items.length ) {
+      let { items }     =     panel;
+
+      if ( ! items.length ) {
         content = (
           <div className="gutter text-center">
             <a href="#" onClick={ this.toggleCreator.bind(this) }>
@@ -85,7 +92,16 @@ class PanelItems extends React.Component {
       else {
         content = [];
 
-        panel.items.forEach(item => content.push(
+        // if ( this.props.focus.item && ( makePanelId(this.props.focus.item) === makePanelId(panel.panel) )) {
+        //
+        //   console.warn('neeen!')
+        //
+        //   items = items.filter(panelItem => panelItem._id === this.props.focus.item._id);
+        // }
+
+        items = items.filter(panelItem => ! panelItem.__hidden);
+
+        items.forEach(item => content.push(
           <Item key={ item._id } { ...this.props } item={ item } />
         ));
 

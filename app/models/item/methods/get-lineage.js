@@ -18,16 +18,21 @@ function getLineage () {
                     return ok(lineage);
                   }
 
-                  lineage.push(item);
+                  item.toPanelItem().then(
+                    item => {
+                      lineage.push(item);
 
-                  if ( item.parent ) {
-                    _getLineage(item.parent);
-                  }
+                      if ( item.parent ) {
+                        _getLineage(item.parent);
+                      }
 
-                  else {
-                    lineage.reverse();
-                    ok(lineage);
-                  }
+                      else {
+                        lineage.reverse();
+                        ok(lineage);
+                      }
+                    },
+                    ko
+                  );
                 }
                 catch ( error ) {
                   ko(error);

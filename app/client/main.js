@@ -4,40 +4,8 @@ import { EventEmitter }   from 'events';
 import React              from 'react';
 import App                from '../components/app';
 import makePanelId        from '../lib/app/make-panel-id';
+import makePanel          from '../lib/app/make-panel';
 import makeProps          from '../props';
-
-function makePanel (panel) {
-  let p = {
-    panel : {
-      skip : 0,
-      limit : 6
-    },
-    items : [],
-    active : null
-  };
-
-  if ( typeof panel === 'object' ) {
-    if ( panel.type ) {
-      p.panel.type = panel.type;
-    }
-
-    if ( panel.parent ) {
-      p.panel.parent = panel.parent;
-    }
-  }
-
-  else if ( typeof panel === 'string' ) {
-    let bits = panel.split('-');
-
-    p.panel.type = { _id : bits[0] };
-
-    if ( bits[1] ) {
-      p.panel.parent = bits[1];
-    }
-  }
-
-  return p;
-}
 
 function INFO (message, ...messages) {
   console.info(`%c${message}`, 'color: magenta; font-weight: bold', ...messages);
@@ -51,20 +19,10 @@ function OUTCOMING (message, ...messages) {
   console.info(`%c${message}`, 'color: green; font-weight: bold', ...messages);
 }
 
-const item = JSON.parse(window.synapp.item);
-
-let panel;
-
-if ( item ) {
-  const panelId = makePanelId(item);
-  panel = { [panelId] : {} };
-}
-
 const props       =   makeProps({
   path            :   location.pathname,
   intro           :   JSON.parse(window.synapp.intro),
-  item,
-  panel
+  panels          :   JSON.parse(window.synapp.panels),
 });
 
 window.location.search.replace(
@@ -94,7 +52,7 @@ window.Dispatcher
   })
 
   .on('set item', item => {
-    props.item = item;
+    props.focus.item = item;
     window.Dispatcher.emit('refresh');
   })
 
@@ -338,9 +296,9 @@ window.socket
     props.user = user;
     render();
 
-    INCOMING('get top level type');
-
-    window.socket.emit('get top level type');
+    // INCOMING('get top level type');
+    //
+    // window.socket.emit('get top level type');
   })
 
   .on('online users', users => {

@@ -44,7 +44,7 @@ class Layout extends Document {
 
     const
       intro     =   JSON.stringify(this.props.intro),
-      item      =   JSON.stringify(this.props.item || null);
+      panels    =   JSON.stringify(this.props.panels || null);
 
     this.add(
       new Element('title').text('Synaccord | Bring synergy to democracy'),
@@ -75,7 +75,7 @@ class Layout extends Document {
     this.add(this.container());
 
     this.add(
-      new Script().text(`window.synapp = ${JSON.stringify({ intro, item })}`)
+      new Script().text(`window.synapp = ${JSON.stringify({ intro, panels })}`)
     );
 
     if ( props.env === 'development' ) {

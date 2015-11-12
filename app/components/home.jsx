@@ -30,6 +30,8 @@ class Home extends React.Component {
     if ( typeof window !== 'undefined' ) {
       window.socket.emit('get discussion')
         .on('OK get discussion', discussion => this.setState({ discussion }));
+
+      window.socket.emit('get top level type');
     }
   }
 

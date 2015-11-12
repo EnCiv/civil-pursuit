@@ -10,12 +10,14 @@ import Home               from './home';
 import ResetPassword      from './reset-password';
 import PanelItems         from './panel-items';
 import panelItemType      from '../lib/proptypes/panel-item';
+import panelType          from '../lib/proptypes/panel';
 
 class App extends React.Component {
 
-  static propTypes = {
-    path : React.PropTypes.string,
-    item : panelItemType
+  static propTypes  =   {
+    path            :   React.PropTypes.string,
+    item            :   panelItemType,
+    panels          :   React.PropTypes.object
   }
 
   render () {
@@ -65,17 +67,14 @@ class App extends React.Component {
         break;
 
       case 'item':
-        const panel =   {
-          panel     :   {
-            type    :   item.type,
-            parent  :   item.parent
-          },
-          items     :   [item]
-        };
+        const panelId = Object.keys(this.props.panels)[0];
+
+        const panel = this.props.panels[panelId];
 
         page = (
           <PanelItems { ...this.props } panel={ panel } />
         );
+
         break;
 
       case 'items':

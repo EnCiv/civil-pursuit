@@ -15,6 +15,7 @@ import config                   from '../secret.json';
 import printIt                  from './lib/util/express-pretty';
 import getTime                  from './lib/util/print-time';
 import makePanelId              from './lib/app/make-panel-id';
+import makePanel                from './lib/app/make-panel';
 
 import TwitterPassport          from './routes/twitter';
 import FacebookPassport         from './routes/facebook';
@@ -281,11 +282,23 @@ class HttpServer extends EventEmitter {
             }
             item.toPanelItem().then(
               item => {
-                req.item = item;
+                req.panels = {};
 
-                req.panel = {
-                  [makePanelId(item)] : {}
-                };
+                item.lineage.forEach((ancestor, index) => {
+                  const panelId = makePanelId(ancestor);
+
+                  if ( ! req.panels[panelId] ) {
+                    req.panels[panelId] = makePanel(ancestor);
+                  }
+
+                  req.panels[panelId].items.push(ancestor);
+
+                  req.panels[panelId].active = `${ancestor._id}-subtype`;
+                });
+
+                req.panels[makePanelId(item)] = makePanel(item);
+
+                req.panels[makePanelId(item)].items.push(item);
 
                 next();
               },
@@ -313,10 +326,13 @@ class HttpServer extends EventEmitter {
             const panelId = makePanelId({ type, parent : req.params.panelParent });
 
             Item.getPanelItems({ type }).then(
-              results => {
-                req.panel = { [panelId] : results };
-                next();
+              items => {
+                req.panels = { [panelId] : makePanel({ type, parent : req.params.panelParent }) };
+
+                req.panels[panelId].items.push(...items);
                 
+                next();
+
               },
               next
             );

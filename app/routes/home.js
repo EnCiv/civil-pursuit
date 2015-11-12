@@ -33,6 +33,7 @@ function home (req, res, next) {
         intro         :   JSON.parse(JSON.stringify(this.props.intro)),
         item          :   JSON.parse(JSON.stringify(req.item || null)),
         panel         :   JSON.parse(JSON.stringify(req.panel || null)),
+        panels        :   JSON.parse(JSON.stringify(req.panels || null)),
         backEnd       :   true
     }),
       appFactory      =   React.createFactory(App),
