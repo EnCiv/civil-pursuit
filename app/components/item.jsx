@@ -110,10 +110,8 @@ class Item extends React.Component {
 
       this.panelId = makePanelId(item);
 
-      console.log('panelId'.bgRed, this.panelId);
-
       if ( panels && ! panels[this.panelId] ) {
-        console.error('Panel not found', this.panelId, this.props.item);
+        console.error('Panel not found', this.panelId, item);
       }
     }
   }
@@ -140,47 +138,15 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  listeners () {
-    if ( typeof window !== 'undefined' ) {
-      if ( this.state.item ) {
-        window.socket.on(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
-
-        window.socket.on(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
-      }
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  updateItem (item) {
-    this.setState({ item });
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  toggle (toggler) {
-    if ( toggler === 'promote' && ! this.props.user ) {
-      Join.click();
-
-      return;
-    }
-
-    if ( this.props.item ) {
-      window.Dispatcher.emit('set active', this.panelId, `${this.props.item._id}-${toggler}`);
-    }
-  }
-
-  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
   componentDidMount () {
 
     let media;
 
-    let image = React
+    const image = React
       .findDOMNode(this.refs.media)
       .querySelector('img');
 
-    let video = React
+    const video = React
       .findDOMNode(this.refs.media)
       .querySelector('iframe');
 
@@ -193,11 +159,11 @@ class Item extends React.Component {
       media = image;
     }
 
-    let item = React
+    const item = React
       .findDOMNode(this.refs.item);
 
     if ( ! this.truncated ) {
-      let more = React.findDOMNode(this.refs.more);
+      const more = React.findDOMNode(this.refs.more);
 
       let truncatable   =   item.querySelector('.item-truncatable');
       let subject       =   item.querySelector('.item-subject a');
@@ -252,6 +218,38 @@ class Item extends React.Component {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  listeners () {
+    if ( typeof window !== 'undefined' ) {
+      if ( this.state.item ) {
+        window.socket.on(`item image uploaded ${this.props.item._id}`, this.updateItem.bind(this));
+
+        window.socket.on(`item changed ${this.props.item._id}`, this.updateItem.bind(this));
+      }
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  updateItem (item) {
+    this.setState({ item });
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  toggle (toggler) {
+    if ( toggler === 'promote' && ! this.props.user ) {
+      Join.click();
+
+      return;
+    }
+
+    if ( this.props.item ) {
+      window.Dispatcher.emit('set active', this.panelId, `${this.props.item._id}-${toggler}`);
+    }
+  }
+
+  //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   readMore () {
     let truncatable =  React.findDOMNode(this.refs.item)
       .querySelector('.item-truncatable');
@@ -273,17 +271,18 @@ class Item extends React.Component {
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   selectItem () {
-    const
-      { item }      =   this.props,
-      $item         =   React.findDOMNode(this.refs.item),
-      $panel        =   $item.closest('.syn-panel'),
-      $otherItems   =   $panel.querySelectorAll(`:scope >.syn-panel-body > .item:not(#item-${item._id})`);
-
-    $panel.classList.add('focused');
-
-    for ( let i = 0; i < $otherItems.length; i ++ ) {
-      $otherItems[i].classList.add('item-hidden');
-    }
+    window.Dispatcher.emit('set item', this.props.item);
+    // const
+    //   { item }      =   this.props,
+    //   $item         =   React.findDOMNode(this.refs.item),
+    //   $panel        =   $item.closest('.syn-panel'),
+    //   $otherItems   =   $panel.querySelectorAll(`:scope >.syn-panel-body > .item:not(#item-${item._id})`);
+    //
+    // $panel.classList.add('focused');
+    //
+    // for ( let i = 0; i < $otherItems.length; i ++ ) {
+    //   $otherItems[i].classList.add('item-hidden');
+    // }
 
   }
 

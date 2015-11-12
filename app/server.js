@@ -26,7 +26,7 @@ import * as Routes              from './routes';
 
 import User                     from './models/user';
 import Item                     from './models/item';
-import DiscussionModel          from './models/discussion';
+import Type                     from './models/type';
 
 import API                      from './api';
 
@@ -304,17 +304,25 @@ class HttpServer extends EventEmitter {
   getPanelPage () {
     this.app.get('/items/:panelShortId/:panelParent?', (req, res, next) => {
       try {
-        // Item.findOne({ id : req.params.item_short_id }).then(
-        //   item => {
-        //     if ( ! item ) {
-        //       return next();
-        //     }
-        //     req.item = item;
-        //     next();
-        //   },
-        //   next
-        // );
-        next();
+        Type.findOne({ id : req.params.panelShortId }).then(
+          type => {
+            if ( ! type ) {
+              return next(new Error('No such type'));
+            }
+
+            const panelId = makePanelId({ type, parent : req.params.panelParent });
+
+            Item.getPanelItems({ type }).then(
+              results => {
+                req.panel = { [panelId] : results };
+                next();
+                
+              },
+              next
+            );
+          },
+          next
+        );
       }
       catch ( error ) {
         next(error);

@@ -96,8 +96,6 @@ var props = (0, _props2['default'])({
   panel: panel
 });
 
-console.log({ props: props });
-
 window.location.search.replace(/([^?=&]+)(=([^&]*))?/g, function ($0, $1, $2, $3) {
   props.urlParams[$1] = $3;
 });
@@ -117,7 +115,13 @@ window.Emitter = new _events.EventEmitter();
 
 window.Dispatcher = new _events.EventEmitter();
 
-window.Dispatcher.on('set active', function (panel, section) {
+window.Dispatcher.on('refresh', function () {
+  props.path = location.pathname;
+  render();
+}).on('set item', function (item) {
+  props.item = item;
+  window.Dispatcher.emit('refresh');
+}).on('set active', function (panel, section) {
   INCOMING('set active', panel, section);
 
   var id = typeof panel === 'string' ? panel : (0, _libAppMakePanelId2['default'])(panel);
@@ -2980,10 +2984,8 @@ var Item = (function (_React$Component) {
 
       this.panelId = (0, _libAppMakePanelId2['default'])(item);
 
-      console.log('panelId'.bgRed, this.panelId);
-
       if (panels && !panels[this.panelId]) {
-        console.error('Panel not found', this.panelId, this.props.item);
+        console.error('Panel not found', this.panelId, item);
       }
     }
   }
@@ -2991,44 +2993,6 @@ var Item = (function (_React$Component) {
   _inherits(Item, _React$Component);
 
   _createClass(Item, [{
-    key: 'listeners',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function listeners() {
-      if (typeof window !== 'undefined') {
-        if (this.state.item) {
-          window.socket.on('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
-
-          window.socket.on('item changed ' + this.props.item._id, this.updateItem.bind(this));
-        }
-      }
-    }
-  }, {
-    key: 'updateItem',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function updateItem(item) {
-      this.setState({ item: item });
-    }
-  }, {
-    key: 'toggle',
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    value: function toggle(toggler) {
-      if (toggler === 'promote' && !this.props.user) {
-        _join2['default'].click();
-
-        return;
-      }
-
-      if (this.props.item) {
-        window.Dispatcher.emit('set active', this.panelId, '' + this.props.item._id + '-' + toggler);
-      }
-    }
-  }, {
     key: 'componentDidMount',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3101,6 +3065,44 @@ var Item = (function (_React$Component) {
       }
     }
   }, {
+    key: 'listeners',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function listeners() {
+      if (typeof window !== 'undefined') {
+        if (this.state.item) {
+          window.socket.on('item image uploaded ' + this.props.item._id, this.updateItem.bind(this));
+
+          window.socket.on('item changed ' + this.props.item._id, this.updateItem.bind(this));
+        }
+      }
+    }
+  }, {
+    key: 'updateItem',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function updateItem(item) {
+      this.setState({ item: item });
+    }
+  }, {
+    key: 'toggle',
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    value: function toggle(toggler) {
+      if (toggler === 'promote' && !this.props.user) {
+        _join2['default'].click();
+
+        return;
+      }
+
+      if (this.props.item) {
+        window.Dispatcher.emit('set active', this.panelId, '' + this.props.item._id + '-' + toggler);
+      }
+    }
+  }, {
     key: 'readMore',
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3126,16 +3128,18 @@ var Item = (function (_React$Component) {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     value: function selectItem() {
-      var item = this.props.item;
-      var $item = _react2['default'].findDOMNode(this.refs.item);
-      var $panel = $item.closest('.syn-panel');
-      var $otherItems = $panel.querySelectorAll(':scope >.syn-panel-body > .item:not(#item-' + item._id + ')');
-
-      $panel.classList.add('focused');
-
-      for (var i = 0; i < $otherItems.length; i++) {
-        $otherItems[i].classList.add('item-hidden');
-      }
+      window.Dispatcher.emit('set item', this.props.item);
+      // const
+      //   { item }      =   this.props,
+      //   $item         =   React.findDOMNode(this.refs.item),
+      //   $panel        =   $item.closest('.syn-panel'),
+      //   $otherItems   =   $panel.querySelectorAll(`:scope >.syn-panel-body > .item:not(#item-${item._id})`);
+      //
+      // $panel.classList.add('focused');
+      //
+      // for ( let i = 0; i < $otherItems.length; i ++ ) {
+      //   $otherItems[i].classList.add('item-hidden');
+      // }
     }
   }, {
     key: 'render',

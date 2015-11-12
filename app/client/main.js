@@ -67,8 +67,6 @@ const props       =   makeProps({
   panel
 });
 
-console.log({ props });
-
 window.location.search.replace(
   /([^?=&]+)(=([^&]*))?/g, ($0, $1, $2, $3) => { props.urlParams[$1] = $3 }
 );
@@ -89,6 +87,16 @@ window.Emitter = new EventEmitter();
 window.Dispatcher = new EventEmitter();
 
 window.Dispatcher
+
+  .on('refresh', () => {
+    props.path = location.pathname;
+    render();
+  })
+
+  .on('set item', item => {
+    props.item = item;
+    window.Dispatcher.emit('refresh');
+  })
 
   .on('set active', (panel, section) => {
     INCOMING('set active', panel, section);

@@ -1270,6 +1270,9 @@ body {
   margin: 0;
   margin-left: 10px;
 }
+.item-subject a {
+  color: #000;
+}
 .item-description {
   /** Parse \n into line breaks */
   white-space: pre-line;
