@@ -6,6 +6,7 @@ import isHarmony    from './methods/is-harmony';
 import getSubtype   from './methods/get-subtype';
 import group        from './statics/group';
 import generateId   from '../item/statics/id';
+import V1           from './migrations/1';
 import V2           from './migrations/2';
 import V3           from './migrations/3';
 import V4           from './migrations/4';
@@ -57,6 +58,7 @@ class Type extends Mungo.Model {
 Type.version = 5;
 
 Type.migrations = {
+  1 : V1,
   2 : V2,
   3 : V3,
   4 : V4,
