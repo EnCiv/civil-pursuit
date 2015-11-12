@@ -631,17 +631,17 @@ var App = (function (_React$Component) {
           break;
 
         case 'item':
-          var panelId = Object.keys(this.props.panels)[0];
+          var panelId1 = Object.keys(this.props.panels)[0];
 
-          var panel = this.props.panels[panelId];
+          var panel = this.props.panels[panelId1];
 
           page = _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: panel }));
 
           break;
 
         case 'items':
-          var panelId = Object.keys(this.props.panels)[0];
-          page = _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: this.props.panels[panelId] }));
+          var panelId2 = Object.keys(this.props.panels)[0];
+          page = _react2['default'].createElement(_panelItems2['default'], _extends({}, this.props, { panel: this.props.panels[panelId2] }));
           break;
       }
 

@@ -67,9 +67,9 @@ class App extends React.Component {
         break;
 
       case 'item':
-        const panelId = Object.keys(this.props.panels)[0];
+        const panelId1 = Object.keys(this.props.panels)[0];
 
-        const panel = this.props.panels[panelId];
+        const panel = this.props.panels[panelId1];
 
         page = (
           <PanelItems { ...this.props } panel={ panel } />
@@ -78,9 +78,9 @@ class App extends React.Component {
         break;
 
       case 'items':
-        const panelId = Object.keys(this.props.panels)[0];
+        const panelId2 = Object.keys(this.props.panels)[0];
         page = (
-          <PanelItems { ...this.props } panel={ this.props.panels[panelId] } />
+          <PanelItems { ...this.props } panel={ this.props.panels[panelId2] } />
         );
         break;
     }
