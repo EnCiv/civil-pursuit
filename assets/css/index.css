@@ -1270,6 +1270,9 @@ body {
   margin: 0;
   margin-left: 10px;
 }
+blockquote {
+  color: red;
+}
 .item-subject a {
   color: #000;
 }

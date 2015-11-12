@@ -1,9 +1,11 @@
 'use strict';
 
-import fs from 'fs';
-import CleanCSS from 'clean-css';
+import fs               from 'fs';
+import path             from 'path';
+import CleanCSS         from 'clean-css';
 
 function minifyCSS (source, destination) {
+  console.log('minify css', source, destination);
   return new Promise((ok, ko) => {
     let min = fs.createWriteStream(destination)
       .on('error', ko)
@@ -20,10 +22,10 @@ function minifyCSS (source, destination) {
 
 export default minifyCSS;
 
-if ( /minify\.js$/.test(process.argv[1]) ) {
+if ( /minify-css\.js$/.test(process.argv[1]) ) {
   minifyCSS(process.argv[2], process.argv[3])
     .then(
       () => console.log('minified'),
-      error => console.log(error.stack.split(/\n/))
+      error => console.log(error.stack)
     );
 }
